@@ -890,7 +890,7 @@ export default class PatchView extends Events
     createSubPatchFromSelection(version = 0, next = null, options = {})
     {
         let opname = defaultOps.defaultOpNames.subPatch;
-        if (version == 2)opname = defaultOps.defaultOpNames.subPatch2;
+        // if (version == 2)opname = defaultOps.defaultOpNames.subPatch2;
 
         const selectedOps = this.getSelectedOps();
 

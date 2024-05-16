@@ -38,7 +38,7 @@ const defaultOpNames =
     "performance": "Ops.Gl.Performance",
 
     "subPatch": "Ops.Ui.SubPatch",
-    "subPatch2": "Ops.Ui.Subpatch2Temp",
+    // "subPatch2": "Ops.Ui.Subpatch2Temp",
     "subPatchInput2": "Ops.Ui.SubPatchInput",
     "subPatchOutput2": "Ops.Ui.SubPatchOutput",
 
@@ -52,7 +52,7 @@ const defaultOpNames =
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "TriggerCounter": "Ops.Trigger.TriggerCounter",
-    "parseFloat": "Ops.String.ParseFloat",
+    "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v2",
     "arrayToString": "Ops.Array.ArrayToString_v3",
@@ -65,7 +65,7 @@ const defaultOpNames =
     "VizNumberBar": "Ops.Ui.VizNumberBar",
     "VizObject": "Ops.Ui.VizObject",
     "VizString": "Ops.Ui.VizString",
-    "VizStringLong": "Ops.Ui.VizStringLong",
+    "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
@@ -159,21 +159,21 @@ const defaultOps = {
 
     ],
     "jsonPathOps": {
-        "ArrayGetArray": "Ops.Json.ArrayGetArrayByPath",
-        "ArrayGetArrayValues": "Ops.Json.ArrayGetArrayValuesByPath",
-        "ArrayGetNumber": "Ops.Json.ArrayGetNumberByPath",
-        "ArrayGetObject": "Ops.Json.ArrayGetObjectByPath",
-        "ArrayGetString": "Ops.Json.ArrayGetStringByPath",
-        "ObjectGetArray": "Ops.Json.ObjectGetArrayByPath",
-        "ObjectGetArrayValues": "Ops.Json.ObjectGetArrayValuesByPath",
-        "ObjectGetNumber": "Ops.Json.ObjectGetNumberByPath",
-        "ObjectGetObject": "Ops.Json.ObjectGetObjectByPath",
-        "ObjectGetString": "Ops.Json.ObjectGetStringByPath"
+        "ArrayGetArray": "Ops.Data.JsonPath.ArrayGetArrayByPath",
+        "ArrayGetArrayValues": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
+        "ArrayGetNumber": "Ops.Data.JsonPath.ArrayGetNumberByPath",
+        "ArrayGetObject": "Ops.Data.JsonPath.ArrayGetObjectByPath",
+        "ArrayGetString": "Ops.Data.JsonPath.ArrayGetStringByPath",
+        "ObjectGetArray": "Ops.Data.JsonPath.ObjectGetArrayByPath",
+        "ObjectGetArrayValues": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
+        "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
+        "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
+        "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath"
     },
     "hideInOpSelect":
     [
         "Ops.Ui.SubPatch",
-        "Ops.Ui.Subpatch2Temp",
+        // "Ops.Ui.Subpatch2Temp",
         "Ops.Ui.SubPatchInput",
         "Ops.Ui.SubPatchOutput",
         "Ops.Ui.PatchInput",

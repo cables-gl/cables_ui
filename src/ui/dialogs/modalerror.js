@@ -155,7 +155,7 @@ export default class ModalError
     {
         CABLES.ajax(
             url,
-            function (err, _data, xhr)
+            (err, _data, xhr) =>
             {
                 if (err)
                 {
