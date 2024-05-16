@@ -537,7 +537,6 @@ export default class GlOp extends Events
             let x = this.w + gluiconfig.portWidth;
             if (this._rectResize)x += this._rectResize.w;
 
-            console.log(this.w);
             if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
             else this._glComment.setPosition(12, this._height, 0, 0); // comment op (weird hardcoded values because of title scaling)
         }
