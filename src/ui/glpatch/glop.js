@@ -40,7 +40,7 @@ export default class GlOp extends Events
         this._glColorIndicator = null;
         this.minWidth = 10;
 
-        this._origPosZ = gluiconfig.zPosOpSelected + (0.1 + Math.random() * 0.01);
+        this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
 
         this._glRectArea = null;
 
