@@ -93,22 +93,9 @@ export default class PatchView extends Events
 
     clickSubPatchNav(subPatchId)
     {
-        // if (gui.patchView.getCurrentSubPatch() == subPatchId)
-        // {
-        //     const op = gui.patchView.getSubPatchOuterOp(subPatchId);
-        //     if (!op) return;
-
-        //     gui.patchView.unselectAllOps();
-        //     gui.patchView.selectOpId(op.id);
-
-        //     gui.patchView.centerSelectOp(op.id);
-        //     gui.patchView.focusOpAnim(op.id);
-        // }
-        // else
-        // {
         gui.patchView.setCurrentSubPatch(subPatchId);
         gui.patchParamPanel.show(true);
-        // }
+        this.focus();
     }
 
     _onDeleteOpUndo(op)
@@ -164,7 +151,6 @@ export default class PatchView extends Events
         if (proj && proj.ui)
         {
             this.store.setProject(proj);
-
 
             if (proj.ui.renderer)
             {

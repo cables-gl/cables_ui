@@ -993,13 +993,13 @@ export default class GlOp extends Events
         if (this._disposed) return;
         if (!this.isInCurrentSubPatch())
         {
-            if (this._glDotHint) this._glDotHint.visible = false;
-            if (this._glDotWarnings) this._glDotWarnings.visible = false;
-            if (this._glDotError) this._glDotError.visible = false;
-            if (this._glNotWorkingCross) this._glNotWorkingCross.visible = false;
-            if (this._glLoadingIndicator) this._glLoadingIndicator.visible = false;
+            // if (this._glDotHint) this._glDotHint.visible = false;
+            // if (this._glDotWarnings) this._glDotWarnings.visible = false;
+            // if (this._glDotError) this._glDotError.visible = false;
+            // if (this._glNotWorkingCross) this._glNotWorkingCross.visible = false;
+            // if (this._glLoadingIndicator) this._glLoadingIndicator.visible = false;
 
-            return;
+            // return;
         }
 
         if (this.opUiAttribs.loading)
@@ -1041,24 +1041,33 @@ export default class GlOp extends Events
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
             const dotY = this.h / 2 - gui.theme.patch.opStateIndicatorSize / 2;
 
-            if (!this._glDotHint)
+            if (hasHints && !this._glDotHint)
             {
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotHint.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glDotHint.setShape(6);
+            }
 
+            if (hasWarnings && !this._glDotWarning)
+            {
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotWarning.setColor(gui.theme.colors_patch.opErrorWarning);
                 this._glDotWarning.setShape(6);
+            }
 
+            if (hasErrors && !this._glDotError)
+            {
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotError.setColor(gui.theme.colors_patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
+            }
 
+            if (notworking && !this._glNotWorkingCross)
+            {
                 this._glNotWorkingCross = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glNotWorkingCross.setSize(this._height * 0.25, this._height * 0.25);
                 this._glNotWorkingCross.setColor(gui.theme.colors_patch.opNotWorkingCross);
@@ -1072,7 +1081,12 @@ export default class GlOp extends Events
                 this._glDotHint.visible = true;
                 dotX += 2;
             }
-            else this._glDotHint.visible = false;
+
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+            if (!hasWarnings && this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+            if (!hasErrors && this._glDotError) this._glDotError = this._glDotError.dispose();
+            if (!notworking && this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
 
             if (hasWarnings)
             {
@@ -1080,7 +1094,6 @@ export default class GlOp extends Events
                 this._glDotWarning.visible = true;
                 dotX += 2;
             }
-            else this._glDotWarning.visible = false;
 
             if (hasErrors)
             {
@@ -1088,14 +1101,12 @@ export default class GlOp extends Events
                 this._glDotError.visible = true;
                 dotX += 2;
             }
-            else this._glDotError.visible = false;
 
             if (notworking)
             {
                 this._glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
                 this._glNotWorkingCross.visible = true;
             }
-            else this._glNotWorkingCross.visible = false;
         }
 
         if (

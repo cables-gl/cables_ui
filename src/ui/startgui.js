@@ -164,9 +164,7 @@ export default function startUi(cfg)
 
                 gui.corePatch().clearSubPatchCache();
 
-                const ops = gui.corePatch().ops;
-                for (let i = 0; i < ops.length; i++)
-                    ops[i].checkLinkTimeWarnings();
+                for (let i = 0; i < gui.corePatch().ops.length; i++) gui.corePatch().ops[i].checkLinkTimeWarnings();
 
                 gui.patchParamPanel.show();
 
