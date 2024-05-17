@@ -242,7 +242,6 @@ export default class GlOp extends Events
 
     getPosZ()
     {
-        if (this._displayType == this.DISPLAY_UI_AREA) return gluiconfig.zPosOpArea;
         if (this.selected) return gluiconfig.zPosOpSelected;
         return this._origPosZ;
     }
@@ -278,7 +277,6 @@ export default class GlOp extends Events
             const undoGroup = undo.startGroup();
 
             for (const i in glOps) glOps[i].endPassiveDrag();
-
 
             const undoAdd = (function (scope, _oldUiAttribs)
             {
@@ -882,7 +880,6 @@ export default class GlOp extends Events
         if (!this.opUiAttribs.translate) return;
         if (!this._visible) return;
 
-
         this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
@@ -1150,9 +1147,6 @@ export default class GlOp extends Events
 
         if ((this.opUiAttribs.hasArea || this._displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
-
-
-        // this._glRectNames.push("_glTitle");
 
 
 
