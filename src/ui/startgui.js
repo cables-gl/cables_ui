@@ -164,7 +164,8 @@ export default function startUi(cfg)
 
                 gui.corePatch().clearSubPatchCache();
 
-                // gui.patchView.showBookmarkParamsPanel();
+                for (let i = 0; i < gui.corePatch().ops.length; i++) gui.corePatch().ops[i].checkLinkTimeWarnings();
+
                 gui.patchParamPanel.show();
 
                 setTimeout(() =>

@@ -40,7 +40,7 @@ export default class GlOp extends Events
         this._glColorIndicator = null;
         this.minWidth = 10;
 
-        this._origPosZ = gluiconfig.zPosOpSelected + (0.1 + Math.random() * 0.01);
+        this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
 
         this._glRectArea = null;
 
@@ -533,8 +533,13 @@ export default class GlOp extends Events
     _updateCommentPosition()
     {
         if (this._glComment)
-            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this.getPosZ());
-            else this._glComment.setPosition(0, this._height + 20, this.getPosZ());
+        {
+            let x = this.w + gluiconfig.portWidth;
+            if (this._rectResize)x += this._rectResize.w;
+
+            if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
+            else this._glComment.setPosition(12, this._height, 0, 0); // comment op (weird hardcoded values because of title scaling)
+        }
     }
 
 
@@ -993,13 +998,13 @@ export default class GlOp extends Events
         if (this._disposed) return;
         if (!this.isInCurrentSubPatch())
         {
-            if (this._glDotHint) this._glDotHint.visible = false;
-            if (this._glDotWarnings) this._glDotWarnings.visible = false;
-            if (this._glDotError) this._glDotError.visible = false;
-            if (this._glNotWorkingCross) this._glNotWorkingCross.visible = false;
-            if (this._glLoadingIndicator) this._glLoadingIndicator.visible = false;
+            // if (this._glDotHint) this._glDotHint.visible = false;
+            // if (this._glDotWarnings) this._glDotWarnings.visible = false;
+            // if (this._glDotError) this._glDotError.visible = false;
+            // if (this._glNotWorkingCross) this._glNotWorkingCross.visible = false;
+            // if (this._glLoadingIndicator) this._glLoadingIndicator.visible = false;
 
-            return;
+            // return;
         }
 
         if (this.opUiAttribs.loading)
@@ -1041,24 +1046,33 @@ export default class GlOp extends Events
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
             const dotY = this.h / 2 - gui.theme.patch.opStateIndicatorSize / 2;
 
-            if (!this._glDotHint)
+            if (hasHints && !this._glDotHint)
             {
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotHint.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glDotHint.setShape(6);
+            }
 
+            if (hasWarnings && !this._glDotWarning)
+            {
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotWarning.setColor(gui.theme.colors_patch.opErrorWarning);
                 this._glDotWarning.setShape(6);
+            }
 
+            if (hasErrors && !this._glDotError)
+            {
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotError.setColor(gui.theme.colors_patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
+            }
 
+            if (notworking && !this._glNotWorkingCross)
+            {
                 this._glNotWorkingCross = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glNotWorkingCross.setSize(this._height * 0.25, this._height * 0.25);
                 this._glNotWorkingCross.setColor(gui.theme.colors_patch.opNotWorkingCross);
@@ -1072,7 +1086,7 @@ export default class GlOp extends Events
                 this._glDotHint.visible = true;
                 dotX += 2;
             }
-            else this._glDotHint.visible = false;
+
 
             if (hasWarnings)
             {
@@ -1080,7 +1094,6 @@ export default class GlOp extends Events
                 this._glDotWarning.visible = true;
                 dotX += 2;
             }
-            else this._glDotWarning.visible = false;
 
             if (hasErrors)
             {
@@ -1088,14 +1101,26 @@ export default class GlOp extends Events
                 this._glDotError.visible = true;
                 dotX += 2;
             }
-            else this._glDotError.visible = false;
 
             if (notworking)
             {
                 this._glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
                 this._glNotWorkingCross.visible = true;
             }
-            else this._glNotWorkingCross.visible = false;
+
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+            if (!hasWarnings && this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+            if (!hasErrors && this._glDotError) this._glDotError = this._glDotError.dispose();
+            if (!notworking && this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+        }
+        else
+        {
+            if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+            if (this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+            if (this._glDotError) this._glDotError = this._glDotError.dispose();
+            if (this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
+            if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
         }
 
         if (
@@ -1219,14 +1244,7 @@ export default class GlOp extends Events
             if (comment != this._glComment.text) this._glComment.text = comment;
             this._glComment.visible = this.visible;
         }
-        else
-        {
-            if (this._glComment)
-            {
-                this._glComment.dispose();
-                this._glComment = null;
-            }
-        }
+        else if (this._glComment) this._glComment = this._glComment.dispose();
 
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
@@ -1365,9 +1383,7 @@ export default class GlOp extends Events
         }
 
 
-
-
-        if (this._displayType === this.DISPLAY_UI_AREA)
+        if (this._displayType === this.DISPLAY_UI_AREA && !this.selected)
         {
             this._glRectBg.setColor(0, 0, 0, 0.15);
         }
@@ -1388,14 +1404,13 @@ export default class GlOp extends Events
             this._glTitle.setOpacity(0.7, false);
         }
 
-
-        if (this._hideBgRect)
+        if (this._hideBgRect && !this.selected)
         {
             this._glRectBg.setOpacity(0.0, true);
         }
+
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
         if (this._resizableArea) this._resizableArea._updateColor();
-        // this._glRectNames.push("_glTitle");
     }
 
     get selected() { return this.opUiAttribs.selected; }

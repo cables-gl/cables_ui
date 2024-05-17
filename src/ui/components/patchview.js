@@ -93,22 +93,9 @@ export default class PatchView extends Events
 
     clickSubPatchNav(subPatchId)
     {
-        // if (gui.patchView.getCurrentSubPatch() == subPatchId)
-        // {
-        //     const op = gui.patchView.getSubPatchOuterOp(subPatchId);
-        //     if (!op) return;
-
-        //     gui.patchView.unselectAllOps();
-        //     gui.patchView.selectOpId(op.id);
-
-        //     gui.patchView.centerSelectOp(op.id);
-        //     gui.patchView.focusOpAnim(op.id);
-        // }
-        // else
-        // {
         gui.patchView.setCurrentSubPatch(subPatchId);
         gui.patchParamPanel.show(true);
-        // }
+        this.focus();
     }
 
     _onDeleteOpUndo(op)
@@ -164,7 +151,6 @@ export default class PatchView extends Events
         if (proj && proj.ui)
         {
             this.store.setProject(proj);
-
 
             if (proj.ui.renderer)
             {
@@ -2074,7 +2060,7 @@ export default class PatchView extends Events
         }
     }
 
-    linkPorts(opid, pid, op2id, p2id)
+    linkPorts(opid, pid, op2id, p2id, event)
     {
         let op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(op2id);
@@ -2088,10 +2074,24 @@ export default class PatchView extends Events
 
             const converters = getConverters(p1, p2);
 
-            if (converters.length > 0)
+            if (converters.length == 1)
             {
                 convertPorts(p1, p2, converters[0]);
                 return;
+            }
+            if (converters.length > 1)
+            {
+                const suggs = [];
+                for (let i = 0; i < converters.length; i++)
+                {
+                    suggs.push({ "name": converters[i].op });
+                }
+
+                new SuggestionDialog(suggs, op2, event, null, function (sid)
+                {
+                    console.log("p1p2", p1, p2);
+                    convertPorts(p1, p2, converters[sid]);
+                });
             }
         }
 

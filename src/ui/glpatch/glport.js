@@ -109,37 +109,37 @@ export default class GlPort
     _updateColor()
     {
         if (!this._rect) return;
-        const isAssigned =
-            this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
 
+        const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
 
-        if (!this._dot &&
-            (isAssigned || this._port.uiAttribs.notWorking))
+        if (!this._dot && (isAssigned || this._port.uiAttribs.notWorking))
         {
             this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
 
+            this._dot.setSize(0, 0);
             this._rect.addChild(this._dot);
-            this._dot.setSize(dotSize, dotSize);
         }
 
         if (this._dot)
         {
-            if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
-            else this._dot.setColor(0.24, 0.24, 0.24, 1);
+            if (!isAssigned && !this._port.uiAttribs.notWorking)
+            {
+                this._dot = this._dot.dispose();
+            }
+            else
+            {
+                if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
+                else this._dot.setColor(0.24, 0.24, 0.24, 1);
 
-            let dotPosY = gluiconfig.portHeight / 2 - dotSize / 2;
-            if (this.direction == CABLES.PORT_DIR_IN) dotPosY += gluiconfig.portHeight;
-            this._dot.setShape(6);
-            this._dot.setSize(dotSize, dotSize);
-            this._dot.setPosition(gluiconfig.portWidth / 2 - dotSize / 2, dotPosY);
+                let dotPosY = gluiconfig.portHeight / 2 - dotSize / 2;
+                if (this.direction == CABLES.PORT_DIR_IN) dotPosY += gluiconfig.portHeight;
+                this._dot.setShape(6);
+                this._dot.setSize(dotSize, dotSize);
+                this._dot.setPosition(gluiconfig.portWidth / 2 - dotSize / 2, dotPosY);
+            }
         }
 
-        if (this._dot && !isAssigned && !this._port.uiAttribs.notWorking)
-        {
-            this._dot.dispose();
-            this._dot = null;
-        }
 
         let hover = this._hover;
 
@@ -184,7 +184,6 @@ export default class GlPort
         // this._posX = this._glop.op.posByIndex(this.portIndex, this._port.direction == CABLES.PORT_DIR_OUT ? this._glop.op.portsOut : this._glop.op.portsIn, false);
         this._posX = this._glop.getPortPos(this._name, false);
 
-
         this._rect.setPosition(this._posX, y - gluiconfig.portHeight);
         this._rect.setSize(gluiconfig.portWidth, h);
     }
@@ -213,7 +212,7 @@ export default class GlPort
                 return;
             }
         }
-        this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
+        this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port, e);
     }
 
     _onHover(rect)

@@ -48,6 +48,7 @@ const defaultOpNames =
 
     "defaultOpVizTexture": "Ops.Ui.VizTexture",
 
+    "BoolToString": "Ops.Boolean.BoolToString",
     "NumberToString": "Ops.String.NumberToString_v2",
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
@@ -65,7 +66,7 @@ const defaultOpNames =
     "VizNumberBar": "Ops.Ui.VizNumberBar",
     "VizObject": "Ops.Ui.VizObject",
     "VizString": "Ops.Ui.VizString",
-    "VizStringLong": "Ops.Ui.VizString",
+    // "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
@@ -105,6 +106,14 @@ const defaultOps = {
             "portIn": "Number",
             "portOut": "Result",
         },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "op": defaultOpNames.BoolToString,
+            "portIn": "Boolean",
+            "portOut": "String",
+        },
+
         {
             "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
             "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
@@ -207,7 +216,7 @@ const defaultOps = {
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.VizString, defaultOpNames.VizStringLong, defaultOpNames.VizLogger];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.VizString, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOpNames.VizBool, defaultOpNames.VizNumber, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.VizNumber, defaultOpNames.VizGraph, defaultOpNames.VizNumberBar, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return [defaultOpNames.VizArrayTable];

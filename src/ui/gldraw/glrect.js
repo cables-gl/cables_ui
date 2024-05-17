@@ -350,6 +350,7 @@ export default class GlRect extends Events
 
     dispose()
     {
+        this.visible = false;
         if (this._parent) this._parent.removeChild(this);
         this.setShape(0);
         this.setSize(0, 0);
