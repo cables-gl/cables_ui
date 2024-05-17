@@ -21,6 +21,7 @@ class GlUiConfig
         this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
+        this.zPosOpUnSelected = -0.5;
         this.zPosOpSelected = -0.6;
 
         this.zPosCableButtonRect = -0.4;

@@ -243,7 +243,7 @@ export default class GlOp extends Events
     getPosZ()
     {
         if (this.selected) return gluiconfig.zPosOpSelected;
-        return this._origPosZ;
+        return gluiconfig.zPosOpUnSelected;
     }
 
     sendNetPos()
