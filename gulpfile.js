@@ -91,7 +91,7 @@ function _scripts_talkerapi(done)
 function _scripts_core()
 {
     return gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/buildinfo.json", "!../cables/build/libs/*"])
+        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"])
         .pipe(gulp.dest("dist/js/"));
 }
 
