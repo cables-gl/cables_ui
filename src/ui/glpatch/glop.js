@@ -235,7 +235,7 @@ export default class GlOp extends Events
         if (gui.patchView.getSelectedOps().length == 1)
         {
             this._glRectBg.setOpacity(0.8, false);
-            this._preDragPosZ = this._glRectBg.z;
+            // this._preDragPosZ = this._glRectBg.z;
             this.updatePosition();
         }
     }
@@ -269,8 +269,8 @@ export default class GlOp extends Events
             oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
 
-        if (this._preDragPosZ != this._glRectBg.z)
-            this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
+        // if (this._preDragPosZ != this._glRectBg.z)
+        // this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
 
         if (changed)
         {

@@ -6,7 +6,7 @@ import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 
-const portCablePadding = 0.01;
+
 
 
 export default class GlLink
@@ -346,10 +346,10 @@ export default class GlLink
                 if (this._cable && this._glOpOut && this._glOpIn && this._glOpIn.getUiAttribs().translate && this._glOpOut.getUiAttribs().translate)
                 {
                     const pos1x = this._glOpIn.getUiAttribs().translate.x + this._offsetXInput;
-                    const pos1y = this._glOpIn.getUiAttribs().translate.y - gluiconfig.portHeightOverhang - portCablePadding;
+                    const pos1y = this._glOpIn.getUiAttribs().translate.y;
 
                     const pos2x = this._glOpOut.getUiAttribs().translate.x + this._offsetXOutput;
-                    const pos2y = this._glOpOut.getUiAttribs().translate.y + this._glOpOut.h + gluiconfig.portHeightOverhang + portCablePadding;
+                    const pos2y = this._glOpOut.getUiAttribs().translate.y + this._glOpOut.h;
 
                     this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
                 }

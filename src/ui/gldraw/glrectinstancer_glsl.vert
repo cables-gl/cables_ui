@@ -55,5 +55,7 @@ void main()
 
     pos.z=zz=instPos.z;
 
+    // col.rgb=vec3( (pos.z+1.0)/2.0);
+
     gl_Position = vec4(pos,1.0);
  }
