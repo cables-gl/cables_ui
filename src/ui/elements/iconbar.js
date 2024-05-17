@@ -44,7 +44,7 @@ export default class IconBar
 
         if (this._id == "sidebar_left")
         {
-            const defaultItems = ["save patch", "add op", "show settings", "toggle fullscreen"];
+            const defaultItems = ["save patch", "add op", "show settings", "maximize canvas"];
             const itemObj = CABLES.UI.userSettings.get(this._id) || {};
 
             for (let i = 0; i < defaultItems.length; i++)

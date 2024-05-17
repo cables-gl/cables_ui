@@ -13,7 +13,7 @@ const text =
     "canvas_ms": "## Miliseconds\n\nCurrent amount of time needed to render the mainloop",
 
     "renderer_patchbg": "## Toggle Patch Background\n\n[cmd_ctrl][shift]`enter` Toggle patch nackground renderer",
-    "renderer_maximize": "## Toggle Fullscreen\n\n[cmd_ctrl]`enter` Toggle Fullscreen",
+    "renderer_maximize": "## Maximize canvas\n\n[cmd_ctrl]`enter` Maximize canvas",
     "renderer_setsize": "## Canvas Size \n\n* click to set canvas size",
     "infoarea": "## Infoarea\n\nLook here for contextual information",
 
