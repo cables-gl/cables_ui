@@ -38,7 +38,7 @@ const defaultOpNames =
     "performance": "Ops.Gl.Performance",
 
     "subPatch": "Ops.Ui.SubPatch",
-    // "subPatch2": "Ops.Ui.Subpatch2Temp",
+    "subPatch2": "Ops.Ui.Subpatch2Template",
     "subPatchInput2": "Ops.Ui.SubPatchInput",
     "subPatchOutput2": "Ops.Ui.SubPatchOutput",
 
@@ -182,7 +182,7 @@ const defaultOps = {
     "hideInOpSelect":
     [
         "Ops.Ui.SubPatch",
-        // "Ops.Ui.Subpatch2Temp",
+        "Ops.Ui.Subpatch2Template",
         "Ops.Ui.SubPatchInput",
         "Ops.Ui.SubPatchOutput",
         "Ops.Ui.PatchInput",
