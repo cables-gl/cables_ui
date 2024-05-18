@@ -18,7 +18,7 @@ CABLES_CMD_RENDERER.screenshot = function ()
     gui.corePatch().resume();
 };
 
-CABLES_CMD_RENDERER.fullscreen = function ()
+CABLES_CMD_RENDERER.maximizeCanvas = function ()
 {
     gui.cycleFullscreen();
 };
@@ -152,48 +152,48 @@ CABLES_CMD_RENDERER.popoutCanvas = function ()
 
 rendererCommands.commands.push({
     "cmd": "save screenshot",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.screenshot,
     "icon": "image"
 }, {
-    "cmd": "toggle fullscreen",
-    "category": "renderer",
-    "func": CABLES_CMD_RENDERER.fullscreen,
+    "cmd": "maximize canvas",
+    "category": "canvas",
+    "func": CABLES_CMD_RENDERER.maximizeCanvas,
     "icon": "canvas_max",
     "infotext": "renderer_maximize"
 }, {
     "cmd": "change canvas size",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.changeSize,
     "icon": "resize_canvas"
 }, {
     "cmd": "reset canvas size",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.resetSize,
     "icon": "reset_render_size"
 }, {
     "cmd": "set canvas aspect ratio",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.aspect,
     "icon": "canvas_max"
 }, {
     "cmd": "scale canvas",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.scaleCanvas,
     "icon": "scale_canvas"
 }, {
     "cmd": "canvas magnifier",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.canvasMagnifier,
     "icon": "picker"
 }, {
     "cmd": "canvas window",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.popoutCanvas,
     "icon": "external"
 }, {
     "cmd": "Simulate Scrolling Page",
-    "category": "renderer",
+    "category": "canvas",
     "func": CABLES_CMD_RENDERER.scrollingPage
 
 }

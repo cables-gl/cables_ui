@@ -1,10 +1,13 @@
 import { Logger } from "cables-shared-client";
-import GlUiConfig from "./gluiconfig.js";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
 import userSettings from "../components/usersettings.js";
 import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
+import gluiconfig from "./gluiconfig.js";
+
+
+
 
 export default class GlLink
 {
@@ -81,7 +84,7 @@ export default class GlLink
                 this._buttonDown == this._glPatch.mouseState.buttonForRemoveLink &&
                 this._mouseDownX - e.offsetX == 0 &&
                 this._mouseDownY - e.offsetY == 0 &&
-                pressTime < GlUiConfig.clickMaxDuration)
+                pressTime < gluiconfig.clickMaxDuration)
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
                 // console
@@ -91,7 +94,7 @@ export default class GlLink
 
 
             if (
-                this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
+                this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
             {
                 const opIn = this._glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
 

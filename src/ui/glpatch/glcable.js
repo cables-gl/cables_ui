@@ -410,6 +410,7 @@ export default class GlCable
 
         this._x = x;
         this._y = y;
+
         this._x2 = x2;
         this._y2 = y2;
 

@@ -5,10 +5,9 @@ class GlUiConfig
         this.OpTitlePaddingLeftRight = 10;
         this.OpTitlePaddingExtTitle = 1;
 
-        // this.OpErrorDotSize = 8;
-
         this.portWidth = 10;
         this.portHeight = 5;
+
         this.portPadding = 2;
 
         this.opHeight = 31;
@@ -22,7 +21,7 @@ class GlUiConfig
         this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
-        this.zPosOpArea =
+        this.zPosOpUnSelected = -0.5;
         this.zPosOpSelected = -0.6;
 
         this.zPosCableButtonRect = -0.4;
