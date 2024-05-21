@@ -1,6 +1,6 @@
 # cables UI
 
-* the preferred way of developing cables locally is using the cables_dev repository: https://github.com/undev-studio/cables_dev
+* the preferred way of developing cables locally is using the cables_dev repository: https://github.com/cables-gl/cables_dev
 * that repo contains scripts that do the described work for you
 
 ## Dev notes

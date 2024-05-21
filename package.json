@@ -41,7 +41,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@github.com:undev-studio/cables_ui.git"
+        "url": "git@github.com:cables-gl/cables_ui.git"
     },
     "author": ""
 }
