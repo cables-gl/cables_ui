@@ -778,7 +778,8 @@ export default class FileManager
 
     uploadFile(filename, content, cb)
     {
-        gui.jobs().start({ "id": "uploadfile" + filename, "title": "saving file " + filename });
+        gui.jobs().finish("uploadfile" + filename);
+        gui.jobs().start({ "id": "uploadfile" + filename, "title": "uploading file " + filename });
 
         CABLESUILOADER.talkerAPI.send(
             "fileUploadStr",
