@@ -56,11 +56,10 @@
                 {{#if divider}}
                     <div style="clear:both"></div>
                     <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                        <h1>{{divider}}</h1>
+                        <h1>{{divider}}{{#if ../frontendOptions.openLocalFiles}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{divider}}'});"><span class="icon icon-folder"></span></a>{{/if}}</h1>
                     </div>
                 {{else}}
                     <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}">
-
 
                         {{#if preview}}
                             <div class="preview bgPatternDark info" data-info="dragfile" style="width:90%;height:calc(90% - 22px);;background-color:#777;">
@@ -118,7 +117,7 @@
                     <tr>
                         <td colspan="100">
                             <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                                <h1>{{divider}}</h1>
+                                <h1>{{divider}}{{#if ../frontendOptions.openLocalFiles}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{divider}}'});"><span class="icon icon-folder"></span></a>{{/if}}</h1>
                             </div>
                         </td>
                     </tr>
