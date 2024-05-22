@@ -32,7 +32,7 @@ export default class JobsTab extends Events
         {
             jobs[i].name = jobs[i].name || jobs[i].title;
             jobs[i].type = jobs[i].type || "???";
-            jobs[i].finished = false || jobs[i].finished;
+            jobs[i].finished = jobs[i].finished || false;
             list.push(jobs[i]);
         }
 
