@@ -95,9 +95,16 @@ export default class FileUploader
             reader.readAsDataURL(file);
         }
 
+
         if (CABLES.platform.frontendOptions.dragDropLocalFiles)
         {
-            gui.patchView.addAssetOpAuto("file://" + file.path, this._uploadDropEventOrig);
+            const assetPath = CABLES.platform.getPrefixAssetPath();
+            let finalPath = "file://" + file.path;
+            if (file.path.startsWith(assetPath))
+            {
+                finalPath = file.path.replace(assetPath, "./");
+            }
+            gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
         }
     }
 

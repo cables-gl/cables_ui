@@ -24,6 +24,12 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    getPrefixAssetPath()
+    {
+        if (!this._cfg || !this._cfg.patchConfig) return "";
+        return this._cfg.patchConfig.prefixAssetPath;
+    }
+
     getIssueTrackerUrl()
     {
         return "https://github.com/cables-gl/cables_docs/issues";
