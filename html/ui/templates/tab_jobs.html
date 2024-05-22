@@ -24,7 +24,16 @@
                         {{/if}}
 
                     </td>
-                    <td>{{type}}</td>
+                    <td>
+
+                        {{#if op}}
+                            <a class="button-small" onclick="gui.patchView.centerSelectOp('{{op.id}}');">
+                        {{/if}}
+                            {{type}}
+                        {{#if op}}
+                        </a>
+                        {{/if}}
+                    </td>
                     <td>
                         {{name}}
                     </td>
