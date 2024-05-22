@@ -14,7 +14,7 @@ export default (isLiveBuild, buildInfo, minify = false) =>
         ],
         "devtool": minify ? "source-map" : false,
         "output": {
-            "path": path.join(__dirname, "build"),
+            "path": path.join(__dirname, "dist", "js"),
             "filename": "cablesui.js",
         },
         "optimization": {
