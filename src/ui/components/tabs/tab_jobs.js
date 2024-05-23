@@ -31,8 +31,8 @@ export default class JobsTab extends Events
         for (let i = 0; i < jobs.length; i++)
         {
             jobs[i].name = jobs[i].name || jobs[i].title;
-            jobs[i].type = "editor";
-            jobs[i].finished = false || jobs[i].finished;
+            jobs[i].type = jobs[i].type || "???";
+            jobs[i].finished = jobs[i].finished || false;
             list.push(jobs[i]);
         }
 
