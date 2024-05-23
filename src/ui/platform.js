@@ -24,6 +24,12 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    getPrefixAssetPath()
+    {
+        if (!this._cfg || !this._cfg.patchConfig) return "";
+        return this._cfg.patchConfig.prefixAssetPath;
+    }
+
     getIssueTrackerUrl()
     {
         return "https://github.com/cables-gl/cables_docs/issues";
@@ -187,6 +193,15 @@ export default class Platform extends Events
         {
             if (options && options.fileName && options.fileName.endsWith(".js"))
             {
+                for (let j = 0; j < gui.corePatch().ops.length; j++)
+                {
+                    if (gui.corePatch().ops[j])
+                    {
+                        if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.fileName);
+                        else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.fileName); // todo deprecate , rename to onFileChanged
+                    }
+                }
+
                 const libUrl = "/assets/" + gui.project()._id + "/" + options.fileName;
                 if (gui && gui.opDocs && gui.opDocs.libs && gui.opDocs.libs.includes(libUrl))
                 {
