@@ -7,6 +7,7 @@
             if(window.hasOwnProperty("require")) {
                 // electron npm load functionality
                 window.nodeRequire = require;
+                delete window.process;
                 delete window.require;
                 delete window.exports;
                 delete window.module;

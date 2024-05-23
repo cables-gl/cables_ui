@@ -488,9 +488,28 @@ export default class FileManager
                     if (document.getElementById("item_details"))
                         document.getElementById("item_details").innerHTML = html;
 
+                    const copyEle = document.querySelector("*[data-info=filemanager_copy_file_url]");
+                    if (copyEle)
+                    {
+                        copyEle.addEventListener(
+                            "click",
+                            (e) =>
+                            {
+                                navigator.clipboard
+                                    .writeText(JSON.stringify(r.path))
+                                    .then(() =>
+                                    {
+                                        CABLES.UI.notify("Copied to clipboard");
+                                    })
+                                    .catch((copyError) =>
+                                    {
+                                        CABLES.UI.notifyWarn("Copied to clipboard failed");
+                                        console.warn("copy to clipboard failed", copyError);
+                                    });
+                            });
+                    }
 
                     const editEle = document.querySelector("*[data-info=filemanager_edit_file]");
-
                     if (editEle)
                     {
                         editEle.addEventListener(
