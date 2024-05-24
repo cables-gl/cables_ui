@@ -30,16 +30,17 @@
 
             {{#if port.uiAttribs.multiPort}}
                 </td><td>
-                    <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
-                    <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
 
-                    num:{{port.uiAttribs.multiPortNum}}
+                    <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">toggle</span>
 
                     {{#if port.uiAttribs.multiPortManual}}
                         manual
+                        <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                        <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
                     {{else}}
                         auto
                     {{/if}}
+                    <!-- num:{{port.uiAttribs.multiPortNum}} -->
 
                 </td>
             {{/if}}

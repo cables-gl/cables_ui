@@ -244,7 +244,7 @@ export default class OpDocs
 
         if (!d)
         {
-            console.log("could not find opdocs by name", opName);
+            // console.log("could not find opdocs by name", opName);
             // console.log((new Error()).stack);
         }
 

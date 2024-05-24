@@ -66,8 +66,11 @@ export default class GlPort
         if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
         if (attribs.hasOwnProperty("expose")) this._updateColor();
 
-
-        if (attribs.hasOwnProperty("addPort")) this._updateColor();
+        if (attribs.hasOwnProperty("addPort"))
+        {
+            console.log("add port", attribs.addPort);
+            this._updateColor();
+        }
 
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this._longPortRect) this._longPortRect = this._longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
@@ -75,18 +78,12 @@ export default class GlPort
             if (!this._rect) return;
             if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
 
-            this._longPortRect.setSize((attribs.longPort) * (gluiconfig.portPadding + gluiconfig.portWidth) - gluiconfig.portPadding, gluiconfig.portLongPortHeight);
 
-            let y = gluiconfig.portHeight;
-            if (this._direction == CABLES.PORT_DIR_OUT)
-            {
-                y = this._parent.h - gluiconfig.portHeight - gluiconfig.portLongPortHeight;
-            }
-
-            this._longPortRect.setPosition(this.portIndex * (gluiconfig.portWidth + gluiconfig.portPadding), y, -0.0001);
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
+
+            this.updateSize();
         }
     }
 
@@ -111,7 +108,7 @@ export default class GlPort
         const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
 
-        let showDot = isAssigned || this._port.uiAttribs.notWorking || this._port.uiAttribs.addPort;
+        const showDot = isAssigned || this._port.uiAttribs.notWorking || this._port.uiAttribs.addPort;
 
         if (!this._dot && showDot)
         {
@@ -183,8 +180,25 @@ export default class GlPort
 
         this._posX = this._glop.getPortPos(this._name, false);
 
-        this._rect.setPosition(this._posX, y - gluiconfig.portHeight, 0);
+        this._rect.setPosition(this._posX, y - gluiconfig.portHeight, -0.001);
         this._rect.setSize(gluiconfig.portWidth, h);
+
+        if (this._longPortRect)
+        {
+            let n = this._port.op.getNumVisiblePortsIn();
+            if (this._direction == CABLES.PORT_DIR_OUT) n = this._port.op.getNumVisiblePortsOut();
+
+            const lastposX = this._port.op.posByIndex(this._port.uiAttribs.longPort + this.portIndex - 1, n);
+
+
+            this._longPortRect.setSize(lastposX - this._posX, gluiconfig.portLongPortHeight);
+            // (this._port.uiAttribs.longPort) * (gluiconfig.portPadding + gluiconfig.portWidth) - gluiconfig.portPadding
+
+            let yl = gluiconfig.portHeight - gluiconfig.portLongPortHeight;
+            if (this._direction == CABLES.PORT_DIR_OUT) yl = this._parent.h - gluiconfig.portHeight;
+
+            this._longPortRect.setPosition(this._posX, yl, -0.0001);
+        }
     }
 
     _onLinkChanged()
