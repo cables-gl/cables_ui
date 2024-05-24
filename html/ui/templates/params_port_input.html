@@ -27,6 +27,24 @@
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
         {{else}}
 
+
+            {{#if port.uiAttribs.multiPort}}
+                </td><td>
+                    <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                    <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
+
+                    num:{{port.uiAttribs.multiPortNum}}
+
+                    {{#if port.uiAttribs.multiPortManual}}
+                        manual
+                    {{else}}
+                        auto
+                    {{/if}}
+
+                </td>
+            {{/if}}
+
+
             {{#if port.uiAttribs.display}}
 
                 {{#compare port.uiAttribs.display '==' 'bool' }}
@@ -72,15 +90,6 @@
                 {{/compare}} -->
 
 
-
-                {{#if port.uiAttribs.multiPort}}
-                    </td><td>
-
-                        <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
-                        <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
-                    </td>
-
-                {{/if}}
 
 
                 {{#compare port.uiAttribs.display '==' 'range' }}
