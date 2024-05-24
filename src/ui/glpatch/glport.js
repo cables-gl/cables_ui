@@ -84,7 +84,11 @@ export default class GlPort
             }
             // (attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)),
             this._longPortRect.setSize((attribs.longPort - 1) * (gluiconfig.portPadding + gluiconfig.portWidth), gluiconfig.portHeight);
-            this._longPortRect.setPosition(gluiconfig.portWidth, 0);
+
+            let y = 0;
+            if (this._direction == CABLES.PORT_DIR_OUT)y = this._parent.h - gluiconfig.portHeight;
+
+            this._longPortRect.setPosition(this.portIndex * (gluiconfig.portWidth + gluiconfig.portPadding), y);
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
