@@ -94,6 +94,12 @@ export default class GlOp extends Events
                 this.refreshPorts();
             });
 
+            this._op.on("onPortRemoved", () =>
+            {
+                console.log("port removed...");
+                this.refreshPorts();
+            });
+
             // if (defaultops.isSubPatchOpName(this._op.objName))
             // if (this._op.storage && this._op.storage.subPatchVer)
             // {
@@ -436,9 +442,8 @@ export default class GlOp extends Events
 
         if (newAttribs.hasOwnProperty("resizable"))
         {
+            for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].updateSize();
             this.updateSize();
-            for (let i = 0; i < this._glPorts.length; i++)
-                this._glPorts[i].updateSize();
         }
 
 
@@ -1207,19 +1212,22 @@ export default class GlOp extends Events
 
             this._rectResize.on("drag", (e) =>
             {
-                let w = this._rectResize.x - this.x;
-                let h = this._rectResize.y - this.y;
+                if (this._rectResize)
+                {
+                    let w = this._rectResize.x - this.x;
+                    let h = this._rectResize.y - this.y;
 
-                w = Math.max(this.minWidth, w);
+                    w = Math.max(this.minWidth, w);
 
-                w = this.glPatch.snap.snapX(w);
-                h = this.glPatch.snap.snapY(h);
+                    w = this.glPatch.snap.snapX(w);
+                    h = this.glPatch.snap.snapY(h);
 
-                for (let i = 0; i < this._glPorts.length; i++)
-                    this._glPorts[i].updateSize();
+                    for (let i = 0; i < this._glPorts.length; i++)
+                        this._glPorts[i].updateSize();
 
-                if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
-                this.updateSize();
+                    if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
+                    this.updateSize();
+                }
             });
         }
 

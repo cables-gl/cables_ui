@@ -677,12 +677,22 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.posByIndex = function (portIndex, numports, center = false)
     {
+        if (portIndex == 0)
+        {
+            if (center) return gluiconfig.portWidth / 2;
+            else return 0;
+        }
+
+
+        if (numports === undefined)console.log("posbyindex needs numports param");
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 
         let p = 0;
 
         const onePort = (gluiconfig.portWidth + gluiconfig.portPadding);
+
+
 
         if (this.uiAttribs.stretchPorts && this.uiAttribs.resizable)
             p = portIndex * (((this.uiAttribs.width || ((numports - 1) * onePort + gluiconfig.rectResizeSize)) - gluiconfig.rectResizeSize) / (numports - 1));
@@ -699,6 +709,7 @@ export default function extendCoreOp()
     CABLES.Op.prototype.getPortPosX = function (name, opid, center, opwidth)
     {
         let index = 0;
+
 
         if (this.isSubPatchOp() == 2)
         {

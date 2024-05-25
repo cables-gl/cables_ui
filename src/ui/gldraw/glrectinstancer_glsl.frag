@@ -203,6 +203,12 @@ float samp(in vec2 uv, float w) {
         if((abs(uv.x-0.5))>(uv.y-0.5))finalColor.a=0.0;
         else finalColor.a=1.0;
     }
+    else
+    if(shape==12.0) // plus
+    {
+        finalColor.a=1.0-step(0.1,abs(uv.x-0.5))*step(0.1,abs(uv.y-0.5));
+    }
+
 
     if(border>=1.0) // border
     {

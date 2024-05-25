@@ -87,15 +87,23 @@ class ParamsListener extends Events
         {
             if (this._portsIn[i].uiAttribs.multiPort)
             {
+                const elToggle = ele.byId("multiport_toggleauto_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
+                if (elToggle)elToggle.addEventListener("click", () =>
+                {
+                    this._portsIn[i].toggleManual();
+                });
+                else console.log("cant find multiport");
+
+
                 const elInc = ele.byId("multiport_inc_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
-                elInc.addEventListener("click", () =>
+                if (elInc)elInc.addEventListener("click", () =>
                 {
                     this._portsIn[i].incDec(1);
                     console.log("click inc!!!");
                 });
 
                 const elDec = ele.byId("multiport_dec_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
-                elDec.addEventListener("click", () =>
+                if (elDec)elDec.addEventListener("click", () =>
                 {
                     this._portsIn[i].incDec(-1);
                     console.log("click dec!!!");

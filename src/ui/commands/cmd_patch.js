@@ -1019,6 +1019,23 @@ CABLES_CMD_PATCH.savePatchScreenshot = function ()
     });
 };
 
+CABLES_CMD_PATCH.toggleResizable = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+
+        op.setUiAttribs({
+            "stretchPorts": !op.uiAttribs.stretchPorts,
+            "resizableY": false,
+            "resizable": !op.uiAttribs.stretchPorts
+        });
+    }
+};
+
+
 CABLES_CMD_PATCH.setOpTitle = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -1429,6 +1446,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "op",
         "func": CABLES_CMD_PATCH.setOpTitle,
         "icon": "edit"
+    },
+    {
+        "cmd": "toggle op resizable",
+        "category": "op",
+        "func": CABLES_CMD_PATCH.toggleResizable,
+        "icon": "op"
     },
     {
         "cmd": "clear patch",

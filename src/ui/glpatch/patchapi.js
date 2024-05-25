@@ -250,7 +250,8 @@ export default class GlPatchAPI
                             this._log.warn("undo: op not found");
                             return;
                         }
-                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                        if (op1.getPortByName(p1Name))
+                            op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
                     },
                     redo()
                     {
