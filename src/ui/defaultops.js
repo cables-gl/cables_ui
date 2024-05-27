@@ -51,6 +51,9 @@ const defaultOpNames =
     "BoolToString": "Ops.Boolean.BoolToString",
     "NumberToString": "Ops.String.NumberToString_v2",
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
+
+    "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
+
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "TriggerCounter": "Ops.Trigger.TriggerCounter",
     "parseFloat": "Ops.String.StringToNumber",
@@ -122,11 +125,11 @@ const defaultOps = {
             "portOut": "Next",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
             "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
-            "op": defaultOpNames.TriggerOnChangeString,
-            "portIn": "String",
-            "portOut": "Changed",
+            "op": defaultOpNames.TriggerOnChangedTrue,
+            "portIn": "Value",
+            "portOut": "Next",
         },
         {
             "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
