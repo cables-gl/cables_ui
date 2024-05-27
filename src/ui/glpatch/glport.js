@@ -68,7 +68,6 @@ export default class GlPort
 
         if (attribs.hasOwnProperty("addPort"))
         {
-            console.log("add port", attribs.addPort);
             this._updateColor();
         }
 
@@ -117,6 +116,8 @@ export default class GlPort
             this._rect.addChild(this._dot);
         }
 
+
+
         if (this._dot)
         {
             if (showDot)
@@ -147,6 +148,9 @@ export default class GlPort
 
         const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
+
+        if (this._port.uiAttribs.addPort) this._rect.setOpacity(0.7);
+        else this._rect.setOpacity(1);
 
         if (this._port.uiAttribs.hasOwnProperty("opacity")) this._rect.setOpacity(this._port.uiAttribs.opacity);
     }
