@@ -6,6 +6,8 @@
         </td><td>
     {{/if}}
 
+
+
     {{#compare port.type '==' 0 }}
         <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext portCopyClipboard watchPort linkedValue monospace watchPortValue_{{ port.watchId }}_{{ panelid }}" >
             {{port.port.getValueForDisplay}}
@@ -24,6 +26,21 @@
 
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
+
+
+
+        {{#if port.uiAttribs.multiPort}}
+            <br>
+            <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">toggle</span>
+
+            {{#if port.uiAttribs.multiPortManual}}
+                manual
+                <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
+            {{else}}
+                auto
+            {{/if}}
+        {{/if}}
 
     {{/compare}}
     {{#compare port.type '==' '2' }}
