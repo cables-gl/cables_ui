@@ -804,7 +804,7 @@ export default class ServerOps
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
 
-            gui.jobs().start({ "id": "checkOpName" + newNamespace + v, "title": "checking iop name" + newNamespace });
+            gui.jobs().start({ "id": "checkOpName" + newNamespace + v, "title": "checking op name" + newNamespace });
 
             if (v)
             {
