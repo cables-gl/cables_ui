@@ -134,7 +134,7 @@ CABLES.UI.startIdleListeners = startIdleListeners;
 CABLES.UI.hideToolTip = hideToolTip;
 CABLES.UI.showToolTip = showToolTip;
 CABLES.UI.hideInfo = hideInfo;
-CABLES.UI.updateHoverToolTip = updateHoverToolTip;
+// CABLES.UI.updateHoverToolTip = updateHoverToolTip;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;

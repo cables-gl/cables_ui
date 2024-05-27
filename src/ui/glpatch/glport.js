@@ -3,6 +3,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
+import { updateHoverToolTip } from "../elements/tooltips.js";
 
 export default class GlPort
 {
@@ -249,7 +250,7 @@ export default class GlPort
                 this._glop._links[i].highlight(true);
 
 
-        CABLES.UI.updateHoverToolTip(event, this._port, false);
+        updateHoverToolTip(event, this._port, false);
         this._updateColor();
     }
 
