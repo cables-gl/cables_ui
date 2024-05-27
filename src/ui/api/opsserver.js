@@ -270,16 +270,16 @@ export default class ServerOps
 
     execute(name, next, refOldOp)
     {
-        if (gui.corePatch()._crashedOps.indexOf(name) > -1)
-        {
-            let html = "";
-            html += "<h1>can not execute op</h1>";
-            html += "this op crashed before, you should reload the page.<br/><br/>";
-            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-            CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
-        }
-
+        // if (gui.corePatch()._crashedOps.indexOf(name) > -1)
+        // {
+        //     let html = "";
+        //     html += "<h1>can not execute op</h1>";
+        //     html += "this op crashed before, you should reload the page.<br/><br/>";
+        //     html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+        //
+        //     CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
+        // }
+        //
 
         let oldOps = null;
         if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
