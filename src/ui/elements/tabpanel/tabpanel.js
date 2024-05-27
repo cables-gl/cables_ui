@@ -156,22 +156,23 @@ export default class TabPanel extends Events
     {
         name = name || "";
         let found = false;
-
+        let tab = null;
         for (let i = 0; i < this._tabs.length; i++)
         {
             if (this._tabs[i].options.name)
-                if (this._tabs[i].options.name.toLowerCase() == name.toLowerCase())
+                if (this._tabs[i].options.name.toLowerCase() === name.toLowerCase())
                 {
-                    this.activateTab(this._tabs[i].id);
+                    tab = this._tabs[i];
+                    this.activateTab(tab.id);
                     found = true;
                 }
                 else this._tabs[i].deactivate();
         }
 
-        if (!found)
-            console.log("[activateTabByName] could not find tab", name);
+        if (!found) console.log("[activateTabByName] could not find tab", name);
 
         this.updateHtml();
+        return tab;
     }
 
 
