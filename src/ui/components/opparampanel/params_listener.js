@@ -98,14 +98,12 @@ class ParamsListener extends Events
             if (elInc)elInc.addEventListener("click", () =>
             {
                 port.incDec(1);
-                console.log("click inc!!!");
             });
 
             const elDec = ele.byId("multiport_dec_" + port.op.id + "_" + port.name);
             if (elDec)elDec.addEventListener("click", () =>
             {
                 port.incDec(-1);
-                console.log("click dec!!!");
             });
         }
 
@@ -495,7 +493,7 @@ class ParamsListener extends Events
                     });
             }
 
-            console.log("port.op.uiAttribs",);
+            // console.log("port.op.uiAttribs",);
 
             if (port.op.isInBlueprint2() && port.op.objName.indexOf("Ops.Ui.") == -1)
             {
@@ -507,7 +505,7 @@ class ParamsListener extends Events
                         {
                             const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
 
-                            console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
+                            // console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
                             if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch))
                             {
                                 new ModalDialog({
