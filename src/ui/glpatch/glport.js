@@ -81,7 +81,7 @@ export default class GlPort
 
 
             const col = GlPort.getColor(this._type, false, false, false);
-            this._longPortRect.setColor(col);
+            this._longPortRect.setColor([col[0], col[1], col[2], 0.5]);
 
             this.updateSize();
         }
