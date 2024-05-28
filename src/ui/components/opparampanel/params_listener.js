@@ -83,34 +83,37 @@ class ParamsListener extends Events
         for (let i = 0; i < this._portsIn.length; i++) this.initPortInputListener(this._portsIn, i, this.panelId);
 
 
-        for (let i = 0; i < this._portsIn.length; i++)
+
+        function addListenersMultiport(port)
         {
-            if (this._portsIn[i].uiAttribs.multiPort)
+            const elToggle = ele.byId("multiport_toggleauto_" + port.op.id + "_" + port.name);
+            if (elToggle)elToggle.addEventListener("click", () =>
             {
-                const elToggle = ele.byId("multiport_toggleauto_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
-                if (elToggle)elToggle.addEventListener("click", () =>
-                {
-                    this._portsIn[i].toggleManual();
-                });
-                else console.log("cant find multiport");
+                port.toggleManual();
+            });
+            else console.log("cant find multiport");
 
 
-                const elInc = ele.byId("multiport_inc_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
-                if (elInc)elInc.addEventListener("click", () =>
-                {
-                    this._portsIn[i].incDec(1);
-                    console.log("click inc!!!");
-                });
+            const elInc = ele.byId("multiport_inc_" + port.op.id + "_" + port.name);
+            if (elInc)elInc.addEventListener("click", () =>
+            {
+                port.incDec(1);
+            });
 
-                const elDec = ele.byId("multiport_dec_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
-                if (elDec)elDec.addEventListener("click", () =>
-                {
-                    this._portsIn[i].incDec(-1);
-                    console.log("click dec!!!");
-                });
-            }
+            const elDec = ele.byId("multiport_dec_" + port.op.id + "_" + port.name);
+            if (elDec)elDec.addEventListener("click", () =>
+            {
+                port.incDec(-1);
+            });
         }
 
+        for (let i = 0; i < this._portsIn.length; i++)
+            if (this._portsIn[i].uiAttribs.multiPort)
+                addListenersMultiport(this._portsIn[i]);
+
+        for (let i = 0; i < this._portsOut.length; i++)
+            if (this._portsOut[i].uiAttribs.multiPort)
+                addListenersMultiport(this._portsOut[i]);
 
 
         // watch anim ports... this should be in initPOrtInputListener !!
@@ -490,7 +493,7 @@ class ParamsListener extends Events
                     });
             }
 
-            console.log("port.op.uiAttribs",);
+            // console.log("port.op.uiAttribs",);
 
             if (port.op.isInBlueprint2() && port.op.objName.indexOf("Ops.Ui.") == -1)
             {
@@ -502,7 +505,7 @@ class ParamsListener extends Events
                         {
                             const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
 
-                            console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
+                            // console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
                             if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch))
                             {
                                 new ModalDialog({

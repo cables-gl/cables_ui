@@ -17,6 +17,7 @@ import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
+import { updateHoverToolTip } from "../elements/tooltips.js";
 
 
 export default class GlPatch extends Events
@@ -1756,7 +1757,7 @@ export default class GlPatch extends Events
         if (link && e)
         {
             clearTimeout(this._ttTImeout);
-            CABLES.UI.updateHoverToolTip(e, link._link.portOut, link);
+            updateHoverToolTip(e, link._link.portOut, link);
         }
 
         if (!link)

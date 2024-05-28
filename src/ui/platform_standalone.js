@@ -31,4 +31,11 @@ export default class PlatformStandalone extends Platform
     {
         return "file://";
     }
+
+    noCacheUrl(url)
+    {
+        let separator = "?";
+        if (url.includes("?")) separator = "&";
+        return url + separator + "nc=" + (Date.now() + "").substr(-6);
+    }
 }

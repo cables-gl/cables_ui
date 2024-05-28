@@ -31,7 +31,9 @@
             {{#if port.uiAttribs.multiPort}}
                 </td><td>
 
-                    <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">toggle</span>
+                    {{#if port.uiAttribs.multiPort}}Multiport {{/if}}
+
+                    <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">Toggle</span>
 
                     {{#if port.uiAttribs.multiPortManual}}
                         manual
@@ -40,8 +42,6 @@
                     {{else}}
                         auto
                     {{/if}}
-                    <!-- num:{{port.uiAttribs.multiPortNum}} -->
-
                 </td>
             {{/if}}
 
@@ -217,8 +217,12 @@
                             </div>
                         {{/compare}}
                         {{#compare port.type '==' 3}}
-                            </td><td>
-                                <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >Array{{#if port.uiAttribs.stride}}{{port.uiAttribs.stride}}{{/if}}</span>
+
+                            {{#if port.uiAttribs.multiPort}}
+                            {{else}}
+                                </td><td>
+                                    <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >Array{{#if port.uiAttribs.stride}}{{port.uiAttribs.stride}}{{/if}}</span>
+                            {{/if}}
                         {{/compare}}
                         {{#compare port.type '==' 2}}
                     </td>

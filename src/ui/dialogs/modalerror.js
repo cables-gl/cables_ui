@@ -62,7 +62,7 @@ export default class ModalError
         let stack = null;
         if (this._options.exception)
         {
-            console.trace();
+            // console.trace();
             try
             {
                 console.log(this._options);

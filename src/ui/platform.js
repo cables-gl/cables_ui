@@ -4,6 +4,7 @@ import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
 import userSettings from "./components/usersettings.js";
 import { notify, notifyError } from "./elements/notification.js";
+import defaultOps from "./defaultops.js";
 
 /**
  * @abstract
@@ -37,8 +38,11 @@ export default class Platform extends Events
 
     updateOnlineIndicator()
     {
-        if (this.isOffline()) ele.show(ele.byId("nav-item-offline"));
-        else ele.hide(ele.byId("nav-item-offline"));
+        if (this.frontendOptions.needsInternet)
+        {
+            if (this.isOffline()) ele.show(ele.byId("nav-item-offline"));
+            else ele.hide(ele.byId("nav-item-offline"));
+        }
     }
 
     isOffline()
@@ -108,6 +112,11 @@ export default class Platform extends Events
         return this._cfg.isDevEnv;
     }
 
+    noCacheUrl(url)
+    {
+        return url;
+    }
+
     showStartupChangelog()
     {
         const lastView = userSettings.get("changelogLastView");
@@ -163,6 +172,59 @@ export default class Platform extends Events
         {
             gui.closeModal();
             gui.refreshFileManager();
+        });
+
+        CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
+        {
+            if (options && options.name)
+            {
+                gui.closeModal();
+                const loadingModal = gui.startModalLoading("Saving and executing op...");
+                loadingModal.setTask("Saving Op");
+                const opname = options.name;
+                if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+
+                if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
+
+                loadingModal.setTask("Executing code");
+
+                const selOps = gui.patchView.getSelectedOps();
+                let selOpTranslate = null;
+                if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
+
+                gui.serverOps.execute(opname, (newOps, refOldOp) =>
+                {
+                    if (selOpTranslate)
+                    {
+                        for (let i = 0; i < gui.corePatch().ops.length; i++)
+                        {
+                            if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                            {
+                                gui.opParams.show(gui.corePatch().ops[i].id);
+                                gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
+                            }
+                        }
+                    }
+                    gui.endModalLoading();
+                    const editorTab = gui.mainTabs.activateTabByName(opname);
+                    if (editorTab && newOps && newOps[0])
+                    {
+                        CABLESUILOADER.talkerAPI.send(
+                            "getOpCode",
+                            {
+                                "opname": newOps[0].opId,
+                                "projectId": this._patchId
+                            },
+                            (er, rslt) =>
+                            {
+                                if (rslt && rslt.hasOwnProperty("code"))
+                                {
+                                    editorTab.editor.setContent(rslt.code);
+                                }
+                            });
+                    }
+                });
+            }
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>

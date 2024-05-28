@@ -63,8 +63,14 @@ export default class OpWatchUiAttribs extends Events
 
             for (let i = 0; i < this._op.portsIn.length; i++)
             {
-                html += "<hr/><h3>Port: " + this._op.portsIn[i].name + " </h3>";
+                html += "<hr/><h3>Input Port: " + this._op.portsIn[i].name + " </h3>";
                 html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.portsIn[i].uiAttribs), false, 4) + "</code></pre>";
+            }
+
+            for (let i = 0; i < this._op.portsOut.length; i++)
+            {
+                html += "<hr/><h3>Output Port: " + this._op.portsOut[i].name + " </h3>";
+                html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.portsOut[i].uiAttribs), false, 4) + "</code></pre>";
             }
 
             html += "</div>";

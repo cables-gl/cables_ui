@@ -3,6 +3,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
+import { updateHoverToolTip } from "../elements/tooltips.js";
 
 export default class GlPort
 {
@@ -68,7 +69,6 @@ export default class GlPort
 
         if (attribs.hasOwnProperty("addPort"))
         {
-            console.log("add port", attribs.addPort);
             this._updateColor();
         }
 
@@ -81,7 +81,7 @@ export default class GlPort
 
 
             const col = GlPort.getColor(this._type, false, false, false);
-            this._longPortRect.setColor(col);
+            this._longPortRect.setColor([col[0], col[1], col[2], 0.5]);
 
             this.updateSize();
         }
@@ -117,6 +117,8 @@ export default class GlPort
             this._rect.addChild(this._dot);
         }
 
+
+
         if (this._dot)
         {
             if (showDot)
@@ -147,6 +149,9 @@ export default class GlPort
 
         const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
+
+        if (this._port.uiAttribs.addPort) this._rect.setOpacity(0.7);
+        else this._rect.setOpacity(1);
 
         if (this._port.uiAttribs.hasOwnProperty("opacity")) this._rect.setOpacity(this._port.uiAttribs.opacity);
     }
@@ -245,7 +250,7 @@ export default class GlPort
                 this._glop._links[i].highlight(true);
 
 
-        CABLES.UI.updateHoverToolTip(event, this._port, false);
+        updateHoverToolTip(event, this._port, false);
         this._updateColor();
     }
 

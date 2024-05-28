@@ -446,8 +446,6 @@ export default class GlOp extends Events
             this.updateSize();
         }
 
-
-
         perf.finish();
         this._needsUpdate = true;
     }

@@ -139,15 +139,16 @@ function getPortDescription(thePort, overlink)
     }
 
 
-    if (!overlink)
-    {
-        if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
-        else str += " <b>" + thePort.getName() + "</b> ";
-    }
-    else
-    {
-        // str += overlink.opOut.op.getTitle() + "." + overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" align=\"bottom\" ></i>" + overlink.opIn.op.getTitle() + "." + overlink._portNameInput;
-    }
+    // if (!overlink)
+    // {
+    if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
+    else str += " <b>" + thePort.getName() + "</b> ";
+    // }
+    // else
+    // {
+    // str += overlink.opOut.op.getTitle() + "." + overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" align=\"bottom\" ></i>" + overlink.opIn.op.getTitle() + "." + overlink._portNameInput;
+    // str += overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" ></i>" + overlink._portNameInput;
+    // }
 
     if (!overlink)
     {

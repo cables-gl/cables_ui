@@ -9,7 +9,8 @@ class GlUiConfig
         this.portHeight = 5;
 
         this.portPadding = 2;
-        this.portLongPortHeight = this.portPadding * 1.5;
+        // this.portLongPortHeight = this.portPadding * 1.5;
+        this.portLongPortHeight = this.portHeight;
 
         this.opHeight = 31;
         this.opWidth = 20;

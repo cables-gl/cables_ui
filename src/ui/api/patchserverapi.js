@@ -109,7 +109,7 @@ export default class PatchSaveServer extends Events
 
                 gui.jobs().finish("checkupdated");
             }
-            else if (this._serverDate != data.updated)
+            else if (data.updated && (this._serverDate != data.updated))
             {
                 let html =
                     "This patch was changed. Your version is out of date. <br/><br/>Last update: " + moment(data.updated).fromNow() + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +

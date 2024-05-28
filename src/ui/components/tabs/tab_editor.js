@@ -26,7 +26,6 @@ export default class EditorTab
                 "dataId": options.dataId,
                 "infotext": text.editorTab,
                 "singleton": options.singleton,
-
             });
 
         this._tab.editor = this;
@@ -182,6 +181,10 @@ export default class EditorTab
         });
     }
 
+    setContent(content)
+    {
+        this._editor.setValue(content, 1);
+    }
 
     focus()
     {

@@ -15,6 +15,7 @@ export default class PlatformCommunity extends Platform
         this.frontendOptions.showPatchViewPage =
         this.frontendOptions.showExport =
         this.frontendOptions.showMyLinks =
+        this.frontendOptions.needsInternet =
         this.frontendOptions.showRemoteViewer =
         this.frontendOptions.showChangeLogLink =
         this.frontendOptions.sendErrorReports =
