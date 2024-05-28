@@ -2,24 +2,21 @@ import gulp from "gulp";
 
 import sass from "gulp-sass-no-nodesass";
 
-import compiler from "webpack";
-import webpack from "webpack-stream";
+import webpack from "webpack";
 import git from "git-last-commit";
 import autoprefixer from "gulp-autoprefixer";
 import replace from "gulp-replace";
 import fs from "fs";
 import svgmin from "gulp-svgmin";
 import svgcss from "gulp-svg-css";
-import sourcemaps from "gulp-sourcemaps";
 import rename from "gulp-rename";
-import gulpUglify from "gulp-uglify-es";
 import concat from "gulp-concat";
 import sassCompiler from "sass";
 
 import webpackConfig from "./webpack.config.js";
 import webpackTalkerApiConfig from "./webpack.talkerapi.config.js";
+import webpackLibsConfig from "./webpack.libs.config.js";
 
-const uglify = gulpUglify.default;
 sass.compiler = sassCompiler;
 
 let configLocation = "../cables_api/cables.json";
@@ -39,52 +36,45 @@ else
     console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
 }
 
+console.log("MINIFY", minify);
+
 function _scripts_libs_ui(done)
 {
-    let task = gulp.src(["libs/ui/*.js"]);
-
-    if (minify) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("libs.ui.js")).pipe(gulp.dest("dist/js"));
-    if (minify)
+    getBuildInfo((buildInfo) =>
     {
-        task = task.pipe(uglify());
-        task = task.pipe(sourcemaps.write("./"));
-    }
-
-    return task.pipe(gulp.dest("dist/js"));
+        webpack(webpackLibsConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        {
+            if (err) done(err);
+            if (stats.hasErrors())
+            {
+                done(new Error(stats.compilation.errors.join("\n")));
+            }
+            else
+            {
+                done();
+            }
+        }
+        );
+    });
 }
 
 function _scripts_talkerapi(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        return gulp.src(["src-talkerapi/talkerapi.js"])
-            .pipe(
-                webpack(
-                    {
-                        "config": webpackTalkerApiConfig(isLiveBuild, buildInfo, minify),
-                    },
-                    compiler,
-                    (err, stats) =>
-                    {
-                        if (err) done(err);
-                        if (stats.hasErrors())
-                        {
-                            done(new Error(stats.compilation.errors.join("\n")));
-                        }
-                        else
-                        {
-                            done();
-                        }
-                    }
-                )
-            )
-            .pipe(gulp.dest("dist/js"))
-            .on("error", (err) =>
+        webpack(webpackTalkerApiConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        {
+            if (err) done(err);
+            if (stats.hasErrors())
             {
-                console.error("WEBPACK ERROR NEU!!!!!!!", err);
-                done(err);
-            });
+                done(new Error(stats.compilation.errors.join("\n")));
+            }
+            else
+            {
+                done();
+            }
+        }
+        );
     });
 }
 
@@ -99,33 +89,18 @@ function _scripts_ui_webpack(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        return gulp.src(["src/ui/index.js"])
-            .pipe(
-                webpack(
-                    {
-                        "config": webpackConfig(isLiveBuild, buildInfo, minify),
-                    },
-                    compiler,
-                    (err, stats) =>
-                    {
-                        if (err) done(err);
-                        if (stats.hasErrors())
-                        {
-                            done(new Error(stats.compilation.errors.join("\n")));
-                        }
-                        else
-                        {
-                            done();
-                        }
-                    }
-                )
-            )
-            .pipe(gulp.dest("dist/js"))
-            .on("error", (err) =>
+        webpack(webpackConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        {
+            if (err) done(err);
+            if (stats.hasErrors())
             {
-                console.error("WEBPACK ERROR NEU!!!!!!!", err);
-                done(err);
-            });
+                done(new Error(stats.compilation.errors.join("\n")));
+            }
+            else
+            {
+                done();
+            }
+        });
     });
 }
 
@@ -134,7 +109,7 @@ function getBuildInfo(cb)
     const date = new Date();
     git.getLastCommit((err, commit) =>
     {
-        cb({
+        const buildInfo = {
             "timestamp": date.getTime(),
             "created": date.toISOString(),
             "git": {
@@ -143,16 +118,11 @@ function getBuildInfo(cb)
                 "date": commit.committedOn,
                 "message": commit.subject
             }
+        };
+        fs.writeFile("./dist/buildinfo.json", JSON.stringify(buildInfo), () =>
+        {
+            cb(buildInfo);
         });
-    });
-}
-
-function _update_buildInfo(done)
-{
-    getBuildInfo((buildInfo) =>
-    {
-        fs.writeFileSync("./dist/buildinfo.json", JSON.stringify(buildInfo));
-        done();
     });
 }
 
@@ -185,9 +155,8 @@ function _svgcss(done)
         .pipe(svgmin())
         .pipe(
             svgcss({
-                "fileName": "icons",
-                "cssPrefix": "icon-",
-                "addSize": false,
+                "name": "icons",
+                "prefix": "icon-"
             })
         )
         .pipe(replace("background-image", "mask"))
@@ -203,10 +172,10 @@ function _svgcss(done)
 
 function _watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack));
-    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass));
-    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui));
-    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], { "usePolling": true }, gulp.series(_scripts_ui_webpack));
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_sass));
+    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_html_ui));
+    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_scripts_talkerapi));
     done();
 }
 
@@ -216,35 +185,28 @@ function _watch(done)
  * -------------------------------------------------------------------------------------------
  */
 
+const defaultSeries = gulp.series(
+    _svgcss,
+    _html_ui,
+    _scripts_libs_ui,
+    _scripts_core,
+    _scripts_ui_webpack,
+    _scripts_talkerapi,
+    _sass,
+);
+
+/**
+ * Run "gulp build"
+ */
+gulp.task("build", defaultSeries);
+
 /**
  * Default Task, for development
  * Run "gulp"
  */
 gulp.task("default", gulp.series(
-    _update_buildInfo,
-    _scripts_ui_webpack,
-    _html_ui,
-    _scripts_core,
-    _scripts_libs_ui,
-    _sass,
-    _svgcss,
-    _scripts_talkerapi,
+    defaultSeries,
     _watch
-));
-
-/**
- * Is this still used?
- * Run "gulp build"
- */
-gulp.task("build", gulp.series(
-    _update_buildInfo,
-    _svgcss,
-    _html_ui,
-    _scripts_libs_ui,
-    _scripts_core,
-    _scripts_ui_webpack,
-    _scripts_talkerapi,
-    _sass,
 ));
 
 gulp.task("testui", gulp.series(

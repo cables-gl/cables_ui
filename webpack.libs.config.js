@@ -6,32 +6,28 @@ import { fileURLToPath } from "url";
 
 export default (isLiveBuild, buildInfo, minify = false) =>
 {
-    minify = false;
     let __dirname = dirname(fileURLToPath(import.meta.url));
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
-            path.join(__dirname, "src", "ui", "index.js"),
+            path.join(__dirname, "libs", "ui", "index.js"),
         ],
         "devtool": minify ? "source-map" : false,
         "output": {
             "path": path.join(__dirname, "dist", "js"),
-            "filename": "cablesui.js",
+            "filename": "libs.ui.js",
         },
         "optimization": {
-            "minimize": true,
-            "minimizer": [
-                new TerserPlugin({
-                    "terserOptions": {
-                        "keep_classnames": true,
-                        "keep_fnames": true
-                    }
-                })
-            ]
+            "minimizer": [new TerserPlugin({ "extractComments": false, "terserOptions": { "output": { "comments": false } } })],
+            "minimize": minify,
+            "usedExports": true
         },
         "externals": ["CABLES"],
         "resolve": {
-            "extensions": [".json", ".js"],
+            "extensions": [".js"],
+            "alias": {
+                "handlebars": "handlebars/dist/handlebars.min.js"
+            }
         },
         "module": {
             "rules": [
