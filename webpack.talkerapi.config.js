@@ -17,11 +17,7 @@ export default (isLiveBuild, buildInfo, minify = false) =>
             "filename": "talkerapi.js"
         },
         "optimization": {
-            "concatenateModules": true,
-            "minimizer": [new TerserPlugin({
-                "extractComments": false,
-                "terserOptions": { "output": { "comments": false } }
-            })],
+            "minimizer": [new TerserPlugin({ "extractComments": false, "terserOptions": { "output": { "comments": false } } })],
             "minimize": minify,
             "usedExports": true
         },
