@@ -36,8 +36,6 @@ else
     console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
 }
 
-console.log("MINIFY", minify);
-
 function _scripts_libs_ui(done)
 {
     getBuildInfo((buildInfo) =>
@@ -155,8 +153,9 @@ function _svgcss(done)
         .pipe(svgmin())
         .pipe(
             svgcss({
-                "name": "icons",
-                "prefix": "icon-"
+                "fileName": "icons",
+                "cssPrefix": "icon-",
+                "addSize": false,
             })
         )
         .pipe(replace("background-image", "mask"))

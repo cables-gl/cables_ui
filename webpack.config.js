@@ -6,7 +6,6 @@ import { fileURLToPath } from "url";
 
 export default (isLiveBuild, buildInfo, minify = false) =>
 {
-    minify = false;
     let __dirname = dirname(fileURLToPath(import.meta.url));
     return {
         "mode": isLiveBuild ? "production" : "development",
@@ -19,15 +18,13 @@ export default (isLiveBuild, buildInfo, minify = false) =>
             "filename": "cablesui.js",
         },
         "optimization": {
-            "minimize": true,
-            "minimizer": [
-                new TerserPlugin({
-                    "terserOptions": {
-                        "keep_classnames": true,
-                        "keep_fnames": true
-                    }
-                })
-            ]
+            "concatenateModules": true,
+            "minimizer": [new TerserPlugin({
+                "extractComments": false,
+                "terserOptions": { "output": { "comments": false } }
+            })],
+            "minimize": minify,
+            "usedExports": true
         },
         "externals": ["CABLES"],
         "resolve": {
