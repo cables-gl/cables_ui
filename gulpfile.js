@@ -175,6 +175,7 @@ function _watch(done)
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_sass));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_html_ui));
     gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_scripts_talkerapi));
+    gulp.watch("libs/**/*", { "usePolling": true }, gulp.series(_scripts_libs_ui));
     done();
 }
 
