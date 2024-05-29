@@ -10,25 +10,24 @@ export default (isLiveBuild, buildInfo, minify = false) =>
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
-            path.join(__dirname, "src", "ui", "index.js"),
+            path.join(__dirname, "libs", "ui", "index.js"),
         ],
         "devtool": minify ? "source-map" : false,
         "output": {
             "path": path.join(__dirname, "dist", "js"),
-            "filename": "cablesui.js",
+            "filename": "libs.ui.js",
         },
         "optimization": {
-            "concatenateModules": true,
-            "minimizer": [new TerserPlugin({
-                "extractComments": false,
-                "terserOptions": { "output": { "comments": false } }
-            })],
+            "minimizer": [new TerserPlugin({ "extractComments": false, "terserOptions": { "output": { "comments": false } } })],
             "minimize": minify,
             "usedExports": true
         },
         "externals": ["CABLES"],
         "resolve": {
-            "extensions": [".json", ".js"],
+            "extensions": [".js"],
+            "alias": {
+                "handlebars": "handlebars/dist/handlebars.min.js"
+            }
         },
         "module": {
             "rules": [
