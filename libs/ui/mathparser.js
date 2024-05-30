@@ -33,6 +33,7 @@ MathParser.prototype.eval = function (e, ig)
                 .concat(e.slice(t + 1));
         }
         while (t = cp.indexOf("^", ++t) + 1);
+    let l;
     for (i = 0, l = e.length; i < l; i++)
     {
         if (o.indexOf(e[i]) > -1)

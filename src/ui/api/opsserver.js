@@ -1380,20 +1380,23 @@ export default class ServerOps
         if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
         else
         {
-            if (opThing.objName)
+            if (opThing.opId)
             {
-                // console.log("A ", opThing.opId, opThing.objName);
-                // op instance
+                // probably serialized patch
+                opDoc = gui.opDocs.getOpDocById(opThing.opId);
+            }
+            else if (opThing.objName)
+            {
+                // probably op instance
                 opDoc = gui.opDocs.getOpDocByName(opThing.objName);
-                if (!opDoc) opDoc = gui.opDocs.getOpDocById(opThing.opId);
             }
             else
             {
-                // console.log("B ", opThing, opThing.id);
-                // opdoc object
+                // probably opDoc object
                 opDoc = gui.opDocs.getOpDocById(opThing.id);
             }
         }
+
         const libs = [];
         if (opDoc && opDoc.libs)
         {
@@ -1428,13 +1431,10 @@ export default class ServerOps
                 // probably serialized patch
                 opDoc = gui.opDocs.getOpDocById(opThing.opId);
             }
-            else
-            if (opThing.objName)
+            else if (opThing.objName)
             {
                 // probably op instance
                 opDoc = gui.opDocs.getOpDocByName(opThing.objName);
-
-                if (!opDoc) opDoc = gui.opDocs.getOpDocById(opThing.opId);
             }
             else
             {
