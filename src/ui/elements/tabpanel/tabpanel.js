@@ -398,7 +398,6 @@ export default class TabPanel extends Events
         talkerAPI.addEventListener("updatePatchName", (opts, next) =>
         {
             gui.setProjectName(opts.name);
-
             CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
         });
 

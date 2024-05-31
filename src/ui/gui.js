@@ -1051,26 +1051,6 @@ export default class Gui extends Events
         if (cb)cb();
     }
 
-    showFileSelect(inputId, filterType, opid, previewId)
-    {
-        this.showFileManager(() =>
-        {
-            const portInputEle = ele.byQuery(inputId);
-            if (!portInputEle)
-            {
-                this._log.warn("[showfileselect] no portInputEle");
-                return;
-            }
-            const fn = portInputEle.value;
-
-            this.fileManager.setFilterType(filterType);
-            this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
-            this.fileManager.selectFile(fn);
-
-            ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
-        });
-    }
-
     setProjectName(name)
     {
         if (name && name !== "undefined")
