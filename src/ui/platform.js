@@ -411,4 +411,24 @@ export default class Platform extends Events
         gui.patchView.setProject(proj, cb);
         if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
     }
+
+    showFileSelect(inputId, filterType, opid, previewId)
+    {
+        gui.showFileManager(() =>
+        {
+            const portInputEle = ele.byQuery(inputId);
+            if (!portInputEle)
+            {
+                this._log.warn("[showfileselect] no portInputEle");
+                return;
+            }
+            const fn = portInputEle.value;
+
+            gui.fileManager.setFilterType(filterType);
+            gui.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
+            gui.fileManager.selectFile(fn);
+
+            ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
+        });
+    }
 }

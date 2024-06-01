@@ -172,7 +172,7 @@
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
                         {{#if openLocalFiles}}
-                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.STANDALONE.openAssetDir('{{port.value}}')"></a>
+                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.STANDALONE.openAssetDir({'url': '{{port.value}}'})"></a>
                         {{else}}
                             <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
                         {{/if}}
@@ -183,7 +183,7 @@
                             <input autocomplete="off" class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" style="width:95%;display:block;"/>
                             <br/><br/>
                         </div>
-                        <div id="portFilename_{{ portnum }}" onclick="document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');gui.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');" style="cursor:pointer;">[???]</div>
+                        <div id="portFilename_{{ portnum }}" onclick="document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');" style="cursor:pointer;">[???]</div>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'text' }}
                     </td><td>
