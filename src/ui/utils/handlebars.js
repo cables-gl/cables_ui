@@ -128,6 +128,22 @@ export function initHandleBarsHelper()
         return new Handlebars.SafeString("<span title=\"" + date + "\">" + displayDate + "</span>");
     });
 
+
+    Handlebars.registerHelper("displaydateNoTime", (str) =>
+    {
+        if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
+        let date = str;
+        let displayDate = str;
+        if (moment)
+        {
+            const m = moment(str);
+            date = m.format("YYYY-MM-DD");
+            displayDate = m.format("MMM D, YYYY");
+        }
+        return new Handlebars.SafeString("<span title=\"" + date + "\">" + displayDate + "</span>");
+    });
+
+
     Handlebars.registerHelper("relativedate", (str) =>
     {
         if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
