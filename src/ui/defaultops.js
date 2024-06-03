@@ -72,6 +72,7 @@ const defaultOpNames =
     // "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
+    "vizTrigger": "Ops.Ui.VizTrigger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
 
     "string": "Ops.String.String_v2",
@@ -243,7 +244,7 @@ const defaultOps = {
         }
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.vizTrigger, defaultOpNames.sequence];
         }
         return [];
     },
