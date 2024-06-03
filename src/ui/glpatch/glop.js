@@ -1158,7 +1158,7 @@ export default class GlOp extends Events
                 this.opUiAttribs.hasOwnProperty("extendTitle") ||
                 this.opUiAttribs.hasOwnProperty("extendTitlePort")))
         {
-            this._titleExt = new GlText(this._textWriter, " ???");
+            this._titleExt = new GlText(this._textWriter, " ");
             this._titleExt.setParentRect(this._glRectBg);
             this._titleExt.visible = this.visible;
         }
