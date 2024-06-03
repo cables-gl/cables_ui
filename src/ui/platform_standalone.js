@@ -59,7 +59,6 @@ export default class PlatformStandalone extends Platform
         }
         CABLESUILOADER.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
-            console.log("BACK", file, gui);
             if (file)
             {
                 if (inputEle)
