@@ -18,6 +18,7 @@ export default class WelcomeTab
             {
                 const result = JSON.parse(res);
 
+                result.events.reverse();
                 if (result.events.length > 3)result.events.length = 3;
 
                 const eventsHtml = getHandleBarHtml("tab_welcome_events", { "events": result.events || [] });
