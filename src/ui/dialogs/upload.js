@@ -104,6 +104,7 @@ export default class FileUploader
             {
                 finalPath = file.path.replace(assetPath, "./");
             }
+            finalPath = finalPath.replaceAll("\\", "/");
             gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
         }
     }
