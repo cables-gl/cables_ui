@@ -705,7 +705,7 @@ export default class PatchView extends Events
         const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
 
         const ops = this._p.ops;
-        console.log("center sub patch bounds");
+        console.log("center sub patch bounds", bounds);
         let count = 0;
 
         for (let j = 0; j < ops.length; j++)
@@ -713,8 +713,8 @@ export default class PatchView extends Events
             {
                 count++;
                 ops[j].setPos(
-                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
-                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny
+                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx - bounds.sizeWidth / 2,
+                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny - bounds.sizeHeight / 2
                 );
             }
     }
