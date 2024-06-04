@@ -702,7 +702,7 @@ export default class PatchView extends Events
         const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
 
         const ops = this._p.ops;
-
+        console.log("center sub patch bounds");
         let count = 0;
 
         for (let j = 0; j < ops.length; j++)
