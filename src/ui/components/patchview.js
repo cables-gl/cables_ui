@@ -740,18 +740,24 @@ export default class PatchView extends Events
 
     getOpBounds(ops, options = {})
     {
-        if (options.minWidth == undefined)options.minWidth = 100;
-        let bigNum = 9999999;
+        if (options.minWidth == undefined) options.minWidth = 100;
+
         const bounds = {
-            "minx": bigNum,
-            "maxx": -bigNum,
-            "miny": bigNum,
-            "maxy": -bigNum };
+            "minx": 0,
+            "maxx": 0,
+            "miny": 0,
+            "maxy": 0 };
 
         for (let j = 0; j < ops.length; j++)
         {
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
+                if (bounds.minx == bounds.miny == bounds.maxx == bounds.maxy == 0)
+                {
+                    bounds.minx = bounds.maxx = ops[j].uiAttribs.translate.x;
+                    bounds.miny = bounds.maxy = ops[j].uiAttribs.translate.y;
+                }
+
                 bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
                 bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + options.minWidth);
                 bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
@@ -760,19 +766,21 @@ export default class PatchView extends Events
         }
 
 
-        if (bounds.minx == bigNum)
-        {
-            return {
-                "minx": 1,
-                "maxx": -1,
-                "miny": 1,
-                "maxy": -1,
-            };
-        }
+        // if (bounds.minx == bigNum)
+        // {
+        //     return {
+        //         "minx": 0,
+        //         "maxx": 0,
+        //         "miny": 0,
+        //         "maxy": 0,
+        //         "sizeWidth": 0,
+        //         "sizeHeight": 0
+        //     };
+        // }
 
         bounds.sizeWidth = Math.abs(bounds.maxx - bounds.minx);
         bounds.sizeHeight = Math.abs(bounds.maxy - bounds.miny);
-
+        console.log("BOUNDZ", bounds);
         return bounds;
     }
 
@@ -1038,8 +1046,6 @@ export default class PatchView extends Events
 
         console.log("sub patch bounds", b);
 
-
-
         let x = 0;
         if (patchInputOP || patchOutputOP)
         {
@@ -1049,23 +1055,38 @@ export default class PatchView extends Events
             if (x > b.maxx)x = b.maxx;
         }
 
+        console.log("b", b.miny, b.maxy);
+
+
+
+
         if (patchInputOP)
+        {
+            let y = Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2);
+
+            console.log("yyyyy", y, patchInputOP.uiAttribs.translate.y, b.miny);
+
             patchInputOP.setUiAttribs(
                 { "translate":
                     {
                         "x": x,
-                        "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+                        "y": y
                     }
                 });
+        }
 
         if (patchOutputOP)
+        {
+            let y = Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2);
+
             patchOutputOP.setUiAttribs(
                 { "translate":
                     {
                         "x": x,
-                        "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2)
+                        "y": y
                     }
                 });
+        }
     }
 
     getSubPatchName(subpatch)
