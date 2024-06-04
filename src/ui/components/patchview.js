@@ -698,8 +698,8 @@ export default class PatchView extends Events
     {
         const bounds = this.getSubPatchBounds(subPatch);
 
-        const cx = (bounds.maxx - bounds.minx) / 2;
-        const cy = (bounds.maxy - bounds.miny) / 2;
+        const cx = (Math.max(bounds.maxx, bounds.minx) - Math.max(bounds.minx, bounds.maxx)) / 2;
+        const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
 
         console.log("center", cx, cy);
         const ops = this._p.ops;
