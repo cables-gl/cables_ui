@@ -35,6 +35,10 @@ const defaultOpNames =
     "VarGetTrigger": "Ops.Trigger.TriggerReceive",
     "defaultFont": "Ops.Html.FontFile_v2",
 
+
+
+    "incrementor": "Ops.Math.Incrementor",
+
     "performance": "Ops.Gl.Performance",
 
     "subPatch": "Ops.Ui.SubPatch",
@@ -55,7 +59,7 @@ const defaultOpNames =
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
-    "TriggerCounter": "Ops.Trigger.TriggerCounter",
+    "triggerCounter": "Ops.Trigger.TriggerCounter",
     "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v2",
@@ -72,6 +76,7 @@ const defaultOpNames =
     // "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
+    "vizTrigger": "Ops.Ui.VizTrigger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
 
     "string": "Ops.String.String_v2",
@@ -132,13 +137,6 @@ const defaultOps = {
             "portOut": "Next",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
-            "op": defaultOpNames.triggerCounter,
-            "portIn": "exe",
-            "portOut": "timesTriggered",
-        },
-        {
             "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
             "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
             "op": defaultOpNames.parseFloat,
@@ -167,6 +165,28 @@ const defaultOps = {
             "portIn": "Array",
             "portOut": "Result",
         },
+
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "op": defaultOpNames.triggerCounter,
+            "portIn": "exe",
+            "portOut": "timesTriggered",
+        },
+        // {
+        //     "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+        //     "typeTo": CONSTANTS.OP.OP_PORT_TYPE_NUMBER,
+        //     "op": defaultOpNames.triggerCounter,
+        //     "portIn": "exe",
+        //     "portOut": "num",
+        // },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_NUMBER,
+            "op": defaultOpNames.incrementor,
+            "portIn": "Increment",
+            "portOut": "Value",
+        }
 
 
     ],
@@ -243,7 +263,7 @@ const defaultOps = {
         }
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.vizTrigger, defaultOpNames.sequence];
         }
         return [];
     },
@@ -371,8 +391,6 @@ const defaultOps = {
         parts.length -= 1;
         return parts.join(".") + ".";
     },
-
-
 
     "getPatchOpsPrefix": () =>
     {

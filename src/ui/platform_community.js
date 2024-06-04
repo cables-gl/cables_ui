@@ -26,4 +26,9 @@ export default class PlatformCommunity extends Platform
     {
         return this.getCablesUrl();
     }
+
+    getCablesVersion()
+    {
+        return "Community build";
+    }
 }

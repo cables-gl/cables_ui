@@ -11,8 +11,31 @@ export default class WelcomeTab
 
         CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
         {
-            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesStaticUrl() });
+            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesStaticUrl(), "version": CABLES.platform.getCablesVersion() });
             this._tab.html(html);
+
+            CABLES.ajax("https://dev.cables.gl/api/events/", (err2, res) =>
+            {
+                const result = JSON.parse(res);
+
+                result.events.reverse();
+                if (result.events.length > 3)result.events.length = 3;
+
+                const eventsHtml = getHandleBarHtml("tab_welcome_events", { "events": result.events || [] });
+
+                ele.byId("welcome_events").innerHTML = eventsHtml;
+            });
+
+            if (!CABLES.platform.frontendOptions.hasCommunity)
+                CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res) =>
+                {
+                    const result = JSON.parse(res);
+                    const elePlatVersion = ele.byId("platformaltversion");
+
+                    if (!result || !elePlatVersion || !result.name) return;
+
+                    elePlatVersion.innerHTML = " - latest standalone release: <a target=\"_blank\" class=\"link\" href=\"https://cables.gl/downloads\">" + result.name + "</a>";
+                });
         });
 
         CABLES.editorSession.remove("welcometab", "Welcome");

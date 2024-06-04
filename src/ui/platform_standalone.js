@@ -17,6 +17,15 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showBuildInfoMenuLink = true;
     }
 
+    getCablesVersion()
+    {
+        let version = "Electron Standalone";
+
+        if (CABLESUILOADER && CABLESUILOADER.buildInfo && CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.version) version += " v" + CABLESUILOADER.buildInfo.api.version;
+        else version += " development version";
+        return version;
+    }
+
     getCablesDocsUrl()
     {
         return "https://cables.gl";
@@ -50,7 +59,6 @@ export default class PlatformStandalone extends Platform
         }
         CABLESUILOADER.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
-            console.log("BACK", file, gui);
             if (file)
             {
                 if (inputEle)

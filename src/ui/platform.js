@@ -25,6 +25,11 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    getCablesVersion()
+    {
+        return "unknown version";
+    }
+
     getPrefixAssetPath()
     {
         if (!this._cfg || !this._cfg.patchConfig) return "";

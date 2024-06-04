@@ -1,0 +1,12 @@
+<script id="tab_welcome_events" type="text/x-handlebars-template">
+
+
+    {{#each events}}
+
+        <a href="{{link}}" target="_blank" style="background-color: var(--color-05);display:block;padding:10px;border-radius: 5px;margin:5px;">
+            <h3 class="nomargin">{{title}}</h3>
+            {{displaydateNoTime eventdate}}
+        </a>
+    {{/each}}
+
+</script>

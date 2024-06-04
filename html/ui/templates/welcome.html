@@ -1,6 +1,7 @@
 <script id="tab_welcome" type="text/x-handlebars-template">
 
     <h2>welcome to cables</h2>
+    {{version}} <span id="platformaltversion"></span>
 
     <br><br>
 
@@ -30,7 +31,6 @@
 
     {{/if}}
 
-
     <h3>Help</h3>
 
     <a href="https://cables.gl/docs" target="_blank" class="button">Documentation</a>
@@ -41,5 +41,10 @@
     <br>
     <a href="https://discord.gg/cablesgl" target="_blank" class="button">Join cables discord community</a>
 
+    <hr>
+
+    <h3>Events</h3>
+
+    <div id="welcome_events">loading...</div>
 
 </script>
