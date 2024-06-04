@@ -693,6 +693,36 @@ export default class PatchView extends Events
     }
 
 
+
+    centerSubPatchBounds(subPatch)
+    {
+        const bounds = this.getSubPatchBounds(subPatch);
+
+        const cx = (bounds.maxx - bounds.minx) / 2;
+        const cy = (bounds.maxy - bounds.miny) / 2;
+
+        console.log("center", cx, cy);
+        const ops = this._p.ops;
+
+        for (let j = 0; j < ops.length; j++)
+        {
+            // if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
+            // {
+            // const t = {
+            //     "x": ops[j].uiAttribs.translate.x - (cx / 2),
+            //     "y": ops[j].uiAttribs.translate.y - (cy / 2)
+            // };
+
+            ops[j].setPos(
+                ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
+                ops[j].uiAttribs.translate.y - (cy) - bounds.miny
+            );
+
+            // ops[j].setUiAttribs({ "translate": t });
+            // }
+        }
+    }
+
     getSubPatchBounds(subPatch)
     {
         const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
