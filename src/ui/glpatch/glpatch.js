@@ -75,6 +75,20 @@ export default class GlPatch extends Events
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
 
+
+
+
+        if (userSettings.get("devinfos"))
+        {
+            const idx = this._overlaySplines.getSplineIndex();
+            this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
+            this._overlaySplines.setSplineColor(idx, [0, 0, 0, 1]);
+
+            const idx2 = this._overlaySplines.getSplineIndex();
+            this._overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
+            this._overlaySplines.setSplineColor(idx2, [0, 0, 0, 1]);
+        }
+
         // this._glTestSpline = new glEditableSpline(this._overlaySplines, this._rectInstancer, this);
 
         this.cablesHoverText = new GlText(this._textWriter, "");

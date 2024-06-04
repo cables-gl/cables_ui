@@ -658,6 +658,7 @@ subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
 subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
+
     gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
     const loadingModal = gui.startModalLoading("serialize ops");
 

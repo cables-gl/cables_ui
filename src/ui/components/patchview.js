@@ -693,15 +693,40 @@ export default class PatchView extends Events
     }
 
 
+
+    centerSubPatchBounds(subPatch)
+    {
+        if (subPatch == 0) return;
+        const bounds = this.getSubPatchBounds(subPatch);
+
+        const cx = (Math.max(bounds.maxx, bounds.minx) - Math.max(bounds.minx, bounds.maxx)) / 2;
+        const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
+
+        const ops = this._p.ops;
+        console.log("center sub patch bounds");
+        let count = 0;
+
+        for (let j = 0; j < ops.length; j++)
+            if (ops[j].uiAttribs.subPatch == subPatch && ops[j].uiAttribs && ops[j].uiAttribs.translate)
+            {
+                count++;
+                ops[j].setPos(
+                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
+                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny
+                );
+            }
+    }
+
     getSubPatchBounds(subPatch)
     {
         const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
+        const bigNum = 9999999;
 
         const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999,
+            "minx": bigNum,
+            "maxx": -bigNum,
+            "miny": bigNum,
+            "maxy": -bigNum,
         };
         const ops = this._p.ops;
 
@@ -721,6 +746,17 @@ export default class PatchView extends Events
 
         perf.finish();
 
+        if (bounds.minx == bigNum)
+        {
+            return {
+                "minx": 1,
+                "maxx": -1,
+                "miny": 1,
+                "maxy": -1,
+            };
+        }
+
+        console.log("bounds", bounds);
         return bounds;
     }
 
@@ -2131,6 +2167,8 @@ export default class PatchView extends Events
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
+            this.centerSubPatchBounds(this.getCurrentSubPatch());
+
             this._patchRenderer.setCurrentSubPatch(subpatch,
                 () =>
                 {
