@@ -705,22 +705,11 @@ export default class PatchView extends Events
         const ops = this._p.ops;
 
         for (let j = 0; j < ops.length; j++)
-        {
-            // if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
-            // {
-            // const t = {
-            //     "x": ops[j].uiAttribs.translate.x - (cx / 2),
-            //     "y": ops[j].uiAttribs.translate.y - (cy / 2)
-            // };
-
-            ops[j].setPos(
-                ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
-                ops[j].uiAttribs.translate.y - (cy) - bounds.miny
-            );
-
-            // ops[j].setUiAttribs({ "translate": t });
-            // }
-        }
+            if (ops[j].uiAttribs.subPatch == subPatch)
+                ops[j].setPos(
+                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
+                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny
+                );
     }
 
     getSubPatchBounds(subPatch)
