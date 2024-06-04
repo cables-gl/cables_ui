@@ -696,6 +696,7 @@ export default class PatchView extends Events
 
     centerSubPatchBounds(subPatch)
     {
+        if (subPatch == 0) return;
         const bounds = this.getSubPatchBounds(subPatch);
 
         const cx = (Math.max(bounds.maxx, bounds.minx) - Math.max(bounds.minx, bounds.maxx)) / 2;
@@ -2136,8 +2137,6 @@ export default class PatchView extends Events
 
     centerView(x, y)
     {
-        this.centerSubPatchBounds(this.getCurrentSubPatch());
-
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
         else this._log.warn("patchRenderer has no function center");
     }
@@ -2168,6 +2167,8 @@ export default class PatchView extends Events
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
+            this.centerSubPatchBounds(this.getCurrentSubPatch());
+
             this._patchRenderer.setCurrentSubPatch(subpatch,
                 () =>
                 {
