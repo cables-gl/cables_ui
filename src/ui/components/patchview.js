@@ -707,7 +707,7 @@ export default class PatchView extends Events
         let count = 0;
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].uiAttribs.subPatch == subPatch)
+            if (ops[j].uiAttribs.subPatch == subPatch && ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
                 count++;
                 ops[j].setPos(
