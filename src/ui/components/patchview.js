@@ -704,23 +704,31 @@ export default class PatchView extends Events
         console.log("center", cx, cy);
         const ops = this._p.ops;
 
+        let count = 0;
+
         for (let j = 0; j < ops.length; j++)
             if (ops[j].uiAttribs.subPatch == subPatch)
+            {
+                count++;
                 ops[j].setPos(
                     ops[j].uiAttribs.translate.x - (cx) - bounds.minx,
                     ops[j].uiAttribs.translate.y - (cy) - bounds.miny
                 );
+            }
+
+        console.log("moved ops:", count);
     }
 
     getSubPatchBounds(subPatch)
     {
         const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
+        const bigNum = 9999999;
 
         const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999,
+            "minx": bigNum,
+            "maxx": -bigNum,
+            "miny": bigNum,
+            "maxy": -bigNum,
         };
         const ops = this._p.ops;
 
@@ -740,6 +748,17 @@ export default class PatchView extends Events
 
         perf.finish();
 
+        if (bounds.minx == bigNum)
+        {
+            return {
+                "minx": 1,
+                "maxx": -1,
+                "miny": 1,
+                "maxy": -1,
+            };
+        }
+
+        console.log("bounds", bounds);
         return bounds;
     }
 
