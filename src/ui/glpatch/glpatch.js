@@ -78,6 +78,7 @@ export default class GlPatch extends Events
 
 
 
+
         if (userSettings.get("devinfos"))
         {
             const idx = this._overlaySplines.getSplineIndex();
@@ -395,6 +396,7 @@ export default class GlPatch extends Events
         this.vizLayer = new VizLayer(this);
 
 
+
         userSettings.on("change", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
@@ -402,6 +404,38 @@ export default class GlPatch extends Events
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
         });
+
+        if (userSettings.get("devinfos"))
+        {
+            gui.corePatch().on("subpatchesChanged", () =>
+            {
+                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this._overlaySplines.getSplineIndex();
+
+                const bounds = gui.patchView.getSubPatchBounds();
+
+                this._overlaySplines.setSpline(this.subpatchAreaSpline, [
+                    bounds.minx, bounds.miny, 0,
+                    bounds.maxx, bounds.miny, 0,
+
+                    bounds.maxx, bounds.miny, 0,
+                    bounds.maxx, bounds.maxy, 0,
+
+                    bounds.maxx, bounds.maxy, 0,
+                    bounds.minx, bounds.maxy, 0,
+
+                    bounds.minx, bounds.maxy, 0,
+                    bounds.minx, bounds.miny, 0
+
+
+                ]);
+
+                console.log(bounds);
+
+                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [1, 0, 0, 1]);
+            });
+        }
+
+
 
         this.snap.update();
     }

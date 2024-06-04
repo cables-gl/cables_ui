@@ -578,6 +578,8 @@ export default class PatchView extends Events
                 "params_ops", {
                     "isDevEnv": CABLES.platform.isDevEnv(),
                     "config": CABLES.platform.cfg,
+                    "showDevInfos": userSettings.get("devinfos"),
+                    "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs
                 });
@@ -717,34 +719,46 @@ export default class PatchView extends Events
             }
     }
 
-    getSubPatchBounds(subPatch)
+    getSubPatchBounds(subPatchId)
     {
+        if (subPatchId == undefined) subPatchId = this.getCurrentSubPatch();
         const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
-        const bigNum = 9999999;
+        const ops = this._p.ops;
+        const theOps = [];
 
+        for (let j = 0; j < ops.length; j++)
+            if (ops[j].uiAttribs.subPatch != subPatchId)
+                if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+                    theOps.push(ops[j]);
+
+        let bounds = this.getOpBounds(theOps);
+
+        perf.finish();
+
+        return bounds;
+    }
+
+    getOpBounds(ops, options = {})
+    {
+        if (options.minWidth == undefined)options.minWidth = 100;
+        let bigNum = 9999999;
         const bounds = {
             "minx": bigNum,
             "maxx": -bigNum,
             "miny": bigNum,
-            "maxy": -bigNum,
-        };
-        const ops = this._p.ops;
+            "maxy": -bigNum };
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+        {
+            if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
-                if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
-                    if (ops[j].uiAttribs.subPatch == subPatch)
-                    {
-                        bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                        bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x);
-                        bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
-                        bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
-                    }
+                bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
+                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + options.minWidth);
+                bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
+                bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
             }
+        }
 
-
-        perf.finish();
 
         if (bounds.minx == bigNum)
         {
@@ -756,32 +770,16 @@ export default class PatchView extends Events
             };
         }
 
-        console.log("bounds", bounds);
+        bounds.sizeWidth = Math.abs(bounds.maxx - bounds.minx);
+        bounds.sizeHeight = Math.abs(bounds.maxy - bounds.miny);
+
         return bounds;
     }
 
     getSelectionBounds(minWidth)
     {
-        if (minWidth == undefined)minWidth = 100;
         const ops = this.getSelectedOps();
-        const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999 };
-
-        for (let j = 0; j < ops.length; j++)
-        {
-            if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
-            {
-                bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + minWidth);
-                bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
-                bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
-            }
-        }
-
-        return bounds;
+        return this.getOpBounds(ops, { "minWidth": minWidth });
     }
 
     getSelectedOpsIds()

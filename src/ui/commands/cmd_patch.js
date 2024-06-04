@@ -274,7 +274,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
 CABLES_CMD_PATCH.centerOpsInSubpatch = function ()
 {
-    this.centerSubPatchBounds(this.getCurrentSubPatch());
+    gui.patchView.centerSubPatchBounds(gui.patchView.getCurrentSubPatch());
 };
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
@@ -1630,6 +1630,18 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "delete unused patch ops",
+        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "center ops in subpatch",
+        "func": CABLES_CMD_PATCH.centerOpsInSubpatch,
         "category": "patch",
         "icon": "op"
     },
