@@ -271,6 +271,12 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
     });
 };
 
+
+CABLES_CMD_PATCH.centerOpsInSubpatch = function ()
+{
+    this.centerSubPatchBounds(this.getCurrentSubPatch());
+};
+
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
     if (!options.ignoreNsCheck)

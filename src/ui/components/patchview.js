@@ -2167,8 +2167,6 @@ export default class PatchView extends Events
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
-            this.centerSubPatchBounds(this.getCurrentSubPatch());
-
             this._patchRenderer.setCurrentSubPatch(subpatch,
                 () =>
                 {
@@ -2178,9 +2176,6 @@ export default class PatchView extends Events
                 });
         }
         else this._log.warn("patchRenderer has no function setCurrentSubPatch");
-
-
-
 
         gui.corePatch().emitEvent("subpatchesChanged");
     }
