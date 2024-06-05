@@ -25,6 +25,11 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    isTrustedPatch()
+    {
+        return this._cfg.isTrustedPatch;
+    }
+
     getCablesVersion()
     {
         return "unknown version";

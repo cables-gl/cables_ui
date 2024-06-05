@@ -4,6 +4,9 @@
 
 
         <h2 class="nomargin" style="margin-bottom:10px !important;">
+
+            {{#if isTrustedPatch}}{{else}}NO TRUST{{/if}}
+
             {{#compare project.summary.visibility '==' 'unlisted'}}<span class="icon icon-eye"></span>{{/compare}}
             {{#compare project.summary.visibility '==' 'view_only'}}<span class="icon icon-eye"></span>{{/compare}}
             {{#compare project.summary.visibility '==' 'private'}}<span class="icon icon-lock"></span>{{/compare}}
