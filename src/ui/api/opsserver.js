@@ -1610,6 +1610,7 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
+        if (!CABLES.platform.isTrustedPatch()) return false;
         if (!user) return false;
         if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });
