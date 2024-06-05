@@ -447,7 +447,8 @@ export default class FileManager
                         // * it's a library file
                         const item = detailItem;
 
-                        const fileInfoPath = item.p.substring("/assets/library/".length);
+                        const fileParts = item.p.split("/assets/library/");
+                        const fileInfoPath = fileParts.length > 1 ? fileParts[1] : "";
 
                         const fileCategory = fileInfoPath.split("/")[0];
                         const fileName = fileInfoPath.split("/")[1];
