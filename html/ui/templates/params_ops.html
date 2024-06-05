@@ -60,12 +60,13 @@
             <br/><br/><br/>
 
             {{#if showDevInfos}}
-
-            {{bounds.minx}},
-            {{bounds.miny}}
-             //
-            {{bounds.maxx}},
-            {{bounds.maxy}}
+            min xy:
+            {{round bounds.minX}},
+            {{round bounds.minY}}
+            <br>
+            max xy:
+            {{round bounds.maxX}},
+            {{round bounds.maxY}}
             {{/if}}
 
 
