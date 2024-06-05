@@ -371,7 +371,7 @@ export default class GlViewBox
 
             if (ops[i].uiAttribs.translate && !ops[i].uiAttribs.hidden)
             {
-                console.log(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
+                // console.log(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
                 bb.applyPos(
                     ops[i].uiAttribs.translate.x,
                     ops[i].uiAttribs.translate.y,
