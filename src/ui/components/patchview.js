@@ -471,6 +471,12 @@ export default class PatchView extends Events
                         op.getPort("value").set(oldValue);
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
+                    if (op.objName == CABLES.UI.DEFAULTOPNAMES.string)
+                    {
+                        const oldValue = options.linkNewOpToPort.get();
+                        op.getPort("value").set(oldValue);
+                        op.setTitle(options.linkNewOpToPort.getName());
+                    }
 
                     gui.corePatch().link(
                         options.linkNewOpToOp,

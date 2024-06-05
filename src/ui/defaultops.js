@@ -8,6 +8,7 @@ import { CONSTANTS } from "../../../cables/src/core/constants.js";
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
+    "string": "Ops.String.String_v2",
     "array": "Ops.Array.Array_v3",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
@@ -78,7 +79,6 @@ const defaultOpNames =
     "vizTrigger": "Ops.Ui.VizTrigger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
 
-    "string": "Ops.String.String_v2",
     "stringEditor": "Ops.String.StringEditor",
     "sequence": "Ops.Trigger.Sequence",
     "divElement": "Ops.Html.DivElement_v3",
