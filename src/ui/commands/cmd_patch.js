@@ -1,10 +1,10 @@
 import { ele } from "cables-shared-client";
+
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notifyError } from "../elements/notification.js";
 import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
-import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
 import GlOpWatcher from "../components/tabs/tab_glop.js";
 import ManageOp from "../components/tabs/tab_manage_op.js";
@@ -271,6 +271,12 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
     });
 };
 
+
+CABLES_CMD_PATCH.centerOpsInSubpatch = function ()
+{
+    gui.patchView.centerSubPatchBounds(gui.patchView.getCurrentSubPatch());
+};
+
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
     if (!options.ignoreNsCheck)
@@ -483,7 +489,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         }
                     });
             },
-            { "translate": { "x": -999999, "y": -999999 } });
+            { "translate": { "x": 0, "y": 0 } });
     }, false, { "noLoadOp": true });
     // }, 1400);
 };
@@ -810,7 +816,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
     let opFunction = getsetOp.getter;
     let newOpX = p.op.uiAttribs.translate.x + 20;
     let newOpY = p.op.uiAttribs.translate.y - 40;
-    if (p.direction === CONSTANTS.PORT.PORT_DIR_OUT)
+    if (p.direction === CABLES.PORT_DIR_OUT)
     {
         if (createTrigger)
         {
@@ -1624,6 +1630,18 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "delete unused patch ops",
+        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "center ops in subpatch",
+        "func": CABLES_CMD_PATCH.centerOpsInSubpatch,
         "category": "patch",
         "icon": "op"
     },

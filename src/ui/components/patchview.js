@@ -578,6 +578,8 @@ export default class PatchView extends Events
                 "params_ops", {
                     "isDevEnv": CABLES.platform.isDevEnv(),
                     "config": CABLES.platform.cfg,
+                    "showDevInfos": userSettings.get("devinfos"),
+                    "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs
                 });
@@ -693,59 +695,99 @@ export default class PatchView extends Events
     }
 
 
-    getSubPatchBounds(subPatch)
-    {
-        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
 
-        const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999,
-        };
+    centerSubPatchBounds(subPatch)
+    {
+        if (subPatch == 0) return;
+        const bounds = this.getSubPatchBounds(subPatch);
+
+        const cx = (Math.max(bounds.maxx, bounds.minx) - Math.max(bounds.minx, bounds.maxx)) / 2;
+        const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
+
         const ops = this._p.ops;
+        console.log("center sub patch bounds", bounds);
+        let count = 0;
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+            if (ops[j].uiAttribs.subPatch == subPatch && ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
-                if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
-                    if (ops[j].uiAttribs.subPatch == subPatch)
-                    {
-                        bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                        bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x);
-                        bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
-                        bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
-                    }
+                count++;
+                ops[j].setPos(
+                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx - bounds.sizeWidth / 2,
+                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny - bounds.sizeHeight / 2
+                );
             }
+    }
 
+    getSubPatchBounds(subPatchId)
+    {
+        if (subPatchId == undefined) subPatchId = this.getCurrentSubPatch();
+        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
+        const ops = this._p.ops;
+        const theOps = [];
+
+        for (let j = 0; j < ops.length; j++)
+            if (ops[j].uiAttribs.subPatch != subPatchId)
+                if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+                    theOps.push(ops[j]);
+
+        let bounds = this.getOpBounds(theOps);
 
         perf.finish();
 
         return bounds;
     }
 
-    getSelectionBounds(minWidth)
+    getOpBounds(ops, options = {})
     {
-        if (minWidth == undefined)minWidth = 100;
-        const ops = this.getSelectedOps();
+        if (options.minWidth == undefined) options.minWidth = 100;
+
         const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999 };
+            "minx": 0,
+            "maxx": 0,
+            "miny": 0,
+            "maxy": 0 };
 
         for (let j = 0; j < ops.length; j++)
         {
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
+                if (bounds.minx == bounds.miny == bounds.maxx == bounds.maxy == 0)
+                {
+                    bounds.minx = bounds.maxx = ops[j].uiAttribs.translate.x;
+                    bounds.miny = bounds.maxy = ops[j].uiAttribs.translate.y;
+                }
+
                 bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + minWidth);
+                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + options.minWidth);
                 bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
                 bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
             }
         }
 
+
+        // if (bounds.minx == bigNum)
+        // {
+        //     return {
+        //         "minx": 0,
+        //         "maxx": 0,
+        //         "miny": 0,
+        //         "maxy": 0,
+        //         "sizeWidth": 0,
+        //         "sizeHeight": 0
+        //     };
+        // }
+
+        bounds.sizeWidth = Math.abs(bounds.maxx - bounds.minx);
+        bounds.sizeHeight = Math.abs(bounds.maxy - bounds.miny);
+        console.log("BOUNDZ", bounds);
         return bounds;
+    }
+
+    getSelectionBounds(minWidth)
+    {
+        const ops = this.getSelectedOps();
+        return this.getOpBounds(ops, { "minWidth": minWidth });
     }
 
     getSelectedOpsIds()
@@ -1004,8 +1046,6 @@ export default class PatchView extends Events
 
         console.log("sub patch bounds", b);
 
-
-
         let x = 0;
         if (patchInputOP || patchOutputOP)
         {
@@ -1015,23 +1055,38 @@ export default class PatchView extends Events
             if (x > b.maxx)x = b.maxx;
         }
 
+        console.log("b", b.miny, b.maxy);
+
+
+
+
         if (patchInputOP)
+        {
+            let y = Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2);
+
+            console.log("yyyyy", y, patchInputOP.uiAttribs.translate.y, b.miny);
+
             patchInputOP.setUiAttribs(
                 { "translate":
                     {
                         "x": x,
-                        "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+                        "y": y
                     }
                 });
+        }
 
         if (patchOutputOP)
+        {
+            let y = Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2);
+
             patchOutputOP.setUiAttribs(
                 { "translate":
                     {
                         "x": x,
-                        "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2)
+                        "y": y
                     }
                 });
+        }
     }
 
     getSubPatchName(subpatch)
@@ -2140,9 +2195,6 @@ export default class PatchView extends Events
                 });
         }
         else this._log.warn("patchRenderer has no function setCurrentSubPatch");
-
-
-
 
         gui.corePatch().emitEvent("subpatchesChanged");
     }

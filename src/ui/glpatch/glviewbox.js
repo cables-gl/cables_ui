@@ -371,6 +371,7 @@ export default class GlViewBox
 
             if (ops[i].uiAttribs.translate && !ops[i].uiAttribs.hidden)
             {
+                console.log(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
                 bb.applyPos(
                     ops[i].uiAttribs.translate.x,
                     ops[i].uiAttribs.translate.y,
@@ -406,6 +407,7 @@ export default class GlViewBox
         if (cy != cy) cy = 0;
 
 
+        gui.patchView.getSubPatchBounds();
         this.animateScrollTo(bb.center[0], cy);
     }
 

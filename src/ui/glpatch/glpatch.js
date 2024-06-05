@@ -75,6 +75,21 @@ export default class GlPatch extends Events
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
 
+
+
+
+
+        if (userSettings.get("devinfos"))
+        {
+            const idx = this._overlaySplines.getSplineIndex();
+            this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
+            this._overlaySplines.setSplineColor(idx, [0, 0, 0, 1]);
+
+            const idx2 = this._overlaySplines.getSplineIndex();
+            this._overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
+            this._overlaySplines.setSplineColor(idx2, [0, 0, 0, 1]);
+        }
+
         // this._glTestSpline = new glEditableSpline(this._overlaySplines, this._rectInstancer, this);
 
         this.cablesHoverText = new GlText(this._textWriter, "");
@@ -381,6 +396,7 @@ export default class GlPatch extends Events
         this.vizLayer = new VizLayer(this);
 
 
+
         userSettings.on("change", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
@@ -388,6 +404,38 @@ export default class GlPatch extends Events
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
         });
+
+        if (userSettings.get("devinfos"))
+        {
+            gui.corePatch().on("subpatchesChanged", () =>
+            {
+                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this._overlaySplines.getSplineIndex();
+
+                const bounds = gui.patchView.getSubPatchBounds();
+
+                this._overlaySplines.setSpline(this.subpatchAreaSpline, [
+                    bounds.minx, bounds.miny, 0,
+                    bounds.maxx, bounds.miny, 0,
+
+                    bounds.maxx, bounds.miny, 0,
+                    bounds.maxx, bounds.maxy, 0,
+
+                    bounds.maxx, bounds.maxy, 0,
+                    bounds.minx, bounds.maxy, 0,
+
+                    bounds.minx, bounds.maxy, 0,
+                    bounds.minx, bounds.miny, 0
+
+
+                ]);
+
+                console.log(bounds);
+
+                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [1, 0, 0, 1]);
+            });
+        }
+
+
 
         this.snap.update();
     }
