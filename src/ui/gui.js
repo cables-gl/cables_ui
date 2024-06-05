@@ -1286,6 +1286,12 @@ export default class Gui extends Events
                 if (!r) return;
 
                 let str = "";
+                if (CABLES.platform.frontendOptions.showOpenPatch)
+                {
+                    str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"\">Open Patch</a></li>";
+                    str += "<li class=\"divide\"></li>";
+                }
+
                 for (let i = 0; i < r.length; i++)
                     str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
 
@@ -1299,7 +1305,7 @@ export default class Gui extends Events
                 ele.byId("nav_recentpatches").innerHTML = str;
                 ele.byId("nav_recentpatches").querySelectorAll("li a.mine").forEach((el) =>
                 {
-                    if (el.dataset.shortId)
+                    if (el.dataset.hasOwnProperty("shortId"))
                     {
                         el.addEventListener("click", () =>
                         {
@@ -1307,8 +1313,6 @@ export default class Gui extends Events
                         });
                     }
                 });
-
-                // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.platform.getCablesUrl(), "_blank"); win.focus(); });
             });
         });
 
