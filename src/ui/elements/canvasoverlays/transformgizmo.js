@@ -63,7 +63,7 @@ export default class Gizmo
             if (cgl.canvas.styleMarginLeft) x += cgl.canvas.styleMarginLeft;
             if (cgl.canvas.styleMarginTop) y += cgl.canvas.styleMarginTop;
 
-            y /= cgl.pixelDensity;
+            x /= cgl.pixelDensity;
             y /= cgl.pixelDensity;
             return { "x": x, "y": y };
         }
