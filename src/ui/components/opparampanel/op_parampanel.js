@@ -111,6 +111,7 @@ class OpParampanel extends Events
                 });
         }
 
+        console.log("opppppp", op);
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
 
         for (let i = 0; i < this._portsIn.length; i++)

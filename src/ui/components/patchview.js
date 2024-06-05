@@ -541,7 +541,7 @@ export default class PatchView extends Events
         });
     }
 
-    addOpAndLink(opname, opid, portname)
+    addOpAndLink(opname, opid, portname, cb)
     {
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
@@ -566,6 +566,7 @@ export default class PatchView extends Events
                 });
 
                 this.testCollision(newOp);
+                if (cb)cb(newOp);
             } });
     }
 

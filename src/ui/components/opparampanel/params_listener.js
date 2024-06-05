@@ -6,6 +6,7 @@ import userSettings from "../usersettings.js";
 import paramsHelper from "./params_helper.js";
 import WatchPortVisualizer from "./watchportvisualizer.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
+import defaultOps from "../../defaultops.js";
 
 class ParamsListener extends Events
 {
@@ -413,6 +414,47 @@ class ParamsListener extends Events
 
             if (!port.uiAttribs.display || port.uiAttribs.display != "readonly")
             {
+                if (port.type == CABLES.OP_PORT_TYPE_STRING)
+                    items.push(
+                        {
+                            "title": "Create String Op",
+                            "func": () =>
+                            {
+                                gui.savedState.setUnSaved("initPortClickListener");
+                                const oldValue = port.get();
+
+                                gui.patchView.addOpAndLink(defaultOps.defaultOpNames.string, port.op.id, port.name, (op) =>
+                                {
+                                    op.getPort("value").set(oldValue);
+                                    op.setTitle(port.getName());
+
+                                    gui.corePatch().link(port.op, port.name, op, op.getFirstOutPortByType(port.type).name);
+                                    op.refreshParams();
+                                });
+                            }
+                        });
+
+                if (port.type == CABLES.OP_PORT_TYPE_NUMBER)
+                    items.push(
+                        {
+                            "title": "Create Number Op",
+                            "func": () =>
+                            {
+                                gui.savedState.setUnSaved("initPortClickListener");
+                                const oldValue = port.get();
+
+                                gui.patchView.addOpAndLink(defaultOps.defaultOpNames.number, port.op.id, port.name, (op) =>
+                                {
+                                    op.getPort("value").set(oldValue);
+                                    op.setTitle(port.getName());
+
+                                    gui.corePatch().link(port.op, port.name, op, op.getFirstOutPortByType(port.type).name);
+                                    op.refreshParams();
+                                });
+                            }
+                        });
+
+
                 if (
                     port.type != CABLES.OP_PORT_TYPE_FUNCTION &&
                     !port.uiAttribs.expose &&
