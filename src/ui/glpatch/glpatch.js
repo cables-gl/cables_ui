@@ -83,11 +83,11 @@ export default class GlPatch extends Events
         {
             const idx = this._overlaySplines.getSplineIndex();
             this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
-            this._overlaySplines.setSplineColor(idx, [0, 0, 0, 1]);
+            this._overlaySplines.setSplineColor(idx, [0, 0, 0, 0.2]);
 
             const idx2 = this._overlaySplines.getSplineIndex();
             this._overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
-            this._overlaySplines.setSplineColor(idx2, [0, 0, 0, 1]);
+            this._overlaySplines.setSplineColor(idx2, [0, 0, 0, 0.2]);
         }
 
         // this._glTestSpline = new glEditableSpline(this._overlaySplines, this._rectInstancer, this);
@@ -411,9 +411,6 @@ export default class GlPatch extends Events
             {
                 if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this._overlaySplines.getSplineIndex();
 
-
-                console.log("subpacches changed");
-
                 const bounds = gui.patchView.getSubPatchBounds();
 
                 this._overlaySplines.setSpline(this.subpatchAreaSpline, [
@@ -430,9 +427,8 @@ export default class GlPatch extends Events
                     bounds.minX, bounds.minY, 0
                 ]);
 
-                console.log(bounds);
 
-                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [1, 0, 0, 1]);
+                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [0, 0, 0, 0.3]);
             });
         }
 

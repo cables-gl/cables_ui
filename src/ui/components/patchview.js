@@ -698,7 +698,6 @@ export default class PatchView extends Events
 
     centerSubPatchBounds(subPatch)
     {
-        if (subPatch == 0) return;
         const bounds = this.getSubPatchBounds(subPatch);
         const ops = this._p.ops;
         let count = 0;
@@ -723,7 +722,8 @@ export default class PatchView extends Events
 
         for (let j = 0; j < ops.length; j++)
             if (ops[j].uiAttribs.subPatch == subPatchId)
-                if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+                // if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+                if (ops[j].objName != defaultOps.defaultOpNames.subPatchInput2 && ops[j].objName != defaultOps.defaultOpNames.subPatchOutput2)
                     theOps.push(ops[j]);
 
         let bounds = this.getOpBounds(theOps);
