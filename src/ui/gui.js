@@ -1398,7 +1398,17 @@ export default class Gui extends Events
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_patchanalysis").addEventListener("click", (event) => { CABLES.CMD.PATCH.analyze(); });
 
+        if (!CABLES.platform.isTrustedPatch())
+        {
+            ele.byId("nav_op_createOp").classList.add("nav-greyout");
+            ele.byId("nav_op_patchOp").classList.add("nav-greyout");
+            ele.byId("nav_uploadfile").classList.add("nav-greyout");
 
+            ele.byId("nav_createBackup").classList.add("nav-greyout");
+            ele.byId("nav_patch_settings").classList.add("nav-greyout");
+            ele.byId("nav_viewBackups").classList.add("nav-greyout");
+            ele.byId("nav_patch_save").classList.add("nav-greyout");
+        }
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {
