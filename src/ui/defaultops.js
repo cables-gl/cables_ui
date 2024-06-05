@@ -5,7 +5,6 @@
 
 import { CONSTANTS } from "../../../cables/src/core/constants.js";
 
-
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
