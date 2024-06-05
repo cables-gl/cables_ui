@@ -697,6 +697,12 @@ export default class ServerOps
 
         const _checkOpName = () =>
         {
+            if (!CABLES.platform.isTrustedPatch())
+            {
+                new ModalDialog({ "title": "You need write access in the patch to create ops", "showOkButton": true });
+                return;
+            }
+
             const checkNameRequest = {
                 "namespace": options.suggestedNamespace,
                 "v": newName,
