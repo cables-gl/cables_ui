@@ -1279,7 +1279,6 @@ export default class Gui extends Events
         ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
@@ -1288,7 +1287,8 @@ export default class Gui extends Events
                 let str = "";
                 if (CABLES.platform.frontendOptions.showOpenPatch)
                 {
-                    str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"\">Open Patch</a></li>";
+                    let item = "<li><a class=\"mine\" target=\"_top\" data-short-id=\"\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
+                    str += this.bottomInfoArea.replaceShortcuts(item);
                     str += "<li class=\"divide\"></li>";
                 }
 
