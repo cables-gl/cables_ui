@@ -1279,13 +1279,19 @@ export default class Gui extends Events
         ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
                 if (!r) return;
 
                 let str = "";
+                if (CABLES.platform.frontendOptions.showOpenPatch)
+                {
+                    let item = "<li><a class=\"mine\" target=\"_top\" data-short-id=\"\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
+                    str += this.bottomInfoArea.replaceShortcuts(item);
+                    str += "<li class=\"divide\"></li>";
+                }
+
                 for (let i = 0; i < r.length; i++)
                     str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
 
@@ -1299,7 +1305,7 @@ export default class Gui extends Events
                 ele.byId("nav_recentpatches").innerHTML = str;
                 ele.byId("nav_recentpatches").querySelectorAll("li a.mine").forEach((el) =>
                 {
-                    if (el.dataset.shortId)
+                    if (el.dataset.hasOwnProperty("shortId"))
                     {
                         el.addEventListener("click", () =>
                         {
@@ -1307,8 +1313,6 @@ export default class Gui extends Events
                         });
                     }
                 });
-
-                // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.platform.getCablesUrl(), "_blank"); win.focus(); });
             });
         });
 
@@ -1398,7 +1402,17 @@ export default class Gui extends Events
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_patchanalysis").addEventListener("click", (event) => { CABLES.CMD.PATCH.analyze(); });
 
+        if (!CABLES.platform.isTrustedPatch())
+        {
+            ele.byId("nav_op_createOp").classList.add("nav-greyout");
+            ele.byId("nav_op_patchOp").classList.add("nav-greyout");
+            ele.byId("nav_uploadfile").classList.add("nav-greyout");
 
+            ele.byId("nav_createBackup").classList.add("nav-greyout");
+            ele.byId("nav_patch_settings").classList.add("nav-greyout");
+            ele.byId("nav_viewBackups").classList.add("nav-greyout");
+            ele.byId("nav_patch_save").classList.add("nav-greyout");
+        }
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {

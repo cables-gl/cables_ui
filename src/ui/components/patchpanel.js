@@ -74,6 +74,7 @@ export default class PatchPanel extends Events
                     "projectId": projectId,
                     "project": project,
                     "frontendOptions": CABLES.platform.frontendOptions,
+                    "isTrustedPatch": CABLES.platform.isTrustedPatch(),
                     "cablesUrl": CABLES.platform.getCablesUrl(),
                     "sameHost": isSameHost,
                     "patchHost": host

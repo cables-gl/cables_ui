@@ -223,7 +223,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
     if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
     {
-        new ModalDialog({ "title": "You don't have write access for this", "showOkButton": true });
+        new ModalDialog({ "title": "You don't have write access", "showOkButton": true });
         return;
     }
 
@@ -388,7 +388,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 gui.patchView.addOp(newOpname,
                     {
                         "uiAttribs": {
-                            "translate": { "x": origOpsBounds.minx, "y": origOpsBounds.miny }
+                            "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
                         },
                         "onOpAdd": (newOp) =>
                         {
@@ -460,7 +460,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
 
                                             if (selectedOpIds.length == 0) newOp.setPos(0, 0);
-                                            else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                            else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
 
                                             gui.patchView.testCollision(newOp);
                                             gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);

@@ -471,6 +471,12 @@ export default class PatchView extends Events
                         op.getPort("value").set(oldValue);
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
+                    if (op.objName == CABLES.UI.DEFAULTOPNAMES.string)
+                    {
+                        const oldValue = options.linkNewOpToPort.get();
+                        op.getPort("value").set(oldValue);
+                        op.setTitle(options.linkNewOpToPort.getName());
+                    }
 
                     gui.corePatch().link(
                         options.linkNewOpToOp,
@@ -535,7 +541,7 @@ export default class PatchView extends Events
         });
     }
 
-    addOpAndLink(opname, opid, portname)
+    addOpAndLink(opname, opid, portname, cb)
     {
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
@@ -560,6 +566,7 @@ export default class PatchView extends Events
                 });
 
                 this.testCollision(newOp);
+                if (cb)cb(newOp);
             } });
     }
 
@@ -698,14 +705,8 @@ export default class PatchView extends Events
 
     centerSubPatchBounds(subPatch)
     {
-        if (subPatch == 0) return;
         const bounds = this.getSubPatchBounds(subPatch);
-
-        const cx = (Math.max(bounds.maxx, bounds.minx) - Math.max(bounds.minx, bounds.maxx)) / 2;
-        const cy = (Math.min(bounds.maxy, bounds.miny) - Math.min(bounds.miny, bounds.maxy)) / 2;
-
         const ops = this._p.ops;
-        console.log("center sub patch bounds", bounds);
         let count = 0;
 
         for (let j = 0; j < ops.length; j++)
@@ -713,8 +714,8 @@ export default class PatchView extends Events
             {
                 count++;
                 ops[j].setPos(
-                    ops[j].uiAttribs.translate.x - (cx) - bounds.minx - bounds.sizeWidth / 2,
-                    ops[j].uiAttribs.translate.y - (cy) - bounds.miny - bounds.sizeHeight / 2
+                    ops[j].uiAttribs.translate.x - bounds.minX - bounds.size[0] / 2,
+                    ops[j].uiAttribs.translate.y - bounds.minY - bounds.size[1] / 2
                 );
             }
     }
@@ -727,8 +728,9 @@ export default class PatchView extends Events
         const theOps = [];
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].uiAttribs.subPatch != subPatchId)
-                if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+            if (ops[j].uiAttribs.subPatch == subPatchId)
+                // if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
+                if (ops[j].objName != defaultOps.defaultOpNames.subPatchInput2 && ops[j].objName != defaultOps.defaultOpNames.subPatchOutput2)
                     theOps.push(ops[j]);
 
         let bounds = this.getOpBounds(theOps);
@@ -742,46 +744,20 @@ export default class PatchView extends Events
     {
         if (options.minWidth == undefined) options.minWidth = 100;
 
-        const bounds = {
-            "minx": 0,
-            "maxx": 0,
-            "miny": 0,
-            "maxy": 0 };
+        const bb = new CABLES.CG.BoundingBox();
 
         for (let j = 0; j < ops.length; j++)
         {
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
-                if (bounds.minx == bounds.miny == bounds.maxx == bounds.maxy == 0)
-                {
-                    bounds.minx = bounds.maxx = ops[j].uiAttribs.translate.x;
-                    bounds.miny = bounds.maxy = ops[j].uiAttribs.translate.y;
-                }
-
-                bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + options.minWidth);
-                bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
-                bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
+                bb.applyPos(ops[j].uiAttribs.translate.x, ops[j].uiAttribs.translate.y, 0);
+                bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
             }
         }
 
+        bb.calcCenterSize();
 
-        // if (bounds.minx == bigNum)
-        // {
-        //     return {
-        //         "minx": 0,
-        //         "maxx": 0,
-        //         "miny": 0,
-        //         "maxy": 0,
-        //         "sizeWidth": 0,
-        //         "sizeHeight": 0
-        //     };
-        // }
-
-        bounds.sizeWidth = Math.abs(bounds.maxx - bounds.minx);
-        bounds.sizeHeight = Math.abs(bounds.maxy - bounds.miny);
-        console.log("BOUNDZ", bounds);
-        return bounds;
+        return bb;
     }
 
     getSelectionBounds(minWidth)
@@ -885,15 +861,15 @@ export default class PatchView extends Events
         const bounds = this.getSelectionBounds();
         const padding = 80;
         const trans = {
-            "x": Snap.snapOpPosX(bounds.minx - 0.8 * padding),
-            "y": Snap.snapOpPosX(bounds.miny - 0.8 * padding) };
+            "x": Snap.snapOpPosX(bounds.minX - 0.8 * padding),
+            "y": Snap.snapOpPosX(bounds.minY - 0.8 * padding) };
 
         const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, {
             "translate": trans,
             "subPatch": this.getCurrentSubPatch(),
             "area": {
-                "w": Snap.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
-                "h": Snap.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+                "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
+                "h": Snap.snapOpPosX(bounds.maxY - bounds.minY + (2 * padding)) } });
 
         const undofunc = (function (opid)
         {
@@ -907,8 +883,8 @@ export default class PatchView extends Events
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
                         "area": {
-                            "w": Snap.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
-                            "h": Snap.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+                            "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
+                            "h": Snap.snapOpPosX(bounds.maxY - bounds.minY + (2 * padding)) } });
                 }
             });
         }(areaOp.id));
@@ -927,8 +903,8 @@ export default class PatchView extends Events
             {
                 const bounds = this.getSelectionBounds();
                 let trans = {
-                    "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
-                    "y": bounds.miny };
+                    "x": bounds.minX + (bounds.maxX - bounds.minX) / 2,
+                    "y": bounds.minY };
 
                 if (options.translate) trans = options.translate;
 
@@ -1015,17 +991,7 @@ export default class PatchView extends Events
                     }
 
                     this.setPositionSubPatchInputOutputOps();
-                    // set positions of input/output
-                    // let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
-                    // let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
 
-                    // const b = this.getSubPatchBounds(patchId);
-
-                    // if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-                    // if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
-
-                    // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                    // this._p.emitEvent("subpatchExpose", patchId);
 
                     if (next)next(patchId, patchOp);
 
@@ -1051,20 +1017,20 @@ export default class PatchView extends Events
         {
             x = (patchInputOP || patchOutputOP).uiAttribs.translate.x;
 
-            if (x < b.minx)x = b.minx;
-            if (x > b.maxx)x = b.maxx;
+            if (x < b.minX)x = b.minX;
+            if (x > b.maxX)x = b.maxX;
         }
 
-        console.log("b", b.miny, b.maxy);
+        console.log("b", b.minY, b.maxY);
 
 
 
 
         if (patchInputOP)
         {
-            let y = Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2);
+            let y = Math.min(patchInputOP.uiAttribs.translate.y, b.minY - gluiconfig.newOpDistanceY * 2);
 
-            console.log("yyyyy", y, patchInputOP.uiAttribs.translate.y, b.miny);
+            console.log("yyyyy", y, patchInputOP.uiAttribs.translate.y, b.minY);
 
             patchInputOP.setUiAttribs(
                 { "translate":
@@ -1077,7 +1043,7 @@ export default class PatchView extends Events
 
         if (patchOutputOP)
         {
-            let y = Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2);
+            let y = Math.max(patchOutputOP.uiAttribs.translate.y, b.maxY + gluiconfig.newOpDistanceY * 2);
 
             patchOutputOP.setUiAttribs(
                 { "translate":
@@ -1711,7 +1677,7 @@ export default class PatchView extends Events
     {
         const bounds = this.getSelectionBounds(0);
         const ops = gui.patchView.getSelectedOps();
-        const centerX = (bounds.minx + bounds.maxx) / 2;
+        const centerX = (bounds.minX + bounds.maxX) / 2;
         const undoGroup = undo.startGroup();
 
         for (let j = 0; j < ops.length; j++)
@@ -1726,7 +1692,7 @@ export default class PatchView extends Events
     {
         const bounds = this.getSelectionBounds(0);
         const ops = gui.patchView.getSelectedOps();
-        const centerY = (bounds.miny + bounds.maxy) / 2;
+        const centerY = (bounds.minY + bounds.maxY) / 2;
         const undoGroup = undo.startGroup();
 
         for (let j = 0; j < ops.length; j++)

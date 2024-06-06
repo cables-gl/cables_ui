@@ -549,33 +549,33 @@ export default function extendCoreOp()
     };
 
 
-    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
-    {
-        if (count > 100) return s;
-        s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
+    // CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
+    // {
+    //     if (count > 100) return s;
+    //     s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
 
-        if (!this.uiAttribs || !this.uiAttribs.translate) return s;
+    //     if (!this.uiAttribs || !this.uiAttribs.translate) return s;
 
-        s.maxx = Math.max(s.maxx || -99999999999, this.getTempPosX() + this.getWidth(glpatch));
-        s.maxy = Math.max(s.maxy || -99999999999, this.getTempPosY() + this.getHeight(glpatch));
+    //     s.maxx = Math.max(s.maxx || -99999999999, this.getTempPosX() + this.getWidth(glpatch));
+    //     s.maxy = Math.max(s.maxy || -99999999999, this.getTempPosY() + this.getHeight(glpatch));
 
-        s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
-        s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
+    //     s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
+    //     s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
 
 
-        if (untilOp && this == untilOp) return s;
+    //     if (untilOp && this == untilOp) return s;
 
-        for (let i = 0; i < this.portsOut.length; i++)
-        {
-            for (let j = 0; j < this.portsOut[i].links.length; j++)
-            {
-                const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
+    //     for (let i = 0; i < this.portsOut.length; i++)
+    //     {
+    //         for (let j = 0; j < this.portsOut[i].links.length; j++)
+    //         {
+    //             const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
 
-                s = p.op.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
-            }
-        }
-        return s;
-    };
+    //             s = p.op.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
+    //         }
+    //     }
+    //     return s;
+    // };
 
     CABLES.Op.prototype.testTempCollision = function (ops, glpatch)
     {

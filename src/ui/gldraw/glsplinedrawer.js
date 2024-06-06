@@ -438,6 +438,9 @@ export default class GlSplineDrawer
                 const perf2 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates progress coords");
                 let totalDistance = 0;
                 const len = (points.length - 3) / 3;
+
+                // console.log("points", points.length / 3, this._pointsSplineLength.length);
+
                 for (let i = 0; i < len; i++)
                 {
                     const ofc3 = (off + count) / 3;
@@ -537,10 +540,13 @@ export default class GlSplineDrawer
     rebuild()
     {
         if (this._splines.length == 0) return;
+        // console.log("rebvuild splinedrawer...", this._rebuildReason);
         this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
+
+        this._thePoints = []; // todo calc length beforehand
 
         const perf = CABLES.UI.uiProfiler.start("[glspline] rebuild");
 

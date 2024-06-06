@@ -114,6 +114,15 @@ export function initHandleBarsHelper()
         return new Handlebars.SafeString(marked.parse(str));
     });
 
+    Handlebars.registerHelper("round", (str) =>
+    {
+        if (CABLES.UTILS.isNumeric(str))
+        {
+            str = String(Math.round(parseFloat(str)));
+        }
+        return str;
+    });
+
     Handlebars.registerHelper("displaydate", (str) =>
     {
         if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;

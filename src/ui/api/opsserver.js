@@ -697,6 +697,12 @@ export default class ServerOps
 
         const _checkOpName = () =>
         {
+            if (!CABLES.platform.isTrustedPatch())
+            {
+                new ModalDialog({ "title": "You need write access in the patch to create ops", "showOkButton": true });
+                return;
+            }
+
             const checkNameRequest = {
                 "namespace": options.suggestedNamespace,
                 "v": newName,
@@ -1610,6 +1616,7 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
+        if (!CABLES.platform.isTrustedPatch()) return false;
         if (!user) return false;
         if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });

@@ -83,11 +83,11 @@ export default class GlPatch extends Events
         {
             const idx = this._overlaySplines.getSplineIndex();
             this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
-            this._overlaySplines.setSplineColor(idx, [0, 0, 0, 1]);
+            this._overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
 
             const idx2 = this._overlaySplines.getSplineIndex();
             this._overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
-            this._overlaySplines.setSplineColor(idx2, [0, 0, 0, 1]);
+            this._overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
         }
 
         // this._glTestSpline = new glEditableSpline(this._overlaySplines, this._rectInstancer, this);
@@ -414,24 +414,20 @@ export default class GlPatch extends Events
                 const bounds = gui.patchView.getSubPatchBounds();
 
                 this._overlaySplines.setSpline(this.subpatchAreaSpline, [
-                    bounds.minx, bounds.miny, 0,
-                    bounds.maxx, bounds.miny, 0,
+                    bounds.minX, bounds.minY, 0,
+                    bounds.maxX, bounds.minY, 0,
 
-                    bounds.maxx, bounds.miny, 0,
-                    bounds.maxx, bounds.maxy, 0,
+                    bounds.maxX, bounds.minY, 0,
+                    bounds.maxX, bounds.maxY, 0,
 
-                    bounds.maxx, bounds.maxy, 0,
-                    bounds.minx, bounds.maxy, 0,
+                    bounds.maxX, bounds.maxY, 0,
+                    bounds.minX, bounds.maxY, 0,
 
-                    bounds.minx, bounds.maxy, 0,
-                    bounds.minx, bounds.miny, 0
-
-
+                    bounds.minX, bounds.maxY, 0,
+                    bounds.minX, bounds.minY, 0
                 ]);
 
-                console.log(bounds);
-
-                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [1, 0, 0, 1]);
+                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
             });
         }
 
@@ -1413,14 +1409,6 @@ export default class GlPatch extends Events
             if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
-
-            // const bounds = this._glOpz[id].op.getChildsBoundings(this);
-            // if (bounds.maxx)
-            // {
-            //     this._testAreaRect.setPosition(bounds.minx, bounds.miny, -1);
-            //     this._testAreaRect.setSize(bounds.maxx - bounds.minx, bounds.maxy - bounds.miny);
-            // }
-            // else this._testAreaRect.setSize(0, 0);
         }
     }
 
@@ -1451,10 +1439,10 @@ export default class GlPatch extends Events
         if (this._subpatchoprect) this._subpatchoprect.dispose();
         this._subpatchoprect = this._overLayRects.createRect();
 
-        this._subpatchoprect.setPosition(bounds.minx - gui.theme.patch.selectedOpBorderX / 2, bounds.miny - gui.theme.patch.selectedOpBorderY / 2);
+        this._subpatchoprect.setPosition(bounds.minX - gui.theme.patch.selectedOpBorderX / 2, bounds.minY - gui.theme.patch.selectedOpBorderY / 2);
         this._subpatchoprect.setSize(
-            Math.abs((bounds.maxx + gui.theme.patch.selectedOpBorderX) - (bounds.minx - gui.theme.patch.selectedOpBorderX / 2)),
-            Math.abs((bounds.maxy + gui.theme.patch.selectedOpBorderY * 2) - (bounds.miny - gui.theme.patch.selectedOpBorderY / 2))
+            Math.abs((bounds.maxX + gui.theme.patch.selectedOpBorderX) - (bounds.minX - gui.theme.patch.selectedOpBorderX / 2)),
+            Math.abs((bounds.maxY + gui.theme.patch.selectedOpBorderY * 2) - (bounds.minY - gui.theme.patch.selectedOpBorderY / 2))
         );
         // this._subpatchoprect.setColor(gui.theme.colors_patch.opBgRect);
         this._subpatchoprect.setColor(gui.theme.colors_patch.selected);
@@ -1543,31 +1531,7 @@ export default class GlPatch extends Events
 
     getOpBounds(ops)
     {
-        ops = ops || this._glOpz;
-        const bounds =
-        {
-            "minx": 9999,
-            "maxx": -9999,
-            "miny": 9999,
-            "maxy": -9999,
-        };
-
-        for (const i in ops)
-        {
-            const op = ops[i];
-            bounds.minx = Math.min(bounds.minx, op.x);
-            bounds.maxx = Math.max(bounds.maxx, op.x);
-            bounds.miny = Math.min(bounds.miny, op.y);
-            bounds.maxy = Math.max(bounds.maxy, op.y);
-        }
-
-        bounds.minx -= gluiconfig.opWidth;
-        bounds.maxx += gluiconfig.opWidth * 2;
-
-        bounds.miny -= gluiconfig.opHeight;
-        bounds.maxy += gluiconfig.opHeight * 2;
-
-        return bounds;
+        return gui.patchView.getOpBounds(ops);
     }
 
 
