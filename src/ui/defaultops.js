@@ -100,8 +100,9 @@ const defaultOpNames =
     "textureGradient": "Ops.Gl.GradientTexture",
     "textureNoise": "Ops.Gl.Textures.NoiseTexture",
 
-    "rerouteNumber": "Ops.Dev.RerouteNumber",
-    "rerouteString": "Ops.Dev.RerouteString"
+    "rerouteNumber": "Ops.Ui.Routing.RouteNumber",
+    "rerouteString": "Ops.Ui.Routing.RouteString",
+    "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger"
 
 };
 
@@ -535,6 +536,7 @@ const defaultOps = {
     {
         if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
         if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
     }
 };
 
