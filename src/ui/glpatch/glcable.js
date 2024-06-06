@@ -170,7 +170,7 @@ export default class GlCable
             {
                 const op = this._glPatch.getOnlySelectedOp();
                 const glop = this._glPatch.getGlOp(op);
-                if (glop._displayType === glop.DISPLAY_SUBPATCH)
+                if (glop.displayType === glop.DISPLAY_SUBPATCH)
                 {
                     // const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
                     // const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
@@ -179,9 +179,7 @@ export default class GlCable
                     // if (!(portsIn[0].type == portsOut[0].type == this._type)) return false;
                 }
                 else
-                if (
-                    op.portsIn.length > 0 &&
-                    op.portsOut.length > 0)
+                if (op.portsIn.length > 0 && op.portsOut.length > 0)
                 {
                     if (!(
                         op.portsIn[0].type == this._type &&
@@ -190,7 +188,7 @@ export default class GlCable
                 }
             }
         }
-        // else
+
         this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, this._buttonSize * 0.4);
     }
 
