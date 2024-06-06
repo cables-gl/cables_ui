@@ -732,10 +732,7 @@ export default class GlOp extends Events
             this.update();
         }
 
-        if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0)
-        {
-            this._op.patch.deleteOp(this._op.id);
-        }
+        if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0) this._glPatch.deleteOp(this._op.id);
     }
 
     refreshPorts()
