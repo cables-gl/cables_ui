@@ -98,7 +98,10 @@ const defaultOpNames =
     "parseObject": "Ops.Json.ParseObject_v2",
 
     "textureGradient": "Ops.Gl.GradientTexture",
-    "textureNoise": "Ops.Gl.Textures.NoiseTexture"
+    "textureNoise": "Ops.Gl.Textures.NoiseTexture",
+
+    "rerouteNumber": "Ops.Dev.RerouteNumber",
+    "rerouteString": "Ops.Dev.RerouteString"
 
 };
 
@@ -526,6 +529,12 @@ const defaultOps = {
     "isInBlueprint": (op) =>
     {
         return op.storage && op.storage.hasOwnProperty("blueprint");
+    },
+
+    "getRerouteOp": (type) =>
+    {
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
     }
 };
 

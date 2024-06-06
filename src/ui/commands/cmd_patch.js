@@ -813,22 +813,17 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    // const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
-    const getsetOp = "Ops.Dev.RerouteNumber";
+    const getsetOp = defaultOps.getRerouteOp(p.type);
 
+    console.log("getsetOp", getsetOp);
     gui.patchView.addOp(
         getsetOp,
         { "onOpAdd": (opGetter) =>
         {
-            // link.remove();
-            // p.removeLinks();
-
-            // p.op.patch.link(opGetter, getsetOp.portName, p.op, p.name);
             const glPatch = gui.patchView.patchRenderer;
-
-            // this._lastMouseX = this._lastMouseY = -1;
             let x = glPatch._lastMouseX;
             let y = glPatch._lastMouseY;
+
             opGetter.uiAttr({
                 "subPatch": gui.patchView.getCurrentSubPatch(),
             });
@@ -841,11 +836,6 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
 
                     gui.patchView.insertOpInLink(link, opGetter, x, y);
                 }, 100);
-
-
-            //     "translate": {
-            //         "x": p.op.uiAttribs.translate.x + 20,
-            //         "y": p.op.uiAttribs.translate.y - 40
         } });
 };
 

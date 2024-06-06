@@ -702,6 +702,7 @@ export default class GlOp extends Events
     {
         this._disposed = true;
 
+        if (this._glRerouteDot) this._glRerouteDot = this._glRerouteDot.dispose();
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this._glRectBg) this._glRectBg = this._glRectBg.dispose();
         if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
@@ -1344,7 +1345,8 @@ export default class GlOp extends Events
             this._glRerouteDot.setPosition(-0.5, 0, 0);
             this._glRerouteDot.setParent(this._glRectBg);
 
-            this._glRerouteDot.setColor(gui.theme.colors_types.num);
+
+            this._glRerouteDot.setColor(GlPort.getInactiveColor(this._glPorts[0].port.type));
             this._glRerouteDot.setShape(6);
 
             this._glRectBg.setColor([0, 0, 0, 0]);
