@@ -102,6 +102,8 @@ const defaultOpNames =
 
     "rerouteNumber": "Ops.Ui.Routing.RouteNumber",
     "rerouteString": "Ops.Ui.Routing.RouteString",
+    "rerouteArray": "Ops.Ui.Routing.RouteArray",
+    "rerouteObject": "Ops.Ui.Routing.RouteObject",
     "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger"
 
 };
@@ -536,6 +538,8 @@ const defaultOps = {
     {
         if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
         if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return defaultOpNames.rerouteArray;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return defaultOpNames.rerouteObject;
         if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
     }
 };

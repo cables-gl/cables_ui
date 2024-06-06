@@ -2,8 +2,9 @@
 
     <h2 style="margin-top:0px;">Suggestions</h2>
 
+
     {{#if ops}}
-        <h3>Ops</h3>
+    <h3>Ops</h3>
         {{#each ops}}
             <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"> {{.}}</a><br/>
         {{/each}}
@@ -14,6 +15,16 @@
         {{#each vizops}}
             <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"><span class="icon icon-eye"></span> {{.}}</a><br/>
         {{/each}}
+    {{/if}}
+
+
+    {{#if link}}
+    <br/>
+
+        <a class="button button-icon" onclick="CABLES.CMD.PATCH.addLinkReroute();">
+            <span class="icon icon-git-commit-horizontal"></span>Reroute
+        </a>
+
     {{/if}}
 
     <h3>Variables</h3>
@@ -60,12 +71,6 @@
 
     <br/>
 
-    <span id="opselect_replaceVar">
-        <a class="button-small button-icon" onclick="CABLES.CMD.PATCH.addLinkReroute();">
-            <span class="icon icon-git-commit-horizontal"></span>Reroute
-        </a>
-        <br/>
-    </span>
 
 
 </script>

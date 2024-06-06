@@ -151,7 +151,7 @@ export default class OpSelect
             return;
         }
 
-        const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
+        const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "link": CABLES.UI.OPSELECT.linkNewLink, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo)
             this._eleSearchinfo.innerHTML = html;
 
