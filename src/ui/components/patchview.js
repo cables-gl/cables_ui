@@ -310,6 +310,8 @@ export default class PatchView extends Events
             const glopA = this._patchRenderer.getGlOp(op);
             const glopB = this._patchRenderer.getGlOp(b);
 
+            if (!glopA || !glopB) return;
+
             let found = true;
 
             if (!op.uiAttribs.resizable && !b.uiAttribs.resizable)
