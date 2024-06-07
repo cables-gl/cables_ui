@@ -803,6 +803,43 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
         } });
 };
 
+
+CABLES_CMD_PATCH.addLinkReroute = function ()
+{
+    const link = CABLES.UI.OPSELECT.linkNewLink;
+    const p = link.portIn;
+    const portOut = link.portOut;
+    CABLES.UI.OPSELECT.linkNewLink = null;
+
+    gui.opSelect().close();
+    gui.closeModal();
+    const getsetOp = defaultOps.getRerouteOp(p.type);
+
+    console.log("getsetOp", getsetOp);
+    gui.patchView.addOp(
+        getsetOp,
+        { "onOpAdd": (opGetter) =>
+        {
+            const glPatch = gui.patchView.patchRenderer;
+            let x = glPatch._lastMouseX;
+            let y = glPatch._lastMouseY;
+
+            opGetter.uiAttr({
+                "subPatch": gui.patchView.getCurrentSubPatch(),
+            });
+
+            setTimeout(
+                () =>
+                {
+                    x = glPatch.snap.snapX(x);
+                    y = glPatch.snap.snapY(y);
+
+                    gui.patchView.insertOpInLink(link, opGetter, x, y);
+                }, 100);
+        } });
+};
+
+
 CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
 {
     gui.opSelect().close();

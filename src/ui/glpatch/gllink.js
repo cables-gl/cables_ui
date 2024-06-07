@@ -118,18 +118,18 @@ export default class GlLink
                             let x = opOut.uiAttribs.translate.x;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
 
-                            op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
-                                "translate": {
-                                    "x": Snap.snapOpPosX(x),
-                                    "y": Snap.snapOpPosY(this._glPatch.viewBox.mousePatchY)
-                                } });
+                            op.setUiAttrib(
+                                {
+                                    "subPatch": this._glPatch.subPatch,
+                                    "translate": {
+                                        "x": Snap.snapOpPosX(x),
+                                        "y": Snap.snapOpPosY(this._glPatch.viewBox.mousePatchY)
+                                    } });
                         } }, null, null, llink);
             }
 
             this._buttonDown = MouseState.BUTTON_NONE;
         });
-
-
 
         this._buttonRect.on("mousedown", (e) =>
         {
@@ -345,11 +345,17 @@ export default class GlLink
 
                 if (this._cable && this._glOpOut && this._glOpIn && this._glOpIn.getUiAttribs().translate && this._glOpOut.getUiAttribs().translate)
                 {
+                    let topy = this._glOpIn.getUiAttribs().translate.y;
+                    let boty = this._glOpOut.getUiAttribs().translate.y + this._glOpOut.h;
+
+                    if (this._glOpIn.displayType === this._glOpIn.DISPLAY_REROUTE_DOT) topy += this._glOpIn.h / 2;
+                    if (this._glOpOut.displayType === this._glOpOut.DISPLAY_REROUTE_DOT) boty -= this._glOpOut.h / 2;
+
                     const pos1x = this._glOpIn.getUiAttribs().translate.x + this._offsetXInput;
-                    const pos1y = this._glOpIn.getUiAttribs().translate.y;
+                    const pos1y = topy;
 
                     const pos2x = this._glOpOut.getUiAttribs().translate.x + this._offsetXOutput;
-                    const pos2y = this._glOpOut.getUiAttribs().translate.y + this._glOpOut.h;
+                    const pos2y = boty;
 
                     this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
                 }

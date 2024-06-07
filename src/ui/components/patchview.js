@@ -862,14 +862,14 @@ export default class PatchView extends Events
         const padding = 80;
         const trans = {
             "x": Snap.snapOpPosX(bounds.minX - 0.8 * padding),
-            "y": Snap.snapOpPosX(bounds.minY - 0.8 * padding) };
+            "y": Snap.snapOpPosY(bounds.minY - 1.2 * padding) };
 
         const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, {
             "translate": trans,
             "subPatch": this.getCurrentSubPatch(),
             "area": {
                 "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
-                "h": Snap.snapOpPosX(bounds.maxY - bounds.minY + (2 * padding)) } });
+                "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2 * padding)) } });
 
         const undofunc = (function (opid)
         {
@@ -884,7 +884,7 @@ export default class PatchView extends Events
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
                         "area": {
                             "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
-                            "h": Snap.snapOpPosX(bounds.maxY - bounds.minY + (2 * padding)) } });
+                            "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2.2 * padding)) } });
                 }
             });
         }(areaOp.id));

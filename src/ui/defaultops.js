@@ -98,7 +98,13 @@ const defaultOpNames =
     "parseObject": "Ops.Json.ParseObject_v2",
 
     "textureGradient": "Ops.Gl.GradientTexture",
-    "textureNoise": "Ops.Gl.Textures.NoiseTexture"
+    "textureNoise": "Ops.Gl.Textures.NoiseTexture",
+
+    "rerouteNumber": "Ops.Ui.Routing.RouteNumber",
+    "rerouteString": "Ops.Ui.Routing.RouteString",
+    "rerouteArray": "Ops.Ui.Routing.RouteArray",
+    "rerouteObject": "Ops.Ui.Routing.RouteObject",
+    "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger"
 
 };
 
@@ -526,6 +532,15 @@ const defaultOps = {
     "isInBlueprint": (op) =>
     {
         return op.storage && op.storage.hasOwnProperty("blueprint");
+    },
+
+    "getRerouteOp": (type) =>
+    {
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return defaultOpNames.rerouteArray;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return defaultOpNames.rerouteObject;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
     }
 };
 

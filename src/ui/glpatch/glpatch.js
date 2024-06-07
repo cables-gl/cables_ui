@@ -986,6 +986,7 @@ export default class GlPatch extends Events
             }
             // }
 
+            console.log(this._glOpz);
             this._log.error("BROKEN");
         }
 

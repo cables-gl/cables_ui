@@ -181,11 +181,20 @@ export default class GlPort
             h = gluiconfig.portHeight * 1.5;
         }
 
+        y -= gluiconfig.portHeight;
+
+        if (this._glop.displayType === this._glop.DISPLAY_REROUTE_DOT)
+        {
+            h = 0;
+            if (this._port.direction == CABLES.PORT_DIR_IN) y = 0;
+            else y = this._glop.h;
+        }
+
         this.updateShape();
 
         this._posX = this._glop.getPortPos(this._name, false);
 
-        this._rect.setPosition(this._posX, y - gluiconfig.portHeight, -0.001);
+        this._rect.setPosition(this._posX, y, -0.001);
         this._rect.setSize(gluiconfig.portWidth, h);
 
         if (this._longPortRect)

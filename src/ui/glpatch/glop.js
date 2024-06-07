@@ -19,6 +19,7 @@ export default class GlOp extends Events
         this.DISPLAY_UI_AREA = 2;
         this.DISPLAY_UI_AREA_INSTANCER = 3;
         this.DISPLAY_SUBPATCH = 3;
+        this.DISPLAY_REROUTE_DOT = 4;
 
         this._id = op.id;
         this._visible = true;
@@ -38,6 +39,7 @@ export default class GlOp extends Events
         this._glRectBg = null;
         this._rectResize = null;
         this._glColorIndicator = null;
+        this._glRerouteDot = null;
         this.minWidth = 10;
 
         this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
@@ -61,7 +63,7 @@ export default class GlOp extends Events
         this._hideBgRect = false;
 
 
-        this._displayType = 0;
+        this.displayType = 0;
 
         this._glPorts = [];
         this.opUiAttribs = {};
@@ -103,7 +105,7 @@ export default class GlOp extends Events
             // if (defaultops.isSubPatchOpName(this._op.objName))
             // if (this._op.storage && this._op.storage.subPatchVer)
             // {
-            //     this._displayType = this.DISPLAY_SUBPATCH;
+            //     this.displayType = this.DISPLAY_SUBPATCH;
 
             //     // this.emitEvent("patchLoadEnd", () =>
             //     // {
@@ -112,8 +114,8 @@ export default class GlOp extends Events
             //     //     console.log("refreshing ports... done");
             //     // });
             // }
-            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
-            else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
+            else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
         }
         this._wasInited = false;
 
@@ -129,7 +131,7 @@ export default class GlOp extends Events
         });
 
         // this.refreshPorts();
-        // if (this._displayType === this.DISPLAY_SUBPATCH)
+        // if (this.displayType === this.DISPLAY_SUBPATCH)
         //     this._op.patch.on("patchLoadEnd", () =>
         //     {
         //         this.refreshPorts();
@@ -140,7 +142,7 @@ export default class GlOp extends Events
     {
         if (this._op?.isSubPatchOp())
         {
-            this._displayType = this.DISPLAY_SUBPATCH;
+            this.displayType = this.DISPLAY_SUBPATCH;
             this._rectBorder = 1;
 
             if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = gluiconfig.subPatchOpBorder;
@@ -432,6 +434,11 @@ export default class GlOp extends Events
             }
         }
 
+        if (this.opUiAttribs.display == "reroute")
+        {
+            this.displayType = this.DISPLAY_REROUTE_DOT;
+            this._hideBgRect = true;
+        }
 
         if (newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
@@ -470,8 +477,8 @@ export default class GlOp extends Events
         if (title === undefined)title = "";
 
         if (
-            this._displayType != this.DISPLAY_COMMENT &&
-            this._displayType != this.DISPLAY_UI_AREA &&
+            this.displayType != this.DISPLAY_COMMENT &&
+            this.displayType != this.DISPLAY_UI_AREA &&
             title != "var set" &&
             title != "var get" &&
             title != "*" &&
@@ -509,7 +516,7 @@ export default class GlOp extends Events
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
-                this._displayType = this.DISPLAY_COMMENT;
+                this.displayType = this.DISPLAY_COMMENT;
                 this._hidePorts = true;
                 this._hideBgRect = true;
                 this._transparent = true;
@@ -610,9 +617,14 @@ export default class GlOp extends Events
 
         if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 
-        // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
+        // if (this.displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
+        if (this.displayType == this.DISPLAY_REROUTE_DOT)
+        {
+            this._hidePorts = true;
+            this._width = this._height = gluiconfig.opHeight * 0.35;
+        }
 
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
@@ -651,6 +663,11 @@ export default class GlOp extends Events
 
     addLink(l)
     {
+        if (!this.opUiAttribs.translate)
+        {
+            this.opUiAttribs.translate = { "x": 0, "y": 0 };
+        }
+
         this._links[l.id] = l;
         l.updateVisible();
     }
@@ -685,6 +702,7 @@ export default class GlOp extends Events
     {
         this._disposed = true;
 
+        if (this._glRerouteDot) this._glRerouteDot = this._glRerouteDot.dispose();
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this._glRectBg) this._glRectBg = this._glRectBg.dispose();
         if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
@@ -713,6 +731,8 @@ export default class GlOp extends Events
             delete this._links[linkId];
             this.update();
         }
+
+        if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0) this._glPatch.deleteOp(this._op.id);
     }
 
     refreshPorts()
@@ -727,7 +747,7 @@ export default class GlOp extends Events
 
         portsIn = portsIn.concat(this._op.portsIn);
 
-        if (this._displayType === this.DISPLAY_SUBPATCH)
+        if (this.displayType === this.DISPLAY_SUBPATCH)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
 
@@ -737,7 +757,7 @@ export default class GlOp extends Events
 
         portsOut = portsOut.concat(this._op.portsOut);
 
-        if (this._displayType === this.DISPLAY_SUBPATCH)
+        if (this.displayType === this.DISPLAY_SUBPATCH)
         {
             const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_OUT));
             for (let i = 0; i < ports.length; i++)
@@ -1148,7 +1168,7 @@ export default class GlOp extends Events
         if (!this._wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
-        if ((this.opUiAttribs.hasArea || this._displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
+        if ((this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
 
@@ -1311,6 +1331,25 @@ export default class GlOp extends Events
         this._updateColors();
         this._updateIndicators();
 
+        if (this.displayType == this.DISPLAY_REROUTE_DOT)
+        {
+            if (!this._glRerouteDot)
+                this._glRerouteDot = this._instancer.createRect({ "draggable": false, "interactive": false });
+
+            this._glTitle.text = "";
+            this._glRerouteDot.setSize(this._width, this._height);
+
+            this._glRerouteDot.setPosition(-0.5, 0, 0);
+            this._glRerouteDot.setParent(this._glRectBg);
+
+
+            this._glRerouteDot.setColor(GlPort.getInactiveColor(this._glPorts[0].port.type));
+            this._glRerouteDot.setShape(6);
+
+            this._glRectBg.setColor([0, 0, 0, 0]);
+            // this._glRectBg.setSize(0.0);
+        }
+
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;
     }
@@ -1341,9 +1380,11 @@ export default class GlOp extends Events
 
         this._glRectBg.setBorder(this._rectBorder);
 
+
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setSelected(1);
+
             if (gui.theme.colors_patch.opBgRectSelected) this._glRectBg.setColor(gui.theme.colors_patch.opBgRectSelected);
         }
         else
@@ -1361,7 +1402,7 @@ export default class GlOp extends Events
                 {
                     this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
 
-                    // if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
+                    // if (!this._glRectRightHandle && this.displayType != this.DISPLAY_UI_AREA)
                     // {
                     //     this._glRectRightHandle = this._instancer.createRect();
                     //     this._glRectRightHandle.setParent(this._glRectBg);
@@ -1383,7 +1424,7 @@ export default class GlOp extends Events
         }
 
 
-        if (this._displayType === this.DISPLAY_UI_AREA && !this.selected)
+        if (this.displayType === this.DISPLAY_UI_AREA && !this.selected)
         {
             this._glRectBg.setColor(0, 0, 0, 0.15);
         }
@@ -1444,6 +1485,14 @@ export default class GlOp extends Events
     {
         if (!this._op) return;
         this._setPortIndexAttribs(this._op.portsIn);
+
+
+        if (this.displayType == this.DISPLAY_REROUTE_DOT)
+        {
+            // this._setPortIndexAttribs(this._op.portsIn);
+            // return this.w / 2;
+        }
+
         return this._op.getPortPosX(id, null, center, this.w);
     }
 
@@ -1495,6 +1544,7 @@ export default class GlOp extends Events
 
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
+
 
         x = this._glPatch.snap.snapOpX(x, this._op);
         y = this._glPatch.snap.snapY(y, this._glPatch._pressedCtrlKey);
