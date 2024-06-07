@@ -1411,6 +1411,8 @@ export default class GlPatch extends Events
 
             this._glOpz[id].selected = true;
         }
+
+        if (gui.patchView.getSelectedOps().length > 1)gui.patchView.showSelectedOpsPanel();
     }
 
     unSelectOpId(id)
