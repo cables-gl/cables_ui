@@ -346,14 +346,15 @@ export default class GlOp extends Events
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
-        if (e.touchType == "mouse")
-        {
-            if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
-        }
-        else
-        {
-            this._glPatch.patchAPI.showOpParams(this._id);
-        }
+        if (!e.shiftKey)
+            if (e.touchType == "mouse")
+            {
+                if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
+            }
+            else
+            {
+                this._glPatch.patchAPI.showOpParams(this._id);
+            }
 
         if (e.altKey || e.metaKey)
         {
