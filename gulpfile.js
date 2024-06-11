@@ -174,7 +174,7 @@ function _watch(done)
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], { "usePolling": true }, gulp.series(_scripts_ui_webpack));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_sass));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_html_ui));
-    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_scripts_talkerapi));
+    gulp.watch("../shared/client/src/talkerapi.js", { "usePolling": true }, gulp.series(_scripts_talkerapi));
     gulp.watch("libs/**/*", { "usePolling": true }, gulp.series(_scripts_libs_ui));
     done();
 }
