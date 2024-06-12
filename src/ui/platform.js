@@ -302,6 +302,18 @@ export default class Platform extends Events
             gui.jobs().setProgress(options.progress);
         });
 
+        CABLESUILOADER.talkerAPI.addEventListener("updatePatchName", (opts, next) =>
+        {
+            gui.setProjectName(opts.name);
+            CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
+        });
+
+        CABLESUILOADER.talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
+        {
+            gui.project().summary = opts;
+            gui.patchParamPanel.show(true);
+        });
+
         CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>
         {
             this._cfg.patch = r;
