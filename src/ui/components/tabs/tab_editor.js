@@ -319,7 +319,7 @@ function createEditor(id, val, cb)
             if (session.getMode().$id !== "ace/mode/javascript") return;
             if (session.$worker)
             {
-                session.$worker.send("changeOptions", [{ "strict": false }]);
+                session.$worker.send("changeOptions", [{ "strict": false, "esversion": 11, "esnext": false }]);
             }
         });
         editor.$blockScrolling = Infinity;
