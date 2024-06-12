@@ -44,12 +44,6 @@
             <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
         {{/if}}
 
-
-        {{#if frontendOptions.showLocalOpDirButton}}
-            <a class="button-small button-icon tt info" data-into="open op dir" data-tt="open op dir" onclick="CABLES.CMD.STANDALONE.openOpDir('{{op.opId}}', '{{op.objName}}')"><span class="icon icon-folder"></span></a>
-        {{/if}}
-
-
         {{#if op.crashed }}
             OP CRASHED
         {{/if}}
