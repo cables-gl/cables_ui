@@ -13,9 +13,10 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showLocalOpDirButton =
         this.frontendOptions.chooseOpDir =
         this.frontendOptions.saveScreenshotInPatchJson =
-        this.frontendOptions.showWelcome = true;
-        this.frontendOptions.showBuildInfoMenuLink = true;
-        this.frontendOptions.showOpenPatch = true;
+        this.frontendOptions.showWelcome =
+        this.frontendOptions.showBuildInfoMenuLink =
+        this.frontendOptions.showOpenPatch =
+        this.frontendOptions.showOpenExport = true;
     }
 
     getCablesVersion()
