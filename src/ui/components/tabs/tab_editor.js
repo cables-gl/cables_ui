@@ -100,10 +100,6 @@ export default class EditorTab
 
                 this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
                 this._tab.addButton("Op Page", () => { window.open(CABLES.platform.getCablesUrl() + "/op/" + opname); });
-                if (CABLES.platform.frontendOptions.showLocalOpDirButton)
-                {
-                    this._tab.addButton("<span class=\"icon icon-folder\"></span>", () => { CABLES.CMD.STANDALONE.openOpDir(opId, opname); });
-                }
 
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
