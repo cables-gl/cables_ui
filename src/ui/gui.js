@@ -1276,7 +1276,12 @@ export default class Gui extends Events
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         let lastTimeRecent = 0;
-        ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>
+        const navCablesLogo = ele.byId("nav_logo_area");
+        if (CABLES.platform.frontendOptions.showWelcome)
+        {
+            navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
+        }
+        navCablesLogo.addEventListener("pointerenter", (event) =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>

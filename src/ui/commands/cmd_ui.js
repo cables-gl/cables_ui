@@ -210,12 +210,13 @@ CABLES_CMD_UI.showBuildInfo = function ()
 };
 
 
-CABLES_CMD_UI.welcomeTab = function ()
+CABLES_CMD_UI.welcomeTab = function (userInteraction)
 {
     CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
     {
         const t = new WelcomeTab(gui.mainTabs, { "patches": r });
         gui.mainTabs.activateTab(t.id);
+        gui.maintabPanel.show(userInteraction);
     });
 };
 

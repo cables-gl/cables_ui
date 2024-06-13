@@ -104,7 +104,19 @@ const defaultOpNames =
     "rerouteString": "Ops.Ui.Routing.RouteString",
     "rerouteArray": "Ops.Ui.Routing.RouteArray",
     "rerouteObject": "Ops.Ui.Routing.RouteObject",
-    "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger"
+    "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger",
+
+    "ArrayGetArray": "Ops.Data.JsonPath.ArrayGetArrayByPath",
+    "ArrayGetArrayValues": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
+    "ArrayGetNumber": "Ops.Data.JsonPath.ArrayGetNumberByPath",
+    "ArrayGetObject": "Ops.Data.JsonPath.ArrayGetObjectByPath",
+    "ArrayGetString": "Ops.Data.JsonPath.ArrayGetStringByPath",
+    "ObjectGetArray": "Ops.Data.JsonPath.ObjectGetArrayByPath",
+    "ObjectGetArrayValues": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
+    "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
+    "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
+    "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath",
+    "HttpRequest": "Ops.Json.HttpRequest_v3"
 
 };
 
@@ -196,16 +208,16 @@ const defaultOps = {
 
     ],
     "jsonPathOps": {
-        "ArrayGetArray": "Ops.Data.JsonPath.ArrayGetArrayByPath",
-        "ArrayGetArrayValues": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
-        "ArrayGetNumber": "Ops.Data.JsonPath.ArrayGetNumberByPath",
-        "ArrayGetObject": "Ops.Data.JsonPath.ArrayGetObjectByPath",
-        "ArrayGetString": "Ops.Data.JsonPath.ArrayGetStringByPath",
-        "ObjectGetArray": "Ops.Data.JsonPath.ObjectGetArrayByPath",
-        "ObjectGetArrayValues": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
-        "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
-        "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
-        "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath"
+        "ArrayGetArray": defaultOpNames.ArrayGetArray,
+        "ArrayGetArrayValues": defaultOpNames.ArrayGetArrayValues,
+        "ArrayGetNumber": defaultOpNames.ArrayGetNumber,
+        "ArrayGetObject": defaultOpNames.ArrayGetObject,
+        "ArrayGetString": defaultOpNames.ArrayGetString,
+        "ObjectGetArray": defaultOpNames.ObjectGetArray,
+        "ObjectGetArrayValues": defaultOpNames.ObjectGetArrayValues,
+        "ObjectGetNumber": defaultOpNames.ObjectGetNumber,
+        "ObjectGetObject": defaultOpNames.ObjectGetObject,
+        "ObjectGetString": defaultOpNames.ObjectGetString
     },
     "hideInOpSelect":
     [
