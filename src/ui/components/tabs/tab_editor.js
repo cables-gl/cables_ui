@@ -82,22 +82,28 @@ export default class EditorTab
 
             let opname = null;
             options.editorObj = options.editorObj || {};
-            if (options.editorObj.type == "op")opname = options.editorObj.name;
-            if (options.editorObj.data && options.editorObj.data.opname)opname = options.editorObj.data.opname;
+            if (options.editorObj.type === "op") opname = options.editorObj.name;
+            if (options.editorObj.data && options.editorObj.data.opname) opname = options.editorObj.data.opname;
 
             if (opname)
             {
+                const opdoc = gui.opDocs.getOpDocByName(opname);
+                let opId = null;
+                if (opdoc)
+                {
+                    opId = opdoc.id;
+                }
+                else
+                {
+                    console.error("could not get opdoc:" + opname);
+                }
+
                 this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
                 this._tab.addButton("Op Page", () => { window.open(CABLES.platform.getCablesUrl() + "/op/" + opname); });
 
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
-
-                const opdoc = gui.opDocs.getOpDocByName(opname);
-
-                if (!opdoc)console.log("could not get opdoc:" + opname);
-                else
-                if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
+                if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
                     const el = this._tab.addButton(opdoc.shortName + " Attachments", () =>
                     {
@@ -319,7 +325,7 @@ function createEditor(id, val, cb)
             if (session.getMode().$id !== "ace/mode/javascript") return;
             if (session.$worker)
             {
-                session.$worker.send("changeOptions", [{ "strict": false }]);
+                session.$worker.send("changeOptions", [{ "strict": false, "esversion": 11, "esnext": false }]);
             }
         });
         editor.$blockScrolling = Infinity;
