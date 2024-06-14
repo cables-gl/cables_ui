@@ -347,7 +347,7 @@ export default class Gui extends Events
 
         const html = "You are overwriting your original patch with a backup! Are you sure?<br/><br/>Saving will redirect back to the original patch.<br/><br/>" +
             "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('');\"><span class=\"icon icon-save\"></span>Yes, save</a>&nbsp;&nbsp;" +
-            "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>No, save as a copy</a>&nbsp;&nbsp;" +
+            "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.saveAs();\"><span class=\"icon icon-save\"></span>No, save as a copy</a>&nbsp;&nbsp;" +
             "<a class=\"button\" onclick=\"gui.closeModal();\">Cancel</a>&nbsp;&nbsp;";
 
         new ModalDialog(
@@ -1276,7 +1276,12 @@ export default class Gui extends Events
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         let lastTimeRecent = 0;
-        ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>
+        const navCablesLogo = ele.byId("nav_logo_area");
+        if (CABLES.platform.frontendOptions.showWelcome)
+        {
+            navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
+        }
+        navCablesLogo.addEventListener("pointerenter", (event) =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
@@ -1535,7 +1540,7 @@ export default class Gui extends Events
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) =>
         {
-            gui.patchView.store.saveAs();
+            CABLES.CMD.PATCH.saveAs();
         });
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
