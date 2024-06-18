@@ -282,7 +282,7 @@ export default class SavedState extends Events
                             }
                         }
 
-                        gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">here</a> ");
+                        gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "', () => { gui.restriction.setMessage('cablesupdate'); })\">here</a> ");
                         gui.patchView.patchRenderer.greyOut = true;
                     }
                 }
