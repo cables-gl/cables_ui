@@ -647,23 +647,6 @@ export default class PatchSaveServer extends Events
         }, 100);
     }
 
-
-
-    /**
-     * Extracts the postfix-filename from a full filename
-     * @param {string} filename e.g. '/Users/Ulf/foo.cables'
-     * @returns {string} filename prefix, e.g. 'foo'
-     */
-    getProjectnameFromFilename(filename)
-    {
-        if (!filename) { return ""; }
-        const lastDotIndex = filename.lastIndexOf(".");
-        const separator = filename.indexOf("/") > -1 ? "/" : "\\";
-        const lastSeparatorIndex = filename.lastIndexOf(separator);
-        const name = filename.substring(lastSeparatorIndex + 1, lastDotIndex);
-        return name;
-    }
-
     showModalTitleDialog(titleElement = null, cb = null)
     {
         const currentProject = gui.project();

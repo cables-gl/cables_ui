@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { ele, HandlebarsHelper } from "cables-shared-client";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui from "./gui.js";
@@ -13,7 +13,7 @@ import { notifyError } from "./elements/notification.js";
 export default function startUi(cfg)
 {
     if (window.logStartup) logStartup("Init UI");
-    CABLES.UI.initHandleBarsHelper();
+    HandlebarsHelper.initHandleBarsHelper();
 
     window.gui = new Gui(cfg);
 

@@ -50,7 +50,6 @@ import PlatformStandalone from "./platform_standalone.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
 import uiconfig from "./uiconfig.js";
-import { initHandleBarsHelper } from "./utils/handlebars.js";
 import { uniqueArray } from "./utils/helper.js";
 import LogFilter from "./utils/loggerfilter.js";
 import undo from "./utils/undo.js";
@@ -126,7 +125,6 @@ CABLES.UI.ModalError = ModalError;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
-CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.uniqueArray = uniqueArray;
 
 CABLES.UI.startIdleListeners = startIdleListeners;
