@@ -40,12 +40,14 @@
         "raw-loader": "^4.0.2",
         "sass": "1.58.3",
         "terser-webpack-plugin": "5.3.10",
-        "webpack": "5.91.0"
+        "webpack": "5.91.0",
+        "webpack-bundle-analyzer": "4.10.2"
     },
     "scripts": {
         "start": "gulp",
         "build": "gulp build",
-        "build:live": "gulp build"
+        "build:live": "gulp build",
+        "analyze": "gulp analyze"
     },
     "repository": {
         "type": "git",
