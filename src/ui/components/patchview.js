@@ -428,6 +428,8 @@ export default class PatchView extends Events
             for (let i = 0; i < op.portsIn.length; i++)
                 if (op.portsIn[i].uiAttribs.display == "file")
                     op.portsIn[i].set(filename);
+
+            op.refreshParams();
         });
     }
 
