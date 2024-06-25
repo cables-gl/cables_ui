@@ -42,7 +42,7 @@ export default class PlatformStandalone extends Platform
 
     getCablesStaticUrl()
     {
-        return "file://";
+        return "";
     }
 
     noCacheUrl(url)
