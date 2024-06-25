@@ -55,16 +55,6 @@ export default class Introduction
             "In the info area you get help. Hover over any element on the page to receive information about it.",
             "left"
         );
-        // defineIntroStep(
-        //    "#metatabpanel",
-        //    "When you select an op in the patch panel its parameters will be shown here.",
-        //    "left"
-        // );
-        this.defineIntroStep(
-            "#metatabpanel .tabpanel",
-            "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
-            "left"
-        );
         this.defineIntroStep(
             "#patchname",
             "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
@@ -75,11 +65,6 @@ export default class Introduction
             "In the sidebar you can access often used features.",
             "right"
         );
-        // defineIntroStep(
-        //     "#icon-bar .icon-three-dots",
-        //     "Feel free to customize it by pressing the <i>…</i> icon.",
-        //     "top"
-        // );
         this.defineIntroStep(
             ".nav-item-help",
             "Make sure to check out the video tutorials and documentation, these will help you get started in a blink!",

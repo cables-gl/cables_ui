@@ -1,4 +1,6 @@
 import Platform from "./platform.js";
+import ModalDialog from "./dialogs/modaldialog.js";
+import text from "./text.js";
 
 export default class PlatformStandalone extends Platform
 {
@@ -74,5 +76,34 @@ export default class PlatformStandalone extends Platform
                 }
             }
         });
+    }
+
+    createBackup()
+    {
+        const showBackupDialog = () =>
+        {
+            CABLESUILOADER.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
+            {
+                if (result.success) CABLES.UI.notify("Backup created!");
+            });
+        };
+
+        if (!gui.getSavedState())
+        {
+            new ModalDialog({
+                "choice": true,
+                "cancelButton": {
+                    "text": "Backup last saved state",
+                    "callback": showBackupDialog
+                },
+                "title": "Backup",
+                "warning": true,
+                "text": text.projectBackupNotSaved,
+            });
+
+            return;
+        }
+
+        showBackupDialog();
     }
 }

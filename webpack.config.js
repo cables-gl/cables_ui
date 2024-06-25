@@ -3,10 +3,23 @@ import path, { dirname } from "path";
 import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import { fileURLToPath } from "url";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
-export default (isLiveBuild, buildInfo, minify = false) =>
+export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
 {
     let __dirname = dirname(fileURLToPath(import.meta.url));
+
+    const plugins = [
+        new webpack.DefinePlugin({
+            "window.BUILD_INFO": JSON.stringify(buildInfo)
+        })
+    ];
+
+    if (analyze)
+    {
+        plugins.push(new BundleAnalyzerPlugin({ "analyzerMode": "static", "openAnalyzer": false, "reportTitle": "cables ui", "reportFilename": path.join(__dirname, "dist", "report_ui.html") }));
+    }
+
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
@@ -47,10 +60,6 @@ export default (isLiveBuild, buildInfo, minify = false) =>
                 }
             ]
         },
-        "plugins": [
-            new webpack.DefinePlugin({
-                "window.BUILD_INFO": JSON.stringify(buildInfo)
-            })
-        ]
+        "plugins": plugins
     };
 };

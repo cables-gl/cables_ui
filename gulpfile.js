@@ -22,6 +22,7 @@ sass.compiler = sassCompiler;
 let configLocation = "../cables_api/cables.json";
 if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
 
+let analyze = false;
 let isLiveBuild = false;
 let minify = false;
 let config = {};
@@ -40,7 +41,7 @@ function _scripts_libs_ui(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackLibsConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        webpack(webpackLibsConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -60,7 +61,7 @@ function _scripts_talkerapi(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackTalkerApiConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        webpack(webpackTalkerApiConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -79,7 +80,7 @@ function _scripts_talkerapi(done)
 function _scripts_core()
 {
     return gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"])
+        .src(["../cables/build/**/*.*", "!../cables/build/libs/*", "!../cables/build/*.html"])
         .pipe(gulp.dest("dist/js/"));
 }
 
@@ -87,7 +88,7 @@ function _scripts_ui_webpack(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackConfig(isLiveBuild, buildInfo, minify), (err, stats) =>
+        webpack(webpackConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -179,6 +180,12 @@ function _watch(done)
     done();
 }
 
+function _analyze(done)
+{
+    analyze = true;
+    done();
+}
+
 /*
  * -------------------------------------------------------------------------------------------
  * MAIN TASKS
@@ -199,6 +206,7 @@ const defaultSeries = gulp.series(
  * Run "gulp build"
  */
 gulp.task("build", defaultSeries);
+gulp.task("analyze", gulp.series(_analyze, defaultSeries));
 
 /**
  * Default Task, for development
