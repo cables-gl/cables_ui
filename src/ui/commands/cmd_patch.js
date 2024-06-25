@@ -41,6 +41,21 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     opParams.show(op);
 };
 
+CABLES_CMD_PATCH.clearOpTitles = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+
+    if (!ops || ops.length == 0) return;
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = gui.corePatch().getOpById(ops[i].id);
+        op.setTitle("");
+    }
+};
+
+
+
 CABLES_CMD_PATCH.selectChilds = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -1438,6 +1453,11 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "select child ops",
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
+    },
+    {
+        "cmd": "clear op titles",
+        "category": "op",
+        "func": CABLES_CMD_PATCH.clearOpTitles
     },
     {
         "cmd": "create subpatch",
