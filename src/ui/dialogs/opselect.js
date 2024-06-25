@@ -80,7 +80,18 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeStart);
 
-        if (query.length === 1) ele.show(this._eleTypeMore);
+        if (query.length === 1)
+        {
+            ele.show(this._eleTypeMore);
+            for (let i = 0; i < this._opSearch.list.length; i++)
+            {
+                if (!this._opSearch.list[i].elementHidden)
+                {
+                    this._opSearch.list[i].elementHidden = true;
+                    ele.hide(this._opSearch.list[i].element);
+                }
+            }
+        }
         else ele.hide(this._eleTypeMore);
 
         if (num === 0 && query.length > 1)
