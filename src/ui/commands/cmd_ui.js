@@ -203,6 +203,11 @@ CABLES_CMD_UI.showBuildInfo = function ()
                 if (apiBuild.version) infoHtml += "version: " + apiBuild.version + "<br/>";
                 if (apiBuild.git.tag) infoHtml += "tag: " + apiBuild.git.tag + "<br/>";
             }
+            if (apiBuild.platform)
+            {
+                if (apiBuild.platform.node) infoHtml += "node: " + apiBuild.platform.node + "<br/>";
+                if (apiBuild.platform.npm) infoHtml += "npm: " + apiBuild.platform.npm + "<br/>";
+            }
         }
     }
 
