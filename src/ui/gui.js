@@ -1452,9 +1452,6 @@ export default class Gui extends Events
         {
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
             this.canvasManager.blur();
-
-
-
             this.mainTabs.emitEvent("resize");
             this.setLayout();
             this.setLayout(); // yes, twice....
