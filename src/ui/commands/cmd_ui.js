@@ -212,6 +212,8 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
 CABLES_CMD_UI.welcomeTab = function (userInteraction)
 {
+    console.log("CABLES_CMD_UI.welcomeTab");
+    console.log((new Error()).stack);
     CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
     {
         const t = new WelcomeTab(gui.mainTabs, { "patches": r });

@@ -9,6 +9,8 @@ export default class WelcomeTab
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
 
+        console.log("welcometab...");
+
         CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
         {
             const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesStaticUrl(), "version": CABLES.platform.getCablesVersion() });
