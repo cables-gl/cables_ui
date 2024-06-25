@@ -17,8 +17,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.saveScreenshotInPatchJson =
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
-        this.frontendOptions.showOpenPatch =
-        this.frontendOptions.showOpenExport = true;
+        this.frontendOptions.showOpenPatch = true;
     }
 
     getCablesVersion()

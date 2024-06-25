@@ -1300,13 +1300,6 @@ export default class Gui extends Events
                 {
                     let item = "<li><a class=\"mine openPatch\" target=\"_top\" data-short-id=\"\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
-                    if (!CABLES.platform.frontendOptions.showOpenExport) str += "<li class=\"divide\"></li>";
-                }
-
-                if (CABLES.platform.frontendOptions.showOpenExport)
-                {
-                    str += "<li><a class=\"mine openExport\" target=\"_top\" data-short-id=\"\">Open Export</a></li>";
-                    str += "<li class=\"divide\"></li>";
                 }
 
                 for (let i = 0; i < r.length; i++)
