@@ -281,7 +281,7 @@ export default class FindTab
         let colorHandle = "";
         if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
-        html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name;
+        html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.shortName;
         if (op.uiAttribs.extendTitle) html += " <span style=\"color: var(--color-13);\"> | " + op.uiAttribs.extendTitle + "</span>";
 
         if (op.storage && (op.storage.blueprint || op.storage.blueprintVer))
@@ -893,7 +893,7 @@ FindTab.searchUserOps = (ops, results) =>
     {
         const op = ops[i];
         if (defaultOps.isUserOp(op.objName))
-            results.push({ op, "score": 1, "where": op.objName });
+            results.push({ "op": op, "score": 1, "where": op.objName });
     }
     return results;
 };

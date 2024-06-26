@@ -678,7 +678,6 @@ export default class PatchView extends Events
             if (gui.project().summary.isBasicExample || gui.project().summary.exampleForOps) CABLES.CMD.PATCH.clearOpTitles(); // examples should not have edited op titles...
         }
 
-
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
             if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
