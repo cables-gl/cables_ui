@@ -11,7 +11,7 @@
         {{/if}}
 
         <div class="panel params_op_head panel_head">
-            <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
+            <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" type="search" data-info="op_title">
 			<br/>
             <div style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">
             <a href="{{cablesDocsUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>

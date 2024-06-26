@@ -468,10 +468,6 @@ export default class PatchSaveServer extends Events
         data.ui.renderer.h = Math.max(0, gui.rendererHeight);
         data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
 
-
-        if (CABLES.platform.frontendOptions.saveScreenshotInPatchJson)
-            data.screenshot = gui.canvasManager.currentCanvas().toDataURL();
-
         CABLES.patch.namespace = currentProject.namespace;
 
         setTimeout(() =>
@@ -495,13 +491,8 @@ export default class PatchSaveServer extends Events
                 if (datastr.length > 12 * 1024 * 1024)
                     notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
 
-
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
-
-
-                // let buf = new Buffer(b64, "base64"); // Ta-da
-                // console.log("buf!!", buf);
 
 
                 const startTime = performance.now();
@@ -590,7 +581,7 @@ export default class PatchSaveServer extends Events
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot() && !CABLES.platform.frontendOptions.saveScreenshotInPatchJson) this.saveScreenshot();
+                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot()) this.saveScreenshot();
                         else this.finishAnimations();
                     }
 

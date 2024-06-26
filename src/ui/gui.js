@@ -876,6 +876,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
+
         perf.finish();
     }
 
@@ -1277,10 +1278,15 @@ export default class Gui extends Events
 
         let lastTimeRecent = 0;
         const navCablesLogo = ele.byId("nav_logo_area");
+
         if (CABLES.platform.frontendOptions.showWelcome)
         {
+            ele.byId("nav_welcome").classList.remove("hidden");
+            ele.byId("nav_welcome").addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
             navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
         }
+
+
         navCablesLogo.addEventListener("pointerenter", (event) =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
@@ -1294,13 +1300,6 @@ export default class Gui extends Events
                 {
                     let item = "<li><a class=\"mine openPatch\" target=\"_top\" data-short-id=\"\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
-                    if (!CABLES.platform.frontendOptions.showOpenExport) str += "<li class=\"divide\"></li>";
-                }
-
-                if (CABLES.platform.frontendOptions.showOpenExport)
-                {
-                    str += "<li><a class=\"mine openExport\" target=\"_top\" data-short-id=\"\">Open Export</a></li>";
-                    str += "<li class=\"divide\"></li>";
                 }
 
                 for (let i = 0; i < r.length; i++)
@@ -1446,11 +1445,15 @@ export default class Gui extends Events
         {
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
             this.canvasManager.blur();
-
             this.mainTabs.emitEvent("resize");
             this.setLayout();
             this.setLayout(); // yes, twice....
         }, false);
+
+        if (CABLES.platform.frontendOptions.showWelcome)
+        {
+            CABLES.CMD.UI.welcomeTab(true);
+        }
 
 
         cb();
