@@ -8,7 +8,7 @@ export default class FindTab
 {
     constructor(tabs, str)
     {
-        this._toggles = ["recent", "outdated", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
+        this._toggles = ["recent", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
 
 
         this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
@@ -372,12 +372,18 @@ export default class FindTab
         {
             if (str == ":attention")
             {
-                // FindTab.searchOutDated(ops, results);
-                // for (let i = 0; i < results.length; i++)
-                // {
-                //     if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
-                //     else results[i].hint = "Newer version of op available! Please upgrade";
-                // }
+                if (
+                    gui.project().summary.isBasicExample ||
+                    (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0))
+                {
+                    FindTab.searchOutDated(ops, results);
+                    for (let i = 0; i < results.length; i++)
+                    {
+                        if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
+                        else results[i].error = "example patch: Newer version of op available!";
+                    }
+                }
+
 
                 for (let i = 0; i < ops.length; i++)
                 {

@@ -688,16 +688,19 @@ export default class PatchView extends Events
         if (hadErrors != this.hasUiErrors)
             gui.corePatch().emitEvent("warningErrorIconChange");
 
+        let showAttentionIcon = this.hasUiErrors;
+
+        if (this.hasOldOps && (gui.project().summary.isBasicExample || gui.project().summary.exampleForOps)) showAttentionIcon = true;
+
         clearTimeout(this._checkErrorTimeout);
 
         const elError = ele.byId("nav-item-error");
         const wasHidden = elError.classList.contains("hidden");
-        if (this.hasUiErrors) ele.show(elError);
+        if (showAttentionIcon) ele.show(elError);
         else ele.hide(elError);
 
         const elIcon = ele.byId("nav-item-error-icon");
-        if (this.hasUiErrors) elIcon.style["background-color"] = "red";
-        // if (!this.hasUiErrors && this.hasOldOps) elIcon.style["background-color"] = "#999";
+        if (showAttentionIcon) elIcon.style["background-color"] = "red";
 
         if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
 
