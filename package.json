@@ -41,7 +41,8 @@
         "sass": "1.58.3",
         "terser-webpack-plugin": "5.3.10",
         "webpack": "5.91.0",
-        "webpack-bundle-analyzer": "4.10.2"
+        "webpack-bundle-analyzer": "4.10.2",
+        "@rbarilani/remove-source-map-url-webpack-plugin": "1.1.0"
     },
     "scripts": {
         "start": "gulp",
