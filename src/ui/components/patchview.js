@@ -673,7 +673,11 @@ export default class PatchView extends Events
         this.hasUiErrors = false;
 
         if (!this._checkErrorTimeout)
+        {
             gui.patchView.checkPatchOutdated(); // first time also check outdated ops..
+
+            if (gui.project().summary.isBasicExample || gui.project().summary.exampleForOps) CABLES.CMD.PATCH.clearOpTitles(); // examples should not have edited op titles...
+        }
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
@@ -691,6 +695,7 @@ export default class PatchView extends Events
         let showAttentionIcon = this.hasUiErrors;
 
         if (this.hasOldOps && (gui.project().summary.isBasicExample || gui.project().summary.exampleForOps)) showAttentionIcon = true;
+
 
         clearTimeout(this._checkErrorTimeout);
 
