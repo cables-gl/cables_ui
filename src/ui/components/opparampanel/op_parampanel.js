@@ -264,7 +264,37 @@ class OpParampanel extends Events
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
                 if (ele.byId("portFilename_" + i))
-                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
+                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
+
+                let srcEle = ele.byId("portFilename_" + i + "_src");
+                if (srcEle)
+                {
+                    let src = "";
+                    let fn = this._portsIn[i].get() || "";
+
+                    if (fn == "" || fn == 0)src = "";
+                    else if (!fn.startsWith("/")) src = "ext";
+
+                    if (fn.startsWith("file:")) src = "file";
+                    if (fn.startsWith("data:")) src = "dataUrl";
+                    if (fn.startsWith("/assets/library/")) src = "lib";
+                    if (fn.startsWith("http://") || fn.startsWith("https://"))
+                    {
+                        const parts = fn.split("/");
+                        if (parts && parts.length > 1) src = "ext: " + parts[2];
+                    }
+                    if (fn.startsWith("/assets/" + gui.project()._id)) src = "this patch";
+                    if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
+                    {
+                        const parts = fn.split("/");
+                        if (parts && parts.length > 1) src = "<a target=\"_blank\" class=\"link\" href=\"" + CABLES.platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
+                    }
+
+
+                    if (src != "") src = "[ " + src + " ]";
+
+                    srcEle.innerHTML = src;
+                }
             }
 
             const f = (e) =>
