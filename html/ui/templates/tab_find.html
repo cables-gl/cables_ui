@@ -14,21 +14,16 @@
             <a class="findToggle" data-togglestr=":{{.}}" id="{{../inputid}}_{{.}}" >{{.}}</a>
         {{/each}}
 
-
         {{#each colors}}
-        &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
+            &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
         {{/each}}
 
         <br/><br/>
 
-        <div id="tabsearchresult" class="tabSearchResultsContainer">
-        </div>
+        <div id="tabsearchresult" class="tabSearchResultsContainer"></div>
+        <div id="ophistory" class=""></div>
 
-        <div id="ophistory" class="">
-        </div>
     </div>
-
-
 
 </script>
 

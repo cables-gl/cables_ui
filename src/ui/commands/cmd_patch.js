@@ -43,7 +43,9 @@ CABLES_CMD_PATCH.openParamsTab = () =>
 
 CABLES_CMD_PATCH.clearOpTitles = function ()
 {
-    const ops = gui.patchView.getSelectedOps();
+    let ops = gui.patchView.getSelectedOps();
+
+    if (ops.length == 0)ops = gui.corePatch().ops;
 
     if (!ops || ops.length == 0) return;
 

@@ -503,7 +503,6 @@ class OpParampanel extends Events
     {
         if (this._currentOp) this._currentOp.setTitle(t);
 
-
         // if (defaultops.isSubPatchOpName(this._currentOp.objName))
         if (this._currentOp.storage && this._currentOp.storage.subPatchVer)
         {
