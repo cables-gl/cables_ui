@@ -277,7 +277,7 @@ class OpParampanel extends Events
 
                     if (fn.startsWith("file:")) src = "file";
                     if (fn.startsWith("data:")) src = "dataUrl";
-                    if (fn.startsWith("/assets/library/")) src = "lib";
+
                     if (fn.startsWith("http://") || fn.startsWith("https://"))
                     {
                         const parts = fn.split("/");
@@ -289,6 +289,7 @@ class OpParampanel extends Events
                         const parts = fn.split("/");
                         if (parts && parts.length > 1) src = "<a target=\"_blank\" class=\"link\" href=\"" + CABLES.platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
                     }
+                    if (fn.startsWith("/assets/library/")) src = "lib";
 
 
                     if (src != "") src = "[ " + src + " ]";
