@@ -320,6 +320,7 @@ export default class GlOp extends Events
         }
     }
 
+
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;

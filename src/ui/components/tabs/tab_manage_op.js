@@ -90,7 +90,7 @@ export default class ManageOp
             {
                 CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
                 {
-                    if (error) this._log.warn("error api?");
+                    if (error) this._log.warn("error api?", error);
                     const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
                     const doc = {};
                     const opName = this._currentName;

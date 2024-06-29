@@ -1024,8 +1024,6 @@ export default class PatchView extends Events
         let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
         let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
 
-        console.log("sub patch bounds", b);
-
         let x = 0;
         if (patchInputOP || patchOutputOP)
         {
@@ -1035,16 +1033,9 @@ export default class PatchView extends Events
             if (x > b.maxX)x = b.maxX;
         }
 
-        console.log("b", b.minY, b.maxY);
-
-
-
-
         if (patchInputOP)
         {
             let y = Math.min(patchInputOP.uiAttribs.translate.y, b.minY - gluiconfig.newOpDistanceY * 2);
-
-            console.log("yyyyy", y, patchInputOP.uiAttribs.translate.y, b.minY);
 
             patchInputOP.setUiAttribs(
                 { "translate":
@@ -1145,8 +1136,6 @@ export default class PatchView extends Events
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
             if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
 
-
-
             sub.subPatchId = patchId;
             sub.id = subOp.id;
             if (subOp.uiAttribs && subOp.uiAttribs.translate)
@@ -1199,10 +1188,7 @@ export default class PatchView extends Events
         for (let i = 0; i < ops.length; i++)
         {
             const sub = ops[i].uiAttribs.subPatch || 0;
-            if (ops[i].isSubPatchOp())
-            {
-                foundSubPatchOps[ops[i].patchId.get()] = true;
-            }
+            if (ops[i].isSubPatchOp()) foundSubPatchOps[ops[i].patchId.get()] = true;
             countSubs[sub] = countSubs[sub] || 0;
             countSubs[sub]++;
         }
