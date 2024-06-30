@@ -207,6 +207,44 @@ export default function extendCorePatch()
     };
 
 
+
+    CABLES.Patch.prototype.getOpsInRect = function (xa, ya, xb, yb)
+    {
+        const perf = CABLES.UI.uiProfiler.start("[extPatch] ops in rect");
+        const x = Math.min(xa, xb);
+        const y = Math.min(ya, yb);
+        const x2 = Math.max(xa, xb);
+        const y2 = Math.max(ya, yb);
+        const ops = [];
+        const cops = gui.corePatch().getSubPatchOps();
+
+        for (let j = 0; j < cops.length; j++)
+        {
+            if (cops[j])
+            {
+                const op = cops[j];
+                if (
+                    op.uiAttribs &&
+                    op.uiAttribs.translate &&
+                    op.uiAttribs.translate.x >= x && // op.uiAttribs.translate. right edge past r2 left
+                        op.uiAttribs.translate.x <= x2 && // op.uiAttribs.translate. left edge past r2 right
+                        op.uiAttribs.translate.y >= y && // op.uiAttribs.translate. top edge past r2 bottom
+                        op.uiAttribs.translate.y <= y2) // r1 bottom edge past r2 top
+                {
+                    ops.push(op);
+                    // console.log(1);
+                }
+            }
+            // else console.log("no c op");
+        }
+
+        perf.finish();
+
+
+        return ops;
+    };
+
+
     CABLES.Patch.prototype.reloadOp = function (objName, cb, refOldOp)
     {
         let count = 0;
