@@ -1279,12 +1279,12 @@ export default class Gui extends Events
         let lastTimeRecent = 0;
         const navCablesLogo = ele.byId("nav_logo_area");
 
-        if (CABLES.platform.frontendOptions.showWelcome)
-        {
-            ele.byId("nav_welcome").classList.remove("hidden");
-            ele.byId("nav_welcome").addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
-            navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
-        }
+        // if (CABLES.platform.frontendOptions.showWelcome)
+        // {
+        //     ele.byId("nav_welcome").classList.remove("hidden");
+        //     ele.byId("nav_welcome").addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
+        //     navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
+        // }
 
 
         navCablesLogo.addEventListener("pointerenter", (event) =>
