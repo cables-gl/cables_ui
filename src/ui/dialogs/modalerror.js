@@ -207,7 +207,7 @@ export default class ModalError
 
         if (!isSameHost)
         {
-            str += "<br/><br/>Patch was last saved on a different environment: <a class=\"link\" href=\"" + gui.project().buildInfo.host + "\" target=\"top\">" + gui.project().buildInfo.host + "</a>";
+            str += "<br/><br/>Patch was last saved on a different environment: <a class=\"link\" href=\"https://" + gui.project().buildInfo.host + "/edit/" + gui.patchId + "\" target=\"top\">" + gui.project().buildInfo.host + "</a>";
             str += "<br/><br/>";
         }
 
