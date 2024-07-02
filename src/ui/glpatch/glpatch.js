@@ -740,7 +740,7 @@ export default class GlPatch extends Events
         if (e.preventDefault) e.preventDefault();
     }
 
-    isFocussed()
+    isFocused()
     {
         return document.activeElement == this._cgl.canvas;
     }

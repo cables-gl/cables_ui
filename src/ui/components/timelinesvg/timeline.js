@@ -196,7 +196,7 @@ export default function TimeLineGui()
         }
     }
 
-    this.isFocussed = function ()
+    this.isFocused = function ()
     {
         ele.hasFocus(ele.byId("timeline"));
     };
