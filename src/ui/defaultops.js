@@ -492,11 +492,6 @@ const defaultOps = {
         return defaultOps.isUserOp(opname) || defaultOps.isExtensionOp(opname) || defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname);
     },
 
-    "isCustomOp": (opname) =>
-    {
-        return opname.startsWith("Ops.Deprecated.Cables.CustomOp");
-    },
-
     "isPrivateOp": (opname) =>
     {
         return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname);

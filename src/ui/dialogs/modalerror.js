@@ -236,23 +236,13 @@ export default class ModalError
         }
         str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
-        let isCustomOp = false;
         let isPrivateOp = false;
         if (this.opName)
         {
             isPrivateOp = defaultOps.isPrivateOp(this.opName);
-            isCustomOp = defaultOps.isCustomOp(this.opName);
-            if (isCustomOp && this._op)
+            if (window.gui && (gui.user.isStaff || defaultOps.isCurrentUserOp(this.opName)))
             {
-                const codePortName = "JavaScript";
-                str += "<a class=\"button \" onclick=\"CABLES.UI.paramsHelper.openParamStringEditor('" + this._options.op.id + "', '" + codePortName + "', null, true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
-            }
-            else
-            {
-                if (window.gui && (gui.user.isStaff || defaultOps.isCurrentUserOp(this.opName)))
-                {
-                    str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
-                }
+                str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
             }
         }
 
@@ -281,7 +271,7 @@ export default class ModalError
             showSendButton = false;
         }
 
-        if (!isCustomOp && !isPrivateOp)
+        if (!isPrivateOp)
         {
             if (CABLES && CABLES.platform && CABLES.platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
