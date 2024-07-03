@@ -104,4 +104,6 @@ export default class PlatformStandalone extends Platform
 
         showBackupDialog();
     }
+
+    showGitBranchWarning() {}
 }
