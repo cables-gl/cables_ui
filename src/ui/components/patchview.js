@@ -233,8 +233,9 @@ export default class PatchView extends Events
     {
         document.addEventListener("copy", (e) =>
         {
-            if (this._patchRenderer.isFocussed()) this._patchRenderer.copy(e);
-            else if (gui.timeLine().isFocussed()) gui.timeLine().copy(e);
+            if (!this._patchRenderer) return;
+            if (this._patchRenderer.isFocused()) this._patchRenderer.copy(e);
+            else if (gui.timeLine().isFocused()) gui.timeLine().copy(e);
         });
 
         document.addEventListener("paste", (e) =>
@@ -253,15 +254,19 @@ export default class PatchView extends Events
                 }
             }
 
-            if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
-            else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
+            if (this._patchRenderer)
+            {
+                if (this._patchRenderer.isFocused()) this._patchRenderer.paste(e);
+                else if (gui.timeLine().isFocused()) gui.timeLine().paste(e);
+            }
         });
 
         document.addEventListener("cut",
             (e) =>
             {
-                if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
-                else if (gui.timeLine().isFocussed()) gui.timeLine().cut(e);
+                if (!this._patchRenderer) return;
+                if (this._patchRenderer.isFocused()) this._patchRenderer.cut(e);
+                else if (gui.timeLine().isFocused()) gui.timeLine().cut(e);
             });
     }
 
@@ -290,7 +295,7 @@ export default class PatchView extends Events
 
     hasFocus()
     {
-        return this._patchRenderer.isFocussed();
+        return this._patchRenderer.isFocused();
     }
 
 
