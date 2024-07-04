@@ -1853,9 +1853,7 @@ export default class Gui extends Events
 
     showWelcomeNotifications()
     {
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") notifyError("core: using master branch not on live?!");
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") notifyError("UI: using master branch not on live?!");
-
+        if (!gui.isRemoteClient && CABLES.platform.showGitBranchWarning) CABLES.platform.showGitBranchWarning();
         if (!gui.isRemoteClient && CABLES.platform.showBrowserWarning) CABLES.platform.showBrowserWarning();
         if (!gui.isRemoteClient && CABLES.platform.showStartupChangelog) CABLES.platform.showStartupChangelog();
     }
