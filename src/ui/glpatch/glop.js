@@ -1182,6 +1182,8 @@ export default class GlOp extends Events
         {
             this._titleExt = new GlText(this._textWriter, " ");
             this._titleExt.setParentRect(this._glRectBg);
+            this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
+
             this._titleExt.visible = this.visible;
         }
         if (this._titleExt &&
