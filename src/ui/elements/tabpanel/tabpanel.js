@@ -395,6 +395,18 @@ export default class TabPanel extends Events
             notifyError(opts.msg, opts.text, opts.options);
         });
 
+        talkerAPI.addEventListener("updatePatchName", (opts, next) =>
+        {
+            gui.setProjectName(opts.name);
+            CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
+        });
+
+        talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
+        {
+            gui.project().summary = opts;
+            gui.patchParamPanel.show(true);
+        });
+
         talkerAPI.addEventListener("opsDeleted", (opts, next) =>
         {
             const opdocs = gui.opDocs.getAll();
