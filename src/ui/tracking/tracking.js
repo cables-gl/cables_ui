@@ -40,23 +40,7 @@ export default class Tracking
             perf.finish();
         });
 
-        /*
-        this.gui.on("coreLogEvent", (initiator, level, args) =>
-        {
-            if (!["error", "warn"].includes(level)) return;
-            const perf = CABLES.UI.uiProfiler.start("coreLogEvent");
-            this._trackLogEvent("logging", level, initiator, args);
-            perf.finish();
-        });
 
-        this.gui.on("opLogEvent", (initiator, level, args) =>
-        {
-            if (!["error"].includes(level)) return;
-            const perf = CABLES.UI.uiProfiler.start("opLogEvent");
-            this._trackLogEvent("oplogging", level, initiator, args);
-            perf.finish();
-        });
-         */
 
         this.gui.on("uncaughtError", (report) =>
         {
