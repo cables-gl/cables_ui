@@ -28,7 +28,7 @@ export default class WelcomeTab
             });
 
             if (!CABLES.platform.frontendOptions.hasCommunity)
-                CABLES.ajax("https://dev.cables.local/api/downloads/latest/", (err2, res) =>
+                CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res) =>
                 {
                     if (!err2)
                     {
