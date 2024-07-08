@@ -180,15 +180,17 @@ export default class GlPatch extends Events
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
 
-        cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
+        // cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
+        // cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
+        // cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
 
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+
+
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
 
         gui.on("themeChanged", this.updateTheme.bind(this));
@@ -565,6 +567,8 @@ export default class GlPatch extends Events
 
     _onCanvasMouseLeave(e)
     {
+        if (e.pointerType == "touch") return;
+
         if (this._pauseMouseUntilButtonUp)
         {
             this._pauseMouseUntilButtonUp = false;
@@ -584,6 +588,7 @@ export default class GlPatch extends Events
 
     _onCanvasMouseEnter(e)
     {
+        if (e.pointerType == "touch") return;
         if (this._mouseLeaveButtons != e.buttons && e.pointerType == "mouse")
         {
             // reentering with mouse down already - basically block all interaction
@@ -638,6 +643,12 @@ export default class GlPatch extends Events
     {
         if (!e.pointerType) return;
         this._removeDropInRect();
+
+
+
+        // this._onCanvasMouseMove(e);
+        this.viewBox._onCanvasMouseMove(e);
+
 
 
         if (this.mouseState.buttonLeft && !this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();

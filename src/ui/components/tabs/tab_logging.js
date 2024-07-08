@@ -9,6 +9,7 @@ export default class LoggingTab extends Events
     {
         super();
         this._tabs = tabs;
+        this._logs = [];
 
         this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
