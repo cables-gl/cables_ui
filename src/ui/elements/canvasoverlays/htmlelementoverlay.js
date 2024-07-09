@@ -11,6 +11,7 @@ export default class HtmlElementOverlay
         gui.opParams.on("opSelected", (op) =>
         {
             this._trackEle = null;
+            if (!op) return;
 
             const ports = op.portsOut;
 
@@ -21,11 +22,6 @@ export default class HtmlElementOverlay
         });
 
         setInterval(this._update.bind(this), 50);
-    }
-
-    remove()
-    {
-
     }
 
     _update()
@@ -52,7 +48,7 @@ export default class HtmlElementOverlay
         this._eleOver.style.display = "block";
         this._eleOver.style.left = r.x + "px";
         this._eleOver.style.top = r.y + "px";
-        this._eleOver.style.width = r.width + "px";
-        this._eleOver.style.height = r.height + "px";
+        this._eleOver.style.width = r.width - 2 + "px";
+        this._eleOver.style.height = r.height - 2 + "px";
     }
 }

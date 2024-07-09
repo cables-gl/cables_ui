@@ -193,6 +193,9 @@ class OpParampanel extends Events
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
+
+
+
         this.emitEvent("opSelected", op);
 
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
