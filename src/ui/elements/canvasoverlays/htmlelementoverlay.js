@@ -16,7 +16,16 @@ export default class HtmlElementOverlay
             const ports = op.portsOut;
 
             for (let i = 0; i < ports.length; i++)
-                if (ports[i].get() && ports[i].uiAttribs.objType == "element") this._trackEle = ports[i].get();
+                if (ports[i].get() && ports[i].uiAttribs.objType == "element")
+                {
+                    if (this._eleOver && this._trackEle != ports[i].get())
+                    {
+                        this._eleOver.remove();
+                        this._eleOver = null;
+                    }
+
+                    this._trackEle = ports[i].get();
+                }
 
             this._update();
         });
