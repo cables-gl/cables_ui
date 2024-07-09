@@ -262,3 +262,36 @@
     border-bottom:1px solid var(--color-special);
 }
 
+
+.logList
+{
+    max-height: 300px;
+    overflow:scroll;
+    display: flex;
+    flex-direction: column-reverse;
+
+    .logLine
+    {
+        margin-top:3px;
+        background-color: #222;
+        font-family: monospace;
+    }
+
+    .logLine:hover
+    {
+        background-color: #444;
+    }
+
+    .logLevel0
+    {
+    }
+    .logLevel1
+    {
+        color:yellow;
+    }
+    .logLevel2
+    {
+        color:red;
+    }
+
+}

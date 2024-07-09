@@ -51,7 +51,7 @@ import startUi from "./startgui.js";
 import text from "./text.js";
 import uiconfig from "./uiconfig.js";
 import { uniqueArray } from "./utils/helper.js";
-import LogFilter from "./utils/loggerfilter.js";
+import LogFilter from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import ManageOp from "./components/tabs/tab_manage_op.js";

@@ -39,6 +39,7 @@ import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
 import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
+import LoggingTab from "./components/tabs/tab_logging.js";
 
 export default class Gui extends Events
 {
@@ -1041,6 +1042,12 @@ export default class Gui extends Events
         return this.fileManager;
     }
 
+    showLogging()
+    {
+        new LoggingTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
     showFileManager(cb, userInteraction)
     {
         // if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
@@ -1278,14 +1285,6 @@ export default class Gui extends Events
 
         let lastTimeRecent = 0;
         const navCablesLogo = ele.byId("nav_logo_area");
-
-        // if (CABLES.platform.frontendOptions.showWelcome)
-        // {
-        //     ele.byId("nav_welcome").classList.remove("hidden");
-        //     ele.byId("nav_welcome").addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
-        //     navCablesLogo.addEventListener("click", () => { CABLES.CMD.UI.welcomeTab(true); });
-        // }
-
 
         navCablesLogo.addEventListener("pointerenter", (event) =>
         {
@@ -1755,6 +1754,7 @@ export default class Gui extends Events
         }
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
+        if (userSettings.get("loggingOpened") == true) this.showLogging();
 
         gui.transformOverlay.updateVisibility();
 

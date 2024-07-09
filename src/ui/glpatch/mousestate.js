@@ -33,21 +33,23 @@ export default class MouseState extends Events
 
         canvas.addEventListener("pointerenter", (e) =>
         {
-            this._mouseOverCanvas = true;
+            if (e.pointerType == "touch") this._mouseOverCanvas = true;
+            else this._mouseOverCanvas = true;
         });
 
         canvas.addEventListener("pointerleave", (e) =>
         {
-            this._mouseOverCanvas = false;
+            if (e.pointerType == "touch") this._mouseOverCanvas = true;
+            else this._mouseOverCanvas = false;
         });
 
         canvas.addEventListener("pointerdown", this._down.bind(this), { "passive": false });
         canvas.addEventListener("pointerup", this._up.bind(this), { "passive": false });
         canvas.addEventListener("pointermove", this._move.bind(this), { "passive": false });
-        canvas.addEventListener("touchmove", this._move.bind(this), { "passive": false });
+        // canvas.addEventListener("touchmove", this._move.bind(this), { "passive": false });
 
-        canvas.addEventListener("touchstart", this._down.bind(this), { "passive": false });
-        canvas.addEventListener("touchend", this._up.bind(this), { "passive": false });
+        // canvas.addEventListener("touchstart", this._down.bind(this), { "passive": false });
+        // canvas.addEventListener("touchend", this._up.bind(this), { "passive": false });
 
         canvas.addEventListener("touchenter", (e) =>
         {
@@ -219,6 +221,7 @@ export default class MouseState extends Events
     _up(e)
     {
         this._isDragging = false;
+
         // console.log("up", e.buttons, e);
         // this._setButton(e.buttons, false);
         if (e.buttons == 0) this._setButtonsUp();

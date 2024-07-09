@@ -49,7 +49,7 @@ export default class GlViewBox
         this.glPatch.addEventListener("spacedown", this._onCanvasSpaceDown.bind(this));
         this.glPatch.addEventListener("spaceup", this._onCanvasSpaceUp.bind(this));
 
-        cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
+        // cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
@@ -121,6 +121,8 @@ export default class GlViewBox
 
     _onCanvasMouseDown(e)
     {
+        this._onCanvasMouseMove(e);
+        // (e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonStateForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
@@ -130,9 +132,6 @@ export default class GlViewBox
         }
     }
 
-    _onCanvasTouchMove(e)
-    {
-    }
 
     _onCanvasMouseMove(e)
     {

@@ -37,6 +37,9 @@ export default class LogFilter extends Events
         this._initiators = {};
         this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
 
+        this.logs = [];
+
+
         userSettings.on("loaded", () =>
         {
             this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
@@ -53,7 +56,7 @@ export default class LogFilter extends Events
 
     }
 
-    shouldPrint(initiator, txt, level)
+    shouldPrint(initiator, level, txt)
     {
         if (!initiator)initiator = "unknown";
         if (!this._initiators[initiator])
@@ -65,13 +68,21 @@ export default class LogFilter extends Events
             this.emitEvent("initiatorsChanged");
         }
 
+        this.logs.push({ "txt": txt, "initiator": initiator, "level": level });
+        while (this.logs.length > 50) this.logs.splice(0, 1);
         this._initiators[initiator].log(txt);
 
-        const should = this._initiators[initiator].print;
+        let should = this._initiators[initiator].print;
         if (should && !this._warned)
         {
             this._warned = true;
             console.log("[logging] some console messages are not printed - [ctrl/cmd+p logging] to change logging settings");// eslint-disable-line
+        }
+
+        if (level > 0)should = true;
+        if (should)
+        {
+            this.emitEvent("logAdded");
         }
         return should;
     }
