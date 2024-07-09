@@ -1322,7 +1322,6 @@ export default class Gui extends Events
                         el.addEventListener("click", () =>
                         {
                             const data = { "id": el.dataset.shortId };
-                            if (el.classList.contains("openExport")) data.type = "export";
                             CABLESUILOADER.talkerAPI.send("gotoPatch", data);
                         });
                     }
