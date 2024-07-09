@@ -61,6 +61,12 @@ export default class LoggingTab extends Events
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
         {
             const l = CABLES.UI.logFilter.logs[i];
+
+            console.log(typeof l.txt);
+            // if (typeof l.txt == "object")
+            // {
+
+            // }
             html += "<div class=\"logLine logLevel" + l.level + "\">";
             html += "<span>[" + l.initiator + "]</span> ";
             html += l.txt;

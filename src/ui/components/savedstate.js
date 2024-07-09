@@ -206,8 +206,13 @@ export default class SavedState extends Events
             if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconSaved");
             this._talkerState = this.isSaved;
 
-            ele.byId("patchname").classList.remove("warning");
-            ele.byId("savestates").innerHTML = "";
+            const elePatchName = ele.byId("patchname");
+
+            if (elePatchName)
+            {
+                elePatchName.classList.remove("warning");
+                ele.byId("savestates").innerHTML = "";
+            }
         }
         else
         {
