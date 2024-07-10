@@ -162,7 +162,7 @@ function _svgcss(done)
         )
         .pipe(rename("svgicons.scss"))
         .pipe(gulp.dest("scss/"));
-    if (!process.env.cables.standalone)
+    if (!process.env.cables_standalone)
     {
         return task.pipe(gulp.dest("../cables_api/scss/"));
     }
