@@ -40,6 +40,7 @@ import FileManagerEditor from "./components/filemanager_edit.js";
 import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
 import LoggingTab from "./components/tabs/tab_logging.js";
+import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
 
 export default class Gui extends Events
 {
@@ -141,6 +142,8 @@ export default class Gui extends Events
         this.introduction = new Introduction();
         this._gizmo = [];
         this.transformOverlay = new TransformsOverlay();
+        this.htmlEleOverlay = null;
+
 
         this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
@@ -1319,7 +1322,6 @@ export default class Gui extends Events
                         el.addEventListener("click", () =>
                         {
                             const data = { "id": el.dataset.shortId };
-                            if (el.classList.contains("openExport")) data.type = "export";
                             CABLESUILOADER.talkerAPI.send("gotoPatch", data);
                         });
                     }
@@ -1453,7 +1455,7 @@ export default class Gui extends Events
         {
             CABLES.CMD.UI.welcomeTab(true);
         }
-
+        this.htmlEleOverlay = new HtmlElementOverlay();
 
         cb();
     }

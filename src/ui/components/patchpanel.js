@@ -54,6 +54,8 @@ export default class PatchPanel extends Events
             this._firstTime = false;
         }
 
+        gui.opParams.emitEvent("opSelected", null);
+
         if (!force && ele.byClass("patchParamPanel")) return;
 
         let html = "<div class=\"patchParamPanel panel bookmarkpanel\">";

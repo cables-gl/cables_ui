@@ -42,6 +42,24 @@ $border-radius-popups:12px;
 
 }
 
+@keyframes flash {
+    from {
+      background: rgba(0,255,255,0.8);;
+    }
+    to {
+      background: rgba(0,255,255,0.0);
+    }
+  }
+
+.cblUiHtmlEleOverlay
+{
+    animation: flash 0.25s ease-in-out 0s;
+    pointer-events: none;
+    z-index: 99999999;
+    position: absolute;
+    border:1px solid var(--color-special);
+}
+
 .nomargin
 {
     margin:0px !important;
