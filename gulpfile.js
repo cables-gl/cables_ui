@@ -32,10 +32,6 @@ if (fs.existsSync(configLocation))
     isLiveBuild = config.env === "live";
     minify = config.hasOwnProperty("minifyJs") ? config.minifyJs : false;
 }
-else
-{
-    console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
-}
 
 function _scripts_libs_ui(done)
 {
@@ -52,8 +48,7 @@ function _scripts_libs_ui(done)
             {
                 done();
             }
-        }
-        );
+        });
     });
 }
 
@@ -149,7 +144,7 @@ function _sass(done)
 
 function _svgcss(done)
 {
-    return gulp
+    const task = gulp
         .src("icons/**/*.svg")
         .pipe(svgmin())
         .pipe(
@@ -166,8 +161,15 @@ function _svgcss(done)
             })
         )
         .pipe(rename("svgicons.scss"))
-        .pipe(gulp.dest("scss/"))
-        .pipe(gulp.dest("../cables_api/scss/"));
+        .pipe(gulp.dest("scss/"));
+    if (!process.env.cables.standalone)
+    {
+        return task.pipe(gulp.dest("../cables_api/scss/"));
+    }
+    else
+    {
+        return task;
+    }
 }
 
 function _watch(done)
