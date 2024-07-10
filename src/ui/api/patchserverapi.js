@@ -638,7 +638,7 @@ export default class PatchSaveServer extends Events
         }, 100);
     }
 
-    showModalTitleDialog(titleElement = null, cb = null)
+    showModalTitleDialog(cb = null)
     {
         const currentProject = gui.project();
         new CABLES.UI.ModalDialog({
@@ -669,9 +669,13 @@ export default class PatchSaveServer extends Events
                         }
                         else
                         {
+                            if (re.data && re.data.summary)
+                            {
+                                gui.project().summary = re.data.summary;
+                                gui.patchParamPanel.show(true);
+                            }
                             CABLESUILOADER.talkerAPI.send("updatePatchName", { "name": newName }, () =>
                             {
-                                if (titleElement) titleElement.innerText = newName;
                                 gui.setProjectName(newName);
                             });
                             if (cb) cb(newName);
