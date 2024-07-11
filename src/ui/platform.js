@@ -5,6 +5,7 @@ import text from "./text.js";
 import userSettings from "./components/usersettings.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
+import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
 
 /**
  * @abstract
@@ -458,5 +459,14 @@ export default class Platform extends Events
 
             ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
         });
+    }
+
+    openOpDirsTab()
+    {
+        if (this.frontendOptions.chooseOpDir)
+        {
+            new StandaloneOpDirs(gui.mainTabs);
+            gui.maintabPanel.show(true);
+        }
     }
 }
