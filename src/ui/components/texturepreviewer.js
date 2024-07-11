@@ -83,6 +83,7 @@ export default class TexturePreviewer
         {
             gui.opParams.on("opSelected", () =>
             {
+                if (!gui.opParams.op) return;
                 let foundPreview = false;
                 const ports = gui.opParams.op.portsOut;
 
