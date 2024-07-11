@@ -229,6 +229,7 @@ CABLES_CMD_UI.toggleOverlays = function ()
 {
     const act = !userSettings.get("overlaysShow");
     userSettings.set("overlaysShow", act);
+    gui.emitEvent("overlaysChanged", act);
     gui.transformOverlay.updateVisibility();
     gui.canvasManager.getCanvasUiBar().updateIconState();
 };

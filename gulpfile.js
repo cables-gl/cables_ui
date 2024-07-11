@@ -32,10 +32,6 @@ if (fs.existsSync(configLocation))
     isLiveBuild = config.env === "live";
     minify = config.hasOwnProperty("minifyJs") ? config.minifyJs : false;
 }
-else
-{
-    console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
-}
 
 function _scripts_libs_ui(done)
 {
@@ -52,8 +48,7 @@ function _scripts_libs_ui(done)
             {
                 done();
             }
-        }
-        );
+        });
     });
 }
 
@@ -149,7 +144,7 @@ function _sass(done)
 
 function _svgcss(done)
 {
-    return gulp
+    const task = gulp
         .src("icons/**/*.svg")
         .pipe(svgmin())
         .pipe(
@@ -166,17 +161,25 @@ function _svgcss(done)
             })
         )
         .pipe(rename("svgicons.scss"))
-        .pipe(gulp.dest("scss/"))
-        .pipe(gulp.dest("../cables_api/scss/"));
+        .pipe(gulp.dest("scss/"));
+    if (!process.env.cables_standalone)
+    {
+        return task.pipe(gulp.dest("../cables_api/scss/"));
+    }
+    else
+    {
+        return task;
+    }
 }
 
 function _watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], { "usePolling": true }, gulp.series(_scripts_ui_webpack));
-    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_sass));
-    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_html_ui));
-    gulp.watch("../shared/client/src/talkerapi.js", { "usePolling": true }, gulp.series(_scripts_talkerapi));
-    gulp.watch("libs/**/*", { "usePolling": true }, gulp.series(_scripts_libs_ui));
+    const watchOptions = { "usePolling": true, "ignored": (fileName) => { return fileName.includes("node_modules"); } };
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], watchOptions, gulp.series(_scripts_ui_webpack));
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], watchOptions, gulp.series(_sass));
+    gulp.watch(["html/**/*.html", "html/*.html"], watchOptions, gulp.series(_html_ui));
+    gulp.watch("../shared/client/src/talkerapi.js", watchOptions, gulp.series(_scripts_talkerapi));
+    gulp.watch("libs/**/*", watchOptions, gulp.series(_scripts_libs_ui));
     done();
 }
 

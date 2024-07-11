@@ -22,6 +22,12 @@ const patchCommands =
 
 export default patchCommands;
 
+CABLES_CMD_PATCH.setPatchTitle = () =>
+{
+    gui.patchView.store.showModalTitleDialog();
+};
+
+
 CABLES_CMD_PATCH.openParamsTab = () =>
 {
     const ops = gui.patchView.getSelectedOps();
@@ -1704,6 +1710,11 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-
+    {
+        "cmd": "set patch title",
+        "func": CABLES_CMD_PATCH.setPatchTitle,
+        "category": "patch",
+        "icon": "edit"
+    },
 
 );
