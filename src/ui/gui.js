@@ -59,7 +59,6 @@ export default class Gui extends Events
         this.serverOps = null;
 
         this.canvasManager = new CanvasManager();
-
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();

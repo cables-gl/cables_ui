@@ -10,6 +10,7 @@ import GlOpWatcher from "../components/tabs/tab_glop.js";
 import ManageOp from "../components/tabs/tab_manage_op.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import StandaloneOpDirs from "../components/tabs/tab_standaloneopdirs.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -27,6 +28,12 @@ CABLES_CMD_PATCH.setPatchTitle = () =>
     gui.patchView.store.showModalTitleDialog();
 };
 
+
+CABLES_CMD_PATCH.testElectron = () =>
+{
+    new StandaloneOpDirs(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
 
 CABLES_CMD_PATCH.openParamsTab = () =>
 {
@@ -1716,5 +1723,10 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "edit"
     },
-
+    {
+        "cmd": "set patch testElectron",
+        "func": CABLES_CMD_PATCH.testElectron,
+        "category": "patch",
+        "icon": "edit"
+    },
 );

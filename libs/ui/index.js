@@ -1,6 +1,5 @@
 import chroma from "chroma-js";
 import loadjs from "loadjs";
-import Fuse from "fuse.js";
 import Handlebars from "handlebars";
 import introJs from "intro.js";
 import iziToast from "izitoast";
@@ -12,14 +11,15 @@ import socketClusterClient from "socketcluster-client";
 import stackinfo from "stackinfo";
 import tinysort from "tinysort";
 import QRCode from "davidshimjs-qrcodejs";
+import Sortable from "sortablejs";
 import hljs from "./highlight_min.cjs";
 import colorrick from "./colorrick.cjs";
 import MathParser from "./mathparser.js";
 import UndoManager from "./undomanager.js";
 
+
 window.chroma = chroma;
 window.ColorRick = colorrick;
-window.Fuse = Fuse;
 window.Handlebars = Handlebars;
 window.hljs = hljs;
 window.introJs = introJs;
@@ -35,3 +35,4 @@ window.socketClusterClient = socketClusterClient;
 window.stackinfo = stackinfo;
 window.tinysort = tinysort;
 window.UndoManager = UndoManager;
+window.Sortable = Sortable;

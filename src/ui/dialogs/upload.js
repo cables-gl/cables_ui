@@ -37,6 +37,10 @@ export default class FileUploader
 
         this._uploadDropEvent = event.originalEvent;
 
+
+
+        if (event.dataTransfer.types.indexOf("Files") == -1) return;
+
         if (CABLES.DragNDrop.internal)
         {
             this._log.error("cancel because internal");
