@@ -29,11 +29,6 @@ CABLES_CMD_PATCH.setPatchTitle = () =>
 };
 
 
-CABLES_CMD_PATCH.testElectron = () =>
-{
-    new StandaloneOpDirs(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
 
 CABLES_CMD_PATCH.openParamsTab = () =>
 {
@@ -1723,10 +1718,5 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "edit"
     },
-    {
-        "cmd": "set patch testElectron",
-        "func": CABLES_CMD_PATCH.testElectron,
-        "category": "patch",
-        "icon": "edit"
-    },
+
 );

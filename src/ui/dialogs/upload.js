@@ -37,8 +37,6 @@ export default class FileUploader
 
         this._uploadDropEvent = event.originalEvent;
 
-
-
         if (event.dataTransfer.types.indexOf("Files") == -1) return;
 
         if (CABLES.DragNDrop.internal)
@@ -129,6 +127,10 @@ export default class FileUploader
 
     uploadDrop(event)
     {
+        if (event.dataTransfer.files.length === 0)
+        {
+            return;
+        }
         event.preventDefault();
         event.stopPropagation();
 
@@ -138,11 +140,7 @@ export default class FileUploader
 
         gui.closeModal();
 
-        if (event.dataTransfer.files.length === 0)
-        {
-            this._log.warn("no files to upload...");
-            return;
-        }
+
         const files = event.dataTransfer.files;
 
         this.uploadFiles(files);

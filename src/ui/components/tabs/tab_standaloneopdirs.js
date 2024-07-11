@@ -16,20 +16,28 @@ export default class StandaloneOpDirs
     {
         let html = "...";
 
-        html += "<ul id=\"dirlist\" class=\"draggable\">";
-        html += "<li class=\"draggable\">hello1</li>";
-        html += "<li class=\"draggable\">hello2</li>";
-        html += "<li class=\"draggable\">hello3</li>";
-        html += "<li class=\"draggable\">hello4</li>";
-        html += "</ul>";
-
+        html += "<div id=\"dirlist\" class=\"dragList draggable\">";
+        html += "  <div class=\"draggable\" data-id=\"1\"><span class=\"handle icon-grip icon icon-0_75x draggable\"></span>hello1</div>";
+        html += "  <div class=\"draggable\" data-id=\"2\"><span class=\"handle icon-grip icon icon-0_75x draggable\"></span>hello2</div>";
+        html += "  <div class=\"draggable\" data-id=\"3\"><span class=\"handle icon-grip icon icon-0_75x draggable\"></span>hello3</div>";
+        html += "  <div class=\"draggable\" data-id=\"4\"><span class=\"handle icon-grip icon icon-0_75x draggable\"></span>hello4</div>";
+        html += "</div>";
         this._tab.html(html);
 
-
-        console.log(ele.byId("dirlist"));
         new Sortable(ele.byId("dirlist"), {
-            // "animation": 150,
-            // "ghostClass": "blue-background-class"
+            "animation": 150,
+            "handle": ".handle",
+            "ghostClass": "ghost",
+            "dragClass": "dragActive",
+            "onEnd": function (evt)
+            {
+                const list = ele.byQueryAll("#dirlist div");
+
+                for (let i = 0; i < list.length; i++)
+                {
+                    console.log(list[i].dataset.id);
+                }
+            },
         });
     }
 }
