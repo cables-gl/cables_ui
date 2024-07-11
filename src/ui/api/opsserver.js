@@ -784,11 +784,11 @@ export default class ServerOps
             {
                 let opDirSelect = "Choose op directory:<br/><br/>";
                 opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
-                for (let i = 0; i < res.length; i++)
+                for (let i = 0; i < res.data.length; i++)
                 {
-                    const dir = res[i];
-                    if (i === 0) opTargetDir = dir;
-                    opDirSelect += "<option value=\"" + dir + "\">" + dir + "</option>";
+                    const dirInfo = res.data[i];
+                    if (i === 0) opTargetDir = dirInfo.dir;
+                    opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
                 }
                 opDirSelect += "</select>";
                 opDirSelect += "&nbsp;<a class=\"button-small button-icon tt info\" data-into=\"add op dir\" data-tt=\"add op dir\" onclick=\"CABLES.CMD.STANDALONE.addProjectOpDir();\"><span class=\"icon icon-file-plus\"></span></a>\n";
