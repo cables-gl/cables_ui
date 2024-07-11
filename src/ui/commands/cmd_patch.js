@@ -1,5 +1,3 @@
-import { ele } from "cables-shared-client";
-
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -10,7 +8,6 @@ import GlOpWatcher from "../components/tabs/tab_glop.js";
 import ManageOp from "../components/tabs/tab_manage_op.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-import StandaloneOpDirs from "../components/tabs/tab_standaloneopdirs.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
