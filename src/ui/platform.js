@@ -319,7 +319,8 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
         {
-            gui.project().summary = opts;
+            const project = gui.project();
+            if (project) gui.project().summary = opts;
             gui.patchParamPanel.show(true);
         });
 
