@@ -4,7 +4,7 @@ import Handlebars from "handlebars";
 import introJs from "intro.js";
 import iziToast from "izitoast";
 import { marked } from "marked";
-import moment from "moment";
+import moment from "moment-mini";
 import pako from "pako";
 import Raphael from "raphael";
 import socketClusterClient from "socketcluster-client";
@@ -16,7 +16,6 @@ import hljs from "./highlight_min.cjs";
 import colorrick from "./colorrick.cjs";
 import MathParser from "./mathparser.js";
 import UndoManager from "./undomanager.js";
-
 
 window.chroma = chroma;
 window.ColorRick = colorrick;

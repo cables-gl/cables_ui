@@ -3,6 +3,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import defaultOps from "../defaultops.js";
 import { notifyError } from "../elements/notification.js";
 
+
 export function bytesArrToBase64(arr)
 {
     const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; // base64 alphabet

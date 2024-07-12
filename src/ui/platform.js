@@ -7,6 +7,8 @@ import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
 
+
+
 /**
  * @abstract
  */
@@ -341,7 +343,7 @@ export default class Platform extends Events
                 let saveText = "";
                 if (project.updated)
                 {
-                    saveText += "on " + moment(project.updated).format("DD.MM.YYYY HH:mm");
+                    saveText += "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
                 }
                 let content = "<div>Do you want to restore your patch to the last version saved " + saveText + "</div>";
                 content += "<div style='margin-top: 20px; text-align: center;'>";
