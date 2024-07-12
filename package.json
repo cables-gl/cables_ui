@@ -10,7 +10,7 @@
     "dependencies": {
         "cables-shared-client": "file:../shared/client/",
         "chroma-js": "2.1.0",
-        "fuse.js": "2.6.0",
+        "davidshimjs-qrcodejs": "0.0.2",
         "handlebars": "4.7.8",
         "intro.js": "2.9.0",
         "izitoast": "1.1.4",
@@ -20,11 +20,12 @@
         "pako": "2.0.3",
         "raphael": "2.2.0",
         "socketcluster-client": "16.0.1",
+        "sortablejs": "^1.15.2",
         "stackinfo": "1.1.5",
-        "tinysort": "3.2.5",
-        "davidshimjs-qrcodejs": "0.0.2"
+        "tinysort": "3.2.5"
     },
     "devDependencies": {
+        "@rbarilani/remove-source-map-url-webpack-plugin": "1.1.0",
         "git-last-commit": "1.0.1",
         "gulp": "5.0.0",
         "gulp-autoprefixer": "8.0.0",
@@ -41,8 +42,7 @@
         "sass": "1.58.3",
         "terser-webpack-plugin": "5.3.10",
         "webpack": "5.91.0",
-        "webpack-bundle-analyzer": "4.10.2",
-        "@rbarilani/remove-source-map-url-webpack-plugin": "1.1.0"
+        "webpack-bundle-analyzer": "4.10.2"
     },
     "scripts": {
         "start": "gulp",

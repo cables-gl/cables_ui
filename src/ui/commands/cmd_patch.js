@@ -1,5 +1,3 @@
-import { ele } from "cables-shared-client";
-
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -26,6 +24,7 @@ CABLES_CMD_PATCH.setPatchTitle = () =>
 {
     gui.patchView.store.showModalTitleDialog();
 };
+
 
 
 CABLES_CMD_PATCH.openParamsTab = () =>

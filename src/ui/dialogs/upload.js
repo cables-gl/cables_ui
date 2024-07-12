@@ -1,6 +1,7 @@
 // http://html5doctor.com/drag-and-drop-to-server/
 import { Logger } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
+import FileManager from "../components/filemanager.js";
 
 
 export default class FileUploader
@@ -36,6 +37,8 @@ export default class FileUploader
         if (gui.isRemoteClient) return;
 
         this._uploadDropEvent = event.originalEvent;
+
+        if (event.dataTransfer.types.indexOf("Files") == -1) return;
 
         if (CABLES.DragNDrop.internal)
         {
@@ -89,6 +92,8 @@ export default class FileUploader
                         (err, res) =>
                         {
                             if (err) notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
+
+                            FileManager.updatedFiles.push(filename || file.name);
                         });
                 },
                 false);
@@ -125,6 +130,10 @@ export default class FileUploader
 
     uploadDrop(event)
     {
+        if (event.dataTransfer.files.length === 0)
+        {
+            return;
+        }
         event.preventDefault();
         event.stopPropagation();
 
@@ -134,11 +143,7 @@ export default class FileUploader
 
         gui.closeModal();
 
-        if (event.dataTransfer.files.length === 0)
-        {
-            this._log.warn("no files to upload...");
-            return;
-        }
+
         const files = event.dataTransfer.files;
 
         this.uploadFiles(files);

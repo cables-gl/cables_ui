@@ -104,6 +104,10 @@ export default class FileManager
         {
             if (!files) files = [];
             const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
+
+
+
+
             // if (this._firstTimeOpening && patchFiles.length === 0)
             // {
             //     this._firstTimeOpening = false;
@@ -179,6 +183,8 @@ export default class FileManager
         if (file.t === "SVG") item.preview = file.p;
         else if (file.t === "image") item.preview = file.p;
         else if (file.t === "dir") item.divider = file.n;
+
+        if (item.preview && FileManager.updatedFiles.indexOf(file.n) > -1) item.preview += "?cb=" + Math.random();
 
         if (!filterType) items.push(item);
         else
@@ -821,3 +827,5 @@ export default class FileManager
         // });
     }
 }
+
+FileManager.updatedFiles = [];

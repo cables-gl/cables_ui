@@ -735,11 +735,6 @@ body
         transform:scale(1,-1);
     }
 
-    .draggable
-    {
-        cursor: grab;
-    }
-
     .colorButton
     {
         color:black;
@@ -791,6 +786,7 @@ body
 
 
 
+@import 'components/draglist.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
 @import 'components/modal.scss';

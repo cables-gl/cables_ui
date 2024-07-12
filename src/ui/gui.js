@@ -41,6 +41,7 @@ import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
 import LoggingTab from "./components/tabs/tab_logging.js";
 import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
+import FileManager from "./components/filemanager.js";
 
 export default class Gui extends Events
 {
@@ -59,7 +60,6 @@ export default class Gui extends Events
         this.serverOps = null;
 
         this.canvasManager = new CanvasManager();
-
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
@@ -1273,6 +1273,8 @@ export default class Gui extends Events
 
                     ele.byId("modalClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
+
+                    FileManager.updatedFiles.push(fileId);
                 }
                 gui.refreshFileManager();
             });
