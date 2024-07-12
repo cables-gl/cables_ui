@@ -53,6 +53,15 @@ export default class LoggingTab extends Events
         this._showLog();
     }
 
+    _logLine(initiator, txt, level)
+    {
+        let html = "<div class=\"logLine logLevel" + level + "\">";
+        html += "<span>[" + initiator + "]</span> ";
+        html += txt;
+        html += "</div>";
+        return html;
+    }
+
     _showLog()
     {
         if (this.closed) return;
@@ -63,14 +72,32 @@ export default class LoggingTab extends Events
             const l = CABLES.UI.logFilter.logs[i];
 
             console.log(typeof l.txt);
-            // if (typeof l.txt == "object")
-            // {
 
-            // }
-            html += "<div class=\"logLine logLevel" + l.level + "\">";
-            html += "<span>[" + l.initiator + "]</span> ";
-            html += l.txt;
-            html += "</div>";
+            if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
+            {
+                const ee = l.txt;
+                console.log(ee);
+
+                if (ee.error)
+                {
+                    html += this._logLine(l.initiator, ee.error.stack, l.level);
+                    html += this._logLine(l.initiator, ee.error.message, l.level);
+                }
+                else
+                {
+                    html += this._logLine(l.initiator, "Err?", l.level);
+                }
+            }
+            else
+            {
+                html += this._logLine(l.initiator, l.txt, l.level);
+            }
+
+
+            // html += "<div class=\"logLine logLevel" + l.level + "\">";
+            // html += "<span>[" + l.initiator + "]</span> ";
+            // html += l.txt;
+            // html += "</div>";
         }
 
         ele.byId("loggingHtmlId").innerHTML = html;
