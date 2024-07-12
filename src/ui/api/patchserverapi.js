@@ -719,6 +719,7 @@ export default class PatchSaveServer extends Events
             cgl.setSize(w, h);
             thePatch.resume();
         }, 300);
+
         thePatch.pause();
         document.getElementById("canvasflash").classList.remove("hidden");
         document.getElementById("canvasflash").classList.add("flash");
