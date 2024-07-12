@@ -1459,6 +1459,10 @@ export default class Gui extends Events
         }
         this.htmlEleOverlay = new HtmlElementOverlay();
 
+
+        console.log(this.opDocs.getStats());
+
+
         cb();
     }
 

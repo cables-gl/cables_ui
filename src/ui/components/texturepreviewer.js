@@ -56,7 +56,6 @@ export default class TexturePreviewer
     {
         if (!window.gui)
         {
-            console.log("waiting for gui");
             setTimeout(this._initListener.bind(this), 300);
             return;
         }
