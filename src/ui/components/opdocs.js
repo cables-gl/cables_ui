@@ -272,6 +272,7 @@ export default class OpDocs
     /**
      * Returns the documentation for an op as Html
      * @param {string} opName - The name of the op to get the documentation as Html for
+     * @param collectionInfo
      */
     getHtml(opName, collectionInfo = {})
     {
