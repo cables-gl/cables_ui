@@ -1295,9 +1295,13 @@ export default class GlOp extends Events
             {
                 const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
 
-                if (this._titleExt.text != str)
+                if (this._titleExt.textOrig != str)
                 {
-                    this._titleExt.text = str;
+                    this._titleExt.textOrig = str;
+
+                    let shortenStr = str;
+                    if (shortenStr.length > 30)shortenStr = str.substring(0, 30) + "...";
+                    this._titleExt.text = shortenStr;
                     doUpdateSize = true;
                 }
             }

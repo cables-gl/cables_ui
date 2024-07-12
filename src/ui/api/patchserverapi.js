@@ -719,6 +719,7 @@ export default class PatchSaveServer extends Events
             cgl.setSize(w, h);
             thePatch.resume();
         }, 300);
+
         thePatch.pause();
         document.getElementById("canvasflash").classList.remove("hidden");
         document.getElementById("canvasflash").classList.add("flash");
@@ -729,12 +730,7 @@ export default class PatchSaveServer extends Events
 
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
 
-
         const url = gui.canvasManager.currentCanvas().toDataURL();
-
-        console.log(gui.canvasManager.currentCanvas());
-
-
 
         CABLESUILOADER.talkerAPI.send(
             "saveScreenshot",

@@ -275,6 +275,10 @@
         margin-top:3px;
         background-color: #222;
         font-family: monospace;
+        *
+        {
+            color:#999
+        }
     }
 
     .logLine:hover
@@ -287,11 +291,11 @@
     }
     .logLevel1
     {
-        color:yellow;
+        background-color: rgb(64, 64, 4);
     }
     .logLevel2
     {
-        color:red;
+        background-color: rgb(67, 4, 4);
     }
 
 }
