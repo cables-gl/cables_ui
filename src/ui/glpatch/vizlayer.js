@@ -310,13 +310,6 @@ export default class VizLayer extends Events
         let padding = fs * 0.25;
         const lineHeight = fs + padding;
         let numLines = Math.floor(layer.height / layer.scale / lineHeight);
-
-
-
-
-
-
-
         let offset = Math.floor(options.scroll * lines.length);
 
         offset = Math.max(offset, 0);

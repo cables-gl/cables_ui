@@ -682,12 +682,14 @@ export default class ServerOps
     }
 
     /**
+     * @param {{}} options
      * @param {string} options.title title of the dialog
      * @param {string} options.shortName shortname of the new op
      * @param {string} options.type type of op (patch/user/team/...)
      * @param {string} options.suggestedNamespace suggested namespace in dropdown
      * @param {boolean} options.showReplace show "create and replace existing" button
      * @param {string|null} options.sourceOpName opname to clone from or create op into
+     * @param {function} cb
      */
     opNameDialog(options, cb)
     {

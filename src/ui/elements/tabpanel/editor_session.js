@@ -101,6 +101,8 @@ export default class EditorSession
      * @name CABLES.EditorSession#rememberOpenEditor
      * @param {string} type
      * @param {string} name
+     * @param data
+     * @param skipSetEditorTab
      * @function
      */
     rememberOpenEditor(type, name, data, skipSetEditorTab)

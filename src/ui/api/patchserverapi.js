@@ -3,6 +3,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import defaultOps from "../defaultops.js";
 import { notifyError } from "../elements/notification.js";
 
+
 export function bytesArrToBase64(arr)
 {
     const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; // base64 alphabet
@@ -709,6 +710,10 @@ export default class PatchSaveServer extends Events
         canvas.style.width = screenshotWidth + "px";
         canvas.style.height = screenshotHeight + "px";
 
+        cgl.setSize(screenshotWidth, screenshotHeight);
+        gui.canvasManager.currentCanvas().width = screenshotWidth; // why is this needed?
+        gui.canvasManager.currentCanvas().height = screenshotHeight; // why is this needed?
+
         const screenshotTimeout = setTimeout(() =>
         {
             cgl.setSize(w, h);
@@ -716,7 +721,6 @@ export default class PatchSaveServer extends Events
         }, 300);
 
         thePatch.pause();
-        cgl.setSize(screenshotWidth, screenshotHeight);
         document.getElementById("canvasflash").classList.remove("hidden");
         document.getElementById("canvasflash").classList.add("flash");
 
@@ -724,7 +728,7 @@ export default class PatchSaveServer extends Events
         thePatch.renderOneFrame();
         gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
+        if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
 
         const url = gui.canvasManager.currentCanvas().toDataURL();
 
@@ -735,12 +739,11 @@ export default class PatchSaveServer extends Events
             },
             (error, re) =>
             {
-                if (error)
-                    this._log.warn("[screenshot save error]", error);
+                if (error) this._log.warn("[screenshot save error]", error);
 
                 cgl.setSize(w, h + 1);
                 cgl.setSize(w, h);
-                // console.log("set size", w, h);
+
                 thePatch.resume(); // must resume here for webgpu
                 gui.jobs().finish("screenshotsave");
                 if (gui.onSaveProject) gui.onSaveProject();

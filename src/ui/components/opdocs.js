@@ -102,6 +102,32 @@ export default class OpDocs
         return s;
     }
 
+
+    getStats()
+    {
+        let countTeamOps = 0;
+        let countExtensionOps = 0;
+        let countUserOps = 0;
+        let countCoreOps = 0;
+        for (let i = 0; i < this._opDocs.length; i++)
+        {
+            if (this._opDocs[i].name.indexOf("Ops.User") == 0)countUserOps++;
+            if (this._opDocs[i].name.indexOf("Ops.Team") == 0)countTeamOps++;
+            if (this._opDocs[i].name.indexOf("Ops.Extension") == 0)countExtensionOps++;
+            else
+            {
+                countCoreOps++;
+            }
+            // console.log(this._opDocs[i]);
+        }
+        return {
+            countCoreOps,
+            countTeamOps,
+            countExtensionOps,
+            countUserOps
+        };
+    }
+
     /**
      * Adds some properties to each doc in the op docs array
      * @param {array} _opDocs - The array of op docs
@@ -272,6 +298,7 @@ export default class OpDocs
     /**
      * Returns the documentation for an op as Html
      * @param {string} opName - The name of the op to get the documentation as Html for
+     * @param collectionInfo
      */
     getHtml(opName, collectionInfo = {})
     {
