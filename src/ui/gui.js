@@ -1701,22 +1701,23 @@ export default class Gui extends Events
 
     showOpCrash(op)
     {
-        iziToast.error({
-            "position": "topRight",
-            "theme": "dark",
-            "title": "error",
-            "message": "an operator has crashed",
-            "progressBar": false,
-            "animateInside": false,
-            "close": true,
-            "timeout": false,
-            "buttons": [
-                ["<button>reload</button>", function (instance, toast)
-                {
-                    CABLES.CMD.PATCH.reload();
-                }]
-            ]
-        });
+        console.warn("an operator has crashed", op);
+        // iziToast.error({
+        //     "position": "topRight",
+        //     "theme": "dark",
+        //     "title": "error",
+        //     "message": "an operator has crashed",
+        //     "progressBar": false,
+        //     "animateInside": false,
+        //     "close": true,
+        //     "timeout": false,
+        //     "buttons": [
+        //         ["<button>reload</button>", function (instance, toast)
+        //         {
+        //             CABLES.CMD.PATCH.reload();
+        //         }]
+        //     ]
+        // });
     }
 
     showLibLoadError(libName)
