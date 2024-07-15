@@ -3,7 +3,6 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import defaultOps from "../defaultops.js";
 import { notifyError } from "../elements/notification.js";
 
-
 export function bytesArrToBase64(arr)
 {
     const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; // base64 alphabet
@@ -703,16 +702,7 @@ export default class PatchSaveServer extends Events
             screenshotHeight = 720;
         }
 
-        const canvas = cgl.canvas;// gui.canvasManager.currentCanvas();
-
-        canvas.width = screenshotWidth + "px";
-        canvas.height = screenshotHeight + "px";
-        canvas.style.width = screenshotWidth + "px";
-        canvas.style.height = screenshotHeight + "px";
-
         cgl.setSize(screenshotWidth, screenshotHeight);
-        gui.canvasManager.currentCanvas().width = screenshotWidth; // why is this needed?
-        gui.canvasManager.currentCanvas().height = screenshotHeight; // why is this needed?
 
         const screenshotTimeout = setTimeout(() =>
         {
