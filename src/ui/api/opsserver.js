@@ -535,6 +535,84 @@ export default class ServerOps
         });
     }
 
+    addOpDependency(opName, depName, depType, next = null)
+    {
+        if (!opName || !depName || !depType) return;
+
+        CABLESUILOADER.talkerAPI.send(
+            "addOpDependency",
+            {
+                "opName": opName,
+                "name": depName,
+                "type": depType
+            },
+            (err, res) =>
+            {
+                if (err)
+                {
+                    if (err.msg === "NO_OP_RIGHTS")
+                    {
+                        let html = "";
+                        html += "you are not allowed to add dependencies to this op.<br/><br/>";
+                        html += "to modify this op, try cloning it";
+                        new ModalDialog({ "title": "error adding op-dependency", "showOkButton": true, "html": html });
+                    }
+                    else
+                    {
+                        let html = "";
+                        html += err.msg + "<br/><br/>";
+                        new ModalDialog({ "title": "error adding op-dependency", "showOkButton": true, "html": html });
+                    }
+                }
+                else
+                {
+                    gui.serverOps.loadOpDependencies(opName, () =>
+                    {
+                        this._log.log("op-dependency added!", opName, depName);
+
+                        gui.emitEvent("refreshManageOp", opName);
+                        if (next) next();
+                    }, true);
+                }
+            },
+        );
+    }
+
+
+    removeOpDependency(opName, depName, depType, next = null)
+    {
+        const modal = new ModalDialog({ "title": "Really remove dependency from op?", "text": "Delete " + depName + " from " + opName + "?", "choice": true });
+        modal.on("onSubmit", () =>
+        {
+            CABLESUILOADER.talkerAPI.send(
+                "removeOpDependency",
+                {
+                    "opName": opName,
+                    "name": depName,
+                    "type": depType
+                },
+                (err, res) =>
+                {
+                    if (err)
+                    {
+                        CABLES.UI.MODAL.showError("ERROR", "unable to remove op-dependency: " + err.msg);
+                    }
+                    else
+                    {
+                        gui.serverOps.loadOpDependencies(opName, () =>
+                        {
+                            this._log.log("op-dependency removed!", opName, depName);
+                            gui.emitEvent("refreshManageOp", opName);
+
+                            gui.metaTabs.activateTabByName("code");
+                            if (next) next();
+                        }, true);
+                    }
+                },
+            );
+        });
+    }
+
     deleteAttachment(opName, opId, attName)
     {
         const modal = new ModalDialog({ "title": "Delete attachment from op?", "text": "Delete " + attName + " from " + opName + "?", "choice": true });

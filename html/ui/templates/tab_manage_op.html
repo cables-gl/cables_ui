@@ -210,6 +210,43 @@
             <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addoplib')));">Add</a>
         </div>
 
+        {{#if frontendOptions.opDependencies}}
+            <br/><br/>
+            <div class="groupSpacer"><h3>Dependencies</h3></div>
+
+            Add dependencies, like libs or modules to your Op
+
+            {{#if opDoc.dependencies}}
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th> </th>
+                    </tr>
+                    {{#each opDoc.dependencies}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{type}}</td>
+                            <td>
+                                {{#if ../canEditOp}}
+                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{name}}', '{{type}}');"></a>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            {{/if}}
+
+            <div id="addopdependency_{{viewId}}">
+                <input class="depName" type="text" placeholder="@cables/cables">
+                <select class="depType">
+                    {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
+                </select>
+                <a class="button-small" onclick="gui.serverOps.addOpDependency('{{opname}}', ele.byQuery('#addopdependency_{{viewId}} .depName').value, ele.byQuery('#addopdependency_{{viewId}} .depType').value);">Add</a>
+            </div>
+
+        {{/if}}
+
         {{#if doc.changelog}}
             <br/><br/>
             <div class="groupSpacer"><h3>Changelog</h3></div>
