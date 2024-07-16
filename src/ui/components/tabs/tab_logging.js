@@ -84,8 +84,7 @@ export default class LoggingTab extends Events
         {
             const l = CABLES.UI.logFilter.logs[i];
 
-            if (!CABLES.UI.logFilter.shouldPrint(l.initiator)) continue;
-            // if (l.hidden) continue;
+            if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
 
             if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
             {

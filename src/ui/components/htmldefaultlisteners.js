@@ -2,7 +2,7 @@ import { Logger } from "cables-shared-client";
 
 export default function setHtmlDefaultListeners()
 {
-    const _log = new Logger("cables");
+    const _log = new Logger("errorListener");
 
     // show context menu only on input fields/images etc...
     document.body.addEventListener("contextmenu", (e) =>
