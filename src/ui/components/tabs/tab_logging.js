@@ -12,9 +12,6 @@ export default class LoggingTab extends Events
         super();
         this._tabs = tabs;
         this._logs = [];
-
-
-
         this.closed = false;
 
         this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -41,7 +38,6 @@ export default class LoggingTab extends Events
                 this.emitEvent("close");
                 userSettings.set("loggingOpened", false);
 
-
                 CABLES.UI.logFilter.off(this._showlogListener);
             },
         );
@@ -56,10 +52,20 @@ export default class LoggingTab extends Events
         this._showLog();
     }
 
-    _logLine(initiator, txt, level)
+    _logLine(log, txt, level)
     {
         let html = "<div class=\"logLine logLevel" + level + "\">";
-        html += "<span style=\"float:left\">[<span style=\"color:#fff;\">" + initiator + "</span>]&nbsp;&nbsp;</span> ";
+        html += "<span style=\"float:left\">[<span class=\"initiator\">";
+
+        if (log.opInstId)
+            html += "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
+
+        html += log.initiator;
+
+        if (log.opInstId)
+            html += "</a>";
+
+        html += "</span>]&nbsp;&nbsp;</span> ";
         html += "<div style=\"float:left\">";
         html += txt;
         html += "</div>";
@@ -78,6 +84,9 @@ export default class LoggingTab extends Events
         {
             const l = CABLES.UI.logFilter.logs[i];
 
+            if (!CABLES.UI.logFilter.shouldPrint(l.initiator)) continue;
+            // if (l.hidden) continue;
+
             if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
             {
                 const ee = l.txt;
@@ -86,17 +95,17 @@ export default class LoggingTab extends Events
                 {
                     const stackHtml = ee.error.stack.replaceAll("\n", "<br/>");
 
-                    html += this._logLine(l.initiator, stackHtml, l.level);
-                    html += this._logLine(l.initiator, ee.error.message, l.level);
+                    html += this._logLine(l, stackHtml, l.level);
+                    html += this._logLine(l, ee.error.message, l.level);
                 }
                 else
                 {
-                    html += this._logLine(l.initiator, "Err?", l.level);
+                    html += this._logLine(l, "Err?", l.level);
                 }
             }
             else
             {
-                html += this._logLine(l.initiator, l.txt, l.level);
+                html += this._logLine(l, l.txt, l.level);
             }
         }
 
