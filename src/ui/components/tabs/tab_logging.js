@@ -12,9 +12,6 @@ export default class LoggingTab extends Events
         super();
         this._tabs = tabs;
         this._logs = [];
-
-
-
         this.closed = false;
 
         this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -40,7 +37,6 @@ export default class LoggingTab extends Events
                 this.closed = true;
                 this.emitEvent("close");
                 userSettings.set("loggingOpened", false);
-
 
                 CABLES.UI.logFilter.off(this._showlogListener);
             },
