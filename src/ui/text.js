@@ -214,7 +214,10 @@ const text =
         "subtitle_formatcode": "Format code after saving",
 
 
-        "subtitle_notlocalizeNumberformat": "Localize output port number format"
+        "subtitle_notlocalizeNumberformat": "Localize output port number format",
+
+        "title_openlastproject": "Open the last saved patch on start",
+        "subtitle_openlastproject": ""
 
 
     },

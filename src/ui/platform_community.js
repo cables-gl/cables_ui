@@ -6,6 +6,8 @@ export default class PlatformCommunity extends Platform
     {
         super(cfg);
 
+        this.frontendOptions.showStartUpLog = this.isDevEnv();
+
         this.frontendOptions.hasCommunity = // favs/comments/activity feed etc.
         this.frontendOptions.uploadFiles =
         this.frontendOptions.showAssetExternalLink =
