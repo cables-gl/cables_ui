@@ -8,7 +8,8 @@ export default class PlatformStandalone extends Platform
     {
         super(cfg);
 
-        // this.frontendOptions.npm = true;
+        this.frontendOptions.npm = true;
+
         this.frontendOptions.openLocalFiles =
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
@@ -16,6 +17,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.chooseOpDir =
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
+        this.frontendOptions.opDependencies =
         this.frontendOptions.showOpenPatch = true;
     }
 

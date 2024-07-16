@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import userSettings from "../usersettings.js";
 
+
 export default class LoggingTab extends Events
 {
     constructor(tabs)
@@ -11,6 +12,8 @@ export default class LoggingTab extends Events
         super();
         this._tabs = tabs;
         this._logs = [];
+
+
 
         this.closed = false;
 
@@ -61,6 +64,8 @@ export default class LoggingTab extends Events
         html += txt;
         html += "</div>";
         html += "</div>";
+
+
         return html;
     }
 
