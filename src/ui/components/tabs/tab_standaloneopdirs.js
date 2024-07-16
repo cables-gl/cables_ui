@@ -1,4 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 export default class StandaloneOpDirs
 {
@@ -10,6 +11,11 @@ export default class StandaloneOpDirs
         this._tab = new Tab("op directories", { "icon": "folder", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
+
+        CABLESUILOADER.talkerAPI.addEventListener("addedProjectOpDir", (err, res) =>
+        {
+            this.show();
+        });
     }
 
     show()
@@ -18,30 +24,14 @@ export default class StandaloneOpDirs
         {
             if (!err && r.data)
             {
-                let html = "...";
-                html += "<div id=\"dirlist\" class=\"dragList draggable\">";
-                r.data.forEach((dirInfo, i) =>
-                {
-                    html += "  <div class=\"draggable\" data-id=\"" + i + "\"><span class=\"handle icon-grip icon icon-0_75x draggable\"></span>" + dirInfo.dir + "</div>";
-                });
-                html += "</div>";
-
+                const html = getHandleBarHtml("tab_standalone_opdirs", { "dirs": r.data });
                 this._tab.html(html);
 
                 new Sortable(ele.byId("dirlist"), {
                     "animation": 150,
                     "handle": ".handle",
                     "ghostClass": "ghost",
-                    "dragClass": "dragActive",
-                    "onEnd": function (evt)
-                    {
-                        const list = ele.byQueryAll("#dirlist div");
-
-                        for (let i = 0; i < list.length; i++)
-                        {
-                            console.log(list[i].dataset.id);
-                        }
-                    },
+                    "dragClass": "dragActive"
                 });
             }
         });

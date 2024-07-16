@@ -1,0 +1,31 @@
+<script id="tab_standalone_opdirs" type="text/x-handlebars-template">
+
+    <div class="tabContentScrollContainer">
+        <h2>Op Directories</h2>
+        Manage directories from where to pick Ops in this project.
+        <br/><br/>
+        If multiple Ops with the same name exist,<br/>
+        the Op will be loaded from the directory higher on this list.
+        <br/><br/>
+        <a class="button-small button-icon tt info" data-into="add op dir" data-tt="add op dir" onclick="CABLES.CMD.STANDALONE.addProjectOpDir();"><span class="icon icon-file-plus"></span>Add Directory</a>
+        <br/><br/>
+        {{#if dirs}}
+            <div id="dirlist" class="dragList draggable" style="margin-bottom: 20px;">
+            {{#each dirs}}
+                    <div class="draggable" data-id="{{@index}}">
+                        <span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>
+                        <span class="dir">{{dir}}</span>
+                        <a class="icon-folder icon icon-0_75x" style="float: right;margin-right: 5px;" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>
+                        <span class="opStats" style="float: right;margin-right: 10px;">
+                            <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>
+                        </span>
+                    </div>
+            {{/each}}
+            </div>
+            <a class="bluebutton" id="saveOpDirOrder">Save</a>
+        {{/if}}
+    </div>
+
+</script>
+
+
