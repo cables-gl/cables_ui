@@ -36,7 +36,11 @@ export default class Tab extends Events
                     "options": this.options, "id": this.id, "title": this.title, "hideToolbar": true,
                 });
             eleContainer.appendChild(this.toolbarContainerEle);
-            document.getElementById("toolbarContent" + this.id).appendChild(this.toolbarEle);
+
+            console.log(eleContainer);
+
+            const tbEl = ele.byId("toolbarContent" + this.id);
+            if (!tbEl)tbEl.appendChild(this.toolbarEle);
         }
 
         this.contentEle.id = "content" + this.id;

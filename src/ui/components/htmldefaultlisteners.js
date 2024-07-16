@@ -21,7 +21,7 @@ export default function setHtmlDefaultListeners()
         console.log("window caught error", e);
         if (!CABLES.lastError)
         {
-            new CABLES.UI.ModalError({ "exception": e });
+            // new CABLES.UI.ModalError({ "exception": e });
             _log.error(e);
         }
     });

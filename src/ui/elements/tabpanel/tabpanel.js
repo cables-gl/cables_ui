@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import userSettings from "../../components/usersettings.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
@@ -8,6 +8,8 @@ export default class TabPanel extends Events
     constructor(eleId)
     {
         super();
+        this._log = new Logger("TabPanel " + eleId);
+
         this.id = CABLES.uuid();
         this._eleId = eleId;
         this._tabs = [];
@@ -22,13 +24,18 @@ export default class TabPanel extends Events
             this._eleTabPanel.classList.add("tabpanel");
             this._eleTabPanel.innerHTML = "";
 
-            const ele = document.querySelector("#" + this._eleId);
-            ele.appendChild(this._eleTabPanel);
+            const el = ele.byId(this._eleId);
+            if (!el)
+            {
+                console.error("could not find ele " + this._eleId);
+                return;
+            }
+            el.appendChild(this._eleTabPanel);
 
             this._eleContentContainer = document.createElement("div");
             this._eleContentContainer.classList.add("contentcontainer");
             this._eleContentContainer.innerHTML = "";
-            ele.appendChild(this._eleContentContainer);
+            el.appendChild(this._eleContentContainer);
         }
 
         this.on("resize", () =>
@@ -215,11 +222,8 @@ export default class TabPanel extends Events
             // console.log("could not find tab", id);
         }
 
-
-        // console.log("CABLES.editorSession", CABLES.editorSession);
         if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
-
 
     loadCurrentTabUsersettings()
     {
@@ -233,8 +237,6 @@ export default class TabPanel extends Events
                 break;
             }
         }
-
-        // if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
     }
 
     saveCurrentTabUsersettings()

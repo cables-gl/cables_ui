@@ -1,11 +1,10 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import userSettings from "../usersettings.js";
 
 
-export default class LoggingTab extends Events
+export default class LogTab extends Events
 {
     constructor(tabs)
     {
@@ -14,7 +13,7 @@ export default class LoggingTab extends Events
         this._logs = [];
         this.closed = false;
 
-        this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+        this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
@@ -24,11 +23,10 @@ export default class LoggingTab extends Events
 
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
-        // window.gui.on("coreLogEvent", this.initiator, "warn", arguments);
-
-        // coreLogEvent;
 
         userSettings.set("loggingOpened", true);
+
+        this._tab.addButton("Filter", CABLES.CMD.DEBUG.logging);
 
         this._tab.addEventListener(
             "close",
@@ -47,7 +45,7 @@ export default class LoggingTab extends Events
 
     _html()
     {
-        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
+        const html = "<div id=\"loggingHtmlId123\" class=\"logList\"></div>";
         this._tab.html(html);
         this._showLog();
     }
@@ -108,7 +106,7 @@ export default class LoggingTab extends Events
             }
         }
 
-        const el = ele.byId("loggingHtmlId");
+        const el = ele.byId("loggingHtmlId123");
         if (el)el.innerHTML = html;
     }
 }

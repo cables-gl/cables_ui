@@ -3,6 +3,8 @@ import userSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator = "")
 {
+    if (initiator.indexOf("Ops.Patch") == 0) return true;
+    if (initiator.indexOf("Ops.Team") == 0) return true;
     if (initiator.indexOf("Ops.User") == 0) return true;
     if (initiator.indexOf("op ") == 0) return true;
     return false;
@@ -83,7 +85,6 @@ export default class LogFilter extends Events
         if (options.level > 0)should = true;
 
 
-
         return should;
     }
 
@@ -107,6 +108,7 @@ export default class LogFilter extends Events
         const should = this.shouldPrint(o);
 
         this._initiators[initiator].log(txt);
+        if (o.level > 1) CABLES.CMD.DEBUG.logConsole();
 
         this.emitEvent("logAdded");
 
