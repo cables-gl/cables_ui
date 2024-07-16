@@ -39,11 +39,10 @@ import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
 import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
-import LoggingTab from "./components/tabs/tab_logging.js";
+import LoggingTab from "./components/tabs/tab_logfilter.js";
 import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
 import FileManager from "./components/filemanager.js";
 import BottomTabPanel from "./elements/tabpanel/bottomtabpanel.js";
-import TabTimeline from "./components/tabs/tab_timeline.js";
 
 export default class Gui extends Events
 {
@@ -562,7 +561,7 @@ export default class Gui extends Events
 
         patchHeight -= infoAreaHeight;
 
-        if (this._showTiming) patchHeight -= this.timingHeight;
+        if (this._showTiming || this.bottomTabPanel.isVisible()) patchHeight -= this.timingHeight;
         else patchHeight -= timelineUiHeight;
 
         let editorWidth = this.editorWidth;
@@ -585,7 +584,7 @@ export default class Gui extends Events
             if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
+            this._elSplitterMaintabs.style.height = (patchHeight) + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
@@ -980,8 +979,7 @@ export default class Gui extends Events
     {
         this._showTiming = true;
 
-        new TabTimeline(this.bottomTabPanel);
-        this.bottomTabPanel.show(true);
+        this.bottomTabPanel.hide(true);
         this.timeLine().show();
         this.setLayout();
         userSettings.set("timelineOpened", this._showTiming);

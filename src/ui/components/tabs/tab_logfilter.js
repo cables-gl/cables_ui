@@ -20,13 +20,6 @@ export default class LoggingTab extends Events
 
         this._html();
         CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
-        // this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
-
-        this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
-
-        // window.gui.on("coreLogEvent", this.initiator, "warn", arguments);
-
-        // coreLogEvent;
 
         userSettings.set("loggingOpened", true);
 
@@ -49,7 +42,6 @@ export default class LoggingTab extends Events
     {
         const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
         this._tab.html(html);
-        this._showLog();
     }
 
     _logLine(log, txt, level)
@@ -73,43 +65,6 @@ export default class LoggingTab extends Events
 
 
         return html;
-    }
-
-    _showLog()
-    {
-        if (this.closed) return;
-        let html = "";
-
-        for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
-        {
-            const l = CABLES.UI.logFilter.logs[i];
-
-            if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
-
-            if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
-            {
-                const ee = l.txt;
-
-                if (ee.error)
-                {
-                    const stackHtml = ee.error.stack.replaceAll("\n", "<br/>");
-
-                    html += this._logLine(l, stackHtml, l.level);
-                    html += this._logLine(l, ee.error.message, l.level);
-                }
-                else
-                {
-                    html += this._logLine(l, "Err?", l.level);
-                }
-            }
-            else
-            {
-                html += this._logLine(l, l.txt, l.level);
-            }
-        }
-
-        const el = ele.byId("loggingHtmlId");
-        if (el)el.innerHTML = html;
     }
 }
 

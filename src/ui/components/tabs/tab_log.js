@@ -14,7 +14,16 @@ export default class LogTab extends Events
         this.closed = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+
+
+
         this._tabs.addTab(this._tab, true);
+
+
+
+        this._tab.addButton("Filter", () => { console.log(1); });
+
+
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
         this._html();
@@ -26,7 +35,6 @@ export default class LogTab extends Events
 
         userSettings.set("loggingOpened", true);
 
-        this._tab.addButton("Filter", CABLES.CMD.DEBUG.logging);
 
         this._tab.addEventListener(
             "close",
