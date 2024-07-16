@@ -98,6 +98,9 @@ export default class Preferences
         this.setSwitchValue("formatcode", userSettings.get("formatcode") || false);
         this.setSwitchValue("notlocalizeNumberformat", userSettings.get("notlocalizeNumberformat") || false);
 
+        this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
+
+
         // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
     }
 

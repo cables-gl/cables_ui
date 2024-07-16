@@ -10,6 +10,7 @@ export default class PlatformStandalone extends Platform
 
         this.frontendOptions.npm = true;
 
+        this.frontendOptions.isStandalone =
         this.frontendOptions.openLocalFiles =
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
@@ -18,7 +19,8 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
-        this.frontendOptions.showOpenPatch = true;
+        this.frontendOptions.showOpenPatch =
+        this.frontendOptions.showStartUpLog = true;
     }
 
     getCablesVersion()

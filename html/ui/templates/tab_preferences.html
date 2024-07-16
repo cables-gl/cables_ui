@@ -388,7 +388,22 @@
     </div>
 
 
+    {{#if frontendOptions.isStandalone }}
+        <br/><br/>
 
+        <h2 class="text-center">Standalone</h2>
+
+        <div class="row prefRow">
+            <div class="cute-5-phone prefRight">
+                <span class="prefswitch switch switch-text switch-left" data-setting="openlastproject" data-value="false">Off</span>
+                <span class="prefswitch switch switch-text switch-right" data-setting="openlastproject" data-value="true">On</span>
+            </div>
+            <div class="cute-7-phone">
+                <h3>{{texts.title_openlastproject}}</h3>
+                {{texts.subtitle_openlastproject}}
+            </div>
+        </div>
+    {{/if}}
 
     <br/><br/>
 
