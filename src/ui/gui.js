@@ -1871,13 +1871,17 @@ export default class Gui extends Events
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
 
-        console.table(buildInfoTable);
-        console.log("start up times:");
-        console.table(CABLESUILOADER.startup.log);
-        console.groupEnd();
-
         for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
-            this._log.log(CABLESUILOADER.startup.log[i].title);
+            this._log.log(CABLESUILOADER.startup.log[i].title + " (" + CABLESUILOADER.startup.log[i].time + "s)");
+
+
+
+
+        this._log.table(buildInfoTable);
+        this._log.log("start up times:");
+        this._log.table(CABLESUILOADER.startup.log);
+        this._log.groupEnd();
+
 
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();
