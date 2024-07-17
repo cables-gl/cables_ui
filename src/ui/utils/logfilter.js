@@ -3,6 +3,9 @@ import userSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator = "")
 {
+    if (initiator == "LoadingStatus") return true;
+
+    if (initiator.indexOf("cgl_shader") == 0) return true;
     if (initiator.indexOf("Ops.Patch") == 0) return true;
     if (initiator.indexOf("Ops.Team") == 0) return true;
     if (initiator.indexOf("Ops.User") == 0) return true;
@@ -88,12 +91,17 @@ export default class LogFilter extends Events
         return should;
     }
 
-    filterLog(options, txt)
+    filterLog(options)
     {
         let level = options.level || 0;
         let initiator = options.initiator || "unknown";
 
 
+        let txt = "";
+        for (let i = 1; i < arguments.length; i++)
+        {
+            txt += arguments[i] + " ";
+        }
 
         const o = {};
         for (let i in options) o[i] = options[i];

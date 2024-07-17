@@ -35,6 +35,10 @@ export default class LogTab extends Events
 
         userSettings.set("loggingOpened", true);
 
+        this._tabs.on("resize", () =>
+        {
+            console.log(this._tab.contentEle, this._tab.contentEle.getBoundingClientRect());
+        });
 
         this._tab.addEventListener(
             "close",
@@ -48,7 +52,6 @@ export default class LogTab extends Events
             },
         );
     }
-
 
 
     _html()
@@ -71,12 +74,11 @@ export default class LogTab extends Events
         if (log.opInstId)
             html += "</a>";
 
-        html += "</span>]&nbsp;&nbsp;</span> ";
+        html += "</span>]&nbsp;</span>";
         html += "<div style=\"float:left\">";
         html += txt;
         html += "</div>";
         html += "</div>";
-
 
         return html;
     }

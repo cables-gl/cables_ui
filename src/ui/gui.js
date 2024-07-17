@@ -805,6 +805,8 @@ export default class Gui extends Events
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
 
+        // this.mainTabs.updateSize();
+
 
         if (this.bottomTabPanel.isVisible())
         {
@@ -814,7 +816,11 @@ export default class Gui extends Events
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
             this._eleBottomTabs.style.height = this.timingHeight + "px";
             this._eleBottomTabs.style.left = iconBarWidth + "px";
+
+            this.bottomTabs.updateSize();
         }
+
+
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
@@ -1869,6 +1875,9 @@ export default class Gui extends Events
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
+
+        for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
+            this._log.log(CABLESUILOADER.startup.log[i].title);
 
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();

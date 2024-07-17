@@ -47,6 +47,8 @@ export default class BottomTabPanel extends Events
 
     show(userInteraction)
     {
+        userSettings.set("bottomTabsOpened", true);
+
         if (this._tabs.getNumTabs() == 0)
         {
             this.hide(true);
@@ -75,6 +77,8 @@ export default class BottomTabPanel extends Events
 
     hide(donotsave)
     {
+        userSettings.set("bottomTabsOpened", false);
+
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
