@@ -104,22 +104,11 @@ export default class LogTab extends Events
                         (l.args[j].constructor && l.args[j].constructor.name.indexOf("Error") > -1)
                     ))
                     {
-                        console.log("stack1", performance.now() - startTime);
-
-
                         const ee = l.args[j];
                         const info = ErrorStackParser.parse(ee.error || ee);
 
-                        console.log("ErrorStackParser", info);
-
-
-
-                        console.log("stack2", performance.now() - startTime);
                         if (info && info.length > 0)
                         {
-                            console.log("stack3", performance.now() - startTime);
-                            console.log(info);
-
                             let stackHtml = "<table>";
                             for (let k = 0; k < info.length; k++)
                             {
@@ -135,15 +124,12 @@ export default class LogTab extends Events
                             }
                             stackHtml += "</table>";
 
-                            console.log("stack31", performance.now() - startTime);
                             html += this._logLine(l, stackHtml, l.level);
 
                             let txt = "[" + l.args[j].constructor.name + "] ";
 
                             if (ee.error)txt += " " + ee.error.message;
-                            console.log("stack4", performance.now() - startTime);
                             html += this._logLine(l, txt, l.level);
-                            console.log("stack5", performance.now() - startTime);
                         }
                         else
                         {
@@ -153,7 +139,6 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        console.log("else1", performance.now() - startTime);
                         if (l.args[j].constructor.name == "Op")
                         {
                             currentLine += "<a onclick=\"gui.patchView.centerSelectOp('" + l.args[j].id + "');\">op: " + l.args[j].shortName + "</a>";
@@ -164,7 +149,6 @@ export default class LogTab extends Events
                         {
                             console.log("unknown log thiung", l.args[j]);
                         }
-                        console.log("else2", performance.now() - startTime);
                     }
                 }
                 if (currentLine)html += this._logLine(l, currentLine, l.level);
