@@ -54,7 +54,16 @@ export default class ModalSourceCode
         let htmlWarning = "<code><pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
 
         str = str || "";
-        const lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
+
+        let lines = [];
+        try
+        {
+            lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
+        }
+        catch (e)
+        {
+            return "could not parse lines.";
+        }
 
         for (let i = from; i < to; i++)
         {
