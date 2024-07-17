@@ -40,7 +40,7 @@ export default class Tab extends Events
             console.log(eleContainer);
 
             const tbEl = ele.byId("toolbarContent" + this.id);
-            if (!tbEl)tbEl.appendChild(this.toolbarEle);
+            if (tbEl)tbEl.appendChild(this.toolbarEle);
         }
 
         this.contentEle.id = "content" + this.id;

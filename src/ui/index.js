@@ -57,6 +57,7 @@ import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import ManageOp from "./components/tabs/tab_manage_op.js";
 import extendCorePatch from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
+import ModalSourceCode from "./dialogs/modalsourcecode.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -160,6 +161,7 @@ CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.ManageOp = ManageOp;
 CABLES.UI.SubPatchOpUtil = subPatchOpUtil;
 CABLES.UI.Gizmo = Gizmo;
+CABLES.UI.ModalSourceCode = ModalSourceCode;
 
 
 setHtmlDefaultListeners();

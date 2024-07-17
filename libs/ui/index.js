@@ -8,7 +8,7 @@ import moment from "moment-mini";
 import pako from "pako";
 import Raphael from "raphael";
 import socketClusterClient from "socketcluster-client";
-import stackinfo from "stackinfo";
+import ErrorStackParser from "error-stack-parser";
 import tinysort from "tinysort";
 import QRCode from "davidshimjs-qrcodejs";
 import Sortable from "sortablejs";
@@ -31,7 +31,8 @@ window.pako = pako;
 window.QRCode = QRCode;
 window.Raphael = Raphael;
 window.socketClusterClient = socketClusterClient;
-window.stackinfo = stackinfo;
+window.ErrorStackParser = ErrorStackParser;
 window.tinysort = tinysort;
 window.UndoManager = UndoManager;
 window.Sortable = Sortable;
+

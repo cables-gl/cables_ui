@@ -119,10 +119,10 @@ export default class Gui extends Events
                 if (window.logStartup) logStartup("Patch loaded");
             });
 
-        this._corePatch.on("opcrash", (portTriggered) =>
-        {
-            this.showOpCrash(portTriggered.op);
-        });
+        // this._corePatch.on("opcrash", (portTriggered) =>
+        // {
+        //     this.showOpCrash(portTriggered.op);
+        // });
 
         this.on("libLoadError", (libName) =>
         {
@@ -1723,26 +1723,26 @@ export default class Gui extends Events
         }, 50);
     }
 
-    showOpCrash(op)
-    {
-        console.warn("an operator has crashed", op);
-        // iziToast.error({
-        //     "position": "topRight",
-        //     "theme": "dark",
-        //     "title": "error",
-        //     "message": "an operator has crashed",
-        //     "progressBar": false,
-        //     "animateInside": false,
-        //     "close": true,
-        //     "timeout": false,
-        //     "buttons": [
-        //         ["<button>reload</button>", function (instance, toast)
-        //         {
-        //             CABLES.CMD.PATCH.reload();
-        //         }]
-        //     ]
-        // });
-    }
+    // showOpCrash(op)
+    // {
+    //     console.warn("an operator has crashed", op);
+    //     // iziToast.error({
+    //     //     "position": "topRight",
+    //     //     "theme": "dark",
+    //     //     "title": "error",
+    //     //     "message": "an operator has crashed",
+    //     //     "progressBar": false,
+    //     //     "animateInside": false,
+    //     //     "close": true,
+    //     //     "timeout": false,
+    //     //     "buttons": [
+    //     //         ["<button>reload</button>", function (instance, toast)
+    //     //         {
+    //     //             CABLES.CMD.PATCH.reload();
+    //     //         }]
+    //     //     ]
+    //     // });
+    // }
 
     showLibLoadError(libName)
     {
@@ -2220,16 +2220,16 @@ export default class Gui extends Events
 
     initCoreListeners()
     {
-        this._corePatch.on("exception", function (ex, op)
-        {
-            new ModalError({ "exception": ex, "op": op });
-        });
+        // this._corePatch.on("exception", function (ex, op)
+        // {
+        //     new ModalError({ "exception": ex, "op": op });
+        // });
 
-        this._corePatch.on("exceptionOp", function (e, objName, op)
-        {
-            console.log("core error2");
-            new ModalError({ "exception": e, "opname": objName, "op": op });
-        });
+        // this._corePatch.on("exceptionOp", function (e, objName, op)
+        // {
+        //     console.log("core error2");
+        //     new ModalError({ "exception": e, "opname": objName, "op": op });
+        // });
 
         this._corePatch.on("criticalError", function (options)
         {

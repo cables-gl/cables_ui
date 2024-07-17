@@ -11,6 +11,7 @@
         "cables-shared-client": "file:../shared/client/",
         "chroma-js": "2.1.0",
         "davidshimjs-qrcodejs": "0.0.2",
+        "error-stack-parser": "^2.1.4",
         "handlebars": "4.7.8",
         "intro.js": "2.9.0",
         "izitoast": "1.1.4",
@@ -21,7 +22,6 @@
         "raphael": "2.2.0",
         "socketcluster-client": "16.0.1",
         "sortablejs": "1.15.2",
-        "stackinfo": "1.1.5",
         "tinysort": "3.2.5"
     },
     "devDependencies": {
