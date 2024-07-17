@@ -76,7 +76,11 @@
             {{/each}}
         {{/if}}
 
-        <div id="op_params_uierrors"></div>
+        <div id="op_params_uierrors">
+        </div>
+        {{#if op.enabled}}{{else}}
+        <div id="uierror__disabled" class="warning-error warning-error-level0"><b>Hint: </b>Op is disabled</div>
+    {{/if}}
 
         {{#if op.isExperimental }}
             <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
@@ -99,7 +103,9 @@
     </div>
 </div>
 
-<div id="opparams" class="panel" style="padding:0px;">
+<div id="opparams" class="panel" style="padding:0px;
+        {{#if op.enabled }}{{else}}opacity:0.3;{{/if}}
+        ">
     <table>
 
 </script>

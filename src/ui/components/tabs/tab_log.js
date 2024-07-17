@@ -84,8 +84,6 @@ export default class LogTab extends Events
 
         const startTime = performance.now();
 
-
-
         try
         {
             for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
@@ -141,7 +139,7 @@ export default class LogTab extends Events
                     {
                         if (l.args[j].constructor.name == "Op")
                         {
-                            currentLine += "<a onclick=\"gui.patchView.centerSelectOp('" + l.args[j].id + "');\">op: " + l.args[j].shortName + "</a>";
+                            currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + l.args[j].id + "');\">op: " + l.args[j].shortName + "</a>";
                         }
                         else
                         if (typeof l.args[j] == "string") currentLine += l.args[j];
