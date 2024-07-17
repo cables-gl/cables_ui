@@ -10,19 +10,21 @@
         <a class="button-small button-icon tt info" data-into="add op dir" data-tt="add op dir" onclick="CABLES.CMD.STANDALONE.addProjectOpDir();"><span class="icon icon-file-plus"></span>Add Directory</a>
         <br/><br/>
         {{#if dirs}}
-            <div id="dirlist" class="dragList draggable" style="margin-bottom: 20px;">
+            <div id="dirlist" class="dragList draggable">
             {{#each dirs}}
-                    <div class="draggable" data-id="{{@index}}">
-                        <span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>
+                    <div class="draggable" data-id="{{@index}}" data-dir="{{dir}}" {{#compare numUsedOps '==' 0}}style="background-color: var(--color-04);" {{/compare}}>
+                        {{#unless @last}}<span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>{{/unless}}
                         <span class="dir">{{dir}}</span>
-                        <a class="icon-folder icon icon-0_75x" style="float: right;margin-right: 5px;" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>
-                        <span class="opStats" style="float: right;margin-right: 10px;">
-                            <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>
+                        <span class="controls" style="float: right">
+                            <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>&nbsp;
+                            <a class="icon icon-folder icon-0_75x" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>&nbsp;
+                            {{#unless @last}}<a class="icon icon-x icon-0_75x" onclick="CABLESUILOADER.talkerAPI.send('removeProjectOpDir', '{{dir}}');"></a>{{/unless}}
                         </span>
                     </div>
             {{/each}}
+                <div class="highlightBlock info hidden" style="margin-top: 20px;"></div>
+                <a class="bluebutton" id="saveProjectOpDirOrder" style="display: inline-block; margin-top: 20px;">Save</a>
             </div>
-            <a class="bluebutton" id="saveOpDirOrder">Save</a>
         {{/if}}
     </div>
 

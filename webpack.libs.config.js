@@ -46,10 +46,7 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
         },
         "externals": ["CABLES"],
         "resolve": {
-            "extensions": [".js"],
-            "alias": {
-                "handlebars": "handlebars/dist/handlebars.min.js"
-            }
+            "extensions": [".js"]
         },
         "module": {
             "rules": [
