@@ -1,6 +1,7 @@
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
-import LoggingTab from "../components/tabs/tab_logging.js";
+import LogTab from "../components/tabs/tab_log.js";
+import LoggingTab from "../components/tabs/tab_logfilter.js";
 import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
@@ -88,6 +89,14 @@ CABLES_CMD_DEBUG.debugGlUi = function ()
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_DEBUG.logConsole = function ()
+{
+    if (!gui.bottomTabPanel.isVisible())
+    {
+        new LogTab(gui.bottomTabs);
+        gui.bottomTabPanel.show(true);
+    }
+};
 
 CABLES_CMD_DEBUG.logging = function ()
 {
@@ -277,6 +286,12 @@ CMD_DEBUG_COMMANDS.push(
         "category": "debug",
         "func": CABLES_CMD_DEBUG.logging,
         "icon": "command"
+    },
+    {
+        "cmd": "log console",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.logConsole,
+        "icon": "list"
     },
     {
         "cmd": "log socketcluster traffic",

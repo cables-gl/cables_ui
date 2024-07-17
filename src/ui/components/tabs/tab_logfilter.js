@@ -12,9 +12,6 @@ export default class LoggingTab extends Events
         super();
         this._tabs = tabs;
         this._logs = [];
-
-
-
         this.closed = false;
 
         this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -23,13 +20,6 @@ export default class LoggingTab extends Events
 
         this._html();
         CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
-        // this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
-
-        this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
-
-        // window.gui.on("coreLogEvent", this.initiator, "warn", arguments);
-
-        // coreLogEvent;
 
         userSettings.set("loggingOpened", true);
 
@@ -40,7 +30,6 @@ export default class LoggingTab extends Events
                 this.closed = true;
                 this.emitEvent("close");
                 userSettings.set("loggingOpened", false);
-
 
                 CABLES.UI.logFilter.off(this._showlogListener);
             },
@@ -53,13 +42,22 @@ export default class LoggingTab extends Events
     {
         const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
         this._tab.html(html);
-        this._showLog();
     }
 
-    _logLine(initiator, txt, level)
+    _logLine(log, txt, level)
     {
         let html = "<div class=\"logLine logLevel" + level + "\">";
-        html += "<span style=\"float:left\">[<span style=\"color:#fff;\">" + initiator + "</span>]&nbsp;&nbsp;</span> ";
+        html += "<span style=\"float:left\">[<span class=\"initiator\">";
+
+        if (log.opInstId)
+            html += "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
+
+        html += log.initiator;
+
+        if (log.opInstId)
+            html += "</a>";
+
+        html += "</span>]&nbsp;&nbsp;</span> ";
         html += "<div style=\"float:left\">";
         html += txt;
         html += "</div>";
@@ -67,40 +65,6 @@ export default class LoggingTab extends Events
 
 
         return html;
-    }
-
-    _showLog()
-    {
-        if (this.closed) return;
-        let html = "";
-
-        for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
-        {
-            const l = CABLES.UI.logFilter.logs[i];
-
-            if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
-            {
-                const ee = l.txt;
-
-                if (ee.error)
-                {
-                    const stackHtml = ee.error.stack.replaceAll("\n", "<br/>");
-
-                    html += this._logLine(l.initiator, stackHtml, l.level);
-                    html += this._logLine(l.initiator, ee.error.message, l.level);
-                }
-                else
-                {
-                    html += this._logLine(l.initiator, "Err?", l.level);
-                }
-            }
-            else
-            {
-                html += this._logLine(l.initiator, l.txt, l.level);
-            }
-        }
-
-        ele.byId("loggingHtmlId").innerHTML = html;
     }
 }
 

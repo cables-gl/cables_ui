@@ -217,11 +217,17 @@
     overflow-y: auto;
 }
 
-#metatabpanel .libselect.inactive {
+#metatabpanel .libselect.inactive
+{
     opacity: 0.5;
 }
 
-#maintabs
+#bottomtabs .tabpanel
+{
+    display: none;
+}
+
+#maintabs,#bottomtabs
 {
     background-color:$background-color-dark;
     margin: 0;
@@ -265,7 +271,7 @@
 
 .logList
 {
-    max-height: 300px;
+    height: 100%;
     overflow:scroll;
     display: flex;
     flex-direction: column-reverse;
@@ -278,6 +284,15 @@
         *
         {
             color:#999
+        }
+
+        .initiator,a
+        {
+            color:white
+        }
+        a
+        {
+            text-decoration: underline;
         }
     }
 

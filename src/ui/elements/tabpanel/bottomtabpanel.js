@@ -1,15 +1,15 @@
 import { Events } from "cables-shared-client";
 import userSettings from "../../components/usersettings.js";
 
-export default class MainTabPanel extends Events
+export default class BottomTabPanel extends Events
 {
     constructor(tabs)
     {
         super();
         this._tabs = tabs;
-        this._tabs.showTabListButton = true;
+        this._tabs.showTabListButton = false;
         this._visible = false;
-        this._ele = document.getElementById("maintabs");
+        this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
 
         this._tabs.addEventListener("onTabAdded", (tab, existedBefore) =>
@@ -35,8 +35,8 @@ export default class MainTabPanel extends Events
 
     init()
     {
-        const showMainTabs = userSettings.get("maintabsVisible");
-        if (showMainTabs) this.show();
+        const showtabs = userSettings.get("bottomTabsVisible");
+        if (showtabs) this.show();
         else this.hide(true);
     }
 
@@ -55,7 +55,7 @@ export default class MainTabPanel extends Events
 
         if (!userInteraction)
         {
-            if (!userSettings.get("maintabsVisible"))
+            if (!userSettings.get("bottomTabsVisible"))
             {
                 return;
             }
@@ -66,7 +66,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (CABLES.UI.loaded && userInteraction) userSettings.set("maintabsVisible", true);
+        if (CABLES.UI.loaded && userInteraction) userSettings.set("bottomTabsVisible", true);
 
         gui.setLayout();
 
@@ -80,7 +80,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
 
-        if (!donotsave && CABLES.UI.loaded) userSettings.set("maintabsVisible", false);
+        if (!donotsave && CABLES.UI.loaded) userSettings.set("bottomTabsVisible", false);
     }
 
     toggle(userInteraction)

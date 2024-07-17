@@ -67,6 +67,7 @@
 <div id="notify"></div>
 
 <div id="maintabs"></div>
+<div id="bottomtabs"></div>
 
 <div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle(true);gui.setLayout();" data-info="minimize_tabpanel">
     <span class="icon icon-chevron-left" style="pointer-events:none;"></span>
@@ -106,10 +107,12 @@
 </div>
 
 <div id="timing"></div>
+
 <div id="splitterPatch" class="splitter"></div>
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterTimeline" class="splitter"></div>
 <div id="splitterMaintabs" class="splitter"></div>
+<div id="splitterBottomTabs" class="splitter"></div>
 
 <div id="uploadprogresscontainer" class="hidden">
     <div id="uploadprogress"></div>
@@ -200,6 +203,7 @@
                     <li id="nav_filemanager">Files</li>
                     <li id="nav_timeline">Timeline</li>
                     <li id="nav_profiler">Profiler</li>
+                    <li id="nav_log">Log Console</li>
                     <li id="nav_gpuprofiler">GPU Profiler</li>
                     <li id="nav_patchanalysis">Patch Analysis</li>
                     <li id="nav_uploadfile">Upload file</li>
@@ -237,6 +241,9 @@
             <li class="nav-item-error hidden"  id="nav-item-error" onclick="gui.find(':attention');gui.patchView.checkPatchErrors();" >
                 <span id="nav-item-error-icon" class="icon-alert-triangle icon" style="display:inherit;margin:-3px;"></span>&nbsp;
             </li>
+            <!-- <li class="nav-item-log " id="nav-item-log" onclick="CABLES.CMD.DEBUG.logConsole()" >
+                <span id="nav-item-log-icon" class="icon-logs icon" style="display:inherit;margin:-3px;"></span>&nbsp;
+            </li> -->
             <li class="nav-item-bpReload hidden" id="nav-item-bpReload">
                 <span id="nav-item-bpReload-icon" class="icon-refresh icon" style="display:inherit;margin:-3px;background-color: var(--color_port_array);"></span>&nbsp;
             </li>

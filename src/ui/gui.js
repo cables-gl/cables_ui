@@ -39,9 +39,10 @@ import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
 import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
-import LoggingTab from "./components/tabs/tab_logging.js";
+import LoggingTab from "./components/tabs/tab_logfilter.js";
 import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
 import FileManager from "./components/filemanager.js";
+import BottomTabPanel from "./elements/tabpanel/bottomtabpanel.js";
 
 export default class Gui extends Events
 {
@@ -144,12 +145,14 @@ export default class Gui extends Events
         this.transformOverlay = new TransformsOverlay();
         this.htmlEleOverlay = null;
 
-
         this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
 
         this.mainTabs = new TabPanel("maintabs");
         this.maintabPanel = new MainTabPanel(this.mainTabs);
+
+        this.bottomTabs = new TabPanel("bottomtabs");
+        this.bottomTabPanel = new BottomTabPanel(this.bottomTabs);
 
         this.chat = null;
 
@@ -441,8 +444,8 @@ export default class Gui extends Events
         this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
-        this._elCanvasFlash = this._elCanvasFlash || ele.byId("canvasflash");
 
+        this._elCanvasFlash = this._elCanvasFlash || ele.byId("canvasflash");
         this._elIconbarLeft = this._elIconbarLeft || ele.byId("iconbar_sidebar_left");
 
         this.patchView.updateBoundingRect();
@@ -558,7 +561,7 @@ export default class Gui extends Events
 
         patchHeight -= infoAreaHeight;
 
-        if (this._showTiming) patchHeight -= this.timingHeight;
+        if (this._showTiming || this.bottomTabPanel.isVisible()) patchHeight -= this.timingHeight;
         else patchHeight -= timelineUiHeight;
 
         let editorWidth = this.editorWidth;
@@ -581,7 +584,7 @@ export default class Gui extends Events
             if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
+            this._elSplitterMaintabs.style.height = (patchHeight) + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
@@ -657,7 +660,7 @@ export default class Gui extends Events
             this._eleSplitterTimeline = this._eleSplitterTimeline || ele.byId("splitterTimeline");
             this._eleTiming = this._eleTiming || ele.byId("timing");
 
-            if (this._showTiming)
+            if (this._showTiming || this.bottomTabPanel.isVisible())
             {
                 this._eleTiming.style.width = timelineWidth + "px";
                 this._eleTiming.style.bottom = infoAreaHeight + "px";
@@ -801,6 +804,17 @@ export default class Gui extends Events
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
+
+
+        if (this.bottomTabPanel.isVisible())
+        {
+            this._eleBottomTabs = ele.byId("bottomtabs");
+
+            this._eleBottomTabs.style.width = timelineWidth + "px";
+            this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
+            this._eleBottomTabs.style.height = this.timingHeight + "px";
+            this._eleBottomTabs.style.left = iconBarWidth + "px";
+        }
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
@@ -964,6 +978,8 @@ export default class Gui extends Events
     showTiming()
     {
         this._showTiming = true;
+
+        this.bottomTabPanel.hide(true);
         this.timeLine().show();
         this.setLayout();
         userSettings.set("timelineOpened", this._showTiming);
@@ -1025,7 +1041,7 @@ export default class Gui extends Events
 
         this._showTiming = !this._showTiming;
         userSettings.set("timelineOpened", this._showTiming);
-        // updateTimingIcon();
+
         this.setLayout();
         gui.timeLine().redraw();
     }
@@ -1422,6 +1438,8 @@ export default class Gui extends Events
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", (event) => { CABLES.CMD.UI.profileGPU(); });
+        ele.byId("nav_log").addEventListener("click", (event) => { CABLES.CMD.DEBUG.logConsole(); });
+
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_patchanalysis").addEventListener("click", (event) => { CABLES.CMD.PATCH.analyze(); });
 
@@ -2075,10 +2093,8 @@ export default class Gui extends Events
         if (r < Gui.RESTRICT_MODE_FULL)
         {
             const optionsPanel = ele.byId("options");
-            if (optionsPanel)
-            {
-                optionsPanel.classList.add("readonly");
-            }
+            if (optionsPanel) optionsPanel.classList.add("readonly");
+
             const tabpanel = ele.byId("metatabpanel");
             if (tabpanel)
             {
@@ -2089,10 +2105,8 @@ export default class Gui extends Events
                 });
             }
             const timeline = ele.byId("timing");
-            if (timeline)
-            {
-                timeline.classList.add("readonly");
-            }
+            if (timeline) timeline.classList.add("readonly");
+
             const tlIconBar = ele.byId("iconbar_sidebar_timeline");
             if (tlIconBar) ele.hide(tlIconBar);
         }
@@ -2108,8 +2122,8 @@ export default class Gui extends Events
             {
                 tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
                 {
-                    tab.inert = false;
                     tab.classList.remove("readonly");
+                    tab.inert = false;
                 });
             }
             const timeline = ele.byId("timing");

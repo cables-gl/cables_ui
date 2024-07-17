@@ -52,8 +52,6 @@ export default class EditorTab
 
             editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
 
-
-
             if (options.allowEdit)
             {
                 if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));

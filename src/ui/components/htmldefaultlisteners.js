@@ -2,7 +2,7 @@ import { Logger } from "cables-shared-client";
 
 export default function setHtmlDefaultListeners()
 {
-    const _log = new Logger("htmlDefaultListeners");
+    const _log = new Logger("errorListener");
 
     // show context menu only on input fields/images etc...
     document.body.addEventListener("contextmenu", (e) =>
@@ -18,15 +18,12 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("error", (e) =>
     {
-        // setTimeout(function ()
-        // {
         console.log("window caught error", e);
         if (!CABLES.lastError)
         {
-            new CABLES.UI.ModalError({ "exception": e });
+            // new CABLES.UI.ModalError({ "exception": e });
             _log.error(e);
         }
-        // }, 100);
     });
 
 

@@ -407,7 +407,8 @@ export default class ScState extends Events
             if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client && this._connection.client.isPilot)
             {
-                this._connection.sendUi("opSelected", { "opId": op.id });
+                if (op)
+                    this._connection.sendUi("opSelected", { "opId": op.id });
             }
         });
 

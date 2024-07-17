@@ -27,7 +27,7 @@ export default class WelcomeTab
                 ele.byId("welcome_events").innerHTML = eventsHtml;
             });
 
-            if (!CABLES.platform.frontendOptions.hasCommunity)
+            if (CABLES.platform.frontendOptions.isStandalone)
                 CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res) =>
                 {
                     if (!err2)

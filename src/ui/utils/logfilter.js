@@ -1,10 +1,12 @@
 import { Events } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
 
-function defaultSetting(initiator)
+function defaultSetting(initiator = "")
 {
+    if (initiator.indexOf("Ops.Patch") == 0) return true;
+    if (initiator.indexOf("Ops.Team") == 0) return true;
     if (initiator.indexOf("Ops.User") == 0) return true;
-    if (initiator.indexOf("op Ops.User") == 0) return true;
+    if (initiator.indexOf("op ") == 0) return true;
     return false;
 }
 
@@ -39,7 +41,6 @@ export default class LogFilter extends Events
 
         this.logs = [];
 
-
         userSettings.on("loaded", () =>
         {
             this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
@@ -56,9 +57,11 @@ export default class LogFilter extends Events
 
     }
 
-    shouldPrint(initiator, level, txt)
+    shouldPrint(options)
     {
-        if (!initiator)initiator = "unknown";
+        const initiator = options.initiator;
+
+
         if (!this._initiators[initiator])
         {
             this._initiators[initiator] = new LogInitiator(initiator);
@@ -68,22 +71,47 @@ export default class LogFilter extends Events
             this.emitEvent("initiatorsChanged");
         }
 
-        this.logs.push({ "txt": txt, "initiator": initiator, "level": level });
-        while (this.logs.length > 50) this.logs.splice(0, 1);
-        this._initiators[initiator].log(txt);
+        let setting = this._initiators[initiator];
 
-        let should = this._initiators[initiator].print;
+
+        if (!setting) return false;
+        let should = setting.print;
         if (should && !this._warned)
         {
             this._warned = true;
             console.log("[logging] some console messages are not printed - [ctrl/cmd+p logging] to change logging settings");// eslint-disable-line
         }
 
-        if (level > 0)should = true;
-        if (should)
-        {
-            this.emitEvent("logAdded");
-        }
+        if (options.level > 0)should = true;
+
+
+        return should;
+    }
+
+    filterLog(options, txt)
+    {
+        let level = options.level || 0;
+        let initiator = options.initiator || "unknown";
+
+
+
+        const o = {};
+        for (let i in options) o[i] = options[i];
+        o.txt = txt;
+        o.initiator = initiator;
+        o.level = level;
+        o.time = performance.now();
+
+        this.logs.push(o);
+        while (this.logs.length > 50) this.logs.splice(0, 1);
+
+        const should = this.shouldPrint(o);
+
+        this._initiators[initiator].log(txt);
+        if (o.level > 1) CABLES.CMD.DEBUG.logConsole();
+
+        this.emitEvent("logAdded");
+
         return should;
     }
 
@@ -95,9 +123,8 @@ export default class LogFilter extends Events
     resetSettings()
     {
         for (let i in this._initiators)
-        {
             this._initiators[i].print = defaultSetting(i);
-        }
+
         this._settings = {};
         userSettings.set("loggingFilter", JSON.stringify(this._settings));
 

@@ -81,10 +81,6 @@ body
     overflow: hidden;
     font-family: $text-font;
     font-size: var(--font-size-default);
-
-    .devOnly {
-        display: none;
-    }
 }
 
 *,*:hover
