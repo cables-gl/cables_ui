@@ -94,7 +94,7 @@ export default class LogTab extends Events
                 const arg = l.args[j];
 
                 if (!arg) continue;
-                if (arg.constructor && arg.constructor.name == "ErrorEvent") this._hasError = true;
+                if (arg.constructor && arg.constructor.name.indexOf("Error") > -1) this._hasError = true;
 
                 try
                 {
@@ -161,6 +161,8 @@ export default class LogTab extends Events
                             let txt = "[" + arg.constructor.name + "] ";
 
                             if (arg.error)txt += " " + arg.error.message;
+                            if (arg.message)txt += " " + arg.message;
+
                             html += this._logLine(l, txt, l.level);
                         }
                         else
@@ -171,7 +173,7 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        if (arg.constructor.name == "ErrorEvent")
+                        if (arg.constructor.name.indexOf("Error") > -1)
                         {
                             let txt = "Uncaught ErrorEvent ";
 
@@ -195,6 +197,7 @@ export default class LogTab extends Events
                             //     this._logLine("unknown log object", arg.constructor.name, l.level);
                             // }
                             console.log("unknown log thing", arg.constructor.name, arg);
+                            currentLine += "unknown log type... ";
                         }
                     }
                 }
