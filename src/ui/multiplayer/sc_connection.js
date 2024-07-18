@@ -606,11 +606,8 @@ export default class ScConnection extends Events
         }
         if (payload.isRemoteClient && CABLESUILOADER.talkerAPI && !payload.isDisconnected)
         {
-            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-            {
-                payload.platform = browserInfo;
-                this.sendControl("pingAnswer", payload);
-            });
+            payload.platform = platform;
+            this.sendControl("pingAnswer", payload);
         }
         else
         {

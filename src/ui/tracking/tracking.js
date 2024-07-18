@@ -62,11 +62,8 @@ export default class Tracking
         if (project) payload.projectId = project._id;
         if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
         {
-            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-            {
-                payload.platform = browserInfo;
-                this._trackEvent("ui", actionName, level, payload);
-            });
+            payload.platform = platform;
+            this._trackEvent("ui", actionName, level, payload);
         }
         else
         {
