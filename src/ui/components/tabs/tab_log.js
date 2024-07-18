@@ -93,6 +93,9 @@ export default class LogTab extends Events
             {
                 const arg = l.args[j];
 
+                if (!arg) continue;
+                if (arg.constructor && arg.constructor.name == "ErrorEvent") this._hasError = true;
+
                 try
                 {
                     ErrorStackParser.parse(arg.error || arg);
@@ -168,6 +171,14 @@ export default class LogTab extends Events
                     }
                     else
                     {
+                        if (arg.constructor.name == "ErrorEvent")
+                        {
+                            let txt = "Uncaught ErrorEvent ";
+
+                            if (arg.message)txt += " message: " + arg.message;
+                            currentLine = txt;
+                        }
+                        else
                         if (arg.constructor.name == "Op")
                         {
                             currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
@@ -179,7 +190,11 @@ export default class LogTab extends Events
                         }
                         else
                         {
-                            console.log("unknown log thiung", arg);
+                            // if (arg.constructor && arg.constructor.name)
+                            // {
+                            //     this._logLine("unknown log object", arg.constructor.name, l.level);
+                            // }
+                            console.log("unknown log thing", arg.constructor.name, arg);
                         }
                     }
                 }

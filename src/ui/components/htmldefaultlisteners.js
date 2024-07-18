@@ -15,14 +15,18 @@ export default function setHtmlDefaultListeners()
         e.preventDefault();
     });
 
+    window.addEventListener("unhandledrejection", function (e)
+    {
+        _log.error("unhandledrejection Error occurred: " + e);
+    });
 
     window.addEventListener("error", (e) =>
     {
         console.log("window caught error", e);
-        if (!CABLES.lastError)
+        if (!CABLES.lastError != e)
         {
-            // new CABLES.UI.ModalError({ "exception": e });
             _log.error(e);
+            CABLES.lastError = e;
         }
     });
 
