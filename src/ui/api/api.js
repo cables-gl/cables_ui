@@ -160,11 +160,11 @@ export default class Api
             this.lastErrorReport = performance.now();
             if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
             {
-                CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-                {
-                    report.browserInfo = browserInfo;
-                    CABLES.api.post("errorReport", report, doneCallback);
-                });
+                // CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+                // {
+                report.browserInfo = platform;
+                CABLES.api.post("errorReport", report, doneCallback);
+                // });
             }
             else
             {
