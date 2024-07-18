@@ -233,13 +233,21 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    if (arg.serialize)
+                    if (arg.constructor.name == "Op")
+                    {
+                        neewArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
+                    }
+                    else if (arg.getSerialized)
+                    {
+                        neewArg = arg.getSerialized();
+                    }
+                    else if (arg.serialize)
                     {
                         neewArg = arg.serialize();
                     }
                     else
                     {
-                        neewArg = "unknow, could not serialize:" + arg.constructor.name;
+                        neewArg = " unknow, could not serialize:" + arg.constructor.name;
                     }
                 }
                 newLine.args.push(neewArg);
