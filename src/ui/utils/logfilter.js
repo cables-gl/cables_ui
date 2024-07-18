@@ -3,6 +3,10 @@ import userSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator = "")
 {
+    if (initiator == "LoadingStatus") return true;
+    if (initiator == "core_port") return true;
+    if (initiator == "core_op") return true;
+    if (initiator.indexOf("cgl_shader") == 0) return true;
     if (initiator.indexOf("Ops.Patch") == 0) return true;
     if (initiator.indexOf("Ops.Team") == 0) return true;
     if (initiator.indexOf("Ops.User") == 0) return true;
@@ -61,7 +65,6 @@ export default class LogFilter extends Events
     {
         const initiator = options.initiator;
 
-
         if (!this._initiators[initiator])
         {
             this._initiators[initiator] = new LogInitiator(initiator);
@@ -84,20 +87,23 @@ export default class LogFilter extends Events
 
         if (options.level > 0)should = true;
 
-
         return should;
     }
 
-    filterLog(options, txt)
+    filterLog(options)
     {
         let level = options.level || 0;
         let initiator = options.initiator || "unknown";
 
-
+        let args = [];
+        for (let i = 1; i < arguments.length; i++)
+        {
+            args.push(arguments[i]);
+        }
 
         const o = {};
         for (let i in options) o[i] = options[i];
-        o.txt = txt;
+        o.args = args;
         o.initiator = initiator;
         o.level = level;
         o.time = performance.now();
@@ -107,7 +113,7 @@ export default class LogFilter extends Events
 
         const should = this.shouldPrint(o);
 
-        this._initiators[initiator].log(txt);
+        this._initiators[initiator].log(args[0]);
         if (o.level > 1) CABLES.CMD.DEBUG.logConsole();
 
         this.emitEvent("logAdded");

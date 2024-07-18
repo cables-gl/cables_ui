@@ -214,6 +214,11 @@ export default class ModalDialog extends Events
     {
         this._options.html = h;
         this._eleContent.innerHTML = this.html();
+
+        Array.from(document.querySelectorAll("pre code")).forEach(function (block)
+        {
+            hljs.highlightElement(block);
+        });
     }
 
     show()

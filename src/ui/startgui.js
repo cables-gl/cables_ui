@@ -110,10 +110,9 @@ export default function startUi(cfg)
 
                 CABLES.UI.startIdleListeners();
 
-
                 new HtmlInspector();
 
-
+                if (userSettings.get("bottomTabsOpened") == true) CABLES.CMD.DEBUG.logConsole();
                 if (userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 gui.maintabPanel.init();

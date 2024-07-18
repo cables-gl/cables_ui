@@ -14,26 +14,24 @@ export default class LogTab extends Events
         this.closed = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
-
-
-
         this._tabs.addTab(this._tab, true);
-
-
-
-        this._tab.addButton("Filter", () => { console.log(1); });
-
 
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
         this._html();
         CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
-        // this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
 
         userSettings.set("loggingOpened", true);
+
+        this._tabs.on("resize", () =>
+        {
+            console.log(this._tab.contentEle, this._tab.contentEle.getBoundingClientRect());
+        });
+
+        const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
 
         this._tab.addEventListener(
@@ -48,7 +46,6 @@ export default class LogTab extends Events
             },
         );
     }
-
 
 
     _html()
@@ -71,12 +68,11 @@ export default class LogTab extends Events
         if (log.opInstId)
             html += "</a>";
 
-        html += "</span>]&nbsp;&nbsp;</span> ";
+        html += "</span>]&nbsp;</span>";
         html += "<div style=\"float:left\">";
         html += txt;
         html += "</div>";
         html += "</div>";
-
 
         return html;
     }
@@ -86,32 +82,79 @@ export default class LogTab extends Events
         if (this.closed) return;
         let html = "";
 
-        for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
+        const startTime = performance.now();
+
+        try
         {
-            const l = CABLES.UI.logFilter.logs[i];
-
-            if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
-
-            if (l.txt && l.txt.constructor && l.txt.constructor.name == "ErrorEvent")
+            for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
             {
-                const ee = l.txt;
+                const l = CABLES.UI.logFilter.logs[i];
 
-                if (ee.error)
-                {
-                    const stackHtml = ee.error.stack.replaceAll("\n", "<br/>");
+                if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
 
-                    html += this._logLine(l, stackHtml, l.level);
-                    html += this._logLine(l, ee.error.message, l.level);
-                }
-                else
+
+                let currentLine = "";
+
+                for (let j = 0; j < l.args.length; j++)
                 {
-                    html += this._logLine(l, "Err?", l.level);
+                    if (l.args[j] &&
+                    (
+                        (l.args[j].constructor && l.args[j].constructor.name.indexOf("Error") > -1)
+                    ))
+                    {
+                        const ee = l.args[j];
+                        const info = ErrorStackParser.parse(ee.error || ee);
+
+                        if (info && info.length > 0)
+                        {
+                            let stackHtml = "<table>";
+                            for (let k = 0; k < info.length; k++)
+                            {
+                                stackHtml += "<tr>";
+                                stackHtml += "  <td>" + info[k].functionName + "</td>";
+                                stackHtml += "  <td>";
+                                stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + info[k].fileName + "',line:" + info[k].lineNumber + "});\">";
+                                stackHtml += info[k].fileName;
+                                stackHtml += "  </a>";
+                                stackHtml += "  </td>";
+                                stackHtml += "  <td>" + info[k].lineNumber + ":" + info[k].columnNumber + "</td>";
+                                stackHtml += "</tr>";
+                            }
+                            stackHtml += "</table>";
+
+                            html += this._logLine(l, stackHtml, l.level);
+
+                            let txt = "[" + l.args[j].constructor.name + "] ";
+
+                            if (ee.error)txt += " " + ee.error.message;
+                            html += this._logLine(l, txt, l.level);
+                        }
+                        else
+                        {
+                            currentLine += "??? " + l.args[j].constructor.name;
+                            console.log("what is this", l.args[j]);
+                        }
+                    }
+                    else
+                    {
+                        if (l.args[j].constructor.name == "Op")
+                        {
+                            currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + l.args[j].id + "');\">op: " + l.args[j].shortName + "</a>";
+                        }
+                        else
+                        if (typeof l.args[j] == "string") currentLine += l.args[j];
+                        else
+                        {
+                            console.log("unknown log thiung", l.args[j]);
+                        }
+                    }
                 }
+                if (currentLine)html += this._logLine(l, currentLine, l.level);
             }
-            else
-            {
-                html += this._logLine(l, l.txt, l.level);
-            }
+        }
+        catch (e)
+        {
+            console.log("error in error");
         }
 
         const el = ele.byId("loggingHtmlId123");

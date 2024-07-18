@@ -119,10 +119,10 @@ export default class Gui extends Events
                 if (window.logStartup) logStartup("Patch loaded");
             });
 
-        this._corePatch.on("opcrash", (portTriggered) =>
-        {
-            this.showOpCrash(portTriggered.op);
-        });
+        // this._corePatch.on("opcrash", (portTriggered) =>
+        // {
+        //     this.showOpCrash(portTriggered.op);
+        // });
 
         this.on("libLoadError", (libName) =>
         {
@@ -805,6 +805,8 @@ export default class Gui extends Events
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
 
+        // this.mainTabs.updateSize();
+
 
         if (this.bottomTabPanel.isVisible())
         {
@@ -814,7 +816,11 @@ export default class Gui extends Events
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
             this._eleBottomTabs.style.height = this.timingHeight + "px";
             this._eleBottomTabs.style.left = iconBarWidth + "px";
+
+            this.bottomTabs.updateSize();
         }
+
+
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
@@ -1717,26 +1723,26 @@ export default class Gui extends Events
         }, 50);
     }
 
-    showOpCrash(op)
-    {
-        console.warn("an operator has crashed", op);
-        // iziToast.error({
-        //     "position": "topRight",
-        //     "theme": "dark",
-        //     "title": "error",
-        //     "message": "an operator has crashed",
-        //     "progressBar": false,
-        //     "animateInside": false,
-        //     "close": true,
-        //     "timeout": false,
-        //     "buttons": [
-        //         ["<button>reload</button>", function (instance, toast)
-        //         {
-        //             CABLES.CMD.PATCH.reload();
-        //         }]
-        //     ]
-        // });
-    }
+    // showOpCrash(op)
+    // {
+    //     console.warn("an operator has crashed", op);
+    //     // iziToast.error({
+    //     //     "position": "topRight",
+    //     //     "theme": "dark",
+    //     //     "title": "error",
+    //     //     "message": "an operator has crashed",
+    //     //     "progressBar": false,
+    //     //     "animateInside": false,
+    //     //     "close": true,
+    //     //     "timeout": false,
+    //     //     "buttons": [
+    //     //         ["<button>reload</button>", function (instance, toast)
+    //     //         {
+    //     //             CABLES.CMD.PATCH.reload();
+    //     //         }]
+    //     //     ]
+    //     // });
+    // }
 
     showLibLoadError(libName)
     {
@@ -1865,10 +1871,17 @@ export default class Gui extends Events
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
 
-        console.table(buildInfoTable);
-        console.log("start up times:");
-        console.table(CABLESUILOADER.startup.log);
-        console.groupEnd();
+        for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
+            this._log.log(CABLESUILOADER.startup.log[i].title + " (" + CABLESUILOADER.startup.log[i].time + "s)");
+
+
+
+
+        this._log.table(buildInfoTable);
+        this._log.log("start up times:");
+        this._log.table(CABLESUILOADER.startup.log);
+        this._log.groupEnd();
+
 
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();
@@ -2207,16 +2220,16 @@ export default class Gui extends Events
 
     initCoreListeners()
     {
-        this._corePatch.on("exception", function (ex, op)
-        {
-            new ModalError({ "exception": ex, "op": op });
-        });
+        // this._corePatch.on("exception", function (ex, op)
+        // {
+        //     new ModalError({ "exception": ex, "op": op });
+        // });
 
-        this._corePatch.on("exceptionOp", function (e, objName, op)
-        {
-            console.log("core error2");
-            new ModalError({ "exception": e, "opname": objName, "op": op });
-        });
+        // this._corePatch.on("exceptionOp", function (e, objName, op)
+        // {
+        //     console.log("core error2");
+        //     new ModalError({ "exception": e, "opname": objName, "op": op });
+        // });
 
         this._corePatch.on("criticalError", function (options)
         {
