@@ -313,4 +313,19 @@
         background-color: rgb(67, 4, 4);
     }
 
+    .logLevel99
+    {
+        background-color: transparent;
+
+        a
+        {
+            text-decoration: none;
+            font-family: "SourceSansPro", sans-serif;;
+        }
+    }
+    .logLevel99:hover
+    {
+        background-color: transparent;
+    }
+
 }

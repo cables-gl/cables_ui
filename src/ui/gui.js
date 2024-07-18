@@ -1766,6 +1766,7 @@ export default class Gui extends Events
 
         ele.byId("menubar").classList.remove("hidden");
 
+
         if (userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
         this._elGlCanvasDom.addEventListener("pointerenter", (e) =>

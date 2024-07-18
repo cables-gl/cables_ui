@@ -37,8 +37,6 @@ export default class Tab extends Events
                 });
             eleContainer.appendChild(this.toolbarContainerEle);
 
-            console.log(eleContainer);
-
             const tbEl = ele.byId("toolbarContent" + this.id);
             if (tbEl)tbEl.appendChild(this.toolbarEle);
         }
