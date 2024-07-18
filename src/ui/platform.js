@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
@@ -17,6 +17,7 @@ export default class Platform extends Events
     constructor(cfg)
     {
         super();
+        this._log = new Logger("platform");
         this._cfg = cfg;
         this.frontendOptions = {};
 
@@ -268,6 +269,11 @@ export default class Platform extends Events
                     }
                 }
             }
+        });
+
+        CABLESUILOADER.talkerAPI.addEventListener("logError", (error) =>
+        {
+            this._log.warn(error);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("fileDeleted", (options, next) =>
