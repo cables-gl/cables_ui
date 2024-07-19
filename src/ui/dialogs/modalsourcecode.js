@@ -21,10 +21,6 @@ export default class ModalSourceCode
             "lang": options.lang
         };
 
-
-        console.log("modal source code", this._options);
-
-
         this._dialog = new ModalDialog(this._options);
 
         if (this._options.url)

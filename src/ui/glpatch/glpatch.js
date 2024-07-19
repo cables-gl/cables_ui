@@ -797,6 +797,9 @@ export default class GlPatch extends Events
             return;
         }
 
+        if (gui.corePatch().getOpById(opid))
+            gui.corePatch().deleteOp(opid);
+
         delete this._glOpz[opid];
         glop.dispose();
     }
@@ -986,19 +989,13 @@ export default class GlPatch extends Events
 
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
         {
-            // for(let i in this._glOpz)
-            // {
             for (let j = 0; j < gui.corePatch().ops.length; j++)
             {
                 if (!this._glOpz[gui.corePatch().ops[j].id])
                 {
-                    console.log("missing glop in glpatch: ", gui.corePatch().ops[j].name);
+                    this._log.error("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
             }
-            // }
-
-            console.log(this._glOpz);
-            this._log.error("BROKEN");
         }
 
         this.hasFocus = ele.hasFocus(this._cgl.canvas);
