@@ -214,6 +214,7 @@ export default class ServerOps
 
             if (op.portsIn[i].uiAttribs.title) l.uititle = op.portsIn[i].uiAttribs.title;
             if (op.portsIn[i].uiAttribs.values) l.values = op.portsIn[i].uiAttribs.values;
+            if (op.portsIn[i].uiAttribs.longPort) l.longPort = op.portsIn[i].uiAttribs.longPort;
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
@@ -238,7 +239,8 @@ export default class ServerOps
                 "name": op.portsOut[i].name,
             };
 
-            if (op.portsOut[i].uiAttribs.title)l.uititle = op.portsOut[i].uiAttribs.title;
+            if (op.portsOut[i].uiAttribs.title) l.uititle = op.portsOut[i].uiAttribs.title;
+            if (op.portsOut[i].uiAttribs.longPort) l.longPort = op.portsOut[i].uiAttribs.longPort;
 
             if (op.portsOut[i].uiAttribs.hidePort) continue;
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
