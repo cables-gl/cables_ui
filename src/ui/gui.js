@@ -1397,7 +1397,7 @@ export default class Gui extends Events
             if (opDirEle)
             {
                 ele.show(opDirEle);
-                opDirEle.addEventListener("click", (event) => { CABLES.CMD.STANDALONE.addProjectOpDir(); });
+                opDirEle.addEventListener("click", (event) => { CABLES.platform.openOpDirsTab(); });
             }
         }
 
