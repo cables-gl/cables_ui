@@ -95,7 +95,7 @@ function initSplitPanes()
         {
             gui.pauseInteractionSplitpanes();
             e.preventDefault();
-            gui.timingHeight = window.innerHeight - e.clientY;
+            gui.setBottomPanelHeight(window.innerHeight - e.clientY);
             gui.setLayout();
         }
 

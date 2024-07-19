@@ -204,16 +204,13 @@
 {
     cursor:pointer;
     position: absolute;
-    // left:50%;
     z-index: 99999;
     transform: translate(-50%, 0);
     left:50%;
     top:calc(100vh - 200px);
-
     color: var(--color_op_text_active);
     font-size: 15px;
-
-    background-color: $color-bar-bg;
+    background-color: var(--color-04);;
     padding: 15px 21px;
     border-radius: 4px;
     margin: 4px 8px 5px 5px;

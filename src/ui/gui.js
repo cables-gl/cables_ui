@@ -70,7 +70,7 @@ export default class Gui extends Events
         this.isRemoteClient = cfg.remoteClient;
         this._spaceBarStart = 0;
 
-        this.timingHeight = uiconfig.timingPanelHeight;
+        this.bottomPanelHeight = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
         this.rendererWidth = uiconfig.rendererDefaultWidth;
         this.rendererHeight = uiconfig.rendererDefaultHeight;
         this.showingtwoMetaPanel = true;
@@ -348,6 +348,17 @@ export default class Gui extends Events
         }
     }
 
+    setBottomPanelHeight(h)
+    {
+        this.bottomPanelHeight = h;
+
+        clearTimeout(this._toBottomPanel);
+        this._toBottomPanel = setTimeout(() =>
+        {
+            userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+        });
+    }
+
     showBackupSaveWarning()
     {
         if (!CABLES.platform.getPatchVersion()) return false;
@@ -482,7 +493,7 @@ export default class Gui extends Events
         this._elCablesCanvasContainer = this._elCablesCanvasContainer || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
 
-        let timelineHeight = this.timingHeight;
+        let timelineHeight = this.bottomPanelHeight;
 
         const iconBarWidth = 0;
         this.canvasInfoUiHeight = 36;
@@ -561,7 +572,7 @@ export default class Gui extends Events
 
         patchHeight -= infoAreaHeight;
 
-        if (this._showTiming || this.bottomTabPanel.isVisible()) patchHeight -= this.timingHeight;
+        if (this._showTiming || this.bottomTabPanel.isVisible()) patchHeight -= this.bottomPanelHeight;
         else patchHeight -= timelineUiHeight;
 
         let editorWidth = this.editorWidth;
@@ -664,7 +675,7 @@ export default class Gui extends Events
             {
                 this._eleTiming.style.width = timelineWidth + "px";
                 this._eleTiming.style.bottom = infoAreaHeight + "px";
-                this._eleTiming.style.height = this.timingHeight + "px";
+                this._eleTiming.style.height = this.bottomPanelHeight + "px";
                 this._eleTiming.style.left = iconBarWidth + "px";
 
                 ele.byId("timelineui").style.width = timelineWidth + "px";
@@ -678,7 +689,7 @@ export default class Gui extends Events
                 ele.byQuery("#timetimeline svg").style.height = 25 + "px";
 
                 ele.byQuery("#timeline svg").style.width = timelineWidth + "px";
-                ele.byQuery("#timeline svg").style.height = this.timingHeight - timedisplayheight + "px";
+                ele.byQuery("#timeline svg").style.height = this.bottomPanelHeight - timedisplayheight + "px";
                 ele.byQuery("#timeline svg").style["margin-top"] = timelineUiHeight + timedisplayheight + timedisplayheight + "px";
 
                 this._elTLoverviewtimeline.style.display = "block";
@@ -687,7 +698,7 @@ export default class Gui extends Events
                 this._elTLsplitterTimeline.style.display = "block";
                 this._elTLtimelineTitle.style.display = "block";
 
-                this._eleSplitterTimeline.style.bottom = (this.timingHeight - 4 + infoAreaHeight) + "px";
+                this._eleSplitterTimeline.style.bottom = (this.bottomPanelHeight - 4 + infoAreaHeight) + "px";
                 ele.show(this._eleSplitterTimeline);
             }
             else
@@ -814,7 +825,7 @@ export default class Gui extends Events
 
             this._eleBottomTabs.style.width = timelineWidth + "px";
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
-            this._eleBottomTabs.style.height = this.timingHeight + "px";
+            this._eleBottomTabs.style.height = this.bottomPanelHeight + "px";
             this._eleBottomTabs.style.left = iconBarWidth + "px";
 
             this.bottomTabs.updateSize();
