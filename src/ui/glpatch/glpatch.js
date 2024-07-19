@@ -46,6 +46,7 @@ export default class GlPatch extends Events
 
         this._glOpz = {};
         this._hoverOps = [];
+        this._ignoreNonExistError = [];
         this._hoverOpLongStartTime = 0;
         this._patchAPI = null;
         this._showRedrawFlash = 0;
@@ -797,9 +798,6 @@ export default class GlPatch extends Events
             return;
         }
 
-        if (gui.corePatch().getOpById(opid))
-            gui.corePatch().deleteOp(opid);
-
         delete this._glOpz[opid];
         glop.dispose();
     }
@@ -991,8 +989,9 @@ export default class GlPatch extends Events
         {
             for (let j = 0; j < gui.corePatch().ops.length; j++)
             {
-                if (!this._glOpz[gui.corePatch().ops[j].id])
+                if (!this._glOpz[gui.corePatch().ops[j].id] && this._ignoreNonExistError.indexOf(gui.corePatch().ops[j].id) == -1)
                 {
+                    this._ignoreNonExistError.push(gui.corePatch().ops[j].id);
                     this._log.error("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
             }
