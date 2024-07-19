@@ -1,6 +1,5 @@
 import chroma from "chroma-js";
 import loadjs from "loadjs";
-import Handlebars from "handlebars";
 import introJs from "intro.js";
 import iziToast from "izitoast";
 import { marked } from "marked";
@@ -12,6 +11,8 @@ import ErrorStackParser from "error-stack-parser";
 import tinysort from "tinysort";
 import QRCode from "davidshimjs-qrcodejs";
 import Sortable from "sortablejs";
+import platform from "platform";
+import Handlebars from "./handlebars.cjs";
 import hljs from "./highlight_min.cjs";
 import colorrick from "./colorrick.cjs";
 import MathParser from "./mathparser.js";
@@ -35,4 +36,4 @@ window.ErrorStackParser = ErrorStackParser;
 window.tinysort = tinysort;
 window.UndoManager = UndoManager;
 window.Sortable = Sortable;
-
+window.platform = platform;

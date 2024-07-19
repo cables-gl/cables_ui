@@ -39,7 +39,7 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
             "minimize": minify,
             "usedExports": true
         },
-        "externals": ["CABLES"],
+        "externals": ["CABLES", /(\/libs\/ui\/)/i],
         "resolve": {
             "extensions": [".json", ".js"],
         },

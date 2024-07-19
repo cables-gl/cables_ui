@@ -122,81 +122,11 @@ export default class Api
     }
 
 
-    getErrorReport(err)
+    sendErrorReport(report, manualSend = true)
     {
-        const report = err || CABLES.lastError || {};
-        let history = [];
-        if (undo)
-        {
-            history = undo.getCommands();
-        }
-        history = history.slice(-10);
-        err = err || CABLES.lastError;
-
-        report.time = Date.now();
-        report.history = history;
-
-        report.url = document.location.href;
-
-        report.infoPlatform = navigator.platform;
-        report.infoLanguage = navigator.language;
-        report.infoUserAgent = navigator.userAgent;
-        // report.opTriggerStack = err.opTriggerStack;
-
-        if (window.gui)
-        {
-            if (gui.project()) report.projectId = gui.project()._id;
-            if (gui.user)
-            {
-                report.username = gui.user.username;
-                report.userId = gui.user.id;
-            }
-
-            try
-            {
-                const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
-                report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
-            }
-            catch (e)
-            {
-                this._log.log(e);
-            }
-        }
-
-        // report.exception = {};
-        // if (err.exception)
-        // {
-        //     report.exception = {
-        //         "type": err.exception.type,
-        //         "error": err.exception.error,
-        //         "filename": err.exception.filename,
-        //         "lineno": err.exception.lineno,
-        //         "message": err.exception.message,
-        //     };
-        //     if (err.exception.stack) report.stack = err.exception.stack;
-        //     if (err.exception.error && err.exception.error.stack) report.stack = err.exception.error.stack;
-        // }
-
-        // report.opName = err.opName;
-        // report.errorLine = err.errorLine;
-
-        // if (err.stackInfo)
-        // {
-        //     report.stackInfo = err.stackInfo;
-        // }
-
-        return report;
-    }
-
-    sendErrorReport(err, manualSend = true)
-    {
-        err = err || CABLES.lastError;
-        const report = this.getErrorReport(err);
-
         const doneCallback = () =>
         {
             this._log.log("error report sent.");
-            this._log.log(report);
 
             if (manualSend)
             {
@@ -230,11 +160,8 @@ export default class Api
             this.lastErrorReport = performance.now();
             if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
             {
-                CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-                {
-                    report.browserInfo = browserInfo;
-                    CABLES.api.post("errorReport", report, doneCallback);
-                });
+                report.browserInfo = platform;
+                CABLES.api.post("errorReport", report, doneCallback);
             }
             else
             {

@@ -143,7 +143,7 @@ export default class ModalError
             "triggerStack": this._options.triggerStack };
 
         if (this._options.op) CABLES.lastError.opName = this.opName;
-        if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
+        // if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
 
         const modalOptions = {
             "title": this._options.title || "cablefail :/",
