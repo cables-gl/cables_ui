@@ -17,7 +17,7 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("unhandledrejection", function (e)
     {
-        _log.error("unhandledrejection Error occurred: " + e);
+        _log.error("unhandledrejection Error occurred: ", e);
     });
 
     window.addEventListener("error", (e) =>

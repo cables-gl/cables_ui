@@ -130,7 +130,7 @@ export default class LogTab extends Events
                     let errorStack = null;
                     try
                     {
-                        errorStack = ErrorStackParser.parse(arg.error || arg);
+                        errorStack = ErrorStackParser.parse(arg.error || arg.reason || arg);
                     }
                     catch (e)
                     {
@@ -160,8 +160,9 @@ export default class LogTab extends Events
 
                             let txt = "[" + arg.constructor.name + "] ";
 
-                            if (arg.error)txt += " " + arg.error.message;
                             if (arg.message)txt += " " + arg.message;
+                            if (arg.error)txt += " " + arg.error.message;
+                            if (arg.reason)txt += " " + arg.reason.message;
 
                             html += this._logLine(l, txt, l.level);
                         }

@@ -13,21 +13,32 @@ export default class ModalSourceCode
     constructor(options)
     {
         this._tasks = [];
-        this.options = {
-            "title": options.title || "?",
-            "html": "loading...!"
+        this._options = {
+            "title": options.title || "Source",
+            "html": "<div class\"loading\"></div>",
+            "url": options.url,
+            "line": options.line,
+            "lang": options.lang
         };
 
-        this._dialog = new ModalDialog(this.options);
 
-        if (options.url)
+        console.log("modal source code", this._options);
+
+
+        this._dialog = new ModalDialog(this._options);
+
+        if (this._options.url)
         {
-            this._getFileSnippet(options.url, options.line, (txt) =>
+            this._getFileSnippet(this._options.url, (txt) =>
             {
-                const html = this._getHtmlFromSrc(txt, [options.line - 1], options.line - 6, options.line + 7, options.lang || "javascript");
+                const html = this._getHtmlFromSrc(txt, [this._options.line - 1], this._options.line - 6, this._options.line + 7, this._options.lang || "javascript");
 
-                this._dialog.updateHtml("" + options.url + "<br/><br/>" + html);
+                this._dialog.updateHtml("" + this._options.url + "<br/><br/>" + html);
             });
+        }
+        else
+        {
+            this._log.warn("no url given...");
         }
     }
 
@@ -55,10 +66,15 @@ export default class ModalSourceCode
 
         str = str || "";
 
+        from = from || 0;
+        to = to || 1;
+
+
         let lines = [];
         try
         {
             lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
+            while (lines.length < to)lines.push("// EOF\n");
         }
         catch (e)
         {
@@ -67,7 +83,7 @@ export default class ModalSourceCode
 
         for (let i = from; i < to; i++)
         {
-            const line = i + ": " + lines[i];
+            const line = i + ": " + (lines[i] || "???");
 
             let isBadLine = false;
             for (const bj in badLines)
@@ -93,7 +109,7 @@ export default class ModalSourceCode
         return htmlWarning;
     }
 
-    _getFileSnippet(url, line, cb)
+    _getFileSnippet(url, cb)
     {
         CABLES.ajax(
             url,
