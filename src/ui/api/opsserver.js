@@ -214,6 +214,7 @@ export default class ServerOps
 
             if (op.portsIn[i].uiAttribs.title) l.uititle = op.portsIn[i].uiAttribs.title;
             if (op.portsIn[i].uiAttribs.values) l.values = op.portsIn[i].uiAttribs.values;
+            if (op.portsIn[i].uiAttribs.longPort) l.longPort = op.portsIn[i].uiAttribs.longPort;
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
@@ -238,7 +239,8 @@ export default class ServerOps
                 "name": op.portsOut[i].name,
             };
 
-            if (op.portsOut[i].uiAttribs.title)l.uititle = op.portsOut[i].uiAttribs.title;
+            if (op.portsOut[i].uiAttribs.title) l.uititle = op.portsOut[i].uiAttribs.title;
+            if (op.portsOut[i].uiAttribs.longPort) l.longPort = op.portsOut[i].uiAttribs.longPort;
 
             if (op.portsOut[i].uiAttribs.hidePort) continue;
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
@@ -804,6 +806,38 @@ export default class ServerOps
                     "text": html
                 });
 
+                if (CABLES.platform.frontendOptions.chooseOpDir)
+                {
+                    const addButton = ele.byId("addOpTargetDir");
+                    if (addButton)
+                    {
+                        addButton.addEventListener("click", () =>
+                        {
+                            CABLES.CMD.STANDALONE.addProjectOpDir(null, (dirErr, dirRes) =>
+                            {
+                                if (!dirErr)
+                                {
+                                    const selectElement = ele.byId("opTargetDir");
+                                    if (selectElement)
+                                    {
+                                        selectElement.length = 0;
+                                        dirRes.forEach((dir, i) =>
+                                        {
+                                            const selected = i === 0;
+                                            selectElement.add(new Option(dir, dir, selected, selected));
+                                            if (selected) opTargetDir = dir;
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    this._log.error(dirErr);
+                                }
+                            });
+                        });
+                    }
+                }
+
                 _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
 
                 ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
@@ -871,7 +905,7 @@ export default class ServerOps
                     opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
                 }
                 opDirSelect += "</select>";
-                opDirSelect += "&nbsp;<a class=\"button-small button-icon tt info\" data-into=\"add op dir\" data-tt=\"add op dir\" onclick=\"CABLES.CMD.STANDALONE.addProjectOpDir();\"><span class=\"icon icon-file-plus\"></span></a>\n";
+                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info\" data-into=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
                 opDirSelect += "<hr/>";
                 html = opDirSelect + html;
                 _checkOpName();
@@ -1800,7 +1834,6 @@ export default class ServerOps
             const options = {
                 "op": op
             };
-
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 if (err)

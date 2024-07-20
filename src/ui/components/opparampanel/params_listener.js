@@ -347,7 +347,7 @@ class ParamsListener extends Events
         // input button click!!!!
         //
         el = ele.byId("portbutton_" + index + "_" + panelid);
-        if (el) el.addEventListener("click", function (e)
+        if (el) el.addEventListener("click", (e) =>
         {
             thePort._onTriggered();
         });
@@ -357,7 +357,7 @@ class ParamsListener extends Events
             for (let i = 0; i < ports[index].value.length; i++)
             {
                 let eli = ele.byId("portbutton_" + index + "_" + panelid + "_" + i);
-                if (eli)eli.addEventListener("click", function (e)
+                if (eli)eli.addEventListener("click", (e) =>
                 {
                     const name = e.target.dataset.title;
                     ports[index]._onTriggered(name);

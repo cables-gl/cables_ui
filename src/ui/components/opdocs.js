@@ -458,6 +458,10 @@ export default class OpDocs
 
             svgStr += "<rect width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
 
+
+
+            let svgOver = "";
+
             if (doc.layout.portsIn)
                 for (let i = 0; i < doc.layout.portsIn.length; i++)
                 {
@@ -467,8 +471,18 @@ export default class OpDocs
                     const pcol = GlPort.getColor(doc.layout.portsIn[i].type);
                     const cssCol = glColorToHtml(pcol);
 
+                    if (doc.layout.portsIn[i].longPort)
+                    {
+                        svgOver = "<rect x=\"" + (posx + gluiconfig.portWidth) + "\" width=\"" + ((gluiconfig.portPadding + gluiconfig.portWidth) * (doc.layout.portsIn[i].longPort - 1)) + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\" opacity=\"0.76\"/>";
+                        svgOver += "<rect x=\"" + (posx + gluiconfig.portWidth) + "\" width=\"" + ((gluiconfig.portPadding + gluiconfig.portWidth) * (doc.layout.portsIn[i].longPort - 1)) + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\" opacity=\"0.5\"/>";
+                    }
+
                     svgStr += "<rect x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
                 }
+
+            svgStr += svgOver;
+
+            svgOver = "";
 
             if (doc.layout.portsOut)
                 for (let i = 0; i < doc.layout.portsOut.length; i++)
@@ -479,8 +493,16 @@ export default class OpDocs
                     const cssCol = glColorToHtml(pcol);
 
 
+                    if (doc.layout.portsOut[i].longPort)
+                    {
+                        svgOver = "<rect y=\"" + (gluiconfig.opHeight - gluiconfig.portHeight) + "\" x=\"" + (posx + gluiconfig.portWidth) + "\" width=\"" + ((gluiconfig.portPadding + gluiconfig.portWidth) * (doc.layout.portsOut[i].longPort - 1)) + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\" opacity=\"0.76\"/>";
+                        svgOver += "<rect y=\"" + (gluiconfig.opHeight - gluiconfig.portHeight) + "\" x=\"" + (posx + gluiconfig.portWidth) + "\" width=\"" + ((gluiconfig.portPadding + gluiconfig.portWidth) * (doc.layout.portsOut[i].longPort - 1)) + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\" opacity=\"0.5\"/>";
+                    }
+
                     svgStr += "<rect y=\"" + (gluiconfig.opHeight - gluiconfig.portHeight) + "\" x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
                 }
+
+            svgStr += svgOver;
 
             const nsCol = GlPatch.getOpNamespaceColor(opname);
             const cssCol = glColorToHtml(nsCol);

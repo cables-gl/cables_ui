@@ -46,6 +46,7 @@ export default class GlPatch extends Events
 
         this._glOpz = {};
         this._hoverOps = [];
+        this._ignoreNonExistError = [];
         this._hoverOpLongStartTime = 0;
         this._patchAPI = null;
         this._showRedrawFlash = 0;
@@ -986,19 +987,14 @@ export default class GlPatch extends Events
 
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
         {
-            // for(let i in this._glOpz)
-            // {
             for (let j = 0; j < gui.corePatch().ops.length; j++)
             {
-                if (!this._glOpz[gui.corePatch().ops[j].id])
+                if (!this._glOpz[gui.corePatch().ops[j].id] && this._ignoreNonExistError.indexOf(gui.corePatch().ops[j].id) == -1)
                 {
-                    console.log("missing glop in glpatch: ", gui.corePatch().ops[j].name);
+                    this._ignoreNonExistError.push(gui.corePatch().ops[j].id);
+                    this._log.error("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
             }
-            // }
-
-            console.log(this._glOpz);
-            this._log.error("BROKEN");
         }
 
         this.hasFocus = ele.hasFocus(this._cgl.canvas);

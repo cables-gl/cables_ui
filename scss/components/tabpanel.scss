@@ -1,4 +1,5 @@
 
+
 .tabContentScrollContainer
 {
     height:100%;
@@ -8,25 +9,11 @@
 {
     padding:15px;
     padding-left:5px;
+}
 
-    // a
-    // {
-    //     border-radius: 9px;
-    //     cursor:pointer !important;
-
-    //     border:2px solid $button-background-color !important;
-    //     color:$button-text-color;
-    //     padding:3px;
-    //     padding-left:5px;
-    //     padding-right:5px;
-
-    //     &:hover
-    //     {
-    //         border:2px solid var(--color-special) !important;
-    //         // background-color: $button-background-color-hover !important;
-    //         color:$button-text-color-hover;
-    //     }
-    // }
+#bottomtabs .tabtoolbar
+{
+    padding:2px;
 }
 
 .toolbar

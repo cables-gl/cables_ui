@@ -1,4 +1,4 @@
-import { helper } from "cables-shared-client";
+import { helper, Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
@@ -6,6 +6,8 @@ export default class StandaloneOpDirs
 {
     constructor(tabs)
     {
+        this._log = new Logger("StandaloneOpDirsTab");
+
         this._count = 0;
         this._timeout = null;
 
@@ -13,37 +15,12 @@ export default class StandaloneOpDirs
         tabs.addTab(this._tab, true);
         this.show();
 
-        const listenerId = CABLESUILOADER.talkerAPI.addEventListener("projectOpDirsChanged", (err, res) =>
-        {
-            this.show();
-            CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": gui.patchId }, (_err, _data) =>
-            {
-                if (_err)
-                {
-                    console.error("preloading error", _err);
-                }
-                else
-                {
-                    if (gui.opDocs)
-                    {
-                        gui.opDocs.addOpDocs(_data.opDocs);
-                    }
-                    gui.opSelect().reload();
-                }
-            }, (response) =>
-            {
-                console.error("preloading error", response);
-            });
-        });
         this._tab.on("onActivate", this.show);
-        this._tab.on("close", () =>
-        {
-            CABLESUILOADER.talkerAPI.removeEventListener(listenerId);
-        });
     }
 
     show()
     {
+        if (!this._tab) return;
         CABLESUILOADER.talkerAPI.send("getOpTargetDirs", {}, (err, r) =>
         {
             if (!err && r.data)
@@ -53,12 +30,41 @@ export default class StandaloneOpDirs
 
                 const listEle = ele.byId("dirlist");
                 const infoBlock = listEle.querySelector(".highlightBlock");
-                const saveButton = this._tab.contentEle.querySelector("#saveProjectOpDirOrder");
-                if (saveButton)
+                const addButton = this._tab.contentEle.querySelector("#addOpProjectDir");
+                if (addButton)
                 {
-                    saveButton.addEventListener("click", () =>
+                    addButton.addEventListener("click", () =>
                     {
-                        ele.hide(infoBlock);
+                        CABLES.CMD.STANDALONE.addProjectOpDir(null, () =>
+                        {
+                            this.show();
+                            this._loadOpsInDirs();
+                        });
+                    });
+                }
+
+                const removeButtons = this._tab.contentEle.querySelectorAll(".removeOpProjectDir");
+                removeButtons.forEach((removeButton) =>
+                {
+                    removeButton.addEventListener("click", () =>
+                    {
+                        const dir = removeButton.dataset.dir;
+                        CABLESUILOADER.talkerAPI.send("removeProjectOpDir", dir, () =>
+                        {
+                            this.show();
+                            this._loadOpsInDirs();
+                        });
+                    });
+                });
+                ele.hide(infoBlock);
+
+                new Sortable(listEle, {
+                    "animation": 150,
+                    "handle": ".handle",
+                    "ghostClass": "ghost",
+                    "dragClass": "dragActive",
+                    "onEnd": () =>
+                    {
                         infoBlock.classList.add("info");
                         infoBlock.classList.remove("error");
                         const order = [];
@@ -72,12 +78,7 @@ export default class StandaloneOpDirs
                             if (orderRes && orderRes.success)
                             {
                                 infoBlock.innerHTML = "Saved, please reload the patch to see the changes";
-                                saveButton.innerHTML = "Reload";
                                 ele.show(infoBlock);
-                                saveButton.addEventListener("click", () =>
-                                {
-                                    window.location.reload();
-                                });
                             }
                             else
                             {
@@ -87,16 +88,31 @@ export default class StandaloneOpDirs
                                 ele.show(infoBlock);
                             }
                         });
-                    });
-                }
-
-                new Sortable(listEle, {
-                    "animation": 150,
-                    "handle": ".handle",
-                    "ghostClass": "ghost",
-                    "dragClass": "dragActive"
+                    }
                 });
             }
+        });
+    }
+
+    _loadOpsInDirs()
+    {
+        CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": gui.patchId }, (_err, _data) =>
+        {
+            if (_err)
+            {
+                this._log.error("preloading error", _err);
+            }
+            else
+            {
+                if (gui.opDocs)
+                {
+                    gui.opDocs.addOpDocs(_data.opDocs);
+                }
+                gui.opSelect().reload();
+            }
+        }, (response) =>
+        {
+            this._log.error("preloading error", response);
         });
     }
 }
