@@ -1,5 +1,4 @@
-import { Events } from "cables-shared-client";
-import { Logger } from "concurrently";
+import { Events, Logger } from "cables-shared-client";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
