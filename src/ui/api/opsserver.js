@@ -2009,7 +2009,7 @@ export default class ServerOps
                 "codeText": JSON.stringify(err, false, 4)
             };
 
-            if (err && err.data && err.datam.msg) options.text = err.datam.msg;
+            if (err && err.data && err.data.msg) options.text = err.data.msg;
 
             new ModalError(options);
         }
