@@ -1698,7 +1698,6 @@ export default class Gui extends Events
         else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
         else if (gui.isShowingModal())
         {
-            console.log("closing modal...");
             gui.closeModal();
 
             if (this.maintabPanel?._tabs?.getActiveTab()?.editor)
