@@ -97,7 +97,7 @@ export default class Gui extends Events
             "editorMode": true,
             "canvas":
                 {
-                    "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
+                    // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
                     "alpha": true,
                     "premultipliedAlpha": true,
                 },
