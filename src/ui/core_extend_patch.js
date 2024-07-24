@@ -291,7 +291,10 @@ export default function extendCorePatch()
                 if (oldOp.portsIn[j].links.length === 0)
                 {
                     const p = op.getPort(oldOp.portsIn[j].name);
-                    if (!p) this._log.error("[reloadOp] could not set port " + oldOp.portsIn[j].name + ", probably renamed port ?");
+                    if (!p)
+                    {
+                        this._log.warn("[reloadOp] could not set port " + oldOp.portsIn[j].name + ", probably renamed port ?");
+                    }
                     else
                     {
                         p.set(oldOp.portsIn[j].get());

@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -21,6 +21,7 @@ export default class GlOp extends Events
         this.DISPLAY_SUBPATCH = 3;
         this.DISPLAY_REROUTE_DOT = 4;
 
+        this._log = new Logger("glop");
         this._id = op.id;
         this._visible = true;
         this._glPatch = glPatch;
@@ -98,7 +99,7 @@ export default class GlOp extends Events
 
             this._op.on("onPortRemoved", () =>
             {
-                console.log("port removed...");
+                this._log.log("port removed...");
                 this.refreshPorts();
             });
 
@@ -109,9 +110,9 @@ export default class GlOp extends Events
 
             //     // this.emitEvent("patchLoadEnd", () =>
             //     // {
-            //     //     console.log("refreshing ports...");
+            //     //     this._log.log("refreshing ports...");
             //     //     this.refreshPorts();
-            //     //     console.log("refreshing ports... done");
+            //     //     this._log.log("refreshing ports... done");
             //     // });
             // }
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
@@ -328,7 +329,7 @@ export default class GlOp extends Events
 
         if (!this._op)
         {
-            console.warn("glop no op", this);
+            this._log.warn("glop no op", this);
             return;
         }
 
@@ -782,8 +783,8 @@ export default class GlOp extends Events
         let emit = false;
         for (let i = 0; i < ports.length; i++)
         {
-            // console.log(ports[i]);
-            // console.log("this.op.getSubPatch() != ports[i].op.id", this.op.getSubPatch(), ports[i].op.id);
+            // this._log.log(ports[i]);
+            // this._log.log("this.op.getSubPatch() != ports[i].op.id", this.op.getSubPatch(), ports[i].op.id);
 
             if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
@@ -797,7 +798,7 @@ export default class GlOp extends Events
             }
             else
             {
-                // console.log("noe");
+                // this._log.log("noe");
                 if (ports[i].uiAttribs.glPortIndex != count) emit = true;
                 ports[i].setUiAttribs({ "glPortIndex": count });
             }
@@ -808,10 +809,10 @@ export default class GlOp extends Events
             count++;
         }
 
-        // if (ports[0])console.log(ports[0].op.objName);
+        // if (ports[0])this._log.log(ports[0].op.objName);
         // for (let i = 0; i < ports.length; i++)
         // {
-        //     console.log(i, ports[i].name, ports[i].uiAttribs.glPortIndex);
+        //     this._log.log(i, ports[i].name, ports[i].uiAttribs.glPortIndex);
         // }
 
         if (emit)
@@ -1047,7 +1048,7 @@ export default class GlOp extends Events
         if (!this.opUiAttribs.loading && this._glLoadingIndicator)
         {
             this._glLoadingIndicator = this._glLoadingIndicator.dispose();
-            // console.log("stop loading!", this._glLoadingIndicator);
+            // this._log.log("stop loading!", this._glLoadingIndicator);
         }
 
         if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
@@ -1481,7 +1482,7 @@ export default class GlOp extends Events
 
                 this._glPatch._updateNumberOfSelectedOps();
                 this._glPatch.selectOpId(this._id);
-                // console.log("_updateNumberOfSelectedOps");
+                // this._log.log("_updateNumberOfSelectedOps");
             }
 
             this.updatePosition();
