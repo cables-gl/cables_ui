@@ -274,7 +274,8 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         "shortName": subPatchOpUtil.getAutoName(true),
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
-        "showReplace": false
+        "showReplace": false,
+        "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
     };
 
     if (gui.patchView.getCurrentSubPatch() != 0)
