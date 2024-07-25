@@ -315,6 +315,48 @@ export default class ServerOps
         }, true);
     }
 
+    rename(oldname, name, cb, options)
+    {
+        if (!CABLES.platform.frontendOptions.opRenameInEditor)
+        {
+            if (cb) cb();
+            return;
+        }
+        options = options || { "openEditor": true };
+        const loadingModal = options.loadingModal || gui.startModalLoading("Renaming op...");
+
+        loadingModal.setTask("renaming " + oldname + " to " + name);
+
+        const renameRequest = {
+            "opname": oldname,
+            "name": name,
+        };
+        if (options.opTargetDir)renameRequest.opTargetDir = options.opTargetDir;
+
+        CABLESUILOADER.talkerAPI.send(
+            "opRename",
+            renameRequest,
+            (err, res) =>
+            {
+                if (err)
+                {
+                    this._log.log("err res", res);
+                    gui.endModalLoading();
+
+                    CABLES.UI.MODAL.showError("Could not rename op", "");
+
+                    return;
+                }
+
+                if (options.openEditor) this.edit(name);
+                gui.opSelect().reload();
+                if (!options.loadingModal) gui.endModalLoading();
+                gui.serverOps.execute(name);
+                if (cb)cb();
+            },
+        );
+    }
+
     clone(oldname, name, cb, options)
     {
         options = options || { "openEditor": true };
@@ -788,10 +830,10 @@ export default class ServerOps
             const checkNameRequest = {
                 "namespace": options.suggestedNamespace,
                 "v": newName,
-                "sourceName": options.sourceOpName
+                "sourceName": options.sourceOpName,
+                "rename": options.rename
             };
             if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
-
             CABLESUILOADER.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
             {
                 if (err)
@@ -888,11 +930,18 @@ export default class ServerOps
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+        if (options.rename)
+        {
+            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
+        }
+        else
+        {
+            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+        }
         html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
-        if (CABLES.platform.frontendOptions.chooseOpDir)
+        if (options.chooseOpDir)
         {
             CABLESUILOADER.talkerAPI.send("getOpTargetDirs", {}, (err, res) =>
             {
@@ -931,7 +980,8 @@ export default class ServerOps
                 const checkNameRequest = {
                     "namespace": newNamespace,
                     "v": v,
-                    "sourceName": options.sourceOpName
+                    "sourceName": options.sourceOpName,
+                    "rename": options.rename
                 };
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
@@ -1050,7 +1100,8 @@ export default class ServerOps
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
-            "sourceOpName": null
+            "sourceOpName": null,
+            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1083,6 +1134,43 @@ export default class ServerOps
         });
     }
 
+    renameDialog(oldName, origOp)
+    {
+        if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
+
+        if (gui.showGuestWarning()) return;
+
+        let name = "";
+        let parts = oldName.split(".");
+        if (parts) name = parts[parts.length - 1];
+        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
+
+        const dialogOptions = {
+            "title": "Rename operator",
+            "shortName": name,
+            "type": "patch",
+            "suggestedNamespace": suggestedNamespace,
+            "showReplace": false,
+            "sourceOpName": null,
+            "rename": true,
+            "chooseOpDir": false
+        };
+
+        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        {
+            const opname = newNamespace + newName;
+
+            let nameOrId = oldName;
+            const doc = gui.opDocs.getOpDocByName(oldName);
+            if (doc && doc.id) nameOrId = doc.id;
+            gui.serverOps.rename(nameOrId, opname, () =>
+            {
+                console.log("RENAMED", nameOrId.opName);
+            }, { "opTargetDir": cbOptions.opTargetDir });
+        });
+    }
+
     cloneDialog(oldName, origOp)
     {
         if (gui.showGuestWarning()) return;
@@ -1105,7 +1193,8 @@ export default class ServerOps
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
-            "sourceOpName": null
+            "sourceOpName": null,
+            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
