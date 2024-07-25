@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
 import userSettings from "../usersettings.js";
@@ -11,10 +11,11 @@ export default class LogTab extends Events
     {
         super();
         this._tabs = tabs;
+        this._log = new Logger("LogTab");
         this._logs = [];
         this.closed = false;
         this.report = [];
-
+        this.lastError = performance.now();
         this._hasError = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -144,6 +145,11 @@ export default class LogTab extends Events
                             let stackHtml = "<table>";
                             for (let k = 0; k < errorStack.length; k++)
                             {
+                                if (k === 0)
+                                {
+                                    this._logErrorLine(errorStack[k].fileName, errorStack[k].lineNumber - 1);
+                                }
+
                                 stackHtml += "<tr>";
                                 stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
                                 stackHtml += "  <td>";
@@ -222,6 +228,36 @@ export default class LogTab extends Events
                 CABLES.api.sendErrorReport(this.createReport(), true);
             });
         }
+    }
+
+    _logErrorLine(url, line)
+    {
+        if (performance.now() - this.lastError < 5000) return;
+
+        this.lastError = performance.now();
+
+        CABLES.ajax(
+            url,
+            (err, _data, xhr) =>
+            {
+                if (err)
+                {
+                    console.error(err);
+                    return;
+                }
+
+                try
+                {
+                    let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
+
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": [" + lines[line] + "]";
+                    this._log.error(str);
+                }
+                catch (e)
+                {
+                    console.log("could not parse lines.", e);
+                }
+            });
     }
 
     createReport()
