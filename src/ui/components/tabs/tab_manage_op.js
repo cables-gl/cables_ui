@@ -45,17 +45,17 @@ export default class ManageOp
                 this.show();
             }));
 
-        // this._refreshListener.push(
-        //     gui.corePatch().on("savedStateChanged", () =>
-        //     {
-        //         this.show();
-        //     }));
+        this._refreshListener.push(
+            gui.corePatch().on("savedStateChanged", () =>
+            {
+                this.show();
+            }));
 
-        // this._refreshListener.push(
-        //     gui.on("opReloaded", () =>
-        //     {
-        //         this.show();
-        //     }));
+        this._refreshListener.push(
+            gui.on("opReloaded", () =>
+            {
+                this.show();
+            }));
     }
 
     init()
@@ -127,13 +127,15 @@ export default class ManageOp
                                     }
                                     catch (e)
                                     {
-                                        console.log(e);
+                                        this._log.error(e);
                                     }
                                 }
                             }
                         }
                         doc.attachmentFiles = attachmentFiles;
                     }
+
+                    console.log(res);
 
 
                     doc.libs = gui.serverOps.getOpLibs(opName, false);
