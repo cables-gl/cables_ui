@@ -1838,7 +1838,7 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    let title = "Failed to load op";
+                    let title = "Failed to load op doc";
                     let html = "";
                     if (err.msg)
                     {

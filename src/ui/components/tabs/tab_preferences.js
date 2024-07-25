@@ -75,18 +75,14 @@ export default class Preferences
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
 
 
-        this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
+        // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
 
         this.setSwitchValue("patch_button_scroll", userSettings.get("patch_button_scroll") || "2");
         this.setSwitchValue("patch_allowCableDrag", userSettings.get("patch_allowCableDrag") || false);
 
-
-
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
-
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
-
         this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
 
         // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);

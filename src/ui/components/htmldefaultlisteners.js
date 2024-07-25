@@ -17,6 +17,8 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("unhandledrejection", function (e)
     {
+        if (e.reason && e.reason.message && e.reason.message == "The user has exited the lock before this request was completed.") return true; // ignore this......
+
         _log.error(e);
     });
 

@@ -161,8 +161,8 @@ const text =
         "title_helperMode": "Show Helper Meshes",
         "subtitle_helperMode": "Show helper, directions/boundaries etc, as in e.g. randomCluster",
 
-        "title_forceWebGl1": "Force WebGL v1",
-        "subtitle_forceWebGl1": "only if you know what you are doing!",
+        // "title_forceWebGl1": "Force WebGL v1",
+        // "subtitle_forceWebGl1": "only if you know what you are doing!",
 
         "title_devinfos": "Show developer information",
         "subtitle_devinfos": "boring developer stuff",

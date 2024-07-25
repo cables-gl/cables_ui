@@ -45,17 +45,17 @@ export default class ManageOp
                 this.show();
             }));
 
-        this._refreshListener.push(
-            gui.corePatch().on("savedStateChanged", () =>
-            {
-                this.show();
-            }));
+        // this._refreshListener.push(
+        //     gui.corePatch().on("savedStateChanged", () =>
+        //     {
+        //         this.show();
+        //     }));
 
-        this._refreshListener.push(
-            gui.on("opReloaded", () =>
-            {
-                this.show();
-            }));
+        // this._refreshListener.push(
+        //     gui.on("opReloaded", () =>
+        //     {
+        //         this.show();
+        //     }));
     }
 
     init()
@@ -97,17 +97,10 @@ export default class ManageOp
                     let summary = "";
                     let portJson = null;
 
-
-
-
-                    if (res.changelog && res.changelog.length > 0)
-                    {
-                        doc.changelog = res.changelog;
-                    }
+                    if (res.changelog && res.changelog.length > 0) doc.changelog = res.changelog;
 
                     if (res.attachmentFiles)
                     {
-                        //
                         const attachmentFiles = [];
                         for (let i = 0; i < res.attachmentFiles.length; i++)
                         {

@@ -174,10 +174,9 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        if (arg.constructor.name.indexOf("Error") > -1)
+                        if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
                         {
                             let txt = "Uncaught ErrorEvent ";
-
                             if (arg.message)txt += " message: " + arg.message;
                             currentLine = txt;
                         }
@@ -191,14 +190,15 @@ export default class LogTab extends Events
                         {
                             currentLine += arg;
                         }
+                        else if (arg.constructor.name == "PromiseRejectionEvent")
+                        {
+                            if (arg.reason && arg.reason.message)
+                                currentLine += arg.constructor.name + ": " + arg.reason.message;
+                        }
                         else
                         {
-                            // if (arg.constructor && arg.constructor.name)
-                            // {
-                            //     this._logLine("unknown log object", arg.constructor.name, l.level);
-                            // }
                             console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += "unknown log type... ";
+                            currentLine += "unknown log type... " + arg.constructor.name;
                         }
                     }
                 }
@@ -278,7 +278,6 @@ export default class LogTab extends Events
         let history = [];
         if (undo) history = undo.getCommands();
         history = history.slice(-10);
-
 
         report.time = Date.now();
         report.history = history;
