@@ -15,7 +15,7 @@ export default class LogTab extends Events
         this._logs = [];
         this.closed = false;
         this.report = [];
-        this.lastError = performance.now();
+        this.lastErrorSrc = [];
         this._hasError = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -232,9 +232,8 @@ export default class LogTab extends Events
 
     _logErrorLine(url, line)
     {
-        if (performance.now() - this.lastError < 5000) return;
-
-        this.lastError = performance.now();
+        if (this.lastErrorSrc.indexOf(url + line) > -1) return;
+        this.lastErrorSrc.push(url + line);
 
         CABLES.ajax(
             url,
