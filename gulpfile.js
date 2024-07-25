@@ -162,7 +162,7 @@ function _svgcss(done)
         )
         .pipe(rename("svgicons.scss"))
         .pipe(gulp.dest("scss/"));
-    if (!process.env.cables_standalone)
+    if (!process.env.cables_standalone || process.env.cables_standalone === "false")
     {
         return task.pipe(gulp.dest("../cables_api/scss/"));
     }
@@ -180,6 +180,7 @@ function _watch(done)
     gulp.watch(["html/**/*.html", "html/*.html"], watchOptions, gulp.series(_html_ui));
     gulp.watch("../shared/client/src/talkerapi.js", watchOptions, gulp.series(_scripts_talkerapi));
     gulp.watch("libs/**/*", watchOptions, gulp.series(_scripts_libs_ui));
+    gulp.watch("icons/**/*.svg", watchOptions, gulp.series(_svgcss));
     done();
 }
 

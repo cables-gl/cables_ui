@@ -1409,12 +1409,6 @@ CMD_PATCH_COMMANDS.push(
         "hotkey": "DEL"
     },
     {
-        "cmd": "rename op",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.renameOp,
-        "icon": "edit"
-    },
-    {
         "cmd": "reload patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.reload

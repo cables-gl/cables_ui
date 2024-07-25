@@ -97,7 +97,7 @@ export default class Gui extends Events
             "editorMode": true,
             "canvas":
                 {
-                    "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
+                    // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
                     "alpha": true,
                     "premultipliedAlpha": true,
                 },
@@ -1335,12 +1335,16 @@ export default class Gui extends Events
                 let str = "";
                 if (CABLES.platform.frontendOptions.showOpenPatch)
                 {
-                    let item = "<li><a class=\"mine openPatch\" target=\"_top\" data-short-id=\"\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
+                    const url = CABLES.platform.getCablesUrl() + "/edit/";
+                    let item = "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
                 for (let i = 0; i < r.length; i++)
-                    str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
+                {
+                    const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
+                    str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
+                }
 
                 str += "<li class=\"divide\"></li>";
 
@@ -1348,19 +1352,7 @@ export default class Gui extends Events
                     str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
 
                 str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
-
                 ele.byId("nav_recentpatches").innerHTML = str;
-                ele.byId("nav_recentpatches").querySelectorAll("li a.mine").forEach((el) =>
-                {
-                    if (el.dataset.hasOwnProperty("shortId"))
-                    {
-                        el.addEventListener("click", () =>
-                        {
-                            const data = { "id": el.dataset.shortId };
-                            CABLESUILOADER.talkerAPI.send("gotoPatch", data);
-                        });
-                    }
-                });
             });
         });
 
