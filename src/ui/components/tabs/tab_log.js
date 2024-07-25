@@ -17,6 +17,7 @@ export default class LogTab extends Events
         this.report = [];
         this.lastErrorSrc = [];
         this._hasError = false;
+        this.hasErrorButton = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
@@ -37,6 +38,21 @@ export default class LogTab extends Events
         });
 
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
+
+
+
+        this._tab.addButton("Copy to clipboard", () =>
+        {
+            const el = ele.byId("loggingHtmlId123");
+            let txt = el.innerText;
+            txt = txt.replaceAll("] \n", "] ");
+            let lines = txt.split("\n");
+            lines = lines.reverse();
+            txt = lines.join("\n");
+
+
+            navigator.clipboard.writeText(txt);
+        });
 
 
         this._tab.addEventListener(
@@ -108,11 +124,13 @@ export default class LogTab extends Events
             }
         }
 
-        if (this._hasError)
+        if (this._hasError && !this.hasErrorButton)
         {
-            html += "<div class=\"logLine logLevel" + 99 + "\">";
-            html += "  <a class=\"button-small\" id=\"sendErrorReport\">Send error report</a>";
-            html += "</div>";
+            this.hasErrorButton = true;
+            this._tab.addButton("Send Error Report", () =>
+            {
+                CABLES.api.sendErrorReport(this.createReport(), true);
+            });
         }
 
         try
@@ -219,15 +237,15 @@ export default class LogTab extends Events
         const el = ele.byId("loggingHtmlId123");
         if (el)el.innerHTML = html;
 
-        if (ele.byId("sendErrorReport"))
-        {
-            ele.byId("sendErrorReport").addEventListener("click", () =>
-            {
-                console.log("click button");
+        // if (ele.byId("sendErrorReport"))
+        // {
+        //     ele.byId("sendErrorReport").addEventListener("click", () =>
+        //     {
+        //         console.log("click button");
 
-                CABLES.api.sendErrorReport(this.createReport(), true);
-            });
-        }
+        //         CABLES.api.sendErrorReport(this.createReport(), true);
+        //     });
+        // }
     }
 
     _logErrorLine(url, line)
