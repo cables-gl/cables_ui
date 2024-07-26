@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
 import userSettings from "../usersettings.js";
@@ -11,11 +11,13 @@ export default class LogTab extends Events
     {
         super();
         this._tabs = tabs;
+        this._log = new Logger("LogTab");
         this._logs = [];
         this.closed = false;
         this.report = [];
-
+        this.lastErrorSrc = [];
         this._hasError = false;
+        this.hasErrorButton = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
@@ -36,6 +38,21 @@ export default class LogTab extends Events
         });
 
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
+
+
+
+        this._tab.addButton("Copy to clipboard", () =>
+        {
+            const el = ele.byId("loggingHtmlId123");
+            let txt = el.innerText;
+            txt = txt.replaceAll("] \n", "] ");
+            let lines = txt.split("\n");
+            lines = lines.reverse();
+            txt = lines.join("\n");
+
+
+            navigator.clipboard.writeText(txt);
+        });
 
 
         this._tab.addEventListener(
@@ -107,11 +124,13 @@ export default class LogTab extends Events
             }
         }
 
-        if (this._hasError)
+        if (this._hasError && !this.hasErrorButton)
         {
-            html += "<div class=\"logLine logLevel" + 99 + "\">";
-            html += "  <a class=\"button-small\" id=\"sendErrorReport\">Send error report</a>";
-            html += "</div>";
+            this.hasErrorButton = true;
+            this._tab.addButton("Send Error Report", () =>
+            {
+                CABLES.api.sendErrorReport(this.createReport(), true);
+            });
         }
 
         try
@@ -144,6 +163,11 @@ export default class LogTab extends Events
                             let stackHtml = "<table>";
                             for (let k = 0; k < errorStack.length; k++)
                             {
+                                if (k === 0)
+                                {
+                                    this._logErrorLine(errorStack[k].fileName, errorStack[k].lineNumber - 1);
+                                }
+
                                 stackHtml += "<tr>";
                                 stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
                                 stackHtml += "  <td>";
@@ -174,10 +198,9 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        if (arg.constructor.name.indexOf("Error") > -1)
+                        if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
                         {
                             let txt = "Uncaught ErrorEvent ";
-
                             if (arg.message)txt += " message: " + arg.message;
                             currentLine = txt;
                         }
@@ -191,14 +214,15 @@ export default class LogTab extends Events
                         {
                             currentLine += arg;
                         }
+                        else if (arg.constructor.name == "PromiseRejectionEvent")
+                        {
+                            if (arg.reason && arg.reason.message)
+                                currentLine += arg.constructor.name + ": " + arg.reason.message;
+                        }
                         else
                         {
-                            // if (arg.constructor && arg.constructor.name)
-                            // {
-                            //     this._logLine("unknown log object", arg.constructor.name, l.level);
-                            // }
                             console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += "unknown log type... ";
+                            currentLine += "unknown log type... " + arg.constructor.name;
                         }
                     }
                 }
@@ -213,15 +237,44 @@ export default class LogTab extends Events
         const el = ele.byId("loggingHtmlId123");
         if (el)el.innerHTML = html;
 
-        if (ele.byId("sendErrorReport"))
-        {
-            ele.byId("sendErrorReport").addEventListener("click", () =>
-            {
-                console.log("click button");
+        // if (ele.byId("sendErrorReport"))
+        // {
+        //     ele.byId("sendErrorReport").addEventListener("click", () =>
+        //     {
+        //         console.log("click button");
 
-                CABLES.api.sendErrorReport(this.createReport(), true);
+        //         CABLES.api.sendErrorReport(this.createReport(), true);
+        //     });
+        // }
+    }
+
+    _logErrorLine(url, line)
+    {
+        if (this.lastErrorSrc.indexOf(url + line) > -1) return;
+        this.lastErrorSrc.push(url + line);
+
+        CABLES.ajax(
+            url,
+            (err, _data, xhr) =>
+            {
+                if (err)
+                {
+                    console.error(err);
+                    return;
+                }
+
+                try
+                {
+                    let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
+
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": [" + lines[line] + "]";
+                    this._log.error(str);
+                }
+                catch (e)
+                {
+                    console.log("could not parse lines.", e);
+                }
             });
-        }
     }
 
     createReport()
@@ -278,7 +331,6 @@ export default class LogTab extends Events
         let history = [];
         if (undo) history = undo.getCommands();
         history = history.slice(-10);
-
 
         report.time = Date.now();
         report.history = history;

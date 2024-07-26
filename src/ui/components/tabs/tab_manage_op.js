@@ -97,17 +97,10 @@ export default class ManageOp
                     let summary = "";
                     let portJson = null;
 
-
-
-
-                    if (res.changelog && res.changelog.length > 0)
-                    {
-                        doc.changelog = res.changelog;
-                    }
+                    if (res.changelog && res.changelog.length > 0) doc.changelog = res.changelog;
 
                     if (res.attachmentFiles)
                     {
-                        //
                         const attachmentFiles = [];
                         for (let i = 0; i < res.attachmentFiles.length; i++)
                         {
@@ -134,13 +127,15 @@ export default class ManageOp
                                     }
                                     catch (e)
                                     {
-                                        console.log(e);
+                                        this._log.error(e);
                                     }
                                 }
                             }
                         }
                         doc.attachmentFiles = attachmentFiles;
                     }
+
+                    console.log(res);
 
 
                     doc.libs = gui.serverOps.getOpLibs(opName, false);

@@ -1,7 +1,6 @@
 import ModalDialog from "./modaldialog.js";
 
 
-
 /**
  * Opens a modal dialog and shows a loading indicator animation
  *
@@ -61,10 +60,8 @@ export default class ModalSourceCode
         let htmlWarning = "<code><pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
 
         str = str || "";
-
         from = from || 0;
         to = to || 1;
-
 
         let lines = [];
         try
