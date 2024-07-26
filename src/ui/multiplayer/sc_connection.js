@@ -449,7 +449,7 @@ export default class ScConnection extends Events
                     this.leaveMultiplayerSession();
                 }
                 // socketcluster reports "hung up" errors during own reconnection/keepalive phase
-                if (!(error.code && error.code === 1006)) this._log.error(error.code + " - " + error.message);
+                if (error.code !== 1006) this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 
                 this.emitEvent("connectionError", error);
