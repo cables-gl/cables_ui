@@ -1917,7 +1917,6 @@ export default class ServerOps
 
     loadOp(op, cb)
     {
-        // console.warn("loadop", op);
         if (op)
         {
             const options = {
