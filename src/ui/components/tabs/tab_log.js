@@ -202,15 +202,17 @@ export default class LogTab extends Events
                             if (arg.message)txt += " message: " + arg.message;
                             currentLine = txt;
                         }
-                        else
-                        if (arg.constructor.name == "Op")
+                        else if (arg.constructor.name == "Op")
                         {
                             currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
                         }
-                        else
-                        if (typeof arg == "string")
+                        else if (typeof arg == "string")
                         {
                             currentLine += arg;
+                        }
+                        else if (typeof arg == "number")
+                        {
+                            currentLine += String(arg);
                         }
                         else if (arg.constructor.name == "PromiseRejectionEvent")
                         {
