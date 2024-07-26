@@ -448,7 +448,8 @@ export default class ScConnection extends Events
                     notifyError("multiplayer server disconnected!", "wait for reconnection to rejoin session");
                     this.leaveMultiplayerSession();
                 }
-                this._log.error(error.code + " - " + error.message);
+                // socketcluster reports "hung up" errors during own reconnection/keepalive phase
+                if (!(error.code && error.code === 1006)) this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 
                 this.emitEvent("connectionError", error);
