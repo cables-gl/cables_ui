@@ -1874,8 +1874,8 @@ export default class Gui extends Events
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
 
-        for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
-            this._log.log(CABLESUILOADER.startup.log[i].title + " (" + CABLESUILOADER.startup.log[i].time + "s)");
+        // for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
+        // this._log.log(CABLESUILOADER.startup.log[i].title + " (" + CABLESUILOADER.startup.log[i].time + "s)");
 
 
 
