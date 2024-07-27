@@ -11,22 +11,14 @@
         var before = function (w)
         {
             for (var field in w)
-            {
                 fields[field] = true;
-            }
         };
 
         var after = function (w)
         {
             for (var field in w)
-            {
                 if (!fields[field])
-                {
                     console.log(field + " has been added");
-                }
-            }
-            ;
-
         };
         return {
             before: before,
@@ -55,21 +47,19 @@
 
     function logStartup(title)
     {
-        if(window.gui && gui.finishedLoading())return; //hallo
+        if(window.gui && gui.finishedLoading()) return;
 
-        const time = Math.round((performance.now() - CABLESUILOADER.uiLoadStart) / 1000 * 100) / 100;
-        CABLESUILOADER.startup.log.push({
-            "title": title,
-            "time": time
-        });
+        const timeUsed = Math.round((performance.now() - CABLESUILOADER.uiLoadStart) / 1000 * 100) / 100;
 
-        if (!window.CABLES || !CABLES.platform || !CABLES.platform.frontendOptions.showStartUpLog) return;
-        const statusLogEle = ele.byId("loadingstatusLog");
-        if(!statusLogEle) return;
-        statusLogEle.innerHTML = "";
-        CABLESUILOADER.startup.log.forEach((logEntry) => {
-            statusLogEle.innerHTML += logEntry.title + " (" + logEntry.time + "s) <br/>";
-        });
+        CABLESUILOADER.startup.log.push(
+            {
+                "title": title,
+                "time": timeUsed
+            });
+
+        if (!window.CABLES || !CABLES.platform || !CABLES.platform.isDevEnv()) return;
+        document.getElementById("loadingstatusLog").innerHTML += title + " (" + timeUsed + ") <br/>";
+        document.querySelectorAll(".devOnly").forEach(e => e.style.display = "inherit");
     }
 
     CABLESUILOADER.noCacheUrl = function (url)

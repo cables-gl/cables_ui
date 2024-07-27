@@ -161,21 +161,19 @@ export default class LogTab extends Events
                         if (errorStack && errorStack.length > 0)
                         {
                             let stackHtml = "<table>";
-                            for (let k = 0; k < errorStack.length; k++)
+                            for (let k = 0; k < Math.min(2, errorStack.length); k++)
                             {
-                                if (k === 0)
+                                if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
                                 {
-                                    this._logErrorLine(errorStack[k].fileName, errorStack[k].lineNumber - 1);
+                                    this._logErrorLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
                                 }
 
-                                stackHtml += "<tr>";
+                                const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
                                 stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
                                 stackHtml += "  <td>";
                                 stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
-                                stackHtml += errorStack[k].fileName;
-                                stackHtml += "  </a>";
-                                stackHtml += "  </td>";
-                                stackHtml += "  <td>" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</td>";
+                                stackHtml += shortFilename;
+                                stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
                                 stackHtml += "</tr>";
                             }
                             stackHtml += "</table>";
@@ -204,15 +202,17 @@ export default class LogTab extends Events
                             if (arg.message)txt += " message: " + arg.message;
                             currentLine = txt;
                         }
-                        else
-                        if (arg.constructor.name == "Op")
+                        else if (arg.constructor.name == "Op")
                         {
                             currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
                         }
-                        else
-                        if (typeof arg == "string")
+                        else if (typeof arg == "string")
                         {
                             currentLine += arg;
+                        }
+                        else if (typeof arg == "number")
+                        {
+                            currentLine += String(arg);
                         }
                         else if (arg.constructor.name == "PromiseRejectionEvent")
                         {
@@ -236,19 +236,9 @@ export default class LogTab extends Events
 
         const el = ele.byId("loggingHtmlId123");
         if (el)el.innerHTML = html;
-
-        // if (ele.byId("sendErrorReport"))
-        // {
-        //     ele.byId("sendErrorReport").addEventListener("click", () =>
-        //     {
-        //         console.log("click button");
-
-        //         CABLES.api.sendErrorReport(this.createReport(), true);
-        //     });
-        // }
     }
 
-    _logErrorLine(url, line)
+    _logErrorLine(l, url, line)
     {
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
@@ -266,7 +256,6 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-
                     const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": [" + lines[line] + "]";
                     this._log.error(str);
                 }
@@ -323,6 +312,10 @@ export default class LogTab extends Events
                     }
                 }
                 newLine.args.push(neewArg);
+
+                if (arg.message)neewArg.push("message: " + arg.message);
+                if (arg.error)neewArg.push("error message: " + arg.error.message);
+                if (arg.reason)neewArg.push("reason: " + arg.reason.message);
             }
         }
 

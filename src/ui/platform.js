@@ -271,9 +271,34 @@ export default class Platform extends Events
             }
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener("logError", (error) =>
+        CABLESUILOADER.talkerAPI.addEventListener("logError", (errorData) =>
         {
-            this._log.warn(error);
+            if (errorData)
+            {
+                const errorMessage = errorData.message || "unknown error";
+                switch (errorData.level)
+                {
+                case "error":
+                    this._log.error(errorMessage);
+                    break;
+                case "warn":
+                    this._log.warn(errorMessage);
+                    break;
+                case "verbose":
+                    this._log.verbose(errorMessage);
+                    break;
+                case "info":
+                    this._log.info(errorMessage);
+                    break;
+                default:
+                    this._log.log(errorMessage);
+                    break;
+                }
+            }
+            else
+            {
+                this._log.warn("unknown error");
+            }
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("fileDeleted", (options, next) =>
