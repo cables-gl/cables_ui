@@ -1759,6 +1759,22 @@ export default class Gui extends Events
 
     showUiElements()
     {
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;___:_&nbsp;_");
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;_:_______________&nbsp;_____________&nbsp;/&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;_&nbsp;_______");
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|\\\\.&nbsp;&nbsp;_)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;_____&nbsp;|&nbsp;(/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/\\\\\\(_______&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;__/\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;");
+        this._log.log("&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;_/\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\\\/_\\\\\\\\&nbsp;_/&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_\\\\\\/___&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\&nbsp;");
+        this._log.log("&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/_\\\\|_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\(&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;\\&nbsp;&nbsp;&nbsp;/_&nbsp;&nbsp;&nbsp;&nbsp;_:\\\\/__&nbsp;/\\_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\&nbsp;&nbsp;&nbsp;_/_\\\\/___");
+        this._log.log("_/&nbsp;&nbsp;&nbsp;/(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|_\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\__&nbsp;&nbsp;/_\\\\_)&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\");
+        this._log.log("\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_\\&nbsp;&nbsp;&nbsp;\\___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\");
+        this._log.log("&nbsp;\\_________(&nbsp;&nbsp;&nbsp;&nbsp;_|\\\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;___________/&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_________/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\/");
+        this._log.log("&nbsp;&nbsp;\\\\\\\\\\\\\\\\|_____)\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(/)&nbsp;&nbsp;/\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\/");
+        this._log.log("&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______:\\\\.\\/______________/\\\\\\\\\\\\\\\\\\_________________(\\\\&nbsp;");
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dip\\\\\\\\\\\\\\)&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\|&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\|&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\(&nbsp;");
+        this._log.log("");
+
+
         ele.show(ele.byId("cablescanvas"));
         ele.show(ele.byId("mainContainer"));
 
