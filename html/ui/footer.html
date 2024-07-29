@@ -45,7 +45,6 @@
         if(CABLESUILOADER.startup.numEvents>CABLESUILOADER.startup.maxEvents)console.warn("too many cables startup events!",CABLESUILOADER.startup.numEvents,CABLESUILOADER.startup.maxEvents)
 
         if (loadingBarEle) loadingBarEle.style.width = (CABLESUILOADER.startup.numEvents / CABLESUILOADER.startup.maxEvents) * 100 + "%";
-        console.log(loadingBarEle,CABLESUILOADER.startup.numEvents,loadingBarEle.style.width);
     }
 
     function logStartup(title)
