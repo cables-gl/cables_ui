@@ -17,6 +17,7 @@ export default class LogTab extends Events
         this.report = [];
         this.lastErrorSrc = [];
         this._hasError = false;
+        this.sentAutoReport = false;
         this.hasErrorButton = false;
 
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
@@ -30,7 +31,6 @@ export default class LogTab extends Events
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
 
-        userSettings.set("loggingOpened", true);
 
         this._tabs.on("resize", () =>
         {
@@ -39,6 +39,17 @@ export default class LogTab extends Events
 
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
+        const alwaysOpenButton = this._tab.addButton("Always open: " + userSettings.get("openLogTab"), () =>
+        {
+            userSettings.set("openLogTab", !userSettings.get("openLogTab"));
+            alwaysOpenButton.innerHTML = "Always open: " + userSettings.get("openLogTab");
+        });
+
+        this._tab.addButton("Clear", () =>
+        {
+            CABLES.UI.logFilter.logs.length = 0; this._html();
+            console.log("clear");
+        });
 
 
         this._tab.addButton("Copy to clipboard", () =>
@@ -61,7 +72,6 @@ export default class LogTab extends Events
             {
                 this.closed = true;
                 this.emitEvent("close");
-                userSettings.set("loggingOpened", false);
 
                 CABLES.UI.logFilter.off(this._showlogListener);
             },
@@ -249,7 +259,7 @@ export default class LogTab extends Events
             {
                 if (err)
                 {
-                    console.error(err);
+                    console.error("error fetching logline", err, _data, xhr);
                     return;
                 }
 
@@ -258,6 +268,15 @@ export default class LogTab extends Events
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
                     const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": [" + lines[line] + "]";
                     this._log.error(str);
+
+                    if (!this.sentAutoReport)
+                    {
+                        this.sentAutoReport = true;
+                        setTimeout(() =>
+                        {
+                            CABLES.api.sendErrorReport(this.createReport(), false);
+                        }, 500);
+                    }
                 }
                 catch (e)
                 {
@@ -308,14 +327,14 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        neewArg = " unknow, could not serialize:" + arg.constructor.name;
+                        neewArg = " unknown, could not serialize:" + arg.constructor.name;
                     }
                 }
                 newLine.args.push(neewArg);
 
-                if (arg.message)neewArg.push("message: " + arg.message);
-                if (arg.error)neewArg.push("error message: " + arg.error.message);
-                if (arg.reason)neewArg.push("reason: " + arg.reason.message);
+                if (arg.message)newLine.args.push("message: " + arg.message);
+                if (arg.error)newLine.args.push("error message: " + arg.error.message);
+                if (arg.reason)newLine.args.push("reason: " + arg.reason.message);
             }
         }
 
@@ -330,6 +349,7 @@ export default class LogTab extends Events
 
         report.url = document.location.href;
         report.infoLanguage = navigator.language;
+
 
         if (window.gui)
         {

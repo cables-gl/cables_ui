@@ -1790,7 +1790,7 @@ export default class Gui extends Events
         }
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
-        if (userSettings.get("loggingOpened") == true) this.showLogging();
+        if (userSettings.get("openLogTab") == true) this.showLogging();
 
         gui.transformOverlay.updateVisibility();
 

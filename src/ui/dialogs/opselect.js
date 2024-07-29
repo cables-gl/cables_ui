@@ -338,6 +338,13 @@ export default class OpSelect
 
                 html += "</div>";
                 html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+
+                const docs = gui.opDocs.getOpDocByName(opName);
+                if (docs.allowEdit)
+                {
+                    html += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+                }
+
                 html += opDocHtml;
             }
             this._eleSearchinfo.innerHTML = html;
