@@ -38,8 +38,8 @@ export default function startUi(cfg)
 
         if (!gui.corePatch().cgl.gl)
         {
-            ele.byId("loadingstatus").remove();
-            ele.byId("loadingstatusLog").remove();
+            // ele.byId("loadingstatus").remove();
+            // ele.byId("loadingstatusLog").remove();
 
             new ModalDialog({ "title": "GL Error", "html": "Could not initialize webgl, or it crashed. Try to restart your browser, or try another one..." });
             return;
@@ -166,6 +166,7 @@ export default function startUi(cfg)
                 for (let i = 0; i < gui.corePatch().ops.length; i++) gui.corePatch().ops[i].checkLinkTimeWarnings();
 
                 gui.patchParamPanel.show();
+
 
                 setTimeout(() =>
                 {

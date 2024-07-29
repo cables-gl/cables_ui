@@ -238,9 +238,6 @@ export default class Gui extends Events
 
     get shouldDrawOverlay()
     {
-        // if (gui.canvasManager.getCanvasUiBar().isCanvasFocussed) return false;
-
-
         if (!userSettings.get("overlaysShow")) return false;
 
         return true;
@@ -1763,7 +1760,6 @@ export default class Gui extends Events
     showUiElements()
     {
         ele.show(ele.byId("cablescanvas"));
-        ele.hide(ele.byId("loadingstatus"));
         ele.show(ele.byId("mainContainer"));
 
         ele.byId("menubar").classList.remove("hidden");
@@ -1807,91 +1803,98 @@ export default class Gui extends Events
         if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab();
 
         const buildInfo = this.project().buildInfo;
+
+
+
+
         this._log.groupCollapsed("welcome to cables!");
-        this._log.log("build info:");
-        const buildInfoTable = [];
-        const displayInfo = {
-            "title": "cables",
-            "host": null,
-            "core": undefined,
-            "ui": undefined,
-            "core_branch": undefined,
-            "core_git": undefined,
-            "ui_branch": undefined,
-            "ui_git": undefined
-        };
-        if (CABLESUILOADER.buildInfo.core)
-        {
-            displayInfo.core = CABLESUILOADER.buildInfo.core.created;
-            displayInfo.core_branch = CABLESUILOADER.buildInfo.core.git.branch;
-            displayInfo.core_git = CABLESUILOADER.buildInfo.core.git.commit;
-        }
-        if (CABLESUILOADER.buildInfo.ui)
-        {
-            displayInfo.ui = CABLESUILOADER.buildInfo.ui.created;
-            displayInfo.ui_branch = CABLESUILOADER.buildInfo.ui.git.branch;
-            displayInfo.ui_git = CABLESUILOADER.buildInfo.ui.git.commit;
-        }
-        buildInfoTable.push(displayInfo);
-        if (buildInfo)
-        {
-            const infoRow = {
-                "title": "project"
-            };
-            if (buildInfo.host)
-            {
-                infoRow.host = buildInfo.host;
-            }
-            if (buildInfo.core)
-            {
-                if (buildInfo.core.created)
-                {
-                    infoRow.core = buildInfo.core.created;
-                }
-                if (buildInfo.core.git)
-                {
-                    infoRow.core_branch = buildInfo.core.git.branch;
-                    infoRow.core_git = buildInfo.core.git.commit;
-                }
-            }
-            if (buildInfo.ui)
-            {
-                if (buildInfo.ui.created)
-                {
-                    infoRow.ui = buildInfo.ui.created;
-                }
-                if (buildInfo.ui.git)
-                {
-                    infoRow.ui_branch = buildInfo.ui.git.branch;
-                    infoRow.ui_git = buildInfo.ui.git.commit;
-                }
-            }
-            buildInfoTable.push(infoRow);
-        }
+        // this._log.log("build info:");
+        // const buildInfoTable = [];
+        // const displayInfo = {
+        //     "title": "cables",
+        //     "host": null,
+        //     "core": undefined,
+        //     "ui": undefined,
+        //     "core_branch": undefined,
+        //     "core_git": undefined,
+        //     "ui_branch": undefined,
+        //     "ui_git": undefined
+        // };
+        // if (CABLESUILOADER.buildInfo.core)
+        // {
+        //     displayInfo.core = CABLESUILOADER.buildInfo.core.created;
+        //     displayInfo.core_branch = CABLESUILOADER.buildInfo.core.git.branch;
+        //     displayInfo.core_git = CABLESUILOADER.buildInfo.core.git.commit;
+        // }
+        // if (CABLESUILOADER.buildInfo.ui)
+        // {
+        //     displayInfo.ui = CABLESUILOADER.buildInfo.ui.created;
+        //     displayInfo.ui_branch = CABLESUILOADER.buildInfo.ui.git.branch;
+        //     displayInfo.ui_git = CABLESUILOADER.buildInfo.ui.git.commit;
+        // }
+        // buildInfoTable.push(displayInfo);
+
+
+        // if (buildInfo)
+        // {
+        //     const infoRow = {
+        //         "title": "project"
+        //     };
+        //     if (buildInfo.host)
+        //     {
+        //         infoRow.host = buildInfo.host;
+        //     }
+        //     if (buildInfo.core)
+        //     {
+        //         if (buildInfo.core.created)
+        //         {
+        //             infoRow.core = buildInfo.core.created;
+        //         }
+        //         if (buildInfo.core.git)
+        //         {
+        //             infoRow.core_branch = buildInfo.core.git.branch;
+        //             infoRow.core_git = buildInfo.core.git.commit;
+        //         }
+        //     }
+        //     if (buildInfo.ui)
+        //     {
+        //         if (buildInfo.ui.created)
+        //         {
+        //             infoRow.ui = buildInfo.ui.created;
+        //         }
+        //         if (buildInfo.ui.git)
+        //         {
+        //             infoRow.ui_branch = buildInfo.ui.git.branch;
+        //             infoRow.ui_git = buildInfo.ui.git.commit;
+        //         }
+        //     }
+        // }
 
 
         if (CABLES.platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
-
-        // for (let i = 0; i < CABLESUILOADER.startup.log.length; i++)
-        // this._log.log(CABLESUILOADER.startup.log[i].title + " (" + CABLESUILOADER.startup.log[i].time + "s)");
-
-
+        console.log("start up times:");
+        console.table(CABLESUILOADER.startup.log);
+        console.groupEnd();
 
 
-        this._log.table(buildInfoTable);
-        this._log.log("start up times:");
-        this._log.table(CABLESUILOADER.startup.log);
-        this._log.groupEnd();
+        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.log("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
+        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.log("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
+        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.log("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
+
 
 
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();
 
         gui.metaTabs.loadCurrentTabUsersettings();
-
         gui.patchView.focus();
+
+        setTimeout(() =>
+        {
+            ele.hide(ele.byId("loadingstatus"));
+        }, 0);
     }
 
     showWelcomeNotifications()

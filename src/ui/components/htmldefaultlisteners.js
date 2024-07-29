@@ -24,7 +24,6 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("error", (e) =>
     {
-        console.log("window caught error", e);
         if (!CABLES.lastError != e)
         {
             _log.error(e);

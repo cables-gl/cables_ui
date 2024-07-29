@@ -27,8 +27,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         <style media="screen">
             body { background-color: #282828; color:#aaa; position:fixed;overflow: hidden;}
-            #loadingstatusBar { background-color: #999;height:100%;width:0px;margin-bottom: 10px;}
-            #loadingstatus { position:absolute;top:0px;left:0px;height:4px;width:100%;}
+            #loadingstatusBar { background-color: #999;height:100%;width:0px;margin-bottom: 10px;z-index: 10000;}
+            #loadingstatus { position:absolute;top:0px;left:0px;height:4px;width:100%;z-index: 10000;}
 
             @keyframes spin
             {
