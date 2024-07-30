@@ -439,7 +439,7 @@ export default class FileManager
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
-                            "isEditable": (r.fileDb && r.fileDb.fileName.endsWith(".md")) || r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
+                            "isEditable": (r.fileDb && r.fileDb.fileName.endsWith(".md") || r.fileDb.fileName.endsWith(".scss")) || r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,

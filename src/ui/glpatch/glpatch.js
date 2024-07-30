@@ -1673,10 +1673,11 @@ export default class GlPatch extends Events
             return;
         }
 
-        if (sub == undefined)
+        if (sub === undefined)
         {
-            this._log.error("current subpatch undefined");
-            throw new Error("current subpatch undefined");
+            this._log.warn("current subpatch undefined");
+            return;
+            // throw new Error("current subpatch undefined");
         }
         this.unselectAll();
         if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
