@@ -462,7 +462,6 @@ export default class Gui extends Events
         this.bottomTabPanel.hide(true);
 
         gui.mainTabs.emitEvent("resize");
-        // this.maintabPanel.resize();
         gui.setLayout();
         gui.mainTabs.emitEvent("resize");
     }

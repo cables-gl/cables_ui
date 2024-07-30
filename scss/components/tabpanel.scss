@@ -263,6 +263,13 @@
     display: flex;
     flex-direction: column-reverse;
 
+    .logLineCode
+    {
+        background-color: rgba(0,0,0,0.75);
+        padding-left:10px;
+        padding-right:10px;
+    }
+
     .logLine
     {
         margin-top:3px;
