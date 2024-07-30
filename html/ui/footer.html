@@ -42,6 +42,8 @@
         CABLESUILOADER.startup.numEvents++;
 
         const loadingBarEle = document.getElementById("loadingstatusBar");
+        if(CABLESUILOADER.startup.numEvents>CABLESUILOADER.startup.maxEvents)console.warn("too many cables startup events!",CABLESUILOADER.startup.numEvents,CABLESUILOADER.startup.maxEvents)
+
         if (loadingBarEle) loadingBarEle.style.width = (CABLESUILOADER.startup.numEvents / CABLESUILOADER.startup.maxEvents) * 100 + "%";
     }
 
@@ -149,19 +151,11 @@
                         console.error("preloading error", response);
                     });
 
-                    incrementStartup();
                     loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
                     loadjs.ready('all_ops', () =>
                     {
                         incrementStartup();
                         logStartup('loaded cables ops');
-                        const uiBuild = CABLESUILOADER.buildInfo.ui;
-                        const coreBuild = CABLESUILOADER.buildInfo.core;
-                        const apiBuild = CABLESUILOADER.buildInfo.api;
-
-                        if(uiBuild && uiBuild.git) if(window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
-                        if(coreBuild && coreBuild.git) if(window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
-                        if(apiBuild && apiBuild.git)  if(window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
 
                         waitForAce();
                     });

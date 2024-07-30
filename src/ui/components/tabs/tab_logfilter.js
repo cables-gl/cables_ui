@@ -21,7 +21,6 @@ export default class LoggingTab extends Events
         this._html();
         CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
 
-        userSettings.set("loggingOpened", true);
 
         this._tab.addEventListener(
             "close",
@@ -29,7 +28,6 @@ export default class LoggingTab extends Events
             {
                 this.closed = true;
                 this.emitEvent("close");
-                userSettings.set("loggingOpened", false);
 
                 CABLES.UI.logFilter.off(this._showlogListener);
             },
