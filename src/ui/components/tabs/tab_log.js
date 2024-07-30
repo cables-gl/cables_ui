@@ -30,8 +30,6 @@ export default class LogTab extends Events
 
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
-
-
         this._tabs.on("resize", () =>
         {
             console.log(this._tab.contentEle, this._tab.contentEle.getBoundingClientRect());
@@ -60,8 +58,6 @@ export default class LogTab extends Events
             let lines = txt.split("\n");
             lines = lines.reverse();
             txt = lines.join("\n");
-
-
             navigator.clipboard.writeText(txt);
         });
 
@@ -70,12 +66,16 @@ export default class LogTab extends Events
             "close",
             () =>
             {
-                this.closed = true;
-                this.emitEvent("close");
+                this.close();
+            });
+    }
 
-                CABLES.UI.logFilter.off(this._showlogListener);
-            },
-        );
+    close()
+    {
+        this.closed = true;
+        CABLES.UI.logFilter.off(this._showlogListener);
+        this.emitEvent("close");
+        gui.hideBottomTabs();
     }
 
 

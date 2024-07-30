@@ -41,6 +41,11 @@ export default function setHtmlDefaultListeners()
         }
     });
 
+    window.addEventListener("resize", () =>
+    {
+        if (window.gui)gui.onResize();
+    }, false);
+
     window.addEventListener("message", (event) =>
     {
         if (CABLESUILOADER.cfg && (event.origin !== CABLESUILOADER.cfg.urlCables)) return;
