@@ -24,6 +24,18 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("error", (e) =>
     {
+        if (e && e.message && e.message.indexOf("/js/ace/worker-javascript.") > -1)
+        {
+            console.log("yay! suppressed nonsense ace editor exception... ");
+            return;
+        }
+
+        if (e && e.exception && String(e.exception.stack).indexOf("file:blob:") == 0)
+        {
+            console.log("ignore file blob exception...");
+            return;
+        }
+
         if (!CABLES.lastError != e)
         {
             _log.error(e);

@@ -432,7 +432,11 @@ class OpParampanel extends Events
                     if (CABLES.UTILS.isNumeric(err.level))
                         div.classList.add("warning-error-level" + err.level);
                     else
-                        console.log("err level not numeric", err.level);
+                    {
+                        console.error("err level not numeric", err.level);
+                        console.log((new Error().stack));
+                    }
+
                     el.appendChild(div);
                 }
 
