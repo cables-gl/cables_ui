@@ -30,23 +30,17 @@ export default class LogTab extends Events
 
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
-        this._tabs.on("resize", () =>
-        {
-            console.log(this._tab.contentEle, this._tab.contentEle.getBoundingClientRect());
-        });
-
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
-        const alwaysOpenButton = this._tab.addButton("Always open: " + userSettings.get("openLogTab"), () =>
+        const alwaysOpenButton = this._tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
         {
             userSettings.set("openLogTab", !userSettings.get("openLogTab"));
-            alwaysOpenButton.innerHTML = "Always open: " + userSettings.get("openLogTab");
+            alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get("openLogTab") || false);
         });
 
         this._tab.addButton("Clear", () =>
         {
             CABLES.UI.logFilter.logs.length = 0; this._html();
-            console.log("clear");
         });
 
 
