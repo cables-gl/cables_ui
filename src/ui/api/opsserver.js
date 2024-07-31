@@ -1843,7 +1843,8 @@ export default class ServerOps
                 {
                     if (op.storage && op.storage.blueprintVer > 1)
                     {
-                        const isInProject = gui.project().ops.some((projectOp) => { return projectOp.opId === op.opId; });
+                        const project = gui.corePatch() || gui.project();
+                        const isInProject = project.ops.some((projectOp) => { return projectOp.opId === op.opId; });
                         if (!isInProject)
                         {
                             missingOps.push(opInfo);
