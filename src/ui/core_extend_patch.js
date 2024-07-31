@@ -16,7 +16,15 @@ export default function extendCorePatch()
         return ops;
     };
 
-
+    CABLES.Patch.prototype.hasOp = function (op)
+    {
+        for (const i in this.ops)
+        {
+            if (this.ops[i].opId === op.opId) return true;
+            if (this.ops[i].objName === op.objName) return true;
+        }
+        return false;
+    };
 
     CABLES.Patch.prototype.getOpByRefId = function (refId, subPatchId)
     {
