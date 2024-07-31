@@ -1176,23 +1176,28 @@ export default class GlOp extends Events
 
 
 
-        if (!this._titleExt &&
-            (
-                this.opUiAttribs.hasOwnProperty("extendTitle") ||
-                this.opUiAttribs.hasOwnProperty("extendTitlePort")))
-        {
-            this._titleExt = new GlText(this._textWriter, " ");
-            this._titleExt.setParentRect(this._glRectBg);
-            this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
 
-            this._titleExt.visible = this.visible;
-        }
-        if (this._titleExt &&
-            (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
-            (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
+        // extended title
+        if (this.displayType != this.DISPLAY_COMMENT)
         {
-            this._titleExt.dispose();
-            this._titleExt = null;
+            if (!this._titleExt &&
+                (
+                    this.opUiAttribs.hasOwnProperty("extendTitle") ||
+                    this.opUiAttribs.hasOwnProperty("extendTitlePort")))
+            {
+                this._titleExt = new GlText(this._textWriter, " ");
+                this._titleExt.setParentRect(this._glRectBg);
+                this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
+
+                this._titleExt.visible = this.visible;
+            }
+            if (this._titleExt &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
+            {
+                this._titleExt.dispose();
+                this._titleExt = null;
+            }
         }
 
         if (!this.opUiAttribs.resizable && this._rectResize)
