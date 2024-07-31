@@ -21,39 +21,6 @@ export default class Platform extends Events
         this._cfg = cfg;
         this.frontendOptions = {};
 
-        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
-        {
-            CABLESUILOADER.talkerAPI.addEventListener("logError", (errorData) =>
-            {
-                if (errorData)
-                {
-                    const errorMessage = errorData.message || "unknown error";
-                    switch (errorData.level)
-                    {
-                    case "error":
-                        this._log.error(errorMessage);
-                        break;
-                    case "warn":
-                        this._log.warn(errorMessage);
-                        break;
-                    case "verbose":
-                        this._log.verbose(errorMessage);
-                        break;
-                    case "info":
-                        this._log.info(errorMessage);
-                        break;
-                    default:
-                        this._log.log(errorMessage);
-                        break;
-                    }
-                }
-                else
-                {
-                    this._log.warn("unknown error");
-                }
-            });
-        }
-
         if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
         else userSettings.load({});
 
@@ -301,6 +268,36 @@ export default class Platform extends Events
                         gui.emitEvent("refreshManageOp");
                     }
                 }
+            }
+        });
+
+        CABLESUILOADER.talkerAPI.addEventListener("logError", (errorData) =>
+        {
+            if (errorData)
+            {
+                const errorMessage = errorData.message || "unknown error";
+                switch (errorData.level)
+                {
+                case "error":
+                    this._log.error(errorMessage);
+                    break;
+                case "warn":
+                    this._log.warn(errorMessage);
+                    break;
+                case "verbose":
+                    this._log.verbose(errorMessage);
+                    break;
+                case "info":
+                    this._log.info(errorMessage);
+                    break;
+                default:
+                    this._log.log(errorMessage);
+                    break;
+                }
+            }
+            else
+            {
+                this._log.warn("unknown error");
             }
         });
 
