@@ -226,7 +226,7 @@ export default class LogTab extends Events
                         else
                         {
                             console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += "unknown log type... " + arg.constructor.name;
+                            currentLine += " obj{" + arg.constructor.name + "} ";
                         }
                     }
                 }
