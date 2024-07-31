@@ -980,7 +980,9 @@ export default class Gui extends Events
         }
 
         this.setLayout();
-        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+
+        if (this.canvasManager.getCanvasUiBar())
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
     }
 
     cycleFullscreen()

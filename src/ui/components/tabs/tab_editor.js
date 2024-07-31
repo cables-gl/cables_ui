@@ -99,7 +99,7 @@ export default class EditorTab
                 }
                 else
                 {
-                    console.error("could not get opdoc:" + opname);
+                    this._log.warn("could not get opdoc:" + opname);
                 }
 
                 this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
@@ -345,7 +345,7 @@ function createEditor(id, val, cb)
 
         if (!snipreq)
         {
-            console.error("ace - no snippetmanager ?!");
+            this._log.error("ace - no snippetmanager ?!");
             alert("ace crash no snippetmanager....");
             return;
         }

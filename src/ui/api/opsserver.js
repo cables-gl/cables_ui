@@ -1344,7 +1344,6 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            console.log("sane", opId);
                             const loadingModal = gui.startModalLoading("Save attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",

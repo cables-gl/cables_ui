@@ -268,7 +268,6 @@ export default function extendCorePatch()
             count++;
             const oldOp = oldOps[i];
             oldOp.deleted = true;
-            console.log("reloadop ", objName, "subpatch:", oldOp.uiAttribs.subPatch);
             const op = this.addOp(objName, oldOp.uiAttribs);
             if (!op) continue;
             if (oldOp && oldOp.storage) op.setStorage(JSON.parse(JSON.stringify(oldOp.storage)));
