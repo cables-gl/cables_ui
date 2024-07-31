@@ -74,8 +74,10 @@ export default class LogFilter extends Events
             this.emitEvent("initiatorsChanged");
         }
 
-        let setting = this._initiators[initiator];
 
+
+
+        let setting = this._initiators[initiator];
 
         if (!setting) return false;
         let should = setting.print;

@@ -43,6 +43,7 @@ import LoggingTab from "./components/tabs/tab_logfilter.js";
 import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
 import FileManager from "./components/filemanager.js";
 import BottomTabPanel from "./elements/tabpanel/bottomtabpanel.js";
+import LogTab from "./components/tabs/tab_log.js";
 
 export default class Gui extends Events
 {
@@ -444,12 +445,33 @@ export default class Gui extends Events
         this.patchView.resumeInteraction();
     }
 
+
+    showBottomTabs()
+    {
+        if (!this.bottomTabPanel.isVisible())
+        {
+            new LogTab(this.bottomTabs);
+            this.bottomTabPanel.show(true);
+            gui.setLayout();
+            gui.mainTabs.emitEvent("resize");
+        }
+    }
+
+    hideBottomTabs()
+    {
+        this.bottomTabPanel.hide(true);
+
+        gui.mainTabs.emitEvent("resize");
+        gui.setLayout();
+        gui.mainTabs.emitEvent("resize");
+    }
+
     setLayout()
     {
         this.pauseProfiling();
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
 
-        this._elAceEditor = ele.byId("ace_editors");
+        // this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
 
@@ -589,7 +611,7 @@ export default class Gui extends Events
             this._elMaintab.style.width = editorWidth + "px";
 
 
-            if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
+            // if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
             this._elSplitterMaintabs.style.height = (patchHeight) + 2 + "px";
@@ -1468,14 +1490,7 @@ export default class Gui extends Events
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
-        window.addEventListener("resize", () =>
-        {
-            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
-            this.canvasManager.blur();
-            this.mainTabs.emitEvent("resize");
-            this.setLayout();
-            this.setLayout(); // yes, twice....
-        }, false);
+
 
         if (CABLES.platform.frontendOptions.showWelcome)
         {
@@ -1488,6 +1503,15 @@ export default class Gui extends Events
 
 
         cb();
+    }
+
+    onResize()
+    {
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        this.canvasManager.blur();
+        this.mainTabs.emitEvent("resize");
+        this.setLayout();
+        this.setLayout(); // yes, twice....
     }
 
     bindKeys()
@@ -1759,20 +1783,20 @@ export default class Gui extends Events
 
     showUiElements()
     {
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;___:_&nbsp;_");
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;_:_______________&nbsp;_____________&nbsp;/&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;_&nbsp;_______");
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|\\\\.&nbsp;&nbsp;_)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;_____&nbsp;|&nbsp;(/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/\\\\\\(_______&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;__/\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;");
-        this._log.log("&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;_/\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\\\/_\\\\\\\\&nbsp;_/&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_\\\\\\/___&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\&nbsp;");
-        this._log.log("&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/_\\\\|_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\(&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;\\&nbsp;&nbsp;&nbsp;/_&nbsp;&nbsp;&nbsp;&nbsp;_:\\\\/__&nbsp;/\\_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\&nbsp;&nbsp;&nbsp;_/_\\\\/___");
-        this._log.log("_/&nbsp;&nbsp;&nbsp;/(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|_\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\__&nbsp;&nbsp;/_\\\\_)&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\");
-        this._log.log("\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_\\&nbsp;&nbsp;&nbsp;\\___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\");
-        this._log.log("&nbsp;\\_________(&nbsp;&nbsp;&nbsp;&nbsp;_|\\\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;___________/&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_________/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\/");
-        this._log.log("&nbsp;&nbsp;\\\\\\\\\\\\\\\\|_____)\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(/)&nbsp;&nbsp;/\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\/");
-        this._log.log("&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______:\\\\.\\/______________/\\\\\\\\\\\\\\\\\\_________________(\\\\&nbsp;");
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dip\\\\\\\\\\\\\\)&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\|&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-        this._log.log("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\|&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\(&nbsp;");
-        this._log.log("");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;___:_&nbsp;_");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;_:_______________&nbsp;_____________&nbsp;/&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;_&nbsp;_______");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|\\\\.&nbsp;&nbsp;_)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;_____&nbsp;|&nbsp;(/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/\\\\\\(_______&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;__/\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;_/\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\\\/_\\\\\\\\&nbsp;_/&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_\\\\\\/___&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\&nbsp;");
+        this._log.logGui("&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/_\\\\|_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\(&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;\\&nbsp;&nbsp;&nbsp;/_&nbsp;&nbsp;&nbsp;&nbsp;_:\\\\/__&nbsp;/\\_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\&nbsp;&nbsp;&nbsp;_/_\\\\/___");
+        this._log.logGui("_/&nbsp;&nbsp;&nbsp;/(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|_\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\__&nbsp;&nbsp;/_\\\\_)&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\");
+        this._log.logGui("\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_\\&nbsp;&nbsp;&nbsp;\\___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\");
+        this._log.logGui("&nbsp;\\_________(&nbsp;&nbsp;&nbsp;&nbsp;_|\\\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;___________/&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_________/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\/");
+        this._log.logGui("&nbsp;&nbsp;\\\\\\\\\\\\\\\\|_____)\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(/)&nbsp;&nbsp;/\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\/");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______:\\\\.\\/______________/\\\\\\\\\\\\\\\\\\_________________(\\\\&nbsp;");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dip\\\\\\\\\\\\\\)&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\|&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\|&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\(&nbsp;");
+        this._log.logGui("");
 
 
         ele.show(ele.byId("cablescanvas"));
@@ -1906,6 +1930,12 @@ export default class Gui extends Events
 
         gui.metaTabs.loadCurrentTabUsersettings();
         gui.patchView.focus();
+
+        setTimeout(() =>
+        {
+            gui.setLayout();
+            gui.mainTabs.emitEvent("resize");
+        }, 1000);
 
         setTimeout(() =>
         {

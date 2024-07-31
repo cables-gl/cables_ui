@@ -30,25 +30,17 @@ export default class LogTab extends Events
 
         this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
 
-
-
-        this._tabs.on("resize", () =>
-        {
-            console.log(this._tab.contentEle, this._tab.contentEle.getBoundingClientRect());
-        });
-
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
-        const alwaysOpenButton = this._tab.addButton("Always open: " + userSettings.get("openLogTab"), () =>
+        const alwaysOpenButton = this._tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
         {
             userSettings.set("openLogTab", !userSettings.get("openLogTab"));
-            alwaysOpenButton.innerHTML = "Always open: " + userSettings.get("openLogTab");
+            alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get("openLogTab") || false);
         });
 
         this._tab.addButton("Clear", () =>
         {
             CABLES.UI.logFilter.logs.length = 0; this._html();
-            console.log("clear");
         });
 
 
@@ -60,8 +52,6 @@ export default class LogTab extends Events
             let lines = txt.split("\n");
             lines = lines.reverse();
             txt = lines.join("\n");
-
-
             navigator.clipboard.writeText(txt);
         });
 
@@ -70,12 +60,16 @@ export default class LogTab extends Events
             "close",
             () =>
             {
-                this.closed = true;
-                this.emitEvent("close");
+                this.close();
+            });
+    }
 
-                CABLES.UI.logFilter.off(this._showlogListener);
-            },
-        );
+    close()
+    {
+        this.closed = true;
+        CABLES.UI.logFilter.off(this._showlogListener);
+        this.emitEvent("close");
+        gui.hideBottomTabs();
     }
 
 
@@ -266,7 +260,7 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": [" + lines[line] + "]";
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": <span class=\"logLineCode\">" + lines[line] + "</span>";
                     this._log.error(str);
 
                     if (!this.sentAutoReport)

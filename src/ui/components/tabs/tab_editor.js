@@ -30,6 +30,12 @@ export default class EditorTab
 
         this._tab.editor = this;
 
+        this._tab.on("resize", () =>
+        {
+            if (this._editor) this._editor.resize();
+        });
+
+
         const existing = gui.mainTabs.getTabByTitle(options.title);
         if (existing)
         {

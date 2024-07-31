@@ -429,7 +429,14 @@ class OpParampanel extends Events
                     div = document.createElement("div");
                     div.id = "uierror_" + err.id;
                     div.classList.add("warning-error");
-                    div.classList.add("warning-error-level" + err.level);
+                    if (CABLES.UTILS.isNumeric(err.level))
+                        div.classList.add("warning-error-level" + err.level);
+                    else
+                    {
+                        console.error("err level not numeric", err.level);
+                        console.log((new Error().stack));
+                    }
+
                     el.appendChild(div);
                 }
 

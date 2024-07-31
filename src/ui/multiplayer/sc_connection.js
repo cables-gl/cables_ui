@@ -462,7 +462,7 @@ export default class ScConnection extends Events
             for await (const event of this._socket.listener("connect"))
             {
                 this.emitEvent("netActivityIn");
-                this._log.verbose("sc connected!");
+                // this._log.verbose("sc connected!");
                 this._connected = true;
                 this._connectedSince = this.getTimestamp();
 

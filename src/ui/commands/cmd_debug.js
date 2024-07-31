@@ -91,11 +91,7 @@ CABLES_CMD_DEBUG.debugGlUi = function ()
 
 CABLES_CMD_DEBUG.logConsole = function ()
 {
-    if (!gui.bottomTabPanel.isVisible())
-    {
-        new LogTab(gui.bottomTabs);
-        gui.bottomTabPanel.show(true);
-    }
+    gui.showBottomTabs();
 };
 
 CABLES_CMD_DEBUG.logging = function ()

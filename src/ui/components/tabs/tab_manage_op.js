@@ -135,9 +135,6 @@ export default class ManageOp
                         doc.attachmentFiles = attachmentFiles;
                     }
 
-                    console.log(res);
-
-
                     doc.libs = gui.serverOps.getOpLibs(opName, false);
                     doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
                     summary = gui.opDocs.getSummary(opName) || "No Summary";
