@@ -8,6 +8,7 @@ import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import ModalIframe from "../dialogs/modaliframe.js";
 
 
 
@@ -1134,7 +1135,19 @@ export default class ServerOps
         });
     }
 
-    renameDialog(oldName, origOp)
+    renameDialogIframe(opName)
+    {
+        if (!CABLES.platform.isTrustedPatch())
+        {
+            new ModalDialog({ "title": "You need write access in the patch to rename ops", "showOkButton": true });
+            return;
+        }
+        const iframeSrc = CABLES.platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
+        new ModalIframe({ "title": "Rename Op", "src": iframeSrc });
+        CABLESUILOADER.talkerAPI.addEventListener("opRenamed", console.log);
+    }
+
+    renameDialog(oldName)
     {
         if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
 
@@ -1166,7 +1179,6 @@ export default class ServerOps
             if (doc && doc.id) nameOrId = doc.id;
             gui.serverOps.rename(nameOrId, opname, () =>
             {
-                console.log("RENAMED", nameOrId.opName);
             }, { "opTargetDir": cbOptions.opTargetDir });
         });
     }
