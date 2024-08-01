@@ -176,6 +176,8 @@ export default class ServerOps
     {
         this.timeoutsLayouts = this.timeoutsLayouts || {};
 
+
+
         clearTimeout(this.timeoutsLayouts[op.objName]);
         this.timeoutsLayouts[op.objName] = setTimeout(
             () =>
@@ -194,8 +196,8 @@ export default class ServerOps
         let i = 0;
         const opObj = {
             "portsIn": [],
-            "portsOut": [],
-            "name": op.objName,
+            "portsOut": []// ,
+            // "name": op.objName,
         };
 
         for (i = 0; i < op.portsIn.length; i++)
@@ -256,6 +258,11 @@ export default class ServerOps
             if (op.portsOut[i].uiAttribs.objType) l.objType = op.portsOut[i].uiAttribs.objType;
             opObj.portsOut.push(l);
         }
+
+
+        // check if layout has changed...
+        const l = gui.opDocs.getOpDocById(op.opId);
+        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return;
 
         CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
