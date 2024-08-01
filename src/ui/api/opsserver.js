@@ -1344,7 +1344,6 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            console.log("sane", opId);
                             const loadingModal = gui.startModalLoading("Save attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
@@ -1844,8 +1843,7 @@ export default class ServerOps
                 {
                     if (op.storage && op.storage.blueprintVer > 1)
                     {
-                        const isInProject = gui.project().ops.some((projectOp) => { return projectOp.opId === op.opId; });
-                        if (!isInProject)
+                        if (!gui.corePatch().hasOp(op))
                         {
                             missingOps.push(opInfo);
                             missingOpsFound.push(opIdentifier);

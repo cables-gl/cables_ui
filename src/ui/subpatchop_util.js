@@ -1,3 +1,4 @@
+import { Logger } from "cables-shared-client";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 
@@ -11,6 +12,7 @@ const subPatchOpUtil = {};
 subPatchOpUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
 subPatchOpUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 
+const _log = new Logger("subPatchOpUtil");
 
 
 subPatchOpUtil.executeBlueprintIfMultiple = (opname, next) =>
@@ -23,7 +25,7 @@ subPatchOpUtil.executeBlueprintIfMultiple = (opname, next) =>
     }
     else
     {
-        console.log("no need to execute bp op");
+        _log.log("no need to execute bp op");
         next();
     }
 };
@@ -388,7 +390,7 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
 {
     if (!portsJson.ports)
     {
-        console.error("thats not json", portsJson);
+        this._log.error("thats not json", portsJson);
         return;
     }
 
@@ -586,7 +588,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 "type": type
             };
 
-            console.log(port);
+            _log.log(port);
 
             try
             {
@@ -594,7 +596,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
             }
             catch (e)
             {
-                console.error("could not parse add ui attribs...");
+                _log.error("could not parse add ui attribs...");
             }
 
 

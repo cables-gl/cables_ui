@@ -169,7 +169,7 @@ export default class LogTab extends Events
                             {
                                 if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
                                 {
-                                    this._logErrorLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
+                                    this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
                                 }
 
                                 const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
@@ -226,7 +226,7 @@ export default class LogTab extends Events
                         else
                         {
                             console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += "unknown log type... " + arg.constructor.name;
+                            currentLine += " obj{" + arg.constructor.name + "} ";
                         }
                     }
                 }
@@ -242,7 +242,7 @@ export default class LogTab extends Events
         if (el)el.innerHTML = html;
     }
 
-    _logErrorLine(l, url, line)
+    _logErrorSrcCodeLine(l, url, line)
     {
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
@@ -261,7 +261,7 @@ export default class LogTab extends Events
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
                     const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": <span class=\"logLineCode\">" + lines[line] + "</span>";
-                    this._log.error(str);
+                    this._log.errorGui(str);
 
                     if (!this.sentAutoReport)
                     {

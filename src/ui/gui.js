@@ -980,7 +980,9 @@ export default class Gui extends Events
         }
 
         this.setLayout();
-        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+
+        if (this.canvasManager.getCanvasUiBar())
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
     }
 
     cycleFullscreen()
@@ -1919,9 +1921,9 @@ export default class Gui extends Events
         console.groupEnd();
 
 
-        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.log("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
-        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.log("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
-        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.log("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
+        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
+        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.logGui("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
+        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.logGui("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
 
 
 

@@ -1,10 +1,11 @@
-import { ele, Events } from "cables-shared-client";
+import { ele, Events, Logger } from "cables-shared-client";
 
 export default class Jobs extends Events
 {
     constructor()
     {
         super();
+        this._log = new Logger("Jobs");
         this._jobs = [];
         this._finishedJobs = [];
         this._lastIndicator = null;
@@ -84,8 +85,7 @@ export default class Jobs extends Events
 
         if (!job.id)
         {
-            console.error("job undefined", job);
-            console.error((new Error()).stack);
+            this._log.error("job undefined", job, new Error());
         }
 
         gui.showLoadingProgress(true);

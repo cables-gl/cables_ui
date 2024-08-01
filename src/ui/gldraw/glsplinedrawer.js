@@ -256,6 +256,8 @@ export default class GlSplineDrawer
         let isDifferent = true;
         let isDifferentLength = false;
 
+
+
         if (!this._rebuildLater)
         {
             if (this._splines[idx] && this._splines[idx].origPoints)
@@ -278,6 +280,9 @@ export default class GlSplineDrawer
                         points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
+
+
+
                     this._splines[idx].pointsNeedProgressUpdate = true;
                 }
                 else
@@ -460,7 +465,11 @@ export default class GlSplineDrawer
                     )
                     {
                         const d = this._dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
-                        if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                        if (d != d)
+                        {
+                            // console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                            points[idx3 + 0] = points[idx3 + 1] = points[idx31 + 0] = points[idx31 + 1] = 0;
+                        }
                         if (d)totalDistance += d;
                     }
 

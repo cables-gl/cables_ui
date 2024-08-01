@@ -99,22 +99,9 @@ export default class GlOp extends Events
 
             this._op.on("onPortRemoved", () =>
             {
-                this._log.log("port removed...");
                 this.refreshPorts();
             });
 
-            // if (defaultops.isSubPatchOpName(this._op.objName))
-            // if (this._op.storage && this._op.storage.subPatchVer)
-            // {
-            //     this.displayType = this.DISPLAY_SUBPATCH;
-
-            //     // this.emitEvent("patchLoadEnd", () =>
-            //     // {
-            //     //     this._log.log("refreshing ports...");
-            //     //     this.refreshPorts();
-            //     //     this._log.log("refreshing ports... done");
-            //     // });
-            // }
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
             else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
         }
@@ -1176,23 +1163,28 @@ export default class GlOp extends Events
 
 
 
-        if (!this._titleExt &&
-            (
-                this.opUiAttribs.hasOwnProperty("extendTitle") ||
-                this.opUiAttribs.hasOwnProperty("extendTitlePort")))
-        {
-            this._titleExt = new GlText(this._textWriter, " ");
-            this._titleExt.setParentRect(this._glRectBg);
-            this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
 
-            this._titleExt.visible = this.visible;
-        }
-        if (this._titleExt &&
-            (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
-            (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
+        // extended title
+        if (this.displayType != this.DISPLAY_COMMENT)
         {
-            this._titleExt.dispose();
-            this._titleExt = null;
+            if (!this._titleExt &&
+                (
+                    this.opUiAttribs.hasOwnProperty("extendTitle") ||
+                    this.opUiAttribs.hasOwnProperty("extendTitlePort")))
+            {
+                this._titleExt = new GlText(this._textWriter, " ");
+                this._titleExt.setParentRect(this._glRectBg);
+                this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
+
+                this._titleExt.visible = this.visible;
+            }
+            if (this._titleExt &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
+            {
+                this._titleExt.dispose();
+                this._titleExt = null;
+            }
         }
 
         if (!this.opUiAttribs.resizable && this._rectResize)
