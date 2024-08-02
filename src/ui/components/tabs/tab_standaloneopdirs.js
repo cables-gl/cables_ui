@@ -21,7 +21,7 @@ export default class StandaloneOpDirs
     show()
     {
         if (!this._tab) return;
-        CABLESUILOADER.talkerAPI.send("getOpTargetDirs", {}, (err, r) =>
+        CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, r) =>
         {
             if (!err && r.data)
             {

@@ -38,7 +38,11 @@ export default class FileUploader
 
         this._uploadDropEvent = event.originalEvent;
 
-        if (event.dataTransfer.types.indexOf("Files") == -1) return;
+        if (event.dataTransfer.types.indexOf("Files") == -1)
+        {
+            console.log("drag has no files...");
+            return;
+        }
 
         if (CABLES.DragNDrop.internal)
         {
