@@ -99,6 +99,18 @@ export default class LogTab extends Events
         html += "</div>";
         html += "</div>";
 
+
+        if (html.indexOf("`") > -1)
+        {
+            const parts = html.split("`");
+
+
+            parts.splice(1, 0, "<span class=\"logLineCode\">");
+            parts.splice(3, 0, "</span>");
+
+            html = parts.join("");
+        }
+
         return html;
     }
 
@@ -212,7 +224,12 @@ export default class LogTab extends Events
                         }
                         else if (typeof arg == "string")
                         {
-                            currentLine += arg;
+                            let _arg = arg;
+                            if (arg.startsWith("https://"))
+                            {
+                                _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                            }
+                            currentLine += _arg;
                         }
                         else if (typeof arg == "number")
                         {
@@ -263,7 +280,7 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": <span class=\"logLineCode\">" + lines[line] + "</span>";
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`</span>";
                     logger.errorGui(str);
 
                     if (!this.sentAutoReport)
