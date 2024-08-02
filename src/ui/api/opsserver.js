@@ -950,7 +950,7 @@ export default class ServerOps
 
         if (options.chooseOpDir)
         {
-            CABLESUILOADER.talkerAPI.send("getOpTargetDirs", {}, (err, res) =>
+            CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
             {
                 let opDirSelect = "Choose op directory:<br/><br/>";
                 opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
