@@ -118,11 +118,8 @@ export default class Jobs extends Events
     _updateVisibility()
     {
         const elContainer = ele.byId("uploadprogresscontainer");
-        if (this._visibleProgressBar)
-            elContainer.classList.remove("hidden");
-        else
-            elContainer.classList.add("hidden");
-
+        if (this._visibleProgressBar) elContainer.classList.remove("hidden");
+        else elContainer.classList.add("hidden");
 
         if (gui.isRemoteClient)
         {
@@ -136,8 +133,7 @@ export default class Jobs extends Events
         clearTimeout(this.removeProgressTo);
         let prog = gui.corePatch().loading.getProgress();
 
-        const elContainer = ele.byId("uploadprogresscontainer");
-        ele.byId("uploadprogress").style.width = prog * 100 + "%";
+        // ele.byId("uploadprogress").style.width = prog * 100 + "%";
 
         if (prog === 1)
         {

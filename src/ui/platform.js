@@ -342,7 +342,7 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("jobProgress", (options, next) =>
         {
-            gui.jobs().setProgress(options.progress);
+            gui.jobs().setProgress(options.id, options.progress);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("updatePatchName", (opts, next) =>
