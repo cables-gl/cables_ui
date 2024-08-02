@@ -1991,7 +1991,7 @@ export default class ServerOps
                         incrementStartup();
                         cb(newOps);
                     });
-                    loadjs(missingOpUrl, lid);
+                    loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
                 }
             });
         }
@@ -2036,7 +2036,7 @@ export default class ServerOps
                     cb();
                 }
             });
-            loadjs(extensionOpUrl, lid);
+            loadjs(extensionOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
         }
         else
         {
@@ -2079,7 +2079,7 @@ export default class ServerOps
                     cb();
                 }
             });
-            loadjs(teamOpUrl, lid);
+            loadjs(teamOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
         }
         else
         {

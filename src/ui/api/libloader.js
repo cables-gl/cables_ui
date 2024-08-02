@@ -75,6 +75,7 @@ export default class LibLoader
                 newScript.dataset.libname = elRef;
                 newScript.type = "text/javascript";
                 newScript.async = true;
+                newScript.crossOrigin = "use-credentials";
                 if (name.startsWith("/assets"))
                 {
                     if (gui && gui.corePatch() && gui.corePatch().config.prefixAssetPath)
