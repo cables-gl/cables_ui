@@ -280,7 +280,7 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`</span>";
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`";
                     logger.errorGui(str);
 
                     if (!this.sentAutoReport)
