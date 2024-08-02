@@ -249,6 +249,7 @@ export default class LogTab extends Events
 
         // export const ajax = function (url, cb, method, post, contenttype, jsonP, headers = {}, options = {})
 
+        const logger = this._log;
         CABLES.ajax(
             url,
             (err, _data, xhr) =>
@@ -263,7 +264,7 @@ export default class LogTab extends Events
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
                     const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": <span class=\"logLineCode\">" + lines[line] + "</span>";
-                    this._log.errorGui(str);
+                    logger.errorGui(str);
 
                     if (!this.sentAutoReport)
                     {
