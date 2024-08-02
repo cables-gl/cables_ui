@@ -235,7 +235,7 @@ export default class LogTab extends Events
         }
         catch (e)
         {
-            console.log("error in error");
+            console.log("error in error", e);
         }
 
         const el = ele.byId("loggingHtmlId123");
