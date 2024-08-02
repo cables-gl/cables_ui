@@ -247,6 +247,8 @@ export default class LogTab extends Events
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 
+        // export const ajax = function (url, cb, method, post, contenttype, jsonP, headers = {}, options = {})
+
         CABLES.ajax(
             url,
             (err, _data, xhr) =>
@@ -276,7 +278,13 @@ export default class LogTab extends Events
                 {
                     console.log("could not parse lines.", e);
                 }
-            });
+            },
+            "GET",
+            null,
+            null,
+            null,
+            null,
+            { "credentials": true });
     }
 
     createReport()
