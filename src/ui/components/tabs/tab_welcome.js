@@ -39,7 +39,7 @@ export default class WelcomeTab
 
                             if (!result || !elePlatVersion || !result.name) return;
 
-                            elePlatVersion.innerHTML = " - latest standalone release: <a target=\"_blank\" class=\"link\" href=\"https://cables.gl/downloads\">" + result.name + "</a>";
+                            elePlatVersion.innerHTML = " - latest standalone release: <a target=\"_blank\" class=\"link\" href=\"https://cables.gl/standalone\">" + result.name + "</a>";
                         }
                         catch (e) {}
                     }

@@ -205,7 +205,7 @@ export default class ModalPortValue
             const jsonInfo = printJsonInfo(thing, port.op, port.name, inputDataType);
 
             let fullHTML = "";
-            fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
+            fullHTML += "<h2 class=\"splitter\"><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
             fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
@@ -221,7 +221,7 @@ export default class ModalPortValue
         catch (ex)
         {
             let fullHTML = "";
-            fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
+            fullHTML += "<h2><span class=\"splitter icon icon-settings\"></span>&nbsp;Structure</h2>";
             fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";

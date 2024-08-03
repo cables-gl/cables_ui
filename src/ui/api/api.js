@@ -124,10 +124,8 @@ export default class Api
 
     sendErrorReport(report, manualSend = true)
     {
-        const doneCallback = () =>
+        const doneCallback = (res) =>
         {
-            this._log.log("error report sent.");
-
             if (manualSend)
             {
                 const modalOptions = {
@@ -137,6 +135,10 @@ export default class Api
                 };
                 new ModalDialog(modalOptions);
             }
+
+            if (res && res.data && res.data.url)
+                this._log.log("sent error report: ", res.data.url);
+
 
             CABLES.lastError = null;
         };

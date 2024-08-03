@@ -99,6 +99,18 @@ export default class LogTab extends Events
         html += "</div>";
         html += "</div>";
 
+
+        if (html.indexOf("`") > -1)
+        {
+            const parts = html.split("`");
+
+
+            parts.splice(1, 0, "<span class=\"logLineCode\">");
+            parts.splice(3, 0, "</span>");
+
+            html = parts.join("");
+        }
+
         return html;
     }
 
@@ -212,7 +224,12 @@ export default class LogTab extends Events
                         }
                         else if (typeof arg == "string")
                         {
-                            currentLine += arg;
+                            let _arg = arg;
+                            if (arg.startsWith("https://"))
+                            {
+                                _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                            }
+                            currentLine += _arg;
                         }
                         else if (typeof arg == "number")
                         {
@@ -235,7 +252,7 @@ export default class LogTab extends Events
         }
         catch (e)
         {
-            console.log("error in error");
+            console.log("error in error", e);
         }
 
         const el = ele.byId("loggingHtmlId123");
@@ -247,6 +264,9 @@ export default class LogTab extends Events
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 
+        // export const ajax = function (url, cb, method, post, contenttype, jsonP, headers = {}, options = {})
+
+        const logger = this._log;
         CABLES.ajax(
             url,
             (err, _data, xhr) =>
@@ -260,8 +280,8 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": <span class=\"logLineCode\">" + lines[line] + "</span>";
-                    this._log.errorGui(str);
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`";
+                    logger.errorGui(str);
 
                     if (!this.sentAutoReport)
                     {
@@ -276,7 +296,13 @@ export default class LogTab extends Events
                 {
                     console.log("could not parse lines.", e);
                 }
-            });
+            },
+            "GET",
+            null,
+            null,
+            null,
+            null,
+            { "credentials": true });
     }
 
     createReport()
@@ -307,21 +333,28 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    if (arg.constructor.name == "Op")
+                    if (arg)
                     {
-                        neewArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
-                    }
-                    else if (arg.getSerialized)
-                    {
-                        neewArg = arg.getSerialized();
-                    }
-                    else if (arg.serialize)
-                    {
-                        neewArg = arg.serialize();
+                        if (arg.constructor.name == "Op")
+                        {
+                            neewArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
+                        }
+                        else if (arg.getSerialized)
+                        {
+                            neewArg = arg.getSerialized();
+                        }
+                        else if (arg.serialize)
+                        {
+                            neewArg = arg.serialize();
+                        }
+                        else
+                        {
+                            neewArg = " unknown, could not serialize:" + arg.constructor.name;
+                        }
                     }
                     else
                     {
-                        neewArg = " unknown, could not serialize:" + arg.constructor.name;
+                        console.log("no arg", e);
                     }
                 }
                 newLine.args.push(neewArg);

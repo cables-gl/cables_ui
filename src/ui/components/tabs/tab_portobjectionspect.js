@@ -62,7 +62,7 @@ export default class TabPortObjectInspect extends Events
             let html = "";
             html += "<div class=\"tabRows\">";
             html += "<div class=\"tabRow\">";
-            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect: " + this.op.name + ": " + this.port.name + "</h2>";
+            html += "<h2><span class=\"splitter icon icon-search\"></span>&nbsp;Inspect: " + this.op.name + ": " + this.port.name + "</h2>";
             html += "<br/>";
             html += "<a class=\"button\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
@@ -104,7 +104,7 @@ export default class TabPortObjectInspect extends Events
         catch (ex)
         {
             let html = "";
-            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect Failed</h2>";
+            html += "<h2><span class=\"splitter icon icon-search\"></span>&nbsp;Inspect Failed</h2>";
             html += "Port: <b>" + port.name + "</b> of <b>" + port.op.name + "</b> ";
             html += "<br/><br/>";
 

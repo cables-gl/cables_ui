@@ -1004,7 +1004,8 @@ export default class Gui extends Events
             this.notifiedFullscreen = true;
         }
 
-        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        if (this.canvasManager.getCanvasUiBar())
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.setLayout();
     }
 
@@ -1509,7 +1510,8 @@ export default class Gui extends Events
 
     onResize()
     {
-        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        if (this.canvasManager.getCanvasUiBar())
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.canvasManager.blur();
         this.mainTabs.emitEvent("resize");
         this.setLayout();
@@ -1679,7 +1681,8 @@ export default class Gui extends Events
 
     pressedEscape(e)
     {
-        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        if (this.canvasManager.getCanvasUiBar())
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
         if (this.fileManager) this.fileManager.setFilePort(null);

@@ -149,7 +149,7 @@
                         console.error("preloading error", response);
                     });
 
-                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
+                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops', { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
                     loadjs.ready('all_ops', () =>
                     {
                         incrementStartup();
