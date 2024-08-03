@@ -713,13 +713,13 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 
             if (p.direction == CABLES.PORT_DIR_IN)
             {
-                p.parent.patch.link(opGetter, portName, p.parent, p.name);
-                if (p2) p2.parent.patch.link(opSetter, portNameOut, p2.parent, p2.name);
+                p.op.patch.link(opGetter, portName, p.op, p.name);
+                if (p2) p2.op.patch.link(opSetter, portNameOut, p2.op, p2.name);
             }
             else
             {
-                p.parent.patch.link(opSetter, portName, p.parent, p.name);
-                if (p2) p2.parent.patch.link(opGetter, portNameOut, p2.parent, p2.name);
+                p.op.patch.link(opSetter, portName, p.op, p.name);
+                if (p2) p2.op.patch.link(opGetter, portNameOut, p2.op, p2.name);
             }
 
             opSetter.varName.set(name);
@@ -1206,7 +1206,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     {
                         bpPort.links.forEach((bpLink) =>
                         {
-                            const parent = bpLink.portOut.parent;
+                            const parent = bpLink.portOut.op;
                             patch.link(parent, bpLink.portOut.name, op, portIn.name);
                         });
                     }
@@ -1224,7 +1224,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     {
                         bpPort.links.forEach((bpLink) =>
                         {
-                            const parent = bpLink.portIn.parent;
+                            const parent = bpLink.portIn.op;
                             const link = patch.link(op, portOut.name, parent, bpLink.portIn.name);
                         });
                     }
