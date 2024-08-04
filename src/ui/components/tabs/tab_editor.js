@@ -253,7 +253,7 @@ export default class EditorTab
         }
 
         const anns = this._editor.getSession().getAnnotations();
-        this._log.log("annotations", anns);
+        // this._log.log("annotations", anns);
 
         if (this._options.onSave)
         {
