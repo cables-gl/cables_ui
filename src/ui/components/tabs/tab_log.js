@@ -283,7 +283,11 @@ export default class LogTab extends Events
                     const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`";
                     logger.errorGui(str);
 
-                    if (url.indexOf("api/op/Ops.Patch.") == -1) // do not send error report when patch ops
+                    if ( // do not send error report
+                        url.indexOf("api/op/Ops.User.") == -1 && // when user ops
+                        url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
+                        url.indexOf("api/op/Ops.Team.") == -1 //  when team ops
+                    )
                     {
                         if (!this.sentAutoReport)
                         {
