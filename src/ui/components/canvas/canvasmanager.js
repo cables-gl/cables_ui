@@ -70,12 +70,12 @@ export default class CanvasManager
 
     blur()
     {
-        this.currentCanvas().blur();
+        if (this.currentCanvas()) this.currentCanvas().blur();
     }
 
     focus()
     {
-        this.currentCanvas().focus();
+        if (this.currentCanvas()) this.currentCanvas().focus();
     }
 
     setCurrentCanvas(canv)
