@@ -133,6 +133,7 @@
                     incrementStartup();
                     logStartup("loaded ui");
 
+                    CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
                     CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
                     {
                         if (err)
@@ -177,7 +178,7 @@
 
     document.addEventListener("DOMContentLoaded", function (event)
     {
-        CABLESUILOADER.talkerAPI = new CABLESUILOADER.TalkerAPI(window.parent);
+        CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
 
         const reqTimeout=setTimeout(()=>
         {

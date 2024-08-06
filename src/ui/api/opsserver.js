@@ -8,7 +8,7 @@ import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-import ModalIframe from "../dialogs/modaliframe.js";
+
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -1141,29 +1141,7 @@ export default class ServerOps
         });
     }
 
-    renameDialogIframe(opName)
-    {
-        if (!CABLES.platform.isTrustedPatch())
-        {
-            new ModalDialog({ "title": "You need write access in the patch to rename ops", "showOkButton": true });
-            return;
-        }
-
-        const iframeSrc = CABLES.platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
-        const modal = new ModalIframe({ "title": "Rename Op", "src": iframeSrc });
-        const iframeEle = modal.iframeEle;
-        iframeEle.addEventListener("load", () =>
-        {
-            const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
-            console.log("ADDING LISTENER!!!");
-            talkerAPI.addEventListener("opRenamed", (data) =>
-            {
-                console.log("DATA", data);
-            });
-        });
-    }
-
-    renameDialog(oldName)
+    renameDialog(oldName, origOp)
     {
         if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
 
