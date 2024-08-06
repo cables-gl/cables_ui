@@ -435,11 +435,16 @@ export default class FileManager
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
 
+                        let editable = false;
+                        if (r.fileDb && r.fileDb.fileName) editable = r.fileDb.fileName.endsWith(".md") || r.fileDb.fileName.endsWith(".scss");
+                        editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
+
+
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
-                            "isEditable": (r.fileDb && r.fileDb.fileName.endsWith(".md") || r.fileDb.fileName.endsWith(".scss")) || r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
+                            "isEditable": editable,
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
