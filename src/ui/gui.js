@@ -1494,18 +1494,8 @@ export default class Gui extends Events
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
-
-
-        if (CABLES.platform.frontendOptions.showWelcome)
-        {
-            CABLES.CMD.UI.welcomeTab(true);
-        }
         this.htmlEleOverlay = new HtmlElementOverlay();
-
-
         console.log(this.opDocs.getStats());
-
-
         cb();
     }
 
@@ -1846,10 +1836,10 @@ export default class Gui extends Events
                 userSettings.get("introCompleted")) gui.tips.show();
 
 
-        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab();
-
-        const buildInfo = this.project().buildInfo;
-
+        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0)
+        {
+            CABLES.CMD.UI.welcomeTab(true);
+        }
 
         let ver = "";
         ver += CABLES.platform.getCablesVersion();
