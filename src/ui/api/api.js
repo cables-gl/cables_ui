@@ -157,15 +157,8 @@ export default class Api
         else
         {
             this.lastErrorReport = performance.now();
-            if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
-            {
-                report.browserInfo = platform;
-                CABLES.api.post("errorReport", report, doneCallback);
-            }
-            else
-            {
-                CABLES.api.post("errorReport", report, doneCallback);
-            }
+            report.browserInfo = platform;
+            CABLES.api.post("errorReport", report, doneCallback);
         }
     }
 }
