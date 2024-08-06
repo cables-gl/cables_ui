@@ -293,7 +293,8 @@ export default class LogTab extends Events
                     if ( // do not send error report
                         url.indexOf("api/op/Ops.User.") == -1 && // when user ops
                         url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
-                        url.indexOf("api/op/Ops.Team.") == -1 //  when team ops
+                        url.indexOf("api/op/Ops.Team.") == -1 && //  when team ops
+                        url.indexOf("cables.gl/assets/") == -1 //  when asset libraries
                     )
                     {
                         if (!this.sentAutoReport)

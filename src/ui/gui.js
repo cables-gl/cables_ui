@@ -1851,7 +1851,11 @@ export default class Gui extends Events
         const buildInfo = this.project().buildInfo;
 
 
-        this._log.groupCollapsed("welcome to cables!");
+        let ver = "";
+        ver += CABLES.platform.getCablesVersion();
+        if (CABLES.platform.isDevEnv()) ver += " (dev)";
+
+        this._log.groupCollapsed("welcome to cables " + ver + "!");
 
         if (CABLES.platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
@@ -1860,11 +1864,9 @@ export default class Gui extends Events
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
-        let ver = "";
-        ver += CABLES.platform.getCablesVersion();
-        if (CABLES.platform.isDevEnv()) ver += " (dev)";
 
-        this._log.logGui(ver);
+
+        this._log.logGui("browser: " + platform.description);
 
 
         if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
