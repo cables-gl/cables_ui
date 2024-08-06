@@ -1600,9 +1600,7 @@ export default class PatchView extends Events
         }
         catch (exp)
         {
-            notifyError("Paste failed");
-            this._log.error(str);
-            this._log.error(exp);
+            this._log.warn("pasting failed...");
         }
 
         const undoGroup = undo.startGroup();
