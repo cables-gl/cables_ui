@@ -549,7 +549,7 @@ export default class GlPatch extends Events
         {
             const hoverOp = this._hoverOps[0].op;
 
-            if (hoverOp.isSubPatchOp())
+            if (hoverOp && hoverOp.isSubPatchOp())
             {
                 gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
                 gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
