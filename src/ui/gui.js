@@ -1,4 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
+import platform from "platform";
 import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -1922,6 +1923,15 @@ export default class Gui extends Events
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
+
+
+        let ver = "";
+        ver += CABLES.platform.getCablesVersion();
+        if (CABLES.platform.isDevEnv()) ver += " (dev)";
+
+        this._log.logGui(ver);
+
+
 
 
         if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
