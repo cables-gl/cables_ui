@@ -205,7 +205,7 @@ export default class LogTab extends Events
                             if (arg.reason)msg = arg.reason.message;
 
                             this.lastErrorMsg = "";
-                            if (errorStack && errorStack[0]) this.lastErrorMsg += errorStack[0].functionName + ": ";
+                            if (errorStack && errorStack[0] && errorStack[0].functionName) this.lastErrorMsg += errorStack[0].functionName + ": ";
                             this.lastErrorMsg += msg;
                             txt += " " + msg;
 
