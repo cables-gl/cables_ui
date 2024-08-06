@@ -17,6 +17,7 @@ export default class LogTab extends Events
         this.report = [];
         this.lastErrorSrc = [];
         this._hasError = false;
+        this.lastErrorMsg = null;
         this.sentAutoReport = false;
         this.hasErrorButton = false;
 
@@ -198,9 +199,15 @@ export default class LogTab extends Events
 
                             let txt = "[" + arg.constructor.name + "] ";
 
-                            if (arg.message)txt += " " + arg.message;
-                            if (arg.error)txt += " " + arg.error.message;
-                            if (arg.reason)txt += " " + arg.reason.message;
+                            let msg = "";
+                            if (arg.message)msg = arg.message;
+                            if (arg.error)msg = arg.error.message;
+                            if (arg.reason)msg = arg.reason.message;
+
+                            this.lastErrorMsg = "";
+                            if (errorStack && errorStack[0]) this.lastErrorMsg += errorStack[0].functionName + ": ";
+                            this.lastErrorMsg += msg;
+                            txt += " " + msg;
 
                             html += this._logLine(l, txt, l.level);
                         }
@@ -315,6 +322,7 @@ export default class LogTab extends Events
     createReport()
     {
         const report = {};
+        report.title = this.lastErrorMsg;
 
         const log = [];
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
