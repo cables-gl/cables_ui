@@ -91,6 +91,14 @@ export default class PatchView extends Events
         }
     }
 
+
+    focusSubpatchOp(subPatchId)
+    {
+        const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
+        gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
+        gui.patchView.centerSelectOp(outerOp);
+    }
+
     clickSubPatchNav(subPatchId)
     {
         gui.patchView.setCurrentSubPatch(subPatchId);
@@ -1399,7 +1407,7 @@ export default class PatchView extends Events
         for (let i = names.length - 1; i >= 0; i--)
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
-            str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
+            str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
         if (names.length > 0)
