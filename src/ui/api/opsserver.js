@@ -1157,14 +1157,21 @@ export default class ServerOps
         {
             talkerAPI.removeEventListener(renameListenerId);
             this._log.info("renamed op", data);
-            CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objName": data.newName } }, (err, res) =>
-            {
-                if (gui.opDocs && res.opDocs)
-                {
-                    gui.opDocs.addOpDocs(res.opDocs);
-                }
-                gui._opselect = null;
-            });
+
+            // gui.serverOps.execute(data.opId, () =>
+            // {
+            //     console.log("execute>?!");
+            //     gui.opSelect().reload();
+            // });
+
+            // CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objName": data.newName } }, (err, res) =>
+            // {
+            //     if (gui.opDocs && res.opDocs)
+            //     {
+            //         gui.opDocs.addOpDocs(res.opDocs);
+            //     }
+            //     gui._opselect = null;
+            // });
         });
         const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
         {
