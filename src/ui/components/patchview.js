@@ -1139,7 +1139,7 @@ export default class PatchView extends Events
 
         let subs = [sub];
 
-        const showSubIds = userSettings.get("devinfos");
+        // const showSubIds = userSettings.get("devinfos");
 
         if (patchId)
         {
@@ -1147,7 +1147,8 @@ export default class PatchView extends Events
             if (!subOp) return;
             sub.title = subOp.getTitle();
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
-            if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
+            // if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
+            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + subOp.uiAttribs.comment + "</span>";
 
             sub.subPatchId = patchId;
             sub.id = subOp.id;
