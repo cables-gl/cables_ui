@@ -1706,9 +1706,12 @@ export default class ServerOps
         return coreLibs;
     }
 
-    loadOpDependencies(opName, _next, reload = false)
+    loadOpDependencies(opIdentifier, _next, reload = false)
     {
-        this.loadProjectDependencies({ "ops": [{ "objName": opName }] }, _next, reload);
+        const op = {};
+        op.opId = this.getOpIdByOpIdentifier(opIdentifier);
+        if (!op.opId) op.objName = this.getOpNameByIdentifier(opIdentifier);
+        this.loadProjectDependencies({ "ops": [op] }, _next, reload);
     }
 
     loadProjectDependencies(proj, _next, loadAll = false)
@@ -2136,5 +2139,21 @@ export default class ServerOps
     {
         if (!op) return undefined;
         return op.opId || op.objName || op.id;
+    }
+
+    getOpIdByOpIdentifier(opIdentifier)
+    {
+        if (!opIdentifier) return undefined;
+        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        const opDoc = gui.opDocs.getOpDocByName(opIdentifier);
+        return opDoc ? opDoc.id : undefined;
+    }
+
+    getOpNameByIdentifier(opIdentifier)
+    {
+        if (!opIdentifier) return undefined;
+        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        const opDoc = gui.opDocs.getOpDocById(opIdentifier);
+        return opDoc ? opDoc.name : undefined;
     }
 }
