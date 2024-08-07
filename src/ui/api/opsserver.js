@@ -1152,24 +1152,24 @@ export default class ServerOps
         const iframeSrc = CABLES.platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
         const modal = new ModalIframe({ "title": "Rename Op", "src": iframeSrc });
         const iframeEle = modal.iframeEle;
-        iframeEle.addEventListener("load", () =>
+        const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
+        const renameListenerId = talkerAPI.addEventListener("opRenamed", (data) =>
         {
-            const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
-            talkerAPI.addEventListener("opRenamed", (data) =>
+            talkerAPI.removeEventListener(renameListenerId);
+            this._log.info("renamed op", data);
+            CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objName": data.newName } }, (err, res) =>
             {
-                this._log.info("renamed op", data);
-
-
-                CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objname": data.newName } }, (err, res) =>
+                if (gui.opDocs && res.opDocs)
                 {
-                    // console.log(err, res);
-                    if (gui.opDocs && res.opDocs)
-                    {
-                        gui.opDocs.addOpDocs(res.opDocs);
-                    }
-                    gui._opselect = null;
-                });
+                    gui.opDocs.addOpDocs(res.opDocs);
+                }
+                gui._opselect = null;
             });
+        });
+        const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
+        {
+            talkerAPI.removeEventListener(renameDoneListenerId);
+            gui.closeModal();
         });
     }
 
