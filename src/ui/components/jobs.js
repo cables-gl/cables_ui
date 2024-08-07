@@ -200,12 +200,6 @@ export default class Jobs extends Events
             {
                 if (this._jobs[i].id == jobId)
                 {
-                    if (this._jobs[i].title.indexOf("file") >= 0)
-                    {
-                        // gui.updateProjectFiles();
-                        // CABLES.UI.fileSelect.load();
-                        // gui.showFileManager();
-                    }
                     this._jobs[i].finished = true;
                     this._jobs[i].timeEnd = Date.now();
 

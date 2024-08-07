@@ -301,6 +301,8 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
+        gui.jobs().start({ "id": "executeop" });
+
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(
@@ -316,6 +318,7 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name, newOps[0]);
+                    gui.jobs().finish("executeop");
                     if (next)next(newOps, refOldOp);
                 },
                 refOldOp
@@ -1929,7 +1932,6 @@ export default class ServerOps
         {
             ops.forEach((op) =>
             {
-                incrementStartup();
                 this.loadOp(op, (createdOps) =>
                 {
                     if (createdOps)
@@ -1954,9 +1956,12 @@ export default class ServerOps
     {
         if (op)
         {
+            gui.jobs().start({ "id": "getopdocs" });
+
             const opIdentifier = this.getOpIdentifier(op);
             CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
+                gui.jobs().finish("getopdocs");
                 if (err)
                 {
                     let title = "Failed to load op doc";
@@ -1969,7 +1974,6 @@ export default class ServerOps
 
                     const continueLoadingCallback = () =>
                     {
-                        incrementStartup();
                         cb([]);
                     };
 
@@ -2001,6 +2005,8 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
+                    gui.jobs().start({ "id": "missingops" });
+
                     loadjs.ready(lid, () =>
                     {
                         let newOps = res.newOps;
@@ -2015,7 +2021,8 @@ export default class ServerOps
                                 gui.opDocs.addOpDocs(res.opDocs);
                             }
                         }
-                        incrementStartup();
+                        gui.jobs().finish("missingops");
+
                         cb(newOps);
                     });
                     loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
