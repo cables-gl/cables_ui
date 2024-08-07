@@ -277,7 +277,7 @@ export default class ServerOps
         );
     }
 
-    execute(name, next, refOldOp)
+    execute(opIdentifier, next, refOldOp)
     {
         // if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         // {
@@ -291,9 +291,10 @@ export default class ServerOps
         //
 
         let oldOps = null;
-        if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
-        else oldOps = gui.corePatch().getOpsByOpId(name);
+        if (opIdentifier.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
+        else oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
 
+        let name = opIdentifier;
         if (oldOps.length > 0) name = oldOps[0].objName;
 
         for (let i = 0; i < oldOps.length; i++)
@@ -1153,30 +1154,17 @@ export default class ServerOps
         const modal = new ModalIframe({ "title": "Rename Op", "src": iframeSrc });
         const iframeEle = modal.iframeEle;
         const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
-        const renameListenerId = talkerAPI.addEventListener("opRenamed", (data) =>
+        const renameListenerId = talkerAPI.addEventListener("opRenamed", (newOp) =>
         {
             talkerAPI.removeEventListener(renameListenerId);
-            this._log.info("renamed op", data);
+            const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
+            {
+                talkerAPI.removeEventListener(renameDoneListenerId);
+                gui.closeModal();
+            });
 
-            // gui.serverOps.execute(data.opId, () =>
-            // {
-            //     console.log("execute>?!");
-            //     gui.opSelect().reload();
-            // });
-
-            // CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objName": data.newName } }, (err, res) =>
-            // {
-            //     if (gui.opDocs && res.opDocs)
-            //     {
-            //         gui.opDocs.addOpDocs(res.opDocs);
-            //     }
-            //     gui._opselect = null;
-            // });
-        });
-        const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
-        {
-            talkerAPI.removeEventListener(renameDoneListenerId);
-            gui.closeModal();
+            this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+            this.execute(newOp.opId, console.log);
         });
     }
 
@@ -1876,7 +1864,7 @@ export default class ServerOps
         const missingOpsFound = [];
         proj.ops.forEach((op) =>
         {
-            const opIdentifier = op.opId || op.objName;
+            const opIdentifier = this.getOpIdentifier(op);
             if (!missingOpsFound.includes(opIdentifier))
             {
                 const opInfo = { "opId": op.opId, "objName": op.objName };
@@ -1907,7 +1895,7 @@ export default class ServerOps
     isLoaded(op)
     {
         const opDocs = gui.opDocs.getOpDocs();
-        const opIdentifier = op.opId || op.objName;
+        const opIdentifier = this.getOpIdentifier(op);
         // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
         let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
@@ -1963,10 +1951,8 @@ export default class ServerOps
     {
         if (op)
         {
-            const options = {
-                "op": op
-            };
-            CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
+            const opIdentifier = this.getOpIdentifier(op);
+            CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 if (err)
                 {
@@ -1995,7 +1981,6 @@ export default class ServerOps
                 }
                 else
                 {
-                    let opIdentifier = op.opId || op.id || op.objName;
                     let allIdentifiers = [opIdentifier];
                     if (res.newOps && res.newOps.length > 0)
                     {
@@ -2145,5 +2130,11 @@ export default class ServerOps
 
             new ModalError(options);
         }
+    }
+
+    getOpIdentifier(op)
+    {
+        if (!op) return undefined;
+        return op.opId || op.objName || op.id;
     }
 }

@@ -31,7 +31,7 @@
             {{#if frontendOptions.opRenameInEditor}}
                 <span class="button-small" onclick="gui.serverOps.renameDialog('{{opname}}');">Rename Op</span>
             {{else}}
-                <span class="button-small" onclick="gui.serverOps.renameDialogIframe('{{opname}}');">Rename Op</span>
+                <a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}">Rename Op</a>
             {{/if}}
         {{/if}}
 

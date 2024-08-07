@@ -1398,6 +1398,14 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     }
 };
 
+CABLES_CMD_PATCH.renameOp = () =>
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (!ops.length) return;
+    const op = gui.patchView.getSelectedOps()[0];
+    gui.serverOps.renameDialogIframe(op.objName);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
@@ -1713,5 +1721,11 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "edit"
     },
+    {
+        "cmd": "rename op",
+        "func": CABLES_CMD_PATCH.renameOp,
+        "category": "op",
+        "icon": "op"
+    }
 
 );
