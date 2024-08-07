@@ -412,6 +412,19 @@ export default class OpDocs
         perf.finish();
     }
 
+    removeOpDoc(opDoc)
+    {
+        let i = this._opDocs.length;
+        while (i--)
+        {
+            const doc = this._opDocs[i];
+            if (doc.id === opDoc.id)
+            {
+                this._opDocs.splice(i, 1);
+            }
+        }
+    }
+
     getOpDocs()
     {
         return this._opDocs;

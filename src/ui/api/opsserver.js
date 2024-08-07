@@ -1,4 +1,4 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, helper } from "cables-shared-client";
 import EditorTab from "../components/tabs/tab_editor.js";
 import CoreLibLoader from "./corelibloader.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -1167,7 +1167,20 @@ export default class ServerOps
             });
 
             this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-            this.execute(newOp.opId, console.log);
+            this.loadOp(newOp, () =>
+            {
+                let properties = newOp.oldName.split(".");
+                properties.shift();
+                const path = properties.join(".");
+                helper.deletePropertyByPath(Ops, path);
+                const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+                usedOps.forEach((usedOp) =>
+                {
+                    gui.patchView.replaceOp(usedOp.id, newOp.objName);
+                });
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+            }, true);
         });
     }
 
@@ -1952,13 +1965,14 @@ export default class ServerOps
         }
     }
 
-    loadOp(op, cb)
+    loadOp(op, cb, forceReload = false)
     {
         if (op)
         {
             gui.jobs().start({ "id": "getopdocs" });
 
             const opIdentifier = this.getOpIdentifier(op);
+            const oldName = this.getOpNameByIdentifier(opIdentifier);
             CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
@@ -2016,6 +2030,11 @@ export default class ServerOps
                             {
                                 this._ops.push(opDoc);
                             });
+                            if (forceReload && oldName)
+                            {
+                                const oldDocs = gui.opDocs.getOpDocByName(oldName);
+                                if (oldDocs) gui.opDocs.removeOpDoc(oldDocs);
+                            }
                             if (gui.opDocs)
                             {
                                 gui.opDocs.addOpDocs(res.opDocs);

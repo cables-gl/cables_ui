@@ -24,8 +24,8 @@ export default class OpSearch extends Events
     {
         const perf = CABLES.UI.uiProfiler.start("opsearch.getlist");
 
-        const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
-        let items = this._createListItemsByNames(coreOpNames);
+        const codeOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
+        let items = this._createListItemsByNames(codeOpNames);
 
         const docOpName = gui.opDocs.getOpDocs().map((ext) => { return ext.name; });
         items = items.concat(this._createListItemsByNames(docOpName, items));
