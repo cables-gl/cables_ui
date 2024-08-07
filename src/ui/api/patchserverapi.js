@@ -127,11 +127,11 @@ export default class PatchSaveServer extends Events
             }
             else
             {
-                CABLESUILOADER.talkerAPI.send("getBuildInfo", {}, (buildInfoErr, buildInfo) =>
+                if (data.platform && data.platform.buildInfo)
                 {
                     let newCore = false;
                     let newUi = false;
-
+                    const buildInfo = data.platform.buildInfo;
                     if (buildInfo.updateWarning)
                     {
                         if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
@@ -140,22 +140,20 @@ export default class PatchSaveServer extends Events
 
                     if (!gui.restriction.visible && (newCore || newUi))
                     {
-                        const html =
-                                "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
-                                "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;" +
-                                "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
-                                "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
                         gui.restriction.setMessage("cablesupdate", "cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>the page to get the latest update!");
-
                         gui.jobs().finish("checkupdated");
                     }
                     else
                     {
                         gui.jobs().finish("checkupdated");
-                        if (cb)cb(null);
                     }
-                });
+                    if (cb)cb(null);
+                }
+                else
+                {
+                    gui.jobs().finish("checkupdated");
+                    if (cb)cb(null);
+                }
             }
         });
     }

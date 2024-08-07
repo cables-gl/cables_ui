@@ -245,15 +245,16 @@ export default class GlDragLine
                 // if (!this._startGlPorts[i].rect) continue;
                 if (count > this._lineIndices.length - 1) this._lineIndices[count] = this._splineDrawer.getSplineIndex();
 
-                this._splineDrawer.setSpline(
-                    this._lineIndices[count],
-                    [
-                        this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + glUiConfig.portWidth / 2,
-                        this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + glUiConfig.portHeight / 2,
-                        this._z,
-                        this._x, this._y, this._z,
-                        this._x, this._y, this._z,
-                    ]);
+                if (this._startGlPorts[i].rect)
+                    this._splineDrawer.setSpline(
+                        this._lineIndices[count],
+                        [
+                            this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + glUiConfig.portWidth / 2,
+                            this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + glUiConfig.portHeight / 2,
+                            this._z,
+                            this._x, this._y, this._z,
+                            this._x, this._y, this._z,
+                        ]);
 
                 count++;
             }

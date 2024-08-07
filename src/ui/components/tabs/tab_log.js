@@ -17,6 +17,7 @@ export default class LogTab extends Events
         this.report = [];
         this.lastErrorSrc = [];
         this._hasError = false;
+        this.lastErrorMsg = null;
         this.sentAutoReport = false;
         this.hasErrorButton = false;
 
@@ -198,9 +199,15 @@ export default class LogTab extends Events
 
                             let txt = "[" + arg.constructor.name + "] ";
 
-                            if (arg.message)txt += " " + arg.message;
-                            if (arg.error)txt += " " + arg.error.message;
-                            if (arg.reason)txt += " " + arg.reason.message;
+                            let msg = "";
+                            if (arg.message)msg = arg.message;
+                            if (arg.error)msg = arg.error.message;
+                            if (arg.reason)msg = arg.reason.message;
+
+                            this.lastErrorMsg = "";
+                            if (errorStack && errorStack[0] && errorStack[0].functionName) this.lastErrorMsg += CABLES.basename(errorStack[0].fileName) + ": " + errorStack[0].functionName + ": ";
+                            this.lastErrorMsg += msg;
+                            txt += " " + msg;
 
                             html += this._logLine(l, txt, l.level);
                         }
@@ -286,7 +293,10 @@ export default class LogTab extends Events
                     if ( // do not send error report
                         url.indexOf("api/op/Ops.User.") == -1 && // when user ops
                         url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
-                        url.indexOf("api/op/Ops.Team.") == -1 //  when team ops
+                        url.indexOf("api/op/Ops.Team.") == -1 && //  when team ops
+                        url.indexOf("cables.gl/assets/") == -1 && //  when asset libraries
+                        url.indexOf("ops/code/project/") == -1 //  when using patch special ops
+
                     )
                     {
                         if (!this.sentAutoReport)
@@ -315,6 +325,7 @@ export default class LogTab extends Events
     createReport()
     {
         const report = {};
+        report.title = this.lastErrorMsg;
 
         const log = [];
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)

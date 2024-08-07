@@ -1,4 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
+import platform from "platform";
 import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -1493,17 +1494,9 @@ export default class Gui extends Events
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
-
-
-        if (CABLES.platform.frontendOptions.showWelcome)
-        {
-            CABLES.CMD.UI.welcomeTab(true);
-        }
         this.htmlEleOverlay = new HtmlElementOverlay();
 
-
         console.log(this.opDocs.getStats());
-
 
         cb();
     }
@@ -1845,76 +1838,13 @@ export default class Gui extends Events
                 userSettings.get("introCompleted")) gui.tips.show();
 
 
-        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab();
+        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
 
-        const buildInfo = this.project().buildInfo;
+        let ver = "";
+        ver += CABLES.platform.getCablesVersion();
+        if (CABLES.platform.isDevEnv()) ver += " (dev)";
 
-
-
-
-        this._log.groupCollapsed("welcome to cables!");
-        // this._log.log("build info:");
-        // const buildInfoTable = [];
-        // const displayInfo = {
-        //     "title": "cables",
-        //     "host": null,
-        //     "core": undefined,
-        //     "ui": undefined,
-        //     "core_branch": undefined,
-        //     "core_git": undefined,
-        //     "ui_branch": undefined,
-        //     "ui_git": undefined
-        // };
-        // if (CABLESUILOADER.buildInfo.core)
-        // {
-        //     displayInfo.core = CABLESUILOADER.buildInfo.core.created;
-        //     displayInfo.core_branch = CABLESUILOADER.buildInfo.core.git.branch;
-        //     displayInfo.core_git = CABLESUILOADER.buildInfo.core.git.commit;
-        // }
-        // if (CABLESUILOADER.buildInfo.ui)
-        // {
-        //     displayInfo.ui = CABLESUILOADER.buildInfo.ui.created;
-        //     displayInfo.ui_branch = CABLESUILOADER.buildInfo.ui.git.branch;
-        //     displayInfo.ui_git = CABLESUILOADER.buildInfo.ui.git.commit;
-        // }
-        // buildInfoTable.push(displayInfo);
-
-
-        // if (buildInfo)
-        // {
-        //     const infoRow = {
-        //         "title": "project"
-        //     };
-        //     if (buildInfo.host)
-        //     {
-        //         infoRow.host = buildInfo.host;
-        //     }
-        //     if (buildInfo.core)
-        //     {
-        //         if (buildInfo.core.created)
-        //         {
-        //             infoRow.core = buildInfo.core.created;
-        //         }
-        //         if (buildInfo.core.git)
-        //         {
-        //             infoRow.core_branch = buildInfo.core.git.branch;
-        //             infoRow.core_git = buildInfo.core.git.commit;
-        //         }
-        //     }
-        //     if (buildInfo.ui)
-        //     {
-        //         if (buildInfo.ui.created)
-        //         {
-        //             infoRow.ui = buildInfo.ui.created;
-        //         }
-        //         if (buildInfo.ui.git)
-        //         {
-        //             infoRow.ui_branch = buildInfo.ui.git.branch;
-        //             infoRow.ui_git = buildInfo.ui.git.commit;
-        //         }
-        //     }
-        // }
-
+        this._log.groupCollapsed("welcome to cables " + ver + "!");
 
         if (CABLES.platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
@@ -1922,6 +1852,10 @@ export default class Gui extends Events
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
+
+
+
+        this._log.logGui("browser: " + platform.description);
 
 
         if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
@@ -2012,12 +1946,8 @@ export default class Gui extends Events
         this._gizmo[idx].set(params);
     }
 
-
-
     setTransform(id, x, y, z)
     {
-        // if (CABLES.UI.showCanvasTransforms)
-
         if (this.shouldDrawOverlay) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
     }
 
@@ -2054,79 +1984,8 @@ export default class Gui extends Events
 
     setStateUnsaved(options)
     {
-        // if (this.ignoreSaveStateChanges) return;
-        // let subPatch = this.patchView.getCurrentSubPatch();
-        // if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
-
-        // this.setSavedStateChangesBlueprintSubPatches(subPatch, true);
-
-        // this._savedState = this.savedState.isSaved;
-
         this.savedState.setUnSaved("unknown", 0);
-
-        // if (this._savedState)
-        // {
-        // let title = "";
-        // if (CABLES.platform.isDevEnv())title = "DEV ";
-        // title += gui.project.name + " *";
-        // document.title = title;
-
-        // CABLESUILOADER.talkerAPI.send("setIconUnsaved");
-        // this.changeFavicon(CABLES.platform.getCablesUrl() + "/favicon/favicon-32_orange.png");
-        // this._favIconLink.href = CABLES.platform.getCablesUrl() + "/favicon/favicon_orange.ico";
-
-        // ele.byId("patchname").classList.add("warning");
-
-        // this._onBeforeUnloadListener = (event) =>
-        // {
-        //     const message = "unsaved content!";
-        //     if (typeof event == "undefined")
-        //     {
-        //         event = window.event;
-        //     }
-        //     if (event)
-        //     {
-        //         event.returnValue = message;
-        //     }
-        //     return message;
-        // };
-        // window.addEventListener("beforeunload", this._onBeforeUnloadListener);
-        // }
     }
-
-    // setStateSaved()
-    // {
-    //     // this._savedState = true;
-    //     // this.resetSavedStateChangesBlueprintSubPatches();
-
-    //     // CABLESUILOADER.talkerAPI.send("setIconSaved");
-    //     // this.changeFavicon(CABLES.platform.getCablesUrl() + "/favicon/favicon.ico");
-    //     // this._favIconLink.href = "/favicon/favicon.ico";
-    //     // ele.byId("patchname").classList.remove("warning");
-
-
-    //     // const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-
-    //     // // console.log("subouter",subOuter,subOuter.isInBlueprint2())
-
-    //     // if (subOuter)
-    //     // {
-    //     //     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
-    //     //     if (bp)
-    //     //     {
-    //     //         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
-    //     //     }
-    //     // }
-
-
-    //     this.savedState.setSaved("unknown", 0);
-
-    //     // let title = "";
-    //     // if (CABLES.platform.isDevEnv())title = "DEV ";
-    //     // title += gui.project.name;
-    //     // document.title = title;
-    //     // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
-    // }
 
     reloadDocs(cb)
     {
@@ -2341,28 +2200,6 @@ export default class Gui extends Events
         return [];// this._savedStateChangesBlueprintSubPatches; // old blueprints
     }
 
-    // resetSavedStateChangesBlueprintSubPatches()
-    // {
-    //     this._savedStateChangesBlueprintSubPatches = [];
-    // }
-
-    // setSavedStateChangesBlueprintSubPatches(subPatchId)
-    // {
-    //     const oldLength = this._savedStateChangesBlueprintSubPatches.length;
-    //     if (!this._savedStateChangesBlueprintSubPatches.includes(subPatchId)) this._savedStateChangesBlueprintSubPatches.push(subPatchId);
-    //     const newLength = this._savedStateChangesBlueprintSubPatches.length;
-    //     if (newLength > oldLength)
-    //     {
-    //         const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches([subPatchId], true);
-    //         if (blueprintOps.length > 0)
-    //         {
-    //             const reloadIcon = ele.byId("nav-item-bpReload");
-    //             if (reloadIcon) ele.show(reloadIcon);
-    //         }
-    //     }
-    // }
-
-
     setTheme(theme = {})
     {
         if (!theme) return;
@@ -2440,7 +2277,6 @@ export default class Gui extends Events
 
     getDefaultTheme()
     {
-        // return gluiconfig._colors_dark;
         return JSON.parse(JSON.stringify(defaultTheme));
     }
 }
@@ -2453,6 +2289,3 @@ Gui.RESTRICT_MODE_REMOTEVIEW = 10;
 Gui.RESTRICT_MODE_FOLLOWER = 20;
 Gui.RESTRICT_MODE_EXPLORER = 30;
 Gui.RESTRICT_MODE_FULL = 40;
-
-
-// !!!!!///!!
