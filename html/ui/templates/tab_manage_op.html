@@ -26,7 +26,15 @@
 
         <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}">Op Page / Documentation</a>
 
-        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op</span><a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}">Rename Op</a>
+        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op</span>
+        {{#if canEditOp}}
+            {{#if frontendOptions.opRenameInEditor}}
+                <span class="button-small" onclick="gui.serverOps.renameDialog('{{opname}}');">Rename Op</span>
+            {{else}}
+                <span class="button-small" onclick="gui.serverOps.renameDialogIframe('{{opname}}');">Rename Op</span>
+            {{/if}}
+        {{/if}}
+
         <br/>
         <br/>
 
