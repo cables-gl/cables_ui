@@ -18,11 +18,7 @@
         </div>
         <br/>
 
-        <span class="button-small button-icon" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>{{else}}<span class="icon icon-file"></span>{{/if}}</span>
-
-        {{#if frontendOptions.showLocalOpDirButton}}
-            <a class="button-small button-icon tt info" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
-        {{/if}}
+        <!-- <span class="button-small button-icon" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>{{else}}<span class="icon icon-file"></span>{{/if}}</span> -->
 
         <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}">Op Page / Documentation</a>
 
@@ -34,6 +30,14 @@
                 <a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}">Rename Op</a>
             {{/if}}
         {{/if}}
+
+
+        {{#if frontendOptions.showLocalOpDirButton}}
+            <a class="button-small button-icon tt info" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
+        {{/if}}
+
+        <a class="button-small button-icon tt info" href="https://github.com/cables-gl/cables/tree/develop/src/ops/base/{{opname}}" target="_blank"><span class="icon icon-github"></span>open on github</a>
+
 
         <br/>
         <br/>

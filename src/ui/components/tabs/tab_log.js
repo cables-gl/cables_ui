@@ -295,6 +295,7 @@ export default class LogTab extends Events
                         url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
                         url.indexOf("api/op/Ops.Team.") == -1 && //  when team ops
                         url.indexOf("cables.gl/assets/") == -1 && //  when asset libraries
+                        url.indexOf("/api/lib/") == -1 && //  when libraries
                         url.indexOf("ops/code/project/") == -1 //  when using patch special ops
 
                     )
