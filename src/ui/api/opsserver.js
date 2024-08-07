@@ -2158,4 +2158,12 @@ export default class ServerOps
         if (!op) return undefined;
         return op.opId || op.objName || op.id;
     }
+
+    getOpNameByIdentifier(opIdentifier)
+    {
+        if (!opIdentifier) return undefined;
+        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        const opDoc = gui.opDocs.getOpDocById(opIdentifier);
+        return opDoc ? opDoc.name : undefined;
+    }
 }
