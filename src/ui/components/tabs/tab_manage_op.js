@@ -40,21 +40,15 @@ export default class ManageOp
         gui.maintabPanel.show(true);
 
         this._refreshListener.push(
-            gui.on("refreshManageOp", () =>
+            gui.on("refreshManageOp", (name) =>
             {
-                this.show();
+                if (name === undefined || this._currentName == name) this.show();
             }));
 
         this._refreshListener.push(
-            gui.corePatch().on("savedStateChanged", () =>
+            gui.on("opReloaded", (name) =>
             {
-                this.show();
-            }));
-
-        this._refreshListener.push(
-            gui.on("opReloaded", () =>
-            {
-                this.show();
+                if (name === undefined || this._currentName == name) this.show();
             }));
     }
 
