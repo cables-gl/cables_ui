@@ -1158,6 +1158,17 @@ export default class ServerOps
             talkerAPI.addEventListener("opRenamed", (data) =>
             {
                 this._log.info("renamed op", data);
+
+
+                CABLESUILOADER.talkerAPI.send("getOpDocs", { "op": { "objname": data.newName } }, (err, res) =>
+                {
+                    // console.log(err, res);
+                    if (gui.opDocs && res.opDocs)
+                    {
+                        gui.opDocs.addOpDocs(res.opDocs);
+                    }
+                    gui._opselect = null;
+                });
             });
         });
     }

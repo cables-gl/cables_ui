@@ -422,6 +422,7 @@ export default class PatchSaveServer extends Events
             if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
             if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
             if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
+            // if (data.ops[i].uiAttribs.history) delete data.ops[i].uiAttribs.history;
 
             if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
             if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
