@@ -41,9 +41,8 @@ export default class ModalLoading
 
     setTask(txt)
     {
-        // console.log("[ModalLoading] " + this.options.title + ": " + txt);
         this._tasks.push(txt);
-        this._dialog.updateHtml(this.getHtml());
+        if (this._dialog) this._dialog.updateHtml(this.getHtml());
     }
 
     close()
