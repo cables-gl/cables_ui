@@ -40,7 +40,7 @@
     function incrementStartup()
     {
         CABLESUILOADER.startup.numEvents++;
-        // if(CABLESUILOADER.startup.numEvents>CABLESUILOADER.startup.maxEvents)console.warn("too many cables startup events!",CABLESUILOADER.startup.numEvents,CABLESUILOADER.startup.maxEvents)
+        if(CABLESUILOADER.startup.numEvents>CABLESUILOADER.startup.maxEvents)console.warn("too many cables startup events!",CABLESUILOADER.startup.numEvents,CABLESUILOADER.startup.maxEvents)
         const loadingBarEle = document.getElementById("loadingstatusBar");
         if (loadingBarEle) loadingBarEle.style.width = (CABLESUILOADER.startup.numEvents / CABLESUILOADER.startup.maxEvents) * 100 + "%";
     }
@@ -133,7 +133,6 @@
                     incrementStartup();
                     logStartup("loaded ui");
 
-                    CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
                     CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
                     {
                         if (err)
@@ -178,7 +177,7 @@
 
     document.addEventListener("DOMContentLoaded", function (event)
     {
-        CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
+        CABLESUILOADER.talkerAPI = new CABLESUILOADER.TalkerAPI(window.parent);
 
         const reqTimeout=setTimeout(()=>
         {

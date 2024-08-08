@@ -1,4 +1,4 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, helper } from "cables-shared-client";
 import EditorTab from "../components/tabs/tab_editor.js";
 import CoreLibLoader from "./corelibloader.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -8,7 +8,7 @@ import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-
+import ModalIframe from "../dialogs/modaliframe.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -176,8 +176,6 @@ export default class ServerOps
     {
         this.timeoutsLayouts = this.timeoutsLayouts || {};
 
-
-
         clearTimeout(this.timeoutsLayouts[op.objName]);
         this.timeoutsLayouts[op.objName] = setTimeout(
             () =>
@@ -196,8 +194,7 @@ export default class ServerOps
         let i = 0;
         const opObj = {
             "portsIn": [],
-            "portsOut": []// ,
-            // "name": op.objName,
+            "portsOut": []
         };
 
         for (i = 0; i < op.portsIn.length; i++)
@@ -259,7 +256,6 @@ export default class ServerOps
             opObj.portsOut.push(l);
         }
 
-
         // check if layout has changed...
         const l = gui.opDocs.getOpDocById(op.opId);
         if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return;
@@ -277,28 +273,20 @@ export default class ServerOps
         );
     }
 
-    execute(name, next, refOldOp)
+    execute(opIdentifier, next, refOldOp)
     {
-        // if (gui.corePatch()._crashedOps.indexOf(name) > -1)
-        // {
-        //     let html = "";
-        //     html += "<h1>can not execute op</h1>";
-        //     html += "this op crashed before, you should reload the page.<br/><br/>";
-        //     html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-        //
-        //     CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
-        // }
-        //
-
         let oldOps = null;
-        if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
-        else oldOps = gui.corePatch().getOpsByOpId(name);
+        if (opIdentifier.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
+        else oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
 
+        let name = opIdentifier;
         if (oldOps.length > 0) name = oldOps[0].objName;
 
         for (let i = 0; i < oldOps.length; i++)
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
+
+        gui.jobs().start({ "id": "executeop" });
 
         this.loadOpDependencies(name, () =>
         {
@@ -315,6 +303,7 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name, newOps[0]);
+                    gui.jobs().finish("executeop");
                     if (next)next(newOps, refOldOp);
                 },
                 refOldOp
@@ -367,7 +356,6 @@ export default class ServerOps
     clone(oldname, name, cb, options)
     {
         options = options || { "openEditor": true };
-        // this._log.log("clone", name, oldname);
 
         const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
 
@@ -1141,7 +1129,46 @@ export default class ServerOps
         });
     }
 
-    renameDialog(oldName, origOp)
+    renameDialogIframe(opName)
+    {
+        if (!CABLES.platform.isTrustedPatch())
+        {
+            new ModalDialog({ "title": "You need write access in the patch to rename ops", "showOkButton": true });
+            return;
+        }
+
+        const iframeSrc = CABLES.platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
+        const modal = new ModalIframe({ "title": "Rename Op", "src": iframeSrc });
+        const iframeEle = modal.iframeEle;
+        const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
+        const renameListenerId = talkerAPI.addEventListener("opRenamed", (newOp) =>
+        {
+            talkerAPI.removeEventListener(renameListenerId);
+            const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
+            {
+                talkerAPI.removeEventListener(renameDoneListenerId);
+                gui.closeModal();
+            });
+
+            this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+            this.loadOp(newOp, () =>
+            {
+                let properties = newOp.oldName.split(".");
+                properties.shift();
+                const path = properties.join(".");
+                helper.deletePropertyByPath(Ops, path);
+                const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+                usedOps.forEach((usedOp) =>
+                {
+                    gui.patchView.replaceOp(usedOp.id, newOp.objName);
+                });
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+            }, true);
+        });
+    }
+
+    renameDialog(oldName)
     {
         if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
 
@@ -1837,7 +1864,7 @@ export default class ServerOps
         const missingOpsFound = [];
         proj.ops.forEach((op) =>
         {
-            const opIdentifier = op.opId || op.objName;
+            const opIdentifier = this.getOpIdentifier(op);
             if (!missingOpsFound.includes(opIdentifier))
             {
                 const opInfo = { "opId": op.opId, "objName": op.objName };
@@ -1868,7 +1895,7 @@ export default class ServerOps
     isLoaded(op)
     {
         const opDocs = gui.opDocs.getOpDocs();
-        const opIdentifier = op.opId || op.objName;
+        const opIdentifier = this.getOpIdentifier(op);
         // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
         let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
@@ -1899,7 +1926,6 @@ export default class ServerOps
         {
             ops.forEach((op) =>
             {
-                incrementStartup();
                 this.loadOp(op, (createdOps) =>
                 {
                     if (createdOps)
@@ -1920,15 +1946,17 @@ export default class ServerOps
         }
     }
 
-    loadOp(op, cb)
+    loadOp(op, cb, forceReload = false)
     {
         if (op)
         {
-            const options = {
-                "op": op
-            };
-            CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
+            gui.jobs().start({ "id": "getopdocs" });
+
+            const opIdentifier = this.getOpIdentifier(op);
+            const oldName = this.getOpNameByIdentifier(opIdentifier);
+            CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
+                gui.jobs().finish("getopdocs");
                 if (err)
                 {
                     let title = "Failed to load op doc";
@@ -1941,7 +1969,6 @@ export default class ServerOps
 
                     const continueLoadingCallback = () =>
                     {
-                        incrementStartup();
                         cb([]);
                     };
 
@@ -1956,7 +1983,6 @@ export default class ServerOps
                 }
                 else
                 {
-                    let opIdentifier = op.opId || op.id || op.objName;
                     let allIdentifiers = [opIdentifier];
                     if (res.newOps && res.newOps.length > 0)
                     {
@@ -1974,6 +2000,8 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
+                    gui.jobs().start({ "id": "missingops" });
+
                     loadjs.ready(lid, () =>
                     {
                         let newOps = res.newOps;
@@ -1983,12 +2011,18 @@ export default class ServerOps
                             {
                                 this._ops.push(opDoc);
                             });
+                            if (forceReload && oldName)
+                            {
+                                const oldDocs = gui.opDocs.getOpDocByName(oldName);
+                                if (oldDocs) gui.opDocs.removeOpDoc(oldDocs);
+                            }
                             if (gui.opDocs)
                             {
                                 gui.opDocs.addOpDocs(res.opDocs);
                             }
                         }
-                        incrementStartup();
+                        gui.jobs().finish("missingops");
+
                         cb(newOps);
                     });
                     loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
@@ -2012,12 +2046,18 @@ export default class ServerOps
 
             const lid = "extensionops" + extensionName + CABLES.uuid();
 
+            gui.jobs().start({ "id": "getCollectionOpDocs" });
+
             CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": extensionName }, (err, res) =>
             {
+                gui.jobs().finish("getCollectionOpDocs");
                 if (!err && res && res.opDocs)
                 {
+                    gui.jobs().start({ "id": "loadjsopdocs" });
                     loadjs.ready(lid, () =>
                     {
+                        gui.jobs().finish("loadjsopdocs");
+
                         res.opDocs.forEach((newOp) =>
                         {
                             this._ops.push(newOp);
@@ -2055,12 +2095,17 @@ export default class ServerOps
 
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
 
+            gui.jobs().start({ "id": "executeop" });
             CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
             {
+                gui.jobs().finish("executeop");
+
                 if (!err && res && res.opDocs)
                 {
+                    gui.jobs().start({ "id": "executeopljs" });
                     loadjs.ready(lid, () =>
                     {
+                        gui.jobs().finish("executeopljs");
                         res.opDocs.forEach((newOp) =>
                         {
                             this._ops.push(newOp);
@@ -2106,5 +2151,19 @@ export default class ServerOps
 
             new ModalError(options);
         }
+    }
+
+    getOpIdentifier(op)
+    {
+        if (!op) return undefined;
+        return op.opId || op.objName || op.id;
+    }
+
+    getOpNameByIdentifier(opIdentifier)
+    {
+        if (!opIdentifier) return undefined;
+        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        const opDoc = gui.opDocs.getOpDocById(opIdentifier);
+        return opDoc ? opDoc.name : undefined;
     }
 }

@@ -111,6 +111,7 @@ const paramsHelper =
         const inputEle = document.getElementById(which);
         const checkBoxEle = document.getElementById(checkbox);
 
+        if (!inputEle || !checkBoxEle) return;
         let bool_value = inputEle.value == "true";
         bool_value = !bool_value;
 

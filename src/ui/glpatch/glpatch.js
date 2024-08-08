@@ -1043,7 +1043,10 @@ export default class GlPatch extends Events
                 this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
                 this._focusRect.setColor(1, 1, 1, v);
             }
-            else this._log.log("no focusrectop");
+            else
+            {
+                this._log.log("no focusrectop");
+            }
         }
 
         this._cgl.pushDepthTest(true);

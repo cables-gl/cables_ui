@@ -64,9 +64,8 @@ export default class PatchPanel extends Events
         if (project)
         {
             const projectId = project.shortId || project._id;
-
-
             const isSameHost = CABLES.platform.isPatchSameHost();
+
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;

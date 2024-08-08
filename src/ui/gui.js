@@ -214,6 +214,7 @@ export default class Gui extends Events
 
     opSelect()
     {
+        if (!this._opselect) this._opselect = new OpSelect();
         return this._opselect;
     }
 
