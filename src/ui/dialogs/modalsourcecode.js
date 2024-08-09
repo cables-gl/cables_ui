@@ -1,3 +1,4 @@
+import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
 
 
@@ -37,24 +38,6 @@ export default class ModalSourceCode
         }
     }
 
-
-    _escapeHTML(string)
-    {
-        const htmlEscapes = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            "\"": "&quot;",
-            "'": "&#39;",
-        };
-        const reUnescapedHtml = /[&<>"']/g;
-        const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
-
-        return string && reHasUnescapedHtml.test(string) ?
-            string.replace(reUnescapedHtml, function (chr) { return htmlEscapes[chr]; })
-            : string || "";
-    }
-
     _getHtmlFromSrc(str, badLines, from, to, lang)
     {
         let htmlWarning = "<code><pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
@@ -87,7 +70,8 @@ export default class ModalSourceCode
                 htmlWarning += "</code></pre>";
                 htmlWarning += "<pre style=\"margin:0\"><code class=\"language-" + lang + "\" style=\"background-color:#660000;padding-top:0px;padding-bottom:0px\">";
             }
-            htmlWarning += this._escapeHTML(line);
+
+            htmlWarning += escapeHTML(line);
 
             if (isBadLine)
             {

@@ -23,6 +23,24 @@ export function uniqueArray(arr)
     return a;
 }
 
+
+export function escapeHTML(string)
+{
+    const htmlEscapes = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;",
+    };
+    const reUnescapedHtml = /[&<>"']/g;
+    const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+
+    return string && reHasUnescapedHtml.test(string) ?
+        string.replace(reUnescapedHtml, function (chr) { return htmlEscapes[chr]; })
+        : string || "";
+}
+
 // export function arrayContains(arr, obj)
 // {
 //     let i = arr.length;
