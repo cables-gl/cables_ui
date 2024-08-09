@@ -24,6 +24,11 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showStartUpLog = true;
     }
 
+    isStandalone()
+    {
+        return true;
+    }
+
     getCablesVersion()
     {
         let version = "Electron Standalone";

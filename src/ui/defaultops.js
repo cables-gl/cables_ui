@@ -452,6 +452,11 @@ const defaultOps = {
         return opname && opname.includes(".Dev.");
     },
 
+    "isStandaloneOp": (opname) =>
+    {
+        return opname && opname.includes(".Standalone.");
+    },
+
     "isAdminOp": (opname) =>
     {
         return opname && opname.indexOf("Ops.Admin.") === 0;

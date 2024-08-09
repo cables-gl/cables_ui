@@ -868,7 +868,8 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    this._log.error(dirErr);
+                                    new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": dirErr.msg });
+                                    this._log.info(dirErr.msg);
                                 }
                             });
                         });

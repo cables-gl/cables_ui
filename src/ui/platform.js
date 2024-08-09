@@ -62,6 +62,11 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    isStandalone()
+    {
+        return false;
+    }
+
     isTrustedPatch()
     {
         return this._cfg.isTrustedPatch;
