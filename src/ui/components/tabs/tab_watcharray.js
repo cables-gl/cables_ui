@@ -127,7 +127,7 @@ export default class WatchArrayTab extends Events
         if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
         {
             const realTexture = this.port.get(),
-                gl = this.port.parent.patch.cgl.gl;
+                gl = this.port.op.patch.cgl.gl;
 
             if (!realTexture) return [];
             if (!this._fb) this._fb = gl.createFramebuffer();

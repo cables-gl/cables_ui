@@ -328,6 +328,7 @@ export default class LogTab extends Events
         const report = {};
         report.title = this.lastErrorMsg;
 
+
         const log = [];
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
         {
@@ -378,9 +379,12 @@ export default class LogTab extends Events
                 }
                 newLine.args.push(neewArg);
 
-                if (arg.message)newLine.args.push("message: " + arg.message);
-                if (arg.error)newLine.args.push("error message: " + arg.error.message);
-                if (arg.reason)newLine.args.push("reason: " + arg.reason.message);
+                if (arg)
+                {
+                    if (arg.message)newLine.args.push("message: " + arg.message);
+                    if (arg.error)newLine.args.push("error message: " + arg.error.message);
+                    if (arg.reason)newLine.args.push("reason: " + arg.reason.message);
+                }
             }
         }
 
@@ -395,6 +399,10 @@ export default class LogTab extends Events
 
         report.url = document.location.href;
         report.infoLanguage = navigator.language;
+
+        report.cablesUrl = CABLES.platform.getCablesUrl();
+        report.platformVersion = CABLES.platform.getCablesVersion();
+        report.browserDescription = platform.description;
 
 
         if (window.gui)
@@ -416,7 +424,7 @@ export default class LogTab extends Events
                 this._log.log(e);
             }
         }
-
+        console.log("REPORT", report);
         return report;
     }
 }
