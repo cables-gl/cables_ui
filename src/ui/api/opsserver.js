@@ -1862,7 +1862,7 @@ export default class ServerOps
 
         let missingOps = [];
         const missingOpsFound = [];
-        proj.ops.forEach((op) =>
+        if (proj.ops) proj.ops.forEach((op) =>
         {
             const opIdentifier = this.getOpIdentifier(op);
             if (!missingOpsFound.includes(opIdentifier))
