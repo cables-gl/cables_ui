@@ -1844,7 +1844,6 @@ export default class Gui extends Events
         let ver = "";
         ver += CABLES.platform.getCablesVersion();
         if (CABLES.platform.isDevEnv()) ver += " (dev)";
-
         this._log.groupCollapsed("welcome to cables " + ver + "!");
 
         if (CABLES.platform.getPatchVersion())
@@ -1855,6 +1854,7 @@ export default class Gui extends Events
         console.groupEnd();
 
 
+        if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
 
         this._log.logGui("browser: " + platform.description);
 

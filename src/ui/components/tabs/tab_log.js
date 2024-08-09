@@ -402,6 +402,7 @@ export default class LogTab extends Events
 
         report.cablesUrl = CABLES.platform.getCablesUrl();
         report.platformVersion = CABLES.platform.getCablesVersion();
+        if (window.gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
         report.browserDescription = platform.description;
 
 
