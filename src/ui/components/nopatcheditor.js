@@ -10,6 +10,8 @@ export default class NoPatchEditor extends Events
 
     get name() { return "nopatch"; }
 
+    isDraggingPort() { return false; }
+
     setSize() {}
 
     setProject() {}
