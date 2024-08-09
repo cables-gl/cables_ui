@@ -683,7 +683,7 @@ export default class GlLink
             if (glport && glport.hovering) return true;
         }
 
-        if (this._glOpIn)
+        if (this._glOpIn && this._glOpIn.op)
         {
             let port = this._glOpIn.op.getPortById(this._portIdInput);
             let glport = this._glOpIn.getGlPort(port.name);
