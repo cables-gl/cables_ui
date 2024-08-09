@@ -154,8 +154,6 @@ export default class ManageOp
                         });
                     });
 
-                    console.log("opDoc", opDoc);
-
                     const html = getHandleBarHtml("tab_manage_op",
                         {
                             "url": CABLES.platform.getCablesUrl(),
