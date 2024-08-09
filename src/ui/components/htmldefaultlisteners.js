@@ -1,5 +1,10 @@
 import { Logger } from "cables-shared-client";
 
+/**
+ * handle global html events like uncaught exceptions, contextmenu, resize etc
+ *
+ * @export
+ */
 export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");

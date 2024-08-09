@@ -4,6 +4,13 @@ import userSettings from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 
+/**
+ * snapping of ops/ports etc to an invisible grid
+ *
+ * @export
+ * @class Snap
+ * @extends {Events}
+ */
 export default class Snap extends Events
 {
     constructor(cgl, glPatch, instancer)

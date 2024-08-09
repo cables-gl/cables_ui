@@ -3,6 +3,14 @@ import userSettings from "../../components/usersettings.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
 
+
+/**
+ * a tab panel, that can contain tabs
+ *
+ * @export
+ * @class TabPanel
+ * @extends {Events}
+ */
 export default class TabPanel extends Events
 {
     constructor(eleId)

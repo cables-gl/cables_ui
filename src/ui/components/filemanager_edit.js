@@ -1,5 +1,11 @@
 import EditorTab from "./tabs/tab_editor.js";
 
+/**
+ * edit text files directly from the filemanager
+ *
+ * @export
+ * @class FileManagerEditor
+ */
 export default class FileManagerEditor
 {
     constructor()

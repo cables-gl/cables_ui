@@ -15,6 +15,14 @@ import userSettings from "./usersettings.js";
 import Snap from "../glpatch/snap.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 
+
+/**
+ * manage patch view and helper functions
+ *
+ * @export
+ * @class PatchView
+ * @extends {Events}
+ */
 export default class PatchView extends Events
 {
     constructor(corepatch)

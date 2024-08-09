@@ -1,5 +1,11 @@
 import font from "../glpatch/sdf_font.json";
 
+/**
+ * draw text using msdf font texture, using {@link GlRectInstancer}
+ *
+ * @export
+ * @class GlText
+ */
 export default class GlText
 {
     constructor(textWriter, string)

@@ -5,6 +5,12 @@ import gluiconfig from "../glpatch/gluiconfig.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
 
+/**
+ * op documentation loading
+ *
+ * @export
+ * @class OpDocs
+ */
 export default class OpDocs
 {
     constructor()

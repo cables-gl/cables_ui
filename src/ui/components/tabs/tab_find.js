@@ -5,6 +5,13 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 
+
+/**
+ * tab panel for searching through the patch
+ *
+ * @export
+ * @class FindTab
+ */
 export default class FindTab
 {
     constructor(tabs, str)

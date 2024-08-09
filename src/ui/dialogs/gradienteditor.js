@@ -2,6 +2,12 @@ import { ModalBackground, Logger } from "cables-shared-client";
 import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
+/**
+ * gradient editor dialog
+ *
+ * @export
+ * @class GradientEditor
+ */
 export default class GradientEditor
 {
     constructor(opid, portname, options)

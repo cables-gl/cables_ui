@@ -1,5 +1,11 @@
 import userSettings from "../components/usersettings.js";
 
+/**
+ * tips and tricks dialog with animated tips
+ *
+ * @export
+ * @class Tips
+ */
 export default class Tips
 {
     constructor()

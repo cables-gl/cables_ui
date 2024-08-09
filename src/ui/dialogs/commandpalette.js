@@ -1,5 +1,11 @@
 import { ele } from "cables-shared-client";
 
+/**
+ * show a searchable command palette (cmd/ctrl+p)
+ *
+ * @export
+ * @class CommandPallete
+ */
 export default class CommandPallete
 {
     constructor()

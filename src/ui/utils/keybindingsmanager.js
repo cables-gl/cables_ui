@@ -3,6 +3,13 @@ import { notifyError } from "../elements/notification.js";
 import Gui from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
 
+/**
+ * manage keybindings for hotkeys/shortcuts
+ *
+ * @export
+ * @class KeyBindingsManager
+ * @extends {Events}
+ */
 export default class KeyBindingsManager extends Events
 {
     constructor()

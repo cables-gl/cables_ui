@@ -1,6 +1,13 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 
+/**
+ *simple tab to just show html
+ *
+ * @export
+ * @class HtmlTab
+ * @extends {Events}
+ */
 export default class HtmlTab extends Events
 {
     constructor(tabs, html, title, options = {})

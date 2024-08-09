@@ -1,6 +1,12 @@
 import defaultOps from "../defaultops.js";
 import SuggestionDialog from "./suggestiondialog.js";
 
+/**
+ * show suggestions for linking a port
+ *
+ * @export
+ * @class SuggestPortDialog
+ */
 export default class SuggestPortDialog
 {
     constructor(op, port, mouseEvent, cb, cbCancel)

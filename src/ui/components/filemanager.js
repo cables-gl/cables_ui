@@ -6,6 +6,12 @@ import text from "../text.js";
 import userSettings from "./usersettings.js";
 import { notify, notifyError } from "../elements/notification.js";
 
+/**
+ * manage files/assets of the patch
+ *
+ * @export
+ * @class FileManager
+ */
 export default class FileManager
 {
     constructor(cb, userInteraction)

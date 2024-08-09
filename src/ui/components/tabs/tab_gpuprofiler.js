@@ -1,6 +1,13 @@
 import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 
+
+/**
+ * tab panel to profile and analyze GPU performance
+ *
+ * @export
+ * @class GpuProfiler
+ */
 export default class GpuProfiler
 {
     constructor(tabs)

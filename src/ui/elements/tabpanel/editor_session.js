@@ -4,9 +4,6 @@ import userSettings from "../../components/usersettings.js";
 
 /**
  * stores opened editors to reopen when loading ui
- * @namespace CABLES.EditorSession
- * @memberof CABLES
- * @class
  */
 export default class EditorSession
 {

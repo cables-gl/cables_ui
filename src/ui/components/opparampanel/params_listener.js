@@ -8,6 +8,13 @@ import WatchPortVisualizer from "./watchportvisualizer.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
 
+
+/**
+ *listen to user interactions with ports in {@link OpParampanel}
+ *
+ * @class ParamsListener
+ * @extends {Events}
+ */
 class ParamsListener extends Events
 {
     constructor(panelid)

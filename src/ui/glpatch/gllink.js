@@ -6,9 +6,12 @@ import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 
-
-
-
+/**
+ * drawing gl links {@link GlCable}
+ *
+ * @export
+ * @class GlLink
+ */
 export default class GlLink
 {
     constructor(glpatch,

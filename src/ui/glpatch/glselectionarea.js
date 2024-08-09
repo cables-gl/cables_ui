@@ -1,3 +1,10 @@
+
+/**
+ * selection area, when dragging the mouse on the patchfield
+ *
+ * @export
+ * @class GlSelectionArea
+ */
 export default class GlSelectionArea
 {
     constructor(rectinstancer, glpatch)

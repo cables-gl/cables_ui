@@ -4,6 +4,12 @@ import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
 
 
+/**
+ * file upload dialog
+ *
+ * @export
+ * @class FileUploader
+ */
 export default class FileUploader
 {
     constructor()

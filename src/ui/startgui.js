@@ -10,6 +10,13 @@ import text from "./text.js";
 import userSettings from "./components/usersettings.js";
 import { notifyError } from "./elements/notification.js";
 
+
+/**
+ * manage the start of the ui/editor
+ *
+ * @export
+ * @param {*} cfg
+ */
 export default function startUi(cfg)
 {
     if (window.logStartup) logStartup("Init UI");

@@ -6,6 +6,9 @@ let pointerLockFirstTime = true;
 
 export default valueChanger;
 
+/**
+ * mouse and keyboard interactions with port parameters
+ */
 function valueChanger(eleId, focus, portName, opid)
 {
     gui.showInfo(text.valueChangerInput);
@@ -38,53 +41,6 @@ function valueChanger(eleId, focus, portName, opid)
         eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
         // elem.keydown(CABLES.UI.paramsHelper.inputListenerCursorKeys);
     }
-
-    // function switchToNextInput(dir)
-    // {
-    //     console.log("switchToNextInput1");
-    //     const portNum = parseInt(eleContainer.dataset.portnum);
-    //     const panelid = parseInt(eleContainer.dataset.panelid);
-
-
-    //     let count = 0;
-
-    //     dir = parseInt(dir);
-    //     while (count < 10)
-    //     {
-    //         const i = (portNum + dir) + count * dir;
-    //         const id = "portval_" + i + "_" + panelid + "-container";
-    //         const pEle = document.getElementById(id);
-
-    //         if (pEle)
-    //         {
-    //             const portname = pEle.dataset.portname;
-
-    //             setTextEdit(false);
-    //             // elem.unbind("keydown", tabKeyListener);
-    //             eleInput.removeEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
-
-    //             CABLES.UI.valueChanger("portval_" + i + "_" + panelid, true, portname, opid);
-
-    //             return;
-    //         }
-    //         else
-    //         {
-    //             console.log("[switchToNextInput] next input not found.", id);
-    //         }
-
-    //         count++;
-    //     }
-    // }
-
-    // function tabKeyListener(event)
-    // {
-    //     if (event.which == 9) // tab key
-    //     {
-    //         event.preventDefault();
-    //         if (event.shiftKey)switchToNextInput(-1);
-    //         else switchToNextInput(1);
-    //     }
-    // }
 
     function setTextEdit(enabled)
     {

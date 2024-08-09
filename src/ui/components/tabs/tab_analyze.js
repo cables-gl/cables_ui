@@ -1,7 +1,9 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
-
+/**
+ * tab panel analyze patch shows information and statistics about the current patch
+ */
 export default class AnalyzePatchTab extends Events
 {
     constructor(tabs)

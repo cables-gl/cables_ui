@@ -1,5 +1,12 @@
 import { Logger, Events } from "cables-shared-client";
 
+/**
+ * rectangle data structure for {@link GlRectInstancer}
+ *
+ * @export
+ * @class GlRect
+ * @extends {Events}
+ */
 export default class GlRect extends Events
 {
     constructor(instancer, options)

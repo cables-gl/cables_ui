@@ -2,6 +2,13 @@ import { Events } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
 
 
+/**
+ * managing mouse states buttons/position/dragging etc
+ *
+ * @export
+ * @class MouseState
+ * @extends {Events}
+ */
 export default class MouseState extends Events
 {
     constructor(canvas)

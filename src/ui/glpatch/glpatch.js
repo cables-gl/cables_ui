@@ -20,6 +20,13 @@ import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip } from "../elements/tooltips.js";
 
 
+/**
+ * rendering the patchfield
+ *
+ * @export
+ * @class GlPatch
+ * @extends {Events}
+ */
 export default class GlPatch extends Events
 {
     constructor(cgl)

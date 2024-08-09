@@ -5,6 +5,13 @@ import userSettings from "../usersettings.js";
 import undo from "../../utils/undo.js";
 
 
+/**
+ * Tab panel to display logging of cables logger
+ *
+ * @export
+ * @class LogTab
+ * @extends {Events}
+ */
 export default class LogTab extends Events
 {
     constructor(tabs)

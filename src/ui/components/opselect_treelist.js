@@ -1,8 +1,11 @@
 import GlPatch from "../glpatch/glpatch.js";
 
-CABLES = CABLES || {};
-
-
+/**
+ * tree view for namespaces in op select dialog
+ *
+ * @export
+ * @class OpTreeList
+ */
 export default class OpTreeList
 {
     constructor()

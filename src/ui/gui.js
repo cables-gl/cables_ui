@@ -46,6 +46,9 @@ import FileManager from "./components/filemanager.js";
 import BottomTabPanel from "./elements/tabpanel/bottomtabpanel.js";
 import LogTab from "./components/tabs/tab_log.js";
 
+/**
+ * main singleton class for starting the editor
+ */
 export default class Gui extends Events
 {
     constructor(cfg)

@@ -3,6 +3,13 @@ import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 
+/**
+ * draw many rectangles quickly using GPU instancing (e.g. patchfield: ops,ports,text)
+ *
+ * @export
+ * @class GlRectInstancer
+ * @extends {Events}
+ */
 export default class GlRectInstancer extends Events
 {
     constructor(cgl, options)

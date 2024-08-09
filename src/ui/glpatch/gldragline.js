@@ -4,7 +4,9 @@ import MouseState from "./mousestate.js";
 import Gui from "../gui.js";
 import GlPort from "./glport.js";
 
-
+/**
+ * simple line e.g. when dragging a port
+ */
 export default class GlDragLine
 {
     constructor(splineDrawer, glpatch)

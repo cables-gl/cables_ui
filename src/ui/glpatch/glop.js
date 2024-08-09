@@ -8,7 +8,13 @@ import MouseState from "./mousestate.js";
 import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
 
-
+/**
+ * rendering of ops on the patchfield {@link GlPatch}
+ *
+ * @export
+ * @class GlOp
+ * @extends {Events}
+ */
 export default class GlOp extends Events
 {
     constructor(glPatch, instancer, op)

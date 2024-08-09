@@ -7,10 +7,8 @@ import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
 
-
-
 /**
- * @abstract
+ * super class for platform implementations
  */
 export default class Platform extends Events
 {

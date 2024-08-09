@@ -3,6 +3,12 @@ import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 
+/**
+ * Managing bookmarks of a patch. bookmarks will be displayed in the param panel when no op is selected
+ *
+ * @export
+ * @class Bookmarks
+ */
 export default class Bookmarks
 {
     constructor()

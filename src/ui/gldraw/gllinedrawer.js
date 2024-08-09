@@ -1,4 +1,10 @@
 
+/**
+ * draw lines on the patchfield
+ *
+ * @export
+ * @class GlLinedrawer
+ */
 export default class GlLinedrawer
 {
     constructor(cgl, options)

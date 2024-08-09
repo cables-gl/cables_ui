@@ -1,6 +1,13 @@
 import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 
+/**
+ * search through opdocs, e.g. for opselect
+ *
+ * @export
+ * @class OpSearch
+ * @extends {Events}
+ */
 export default class OpSearch extends Events
 {
     constructor()
