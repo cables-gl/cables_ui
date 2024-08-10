@@ -319,10 +319,6 @@ export default class ServerOps
             return;
         }
         options = options || { "openEditor": true };
-        const loadingModal = options.loadingModal || gui.startModalLoading("Renaming op...");
-
-        loadingModal.setTask("renaming " + oldname + " to " + name);
-
         const renameRequest = {
             "opname": oldname,
             "name": name,
@@ -337,18 +333,10 @@ export default class ServerOps
                 if (err)
                 {
                     this._log.log("err res", res);
-                    gui.endModalLoading();
-
                     CABLES.UI.MODAL.showError("Could not rename op", "");
-
                     return;
                 }
-
-                if (options.openEditor) this.edit(name);
-                gui.opSelect().reload();
-                if (!options.loadingModal) gui.endModalLoading();
-                gui.serverOps.execute(name);
-                if (cb)cb();
+                if (cb)cb(err, res);
             },
         );
     }
@@ -868,7 +856,8 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    this._log.error(dirErr);
+                                    new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": dirErr.msg });
+                                    this._log.info(dirErr.msg);
                                 }
                             });
                         });
@@ -919,6 +908,9 @@ export default class ServerOps
         };
 
         let html = "";
+
+        html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
+
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
         html += "<br/><br/>";
@@ -1177,8 +1169,7 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
-        if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
+        let suggestedNamespace = defaultOps.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Rename operator",
@@ -1198,9 +1189,25 @@ export default class ServerOps
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
             if (doc && doc.id) nameOrId = doc.id;
-            gui.serverOps.rename(nameOrId, opname, () =>
+            gui.serverOps.rename(nameOrId, opname, (renameErr, res) =>
             {
-                console.log("RENAMED", nameOrId.opName);
+                gui.closeModal();
+                const newOp = res.data;
+                this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+                this.loadOp(newOp, () =>
+                {
+                    let properties = newOp.oldName.split(".");
+                    properties.shift();
+                    const path = properties.join(".");
+                    helper.deletePropertyByPath(Ops, path);
+                    const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+                    usedOps.forEach((usedOp) =>
+                    {
+                        gui.patchView.replaceOp(usedOp.id, newOp.objName);
+                    });
+                    gui.opSelect().reload();
+                    gui.opSelect().prepare();
+                }, true);
             }, { "opTargetDir": cbOptions.opTargetDir });
         });
     }
@@ -1862,7 +1869,7 @@ export default class ServerOps
 
         let missingOps = [];
         const missingOpsFound = [];
-        proj.ops.forEach((op) =>
+        if (proj.ops) proj.ops.forEach((op) =>
         {
             const opIdentifier = this.getOpIdentifier(op);
             if (!missingOpsFound.includes(opIdentifier))

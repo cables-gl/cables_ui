@@ -6,6 +6,12 @@ import ParamsListener from "./params_listener.js";
 import userSettings from "../usersettings.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 
+/**
+ * op parameter panel
+ *
+ * @class OpParampanel
+ * @extends {Events}
+ */
 class OpParampanel extends Events
 {
     constructor(eleid)

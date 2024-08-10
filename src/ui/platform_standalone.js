@@ -2,6 +2,13 @@ import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
 
+/**
+ * platform for standalone / electron version
+ *
+ * @export
+ * @class PlatformStandalone
+ * @extends {Platform}
+ */
 export default class PlatformStandalone extends Platform
 {
     constructor(cfg)
@@ -22,6 +29,11 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showOpenPatch =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.showStartUpLog = true;
+    }
+
+    isStandalone()
+    {
+        return true;
     }
 
     getCablesVersion()

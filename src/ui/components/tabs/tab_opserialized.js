@@ -1,5 +1,12 @@
 import { ele, Events } from "cables-shared-client";
 
+/**
+ * debug: show current op in serialized form
+ *
+ * @export
+ * @class OpSerialized
+ * @extends {Events}
+ */
 export default class OpSerialized extends Events
 {
     constructor(tabs)

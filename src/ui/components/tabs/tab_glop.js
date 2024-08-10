@@ -1,5 +1,12 @@
 import { Events } from "cables-shared-client";
 
+/**
+ * tab panel to debug patchfield gl Op rendering
+ *
+ * @export
+ * @class GlOpWatcher
+ * @extends {Events}
+ */
 export default class GlOpWatcher extends Events
 {
     constructor(tabs)

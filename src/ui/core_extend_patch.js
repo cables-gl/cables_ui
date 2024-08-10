@@ -2,8 +2,6 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-
-
 export default function extendCorePatch()
 {
     CABLES.Patch.prototype._opIdsToOps = function (opids)

@@ -5,6 +5,13 @@ import userSettings from "../usersettings.js";
 import undo from "../../utils/undo.js";
 
 
+/**
+ * Tab panel to display logging of cables logger
+ *
+ * @export
+ * @class LogTab
+ * @extends {Events}
+ */
 export default class LogTab extends Events
 {
     constructor(tabs)
@@ -291,9 +298,10 @@ export default class LogTab extends Events
                     logger.errorGui(str);
 
                     if ( // do not send error report
-                        url.indexOf("api/op/Ops.User.") == -1 && // when user ops
-                        url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
-                        url.indexOf("api/op/Ops.Team.") == -1 && //  when team ops
+                        url.indexOf("api/op/") == -1 && // custom executed op ?
+                        // url.indexOf("api/op/Ops.User.") == -1 && // when user ops
+                        // url.indexOf("api/op/Ops.Patch.") == -1 && // when patch ops
+                        // url.indexOf("api/op/Ops.Team.") == -1 && //  when team ops
                         url.indexOf("cables.gl/assets/") == -1 && //  when asset libraries
                         url.indexOf("/api/lib/") == -1 && //  when libraries
                         url.indexOf("ops/code/project/") == -1 //  when using patch special ops
@@ -402,6 +410,7 @@ export default class LogTab extends Events
 
         report.cablesUrl = CABLES.platform.getCablesUrl();
         report.platformVersion = CABLES.platform.getCablesVersion();
+        if (window.gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
         report.browserDescription = platform.description;
 
 

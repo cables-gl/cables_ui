@@ -125,10 +125,8 @@
         margin-top:10px;
         border:5px solid $color-menubar-background;
         border-radius: $iconbar-borderradius;
-        // height: 30px;
         margin-left:calc(2 * var(--font-size-off));
         height: calc(30px + var(--font-size-off));
-
     }
 
     .cables-logo

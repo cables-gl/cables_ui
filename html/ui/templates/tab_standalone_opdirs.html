@@ -13,7 +13,7 @@
             <div id="dirlist" class="dragList draggable">
             {{#each dirs}}
                     <div class="draggable" data-id="{{@index}}" data-dir="{{dir}}" {{#compare numUsedOps '==' 0}}style="background-color: var(--color-04);" {{/compare}}>
-                        {{#unless @last}}<span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>{{/unless}}
+                        {{#unless fixedPlace}}<span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>{{/unless}}
                         <span class="dir">{{dir}}</span>
                         <span class="controls" style="float: right">
                             <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>&nbsp;

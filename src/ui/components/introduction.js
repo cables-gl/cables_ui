@@ -1,3 +1,9 @@
+/**
+ * Show intro and explain gui elements
+ *
+ * @export
+ * @class Introduction
+ */
 export default class Introduction
 {
     constructor()

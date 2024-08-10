@@ -1,5 +1,12 @@
 import { Events } from "cables-shared-client";
 
+/**
+ * saved state of patch and subpatches, set orange icon if unsaved
+ *
+ * @export
+ * @class SavedState
+ * @extends {Events}
+ */
 export default class SavedState extends Events
 {
     constructor()

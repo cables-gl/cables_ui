@@ -1,5 +1,12 @@
 import { ele, Events } from "cables-shared-client";
 
+/**
+ * debug: show content of an array in a tab
+ *
+ * @export
+ * @class WatchArrayTab
+ * @extends {Events}
+ */
 export default class WatchArrayTab extends Events
 {
     constructor(tabs, op, port, options)

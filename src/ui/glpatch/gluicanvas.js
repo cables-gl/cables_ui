@@ -1,6 +1,12 @@
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 
+/**
+ * canvas for the patchfield {@link GlPatch}
+ *
+ * @export
+ * @class GlUiCanvas
+ */
 export default class GlUiCanvas
 {
     constructor(_patch, parentEle)

@@ -3,6 +3,12 @@ import userSettings from "../components/usersettings.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
 
+/**
+ * draw splines, e.g. cables on the patchfield
+ *
+ * @export
+ * @class GlSplineDrawer
+ */
 export default class GlSplineDrawer
 {
     constructor(cgl, name)

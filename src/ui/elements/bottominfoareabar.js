@@ -2,6 +2,13 @@ import { ele, Events } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
 import text from "../text.js";
 
+/**
+ * info bar at the bottom of the window, showing context sensitive shortcuts etc.
+ *
+ * @export
+ * @class BottomInfoAreaBar
+ * @extends {Events}
+ */
 export default class BottomInfoAreaBar extends Events
 {
     constructor()

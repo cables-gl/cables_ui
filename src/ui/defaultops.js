@@ -120,6 +120,10 @@ const defaultOpNames =
 
 };
 
+
+/**
+ * default ops structure for assets, ports, math operations etc.
+ */
 const defaultOps = {
     "defaultOpNames": defaultOpNames,
     "converterOps":
@@ -452,6 +456,11 @@ const defaultOps = {
         return opname && opname.includes(".Dev.");
     },
 
+    "isStandaloneOp": (opname) =>
+    {
+        return opname && opname.includes(".Standalone.");
+    },
+
     "isAdminOp": (opname) =>
     {
         return opname && opname.indexOf("Ops.Admin.") === 0;
@@ -550,5 +559,6 @@ const defaultOps = {
         if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
     }
 };
+
 
 export default defaultOps;

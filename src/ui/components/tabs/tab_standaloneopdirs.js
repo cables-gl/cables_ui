@@ -1,6 +1,7 @@
-import { helper, Logger } from "cables-shared-client";
+import { ele, Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
 
 export default class StandaloneOpDirs
 {
@@ -35,10 +36,18 @@ export default class StandaloneOpDirs
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        CABLES.CMD.STANDALONE.addProjectOpDir(null, () =>
+                        CABLES.CMD.STANDALONE.addProjectOpDir(null, (dirErr, _dirRes) =>
                         {
-                            this.show();
-                            this._loadOpsInDirs();
+                            if (!dirErr)
+                            {
+                                this.show();
+                                this._loadOpsInDirs();
+                            }
+                            else
+                            {
+                                new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": dirErr.msg });
+                                this._log.info(dirErr.msg);
+                            }
                         });
                     });
                 }

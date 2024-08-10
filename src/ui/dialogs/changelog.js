@@ -1,6 +1,12 @@
 import { Logger } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
 
+/**
+ * show a toast when cables changelog is new
+ *
+ * @export
+ * @class ChangelogToast
+ */
 export default class ChangelogToast
 {
     constructor()

@@ -4,6 +4,13 @@ import text from "../text.js";
 import userSettings from "../components/usersettings.js";
 import GlPort from "./glport.js";
 
+
+/**
+ * rendering cables for links
+ *
+ * @export
+ * @class GlCable
+ */
 export default class GlCable
 {
     constructor(glPatch, splineDrawer, buttonRect, type, link, subpatch)
@@ -21,8 +28,6 @@ export default class GlCable
         this._y2 = 0;
 
         this._points = [];
-
-
 
         this._buttonSize = gui.theme.patch.cableButtonSize || 17;
         this._linetype = this.LINETYPE_CURVED;

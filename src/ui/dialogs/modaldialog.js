@@ -1,7 +1,7 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 
 /**
- * configuration object for loading a patch
+ * configuration object for a modal dialog
  * @typedef {Object} ModalDialogOptions
  * @hideconstructor
  * @property {String} [html=''] html content
@@ -14,10 +14,9 @@ import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
  */
 
 /**
- * ModalDialog opens a modal dialog overlay
+ * open a modal dialog
  *
  * @param {ModalDialogOptions} options The option object.
- * @class
  * @example
  * new ModalDialog(
  * {

@@ -7,6 +7,12 @@ import srcShaderVertex from "./texturepreviewer_glsl.vert";
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;
 
+/**
+ * texturepreview floating over the patchfield
+ *
+ * @export
+ * @class TexturePreviewer
+ */
 export default class TexturePreviewer
 {
     constructor()

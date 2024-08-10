@@ -1,5 +1,10 @@
 
 
+/**
+ * filemanager - dragging and dropping files handler/listener
+ *
+ * @export
+ */
 export default function DragNDrop()
 {
     this.internal = false;

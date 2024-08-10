@@ -4,6 +4,12 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 
+/**
+ * tab panel for managing ops: attachments,libs etc.
+ *
+ * @export
+ * @class ManageOp
+ */
 export default class ManageOp
 {
     constructor(tabs, opname)
@@ -153,8 +159,6 @@ export default class ManageOp
                             "isAssetLib": lib.startsWith("/assets/"),
                         });
                     });
-
-                    console.log("opDoc", opDoc);
 
                     const html = getHandleBarHtml("tab_manage_op",
                         {

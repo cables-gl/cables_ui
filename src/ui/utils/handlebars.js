@@ -1,8 +1,6 @@
 /**
  * Handlebars template helper functions
- *
  */
-
 const handleBarsPrecompiled = {};
 
 export function getHandleBarHtml(name, obj)

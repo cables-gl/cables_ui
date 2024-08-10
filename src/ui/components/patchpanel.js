@@ -3,6 +3,13 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import TreeView from "./treeview.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 
+/**
+ * default panel when clicking into the pach background, shows patch summary and tree view
+ *
+ * @export
+ * @class PatchPanel
+ * @extends {Events}
+ */
 export default class PatchPanel extends Events
 {
     constructor()

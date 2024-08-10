@@ -1,6 +1,12 @@
 import { ele, ModalBackground } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
+/**
+ * show suggestion dialog (rotary mouse select menu)
+ *
+ * @export
+ * @class SuggestionDialog
+ */
 export default class SuggestionDialog
 {
     constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel)

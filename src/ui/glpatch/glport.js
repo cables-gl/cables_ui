@@ -5,6 +5,12 @@ import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
 import { updateHoverToolTip } from "../elements/tooltips.js";
 
+/**
+ * rendering ports on {@link GlOp} on  {@link GlPatch}
+ *
+ * @export
+ * @class GlPort
+ */
 export default class GlPort
 {
     constructor(glpatch, glop, rectInstancer, p, posCount, oprect)

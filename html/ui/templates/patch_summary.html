@@ -77,10 +77,12 @@
 
         <div>
             {{#if frontendOptions.hasCommunity}}
-                <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
-            {{/if}}
-            {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
+            {{/if}}
+            <a class="iconbutton" onclick="CABLES.CMD.PATCH.analyze();"><span class="icon icon-pie-chart"></span></a>
+
+            {{#if frontendOptions.hasCommunity}}
+                <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
             {{/if}}
             {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>

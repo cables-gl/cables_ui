@@ -1,6 +1,13 @@
 import { Events } from "cables-shared-client";
 import userSettings from "../../components/usersettings.js";
 
+/**
+ * the maintabpanel on the left side of the patchfield, can be minimized
+ *
+ * @export
+ * @class MainTabPanel
+ * @extends {Events}
+ */
 export default class MainTabPanel extends Events
 {
     constructor(tabs)

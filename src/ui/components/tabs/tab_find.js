@@ -3,7 +3,15 @@ import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
+import { escapeHTML } from "../../utils/helper.js";
 
+
+/**
+ * tab panel for searching through the patch
+ *
+ * @export
+ * @class FindTab
+ */
 export default class FindTab
 {
     constructor(tabs, str)
@@ -725,7 +733,7 @@ export default class FindTab
 
                         if (!op.portsIn[j].isLinked()) score += 2;
                         else where += "linked ";
-                        where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
+                        where += op.portsIn[j].name + ": " + this.highlightWord(str, escapeHTML(op.portsIn[j].get()));
                         score += 2;
                         found = true;
                     }

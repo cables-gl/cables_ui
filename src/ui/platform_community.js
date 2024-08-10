@@ -1,5 +1,12 @@
 import Platform from "./platform.js";
 
+/**
+ * platform implementation for community (https://cables.gl)
+ *
+ * @export
+ * @class PlatformCommunity
+ * @extends {Platform}
+ */
 export default class PlatformCommunity extends Platform
 {
     constructor(cfg)

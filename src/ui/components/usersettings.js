@@ -1,5 +1,11 @@
 import { Events } from "cables-shared-client";
 
+/**
+ * storing/loading user settings/ sending to the user and in localstorage etc.
+ *
+ * @class UserSettings
+ * @extends {Events}
+ */
 class UserSettings extends Events
 {
     constructor()

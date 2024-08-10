@@ -46,6 +46,9 @@ import FileManager from "./components/filemanager.js";
 import BottomTabPanel from "./elements/tabpanel/bottomtabpanel.js";
 import LogTab from "./components/tabs/tab_log.js";
 
+/**
+ * main singleton class for starting the editor
+ */
 export default class Gui extends Events
 {
     constructor(cfg)
@@ -1844,7 +1847,6 @@ export default class Gui extends Events
         let ver = "";
         ver += CABLES.platform.getCablesVersion();
         if (CABLES.platform.isDevEnv()) ver += " (dev)";
-
         this._log.groupCollapsed("welcome to cables " + ver + "!");
 
         if (CABLES.platform.getPatchVersion())
@@ -1855,6 +1857,7 @@ export default class Gui extends Events
         console.groupEnd();
 
 
+        if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
 
         this._log.logGui("browser: " + platform.description);
 

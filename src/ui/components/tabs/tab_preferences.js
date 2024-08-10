@@ -3,6 +3,12 @@ import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import userSettings from "../usersettings.js";
 
+/**
+ * show user editor preferences, stored in {@link UserSettings}
+ *
+ * @export
+ * @class Preferences
+ */
 export default class Preferences
 {
     constructor(tabs)

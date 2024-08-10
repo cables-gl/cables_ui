@@ -8,9 +8,6 @@ import text from "./text.js";
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 
-
-
-
 export default function extendCoreOp()
 {
     CABLES.Op.prototype.initUi = function ()

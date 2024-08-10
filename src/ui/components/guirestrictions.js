@@ -1,4 +1,10 @@
 
+/**
+ * gui restrictions,e.g. show an editor to the user, the user can  make changes etc.
+ *
+ * @export
+ * @class GuiRestrictions
+ */
 export default class GuiRestrictions
 {
     constructor()
@@ -9,10 +15,6 @@ export default class GuiRestrictions
         this._messages = {};
 
         this._messageBox = ele.byId("restriction_message");
-        // this._messageBox.addEventListener("click", () =>
-        // {
-        //     this.setMessage(null);
-        // });
     }
 
 

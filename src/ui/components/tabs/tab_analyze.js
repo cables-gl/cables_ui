@@ -1,7 +1,9 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
-
+/**
+ * tab panel analyze patch shows information and statistics about the current patch
+ */
 export default class AnalyzePatchTab extends Events
 {
     constructor(tabs)
@@ -19,7 +21,7 @@ export default class AnalyzePatchTab extends Events
 
     _html()
     {
-        let report = "";
+        let report = "<h1>Analyze Patch</h1>";
         const patch = gui.corePatch();
         report += "<div style=\"overflow:scroll;width:100%;height:100%\">";
         report += "<h2>Ops</h2>";
@@ -34,10 +36,8 @@ export default class AnalyzePatchTab extends Events
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
 
-
         report += "<hr/>";
         report += "<h2>Op Types</h2>";
-
 
         {
             let arr = FindTab.searchOutDated(gui.corePatch().ops, []);

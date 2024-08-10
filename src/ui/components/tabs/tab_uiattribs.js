@@ -1,5 +1,12 @@
 import { ele, Events } from "cables-shared-client";
 
+/**
+ * debug: showing uiattribs of currently selected op
+ *
+ * @export
+ * @class OpWatchUiAttribs
+ * @extends {Events}
+ */
 export default class OpWatchUiAttribs extends Events
 {
     constructor(tabs)

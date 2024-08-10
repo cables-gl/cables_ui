@@ -1,5 +1,12 @@
 import { Events } from "cables-shared-client";
 
+/**
+ * detect shaking of ops to disconnect
+ *
+ * @export
+ * @class ShakeDetector
+ * @extends {Events}
+ */
 export default class ShakeDetector extends Events
 {
     constructor()

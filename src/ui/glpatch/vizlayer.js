@@ -2,6 +2,13 @@ import { Logger, Events } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
 import gluiconfig from "./gluiconfig.js";
 
+/**
+ * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
+ *
+ * @export
+ * @class VizLayer
+ * @extends {Events}
+ */
 export default class VizLayer extends Events
 {
     constructor(glPatch)

@@ -2,6 +2,13 @@ import GlUiConfig from "./gluiconfig.js";
 import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 
+
+/**
+ * Viewbox of current patch
+ *
+ * @export
+ * @class GlViewBox
+ */
 export default class GlViewBox
 {
     constructor(cgl, glPatch)

@@ -1,6 +1,12 @@
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
+/**
+ * tab panel to welcome users of the standalone editor
+ *
+ * @export
+ * @class WelcomeTab
+ */
 export default class WelcomeTab
 {
     constructor(tabs)

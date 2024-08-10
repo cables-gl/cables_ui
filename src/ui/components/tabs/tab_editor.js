@@ -5,6 +5,9 @@ import userSettings from "../usersettings.js";
 import ManageOp from "./tab_manage_op.js";
 import { notifyError } from "../../elements/notification.js";
 
+/**
+ * tab panel for editing text and source code using the ace editor
+ */
 
 export default class EditorTab
 {

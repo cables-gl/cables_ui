@@ -1577,7 +1577,7 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.findOpsUsingExternalAssets
     },
     {
-        "cmd": "patch analysis",
+        "cmd": "analyze patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.analyze
     },
