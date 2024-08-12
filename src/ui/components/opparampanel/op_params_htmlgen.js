@@ -58,6 +58,7 @@ class PortHtmlGenerator
             "user": gui.user,
             "optitle": op.getTitle(),
             "showEditButton": canEditOp, // && defaultOps.isNonCoreOp(op.objName),
+            "showRenameButton": canEditOp && defaultOps.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
