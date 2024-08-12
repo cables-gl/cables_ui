@@ -602,7 +602,7 @@ export default class GlPatch extends Events
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
-            this._log.log("reenter with different buttons!");
+            // this._log.log("reenter with different buttons!");
             return;
         }
 
