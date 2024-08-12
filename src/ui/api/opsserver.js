@@ -909,8 +909,6 @@ export default class ServerOps
 
         let html = "";
 
-        html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
-
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
         html += "<br/><br/>";
