@@ -818,6 +818,7 @@ export default class GlOp extends Events
 
     _initColorIndicators()
     {
+        if (!this._op) return;
         const ports = this._op.portsIn;
 
         for (let i = 0; i < ports.length; i++)
