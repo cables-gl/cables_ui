@@ -997,8 +997,7 @@ export default class GlOp extends Events
             if (this[this._glRectNames[i]])
                 this[this._glRectNames[i]].visible = visi;
 
-        if (changed)
-            this._updateIndicators();
+        if (changed) this._updateIndicators();
 
         if (this._resizableArea) this._resizableArea.visible = visi;
         if (this._glColorIndicator) this._glColorIndicator.visible = visi;
@@ -1086,6 +1085,7 @@ export default class GlOp extends Events
                 this._glDotError.setColor(gui.theme.colors_patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
+                this._glDotError.visible = this._visible && hasErrors;
             }
 
             if (notworking && !this._glNotWorkingCross)
@@ -1095,12 +1095,14 @@ export default class GlOp extends Events
                 this._glNotWorkingCross.setColor(gui.theme.colors_patch.opNotWorkingCross);
                 this._glNotWorkingCross.setShape(7);
                 this._glNotWorkingCross.interactive = false;
+                this._glNotWorkingCross.visible = this.visible && notworking;
             }
 
             if (hasHints)
             {
                 this._glDotHint.setPosition(dotX, dotY, 0);
-                this._glDotHint.visible = true;
+                this._glDotHint.visible = this.visible && hasHints;
+
                 dotX += 2;
             }
 
@@ -1108,21 +1110,21 @@ export default class GlOp extends Events
             if (hasWarnings)
             {
                 this._glDotWarning.setPosition(dotX, dotY, 0);
-                this._glDotWarning.visible = true;
+                this._glDotWarning.visible = this.visible && hasWarnings;
                 dotX += 2;
             }
 
             if (hasErrors)
             {
                 this._glDotError.setPosition(dotX, dotY, 0);
-                this._glDotError.visible = true;
+                this._glDotError.visible = this.visible && hasErrors;
                 dotX += 2;
             }
 
             if (notworking)
             {
                 this._glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
-                this._glNotWorkingCross.visible = true;
+                this._glNotWorkingCross.visible = this.visible && notworking;
             }
 
             if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
