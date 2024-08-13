@@ -279,6 +279,10 @@
     <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputUpload(this.files)"/>
 </form>
 
+<form id="hiddenreupload" class="hide">
+    <input id="hiddenfileElemReupload" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputReUpload(this.files)"/>
+</form>
+
 <div class="tooltip hidden" id="cbltooltip"></div>
 <div id="uiperf" ></div>
 <div id="patchnavhelperBounds" class="hidden" onclick=""></div>

@@ -240,13 +240,14 @@ export default class GlPatch extends Events
             for (let j = 0; j < 20; j++)
                 for (const i in this._selectedGlOps)
                 {
-                    this._selectedGlOps[i].op.setUiAttribs(
-                        {
-                            "translate":
+                    if (this._selectedGlOps[i].op)
+                        this._selectedGlOps[i].op.setUiAttribs(
                             {
-                                "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
-                                "y": this._selectedGlOps[i].op.uiAttribs.translate.y
-                            } });
+                                "translate":
+                                {
+                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
+                                    "y": this._selectedGlOps[i].op.uiAttribs.translate.y
+                                } });
 
                     gui.patchView.testCollision(this._selectedGlOps[i].op);
                 }
@@ -601,7 +602,7 @@ export default class GlPatch extends Events
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
-            this._log.log("reenter with different buttons!");
+            // this._log.log("reenter with different buttons!");
             return;
         }
 

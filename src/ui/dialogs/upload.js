@@ -87,6 +87,7 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
+
         if (CABLES.platform.frontendOptions.uploadFiles)
         {
             const reader = new FileReader();
@@ -122,6 +123,34 @@ export default class FileUploader
             finalPath = finalPath.replaceAll("\\", "/");
             gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
         }
+    }
+
+    handleFileInputReUpload(files)
+    {
+        if (!window.gui) return;
+        if (gui.isRemoteClient) return;
+
+        gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
+
+
+        if (files.length > 0)
+        {
+            console.log("upload as", files[0].name, CABLES.reuploadName);
+
+            const partsNew = files[0].name.split(".");
+            const partsOld = CABLES.reuploadName.split(".");
+
+            if (partsNew[partsNew.length - 1] != partsOld[partsOld.length - 1])
+            {
+                notifyError("ERROR: different file ending " + partsNew[partsNew.length - 1] + "/" + partsOld[partsOld.length - 1]);
+            }
+            else
+            {
+                this.uploadFile(files[0], CABLES.reuploadName);
+            }
+        }
+
+        gui.jobs().finish("prepareuploadfiles");
     }
 
     uploadFiles(files)

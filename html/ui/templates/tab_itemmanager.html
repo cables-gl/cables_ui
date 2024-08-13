@@ -10,17 +10,17 @@
 
             <span class="divider"></span>
 
-            <span class="iconbutton info" data-info="filemanager_file_refresh" onclick="gui.refreshFileManager();" >
+            <span class="iconbutton info" data-info="filemanager_file_refresh" onclick="gui.refreshFileManager();">
                 <i class="icon icon-refresh"></i>
             </span>
 
             {{#if frontendOptions.showAssetUpload }}
-                <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+                <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();">
                     <i class="icon icon-upload"></i>
                 </span>
             {{/if}}
 
-            <span class="iconbutton info" data-info="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
+            <span class="iconbutton info" data-info="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();">
                 <i class="icon icon-file-plus"></i>
             </span>
 
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
                         {{else}}
-                            <div class="preview info text-center" data-info="dragfile" style="width:90%;height:calc(90% - 22px);;background-color:#555;" >
+                            <div class="preview info text-center" data-info="dragfile" style="width:90%;height:calc(90% - 22px);;background-color:#555;">
                                 <br/>
                                 <span data-info="dragfile"  class="icon icon-{{icon}} icon-4x info"></span>
                             </div>
@@ -124,7 +124,7 @@
                 {{else}}
                     <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}">
                         <td><span class="icon icon-{{icon}} "></span></td>
-                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}" >{{title}}</div>
+                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}}</div>
                         </td>
                         <td>{{sizeKb}}</td>
                         <td>{{relativedate updated}}</td>
@@ -145,7 +145,7 @@
         <div>
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
-                <span class="icon icon-1x icon-download" ></span>
+                <span class="icon icon-1x icon-download"></span>
             </a>
             <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{filename}}')">
                 <a class="icon icon-1x icon-search"></a>
@@ -217,7 +217,7 @@
         <div style="padding-left:10px;">
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{downloadUrl}}">
-                <span class="icon icon-1x icon-download" ></span>
+                <span class="icon icon-1x icon-download"></span>
             </a>
             {{#if frontendOptions.showAssetExternalLink}}
             <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{assetPageUrl}}">
@@ -235,15 +235,24 @@
                 <a class="icon icon-1x icon-search"></a>
             </span>
 
-            <span class="iconbutton info" data-info="filemanager_copy_file_url" id="filecopyurl{{file.fileDb._id}}" >
-                <a class="info icon icon-1x icon-copy" ></a>
+            <span class="iconbutton info" data-info="filemanager_copy_file_url" id="filecopyurl{{file.fileDb._id}}">
+                <a class="info icon icon-1x icon-copy"></a>
             </span>
 
             {{#if isEditable}}
-                <span class="iconbutton info" data-info="filemanager_edit_file" id="fileedit{{file.fileDb._id}}" >
-                    <a class="info icon icon-1x icon-edit" ></a>
+                <span class="iconbutton info" data-info="filemanager_edit_file" id="fileedit{{file.fileDb._id}}">
+                    <a class="info icon icon-1x icon-edit"></a>
                 </span>
             {{/if}}
+
+
+
+
+
+
+            <span class="iconbutton info" data-info="filemanager_reupload" id="fileReUpload{{file.fileDb._id}}" onclick="CABLES.reuploadName='{{file.fileDb.fileName}}';ele.byId('hiddenfileElemReupload').click();">
+                <a class="info icon icon-1x icon-upload"></a>
+            </span>
 
 
 
@@ -307,8 +316,8 @@
         {{#if isReference}}
         {{else}}
         <br/><br/>
-        <span class="button" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
-            <a class="info icon icon-1x icon-trash" ></a>Delete File
+        <span class="button" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}">
+            <a class="info icon icon-1x icon-trash"></a>Delete File
 
         </span>
         {{/if}}

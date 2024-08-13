@@ -560,6 +560,7 @@ CABLES_CMD_PATCH.uploadFile = function ()
     if (fileElem) fileElem.click();
 };
 
+
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui || !gui.project()) return;
