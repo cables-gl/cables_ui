@@ -1,5 +1,4 @@
 import { Logger, ele } from "cables-shared-client";
-import { getFileInfo } from "prettier";
 import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";

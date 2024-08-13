@@ -64,7 +64,6 @@ const paramsHelper =
         // gui.setStateUnsaved();
         gui.savedState.setUnSaved("paramsInputIncrement");
 
-
         if (v == "true") return "false";
         if (v == "false") return "true";
 
