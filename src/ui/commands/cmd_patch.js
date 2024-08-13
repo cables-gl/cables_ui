@@ -1399,12 +1399,24 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     }
 };
 
-CABLES_CMD_PATCH.renameOp = () =>
+CABLES_CMD_PATCH.renameOp = (opName = null) =>
 {
-    const ops = gui.patchView.getSelectedOps();
-    if (!ops.length) return;
-    const op = gui.patchView.getSelectedOps()[0];
-    gui.serverOps.renameDialogIframe(op.objName);
+    if (!opName)
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (!ops.length) return;
+        const op = gui.patchView.getSelectedOps()[0];
+        opName = op.objName;
+    }
+
+    if (CABLES.platform.frontendOptions.opRenameInEditor)
+    {
+        gui.serverOps.renameDialog(opName);
+    }
+    else
+    {
+        gui.serverOps.renameDialogIframe(opName);
+    }
 };
 
 CMD_PATCH_COMMANDS.push(

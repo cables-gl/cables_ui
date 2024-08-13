@@ -705,7 +705,7 @@ export default class OpSelect
 
     loadExtension(name)
     {
-        gui.serverOps.loadExtensionOps(name, () =>
+        gui.serverOps.loadCollectionOps(name, "extension", () =>
         {
             this.close();
             this.reload();
@@ -722,7 +722,7 @@ export default class OpSelect
 
     loadTeamOps(name)
     {
-        gui.serverOps.loadTeamNamespaceOps(name, () =>
+        gui.serverOps.loadCollectionOps(name, "team", () =>
         {
             this.close();
             this.reload();
