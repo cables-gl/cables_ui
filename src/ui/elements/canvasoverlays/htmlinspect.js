@@ -13,6 +13,7 @@ export default class HtmlInspector
         this._inspectEle.addEventListener("click", () =>
         {
             gui.patchView.centerSelectOp(this._hoveringOpId);
+            gui.opParams.show(this._hoveringOpId);
         }, { "passive": true });
 
         this._inspectEle.addEventListener("mouseleave", () =>
