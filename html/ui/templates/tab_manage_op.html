@@ -24,14 +24,8 @@
 
         <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op</span>
         {{#if canEditOp}}
-            {{#if frontendOptions.opRenameInEditor}}
-                <span class="button-small" onclick="gui.serverOps.renameDialog('{{opname}}');">Rename Op</span>
-            {{else}}
-
-                <a class="button-small" target="_blank" onclick="CABLES.CMD.PATCH.renameOp()">Rename Op</a>
-            {{/if}}
+            <a class="button-small" target="_blank" onclick="CABLES.CMD.PATCH.renameOp('{{opname}}')">Rename Op</a>
         {{/if}}
-
 
         {{#if frontendOptions.showLocalOpDirButton}}
             <a class="button-small button-icon tt info" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>

@@ -311,36 +311,6 @@ export default class ServerOps
         }, true);
     }
 
-    rename(oldname, name, cb, options)
-    {
-        if (!CABLES.platform.frontendOptions.opRenameInEditor)
-        {
-            if (cb) cb();
-            return;
-        }
-        options = options || { "openEditor": true };
-        const renameRequest = {
-            "opname": oldname,
-            "name": name,
-        };
-        if (options.opTargetDir)renameRequest.opTargetDir = options.opTargetDir;
-
-        CABLESUILOADER.talkerAPI.send(
-            "opRename",
-            renameRequest,
-            (err, res) =>
-            {
-                if (err)
-                {
-                    this._log.log("err res", res);
-                    CABLES.UI.MODAL.showError("Could not rename op", "");
-                    return;
-                }
-                if (cb)cb(err, res);
-            },
-        );
-    }
-
     clone(oldname, name, cb, options)
     {
         options = options || { "openEditor": true };
@@ -1141,22 +1111,7 @@ export default class ServerOps
                 talkerAPI.removeEventListener(renameDoneListenerId);
                 gui.closeModal();
             });
-
-            this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-            this.loadOp(newOp, () =>
-            {
-                let properties = newOp.oldName.split(".");
-                properties.shift();
-                const path = properties.join(".");
-                helper.deletePropertyByPath(Ops, path);
-                const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
-                usedOps.forEach((usedOp) =>
-                {
-                    gui.patchView.replaceOp(usedOp.id, newOp.objName);
-                });
-                gui.opSelect().reload();
-                gui.opSelect().prepare();
-            }, true);
+            this._afterOpRename(newOp);
         });
     }
 
@@ -1184,32 +1139,53 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
-
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
             if (doc && doc.id) nameOrId = doc.id;
-            gui.serverOps.rename(nameOrId, opname, (renameErr, res) =>
-            {
-                gui.closeModal();
-                const newOp = res.data;
-                this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-                this.loadOp(newOp, () =>
+            cbOptions = cbOptions || { "openEditor": true };
+            const renameRequest = {
+                "opname": oldName,
+                "name": name,
+            };
+            if (cbOptions.opTargetDir)renameRequest.opTargetDir = cbOptions.opTargetDir;
+
+            CABLESUILOADER.talkerAPI.send(
+                "opRename",
+                renameRequest,
+                (err, res) =>
                 {
-                    let properties = newOp.oldName.split(".");
-                    properties.shift();
-                    const path = properties.join(".");
-                    helper.deletePropertyByPath(Ops, path);
-                    const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
-                    usedOps.forEach((usedOp) =>
+                    if (err)
                     {
-                        gui.patchView.replaceOp(usedOp.id, newOp.objName);
-                    });
-                    gui.opSelect().reload();
-                    gui.opSelect().prepare();
-                }, true);
-            }, { "opTargetDir": cbOptions.opTargetDir });
+                        this._log.log("err res", res);
+                        CABLES.UI.MODAL.showError("Could not rename op", "");
+                    }
+                    else
+                    {
+                        gui.closeModal();
+                        this._afterOpRename(res.data);
+                    }
+                },
+            );
         });
+    }
+
+    _afterOpRename(newOp)
+    {
+        this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+        this.loadOp(newOp, () =>
+        {
+            let properties = newOp.oldName.split(".");
+            properties.shift();
+            const path = properties.join(".");
+            helper.deletePropertyByPath(Ops, path);
+            const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+            usedOps.forEach((usedOp) =>
+            {
+                gui.patchView.replaceOp(usedOp.id, newOp.objName);
+            });
+            gui.opSelect().reload();
+            gui.opSelect().prepare();
+        }, true);
     }
 
     cloneDialog(oldName, origOp)
