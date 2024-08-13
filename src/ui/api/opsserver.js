@@ -1139,15 +1139,17 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
+            const opname = newNamespace + newName;
+
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
             if (doc && doc.id) nameOrId = doc.id;
             cbOptions = cbOptions || { "openEditor": true };
             const renameRequest = {
-                "opname": oldName,
-                "name": name,
+                "opname": nameOrId,
+                "name": opname,
             };
-            if (cbOptions.opTargetDir)renameRequest.opTargetDir = cbOptions.opTargetDir;
+            if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
             CABLESUILOADER.talkerAPI.send(
                 "opRename",
