@@ -162,7 +162,7 @@ export default class PatchView extends Events
         }
 
         const perf = CABLES.UI.uiProfiler.start("[patchview] setproject");
-        if (window.logStartup) logStartup("setProject 1");
+        if (window.logStartup) logStartup("gui set project");
 
         if (proj && proj.ui)
         {
@@ -185,13 +185,9 @@ export default class PatchView extends Events
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
-        if (window.logStartup) logStartup("setProject 2");
         gui.setProject(proj);
 
-        if (window.logStartup) logStartup("setProject renderer");
-
         this._patchRenderer.setProject(proj);
-        if (window.logStartup) logStartup("setProject renderer done");
 
         this.store.setServerDate(proj.updated);
 
