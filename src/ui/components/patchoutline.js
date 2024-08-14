@@ -8,12 +8,12 @@ export default class PatchOutline extends Events
     {
         super();
 
-        this.includeAreas = false;
-        this.includeSubpatches = true;
-        this.includeComments = true;
-        this.includeCommented = true;
-        this.includeBookmarks = true;
-        this.includeAnimated = true;
+        this.includeAreas =
+        this.includeSubpatches =
+        this.includeComments =
+        this.includeCommented =
+        this.includeBookmarks =
+        this.includeAnimated =
         this.includeColored = true;
 
         this._subTree = new TreeView();
@@ -199,11 +199,12 @@ export default class PatchOutline extends Events
                 else
                 {
                     let icon = "bookmark";
-                    let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment && this.includeComments) icon = "message";
                     else if (ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1) icon = "box-select";
                     else if (ops[i].uiAttribs.comment_title) icon = "message-square-text";
-                    else if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
+
+                    let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
+                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
 
 
                     sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "opid": ops[i].id, "order": title + ops[i].id });
