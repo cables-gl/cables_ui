@@ -144,7 +144,7 @@ export default class PatchOutline extends Events
 
     _getSubPatchesHierarchy(patchId = 0)
     {
-        let mainTitle = "Main ";
+        let mainTitle = "Patch ";
         if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
 
         let sub =
@@ -154,7 +154,7 @@ export default class PatchOutline extends Events
             "order": 0,
             "subPatchId": "0",
             "childs": [],
-            "icon": "op"
+            "icon": "folder"
         };
 
         if (gui.patchView.getCurrentSubPatch() == 0)sub.rowClass = "active";
@@ -184,7 +184,7 @@ export default class PatchOutline extends Events
             if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
                 sub.blueprintVer = subOp.storage.blueprintVer;
-                sub.icon = "blueprint";
+                sub.icon = "folder";
             }
         }
 
@@ -211,14 +211,14 @@ export default class PatchOutline extends Events
                 {
                     let icon = "bookmark";
                     if (this.includeCommented && ops[i].uiAttribs.comment) icon = "message";
-                    if (this.includeColored && ops[i].uiAttribs.color) icon = "picker";
+                    if (this.includeColored && ops[i].uiAttribs.color) icon = "op";
                     if (this.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
                     if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
 
-                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id });
+                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color });
                 }
             }
         }

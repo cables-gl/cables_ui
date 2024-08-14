@@ -43,14 +43,17 @@ export default class TreeView extends Events
             {
                 html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;;\"></span>";
 
-                if (level == j + 1)
+                if (level == j)
                     if (item.hasOwnProperty("childs") && item.childs.length > 0) html += "<span class=\"icon icon-chevron-down\" style=\"margin-right:3px;\"></span>";
                     else html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;\"></span>";
             }
 
             const icon = data[i].icon || "empty";
 
-            html += "<span id=\"icon_" + item.id + "\" data-eletype=\"icon\" class=\"icon icon-" + icon + " iconhover\"></span>";
+            let style = "";
+            if (data[i].iconBgColor)style = "background-color:" + data[i].iconBgColor;
+
+            html += "<span id=\"icon_" + item.id + "\" data-eletype=\"icon\" class=\"icon icon-" + icon + " iconhover\" style=\"" + style + "\"></span>";
 
             html += "&nbsp;&nbsp;";
 
