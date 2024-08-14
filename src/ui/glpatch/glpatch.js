@@ -1398,9 +1398,9 @@ export default class GlPatch extends Events
     setSelectedOpById(id)
     {
         this.unselectAll();
-        this.selectOpId(id);
 
         if (this._glOpz[id] && !this._glOpz[id].isInCurrentSubPatch()) this.setCurrentSubPatch(this._glOpz[id].getSubPatch());
+        this.selectOpId(id);
     }
 
     getNumSelectedOps()

@@ -78,17 +78,14 @@ export default class PlatformStandalone extends Platform
         }
         CABLESUILOADER.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
-            if (file)
+            if (file && inputEle)
             {
-                if (inputEle)
-                {
-                    gui.savedState.setUnSaved("filemanager");
-                    inputEle.value = file;
-                    const event = document.createEvent("Event");
-                    event.initEvent("input", true, true);
-                    inputEle.dispatchEvent(event);
-                    gui.opParams.show(opId);
-                }
+                gui.savedState.setUnSaved("filemanager");
+                inputEle.value = file;
+                const event = document.createEvent("Event");
+                event.initEvent("input", true, true);
+                inputEle.dispatchEvent(event);
+                gui.opParams.show(opId);
             }
         });
     }

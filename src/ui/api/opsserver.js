@@ -311,36 +311,6 @@ export default class ServerOps
         }, true);
     }
 
-    rename(oldname, name, cb, options)
-    {
-        if (!CABLES.platform.frontendOptions.opRenameInEditor)
-        {
-            if (cb) cb();
-            return;
-        }
-        options = options || { "openEditor": true };
-        const renameRequest = {
-            "opname": oldname,
-            "name": name,
-        };
-        if (options.opTargetDir)renameRequest.opTargetDir = options.opTargetDir;
-
-        CABLESUILOADER.talkerAPI.send(
-            "opRename",
-            renameRequest,
-            (err, res) =>
-            {
-                if (err)
-                {
-                    this._log.log("err res", res);
-                    CABLES.UI.MODAL.showError("Could not rename op", "");
-                    return;
-                }
-                if (cb)cb(err, res);
-            },
-        );
-    }
-
     clone(oldname, name, cb, options)
     {
         options = options || { "openEditor": true };
@@ -1141,22 +1111,7 @@ export default class ServerOps
                 talkerAPI.removeEventListener(renameDoneListenerId);
                 gui.closeModal();
             });
-
-            this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-            this.loadOp(newOp, () =>
-            {
-                let properties = newOp.oldName.split(".");
-                properties.shift();
-                const path = properties.join(".");
-                helper.deletePropertyByPath(Ops, path);
-                const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
-                usedOps.forEach((usedOp) =>
-                {
-                    gui.patchView.replaceOp(usedOp.id, newOp.objName);
-                });
-                gui.opSelect().reload();
-                gui.opSelect().prepare();
-            }, true);
+            this._afterOpRename(newOp);
         });
     }
 
@@ -1189,27 +1144,50 @@ export default class ServerOps
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
             if (doc && doc.id) nameOrId = doc.id;
-            gui.serverOps.rename(nameOrId, opname, (renameErr, res) =>
-            {
-                gui.closeModal();
-                const newOp = res.data;
-                this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-                this.loadOp(newOp, () =>
+            cbOptions = cbOptions || { "openEditor": true };
+            const renameRequest = {
+                "opname": nameOrId,
+                "name": opname,
+            };
+            if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
+
+            CABLESUILOADER.talkerAPI.send(
+                "opRename",
+                renameRequest,
+                (err, res) =>
                 {
-                    let properties = newOp.oldName.split(".");
-                    properties.shift();
-                    const path = properties.join(".");
-                    helper.deletePropertyByPath(Ops, path);
-                    const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
-                    usedOps.forEach((usedOp) =>
+                    if (err)
                     {
-                        gui.patchView.replaceOp(usedOp.id, newOp.objName);
-                    });
-                    gui.opSelect().reload();
-                    gui.opSelect().prepare();
-                }, true);
-            }, { "opTargetDir": cbOptions.opTargetDir });
+                        this._log.log("err res", res);
+                        CABLES.UI.MODAL.showError("Could not rename op", "");
+                    }
+                    else
+                    {
+                        gui.closeModal();
+                        this._afterOpRename(res.data);
+                    }
+                },
+            );
         });
+    }
+
+    _afterOpRename(newOp)
+    {
+        this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+        this.loadOp(newOp, () =>
+        {
+            let properties = newOp.oldName.split(".");
+            properties.shift();
+            const path = properties.join(".");
+            helper.deletePropertyByPath(Ops, path);
+            const usedOps = gui.corePatch().getOpsByOpId(newOp.opId);
+            usedOps.forEach((usedOp) =>
+            {
+                gui.patchView.replaceOp(usedOp.id, newOp.objName);
+            });
+            gui.opSelect().reload();
+            gui.opSelect().prepare();
+        }, true);
     }
 
     cloneDialog(oldName, origOp)
@@ -2043,19 +2021,31 @@ export default class ServerOps
         }
     }
 
-    loadExtensionOps(name, cb)
+    loadCollectionOps(name, type, cb)
     {
-        if (name && defaultOps.isExtensionOp(name))
+        let valid = false;
+        let apiUrl = "";
+        let collectionName = "";
+        if (name && type === "extension")
         {
-            const extensionName = name.split(".", 3).join(".");
-            const extensionOpUrl = [];
-            extensionOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + extensionName));
+            collectionName = name.split(".", 3).join(".");
+            valid = name && defaultOps.isExtensionOp(name);
+            apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
+        }
+        if (name && type === "team")
+        {
+            collectionName = name.split(".", 3).join(".");
+            valid = name && defaultOps.isTeamOp(name);
+            apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
+        }
 
-            const lid = "extensionops" + extensionName + CABLES.uuid();
-
+        if (valid)
+        {
+            const collectionOpUrl = [];
+            collectionOpUrl.push(apiUrl);
+            const lid = type + "ops" + collectionName + CABLES.uuid();
             gui.jobs().start({ "id": "getCollectionOpDocs" });
-
-            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": extensionName }, (err, res) =>
+            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
             {
                 gui.jobs().finish("getCollectionOpDocs");
                 if (!err && res && res.opDocs)
@@ -2083,55 +2073,7 @@ export default class ServerOps
                     cb();
                 }
             });
-            loadjs(extensionOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
-        }
-        else
-        {
-            incrementStartup();
-            cb();
-        }
-    }
-
-    loadTeamNamespaceOps(name, cb)
-    {
-        if (name && defaultOps.isTeamOp(name))
-        {
-            const teamNamespaceName = name.split(".", 3).join(".");
-            const teamOpUrl = [];
-            teamOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + teamNamespaceName));
-
-            const lid = "teamops" + teamNamespaceName + CABLES.uuid();
-
-            gui.jobs().start({ "id": "executeop" });
-            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
-            {
-                gui.jobs().finish("executeop");
-
-                if (!err && res && res.opDocs)
-                {
-                    gui.jobs().start({ "id": "executeopljs" });
-                    loadjs.ready(lid, () =>
-                    {
-                        gui.jobs().finish("executeopljs");
-                        res.opDocs.forEach((newOp) =>
-                        {
-                            this._ops.push(newOp);
-                        });
-                        if (gui.opDocs)
-                        {
-                            gui.opDocs.addOpDocs(res.opDocs);
-                        }
-                        incrementStartup();
-                        cb();
-                    });
-                }
-                else
-                {
-                    incrementStartup();
-                    cb();
-                }
-            });
-            loadjs(teamOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
+            loadjs(collectionOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
         }
         else
         {

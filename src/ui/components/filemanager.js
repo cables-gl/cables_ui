@@ -111,17 +111,6 @@ export default class FileManager
             if (!files) files = [];
             const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
 
-
-
-
-            // if (this._firstTimeOpening && patchFiles.length === 0)
-            // {
-            //     this._firstTimeOpening = false;
-            //     this._fileSource = "lib";
-            //     this.reload(cb);
-            //     return;
-            // }
-
             this._firstTimeOpening = false;
             this._files = files;
 
@@ -352,6 +341,9 @@ export default class FileManager
             }
         }
         gui.maintabPanel.show(true);
+
+        const item = this._manager.getItemByTitleContains(filename);
+        if (item) this.setDetail([item]);
     }
 
     setDisplay(type)

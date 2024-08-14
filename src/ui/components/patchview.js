@@ -317,12 +317,13 @@ export default class PatchView extends Events
 
     testCollision(op)
     {
+        if (!op || !op.uiAttribs) return;
         let count = 0;
         let collided = {};
         for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
             const b = gui.corePatch().ops[j];
-            if (b.deleted || b == op) continue;
+            if (!b || !b.uiAttribs || b.deleted || b == op) continue;
             if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
             if (!b.uiAttribs.translate) continue;
             if (!op.uiAttribs.translate) continue;

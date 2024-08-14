@@ -13,9 +13,7 @@ export default class opCleaner
         const otherOps = [];
         let startPosX = ops[0].uiAttribs.translate.x;
         let startPosY = ops[0].uiAttribs.translate.y;
-
         let longestOpPorts = 0;
-
 
         for (let i = 0; i < ops.length; i++)
         {

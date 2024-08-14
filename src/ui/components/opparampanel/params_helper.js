@@ -20,7 +20,7 @@ const paramsHelper =
     "inputListenerMousewheel": (event) =>
     {
         event.preventDefault();
-        let delta = -event.deltaY;
+        let delta = -event.deltaY || event.deltaX;
         if (ele.hasFocus(event.target))
         {
             if (delta > 0)
@@ -64,7 +64,6 @@ const paramsHelper =
         // gui.setStateUnsaved();
         gui.savedState.setUnSaved("paramsInputIncrement");
 
-
         if (v == "true") return "false";
         if (v == "false") return "true";
 
@@ -80,7 +79,7 @@ const paramsHelper =
         else if (e && e.shiftKey) add = 0.01;
         else if (e && e.altKey) add = 1;
 
-        let r = val + add * dir;
+        let r = val + (add * dir);
 
         if (isNaN(r)) r = 0.0;
         else r = Math.round(1000 * r) / 1000;

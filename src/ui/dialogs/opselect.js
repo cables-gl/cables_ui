@@ -340,10 +340,8 @@ export default class OpSelect
                 html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
 
                 const docs = gui.opDocs.getOpDocByName(opName);
-                if (docs.allowEdit)
-                {
+                if (docs && docs.allowEdit)
                     html += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
-                }
 
                 html += opDocHtml;
             }
@@ -705,7 +703,7 @@ export default class OpSelect
 
     loadExtension(name)
     {
-        gui.serverOps.loadExtensionOps(name, () =>
+        gui.serverOps.loadCollectionOps(name, "extension", () =>
         {
             this.close();
             this.reload();
@@ -722,7 +720,7 @@ export default class OpSelect
 
     loadTeamOps(name)
     {
-        gui.serverOps.loadTeamNamespaceOps(name, () =>
+        gui.serverOps.loadCollectionOps(name, "team", () =>
         {
             this.close();
             this.reload();
