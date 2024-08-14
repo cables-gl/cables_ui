@@ -199,9 +199,10 @@ export default class PatchOutline extends Events
                 else
                 {
                     let icon = "bookmark";
-                    if (ops[i].uiAttribs.comment && this.includeComments) icon = "message";
-                    else if (ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1) icon = "box-select";
-                    else if (ops[i].uiAttribs.comment_title) icon = "message-square-text";
+                    if (this.includeCommented && ops[i].uiAttribs.comment) icon = "message";
+                    if (this.includeColored && ops[i].uiAttribs.color) icon = "picker";
+                    if (this.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
+                    if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
