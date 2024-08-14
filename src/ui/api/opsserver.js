@@ -88,11 +88,12 @@ export default class ServerOps
             {
                 if (err) this._log.error(err);
 
-                if (res)
-                    res.forEach((newOp) =>
-                    {
-                        this._ops.push(newOp);
-                    });
+                res = res || [];
+
+                res.forEach((newOp) =>
+                {
+                    this._ops.push(newOp);
+                });
                 if (gui.opDocs)
                 {
                     gui.opDocs.addOpDocs(res);
@@ -100,7 +101,7 @@ export default class ServerOps
 
                 // ops added to opdocs so they are available in opsearch
                 // make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
-                const usedOps = res.filter((op) => { return op.usedInProject; });
+                const usedOps = res.filter((op) => { return op && op.usedInProject; });
                 this.loadOpsLibs(usedOps, () =>
                 {
                     if (window.logStartup) logStartup("Ops loaded");

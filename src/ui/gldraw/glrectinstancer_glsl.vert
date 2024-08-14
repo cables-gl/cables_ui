@@ -24,7 +24,6 @@ void main()
     useTexture=contentTexture;
     decoration=instDeco;
 
-
     uv=attrTexCoord*texRect.zw+texRect.xy;
     uv.y=1.0-uv.y;
 
