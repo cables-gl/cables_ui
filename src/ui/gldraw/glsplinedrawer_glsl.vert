@@ -26,7 +26,6 @@ UNI float zpos;
 
 IN vec3 spline,spline2,spline3;
 
-// IN vec2 attrTexCoord;
 OUT vec2 texCoord;
 OUT vec3 norm;
 OUT float zz;

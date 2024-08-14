@@ -7,8 +7,6 @@ IN vec2 instSize;
 IN vec4 instDeco;
 
 OUT vec4 decoration;
-
-// OUT float outlinefrag;
 OUT vec4 posSize;
 OUT vec4 col;
 OUT highp vec2 uv;
@@ -30,8 +28,6 @@ void main()
     uv=attrTexCoord*texRect.zw+texRect.xy;
     uv.y=1.0-uv.y;
 
-    // outlinefrag=outline/resY*aspect*1.0;
-
     vec3 pos=vPosition;
     pos.xy*=instSize;
 
@@ -50,12 +46,7 @@ void main()
     pos.x+=scrollX;
     pos.y+=scrollY;
 
-    pos.x=ceil(pos.x*resX)/resX;
-    pos.y=ceil(pos.y*resY)/resY;
-
     pos.z=zz=instPos.z;
-
-    // col.rgb=vec3( (pos.z+1.0)/2.0);
 
     gl_Position = vec4(pos,1.0);
  }
