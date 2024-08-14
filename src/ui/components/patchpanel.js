@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import TreeView from "./treeview.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import PatchOutline from "./patchoutline.js";
 
 /**
  * default panel when clicking into the pach background, shows patch summary and tree view
@@ -17,38 +18,7 @@ export default class PatchPanel extends Events
         super();
 
         this._firstTime = true;
-        this._subTree = new TreeView();
-
-        this._subTree.on("threedots_click",
-            (item, el) =>
-            {
-                this.subPatchContextMenu(item, el);
-            });
-
-        this._subTree.on("title_click",
-            (item) =>
-            {
-                if (item.subPatchId)
-                {
-                    gui.patchView.clickSubPatchNav(item.subPatchId);
-                }
-                else if (item.opid)
-                {
-                    gui.patchView.centerSelectOp(item.opid);
-                }
-                else console.log(item);
-            });
-
-        this._subTree.on("icon_click",
-            (item) =>
-            {
-                if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
-                else if (item.opid)
-                {
-                    gui.patchView.centerSelectOp(item.opid);
-                }
-                else console.log(item);
-            });
+        this._outline = new PatchOutline();
     }
 
     show(force)
@@ -89,6 +59,7 @@ export default class PatchPanel extends Events
                 });
         }
 
+
         html += "<br/><div id=\"tree\"></div>";
 
         if (gui.longPressConnector.isActive())
@@ -107,9 +78,7 @@ export default class PatchPanel extends Events
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
-        const su = gui.patchView.getSubPatchesHierarchy();
-        // html += this._subTree.html(su);
-        this._subTree.insert(ele.byId("tree"), su);
+        this._outline.insert("tree");
     }
 
     subPatchContextMenu(item, el)

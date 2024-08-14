@@ -20,7 +20,13 @@ export default class TreeView extends Events
         this._clickListenerIds = [];
         this._data = data;
         ele.innerHTML = this._html(data);
-        this._bindListeners();
+        this.bindListeners();
+    }
+
+    html(data)
+    {
+        this._data = data;
+        return this._html(data);
     }
 
     _html(data = [], level = 0, html = "")
@@ -85,7 +91,7 @@ export default class TreeView extends Events
         return html;
     }
 
-    _bindListeners()
+    bindListeners()
     {
         for (const i in this._clickListenerIds)
         {
