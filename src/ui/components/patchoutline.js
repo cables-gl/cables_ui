@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export default class PatchOutline extends Events
 {
@@ -24,16 +25,24 @@ export default class PatchOutline extends Events
                 this.subPatchContextMenu(item, el);
             });
 
+        this._subTree.on("title_dblclick",
+            (item) =>
+            {
+                if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
+                    gui.patchView.clickSubPatchNav(item.subPatchId);
+            });
+
         this._subTree.on("title_click",
             (item) =>
             {
-                if (item.subPatchId)
+                // if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
+                // {
+                //     gui.patchView.clickSubPatchNav(item.subPatchId);
+                // }
+                // else
+                if (item.id)
                 {
-                    gui.patchView.clickSubPatchNav(item.subPatchId);
-                }
-                else if (item.opid)
-                {
-                    gui.patchView.centerSelectOp(item.opid);
+                    gui.patchView.centerSelectOp(item.id);
                 }
                 else console.log(item);
             });
@@ -41,12 +50,14 @@ export default class PatchOutline extends Events
         this._subTree.on("icon_click",
             (item) =>
             {
-                if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
-                else if (item.opid)
-                {
-                    gui.patchView.centerSelectOp(item.opid);
-                }
-                else console.log(item);
+                // if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
+                // else if (item.opid)
+                // {
+                gui.patchView.centerSelectOp(item.id);
+                gui.opParams.show(item.id);
+
+                // }
+                // else console.log(item);
             });
     }
 
@@ -157,6 +168,7 @@ export default class PatchOutline extends Events
             const subOp = gui.patchView.getSubPatchOuterOp(patchId);
             if (!subOp) return;
             sub.title = subOp.getTitle();
+            sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
             if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + subOp.uiAttribs.comment + "</span>";
 
@@ -207,13 +219,49 @@ export default class PatchOutline extends Events
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
 
-
-                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "opid": ops[i].id, "order": title + ops[i].id });
+                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id });
                 }
             }
         }
 
         if (patchId == 0) return subs;
         else return sub;
+    }
+
+
+    subPatchContextMenu(item, el)
+    {
+        const items = [];
+        items.push({
+            "title": "Rename",
+            func()
+            {
+                gui.patchView.focusSubpatchOp(item.subPatchId);
+                CABLES.CMD.PATCH.setOpTitle();
+            },
+        });
+
+        if (item.subPatchVer == "2" && item.blueprintVer != 2)
+            items.push({
+                "title": "Create op from subpatch",
+                func()
+                {
+                    subPatchOpUtil.createBlueprint2Op(item.subPatchId);
+                },
+            });
+
+        if (item.blueprintVer == 2)
+        {
+            items.push({
+                "title": "Save Op",
+                func()
+                {
+                    const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+
+                    subPatchOpUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
+                },
+            });
+        }
+        CABLES.contextMenu.show({ items }, el);
     }
 }

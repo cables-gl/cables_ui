@@ -80,42 +80,4 @@ export default class PatchPanel extends Events
 
         this._outline.insert("tree");
     }
-
-    subPatchContextMenu(item, el)
-    {
-        // const outer = gui.patchView.getSubPatchOuterOp(item.subPatchId);
-
-        const items = [];
-        items.push({
-            "title": "Rename",
-            func()
-            {
-                gui.patchView.focusSubpatchOp(item.subPatchId);
-                CABLES.CMD.PATCH.setOpTitle();
-            },
-        });
-
-        if (item.subPatchVer == "2" && item.blueprintVer != 2)
-            items.push({
-                "title": "Create op from subpatch",
-                func()
-                {
-                    subPatchOpUtil.createBlueprint2Op(item.subPatchId);
-                },
-            });
-
-        if (item.blueprintVer == 2)
-        {
-            items.push({
-                "title": "Save Op",
-                func()
-                {
-                    const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
-
-                    subPatchOpUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
-                },
-            });
-        }
-        CABLES.contextMenu.show({ items }, el);
-    }
 }
