@@ -17,6 +17,8 @@ export default class PatchOutline extends Events
         this.includeAnimated =
         this.includeColored = true;
 
+
+
         this._subTree = new TreeView();
 
         this._subTree.on("threedots_click",
@@ -30,18 +32,21 @@ export default class PatchOutline extends Events
             {
                 if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
                     gui.patchView.clickSubPatchNav(item.subPatchId);
+                // else
+                // {
+                //     gui.patchView.centerSelectOp(item.id);
+                //     gui.opParams.show(item.id);
+                // }
             });
 
         this._subTree.on("title_click",
             (item) =>
             {
-                // if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
-                // {
-                //     gui.patchView.clickSubPatchNav(item.subPatchId);
-                // }
-                // else
                 if (item.id)
                 {
+                    if (gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
+                        gui.opParams.show(item.id);
+
                     gui.patchView.centerSelectOp(item.id);
                 }
                 else console.log(item);
@@ -50,14 +55,8 @@ export default class PatchOutline extends Events
         this._subTree.on("icon_click",
             (item) =>
             {
-                // if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
-                // else if (item.opid)
-                // {
                 gui.patchView.centerSelectOp(item.id);
                 gui.opParams.show(item.id);
-
-                // }
-                // else console.log(item);
             });
     }
 
