@@ -17,8 +17,9 @@ export default class PatchOutline extends Events
         this.includeAnimated =
         this.includeColored = true;
 
+        this.foundRelevantOps = false;
 
-
+        this._listeningSubs = false;
         this._subTree = new TreeView();
 
         this._subTree.on("threedots_click",
@@ -28,22 +29,22 @@ export default class PatchOutline extends Events
             });
 
         this._subTree.on("title_dblclick",
-            (item) =>
+            (item, el, event) =>
             {
                 if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
                     gui.patchView.clickSubPatchNav(item.subPatchId);
-                // else
-                // {
-                //     gui.patchView.centerSelectOp(item.id);
-                //     gui.opParams.show(item.id);
-                // }
             });
 
         this._subTree.on("title_click",
-            (item) =>
+            (item, el, event) =>
             {
                 if (item.id)
                 {
+                    if (event.shiftKey)
+                    {
+                        return gui.opParams.show(item.id);
+                    }
+
                     if (gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
                         gui.opParams.show(item.id);
 
@@ -81,9 +82,21 @@ export default class PatchOutline extends Events
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
     }
 
-    insert(id = "tree")
+    insert(id = "_cbl_outlinetree")
     {
-        let html = "<h3>Outline</h3>";
+        if (!this._listeningSubs)
+        {
+            this._listeningSubs = true;
+            gui.corePatch().on("subpatchesChanged", () =>
+            {
+                console.log("sub changed");
+                if (ele.byId("_cbl_outlinetree"))
+                    this.insert();
+            });
+        }
+
+
+        let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
         html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
         html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-op\"></span></a>";
@@ -93,9 +106,9 @@ export default class PatchOutline extends Events
         html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
         html += "</div>";
 
-
-
         const su = this._getSubPatchesHierarchy();
+
+        if (!this.foundRelevantOps) return;
         html += this._subTree.html(su);
 
         let el = ele.byId(id);
@@ -189,6 +202,7 @@ export default class PatchOutline extends Events
         }
 
         const ops = gui.patchView.getAllSubPatchOps(patchId || 0);
+        this.foundRelevantOps = false;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -203,6 +217,7 @@ export default class PatchOutline extends Events
 
             if (included)
             {
+                this.foundRelevantOps = true;
                 if (ops[i].patchId && ops[i].patchId.get() !== 0)
                 {
                     sub.childs.push(this._getSubPatchesHierarchy(ops[i].patchId.get()));

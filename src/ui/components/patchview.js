@@ -2091,7 +2091,6 @@ export default class PatchView extends Events
         this._patchRenderer.serialize(dataUi);
     }
 
-
     setCurrentSubPatch(subpatch, next)
     {
         if (this._patchRenderer.setCurrentSubPatch)
@@ -2117,7 +2116,6 @@ export default class PatchView extends Events
 
     unselectAllOps()
     {
-        // this._patchRenderer.unselectAll();
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i].uiAttribs.selected) this._p.ops[i].setUiAttribs({ "selected": false });
     }
@@ -2134,7 +2132,6 @@ export default class PatchView extends Events
     {
         const op = this._p.getOpById(id);
         if (op)op.setUiAttribs({ "selected": true });
-        // this._patchRenderer.selectOpId(id);
     }
 
     centerSelectOp(opid)

@@ -60,7 +60,7 @@ export default class PatchPanel extends Events
         }
 
 
-        html += "<br/><div id=\"tree\"></div>";
+        html += "<br/><div id=\"_cbl_outlinetree\"></div>";
 
         if (gui.longPressConnector.isActive())
         {
@@ -78,6 +78,6 @@ export default class PatchPanel extends Events
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
-        this._outline.insert("tree");
+        this._outline.insert();
     }
 }

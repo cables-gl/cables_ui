@@ -94,14 +94,14 @@ export default class TreeView extends Events
                     {
                         const ele = event.target;
                         const eletype = ele.dataset.eletype;
-                        this.emitEvent(eletype + "_click", this._clickListenerIds[i], ele);
+                        this.emitEvent(eletype + "_click", this._clickListenerIds[i], ele, event);
                     });
                 el.addEventListener("dblclick",
                     (event) =>
                     {
                         const ele = event.target;
                         const eletype = ele.dataset.eletype;
-                        this.emitEvent(eletype + "_dblclick", this._clickListenerIds[i], ele);
+                        this.emitEvent(eletype + "_dblclick", this._clickListenerIds[i], ele, event);
                     });
             }
             else
