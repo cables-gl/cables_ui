@@ -31,8 +31,9 @@
             <a class="button-small button-icon tt info" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
         {{/if}}
 
-        <a class="button-small button-icon tt info" href="{{url}}/op/{{opDoc.id}}/github/{{opname}}" target="_blank"><span class="icon icon-github"></span>open on github</a>
-
+        {{#if opDoc.hasPublicRepo}}
+            <a class="button-small button-icon tt info" href="{{url}}/op/{{opname}}/github" target="_blank"><span class="icon icon-github"></span> open on github</a>
+        {{/if}}
 
         <br/>
         <br/>
