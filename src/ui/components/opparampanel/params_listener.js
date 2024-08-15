@@ -935,10 +935,13 @@ class ParamsListener extends Events
                     thePort._tempLastUiValue = thePort.get();
                     const valDisp = thePort.getValueForDisplay();
 
+
+                    // hier
                     if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                     {
                         const elVal = ele.byClass(id);
-                        if (elVal)
+
+                        if (elVal && elVal != document.activeElement)
                             if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;
                             else if (elVal.value != valDisp) elVal.value = valDisp;
 

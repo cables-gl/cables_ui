@@ -573,6 +573,10 @@ export default class FileManager
 
                                         let title = "Really delete this file?";
                                         let okButton = null;
+
+                                        if (gui.project().summary.visibility)content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
+
+
                                         if (!allowDelete)
                                         {
                                             title = "You cannot delete this file!";

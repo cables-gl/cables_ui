@@ -179,6 +179,7 @@ export default class LogTab extends Events
                     {
                         errorStack = null;
                     }
+
                     if (errorStack)
                     {
                         l.errorStack = errorStack;
@@ -188,12 +189,10 @@ export default class LogTab extends Events
                             for (let k = 0; k < Math.min(2, errorStack.length); k++)
                             {
                                 if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
-                                {
                                     this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
-                                }
 
                                 const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
-                                stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
+                                if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
                                 stackHtml += "  <td>";
                                 stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
                                 stackHtml += shortFilename;
@@ -205,15 +204,15 @@ export default class LogTab extends Events
                             html += this._logLine(l, stackHtml, l.level);
 
                             let txt = "[" + arg.constructor.name + "] ";
-
                             let msg = "";
+
                             if (arg.message)msg = arg.message;
                             if (arg.error)msg = arg.error.message;
                             if (arg.reason)msg = arg.reason.message;
 
                             this.lastErrorMsg = "";
                             if (errorStack && errorStack[0] && errorStack[0].functionName) this.lastErrorMsg += CABLES.basename(errorStack[0].fileName) + ": " + errorStack[0].functionName + ": ";
-                            this.lastErrorMsg += msg;
+                            if (msg) this.lastErrorMsg += msg;
                             txt += " " + msg;
 
                             html += this._logLine(l, txt, l.level);
@@ -294,7 +293,12 @@ export default class LogTab extends Events
                 try
                 {
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lines[line] + "`";
+
+                    let lStr = lines[line];
+                    const maxLength = 150;
+                    if (lStr.length > maxLength) lStr = lStr.substring(0, maxLength) + "...";
+
+                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lStr + "`";
                     logger.errorGui(str);
 
                     if ( // do not send error report

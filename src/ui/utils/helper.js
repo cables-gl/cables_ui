@@ -8,7 +8,6 @@ String.prototype.endl = function ()
     return this + "\n";
 };
 
-
 export function uniqueArray(arr)
 {
     const u = {}, a = [];
@@ -23,15 +22,15 @@ export function uniqueArray(arr)
     return a;
 }
 
-
 export function escapeHTML(string)
 {
+    string = string || "";
     const htmlEscapes = {
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         "\"": "&quot;",
-        "'": "&#39;",
+        "'": "&#39;"
     };
     const reUnescapedHtml = /[&<>"']/g;
     const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
@@ -40,16 +39,3 @@ export function escapeHTML(string)
         string.replace(reUnescapedHtml, function (chr) { return htmlEscapes[chr]; })
         : string || "";
 }
-
-// export function arrayContains(arr, obj)
-// {
-//     let i = arr.length;
-//     while (i--)
-//     {
-//         if (arr[i] === obj)
-//         {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
