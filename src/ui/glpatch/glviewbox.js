@@ -495,7 +495,6 @@ export default class GlViewBox
     storeCurrentSubPatch()
     {
         const o = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
-        console.log("storeCurrentSubPatch", o.x, o.y, o.z);
         this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 
