@@ -50,7 +50,7 @@ export default class PatchView extends Events
         corepatch.on("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.on("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
 
-        corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
+        // corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
         corepatch.on("onOpDelete", this._onDeleteOpUndo.bind(this));
 
         corepatch.on("onOpAdd", (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.uiAttribs.subPatch); });
@@ -76,28 +76,28 @@ export default class PatchView extends Events
         return this._patchRenderer.name;
     }
 
-    _onAddOpHistory(op, fromDeserialize)
-    {
-        if (this._showingNavHelperEmpty)
-        {
-            this._showingNavHelperEmpty = false;
-            ele.hide(ele.byId("patchnavhelperEmpty"));
-        }
+    // _onAddOpHistory(op, fromDeserialize)
+    // {
+    //     if (this._showingNavHelperEmpty)
+    //     {
+    //         this._showingNavHelperEmpty = false;
+    //         ele.hide(ele.byId("patchnavhelperEmpty"));
+    //     }
 
-        if (!fromDeserialize)
-        {
-            if (!op.uiAttribs) op.uiAttribs = {};
-            if (!op.uiAttribs.history) op.uiAttribs.history = {};
-            op.uiAttribs.history.createdAt = Date.now();
-            op.uiAttribs.history.createdBy = {
-                "name": gui.user.usernameLowercase
-            };
-            op.uiAttribs.history.lastInteractionAt = Date.now();
-            op.uiAttribs.history.lastInteractionBy = {
-                "name": gui.user.usernameLowercase
-            };
-        }
-    }
+    //     if (!fromDeserialize)
+    //     {
+    //         if (!op.uiAttribs) op.uiAttribs = {};
+    //         if (!op.uiAttribs.history) op.uiAttribs.history = {};
+    //         op.uiAttribs.history.createdAt = Date.now();
+    //         op.uiAttribs.history.createdBy = {
+    //             "name": gui.user.usernameLowercase
+    //         };
+    //         op.uiAttribs.history.lastInteractionAt = Date.now();
+    //         op.uiAttribs.history.lastInteractionBy = {
+    //             "name": gui.user.usernameLowercase
+    //         };
+    //     }
+    // }
 
 
     focusSubpatchOp(subPatchId)
