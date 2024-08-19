@@ -994,12 +994,14 @@ export default class Gui extends Events
     {
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
+            gui.patchView.patchRenderer.storeSubPatchViewBox();
             this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
         }
         else
         {
+            gui.patchView.patchRenderer.restoreSubPatchViewBox(gui.patchView.getCurrentSubPatch());
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;

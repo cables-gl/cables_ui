@@ -378,7 +378,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     for (let j = 0; j < op.portsIn.length; j++)
                     {
                         const portIn = op.portsIn[j];
-                        if (portIn.isLinked())
+                        if (portIn.isLinked() && portIn.links[0])
                         {
                             const p2 = portIn.links[0].getOtherPort(portIn);
                             if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)

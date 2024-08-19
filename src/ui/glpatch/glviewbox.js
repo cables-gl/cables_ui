@@ -466,14 +466,14 @@ export default class GlViewBox
         const mouseAbsX = (x - (this._viewResX / 2)) * zx - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
-        if (mouseAbsY != mouseAbsY) this.centerSelectedOps(true);
+        if (isNaN(mouseAbsY)) this.centerSelectedOps(true);
 
         return [mouseAbsX, mouseAbsY];
     }
 
     serialize(dataui)
     {
-        this._storeCurrentSubPatch();
+        this.storeCurrentSubPatch();
 
         dataui.viewBoxesGl = this._subPatchViewBoxes;
     }
@@ -484,15 +484,18 @@ export default class GlViewBox
         if (!dataui.viewBoxesGl)
         {
             this.centerSelectedOps();
-            this._storeCurrentSubPatch();
+            this.storeCurrentSubPatch();
         }
         else this._subPatchViewBoxes = dataui.viewBoxesGl;
         this._restoreSubPatch(this._currentSubPatchId);
+        console.log("_restoreSubPatch", this._currentSubPatchId);
     }
 
-    _storeCurrentSubPatch()
+
+    storeCurrentSubPatch()
     {
         const o = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        console.log("storeCurrentSubPatch", o.x, o.y, o.z);
         this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 
@@ -507,14 +510,16 @@ export default class GlViewBox
         }
         else
         {
-            this._storeCurrentSubPatch();
+            this.storeCurrentSubPatch();
             this.centerSelectedOps(true);
         }
     }
 
+
+
     animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next)
     {
-        this._storeCurrentSubPatch();
+        this.storeCurrentSubPatch();
 
         const zoomFactor = 0.1;
 
