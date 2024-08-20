@@ -63,6 +63,9 @@ export default class SuggestionDialog
             suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
             const sugEle = ele.byId("suggestion" + i);
+
+            if (suggestions[i].class)sugEle.classList.add(suggestions[i].class);
+
             sugEle.animate([
                 { "left": -left + "px", "opacity": 0 },
                 { "left": 0 + "px", "opacity": 1 },

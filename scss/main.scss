@@ -821,6 +821,13 @@ body
 .hidden { display:none !important;}
 
 
+.portSuggest0 { border-left:4px solid var(--color_link_value) !important; }
+.portSuggest1 { border-left:4px solid var(--color_link_function) !important; }
+.portSuggest2 { border-left:4px solid var(--color_link_object) !important; }
+.portSuggest3 { border-left:4px solid var(--color_link_array) !important; }
+.portSuggest4 { border-left:4px solid var(--color_port_dynamic) !important; }
+.portSuggest5 { border-left:4px solid var(--color_link_string) !important; }
+
 
 .scrollPage
 {

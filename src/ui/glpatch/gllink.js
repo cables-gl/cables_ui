@@ -382,14 +382,14 @@ export default class GlLink
 
                 if (!this._subPatchInputOp && this._cable)
                 {
-                    this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, defaultOps.subPatchInput2);
+                    this._subPatchInputOp = gui.corePatch().getFirstSubPatchOpByName(this._cable.subPatch, defaultOps.subPatchInput2);
                     // this._glSubPatchInputOp = this._glPatch.getOp(this._subPatchInputOp.id);
                     if (this._subPatchInputOp) this._subPatchInputOp.on("move", () => { this.update(); });
                 }
 
                 if (!this._subPatchOutputOp && this._glOpOut && this._glOpOut.op)
                 {
-                    this._subPatchOutputOp = gui.corePatch().getSubPatchOp(this._glOpOut.op.uiAttribs.subPatch, defaultOps.subPatchOutput2);
+                    this._subPatchOutputOp = gui.corePatch().getFirstSubPatchOpByName(this._glOpOut.op.uiAttribs.subPatch, defaultOps.subPatchOutput2);
                     // this._glSubPatchOutputOp = this._glPatch.getOp(this._subPatchOutputOp.id);
                     if (this._subPatchOutputOp) this._subPatchOutputOp.on("move", () => { this.update(); });
                 }

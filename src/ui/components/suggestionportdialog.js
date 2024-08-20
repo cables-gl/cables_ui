@@ -70,6 +70,7 @@ export default class SuggestPortDialog
             if (this._suggestions[i].p == p) return;
 
         this._suggestions.push({
+            "class": "portSuggest" + p.type,
             "p": p,
             "op": p.op.id,
             "name": p.title,
