@@ -17,7 +17,6 @@ export default class PatchOutline extends Events
         this.includeAnimated =
         this.includeColored = true;
 
-        this.foundRelevantOps = false;
 
         this._listeningSubs = false;
         this._subTree = new TreeView();
@@ -89,7 +88,6 @@ export default class PatchOutline extends Events
             this._listeningSubs = true;
             gui.corePatch().on("subpatchesChanged", () =>
             {
-                console.log("sub changed");
                 if (ele.byId("_cbl_outlinetree"))
                     this.insert();
             });
@@ -99,7 +97,7 @@ export default class PatchOutline extends Events
         let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
         html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
-        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-op\"></span></a>";
+        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
         html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
         html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
         html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
@@ -108,7 +106,6 @@ export default class PatchOutline extends Events
 
         const su = this._getSubPatchesHierarchy();
 
-        if (!this.foundRelevantOps) return;
         html += this._subTree.html(su);
 
         let el = ele.byId(id);
@@ -202,7 +199,6 @@ export default class PatchOutline extends Events
         }
 
         const ops = gui.patchView.getAllSubPatchOps(patchId || 0);
-        this.foundRelevantOps = false;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -217,7 +213,6 @@ export default class PatchOutline extends Events
 
             if (included)
             {
-                this.foundRelevantOps = true;
                 if (ops[i].patchId && ops[i].patchId.get() !== 0)
                 {
                     sub.childs.push(this._getSubPatchesHierarchy(ops[i].patchId.get()));

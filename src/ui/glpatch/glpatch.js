@@ -1694,9 +1694,6 @@ export default class GlPatch extends Events
         if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
 
-        const dur = 0.3;
-        const timeGrey = dur * 1.5;
-        const timeVisibleAgain = dur * 3.0;
 
         // this._fadeOutRectAnim.clear();
         // this._fadeOutRectAnim.setValue(this._time, 0);
@@ -1718,10 +1715,24 @@ export default class GlPatch extends Events
             this.links[i].updateVisible();
         }
 
-        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
+
+        this.restoreSubPatchViewBox(sub, next);
         this.snap.update();
     }
 
+    restoreSubPatchViewBox(sub, next)
+    {
+        const dur = 0.3;
+        const timeGrey = dur * 1.5;
+        const timeVisibleAgain = dur * 3.0;
+
+        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
+    }
+
+    storeSubPatchViewBox()
+    {
+        this.viewBox.storeCurrentSubPatch();
+    }
 
     serialize(dataUi)
     {
