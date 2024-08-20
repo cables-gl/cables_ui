@@ -69,12 +69,16 @@ export default class SuggestPortDialog
         for (let i = 0; i < this._suggestions.length; i++)
             if (this._suggestions[i].p == p) return;
 
+
+        let className = "portSuggest" + p.type;
+        if (p.isLinked()) className += "Linked";
+
         this._suggestions.push({
-            "class": "portSuggest" + p.type,
+            "class": className,
             "p": p,
             "op": p.op.id,
             "name": p.title,
-            "isLinked": p.isLinked(),
+            // "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),
             "isAnimated": p.isAnimated()
         });
