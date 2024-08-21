@@ -233,9 +233,11 @@ const paramsHelper =
 
         const editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
 
+
+
         if (editorObj)
         {
-            new EditorTab(
+            const t = new EditorTab(
                 {
                     "title": name,
                     "dataId": dataId,
@@ -267,6 +269,11 @@ const paramsHelper =
                         gui.mainTabs.activateTabByName(name);
                     }
                 });
+
+            gui.corePatch().on("onOpDelete", (deletedOp) =>
+            {
+                if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
+            });
         }
         else
         {

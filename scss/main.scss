@@ -821,6 +821,20 @@ body
 .hidden { display:none !important;}
 
 
+.portSuggest0 { border-left:4px solid var(--color_link_value) !important; }
+.portSuggest1 { border-left:4px solid var(--color_link_function) !important; }
+.portSuggest2 { border-left:4px solid var(--color_link_object) !important; }
+.portSuggest3 { border-left:4px solid var(--color_link_array) !important; }
+.portSuggest4 { border-left:4px solid var(--color_port_dynamic) !important; }
+.portSuggest5 { border-left:4px solid var(--color_link_string) !important; }
+
+.portSuggest0Linked { border-left:10px solid var(--color_link_value) !important; color:#888;}
+.portSuggest1Linked { border-left:10px solid var(--color_link_function) !important; color:#888;}
+.portSuggest2Linked { border-left:10px solid var(--color_link_object) !important; color:#888;}
+.portSuggest3Linked { border-left:10px solid var(--color_link_array) !important; color:#888;}
+.portSuggest4Linked { border-left:10px solid var(--color_port_dynamic) !important; color:#888;}
+.portSuggest5Linked { border-left:10px solid var(--color_link_string) !important; color:#888;}
+
 
 .scrollPage
 {

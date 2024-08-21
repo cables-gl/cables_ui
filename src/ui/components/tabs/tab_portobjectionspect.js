@@ -30,6 +30,15 @@ export default class TabPortObjectInspect extends Events
             return;
         }
 
+        this._deletelistener = gui.corePatch().on("onOpDelete", (op) =>
+        {
+            if (op == this.op) this.tabs.closeTab(this.tab.id);
+        });
+        this.tab.on("close", () =>
+        {
+            gui.corePatch().off(this._deletelistener);
+        });
+
         this._showPortValue();
 
         gui.maintabPanel.show(true);

@@ -1035,12 +1035,33 @@ export default class PatchView extends Events
             });
     }
 
+
+
+
+
     setPositionSubPatchInputOutputOps(patchId)
     {
         const b = this.getSubPatchBounds(patchId);
 
-        let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
-        let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
+        // const op = gui.corePatch().getSubPatchOuterOp(patchId);
+        // op.createInOutOps();
+
+        let patchInputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchInput2);
+        let patchOutputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchOutput2);
+
+        if (patchInputOPs.length == 0)
+        {
+            if (this._p.clearSubPatchCache) this._p.clearSubPatchCache(this.patchId);
+
+            this._p.addOp(defaultOps.defaultOpNames.subPatchInput2, { "subPatch": patchId, "translate": { "x": 0, "y": 0 } });
+            this._p.addOp(defaultOps.defaultOpNames.subPatchOutput2, { "subPatch": patchId, "translate": { "x": 0, "y": 0 } });
+        }
+
+        if (patchInputOPs.length > 1) this._log.warn("too many input ops?");
+        if (patchOutputOPs.length > 1) this._log.warn("too many output ops?");
+
+        let patchInputOP = patchInputOPs[0];
+        let patchOutputOP = patchOutputOPs[0];
 
         let x = 0;
         if (patchInputOP || patchOutputOP)

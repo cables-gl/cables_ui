@@ -74,9 +74,6 @@ export default class LogFilter extends Events
             this.emitEvent("initiatorsChanged");
         }
 
-
-
-
         let setting = this._initiators[initiator];
 
         if (!setting) return false;
@@ -110,7 +107,6 @@ export default class LogFilter extends Events
         o.level = level;
         o.time = performance.now();
 
-        this.logs.push(o);
         while (this.logs.length > 50) this.logs.splice(0, 1);
 
         const should = this.shouldPrint(o);

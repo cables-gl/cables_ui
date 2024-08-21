@@ -1734,16 +1734,17 @@ export default class ServerOps
             //     }
             // });
 
-            for (let i = 0; i < proj.ops.length; i++)
-            {
-                if (proj.ops[i])
+            if (proj && proj.ops)
+                for (let i = 0; i < proj.ops.length; i++)
                 {
-                    if (newIds.hasOwnProperty(proj.ops[i].opId))
+                    if (proj.ops[i])
                     {
-                        proj.ops[i].opId = newIds[proj.ops[i].opId];
+                        if (newIds.hasOwnProperty(proj.ops[i].opId))
+                        {
+                            proj.ops[i].opId = newIds[proj.ops[i].opId];
+                        }
                     }
                 }
-            }
 
             perf2.finish();
             this.loadOpsLibs(proj.ops, () =>
