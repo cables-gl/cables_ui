@@ -15,6 +15,7 @@ export default class OpSearch extends Events
         super();
         this._list = null;
         this._wordsDb = null;
+        this.numPatchops = 0;
     }
 
     get list()
@@ -45,6 +46,8 @@ export default class OpSearch extends Events
 
         const namespace = defaultOps.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
+
+        this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;
         items = items.concat(this._createListItemsByNames(patchOpNames, items));
 
         const newList = {};

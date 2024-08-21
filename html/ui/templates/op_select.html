@@ -64,6 +64,10 @@
           <div class="padded text-center">
               <br/>
               {{{texts.opselect_intro}}}
+              {{#if patchOps}}
+                <br/><br/>
+                <a class="button button-small" onclick="gui.opSelect().searchFor('Ops.Patch.P'+gui.project().shortId);">{{patchOps}} patch ops</a>
+              {{/if}}
           </div>
       </div>
 

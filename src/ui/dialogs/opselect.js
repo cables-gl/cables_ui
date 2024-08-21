@@ -496,7 +496,8 @@ export default class OpSelect
             this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
             this._eleOpsearchmodal.innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text });
+            console.log("this._opSearch.numPatchops", this._opSearch.numPatchops);
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text, "patchOps": this._opSearch.numPatchops });
 
 
             ele.byId("searchbrowserContainer").innerHTML = this._html;
