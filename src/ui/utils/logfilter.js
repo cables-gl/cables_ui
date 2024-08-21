@@ -107,6 +107,7 @@ export default class LogFilter extends Events
         o.level = level;
         o.time = performance.now();
 
+        this.logs.push(o);
         while (this.logs.length > 50) this.logs.splice(0, 1);
 
         const should = this.shouldPrint(o);
