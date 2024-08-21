@@ -1365,7 +1365,7 @@ export default class Gui extends Events
                 if (CABLES.platform.frontendOptions.showOpenPatch)
                 {
                     const url = CABLES.platform.getCablesUrl() + "/edit/";
-                    let item = "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
+                    let item = "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
