@@ -537,6 +537,7 @@ export default class ServerOps
     {
         if (!opName || !depName || !depType) return;
 
+        gui.jobs().start({ "id": "addOpDependency", "title": "adding " + depName + " to " + opName });
         CABLESUILOADER.talkerAPI.send(
             "addOpDependency",
             {
@@ -546,6 +547,8 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                gui.jobs().finish("addOpDependency");
+
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
@@ -582,6 +585,7 @@ export default class ServerOps
         const modal = new ModalDialog({ "title": "Really remove dependency from op?", "text": "Delete " + depName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
         {
+            gui.jobs().start({ "id": "removeOpDependency", "title": "removing " + depName + " from " + opName });
             CABLESUILOADER.talkerAPI.send(
                 "removeOpDependency",
                 {
@@ -591,6 +595,7 @@ export default class ServerOps
                 },
                 (err, res) =>
                 {
+                    gui.jobs().finish("removeOpDependency");
                     if (err)
                     {
                         CABLES.UI.MODAL.showError("ERROR", "unable to remove op-dependency: " + err.msg);
@@ -1936,10 +1941,9 @@ export default class ServerOps
     {
         if (op)
         {
-            gui.jobs().start({ "id": "getopdocs" });
-
             const opIdentifier = this.getOpIdentifier(op);
             const oldName = this.getOpNameByIdentifier(opIdentifier);
+            gui.jobs().start({ "id": "getopdocs", "title": "load opdocs for " + oldName });
             CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
@@ -1986,7 +1990,7 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
-                    gui.jobs().start({ "id": "missingops" });
+                    gui.jobs().start({ "id": "missingops", "title": "load missing ops" });
 
                     loadjs.ready(lid, () =>
                     {
