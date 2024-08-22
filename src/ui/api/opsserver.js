@@ -566,7 +566,7 @@ export default class ServerOps
                 {
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
-                        this._log.log("op-dependency added!", opName, depName);
+                        this._log.log("op-dependency added: " + opName + " " + depName);
 
                         gui.emitEvent("refreshManageOp", opName);
                         if (next) next();
