@@ -222,18 +222,27 @@
             <br/><br/>
             <div class="groupSpacer"><h3>Dependencies</h3></div>
 
-            Add dependencies, like libs or modules to your Op
+            Add dependencies, like libs or modules to your op
 
             {{#if opDoc.dependencies}}
                 <table class="table">
                     <tr>
                         <th>Name</th>
+                        <!-- <th>Version</th> -->
                         <th>Type</th>
                         <th> </th>
                     </tr>
                     {{#each opDoc.dependencies}}
                         <tr>
-                            <td>{{name}}</td>
+                            <td>
+                            {{#compare type '==' 'npm'}}
+                                <a {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
+                            {{else}}
+                                {{name}}
+                            {{/compare}}
+
+                            </td>
+                            <!-- <td>{{#if version}}{{version}}{{else}}latest{{/if}}</td> -->
                             <td>{{type}}</td>
                             <td>
                                 {{#if ../canEditOp}}

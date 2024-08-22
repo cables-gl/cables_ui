@@ -499,7 +499,7 @@ export default class OpSearch extends Events
             }
 
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
-            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.isStandalone()) hidden = true;
+            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.frontendOptions.isStandalone) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
