@@ -1374,8 +1374,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
-
+                                    if (!CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (errr)
                                     {
@@ -1534,7 +1533,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
