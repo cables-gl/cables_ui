@@ -243,7 +243,7 @@ export default class Platform extends Events
                 const loadingModal = gui.startModalLoading("Saving and executing op...");
                 loadingModal.setTask("Saving Op");
                 const opname = options.name;
-                if (!CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                 if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 

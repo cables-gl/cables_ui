@@ -880,7 +880,7 @@ export default class ServerOps
 
         let html = "";
 
-        html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
+        if (!CABLES.platform.isStandalone()) html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
@@ -1374,7 +1374,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (errr)
                                     {
@@ -1533,7 +1533,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
