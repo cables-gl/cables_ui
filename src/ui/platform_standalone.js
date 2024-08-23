@@ -15,6 +15,8 @@ export default class PlatformStandalone extends Platform
     {
         super(cfg);
 
+        this.paths = cfg.paths;
+
         this.frontendOptions.npm = true;
 
         this.frontendOptions.isStandalone =
