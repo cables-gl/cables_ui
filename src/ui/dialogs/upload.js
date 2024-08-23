@@ -118,7 +118,7 @@ export default class FileUploader
             let finalPath = "file://" + file.path;
             if (file.path.startsWith(assetPath))
             {
-                finalPath = file.path.replace(assetPath, "/");
+                finalPath = file.path.replace(assetPath, "./");
             }
             finalPath = finalPath.replaceAll("\\", "/");
             gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
