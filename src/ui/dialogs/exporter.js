@@ -18,24 +18,35 @@ export default class Exporter
         }
 
         const projectId = this._project.shortId || this._project._id;
-        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
-        if (this._versionId)
+
+        if (CABLES.platform.isStandalone())
         {
-            gotoUrl += "?version=" + this._versionId;
-        }
-
-        const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
-        const url = gotoUrl + iframeParam;
-
-        gui.mainTabs.addIframeTab(
-            "Export Patch ",
-            url,
+            CABLESUILOADER.talkerAPI.send("exportPatch", {}, () =>
             {
-                "icon": "settings",
-                "closable": true,
-                "singleton": false,
-                "gotoUrl": gotoUrl
-            },
-            true);
+                console.log("EXPORTED");
+            });
+        }
+        else
+        {
+            let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
+            if (this._versionId)
+            {
+                gotoUrl += "?version=" + this._versionId;
+            }
+
+            const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
+            const url = gotoUrl + iframeParam;
+
+            gui.mainTabs.addIframeTab(
+                "Export Patch ",
+                url,
+                {
+                    "icon": "settings",
+                    "closable": true,
+                    "singleton": false,
+                    "gotoUrl": gotoUrl
+                },
+                true);
+        }
     }
 }

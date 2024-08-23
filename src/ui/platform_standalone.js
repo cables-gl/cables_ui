@@ -27,6 +27,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
         this.frontendOptions.showOpenPatch =
+        this.frontendOptions.showExport =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.showStartUpLog = true;
     }
