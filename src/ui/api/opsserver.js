@@ -1864,17 +1864,6 @@ export default class ServerOps
                     missingOps.push(opInfo);
                     missingOpsFound.push(opIdentifier);
                 }
-                else
-                {
-                    if (op.storage && op.storage.blueprintVer > 1)
-                    {
-                        if (!gui.corePatch().hasOp(op))
-                        {
-                            missingOps.push(opInfo);
-                            missingOpsFound.push(opIdentifier);
-                        }
-                    }
-                }
             }
         });
         missingOps = missingOps.filter((obj, index) => { return missingOps.findIndex((item) => { return item.opId === obj.opId; }) === index; });
