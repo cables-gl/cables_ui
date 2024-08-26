@@ -666,17 +666,14 @@ export default class OpSelect
             }
         }
 
+
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;
 
-            if (itemType === "extension")
+            if (itemType === "extension" || itemType === "team")
             {
-                gui.opSelect().loadExtension(opname);
-            }
-            else if (itemType === "teamnamespace")
-            {
-                gui.opSelect().loadTeamOps(opname);
+                gui.opSelect().loadCollection(opname, itemType);
             }
             else if (itemType === "patchop")
             {
@@ -702,26 +699,9 @@ export default class OpSelect
         }
     }
 
-    loadExtension(name)
+    loadCollection(name, type)
     {
-        gui.serverOps.loadCollectionOps(name, "extension", () =>
-        {
-            this.close();
-            this.reload();
-            this.prepare();
-            setTimeout(() =>
-            {
-                const opts = this._options;
-                opts.search = name;
-                opts.subPatch = gui.patchView.getCurrentSubPatch();
-                this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
-            }, 50);
-        });
-    }
-
-    loadTeamOps(name)
-    {
-        gui.serverOps.loadCollectionOps(name, "team", () =>
+        gui.serverOps.loadCollectionOps(name, type, () =>
         {
             this.close();
             this.reload();

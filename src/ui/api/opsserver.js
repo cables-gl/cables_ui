@@ -537,6 +537,7 @@ export default class ServerOps
     {
         if (!opName || !depName || !depType) return;
 
+        gui.jobs().start({ "id": "addOpDependency", "title": "adding " + depName + " to " + opName });
         CABLESUILOADER.talkerAPI.send(
             "addOpDependency",
             {
@@ -546,6 +547,8 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                gui.jobs().finish("addOpDependency");
+
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
@@ -566,7 +569,7 @@ export default class ServerOps
                 {
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
-                        this._log.log("op-dependency added!", opName, depName);
+                        this._log.log("op-dependency added: " + opName + " " + depName);
 
                         gui.emitEvent("refreshManageOp", opName);
                         if (next) next();
@@ -582,6 +585,7 @@ export default class ServerOps
         const modal = new ModalDialog({ "title": "Really remove dependency from op?", "text": "Delete " + depName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
         {
+            gui.jobs().start({ "id": "removeOpDependency", "title": "removing " + depName + " from " + opName });
             CABLESUILOADER.talkerAPI.send(
                 "removeOpDependency",
                 {
@@ -591,6 +595,7 @@ export default class ServerOps
                 },
                 (err, res) =>
                 {
+                    gui.jobs().finish("removeOpDependency");
                     if (err)
                     {
                         CABLES.UI.MODAL.showError("ERROR", "unable to remove op-dependency: " + err.msg);
@@ -880,7 +885,7 @@ export default class ServerOps
 
         let html = "";
 
-        html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
+        if (!CABLES.platform.isStandalone()) html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
@@ -1374,8 +1379,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
-
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (errr)
                                     {
@@ -1534,7 +1538,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
@@ -1860,17 +1864,6 @@ export default class ServerOps
                     missingOps.push(opInfo);
                     missingOpsFound.push(opIdentifier);
                 }
-                else
-                {
-                    if (op.storage && op.storage.blueprintVer > 1)
-                    {
-                        if (!gui.corePatch().hasOp(op))
-                        {
-                            missingOps.push(opInfo);
-                            missingOpsFound.push(opIdentifier);
-                        }
-                    }
-                }
             }
         });
         missingOps = missingOps.filter((obj, index) => { return missingOps.findIndex((item) => { return item.opId === obj.opId; }) === index; });
@@ -1937,10 +1930,9 @@ export default class ServerOps
     {
         if (op)
         {
-            gui.jobs().start({ "id": "getopdocs" });
-
             const opIdentifier = this.getOpIdentifier(op);
             const oldName = this.getOpNameByIdentifier(opIdentifier);
+            gui.jobs().start({ "id": "getopdocs", "title": "load opdocs for " + oldName });
             CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
@@ -1987,7 +1979,7 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
-                    gui.jobs().start({ "id": "missingops" });
+                    gui.jobs().start({ "id": "missingops", "title": "load missing ops" });
 
                     loadjs.ready(lid, () =>
                     {

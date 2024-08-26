@@ -499,7 +499,7 @@ export default class OpSearch extends Events
             }
 
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
-            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.isStandalone()) hidden = true;
+            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.frontendOptions.isStandalone) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
@@ -524,7 +524,7 @@ export default class OpSearch extends Events
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);
                 let type = "op";
-                if (defaultOps.isTeamNamespace(opName)) type = "teamnamespace";
+                if (defaultOps.isTeamNamespace(opName)) type = "team";
                 if (defaultOps.isExtension(opName)) type = "extension";
                 if (defaultOps.isPatchOp(opName)) type = "patchop";
 

@@ -15,8 +15,11 @@ export default class Platform extends Events
     constructor(cfg)
     {
         super();
+
         this._log = new Logger("platform");
         this._cfg = cfg;
+
+        this.paths = {};
         this.frontendOptions = {};
 
         if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
@@ -58,6 +61,11 @@ export default class Platform extends Events
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
         this.updateOnlineIndicator();
+    }
+
+    warnOpEdit(opName)
+    {
+        return (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opName) && !CABLES.platform.isStandalone());
     }
 
     isStandalone()
@@ -238,7 +246,7 @@ export default class Platform extends Events
                 const loadingModal = gui.startModalLoading("Saving and executing op...");
                 loadingModal.setTask("Saving Op");
                 const opname = options.name;
-                if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                 if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 

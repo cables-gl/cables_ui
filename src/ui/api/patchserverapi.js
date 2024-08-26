@@ -514,7 +514,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (err)
                         {
-                            this._log.warn("[save patch error]", err);
+                            this._log.warn("[save patch error] ", err.msg || err);
                         }
 
                         gui.savedState.setSaved("patchServerApi", 0);
