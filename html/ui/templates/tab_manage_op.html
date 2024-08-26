@@ -236,7 +236,7 @@
                         <tr>
                             <td>
                             {{#compare type '==' 'npm'}}
-                                <a {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
+                                <a class="link" {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
                             {{else}}
                                 {{name}}
                             {{/compare}}
