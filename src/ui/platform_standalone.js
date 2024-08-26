@@ -122,4 +122,10 @@ export default class PlatformStandalone extends Platform
     }
 
     showGitBranchWarning() {}
+
+
+    currentUserIsPatchOwner()
+    {
+        return true;
+    }
 }

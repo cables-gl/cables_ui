@@ -453,8 +453,11 @@ export default class PatchView extends Events
 
     addOp(opname, options)
     {
+        gui.jobs().start({ "id": "loadOpDependencies" });
         gui.serverOps.loadOpDependencies(opname, () =>
         {
+            gui.jobs().finish("loadOpDependencies");
+
             options = options || {};
             const uiAttribs = options.uiAttribs || {};
 

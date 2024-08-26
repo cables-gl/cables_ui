@@ -112,7 +112,7 @@ export default class OpSelect
         }
         else
         {
-            const isOwner = gui.project().userId === gui.user.id;
+            const isOwner = CABLES.platform.currentUserIsPatchOwner();
             const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
             const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
 
