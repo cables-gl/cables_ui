@@ -499,7 +499,6 @@ export default class OpSearch extends Events
             }
 
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
-            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.frontendOptions.isStandalone) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
@@ -549,7 +548,6 @@ export default class OpSearch extends Events
                     "isOp": !defaultOps.isCollection(opName),
                     "userOp": defaultOps.isUserOp(opName),
                     "devOp": defaultOps.isDevOp(opName),
-                    "standaloneOp": defaultOps.isStandaloneOp(opName),
                     "extensionOp": defaultOps.isExtensionOp(opName),
                     "teamOp": defaultOps.isTeamOp(opName),
                     "patchOp": defaultOps.isPatchOp(opName),
