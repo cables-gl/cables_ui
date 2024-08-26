@@ -225,39 +225,40 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
-                        {
-                            let txt = "Uncaught ErrorEvent ";
-                            if (arg.message)txt += " message: " + arg.message;
-                            currentLine = txt;
-                        }
-                        else if (arg.constructor.name == "Op")
-                        {
-                            currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
-                        }
-                        else if (typeof arg == "string")
-                        {
-                            let _arg = arg;
-                            if (arg.startsWith("https://"))
+                        if (arg)
+                            if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
                             {
-                                _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                                let txt = "Uncaught ErrorEvent ";
+                                if (arg.message)txt += " message: " + arg.message;
+                                currentLine = txt;
                             }
-                            currentLine += _arg;
-                        }
-                        else if (typeof arg == "number")
-                        {
-                            currentLine += String(arg);
-                        }
-                        else if (arg.constructor.name == "PromiseRejectionEvent")
-                        {
-                            if (arg.reason && arg.reason.message)
-                                currentLine += arg.constructor.name + ": " + arg.reason.message;
-                        }
-                        else
-                        {
-                            console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += " obj{" + arg.constructor.name + "} ";
-                        }
+                            else if (arg.constructor.name == "Op")
+                            {
+                                currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
+                            }
+                            else if (typeof arg == "string")
+                            {
+                                let _arg = arg;
+                                if (arg.startsWith("https://"))
+                                {
+                                    _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                                }
+                                currentLine += _arg;
+                            }
+                            else if (typeof arg == "number")
+                            {
+                                currentLine += String(arg);
+                            }
+                            else if (arg.constructor.name == "PromiseRejectionEvent")
+                            {
+                                if (arg.reason && arg.reason.message)
+                                    currentLine += arg.constructor.name + ": " + arg.reason.message;
+                            }
+                            else
+                            {
+                                console.log("unknown log thing", arg.constructor.name, arg);
+                                currentLine += " obj{" + arg.constructor.name + "} ";
+                            }
                     }
                 }
                 if (currentLine) html += this._logLine(l, currentLine, l.level);
