@@ -2,6 +2,7 @@
 import { Logger } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
+import ModalDialog from "./modaldialog.js";
 
 
 /**
@@ -102,15 +103,38 @@ export default class FileUploader
                         },
                         (err, res) =>
                         {
-                            if (err) notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
-
-                            FileManager.updatedFiles.push(filename || file.name);
+                            if (err)
+                            {
+                                if (err.msg === "FAILED_PARSE_DATAURI")
+                                {
+                                    const modalOptions = {
+                                        "title": "Error uploading files",
+                                        "choice": true,
+                                        "okButton": {
+                                            "text": "Try different method"
+                                        }
+                                    };
+                                    const modal = new ModalDialog(modalOptions);
+                                    modal.on("onSubmit", () =>
+                                    {
+                                        CABLES.CMD.PATCH.uploadFileTab();
+                                    });
+                                }
+                                else
+                                {
+                                    notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
+                                    FileManager.updatedFiles.push(filename || file.name);
+                                }
+                            }
+                            else
+                            {
+                                FileManager.updatedFiles.push(filename || file.name);
+                            }
                         });
                 },
                 false);
             reader.readAsDataURL(file);
         }
-
 
         if (CABLES.platform.frontendOptions.dragDropLocalFiles)
         {

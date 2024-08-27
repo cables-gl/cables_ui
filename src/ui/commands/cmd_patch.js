@@ -574,6 +574,20 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     }
 };
 
+CABLES_CMD_PATCH.uploadFileTab = () =>
+{
+    const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings/upload?iframe=true";
+    gui.mainTabs.addIframeTab(
+        "Upload File",
+        url,
+        {
+            "icon": "settings",
+            "closable": true,
+            "singleton": true,
+        },
+        true);
+};
+
 CABLES_CMD_PATCH.showBackups = () =>
 {
     const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
@@ -1740,5 +1754,4 @@ CMD_PATCH_COMMANDS.push(
         "category": "op",
         "icon": "op"
     }
-
 );
