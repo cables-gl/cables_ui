@@ -1753,12 +1753,5 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.renameOp,
         "category": "op",
         "icon": "op"
-    },
-    {
-        "cmd": "upload form tab",
-        "func": CABLES_CMD_PATCH.uploadFileTab,
-        "category": "patch",
-        "icon": "file"
     }
-
 );
