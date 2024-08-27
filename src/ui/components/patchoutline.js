@@ -17,7 +17,6 @@ export default class PatchOutline extends Events
         this.includeAnimated =
         this.includeColored = true;
 
-
         this._listeningSubs = false;
         this._subTree = new TreeView();
 
@@ -60,8 +59,40 @@ export default class PatchOutline extends Events
             });
     }
 
+    deserialize(p)
+    {
+        if (!p || !p.ui || !p.ui.outline) return;
+
+        const outlineCfg = p.ui.outline;
+
+        this.includeBookmarks = outlineCfg.includeBookmarks;
+        this.includeSubpatches = outlineCfg.includeSubpatches;
+        this.includeCommented = outlineCfg.includeCommented;
+        this.includeComments = outlineCfg.includeComments;
+        this.includeAreas = outlineCfg.includeAreas;
+        this.includeColored = outlineCfg.includeColored;
+
+        this.updateFilterUi();
+    }
+
+    serialize(obj)
+    {
+        const outlineCfg = {};
+
+        outlineCfg.includeBookmarks = this.includeBookmarks;
+        outlineCfg.includeSubpatches = this.includeSubpatches;
+        outlineCfg.includeCommented = this.includeCommented;
+        outlineCfg.includeComments = this.includeComments;
+        outlineCfg.includeAreas = this.includeAreas;
+        outlineCfg.includeColored = this.includeColored;
+
+        obj.outline = outlineCfg;
+    }
+
     updateFilterUi()
     {
+        if (!ele.byId("subtreeFilterBookmarks")) return;
+
         if (this.includeBookmarks)ele.byId("subtreeFilterBookmarks").classList.add("findToggleActive");
         else ele.byId("subtreeFilterBookmarks").classList.remove("findToggleActive");
 

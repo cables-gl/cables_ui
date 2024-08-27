@@ -463,6 +463,7 @@ export default class PatchSaveServer extends Events
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
         gui.patchView.serialize(data.ui);
+        gui.patchParamPanel.serialize(data.ui);
 
         data.ui.renderer = {};
         data.ui.renderer.w = Math.max(0, gui.rendererWidth);
