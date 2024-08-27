@@ -108,9 +108,9 @@ export default class FileUploader
                                 if (err.msg === "FAILED_PARSE_DATAURI")
                                 {
                                     let html = "";
-                                    html += "failed to upload file<br/>";
-                                    html += "try uploading via form instead";
-                                    const modal = new ModalDialog({ "title": "error uploading files", "showOkButton": true, "html": html });
+                                    html += "Failed to upload file.<br/>";
+                                    html += "Press \"Ok\" to ´try uploading via form instead";
+                                    const modal = new ModalDialog({ "title": "Error uploading files", "showOkButton": true, "html": html });
                                     modal.on("onClose", () =>
                                     {
                                         CABLES.CMD.PATCH.uploadFileTab();
