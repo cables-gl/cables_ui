@@ -236,7 +236,7 @@
                         <tr>
                             <td>
                             {{#compare type '==' 'npm'}}
-                                <a {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
+                                <a class="link" {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
                             {{else}}
                                 {{name}}
                             {{/compare}}
@@ -259,7 +259,7 @@
                 <select class="depType">
                     {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
                 </select>
-                <a class="button-small" onclick="gui.serverOps.addOpDependency('{{opname}}', ele.byQuery('#addopdependency_{{viewId}} .depName').value, ele.byQuery('#addopdependency_{{viewId}} .depType').value);">Add</a>
+                <a class="button-small" onclick="this.innerText = 'working...';gui.serverOps.addOpDependency('{{opname}}', ele.byQuery('#addopdependency_{{viewId}} .depName').value, ele.byQuery('#addopdependency_{{viewId}} .depType').value);">Add</a>
             </div>
 
         {{/if}}

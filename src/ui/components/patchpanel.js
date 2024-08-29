@@ -21,6 +21,16 @@ export default class PatchPanel extends Events
         this._outline = new PatchOutline();
     }
 
+    deserialize(obj)
+    {
+        this._outline.deserialize(obj);
+    }
+
+    serialize(obj)
+    {
+        this._outline.serialize(obj);
+    }
+
     show(force)
     {
         if (!CABLES.UI.loaded) return;

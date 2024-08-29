@@ -40,4 +40,9 @@ export default class PlatformCommunity extends Platform
     {
         return "Community build";
     }
+
+    currentUserIsPatchOwner()
+    {
+        return gui.project().userId === gui.user.id;
+    }
 }

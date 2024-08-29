@@ -15,8 +15,11 @@ export default class Platform extends Events
     constructor(cfg)
     {
         super();
+
         this._log = new Logger("platform");
         this._cfg = cfg;
+
+        this.paths = {};
         this.frontendOptions = {};
 
         if (CABLESUILOADER && CABLESUILOADER.talkerAPI)

@@ -453,8 +453,11 @@ export default class PatchView extends Events
 
     addOp(opname, options)
     {
+        gui.jobs().start({ "id": "loadOpDependencies" });
         gui.serverOps.loadOpDependencies(opname, () =>
         {
+            gui.jobs().finish("loadOpDependencies");
+
             options = options || {};
             const uiAttribs = options.uiAttribs || {};
 
@@ -1043,8 +1046,7 @@ export default class PatchView extends Events
     {
         const b = this.getSubPatchBounds(patchId);
 
-        // const op = gui.corePatch().getSubPatchOuterOp(patchId);
-        // op.createInOutOps();
+        if (!patchId) return;
 
         let patchInputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchInput2);
         let patchOutputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchOutput2);

@@ -213,6 +213,7 @@ export default class Gui extends Events
     {
         this._currentProject = p;
         gui.setProjectName(p.name || "unknown");
+        this.patchParamPanel.deserialize(p);
     }
 
     opSelect()

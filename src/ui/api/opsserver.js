@@ -295,7 +295,7 @@ export default class ServerOps
                 name,
                 (num, newOps) =>
                 {
-                    CABLES.UI.notify(num + " ops reloaded");
+                    // CABLES.UI.notify(num + " ops reloaded");
 
                     for (let i = 0; i < newOps.length; i++)
                     {
