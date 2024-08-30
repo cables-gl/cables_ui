@@ -439,6 +439,7 @@ export default class GradientEditor
         if (this._opId && this._portName)
         {
             const op = gui.corePatch().getOpById(this._opId);
+            if (!op) this.close();
             const data = op.getPort(this._portName).get();
             try
             {
