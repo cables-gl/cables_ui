@@ -107,7 +107,7 @@ export default class EditorTab
                     this._log.warn("could not get opdoc:" + opname);
                 }
 
-                this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
+                this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
                 this._tab.addButton("Op Page", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
 
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
