@@ -14,18 +14,23 @@ export default class ManageOp
 {
     constructor(tabs, opId)
     {
+        this._log = new Logger("ManageOp");
         if (!opId)
         {
             CABLES.editorSession.remove("manageOp", opId);
             return;
         }
 
+
         const opDoc = gui.opDocs.getOpDocById(opId);
+        if (!opDoc && opId.startsWith("Ops."))
+        {
+            this._log.warn("manage op paramerter should not be objname, but id");
+        }
 
         let opObjName = "";
         if (opDoc)opObjName = opDoc.name;
 
-        this._log = new Logger("ManageOp");
         this._initialized = false;
         this._currentName = opObjName;
         this._id = CABLES.shortId();
