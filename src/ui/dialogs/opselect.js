@@ -710,13 +710,15 @@ export default class OpSelect
     {
         gui.serverOps.loadCollectionOps(name, type, () =>
         {
+            const q = this._getQuery();
             this.close();
             this.reload();
             this.prepare();
             setTimeout(() =>
             {
                 const opts = this._options;
-                opts.search = name;
+
+                opts.search = q;
                 opts.subPatch = gui.patchView.getCurrentSubPatch();
                 this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
             }, 50);
