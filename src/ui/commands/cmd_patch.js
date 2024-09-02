@@ -1351,7 +1351,6 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     {
         ops = gui.patchView.getSelectedOps();
 
-
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];

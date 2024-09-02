@@ -592,11 +592,12 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
             try
             {
-                port.addUiAttribs = JSON.parse(eleAddUiAttribs.value);
+                if (eleAddUiAttribs.value)
+                    port.addUiAttribs = JSON.parse(eleAddUiAttribs.value);
             }
             catch (e)
             {
-                _log.error("could not parse add ui attribs...");
+                _log.warn("could not parse add ui attribs...");
             }
 
 
