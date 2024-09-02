@@ -19,9 +19,9 @@ export default class EditorSession
             CABLES.UI.paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
         });
 
-        this.addListener("manageOp", (name, data) =>
+        this.addListener("manageOp", (id, data) =>
         {
-            new ManageOp(gui.mainTabs, name);
+            new ManageOp(gui.mainTabs, id);
         });
         this.addListener("welcometab", (name, data) =>
         {

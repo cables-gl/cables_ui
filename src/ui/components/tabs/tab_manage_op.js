@@ -30,6 +30,7 @@ export default class ManageOp
 
         this._initialized = false;
         this._currentName = opObjName;
+        this._currentId = opId;
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
@@ -39,7 +40,7 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
-            CABLES.editorSession.remove("manageOp", this._currentName);
+            CABLES.editorSession.remove("manageOp", this._currentId);
 
             for (let i in this._refreshListener)
                 gui.off(this._refreshListener[i]);
@@ -68,12 +69,12 @@ export default class ManageOp
 
     show()
     {
-        CABLES.editorSession.remove("manageOp", this._currentName);
-        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentName, { "opname": this._currentName }, true);
+        CABLES.editorSession.remove("manageOp", this._currentId);
+        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentId, { "opname": this._currentName, "opid": this._currentId }, true);
 
         this._id = CABLES.shortId();
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
-        const opDoc = gui.opDocs.getOpDocByName(this._currentName);
+        const opDoc = gui.opDocs.getOpDocById(this._currentId);
 
         if (!opDoc)
         {
@@ -180,6 +181,8 @@ export default class ManageOp
                         });
 
                     this._tab.html(html);
+
+                    // CABLES.UI.Collapsable.setup();
 
                     if (canEditOp)
                     {
