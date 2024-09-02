@@ -1432,16 +1432,11 @@ export default class Gui extends Events
         if (!CABLES.platform.frontendOptions.showExport) ele.hide(ele.byId("nav_patch_export"));
         if (!CABLES.platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
 
-
-
         if (!CABLES.platform.frontendOptions.showPatchBackups)
         {
             ele.hide(ele.byId("nav_viewBackups"));
             ele.hide(ele.byId("nav_createBackup"));
         }
-
-
-
 
 
         if (CABLES.platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/changelog", "_blank"); });

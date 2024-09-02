@@ -340,7 +340,7 @@ export default class LogTab extends Events
     {
         const report = {};
         report.title = this.lastErrorMsg;
-
+        report.patchTitle = gui.project().name;
 
         const log = [];
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
@@ -350,7 +350,7 @@ export default class LogTab extends Events
                 "initiator": l.initiator,
                 "errorStack": l.errorStack,
                 "args": [],
-                "level": l.level
+                "level": l.level,
             };
 
             log.push(newLine);
