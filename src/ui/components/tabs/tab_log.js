@@ -261,8 +261,23 @@ export default class LogTab extends Events
                             }
                             else
                             {
-                                console.log("unknown log thing", arg.constructor.name, arg);
-                                currentLine += " obj{" + arg.constructor.name + "} ";
+                                currentLine += "Object " + arg.constructor.name + "<br/>";
+
+                                for (let oi in arg)
+                                {
+                                    if (arg[oi] && arg[oi].constructor)
+                                    {
+                                        if (arg[oi].constructor.name == "Number" || arg[oi].constructor.name == "String" || arg[oi].constructor.name == "Boolean")
+                                        {
+                                            currentLine += "&nbsp;&nbsp;" + oi + ":";
+
+                                            if (arg[oi].constructor.name == "String")currentLine += "\"";
+                                            currentLine += arg[oi];
+                                            if (arg[oi].constructor.name == "String")currentLine += "\"";
+                                            currentLine += "<br/>";
+                                        }
+                                    }
+                                }
                             }
                     }
                 }
