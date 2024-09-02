@@ -12,22 +12,22 @@ import subPatchOpUtil from "../../subpatchop_util.js";
  */
 export default class ManageOp
 {
-    constructor(tabs, opname)
+    constructor(tabs, opId)
     {
-        if (!opname)
+        if (!opId)
         {
-            CABLES.editorSession.remove("manageOp", opname);
+            CABLES.editorSession.remove("manageOp", opId);
             return;
         }
 
-        const opDoc = gui.opDocs.getOpDocByName(opname);
+        const opDoc = gui.opDocs.getOpDocById(opId);
 
-        let opObjName = opname;
+        let opObjName = "";
         if (opDoc)opObjName = opDoc.name;
 
         this._log = new Logger("ManageOp");
         this._initialized = false;
-        this._currentName = opname;
+        this._currentName = opObjName;
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
@@ -64,11 +64,9 @@ export default class ManageOp
         this._initialized = true;
     }
 
-
     show()
     {
         CABLES.editorSession.remove("manageOp", this._currentName);
-
         CABLES.editorSession.rememberOpenEditor("manageOp", this._currentName, { "opname": this._currentName }, true);
 
         this._id = CABLES.shortId();
@@ -79,7 +77,6 @@ export default class ManageOp
         {
             this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patch");
             this._tab.remove();
-            // console.log("no opdocs?!");
             return;
         }
 
