@@ -21,12 +21,9 @@ export default class ManageOp
             return;
         }
 
-
         const opDoc = gui.opDocs.getOpDocById(opId);
         if (!opDoc && opId.startsWith("Ops."))
-        {
             this._log.warn("manage op paramerter should not be objname, but id");
-        }
 
         let opObjName = "";
         if (opDoc)opObjName = opDoc.name;
