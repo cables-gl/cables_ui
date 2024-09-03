@@ -25,8 +25,6 @@ CABLES_CMD_PATCH.setPatchTitle = () =>
     gui.patchView.store.showModalTitleDialog();
 };
 
-
-
 CABLES_CMD_PATCH.openParamsTab = () =>
 {
     const ops = gui.patchView.getSelectedOps();
@@ -61,8 +59,6 @@ CABLES_CMD_PATCH.clearOpTitles = function ()
     }
 };
 
-
-
 CABLES_CMD_PATCH.selectChilds = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -77,7 +73,6 @@ CABLES_CMD_PATCH.selectChilds = function ()
 
     gui.patchView.showSelectedOpsPanel();
 };
-
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
@@ -318,8 +313,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     const origOpsBounds = gui.patchView.getSelectionBounds();
     gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds);
 
-    // setTimeout(() =>
-    // {
     const selops = gui.patchView.getSelectedOps();
 
     let selectedOpIds = gui.patchView.getSelectedOpsIds();

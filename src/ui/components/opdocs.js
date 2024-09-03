@@ -526,7 +526,7 @@ export default class OpDocs
             const nsCol = GlPatch.getOpNamespaceColor(opname);
             const cssCol = glColorToHtml(nsCol);
 
-            svgStr += "<text x=\"" + gluiconfig.portWidth + "\" y=\"" + gluiconfig.opHeight * 0.63 + "\" style=\"font-family:roboto, arial;font-size:12px;\" fill=\"" + cssCol + "\">" + doc.shortNameDisplay + "</text>";
+            svgStr += "<text x=\"" + gluiconfig.portWidth + "\" y=\"" + gluiconfig.opHeight * 0.63 + "\" style=\"font-family:roboto, arial;font-size:12px;\" fill=\"" + cssCol + "\">" + (doc.shortNameDisplay || "??" + opname) + "</text>";
 
             svgStr += "</svg>";
 

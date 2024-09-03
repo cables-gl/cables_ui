@@ -38,9 +38,6 @@ export default class EditorTab
             if (this._editor) this._editor.resize();
         });
 
-
-
-
         const existing = gui.mainTabs.getTabByTitle(options.title);
         if (existing)
         {
