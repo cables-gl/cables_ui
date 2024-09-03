@@ -337,7 +337,7 @@ export default class OpSelect
                 else html += "<img src=\"" + CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
 
                 html += "</div>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesDocsUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
 
                 const docs = gui.opDocs.getOpDocByName(opName);
 
