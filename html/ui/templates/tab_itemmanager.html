@@ -265,10 +265,14 @@
 
             <br/>
 
-            {{#if isReference}}
-                {{#if isLibraryFile}}{{else}}
-                    <br/>
-                    <a class="button-small" href="{{projectUrl}}" target="_blank"><span class="icon icon-file-symlink"></span>Original patch</b></a>
+
+
+            {{#if isPlatformCommunity}}
+                {{#if isReference}}
+                    {{#if isLibraryFile}}{{else}}
+                        <br/>
+                        <a class="button-small" href="{{projectUrl}}" target="_blank"><span class="icon icon-file-symlink"></span>Original patch</b></a>
+                    {{/if}}
                 {{/if}}
             {{/if}}
             {{#if referenceCount}}
@@ -297,8 +301,7 @@
             File Ops
             <br/><br/>
             {{#each file.ops}}
-                <a class="button" onclick="gui.patchView.addAssetOpAuto('/assets/{{../file.fileDb.projectId}}/{{../file.fileDb.fileName}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
-
+                <a class="button" onclick="gui.patchView.addAssetOpAuto('{{../assetPath}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
                 <br/><br/>
             {{/each}}
         {{/if}}

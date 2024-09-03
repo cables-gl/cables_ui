@@ -426,10 +426,7 @@ export default class FileManager
                     if (r.fileDb) r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
-                        if (detailItem.isReference)
-                        {
-                            delete r.converters;
-                        }
+                        if (detailItem.isReference) delete r.converters;
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
 
@@ -438,11 +435,19 @@ export default class FileManager
                         editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
 
 
+
+                        let assetPath = "/assets/" + r.projectId + "/" + r.fileName;
+
+                        console.log("....", CABLES.platform.frontendOptions.isStandalone, r);
+                        if (CABLES.platform.frontendOptions.isStandalone) assetPath = r.path;
+
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
                             "isEditable": editable,
+                            "assetPath": assetPath,
+                            "isPlatformCommunity": CABLES.platform.hasCommunity,
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
