@@ -32,6 +32,8 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showExport =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.showStartUpLog = true;
+
+        this.frontendOptions.showFormatCodeButton = false;
     }
 
     isStandalone()
