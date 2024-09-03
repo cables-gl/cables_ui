@@ -84,12 +84,8 @@ CABLES_CMD_PATCH.gotoParentSubpatch = function ()
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
 
     if (names.length == 0) return;
-    if (names.length == 1)
-    {
-        gui.patchView.setCurrentSubPatch(0);
-    }
-    else
-        gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+    if (names.length == 1) gui.patchView.setCurrentSubPatch(0);
+    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
 };
 
 CABLES_CMD_PATCH.selectAllOps = function ()

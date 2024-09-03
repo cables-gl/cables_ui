@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import { escapeHTML } from "../utils/helper.js";
 
 export default class PatchOutline extends Events
 {
@@ -183,6 +184,15 @@ export default class PatchOutline extends Events
         this.updateFilterUi();
     }
 
+    _sanitizeComment(_cmt)
+    {
+        let cmt = escapeHTML(_cmt);
+
+        if (cmt.length > 30)cmt = cmt.substring(0, 30) + "...";
+
+        return cmt;
+    }
+
     _getSubPatchesHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
@@ -210,7 +220,8 @@ export default class PatchOutline extends Events
             sub.title = subOp.getTitle();
             sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
-            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + subOp.uiAttribs.comment + "</span>";
+
+            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(subOp.uiAttribs.comment) + "</span>";
 
             sub.subPatchId = patchId;
             sub.id = subOp.id;
@@ -257,7 +268,7 @@ export default class PatchOutline extends Events
                     if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
-                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
+                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
 
                     sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color });
                 }
