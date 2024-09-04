@@ -517,4 +517,27 @@ export default class Platform extends Events
             gui.maintabPanel.show(true);
         }
     }
+
+    exportPatch(projectId)
+    {
+        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
+        if (this._versionId)
+        {
+            gotoUrl += "?version=" + this._versionId;
+        }
+
+        const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
+        const url = gotoUrl + iframeParam;
+
+        gui.mainTabs.addIframeTab(
+            "Export Patch ",
+            url,
+            {
+                "icon": "settings",
+                "closable": true,
+                "singleton": false,
+                "gotoUrl": gotoUrl
+            },
+            true);
+    }
 }

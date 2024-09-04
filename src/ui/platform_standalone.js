@@ -131,4 +131,28 @@ export default class PlatformStandalone extends Platform
     {
         return true;
     }
+
+    exportPatch(projectId)
+    {
+        const loadingModal = gui.startModalLoading("Exporting patch...");
+        loadingModal.setTask("Exporting patch...");
+        CABLESUILOADER.talkerAPI.send("exportPatch", { "projectId": projectId }, (err, result) =>
+        {
+            if (err)
+            {
+                loadingModal.setTask("ERROR", err.msg);
+                loadingModal.setTask(err.data);
+            }
+            else
+            {
+                if (result.data && result.data.log)
+                {
+                    result.data.log.forEach((log) =>
+                    {
+                        loadingModal.setTask(log.text);
+                    });
+                }
+            }
+        });
+    }
 }
