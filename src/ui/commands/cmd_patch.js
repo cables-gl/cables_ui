@@ -74,6 +74,14 @@ CABLES_CMD_PATCH.selectChilds = function ()
     gui.patchView.showSelectedOpsPanel();
 };
 
+CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps = function ()
+{
+    const sub = gui.patchView.getCurrentSubPatch();
+    if (!sub) return;
+    gui.patchView.setPositionSubPatchInputOutputOps(sub);
+};
+
+
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
@@ -1741,5 +1749,12 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.renameOp,
         "category": "op",
         "icon": "op"
+    },
+    {
+        "cmd": "auto position subpatch input output ops",
+        "func": CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps,
+        "category": "op",
+        "icon": "op"
     }
+
 );

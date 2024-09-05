@@ -662,7 +662,6 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
 
-    gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
     const loadingModal = gui.startModalLoading("serialize ops");
 
     const subId = CABLES.shortId();
@@ -773,6 +772,8 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
                             "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY
                         }
                     });
+
+            gui.patchView.setPositionSubPatchInputOutputOps(oldSubpatchOp.patchId.get());
 
             subPatchOpUtil.updateBluePrint2Attachment(
                 newOp,
