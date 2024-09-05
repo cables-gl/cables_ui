@@ -1365,7 +1365,6 @@ export default class Gui extends Events
                 let str = "";
                 if (CABLES.platform.frontendOptions.showOpenPatch)
                 {
-                    const url = CABLES.platform.getCablesUrl() + "/edit/";
                     let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }

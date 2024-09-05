@@ -256,7 +256,7 @@ export default class Platform extends Events
                 let selOpTranslate = null;
                 if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
 
-                gui.serverOps.execute(opname, (newOps, refOldOp) =>
+                gui.serverOps.execute(opname, (newOps) =>
                 {
                     if (selOpTranslate)
                     {
@@ -270,20 +270,25 @@ export default class Platform extends Events
                         }
                     }
                     gui.endModalLoading();
+                    let reloadCode = options.forceReload;
+                    if (!reloadCode) reloadCode = editorTab && newOps && newOps[0];
                     const editorTab = gui.mainTabs.activateTabByName(opname);
-                    if (editorTab && newOps && newOps[0])
+                    if (reloadCode)
                     {
+                        let opId = options.id;
+                        if (!opId) opId = newOps[0].opId;
+
                         CABLESUILOADER.talkerAPI.send(
                             "getOpCode",
                             {
-                                "opname": newOps[0].opId,
+                                "opname": opId,
                                 "projectId": this._patchId
                             },
                             (er, rslt) =>
                             {
                                 if (rslt && rslt.hasOwnProperty("code"))
                                 {
-                                    editorTab.editor.setContent(rslt.code);
+                                    editorTab.editor.setContent(rslt.code, options.forceReload);
                                 }
                             });
                     }

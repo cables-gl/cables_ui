@@ -217,8 +217,10 @@ const text =
         "subtitle_notlocalizeNumberformat": "Localize output port number format",
 
         "title_openlastproject": "Open the last saved patch on start",
-        "subtitle_openlastproject": ""
+        "subtitle_openlastproject": "",
 
+        "title_authorName": "Author name for created ops",
+        "subtitle_authorName": ""
 
     },
     "tips":
