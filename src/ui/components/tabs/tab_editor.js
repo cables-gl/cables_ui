@@ -189,9 +189,10 @@ export default class EditorTab
         });
     }
 
-    setContent(content)
+    setContent(content, silent = false)
     {
         this._editor.setValue(content, 1);
+        if (silent) gui.mainTabs.setChanged(this._tab.id, false);
     }
 
     focus()
