@@ -101,6 +101,7 @@ export default class Preferences
         this.setSwitchValue("notlocalizeNumberformat", userSettings.get("notlocalizeNumberformat") || false);
 
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
+        this.setInputValue("authorName", userSettings.get("authorName") || "");
 
 
         // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
