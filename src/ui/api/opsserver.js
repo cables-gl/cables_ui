@@ -1723,22 +1723,8 @@ export default class ServerOps
                 gui.opSelect().prepare();
             }
 
-            // let libsToLoad = [];
-            // let coreLibsToLoad = [];
-            // newOps.forEach((newOp) =>
-            // {
-            //     if (newOp)
-            //     {
-            //         if (newIds.hasOwnProperty(newOp.opId))
-            //         {
-            //             newOp.opId = newIds[newOp.opId];
-            //         }
-            //         libsToLoad = libsToLoad.concat(this.getOpLibs(newOp, true));
-            //         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
-            //     }
-            // });
-
             if (proj && proj.ops)
+            {
                 for (let i = 0; i < proj.ops.length; i++)
                 {
                     if (proj.ops[i])
@@ -1749,11 +1735,16 @@ export default class ServerOps
                         }
                     }
                 }
+            }
 
             perf2.finish();
             this.loadOpsLibs(proj.ops, () =>
             {
-                if (_next) _next(proj);
+                if (_next)
+                {
+                    proj.ops = proj.ops.filter((op) => { return this.isLoaded(op); });
+                    _next(proj);
+                }
             });
         });
     }
@@ -1956,7 +1947,7 @@ export default class ServerOps
                             "title": title,
                             "html": html,
                             "showOkButton": true,
-                            "okButton": { "text": "Continue Loading", "cssClasses": "button" }
+                            "okButton": { "text": "OK" }
                         });
                     modal.on("onClose", continueLoadingCallback);
                 }
