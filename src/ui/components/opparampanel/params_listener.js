@@ -705,12 +705,17 @@ class ParamsListener extends Events
 
         const eleId = "portval_" + index + "_" + panelid;
 
-        // if (op.portsIn[index].uiAttribs.type == "string")
-        // {
-        //     console.log("yes string...");
+        if (ports[index].uiAttribs.type == "string")
+        {
+            const str = ports[index].get();
 
-        //     // el.addEventListener("keydown", tabKeyListener);
-        // }
+            if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1)
+            {
+                ports[index].op.setUiError("utf8illegal" + ports[index].name, "Port " + ports[index].name + ": String contains unusual UTF8 characters", 1);
+                console.error(ports[index].name, "illegal string...");
+            }
+            else ports[index].op.setUiError("utf8illegal" + ports[index].name, null);
+        }
 
         if (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number" || ports[index].uiAttribs.type == "int")
         {
