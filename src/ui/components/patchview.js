@@ -822,7 +822,7 @@ export default class PatchView extends Events
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
-            if (this._p.ops[i].uiAttribs.selected)
+            if (this._p.ops[i] && this._p.ops[i].uiAttribs && this._p.ops[i].uiAttribs.selected)
                 ops.push(this._p.ops[i]);
 
         perf.finish();
@@ -1156,6 +1156,7 @@ export default class PatchView extends Events
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (!ops[i] || !ops[i].uiAttribs) continue;
             const sub = ops[i].uiAttribs.subPatch || 0;
             if (ops[i].isSubPatchOp()) foundSubPatchOps[ops[i].patchId.get()] = true;
             countSubs[sub] = countSubs[sub] || 0;
@@ -2738,7 +2739,7 @@ export default class PatchView extends Events
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+            if (ops[i] && ops[i].uiAttribs && ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
         }
         return foundOps;
     }

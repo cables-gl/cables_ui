@@ -75,6 +75,7 @@ export default function extendCorePatch()
             {
                 // console.log("creating cache ", subPatchId, this.ops.length);
                 const op = this.ops[i];
+                if (!op || !op.uiAttribs) continue;
 
                 // console.log("creating cache ", subPatchId, op.uiAttribs.subPatch, this.ops);
 
