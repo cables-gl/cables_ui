@@ -707,7 +707,7 @@ class ParamsListener extends Events
 
         if (ports[index].uiAttribs.type == "string")
         {
-            const str = ports[index].get();
+            const str = String(ports[index].get()) || "";
 
             if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1)
             {
