@@ -12,7 +12,7 @@ const paramsHelper =
         v = Math.max(0, v);
         v = Math.min(1, v);
         const cssv = v * 100;
-        const grad = "linear-gradient(0.25turn, var(--numinput-bar), var(--numinput-bar) " + cssv + "%, var(--numinput-bg) " + cssv + "%)";
+        const grad = "linear-gradient(0.25turn, var(--numberinput-bar), var(--numberinput-bar) " + cssv + "%, var(--numberinput-bg) " + cssv + "%)";
 
         eleInput.style.background = grad;
     },
