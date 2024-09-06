@@ -1,4 +1,4 @@
-uimport { ele } from "cables-shared-client";
+import { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
 
 const paramsHelper =
