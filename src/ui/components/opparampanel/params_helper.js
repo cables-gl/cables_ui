@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+uimport { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
 
 const paramsHelper =
@@ -12,7 +12,7 @@ const paramsHelper =
         v = Math.max(0, v);
         v = Math.min(1, v);
         const cssv = v * 100;
-        const grad = "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
+        const grad = "linear-gradient(0.25turn, var(--numinput-bar), var(--numinput-bar) " + cssv + "%, var(--numinput-bg) " + cssv + "%)";
 
         eleInput.style.background = grad;
     },
