@@ -3,10 +3,11 @@ import ModalDialog from "./modaldialog.js";
 
 export default class Exporter
 {
-    constructor(project, versionId)
+    constructor(project, versionId, type = null)
     {
         this._versionId = versionId;
         this._project = project;
+        this._exportType = type;
     }
 
     show()
@@ -19,6 +20,6 @@ export default class Exporter
 
         const projectId = this._project.shortId || this._project._id;
 
-        CABLES.platform.exportPatch(projectId);
+        CABLES.platform.exportPatch(projectId, this._exportType);
     }
 }

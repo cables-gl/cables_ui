@@ -277,7 +277,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
         "showReplace": false,
-        "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+        "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
     };
 
     if (gui.patchView.getCurrentSubPatch() != 0)
@@ -601,9 +601,9 @@ CABLES_CMD_PATCH.showBackups = () =>
         true);
 };
 
-CABLES_CMD_PATCH.export = function ()
+CABLES_CMD_PATCH.export = function (type)
 {
-    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion());
+    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion(), type);
     exporter.show();
 };
 

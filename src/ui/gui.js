@@ -1410,9 +1410,10 @@ export default class Gui extends Events
         ele.byId("nav_patch_save").addEventListener("click", (event) => { CABLES.CMD.PATCH.save(); });
         ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });
         ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
+        ele.byId("nav_patch_export_patch").addEventListener("click", (event) => { CABLES.CMD.PATCH.export("patch"); });
 
         ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
-        if (CABLES.platform.frontendOptions.chooseOpDir)
+        if (CABLES.platform.frontendOptions.hasOpDirectories)
         {
             const opDirEle = ele.byId("nav_patch_add_opdir");
             if (opDirEle)
@@ -1428,7 +1429,22 @@ export default class Gui extends Events
 
         if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
         if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
-        if (!CABLES.platform.frontendOptions.showExport) ele.hide(ele.byId("nav_patch_export"));
+
+        const exportLink = ele.byId("nav_patch_export");
+        if (!CABLES.platform.frontendOptions.showExport)
+        {
+            ele.hide(exportLink);
+        }
+        if (CABLES.platform.isStandalone())
+        {
+            if (exportLink) exportLink.innerText = "Export - HTML";
+        }
+
+        if (!CABLES.platform.frontendOptions.showExportPatch)
+        {
+            ele.hide(ele.byId("nav_patch_export_patch"));
+        }
+
         if (!CABLES.platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
 
         if (!CABLES.platform.frontendOptions.showPatchBackups)

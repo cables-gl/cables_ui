@@ -807,7 +807,7 @@ export default class ServerOps
                     "text": html
                 });
 
-                if (CABLES.platform.frontendOptions.chooseOpDir)
+                if (CABLES.platform.frontendOptions.hasOpDirectories)
                 {
                     const addButton = ele.byId("addOpTargetDir");
                     if (addButton)
@@ -904,7 +904,7 @@ export default class ServerOps
         html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
-        if (options.chooseOpDir)
+        if (options.hasOpDirectories)
         {
             CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
             {
@@ -1064,7 +1064,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
-            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1140,7 +1140,7 @@ export default class ServerOps
             "showReplace": false,
             "sourceOpName": null,
             "rename": true,
-            "chooseOpDir": false
+            "hasOpDirectories": false
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1219,7 +1219,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": null,
-            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>

@@ -516,7 +516,7 @@ export default class Platform extends Events
 
     openOpDirsTab()
     {
-        if (this.frontendOptions.chooseOpDir)
+        if (this.frontendOptions.hasOpDirectories)
         {
             new StandaloneOpDirs(gui.mainTabs);
             gui.maintabPanel.show(true);

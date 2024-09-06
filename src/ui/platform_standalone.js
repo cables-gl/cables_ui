@@ -24,12 +24,14 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
         this.frontendOptions.showLocalOpDirButton =
-        this.frontendOptions.chooseOpDir =
+        this.frontendOptions.hasOpDirectories =
+        this.frontendOptions.hasAssetDirectories =
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
         this.frontendOptions.showOpenPatch =
         this.frontendOptions.showExport =
+        this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
@@ -133,11 +135,13 @@ export default class PlatformStandalone extends Platform
         return true;
     }
 
-    exportPatch(projectId)
+    exportPatch(projectId, exportType = null)
     {
         const loadingModal = gui.startModalLoading("Exporting patch...");
         loadingModal.setTask("Exporting patch...");
-        CABLESUILOADER.talkerAPI.send("exportPatch", { "projectId": projectId }, (err, result) =>
+        let talkerCommand = "exportPatch";
+        if (exportType === "patch") talkerCommand = "exportPatchBundle";
+        CABLESUILOADER.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {
             if (err)
             {
