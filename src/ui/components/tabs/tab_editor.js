@@ -66,7 +66,7 @@ export default class EditorTab
                 let hideFormatButton = !!options.hideFormatButton;
                 if (!hideFormatButton && options.syntax && options.syntax === "js") hideFormatButton = false;
                 else hideFormatButton = true;
-                if (!CABLES.platform.showFormatCodeButton)hideFormatButton = true;
+                if (!CABLES.platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
                 if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
             }
