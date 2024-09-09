@@ -343,7 +343,7 @@ export default class FileManager
         gui.maintabPanel.show(true);
 
         const item = this._manager.getItemByTitleContains(filename);
-        if (item) this.setDetail([item]);
+        if (item && !item.isLibraryFile) this.setDetail([item]);
     }
 
     setDisplay(type)
