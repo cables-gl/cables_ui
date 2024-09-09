@@ -45,6 +45,11 @@ export default class FileManager
             userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
+
+        gui.on("patchsaved", () =>
+        {
+            gui.refreshFileManager();
+        });
     }
 
     show(userInteraction)

@@ -1364,7 +1364,7 @@ export default class Gui extends Events
                 let str = "";
 
                 if (CABLES.platform.frontendOptions.showMyLinks)
-                    str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+                    str += "<li id=\"nav_mypatches\"><a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
 
                 str += "<li id=\"nav_patch_new\">Create New Empty Patch</li>";
 

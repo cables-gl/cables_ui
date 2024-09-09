@@ -528,6 +528,7 @@ export default class PatchSaveServer extends Events
                                 "time": performance.now() - startTime
                             });
 
+                        gui.emitEvent("patchsaved");
                         gui.jobs().finish("projectsave");
 
                         if (!r || !r.success || err)
