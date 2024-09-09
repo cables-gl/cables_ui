@@ -282,7 +282,8 @@ class OpParampanel extends Events
                     let fn = this._portsIn[i].get() || "";
 
                     if (fn == "" || fn == 0)src = "";
-                    else if (!fn.startsWith("/")) src = "ext";
+                    else if (!fn.startsWith("/")) src = "relative";
+                    if (fn.startsWith("/")) src = "abs";
 
                     if (fn.startsWith("file:")) src = "file";
                     if (fn.startsWith("data:")) src = "dataUrl";
