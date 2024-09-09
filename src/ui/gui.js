@@ -1360,28 +1360,36 @@ export default class Gui extends Events
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
-                if (!r) return;
 
                 let str = "";
+
+                if (CABLES.platform.frontendOptions.showMyLinks)
+                    str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+
+                str += "<li id=\"nav_patch_new\">Create New Empty Patch</li>";
+
+                str += "<li class=\"divide\"></li>";
+
+
                 if (CABLES.platform.frontendOptions.showOpenPatch)
                 {
                     let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
-                for (let i = 0; i < r.length; i++)
-                {
-                    const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
-                    str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
-                }
+                if (r)
+                    for (let i = 0; i < Math.min(5, r.length); i++)
+                    {
+                        const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
+                        str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
+                    }
 
                 str += "<li class=\"divide\"></li>";
 
-                if (CABLES.platform.frontendOptions.showMyLinks)
-                    str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
-
                 str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
+
+                ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
             });
         });
 
@@ -1412,7 +1420,7 @@ export default class Gui extends Events
         ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
         ele.byId("nav_patch_export_patch").addEventListener("click", (event) => { CABLES.CMD.PATCH.export("patch"); });
 
-        ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
+
         if (CABLES.platform.frontendOptions.hasOpDirectories)
         {
             const opDirEle = ele.byId("nav_patch_add_opdir");
