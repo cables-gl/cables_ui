@@ -1439,7 +1439,7 @@ export default class ServerOps
                                             subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
-                                                gui.savingTitleAnimStart;
+                                                gui.savingTitleAnimEnd();
                                             });
                                         });
                                     }
@@ -1447,7 +1447,7 @@ export default class ServerOps
                                         subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
-                                            gui.savingTitleAnimStart;
+                                            gui.savingTitleAnimEnd();
                                         });
                                 },
                             );
