@@ -709,11 +709,7 @@ class ParamsListener extends Events
         {
             const str = String(ports[index].get()) || "";
 
-            if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1)
-            {
-                ports[index].op.setUiError("utf8illegal" + ports[index].name, "Port " + ports[index].name + ": String contains unusual UTF8 characters", 1);
-                console.error(ports[index].name, "illegal string...");
-            }
+            if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1) ports[index].op.setUiError("utf8illegal" + ports[index].name, "Port " + ports[index].name + ": String contains unusual UTF8 characters", 1);
             else ports[index].op.setUiError("utf8illegal" + ports[index].name, null);
         }
 

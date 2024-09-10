@@ -1479,7 +1479,7 @@ export default class GlPatch extends Events
 
 
 
-        setTimeout(() =>
+        this.pauseTimeOut = setTimeout(() =>
         {
             this.paused = true;
         }, 250);
@@ -1487,6 +1487,7 @@ export default class GlPatch extends Events
 
     subPatchOpAnimEnd(opid)
     {
+        this.clearTimeout(this.pauseTimeOut);
         this.paused = false;
         const dur = 0.25;
         const glop = this._glOpz[opid];

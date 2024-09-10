@@ -245,6 +245,7 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
 
 CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
+    console.log("createSubPatchOp");
     if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
     {
         new ModalDialog({ "title": "You don't have write access", "showOkButton": true });
