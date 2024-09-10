@@ -1481,7 +1481,7 @@ export default class GlPatch extends Events
         this.pauseTimeOut = setTimeout(() =>
         {
             this.paused = true;
-        }, 250);
+        }, 260);
     }
 
     subPatchOpAnimEnd(opid)
@@ -1493,18 +1493,23 @@ export default class GlPatch extends Events
 
         this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
 
+        this._subpatchAnimOutX.clear();
         this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
         this._subpatchAnimOutX.setValue(this._time + dur, glop.op.uiAttribs.translate.x);
 
+        this._subpatchAnimOutY.clear();
         this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
         this._subpatchAnimOutY.setValue(this._time + dur, glop.op.uiAttribs.translate.y);
 
+        this._subpatchAnimOutW.clear();
         this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
         this._subpatchAnimOutW.setValue(this._time + dur, glop.w);
 
+        this._subpatchAnimOutH.clear();
         this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
         this._subpatchAnimOutH.setValue(this._time + dur, glop.h);
 
+        this._subpatchAnimFade.clear();
         this._subpatchAnimFade.setValue(this._time, 1);
         this._subpatchAnimFade.setValue(this._time + dur / 2, 1.0);
         this._subpatchAnimFade.setValue(this._time + dur, 0.0, () =>

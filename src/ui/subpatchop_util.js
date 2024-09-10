@@ -506,10 +506,13 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
                         );
                     }
 
-                    // console.log("endmodal...");
-                    // gui.endModalLoading();
+
                     gui.savingTitleAnimEnd();
                     if (options.cb)options.cb(newPortJson, newOp);
+
+                    const outerOp = gui.patchView.getSubPatchOuterOp(newOp.patchId.get());
+
+                    subPatchOpUtil.updateBluePrint2Attachment(outerOp, { "oldSubId": newOp.patchId.get() });
                 });
             });
         }
@@ -661,9 +664,11 @@ subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
     return o;
 };
 
-subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
+subPatchOpUtil.updateBluePrint2Attachment = (newOp, options = {}) =>
 {
-    const oldSubId = options.oldSubId;
+    const oldSubId = options.oldSubId || 0;
+
+    console.log(newOp.uiAttribs.subPatch, oldSubId, newOp);
 
     gui.savingTitleAnimStart("Saving Subpatch Op...");
 

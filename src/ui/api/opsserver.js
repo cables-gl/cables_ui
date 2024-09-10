@@ -1393,13 +1393,11 @@ export default class ServerOps
                         "inactive": inactive,
                         "onClose": (which) =>
                         {
-                            // this._log.log("close!!! missing infos...");
                             if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            // const loadingModal = gui.startModalLoading("Save attachment...");
-                            gui.savingTitleAnimStart("Save attachment...");
+                            gui.savingTitleAnimStart("Saving Attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -1414,7 +1412,6 @@ export default class ServerOps
                                     if (errr)
                                     {
                                         notifyError("error: op not saved");
-                                        // _setStatus('ERROR: not saved - '+res.msg);
                                         this._log.warn("[opAttachmentSave]", errr);
                                         return;
                                     }

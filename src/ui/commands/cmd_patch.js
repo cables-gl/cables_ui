@@ -245,7 +245,6 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
 
 CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
-    console.log("createSubPatchOp");
     if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
     {
         new ModalDialog({ "title": "You don't have write access", "showOkButton": true });
@@ -369,8 +368,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 // find ops that are crosslinked...
                 const ops = gui.corePatch().getSubPatchOps(patchId);
 
-                console.log("subpatchops", ops.length);
-
                 for (let i = 0; i < ops.length; i++)
                 {
                     const op = ops[i];
@@ -408,8 +405,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     }
                 }
 
-                console.log(oldLinks.length + " oldlinks");
-
                 gui.patchView.addOp(newOpname,
                     {
                         "uiAttribs": {
@@ -420,7 +415,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                             {
                                 const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
-                                console.log(src, portJson);
 
                                 gui.corePatch().deleteOp(OpTempSubpatch.id);
                                 gui.patchView.setCurrentSubPatch(currentSubpatch);
@@ -449,9 +443,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                         {
                                             newOp = newOps[0];
 
-                                            console.log(newOp);
                                             const subPatchId = newOp.patchId.get();
-                                            console.log("subPatchId", subPatchId);
 
                                             // relink inside ports....
                                             const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
@@ -467,12 +459,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                     {
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-
-                                                        // if (!patchInputOP)console.log("no patchInputOP");
-
-                                                        console.log(patchInputOP, patchInputOP.uiAttribs);
-
-
                                                         let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
 
                                                         if (!l)
@@ -856,7 +842,6 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
     gui.closeModal();
     const getsetOp = defaultOps.getRerouteOp(p.type);
 
-    console.log("getsetOp", getsetOp);
     gui.patchView.addOp(
         getsetOp,
         { "onOpAdd": (opGetter) =>

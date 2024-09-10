@@ -102,6 +102,7 @@ export default class PatchView extends Events
 
     focusSubpatchOp(subPatchId)
     {
+        console.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
         gui.patchView.centerSelectOp(outerOp);
@@ -1334,6 +1335,8 @@ export default class PatchView extends Events
 
     focusSubpatchOp(subPatchId)
     {
+        console.log("dupe focusSubpatchOp2");
+
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
         if (!gotoOp) return;
         let parentSubId = gotoOp.uiAttribs.subPatch || 0;
