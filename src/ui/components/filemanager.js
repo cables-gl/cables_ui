@@ -46,10 +46,12 @@ export default class FileManager
             gui.fileManager = null;
         });
 
-        gui.on("patchsaved", () =>
-        {
-            gui.refreshFileManager();
-        });
+        if (CABLES.platform.frontendOptions.isStandalone)
+            gui.on("patchsaved", () =>
+            {
+                if (!ele.byId("filemanagercontainer")) return;
+                gui.refreshFileManager();
+            });
     }
 
     show(userInteraction)
@@ -443,7 +445,6 @@ export default class FileManager
 
                         let assetPath = "/assets/" + r.projectId + "/" + r.fileName;
 
-                        console.log("....", CABLES.platform.frontendOptions.isStandalone, r);
                         if (CABLES.platform.frontendOptions.isStandalone) assetPath = r.path;
 
                         html = getHandleBarHtml("filemanager_details", {

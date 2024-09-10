@@ -1506,8 +1506,10 @@ export default class ServerOps
                     {
                         // CABLES.UI.MODAL.showLoading("Saving and executing op...");
 
-                        const loadingModal = gui.startModalLoading("Saving and executing op...");
-                        loadingModal.setTask("Saving Op");
+                        gui.savingTitleAnimStart("Saving Op...");
+
+                        // const loadingModal = gui.startModalLoading("Saving and executing op...");
+                        // loadingModal.setTask("Saving Op");
 
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
@@ -1531,7 +1533,8 @@ export default class ServerOps
 
                                 if (!res.success)
                                 {
-                                    gui.endModalLoading();
+                                    // gui.endModalLoading();
+                                    gui.savingTitleAnimEnd();
 
                                     if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
                                     else if (err)setStatus("Error: " + err.msg || "Unknown error");
@@ -1542,7 +1545,7 @@ export default class ServerOps
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
-                                    loadingModal.setTask("Executing code");
+                                    // loadingModal.setTask("Executing code");
 
                                     gui.serverOps.execute(opid, () =>
                                     {
@@ -1557,6 +1560,7 @@ export default class ServerOps
                                                     gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
                                                 }
 
+                                        gui.savingTitleAnimEnd();
                                         gui.endModalLoading();
                                     });
                                 }
@@ -1566,7 +1570,8 @@ export default class ServerOps
                                 setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
 
-                                gui.endModalLoading();
+                                // gui.endModalLoading();
+                                gui.savingTitleAnimEnd();
                             },
                         );
                     };

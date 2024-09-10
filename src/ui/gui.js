@@ -1100,7 +1100,20 @@ export default class Gui extends Events
     }
 
 
+    savingTitleAnimEnd()
+    {
+        const elePatchName = ele.byId("patchname");
+        elePatchName.classList.remove("blinking");
 
+        if (elePatchName.dataset.patchname != "undefined")
+            elePatchName.innerHTML = elePatchName.dataset.patchname;
+    }
+
+    savingTitleAnimStart(title)
+    {
+        document.getElementById("patchname").innerHTML = title;
+        document.getElementById("patchname").classList.add("blinking");
+    }
 
     getFileManager(cb, userInteraction)
     {

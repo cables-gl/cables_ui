@@ -354,11 +354,7 @@ export default class PatchSaveServer extends Events
 
     finishAnimations()
     {
-        const elePatchName = ele.byId("patchname");
-        elePatchName.classList.remove("blinking");
-
-        if (elePatchName.dataset.patchname != "undefined")
-            elePatchName.innerHTML = elePatchName.dataset.patchname;
+        gui.savingTitleAnimEnd();
 
         setTimeout(() =>
         {
@@ -492,8 +488,10 @@ export default class PatchSaveServer extends Events
                 if (datastr.length > 12 * 1024 * 1024)
                     notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
 
-                document.getElementById("patchname").innerHTML = "Saving Patch";
-                document.getElementById("patchname").classList.add("blinking");
+                gui.savingTitleAnimStart("Saving Patch");
+
+                // document.getElementById("patchname").innerHTML = "Saving Patch";
+                // document.getElementById("patchname").classList.add("blinking");
 
 
                 const startTime = performance.now();

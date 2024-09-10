@@ -662,12 +662,14 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
 
-    const loadingModal = gui.startModalLoading("serialize ops");
+    gui.savingTitleAnimStart("Saving subpatch");
+
+    // const loadingModal = gui.startModalLoading("serialize ops");
 
     const subId = CABLES.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
 
-    loadingModal.setTask("save attachment...");
+    // loadingModal.setTask("save attachment...");
 
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 
@@ -725,17 +727,21 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
                                 }
 
                                 if (options.next)options.next();
+                                gui.savingTitleAnimEnd();
                             }, 100);
                         },
                         newOp);
                 }
                 else
                 if (options.next)options.next();
+                gui.savingTitleAnimEnd();
             }
             else
             {
+                gui.savingTitleAnimEnd();
                 if (options.next)options.next();
             }
+
             gui.endModalLoading();
         });
 };
