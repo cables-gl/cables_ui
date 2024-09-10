@@ -407,6 +407,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     }
                 }
 
+                console.log(oldLinks.length + " oldlinks");
                 loadingModal.setTask("Creating blueprint op");
 
                 gui.patchView.addOp(newOpname,
@@ -463,6 +464,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 const oldLink = oldLinks[j];
                                                 newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
 
+                                                let found = false;
                                                 for (let i = 0; i < subOps.length; i++)
                                                 {
                                                     if (subOps[i].uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
@@ -470,13 +472,16 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                         const op = subOps[i];
 
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                        const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+                                                        let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+
 
                                                         if (!l)
                                                         {
                                                             let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                            newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+                                                            l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
                                                         }
+
+                                                        if (!l)console.log("could not recreate oldlink", oldLink);
                                                     }
                                                 }
                                             }
