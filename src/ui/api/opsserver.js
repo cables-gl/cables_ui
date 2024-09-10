@@ -138,7 +138,6 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    // this._log.error(err);
                     gui.serverOps.showApiError(err);
                     loadingModal.close();
                     if (cb)cb();
@@ -185,7 +184,9 @@ export default class ServerOps
             }, 500);
     }
 
-    _saveOpLayout(op)
+
+
+    _getOpLayout(op)
     {
         if (!op)
         {
@@ -257,9 +258,23 @@ export default class ServerOps
             opObj.portsOut.push(l);
         }
 
+        return opObj;
+    }
+
+
+    _saveOpLayout(op)
+    {
+        if (!op)
+        {
+            this._log.error("saveoplayout: no op!");
+            return;
+        }
+
+        const opObj = this._getOpLayout(op);
+
         // check if layout has changed...
         const l = gui.opDocs.getOpDocById(op.opId);
-        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return;
+        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return false; // has not changed
 
         CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
@@ -272,10 +287,16 @@ export default class ServerOps
                 if (err) this._log.error(err);
             },
         );
+        return true; // has changed
     }
 
     execute(opIdentifier, next, refOldOp)
     {
+        /// //////////////
+
+        gui.savedState.pause();
+
+        console.log(opIdentifier, refOldOp);
         let oldOps = null;
         if (opIdentifier.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
         else oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
@@ -289,23 +310,35 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
+        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId);
+
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(
                 name,
                 (num, newOps) =>
                 {
-                    // CABLES.UI.notify(num + " ops reloaded");
+                    for (let i = 0; i < newOps.length; i++) newOps[i].checkLinkTimeWarnings();
 
-                    for (let i = 0; i < newOps.length; i++)
+                    if (newOps.length > 0)
                     {
-                        newOps[i].checkLinkTimeWarnings();
-                    }
+                        // const newLayout = this._getOpLayout(newOps[0]);
+                        // if (JSON.stringify(oldLayout) == JSON.stringify(newLayout))
+                        // {
+                        //     console.log("layout did not change...");
+                        // }
 
-                    if (newOps.length > 0) this.saveOpLayout(newOps[0]);
+                        this.saveOpLayout(newOps[0]);
+                    }
                     gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
+
+
+
+
+
                     if (next)next(newOps, refOldOp);
+                    gui.savedState.resume();
                 },
                 refOldOp
             );
@@ -1533,7 +1566,6 @@ export default class ServerOps
 
                                 if (!res.success)
                                 {
-                                    // gui.endModalLoading();
                                     gui.savingTitleAnimEnd();
 
                                     if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
@@ -1542,10 +1574,7 @@ export default class ServerOps
                                 else
                                 {
                                     if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
-
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
-
-                                    // loadingModal.setTask("Executing code");
 
                                     gui.serverOps.execute(opid, () =>
                                     {

@@ -222,7 +222,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op");
+                loadingModal.setTask("reload op4");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -273,7 +273,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op");
+                loadingModal.setTask("reload op3");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -345,7 +345,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op");
+                loadingModal.setTask("reload op2");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -474,7 +474,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op");
+                loadingModal.setTask("reload op1");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -505,8 +505,8 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
                         );
                     }
 
-                    if (options.cb)options.cb(newPortJson, newOp);
                     gui.endModalLoading();
+                    if (options.cb)options.cb(newPortJson, newOp);
                 });
             });
         }
@@ -669,8 +669,6 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 
 
-    // centerSubPatchBounds
-    // CABLES_CMD_PATCH.centerOpsInSubpatch
     const origOpsBounds = gui.patchView.getSubPatchBounds(gui.patchView.getCurrentSubPatch());
     if (origOpsBounds.maxAxis > 10000000)
     {
