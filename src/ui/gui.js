@@ -1105,7 +1105,6 @@ export default class Gui extends Events
         const elePatchName = ele.byId("patchname");
         elePatchName.classList.remove("blinking");
 
-
         if (elePatchName.dataset.patchname != "undefined")
             setTimeout(() =>
             {

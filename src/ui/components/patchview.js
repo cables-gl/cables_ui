@@ -2120,6 +2120,32 @@ export default class PatchView extends Events
 
     setCurrentSubPatch(subpatch, next)
     {
+        gui.restriction.setMessage("subpatchref", null);
+        if (subpatch != 0)
+        {
+            const outerOp = this.getSubPatchOuterOp(subpatch);
+            console.log("outerop...", outerOp);
+
+            const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+            console.log("unsaved...", ops);
+
+
+            for (let i = 0; i < ops.length; i++)
+            {
+                console.log(ops[i].op.opId, outerOp.opId);
+                if (ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
+                {
+                    let subid = ops[i].subId;
+                    gui.restriction.setMessage("subpatchref", "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" + subid + "\")'>goto patch</a>");
+                }
+            }
+        }
+
+
+
+
+
+
         if (this._patchRenderer.setCurrentSubPatch)
         {
             this._patchRenderer.setCurrentSubPatch(subpatch,
