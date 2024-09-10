@@ -128,21 +128,16 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatch2InnerInputOp = function (subPatchId)
     {
-        const ops = this.ops;// gui.corePatch().getSubPatchOps(subPatchId);
-
+        const ops = gui.corePatch().getSubPatchOps(subPatchId);
         for (let i = 0; i < ops.length; i++)
-        {
             if (ops[i].innerInput) return ops[i];
-        }
     };
 
     CABLES.Patch.prototype.getSubPatch2InnerOutputOp = function (subPatchId)
     {
         const ops = gui.corePatch().getSubPatchOps(subPatchId);
         for (let i = 0; i < ops.length; i++)
-        {
             if (ops[i].innerOutput) return ops[i];
-        }
     };
 
     CABLES.Patch.prototype.buildSubPatchCache = () =>

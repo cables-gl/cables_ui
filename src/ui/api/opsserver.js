@@ -1432,7 +1432,6 @@ export default class ServerOps
                                         {
                                             ports = { "ports": [] };
                                         }
-                                        // const src = subPatchOpUtil.generatePortsAttachmentJsSrc(ports);
 
                                         subPatchOpUtil.savePortJsonSubPatchOpAttachment(ports, opname, () =>
                                         {

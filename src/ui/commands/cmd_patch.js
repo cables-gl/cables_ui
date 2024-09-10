@@ -367,8 +367,9 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 const oldLinks = [];
 
                 // find ops that are crosslinked...
-                // todo: relink somehow ?
                 const ops = gui.corePatch().getSubPatchOps(patchId);
+
+                console.log("subpatchops", ops.length);
 
                 for (let i = 0; i < ops.length; i++)
                 {
@@ -408,7 +409,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 }
 
                 console.log(oldLinks.length + " oldlinks");
-                // loadingModal.setTask("Creating blueprint op");
 
                 gui.patchView.addOp(newOpname,
                     {
@@ -420,11 +420,10 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                             {
                                 const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
+                                console.log(src, portJson);
 
                                 gui.corePatch().deleteOp(OpTempSubpatch.id);
                                 gui.patchView.setCurrentSubPatch(currentSubpatch);
-
-                                // loadingModal.setTask("Creating ports...");
 
                                 CABLESUILOADER.talkerAPI.send("opUpdate",
                                     {
@@ -446,12 +445,13 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             return;
                                         }
 
-                                        // loadingModal.setTask("Execute code");
-
                                         gui.serverOps.execute(newOpname, (newOps) =>
                                         {
                                             newOp = newOps[0];
+
+                                            console.log(newOp);
                                             const subPatchId = newOp.patchId.get();
+                                            console.log("subPatchId", subPatchId);
 
                                             // relink inside ports....
                                             const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
@@ -461,7 +461,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 const oldLink = oldLinks[j];
                                                 newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
 
-                                                let found = false;
                                                 for (let i = 0; i < subOps.length; i++)
                                                 {
                                                     const op = subOps[i];
@@ -469,7 +468,11 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     {
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
 
-                                                        if (!patchInputOP)console.log("no patchInputOP");
+                                                        // if (!patchInputOP)console.log("no patchInputOP");
+
+                                                        console.log(patchInputOP, patchInputOP.uiAttribs);
+
+
                                                         let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
 
                                                         if (!l)
@@ -499,18 +502,15 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     "next": () =>
                                                     {
                                                         // console.log("bp", bp);
-
                                                         // CABLES.CMD.PATCH.save();
                                                     } });
                                             }
 
 
                                             gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                                            // gui.endModalLoading();
                                             gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
                                         });
                                     });
-                                // });
                             }, { "doNotExecute": true });
                         }
                     });
