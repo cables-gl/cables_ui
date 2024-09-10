@@ -488,7 +488,7 @@ export default class PatchSaveServer extends Events
                 if (datastr.length > 12 * 1024 * 1024)
                     notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
 
-                gui.savingTitleAnimStart("Saving Patch");
+                gui.savingTitleAnimStart("Saving Patch...");
 
                 // document.getElementById("patchname").innerHTML = "Saving Patch";
                 // document.getElementById("patchname").classList.add("blinking");

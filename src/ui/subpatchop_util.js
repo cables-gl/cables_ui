@@ -662,16 +662,24 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
 
-    gui.savingTitleAnimStart("Saving subpatch");
-
-    // const loadingModal = gui.startModalLoading("serialize ops");
+    gui.savingTitleAnimStart("Saving Subpatch Op...");
 
     const subId = CABLES.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
-
-    // loadingModal.setTask("save attachment...");
-
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
+
+
+    // centerSubPatchBounds
+    // CABLES_CMD_PATCH.centerOpsInSubpatch
+    const origOpsBounds = gui.patchView.getSubPatchBounds(gui.patchView.getCurrentSubPatch());
+    if (origOpsBounds.maxAxis > 10000000)
+    {
+        CABLES.CMD.PATCH.centerOpsInSubpatch();
+        gui.patchView._patchRenderer.viewBox.centerSelectedOps();
+
+        this._log.log("subpatch huge... center subpatch...");
+    }
+
 
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentSave",

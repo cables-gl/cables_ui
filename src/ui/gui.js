@@ -1105,8 +1105,12 @@ export default class Gui extends Events
         const elePatchName = ele.byId("patchname");
         elePatchName.classList.remove("blinking");
 
+
         if (elePatchName.dataset.patchname != "undefined")
-            elePatchName.innerHTML = elePatchName.dataset.patchname;
+            setTimeout(() =>
+            {
+                elePatchName.innerHTML = elePatchName.dataset.patchname;
+            }, 200);
     }
 
     savingTitleAnimStart(title)
