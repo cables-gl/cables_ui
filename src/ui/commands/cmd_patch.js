@@ -327,7 +327,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
-    const loadingModal = gui.startModalLoading("Create Subpatch");
+    // const loadingModal = gui.startModalLoading("Create Subpatch");
 
     for (let i = 0; i < selops.length; i++)
     {
@@ -408,7 +408,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 }
 
                 console.log(oldLinks.length + " oldlinks");
-                loadingModal.setTask("Creating blueprint op");
+                // loadingModal.setTask("Creating blueprint op");
 
                 gui.patchView.addOp(newOpname,
                     {
@@ -424,7 +424,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                 gui.corePatch().deleteOp(OpTempSubpatch.id);
                                 gui.patchView.setCurrentSubPatch(currentSubpatch);
 
-                                loadingModal.setTask("Creating ports...");
+                                // loadingModal.setTask("Creating ports...");
 
                                 CABLESUILOADER.talkerAPI.send("opUpdate",
                                     {
@@ -446,7 +446,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             return;
                                         }
 
-                                        loadingModal.setTask("Execute code");
+                                        // loadingModal.setTask("Execute code");
 
                                         gui.serverOps.execute(newOpname, (newOps) =>
                                         {
@@ -506,7 +506,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
 
                                             gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                                            gui.endModalLoading();
+                                            // gui.endModalLoading();
                                             gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
                                         });
                                     });
@@ -1345,7 +1345,7 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
     });
 };
 
-CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
+CABLES_CMD_PATCH.cloneSelectedOps = (ops) =>
 {
     if (!ops)
     {
@@ -1378,7 +1378,7 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
         if (ops.length == 0) return;
     }
 
-    loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+    // loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
 
 
     if (ops.length == 0)
@@ -1394,7 +1394,7 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     {
         // that opname was already renamed in list
         gui.patchView.replaceOp(op.id, newOpname);
-        CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+        CABLES_CMD_PATCH.cloneSelectedOps(ops);
     }
     else
     {
@@ -1406,9 +1406,9 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
 
                 CABLES.UI.notify("created op " + newOpname, null, { "force": true });
 
-                CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+                CABLES_CMD_PATCH.cloneSelectedOps(ops);
             });
-        }, { "openEditor": false, "loadingModal": loadingModal });
+        }, { "openEditor": false });
     }
 };
 

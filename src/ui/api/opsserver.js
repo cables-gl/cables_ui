@@ -122,9 +122,10 @@ export default class ServerOps
 
     create(name, cb, openEditor, options = {})
     {
-        const loadingModal = gui.startModalLoading("Creating op...");
+        // const loadingModal = gui.startModalLoading("Creating op...");
+        gui.savingTitleAnimStart("Creating Op...");
 
-        loadingModal.setTask("Creating Op");
+        // loadingModal.setTask("Creating Op");
 
         const createRequest = {
             "opname": name
@@ -139,17 +140,19 @@ export default class ServerOps
                 if (err)
                 {
                     gui.serverOps.showApiError(err);
-                    loadingModal.close();
+                    gui.savingTitleAnimEnd();
+                    // loadingModal.close();
                     if (cb)cb();
                 }
                 else
                 {
-                    loadingModal.setTask("Loading Op");
+                    // loadingModal.setTask("Loading Op");
 
                     function done()
                     {
                         gui.opSelect().reload();
                         gui.endModalLoading();
+                        gui.savingTitleAnimEnd();
                         if (cb)cb();
                     }
 
@@ -296,7 +299,6 @@ export default class ServerOps
 
         gui.savedState.pause();
 
-        console.log(opIdentifier, refOldOp);
         let oldOps = null;
         if (opIdentifier.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
         else oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
@@ -339,9 +341,11 @@ export default class ServerOps
     {
         options = options || { "openEditor": true };
 
-        const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
+        // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
+        gui.savingTitleAnimStart("Cloning Op...");
 
-        loadingModal.setTask("cloning " + oldname + " to " + name);
+
+        // loadingModal.setTask("cloning " + oldname + " to " + name);
 
         const cloneRequest = {
             "opname": oldname,
@@ -357,7 +361,8 @@ export default class ServerOps
                 if (err)
                 {
                     this._log.log("err res", res);
-                    gui.endModalLoading();
+                    // gui.endModalLoading();
+                    gui.savingTitleAnimEnd();
 
                     CABLES.UI.MODAL.showError("Could not clone op", "");
 
@@ -370,10 +375,11 @@ export default class ServerOps
                     {
                         if (options.openEditor) this.edit(name);
 
-                        loadingModal.setTask("loading new op: " + name);
+                        // loadingModal.setTask("loading new op: " + name);
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
-                        if (!options.loadingModal) gui.endModalLoading();
+                        // if (!options.loadingModal) gui.endModalLoading();
+                        gui.savingTitleAnimEnd();
                         if (cb)cb();
                     });
                 };
@@ -1392,7 +1398,8 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            const loadingModal = gui.startModalLoading("Save attachment...");
+                            // const loadingModal = gui.startModalLoading("Save attachment...");
+                            gui.savingTitleAnimStart("Save attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -1432,7 +1439,7 @@ export default class ServerOps
                                             subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
-                                                gui.endModalLoading();
+                                                gui.savingTitleAnimStart;
                                             });
                                         });
                                     }
@@ -1440,7 +1447,7 @@ export default class ServerOps
                                         subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
-                                            gui.endModalLoading();
+                                            gui.savingTitleAnimStart;
                                         });
                                 },
                             );

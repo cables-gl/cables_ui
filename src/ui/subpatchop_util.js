@@ -172,7 +172,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
 subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 {
-    const loadingModal = gui.startModalLoading("Modify port ...");
+    // const loadingModal = gui.startModalLoading("Modify port ...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
@@ -186,7 +186,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
         for (let k = 0; k < ops[i].portsOut.length; k++) ops[i].portsOut[k].setUiAttribs({ "title": null });
     }
 
-    loadingModal.setTask("getting ports json");
+    // loadingModal.setTask("getting ports json");
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
         {
@@ -218,11 +218,11 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
                 }
             }
 
-            loadingModal.setTask("saving ports json");
+            // loadingModal.setTask("saving ports json");
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op4");
+                // loadingModal.setTask("reload op4");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -245,14 +245,14 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 
 subPatchOpUtil.portJsonDelete = (opId, portid) =>
 {
-    const loadingModal = gui.startModalLoading("Deleting port...");
+    // const loadingModal = gui.startModalLoading("Deleting port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
-    loadingModal.setTask("getting ports json");
+    // loadingModal.setTask("getting ports json");
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
         {
@@ -269,11 +269,11 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
             js.ports = subPatchOpUtil.sortPortsJsonPorts(js.ports);
 
-            loadingModal.setTask("saving ports json");
+            // loadingModal.setTask("saving ports json");
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op3");
+                // loadingModal.setTask("reload op3");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -294,13 +294,13 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
 subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 {
-    const loadingModal = gui.startModalLoading("Moving port...");
+    // const loadingModal = gui.startModalLoading("Moving port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
-    loadingModal.setTask("getting ports json");
+    // loadingModal.setTask("getting ports json");
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
         {
@@ -341,11 +341,11 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 
             array_move(js.ports, idx, newIndex);
 
-            loadingModal.setTask("saving ports json");
+            // loadingModal.setTask("saving ports json");
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op2");
+                // loadingModal.setTask("reload op2");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -759,7 +759,7 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 
 subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
 {
-    const loadingModal = gui.startModalLoading("save op code");
+    // const loadingModal = gui.startModalLoading("save op code");
 
     CABLESUILOADER.talkerAPI.send("opUpdate",
         {
@@ -777,7 +777,7 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
                 this.showApiError(err);
                 return;
             }
-            loadingModal.setTask("update bp2 attachment");
+            // loadingModal.setTask("update bp2 attachment");
 
             if (oldSubpatchOp && newOp)
                 newOp.setUiAttrib(
