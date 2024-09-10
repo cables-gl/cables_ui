@@ -444,13 +444,14 @@ subPatchOpUtil.sortPortsJsonPorts = (ports) =>
 subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 {
     options = options || {};
-    const loadingModal = gui.startModalLoading("Adding port");
+    // const loadingModal = gui.startModalLoading("Adding port");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     gui.patchView.unselectAllOps();
 
-    loadingModal.setTask("getting ports json");
+    // loadingModal.setTask("getting ports json");
+    gui.savingTitleAnimStart("Adding Subpatch Port...");
 
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
@@ -470,11 +471,11 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
             js.ports.push(newPortJson);
             js.ports = subPatchOpUtil.sortPortsJsonPorts(js.ports);
 
-            loadingModal.setTask("saving ports json");
+            // loadingModal.setTask("saving ports json");
 
             subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
-                loadingModal.setTask("reload op1");
+                // loadingModal.setTask("reload op1");
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
@@ -505,7 +506,9 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
                         );
                     }
 
-                    gui.endModalLoading();
+                    // console.log("endmodal...");
+                    // gui.endModalLoading();
+                    gui.savingTitleAnimEnd();
                     if (options.cb)options.cb(newPortJson, newOp);
                 });
             });
@@ -701,12 +704,12 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 
             gui.showLoadingProgress(false);
 
-            if (options.loadingModal) options.loadingModal.setTask("update project date...");
+            // if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
-            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { }, (e, res) =>
-            {
-                gui.patchView.store._serverDate = res.data.updated;
-            });
+            // CABLESUILOADER.talkerAPI.send("setProjectUpdated", { }, (e, res) =>
+            // {
+            //     gui.patchView.store._serverDate = res.data.updated;
+            // });
 
             if (newOp.patchId)
                 gui.savedState.setSaved("saved bp", newOp.patchId.get());

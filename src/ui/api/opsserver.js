@@ -322,23 +322,13 @@ export default class ServerOps
 
                     if (newOps.length > 0)
                     {
-                        // const newLayout = this._getOpLayout(newOps[0]);
-                        // if (JSON.stringify(oldLayout) == JSON.stringify(newLayout))
-                        // {
-                        //     console.log("layout did not change...");
-                        // }
-
                         this.saveOpLayout(newOps[0]);
                     }
                     gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
 
-
-
-
-
-                    if (next)next(newOps, refOldOp);
                     gui.savedState.resume();
+                    if (next)next(newOps, refOldOp);
                 },
                 refOldOp
             );
