@@ -240,6 +240,7 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
         {
+            console.log("talkerapi execute op");
             if (options && options.name)
             {
                 gui.closeModal();
