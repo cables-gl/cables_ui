@@ -38,6 +38,7 @@ export default class GlPatch extends Events
 
         this._log = new Logger("glpatch");
         this.paused = false;
+        this.pauseTimeOut = null;
         this.blueprint = false;
         this._cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
@@ -1477,8 +1478,6 @@ export default class GlPatch extends Events
         this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
         this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
 
-
-
         this.pauseTimeOut = setTimeout(() =>
         {
             this.paused = true;
@@ -1487,7 +1486,7 @@ export default class GlPatch extends Events
 
     subPatchOpAnimEnd(opid)
     {
-        this.clearTimeout(this.pauseTimeOut);
+        clearTimeout(this.pauseTimeOut);
         this.paused = false;
         const dur = 0.25;
         const glop = this._glOpz[opid];
