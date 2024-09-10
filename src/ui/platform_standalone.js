@@ -55,7 +55,7 @@ export default class PlatformStandalone extends Platform
 
     getCablesDocsUrl()
     {
-        return "https://cables.gl";
+        return this._cfg.communityUrl || "https://cables.gl";
     }
 
     getIssueTrackerUrl()
