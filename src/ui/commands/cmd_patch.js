@@ -467,18 +467,19 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 let found = false;
                                                 for (let i = 0; i < subOps.length; i++)
                                                 {
-                                                    if (subOps[i].uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
+                                                    const op = subOps[i];
+                                                    if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                     {
-                                                        const op = subOps[i];
-
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                        let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+
+                                                        if (!patchInputOP)console.log("no patchInputOP");
+                                                        let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
 
 
                                                         if (!l)
                                                         {
                                                             let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                            l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+                                                            l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
                                                         }
 
                                                         if (!l)console.log("could not recreate oldlink", oldLink);
