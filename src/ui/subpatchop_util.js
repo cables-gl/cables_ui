@@ -668,8 +668,6 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options = {}) =>
 {
     const oldSubId = options.oldSubId || 0;
 
-    console.log(newOp.uiAttribs.subPatch, oldSubId, newOp);
-
     gui.savingTitleAnimStart("Saving Subpatch Op...");
 
     const subId = CABLES.shortId();
