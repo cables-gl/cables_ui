@@ -310,7 +310,7 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
-        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId);
+        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId); //d....
 
         this.loadOpDependencies(name, () =>
         {
@@ -322,7 +322,7 @@ export default class ServerOps
 
                     if (newOps.length > 0)
                     {
-                        // this.saveOpLayout(newOps[0]);
+                        this.saveOpLayout(newOps[0]);
                     }
                     gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
