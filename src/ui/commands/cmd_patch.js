@@ -368,42 +368,61 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     // find ops that are crosslinked...
                     const ops = gui.corePatch().getSubPatchOps(patchId);
 
+                    let unlink = [];
                     for (let i = 0; i < ops.length; i++)
                     {
                         const op = ops[i];
                         for (let j = 0; j < op.portsIn.length; j++)
                         {
                             const portIn = op.portsIn[j];
-                            if (portIn.isLinked() && portIn.links[0])
+                            let pJson;
+                            for (let k = 0; k < op.portsIn[j].links.length; k++)
                             {
-                                const p2 = portIn.links[0].getOtherPort(portIn);
-                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                if (portIn.isLinked() && portIn.links[k])
                                 {
-                                    const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
-                                    portJson.ports.push(pJson);
-                                    portIn.removeLinks();
-                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
+                                    const p2 = portIn.links[k].getOtherPort(portIn);
+                                    if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                    {
+                                        if (k == 0)
+                                        {
+                                            pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
+                                            portJson.ports.push(pJson);
+                                        }
+
+                                        op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                        oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
+                                        unlink.push(portIn.links[k]);
+                                    }
                                 }
                             }
                         }
+
                         for (let j = 0; j < op.portsOut.length; j++)
                         {
                             const portOut = op.portsOut[j];
                             if (portOut.isLinked())
                             {
-                                const p2 = portOut.links[0].getOtherPort(portOut);
-                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                let pJson = null;
+                                for (let k = 0; k < portOut.links.length; k++)
                                 {
-                                    const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
-                                    portJson.ports.push(pJson);
-                                    portOut.removeLinks();
-                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
+                                    const p2 = portOut.links[k].getOtherPort(portOut);
+                                    if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                    {
+                                        if (k == 0)
+                                        {
+                                            pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
+                                            portJson.ports.push(pJson);
+                                        }
+                                        op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                        oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
+                                        unlink.push(portOut.links[k]);
+                                    }
                                 }
                             }
                         }
                     }
+
+                    unlink.forEach((l) => { l.remove(); });
 
                     gui.patchView.addOp(newOpname,
                         {
