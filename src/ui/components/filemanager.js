@@ -442,7 +442,8 @@ export default class FileManager
                         editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
 
 
-                        let assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
+                        let assetPath = "";
+                        if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
                         if (CABLES.platform.frontendOptions.isStandalone) assetPath = r.path;
 
                         html = getHandleBarHtml("filemanager_details", {
