@@ -787,12 +787,15 @@ export default class PatchView extends Events
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
                 bb.applyPos(ops[j].uiAttribs.translate.x, ops[j].uiAttribs.translate.y, 0);
-                bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
+
+                const glop = this.patchRenderer.getGlOp(ops[j]);
+                if (glop) bb.applyPos(ops[j].uiAttribs.translate.x + glop.w, ops[j].uiAttribs.translate.y + glop.h, 0);
+                else bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
             }
         }
 
         bb.calcCenterSize();
-
+        // this.patchRenderer.subPatchOpAnimStart(bb, null);
         return bb;
     }
 

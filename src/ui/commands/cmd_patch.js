@@ -319,191 +319,191 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
 
     const origOpsBounds = gui.patchView.getSelectionBounds();
-    gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds);
-
-    const selops = gui.patchView.getSelectedOps();
-
-    let selectedOpIds = gui.patchView.getSelectedOpsIds();
-    const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
-    const currentSubpatch = gui.patchView.getCurrentSubPatch();
-    // const loadingModal = gui.startModalLoading("Create Subpatch");
-
-    for (let i = 0; i < selops.length; i++)
+    gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds, () =>
     {
-        if (selops[i].isSubPatchOp())
+        const selops = gui.patchView.getSelectedOps();
+
+        let selectedOpIds = gui.patchView.getSelectedOpsIds();
+        const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
+        const currentSubpatch = gui.patchView.getCurrentSubPatch();
+        // const loadingModal = gui.startModalLoading("Create Subpatch");
+
+        for (let i = 0; i < selops.length; i++)
         {
-            if (selops[i].storage && selops[i].storage.subPatchVer != 2)
+            if (selops[i].isSubPatchOp())
             {
-                new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
-
-                return;
-            }
-        }
-    }
-
-    gui.serverOps.create(newOpname, () =>
-    {
-        let newselectedOpIds = [];
-
-        for (let i = 0; i < selectedOpIds.length; i++)
-        {
-            gui.patchView.selectOpId(selectedOpIds[i]);
-
-            const op = gui.corePatch().getOpById(selectedOpIds[i]);
-            if (op.isSubPatchOp())
-            {
-                const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
-                for (let j = 0; j < newops.length; j++)
-                    newselectedOpIds.push(newops[j].id);
-            }
-        }
-
-
-        gui.patchView.createSubPatchFromSelection(2,
-            (patchId, OpTempSubpatch) =>
-            {
-                const portJson = { "ports": [] };
-                const oldLinks = [];
-
-                // find ops that are crosslinked...
-                const ops = gui.corePatch().getSubPatchOps(patchId);
-
-                for (let i = 0; i < ops.length; i++)
+                if (selops[i].storage && selops[i].storage.subPatchVer != 2)
                 {
-                    const op = ops[i];
-                    for (let j = 0; j < op.portsIn.length; j++)
-                    {
-                        const portIn = op.portsIn[j];
-                        if (portIn.isLinked() && portIn.links[0])
-                        {
-                            const p2 = portIn.links[0].getOtherPort(portIn);
-                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                            {
-                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
-                                portJson.ports.push(pJson);
-                                portIn.removeLinks();
-                                op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
-                            }
-                        }
-                    }
-                    for (let j = 0; j < op.portsOut.length; j++)
-                    {
-                        const portOut = op.portsOut[j];
-                        if (portOut.isLinked())
-                        {
-                            const p2 = portOut.links[0].getOtherPort(portOut);
-                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                            {
-                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
-                                portJson.ports.push(pJson);
-                                portOut.removeLinks();
-                                op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
-                            }
-                        }
-                    }
+                    new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
+
+                    return;
                 }
+            }
+        }
 
-                gui.patchView.addOp(newOpname,
+        gui.serverOps.create(newOpname, () =>
+        {
+            let newselectedOpIds = [];
+
+            for (let i = 0; i < selectedOpIds.length; i++)
+            {
+                gui.patchView.selectOpId(selectedOpIds[i]);
+
+                const op = gui.corePatch().getOpById(selectedOpIds[i]);
+                if (op.isSubPatchOp())
+                {
+                    const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
+                    for (let j = 0; j < newops.length; j++)
+                        newselectedOpIds.push(newops[j].id);
+                }
+            }
+
+
+            gui.patchView.createSubPatchFromSelection(2,
+                (patchId, OpTempSubpatch) =>
+                {
+                    const portJson = { "ports": [] };
+                    const oldLinks = [];
+
+                    // find ops that are crosslinked...
+                    const ops = gui.corePatch().getSubPatchOps(patchId);
+
+                    for (let i = 0; i < ops.length; i++)
                     {
-                        "uiAttribs": {
-                            "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
-                        },
-                        "onOpAdd": (newOp) =>
+                        const op = ops[i];
+                        for (let j = 0; j < op.portsIn.length; j++)
                         {
-                            subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                            const portIn = op.portsIn[j];
+                            if (portIn.isLinked() && portIn.links[0])
                             {
-                                const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
+                                const p2 = portIn.links[0].getOtherPort(portIn);
+                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                {
+                                    const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
+                                    portJson.ports.push(pJson);
+                                    portIn.removeLinks();
+                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
+                                }
+                            }
+                        }
+                        for (let j = 0; j < op.portsOut.length; j++)
+                        {
+                            const portOut = op.portsOut[j];
+                            if (portOut.isLinked())
+                            {
+                                const p2 = portOut.links[0].getOtherPort(portOut);
+                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                {
+                                    const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
+                                    portJson.ports.push(pJson);
+                                    portOut.removeLinks();
+                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
+                                }
+                            }
+                        }
+                    }
 
-                                gui.corePatch().deleteOp(OpTempSubpatch.id);
-                                gui.patchView.setCurrentSubPatch(currentSubpatch);
+                    gui.patchView.addOp(newOpname,
+                        {
+                            "uiAttribs": {
+                                "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
+                            },
+                            "onOpAdd": (newOp) =>
+                            {
+                                subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                                {
+                                    const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
-                                CABLESUILOADER.talkerAPI.send("opUpdate",
-                                    {
-                                        "opname": newOpname,
-                                        "update": {
-                                            "attachments":
-                                            {
-                                                "att_inc_gen_ports.js": src,
-                                                "att_ports.json": JSON.stringify(portJson)
-                                            }
-                                        }
-                                    },
-                                    (err, r) =>
-                                    {
-                                        if (err)
+                                    gui.corePatch().deleteOp(OpTempSubpatch.id);
+                                    gui.patchView.setCurrentSubPatch(currentSubpatch);
+
+                                    CABLESUILOADER.talkerAPI.send("opUpdate",
                                         {
-                                            // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                                            this.showApiError(err);
-                                            return;
-                                        }
-
-                                        gui.serverOps.execute(newOpname, (newOps) =>
-                                        {
-                                            newOp = newOps[0];
-
-                                            const subPatchId = newOp.patchId.get();
-
-                                            // relink inside ports....
-                                            const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
-                                            for (let j = 0; j < oldLinks.length; j++)
-                                            {
-                                                // outer linking
-                                                const oldLink = oldLinks[j];
-                                                newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
-
-                                                for (let i = 0; i < subOps.length; i++)
+                                            "opname": newOpname,
+                                            "update": {
+                                                "attachments":
                                                 {
-                                                    const op = subOps[i];
-                                                    if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
-                                                    {
-                                                        let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                        let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
-
-                                                        if (!l)
-                                                        {
-                                                            let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                            l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
-                                                        }
-
-                                                        if (!l)console.log("could not recreate oldlink", oldLink);
-                                                    }
+                                                    "att_inc_gen_ports.js": src,
+                                                    "att_ports.json": JSON.stringify(portJson)
                                                 }
                                             }
-
-                                            for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
-
-                                            if (selectedOpIds.length == 0) newOp.setPos(0, 0);
-                                            else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
-
-                                            gui.patchView.testCollision(newOp);
-                                            gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
-
-                                            if (!gui.savedState.getStateBlueprint(subPatchId))
+                                        },
+                                        (err, r) =>
+                                        {
+                                            if (err)
                                             {
-                                                console.log("need so save subpatchop AGAIN");
-
-                                                subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
-                                                    "next": () =>
-                                                    {
-                                                        // console.log("bp", bp);
-                                                        // CABLES.CMD.PATCH.save();
-                                                    } });
+                                                // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                this.showApiError(err);
+                                                return;
                                             }
 
+                                            gui.serverOps.execute(newOpname, (newOps) =>
+                                            {
+                                                newOp = newOps[0];
 
-                                            gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                                            gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                                const subPatchId = newOp.patchId.get();
+
+                                                // relink inside ports....
+                                                const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
+                                                for (let j = 0; j < oldLinks.length; j++)
+                                                {
+                                                    // outer linking
+                                                    const oldLink = oldLinks[j];
+                                                    newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+
+                                                    for (let i = 0; i < subOps.length; i++)
+                                                    {
+                                                        const op = subOps[i];
+                                                        if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
+                                                        {
+                                                            let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                            let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
+
+                                                            if (!l)
+                                                            {
+                                                                let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
+                                                            }
+
+                                                            if (!l)console.log("could not recreate oldlink", oldLink);
+                                                        }
+                                                    }
+                                                }
+
+                                                for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
+
+                                                if (selectedOpIds.length == 0) newOp.setPos(0, 0);
+                                                else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
+
+                                                gui.patchView.testCollision(newOp);
+                                                gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
+
+                                                if (!gui.savedState.getStateBlueprint(subPatchId))
+                                                {
+                                                    console.log("need so save subpatchop AGAIN");
+
+                                                    subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                        "next": () =>
+                                                        {
+                                                            // console.log("bp", bp);
+                                                            // CABLES.CMD.PATCH.save();
+                                                        } });
+                                                }
+
+
+                                                gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+                                                gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                            });
                                         });
-                                    });
-                            }, { "doNotExecute": true });
-                        }
-                    });
-            },
-            { "translate": { "x": 0, "y": 0 } });
-    }, false, { "noLoadOp": true });
-    // }, 1400);
+                                }, { "doNotExecute": true });
+                            }
+                        });
+                },
+                { "translate": { "x": 0, "y": 0 } });
+        }, false, { "noLoadOp": true });
+    });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)

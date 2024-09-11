@@ -975,12 +975,7 @@ export default class GlPatch extends Events
                 gui.theme.colors_patch.background[3]);
         }
 
-        if (this._subpatchoprect)
-        {
-            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), gluiconfig.zPosGlRectSelected);
-            this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
-            this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
-        }
+        this.updateSubPatchOpAnim();
 
         // if (
         //     this._portDragLine.isActive &&
@@ -1446,7 +1441,18 @@ export default class GlPatch extends Events
     }
 
 
-    subPatchOpAnimStart(bounds)
+    updateSubPatchOpAnim()
+    {
+        if (this._subpatchoprect)
+        {
+            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), gluiconfig.zPosGlRectSelected);
+            this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
+            this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
+        }
+    }
+
+
+    subPatchOpAnimStart(bounds, next)
     {
         this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
@@ -1461,37 +1467,36 @@ export default class GlPatch extends Events
         if (this._subpatchoprect) this._subpatchoprect.dispose();
         this._subpatchoprect = this._overLayRects.createRect();
 
-        this._subpatchoprect.setPosition(bounds.minX - gui.theme.patch.selectedOpBorderX / 2, bounds.minY - gui.theme.patch.selectedOpBorderY / 2);
-        this._subpatchoprect.setSize(
-            Math.abs((bounds.maxX + gui.theme.patch.selectedOpBorderX) - (bounds.minX - gui.theme.patch.selectedOpBorderX / 2)),
-            Math.abs((bounds.maxY + gui.theme.patch.selectedOpBorderY * 2) - (bounds.minY - gui.theme.patch.selectedOpBorderY / 2))
-        );
-        // this._subpatchoprect.setColor(gui.theme.colors_patch.opBgRect);
-        this._subpatchoprect.setColor(gui.theme.colors_patch.selected);
-        // this._subpatchoprect.setColor(gui.theme.colors_patch.background);
+
+        let col = gui.theme.colors_patch.opBgRect;
+        this._subpatchoprect.setColor(col);
+
+        let dur = 0.4;
+
         this._subpatchAnimFade.setValue(this._time, 0.0);
-        this._subpatchAnimFade.setValue(this._time + 0.25, 0.25);
-
-
-        this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
-        this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
-        this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
-        this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
-
-        this.pauseTimeOut = setTimeout(() =>
+        this._subpatchAnimFade.setValue(this._time + dur, 0.4, () =>
         {
-            this.paused = true;
-        }, 260);
+            if (next)
+            {
+                this.paused = true;
+                next();
+            }
+        });
+        this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
+        this._subpatchAnimOutX.setValue(this._time, bounds.minX - gui.theme.patch.selectedOpBorderX / 2);
+        this._subpatchAnimOutY.setValue(this._time, bounds.minY - gui.theme.patch.selectedOpBorderY / 2);
+        this._subpatchAnimOutW.setValue(this._time, bounds.size[0] + gui.theme.patch.selectedOpBorderX);
+        this._subpatchAnimOutH.setValue(this._time, bounds.size[1] + gui.theme.patch.selectedOpBorderY);
+
+        this.updateSubPatchOpAnim();
     }
 
     subPatchOpAnimEnd(opid)
     {
-        clearTimeout(this.pauseTimeOut);
+        // clearTimeout(this.pauseTimeOut);
         this.paused = false;
         const dur = 0.25;
         const glop = this._glOpz[opid];
-
-        this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
 
         this._subpatchAnimOutX.clear();
         this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
