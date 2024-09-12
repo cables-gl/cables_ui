@@ -234,12 +234,30 @@
     // border:1px solid blue;
     // overflow-y:hide;
 
+
+    .ace_gutter-active-line
+    {
+        background-color: #696a6b;
+    }
+
     .ace_content *
     {
         font-family: sourceCodePro;
         -webkit-font-smoothing: subpixel-antialiased;
 
     }
+
+    .ace_selection
+    {
+        background-color: #188eac !important;
+        border:0 !important;
+    }
+    .ace_selected-word
+    {
+        background-color: #14748b !important;
+        border:0 !important;
+    }
+
 }
 
 
