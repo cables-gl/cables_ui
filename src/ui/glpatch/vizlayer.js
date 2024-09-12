@@ -380,15 +380,17 @@ export default class VizLayer extends Events
 
             if (hl)
             {
-                const data = hljs.highlight(lines[i], { "language": "glsl" });
+                const data = hljs.highlight(lines[i], { "language": options.syntax });
 
                 let fake = "";
                 for (let j = 0; j < data._emitter.rootNode.children.length; j++)
                 {
                     const child = data._emitter.rootNode.children[j];
+                    let nextChild = null;
+                    if (data._emitter.rootNode.children.length >= j + 1) nextChild = data._emitter.rootNode.children[j + 1];
                     if (typeof child == "string")
                     {
-                        ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+                        ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#888";
                         ctx.fillText(indent + fake + child,
                             layer.x / layer.scale + padding,
                             layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
@@ -401,8 +403,13 @@ export default class VizLayer extends Events
                             if (child.scope == "built_in")ctx.fillStyle = "#418ce9"; // blue
                             else if (child.scope == "comment")ctx.fillStyle = "#0b0"; // green
                             else if (child.scope == "number")ctx.fillStyle = "#49d6b2"; // cyan
+                            else if (options.syntax == "js" && child.scope == "string" && nextChild && nextChild == ": ")
+                            {
+                                ctx.fillStyle = "#ecce64";
+                            }
+                            else if (child.scope == "string")ctx.fillStyle = "#d57272";
                             else if (child.scope == "literal")ctx.fillStyle = "#49d6b2"; // cyan
-                            else if (child.scope == "meta" || child.scope == "keyword" || child.scope == "type")ctx.fillStyle = "#ecce64"; // yello
+                            else if (child.scope == "meta" || child.scope == "keyword" || child.scope == "type") ctx.fillStyle = "#ecce64"; // yello
                             else
                             {
                                 ctx.fillStyle = "#d00";
