@@ -126,7 +126,7 @@ export default class SavedState extends Events
     {
         if (this._paused) return;
 
-        // console.log("setUnSaved", initiator);
+        console.log("setUnSaved", initiator);
 
         if (subpatch === undefined)
         {

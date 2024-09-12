@@ -476,7 +476,7 @@ export default class Gui extends Events
     {
         this.pauseProfiling();
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
-
+        let canvasScale = 1;
         // this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
@@ -555,8 +555,11 @@ export default class Gui extends Events
             this.rendererHeight = window.innerHeight;
         }
 
-        this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
-        this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
+        if (this._corePatch.cgl && this._corePatch.cgl.canvasScale)canvasScale = this._corePatch.cgl.canvasScale;
+
+
+        this.rendererWidthScaled = this.rendererWidth * canvasScale;
+        this.rendererHeightScaled = this.rendererHeight * canvasScale;
 
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
@@ -812,7 +815,7 @@ export default class Gui extends Events
         }
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
-        ele.byId("canvasicons").style.width = (this.rendererWidth * this._corePatch.cgl.canvasScale) + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
         ele.byId("canvasicons").style.right = (0) + "px";
 
         const widthResizeIcon = 30;
@@ -919,12 +922,12 @@ export default class Gui extends Events
             this._elCablesCanvasContainer.style.right = "0px";
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
-            this._elCablesCanvasContainer.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
+            this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";
         }
 
         // flashing canvas overlay when saving
-        this._elCanvasFlash.style.width = this.rendererWidth * this._corePatch.cgl.canvasScale + "px";
-        this._elCanvasFlash.style.height = this.rendererHeight * this._corePatch.cgl.canvasScale + "px";
+        this._elCanvasFlash.style.width = this.rendererWidth * canvasScale + "px";
+        this._elCanvasFlash.style.height = this.rendererHeight * canvasScale + "px";
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
