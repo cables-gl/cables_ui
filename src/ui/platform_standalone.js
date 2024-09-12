@@ -1,6 +1,8 @@
+// import process from "node:process";
 import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
+
 
 /**
  * platform for standalone / electron version
@@ -37,6 +39,19 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showStartUpLog = true;
 
         this.frontendOptions.showFormatCodeButton = false;
+
+        this.bindHrTimer();
+    }
+
+    bindHrTimer()
+    {
+        const process = window.nodeRequire("node:process");
+        const startTime = process.hrtime();
+        performance.now = () =>
+        {
+            let t = process.hrtime(startTime);
+            return t[0] * 1000 + t[1] / 1000000;
+        };
     }
 
     isStandalone()
