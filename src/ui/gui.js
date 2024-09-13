@@ -1500,7 +1500,7 @@ export default class Gui extends Events
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); });
 
-        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null); });
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
         ele.byId("nav_op_patchOp").addEventListener("click", (event) =>
         {
             gui.patchView.unselectAllOps();

@@ -533,7 +533,7 @@ body
 
     }
 
-    #opNameDialogConsequences, #opcreateerrors
+    #opNameDialogConsequences, #opNameDialogHints, #opcreateerrors
     {
         h3
         {
@@ -551,6 +551,11 @@ body
     #opNameDialogConsequences
     {
         border-left:5px solid #5CB59E;
+    }
+
+    #opNameDialogHints
+    {
+        border-left:5px solid #EBA605;
     }
 
     #notify
