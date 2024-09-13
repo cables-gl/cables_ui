@@ -295,12 +295,16 @@
         font-family: monospace;
         *
         {
-            color:#999
+            color:#c8c8c8;
         }
 
+        .outerInitiator
+        {
+            color:#777;
+        }
         .initiator,a
         {
-            color:white
+            color:#ecce64;
         }
         a
         {
@@ -310,7 +314,12 @@
 
     .logLine:hover
     {
-        background-color: #444;
+        background-color: #333;
+    }
+
+    .initiator_gui
+    {
+        color:var(--color_port_value)
     }
 
     .logLevel0
@@ -318,11 +327,19 @@
     }
     .logLevel1
     {
-        background-color: rgb(64, 64, 4);
+        background-color: rgb(48, 48, 3);
+    }
+    .logLevel1:hover
+    {
+        background-color: rgb(61, 61, 4);
     }
     .logLevel2
     {
         background-color: rgb(52, 9, 9);
+    }
+    .logLevel2:hover
+    {
+        background-color: rgb(74, 13, 13);
     }
 
     .logLevel99

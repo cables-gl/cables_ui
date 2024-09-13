@@ -91,18 +91,17 @@ export default class LogTab extends Events
     _logLine(log, txt, level)
     {
         let html = "<div class=\"logLine logLevel" + level + "\">";
-        html += "<span style=\"float:left\">[<span class=\"initiator\">";
+        html += "<span style=\"float:left\" class=\"outerInitiator\">[<span class=\"initiator\">";
 
         if (log.opInstId)
             html += "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
 
         html += log.initiator;
 
-        if (log.opInstId)
-            html += "</a>";
+        if (log.opInstId) html += "</a>";
 
         html += "</span>]&nbsp;</span>";
-        html += "<div style=\"float:left\">";
+        html += "<div style=\"float:left\" class=\"initiator_" + log.initiator + "\">";
         html += txt;
         html += "</div>";
         html += "</div>";
@@ -243,16 +242,16 @@ export default class LogTab extends Events
                             }
                             else if (typeof arg == "string")
                             {
-                                let _arg = arg;
+                                let _arg = arg.replaceAll("\n", "<br/>");
                                 if (arg.startsWith("https://"))
                                 {
                                     _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
                                 }
-                                currentLine += _arg;
+                                currentLine += _arg + " ";
                             }
                             else if (typeof arg == "number")
                             {
-                                currentLine += String(arg);
+                                currentLine += String(arg) + " ";
                             }
                             else if (arg.constructor.name == "PromiseRejectionEvent")
                             {
