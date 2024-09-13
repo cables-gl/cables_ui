@@ -305,78 +305,78 @@ CABLES_CMD_UI.togglePauseVizLayer = function ()
 
 CMD_UI_COMMANDS.push(
     {
-        "cmd": "show settings",
+        "cmd": "Show settings",
         "category": "ui",
         "func": CABLES_CMD_UI.settings,
         "icon": "settings",
         "infotext": "cmd_patchsettings"
     },
     {
-        "cmd": "show files",
+        "cmd": "Show files",
         "category": "ui",
         "func": CABLES_CMD_UI.files,
         "icon": "file"
     },
     {
-        "cmd": "toggle files",
+        "cmd": "Toggle files",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleFiles,
         "icon": "file"
     },
     {
-        "cmd": "toggle mute",
+        "cmd": "Toggle mute",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMute
     },
     {
-        "cmd": "search",
+        "cmd": "Search",
         "category": "ui",
         "func": CABLES_CMD_UI.showSearch,
         "icon": "search",
         "hotkey": "CMD + f"
     },
     {
-        "cmd": "maximize renderer",
+        "cmd": "Maximize renderer",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMaxRenderer,
         "icon": "canvas_max",
         "hotkey": "CMD + ENTER"
     },
     {
-        "cmd": "patch background renderer",
+        "cmd": "Patch background renderer",
         "category": "ui",
         "func": CABLES_CMD_UI.togglePatchBgRenderer,
         "icon": "canvas_patchbg",
         "hotkey": "CMD + SHIFT + ENTER"
     },
     {
-        "cmd": "patch background renderer",
+        "cmd": "Patch background renderer",
         "category": "ui",
         "func": CABLES_CMD_UI.togglePatchBgPatchField,
         "icon": "canvas_op",
         "hotkey": "SHIFT + ENTER"
     },
     {
-        "cmd": "show command pallet",
+        "cmd": "Show command pallet",
         "category": "ui",
         "func": CABLES_CMD_UI.showCommandPallet,
         "icon": "search",
         "hotkey": "CMD + P"
     },
     {
-        "cmd": "show changelog",
+        "cmd": "Show changelog",
         "category": "cables",
         "func": CABLES_CMD_UI.showChangelog,
         "icon": "info"
     },
     {
-        "cmd": "show buildinfo",
+        "cmd": "Show buildinfo",
         "category": "cables",
         "func": CABLES_CMD_UI.showBuildInfo,
         "icon": "info"
     },
     {
-        "cmd": "center patch",
+        "cmd": "Center patch",
         "category": "patch",
         "func": CABLES_CMD_UI.centerPatchOps,
         "hotkey": "c",
@@ -384,12 +384,12 @@ CMD_UI_COMMANDS.push(
         "infotext": "cmd_centerpatch"
     },
     {
-        "cmd": "start presentation mode",
+        "cmd": "Start presentation mode",
         "category": "ui",
         "func": CABLES_CMD_UI.startPresentationMode
     },
     {
-        "cmd": "toggle flow visualization",
+        "cmd": "Toggle flow visualization",
         "category": "ui",
         "func": CABLES_CMD_UI.flowVis,
         "icon": "cables",
@@ -402,31 +402,31 @@ CMD_UI_COMMANDS.push(
         "icon": "cables"
     },
     {
-        "cmd": "toggle window fullscreen",
+        "cmd": "Toggle window fullscreen",
         "category": "ui",
         "func": CABLES_CMD_UI.windowFullscreen,
         "icon": "cables"
     },
     {
-        "cmd": "gradient test",
+        "cmd": "Gradient test",
         "category": "ui",
         "func": CABLES_CMD_UI.gradientTest,
         "icon": "command"
     },
     {
-        "cmd": "toggle snap to grid",
+        "cmd": "Toggle snap to grid",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleSnapToGrid,
         "icon": "command"
     },
     {
-        "cmd": "toggle texture preview",
+        "cmd": "Toggle texture preview",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleBgTexturePreview,
         "icon": "monitor"
     },
     {
-        "cmd": "ui profiler",
+        "cmd": "Ui profiler",
         "category": "ui",
         "func": CABLES_CMD_UI.profileUI,
         "icon": "command"
@@ -438,21 +438,21 @@ CMD_UI_COMMANDS.push(
         "icon": "cables_editor"
     },
     {
-        "cmd": "chat",
+        "cmd": "Chat",
         "category": "ui",
         "func": CABLES_CMD_UI.showChat,
         "icon": "command",
         "frontendOption": "hasCommunity"
     },
     {
-        "cmd": "open remote viewer",
+        "cmd": "Open remote viewer",
         "category": "ui",
         "func": CABLES_CMD_UI.openRemoteViewer,
         "icon": "command",
         "frontendOption": "showRemoteViewer"
     },
     {
-        "cmd": "zoom in",
+        "cmd": "Zoom in",
         "category": "ui",
         "func": CABLES_CMD_UI.zoomIn,
         "icon": "plus",
@@ -460,7 +460,7 @@ CMD_UI_COMMANDS.push(
         "infotext": "cmd_zoomin"
     },
     {
-        "cmd": "zoom out",
+        "cmd": "Zoom out",
         "category": "ui",
         "func": CABLES_CMD_UI.zoomOut,
         "icon": "minus",
@@ -468,7 +468,7 @@ CMD_UI_COMMANDS.push(
         "infotext": "cmd_zoomout"
     },
     {
-        "cmd": "watch variables",
+        "cmd": "Watch variables",
         "category": "ui",
         "func": CABLES_CMD_UI.watchVars,
         "icon": "align-justify",

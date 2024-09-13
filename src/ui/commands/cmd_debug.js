@@ -260,19 +260,19 @@ CABLES_CMD_DEBUG.undoHistory = () =>
 
 CMD_DEBUG_COMMANDS.push(
     {
-        "cmd": "glui debug",
+        "cmd": "Glui debug",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.debugGlUi,
         "icon": "command"
     },
     {
-        "cmd": "test all ops",
+        "cmd": "Test all ops",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.testAllOps,
         "icon": "command"
     },
     {
-        "cmd": "dump global vars",
+        "cmd": "Dump global vars",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.globalVarDump,
         "icon": "command"
@@ -284,90 +284,90 @@ CMD_DEBUG_COMMANDS.push(
         "icon": "command"
     },
     {
-        "cmd": "log console",
+        "cmd": "Log console",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.logConsole,
         "icon": "list"
     },
     {
-        "cmd": "log socketcluster traffic",
+        "cmd": "Log socketcluster traffic",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.logSocketCluster,
         "icon": "command"
     },
     {
-        "cmd": "glgui tab",
+        "cmd": "Glgui tab",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.glguiTab,
         "icon": "command"
     },
     {
-        "cmd": "toggle multiplayer",
+        "cmd": "Toggle multiplayer",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.toggleMultiplayer,
         "icon": "command"
     },
     {
-        "cmd": "restriction remoteviewer",
+        "cmd": "Restriction remoteviewer",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.restrictRemoteView,
         "icon": "command"
     },
     {
-        "cmd": "restriction follow",
+        "cmd": "Restriction follow",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.restrictFollow,
         "icon": "command"
     },
     {
-        "cmd": "restriction explorer",
+        "cmd": "Restriction explorer",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.restrictExplorer,
         "icon": "command"
     },
     {
-        "cmd": "restriction full",
+        "cmd": "Restriction full",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.restrictFull,
         "icon": "command"
     },
     {
-        "cmd": "test op",
+        "cmd": "Test op",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.testOp,
         "icon": "op"
     },
     {
-        "cmd": "show op docs json",
+        "cmd": "Show op docs json",
         "func": CABLES_CMD_DEBUG.watchOpDocsJson,
         "category": "debug",
         "icon": "op"
     },
     {
-        "cmd": "show op serialized",
+        "cmd": "Show op serialized",
         "func": CABLES_CMD_DEBUG.watchOpSerialized,
         "category": "debug",
         "icon": "op"
     },
     {
-        "cmd": "show op uiattribs",
+        "cmd": "Show op uiattribs",
         "func": CABLES_CMD_DEBUG.watchOpUiAttribs,
         "category": "debug",
         "icon": "op"
     },
     {
-        "cmd": "save without objnames",
+        "cmd": "Save without objnames",
         "func": CABLES_CMD_DEBUG.saveWithOutObjnames,
         "category": "debug",
         "icon": "op"
     },
     {
-        "cmd": "glui focusOpAnim",
+        "cmd": "Glui focusOpAnim",
         "func": CABLES_CMD_DEBUG.focusOpAnim,
         "category": "debug",
     },
     {
-        "cmd": "undo history",
+        "cmd": "Undo history",
         "func": CABLES_CMD_DEBUG.undoHistory,
         "category": "debug",
     },
