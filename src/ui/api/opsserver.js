@@ -803,10 +803,12 @@ export default class ServerOps
      */
     opNameDialog(options, cb)
     {
-        let newName = options.shortName || "";
-        let opTargetDir = null;
-        if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
+        const suggestedNamespace = options.suggestedNamespace || "";
+        const shortName = options.shortName || "";
 
+        let newName = suggestedNamespace + shortName;
+
+        let opTargetDir = null;
         const _checkOpName = () =>
         {
             if (!CABLES.platform.isTrustedPatch())
@@ -871,8 +873,20 @@ export default class ServerOps
 
                 _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
 
-                ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
-                ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
+                const opNameInput = ele.byId("opNameDialogInput");
+                if (opNameInput.value)
+                {
+                    const parts = opNameInput.value.split(".");
+                    let lastPartLength = parts[parts.length - 1].length;
+                    if (parts.length > 1)
+                    {
+                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
+                        opNameInput.focus();
+                    }
+                }
+
+                opNameInput.addEventListener("input", _nameChangeListener);
+                ele.byId("opNameDialogNamespace").addEventListener("input", _namespaceChangeListener);
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle)
                 {
@@ -897,7 +911,7 @@ export default class ServerOps
                 ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                    cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
+                    cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
                 });
 
                 if (options.showReplace)
@@ -906,7 +920,7 @@ export default class ServerOps
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                        cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
+                        cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
                     });
                 }
             });
@@ -920,6 +934,7 @@ export default class ServerOps
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
+        html += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
         if (options.rename)
@@ -957,21 +972,52 @@ export default class ServerOps
             _checkOpName();
         }
 
+        const _namespaceChangeListener = () =>
+        {
+            const opNameInput = ele.byId("opNameDialogInput");
+            const selectEle = ele.byId("opNameDialogNamespace");
+
+            if (selectEle.value)
+            {
+                const opName = opNameInput.value;
+                const opBasename = opName.substring(opName.lastIndexOf(".") + 1);
+                const newNamespace = selectEle.value;
+                const newOpName = newNamespace + opBasename;
+                if (opNameInput)
+                {
+                    opNameInput.value = newOpName;
+                    _nameChangeListener();
+                }
+            }
+        };
+
         const _nameChangeListener = () =>
         {
+            const nameEle = ele.byId("opNameDialogInput");
             const newNamespace = ele.byId("opNameDialogNamespace").value;
-            let v = capitalize(ele.byId("opNameDialogInput").value);
+            let nameInput = ele.byId("opNameDialogInput").value;
+
+            const opUsername = gui.user ? gui.user.usernameLowercase : "";
+            const nameParts = nameInput.split(".");
+            const capitalizedParts = nameParts.map((part) =>
+            {
+                if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
+                return capitalize(part);
+            });
+            const fullName = capitalizedParts.join(".");
+
+            if (nameInput !== fullName) nameEle.value = fullName;
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
 
-            gui.jobs().start({ "id": "checkOpName" + newNamespace + v, "title": "checking op name" + newNamespace });
+            gui.jobs().start({ "id": "checkOpName" + fullName, "title": "checking op name" + fullName });
 
-            if (v)
+            if (fullName)
             {
                 const checkNameRequest = {
                     "namespace": newNamespace,
-                    "v": v,
+                    "v": fullName,
                     "sourceName": options.sourceOpName,
                     "rename": options.rename
                 };
@@ -986,12 +1032,12 @@ export default class ServerOps
                         return;
                     }
 
-                    if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value + capitalize(ele.byId("opNameDialogInput").value))
+                    if (res.checkedName && res.checkedName === fullName)
                     {
                         ele.show(ele.byId("opNameDialogSubmit"));
                         if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
 
-                        _updateFormFromApi(res, v, newNamespace);
+                        _updateFormFromApi(res, fullName, newNamespace);
                     }
                     gui.jobs().finish("checkOpName" + res.checkedName);
                 });
@@ -1000,6 +1046,25 @@ export default class ServerOps
 
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
+            let hintsHtml = "";
+            const eleHints = ele.byId("opNameDialogHints");
+            if (eleHints) ele.hide(eleHints);
+            if (res.hints && res.hints.length > 0)
+            {
+                hintsHtml += "<ul>";
+                res.hints.forEach((hint) =>
+                {
+                    hintsHtml += "<li>" + hint + "</li>";
+                });
+                hintsHtml += "</ul>";
+
+                if (eleHints)
+                {
+                    eleHints.innerHTML = "<h3>Hints</h3>" + hintsHtml;
+                    ele.show(eleHints);
+                }
+            }
+
             let consequencesHtml = "";
             const eleCons = ele.byId("opNameDialogConsequences");
             if (eleCons) ele.hide(eleCons);
@@ -1036,11 +1101,11 @@ export default class ServerOps
                     const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
                     if (versionSuggestions) versionSuggestions.forEach((suggest) =>
                     {
-                        if (suggest.dataset.shortName)
+                        if (suggest.dataset.nextName)
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.shortName);
+                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.nextName);
                                 _nameChangeListener();
                             });
                         }
@@ -1174,7 +1239,7 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
+            const opname = newName;
 
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
@@ -1183,6 +1248,7 @@ export default class ServerOps
             const renameRequest = {
                 "opname": nameOrId,
                 "name": opname,
+                "namespace": newNamespace
             };
             if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
@@ -1253,7 +1319,7 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
+            const opname = newName;
 
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
@@ -1262,6 +1328,8 @@ export default class ServerOps
 
             gui.serverOps.clone(nameOrId, opname, () =>
             {
+                gui.closeModal();
+
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {
                     if (cbOptions && cbOptions.replace)
