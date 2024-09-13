@@ -190,8 +190,6 @@ export default class TabPanel extends Events
         return tab;
     }
 
-
-
     scrollToActiveTab()
     {
         const tab = this.getActiveTab();

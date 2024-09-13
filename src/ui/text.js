@@ -4,6 +4,7 @@ const text =
     "toggle_sound": "## Toggle Sound\n\nTurn sound on or off",
     "toggle_helper": "`o` Toggle the idsplay of overlays (helper outlines and bounding boxes)",
     "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n[cmd_ctrl]`c` copy hovered color to clipboard",
+    "canvas_switch": "Switch between multiple canvasses",
 
     "canvas_size": "## Canvas Size\n\nCanvas size in pixels\n\nclick to set the canvas manually",
     "canvas_aspect": "## Canvas Aspect ratio\n\nclick to choose an aspect ratio",
@@ -132,6 +133,16 @@ const text =
     "opselect_typemore": "<h2>&nbsp;Type some more!</h2>",
     "opselect_notfound": "<h2>&nbsp;404 - Op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui._opselect.close();gui.serverOps.createDialog(document.getElementById('opsearch').value);\">Code a new op</a>",
     "opselect_addop": "Add",
+
+    "summary_settings": "Patch settings",
+    "summary_analyze": "Analyze patch",
+
+    "outline_filter_bookmarks": "Show/hide bookmarks ops in patch outline",
+    "outline_filter_subpatchops": "Show/hide subpatchops ops in patch outline",
+    "outline_filter_commented": "Show/hide commented ops in patch outline",
+    "outline_filter_comments": "Show/hide comments ops in patch outline",
+    "outline_filter_areas": "Show/hide areas ops in patch outline",
+    "outline_filter_colored": "Show/hide colored ops in patch outline",
 
     "preferences":
     {

@@ -34,17 +34,17 @@ export default class IconBar
         if (this._id == "sidebar_bottom")
         {
             this.vertical = false;
-            items.push("center patch", "zoom out", "zoom in");
+            items.push("Center patch", "Zoom out", "Zoom in");
             if (gui && (gui.canvasManager.mode === gui.canvasManager.CANVASMODE_PATCHBG))
             {
-                items.push("patch background renderer");
-                items.push("hide patchfield");
+                items.push("Patch background renderer");
+                items.push("Hide patchfield");
             }
         }
 
         if (this._id == "sidebar_left")
         {
-            const defaultItems = ["save patch", "add op", "show settings", "maximize canvas"];
+            const defaultItems = ["Save patch", "Add op", "Show settings", "Maximize canvas"];
             const itemObj = CABLES.UI.userSettings.get(this._id) || {};
 
             for (let i = 0; i < defaultItems.length; i++)
