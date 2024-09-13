@@ -1667,14 +1667,14 @@ CMD_PATCH_COMMANDS.push(
         "icon": "op"
     },
     {
-        "cmd": "clone selected ops to patch ops",
-        "func": CABLES_CMD_PATCH.cloneSelectedOps,
+        "cmd": "clone selected op",
+        "func": CABLES_CMD_PATCH.cloneSelectedOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "clone selected op",
-        "func": CABLES_CMD_PATCH.cloneSelectedOp,
+        "cmd": "clone selected ops to patch ops",
+        "func": CABLES_CMD_PATCH.cloneSelectedOps,
         "category": "patch",
         "icon": "op"
     },
