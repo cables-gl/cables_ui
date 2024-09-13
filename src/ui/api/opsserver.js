@@ -1153,7 +1153,7 @@ export default class ServerOps
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": name,
+            "shortName": name || "MyAwesomeOpName",
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
