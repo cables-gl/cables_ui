@@ -81,6 +81,8 @@ export default class PatchSaveServer extends Events
                 return;
             }
 
+            ele.hide(ele.byId("nav-item-offline"));
+
             if (gui.isRemoteClient)
             {
                 gui.jobs().finish("checkupdated");

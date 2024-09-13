@@ -29,6 +29,10 @@ export default class Platform extends Events
                 if (errorData)
                 {
                     const errorMessage = errorData.message || "unknown error";
+                    if (errorData.type && errorData.type === "network")
+                    {
+                        ele.show(ele.byId("nav-item-offline"));
+                    }
                     switch (errorData.level)
                     {
                     case "error":
