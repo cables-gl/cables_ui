@@ -88,9 +88,12 @@ export default class LogTab extends Events
         this._showLog();
     }
 
-    _logLine(log, txt, level)
+    _logLine(log, txt, level, timediff)
     {
-        let html = "<div class=\"logLine logLevel" + level + "\">";
+        let spacerClass = "";
+        // console.log(Math.abs(timediff));
+        if (Math.abs(timediff) > 300)spacerClass = "loglineSpacer";
+        let html = "<div class=\"logLine " + spacerClass + " logLevel" + level + "\">";
         html += "<span style=\"float:left\" class=\"outerInitiator\">[<span class=\"initiator\">";
 
         if (log.opInstId)
@@ -158,10 +161,14 @@ export default class LogTab extends Events
 
         try
         {
+            let lastTime = 0;
             for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
             {
                 const l = CABLES.UI.logFilter.logs[i];
                 let currentLine = "";
+                const timediff = l.time - lastTime;
+                lastTime = l.time;
+                // console.log(l);
 
                 if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
 
@@ -205,7 +212,7 @@ export default class LogTab extends Events
                             }
                             stackHtml += "</table>";
 
-                            html += this._logLine(l, stackHtml, l.level);
+                            html += this._logLine(l, stackHtml, l.level, timediff);
 
                             let txt = "[" + arg.constructor.name + "] ";
                             let msg = "";
@@ -280,7 +287,7 @@ export default class LogTab extends Events
                             }
                     }
                 }
-                if (currentLine) html += this._logLine(l, currentLine, l.level);
+                if (currentLine) html += this._logLine(l, currentLine, l.level, timediff);
             }
         }
         catch (e)

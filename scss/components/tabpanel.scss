@@ -281,6 +281,7 @@
     display: flex;
     flex-direction: column-reverse;
 
+
     .logLineCode
     {
         background-color: rgba(0,0,0,0.75);
@@ -290,7 +291,7 @@
 
     .logLine
     {
-        margin-top:3px;
+        margin-top:2px;
         background-color: #222;
         font-family: monospace;
         *
@@ -357,4 +358,8 @@
         background-color: transparent;
     }
 
+    .loglineSpacer
+    {
+        margin-bottom:5px;
+    }
 }
