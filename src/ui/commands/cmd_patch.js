@@ -566,6 +566,16 @@ CABLES_CMD_PATCH.uploadFile = function ()
     if (fileElem) fileElem.click();
 };
 
+CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
+{
+    if (!window.gui || !fileName) return;
+    CABLES.reuploadName = fileName;
+    const fileEle = ele.byId("fileReUpload" + id);
+    if (fileEle && fileEle.dataset.filePath) CABLES.reuploadName = fileEle.dataset.filePath;
+    const uploadEle = ele.byId("hiddenfileElemReupload");
+    if (uploadEle) uploadEle.click();
+};
+
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {

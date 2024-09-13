@@ -245,11 +245,10 @@
                 </span>
             {{/if}}
 
-            {{#if frontendOptions.uploadFiles}}
-            <span class="iconbutton info" data-info="filemanager_reupload" id="fileReUpload{{file.fileDb._id}}" onclick="CABLES.reuploadName='{{file.fileDb.fileName}}';ele.byId('hiddenfileElemReupload').click();">
+            <span class="iconbutton info" data-info="filemanager_reupload" id="fileReUpload{{file.fileDb._id}}" {{#if frontendOptions.isStandalone}}data-file-path="{{file.fileDb.path}}"{{/if}} onclick="CABLES.CMD.PATCH.reuploadFile('{{file.fileDb._id}}', '{{file.fileDb.fileName}}');">
                 <a class="info icon icon-1x icon-upload"></a>
             </span>
-            {{/if}}
+
 
             <br/><br/>
 
