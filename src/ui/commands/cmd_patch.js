@@ -1439,25 +1439,25 @@ CABLES_CMD_PATCH.renameOp = (opName = null) =>
 
 CMD_PATCH_COMMANDS.push(
     {
-        "cmd": "select all ops",
+        "cmd": "Select all ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.selectAllOps,
         "hotkey": "CMD + a"
     },
     {
-        "cmd": "delete selected ops",
+        "cmd": "Delete selected ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.deleteSelectedOps,
         "icon": "trash",
         "hotkey": "DEL"
     },
     {
-        "cmd": "reload patch",
+        "cmd": "Reload patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.reload
     },
     {
-        "cmd": "save patch",
+        "cmd": "Save patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.save,
         "icon": "save",
@@ -1466,300 +1466,300 @@ CMD_PATCH_COMMANDS.push(
 
     },
     {
-        "cmd": "save patch as...",
+        "cmd": "Save patch as...",
         "category": "patch",
         "func": CABLES_CMD_PATCH.saveAs,
         "icon": "save",
         "hotkey": "[cmd_ctrl][shift]`s`",
     },
     {
-        "cmd": "upload file dialog",
+        "cmd": "Upload file dialog",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFileDialog,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "upload file",
+        "cmd": "Upload file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFile,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "create new file",
+        "cmd": "Create new file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createFile,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "select child ops",
+        "cmd": "Select child ops",
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
     },
     {
-        "cmd": "clear op titles",
+        "cmd": "Clear op titles",
         "category": "op",
         "func": CABLES_CMD_PATCH.clearOpTitles
     },
     {
-        "cmd": "create subpatch",
+        "cmd": "Create subpatch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
         "icon": "subpatch"
     },
     {
-        "cmd": "export static html",
+        "cmd": "Export static html",
         "category": "patch",
         "func": CABLES_CMD_PATCH.export,
         "icon": "download",
         "frontendOption": "showExport"
     },
     {
-        "cmd": "show backups",
+        "cmd": "Show backups",
         "category": "patch",
         "func": CABLES_CMD_PATCH.showBackups,
         "icon": "file",
         "frontendOption": "showPatchBackups"
     },
     {
-        "cmd": "create new patch",
+        "cmd": "Create new patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.newPatch,
         "icon": "file"
     },
     {
-        "cmd": "add op",
+        "cmd": "Add op",
         "category": "patch",
         "func": CABLES_CMD_PATCH.addOp,
         "icon": "op",
         "infotext": "cmd_addop"
     },
     {
-        "cmd": "add op by name",
+        "cmd": "Add op by name",
         "category": "patch",
         "func": CABLES_CMD_PATCH.addOpByName,
         "icon": "op"
     },
     {
-        "cmd": "edit op",
+        "cmd": "Edit op",
         "category": "op",
         "func": CABLES_CMD_PATCH.editOp,
         "icon": "edit"
     },
     {
-        "cmd": "set title",
+        "cmd": "Set title",
         "category": "op",
         "func": CABLES_CMD_PATCH.setOpTitle,
         "icon": "edit"
     },
     {
-        "cmd": "toggle op resizable",
+        "cmd": "Toggle op resizable",
         "category": "op",
         "func": CABLES_CMD_PATCH.toggleResizable,
         "icon": "op"
     },
     {
-        "cmd": "clear patch",
+        "cmd": "Clear patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.clear
     },
     {
-        "cmd": "open patch website",
+        "cmd": "Open patch website",
         "category": "patch",
         "func": CABLES_CMD_PATCH.patchWebsite,
         "icon": "link",
         "frontendOption": "hasCommunity"
     },
     {
-        "cmd": "pause patch execution",
+        "cmd": "Pause patch execution",
         "category": "patch",
         "func": CABLES_CMD_PATCH.pause
     },
     {
-        "cmd": "resume patch execution",
+        "cmd": "Resume patch execution",
         "category": "patch",
         "func": CABLES_CMD_PATCH.resume
     },
     {
-        "cmd": "replace file path",
+        "cmd": "Replace file path",
         "category": "patch",
         "func": CABLES_CMD_PATCH.replaceFilePath
     },
     {
-        "cmd": "find unconnected ops",
+        "cmd": "Find unconnected ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findUnconnectedOps
     },
     {
-        "cmd": "find user ops",
+        "cmd": "Find user ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findUserOps
     },
     {
-        "cmd": "find commented ops",
+        "cmd": "Find commented ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findCommentedOps
     },
     {
-        "cmd": "find external assets",
+        "cmd": "Find external assets",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findOpsUsingExternalAssets
     },
     {
-        "cmd": "analyze patch",
+        "cmd": "Analyze patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.analyze
     },
     {
-        "cmd": "create number variable",
+        "cmd": "Create number variable",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createVarNumber
     },
     {
-        "cmd": "create backup",
+        "cmd": "Create backup",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createBackup
     },
     {
-        "cmd": "align ops left",
+        "cmd": "Align ops left",
         "func": CABLES_CMD_PATCH.alignOpsLeft,
         "icon": "align-left"
     },
     {
-        "cmd": "compress ops vertically",
+        "cmd": "Compress ops vertically",
         "func": CABLES_CMD_PATCH.compressOps,
         "icon": "list"
     },
     {
-        "cmd": "add space x",
+        "cmd": "Add space x",
         "func": CABLES_CMD_PATCH.addSpaceX,
         "icon": "list"
     },
     {
-        "cmd": "add space y",
+        "cmd": "Add space y",
         "func": CABLES_CMD_PATCH.addSpaceY,
         "icon": "list"
     },
     {
-        "cmd": "save patchfield screenshot",
+        "cmd": "Save patchfield screenshot",
         "func": CABLES_CMD_PATCH.savePatchScreenshot,
         "icon": "image"
     },
     {
-        "cmd": "replace ops",
+        "cmd": "Replace ops",
         "func": CABLES_CMD_PATCH.replaceOp,
         "icon": "op"
     },
     {
-        "cmd": "link two selected ops",
+        "cmd": "Link two selected ops",
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "icon": "op"
     },
     {
-        "cmd": "downgrade selected op",
+        "cmd": "Downgrade selected op",
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
     },
     {
-        "cmd": "upgrade selected ops",
+        "cmd": "Upgrade selected ops",
         "func": CABLES_CMD_PATCH.upGradeOps,
         "icon": "op"
     },
     {
-        "cmd": "clone selected op",
+        "cmd": "Clone selected op",
         "func": CABLES_CMD_PATCH.cloneSelectedOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "clone selected ops to patch ops",
+        "cmd": "Clone selected ops to patch ops",
         "func": CABLES_CMD_PATCH.cloneSelectedOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "create new version of op",
+        "cmd": "Create new version of op",
         "func": CABLES_CMD_PATCH.createVersionSelectedOp,
         "icon": "op"
     },
     {
-        "cmd": "manage selected op",
+        "cmd": "Manage selected op",
         "func": CABLES_CMD_PATCH.manageSelectedOp,
         "icon": "op"
     },
     {
-        "cmd": "go to parent subpatch",
+        "cmd": "Go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
     },
     {
-        "cmd": "open params in tab",
+        "cmd": "Open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "point blueprints to local patch",
+        "cmd": "Point blueprints to local patch",
         "func": CABLES_CMD_PATCH.localizeBlueprints,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "show glop information",
+        "cmd": "Show glop information",
         "func": CABLES_CMD_PATCH.watchGlOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "uncollide ops",
+        "cmd": "Uncollide ops",
         "func": CABLES_CMD_PATCH.uncollideOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "toggle patch like",
+        "cmd": "Toggle patch like",
         "func": CABLES_CMD_PATCH.togglePatchLike,
         "category": "patch"
     },
     {
-        "cmd": "create subpatch op",
+        "cmd": "Create subpatch op",
         "func": CABLES_CMD_PATCH.createSubPatchOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "delete unused patch ops",
+        "cmd": "Delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "delete unused patch ops",
+        "cmd": "Delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "center ops in subpatch",
+        "cmd": "Center ops in subpatch",
         "func": CABLES_CMD_PATCH.centerOpsInSubpatch,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "set patch title",
+        "cmd": "Set patch title",
         "func": CABLES_CMD_PATCH.setPatchTitle,
         "category": "patch",
         "icon": "edit"
     },
     {
-        "cmd": "rename op",
+        "cmd": "Rename op",
         "func": CABLES_CMD_PATCH.renameOp,
         "category": "op",
         "icon": "op"
     },
     {
-        "cmd": "auto position subpatch input output ops",
+        "cmd": "Auto position subpatch input output ops",
         "func": CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps,
         "category": "op",
         "icon": "op"
