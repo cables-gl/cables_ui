@@ -273,3 +273,19 @@
     border-bottom:1px solid var(--color-special);
 }
 
+
+.fileTypeColor_gl
+{
+    color:var(--color_port_function);
+}
+
+.fileTypeColor_js
+{
+    color:var(--color_port_value);
+}
+
+.fileTypeColor_css
+{
+    color:var(--color_port_array);
+}
+
