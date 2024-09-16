@@ -247,7 +247,7 @@ export default class PatchSaveServer extends Events
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
-                let patchOpsText = "Patch ops used in this patch will be copied to the new patch.";
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. need to reuse ops ? create a <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
                 modalNotices.push(patchOpsText);
             }
 
