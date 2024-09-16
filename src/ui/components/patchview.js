@@ -424,23 +424,20 @@ export default class PatchView extends Events
         const opname = ops[0];
         const uiAttr = { "subPatch": this.getCurrentSubPatch() };
 
-        if (event)
+
+        let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
+
+        if (event && this._patchRenderer.screenToPatchCoord)
         {
-            let coord = { "x": 0, "y": 0 };
-            if (this._patchRenderer.screenToPatchCoord)
-            {
-                const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX || event.x, event.clientY || event.y);
-
-                coord = { "x": coordArr[0], "y": coordArr[1] };
-            }
-
-            coord.x = Snap.snapOpPosX(coord.x, true);
-            coord.y = Snap.snapOpPosY(coord.y);
-
-            uiAttr.translate = { "x": coord.x, "y": coord.y };
+            coordArr = this._patchRenderer.screenToPatchCoord(event.clientX || event.x, event.clientY || event.y);
         }
 
-        gui.serverOps.loadOpDependencies(opname, function ()
+        const coord = { "x": coordArr[0], "y": coordArr[1] };
+        coord.x = Snap.snapOpPosX(coord.x, true);
+        coord.y = Snap.snapOpPosY(coord.y);
+        uiAttr.translate = { "x": coord.x, "y": coord.y };
+
+        gui.serverOps.loadOpDependencies(opname, () =>
         {
             const op = gui.corePatch().addOp(opname, uiAttr);
 
@@ -449,6 +446,7 @@ export default class PatchView extends Events
                     op.portsIn[i].set(filename);
 
             op.refreshParams();
+            this.centerSelectOp(op.opId);
         });
     }
 
