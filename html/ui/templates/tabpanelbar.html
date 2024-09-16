@@ -10,9 +10,9 @@
                     {{#if icon }} <span class="tabicon icon-{{icon}} icon fleft"></span> &nbsp;{{/if}}
                     {{#if icon }}{{else}}{{#if options.type }}{{else}} <span class="tabicon icon-file icon fleft"></span> &nbsp;{{/if}}{{/if}}
 
-                    {{#compare options.type '==' 'glsl' }}<span style="color:var(--color_port_function);">GL</span>&nbsp; {{/compare}}
-                    {{#compare options.type '==' 'js' }}<span style="color:var(--color_port_value);">JS</span>&nbsp; {{/compare}}
-                    {{#compare options.type '==' 'css' }}<span style="color:var(--color_port_array);">CSS</span>&nbsp; {{/compare}}
+                    {{#compare options.type '==' 'glsl' }}<span class="fileTypeColor_gl">GL</span>&nbsp; {{/compare}}
+                    {{#compare options.type '==' 'js' }}<span class="fileTypeColor_js">JS</span>&nbsp; {{/compare}}
+                    {{#compare options.type '==' 'css' }}<span class="fileTypeColor_css">CSS</span>&nbsp; {{/compare}}
 
                     {{#if options.showTitle }}{{title}}{{/if}}
                     {{#if unsaved }} ! {{/if}}
