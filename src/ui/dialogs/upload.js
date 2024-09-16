@@ -88,21 +88,24 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
-
-        if (CABLES.platform.frontendOptions.uploadFiles)
+        if (CABLES.platform.frontendOptions.uploadFiles || filename) // allow reupload in standalone via `|| filename`
         {
             const reader = new FileReader();
 
+            let uploadFileName = filename || file.name;
             reader.addEventListener("load",
                 () =>
                 {
                     CABLESUILOADER.talkerAPI.send("fileUploadStr",
                         {
                             "fileStr": reader.result,
-                            "filename": filename || file.name,
+                            "filename": uploadFileName,
                         },
                         (err, res) =>
                         {
+                            let newFilename = uploadFileName;
+                            if (res && res.filename) newFilename = res.filename;
+
                             if (err)
                             {
                                 if (err.msg === "FAILED_PARSE_DATAURI")
@@ -123,20 +126,19 @@ export default class FileUploader
                                 else
                                 {
                                     notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
-                                    FileManager.updatedFiles.push(filename || file.name);
+                                    FileManager.updatedFiles.push(newFilename);
                                 }
                             }
                             else
                             {
-                                FileManager.updatedFiles.push(filename || file.name);
+                                FileManager.updatedFiles.push(newFilename);
                             }
                         });
                 },
                 false);
             reader.readAsDataURL(file);
         }
-
-        if (CABLES.platform.frontendOptions.dragDropLocalFiles)
+        else if (CABLES.platform.frontendOptions.dragDropLocalFiles)
         {
             const assetPath = CABLES.platform.getPrefixAssetPath();
             let finalPath = "file://" + file.path;
