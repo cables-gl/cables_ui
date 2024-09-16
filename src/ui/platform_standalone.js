@@ -1,6 +1,8 @@
+// import process from "node:process";
 import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
+
 
 /**
  * platform for standalone / electron version
@@ -15,6 +17,8 @@ export default class PlatformStandalone extends Platform
     {
         super(cfg);
 
+        this.paths = cfg.paths;
+
         this.frontendOptions.npm = true;
 
         this.frontendOptions.isStandalone =
@@ -22,13 +26,32 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
         this.frontendOptions.showLocalOpDirButton =
-        this.frontendOptions.chooseOpDir =
+        this.frontendOptions.hasOpDirectories =
+        this.frontendOptions.hasAssetDirectories =
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
         this.frontendOptions.showOpenPatch =
+        this.frontendOptions.showExport =
+        this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
+        this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
+
+        this.frontendOptions.showFormatCodeButton = false;
+
+        this.bindHrTimer();
+    }
+
+    bindHrTimer()
+    {
+        const process = window.nodeRequire("node:process");
+        const startTime = process.hrtime();
+        performance.now = () =>
+        {
+            let t = process.hrtime(startTime);
+            return t[0] * 1000 + t[1] / 1000000;
+        };
     }
 
     isStandalone()
@@ -47,7 +70,7 @@ export default class PlatformStandalone extends Platform
 
     getCablesDocsUrl()
     {
-        return "https://cables.gl";
+        return this._cfg.communityUrl || "https://cables.gl";
     }
 
     getIssueTrackerUrl()
@@ -120,4 +143,36 @@ export default class PlatformStandalone extends Platform
     }
 
     showGitBranchWarning() {}
+
+
+    currentUserIsPatchOwner()
+    {
+        return true;
+    }
+
+    exportPatch(projectId, exportType = null)
+    {
+        const loadingModal = gui.startModalLoading("Exporting patch...");
+        loadingModal.setTask("Exporting patch...");
+        let talkerCommand = "exportPatch";
+        if (exportType === "patch") talkerCommand = "exportPatchBundle";
+        CABLESUILOADER.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
+        {
+            if (err)
+            {
+                loadingModal.setTask("ERROR", err.msg);
+                loadingModal.setTask(err.data);
+            }
+            else
+            {
+                if (result.data && result.data.log)
+                {
+                    result.data.log.forEach((log) =>
+                    {
+                        loadingModal.setTask(log.text);
+                    });
+                }
+            }
+        });
+    }
 }

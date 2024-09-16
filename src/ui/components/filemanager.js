@@ -45,6 +45,13 @@ export default class FileManager
             userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
+
+        if (CABLES.platform.frontendOptions.isStandalone)
+            gui.on("patchsaved", () =>
+            {
+                if (!ele.byId("filemanagercontainer")) return;
+                gui.refreshFileManager();
+            });
     }
 
     show(userInteraction)
@@ -343,7 +350,7 @@ export default class FileManager
         gui.maintabPanel.show(true);
 
         const item = this._manager.getItemByTitleContains(filename);
-        if (item) this.setDetail([item]);
+        if (item && !item.isLibraryFile) this.setDetail([item]);
     }
 
     setDisplay(type)
@@ -426,10 +433,7 @@ export default class FileManager
                     if (r.fileDb) r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
-                        if (detailItem.isReference)
-                        {
-                            delete r.converters;
-                        }
+                        if (detailItem.isReference) delete r.converters;
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
 
@@ -438,11 +442,17 @@ export default class FileManager
                         editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
 
 
+                        let assetPath = "";
+                        if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
+                        if (CABLES.platform.frontendOptions.isStandalone) assetPath = r.path;
+
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
                             "isEditable": editable,
+                            "assetPath": assetPath,
+                            "isPlatformCommunity": CABLES.platform.hasCommunity,
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,

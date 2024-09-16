@@ -122,9 +122,10 @@ export default class ServerOps
 
     create(name, cb, openEditor, options = {})
     {
-        const loadingModal = gui.startModalLoading("Creating op...");
+        // const loadingModal = gui.startModalLoading("Creating op...");
+        gui.savingTitleAnimStart("Creating Op...");
 
-        loadingModal.setTask("Creating Op");
+        // loadingModal.setTask("Creating Op");
 
         const createRequest = {
             "opname": name
@@ -138,19 +139,20 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    // this._log.error(err);
                     gui.serverOps.showApiError(err);
-                    loadingModal.close();
+                    gui.savingTitleAnimEnd();
+                    // loadingModal.close();
                     if (cb)cb();
                 }
                 else
                 {
-                    loadingModal.setTask("Loading Op");
+                    // loadingModal.setTask("Loading Op");
 
                     function done()
                     {
                         gui.opSelect().reload();
                         gui.endModalLoading();
+                        gui.savingTitleAnimEnd();
                         if (cb)cb();
                     }
 
@@ -185,7 +187,9 @@ export default class ServerOps
             }, 500);
     }
 
-    _saveOpLayout(op)
+
+
+    _getOpLayout(op)
     {
         if (!op)
         {
@@ -257,9 +261,23 @@ export default class ServerOps
             opObj.portsOut.push(l);
         }
 
+        return opObj;
+    }
+
+
+    _saveOpLayout(op)
+    {
+        if (!op)
+        {
+            this._log.error("saveoplayout: no op!");
+            return;
+        }
+
+        const opObj = this._getOpLayout(op);
+
         // check if layout has changed...
         const l = gui.opDocs.getOpDocById(op.opId);
-        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return;
+        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return false; // has not changed
 
         CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
@@ -272,10 +290,15 @@ export default class ServerOps
                 if (err) this._log.error(err);
             },
         );
+        return true; // has changed
     }
 
     execute(opIdentifier, next, refOldOp)
     {
+        /// //////////////
+
+        gui.savedState.pause();
+
         let oldOps = null;
         if (opIdentifier.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(opIdentifier);
         else oldOps = gui.corePatch().getOpsByOpId(opIdentifier);
@@ -289,22 +312,24 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
+        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId); //d.......
+
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(
                 name,
                 (num, newOps) =>
                 {
-                    CABLES.UI.notify(num + " ops reloaded");
+                    for (let i = 0; i < newOps.length; i++) newOps[i].checkLinkTimeWarnings();
 
-                    for (let i = 0; i < newOps.length; i++)
+                    if (newOps.length > 0)
                     {
-                        newOps[i].checkLinkTimeWarnings();
+                        this.saveOpLayout(newOps[0]);
                     }
-
-                    if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
+
+                    gui.savedState.resume();
                     if (next)next(newOps, refOldOp);
                 },
                 refOldOp
@@ -316,9 +341,11 @@ export default class ServerOps
     {
         options = options || { "openEditor": true };
 
-        const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
+        // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
+        gui.savingTitleAnimStart("Cloning Op...");
 
-        loadingModal.setTask("cloning " + oldname + " to " + name);
+
+        // loadingModal.setTask("cloning " + oldname + " to " + name);
 
         const cloneRequest = {
             "opname": oldname,
@@ -334,7 +361,8 @@ export default class ServerOps
                 if (err)
                 {
                     this._log.log("err res", res);
-                    gui.endModalLoading();
+                    // gui.endModalLoading();
+                    gui.savingTitleAnimEnd();
 
                     CABLES.UI.MODAL.showError("Could not clone op", "");
 
@@ -347,10 +375,11 @@ export default class ServerOps
                     {
                         if (options.openEditor) this.edit(name);
 
-                        loadingModal.setTask("loading new op: " + name);
+                        // loadingModal.setTask("loading new op: " + name);
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
-                        if (!options.loadingModal) gui.endModalLoading();
+                        // if (!options.loadingModal) gui.endModalLoading();
+                        gui.savingTitleAnimEnd();
                         if (cb)cb();
                     });
                 };
@@ -537,6 +566,7 @@ export default class ServerOps
     {
         if (!opName || !depName || !depType) return;
 
+        gui.jobs().start({ "id": "addOpDependency", "title": "adding " + depName + " to " + opName });
         CABLESUILOADER.talkerAPI.send(
             "addOpDependency",
             {
@@ -546,6 +576,8 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                gui.jobs().finish("addOpDependency");
+
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
@@ -566,7 +598,7 @@ export default class ServerOps
                 {
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
-                        this._log.log("op-dependency added!", opName, depName);
+                        this._log.log("op-dependency added: " + opName + " " + depName);
 
                         gui.emitEvent("refreshManageOp", opName);
                         if (next) next();
@@ -582,6 +614,7 @@ export default class ServerOps
         const modal = new ModalDialog({ "title": "Really remove dependency from op?", "text": "Delete " + depName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
         {
+            gui.jobs().start({ "id": "removeOpDependency", "title": "removing " + depName + " from " + opName });
             CABLESUILOADER.talkerAPI.send(
                 "removeOpDependency",
                 {
@@ -591,6 +624,7 @@ export default class ServerOps
                 },
                 (err, res) =>
                 {
+                    gui.jobs().finish("removeOpDependency");
                     if (err)
                     {
                         CABLES.UI.MODAL.showError("ERROR", "unable to remove op-dependency: " + err.msg);
@@ -769,10 +803,12 @@ export default class ServerOps
      */
     opNameDialog(options, cb)
     {
-        let newName = options.shortName || "";
-        let opTargetDir = null;
-        if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
+        const suggestedNamespace = options.suggestedNamespace || "";
+        const shortName = options.shortName || "";
 
+        let newName = suggestedNamespace + shortName;
+
+        let opTargetDir = null;
         const _checkOpName = () =>
         {
             if (!CABLES.platform.isTrustedPatch())
@@ -802,7 +838,7 @@ export default class ServerOps
                     "text": html
                 });
 
-                if (CABLES.platform.frontendOptions.chooseOpDir)
+                if (CABLES.platform.frontendOptions.hasOpDirectories)
                 {
                     const addButton = ele.byId("addOpTargetDir");
                     if (addButton)
@@ -837,8 +873,20 @@ export default class ServerOps
 
                 _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
 
-                ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
-                ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
+                const opNameInput = ele.byId("opNameDialogInput");
+                if (opNameInput.value)
+                {
+                    const parts = opNameInput.value.split(".");
+                    let lastPartLength = parts[parts.length - 1].length;
+                    if (parts.length > 1)
+                    {
+                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
+                        opNameInput.focus();
+                    }
+                }
+
+                opNameInput.addEventListener("input", _nameChangeListener);
+                ele.byId("opNameDialogNamespace").addEventListener("input", _namespaceChangeListener);
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle)
                 {
@@ -863,7 +911,7 @@ export default class ServerOps
                 ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                    cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
+                    cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
                 });
 
                 if (options.showReplace)
@@ -872,7 +920,7 @@ export default class ServerOps
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                        cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
+                        cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
                     });
                 }
             });
@@ -880,12 +928,13 @@ export default class ServerOps
 
         let html = "";
 
-        html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
+        if (!CABLES.platform.isStandalone()) html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
+        html += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
         if (options.rename)
@@ -899,7 +948,7 @@ export default class ServerOps
         html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
-        if (options.chooseOpDir)
+        if (options.hasOpDirectories)
         {
             CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
             {
@@ -923,21 +972,52 @@ export default class ServerOps
             _checkOpName();
         }
 
+        const _namespaceChangeListener = () =>
+        {
+            const opNameInput = ele.byId("opNameDialogInput");
+            const selectEle = ele.byId("opNameDialogNamespace");
+
+            if (selectEle.value)
+            {
+                const opName = opNameInput.value;
+                const opBasename = opName.substring(opName.lastIndexOf(".") + 1);
+                const newNamespace = selectEle.value;
+                const newOpName = newNamespace + opBasename;
+                if (opNameInput)
+                {
+                    opNameInput.value = newOpName;
+                    _nameChangeListener();
+                }
+            }
+        };
+
         const _nameChangeListener = () =>
         {
+            const nameEle = ele.byId("opNameDialogInput");
             const newNamespace = ele.byId("opNameDialogNamespace").value;
-            let v = capitalize(ele.byId("opNameDialogInput").value);
+            let nameInput = ele.byId("opNameDialogInput").value;
+
+            const opUsername = gui.user ? gui.user.usernameLowercase : "";
+            const nameParts = nameInput.split(".");
+            const capitalizedParts = nameParts.map((part) =>
+            {
+                if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
+                return capitalize(part);
+            });
+            const fullName = capitalizedParts.join(".");
+
+            if (nameInput !== fullName) nameEle.value = fullName;
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
 
-            gui.jobs().start({ "id": "checkOpName" + newNamespace + v, "title": "checking op name" + newNamespace });
+            gui.jobs().start({ "id": "checkOpName" + fullName, "title": "checking op name" + fullName });
 
-            if (v)
+            if (fullName)
             {
                 const checkNameRequest = {
                     "namespace": newNamespace,
-                    "v": v,
+                    "v": fullName,
                     "sourceName": options.sourceOpName,
                     "rename": options.rename
                 };
@@ -952,12 +1032,12 @@ export default class ServerOps
                         return;
                     }
 
-                    if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value + capitalize(ele.byId("opNameDialogInput").value))
+                    if (res.checkedName && res.checkedName === fullName)
                     {
                         ele.show(ele.byId("opNameDialogSubmit"));
                         if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
 
-                        _updateFormFromApi(res, v, newNamespace);
+                        _updateFormFromApi(res, fullName, newNamespace);
                     }
                     gui.jobs().finish("checkOpName" + res.checkedName);
                 });
@@ -966,6 +1046,25 @@ export default class ServerOps
 
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
+            let hintsHtml = "";
+            const eleHints = ele.byId("opNameDialogHints");
+            if (eleHints) ele.hide(eleHints);
+            if (res.hints && res.hints.length > 0)
+            {
+                hintsHtml += "<ul>";
+                res.hints.forEach((hint) =>
+                {
+                    hintsHtml += "<li>" + hint + "</li>";
+                });
+                hintsHtml += "</ul>";
+
+                if (eleHints)
+                {
+                    eleHints.innerHTML = "<h3>Hints</h3>" + hintsHtml;
+                    ele.show(eleHints);
+                }
+            }
+
             let consequencesHtml = "";
             const eleCons = ele.byId("opNameDialogConsequences");
             if (eleCons) ele.hide(eleCons);
@@ -1002,11 +1101,11 @@ export default class ServerOps
                     const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
                     if (versionSuggestions) versionSuggestions.forEach((suggest) =>
                     {
-                        if (suggest.dataset.shortName)
+                        if (suggest.dataset.nextName)
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.shortName);
+                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.nextName);
                                 _nameChangeListener();
                             });
                         }
@@ -1054,12 +1153,12 @@ export default class ServerOps
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": name,
+            "shortName": name || "MyAwesomeOpName",
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
-            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1135,12 +1234,12 @@ export default class ServerOps
             "showReplace": false,
             "sourceOpName": null,
             "rename": true,
-            "chooseOpDir": false
+            "hasOpDirectories": false
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
+            const opname = newName;
 
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
@@ -1149,6 +1248,7 @@ export default class ServerOps
             const renameRequest = {
                 "opname": nameOrId,
                 "name": opname,
+                "namespace": newNamespace
             };
             if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
@@ -1214,12 +1314,12 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": null,
-            "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
+            const opname = newName;
 
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
@@ -1228,6 +1328,8 @@ export default class ServerOps
 
             gui.serverOps.clone(nameOrId, opname, () =>
             {
+                gui.closeModal();
+
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {
                     if (cbOptions && cbOptions.replace)
@@ -1359,12 +1461,11 @@ export default class ServerOps
                         "inactive": inactive,
                         "onClose": (which) =>
                         {
-                            // this._log.log("close!!! missing infos...");
                             if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            const loadingModal = gui.startModalLoading("Save attachment...");
+                            gui.savingTitleAnimStart("Saving Attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -1374,13 +1475,11 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
-
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (errr)
                                     {
                                         notifyError("error: op not saved");
-                                        // _setStatus('ERROR: not saved - '+res.msg);
                                         this._log.warn("[opAttachmentSave]", errr);
                                         return;
                                     }
@@ -1398,14 +1497,13 @@ export default class ServerOps
                                         {
                                             ports = { "ports": [] };
                                         }
-                                        // const src = subPatchOpUtil.generatePortsAttachmentJsSrc(ports);
 
                                         subPatchOpUtil.savePortJsonSubPatchOpAttachment(ports, opname, () =>
                                         {
                                             subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
-                                                gui.endModalLoading();
+                                                gui.savingTitleAnimEnd();
                                             });
                                         });
                                     }
@@ -1413,7 +1511,7 @@ export default class ServerOps
                                         subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
-                                            gui.endModalLoading();
+                                            gui.savingTitleAnimEnd();
                                         });
                                 },
                             );
@@ -1502,8 +1600,10 @@ export default class ServerOps
                     {
                         // CABLES.UI.MODAL.showLoading("Saving and executing op...");
 
-                        const loadingModal = gui.startModalLoading("Saving and executing op...");
-                        loadingModal.setTask("Saving Op");
+                        gui.savingTitleAnimStart("Saving Op...");
+
+                        // const loadingModal = gui.startModalLoading("Saving and executing op...");
+                        // loadingModal.setTask("Saving Op");
 
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
@@ -1527,18 +1627,15 @@ export default class ServerOps
 
                                 if (!res.success)
                                 {
-                                    gui.endModalLoading();
+                                    gui.savingTitleAnimEnd();
 
                                     if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
                                     else if (err)setStatus("Error: " + err.msg || "Unknown error");
                                 }
                                 else
                                 {
-                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
-
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
-
-                                    loadingModal.setTask("Executing code");
 
                                     gui.serverOps.execute(opid, () =>
                                     {
@@ -1553,6 +1650,7 @@ export default class ServerOps
                                                     gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
                                                 }
 
+                                        gui.savingTitleAnimEnd();
                                         gui.endModalLoading();
                                     });
                                 }
@@ -1562,7 +1660,8 @@ export default class ServerOps
                                 setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
 
-                                gui.endModalLoading();
+                                // gui.endModalLoading();
+                                gui.savingTitleAnimEnd();
                             },
                         );
                     };
@@ -1719,22 +1818,8 @@ export default class ServerOps
                 gui.opSelect().prepare();
             }
 
-            // let libsToLoad = [];
-            // let coreLibsToLoad = [];
-            // newOps.forEach((newOp) =>
-            // {
-            //     if (newOp)
-            //     {
-            //         if (newIds.hasOwnProperty(newOp.opId))
-            //         {
-            //             newOp.opId = newIds[newOp.opId];
-            //         }
-            //         libsToLoad = libsToLoad.concat(this.getOpLibs(newOp, true));
-            //         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
-            //     }
-            // });
-
             if (proj && proj.ops)
+            {
                 for (let i = 0; i < proj.ops.length; i++)
                 {
                     if (proj.ops[i])
@@ -1745,11 +1830,16 @@ export default class ServerOps
                         }
                     }
                 }
+            }
 
             perf2.finish();
             this.loadOpsLibs(proj.ops, () =>
             {
-                if (_next) _next(proj);
+                if (_next)
+                {
+                    proj.ops = proj.ops.filter((op) => { return this.isLoaded(op); });
+                    _next(proj);
+                }
             });
         });
     }
@@ -1860,17 +1950,6 @@ export default class ServerOps
                     missingOps.push(opInfo);
                     missingOpsFound.push(opIdentifier);
                 }
-                else
-                {
-                    if (op.storage && op.storage.blueprintVer > 1)
-                    {
-                        if (!gui.corePatch().hasOp(op))
-                        {
-                            missingOps.push(opInfo);
-                            missingOpsFound.push(opIdentifier);
-                        }
-                    }
-                }
             }
         });
         missingOps = missingOps.filter((obj, index) => { return missingOps.findIndex((item) => { return item.opId === obj.opId; }) === index; });
@@ -1937,10 +2016,9 @@ export default class ServerOps
     {
         if (op)
         {
-            gui.jobs().start({ "id": "getopdocs" });
-
             const opIdentifier = this.getOpIdentifier(op);
             const oldName = this.getOpNameByIdentifier(opIdentifier);
+            gui.jobs().start({ "id": "getopdocs", "title": "load opdocs for " + oldName });
             CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
@@ -1964,7 +2042,7 @@ export default class ServerOps
                             "title": title,
                             "html": html,
                             "showOkButton": true,
-                            "okButton": { "text": "Continue Loading", "cssClasses": "button" }
+                            "okButton": { "text": "OK" }
                         });
                     modal.on("onClose", continueLoadingCallback);
                 }
@@ -1987,7 +2065,7 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
-                    gui.jobs().start({ "id": "missingops" });
+                    gui.jobs().start({ "id": "missingops", "title": "load missing ops" });
 
                     loadjs.ready(lid, () =>
                     {

@@ -81,6 +81,8 @@ export default class PatchSaveServer extends Events
                 return;
             }
 
+            ele.hide(ele.byId("nav-item-offline"));
+
             if (gui.isRemoteClient)
             {
                 gui.jobs().finish("checkupdated");
@@ -245,7 +247,7 @@ export default class PatchSaveServer extends Events
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
-                let patchOpsText = "Patch ops used in this patch will be copied to the new patch.";
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. need to reuse ops ? create a <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
                 modalNotices.push(patchOpsText);
             }
 
@@ -354,11 +356,7 @@ export default class PatchSaveServer extends Events
 
     finishAnimations()
     {
-        const elePatchName = ele.byId("patchname");
-        elePatchName.classList.remove("blinking");
-
-        if (elePatchName.dataset.patchname != "undefined")
-            elePatchName.innerHTML = elePatchName.dataset.patchname;
+        gui.savingTitleAnimEnd();
 
         setTimeout(() =>
         {
@@ -386,16 +384,15 @@ export default class PatchSaveServer extends Events
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];
-            if (op.uiAttribs)
-            {
-                if (defaultOps.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
-                {
-                    blueprintIds.push(op.uiAttribs.blueprintSubpatch);
+            if (!op || !op.uiAttribs) continue;
 
-                    if (op.patchId && op.isInBlueprint2())
-                    {
-                        blueprintIds.push(op.patchId.get());
-                    }
+            if (defaultOps.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
+            {
+                blueprintIds.push(op.uiAttribs.blueprintSubpatch);
+
+                if (op.patchId && op.isInBlueprint2())
+                {
+                    blueprintIds.push(op.patchId.get());
                 }
             }
 
@@ -463,6 +460,7 @@ export default class PatchSaveServer extends Events
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
         gui.patchView.serialize(data.ui);
+        gui.patchParamPanel.serialize(data.ui);
 
         data.ui.renderer = {};
         data.ui.renderer.w = Math.max(0, gui.rendererWidth);
@@ -492,8 +490,10 @@ export default class PatchSaveServer extends Events
                 if (datastr.length > 12 * 1024 * 1024)
                     notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
 
-                document.getElementById("patchname").innerHTML = "Saving Patch";
-                document.getElementById("patchname").classList.add("blinking");
+                gui.savingTitleAnimStart("Saving Patch...");
+
+                // document.getElementById("patchname").innerHTML = "Saving Patch";
+                // document.getElementById("patchname").classList.add("blinking");
 
 
                 const startTime = performance.now();
@@ -514,7 +514,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (err)
                         {
-                            this._log.warn("[save patch error]", err);
+                            this._log.warn("[save patch error] ", err.msg || err);
                         }
 
                         gui.savedState.setSaved("patchServerApi", 0);
@@ -528,6 +528,7 @@ export default class PatchSaveServer extends Events
                                 "time": performance.now() - startTime
                             });
 
+                        gui.emitEvent("patchsaved");
                         gui.jobs().finish("projectsave");
 
                         if (!r || !r.success || err)

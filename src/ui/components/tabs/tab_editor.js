@@ -38,9 +38,6 @@ export default class EditorTab
             if (this._editor) this._editor.resize();
         });
 
-
-
-
         const existing = gui.mainTabs.getTabByTitle(options.title);
         if (existing)
         {
@@ -67,14 +64,10 @@ export default class EditorTab
             {
                 if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
                 let hideFormatButton = !!options.hideFormatButton;
-                if (!hideFormatButton && options.syntax && options.syntax === "js")
-                {
-                    hideFormatButton = false;
-                }
-                else
-                {
-                    hideFormatButton = true;
-                }
+                if (!hideFormatButton && options.syntax && options.syntax === "js") hideFormatButton = false;
+                else hideFormatButton = true;
+                if (!CABLES.platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
+
                 if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
             }
             else
@@ -107,23 +100,34 @@ export default class EditorTab
                     this._log.warn("could not get opdoc:" + opname);
                 }
 
-                this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
-                this._tab.addButton("Op Page", () => { window.open(CABLES.platform.getCablesUrl() + "/op/" + opname); });
+                this._tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
 
-                this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
                 if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
-                    const el = this._tab.addButton(opdoc.shortName + " Attachments", () =>
+                    const el = this._tab.addButton("<span class=\"icon icon-chevron-down\"></span>Op Files", () =>
                     {
                         const items = [];
+
+
+
+                        items.push({
+                            "title": opdoc.name + ".js",
+                            // "iconClass": "icon icon-file",
+                            "func": () =>
+                            {
+                                gui.serverOps.edit(opdoc.name, false, null, true);
+                            }
+                        });
+
+
 
                         for (let i = 0; i < opdoc.attachmentFiles.length; i++)
                         {
                             const fn = opdoc.attachmentFiles[i];
                             items.push({
                                 "title": opdoc.attachmentFiles[i],
-                                "iconClass": "icon icon-file",
+                                // "iconClass": "icon icon-file",
                                 "func": () =>
                                 {
                                     gui.serverOps.editAttachment(opname, fn);
@@ -139,6 +143,9 @@ export default class EditorTab
                 }
             }
 
+            this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
+
+            this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
 
 
@@ -196,9 +203,10 @@ export default class EditorTab
         });
     }
 
-    setContent(content)
+    setContent(content, silent = false)
     {
         this._editor.setValue(content, 1);
+        if (silent) gui.mainTabs.setChanged(this._tab.id, false);
     }
 
     focus()

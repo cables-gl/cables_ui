@@ -102,6 +102,7 @@ export default class PatchView extends Events
 
     focusSubpatchOp(subPatchId)
     {
+        console.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
         gui.patchView.centerSelectOp(outerOp);
@@ -423,23 +424,20 @@ export default class PatchView extends Events
         const opname = ops[0];
         const uiAttr = { "subPatch": this.getCurrentSubPatch() };
 
-        if (event)
+
+        let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
+
+        if (event && this._patchRenderer.screenToPatchCoord)
         {
-            let coord = { "x": 0, "y": 0 };
-            if (this._patchRenderer.screenToPatchCoord)
-            {
-                const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX || event.x, event.clientY || event.y);
-
-                coord = { "x": coordArr[0], "y": coordArr[1] };
-            }
-
-            coord.x = Snap.snapOpPosX(coord.x, true);
-            coord.y = Snap.snapOpPosY(coord.y);
-
-            uiAttr.translate = { "x": coord.x, "y": coord.y };
+            coordArr = this._patchRenderer.screenToPatchCoord(event.clientX || event.x, event.clientY || event.y);
         }
 
-        gui.serverOps.loadOpDependencies(opname, function ()
+        const coord = { "x": coordArr[0], "y": coordArr[1] };
+        coord.x = Snap.snapOpPosX(coord.x, true);
+        coord.y = Snap.snapOpPosY(coord.y);
+        uiAttr.translate = { "x": coord.x, "y": coord.y };
+
+        gui.serverOps.loadOpDependencies(opname, () =>
         {
             const op = gui.corePatch().addOp(opname, uiAttr);
 
@@ -448,13 +446,17 @@ export default class PatchView extends Events
                     op.portsIn[i].set(filename);
 
             op.refreshParams();
+            this.centerSelectOp(op.opId);
         });
     }
 
     addOp(opname, options)
     {
+        gui.jobs().start({ "id": "loadOpDependencies" });
         gui.serverOps.loadOpDependencies(opname, () =>
         {
+            gui.jobs().finish("loadOpDependencies");
+
             options = options || {};
             const uiAttribs = options.uiAttribs || {};
 
@@ -783,12 +785,15 @@ export default class PatchView extends Events
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
                 bb.applyPos(ops[j].uiAttribs.translate.x, ops[j].uiAttribs.translate.y, 0);
-                bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
+
+                const glop = this.patchRenderer.getGlOp(ops[j]);
+                if (glop) bb.applyPos(ops[j].uiAttribs.translate.x + glop.w, ops[j].uiAttribs.translate.y + glop.h, 0);
+                else bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
             }
         }
 
         bb.calcCenterSize();
-
+        // this.patchRenderer.subPatchOpAnimStart(bb, null);
         return bb;
     }
 
@@ -819,7 +824,7 @@ export default class PatchView extends Events
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
-            if (this._p.ops[i].uiAttribs.selected)
+            if (this._p.ops[i] && this._p.ops[i].uiAttribs && this._p.ops[i].uiAttribs.selected)
                 ops.push(this._p.ops[i]);
 
         perf.finish();
@@ -1043,8 +1048,7 @@ export default class PatchView extends Events
     {
         const b = this.getSubPatchBounds(patchId);
 
-        // const op = gui.corePatch().getSubPatchOuterOp(patchId);
-        // op.createInOutOps();
+        if (!patchId) return;
 
         let patchInputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchInput2);
         let patchOutputOPs = this._p.getSubPatchOpsByName(patchId, defaultOps.defaultOpNames.subPatchOutput2);
@@ -1154,6 +1158,7 @@ export default class PatchView extends Events
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (!ops[i] || !ops[i].uiAttribs) continue;
             const sub = ops[i].uiAttribs.subPatch || 0;
             if (ops[i].isSubPatchOp()) foundSubPatchOps[ops[i].patchId.get()] = true;
             countSubs[sub] = countSubs[sub] || 0;
@@ -1331,6 +1336,8 @@ export default class PatchView extends Events
 
     focusSubpatchOp(subPatchId)
     {
+        console.log("dupe focusSubpatchOp2");
+
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
         if (!gotoOp) return;
         let parentSubId = gotoOp.uiAttribs.subPatch || 0;
@@ -2114,6 +2121,22 @@ export default class PatchView extends Events
 
     setCurrentSubPatch(subpatch, next)
     {
+        gui.restriction.setMessage("subpatchref", null);
+        if (subpatch != 0)
+        {
+            const outerOp = this.getSubPatchOuterOp(subpatch);
+            const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+
+            for (let i = 0; i < ops.length; i++)
+            {
+                if (ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
+                {
+                    let subid = ops[i].subId;
+                    gui.restriction.setMessage("subpatchref", "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" + subid + "\")'>goto patch</a>");
+                }
+            }
+        }
+
         if (this._patchRenderer.setCurrentSubPatch)
         {
             this._patchRenderer.setCurrentSubPatch(subpatch,
@@ -2736,7 +2759,7 @@ export default class PatchView extends Events
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+            if (ops[i] && ops[i].uiAttribs && ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
         }
         return foundOps;
     }

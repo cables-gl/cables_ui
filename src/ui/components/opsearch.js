@@ -15,6 +15,7 @@ export default class OpSearch extends Events
         super();
         this._list = null;
         this._wordsDb = null;
+        this.numPatchops = 0;
     }
 
     get list()
@@ -45,6 +46,8 @@ export default class OpSearch extends Events
 
         const namespace = defaultOps.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
+
+        this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;
         items = items.concat(this._createListItemsByNames(patchOpNames, items));
 
         const newList = {};
@@ -496,7 +499,6 @@ export default class OpSearch extends Events
             }
 
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
-            if (defaultOps.isStandaloneOp(opName) && !CABLES.platform.isStandalone()) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
@@ -521,7 +523,7 @@ export default class OpSearch extends Events
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);
                 let type = "op";
-                if (defaultOps.isTeamNamespace(opName)) type = "teamnamespace";
+                if (defaultOps.isTeamNamespace(opName)) type = "team";
                 if (defaultOps.isExtension(opName)) type = "extension";
                 if (defaultOps.isPatchOp(opName)) type = "patchop";
 
@@ -546,7 +548,6 @@ export default class OpSearch extends Events
                     "isOp": !defaultOps.isCollection(opName),
                     "userOp": defaultOps.isUserOp(opName),
                     "devOp": defaultOps.isDevOp(opName),
-                    "standaloneOp": defaultOps.isStandaloneOp(opName),
                     "extensionOp": defaultOps.isExtensionOp(opName),
                     "teamOp": defaultOps.isTeamOp(opName),
                     "patchOp": defaultOps.isPatchOp(opName),

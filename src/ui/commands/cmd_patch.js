@@ -25,8 +25,6 @@ CABLES_CMD_PATCH.setPatchTitle = () =>
     gui.patchView.store.showModalTitleDialog();
 };
 
-
-
 CABLES_CMD_PATCH.openParamsTab = () =>
 {
     const ops = gui.patchView.getSelectedOps();
@@ -61,8 +59,6 @@ CABLES_CMD_PATCH.clearOpTitles = function ()
     }
 };
 
-
-
 CABLES_CMD_PATCH.selectChilds = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -78,18 +74,21 @@ CABLES_CMD_PATCH.selectChilds = function ()
     gui.patchView.showSelectedOpsPanel();
 };
 
+CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps = function ()
+{
+    const sub = gui.patchView.getCurrentSubPatch();
+    if (!sub) return;
+    gui.patchView.setPositionSubPatchInputOutputOps(sub);
+};
+
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
 
     if (names.length == 0) return;
-    if (names.length == 1)
-    {
-        gui.patchView.setCurrentSubPatch(0);
-    }
-    else
-        gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+    if (names.length == 1) gui.patchView.setCurrentSubPatch(0);
+    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
 };
 
 CABLES_CMD_PATCH.selectAllOps = function ()
@@ -161,7 +160,7 @@ CABLES_CMD_PATCH.manageSelectedOp = function (opid)
     if (!opid)
     {
         const ops = gui.patchView.getSelectedOps();
-        if (ops.length > 0) opid = ops[0].objName;
+        if (ops.length > 0) opid = ops[0].opId;
     }
     new ManageOp(gui.mainTabs, opid);
 };
@@ -278,7 +277,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
         "showReplace": false,
-        "chooseOpDir": CABLES.platform.frontendOptions.chooseOpDir
+        "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
     };
 
     if (gui.patchView.getCurrentSubPatch() != 0)
@@ -293,6 +292,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
     gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
     {
+        gui.closeModal();
         CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName, "ignoreNsCheck": true });
     });
 };
@@ -320,204 +320,210 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
 
     const origOpsBounds = gui.patchView.getSelectionBounds();
-    gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds);
-
-    // setTimeout(() =>
-    // {
-    const selops = gui.patchView.getSelectedOps();
-
-    let selectedOpIds = gui.patchView.getSelectedOpsIds();
-    const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
-    const currentSubpatch = gui.patchView.getCurrentSubPatch();
-    const loadingModal = gui.startModalLoading("Create Subpatch");
-
-    for (let i = 0; i < selops.length; i++)
+    gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds, () =>
     {
-        if (selops[i].isSubPatchOp())
+        const selops = gui.patchView.getSelectedOps();
+
+        let selectedOpIds = gui.patchView.getSelectedOpsIds();
+        const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
+        const currentSubpatch = gui.patchView.getCurrentSubPatch();
+        // const loadingModal = gui.startModalLoading("Create Subpatch");
+
+        for (let i = 0; i < selops.length; i++)
         {
-            if (selops[i].storage && selops[i].storage.subPatchVer != 2)
+            if (selops[i].isSubPatchOp())
             {
-                new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
-
-                return;
-            }
-        }
-    }
-
-    gui.serverOps.create(newOpname, () =>
-    {
-        let newselectedOpIds = [];
-
-        for (let i = 0; i < selectedOpIds.length; i++)
-        {
-            gui.patchView.selectOpId(selectedOpIds[i]);
-
-            const op = gui.corePatch().getOpById(selectedOpIds[i]);
-            if (op.isSubPatchOp())
-            {
-                const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
-                for (let j = 0; j < newops.length; j++)
-                    newselectedOpIds.push(newops[j].id);
-            }
-        }
-
-
-        gui.patchView.createSubPatchFromSelection(2,
-            (patchId, OpTempSubpatch) =>
-            {
-                const portJson = { "ports": [] };
-                const oldLinks = [];
-
-                // find ops that are crosslinked...
-                // todo: relink somehow ?
-                const ops = gui.corePatch().getSubPatchOps(patchId);
-
-                for (let i = 0; i < ops.length; i++)
+                if (selops[i].storage && selops[i].storage.subPatchVer != 2)
                 {
-                    const op = ops[i];
-                    for (let j = 0; j < op.portsIn.length; j++)
-                    {
-                        const portIn = op.portsIn[j];
-                        if (portIn.isLinked() && portIn.links[0])
-                        {
-                            const p2 = portIn.links[0].getOtherPort(portIn);
-                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                            {
-                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
-                                portJson.ports.push(pJson);
-                                portIn.removeLinks();
-                                op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
-                            }
-                        }
-                    }
-                    for (let j = 0; j < op.portsOut.length; j++)
-                    {
-                        const portOut = op.portsOut[j];
-                        if (portOut.isLinked())
-                        {
-                            const p2 = portOut.links[0].getOtherPort(portOut);
-                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                            {
-                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
-                                portJson.ports.push(pJson);
-                                portOut.removeLinks();
-                                op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
-                            }
-                        }
-                    }
+                    new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
+
+                    return;
                 }
+            }
+        }
 
-                loadingModal.setTask("Creating blueprint op");
+        gui.serverOps.create(newOpname, () =>
+        {
+            let newselectedOpIds = [];
 
-                gui.patchView.addOp(newOpname,
+            for (let i = 0; i < selectedOpIds.length; i++)
+            {
+                gui.patchView.selectOpId(selectedOpIds[i]);
+
+                const op = gui.corePatch().getOpById(selectedOpIds[i]);
+                if (op.isSubPatchOp())
+                {
+                    const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
+                    for (let j = 0; j < newops.length; j++)
+                        newselectedOpIds.push(newops[j].id);
+                }
+            }
+
+
+            gui.patchView.createSubPatchFromSelection(2,
+                (patchId, OpTempSubpatch) =>
+                {
+                    const portJson = { "ports": [] };
+                    const oldLinks = [];
+
+                    // find ops that are crosslinked...
+                    const ops = gui.corePatch().getSubPatchOps(patchId);
+
+                    let unlink = [];
+                    for (let i = 0; i < ops.length; i++)
                     {
-                        "uiAttribs": {
-                            "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
-                        },
-                        "onOpAdd": (newOp) =>
+                        const op = ops[i];
+                        for (let j = 0; j < op.portsIn.length; j++)
                         {
-                            subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                            const portIn = op.portsIn[j];
+                            let pJson;
+                            for (let k = 0; k < op.portsIn[j].links.length; k++)
                             {
-                                const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
-
-                                gui.corePatch().deleteOp(OpTempSubpatch.id);
-                                gui.patchView.setCurrentSubPatch(currentSubpatch);
-
-                                loadingModal.setTask("Creating ports...");
-
-                                CABLESUILOADER.talkerAPI.send("opUpdate",
+                                if (portIn.isLinked() && portIn.links[k])
+                                {
+                                    const p2 = portIn.links[k].getOtherPort(portIn);
+                                    if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                                     {
-                                        "opname": newOpname,
-                                        "update": {
-                                            "attachments":
-                                            {
-                                                "att_inc_gen_ports.js": src,
-                                                "att_ports.json": JSON.stringify(portJson)
-                                            }
-                                        }
-                                    },
-                                    (err, r) =>
-                                    {
-                                        if (err)
+                                        if (k == 0)
                                         {
-                                            // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                                            this.showApiError(err);
-                                            return;
+                                            pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
+                                            portJson.ports.push(pJson);
                                         }
 
-                                        loadingModal.setTask("Execute code");
+                                        op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                        oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portIn.name });
+                                        unlink.push(portIn.links[k]);
+                                    }
+                                }
+                            }
+                        }
 
-                                        gui.serverOps.execute(newOpname, (newOps) =>
+                        for (let j = 0; j < op.portsOut.length; j++)
+                        {
+                            const portOut = op.portsOut[j];
+                            if (portOut.isLinked())
+                            {
+                                let pJson = null;
+                                for (let k = 0; k < portOut.links.length; k++)
+                                {
+                                    const p2 = portOut.links[k].getOtherPort(portOut);
+                                    if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                    {
+                                        if (k == 0)
                                         {
-                                            newOp = newOps[0];
-                                            const subPatchId = newOp.patchId.get();
+                                            pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
+                                            portJson.ports.push(pJson);
+                                        }
+                                        op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                        oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": portOut.name });
+                                        unlink.push(portOut.links[k]);
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-                                            // relink outside ports.......
-                                            // for (let i = 0; i < oldLinks.length; i++)
+                    unlink.forEach((l) => { l.remove(); });
 
-                                            // relink inside ports....
-                                            const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
-                                            for (let j = 0; j < oldLinks.length; j++)
-                                            {
-                                                // outer linking
-                                                const oldLink = oldLinks[j];
-                                                newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+                    gui.patchView.addOp(newOpname,
+                        {
+                            "uiAttribs": {
+                                "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
+                            },
+                            "onOpAdd": (newOp) =>
+                            {
+                                subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                                {
+                                    const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
-                                                for (let i = 0; i < subOps.length; i++)
+                                    gui.corePatch().deleteOp(OpTempSubpatch.id);
+                                    gui.patchView.setCurrentSubPatch(currentSubpatch);
+
+                                    CABLESUILOADER.talkerAPI.send("opUpdate",
+                                        {
+                                            "opname": newOpname,
+                                            "update": {
+                                                "attachments":
                                                 {
-                                                    if (subOps[i].uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
+                                                    "att_inc_gen_ports.js": src,
+                                                    "att_ports.json": JSON.stringify(portJson)
+                                                }
+                                            }
+                                        },
+                                        (err, r) =>
+                                        {
+                                            if (err)
+                                            {
+                                                // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                this.showApiError(err);
+                                                return;
+                                            }
+
+                                            gui.serverOps.execute(newOpname, (newOps) =>
+                                            {
+                                                newOp = newOps[0];
+
+                                                const subPatchId = newOp.patchId.get();
+
+                                                // relink inside ports....
+                                                const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
+                                                for (let j = 0; j < oldLinks.length; j++)
+                                                {
+                                                    // outer linking
+                                                    const oldLink = oldLinks[j];
+                                                    newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+
+                                                    for (let i = 0; i < subOps.length; i++)
                                                     {
                                                         const op = subOps[i];
-
-                                                        let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                        const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
-
-                                                        if (!l)
+                                                        if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                         {
-                                                            let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                            newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
+                                                            let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                            let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
+
+                                                            if (!l)
+                                                            {
+                                                                let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
+                                                            }
+
+                                                            if (!l)console.log("could not recreate oldlink", oldLink);
                                                         }
                                                     }
                                                 }
-                                            }
 
-                                            for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
+                                                for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
 
-                                            if (selectedOpIds.length == 0) newOp.setPos(0, 0);
-                                            else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
+                                                if (selectedOpIds.length == 0) newOp.setPos(0, 0);
+                                                else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
 
-                                            gui.patchView.testCollision(newOp);
-                                            gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
+                                                gui.patchView.testCollision(newOp);
+                                                gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 
-                                            if (!gui.savedState.getStateBlueprint(subPatchId))
-                                            {
-                                                console.log("need so save subpatchop AGAIN");
+                                                if (!gui.savedState.getStateBlueprint(subPatchId))
+                                                {
+                                                    console.log("need so save subpatchop AGAIN");
 
-                                                subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
-                                                    "next": () =>
-                                                    {
-                                                        // console.log("bp", bp);
-
-                                                        // CABLES.CMD.PATCH.save();
-                                                    } });
-                                            }
+                                                    subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                        "next": () =>
+                                                        {
+                                                            // console.log("bp", bp);
+                                                            // CABLES.CMD.PATCH.save();
+                                                        } });
+                                                }
 
 
-                                            gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                                            gui.endModalLoading();
-                                            gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                                gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+                                                gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                            });
                                         });
-                                    });
-                                // });
-                            }, { "doNotExecute": true });
-                        }
-                    });
-            },
-            { "translate": { "x": 0, "y": 0 } });
-    }, false, { "noLoadOp": true });
-    // }, 1400);
+                                }, { "doNotExecute": true });
+                            }
+                        });
+                },
+                { "translate": { "x": 0, "y": 0 } });
+        }, false, { "noLoadOp": true });
+    });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
@@ -560,6 +566,16 @@ CABLES_CMD_PATCH.uploadFile = function ()
     if (fileElem) fileElem.click();
 };
 
+CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
+{
+    if (!window.gui || !fileName) return;
+    CABLES.reuploadName = fileName;
+    const fileEle = ele.byId("fileReUpload" + id);
+    if (fileEle && fileEle.dataset.filePath) CABLES.reuploadName = fileEle.dataset.filePath;
+    const uploadEle = ele.byId("hiddenfileElemReupload");
+    if (uploadEle) uploadEle.click();
+};
+
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
@@ -572,6 +588,20 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
         new ModalDialog({ "html": html });
     }
+};
+
+CABLES_CMD_PATCH.uploadFileTab = () =>
+{
+    const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings/upload?iframe=true";
+    gui.mainTabs.addIframeTab(
+        "Upload File",
+        url,
+        {
+            "icon": "settings",
+            "closable": true,
+            "singleton": true,
+        },
+        true);
 };
 
 CABLES_CMD_PATCH.showBackups = () =>
@@ -590,9 +620,9 @@ CABLES_CMD_PATCH.showBackups = () =>
         true);
 };
 
-CABLES_CMD_PATCH.export = function ()
+CABLES_CMD_PATCH.export = function (type)
 {
-    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion());
+    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion(), type);
     exporter.show();
 };
 
@@ -842,7 +872,6 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
     gui.closeModal();
     const getsetOp = defaultOps.getRerouteOp(p.type);
 
-    console.log("getsetOp", getsetOp);
     gui.patchView.addOp(
         getsetOp,
         { "onOpAdd": (opGetter) =>
@@ -1331,12 +1360,11 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
     });
 };
 
-CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
+CABLES_CMD_PATCH.cloneSelectedOps = (ops) =>
 {
     if (!ops)
     {
         ops = gui.patchView.getSelectedOps();
-
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -1365,7 +1393,7 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
         if (ops.length == 0) return;
     }
 
-    loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+    // loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
 
 
     if (ops.length == 0)
@@ -1381,7 +1409,7 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     {
         // that opname was already renamed in list
         gui.patchView.replaceOp(op.id, newOpname);
-        CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+        CABLES_CMD_PATCH.cloneSelectedOps(ops);
     }
     else
     {
@@ -1393,9 +1421,9 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
 
                 CABLES.UI.notify("created op " + newOpname, null, { "force": true });
 
-                CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+                CABLES_CMD_PATCH.cloneSelectedOps(ops);
             });
-        }, { "openEditor": false, "loadingModal": loadingModal });
+        }, { "openEditor": false });
     }
 };
 
@@ -1421,25 +1449,25 @@ CABLES_CMD_PATCH.renameOp = (opName = null) =>
 
 CMD_PATCH_COMMANDS.push(
     {
-        "cmd": "select all ops",
+        "cmd": "Select all ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.selectAllOps,
         "hotkey": "CMD + a"
     },
     {
-        "cmd": "delete selected ops",
+        "cmd": "Delete selected ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.deleteSelectedOps,
         "icon": "trash",
         "hotkey": "DEL"
     },
     {
-        "cmd": "reload patch",
+        "cmd": "Reload patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.reload
     },
     {
-        "cmd": "save patch",
+        "cmd": "Save patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.save,
         "icon": "save",
@@ -1448,295 +1476,301 @@ CMD_PATCH_COMMANDS.push(
 
     },
     {
-        "cmd": "save patch as...",
+        "cmd": "Save patch as...",
         "category": "patch",
         "func": CABLES_CMD_PATCH.saveAs,
         "icon": "save",
         "hotkey": "[cmd_ctrl][shift]`s`",
     },
     {
-        "cmd": "upload file dialog",
+        "cmd": "Upload file dialog",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFileDialog,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "upload file",
+        "cmd": "Upload file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFile,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "create new file",
+        "cmd": "Create new file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createFile,
         "icon": "file",
         "frontendOption": "uploadFiles"
     },
     {
-        "cmd": "select child ops",
+        "cmd": "Select child ops",
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
     },
     {
-        "cmd": "clear op titles",
+        "cmd": "Clear op titles",
         "category": "op",
         "func": CABLES_CMD_PATCH.clearOpTitles
     },
     {
-        "cmd": "create subpatch",
+        "cmd": "Create subpatch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
         "icon": "subpatch"
     },
     {
-        "cmd": "export static html",
+        "cmd": "Export static html",
         "category": "patch",
         "func": CABLES_CMD_PATCH.export,
         "icon": "download",
         "frontendOption": "showExport"
     },
     {
-        "cmd": "show backups",
+        "cmd": "Show backups",
         "category": "patch",
         "func": CABLES_CMD_PATCH.showBackups,
         "icon": "file",
         "frontendOption": "showPatchBackups"
     },
     {
-        "cmd": "create new patch",
+        "cmd": "Create new patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.newPatch,
         "icon": "file"
     },
     {
-        "cmd": "add op",
+        "cmd": "Add op",
         "category": "patch",
         "func": CABLES_CMD_PATCH.addOp,
         "icon": "op",
         "infotext": "cmd_addop"
     },
     {
-        "cmd": "add op by name",
+        "cmd": "Add op by name",
         "category": "patch",
         "func": CABLES_CMD_PATCH.addOpByName,
         "icon": "op"
     },
     {
-        "cmd": "edit op",
+        "cmd": "Edit op",
         "category": "op",
         "func": CABLES_CMD_PATCH.editOp,
         "icon": "edit"
     },
     {
-        "cmd": "set title",
+        "cmd": "Set title",
         "category": "op",
         "func": CABLES_CMD_PATCH.setOpTitle,
         "icon": "edit"
     },
     {
-        "cmd": "toggle op resizable",
+        "cmd": "Toggle op resizable",
         "category": "op",
         "func": CABLES_CMD_PATCH.toggleResizable,
         "icon": "op"
     },
     {
-        "cmd": "clear patch",
+        "cmd": "Clear patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.clear
     },
     {
-        "cmd": "open patch website",
+        "cmd": "Open patch website",
         "category": "patch",
         "func": CABLES_CMD_PATCH.patchWebsite,
         "icon": "link",
         "frontendOption": "hasCommunity"
     },
     {
-        "cmd": "pause patch execution",
+        "cmd": "Pause patch execution",
         "category": "patch",
         "func": CABLES_CMD_PATCH.pause
     },
     {
-        "cmd": "resume patch execution",
+        "cmd": "Resume patch execution",
         "category": "patch",
         "func": CABLES_CMD_PATCH.resume
     },
     {
-        "cmd": "replace file path",
+        "cmd": "Replace file path",
         "category": "patch",
         "func": CABLES_CMD_PATCH.replaceFilePath
     },
     {
-        "cmd": "find unconnected ops",
+        "cmd": "Find unconnected ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findUnconnectedOps
     },
     {
-        "cmd": "find user ops",
+        "cmd": "Find user ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findUserOps
     },
     {
-        "cmd": "find commented ops",
+        "cmd": "Find commented ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findCommentedOps
     },
     {
-        "cmd": "find external assets",
+        "cmd": "Find external assets",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findOpsUsingExternalAssets
     },
     {
-        "cmd": "analyze patch",
+        "cmd": "Analyze patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.analyze
     },
     {
-        "cmd": "create number variable",
+        "cmd": "Create number variable",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createVarNumber
     },
     {
-        "cmd": "create backup",
+        "cmd": "Create backup",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createBackup
     },
     {
-        "cmd": "align ops left",
+        "cmd": "Align ops left",
         "func": CABLES_CMD_PATCH.alignOpsLeft,
         "icon": "align-left"
     },
     {
-        "cmd": "compress ops vertically",
+        "cmd": "Compress ops vertically",
         "func": CABLES_CMD_PATCH.compressOps,
         "icon": "list"
     },
     {
-        "cmd": "add space x",
+        "cmd": "Add space x",
         "func": CABLES_CMD_PATCH.addSpaceX,
         "icon": "list"
     },
     {
-        "cmd": "add space y",
+        "cmd": "Add space y",
         "func": CABLES_CMD_PATCH.addSpaceY,
         "icon": "list"
     },
     {
-        "cmd": "save patchfield screenshot",
+        "cmd": "Save patchfield screenshot",
         "func": CABLES_CMD_PATCH.savePatchScreenshot,
         "icon": "image"
     },
     {
-        "cmd": "replace ops",
+        "cmd": "Replace ops",
         "func": CABLES_CMD_PATCH.replaceOp,
         "icon": "op"
     },
     {
-        "cmd": "link two selected ops",
+        "cmd": "Link two selected ops",
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "icon": "op"
     },
     {
-        "cmd": "downgrade selected op",
+        "cmd": "Downgrade selected op",
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
     },
     {
-        "cmd": "upgrade selected ops",
+        "cmd": "Upgrade selected ops",
         "func": CABLES_CMD_PATCH.upGradeOps,
         "icon": "op"
     },
     {
-        "cmd": "clone selected ops to patch ops",
-        "func": CABLES_CMD_PATCH.cloneSelectedOps,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "clone selected op",
+        "cmd": "Clone selected op",
         "func": CABLES_CMD_PATCH.cloneSelectedOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "create new version of op",
+        "cmd": "Clone selected ops to patch ops",
+        "func": CABLES_CMD_PATCH.cloneSelectedOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "Create new version of op",
         "func": CABLES_CMD_PATCH.createVersionSelectedOp,
         "icon": "op"
     },
     {
-        "cmd": "manage selected op",
+        "cmd": "Manage selected op",
         "func": CABLES_CMD_PATCH.manageSelectedOp,
         "icon": "op"
     },
     {
-        "cmd": "go to parent subpatch",
+        "cmd": "Go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
     },
     {
-        "cmd": "open params in tab",
+        "cmd": "Open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "point blueprints to local patch",
+        "cmd": "Point blueprints to local patch",
         "func": CABLES_CMD_PATCH.localizeBlueprints,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "show glop information",
+        "cmd": "Show glop information",
         "func": CABLES_CMD_PATCH.watchGlOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "uncollide ops",
+        "cmd": "Uncollide ops",
         "func": CABLES_CMD_PATCH.uncollideOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "toggle patch like",
+        "cmd": "Toggle patch like",
         "func": CABLES_CMD_PATCH.togglePatchLike,
         "category": "patch"
     },
     {
-        "cmd": "create subpatch op",
+        "cmd": "Create subpatch op",
         "func": CABLES_CMD_PATCH.createSubPatchOp,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "delete unused patch ops",
+        "cmd": "Delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "delete unused patch ops",
+        "cmd": "Delete unused patch ops",
         "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "center ops in subpatch",
+        "cmd": "Center ops in subpatch",
         "func": CABLES_CMD_PATCH.centerOpsInSubpatch,
         "category": "patch",
         "icon": "op"
     },
     {
-        "cmd": "set patch title",
+        "cmd": "Set patch title",
         "func": CABLES_CMD_PATCH.setPatchTitle,
         "category": "patch",
         "icon": "edit"
     },
     {
-        "cmd": "rename op",
+        "cmd": "Rename op",
         "func": CABLES_CMD_PATCH.renameOp,
+        "category": "op",
+        "icon": "op"
+    },
+    {
+        "cmd": "Auto position subpatch input output ops",
+        "func": CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps,
         "category": "op",
         "icon": "op"
     }

@@ -213,6 +213,7 @@ export default class Gui extends Events
     {
         this._currentProject = p;
         gui.setProjectName(p.name || "unknown");
+        this.patchParamPanel.deserialize(p);
     }
 
     opSelect()
@@ -475,7 +476,7 @@ export default class Gui extends Events
     {
         this.pauseProfiling();
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
-
+        let canvasScale = 1;
         // this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
@@ -554,8 +555,11 @@ export default class Gui extends Events
             this.rendererHeight = window.innerHeight;
         }
 
-        this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
-        this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
+        if (this._corePatch.cgl && this._corePatch.cgl.canvasScale)canvasScale = this._corePatch.cgl.canvasScale;
+
+
+        this.rendererWidthScaled = this.rendererWidth * canvasScale;
+        this.rendererHeightScaled = this.rendererHeight * canvasScale;
 
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
@@ -811,7 +815,7 @@ export default class Gui extends Events
         }
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
-        ele.byId("canvasicons").style.width = (this.rendererWidth * this._corePatch.cgl.canvasScale) + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
         ele.byId("canvasicons").style.right = (0) + "px";
 
         const widthResizeIcon = 30;
@@ -918,12 +922,12 @@ export default class Gui extends Events
             this._elCablesCanvasContainer.style.right = "0px";
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
-            this._elCablesCanvasContainer.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
+            this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";
         }
 
         // flashing canvas overlay when saving
-        this._elCanvasFlash.style.width = this.rendererWidth * this._corePatch.cgl.canvasScale + "px";
-        this._elCanvasFlash.style.height = this.rendererHeight * this._corePatch.cgl.canvasScale + "px";
+        this._elCanvasFlash.style.width = this.rendererWidth * canvasScale + "px";
+        this._elCanvasFlash.style.height = this.rendererHeight * canvasScale + "px";
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
@@ -1099,7 +1103,23 @@ export default class Gui extends Events
     }
 
 
+    savingTitleAnimEnd()
+    {
+        const elePatchName = ele.byId("patchname");
+        elePatchName.classList.remove("blinking");
 
+        if (elePatchName.dataset.patchname != "undefined")
+            setTimeout(() =>
+            {
+                elePatchName.innerHTML = elePatchName.dataset.patchname;
+            }, 200);
+    }
+
+    savingTitleAnimStart(title)
+    {
+        document.getElementById("patchname").innerHTML = title;
+        document.getElementById("patchname").classList.add("blinking");
+    }
 
     getFileManager(cb, userInteraction)
     {
@@ -1359,29 +1379,36 @@ export default class Gui extends Events
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
-                if (!r) return;
 
                 let str = "";
-                if (CABLES.platform.frontendOptions.showOpenPatch)
-                {
-                    const url = CABLES.platform.getCablesUrl() + "/edit/";
-                    let item = "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch<span class=\"shortcut\">[cmd_ctrl]`O`</span></a></li>";
-                    str += this.bottomInfoArea.replaceShortcuts(item);
-                }
 
-                for (let i = 0; i < r.length; i++)
-                {
-                    const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
-                    str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
-                }
+                if (CABLES.platform.frontendOptions.showMyLinks)
+                    str += "<li id=\"nav_mypatches\"><a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+
+                str += "<li id=\"nav_patch_new\">Create New Empty Patch</li>";
 
                 str += "<li class=\"divide\"></li>";
 
-                if (CABLES.platform.frontendOptions.showMyLinks)
-                    str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+
+                if (CABLES.platform.frontendOptions.showOpenPatch)
+                {
+                    let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
+                    str += this.bottomInfoArea.replaceShortcuts(item);
+                }
+
+                if (r)
+                    for (let i = 0; i < Math.min(5, r.length); i++)
+                    {
+                        const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
+                        str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
+                    }
+
+                str += "<li class=\"divide\"></li>";
 
                 str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
+
+                ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
             });
         });
 
@@ -1410,9 +1437,10 @@ export default class Gui extends Events
         ele.byId("nav_patch_save").addEventListener("click", (event) => { CABLES.CMD.PATCH.save(); });
         ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });
         ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
+        ele.byId("nav_patch_export_patch").addEventListener("click", (event) => { CABLES.CMD.PATCH.export("patch"); });
 
-        ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
-        if (CABLES.platform.frontendOptions.chooseOpDir)
+
+        if (CABLES.platform.frontendOptions.hasOpDirectories)
         {
             const opDirEle = ele.byId("nav_patch_add_opdir");
             if (opDirEle)
@@ -1428,19 +1456,29 @@ export default class Gui extends Events
 
         if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
         if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
-        if (!CABLES.platform.frontendOptions.showExport) ele.hide(ele.byId("nav_patch_export"));
+
+        const exportLink = ele.byId("nav_patch_export");
+        if (!CABLES.platform.frontendOptions.showExport)
+        {
+            ele.hide(exportLink);
+        }
+        if (CABLES.platform.isStandalone())
+        {
+            if (exportLink) exportLink.innerText = "Export - HTML";
+        }
+
+        if (!CABLES.platform.frontendOptions.showExportPatch)
+        {
+            ele.hide(ele.byId("nav_patch_export_patch"));
+        }
+
         if (!CABLES.platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
-
-
 
         if (!CABLES.platform.frontendOptions.showPatchBackups)
         {
             ele.hide(ele.byId("nav_viewBackups"));
             ele.hide(ele.byId("nav_createBackup"));
         }
-
-
-
 
 
         if (CABLES.platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/changelog", "_blank"); });
@@ -1462,7 +1500,7 @@ export default class Gui extends Events
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); });
 
-        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null); });
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
         ele.byId("nav_op_patchOp").addEventListener("click", (event) =>
         {
             gui.patchView.unselectAllOps();
@@ -2129,6 +2167,13 @@ export default class Gui extends Events
     setFontSize(v)
     {
         document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
+
+        const eleMb = ele.byId("menubar");
+        eleMb.style.height = (30 + v) + "px";
+        eleMb.style["margin-left"] = (2 * v) + "px";
+
+        const eleMp = ele.byId("multiplayerbar");
+        eleMp.style.height = (30 + v) + "px";
     }
 
     setUser(u)
@@ -2293,3 +2338,4 @@ Gui.RESTRICT_MODE_REMOTEVIEW = 10;
 Gui.RESTRICT_MODE_FOLLOWER = 20;
 Gui.RESTRICT_MODE_EXPLORER = 30;
 Gui.RESTRICT_MODE_FULL = 40;
+

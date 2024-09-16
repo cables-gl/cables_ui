@@ -533,7 +533,7 @@ body
 
     }
 
-    #opNameDialogConsequences, #opcreateerrors
+    #opNameDialogConsequences, #opNameDialogHints, #opcreateerrors
     {
         h3
         {
@@ -551,6 +551,11 @@ body
     #opNameDialogConsequences
     {
         border-left:5px solid #5CB59E;
+    }
+
+    #opNameDialogHints
+    {
+        border-left:5px solid #EBA605;
     }
 
     #notify
@@ -779,17 +784,12 @@ body
 
 
 
-
-
-
 @import 'components/draglist.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
 @import 'components/modal.scss';
 @import 'components/cmdpalette.scss';
 @import 'components/project_settings.scss';
-
-
 @import 'components/nav';
 @import 'components/files';
 @import 'components/editor';
@@ -802,7 +802,6 @@ body
 @import 'components/contextmenu';
 @import 'components/valueinput';
 @import 'components/treetable';
-
 @import 'components/params.scss';
 @import 'components/projectsearch.scss';
 @import 'components/canvas.scss';
@@ -810,6 +809,7 @@ body
 @import 'libs/iztoast.scss';
 @import 'libs/highlightjs-monokai';
 @import 'components/tabpanel.scss';
+@import 'components/log.scss';
 @import 'components/item_manager.scss';
 @import 'components/iconbar.scss';
 @import 'components/colorrick.scss';
@@ -817,9 +817,7 @@ body
 @import 'components/gradienteditor.scss';
 @import 'components/buttons.scss';
 
-
 .hidden { display:none !important;}
-
 
 .portSuggest0 { border-left:4px solid var(--color_link_value) !important; }
 .portSuggest1 { border-left:4px solid var(--color_link_function) !important; }

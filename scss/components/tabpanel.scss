@@ -234,12 +234,30 @@
     // border:1px solid blue;
     // overflow-y:hide;
 
+
+    .ace_gutter-active-line
+    {
+        background-color: #696a6b;
+    }
+
     .ace_content *
     {
         font-family: sourceCodePro;
         -webkit-font-smoothing: subpixel-antialiased;
 
     }
+
+    .ace_selection
+    {
+        background-color: #188eac !important;
+        border:0 !important;
+    }
+    .ace_selected-word
+    {
+        background-color: #14748b !important;
+        border:0 !important;
+    }
+
 }
 
 
@@ -256,70 +274,18 @@
 }
 
 
-.logList
+.fileTypeColor_gl
 {
-    height: 100%;
-    overflow:scroll;
-    display: flex;
-    flex-direction: column-reverse;
-
-    .logLineCode
-    {
-        background-color: rgba(0,0,0,0.75);
-        padding-left:10px;
-        padding-right:10px;
-    }
-
-    .logLine
-    {
-        margin-top:3px;
-        background-color: #222;
-        font-family: monospace;
-        *
-        {
-            color:#999
-        }
-
-        .initiator,a
-        {
-            color:white
-        }
-        a
-        {
-            text-decoration: underline;
-        }
-    }
-
-    .logLine:hover
-    {
-        background-color: #444;
-    }
-
-    .logLevel0
-    {
-    }
-    .logLevel1
-    {
-        background-color: rgb(64, 64, 4);
-    }
-    .logLevel2
-    {
-        background-color: rgb(52, 9, 9);
-    }
-
-    .logLevel99
-    {
-        background-color: transparent;
-
-        a
-        {
-            text-decoration: none;
-            font-family: "SourceSansPro", sans-serif;;
-        }
-    }
-    .logLevel99:hover
-    {
-        background-color: transparent;
-    }
-
+    color:var(--color_port_function);
 }
+
+.fileTypeColor_js
+{
+    color:var(--color_port_value);
+}
+
+.fileTypeColor_css
+{
+    color:var(--color_port_array);
+}
+

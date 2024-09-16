@@ -112,7 +112,7 @@ export default class OpSelect
         }
         else
         {
-            const isOwner = gui.project().userId === gui.user.id;
+            const isOwner = CABLES.platform.currentUserIsPatchOwner();
             const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
             const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
 
@@ -337,11 +337,20 @@ export default class OpSelect
                 else html += "<img src=\"" + CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
 
                 html += "</div>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesDocsUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
 
                 const docs = gui.opDocs.getOpDocByName(opName);
-                if (docs && docs.allowEdit)
-                    html += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+
+                if (docs)
+                {
+                    if (docs.allowEdit)
+                        html += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+
+                    if (docs.coreLibs && docs.coreLibs.indexOf("standalone_electron") > -1)
+                        html += "<br/><br/>this is a <a class=\"link\" href=\"https://cables.gl/standalone\" target=\"_blank\">Standalone</a> op, it will not work fully in the web version.";
+                }
+                else html += "no opDocs found";
+
 
                 html += opDocHtml;
             }
@@ -496,8 +505,7 @@ export default class OpSelect
             this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
             this._eleOpsearchmodal.innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text });
-
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text, "patchOps": this._opSearch.numPatchops });
 
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
@@ -665,17 +673,14 @@ export default class OpSelect
             }
         }
 
+
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;
 
-            if (itemType === "extension")
+            if (itemType === "extension" || itemType === "team")
             {
-                gui.opSelect().loadExtension(opname);
-            }
-            else if (itemType === "teamnamespace")
-            {
-                gui.opSelect().loadTeamOps(opname);
+                gui.opSelect().loadCollection(opname, itemType);
             }
             else if (itemType === "patchop")
             {
@@ -701,34 +706,19 @@ export default class OpSelect
         }
     }
 
-    loadExtension(name)
+    loadCollection(name, type)
     {
-        gui.serverOps.loadCollectionOps(name, "extension", () =>
+        gui.serverOps.loadCollectionOps(name, type, () =>
         {
+            const q = this._getQuery();
             this.close();
             this.reload();
             this.prepare();
             setTimeout(() =>
             {
                 const opts = this._options;
-                opts.search = name;
-                opts.subPatch = gui.patchView.getCurrentSubPatch();
-                this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
-            }, 50);
-        });
-    }
 
-    loadTeamOps(name)
-    {
-        gui.serverOps.loadCollectionOps(name, "team", () =>
-        {
-            this.close();
-            this.reload();
-            this.prepare();
-            setTimeout(() =>
-            {
-                const opts = this._options;
-                opts.search = name;
+                opts.search = q;
                 opts.subPatch = gui.patchView.getCurrentSubPatch();
                 this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
             }, 50);

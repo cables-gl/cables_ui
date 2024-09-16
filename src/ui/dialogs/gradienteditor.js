@@ -402,9 +402,10 @@ export default class GradientEditor
         {
             const r = this._openerEle.getBoundingClientRect();
             const rge = this._elContainer.getBoundingClientRect();
-
+            let ry = r.y;
+            if (window.innerHeight - ry < this._height * 1.5)ry -= this._height * 1.5;
             this._elContainer.style.left = r.x - rge.width - 20 + "px";
-            this._elContainer.style.top = r.y + "px";
+            this._elContainer.style.top = ry + "px";
         }
         else
         {
@@ -438,6 +439,7 @@ export default class GradientEditor
         if (this._opId && this._portName)
         {
             const op = gui.corePatch().getOpById(this._opId);
+            if (!op) this.close();
             const data = op.getPort(this._portName).get();
             try
             {

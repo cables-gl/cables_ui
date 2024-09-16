@@ -28,6 +28,7 @@ export default class PlatformCommunity extends Platform
         this.frontendOptions.showRemoteViewer =
         this.frontendOptions.showChangeLogLink =
         this.frontendOptions.sendErrorReports =
+        this.frontendOptions.showFormatCodeButton =
         this.frontendOptions.showSetProjectTitle = true;
     }
 
@@ -39,5 +40,10 @@ export default class PlatformCommunity extends Platform
     getCablesVersion()
     {
         return "Community build";
+    }
+
+    currentUserIsPatchOwner()
+    {
+        return gui.project().userId === gui.user.id;
     }
 }

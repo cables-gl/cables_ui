@@ -24,7 +24,7 @@ export function uniqueArray(arr)
 
 export function escapeHTML(string)
 {
-    string = string || "";
+    string = String(string) || "";
     const htmlEscapes = {
         "&": "&amp;",
         "<": "&lt;",

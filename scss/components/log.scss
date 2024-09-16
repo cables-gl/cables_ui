@@ -1,0 +1,97 @@
+
+.logList
+{
+    height: 100%;
+    overflow:scroll;
+    display: flex;
+    flex-direction: column-reverse;
+
+    .logLineCode
+    {
+        background-color: rgba(0,0,0,0.75);
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .logLine
+    {
+        margin-top:2px;
+        background-color: #222;
+        font-family: monospace;
+
+        *
+        {
+            color:#c8c8c8;
+        }
+
+        .outerInitiator
+        {
+            color:#777;
+        }
+
+        .initiator,a
+        {
+            color:#ecce64;
+        }
+
+        a
+        {
+            text-decoration: underline;
+        }
+    }
+
+    .logLine:hover
+    {
+        background-color: #333;
+    }
+
+    .initiator_gui
+    {
+        color:var(--color_port_value)
+    }
+
+    .logLevel0
+    {
+    }
+
+    .logLevel1
+    {
+        background-color: rgb(48, 48, 3);
+    }
+
+    .logLevel1:hover
+    {
+        background-color: rgb(61, 61, 4);
+    }
+
+    .logLevel2
+    {
+        background-color: rgb(52, 9, 9);
+    }
+
+    .logLevel2:hover
+    {
+        background-color: rgb(74, 13, 13);
+    }
+
+    .logLevel99
+    {
+        background-color: transparent;
+
+        a
+        {
+            text-decoration: none;
+            font-family: "SourceSansPro", sans-serif;;
+        }
+    }
+
+    .logLevel99:hover
+    {
+        background-color: transparent;
+    }
+
+    .loglineSpacer
+    {
+        margin-bottom:8px;
+    }
+}

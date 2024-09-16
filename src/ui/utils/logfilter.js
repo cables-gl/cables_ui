@@ -97,7 +97,17 @@ export default class LogFilter extends Events
         let args = [];
         for (let i = 1; i < arguments.length; i++)
         {
-            args.push(arguments[i]);
+            // let lines = [txt];
+            // if (txt.indexOf("\n") > -1)
+            // {
+            //     lines = txt.split("\n");
+            //     lines.push("---");
+            //     console.log("split lines!!!", this.initiator, lines);
+            // }
+
+            let a = arguments[i];
+
+            args.push(a);
         }
 
         const o = {};
@@ -107,6 +117,9 @@ export default class LogFilter extends Events
         o.level = level;
         o.time = performance.now();
 
+
+
+        this.logs.push(o);
         while (this.logs.length > 50) this.logs.splice(0, 1);
 
         const should = this.shouldPrint(o);

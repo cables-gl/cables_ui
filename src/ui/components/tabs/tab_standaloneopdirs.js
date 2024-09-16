@@ -52,6 +52,27 @@ export default class StandaloneOpDirs
                     });
                 }
 
+                const packageButton = this._tab.contentEle.querySelector("#addOpPackage");
+                if (packageButton)
+                {
+                    packageButton.addEventListener("click", () =>
+                    {
+                        CABLES.CMD.STANDALONE.addOpPackage(null, (dirErr, _dirRes) =>
+                        {
+                            if (!dirErr)
+                            {
+                                this.show();
+                                this._loadOpsInDirs();
+                            }
+                            else
+                            {
+                                new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": dirErr.msg });
+                                this._log.info(dirErr.msg);
+                            }
+                        });
+                    });
+                }
+
                 const removeButtons = this._tab.contentEle.querySelectorAll(".removeOpProjectDir");
                 removeButtons.forEach((removeButton) =>
                 {

@@ -39,6 +39,7 @@ export default class GlPatchAPI
         for (i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];
+            if (!op) continue;
 
             for (let ip = 0; ip < op.portsIn.length; ip++)
             {
@@ -96,6 +97,8 @@ export default class GlPatchAPI
                 const op = this._patch.ops[i];
                 const glop = this._glPatch.getGlOp(op);
 
+                if (!op || !op.portOut) return;
+
                 if (!glop) continue;
 
                 for (let ip = 0; ip < op.portsOut.length; ip++)
@@ -151,20 +154,23 @@ export default class GlPatchAPI
             //     continue;
             // }
 
-            if (op.portsIn[0] && op.portsIn[0].activityCounterStartFrame == frameCount) continue;
+            if (op && op.portsIn && op.portsIn[0] && op.portsIn[0].activityCounterStartFrame == frameCount) continue;
 
-            for (let ip = 0; ip < op.portsOut.length; ip++)
-            {
-                op.portsOut[ip].apf = op.portsOut[ip].activityCounter / (frameCount - op.portsOut[ip].activityCounterStartFrame);
-                op.portsOut[ip].activityCounter = 0;
-                op.portsOut[ip].activityCounterStartFrame = frameCount;
-            }
-            for (let ip = 0; ip < op.portsIn.length; ip++)
-            {
-                op.portsIn[ip].apf = op.portsIn[ip].activityCounter / (frameCount - op.portsIn[ip].activityCounterStartFrame);
-                op.portsIn[ip].activityCounter = 0;
-                op.portsIn[ip].activityCounterStartFrame = frameCount;
-            }
+            if (op && op.portsOut)
+                for (let ip = 0; ip < op.portsOut.length; ip++)
+                {
+                    op.portsOut[ip].apf = op.portsOut[ip].activityCounter / (frameCount - op.portsOut[ip].activityCounterStartFrame);
+                    op.portsOut[ip].activityCounter = 0;
+                    op.portsOut[ip].activityCounterStartFrame = frameCount;
+                }
+
+            if (op && op.portsIn)
+                for (let ip = 0; ip < op.portsIn.length; ip++)
+                {
+                    op.portsIn[ip].apf = op.portsIn[ip].activityCounter / (frameCount - op.portsIn[ip].activityCounterStartFrame);
+                    op.portsIn[ip].activityCounter = 0;
+                    op.portsIn[ip].activityCounterStartFrame = frameCount;
+                }
 
             if (glop)
             {
@@ -177,35 +183,36 @@ export default class GlPatchAPI
                 }
             }
 
-            for (let ip = 0; ip < op.portsIn.length; ip++)
-            {
-                const thePort = op.portsIn[ip];
-                thePort.activityCounter = 0;
-
-                if (glop)
+            if (op && op.portsIn)
+                for (let ip = 0; ip < op.portsIn.length; ip++)
                 {
-                    const glp = glop.getGlPort(thePort.name);
-                    if (glp)glp.setFlowModeActivity(thePort.activityCounter);
-                }
+                    const thePort = op.portsIn[ip];
+                    thePort.activityCounter = 0;
 
-                for (let il = 0; il < thePort.links.length; il++)
-                {
-                    const link = thePort.links[il];
-                    let newClass = 0;
-
-                    if (link.activityCounter >= 1) newClass = 1;
-
-                    if (flowMode == 2)
+                    if (glop)
                     {
-                        if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
-                        else if (link.activityCounter >= 5) newClass = 3;
-                        else if (link.activityCounter >= 2) newClass = 2;
+                        const glp = glop.getGlPort(thePort.name);
+                        if (glp)glp.setFlowModeActivity(thePort.activityCounter);
                     }
 
-                    if (this._glPatch.links[link.id]) this._glPatch.links[link.id].setFlowModeActivity(newClass, thePort.get());
-                    link.activityCounter = 0;
+                    for (let il = 0; il < thePort.links.length; il++)
+                    {
+                        const link = thePort.links[il];
+                        let newClass = 0;
+
+                        if (link.activityCounter >= 1) newClass = 1;
+
+                        if (flowMode == 2)
+                        {
+                            if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+                            else if (link.activityCounter >= 5) newClass = 3;
+                            else if (link.activityCounter >= 2) newClass = 2;
+                        }
+
+                        if (this._glPatch.links[link.id]) this._glPatch.links[link.id].setFlowModeActivity(newClass, thePort.get());
+                        link.activityCounter = 0;
+                    }
                 }
-            }
         }
         this._updateCounter += numUpdates;
         perf.finish();

@@ -221,10 +221,12 @@ const UndoManager = function ()
         {
             paused = true;
         },
+
         "paused": function ()
         {
             return paused;
         },
+
         "resume": function ()
         {
             paused = false;

@@ -34,16 +34,18 @@
 	pointer-events: none;
 }
 
-.error-indicator
-{
-	fill:var(--color-error);
-	stroke-width:0;
-}
-.error-indicator-warning
-{
-	fill:var(--color-warning);
-	stroke-width:0;
-}
+
+// not used ?
+// .error-indicator
+// {
+// 	fill:var(--color-error);
+// 	stroke-width:0;
+// }
+// .error-indicator-warning
+// {
+// 	fill:var(--color-warning);
+// 	stroke-width:0;
+// }
 
 
 .port_text_color_trigger, .port_text_color_function { color :var(--color_port_function);}

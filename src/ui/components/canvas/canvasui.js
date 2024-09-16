@@ -119,6 +119,7 @@ export default class CanvasUi
 
     updateSizeDisplay()
     {
+        if (!gui.corePatch().cgl) return;
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
 
         let sizeStr = gui.corePatch().cgl.canvas.width + "x" + gui.corePatch().cgl.canvas.height;

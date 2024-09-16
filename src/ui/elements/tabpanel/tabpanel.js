@@ -174,14 +174,14 @@ export default class TabPanel extends Events
         let tab = null;
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (this._tabs[i].options.name)
-                if (this._tabs[i].options.name.toLowerCase() === name.toLowerCase())
-                {
-                    tab = this._tabs[i];
-                    this.activateTab(tab.id);
-                    found = true;
-                }
-                else this._tabs[i].deactivate();
+            if (this._tabs[i].title.toLowerCase() === name.toLowerCase() ||
+                this._tabs[i].options.name.toLowerCase() === name.toLowerCase())
+            {
+                tab = this._tabs[i];
+                this.activateTab(tab.id);
+                found = true;
+            }
+            else this._tabs[i].deactivate();
         }
 
         if (!found) console.log("[activateTabByName] could not find tab", name);
@@ -189,8 +189,6 @@ export default class TabPanel extends Events
         this.updateHtml();
         return tab;
     }
-
-
 
     scrollToActiveTab()
     {

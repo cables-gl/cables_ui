@@ -88,21 +88,23 @@ export default class LogTab extends Events
         this._showLog();
     }
 
-    _logLine(log, txt, level)
+    _logLine(log, txt, level, timediff)
     {
-        let html = "<div class=\"logLine logLevel" + level + "\">";
-        html += "<span style=\"float:left\">[<span class=\"initiator\">";
+        let spacerClass = "";
+        // console.log(Math.abs(timediff));
+        if (Math.abs(timediff) > 300)spacerClass = "loglineSpacer";
+        let html = "<div class=\"logLine " + spacerClass + " logLevel" + level + "\">";
+        html += "<span style=\"float:left\" class=\"outerInitiator\">[<span class=\"initiator\">";
 
         if (log.opInstId)
             html += "<a onclick=\"gui.patchView.centerSelectOp('" + log.opInstId + "');\">";
 
         html += log.initiator;
 
-        if (log.opInstId)
-            html += "</a>";
+        if (log.opInstId) html += "</a>";
 
         html += "</span>]&nbsp;</span>";
-        html += "<div style=\"float:left\">";
+        html += "<div style=\"float:left\" class=\"initiator_" + log.initiator + "\">";
         html += txt;
         html += "</div>";
         html += "</div>";
@@ -159,10 +161,14 @@ export default class LogTab extends Events
 
         try
         {
+            let lastTime = 0;
             for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
             {
                 const l = CABLES.UI.logFilter.logs[i];
                 let currentLine = "";
+                const timediff = l.time - lastTime;
+                lastTime = l.time;
+                // console.log(l);
 
                 if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
 
@@ -194,14 +200,19 @@ export default class LogTab extends Events
                                 const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
                                 if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
                                 stackHtml += "  <td>";
-                                stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
+
+
+                                if (errorStack[k].fileName.indexOf("https://") == 0 || errorStack[k].fileName.indexOf("http://") == 0 || errorStack[k].fileName.indexOf("file://") == 0 || errorStack[k].fileName.indexOf("cables://") == 0)
+                                    stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
+                                else stackHtml += errorStack[k].fileName + ":" + errorStack[k].lineNumber + "";
+
                                 stackHtml += shortFilename;
                                 stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
                                 stackHtml += "</tr>";
                             }
                             stackHtml += "</table>";
 
-                            html += this._logLine(l, stackHtml, l.level);
+                            html += this._logLine(l, stackHtml, l.level, timediff);
 
                             let txt = "[" + arg.constructor.name + "] ";
                             let msg = "";
@@ -225,42 +236,58 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
-                        {
-                            let txt = "Uncaught ErrorEvent ";
-                            if (arg.message)txt += " message: " + arg.message;
-                            currentLine = txt;
-                        }
-                        else if (arg.constructor.name == "Op")
-                        {
-                            currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
-                        }
-                        else if (typeof arg == "string")
-                        {
-                            let _arg = arg;
-                            if (arg.startsWith("https://"))
+                        if (arg)
+                            if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
                             {
-                                _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                                let txt = "Uncaught ErrorEvent ";
+                                if (arg.message)txt += " message: " + arg.message;
+                                currentLine = txt;
                             }
-                            currentLine += _arg;
-                        }
-                        else if (typeof arg == "number")
-                        {
-                            currentLine += String(arg);
-                        }
-                        else if (arg.constructor.name == "PromiseRejectionEvent")
-                        {
-                            if (arg.reason && arg.reason.message)
-                                currentLine += arg.constructor.name + ": " + arg.reason.message;
-                        }
-                        else
-                        {
-                            console.log("unknown log thing", arg.constructor.name, arg);
-                            currentLine += " obj{" + arg.constructor.name + "} ";
-                        }
+                            else if (arg.constructor.name == "Op")
+                            {
+                                currentLine += " <a onclick=\"gui.patchView.centerSelectOp('" + arg.id + "');\">op: " + arg.shortName + "</a>";
+                            }
+                            else if (typeof arg == "string")
+                            {
+                                let _arg = arg.replaceAll("\n", "<br/>");
+                                if (arg.startsWith("https://"))
+                                {
+                                    _arg = "<a href=\"" + arg + "\" target=\"_blank\">" + arg + "</a>";
+                                }
+                                currentLine += _arg + " ";
+                            }
+                            else if (typeof arg == "number")
+                            {
+                                currentLine += String(arg) + " ";
+                            }
+                            else if (arg.constructor.name == "PromiseRejectionEvent")
+                            {
+                                if (arg.reason && arg.reason.message)
+                                    currentLine += arg.constructor.name + ": " + arg.reason.message;
+                            }
+                            else
+                            {
+                                currentLine += "Object " + arg.constructor.name + "<br/>";
+
+                                for (let oi in arg)
+                                {
+                                    if (arg[oi] && arg[oi].constructor)
+                                    {
+                                        if (arg[oi].constructor.name == "Number" || arg[oi].constructor.name == "String" || arg[oi].constructor.name == "Boolean")
+                                        {
+                                            currentLine += "&nbsp;&nbsp;" + oi + ":";
+
+                                            if (arg[oi].constructor.name == "String")currentLine += "\"";
+                                            currentLine += arg[oi];
+                                            if (arg[oi].constructor.name == "String")currentLine += "\"";
+                                            currentLine += "<br/>";
+                                        }
+                                    }
+                                }
+                            }
                     }
                 }
-                if (currentLine) html += this._logLine(l, currentLine, l.level);
+                if (currentLine) html += this._logLine(l, currentLine, l.level, timediff);
             }
         }
         catch (e)
@@ -339,7 +366,7 @@ export default class LogTab extends Events
     {
         const report = {};
         report.title = this.lastErrorMsg;
-
+        report.patchTitle = gui.project().name;
 
         const log = [];
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
@@ -349,7 +376,7 @@ export default class LogTab extends Events
                 "initiator": l.initiator,
                 "errorStack": l.errorStack,
                 "args": [],
-                "level": l.level
+                "level": l.level,
             };
 
             log.push(newLine);

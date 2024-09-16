@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import { escapeHTML } from "../utils/helper.js";
 
 export default class PatchOutline extends Events
 {
@@ -16,7 +17,6 @@ export default class PatchOutline extends Events
         this.includeBookmarks =
         this.includeAnimated =
         this.includeColored = true;
-
 
         this._listeningSubs = false;
         this._subTree = new TreeView();
@@ -60,8 +60,40 @@ export default class PatchOutline extends Events
             });
     }
 
+    deserialize(p)
+    {
+        if (!p || !p.ui || !p.ui.outline) return;
+
+        const outlineCfg = p.ui.outline;
+
+        this.includeBookmarks = outlineCfg.includeBookmarks;
+        this.includeSubpatches = outlineCfg.includeSubpatches;
+        this.includeCommented = outlineCfg.includeCommented;
+        this.includeComments = outlineCfg.includeComments;
+        this.includeAreas = outlineCfg.includeAreas;
+        this.includeColored = outlineCfg.includeColored;
+
+        this.updateFilterUi();
+    }
+
+    serialize(obj)
+    {
+        const outlineCfg = {};
+
+        outlineCfg.includeBookmarks = this.includeBookmarks;
+        outlineCfg.includeSubpatches = this.includeSubpatches;
+        outlineCfg.includeCommented = this.includeCommented;
+        outlineCfg.includeComments = this.includeComments;
+        outlineCfg.includeAreas = this.includeAreas;
+        outlineCfg.includeColored = this.includeColored;
+
+        obj.outline = outlineCfg;
+    }
+
     updateFilterUi()
     {
+        if (!ele.byId("subtreeFilterBookmarks")) return;
+
         if (this.includeBookmarks)ele.byId("subtreeFilterBookmarks").classList.add("findToggleActive");
         else ele.byId("subtreeFilterBookmarks").classList.remove("findToggleActive");
 
@@ -96,12 +128,12 @@ export default class PatchOutline extends Events
 
         let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
-        html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
-        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
-        html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
-        html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
-        html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
-        html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
+        html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_bookmarks\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
+        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
+        html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_commented\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
+        html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_comments\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
+        html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_areas\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
+        html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_colored\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
         html += "</div>";
 
         const su = this._getSubPatchesHierarchy();
@@ -152,6 +184,15 @@ export default class PatchOutline extends Events
         this.updateFilterUi();
     }
 
+    _sanitizeComment(_cmt)
+    {
+        let cmt = escapeHTML(_cmt);
+
+        if (cmt.length > 30)cmt = cmt.substring(0, 30) + "...";
+
+        return cmt;
+    }
+
     _getSubPatchesHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
@@ -179,7 +220,8 @@ export default class PatchOutline extends Events
             sub.title = subOp.getTitle();
             sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
-            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + subOp.uiAttribs.comment + "</span>";
+
+            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(subOp.uiAttribs.comment) + "</span>";
 
             sub.subPatchId = patchId;
             sub.id = subOp.id;
@@ -226,7 +268,7 @@ export default class PatchOutline extends Events
                     if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
-                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + ops[i].uiAttribs.comment + "</span>";
+                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
 
                     sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color });
                 }

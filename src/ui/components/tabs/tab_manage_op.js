@@ -12,22 +12,30 @@ import subPatchOpUtil from "../../subpatchop_util.js";
  */
 export default class ManageOp
 {
-    constructor(tabs, opname)
+    constructor(tabs, opId)
     {
-        if (!opname)
+        this._log = new Logger("ManageOp");
+        if (!opId)
         {
-            CABLES.editorSession.remove("manageOp", opname);
+            CABLES.editorSession.remove("manageOp", opId);
             return;
         }
 
-        const opDoc = gui.opDocs.getOpDocByName(opname);
+        let opDoc = gui.opDocs.getOpDocById(opId);
+        if (!opDoc && opId.startsWith("Ops."))
+        {
+            this._log.warn("manage op paramerter should not be objname, but id", opId);
+            opDoc = gui.opDocs.getOpDocByName(opId);
+            if (opDoc)opId = opDoc.id;
+            else return;
+        }
 
-        let opObjName = opname;
+        let opObjName = "";
         if (opDoc)opObjName = opDoc.name;
 
-        this._log = new Logger("ManageOp");
         this._initialized = false;
-        this._currentName = opname;
+        this._currentName = opObjName;
+        this._currentId = opId;
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
@@ -37,7 +45,7 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
-            CABLES.editorSession.remove("manageOp", this._currentName);
+            CABLES.editorSession.remove("manageOp", this._currentId);
 
             for (let i in this._refreshListener)
                 gui.off(this._refreshListener[i]);
@@ -64,22 +72,19 @@ export default class ManageOp
         this._initialized = true;
     }
 
-
     show()
     {
-        CABLES.editorSession.remove("manageOp", this._currentName);
-
-        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentName, { "opname": this._currentName }, true);
+        CABLES.editorSession.remove("manageOp", this._currentId);
+        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentId, { "opname": this._currentName, "opid": this._currentId }, true);
 
         this._id = CABLES.shortId();
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
-        const opDoc = gui.opDocs.getOpDocByName(this._currentName);
+        const opDoc = gui.opDocs.getOpDocById(this._currentId);
 
         if (!opDoc)
         {
             this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patch");
             this._tab.remove();
-            // console.log("no opdocs?!");
             return;
         }
 
@@ -162,7 +167,7 @@ export default class ManageOp
 
                     const html = getHandleBarHtml("tab_manage_op",
                         {
-                            "url": CABLES.platform.getCablesUrl(),
+                            "url": CABLES.platform.getCablesDocsUrl(),
                             "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
                             "opid": opDoc.id,
                             "opname": opDoc.name,
@@ -181,6 +186,8 @@ export default class ManageOp
                         });
 
                     this._tab.html(html);
+
+                    // CABLES.UI.Collapsable.setup();
 
                     if (canEditOp)
                     {

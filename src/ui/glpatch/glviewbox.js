@@ -488,9 +488,7 @@ export default class GlViewBox
         }
         else this._subPatchViewBoxes = dataui.viewBoxesGl;
         this._restoreSubPatch(this._currentSubPatchId);
-        console.log("_restoreSubPatch", this._currentSubPatchId);
     }
-
 
     storeCurrentSubPatch()
     {

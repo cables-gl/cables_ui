@@ -15,8 +15,11 @@ export default class Platform extends Events
     constructor(cfg)
     {
         super();
+
         this._log = new Logger("platform");
         this._cfg = cfg;
+
+        this.paths = {};
         this.frontendOptions = {};
 
         if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
@@ -26,6 +29,10 @@ export default class Platform extends Events
                 if (errorData)
                 {
                     const errorMessage = errorData.message || "unknown error";
+                    if (errorData.type && errorData.type === "network")
+                    {
+                        ele.show(ele.byId("nav-item-offline"));
+                    }
                     switch (errorData.level)
                     {
                     case "error":
@@ -58,6 +65,11 @@ export default class Platform extends Events
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
         this.updateOnlineIndicator();
+    }
+
+    warnOpEdit(opName)
+    {
+        return (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opName) && !CABLES.platform.isStandalone());
     }
 
     isStandalone()
@@ -232,13 +244,14 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
         {
+            console.log("talkerapi execute op");
             if (options && options.name)
             {
                 gui.closeModal();
                 const loadingModal = gui.startModalLoading("Saving and executing op...");
                 loadingModal.setTask("Saving Op");
                 const opname = options.name;
-                if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                 if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
@@ -248,7 +261,7 @@ export default class Platform extends Events
                 let selOpTranslate = null;
                 if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
 
-                gui.serverOps.execute(opname, (newOps, refOldOp) =>
+                gui.serverOps.execute(opname, (newOps) =>
                 {
                     if (selOpTranslate)
                     {
@@ -262,20 +275,25 @@ export default class Platform extends Events
                         }
                     }
                     gui.endModalLoading();
+                    let reloadCode = options.forceReload;
+                    if (!reloadCode) reloadCode = editorTab && newOps && newOps[0];
                     const editorTab = gui.mainTabs.activateTabByName(opname);
-                    if (editorTab && newOps && newOps[0])
+                    if (reloadCode)
                     {
+                        let opId = options.id;
+                        if (!opId) opId = newOps[0].opId;
+
                         CABLESUILOADER.talkerAPI.send(
                             "getOpCode",
                             {
-                                "opname": newOps[0].opId,
+                                "opname": opId,
                                 "projectId": this._patchId
                             },
                             (er, rslt) =>
                             {
                                 if (rslt && rslt.hasOwnProperty("code"))
                                 {
-                                    editorTab.editor.setContent(rslt.code);
+                                    editorTab.editor.setContent(rslt.code, options.forceReload);
                                 }
                             });
                     }
@@ -503,10 +521,33 @@ export default class Platform extends Events
 
     openOpDirsTab()
     {
-        if (this.frontendOptions.chooseOpDir)
+        if (this.frontendOptions.hasOpDirectories)
         {
             new StandaloneOpDirs(gui.mainTabs);
             gui.maintabPanel.show(true);
         }
+    }
+
+    exportPatch(projectId)
+    {
+        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
+        if (this._versionId)
+        {
+            gotoUrl += "?version=" + this._versionId;
+        }
+
+        const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
+        const url = gotoUrl + iframeParam;
+
+        gui.mainTabs.addIframeTab(
+            "Export Patch ",
+            url,
+            {
+                "icon": "settings",
+                "closable": true,
+                "singleton": false,
+                "gotoUrl": gotoUrl
+            },
+            true);
     }
 }
