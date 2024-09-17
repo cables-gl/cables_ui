@@ -254,7 +254,7 @@ const paramsHelper =
                     {
                         setStatus("updated " + port.name);
                         // gui.setStateUnsaved();
-                        gui.savedState.setUnSaved("saveeditorcontent", gui.opParams.op.getSubPatch());
+                        gui.savedState.setUnSaved("saveeditorcontent", op.getSubPatch());
                         gui.jobs().finish("saveeditorcontent");
                         port.setRef(content);
                         gui.emitEvent("portValueEdited", op, port, content);
@@ -262,7 +262,7 @@ const paramsHelper =
                     "onChange": function (e)
                     {
                         // gui.setStateUnsaved();
-                        gui.savedState.setUnSaved("editorOnChange", gui.opParams.op.getSubPatch());
+                        gui.savedState.setUnSaved("editorOnChange", op.getSubPatch());
                     },
                     "onFinished": () =>
                     {
