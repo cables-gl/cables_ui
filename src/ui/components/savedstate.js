@@ -125,8 +125,7 @@ export default class SavedState extends Events
     setUnSaved(initiator, subpatch)
     {
         if (this._paused) return;
-
-        // console.log("setUnSaved", initiator);
+        if (gui.isRemoteClient) return;
 
         if (subpatch === undefined)
         {
