@@ -1163,7 +1163,7 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newNamespace + newName;
+            const opname = newName;
             this.create(opname, () =>
             {
                 gui.closeModal();
