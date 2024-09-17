@@ -5,6 +5,7 @@ export default class CanvasManager
         this._curContextIdx = 0;
         this._contexts = [];
         this.subWindow = null;
+        this._menuEle = null;
 
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_PATCHBG = 1;
@@ -76,6 +77,23 @@ export default class CanvasManager
     focus()
     {
         if (this.currentCanvas()) this.currentCanvas().focus();
+        this.updateCanvasUi();
+    }
+
+    updateCanvasUi()
+    {
+        if (!this._menuEle) this._menuEle = ele.byId("canvasCtxSwitcher");
+
+        if (this._menuEle)
+        {
+            for (let i = 0; i < this._contexts.length; i++)
+            {
+                if (this._contexts[i].canvas == this.currentCanvas())
+                {
+                    this._menuEle.innerText = this._contexts[i].getGApiName();
+                }
+            }
+        }
     }
 
     setCurrentCanvas(canv)
@@ -133,8 +151,12 @@ export default class CanvasManager
                 "func": () =>
                 {
                     ctx.canvas.focus();
+                    this.updateCanvasUi();
                 } });
         }
+
+        this._menuEle = el;
+        this.updateCanvasUi();
 
         CABLES.contextMenu.show({ "items": items }, el);
     }

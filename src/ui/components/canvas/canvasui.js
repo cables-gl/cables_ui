@@ -23,6 +23,12 @@ export default class CanvasUi
 
         this._elCanvasInfoSizeOverlay = ele.byId("canvasInfoOverlay");
 
+
+        this._elCanvasIconbarContainer.addEventListener("click", () =>
+        {
+            this.canvasEle.focus();
+        });
+
         this._elCanvasInfoSize.addEventListener("pointerenter", () =>
         {
             this._elCanvasInfoSizeOverlay.style.top = this._elCanvasInfoSize.getBoundingClientRect().y + 30 + "px";
@@ -125,9 +131,10 @@ export default class CanvasUi
         let sizeStr = gui.corePatch().cgl.canvas.width + "x" + gui.corePatch().cgl.canvas.height;
         if (this._cg.pixelDensity != 1) sizeStr += " (" + Math.round(this._cg.pixelDensity * 100) / 100 + "x)";
 
-        const apiName = this._cg.getGApiName();
-        if (this._oldApiName != apiName) this._elcanvasCtxSwitcher.innerHTML = apiName;
-        this._oldApiName = apiName;
+        gui.canvasManager.updateCanvasUi();
+        // const apiName = this._cg.getGApiName();
+        // if (this._oldApiName != apiName) this._elcanvasCtxSwitcher.innerHTML = apiName;
+        // this._oldApiName = apiName;
 
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
