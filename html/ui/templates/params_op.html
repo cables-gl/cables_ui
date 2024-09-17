@@ -11,7 +11,10 @@
         {{/if}}
 
         <div class="panel params_op_head panel_head">
-            <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" type="search" data-info="op_title">
+            <!-- <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span> -->
+            <!-- <input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" type="search" data-info="op_title"> -->
+
+            <a class="optitle" onclick="{{#if canEditOp}}CABLES.CMD.PATCH.renameOp(){{else}}CABLES.CMD.PATCH.setOpTitle(){{/if}}"><b>Op</b> {{optitle}} {{#if canEditOp}}<span class="editbutton"><i class="icon icon-edit"></i><span style="font-size:12px;">rename</span>{{/if}}</a>
 			<br/>
             <div style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">
             <a href="{{cablesDocsUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
@@ -40,7 +43,7 @@
 
         <a class="button-small button-icon tt info" data-tt="manage op" onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-op"></span></a>
 
-        {{#if showEditButton}}
+        {{#if canEditOp}}
             <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
         {{/if}}
 
