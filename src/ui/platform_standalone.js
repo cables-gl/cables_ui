@@ -103,12 +103,13 @@ export default class PlatformStandalone extends Platform
         {
             if (file && inputEle)
             {
-                gui.savedState.setUnSaved("filemanager");
+                const op = gui.corePatch().getOpById(opId);
+                gui.savedState.setUnSaved("filemanager", op.getSubPatch());
                 inputEle.value = file;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);
                 inputEle.dispatchEvent(event);
-                gui.opParams.show(opId);
+                gui.opParams.show(op);
             }
         });
     }

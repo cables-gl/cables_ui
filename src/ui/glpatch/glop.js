@@ -1535,7 +1535,7 @@ export default class GlOp extends Events
                     });
                 }(this, this._passiveDragStartX, this._passiveDragStartY, this.x, this.y));
 
-                gui.savedState.setUnSaved("opDrag");
+                gui.savedState.setUnSaved("opDrag", this.op.getSubPatch());
             }
 
         this._passiveDragStartX = null;

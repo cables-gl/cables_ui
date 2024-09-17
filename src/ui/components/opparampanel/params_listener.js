@@ -399,7 +399,7 @@ class ParamsListener extends Events
 
 
             // gui.setStateUnsaved();
-            gui.savedState.setUnSaved("initPortClickListener");
+            gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
         });
 
         // el = ele.byId("portremovevar_" + index);
@@ -427,7 +427,7 @@ class ParamsListener extends Events
                             "title": "Create String Op",
                             "func": () =>
                             {
-                                gui.savedState.setUnSaved("initPortClickListener");
+                                gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
                                 const oldValue = port.get();
 
                                 gui.patchView.addOpAndLink(defaultOps.defaultOpNames.string, port.op.id, port.name, (op) =>
@@ -447,7 +447,7 @@ class ParamsListener extends Events
                             "title": "Create Number Op",
                             "func": () =>
                             {
-                                gui.savedState.setUnSaved("initPortClickListener");
+                                gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
                                 const oldValue = port.get();
 
                                 gui.patchView.addOpAndLink(defaultOps.defaultOpNames.number, port.op.id, port.name, (op) =>
@@ -474,7 +474,7 @@ class ParamsListener extends Events
                         "func": () =>
                         {
                             // gui.setStateUnsaved();
-                            gui.savedState.setUnSaved("initPortClickListener");
+                            gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
 
 
                             if (port.isBoundToVar()) port.setVariable(null);
@@ -514,7 +514,7 @@ class ParamsListener extends Events
                     "func": () =>
                     {
                         // gui.setStateUnsaved();
-                        gui.savedState.setUnSaved("setPortAnimated");
+                        gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         CABLES.UI.paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                     }
@@ -750,7 +750,7 @@ class ParamsListener extends Events
             let v = "" + el.value;
 
             // gui.setStateUnsaved();
-            gui.savedState.setUnSaved("paramsInput");
+            gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
 
 
             if (

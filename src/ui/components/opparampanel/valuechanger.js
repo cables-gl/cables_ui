@@ -150,7 +150,7 @@ function valueChanger(eleId, focus, portName, opid)
         }
 
         // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("valuechangerUp");
+        gui.savedState.setUnSaved("valuechangerUp", thePort.op.getSubPatch());
 
         isDown = false;
 
@@ -198,7 +198,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (ele.hasFocus(eleInput)) return;
 
         // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("valuechangerMove");
+        gui.savedState.setUnSaved("valuechangerMove", thePort.op.getSubPatch());
         let v = eleInputValue();
         let inc = 0;
 
