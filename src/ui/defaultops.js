@@ -66,7 +66,7 @@ const defaultOpNames =
     "arrayToString": "Ops.Array.ArrayToString_v3",
     "stringConcat": "Ops.String.Concat_v2",
 
-    "VizArrayTable": "Ops.Ui.VizArrayTable",
+    "VizArrayTable": "Ops.Ui.VizArrayTable_v2",
     "VizArrayGraph": "Ops.Ui.VizArrayGraph",
     "VizBool": "Ops.Ui.VizBool",
     "VizGraph": "Ops.Ui.VizGraph",

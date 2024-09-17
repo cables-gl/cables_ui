@@ -67,7 +67,7 @@ export default class GlLink
 
                     if (fromPort.type == otherPort.type)
                     {
-                        if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
+                        if (fromPort.direction != link.portIn.direction) otherPort = link.portIn;
 
                         this._link.remove();
                         this._glPatch._portDragLine.stop();

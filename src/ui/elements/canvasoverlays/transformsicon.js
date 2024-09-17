@@ -10,6 +10,7 @@ export default class TransformsIcon
         this._id = id;
         this.lastUpdate = performance.now();
 
+        if (!cgl || !cgl.canvas) return;
         const container = cgl.canvas.parentElement;
         this._eleCenter = document.createElement("div");
 
@@ -42,8 +43,11 @@ export default class TransformsIcon
     {
         this.lastUpdate = performance.now();
         this._updateScreenPos();
-        this._eleCenter.style.left = this._screenPos[0] + "px";
-        this._eleCenter.style.top = this._screenPos[1] + "px";
+        if (this._eleCenter)
+        {
+            this._eleCenter.style.left = this._screenPos[0] + "px";
+            this._eleCenter.style.top = this._screenPos[1] + "px";
+        }
     }
 
     setPos(x, y, z)
@@ -54,6 +58,7 @@ export default class TransformsIcon
 
     _updateScreenPos()
     {
+        if (!this._cgl) return;
         this._cgl.pushModelMatrix();
 
         const m = mat4.create();
@@ -86,6 +91,7 @@ export default class TransformsIcon
 
     dispose()
     {
-        this._eleCenter.remove();
+        if (this._eleCenter)
+            this._eleCenter.remove();
     }
 }
