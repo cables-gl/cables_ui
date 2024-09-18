@@ -407,10 +407,10 @@ export default class Gizmo
 
         function keydown(e) {}
 
-        function down(e)
+        const down = (e) =>
         {
             // if (CABLES.UI) gui.setStateUnsaved();
-            if (CABLES.UI) gui.savedState.setUnSaved("transformDown");
+            if (CABLES.UI) gui.savedState.setUnSaved("transformDown", this._params.posX.op.getSubPatch());
 
             isDown = true;
             document.addEventListener("pointerlockchange", lockChange, false);
@@ -419,9 +419,9 @@ export default class Gizmo
             document.addEventListener("keydown", keydown, false);
             el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
             if (el.requestPointerLock) el.requestPointerLock();
-        }
+        };
 
-        function up(e)
+        const up = (e) =>
         {
             self.flipY = false;
             self.flipX = false;
@@ -454,7 +454,7 @@ export default class Gizmo
                 ));
             }
 
-            if (CABLES.UI) gui.savedState.setUnSaved("transformUp");
+            if (CABLES.UI) gui.savedState.setUnSaved("transformUp", this._params.posX.op.getSubPatch());
 
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
@@ -470,11 +470,11 @@ export default class Gizmo
             document.removeEventListener("mousemove", move, false);
 
             if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
-        }
+        };
 
-        function move(e)
+        const move = (e) =>
         {
-            if (CABLES.UI) gui.savedState.setUnSaved("transformMove");
+            if (CABLES.UI) gui.savedState.setUnSaved("transformMove", this._params.posX.op.getSubPatch());
 
             if (self._draggingPortY)
             {
@@ -510,7 +510,7 @@ export default class Gizmo
                 self._draggingPort.set(newValue);
                 if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
             }
-        }
+        };
 
         function lockChange(e)
         {

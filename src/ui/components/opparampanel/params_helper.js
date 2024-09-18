@@ -61,8 +61,8 @@ const paramsHelper =
     "inputIncrement": (v, dir, e) =>
     {
         if (e.target.type == "search") return v;
-        // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("paramsInputIncrement");
+
+        gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
 
         if (v == "true") return "false";
         if (v == "false") return "true";
@@ -106,7 +106,7 @@ const paramsHelper =
     "togglePortValBool": (which, checkbox) =>
     {
         // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("paramsTogglePortValBool");
+        gui.savedState.setUnSaved("paramsTogglePortValBool", gui.opParams.op.getSubPatch());
         const inputEle = document.getElementById(which);
         const checkBoxEle = document.getElementById(checkbox);
 
@@ -254,7 +254,7 @@ const paramsHelper =
                     {
                         setStatus("updated " + port.name);
                         // gui.setStateUnsaved();
-                        gui.savedState.setUnSaved("saveeditorcontent");
+                        gui.savedState.setUnSaved("saveeditorcontent", op.getSubPatch());
                         gui.jobs().finish("saveeditorcontent");
                         port.setRef(content);
                         gui.emitEvent("portValueEdited", op, port, content);
@@ -262,7 +262,7 @@ const paramsHelper =
                     "onChange": function (e)
                     {
                         // gui.setStateUnsaved();
-                        gui.savedState.setUnSaved("editorOnChange");
+                        gui.savedState.setUnSaved("editorOnChange", op.getSubPatch());
                     },
                     "onFinished": () =>
                     {

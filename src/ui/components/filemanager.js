@@ -637,7 +637,7 @@ export default class FileManager
 
             if (this._filePortEle)
             {
-                gui.savedState.setUnSaved("filemanager");
+                gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
                 this._filePortEle.value = detailItems[0].p;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);

@@ -281,6 +281,7 @@ export default class OpSelect
     {
         if (this._minimal) return;
 
+        this._eleSearchinfo = ele.byId("searchinfo");
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
@@ -319,7 +320,7 @@ export default class OpSelect
             }
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
-            this._eleSearchinfo.innerHTML = "";
+            this._eleSearchinfo.innerHTML = "??";
             const listItem = this.getListItemByOpName(opName);
             const opDocHtml = gui.opDocs.getHtml(opName, listItem);
 

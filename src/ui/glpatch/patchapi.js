@@ -333,8 +333,7 @@ export default class GlPatchAPI
 
     _onDeleteOp(op)
     {
-        // if (!undo.paused()) gui.setStateUnsaved();
-        if (!undo.paused()) gui.savedState.setUnSaved("patchApiOnDeleteOp");
+        if (!undo.paused()) gui.savedState.setUnSaved("patchApiOnDeleteOp", op.getSubPatch());
 
         let updateSubs = false;
 

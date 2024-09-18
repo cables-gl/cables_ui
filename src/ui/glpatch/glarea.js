@@ -43,7 +43,7 @@ export default class GlArea
                 this._h = this._glop.glPatch.snap.snapY(this._h);
             }
 
-            gui.savedState.setUnSaved("resizeGlArea");
+            gui.savedState.setUnSaved("resizeGlArea", this._glop.op.getSubPatch());
             this._update();
         });
 

@@ -1539,7 +1539,7 @@ export default class Gui extends Events
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
         this.htmlEleOverlay = new HtmlElementOverlay();
-
+        gui.canvasManager.updateCanvasUi();
         cb();
     }
 

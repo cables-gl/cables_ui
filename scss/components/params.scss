@@ -17,6 +17,22 @@
         }
     }
 
+    .optitle
+    {
+        font-size: 23px;
+
+
+    }
+    .optitle .editbutton
+    {
+        opacity:0;
+    }
+
+    .optitle:hover .editbutton
+    {
+        opacity:1;
+    }
+
     .reset_hidden
     {
         pointer-events: none;

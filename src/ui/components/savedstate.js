@@ -128,6 +128,9 @@ export default class SavedState extends Events
         if (gui.isRemoteClient) return;
 
         if (subpatch === undefined)
+            console.log("setUnSaved subpatch undefined", initiator, subpatch);
+
+        if (subpatch === undefined)
         {
             subpatch = this.getBlueprint() || 0;
             // this._statesSaved[subpatch] = true;
