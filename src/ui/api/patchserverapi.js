@@ -538,11 +538,43 @@ export default class PatchSaveServer extends Events
 
                             if (!navigator.onLine)msg = "no internet connection";
 
-                            new ModalDialog({
+                            const modalOptions = {
                                 "warning": true,
                                 "title": "Patch not saved",
                                 "text": "Could not save patch: " + msg
-                            });
+                            };
+
+                            if (msg === "ILLEGAL_OPS")
+                            {
+                                const docsUrl = CABLES.platform.getCablesDocsUrl();
+                                modalOptions.text = "You lack permissions to the following ops:";
+                                modalOptions.footer = "Invite the owners of the ops to this patch, join the teams the ops belong to, or convert them to patch ops.";
+                                modalOptions.choice = true;
+                                modalOptions.notices = [];
+                                r.data.forEach((opName) =>
+                                {
+                                    modalOptions.notices.push("<a href=\"" + docsUrl + "/op/" + opName + "\">" + opName + "</a>");
+                                });
+
+                                modalOptions.cancelButton = {
+                                    "text": "Convert",
+                                    "callback": () =>
+                                    {
+                                        gui.patchView.unselectAllOps();
+                                        r.data.forEach((opName) =>
+                                        {
+                                            const opsInPatch = gui.corePatch().getOpsByObjName(opName);
+                                            opsInPatch.forEach((op) =>
+                                            {
+                                                gui.patchView.selectOpId(op.id);
+                                            });
+                                        });
+
+                                        CABLES.CMD.PATCH.cloneSelectedOps();
+                                    }
+                                };
+                            }
+                            new ModalDialog(modalOptions);
 
                             this._log.log(r);
                             this.finishAnimations();
