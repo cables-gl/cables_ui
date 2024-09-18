@@ -670,10 +670,27 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options = {}) =>
 
     gui.savingTitleAnimStart("Saving Subpatch Op...");
 
+    const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
+    let hasNoSaveError = false;
+    let erro = "";
+    ops.forEach((op) =>
+    {
+        if (op.hasUiError("subPatchOpNoSaveError"))
+        {
+            hasNoSaveError = true;
+            erro = op.getUiError("subPatchOpNoSaveError");
+        }
+    });
+
+    // if (hasNoSaveError)
+    // {
+    //     notifyError("Could not save " + erro.txt);
+    //     return;
+    // }
+
     const subId = CABLES.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-
 
     const origOpsBounds = gui.patchView.getSubPatchBounds(gui.patchView.getCurrentSubPatch());
     if (origOpsBounds.maxAxis > 10000000)

@@ -75,9 +75,7 @@ export default class TreeView extends Events
         }
 
         if (level == 0)
-        {
             html += "</table>";
-        }
 
         return html;
     }
@@ -96,6 +94,7 @@ export default class TreeView extends Events
                         const eletype = ele.dataset.eletype;
                         this.emitEvent(eletype + "_click", this._clickListenerIds[i], ele, event);
                     });
+
                 el.addEventListener("dblclick",
                     (event) =>
                     {
