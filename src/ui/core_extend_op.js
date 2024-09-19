@@ -229,6 +229,11 @@ export default function extendCoreOp()
         return !this.isTeamOp() && !this.isPatchOp() && !this.isUserOp();
     };
 
+    CABLES.Op.prototype.getUiError = function (id)
+    {
+        return this._uiErrors[id];
+    };
+
     CABLES.Op.prototype.setUiError = function (id, txt, level)
     {
         if (!txt && !this.hasUiErrors) return;
@@ -267,6 +272,7 @@ export default function extendCoreOp()
             if (outer)
             {
                 let subPatchOpError = null;
+                if (this.objName == outer.objName) subPatchOpError = "SubPatchOp Recusion error";
                 if (this.isPatchOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in team ops";
                 if (this.isUserOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: User op can't be in team ops";
                 if (this.isPatchOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in core ops or extensions";

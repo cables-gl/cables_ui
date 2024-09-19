@@ -59,6 +59,8 @@ export default class EditorTab
             this._editor = editor;
 
             editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
+            editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
+
 
             if (options.allowEdit)
             {

@@ -77,6 +77,8 @@ export default class Preferences
 
         this.setInputValue("wheelmultiplier", userSettings.get("wheelmultiplier") || 1);
         this.setInputValue("fontsize_ace", userSettings.get("fontsize_ace") || 12);
+        this.setSwitchValue("wrapmode_ace", userSettings.get("wrapmode_ace") || false);
+
         this.setSwitchValue("quickLinkLongPress", userSettings.get("quickLinkLongPress"));
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
 

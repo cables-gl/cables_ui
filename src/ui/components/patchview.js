@@ -1369,7 +1369,7 @@ export default class PatchView extends Events
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             if (i == 0)
-                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\">" + names[i].name + "</a>";
+                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "</a>";
             else
                 str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
@@ -1378,11 +1378,8 @@ export default class PatchView extends Events
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-                // str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + 12 + "\">" + 32 + "</a>";
-
-                const outerOp = this.getSubPatchOuterOp(currentSubPatch);
-
-                str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageCurrentSubpatchOp()\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
+                // const outerOp = this.getSubPatchOuterOp(currentSubPatch);
+                // str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageCurrentSubpatchOp()\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
             }
             else if (names[0].type == "blueprint_subpatch")
             {
@@ -1682,7 +1679,6 @@ export default class PatchView extends Events
     {
         if (!ops || ops.length === 0) return;
 
-
         const undoGroup = undo.startGroup();
 
         this.saveUndoSelectedOpsPositions(ops);
@@ -1696,11 +1692,9 @@ export default class PatchView extends Events
         // }
         // y = Snap.snapOpPosY(y / ops.length);
 
-
         // for (let j = 0; j < ops.length; j++)
         // {
         //     y = Snap.snapOpPosY(y);
-
         //     this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
         //     this.testCollision(ops[j]);
         // }
@@ -1878,16 +1872,6 @@ export default class PatchView extends Events
         }
         return ops;
     }
-
-    // setTempOpPos(op, x, y)
-    // {
-    //     op.setUiAttribs({ "translateTemp":
-    //         {
-    //             "x": x,
-    //             "y": y
-    //         }
-    //     });
-    // }
 
     setOpPos(op, x, y)
     {

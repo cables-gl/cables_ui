@@ -29,78 +29,71 @@
             padding-bottom: 15px;
         }
 
-        .prefRight
+        .prefLeft
         {
-            padding-top:30px;
+            padding-top:10px;
             text-align: right
         }
+        .prefRight h3
+        {
+            margin-top:0px;
+        }
 
+        .title h2
+        {
+            margin-top:0px;
+            font-weight: bold;
+        }
     </style>
 
     <br/><br/>
 
-    <h2 class="text-center">{{texts.head_glpatch}}</h2>
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>{{texts.head_glpatch}}</h2></div></div>
 
-<!--
-    <div class="row prefRow" >
-        <div class="cute-5-phone text-right">
-            <span class="prefswitch switch switch-text switch-left" data-setting="glpatch_showboundings" data-value="false">Off</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="glpatch_showboundings" data-value="true">On</span>
-        </div>
-        <div class="cute-5-phone left" >
-            {{texts.subtitle_glpatch_showboundings}}
-        </div>
-    </div> -->
 
-    <div class="row prefRow" >
+    <div class="row">
         <div class="cute-5-phone text-right">
             <span class="prefswitch switch switch-text switch-left"  data-setting="linetype" data-value="curved">Curved</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="linetype" data-value="straight">Straight</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="linetype" data-value="simple">Simple</span>
-            <!-- <span class="prefswitch switch switch-text switch-right" data-setting="linetype" data-value="h1">Hanging</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="linetype" data-value="h2">h2</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="linetype" data-value="h3">h3</span> -->
         </div>
         <div class="cute-5-phone left">
             {{texts.subtitle_glpatch_linetype}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="snapToGrid2" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="snapToGrid2" data-value="false">Off</span>
         </div>
 
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_snapToGrid}}</h3>
             {{texts.subtitle_snapToGrid}}
         </div>
     </div>
 
 
-
-
-
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="noFadeOutCables" data-value="false">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="noFadeOutCables" data-value="true">Off</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_fadeOutCables}}</h3>
             {{texts.subtitle_fadeOutCables}}
         </div>
     </div>
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="canvasMode" data-value="default">Default</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="canvasMode" data-value="patchbg">Background</span>
         </div>
 
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_canvaspos}}</h3>
             {{texts.subtitle_canvaspos}}
         </div>
@@ -108,10 +101,8 @@
 
 
 
-
-
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="fontSizeOff" data-value="-2">-2</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="fontSizeOff" data-value="-1">-1</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="fontSizeOff" data-value="0">Default</span>
@@ -120,67 +111,75 @@
             <span class="prefswitch switch switch-text switch-middle" data-setting="fontSizeOff" data-value="3">+3</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="fontSizeOff" data-value="4">+4</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_fontsize}}</h3>
             {{texts.subtitle_fontsize}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <br/><hr/><br/>
+
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>ACE Text Editor</h2></div></div>
+
+    <div class="row">
+        <div class="cute-5-phone text-right">
             <input class="numberinput valinput" data-setting="fontsize_ace" value="12"/>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-5-phone left">
             {{texts.subtitle_fontsize_ace}}
-
         </div>
     </div>
 
-    <div class="row prefRow" >
+    <div class="row">
+        <div class="cute-5-phone text-right">
+            <span class="prefswitch switch switch-text switch-left" data-setting="wrapmode_ace" data-value="false">Off</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="wrapmode_ace" data-value="true">On</span>
+        </div>
+        <div class="cute-5-phone left">
+            {{texts.subtitle_wrapmode_ace}}
+        </div>
+    </div>
+
+    <div class="row">
         <div class="cute-5-phone text-right">
             <span class="prefswitch switch switch-text switch-left" data-setting="formatcode" data-value="false">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="formatcode" data-value="true">On</span>
         </div>
-        <div class="cute-5-phone left" >
+        <div class="cute-5-phone left">
             {{texts.subtitle_formatcode}}
         </div>
     </div>
 
-
+    <br/><hr/><br/>
 
     <div class="row ">
-        <h2 class="text-center">Ui Elements</h2>
+        <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Ui Elements</h2></div></div>
     </div>
 
-
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="hideCanvasUi" data-value="true">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="hideCanvasUi" data-value="false">On</span>
         </div>
 
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_hideCanvasUi}}</h3>
-
         </div>
     </div>
 
-
-
-
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="hideSizeBar" data-value="true">Hide</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="hideSizeBar" data-value="false">Show</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_hideSizeBar}}</h3>
             {{texts.subtitle_hideSizeBar}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight ">
+    <div class="row">
+        <div class="cute-5-phone prefLeft ">
             <span class="prefswitch switch switch-text switch-left" data-setting="bgpreview" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="bgpreview" data-value="false">Off</span>
 
@@ -194,10 +193,9 @@
             <span class="prefswitch switch switch-text switch-left" data-setting="texpreviewTransparent" data-value="false">Opaque</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="texpreviewTransparent" data-value="true">Transparent</span>
 
-            <br/><br/>
         </div>
 
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_texpreviewSize}}</h3>
             {{texts.subtitle_texpreviewSize}}
         </div>
@@ -205,8 +203,8 @@
 
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="bgpattern" data-value="bgPatternDark">Dark</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="bgpattern" data-value="bgPatternBright">Bright</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="bgpattern" data-value="bgPatternBlack">0</span>
@@ -215,7 +213,7 @@
             <span class="prefswitch switch switch-text switch-middle" data-setting="bgpattern" data-value="bgPatternRed">R</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="bgpattern" data-value="bgPatternBlue">B</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_bgpattern}}</h3>
             {{texts.subtitle_bgpattern}}
         </div>
@@ -223,45 +221,45 @@
     </div>
 
 
-    <br/><br/>
+    <br/><hr/><br/>
 
-    <h2 class="text-center">Input</h2>
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Input</h2></div></div>
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <input class="numberinput valinput" data-setting="wheelmultiplier" value="1"/>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_wheelmultiplier}}</h3>
             {{texts.subtitle_wheelmultiplier}}
 
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkLongPress" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkLongPress" data-value="false">Off</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_quickLinkLongPress}}</h3>
             {{texts.subtitle_quickLinkLongPress}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkMiddleMouse" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkMiddleMouse" data-value="false">Off</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_quickLinkMiddleMouse}}</h3>
             {{texts.subtitle_quickLinkMiddleMouse}}
         </div>
     </div>
 
-    <div class="row prefRow" >
+    <div class="row">
         <div class="cute-5-phone text-right">
             <span class="prefswitch switch switch-text switch-left" data-setting="patch_button_scroll" data-value="1">Left</span>
             <span class="prefswitch switch switch-text switch-middle" data-setting="patch_button_scroll" data-value="4">Middle</span>
@@ -274,8 +272,8 @@
 
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="patch_allowCableDrag" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="patch_allowCableDrag" data-value="false">Off</span>
         </div>
@@ -286,40 +284,40 @@
 
 
 
-    <br/><br/>
+    <br/><hr/><br/>
 
-    <h2 class="text-center">Misc</h2>
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Misc</h2></div></div>
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="noidlemode" data-value="true">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="noidlemode" data-value="false">On</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_noidlemode}}</h3>
             {{texts.subtitle_noidlemode}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="showTipps" data-value="true">Show</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="showTipps" data-value="false">Hide</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_tipps}}</h3>
             {{texts.subtitle_tipps}}
         </div>
     </div>
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="presentationmode" data-value="false">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="presentationmode" data-value="true">On</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_presentationmode}}</h3>
             {{texts.subtitle_presentationmode}}
         </div>
@@ -327,12 +325,12 @@
 
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="nobrowserWarning" data-value="false">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="nobrowserWarning" data-value="true">On</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_nobrowserWarning}}</h3>
             {{texts.subtitle_nobrowserWarning}}
         </div>
@@ -341,34 +339,34 @@
 
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="introCompleted" data-value="true">Hide</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="introCompleted" data-value="false">Show Again</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_introCompleted}}</h3>
             {{texts.subtitle_introCompleted}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="randomizePatchName" data-value="false">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="randomizePatchName" data-value="true">On</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_randomizePatchName}}</h3>
             {{texts.subtitle_randomizePatchName}}
         </div>
     </div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="helperMode" data-value="true">Show</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="helperMode" data-value="false">Hide</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_helperMode}}</h3>
             {{texts.subtitle_helperMode}}
         </div>
@@ -376,12 +374,12 @@
 
 
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="notlocalizeNumberformat" data-value="true">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="notlocalizeNumberformat" data-value="false">On</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_notlocalizeNumberformat}}</h3>
             {{texts.subtitle_notlocalizeNumberformat}}
         </div>
@@ -389,69 +387,69 @@
 
 
     {{#if frontendOptions.isStandalone }}
-        <br/><br/>
+        <br/><hr/><br/>
 
-        <h2 class="text-center">Standalone</h2>
+        <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Standalone</h2></div></div>
 
-        <div class="row prefRow">
-            <div class="cute-5-phone prefRight">
+        <div class="row">
+            <div class="cute-5-phone prefLeft">
                 <span class="prefswitch switch switch-text switch-left" data-setting="openlastproject" data-value="false">Off</span>
                 <span class="prefswitch switch switch-text switch-right" data-setting="openlastproject" data-value="true">On</span>
             </div>
-            <div class="cute-7-phone">
+            <div class="cute-7-phone prefRight">
                 <h3>{{texts.title_openlastproject}}</h3>
                 {{texts.subtitle_openlastproject}}
             </div>
         </div>
-        <div class="row prefRow">
-            <div class="cute-5-phone prefRight">
+        <div class="row">
+            <div class="cute-5-phone prefLeft">
                 <input class="valinput" data-setting="authorName" value=""/>
             </div>
-            <div class="cute-7-phone">
+            <div class="cute-7-phone prefRight">
                 <h3>{{texts.title_authorName}}</h3>
                 {{texts.subtitle_authorName}}
             </div>
         </div>
     {{/if}}
 
-    <br/><br/>
+    <br/><hr/><br/>
 
-    <h2 class="text-center">Advanced</h2>
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Advanced</h2></div></div>
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="devinfos" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="devinfos" data-value="false">Off</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_devinfos}}</h3>
             {{texts.subtitle_devinfos}}
         </div>
     </div>
 
-    <!-- <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <!-- <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="forceWebGl1" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="forceWebGl1" data-value="false">Off</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_forceWebGl1}}</h3>
             {{texts.subtitle_forceWebGl1}}
         </div>
     </div> -->
 
-    <div class="row prefRow">
-        <div class="cute-5-phone prefRight">
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="miniopselect" data-value="true">Minimal</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="miniopselect" data-value="false">Full</span>
         </div>
-        <div class="cute-7-phone">
+        <div class="cute-7-phone prefRight">
             <h3>{{texts.title_miniopselect}}</h3>
             {{texts.subtitle_miniopselect}}
         </div>
     </div>
 
-    <div class="row prefRow" >
+    <div class="row">
         <div class="cute-5-phone text-right">
             <span class="prefswitch switch switch-text switch-left" data-setting="glpatch_cursor" data-value="true">Off</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="glpatch_cursor" data-value="false">On</span>
@@ -461,11 +459,21 @@
         </div>
     </div>
 
-    <br/><br/>
 
-    <input class="button" value="Reset preferences" onClick="CABLES.UI.userSettings.reset();"/>
-    <br/>
-    resetting or changing some settings need a reload of the editor!
+
+    <br/><hr/><br/>
+
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Reset preferences</h2></div></div>
+
+    <div class="row">
+        <div class="cute-5-phone text-right">
+            <input class="button" value="Reset preferences" onClick="CABLES.UI.userSettings.reset();"/>
+        </div>
+        <div class="cute-5-phone left">
+            resetting or changing some settings need a reload of the editor!
+        </div>
+    </div>
+
 
     <br/><br/><br/><br/><br/><br/>
 
