@@ -29,8 +29,8 @@ export default class WelcomeTab
                 if (result.events.length > 3)result.events.length = 3;
 
                 const eventsHtml = getHandleBarHtml("tab_welcome_events", { "events": result.events || [] });
-
-                ele.byId("welcome_events").innerHTML = eventsHtml;
+                const eventsEle = ele.byId("welcome_events");
+                if (eventsEle) eventsEle.innerHTML = eventsHtml;
             });
 
             if (CABLES.platform.frontendOptions.isStandalone)

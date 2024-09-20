@@ -682,11 +682,11 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         }
     });
 
-    // if (hasNoSaveError)
-    // {
-    //     notifyError("Could not save " + erro.txt);
-    //     return;
-    // }
+    if (hasNoSaveError)
+    {
+        notifyError("Could not save " + erro.txt);
+        return;
+    }
 
     const subId = CABLES.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
