@@ -309,7 +309,7 @@ export default class PatchOutline extends Events
                 {
                     const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
-                    subPatchOpUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
+                    subPatchOpUtil.updateSubPatchOpAttachment(op, { "oldSubId": item.subPatchId });
                 },
             });
         }

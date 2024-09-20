@@ -1656,7 +1656,7 @@ export default class Gui extends Events
                     {
                         gui.showLoadingProgress(true);
 
-                        subPatchOpUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                        subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(bp),
                             {
                                 "oldSubId": bp,
                                 "next": () =>

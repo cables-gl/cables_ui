@@ -5,6 +5,7 @@ import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import userSettings from "../usersettings.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
+import defaultOps from "../../defaultops.js";
 
 /**
  * op parameter panel
@@ -271,6 +272,15 @@ class OpParampanel extends Events
             {
                 let shortName = String(this._portsIn[i].get() || "none");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
+
+                if (op.getSubPatch())
+                {
+                    const subouterOp = op.patch.getSubPatchOuterOp(op.getSubPatch());
+                    const subOuterName = subouterOp.objName;
+
+                    if (!defaultOps.isPatchOp(subOuterName) && this._portsIn[i].get().startsWith("/assets/"))
+                        this._portsIn[i].op.setUiError("nonpatchopassets", "This Operator uses assets from a patch, this file will probably not be found when exporting the patch or using in standalone etc.!", 1);
+                }
 
                 if (ele.byId("portFilename_" + i))
                     ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
@@ -641,7 +651,7 @@ class OpParampanel extends Events
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
 
-                        gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
+                        gui.serverOps.updateSubPatchOpAttachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
                     },
                 });

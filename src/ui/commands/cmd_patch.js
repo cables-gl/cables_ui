@@ -185,7 +185,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
     for (let i = 0; i < ops.length; i++)
     {
         const name = ops[i].op.shortName;
-        subPatchOpUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
+        subPatchOpUtil.updateSubPatchOpAttachment(ops[i].op, { "oldSubId": ops[i].subId });
     }
 };
 
@@ -504,7 +504,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 {
                                                     console.log("need so save subpatchop AGAIN");
 
-                                                    subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                    subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
                                                         "next": () =>
                                                         {
                                                             // console.log("bp", bp);

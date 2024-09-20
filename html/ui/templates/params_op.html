@@ -161,6 +161,11 @@
                     <td>subpatch</td>
                     <td><code>{{op.uiAttribs.subPatch}}</code></td>
                 </tr>
+                <tr>
+                    <td>ui translate</td>
+                    <td><code>{{op.uiAttribs.translate.x}},{{op.uiAttribs.translate.y}}</code></td>
+                </tr>
+
                 <!-- <tr>
                     <td>num instances</td>
                     <td><code>?</code></td>
@@ -176,8 +181,6 @@
             <span onclick="CABLES.CMD.DEBUG.watchOpUiAttribs()" class="button">UiAttribs</span>
             <span onclick="CABLES.CMD.DEBUG.watchOpDocsJson()" class="button">OpDocs</span>
 
-            <br>
-            {{op.uiAttribs.translate.x}},{{op.uiAttribs.translate.y}},
         </div>
     {{/if}}
 
