@@ -276,10 +276,13 @@ class OpParampanel extends Events
                 if (op.getSubPatch())
                 {
                     const subouterOp = op.patch.getSubPatchOuterOp(op.getSubPatch());
-                    const subOuterName = subouterOp.objName;
+                    if (subouterOp)
+                    {
+                        const subOuterName = subouterOp.objName;
 
-                    if (!defaultOps.isPatchOp(subOuterName) && this._portsIn[i].get().startsWith("/assets/"))
-                        this._portsIn[i].op.setUiError("nonpatchopassets", "This Operator uses assets from a patch, this file will probably not be found when exporting the patch or using in standalone etc.!", 1);
+                        if (!defaultOps.isPatchOp(subOuterName) && this._portsIn[i].get().startsWith("/assets/"))
+                            this._portsIn[i].op.setUiError("nonpatchopassets", "This Operator uses assets from a patch, this file will probably not be found when exporting the patch or using in standalone etc.!", 1);
+                    }
                 }
 
                 if (ele.byId("portFilename_" + i))
