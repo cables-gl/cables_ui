@@ -272,7 +272,7 @@ export default function extendCoreOp()
             if (outer)
             {
                 let subPatchOpError = null;
-                if (this.objName == outer.objName) subPatchOpError = "SubPatchOp Recusion error";
+                if (this.objName == outer.objName) subPatchOpError = "SubPatchOp Recursion error";
                 if (this.isPatchOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in team ops";
                 if (this.isUserOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: User op can't be in team ops";
                 if (this.isPatchOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in core ops or extensions";

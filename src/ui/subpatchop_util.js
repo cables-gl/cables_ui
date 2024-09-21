@@ -512,7 +512,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 
                     const outerOp = gui.patchView.getSubPatchOuterOp(newOp.patchId.get());
 
-                    subPatchOpUtil.updateBluePrint2Attachment(outerOp, { "oldSubId": newOp.patchId.get() });
+                    subPatchOpUtil.updateSubPatchOpAttachment(outerOp, { "oldSubId": newOp.patchId.get() });
                 });
             });
         }
@@ -664,7 +664,7 @@ subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
     return o;
 };
 
-subPatchOpUtil.updateBluePrint2Attachment = (newOp, options = {}) =>
+subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 {
     const oldSubId = options.oldSubId || 0;
 
@@ -810,7 +810,7 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
 
             gui.patchView.setPositionSubPatchInputOutputOps(oldSubpatchOp.patchId.get());
 
-            subPatchOpUtil.updateBluePrint2Attachment(
+            subPatchOpUtil.updateSubPatchOpAttachment(
                 newOp,
                 {
                     "execute": false,
