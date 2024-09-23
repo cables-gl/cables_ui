@@ -20,7 +20,7 @@
                         <span class="controls" style="float: right">
                             <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>&nbsp;
                             <a class="icon icon-folder icon-0_75x" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>&nbsp;
-                            {{#unless @last}}<a class="removeOpProjectDir icon icon-x icon-0_75x" data-dir="{{dir}}"></a>{{/unless}}
+                            {{#unless fixedPlace}}<a class="removeOpProjectDir icon icon-x icon-0_75x" data-dir="{{dir}}"></a>{{/unless}}
                         </span>
                     </div>
             {{/each}}
