@@ -326,7 +326,8 @@ export default class ServerOps
                     {
                         this.saveOpLayout(newOps[0]);
                     }
-                    gui.emitEvent("opReloaded", name, newOps[0]);
+                    gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
+                    // gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
 
                     gui.savedState.resume();

@@ -8,12 +8,13 @@ export default class TransformsOverlay
         this._transforms = {};
         this._lastCheck = 0;
 
-        if (!gui.isRemoteClient)
-            setInterval(this._cleanUp.bind(this), 2000);
+        setInterval(this._cleanUp.bind(this), 2000);
     }
 
     _cleanUp(diff)
     {
+        if (!gui || gui.isRemoteClient) return;
+
         diff = diff || 500;
         for (const i in this._transforms)
         {

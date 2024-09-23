@@ -60,7 +60,7 @@ export default class ManageOp
             }));
 
         this._refreshListener.push(
-            gui.on("opReloaded", (name) =>
+            gui.corePatch().on("opReloaded", (name) =>
             {
                 if (name === undefined || this._currentName == name) this.show();
             }));

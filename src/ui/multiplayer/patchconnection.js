@@ -208,6 +208,15 @@ const PatchConnectionSender = function (patch)
     this.connectors = [];
     this.paused = false;
 
+    patch.addEventListener("opReloaded",
+        (opname) =>
+        {
+            if (gui)gui.serverOps.execute(opname, () =>
+            {
+                console.log("reloaded op", opname);
+            });
+        });
+
     patch.addEventListener("onOpDelete",
         (op) =>
         {

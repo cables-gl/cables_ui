@@ -659,6 +659,22 @@ CABLES_CMD_PATCH.addOpByName = (name) =>
     });
 };
 
+
+
+CABLES_CMD_PATCH.reloadOp = function (x, y)
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (!ops.length) return;
+
+    const op = gui.patchView.getSelectedOps()[0];
+
+    gui.serverOps.execute(op.opId, () =>
+    {
+        CABLES.UI.notify("reloaded op " + op.objName);
+    });
+};
+
+
 CABLES_CMD_PATCH.addOp = function (x, y)
 {
     gui.opSelect().show({ "x": 0, "y": 0 });
@@ -1462,11 +1478,6 @@ CMD_PATCH_COMMANDS.push(
         "hotkey": "DEL"
     },
     {
-        "cmd": "Reload patch",
-        "category": "patch",
-        "func": CABLES_CMD_PATCH.reload
-    },
-    {
         "cmd": "Save patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.save,
@@ -1538,6 +1549,13 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.newPatch,
         "icon": "file"
+    },
+    {
+        "cmd": "Reload op",
+        "category": "patch",
+        "func": CABLES_CMD_PATCH.reloadOp,
+        "icon": "op",
+        "infotext": "cmd_reloadop"
     },
     {
         "cmd": "Add op",
@@ -1773,6 +1791,11 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps,
         "category": "op",
         "icon": "op"
-    }
+    },
+    {
+        "cmd": "Reload patch",
+        "category": "patch",
+        "func": CABLES_CMD_PATCH.reload
+    },
 
 );
