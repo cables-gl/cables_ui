@@ -1838,7 +1838,7 @@ export default class ServerOps
             {
                 if (_next)
                 {
-                    proj.ops = proj.ops.filter((op) => { return this.isLoaded(op); });
+                    proj.ops = proj.ops ? proj.ops.filter((op) => { return this.isLoaded(op); }) : [];
                     _next(proj);
                 }
             });

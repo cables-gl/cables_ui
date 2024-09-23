@@ -40,7 +40,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
 
         if (window.gui)
         {
-            gui.serverOps.loadOpLibs(data.vars.objName, () =>
+            gui.serverOps.loadOpDependencies(data.vars.objName, () =>
             {
                 this._addOp(data);
             });
@@ -193,6 +193,13 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             }
         }
     }
+    else if (data.event == CONSTANTS.PACO.PACO_OP_RELOAD)
+    {
+        if (gui)gui.serverOps.execute(data.vars.opName, () =>
+        {
+            console.log("reloaded op", data.vars.opName);
+        });
+    }
     else
     {
         this._log.warn("unknown patchConnectionEvent!", ev);
@@ -209,12 +216,9 @@ const PatchConnectionSender = function (patch)
     this.paused = false;
 
     patch.addEventListener("opReloaded",
-        (opname) =>
+        (opName) =>
         {
-            if (gui)gui.serverOps.execute(opname, () =>
-            {
-                console.log("reloaded op", opname);
-            });
+            this.send(CABLES.PACO_OP_RELOAD, { "opName": opName });
         });
 
     patch.addEventListener("onOpDelete",
