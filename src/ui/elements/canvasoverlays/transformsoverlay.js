@@ -7,7 +7,9 @@ export default class TransformsOverlay
     {
         this._transforms = {};
         this._lastCheck = 0;
-        setInterval(this._cleanUp.bind(this), 2000);
+
+        if (!gui.isRemoteClient)
+            setInterval(this._cleanUp.bind(this), 2000);
     }
 
     _cleanUp(diff)
@@ -62,6 +64,7 @@ export default class TransformsOverlay
 
     add(cgl, id, x, y, z)
     {
+        if (gui.isRemoteClient) return;
         this._transforms[id] = this._transforms[id] || new TransformsIcon(cgl, id);
         this._transforms[id].setPos(x, y, z);
 
