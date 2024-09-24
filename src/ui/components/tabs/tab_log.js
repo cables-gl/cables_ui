@@ -199,16 +199,19 @@ export default class LogTab extends Events
 
                                 errorStack[k].fileName = errorStack[k].fileName || null;
 
-                                const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
-                                if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
-                                stackHtml += "  <td>";
+                                if (errorStack[k].fileName)
+                                {
+                                    const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
+                                    if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
+                                    stackHtml += "  <td>";
 
-                                if (errorStack[k].fileName.indexOf("https://") == 0 || errorStack[k].fileName.indexOf("http://") == 0 || errorStack[k].fileName.indexOf("file://") == 0 || errorStack[k].fileName.indexOf("cables://") == 0)
-                                    stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
-                                else stackHtml += errorStack[k].fileName + ":" + errorStack[k].lineNumber + "";
+                                    if (errorStack[k].fileName.indexOf("https://") == 0 || errorStack[k].fileName.indexOf("http://") == 0 || errorStack[k].fileName.indexOf("file://") == 0 || errorStack[k].fileName.indexOf("cables://") == 0)
+                                        stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
+                                    else stackHtml += errorStack[k].fileName + ":" + errorStack[k].lineNumber + "";
 
-                                stackHtml += shortFilename;
-                                stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
+                                    stackHtml += shortFilename;
+                                    stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
+                                }
                                 stackHtml += "</tr>";
                             }
                             stackHtml += "</table>";
