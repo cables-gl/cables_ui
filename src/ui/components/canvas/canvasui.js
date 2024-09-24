@@ -126,15 +126,17 @@ export default class CanvasUi
     updateSizeDisplay()
     {
         if (!gui.corePatch().cgl) return;
+
+        const canvas = gui.canvasManager.currentCanvas();
+
+        const ctx = gui.canvasManager.currentContext();
+
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
 
-        let sizeStr = gui.corePatch().cgl.canvas.width + "x" + gui.corePatch().cgl.canvas.height;
-        if (this._cg.pixelDensity != 1) sizeStr += " (" + Math.round(this._cg.pixelDensity * 100) / 100 + "x)";
+        let sizeStr = canvas.width + "x" + canvas.height;
+        if (ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
         gui.canvasManager.updateCanvasUi();
-        // const apiName = this._cg.getGApiName();
-        // if (this._oldApiName != apiName) this._elcanvasCtxSwitcher.innerHTML = apiName;
-        // this._oldApiName = apiName;
 
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
@@ -142,10 +144,12 @@ export default class CanvasUi
         this.updateIconState();
 
         let str = "<table>";
-        str += "<tr><td>Canvas CSS Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + "&nbsp;x&nbsp;" + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
-        str += "<tr><td>Canvas Pixel Size:</td><td><code>" + gui.corePatch().cgl.canvas.width + " x " + gui.corePatch().cgl.canvas.height + "</td></tr>";
+        str += "<tr><td>Canvas API</td><td>" + ctx.getGApiName() + "</td></tr>";
+        str += "<tr><td>Canvas id</td><td>" + canvas.id + "</td></tr>";
+        str += "<tr><td>Canvas CSS Size:</td><td><code>" + canvas.clientWidth + "&nbsp;x&nbsp;" + canvas.clientHeight + "</td></tr>";
+        str += "<tr><td>Canvas Pixel Size:</td><td><code>" + canvas.width + " x " + canvas.height + "</td></tr>";
         str += "<tr><td>Device Pixel Ratio/Density:</td><td><code>" + window.devicePixelRatio + "</td></tr>";
-        str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + gui.corePatch().cgl.pixelDensity + "</td></tr>";
+        str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + ctx.pixelDensity + "</td></tr>";
         str += "</table>";
         this._elCanvasInfoSizeOverlay.innerHTML = str;
 

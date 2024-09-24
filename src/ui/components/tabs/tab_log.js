@@ -327,6 +327,7 @@ export default class LogTab extends Events
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
 
                     let lStr = lines[line];
+                    if (!lStr) return;
                     const maxLength = 150;
                     if (lStr.length > maxLength) lStr = lStr.substring(0, maxLength) + "...";
 
@@ -356,7 +357,7 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    console.log("could not parse lines.", e);
+                    console.log("could not parse lines.", e, url);
                 }
             },
             "GET",
