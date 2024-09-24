@@ -1321,6 +1321,33 @@ CABLES_CMD_PATCH.replaceOp = function ()
     });
 };
 
+CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "")
+{
+    if (!CABLES.platform.frontendOptions.editOpSummary) return;
+
+    new ModalDialog({
+        "prompt": true,
+        "title": opName,
+        "text": "New summary:",
+        "promptValue": oldSummary,
+        "promptOk": (summary) =>
+        {
+            gui.savingTitleAnimStart("Updating Op...");
+            CABLESUILOADER.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
+            {
+                if (!err)
+                {
+                    gui.serverOps.loadOpDependencies(opName, () =>
+                    {
+                        gui.savingTitleAnimEnd();
+                        gui.emitEvent("refreshManageOp", opName);
+                    }, true);
+                }
+            });
+        }
+    });
+};
+
 CABLES_CMD_PATCH.uncollideOps = function (ops)
 {
     let found = true;

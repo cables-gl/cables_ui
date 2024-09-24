@@ -26,6 +26,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
         this.frontendOptions.showLocalOpDirButton =
+        this.frontendOptions.editOpSummary =
         this.frontendOptions.hasOpDirectories =
         this.frontendOptions.hasAssetDirectories =
         this.frontendOptions.showWelcome =

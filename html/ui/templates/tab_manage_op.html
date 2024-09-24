@@ -18,7 +18,7 @@
         {{/if}}
 
         <br/>
-        <div class="summary selectable">
+        <div {{#if frontendOptions.editOpSummary}}onclick="CABLES.CMD.PATCH.editOpSummary('{{opDoc.id}}','{{opname}}', '{{summary}}');"{{/if}} class="summary selectable">
             <br/><b>{{summary}}</b>
         </div>
         <br/>
