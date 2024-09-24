@@ -197,7 +197,7 @@ export default class LogTab extends Events
                                 if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
                                     this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
 
-                                errorStack[k].fileName = errorStack[k].fileName || "unknown";
+                                errorStack[k].fileName = errorStack[k].fileName || null;
 
                                 const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
                                 if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
