@@ -165,8 +165,10 @@ export default class ServerOps
                                 gui.maintabPanel.show(true);
                                 this.edit(name, false, null, true);
                             }
-                            gui.serverOps.execute(name);
-                            done();
+                            gui.serverOps.execute(name, () =>
+                            {
+                                done();
+                            });
                         });
                     }
                     else done();
@@ -293,9 +295,10 @@ export default class ServerOps
         return true; // has changed
     }
 
-    execute(opIdentifier, next, refOldOp)
+    execute(opIdentifier, next, options)
     {
-        /// //////////////
+        options = options || {};
+
 
         gui.savedState.pause();
 
@@ -326,13 +329,14 @@ export default class ServerOps
                     {
                         this.saveOpLayout(newOps[0]);
                     }
-                    gui.emitEvent("opReloaded", name, newOps[0]);
+                    gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
+                    // gui.emitEvent("opReloaded", name, newOps[0]);
                     gui.jobs().finish("executeop");
 
                     gui.savedState.resume();
-                    if (next)next(newOps, refOldOp);
+                    if (next)next(newOps, options.refOldOp);
                 },
-                refOldOp
+                options.refOldOp
             );
         }, true);
     }
@@ -376,11 +380,12 @@ export default class ServerOps
                         if (options.openEditor) this.edit(name);
 
                         // loadingModal.setTask("loading new op: " + name);
-                        gui.serverOps.execute(name);
-                        gui.opSelect().reload();
-                        // if (!options.loadingModal) gui.endModalLoading();
-                        gui.savingTitleAnimEnd();
-                        if (cb)cb();
+                        gui.serverOps.execute(name, () =>
+                        {
+                            gui.opSelect().reload();
+                            gui.savingTitleAnimEnd();
+                            if (cb)cb();
+                        });
                     });
                 };
 
@@ -1837,7 +1842,7 @@ export default class ServerOps
             {
                 if (_next)
                 {
-                    proj.ops = proj.ops.filter((op) => { return this.isLoaded(op); });
+                    proj.ops = proj.ops ? proj.ops.filter((op) => { return this.isLoaded(op); }) : [];
                     _next(proj);
                 }
             });

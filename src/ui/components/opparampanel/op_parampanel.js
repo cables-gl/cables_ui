@@ -154,7 +154,7 @@ class OpParampanel extends Events
         }
 
         if (this.reloadListener)
-            this.reloadListener = gui.on("opReloaded", () =>
+            this.reloadListener = gui.corePatch().on("opReloaded", () =>
             {
                 this.refreshDelayed();
             });

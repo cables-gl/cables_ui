@@ -1418,26 +1418,15 @@ export default class PatchView extends Events
         this.deleteSelectedOps();
     }
 
-    clipboardCopyOps(e)
+    serializeOps(selectedOps, options = { })
     {
         function arrayContains(arr, obj)
         {
             return arr.indexOf(obj) > -1;
         }
 
-        let selectedOps = this.getSelectedOps();
         const ops = [];
         const opIds = [];
-
-        for (const i in selectedOps)
-        {
-            if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
-            {
-                this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
-            }
-        }
-
-        selectedOps = this.getSelectedOps();
 
         for (const i in selectedOps)
         {
@@ -1470,7 +1459,9 @@ export default class PatchView extends Events
             if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
 
             // remove links that are not fully copied...
+
             if (ops[i].portsIn)
+            {
                 for (let j = 0; j < ops[i].portsIn.length; j++)
                 {
                     delete ops[i].portsIn[j].expose;
@@ -1493,9 +1484,11 @@ export default class PatchView extends Events
                                 }
                             }
                         }
-                        numLinks += ops[i].portsIn[j].links.length;
+                        // numLinks += ops[i].portsIn[j].links.length;
                     }
                 }
+            }
+
 
             if (ops[i].portsOut) for (let j = 0; j < ops[i].portsOut.length; j++)
             {
@@ -1519,19 +1512,36 @@ export default class PatchView extends Events
                             }
                         }
                     }
-                    numLinks += ops[i].portsOut[j].links.length;
+                    // numLinks += ops[i].portsOut[j].links.length;
                 }
             }
         }
 
+        return { "ops": ops };
+    }
 
 
+    clipboardCopyOps(e)
+    {
+        let selectedOps = this.getSelectedOps();
 
+        for (const i in selectedOps)
+        {
+            if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
+            {
+                this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
+            }
+        }
+
+        selectedOps = this.getSelectedOps();
+
+        const ser = this.serializeOps(selectedOps);
+        const ops = ser.ops;
 
         const objStr = JSON.stringify({
             "ops": ops
         });
-        notify("Copied " + ops.length + " ops / " + numLinks + " Links");
+        notify("Copied " + ops.length + " ops");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();

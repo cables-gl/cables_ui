@@ -525,7 +525,7 @@ export default class ScState extends Events
             }
         });
 
-        gui.on("opReloaded", (opName) =>
+        gui.corePatch().on("opReloaded", (opName) =>
         {
             if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client && this._connection.client.isPilot)

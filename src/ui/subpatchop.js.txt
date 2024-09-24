@@ -7,6 +7,8 @@ initializeSubpatch();
 
 function initializeSubpatch()
 {
+    if(!attachments || !attachments.subpatch_json) return;
+
     const p = JSON.parse(attachments.subpatch_json);
 
     CABLES.Patch.replaceOpIds(p,
