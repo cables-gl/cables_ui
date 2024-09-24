@@ -314,7 +314,7 @@ export default class LogTab extends Events
             {
                 if (err)
                 {
-                    console.error("error fetching logline", err, _data, xhr);
+                    console.error("error fetching logline", url, err, _data, xhr);
                     return;
                 }
 
