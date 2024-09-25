@@ -42,6 +42,12 @@ export default class CanvasManager
         return this._canvasMode;
     }
 
+
+    currentContext()
+    {
+        return this._contexts[this._curContextIdx];
+    }
+
     currentCanvas()
     {
         if (!this._contexts[this._curContextIdx]) return null;
@@ -50,8 +56,7 @@ export default class CanvasManager
 
     addContext(c)
     {
-        for (let i = 0; i < this._contexts.length; i++)
-            if (this._contexts[i] == c) return;
+        for (let i = 0; i < this._contexts.length; i++) if (this._contexts[i] == c) return;
 
         if (!c.canvasUi) c.canvasUi = new CABLES.UI.CanvasUi(c);
 
@@ -175,21 +180,7 @@ export default class CanvasManager
 
         gui.corePatch().emitEvent("windowChanged", this.subWindow);
 
-        // const img = nDocument.createElement("img");
-        // img.setAttribute("src", "http://localhost:5711/assets/6528ff86a3da3169c9cfef49/production_0_side.jpg?rnd629ea44b-fff0-4f1d-885c-db95d63aae30/production_0_side.jpg?rnd=629ea44b-fff0-4f1d-885c-db95d63aae30");
-        // img.onload = () => { console.log("load"); };
-        // body.appendChild(img);
-        // console.log("huhu");
 
-        // const style = nDocument.createElement("link");
-        // style.setAttribute("href", "/ui/css/style-dark.css");
-        // style.setAttribute("rel", "stylesheet");
-        // style.setAttribute("type", "text/css");
-        // style.setAttribute("media", "all");
-
-        // style.onload = () => { console.log("load"); };
-
-        // nDocument.head.appendChild(style);
 
         const style = document.createElement("style");
         style.innerHTML = "body{padding:0;margin:0;background-color:black;overflow:hidden;color:#aaa;font-family:arial;}" +

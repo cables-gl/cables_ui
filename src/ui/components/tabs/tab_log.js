@@ -197,17 +197,21 @@ export default class LogTab extends Events
                                 if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
                                     this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
 
-                                const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
-                                if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
-                                stackHtml += "  <td>";
+                                errorStack[k].fileName = errorStack[k].fileName || null;
 
+                                if (errorStack[k].fileName)
+                                {
+                                    const shortFilename = errorStack[k].fileName.replaceAll("https://", "");
+                                    if (errorStack[k].functionName)stackHtml += "  <td>" + errorStack[k].functionName + "</td>";
+                                    stackHtml += "  <td>";
 
-                                if (errorStack[k].fileName.indexOf("https://") == 0 || errorStack[k].fileName.indexOf("http://") == 0 || errorStack[k].fileName.indexOf("file://") == 0 || errorStack[k].fileName.indexOf("cables://") == 0)
-                                    stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
-                                else stackHtml += errorStack[k].fileName + ":" + errorStack[k].lineNumber + "";
+                                    if (errorStack[k].fileName.indexOf("https://") == 0 || errorStack[k].fileName.indexOf("http://") == 0 || errorStack[k].fileName.indexOf("file://") == 0 || errorStack[k].fileName.indexOf("cables://") == 0)
+                                        stackHtml += "  <a onclick=\"new CABLES.UI.ModalSourceCode({url:'" + errorStack[k].fileName + "',line:" + errorStack[k].lineNumber + "});\">";
+                                    else stackHtml += errorStack[k].fileName + ":" + errorStack[k].lineNumber + "";
 
-                                stackHtml += shortFilename;
-                                stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
+                                    stackHtml += shortFilename;
+                                    stackHtml += "@" + errorStack[k].lineNumber + ":" + errorStack[k].columnNumber + "</a></td>";
+                                }
                                 stackHtml += "</tr>";
                             }
                             stackHtml += "</table>";
@@ -301,6 +305,7 @@ export default class LogTab extends Events
 
     _logErrorSrcCodeLine(l, url, line)
     {
+        if (!url) return;
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 
@@ -313,7 +318,7 @@ export default class LogTab extends Events
             {
                 if (err)
                 {
-                    console.error("error fetching logline", err, _data, xhr);
+                    console.error("error fetching logline2", url, err, _data, xhr);
                     return;
                 }
 
@@ -322,6 +327,7 @@ export default class LogTab extends Events
                     let lines = _data.match(/^.*((\r\n|\n|\r)|$)/gm);
 
                     let lStr = lines[line];
+                    if (!lStr) return;
                     const maxLength = 150;
                     if (lStr.length > maxLength) lStr = lStr.substring(0, maxLength) + "...";
 
@@ -351,7 +357,7 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    console.log("could not parse lines.", e);
+                    console.log("could not parse lines.", e, url);
                 }
             },
             "GET",
