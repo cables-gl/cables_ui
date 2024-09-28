@@ -31,12 +31,12 @@ export default class GlViewBox
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
+        this.wheelMode = userSettings.get("patch_wheelmode");
         // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = GlUiConfig.zoomDefault;
         this._spaceDown = false;
-        this._touchpadMode = false;
         this._outOfBounds = false;
 
         this._defaultEasing = CABLES.EASING_EXPO_OUT;
@@ -62,14 +62,10 @@ export default class GlViewBox
 
         // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
-        // userSettings.on("change", (which, v) =>
-        // {
-        //     if (which == "glpatch_showboundings")
-        //     {
-        //         this._drawBoundingRect = v;
-        //         // // if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
-        //     }
-        // });
+        userSettings.on("change", (which, v) =>
+        {
+            this.wheelMode = userSettings.get("patch_wheelmode");
+        });
     }
 
     setSize(w, h)
@@ -199,28 +195,25 @@ export default class GlViewBox
 
         let delta = 5;
 
-        // auto detect - it's crap
-        // if (!this._touchpadMode)
-        //     if (event.deltaX && event.deltaX > 1)
-        //     {
-        //         this._touchpadMode = true;
-        //         console.log("touchpad mode!");
-        //     }
-
         if (event.deltaY < 0)delta *= -1;
 
-        if (!this._touchpadMode)
+        let mode = this.wheelMode;
+        if (Math.abs(event.deltaX) > 0 && this.wheelMode == "auto") this.wheelMode = "pan";
+
+        if (this.wheelMode == "pan")
+        {
+            let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
+
+            this.scrollTo(
+                this._scrollX - event.deltaX * speed,
+                this._scrollY - event.deltaY * speed);
+        }
+        else
         {
             if (event.altKey) this._scrollY -= delta;
             else if (event.shiftKey) this.scrollTo(this._scrollX - delta, this._scrollY);
 
             this.wheelZoom(delta);
-        }
-        else
-        {
-            this.scrollTo(
-                this._scrollX - event.deltaX * 4.0,
-                this._scrollY - event.deltaY * 4.0);
         }
 
 

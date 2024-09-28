@@ -106,7 +106,8 @@ export default class Preferences
         this.setInputValue("authorName", userSettings.get("authorName") || "");
 
 
-        // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
+        this.setSwitchValue("patch_wheelmode", userSettings.get("patch_wheelmode") || "zoom");
+        this.setInputValue("patch_panspeed", userSettings.get("patch_panspeed") || 0.25);
     }
 
     show()

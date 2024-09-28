@@ -206,7 +206,8 @@ export default class VizLayer extends Events
                     "height": size[1],
                     "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6,
                     "useGl": this._usingGl,
-                    "vizLayer": this
+                    "vizLayer": this,
+                    "pixelDensity": window.devicePixelRatio
                 };
 
 

@@ -35,6 +35,7 @@ class UserSettings extends Events
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("overlaysShow") === null) this.set("overlaysShow", true);
+        if (this.get("patch_wheelmode") == null) this.set("zoom", true);
 
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
     }

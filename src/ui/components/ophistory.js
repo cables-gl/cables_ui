@@ -12,7 +12,7 @@ export default class OpHistory extends Events
     push(opid)
     {
         if (this._history[this._position] == opid) return;
-        if (this._position != this._history.length - 1) this._history.length = this._position;
+        if (this._position != this._history.length - 1 && this._position > 0) this._history.length = this._position;
 
         this._history.push(opid);
         this._position = this._history.length - 1;

@@ -198,8 +198,7 @@ const text =
         "title_bgpattern": "Background Pattern",
         "subtitle_bgpattern": "Background Pattern for transparent canvas/textures.",
 
-        "title_wheelmultiplier": "Wheel Speed",
-        "subtitle_wheelmultiplier": "Mouse/Touchpad scrollwheel speed higher number - faster zooming, default is 1",
+        "subtitle_wheelmultiplier": "Mouse scrollwheel speed",
 
         "title_quickLinkLongPress": "Long Press Quick Link",
         "subtitle_quickLinkLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
@@ -226,14 +225,16 @@ const text =
 
         "subtitle_formatcode": "Format code after saving",
 
-
         "subtitle_notlocalizeNumberformat": "Localize output port number format",
 
         "title_openlastproject": "Open the last saved patch on start",
         "subtitle_openlastproject": "",
 
         "title_authorName": "Author name for created ops",
-        "subtitle_authorName": ""
+        "subtitle_authorName": "",
+
+        "subtitle_wheelmode": "How scrolling events are interpreted:<br/>- Zoom: mousewheel<br/>- pan: for tablets and touchpads",
+        "subtitle_panspeed": "Pan speed",
 
     },
     "tips":

@@ -226,16 +226,6 @@
     <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Input</h2></div></div>
 
 
-    <div class="row">
-        <div class="cute-5-phone prefLeft">
-            <input class="numberinput valinput" data-setting="wheelmultiplier" value="1"/>
-        </div>
-        <div class="cute-7-phone prefRight">
-            <h3>{{texts.title_wheelmultiplier}}</h3>
-            {{texts.subtitle_wheelmultiplier}}
-
-        </div>
-    </div>
 
     <div class="row">
         <div class="cute-5-phone prefLeft">
@@ -279,6 +269,40 @@
         </div>
         <div class="cute-5-phone left">
             {{texts.subtitle_allow_cable_drag}}
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
+            <span class="prefswitch switch switch-text switch-left" data-setting="patch_wheelmode" data-value="zoom">Zoom</span>
+            <span class="prefswitch switch switch-text switch-middle" data-setting="patch_wheelmode" data-value="pan">Pan</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="patch_wheelmode" data-value="auto">Auto</span>
+        </div>
+        <div class="cute-5-phone left prefRight">
+            <h3>Scroll Method</h3>
+            {{{texts.subtitle_wheelmode}}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
+            <input class="numberinput valinput" data-setting="wheelmultiplier" value="1"/>
+        </div>
+        <div class="cute-7-phone prefRight">
+            {{texts.subtitle_wheelmultiplier}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
+            <input class="numberinput valinput" data-setting="patch_panspeed" value="0.25"/>
+        </div>
+        <div class="cute-7-phone prefRight">
+            {{texts.subtitle_panspeed}}
         </div>
     </div>
 
