@@ -228,7 +228,7 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
         {
-            notify(options.msg);
+            notify(options.msg, options.text, options.options);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("notifyError", (options, next) =>
@@ -293,7 +293,7 @@ export default class Platform extends Events
                             {
                                 if (rslt && rslt.hasOwnProperty("code"))
                                 {
-                                    editorTab.editor.setContent(rslt.code, options.forceReload);
+                                    if (editorTab && editorTab.editor) editorTab.editor.setContent(rslt.code, options.forceReload);
                                 }
                             });
                     }

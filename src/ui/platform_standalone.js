@@ -23,6 +23,7 @@ export default class PlatformStandalone extends Platform
 
         this.frontendOptions.isStandalone =
         this.frontendOptions.openLocalFiles =
+        this.frontendOptions.selectableDownloadPath =
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
         this.frontendOptions.showLocalOpDirButton =
