@@ -1277,6 +1277,34 @@ export default class ServerOps
         });
     }
 
+    deleteDialog(opName)
+    {
+        if (!CABLES.platform.frontendOptions.opDeleteInEditor) return;
+
+        if (gui.showGuestWarning()) return;
+
+        const modal = new ModalDialog({ "title": "Really delete op?", "text": "Delete " + opName + "?", "choice": true });
+        modal.on("onSubmit", () =>
+        {
+            CABLESUILOADER.talkerAPI.send("opDelete", { "opName": opName }, (err, res) =>
+            {
+                if (err)
+                {
+                    new ModalDialog({ "title": "Failed to delete op", "text": e.message });
+                }
+                else
+                {
+                    const patch = gui.corePatch();
+                    const ops = patch.getOpsByObjName(opName);
+                    ops.forEach((op) =>
+                    {
+                        patch.deleteOp(op.id, true);
+                    });
+                }
+            });
+        });
+    }
+
     _afterOpRename(newOp)
     {
         this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);

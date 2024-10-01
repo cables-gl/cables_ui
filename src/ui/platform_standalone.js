@@ -37,6 +37,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showExport =
         this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
+        this.frontendOptions.opDeleteInEditor =
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
 

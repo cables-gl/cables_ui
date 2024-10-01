@@ -32,6 +32,10 @@
             <a class="button-small" target="_blank" onclick="CABLES.CMD.PATCH.renameOp('{{opname}}')">Rename Op</a>
         {{/if}}
 
+        {{#if canDeleteOp}}
+            <a class="button-small button-delete" target="_blank" onclick="CABLES.CMD.PATCH.deleteOp('{{opname}}')">Delete Op</a>
+        {{/if}}
+
         {{#if frontendOptions.showLocalOpDirButton}}
             <a class="button-small button-icon tt info" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
         {{/if}}
