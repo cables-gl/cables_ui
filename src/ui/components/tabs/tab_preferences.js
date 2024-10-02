@@ -105,6 +105,27 @@ export default class Preferences
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
         this.setInputValue("authorName", userSettings.get("authorName") || "");
 
+        if (CABLES.platform.frontendOptions.selectableDownloadPath)
+        {
+            const currentValue = userSettings.get("downloadPath") || "";
+            this.setInputValue("downloadPath", currentValue);
+            const pathSelectEle = ele.byId("usersetting_downloadPath");
+            if (pathSelectEle)
+            {
+                const valueEle = pathSelectEle.querySelector(".value");
+                if (valueEle) valueEle.innerText = currentValue;
+                pathSelectEle.addEventListener("click", () =>
+                {
+                    CABLESUILOADER.talkerAPI.send("selectDir", { "dir": currentValue }, (err, dirName) =>
+                    {
+                        if (!err)
+                        {
+                            userSettings.set("downloadPath", dirName);
+                        }
+                    });
+                });
+            }
+        }
 
         this.setSwitchValue("patch_wheelmode", userSettings.get("patch_wheelmode") || "zoom");
         this.setInputValue("patch_panspeed", userSettings.get("patch_panspeed") || 0.25);

@@ -233,6 +233,9 @@ const text =
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",
 
+        "title_downloadPath": "Custom download folder",
+        "subtitle_downloadPath": "",
+
         "subtitle_wheelmode": "How scrolling events are interpreted:<br/>- Zoom: mousewheel<br/>- pan: for tablets and touchpads",
         "subtitle_panspeed": "Pan speed",
 

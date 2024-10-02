@@ -23,6 +23,7 @@ export default class PlatformStandalone extends Platform
 
         this.frontendOptions.isStandalone =
         this.frontendOptions.openLocalFiles =
+        this.frontendOptions.selectableDownloadPath =
         this.frontendOptions.dragDropLocalFiles =
         this.frontendOptions.showLocalAssetDirOpen =
         this.frontendOptions.showLocalOpDirButton =
@@ -36,6 +37,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showExport =
         this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
+        this.frontendOptions.opDeleteInEditor =
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
 

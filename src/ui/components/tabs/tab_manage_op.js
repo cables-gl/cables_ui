@@ -178,6 +178,7 @@ export default class ManageOp
                             "portJson": portJson,
                             "summary": summary,
                             "canEditOp": canEditOp,
+                            "canDeleteOp": CABLES.platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
                             "readOnly": !canEditOp,
                             "libs": libs,
                             "coreLibs": gui.opDocs.coreLibs,

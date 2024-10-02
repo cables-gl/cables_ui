@@ -1490,6 +1490,22 @@ CABLES_CMD_PATCH.renameOp = (opName = null) =>
     }
 };
 
+CABLES_CMD_PATCH.deleteOp = (opName = null) =>
+{
+    if (!opName)
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (!ops.length) return;
+        const op = gui.patchView.getSelectedOps()[0];
+        opName = op.objName;
+    }
+
+    if (CABLES.platform.frontendOptions.opDeleteInEditor)
+    {
+        gui.serverOps.deleteDialog(opName);
+    }
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Select all ops",
