@@ -31,6 +31,7 @@ export default class GlViewBox
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
+        this._panStarted = 0;
         this.wheelMode = userSettings.get("patch_wheelmode");
         // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
@@ -197,10 +198,21 @@ export default class GlViewBox
 
         if (event.deltaY < 0)delta *= -1;
 
-        let mode = this.wheelMode;
-        if (Math.abs(event.deltaX) > 0 && this.wheelMode == "auto") this.wheelMode = "pan";
 
-        if (this.wheelMode == "pan")
+        let doPan = this.wheelMode == "pan";
+        let doZoom = this.wheelMode == "zoom";
+
+        if (this.wheelMode == "auto")
+        {
+            if (performance.now() - this._panStarted < 500 || Math.abs(event.deltaX) > 0)
+            {
+                this._panStarted = performance.now();
+                doPan = true;
+            }
+            else doZoom = true;
+        }
+
+        if (doPan)
         {
             let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
 
@@ -208,7 +220,8 @@ export default class GlViewBox
                 this._scrollX - event.deltaX * speed,
                 this._scrollY - event.deltaY * speed);
         }
-        else
+
+        if (doZoom)
         {
             if (event.altKey) this._scrollY -= delta;
             else if (event.shiftKey) this.scrollTo(this._scrollX - delta, this._scrollY);
@@ -535,5 +548,23 @@ export default class GlViewBox
         let z = this._zoom + 200 * s;
         z = Math.max(50, z);
         this.animateZoom(z);
+    }
+
+    keyScrollX(d)
+    {
+        this.animateScrollTo(
+            this._scrollX + d * 100,
+            this._scrollY,
+            0.15,
+            true);
+    }
+
+    keyScrollY(d)
+    {
+        this.animateScrollTo(
+            this._scrollX,
+            this._scrollY + d * 100,
+            0.15,
+            true);
     }
 }

@@ -1613,7 +1613,7 @@ export default class Gui extends Events
             }
         });
 
-        this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });
+        this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "cmdCtrl": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });
 
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
@@ -1823,19 +1823,15 @@ export default class Gui extends Events
 
     showUiElements()
     {
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;>>>&nbsp;&nbsp;___:_&nbsp;_");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;_:_______________&nbsp;_____________&nbsp;/&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;_&nbsp;_______");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|\\\\.&nbsp;&nbsp;_)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;_____&nbsp;|&nbsp;(/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/\\\\\\(_______&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;__/\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;&nbsp;&nbsp;&nbsp;");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;_/\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\\\/_\\\\\\\\&nbsp;_/&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\|/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_\\\\\\/___&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\&nbsp;");
-        this._log.logGui("&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/_\\\\|_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\(&nbsp;&nbsp;&nbsp;&nbsp;/\\&nbsp;\\&nbsp;&nbsp;&nbsp;/_&nbsp;&nbsp;&nbsp;&nbsp;_:\\\\/__&nbsp;/\\_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\&nbsp;&nbsp;&nbsp;_/_\\\\/___");
-        this._log.logGui("_/&nbsp;&nbsp;&nbsp;/(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;|_\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\__&nbsp;&nbsp;/_\\\\_)&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\");
-        this._log.logGui("\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_\\&nbsp;&nbsp;&nbsp;\\___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\");
-        this._log.logGui("&nbsp;\\_________(&nbsp;&nbsp;&nbsp;&nbsp;_|\\\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\_&nbsp;___________/&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;/_________/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\\\\\\/");
-        this._log.logGui("&nbsp;&nbsp;\\\\\\\\\\\\\\\\|_____)\\\\\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(/)&nbsp;&nbsp;/\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\\\/");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______:\\\\.\\/______________/\\\\\\\\\\\\\\\\\\_________________(\\\\&nbsp;");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dip\\\\\\\\\\\\\\)&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\|&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\|&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\(&nbsp;");
+        this._log.logGui("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________&nbsp;&nbsp;___________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______");
+        this._log.logGui("._(//&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;___)\\_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/(_\\___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/(___&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/");
+        this._log.logGui("|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/___)\\&nbsp;_&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/______)/&nbsp;&nbsp;&nbsp;&nbsp;_/(___&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/(_____..___&nbsp;");
+        this._log.logGui("|_&nbsp;&nbsp;&nbsp;&nbsp;\\/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_/&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;_//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;_)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;____&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;//");
+        this._log.logGui("&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/_\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;\\(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;_/&nbsp;&nbsp;&nbsp;_&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_||_/&nbsp;&nbsp;");
+        this._log.logGui("/___________)__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__________\\____________\\______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\/________)diP");
+        this._log.logGui("-&nbsp;------------/________/------------------------------\\_______\\-------------&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;");
+
+
         this._log.logGui("");
 
 

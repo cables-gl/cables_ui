@@ -204,6 +204,43 @@ export default class GlPatch extends Events
 
         gui.on("themeChanged", this.updateTheme.bind(this));
 
+        gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        {
+            this.viewBox.keyScrollX(-1);
+        });
+        gui.keys.key("ArrowRight", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        {
+            this.viewBox.keyScrollX(1);
+        });
+        gui.keys.key("ArrowUp", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        {
+            this.viewBox.keyScrollY(-1);
+        });
+        gui.keys.key("ArrowDown", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        {
+            this.viewBox.keyScrollY(1);
+        });
+
+
+
+        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, {}, () =>
+        {
+            gui.patchView.cursorNavOps(0, -1);
+        });
+        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, {}, () =>
+        {
+            gui.patchView.cursorNavOps(0, 1);
+        });
+        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, {}, () =>
+        {
+            gui.patchView.cursorNavOps(-1, 0);
+        });
+        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, {}, () =>
+        {
+            gui.patchView.cursorNavOps(1, 0);
+        });
+
+
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
@@ -848,6 +885,13 @@ export default class GlPatch extends Events
     {
         gui.opParams.show(opid);
         this.focusOpAnim(opid);
+    }
+
+    cursorNavOps(x, y)
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length == 0) return;
+        console.log(ops[0]);
     }
 
     addOp(op, fromDeserialize)

@@ -526,10 +526,10 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     });
 };
 
-CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
-{
-    gui.patchView.createSubPatchFromSelection(version);
-};
+// CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
+// {
+//     gui.patchView.createSubPatchFromSelection(version);
+// };
 
 CABLES_CMD_PATCH.findCommentedOps = function ()
 {
@@ -1567,12 +1567,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "op",
         "func": CABLES_CMD_PATCH.clearOpTitles
     },
-    {
-        "cmd": "Create subpatch",
-        "category": "patch",
-        "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
-        "icon": "subpatch"
-    },
+    // {
+    //     "cmd": "Create subpatch",
+    //     "category": "patch",
+    //     "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
+    //     "icon": "subpatch"
+    // },
     {
         "cmd": "Export static html",
         "category": "patch",
@@ -1796,12 +1796,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Create subpatch op",
         "func": CABLES_CMD_PATCH.createSubPatchOp,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "Delete unused patch ops",
-        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
