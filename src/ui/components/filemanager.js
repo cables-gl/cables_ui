@@ -546,7 +546,7 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                gui.fileManagerEditor.editAssetTextFile(r.fileDb.fileName, r.fileDb.type);
+                                gui.fileManagerEditor.editAssetTextFile(r.path || r.fileDb.fileName, r.fileDb.type);
                             });
                     }
 
