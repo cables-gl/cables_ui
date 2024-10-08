@@ -17,6 +17,7 @@ export default class VizLayer extends Events
 
         this._log = new Logger("VizLayer");
 
+        this.renderMs = null;
         this._usingGl = false;
         this._items = [];
         this._itemsLookup = {};
@@ -121,6 +122,8 @@ export default class VizLayer extends Events
             return;
         }
 
+
+
         if (gl) this.lastGlRendering = performance.now();
 
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
@@ -224,6 +227,8 @@ export default class VizLayer extends Events
             item.oldPos = [pos[0], pos[1], size[0], size[1]];
 
             this._canvasCtx.restore();
+            this.renderMs = performance.now() - this.lastGlRendering;
+
             count++;
         }
 

@@ -803,6 +803,96 @@ export default class PatchView extends Events
         return this.getOpBounds(ops, { "minWidth": minWidth });
     }
 
+    getDistScore(primAxis, secAxis, primAxisB, secAxisB)
+    {
+        let score = 0;
+
+        if (primAxis != primAxisB)
+            score = Math.abs(primAxis - primAxisB);
+
+
+        if (secAxis != secAxisB)
+            score += (Math.abs(secAxis - secAxisB)) * 2;
+
+        return score;
+    }
+
+    cursorNavOps(x, y)
+    {
+        const ops = this.getSelectedOps();
+        if (ops.length == 0) return;
+
+        const curOp = ops[0];
+        const cursub = this.getCurrentSubPatch();
+
+        let foundOp = null;
+        let foundOpScore = 9999999;
+
+        // console.log("------------");
+        // console.log("from op", curOp.name);
+        for (let i = 0; i < this._p.ops.length; i++)
+        {
+            const op = this._p.ops[i];
+            if (op.getSubPatch() == cursub)
+            {
+                // console.log("yay");
+
+
+                if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
+                {
+                    const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
+                    // console.log("  score", op.name, score);
+                    if (score < foundOpScore)
+                    {
+                        foundOp = op;
+                        foundOpScore = score;
+                    }
+                }
+                else
+                if (y == -1 && op.uiAttribs.translate.y < curOp.uiAttribs.translate.y)
+                {
+                    const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
+                    // console.log("  score", op.name, score);
+                    if (score < foundOpScore)
+                    {
+                        foundOp = op;
+                        foundOpScore = score;
+                    }
+                }
+                else
+                if (x == 1 && op.uiAttribs.translate.x > curOp.uiAttribs.translate.x)
+                {
+                    const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+                    // console.log("  score", op.name, score);
+                    if (score < foundOpScore)
+                    {
+                        foundOp = op;
+                        foundOpScore = score;
+                    }
+                }
+                else
+                if (x == -1 && op.uiAttribs.translate.x < curOp.uiAttribs.translate.x)
+                {
+                    const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+                    // console.log("  score", op.name, score);
+                    if (score < foundOpScore)
+                    {
+                        foundOp = op;
+                        foundOpScore = score;
+                    }
+                }
+            }
+        }
+
+
+        if (foundOp)
+        {
+            this.setSelectedOpById(foundOp.id);
+            this.focusOp(foundOp.id);
+            // this.centerSelectOp(foundOp.id);
+        }
+    }
+
     getSelectedOpsIds()
     {
         const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOpsIds");
