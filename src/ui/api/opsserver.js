@@ -481,8 +481,6 @@ export default class ServerOps
                         {
                             this._log.log("lib removed!", opName, libName);
                             gui.emitEvent("refreshManageOp", opName);
-
-                            gui.metaTabs.activateTabByName("code");
                             if (next) next();
                         }, true);
                     }
@@ -526,7 +524,6 @@ export default class ServerOps
                         this._log.log("corelib added!", opName, libName);
 
                         gui.emitEvent("refreshManageOp", opName);
-                        // gui.metaTabs.activateTabByName("code");
                         if (next)next();
                     }, true);
                 }
@@ -558,7 +555,6 @@ export default class ServerOps
                             this._log.log("corelib removed!", opName, libName);
                             gui.emitEvent("refreshManageOp", opName);
 
-                            gui.metaTabs.activateTabByName("code");
                             if (next) next();
                         }, true);
                     }
@@ -641,7 +637,6 @@ export default class ServerOps
                             this._log.log("op-dependency removed!", opName, depName);
                             gui.emitEvent("refreshManageOp", opName);
 
-                            gui.metaTabs.activateTabByName("code");
                             if (next) next();
                         }, true);
                     }
@@ -675,10 +670,6 @@ export default class ServerOps
                     if (err)
                     {
                         CABLES.UI.MODAL.showError("ERROR", "unable to remove attachment: " + err.msg);
-                    }
-                    else
-                    {
-                        gui.metaTabs.activateTabByName("code");
                     }
                 },
             );
@@ -715,7 +706,6 @@ export default class ServerOps
                         }
 
                         this.editAttachment(opname, "att_" + attName);
-                        gui.metaTabs.activateTabByName("code");
                         gui.emitEvent("refreshManageOp", opname);
                     },
                 );
