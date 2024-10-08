@@ -30,13 +30,13 @@ class UserSettings extends Events
 
     init()
     {
+        if (!this.get("patch_wheelmode")) this.set("patch_wheelmode", "zoom");
+
         if (this.get("glflowmode") === null) this.set("glflowmode", 2);
         if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("overlaysShow") === null) this.set("overlaysShow", true);
-        if (this.get("patch_wheelmode") == null) this.set("patch_wheelmode", "zoom");
-
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
     }
 
