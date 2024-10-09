@@ -837,7 +837,6 @@ export default class PatchView extends Events
             {
                 // console.log("yay");
 
-
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
@@ -889,7 +888,6 @@ export default class PatchView extends Events
         {
             this.setSelectedOpById(foundOp.id);
             this.focusOp(foundOp.id);
-            // this.centerSelectOp(foundOp.id);
         }
     }
 
