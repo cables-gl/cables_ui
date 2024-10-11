@@ -793,7 +793,6 @@ export default class PatchView extends Events
         }
 
         bb.calcCenterSize();
-        // this.patchRenderer.subPatchOpAnimStart(bb, null);
         return bb;
     }
 
@@ -817,26 +816,48 @@ export default class PatchView extends Events
         return score;
     }
 
+
+    getClosestOp()
+    {
+        let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
+        let minDist = 999999;
+        let foundOp = null;
+        const cursub = this.getCurrentSubPatch();
+
+        for (let i = 0; i < this._p.ops.length; i++)
+        {
+            if (this._p.ops[i].getSubPatch() == cursub)
+            {
+                const a = this.getDistScore(this._p.ops[i].uiAttribs.translate.x, this._p.ops[i].uiAttribs.translate.y, coordArr[0], coordArr[1]);
+
+                if (a < minDist)
+                {
+                    minDist = a;
+                    foundOp = this._p.ops[i];
+                }
+            }
+        }
+
+        return foundOp;
+    }
+
     cursorNavOps(x, y)
     {
         const ops = this.getSelectedOps();
-        if (ops.length == 0) return;
+        let curOp;
+        if (ops.length == 0) curOp = this.getClosestOp();
+        else curOp = ops[0];
 
-        const curOp = ops[0];
         const cursub = this.getCurrentSubPatch();
 
         let foundOp = null;
         let foundOpScore = 9999999;
 
-        // console.log("------------");
-        // console.log("from op", curOp.name);
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const op = this._p.ops[i];
             if (op.getSubPatch() == cursub)
             {
-                // console.log("yay");
-
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
