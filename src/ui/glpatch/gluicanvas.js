@@ -94,7 +94,7 @@ export default class GlUiCanvas
             this.patch.resume();
         });
 
-        this.canvas.addEventListener("touch",
+        this.canvas.addEventListener("touchmove",
             (e) =>
             {
                 if (e.touches.length > 1) e.preventDefault();
