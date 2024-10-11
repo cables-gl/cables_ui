@@ -35,13 +35,8 @@ export default class EditorTab
 
         this._tab.on("onActivate", () =>
         {
-            setTimeout(() => { this._editor.focus(); }, 30);
-
-            if (this._editor) this._editor.focus();
-            if (this._editor)console.log("yes");
+            setTimeout(() => { if (this._editor) this._editor.focus(); }, 30);
         });
-
-
 
         this._tab.on("resize", () =>
         {

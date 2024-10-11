@@ -132,9 +132,14 @@ export default class GlUiCanvas
         }, { "passive": true });
 
 
+
+        // this is for disabling touchpad "pinch with two fingers" on macs, which would zoom in html
+        this.canvas.addEventListener("wheel", (event) => { if (event.ctrlKey) event.preventDefault(); }, { "passive": false });
+
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
+
             // event.preventDefault();
             // const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
 
