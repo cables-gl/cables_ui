@@ -94,6 +94,12 @@ export default class GlUiCanvas
             this.patch.resume();
         });
 
+        this.canvas.addEventListener("touch",
+            (e) =>
+            {
+                if (e.touches.length > 1) e.preventDefault();
+            });
+
         this.canvas.addEventListener("pointermove", (e) =>
         {
             this.activityHigh();
