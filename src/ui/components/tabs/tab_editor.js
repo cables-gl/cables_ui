@@ -35,6 +35,7 @@ export default class EditorTab
 
         this._tab.on("resize", () =>
         {
+            if (this._tab) this._tab.updateSize();
             if (this._editor) this._editor.resize();
         });
 
@@ -111,11 +112,8 @@ export default class EditorTab
                     {
                         const items = [];
 
-
-
                         items.push({
                             "title": opdoc.name + ".js",
-                            // "iconClass": "icon icon-file",
                             "func": () =>
                             {
                                 gui.serverOps.edit(opdoc.name, false, null, true);
@@ -129,7 +127,6 @@ export default class EditorTab
                             const fn = opdoc.attachmentFiles[i];
                             items.push({
                                 "title": opdoc.attachmentFiles[i],
-                                // "iconClass": "icon icon-file",
                                 "func": () =>
                                 {
                                     gui.serverOps.editAttachment(opname, fn);
@@ -137,20 +134,13 @@ export default class EditorTab
                             });
                         }
 
-                        CABLES.contextMenu.show(
-                            {
-                                "items": items
-                            }, el);
+                        CABLES.contextMenu.show({ "items": items }, el);
                     });
                 }
             }
 
             this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
-
             this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
-
-
-
 
             this._editor.resize();
 
@@ -200,6 +190,8 @@ export default class EditorTab
             setTimeout(() =>
             {
                 this._editor.focus();
+                this._tab.updateSize();
+                this._editor.resize(true);
                 if (options.onFinished)options.onFinished();
             }, 100);
         });

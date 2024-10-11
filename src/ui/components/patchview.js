@@ -2488,44 +2488,52 @@ export default class PatchView extends Events
             this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
             {
                 const origOp = this._p.getOpById(opid);
-                const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
-                const theUiAttribs = {};
-                for (const i in oldUiAttribs)
+                if (origOp)
                 {
-                    if (i == "uierrors") continue;
-                    theUiAttribs[i] = oldUiAttribs[i];
-                }
+                    const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
-                newOp.setUiAttrib(theUiAttribs);
-                this.copyOpInputPorts(origOp, newOp);
-
-                for (let i = 0; i < origOp.portsIn.length; i++)
-                {
-                    for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                    const theUiAttribs = {};
+                    for (const i in oldUiAttribs)
                     {
-                        const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                        if (i == "uierrors") continue;
+                        theUiAttribs[i] = oldUiAttribs[i];
                     }
-                }
-
-                for (let i = 0; i < origOp.portsOut.length; i++)
-                {
-                    for (let j = 0; j < origOp.portsOut[i].links.length; j++)
-                    {
-                        const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
-                    }
-                }
-
-                this._p.deleteOp(origOp.id);
-
-                setTimeout(() =>
-                {
                     newOp.setUiAttrib(theUiAttribs);
-                    this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
-                    if (cb) cb();
-                }, 100);
+
+                    this.copyOpInputPorts(origOp, newOp);
+
+                    for (let i = 0; i < origOp.portsIn.length; i++)
+                    {
+                        for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                        {
+                            const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                        }
+                    }
+
+                    for (let i = 0; i < origOp.portsOut.length; i++)
+                    {
+                        for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                        {
+                            const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                        }
+                    }
+
+                    this._p.deleteOp(origOp.id);
+
+                    setTimeout(() =>
+                    {
+                        newOp.setUiAttrib(theUiAttribs);
+                        this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
+                        if (cb) cb();
+                    }, 100);
+                }
+                else
+                {
+                    this._log.error("no origop ?!");
+                }
             } });
         });
     }
