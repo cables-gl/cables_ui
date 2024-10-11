@@ -25,6 +25,7 @@ class GlUiConfig
 
         this.zPosOpUnSelected = -0.5;
         this.zPosOpSelected = -0.6;
+        this.zPosOpUnlinked = 0.1;
 
         this.zPosCableButtonRect = -0.4;
         this.zPosCables = -0.4;

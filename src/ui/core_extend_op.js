@@ -157,6 +157,11 @@ export default function extendCoreOp()
             );
     };
 
+    CABLES.Op.prototype.isLinked = function ()
+    {
+        return this.isLinkedIn() || this.isLinkedOut();
+    };
+
     CABLES.Op.prototype.isLinkedIn = function ()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i] && this.portsIn[i].isLinked()) return true;

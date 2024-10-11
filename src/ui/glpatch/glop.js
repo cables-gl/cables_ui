@@ -244,6 +244,7 @@ export default class GlOp extends Events
 
     getPosZ()
     {
+        if (!this.op.isLinked()) return gluiconfig.zPosOpUnlinked;
         if (this.selected) return gluiconfig.zPosOpSelected;
         return gluiconfig.zPosOpUnSelected;
     }
