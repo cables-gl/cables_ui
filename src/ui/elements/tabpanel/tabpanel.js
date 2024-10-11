@@ -245,6 +245,7 @@ export default class TabPanel extends Events
         }
     }
 
+
     saveCurrentTabUsersettings()
     {
         const activeTab = this.getActiveTab();
@@ -309,6 +310,17 @@ export default class TabPanel extends Events
     getNumTabs()
     {
         return this._tabs.length;
+    }
+
+    cycleActiveTab()
+    {
+        if (this._tabs.length <= 1) return;
+
+        for (let i = 1; i < this._tabs.length; i++)
+            if (this._tabs[i - 1].active)
+                return this.activateTab(this._tabs[i].id);
+
+        return this.activateTab(this._tabs[0].id);
     }
 
     getActiveTab()

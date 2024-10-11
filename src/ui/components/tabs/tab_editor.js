@@ -33,6 +33,16 @@ export default class EditorTab
 
         this._tab.editor = this;
 
+        this._tab.on("onActivate", () =>
+        {
+            setTimeout(() => { this._editor.focus(); }, 30);
+
+            if (this._editor) this._editor.focus();
+            if (this._editor)console.log("yes");
+        });
+
+
+
         this._tab.on("resize", () =>
         {
             if (this._tab) this._tab.updateSize();
@@ -150,11 +160,11 @@ export default class EditorTab
 
             this._editor.on(
                 "change",
-                function (e)
+                (e) =>
                 {
                     gui.mainTabs.setChanged(this._tab.id, true);
                     if (options.onChange) options.onChange();
-                }.bind(this),
+                }
             );
 
             this._editor.getSession().setUseWorker(true);
@@ -179,12 +189,12 @@ export default class EditorTab
             this._tab.addEventListener("close", options.onClose);
             this._tab.addEventListener(
                 "onActivate",
-                function ()
+                () =>
                 {
                     this._editor.resize(true);
                     this._editor.focus();
                     if (this._tab.editorObj && this._tab.editorObj.name)userSettings.set("editortab", this._tab.editorObj.name);
-                }.bind(this),
+                },
             );
 
             setTimeout(() =>
@@ -251,12 +261,10 @@ export default class EditorTab
 
             this._editor.focus();
             setTimeout(
-                function ()
+                () =>
                 {
                     this._editor.focus();
-                }.bind(this),
-                100,
-            );
+                }, 100);
         }
 
         const anns = this._editor.getSession().getAnnotations();

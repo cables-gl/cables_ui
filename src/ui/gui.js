@@ -1557,6 +1557,11 @@ export default class Gui extends Events
     {
         if (gui.isRemoteClient) return;
 
+        this.keys.key("Tab", "cycle tab", "down", null, { "altKey": true, "ignoreInput": false }, (e) =>
+        {
+            gui.maintabPanel.tabs.cycleActiveTab();
+        });
+
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
         {

@@ -111,11 +111,14 @@ export default class KeyBindingsManager extends Events
 
             if (k.key != (e.key + "").toLowerCase() || k.event != "up") continue;
 
-            if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
-
-            if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
+            if (!k.options.ctrlKey)
+            {
+                if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
+                if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
+            }
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
+            if (!k.options.ctrlKey && e.ctrlKey) continue;
 
 
             if (!k.target || k.target == e.target.id)
@@ -152,8 +155,12 @@ export default class KeyBindingsManager extends Events
             const k = this._keys[i];
 
             if (k.key != (e.key + "").toLowerCase() || k.event != "down") continue;
-            if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
-            if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
+
+            if (!k.options.ctrlKey)
+            {
+                if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
+                if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
+            }
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (k.options.altKey && !e.altKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
