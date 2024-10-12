@@ -40,6 +40,11 @@ export default class MainTabPanel extends Events
         });
     }
 
+    get tabs()
+    {
+        return this._tabs;
+    }
+
     init()
     {
         const showMainTabs = userSettings.get("maintabsVisible");

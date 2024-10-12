@@ -793,7 +793,6 @@ export default class PatchView extends Events
         }
 
         bb.calcCenterSize();
-        // this.patchRenderer.subPatchOpAnimStart(bb, null);
         return bb;
     }
 
@@ -817,26 +816,48 @@ export default class PatchView extends Events
         return score;
     }
 
+
+    getClosestOp()
+    {
+        let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
+        let minDist = 999999;
+        let foundOp = null;
+        const cursub = this.getCurrentSubPatch();
+
+        for (let i = 0; i < this._p.ops.length; i++)
+        {
+            if (this._p.ops[i].getSubPatch() == cursub)
+            {
+                const a = this.getDistScore(this._p.ops[i].uiAttribs.translate.x, this._p.ops[i].uiAttribs.translate.y, coordArr[0], coordArr[1]);
+
+                if (a < minDist)
+                {
+                    minDist = a;
+                    foundOp = this._p.ops[i];
+                }
+            }
+        }
+
+        return foundOp;
+    }
+
     cursorNavOps(x, y)
     {
         const ops = this.getSelectedOps();
-        if (ops.length == 0) return;
+        let curOp;
+        if (ops.length == 0) curOp = this.getClosestOp();
+        else curOp = ops[0];
 
-        const curOp = ops[0];
         const cursub = this.getCurrentSubPatch();
 
         let foundOp = null;
         let foundOpScore = 9999999;
 
-        // console.log("------------");
-        // console.log("from op", curOp.name);
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const op = this._p.ops[i];
             if (op.getSubPatch() == cursub)
             {
-                // console.log("yay");
-
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
@@ -2488,44 +2509,52 @@ export default class PatchView extends Events
             this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
             {
                 const origOp = this._p.getOpById(opid);
-                const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
-                const theUiAttribs = {};
-                for (const i in oldUiAttribs)
+                if (origOp)
                 {
-                    if (i == "uierrors") continue;
-                    theUiAttribs[i] = oldUiAttribs[i];
-                }
+                    const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
-                newOp.setUiAttrib(theUiAttribs);
-                this.copyOpInputPorts(origOp, newOp);
-
-                for (let i = 0; i < origOp.portsIn.length; i++)
-                {
-                    for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                    const theUiAttribs = {};
+                    for (const i in oldUiAttribs)
                     {
-                        const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                        if (i == "uierrors") continue;
+                        theUiAttribs[i] = oldUiAttribs[i];
                     }
-                }
-
-                for (let i = 0; i < origOp.portsOut.length; i++)
-                {
-                    for (let j = 0; j < origOp.portsOut[i].links.length; j++)
-                    {
-                        const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
-                    }
-                }
-
-                this._p.deleteOp(origOp.id);
-
-                setTimeout(() =>
-                {
                     newOp.setUiAttrib(theUiAttribs);
-                    this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
-                    if (cb) cb();
-                }, 100);
+
+                    this.copyOpInputPorts(origOp, newOp);
+
+                    for (let i = 0; i < origOp.portsIn.length; i++)
+                    {
+                        for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                        {
+                            const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                        }
+                    }
+
+                    for (let i = 0; i < origOp.portsOut.length; i++)
+                    {
+                        for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                        {
+                            const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                        }
+                    }
+
+                    this._p.deleteOp(origOp.id);
+
+                    setTimeout(() =>
+                    {
+                        newOp.setUiAttrib(theUiAttribs);
+                        this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
+                        if (cb) cb();
+                    }, 100);
+                }
+                else
+                {
+                    this._log.error("no origop ?!");
+                }
             } });
         });
     }

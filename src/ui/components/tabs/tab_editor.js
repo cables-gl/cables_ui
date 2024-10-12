@@ -33,8 +33,14 @@ export default class EditorTab
 
         this._tab.editor = this;
 
+        this._tab.on("onActivate", () =>
+        {
+            setTimeout(() => { if (this._editor) this._editor.focus(); }, 30);
+        });
+
         this._tab.on("resize", () =>
         {
+            if (this._tab) this._tab.updateSize();
             if (this._editor) this._editor.resize();
         });
 
@@ -111,11 +117,8 @@ export default class EditorTab
                     {
                         const items = [];
 
-
-
                         items.push({
                             "title": opdoc.name + ".js",
-                            // "iconClass": "icon icon-file",
                             "func": () =>
                             {
                                 gui.serverOps.edit(opdoc.name, false, null, true);
@@ -129,7 +132,6 @@ export default class EditorTab
                             const fn = opdoc.attachmentFiles[i];
                             items.push({
                                 "title": opdoc.attachmentFiles[i],
-                                // "iconClass": "icon icon-file",
                                 "func": () =>
                                 {
                                     gui.serverOps.editAttachment(opname, fn);
@@ -137,20 +139,13 @@ export default class EditorTab
                             });
                         }
 
-                        CABLES.contextMenu.show(
-                            {
-                                "items": items
-                            }, el);
+                        CABLES.contextMenu.show({ "items": items }, el);
                     });
                 }
             }
 
             this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
-
             this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
-
-
-
 
             this._editor.resize();
 
@@ -160,11 +155,11 @@ export default class EditorTab
 
             this._editor.on(
                 "change",
-                function (e)
+                (e) =>
                 {
                     gui.mainTabs.setChanged(this._tab.id, true);
                     if (options.onChange) options.onChange();
-                }.bind(this),
+                }
             );
 
             this._editor.getSession().setUseWorker(true);
@@ -189,17 +184,19 @@ export default class EditorTab
             this._tab.addEventListener("close", options.onClose);
             this._tab.addEventListener(
                 "onActivate",
-                function ()
+                () =>
                 {
                     this._editor.resize(true);
                     this._editor.focus();
                     if (this._tab.editorObj && this._tab.editorObj.name)userSettings.set("editortab", this._tab.editorObj.name);
-                }.bind(this),
+                },
             );
 
             setTimeout(() =>
             {
                 this._editor.focus();
+                this._tab.updateSize();
+                this._editor.resize(true);
                 if (options.onFinished)options.onFinished();
             }, 100);
         });
@@ -259,12 +256,10 @@ export default class EditorTab
 
             this._editor.focus();
             setTimeout(
-                function ()
+                () =>
                 {
                     this._editor.focus();
-                }.bind(this),
-                100,
-            );
+                }, 100);
         }
 
         const anns = this._editor.getSession().getAnnotations();
