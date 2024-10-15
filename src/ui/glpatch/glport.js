@@ -123,8 +123,6 @@ export default class GlPort
             this._rect.addChild(this._dot);
         }
 
-
-
         if (this._dot)
         {
             if (showDot)
@@ -153,7 +151,11 @@ export default class GlPort
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 if (this._glop._links[i].hovering) { hover = true; break; }
 
-        const col = GlPort.getColor(this._type, hover, false, this._activity);
+
+        let act = this._activity;
+        if (this._glPatch.vizFlowMode == 0)act = 10;
+
+        const col = GlPort.getColor(this._type, hover, false, act);
         this._rect.setColor(col);
 
         if (this._port.uiAttribs.addPort) this._rect.setOpacity(0.7);

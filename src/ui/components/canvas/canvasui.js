@@ -96,6 +96,7 @@ export default class CanvasUi
 
 
 
+
             p.finish();
         });
 
@@ -143,6 +144,7 @@ export default class CanvasUi
         if (ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
         gui.canvasManager.updateCanvasUi();
+
 
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
@@ -192,6 +194,7 @@ export default class CanvasUi
         if (_show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
+
             {
                 ele.hide(this._elCanvasModalDarkener);
             }

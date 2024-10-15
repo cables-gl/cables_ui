@@ -65,10 +65,12 @@ export default class GlSplineDrawer
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
         this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
+        this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
 
         userSettings.on("change", (which, val) =>
         {
             if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
+            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
         gui.on("themeChanged", () =>
@@ -78,6 +80,7 @@ export default class GlSplineDrawer
             this._uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
     }
+
 
     set zPos(v)
     {

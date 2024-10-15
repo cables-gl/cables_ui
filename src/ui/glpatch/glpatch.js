@@ -65,6 +65,7 @@ export default class GlPatch extends Events
         this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
+        this.vizFlowMode = userSettings.get("glflowmode") || 0;
 
         this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
@@ -244,7 +245,8 @@ export default class GlPatch extends Events
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
-            let fm = userSettings.get("glflowmode") || 0;
+            let fm = this.vizFlowMode || 0;
+
             fm++;
 
             if (fm == 3)fm = 0;
@@ -448,7 +450,9 @@ export default class GlPatch extends Events
 
         userSettings.on("change", (key, value) =>
         {
-            // this._log.log("linetype changed!", value);
+            this.vizFlowMode = userSettings.get("glflowmode");
+            this.updateVizFlowMode();
+
             if (key == "linetype")
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
@@ -501,6 +505,13 @@ export default class GlPatch extends Events
     get subPatch() { return this._currentSubpatch; }
 
     get isAreaSelecting() { return this._selectionArea.active; }
+
+
+    updateVizFlowMode()
+    {
+        for (let i in this._glOpz)
+            this._glOpz[i].updateVizFlowMode(this.vizFlowMode);
+    }
 
 
     zIndex()
@@ -1104,7 +1115,8 @@ export default class GlPatch extends Events
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
-        this._patchAPI.updateFlowModeActivity();
+
+        this._patchAPI.updateFlowModeActivity(this.vizFlowMode);
 
         this.viewBox.setSize(resX, resY);
 

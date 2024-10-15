@@ -145,7 +145,6 @@ export default class GlLinedrawer
 
         if (this._needsUpload) this.rebuild();
 
-
         this._mesh.render(this._shader);
     }
 
@@ -162,9 +161,7 @@ export default class GlLinedrawer
         const perf = CABLES.UI.uiProfiler.start("[glLineDrawer] rebuild");
 
         // console.log("reupload lines...",this._num);
-
         // todo: this is basically ALWAYS! could be optimized
-
         // todo only update whats needed
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION, this._positions, 3);
         this._mesh.setAttribute("color", this._colors, 4);
