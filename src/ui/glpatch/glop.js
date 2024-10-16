@@ -1618,5 +1618,15 @@ export default class GlOp extends Events
         if (this._glDotError) this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
         if (this._glLoadingIndicator) this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
     }
+
+    updateVizFlowMode(m)
+    {
+        for (let i in this._glPorts)
+        {
+            this._glPorts[i]._updateColor();
+        }
+        for (let i in this._links)
+            this._links[i].setFlowModeActivity(0, 0);
+    }
 }
 

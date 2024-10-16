@@ -84,48 +84,47 @@ export default class GlPatchAPI
         }
     }
 
-    updateFlowModeActivity()
+    updateFlowModeActivity(flowMode)
     {
-        let flowMode = userSettings.get("glflowmode");
+        // if (flowMode == 0 && this._currentFlowMode != 0)
+        // {
+        //     const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
+        //     console.log("updflowmode0");
 
-        if (flowMode == 0 && this._currentFlowMode != 0)
-        {
-            const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
+        //     for (let i = 0; i < this._patch.ops.length; i++)
+        //     {
+        //         const op = this._patch.ops[i];
+        //         const glop = this._glPatch.getGlOp(op);
 
-            for (let i = 0; i < this._patch.ops.length; i++)
-            {
-                const op = this._patch.ops[i];
-                const glop = this._glPatch.getGlOp(op);
+        //         if (!op || !op.portOut) return;
 
-                if (!op || !op.portOut) return;
+        //         if (!glop) continue;
 
-                if (!glop) continue;
+        //         for (let ip = 0; ip < op.portsOut.length; ip++)
+        //         {
+        //             const thePort = op.portsOut[ip];
+        //             thePort.apf = -1;
+        //             if (thePort)
+        //             {
+        //                 const glp = glop.getGlPort(thePort.name);
+        //                 if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
+        //             }
+        //         }
+        //         for (let ip = 0; ip < op.portsIn.length; ip++)
+        //         {
+        //             const thePort = op.portsIn[ip];
+        //             thePort.apf = -1;
+        //             const glp = glop.getGlPort(thePort.name);
+        //             if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
+        //         }
+        //     }
 
-                for (let ip = 0; ip < op.portsOut.length; ip++)
-                {
-                    const thePort = op.portsOut[ip];
-                    thePort.apf = -1;
-                    if (thePort)
-                    {
-                        const glp = glop.getGlPort(thePort.name);
-                        if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
-                    }
-                }
-                for (let ip = 0; ip < op.portsIn.length; ip++)
-                {
-                    const thePort = op.portsIn[ip];
-                    thePort.apf = -1;
-                    const glp = glop.getGlPort(thePort.name);
-                    if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
-                }
-            }
+        //     for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
 
-            for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
+        //     perf.finish();
+        // }
 
-            perf.finish();
-        }
-
-        this._currentFlowMode = flowMode;
+        // this._currentFlowMode = flowMode;
 
         if (flowMode == 0) return;
 

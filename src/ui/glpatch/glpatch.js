@@ -65,6 +65,7 @@ export default class GlPatch extends Events
         this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
+        this.vizFlowMode = userSettings.get("glflowmode") || 0;
 
         this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
@@ -244,7 +245,8 @@ export default class GlPatch extends Events
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
-            let fm = userSettings.get("glflowmode") || 0;
+            let fm = this.vizFlowMode || 0;
+
             fm++;
 
             if (fm == 3)fm = 0;
@@ -448,7 +450,9 @@ export default class GlPatch extends Events
 
         userSettings.on("change", (key, value) =>
         {
-            // this._log.log("linetype changed!", value);
+            this.vizFlowMode = userSettings.get("glflowmode");
+            this.updateVizFlowMode();
+
             if (key == "linetype")
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
@@ -503,14 +507,44 @@ export default class GlPatch extends Events
     get isAreaSelecting() { return this._selectionArea.active; }
 
 
+    updateVizFlowMode()
+    {
+        for (let i in this._glOpz)
+            this._glOpz[i].updateVizFlowMode(this.vizFlowMode);
+    }
+
+
     zIndex()
     {
         return this.zIndex++;
     }
 
+    updateCursor()
+    {
+        let cur = "auto";
+        if (this.greyOut)
+        {
+            cur = "not-allowed";
+        }
+        else
+        {
+            if (this.viewBox.cursor)cur = this.viewBox.cursor;
+            else if (this._hoverOps.length > 0 || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) cur = "pointer";
+            else if (this._spacePressed) cur = "grabbing";
+        }
+
+        if (this._cursor != cur) this._cgl.setCursor(cur);
+
+        this._cursor = cur;
+    }
+
+
     setCursor(c)
     {
         this._cursor = c;
+
+
+        // this.mouseState.setCursor(this._cgl.canvas, c);
     }
 
     _removeDropInRect()
@@ -666,14 +700,11 @@ export default class GlPatch extends Events
                 0.5);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, gluiconfig.zPosGreyOutRect);
-
-            this._cgl.canvas.style.cursor = "not-allowed";
         }
         else if (!this.greyOut && this._greyOutRect)
         {
             this._greyOutRect.dispose();
             this._greyOutRect = null;
-            this._cgl.canvas.style.cursor = "auto";
         }
 
         // if (this.greyOutBlue && this._greyOutRect)
@@ -972,13 +1003,13 @@ export default class GlPatch extends Events
     {
         const drawGlCursor = userSettings.get("glpatch_cursor");
 
-        if (drawGlCursor) this._cgl.setCursor("none");
-        else
-        {
-            if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
-            else if (this._cursor == CABLES.GLGUI.CURSOR_POINTER) this._cgl.setCursor("pointer");
-            else this._cgl.setCursor("auto");
-        }
+        // if (drawGlCursor) this._cgl.setCursor("none");
+        // else
+        // {
+        //     if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
+        //     else if (this._cursor == CABLES.GLGUI.CURSOR_POINTER) this._cgl.setCursor("pointer");
+        //     else this._cgl.setCursor("auto");
+        // }
 
         this._localGlCursor.visible = drawGlCursor;
 
@@ -1104,7 +1135,8 @@ export default class GlPatch extends Events
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
-        this._patchAPI.updateFlowModeActivity();
+
+        this._patchAPI.updateFlowModeActivity(this.vizFlowMode);
 
         this.viewBox.setSize(resX, resY);
 
@@ -1188,6 +1220,8 @@ export default class GlPatch extends Events
 
         this._updateGreyout();
         perf.finish();
+
+        this.updateCursor();
 
         this._cgl.profileData.clearGlQuery();
     }
@@ -1288,9 +1322,9 @@ export default class GlPatch extends Events
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
-        if (this._hoverOps.length > 0
-    || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
-        else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
+        //     if (this._hoverOps.length > 0
+        // || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
+        //     else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
 
 
         if (gui.longPressConnector.isActive())

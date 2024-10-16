@@ -56,7 +56,8 @@ CABLES_CMD_UI.toggleFiles = function ()
 
 CABLES_CMD_UI.windowFullscreen = function ()
 {
-    document.documentElement.webkitRequestFullScreen();
+    if (document.documentElement.mozRequestFullScreen) document.documentElement.mozRequestFullScreen();
+    if (document.documentElement.webkitRequestFullScreen) document.documentElement.webkitRequestFullScreen();
 };
 
 CABLES_CMD_UI.toggleMute = function ()

@@ -112,6 +112,8 @@ export default class CanvasManager
             }
             else this._contexts[i].canvas.style["z-index"] = -1;
         }
+
+        this.updateCanvasUi();
     }
 
     setSize(w, h)

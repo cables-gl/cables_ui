@@ -467,7 +467,8 @@ export default class GlCable
 
     setSpeed(speed)
     {
-        this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
+        if (this._glPatch.vizFlowMode != 0)
+            this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
     }
 
     collideLine(x1, y1, x2, y2)

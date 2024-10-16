@@ -25,6 +25,7 @@ export default class GlViewBox
         this._mouseX = 0;
         this._mouseY = 0;
         this._mousePatchX = this._mousePatchY = 0;
+        this.cursor = null;
         this._scrollX = 0;
         this._scrollY = 0;
         this._oldScrollX = 0;
@@ -150,7 +151,7 @@ export default class GlViewBox
             (this.glPatch.mouseState.buttonStateForScrolling) ||
             ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
         {
-            this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
+            this.cursor = "grabbing";
             CABLES.UI.hideToolTip();
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
@@ -166,7 +167,7 @@ export default class GlViewBox
     {
         this._oldScrollX = this._scrollX;
         this._oldScrollY = this._scrollY;
-        this.glPatch.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
+        this.cursor = null;
     }
 
     _onCanvasDblClick(e)
