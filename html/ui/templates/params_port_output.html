@@ -27,8 +27,6 @@
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
 
-
-
         {{#if port.uiAttribs.multiPort}}
             <br>
             <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">toggle</span>
@@ -57,7 +55,7 @@
             {{#compare port.uiAttribs.objType '==' 'texture' }}
 
                 {{port.port.get.shortInfoString}}
-                &nbsp;<span class="button-small button-icon info" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"><span class="icon icon-align-justify"></span></span>
+                &nbsp;<span class="button-small button-icon info" data-info="Watch texture data" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"><span class="icon icon-align-justify"></span></span>
 
                 <a class="button-small button-icon"  onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpVizTexture,'{{op.id}}','{{port.name}}');"><span class="icon icon-eye"></span></a>
 
