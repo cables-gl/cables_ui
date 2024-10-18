@@ -171,7 +171,7 @@ export default class CanvasManager
 
     popOut()
     {
-        if (this.subWindow)close();
+        if (this.subWindow) this.subWindow.close();
         let id = CABLES.uuid();
         this.subWindow = window.open("", "view#" + id, "width=" + 500 + ",height=" + 500 + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
