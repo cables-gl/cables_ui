@@ -153,7 +153,11 @@ export default class BottomInfoAreaBar extends Events
     {
         let txt = e.target.dataset.info;
         if (text[e.target.dataset.info]) txt = text[e.target.dataset.info];
-        // if (!txt) txt = ele.byId("infoArea").dataset.info;
+
+        if (e.target.dataset && !e.target.dataset.info)
+        {
+            this._log.warn("element has info class but no info data", e.target);
+        }
 
         this.setContent(txt);
     }

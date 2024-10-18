@@ -46,6 +46,11 @@
             background-color: var(--color-button-bg-active) !important;
         }
 
+        .icon
+        {
+            pointer-events: none;
+        }
+
     }
 
     .icon

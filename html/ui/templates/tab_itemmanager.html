@@ -236,17 +236,17 @@
             </span>
 
             <span class="iconbutton info" data-info="filemanager_copy_file_url" id="filecopyurl{{file.fileDb._id}}">
-                <a class="info icon icon-1x icon-copy"></a>
+                <a class="icon icon-1x icon-copy"></a>
             </span>
 
             {{#if isEditable}}
                 <span class="iconbutton info" data-info="filemanager_edit_file" id="fileedit{{file.fileDb._id}}">
-                    <a class="info icon icon-1x icon-edit"></a>
+                    <a class="icon icon-1x icon-edit"></a>
                 </span>
             {{/if}}
 
             <span class="iconbutton info" data-info="filemanager_reupload" id="fileReUpload{{file.fileDb._id}}" {{#if frontendOptions.isStandalone}}data-file-path="{{file.fileDb.path}}"{{/if}} onclick="CABLES.CMD.PATCH.reuploadFile('{{file.fileDb._id}}', '{{file.fileDb.fileName}}');">
-                <a class="info icon icon-1x icon-upload"></a>
+                <a class="icon icon-1x icon-upload"></a>
             </span>
 
 
