@@ -2433,6 +2433,12 @@ export default class PatchView extends Events
             {
                 const origOp = this._p.getOpById(opid);
 
+                if (!newOp || !origOp)
+                {
+                    this._log.warn("could not replace op.?", newOp, origOp);
+                    return;
+                }
+
                 let allFine = true;
                 let html = "<h3>Replacing Op</h3>";
 
