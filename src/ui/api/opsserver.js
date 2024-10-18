@@ -956,7 +956,7 @@ export default class ServerOps
                     opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
                 }
                 opDirSelect += "</select>";
-                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info\" data-into=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
+                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
                 opDirSelect += "<hr/>";
                 html = opDirSelect + html;
                 _checkOpName();
