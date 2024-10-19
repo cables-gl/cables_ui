@@ -52,7 +52,7 @@ const text =
 
     "editorTab": "## Editor \n\n* [LMB] Activate tab [MMB] Close tab ",
     "searchResult": "|| [LMB] Focus op || [shift][LMB] Show op params",
-    "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create op!",
+    "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create a fitting operator",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
     "patch": "## Patchfield \n\n|| `ESC` Add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+`/`-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
@@ -113,6 +113,9 @@ const text =
     "filemanager_file_refresh": "Reload file list",
     "filemanager_file_upload": "Upload new file",
     "filemanager_file_create": "Create a file",
+    "filemanager_reupload": "Replace contents of this file",
+    "filemanager_copy_file_url": "Copy file URL",
+
 
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",

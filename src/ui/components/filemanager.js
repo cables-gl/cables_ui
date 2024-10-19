@@ -88,6 +88,7 @@ export default class FileManager
             this._filePortElePreview = previewEle;
             this._filePortEle = portEle;
             this._filePortOp = op;
+            gui.fileManager.setFilter("");
         }
         this.updateHeader();
     }

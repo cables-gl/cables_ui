@@ -2167,14 +2167,8 @@ export default class Gui extends Events
 
     setFontSize(v)
     {
+        v = v || 0;
         document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
-
-        const eleMb = ele.byId("menubar");
-        eleMb.style.height = (30 + v) + "px";
-        eleMb.style["margin-left"] = (2 * v) + "px";
-
-        const eleMp = ele.byId("multiplayerbar");
-        eleMp.style.height = (30 + v) + "px";
     }
 
     setUser(u)
