@@ -72,7 +72,7 @@ export default class CanvasUi
             {
                 let ms = ((Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0") + "ms";
 
-                if (gui.patchView.patchRenderer.vizLayer.renderMs > 3)
+                if (window.gui && gui.patchView.patchRenderer.vizLayer && gui.patchView.patchRenderer.vizLayer.renderMs > 3)
                 {
                     ms += " vizLayer: " + Math.round(gui.patchView.patchRenderer.vizLayer.renderMs) + "ms";
                 }

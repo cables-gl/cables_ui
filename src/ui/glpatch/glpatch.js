@@ -368,7 +368,8 @@ export default class GlPatch extends Events
                 }
                 else
                 {
-                    area.setColor([msg.color.r, msg.color.g, msg.color.b, gui.theme.colors_patch.patchSelectionArea[3]]);
+                    if (msg.color)
+                        area.setColor([msg.color.r, msg.color.g, msg.color.b, gui.theme.colors_patch.patchSelectionArea[3]]);
                     area.setPos(msg.x, msg.y, 1000);
                     area.setSize(msg.sizeX, msg.sizeY);
                 }
