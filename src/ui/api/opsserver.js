@@ -2047,12 +2047,17 @@ export default class ServerOps
                 gui.jobs().finish("getopdocs");
                 if (err)
                 {
-                    let title = "Failed to load op doc";
-                    let html = "";
+                    let title = "Failed to load op";
+                    let otherEnv = "dev.cables.gl";
+                    let editorLink = "https://" + otherEnv + "/edit/" + gui.project().shortId;
+                    let errMsg = "";
+                    let opLinks = [];
                     if (err.msg)
                     {
-                        if (err.msg.title) title = err.msg.title;
-                        html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
+                        if (err.msg.text) errMsg = err.msg.text;
+                        if (err.msg.otherEnvName) otherEnv = err.msg.otherEnvName;
+                        if (err.msg.reasons) opLinks = err.msg.reasons;
+                        if (err.msg.otherEnvUrl) editorLink = err.msg.otherEnvUrl + "/edit/" + gui.project().shortId;
                     }
 
                     const continueLoadingCallback = () =>
@@ -2060,13 +2065,21 @@ export default class ServerOps
                         cb([]);
                     };
 
+                    const tryOtherEnvCallback = () =>
+                    {
+                        window.parent.location = editorLink;
+                    };
+
                     const modal = new ModalDialog(
                         {
+                            "choice": true,
                             "title": title,
-                            "html": html,
-                            "showOkButton": true,
-                            "okButton": { "text": "OK" }
+                            "text": errMsg,
+                            "notices": opLinks,
+                            "okButton": { "text": "Try " + otherEnv },
+                            "cancelButton": { "text": "Continue loading", "callback": continueLoadingCallback }
                         });
+                    modal.on("onSubmit", tryOtherEnvCallback);
                     modal.on("onClose", continueLoadingCallback);
                 }
                 else
