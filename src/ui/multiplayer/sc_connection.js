@@ -40,21 +40,18 @@ export default class ScConnection extends Events
         this.patchChannelName = this._scConfig.patchChannel;
         this.userChannelName = this._scConfig.userChannel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
-        if (cfg)
+        if (cfg) this._init((isActive) =>
         {
-            this._init((isActive) =>
-            {
-                let showMultiplayerUi = (isActive && this.multiplayerCapable);
-                if (this.showGuestUsers) showMultiplayerUi = true;
-                if (gui.isRemoteClient) showMultiplayerUi = false;
+            let showMultiplayerUi = (isActive && this.multiplayerCapable);
+            if (this.showGuestUsers) showMultiplayerUi = true;
+            if (gui.isRemoteClient) showMultiplayerUi = false;
 
-                if (showMultiplayerUi)
-                {
-                    this._multiplayerUi = new ScUiMultiplayer(this);
-                    this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
-                }
-            });
-        }
+            if (showMultiplayerUi)
+            {
+                this._multiplayerUi = new ScUiMultiplayer(this);
+                this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
+            }
+        });
     }
 
     getTimestamp()
@@ -199,7 +196,7 @@ export default class ScConnection extends Events
                 if (!this.client.isRemoteClient)
                 {
                     this.client.isPilot = true;
-                    // this.sendNotification(this.client.username + " just started a multiplayer session");
+                    this.sendNotification(this.client.username + " just started a multiplayer session");
                 }
                 this._inSessionSince = this.getTimestamp();
                 this.client.inMultiplayerSession = true;
@@ -211,10 +208,10 @@ export default class ScConnection extends Events
 
     joinMultiplayerSession()
     {
-        // if (gui && !gui.isRemoteClient)
-        // {
-        //     gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
-        // }
+        if (gui && !gui.isRemoteClient)
+        {
+            gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        }
         this.client.isPilot = false;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
@@ -226,29 +223,27 @@ export default class ScConnection extends Events
     reconnectRemoteViewer()
     {
         let startSessionListener = null;
-
+        const reconnectViewer = () =>
+        {
+            if (startSessionListener) this._state.off(startSessionListener);
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+            this.client.isPilot = true;
+            this.client.following = null;
+            this.client.inMultiplayerSession = true;
+            this._inSessionSince = this.getTimestamp();
+            this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
+            this._sendPing(true);
+            this._startPacoSend(this.clientId, true);
+        };
         if (!this.runningMultiplayerSession)
         {
-            startSessionListener = this.on("multiplayerEnabled", () => { this._reconnectViewer(startSessionListener); });
+            startSessionListener = this.on("multiplayerEnabled", reconnectViewer);
             this.startMultiplayerSession();
         }
         else
         {
-            this._reconnectViewer(startSessionListener);
+            reconnectViewer();
         }
-    }
-
-    _reconnectViewer(startSessionListener)
-    {
-        if (startSessionListener) this._state.off(startSessionListener);
-        gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        this.client.isPilot = true;
-        this.client.following = null;
-        this.client.inMultiplayerSession = true;
-        this._inSessionSince = this.getTimestamp();
-        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
-        this._sendPing(true);
-        this._startPacoSend(this.clientId, true);
     }
 
     startRemoteViewer(doneCallback)
@@ -276,7 +271,7 @@ export default class ScConnection extends Events
     leaveMultiplayerSession()
     {
         this.client.isPilot = false;
-        this._pacoChannel = this._socket.unsubscribe(this.userChannelName + "/paco");
+        this._pacoChannel = this._socket.unsubscribe(this.patchChannelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
         this.client.following = null;
@@ -323,7 +318,7 @@ export default class ScConnection extends Events
     {
         if (this.inMultiplayerSession && !this.client.isPilot)
         {
-            this.sendPaco({ "requestedBy": this.client.clientId }, "resync");
+            this.sendControl("resync", { "requestedBy": this.client.clientId });
         }
     }
 
@@ -332,22 +327,23 @@ export default class ScConnection extends Events
         if (!this._scConfig.enableTracking) return;
 
         const payload = {
+            "name": "track",
             eventCategory,
             eventAction,
             eventLabel,
             meta
         };
-        this.sendControl("track", payload);
+        this._send("control", payload);
     }
 
     sendNotification(title, text)
     {
-        this._send(this.patchChannelName, "info", { "name": "notify", title, text });
+        this._send("info", { "name": "notify", title, text });
     }
 
     sendInfo(name, text)
     {
-        this._send(this.patchChannelName, "info", { "name": "info", text });
+        this._send("info", { "name": "info", text });
     }
 
     sendControl(name, payload)
@@ -355,7 +351,7 @@ export default class ScConnection extends Events
         payload = payload || {};
         payload.name = name;
 
-        this._send(this.patchChannelName, "control", payload);
+        this._send("control", payload);
     }
 
     sendUi(name, payload, sendOnEmptyClientList = false)
@@ -364,7 +360,7 @@ export default class ScConnection extends Events
         {
             payload = payload || {};
             payload.name = name;
-            this._send(this.patchChannelName, "ui", payload);
+            this._send("ui", payload);
         }
     }
 
@@ -374,16 +370,16 @@ export default class ScConnection extends Events
         const el = document.createElement("div");
         el.innerHTML = text;
         text = el.textContent || el.innerText || "";
-        this._send(this.patchChannelName, "chat", { "name": "chatmsg", text, "username": gui.user.username });
+        this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
-    sendPaco(payload, name = "paco")
+    sendPaco(payload)
     {
         if (!this._pacoEnabled) return;
-        if (this.client && (!this.client.isRemoteClient || name === "resync"))
+        if (this.client && this.client.isPilot)
         {
-            payload.name = name || "paco";
-            this._send(this.userChannelName, "paco", payload);
+            payload.name = "paco";
+            this._send("paco", payload);
         }
     }
 
@@ -418,7 +414,7 @@ export default class ScConnection extends Events
                     if (!this._pacoEnabled) return;
                     if (!this._pacoChannel)
                     {
-                        this._pacoChannel = this._socket.subscribe(this.userChannelName + "/paco");
+                        this._pacoChannel = this._socket.subscribe(this.patchChannelName + "/paco");
                         if (!this._pacoLoopReady)
                         {
                             this._pacoLoopReady = true;
@@ -475,10 +471,6 @@ export default class ScConnection extends Events
                 if (this.client.isRemoteClient)
                 {
                     this.joinMultiplayerSession();
-                }
-                else
-                {
-                    this._reconnectViewer();
                 }
             }
         })();
@@ -621,7 +613,7 @@ export default class ScConnection extends Events
         }
     }
 
-    _send(channel, topic, payload)
+    _send(topic, payload)
     {
         if (!this.client) return;
 
@@ -641,8 +633,8 @@ export default class ScConnection extends Events
 
                 this.emitEvent("netActivityOut");
                 const perf = CABLES.UI.uiProfiler.start("[sc] send");
-                const scTopic = channel + "/" + topic;
-                this._logVerbose("send:", scTopic, finalPayload);
+                const scTopic = this.patchChannelName + "/" + topic;
+                this._logVerbose("send:", scTopic, payload);
                 this._socket.transmitPublish(scTopic, finalPayload);
                 perf.finish();
             }
@@ -702,25 +694,6 @@ export default class ScConnection extends Events
                 this.state.emitEvent("patchSynchronized");
             }
         }
-        else if (msg.name === "resync")
-        {
-            if (msg.clientId === this._socket.clientId) return;
-
-            let startSessionListener = null;
-            const resyncPatch = () =>
-            {
-                if (startSessionListener) this.off(startSessionListener);
-                if (this._pacoEnabled && this.client) // && this.client.isPilot)
-                {
-                    this._log.info("RESYNC sending paco patch....");
-                    this._startPacoSend(msg.clientId);
-                }
-            };
-            if (this.inMultiplayerSession)
-            {
-                resyncPatch();
-            }
-        }
     }
 
     _synchronizePatch(data)
@@ -746,7 +719,30 @@ export default class ScConnection extends Events
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/control", msg);
 
+        if (msg.name === "resync")
+        {
+            if (msg.clientId === this._socket.clientId) return;
 
+            let startSessionListener = null;
+            const resyncPatch = () =>
+            {
+                if (startSessionListener) this.off(startSessionListener);
+                if (this._pacoEnabled && this.client && this.client.isPilot)
+                {
+                    this._log.info("RESYNC sending paco patch....");
+                    this._startPacoSend(msg.clientId);
+                }
+            };
+            if (!this.runningMultiplayerSession)
+            {
+                startSessionListener = this.on("multiplayerEnabled", resyncPatch);
+                this.startMultiplayerSession(true);
+            }
+            else
+            {
+                resyncPatch();
+            }
+        }
         if (msg.name === "pingMembers")
         {
             const timeOutSeconds = this.PING_INTERVAL * this.OWN_PINGS_TO_TIMEOUT;
