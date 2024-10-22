@@ -1491,6 +1491,8 @@ export default class Gui extends Events
         // --- Help menu
         // Documentation
 
+        ele.byId("nav_support").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/support", "_blank"); });
+
         ele.byId("nav_help_keys").addEventListener("click", (event) => { CABLES.CMD.UI.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs", "_blank"); });
         ele.byId("nav_help_forum").addEventListener("click", (event) => { window.open("https://github.com/cables-gl/cables_docs/discussions", "_blank"); });
