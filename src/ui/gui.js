@@ -2186,17 +2186,6 @@ export default class Gui extends Events
 
     initCoreListeners()
     {
-        // this._corePatch.on("exception", function (ex, op)
-        // {
-        //     new ModalError({ "exception": ex, "op": op });
-        // });
-
-        // this._corePatch.on("exceptionOp", function (e, objName, op)
-        // {
-        //     console.log("core error2");
-        //     new ModalError({ "exception": e, "opname": objName, "op": op });
-        // });
-
         this._corePatch.on("criticalError", function (options)
         {
             console.log("core error3");
