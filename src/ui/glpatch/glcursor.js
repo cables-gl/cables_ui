@@ -26,7 +26,7 @@ export default class GlCursor extends Events
         this._avatarEle = document.createElement("div");
         this._avatarEle.classList.add("cursorAvatar");
 
-
+        this._avatarEle.style.display = "none";
         this._avatarEle.style["background-size"] = "100%";
 
         document.body.appendChild(this._avatarEle);
