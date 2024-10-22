@@ -140,21 +140,7 @@ export default class ScState extends Events
         }
     }
 
-    getClientColor(clientId)
-    {
-        const defaultColor = { "r": 1, "g": 1, "b": 1, "rb": 255, "gb": 255, "bb": 255 };
-        if (!clientId) return defaultColor;
-        if (!this._colors[clientId])
-        {
-            const client = this._clients[clientId];
-            if (client)
-            {
-                this._colors[clientId] = client.getColor();
-            }
-        }
 
-        return this._colors[clientId];
-    }
 
     getNumClients()
     {
@@ -588,8 +574,6 @@ export default class ScState extends Events
 
         this._connection.on("netSelectionArea", (msg) =>
         {
-            // if (!this._connection.inMultiplayerSession) return;
-            msg.color = this._connection.getClientColor(msg.clientId);
             gui.emitEvent("netSelectionArea", msg);
         });
 

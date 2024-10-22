@@ -10,42 +10,67 @@ export default class GlCursor extends Events
         this._animX = new CABLES.Anim();
         this._animY = new CABLES.Anim();
 
-
         this._animX.defaultEasing = this._animY.defaultEasing = CABLES.ANIM.EASING_CUBIC_OUT;
 
         this._glPatch = glPatch;
         this._instancer = instancer;
-        this._cursor2 = this._instancer.createRect();
-        this._cursor2.setSize(10, 10);
-        this._cursor2.setShape(5);
+        this._cursorRect = this._instancer.createRect();
+        this._cursorRect.setSize(10, 10);
+        this._cursorRect.setShape(5);
+        this._lastMovement = performance.now();
 
-        let col = null;
-        if (gui.socket)col = gui.socket.getClientColor(clientId);
-        if (col) this._cursor2.setColor(col.r, col.g, col.b, 1);
-        else this._cursor2.setColor(1, 1, 1, 1);
+
+        this._avatarEle = document.createElement("div");
+        this._avatarEle.classList.add("cursorAvatar");
+        this._avatarEle.style["background-image"] = "url(" + CABLES.platform.getCablesUrl() + "/api/avatar/64de21c72ce6ffb833745cb5)";
+        this._avatarEle.style["background-size"] = "100%";
+
+        document.body.appendChild(this._avatarEle);
+
+        this._cursorRect.setColor(1, 1, 1, 1);
     }
 
     updateAnim()
     {
         if (this.isAnimated)
         {
-            this._cursor2.setPosition(
-                this._animX.getValue(this._glPatch.time),
-                this._animY.getValue(this._glPatch.time));
+            let x = this._animX.getValue(this._glPatch.time);
+            let y = this._animY.getValue(this._glPatch.time);
+
+            this._cursorRect.setPosition(x, y);
+
+            const coord = this._glPatch.viewBox.patchToScreenCoords(x, y);
+
+            if (coord[0] < 0 || coord[1] < 0 || coord[0] > this._glPatch.viewBox.width || coord[1] > this._glPatch.viewBox.height) this._avatarEle.style.display = "none";
+
+            this._avatarEle.style.top = (coord[1] + 4) + "px";
+            this._avatarEle.style.left = (coord[0] + 15) + "px";
+        }
+
+        if (performance.now() - this._lastMovement > 10000)
+        {
+            this._avatarEle.style.display = "none";
+            this._cursorRect.visible = false;
+        }
+        else
+        {
+            this._avatarEle.style.display = "block";
+            this._cursorRect.visible = true;
         }
     }
 
-    setColor(r, g, b, a) { this._cursor2.setColor(1, 1, 1, 1); }
+    setColor(r, g, b, a) { this._cursorRect.setColor(1, 1, 1, 1); }
 
-    get visible() { return this._cursor2.visible; }
+    get visible() { return this._cursorRect.visible; }
 
-    set visible(v) { this._cursor2.visible = v; }
+    set visible(v) { this._cursorRect.visible = v; }
 
-    setSize(w, h) { this._cursor2.setSize(w, h); }
+    setSize(w, h) { this._cursorRect.setSize(w, h); }
 
     setPosition(x, y)
     {
-        if (!this.isAnimated) this._cursor2.setPosition(x, y);
+        this._lastMovement = performance.now();
+        if (!this.isAnimated) this._cursorRect.setPosition(x, y);
         else
         {
             this._animX.clear(this._glPatch.time);
@@ -59,6 +84,7 @@ export default class GlCursor extends Events
 
     dispose()
     {
-        this._cursor2.dispose();
+        if (this._cursorRect) this._cursorRect.dispose();
+        if (this._avatarEle) this._avatarEle.remove();
     }
 }

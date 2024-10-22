@@ -171,10 +171,7 @@ export default class ScConnection extends Events
         }
     }
 
-    getClientColor(clientId)
-    {
-        return this._state.getClientColor(clientId);
-    }
+
 
     showChat()
     {

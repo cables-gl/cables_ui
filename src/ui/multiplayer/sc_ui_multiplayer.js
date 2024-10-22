@@ -74,16 +74,16 @@ export default class ScUiMultiplayer extends Events
             if (client)
             {
                 const cursorColorEl = elem.querySelector(".cursorcolor");
-                if (cursorColorEl)
-                {
-                    const clientColor = this._connection.getClientColor(itemId);
-                    let alpha = "0.0";
-                    if (client.inMultiplayerSession)
-                    {
-                        alpha = "1.0";
-                    }
-                    cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
-                }
+                // if (cursorColorEl)
+                // {
+                //     const clientColor = this._connection.getClientColor(itemId);
+                //     let alpha = "0.0";
+                //     if (client.inMultiplayerSession)
+                //     {
+                //         alpha = "1.0";
+                //     }
+                //     cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
+                // }
 
                 if (client.isPilot)
                 {

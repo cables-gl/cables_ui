@@ -862,3 +862,16 @@ body
 
 
 
+
+.cursorAvatar
+{
+    width:20px;
+    height:20px;
+    // border:1px solid red;
+    z-index: 1000;
+    position: absolute;
+    border-radius: 100%;
+    border:2px solid black;
+    pointer-events: none;
+
+}
