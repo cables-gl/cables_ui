@@ -288,11 +288,18 @@ export default class FileManager
             const els = ele.byQuery("#filemanagercontainer .filelistcontainer");
             if (els)
             {
-                let uploadText = "<br/><br/><br/><br/><div class=\"text-center\">This Patch contains no files yet!<br/><br/>";
+                let uploadText = "";
                 if (CABLES.platform.frontendOptions.uploadFiles)
                 {
+                    uploadText = "<br/><br/><br/><br/><div class=\"text-center\">This Patch contains no files yet!<br/><br/>";
                     uploadText += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Upload files</a> or ";
                     uploadText += "use files from our <a class=\"button-small\" onclick=\"gui.fileManager.setSource('lib');\">Library</a>";
+                }
+                else
+                {
+                    uploadText = "<br/><br/><br/><br/><div class=\"text-center\">Patch does not use any files, yet!<br/><br/>";
+                    uploadText += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Add files</a> or ";
+                    uploadText += "drag them onto the patchfiled to use them";
                 }
                 uploadText += "</div>";
                 els.innerHTML = uploadText;

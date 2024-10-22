@@ -1452,8 +1452,12 @@ export default class Gui extends Events
         }
 
 
-        if (CABLES.platform.frontendOptions.showAssetUpload) ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-        else ele.hide(ele.byId("nav_uploadfile"));
+        const uploadEle = ele.byId("nav_uploadfile");
+        if (uploadEle)
+        {
+            uploadEle.addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+            if (!CABLES.platform.frontendOptions.showAssetUpload)uploadEle.innerText = "Add file";
+        }
 
         if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
         if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
