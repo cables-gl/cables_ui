@@ -133,10 +133,7 @@ export default class EditorSession
         {
             for (let i = 0; i < sessions.length; i++)
             {
-                if (this._listeners[sessions[i].type])
-                {
-                    this._listeners[sessions[i].type](sessions[i].name, sessions[i].data || {});
-                }
+                if (this._listeners[sessions[i].type]) this._listeners[sessions[i].type](sessions[i].name, sessions[i].data || {});
                 else console.warn("no editorsession listener for " + sessions[i].type + " (" + sessions[i].name + ")");
             }
         }
