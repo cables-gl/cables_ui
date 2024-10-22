@@ -170,7 +170,7 @@ export default class ScUiMultiplayer extends Events
             });
             if (this._connection.onlyRemoteClientsConnected)
             {
-                joinButton.textContent = "Reconnect";
+                joinButton.textContent = "Remote Viewer";
             }
             else
             {
