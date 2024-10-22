@@ -18,6 +18,10 @@
                 <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();">
                     <i class="icon icon-upload"></i>
                 </span>
+            {{else}}
+                <span class="iconbutton info" data-info="filemanager_file_add" onclick="CABLES.CMD.PATCH.uploadFileDialog();">
+                    <i class="icon icon-file"></i>
+                </span>
             {{/if}}
 
             <span class="iconbutton info" data-info="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();">
@@ -56,7 +60,11 @@
                 {{#if divider}}
                     <div style="clear:both"></div>
                     <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                        <h1>{{divider}}{{#unless isLibraryFile}}{{#if ../frontendOptions.openLocalFiles}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/if}}{{/unless}}</h1>
+                        {{#if ../frontendOptions.openLocalFiles}}
+                            <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                        {{else}}
+                            <h1>{{divider}}</h1>
+                        {{/if}}
                     </div>
                 {{else}}
                     <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}">
@@ -117,7 +125,11 @@
                     <tr>
                         <td colspan="100">
                             <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                                <h1>{{divider}}{{#unless isLibraryFile}}{{#if ../frontendOptions.openLocalFiles}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/if}}{{/unless}}</h1>
+                                {{#if ../frontendOptions.openLocalFiles}}
+                                    <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                                {{else}}
+                                    <h1>{{divider}}</h1>
+                                {{/if}}
                             </div>
                         </td>
                     </tr>

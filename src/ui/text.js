@@ -112,6 +112,7 @@ const text =
     "filemanager_file_download": "Download file",
     "filemanager_file_refresh": "Reload file list",
     "filemanager_file_upload": "Upload new file",
+    "filemanager_file_add": "Add new file",
     "filemanager_file_create": "Create a file",
     "filemanager_reupload": "Replace contents of this file",
     "filemanager_copy_file_url": "Copy file URL",
