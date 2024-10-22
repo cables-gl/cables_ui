@@ -39,6 +39,7 @@ export default class ScConnection extends Events
 
         this.patchChannelName = this._scConfig.patchChannel;
         this.userChannelName = this._scConfig.userChannel;
+        this.userPatchChannelName = this._scConfig.userPatchChannel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
         if (cfg)
         {
@@ -276,7 +277,7 @@ export default class ScConnection extends Events
     leaveMultiplayerSession()
     {
         this.client.isPilot = false;
-        this._pacoChannel = this._socket.unsubscribe(this.userChannelName + "/paco");
+        this._pacoChannel = this._socket.unsubscribe(this.userPatchChannelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
         this.client.following = null;
@@ -383,7 +384,7 @@ export default class ScConnection extends Events
         if (this.client && (!this.client.isRemoteClient || name === "resync"))
         {
             payload.name = name || "paco";
-            this._send(this.userChannelName, "paco", payload);
+            this._send(this.userPatchChannelName, "paco", payload);
         }
     }
 
@@ -399,6 +400,7 @@ export default class ScConnection extends Events
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.patchChannelName = this.patchChannelName;
         this._socket.userChannelName = this.userChannelName;
+        this._socket.userPatchChannelName = this.userPatchChannelName;
 
         this._state = new ScState(this);
         if (this.multiplayerCapable)
@@ -418,7 +420,7 @@ export default class ScConnection extends Events
                     if (!this._pacoEnabled) return;
                     if (!this._pacoChannel)
                     {
-                        this._pacoChannel = this._socket.subscribe(this.userChannelName + "/paco");
+                        this._pacoChannel = this._socket.subscribe(this.userPatchChannelName + "/paco");
                         if (!this._pacoLoopReady)
                         {
                             this._pacoLoopReady = true;
