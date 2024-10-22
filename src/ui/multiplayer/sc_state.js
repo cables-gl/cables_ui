@@ -359,7 +359,7 @@ export default class ScState extends Events
 
         gui.patchView.on("mouseMove", (x, y) =>
         {
-            if (!this._connection.inMultiplayerSession) return;
+            // if (!this._connection.inMultiplayerSession) return;
             this._sendCursorPos(x, y);
         });
 
@@ -536,13 +536,13 @@ export default class ScState extends Events
 
         gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
         {
-            if (!this._connection.inMultiplayerSession) return;
+            // if (!this._connection.inMultiplayerSession) return;
             this._sendSelectionArea(x, y, sizeX, sizeY);
         });
 
         gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
         {
-            if (!this._connection.inMultiplayerSession) return;
+            // if (!this._connection.inMultiplayerSession) return;
             this._sendSelectionArea(x, y, sizeX, sizeY, true);
         });
 
@@ -588,19 +588,19 @@ export default class ScState extends Events
 
         this._connection.on("netSelectionArea", (msg) =>
         {
-            if (!this._connection.inMultiplayerSession) return;
+            // if (!this._connection.inMultiplayerSession) return;
             msg.color = this._connection.getClientColor(msg.clientId);
             gui.emitEvent("netSelectionArea", msg);
         });
 
         this._connection.on("netCursorPos", (msg) =>
         {
-            if (!this._connection.inMultiplayerSession) return;
+            // if (!this._connection.inMultiplayerSession) return;
             delete msg.zoom;
-            if (this._connection.client.following && msg.clientId === this._connection.client.following)
-            {
-                gui.emitEvent("netGotoPos", msg);
-            }
+            // if (this._connection.client.following && msg.clientId === this._connection.client.following)
+            // {
+            //     gui.emitEvent("netGotoPos", msg);
+            // }
             gui.emitEvent("netCursorPos", msg);
         });
 
@@ -650,7 +650,7 @@ export default class ScState extends Events
     _sendCursorPos(x, y)
     {
         if (!this._connection.isConnected()) return;
-        if (!this._connection.inMultiplayerSession) return;
+        // if (!this._connection.inMultiplayerSession) return;
 
         if (this._lastMouseX === x || this._lastMouseY === y) return;
 
@@ -677,7 +677,7 @@ export default class ScState extends Events
     _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
     {
         if (!this._connection.isConnected()) return;
-        if (!this._connection.inMultiplayerSession) return;
+        // if (!this._connection.inMultiplayerSession) return;
 
         if (!hide && this._mouseTimeout) return;
 

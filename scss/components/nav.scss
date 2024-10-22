@@ -52,10 +52,6 @@
 
     }
 
-    .menubar
-    {
-        overflow: hidden;
-    }
 
     .menubar:hover
     {
@@ -101,6 +97,15 @@
     }
 
 
+    .menubar
+    {
+        overflow: hidden;
+        display:block;
+        margin-top:10px;
+        border:5px solid $color-menubar-background;
+        border-radius: $iconbar-borderradius;
+    }
+
     .blinking
     {
         animation:blinkingText 0.8s infinite;
@@ -117,16 +122,6 @@
     {
         margin-top:1px;
         user-select:none;
-    }
-
-    .menubar
-    {
-        display:block;
-        margin-top:10px;
-        border:5px solid $color-menubar-background;
-        border-radius: $iconbar-borderradius;
-        // margin-left:calc(2 * var(--font-size-off));
-        // height: calc(30px + var(--font-size-off));
     }
 
     .cables-logo
@@ -155,7 +150,6 @@
     {
         user-select: none;
         float:left;
-        $nav-li-padding: 5px 10px;
 
         .main .icon
         {
@@ -181,22 +175,22 @@
         ul
         {
             text-align: left;
-            display: inline;
+            display: block;
             margin: 0;
-            padding: 5px 4px 5px 0;
+            padding: 0;
             list-style: none;
-            // -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            // -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            // box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
         }
         ul li
         {
-            //font: bold 12px/18px arial;
             display: inline-block;
-            // margin-right: -4px;
             position: relative;
-            padding: $nav-li-padding;
             cursor: pointer;
+            margin-right: -4px;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 3px;
+            padding-right: 10px;
+
 
             &.inactive
             {
@@ -218,13 +212,6 @@
                 }
             }
 
-
-            // span
-            // {
-            //     margin-left: 20px;
-            // }
-
-
             .icon {
                 margin-left: 0 !important;
             }
@@ -240,17 +227,16 @@
         }
         .nav-greyout
         {
-            // opacity: 0.3;
             color:#555;
         }
 
-        //ul li ul
         .nav-submenu
         {
             z-index: $zindex_highest;
             padding: 0;
             position: absolute;
-            top: 29px;
+            top: 20px;
+            border-top:10px solid transparent;
             left: 0;
             width: 235px;
             -webkit-box-shadow: none;
@@ -267,6 +253,7 @@
         }
         ul li ul li
         {
+            padding: 5px 10px;
             background: var(--color-03);
             display: block;
             color: var(--color-13);
@@ -297,31 +284,6 @@
             {
                 color: var(--color-13);
             }
-        }
-        ul
-        {
-            text-align: left;
-            display: inline;
-            margin: 0;
-            padding: 5px 4px 5px 0;
-            list-style: none;
-            // -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            // -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            // box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-        }
-        ul li
-        {
-            //font: bold 12px/18px arial;
-            display: inline-block;
-            margin-right: -4px;
-            position: relative;
-            padding: $nav-li-padding;
-            cursor: pointer;
-
-            // span
-            // {
-            //     margin-left: 20px;
-            // }
         }
         ul li:hover
         {
@@ -401,9 +363,10 @@
                     padding: 0;
                     white-space: nowrap;
 
+
                     a {
                         display: block;
-                        padding: $nav-li-padding;
+                        padding: 5px 10px;
                     }
                 }
             }
