@@ -331,12 +331,12 @@ export default class ScState extends Events
 
         this.on("patchSynchronized", () =>
         {
-            if (!this._connection.client.isPilot)
-            {
-                // set patchsave state if not pilot after sync
-                // gui.setStateSaved();
-                gui.savedState.setSaved("sc", 0);
-            }
+            // if (!this._connection.client.isPilot)
+            // {
+            //     // set patchsave state if not pilot after sync
+            //     // gui.setStateSaved();
+            //     gui.savedState.setSaved("sc", 0);
+            // }
             if (this._connection.client.isRemoteClient)
             {
                 const menubar = document.getElementById("menubar");
@@ -465,7 +465,7 @@ export default class ScState extends Events
         gui.on("portValueEdited", (op, port, value) =>
         {
             if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client && this._connection.client.isPilot)
+            if (this._connection.client) // && this._connection.client.isPilot)
             {
                 if (op && port)
                 {
@@ -667,8 +667,9 @@ export default class ScState extends Events
 
     _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
     {
+        return;
         if (!this._connection.isConnected()) return;
-        // if (!this._connection.inMultiplayerSession) return;
+        if (!this._connection.inMultiplayerSession) return;
 
         if (!hide && this._mouseTimeout) return;
 
