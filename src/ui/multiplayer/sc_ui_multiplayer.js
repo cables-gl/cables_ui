@@ -73,7 +73,7 @@ export default class ScUiMultiplayer extends Events
             let client = this._connection.clients[itemId];
             if (client)
             {
-                const cursorColorEl = elem.querySelector(".cursorcolor");
+                // const cursorColorEl = elem.querySelector(".cursorcolor");
                 // if (cursorColorEl)
                 // {
                 //     const clientColor = this._connection.getClientColor(itemId);

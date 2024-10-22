@@ -38,6 +38,13 @@ export default class ScState extends Events
 
     get followers() { return this._followers; }
 
+
+    getUserId(clientId)
+    {
+        if (this._clients[clientId])
+            return this._clients[clientId].userid;
+    }
+
     _onPingAnswer(payload)
     {
         let userListChanged = false;

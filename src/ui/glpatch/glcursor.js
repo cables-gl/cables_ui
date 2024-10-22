@@ -1,3 +1,4 @@
+
 import { Events } from "cables-shared-client";
 
 export default class GlCursor extends Events
@@ -19,10 +20,13 @@ export default class GlCursor extends Events
         this._cursorRect.setShape(5);
         this._lastMovement = performance.now();
 
+        this._clientId = clientId;
+        this._userId = null;
 
         this._avatarEle = document.createElement("div");
         this._avatarEle.classList.add("cursorAvatar");
-        this._avatarEle.style["background-image"] = "url(" + CABLES.platform.getCablesUrl() + "/api/avatar/64de21c72ce6ffb833745cb5)";
+
+
         this._avatarEle.style["background-size"] = "100%";
 
         document.body.appendChild(this._avatarEle);
@@ -41,7 +45,7 @@ export default class GlCursor extends Events
 
             const coord = this._glPatch.viewBox.patchToScreenCoords(x, y);
 
-            if (coord[0] < 0 || coord[1] < 0 || coord[0] > this._glPatch.viewBox.width || coord[1] > this._glPatch.viewBox.height) this._avatarEle.style.display = "none";
+            if (!this._userId || coord[0] < 0 || coord[1] < 0 || coord[0] > this._glPatch.viewBox.width || coord[1] > this._glPatch.viewBox.height) this._avatarEle.style.display = "none";
 
             this._avatarEle.style.top = (coord[1] + 4) + "px";
             this._avatarEle.style.left = (coord[0] + 15) + "px";
@@ -54,7 +58,7 @@ export default class GlCursor extends Events
         }
         else
         {
-            this._avatarEle.style.display = "block";
+            if (this._userId) this._avatarEle.style.display = "block";
             this._cursorRect.visible = true;
         }
     }
@@ -79,6 +83,12 @@ export default class GlCursor extends Events
             this._animX.setValue(this._glPatch.time + netCursorDelay, x);
             this._animY.setValue(this._glPatch.time + netCursorDelay, y);
             this.updateAnim();
+        }
+
+        if (gui.socket && !this._userId)
+        {
+            this._userId = gui.socket.state.getUserId(this._clientId);
+            if (this._userId) this._avatarEle.style["background-image"] = "url(" + CABLES.platform.getCablesUrl() + "/api/avatar/" + this._userId + ")";
         }
     }
 

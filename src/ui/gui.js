@@ -382,8 +382,9 @@ export default class Gui extends Events
 
     canSaveInMultiplayer()
     {
-        if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
-        else return true;
+        // if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
+        // else return true;
+        return true;
     }
 
     isGuestEditor()
