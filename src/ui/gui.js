@@ -1489,10 +1489,10 @@ export default class Gui extends Events
         else ele.hide(ele.byId("nav_buildinfo"));
 
 
+        ele.byId("nav_support").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/support", "_blank"); });
+
         // --- Help menu
         // Documentation
-
-        ele.byId("nav_support").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/support", "_blank"); });
 
         ele.byId("nav_help_keys").addEventListener("click", (event) => { CABLES.CMD.UI.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs", "_blank"); });
@@ -2177,6 +2177,7 @@ export default class Gui extends Events
     setUser(u)
     {
         gui.user = u;
+        if (gui.user.isPatron) ele.hide(ele.byId("nav_support"));
     }
 
     initCoreListeners()
