@@ -132,7 +132,7 @@ function _sass(done)
 {
     return gulp
         .src("scss/style-dark.scss")
-        .pipe(sass())
+        .pipe(sass().on("error", sass.logError))
         .pipe(rename("style-dark.css"))
         .pipe(
             autoprefixer({
