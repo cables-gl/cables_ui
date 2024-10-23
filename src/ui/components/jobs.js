@@ -11,6 +11,7 @@ export default class Jobs extends Events
         this._lastIndicator = null;
         this._jobsEle = ele.byId("jobs");
         this._listenerStarted = false;
+        this.hideProgressTimeout = null;
     }
 
     startListener()
@@ -118,8 +119,19 @@ export default class Jobs extends Events
     _updateVisibility()
     {
         const elContainer = ele.byId("uploadprogresscontainer");
-        if (this._visibleProgressBar) elContainer.classList.remove("hidden");
-        else elContainer.classList.add("hidden");
+
+        if (this._visibleProgressBar)
+        {
+            clearTimeout(this.hideProgressTimeout);
+            elContainer.classList.remove("hidden");
+        }
+        else
+        {
+            this.hideProgressTimeout = setTimeout(() =>
+            {
+                elContainer.classList.add("hidden");
+            }, 100);
+        }
 
         if (gui.isRemoteClient)
         {
@@ -132,8 +144,6 @@ export default class Jobs extends Events
     {
         clearTimeout(this.removeProgressTo);
         let prog = gui.corePatch().loading.getProgress();
-
-        // ele.byId("uploadprogress").style.width = prog * 100 + "%";
 
         if (prog === 1)
         {
@@ -163,18 +173,13 @@ export default class Jobs extends Events
 
     setProgress(jobId, progress)
     {
-        const elContainer = ele.byId("uploadprogresscontainer");
         this._visibleProgressBar = progress != 100;
 
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
         {
-            if (this._jobs[i].id == jobId)
-            {
-                this._jobs[i].progress = progress;
-                // ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
-            }
+            if (this._jobs[i].id == jobId) this._jobs[i].progress = progress;
 
             if (this._jobs[i].progress)
             {
@@ -186,7 +191,6 @@ export default class Jobs extends Events
         {
             const prog = avg / avgCount;
             ele.byId("uploadprogress").style.width = prog + "%";
-
             this._visibleProgressBar = prog != 100;
         }
         this._updateVisibility();
