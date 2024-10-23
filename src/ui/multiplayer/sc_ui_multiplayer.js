@@ -396,55 +396,55 @@ export default class ScUiMultiplayer extends Events
     }
 
 
-    _requestResync(title, callbackBeforeSync)
-    {
-        let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
-        content += "<div style='margin-top: 20px; text-align: center;'>";
-        content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
-        content += "<a class=\"button decline\">Ignore</a>";
-        content += "</div>";
+    // _requestResync(title, callbackBeforeSync)
+    // {
+    //     let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
+    //     content += "<div style='margin-top: 20px; text-align: center;'>";
+    //     content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
+    //     content += "<a class=\"button decline\">Ignore</a>";
+    //     content += "</div>";
 
-        const options = {
-            "title": title,
-            "html": content
-        };
+    //     const options = {
+    //         "title": title,
+    //         "html": content
+    //     };
 
-        const modal = new ModalDialog(options, false);
-        modal.on("onShow", () =>
-        {
-            const modalElement = modal.getElement();
-            const acceptButton = modalElement.querySelector(".button.accept");
-            const declineButton = modalElement.querySelector(".button.decline");
+    //     const modal = new ModalDialog(options, false);
+    //     modal.on("onShow", () =>
+    //     {
+    //         const modalElement = modal.getElement();
+    //         const acceptButton = modalElement.querySelector(".button.accept");
+    //         const declineButton = modalElement.querySelector(".button.decline");
 
-            if (acceptButton)
-            {
-                acceptButton.addEventListener("pointerdown", () =>
-                {
-                    if (callbackBeforeSync)
-                    {
-                        callbackBeforeSync(() =>
-                        {
-                            this._connection.requestPilotPatch();
-                            modal.close();
-                        });
-                    }
-                    else
-                    {
-                        this._connection.requestPilotPatch();
-                        modal.close();
-                    }
-                });
-            }
-            if (declineButton)
-            {
-                declineButton.addEventListener("pointerdown", () =>
-                {
-                    modal.close();
-                });
-            }
-        });
-        modal.show();
-    }
+    //         if (acceptButton)
+    //         {
+    //             acceptButton.addEventListener("pointerdown", () =>
+    //             {
+    //                 if (callbackBeforeSync)
+    //                 {
+    //                     callbackBeforeSync(() =>
+    //                     {
+    //                         this._connection.requestPilotPatch();
+    //                         modal.close();
+    //                     });
+    //                 }
+    //                 else
+    //                 {
+    //                     this._connection.requestPilotPatch();
+    //                     modal.close();
+    //                 }
+    //             });
+    //         }
+    //         if (declineButton)
+    //         {
+    //             declineButton.addEventListener("pointerdown", () =>
+    //             {
+    //                 modal.close();
+    //             });
+    //         }
+    //     });
+    //     modal.show();
+    // }
 
     _registerEventListeners()
     {
@@ -578,17 +578,17 @@ export default class ScUiMultiplayer extends Events
                 const opName = msg.opName;
                 notify("reloaded code for op", opName);
 
-                this._requestResync(msg.username + " changed " + opName, (next) =>
-                {
-                    const taskName = String(this._connection.getTimestamp());
-                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
+                // this._requestResync(msg.username + " changed " + opName, (next) =>
+                // {
+                //     const taskName = String(this._connection.getTimestamp());
+                //     loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
 
-                    const loadJsCallback = () =>
-                    {
-                        next();
-                    };
-                    loadjs.ready(taskName, loadJsCallback, loadJsCallback);
-                });
+                //     const loadJsCallback = () =>
+                //     {
+                //         next();
+                //     };
+                //     loadjs.ready(taskName, loadJsCallback, loadJsCallback);
+                // });
             }
         });
 
