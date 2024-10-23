@@ -19,6 +19,10 @@ export default class ScClient
         this.following = isOwnAnswer && ownClient ? ownClient.following : payload.following;
         this.isRemoteClient = payload.isRemoteClient;
         this.platform = payload.platform;
+        if (this.platform)
+        {
+            this.platform.isMobile = (/Android/i.test(this.platform.ua) || /iPhone|iPad|iPod/i.test(this.platform.ua));
+        }
         this.x = payload.x;
         this.y = payload.y;
         this.subpatch = payload.subpatch;

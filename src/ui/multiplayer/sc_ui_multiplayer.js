@@ -85,14 +85,14 @@ export default class ScUiMultiplayer extends Events
                 //     cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
                 // }
 
-                if (client.isPilot)
-                {
-                    elem.classList.add("pilot");
-                }
-                else
-                {
-                    elem.classList.remove("pilot");
-                }
+                // if (client.isPilot)
+                // {
+                //     elem.classList.add("pilot");
+                // }
+                // else
+                // {
+                //     elem.classList.remove("pilot");
+                // }
 
                 if (client.isMe)
                 {
@@ -103,13 +103,9 @@ export default class ScUiMultiplayer extends Events
                     elem.classList.remove("me");
                 }
             }
-
             elem.addEventListener("pointerdown", (event) =>
             {
-                CABLES.contextMenu.show(
-                    {
-                        "items": this._getContextMenuItems(event.currentTarget.dataset.clientId)
-                    }, event.currentTarget);
+                CABLES.contextMenu.show({ "items": this._getContextMenuItems(event.currentTarget.dataset.clientId) }, event.currentTarget);
             });
         });
 
@@ -290,26 +286,26 @@ export default class ScUiMultiplayer extends Events
 
             if (this._connection.inMultiplayerSession)
             {
-                if (client.isPilot && this._connection.clientId !== client.clientId)
-                {
-                    items.push({
-                        "title": "request pilot seat",
-                        "iconClass": "icon icon-user",
-                        "func": () =>
-                        {
-                            this._connection.state.requestPilotSeat();
-                        }
-                    });
-
-                    items.push({
-                        "title": "sync patch with pilot",
-                        "iconClass": "icon icon-refresh",
-                        "func": () =>
-                        {
-                            this._connection.requestPilotPatch();
-                        }
-                    });
-                }
+                // if (client.isPilot && this._connection.clientId !== client.clientId)
+                // {
+                //     items.push({
+                //         "title": "request pilot seat",
+                //         "iconClass": "icon icon-user",
+                //         "func": () =>
+                //         {
+                //             this._connection.state.requestPilotSeat();
+                //         }
+                //     });
+                //
+                //     items.push({
+                //         "title": "sync patch with pilot",
+                //         "iconClass": "icon icon-refresh",
+                //         "func": () =>
+                //         {
+                //             this._connection.requestPilotPatch();
+                //         }
+                //     });
+                // }
 
                 if (client.isRemoteClient)
                 {
@@ -327,22 +323,35 @@ export default class ScUiMultiplayer extends Events
                             title += " on " + platform.os.family;
                         }
                     }
+                    const icon = platform.isMobile ? "icon-smartphone" : "icon-remoteviewer";
                     items.push({
                         "title": title,
-                        "iconClass": "icon icon-remoteviewer",
+                        "iconClass": "icon " + icon,
                         "func": () => {}
                     });
-                    if (this._connection.client.isPilot)
+                    const projectId = gui.project().shortId;
+                    if (projectId && client.userid)
                     {
                         items.push({
-                            "title": "send resync command",
-                            "iconClass": "icon icon-refresh",
+                            "title": "Open in new window",
                             "func": () =>
                             {
-                                this._sendForceResync(client);
+                                window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId + "?u=" + client.userid);
                             }
                         });
                     }
+
+                    // if (this._connection.client.isPilot)
+                    // {
+                    //     items.push({
+                    //         "title": "send resync command",
+                    //         "iconClass": "icon icon-refresh",
+                    //         "func": () =>
+                    //         {
+                    //             this._sendForceResync(client);
+                    //         }
+                    //     });
+                    // }
                 }
             }
         }
