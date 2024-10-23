@@ -553,7 +553,7 @@ export default class ScUiMultiplayer extends Events
                 {
                     // follow the pilot
                     this._connection.client.following = pilot.clientId;
-                    this._jumpToCursor(pilot);
+                    // this._jumpToCursor(pilot);
                 }
                 this.updateMultiplayerBar();
                 // notify(username + " the pilot");

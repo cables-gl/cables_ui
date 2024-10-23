@@ -328,8 +328,6 @@ export default class ScState extends Events
                     gui.emitEvent("multiUserSubpatchChanged", msg.clientId, msg.subpatch);
                 }
 
-                console.log(msg.subpatch);
-
                 this._clients[msg.clientId].x = msg.x;
                 this._clients[msg.clientId].y = msg.y;
                 this._clients[msg.clientId].subpatch = msg.subpatch;
