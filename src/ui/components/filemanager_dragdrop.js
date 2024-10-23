@@ -60,6 +60,12 @@ DragNDrop.startDragLibraryFile = function (_event, p)
 
         const filepath = event.dataTransfer.getData("filepath");
 
+        if (event.dataTransfer.files[0])
+        {
+            // this drop is actually a real file...
+            return CABLES.fileUploader.uploadDrop(event);
+        }
+
         console.log("drop event", filepath, event);
         gui.patchView.addAssetOpAuto(filepath, event);
 
