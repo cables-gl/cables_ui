@@ -20,6 +20,7 @@ export default class GlCursor extends Events
         this._cursorRect.setShape(5);
         this._lastMovement = performance.now();
 
+        this._subPatch = 0;
         this._clientId = clientId;
         this._userId = null;
 
@@ -32,6 +33,25 @@ export default class GlCursor extends Events
         document.body.appendChild(this._avatarEle);
 
         this._cursorRect.setColor(1, 1, 1, 1);
+
+        gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) =>
+        {
+            this._subPatch = _subPatch;
+
+            if (_clientId == this._clientId)
+            {
+                // if (gui.patchView.getCurrentSubPatch() != _subPatch)
+                // {
+                this.updateAnim();
+                // }
+            }
+        });
+    }
+
+    setSubpatch(_subPatch)
+    {
+        this._subPatch = _subPatch;
+        this.updateAnim();
     }
 
     updateAnim()
@@ -51,7 +71,7 @@ export default class GlCursor extends Events
             this._avatarEle.style.left = (coord[0] + 15) + "px";
         }
 
-        if (performance.now() - this._lastMovement > 10000)
+        if (performance.now() - this._lastMovement > 10000 || gui.patchView.getCurrentSubPatch() != this._subPatch)
         {
             this._avatarEle.style.display = "none";
             this._cursorRect.visible = false;

@@ -113,6 +113,11 @@ export default class PatchOutline extends Events
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
     }
 
+    isCurrentlyVisible()
+    {
+        return !!ele.byId("_cbl_outlinetree");
+    }
+
     insert(id = "_cbl_outlinetree")
     {
         if (!this._listeningSubs)
@@ -120,7 +125,13 @@ export default class PatchOutline extends Events
             this._listeningSubs = true;
             gui.corePatch().on("subpatchesChanged", () =>
             {
-                if (ele.byId("_cbl_outlinetree"))
+                if (this.isCurrentlyVisible())
+                    this.insert();
+            });
+
+            gui.on("multiUserSubpatchChanged", (_clientId, _subPatch) =>
+            {
+                if (this.isCurrentlyVisible())
                     this.insert();
             });
         }
@@ -198,6 +209,7 @@ export default class PatchOutline extends Events
     {
         let str = "";
         const userIds = gui.socket.state.getUserInSubpatch(patchId);
+
 
         for (let i = 0; i < userIds.length; i++)
         {
