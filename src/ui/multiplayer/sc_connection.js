@@ -674,6 +674,8 @@ export default class ScConnection extends Events
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
+            if (!this.client.isRemoteClient) return;
+
             const foreignRequest = (msg.data && msg.data.vars && msg.data.vars.requestedBy && this.client) && (msg.data.vars.requestedBy !== this.clientId);
 
             if (!this._paco)
