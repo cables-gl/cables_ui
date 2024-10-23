@@ -477,16 +477,16 @@
                     display: none;
                 }
 
-                .cursorcolor
-                {
-                    width:5px;
-                    height:5px;
-                    border-radius: 100%;
-                    position: absolute;
-                    background-color: red;
-                    margin-left:-3px;
+                // .cursorcolor
+                // {
+                //     width:5px;
+                //     height:5px;
+                //     border-radius: 100%;
+                //     position: absolute;
+                //     background-color: red;
+                //     margin-left:-3px;
 
-                }
+                // }
 
                 &.following .followingicon
                 {
@@ -565,6 +565,11 @@
     .nav_logo
     {
         padding-left: 7px;
+    }
+
+    .nav_support
+    {
+        background-color: #72100e;
     }
 
     #nav-logo_idle

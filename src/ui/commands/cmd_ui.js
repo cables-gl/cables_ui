@@ -40,7 +40,10 @@ CABLES_CMD_UI.openRemoteViewer = function ()
     {
         projectId = gui.project().shortId || gui.project()._id;
     }
-    window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId);
+    if (gui.socket) gui.socket.startRemoteViewer(() =>
+    {
+        window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId);
+    });
 };
 
 CABLES_CMD_UI.files = function ()

@@ -382,8 +382,9 @@ export default class Gui extends Events
 
     canSaveInMultiplayer()
     {
-        if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
-        else return true;
+        // if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
+        // else return true;
+        return true;
     }
 
     isGuestEditor()
@@ -1451,8 +1452,12 @@ export default class Gui extends Events
         }
 
 
-        if (CABLES.platform.frontendOptions.showAssetUpload) ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-        else ele.hide(ele.byId("nav_uploadfile"));
+        const uploadEle = ele.byId("nav_uploadfile");
+        if (uploadEle)
+        {
+            uploadEle.addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+            if (!CABLES.platform.frontendOptions.showAssetUpload)uploadEle.innerText = "Add file";
+        }
 
         if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
         if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
@@ -1487,6 +1492,8 @@ export default class Gui extends Events
         if (CABLES.platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
         else ele.hide(ele.byId("nav_buildinfo"));
 
+
+        ele.byId("nav_support").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/support", "_blank"); });
 
         // --- Help menu
         // Documentation
@@ -2174,21 +2181,11 @@ export default class Gui extends Events
     setUser(u)
     {
         gui.user = u;
+        if (gui.user.isPatron) ele.hide(ele.byId("nav_support"));
     }
 
     initCoreListeners()
     {
-        // this._corePatch.on("exception", function (ex, op)
-        // {
-        //     new ModalError({ "exception": ex, "op": op });
-        // });
-
-        // this._corePatch.on("exceptionOp", function (e, objName, op)
-        // {
-        //     console.log("core error2");
-        //     new ModalError({ "exception": e, "opname": objName, "op": op });
-        // });
-
         this._corePatch.on("criticalError", function (options)
         {
             console.log("core error3");

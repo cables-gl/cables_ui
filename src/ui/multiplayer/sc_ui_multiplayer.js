@@ -73,17 +73,17 @@ export default class ScUiMultiplayer extends Events
             let client = this._connection.clients[itemId];
             if (client)
             {
-                const cursorColorEl = elem.querySelector(".cursorcolor");
-                if (cursorColorEl)
-                {
-                    const clientColor = this._connection.getClientColor(itemId);
-                    let alpha = "0.0";
-                    if (client.inMultiplayerSession)
-                    {
-                        alpha = "1.0";
-                    }
-                    cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
-                }
+                // const cursorColorEl = elem.querySelector(".cursorcolor");
+                // if (cursorColorEl)
+                // {
+                //     const clientColor = this._connection.getClientColor(itemId);
+                //     let alpha = "0.0";
+                //     if (client.inMultiplayerSession)
+                //     {
+                //         alpha = "1.0";
+                //     }
+                //     cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
+                // }
 
                 if (client.isPilot)
                 {
@@ -113,30 +113,30 @@ export default class ScUiMultiplayer extends Events
             });
         });
 
-        if (this._connection.inMultiplayerSession)
-        {
-            if (this._connection.client && !this._connection.client.isPilot)
-            {
-                if (!this._connection.client.isRemoteClient) gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
-
-                if (this._connection.client.following)
-                {
-                    let userName = "someone";
-                    if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
-                    gui.restriction.setMessage("You are following  " + userName + " in a multiplayer session - editing is restricted");
-                }
-                else
-                {
-                    gui.restriction.setMessage("You are NOT the pilot in this multiplayer session - changes will not be saved");
-                }
-            }
-            else
-            {
-                gui.restriction.setMessage("You are the pilot in this multiplayer session - changes will be sent to others");
-                gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            }
-        }
-        else
+        // if (this._connection.inMultiplayerSession)
+        // {
+        //     if (this._connection.client && !this._connection.client.isPilot)
+        //     {
+        //         if (!this._connection.client.isRemoteClient) gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        //
+        //         if (this._connection.client.following)
+        //         {
+        //             let userName = "someone";
+        //             if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
+        //             gui.restriction.setMessage("You are following  " + userName + " in a multiplayer session - editing is restricted");
+        //         }
+        //         else
+        //         {
+        //             gui.restriction.setMessage("You are NOT the pilot in this multiplayer session - changes will not be saved");
+        //         }
+        //     }
+        //     else
+        //     {
+        //         gui.restriction.setMessage("You are the pilot in this multiplayer session - changes will be sent to others");
+        //         gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+        //     }
+        // }
+        // else
         {
             gui.restriction.setMessage(null);
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
@@ -474,56 +474,57 @@ export default class ScUiMultiplayer extends Events
             }
         });
 
-        this._connection.state.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
-        {
-            if (client.clientId === this._connection.clientId) return;
-
-            if (this._connection.inMultiplayerSession)
-            {
-                if (client.isRemoteClient)
-                {
-                    notify("remote viewer closed by " + client.username);
-                }
-                else
-                {
-                    notify(client.username + " just left the multiplayer session");
-                }
-            }
-        });
-
-        this._connection.state.on("clientJoined", (client) =>
-        {
-            if (client.clientId === this._connection.clientId) return;
-
-            if (this._connection.inMultiplayerSession)
-            {
-                if (client.isRemoteClient)
-                {
-                    notify("remote viewer opened by " + client.username);
-                }
-                else
-                {
-                    notify(client.username + " just joined the multiplayer session");
-                }
-            }
-        });
-
-        this._connection.state.on("clientLeft", (client) =>
-        {
-            if (client.clientId === this._connection.clientId) return;
-
-            if (this._connection.inMultiplayerSession)
-            {
-                if (client.isRemoteClient)
-                {
-                    notify("remote viewer closed by " + client.username);
-                }
-                else
-                {
-                    notify(client.username + " just left the multiplayer session");
-                }
-            }
-        });
+        // this._connection.state.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
+        // {
+        //     return;
+        //     if (client.clientId === this._connection.clientId) return;
+        //
+        //     if (this._connection.inMultiplayerSession)
+        //     {
+        //         if (client.isRemoteClient)
+        //         {
+        //             notify("remote viewer closed by " + client.username);
+        //         }
+        //         else
+        //         {
+        //             notify(client.username + " just left the multiplayer session");
+        //         }
+        //     }
+        // });
+        //
+        // this._connection.state.on("clientJoined", (client) =>
+        // {
+        //     if (client.clientId === this._connection.clientId) return;
+        //
+        //     if (this._connection.inMultiplayerSession)
+        //     {
+        //         if (client.isRemoteClient)
+        //         {
+        //             notify("remote viewer opened by " + client.username);
+        //         }
+        //         else
+        //         {
+        //             notify(client.username + " just joined the multiplayer session");
+        //         }
+        //     }
+        // });
+        //
+        // this._connection.state.on("clientLeft", (client) =>
+        // {
+        //     if (client.clientId === this._connection.clientId) return;
+        //
+        //     if (this._connection.inMultiplayerSession)
+        //     {
+        //         if (client.isRemoteClient)
+        //         {
+        //             notify("remote viewer closed by " + client.username);
+        //         }
+        //         else
+        //         {
+        //             notify(client.username + " just left the multiplayer session");
+        //         }
+        //     }
+        // });
 
         this._connection.state.on("pilotChanged", (pilot) =>
         {
@@ -546,7 +547,7 @@ export default class ScUiMultiplayer extends Events
                     this._jumpToCursor(pilot);
                 }
                 this.updateMultiplayerBar();
-                notify(username + " the pilot");
+                // notify(username + " the pilot");
             }
         });
 

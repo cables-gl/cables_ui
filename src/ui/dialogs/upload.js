@@ -45,9 +45,9 @@ export default class FileUploader
 
         this._uploadDropEvent = event.originalEvent;
 
-        if (event.dataTransfer.types.indexOf("Files") == -1)
+        if (!event || !event.dataTransfer || event.dataTransfer.types.indexOf("Files") == -1)
         {
-            console.log("drag has no files...");
+            this._log.log("drag has no files...");
             return;
         }
 

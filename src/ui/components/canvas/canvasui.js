@@ -93,10 +93,6 @@ export default class CanvasUi
 
             this.showCanvasModal(true);
             gui.canvasManager.setCurrentCanvas(this.canvasEle);
-
-
-
-
             p.finish();
         });
 

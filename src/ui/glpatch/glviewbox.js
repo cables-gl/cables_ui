@@ -312,6 +312,16 @@ export default class GlViewBox
 
     get mousePatchY() { return this._mousePatchY; }
 
+    get width()
+    {
+        return this._cgl.canvasWidth;
+    }
+
+    get height()
+    {
+        return this._cgl.canvasHeight;
+    }
+
     update()
     {
         const time = this.glPatch.time;
