@@ -20,6 +20,7 @@ export default class FileManagerEditor
 
     editAssetTextFile(filename, syntax, patchId)
     {
+        console.log("filename", filename);
         patchId = patchId || gui.project()._id;
         let url = filename;
         if (!filename.startsWith("file:"))
@@ -51,6 +52,8 @@ export default class FileManagerEditor
                         "onSave": function (setStatus, content)
                         {
                             gui.jobs().start({ "id": "saveeditorcontent" + filename, "title": "saving file " + filename });
+
+                            console.log("updatefile save", filename);
 
                             CABLESUILOADER.talkerAPI.send(
                                 "updateFile",
