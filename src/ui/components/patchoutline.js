@@ -193,10 +193,26 @@ export default class PatchOutline extends Events
         return cmt;
     }
 
+
+    _getUserImagesStringSubpatch(patchId)
+    {
+        let str = "";
+        const userIds = gui.socket.state.getUserInSubpatch(patchId);
+
+        for (let i = 0; i < userIds.length; i++)
+        {
+            str += "<img style='height:15px;border-radius:100%;margin-left:10px;' src=\"" + CABLES.platform.getCablesUrl() + "/api/avatar/" + userIds[i] + "/mini\"/>";
+        }
+
+        return str;
+    }
+
     _getSubPatchesHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
         if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
+
+        mainTitle += this._getUserImagesStringSubpatch(0);
 
         let sub =
         {
@@ -220,6 +236,10 @@ export default class PatchOutline extends Events
             sub.title = subOp.getTitle();
             sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
+
+            this._getUserImagesStringSubpatch(patchId);
+
+            // html += "!!";
 
             if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(subOp.uiAttribs.comment) + "</span>";
 

@@ -45,6 +45,19 @@ export default class ScState extends Events
             return this._clients[clientId].userid;
     }
 
+
+    getUserInSubpatch(subPatch)
+    {
+        const userIds = [];
+        for (const i in this._clients)
+        {
+            if (this._clients[i].subpatch == subPatch)
+                userIds.push(this._clients[i].userid);
+        }
+
+        return userIds;
+    }
+
     _onPingAnswer(payload)
     {
         let userListChanged = false;

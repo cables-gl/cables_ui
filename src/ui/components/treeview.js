@@ -27,10 +27,7 @@ export default class TreeView extends Events
         if (level == 0)
             html = " <table class=\"table treetable\">";
 
-        data.sort(
-            (a, b) =>
-            { return a.order.localeCompare(b.order, "en", { "sensitivity": "base" }); }
-        );
+        data.sort((a, b) => { return a.order.localeCompare(b.order, "en", { "sensitivity": "base" }); });
 
         for (let i = 0; i < data.length; i++)
         {
@@ -53,6 +50,7 @@ export default class TreeView extends Events
             let style = "";
             if (data[i].iconBgColor)style = "background-color:" + data[i].iconBgColor;
 
+
             html += "<span id=\"icon_" + item.id + "\" data-eletype=\"icon\" class=\"icon icon-" + icon + " iconhover\" style=\"" + style + "\"></span>";
 
             html += "&nbsp;&nbsp;";
@@ -62,10 +60,16 @@ export default class TreeView extends Events
             html += "</a>";
 
             html += "</td>";
+
+
+
+
             html += "<td>";
+
             html += "  <span id=\"threedots_" + item.id + "\" data-eletype=\"threedots\" class=\"icon icon-three-dots iconhover\"></span>";
             html += "</td>";
             html += "</tr>";
+
 
             if (item.hasOwnProperty("childs") && item.childs.length > 0) html += this._html(item.childs, level + 1);
 
