@@ -237,7 +237,7 @@ export default class PatchOutline extends Events
             sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
 
-            this._getUserImagesStringSubpatch(patchId);
+            sub.title += this._getUserImagesStringSubpatch(patchId);
 
             // html += "!!";
 
