@@ -45,6 +45,19 @@ export default class ScState extends Events
             return this._clients[clientId].userid;
     }
 
+
+    getUserInSubpatch(subPatch)
+    {
+        const userIds = [];
+        for (const i in this._clients)
+        {
+            if (!this._clients[i].isMe && this._clients[i].subpatch == subPatch)
+                userIds.push(this._clients[i].userid);
+        }
+
+        return userIds;
+    }
+
     _onPingAnswer(payload)
     {
         let userListChanged = false;
@@ -309,6 +322,12 @@ export default class ScState extends Events
             if (this._connection.client.isRemoteClient) return;
             if (this._clients[msg.clientId])
             {
+                if (this._clients[msg.clientId].subpatch != msg.subpatch)
+                {
+                    this._clients[msg.clientId].subpatch = msg.subpatch;
+                    gui.emitEvent("multiUserSubpatchChanged", msg.clientId, msg.subpatch);
+                }
+
                 this._clients[msg.clientId].x = msg.x;
                 this._clients[msg.clientId].y = msg.y;
                 this._clients[msg.clientId].subpatch = msg.subpatch;
@@ -395,30 +414,30 @@ export default class ScState extends Events
             }
         });
 
-        gui.opParams.addEventListener("opSelected", (op) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client && this._connection.client.isPilot)
-            {
-                if (op)
-                    this._connection.sendUi("opSelected", { "opId": op.id });
-            }
-        });
+        // gui.opParams.addEventListener("opSelected", (op) =>
+        // {
+        //     if (!this._connection.inMultiplayerSession) return;
+        //     if (this._connection.client && this._connection.client.isPilot)
+        //     {
+        //         if (op)
+        //             this._connection.sendUi("opSelected", { "opId": op.id });
+        //     }
+        // });
 
-        this._connection.on("opSelected", (msg) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client.isRemoteClient) return;
-            if (!this._connection.client.following) return;
-            if (!this._connection.client.following === msg.clientId) return;
-            const op = gui.corePatch().getOpById(msg.opId);
-            if (op)
-            {
-                gui.patchView.unselectAllOps();
-                gui.patchView.selectOpId(msg.opId);
-                gui.patchView.focusOp(msg.opId);
-            }
-        });
+        // this._connection.on("opSelected", (msg) =>
+        // {
+        //     if (!this._connection.inMultiplayerSession) return;
+        //     if (this._connection.client.isRemoteClient) return;
+        //     if (!this._connection.client.following) return;
+        //     if (!this._connection.client.following === msg.clientId) return;
+        //     const op = gui.corePatch().getOpById(msg.opId);
+        //     if (op)
+        //     {
+        //         gui.patchView.unselectAllOps();
+        //         gui.patchView.selectOpId(msg.opId);
+        //         gui.patchView.focusOp(msg.opId);
+        //     }
+        // });
 
         this._connection.on("timelineControl", (msg) =>
         {

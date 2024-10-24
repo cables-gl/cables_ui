@@ -51,11 +51,12 @@ export default class EditorTab extends Events
         if (existing)
         {
             gui.mainTabs.activateTab(existing.id);
-            return;
         }
-
-        this._tab.editorObj = options.editorObj;
-        gui.mainTabs.addTab(this._tab);
+        else
+        {
+            this._tab.editorObj = options.editorObj;
+            gui.mainTabs.addTab(this._tab);
+        }
 
         let style = "";
 
@@ -63,10 +64,7 @@ export default class EditorTab extends Events
         const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
         this._tab.html(html);
 
-        if (options.content)
-        {
-            this.setContent(options.content);
-        }
+        if (options.hasOwnProperty("content")) this.setContent(options.content);
     }
 
     setContent(content, silent = false)

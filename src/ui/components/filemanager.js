@@ -554,7 +554,9 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                gui.fileManagerEditor.editAssetTextFile(r.path || r.fileDb.fileName, r.fileDb.type);
+                                let fileName = r.fileDb.fileName;
+                                if (CABLES.platform.frontendOptions.isStandalone) fileName = r.path;
+                                gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
                             });
                     }
 

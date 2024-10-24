@@ -85,14 +85,14 @@ export default class ScUiMultiplayer extends Events
                 //     cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
                 // }
 
-                if (client.isPilot)
-                {
-                    elem.classList.add("pilot");
-                }
-                else
-                {
-                    elem.classList.remove("pilot");
-                }
+                // if (client.isPilot)
+                // {
+                //     elem.classList.add("pilot");
+                // }
+                // else
+                // {
+                //     elem.classList.remove("pilot");
+                // }
 
                 if (client.isMe)
                 {
@@ -103,13 +103,9 @@ export default class ScUiMultiplayer extends Events
                     elem.classList.remove("me");
                 }
             }
-
             elem.addEventListener("pointerdown", (event) =>
             {
-                CABLES.contextMenu.show(
-                    {
-                        "items": this._getContextMenuItems(event.currentTarget.dataset.clientId)
-                    }, event.currentTarget);
+                CABLES.contextMenu.show({ "items": this._getContextMenuItems(event.currentTarget.dataset.clientId) }, event.currentTarget);
             });
         });
 
@@ -290,26 +286,26 @@ export default class ScUiMultiplayer extends Events
 
             if (this._connection.inMultiplayerSession)
             {
-                if (client.isPilot && this._connection.clientId !== client.clientId)
-                {
-                    items.push({
-                        "title": "request pilot seat",
-                        "iconClass": "icon icon-user",
-                        "func": () =>
-                        {
-                            this._connection.state.requestPilotSeat();
-                        }
-                    });
-
-                    items.push({
-                        "title": "sync patch with pilot",
-                        "iconClass": "icon icon-refresh",
-                        "func": () =>
-                        {
-                            this._connection.requestPilotPatch();
-                        }
-                    });
-                }
+                // if (client.isPilot && this._connection.clientId !== client.clientId)
+                // {
+                //     items.push({
+                //         "title": "request pilot seat",
+                //         "iconClass": "icon icon-user",
+                //         "func": () =>
+                //         {
+                //             this._connection.state.requestPilotSeat();
+                //         }
+                //     });
+                //
+                //     items.push({
+                //         "title": "sync patch with pilot",
+                //         "iconClass": "icon icon-refresh",
+                //         "func": () =>
+                //         {
+                //             this._connection.requestPilotPatch();
+                //         }
+                //     });
+                // }
 
                 if (client.isRemoteClient)
                 {
@@ -327,22 +323,35 @@ export default class ScUiMultiplayer extends Events
                             title += " on " + platform.os.family;
                         }
                     }
+                    const icon = platform.isMobile ? "icon-smartphone" : "icon-remoteviewer";
                     items.push({
                         "title": title,
-                        "iconClass": "icon icon-remoteviewer",
+                        "iconClass": "icon " + icon,
                         "func": () => {}
                     });
-                    if (this._connection.client.isPilot)
+                    const projectId = gui.project().shortId;
+                    if (projectId && client.userid)
                     {
                         items.push({
-                            "title": "send resync command",
-                            "iconClass": "icon icon-refresh",
+                            "title": "Open in new window",
                             "func": () =>
                             {
-                                this._sendForceResync(client);
+                                window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId + "?u=" + client.userid);
                             }
                         });
                     }
+
+                    // if (this._connection.client.isPilot)
+                    // {
+                    //     items.push({
+                    //         "title": "send resync command",
+                    //         "iconClass": "icon icon-refresh",
+                    //         "func": () =>
+                    //         {
+                    //             this._sendForceResync(client);
+                    //         }
+                    //     });
+                    // }
                 }
             }
         }
@@ -387,55 +396,55 @@ export default class ScUiMultiplayer extends Events
     }
 
 
-    _requestResync(title, callbackBeforeSync)
-    {
-        let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
-        content += "<div style='margin-top: 20px; text-align: center;'>";
-        content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
-        content += "<a class=\"button decline\">Ignore</a>";
-        content += "</div>";
+    // _requestResync(title, callbackBeforeSync)
+    // {
+    //     let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
+    //     content += "<div style='margin-top: 20px; text-align: center;'>";
+    //     content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
+    //     content += "<a class=\"button decline\">Ignore</a>";
+    //     content += "</div>";
 
-        const options = {
-            "title": title,
-            "html": content
-        };
+    //     const options = {
+    //         "title": title,
+    //         "html": content
+    //     };
 
-        const modal = new ModalDialog(options, false);
-        modal.on("onShow", () =>
-        {
-            const modalElement = modal.getElement();
-            const acceptButton = modalElement.querySelector(".button.accept");
-            const declineButton = modalElement.querySelector(".button.decline");
+    //     const modal = new ModalDialog(options, false);
+    //     modal.on("onShow", () =>
+    //     {
+    //         const modalElement = modal.getElement();
+    //         const acceptButton = modalElement.querySelector(".button.accept");
+    //         const declineButton = modalElement.querySelector(".button.decline");
 
-            if (acceptButton)
-            {
-                acceptButton.addEventListener("pointerdown", () =>
-                {
-                    if (callbackBeforeSync)
-                    {
-                        callbackBeforeSync(() =>
-                        {
-                            this._connection.requestPilotPatch();
-                            modal.close();
-                        });
-                    }
-                    else
-                    {
-                        this._connection.requestPilotPatch();
-                        modal.close();
-                    }
-                });
-            }
-            if (declineButton)
-            {
-                declineButton.addEventListener("pointerdown", () =>
-                {
-                    modal.close();
-                });
-            }
-        });
-        modal.show();
-    }
+    //         if (acceptButton)
+    //         {
+    //             acceptButton.addEventListener("pointerdown", () =>
+    //             {
+    //                 if (callbackBeforeSync)
+    //                 {
+    //                     callbackBeforeSync(() =>
+    //                     {
+    //                         this._connection.requestPilotPatch();
+    //                         modal.close();
+    //                     });
+    //                 }
+    //                 else
+    //                 {
+    //                     this._connection.requestPilotPatch();
+    //                     modal.close();
+    //                 }
+    //             });
+    //         }
+    //         if (declineButton)
+    //         {
+    //             declineButton.addEventListener("pointerdown", () =>
+    //             {
+    //                 modal.close();
+    //             });
+    //         }
+    //     });
+    //     modal.show();
+    // }
 
     _registerEventListeners()
     {
@@ -544,7 +553,7 @@ export default class ScUiMultiplayer extends Events
                 {
                     // follow the pilot
                     this._connection.client.following = pilot.clientId;
-                    this._jumpToCursor(pilot);
+                    // this._jumpToCursor(pilot);
                 }
                 this.updateMultiplayerBar();
                 // notify(username + " the pilot");
@@ -569,17 +578,17 @@ export default class ScUiMultiplayer extends Events
                 const opName = msg.opName;
                 notify("reloaded code for op", opName);
 
-                this._requestResync(msg.username + " changed " + opName, (next) =>
-                {
-                    const taskName = String(this._connection.getTimestamp());
-                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
+                // this._requestResync(msg.username + " changed " + opName, (next) =>
+                // {
+                //     const taskName = String(this._connection.getTimestamp());
+                //     loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
 
-                    const loadJsCallback = () =>
-                    {
-                        next();
-                    };
-                    loadjs.ready(taskName, loadJsCallback, loadJsCallback);
-                });
+                //     const loadJsCallback = () =>
+                //     {
+                //         next();
+                //     };
+                //     loadjs.ready(taskName, loadJsCallback, loadJsCallback);
+                // });
             }
         });
 

@@ -23,6 +23,7 @@ export default class EditorSession
         {
             new ManageOp(gui.mainTabs, id);
         });
+
         this.addListener("welcometab", (name, data) =>
         {
             new WelcomeTab(gui.mainTabs, name);

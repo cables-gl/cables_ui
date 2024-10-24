@@ -171,7 +171,22 @@ export default class CanvasManager
 
     popOut()
     {
-        if (this.subWindow) this.subWindow.close();
+        if (this._canvasMode === this.CANVASMODE_POPOUT)
+        {
+            if (this.subWindow)
+            {
+                this.subWindow.focus();
+            }
+            return;
+        }
+        if (this.subWindow)
+        {
+            // this leads to problems with internally registered electron listeners
+            // so we close and ignore errors (as that works, even in electron)
+            try { this.subWindow.close(); }
+            catch (e) {}
+            this.subWindow = null;
+        }
         let id = CABLES.uuid();
         this.subWindow = window.open("", "view#" + id, "width=" + 500 + ",height=" + 500 + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
@@ -186,7 +201,8 @@ export default class CanvasManager
 
         const style = document.createElement("style");
         style.innerHTML = "body{padding:0;margin:0;background-color:black;overflow:hidden;color:#aaa;font-family:arial;}" +
-            "#glcanvas{position:absolute;}";
+            "#glcanvas{position:absolute;}" +
+            ":focus{outline:unset;}";
         nBody.appendChild(style);
 
         // <link rel="stylesheet" type="text/css" media="all" href="css/style-dark.css">
@@ -219,7 +235,9 @@ export default class CanvasManager
         // for (let i = 0; i < cablesEles.length; i++)nBody.appendChild(cablesEles[i]);
 
         while (document.body.getElementsByClassName("cablesEle").length > 0)
+        {
             nBody.appendChild(document.body.getElementsByClassName("cablesEle")[0]);
+        }
 
         this.subWindow.addEventListener("resize", () =>
         {
@@ -236,7 +254,9 @@ export default class CanvasManager
             }
 
             while (nBody.getElementsByClassName("cablesEle").length > 0)
+            {
                 document.body.appendChild(nBody.getElementsByClassName("cablesEle")[0]);
+            }
             // for (let i = 0; i < ncablesEles.length; i++)
 
             gui.corePatch().cgl.updateSize();

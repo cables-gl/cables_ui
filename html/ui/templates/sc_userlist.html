@@ -4,8 +4,15 @@
         {{#if isRemoteClient}}
             <div class="tt item remote-client" data-client-id="{{clientId}}" data-tt="{{username}}">
                 <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
-                <div class="greyicon"><span class="icon icon-smartphone icon-0_75x"></span>
-                </div>
+                {{#if platfrom}}
+                    {{#if platform.isMobile}}
+                        <div class="greyicon"><span class="icon icon-smartphone icon-0_75x"></span></div>
+                    {{else}}
+                        <div class="greyicon"><span class="icon icon-remoteviewer icon-0_75x"></span></div>
+                    {{/if}}
+                {{else}}
+                    <div class="greyicon"><span class="icon icon-remoteviewer icon-0_75x"></span></div>
+                {{/if}}
             </div>
         {{else}}
             <div class="tt item" data-client-id="{{clientId}}" data-tt="{{username}}">

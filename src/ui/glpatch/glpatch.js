@@ -347,15 +347,18 @@ export default class GlPatch extends Events
             gui.on("netCursorPos", (msg) =>
             {
                 if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
-                if (msg.hasOwnProperty("subpatch") && gui.patchView.getCurrentSubPatch() !== msg.subpatch)
-                {
-                    this._glCursors[msg.clientId].visible = false;
-                }
-                else
-                {
-                    this._glCursors[msg.clientId].visible = true;
-                    this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
-                }
+
+
+                if (msg.hasOwnProperty("subpatch"))
+                    this._glCursors[msg.clientId].setSubpatch(msg.subpatch);
+                // {
+                    // this._glCursors[msg.clientId].visible = false;
+                // }
+                // else
+                // {
+                    // this._glCursors[msg.clientId].visible = true;
+                this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
+                // }
             });
 
             gui.on("netSelectionArea", (msg) =>
