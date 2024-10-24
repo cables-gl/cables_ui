@@ -2049,14 +2049,14 @@ export default class ServerOps
                 if (err)
                 {
                     let title = "Failed to load op";
-                    let otherEnv = "dev.cables.gl";
-                    let editorLink = "https://" + otherEnv + "/edit/" + gui.project().shortId;
+                    let otherEnvName = "dev.cables.gl";
+                    let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
                     let errMsg = "";
                     let opLinks = [];
                     if (err.data)
                     {
                         if (err.data.text) errMsg = err.data.text;
-                        if (err.data.otherEnvName) otherEnv = err.data.otherEnvName;
+                        if (err.data.otherEnvName) otherEnvName = err.data.otherEnvName;
                         if (err.data.reasons) opLinks = err.data.reasons;
                         if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
                     }
@@ -2077,7 +2077,7 @@ export default class ServerOps
                             "title": title,
                             "text": errMsg,
                             "notices": opLinks,
-                            "okButton": { "text": "Try " + otherEnv },
+                            "okButton": { "text": "Try " + otherEnvName },
                             "cancelButton": { "text": "Continue loading", "callback": continueLoadingCallback }
                         });
                     modal.on("onSubmit", tryOtherEnvCallback);
