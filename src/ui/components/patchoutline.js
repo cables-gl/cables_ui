@@ -208,6 +208,7 @@ export default class PatchOutline extends Events
     _getUserImagesStringSubpatch(patchId)
     {
         let str = "";
+        if (!gui.socket) return "";
         const userIds = gui.socket.state.getUserInSubpatch(patchId);
 
 

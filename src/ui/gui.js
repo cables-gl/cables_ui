@@ -498,7 +498,6 @@ export default class Gui extends Events
         this._elInfoAreaParam = this._elInfoAreaParam || ele.byId("infoAreaParam");
         this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
-
         this._elGlCanvasDom = this.canvasManager.currentCanvas() || ele.byId("glcanvas");
 
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
