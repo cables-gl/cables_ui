@@ -2053,12 +2053,12 @@ export default class ServerOps
                     let editorLink = "https://" + otherEnv + "/edit/" + gui.project().shortId;
                     let errMsg = "";
                     let opLinks = [];
-                    if (err.msg)
+                    if (err.data)
                     {
-                        if (err.msg.text) errMsg = err.msg.text;
-                        if (err.msg.otherEnvName) otherEnv = err.msg.otherEnvName;
-                        if (err.msg.reasons) opLinks = err.msg.reasons;
-                        if (err.msg.otherEnvUrl) editorLink = err.msg.otherEnvUrl + "/edit/" + gui.project().shortId;
+                        if (err.data.text) errMsg = err.data.text;
+                        if (err.data.otherEnvName) otherEnv = err.data.otherEnvName;
+                        if (err.data.reasons) opLinks = err.data.reasons;
+                        if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
                     }
 
                     const continueLoadingCallback = () =>
