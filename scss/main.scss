@@ -497,9 +497,9 @@ body
     .clone
     {
         background-color: var(--color-02);
-        width:500px;
+        max-width:720px;
         padding:0px;
-        padding-left: 10px;
+        // padding-left: 10px;
         font-size: var(--font-size-default);
         color: var(--color-10);
         height:38px;
@@ -518,7 +518,7 @@ body
             // padding:10px;
             // padding-left:5px;
             // height:100%;
-            width:350px;
+            // width:350px;
             // background-color: var(--color-02);
             // color: var(--color-12);
             // float:right
@@ -532,6 +532,7 @@ body
             border: 1px solid transparent !important;
             border-radius: 10px;
             margin-right: 10px;
+            max-width: 300px;
         }
 
 
