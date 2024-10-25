@@ -2049,16 +2049,23 @@ export default class ServerOps
                 if (err)
                 {
                     let title = "Failed to load op";
-                    let otherEnv = "dev.cables.gl";
-                    let editorLink = "https://" + otherEnv + "/edit/" + gui.project().shortId;
+                    let footer = "";
+                    let otherEnvName = "dev.cables.gl";
+                    let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
+                    let otherEnvButton = "Try " + otherEnvName;
                     let errMsg = "";
                     let opLinks = [];
-                    if (err.msg)
+                    let hideEnvButton = false;
+                    if (err.data)
                     {
-                        if (err.msg.text) errMsg = err.msg.text;
-                        if (err.msg.otherEnvName) otherEnv = err.msg.otherEnvName;
-                        if (err.msg.reasons) opLinks = err.msg.reasons;
-                        if (err.msg.otherEnvUrl) editorLink = err.msg.otherEnvUrl + "/edit/" + gui.project().shortId;
+                        if (err.data.text) errMsg = err.data.text;
+                        if (err.data.footer) footer = err.data.footer;
+                        if (err.data.otherEnvName) otherEnvName = err.data.otherEnvName;
+                        if (err.data.reasons) opLinks = err.data.reasons;
+                        if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
+                        if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
+                        if (err.data.editorLink) editorLink = err.data.editorLink;
+                        if (err.data.hideEnvButton) hideEnvButton = true;
                     }
 
                     const continueLoadingCallback = () =>
@@ -2068,20 +2075,31 @@ export default class ServerOps
 
                     const tryOtherEnvCallback = () =>
                     {
-                        window.parent.location = editorLink;
+                        window.open(editorLink);
                     };
 
-                    const modal = new ModalDialog(
-                        {
-                            "choice": true,
-                            "title": title,
-                            "text": errMsg,
-                            "notices": opLinks,
-                            "okButton": { "text": "Try " + otherEnv },
-                            "cancelButton": { "text": "Continue loading", "callback": continueLoadingCallback }
-                        });
-                    modal.on("onSubmit", tryOtherEnvCallback);
-                    modal.on("onClose", continueLoadingCallback);
+                    const modalOptions = {
+                        "title": title,
+                        "footer": footer,
+                        "text": errMsg,
+                        "notices": opLinks,
+                    };
+                    if (!hideEnvButton)
+                    {
+                        modalOptions.choice = true;
+                        modalOptions.okButton = { "text": otherEnvButton };
+                        modalOptions.cancelButton = { "text": "Continue loading", "callback": continueLoadingCallback };
+                    }
+                    else
+                    {
+                        modalOptions.showOkButton = true;
+                    }
+                    const modal = new ModalDialog(modalOptions);
+                    if (!hideEnvButton)
+                    {
+                        modal.on("onSubmit", tryOtherEnvCallback);
+                        modal.on("onClose", continueLoadingCallback);
+                    }
                 }
                 else
                 {
