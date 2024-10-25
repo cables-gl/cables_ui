@@ -94,7 +94,8 @@ export default class EditorTab extends Events
                     else hideFormatButton = true;
                     if (!CABLES.platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-                    if (this._options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+
+                    if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
                 }
                 else
                 {
