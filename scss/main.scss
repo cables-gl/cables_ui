@@ -486,20 +486,11 @@ body
         background-color: transparent;
     }
 
-    // #performance_glcanvas
-    // {
-    //     right:0;
-    //     position:absolute;
-    // }
-
-
-
     .clone
     {
         background-color: var(--color-02);
         max-width:720px;
         padding:0px;
-        // padding-left: 10px;
         font-size: var(--font-size-default);
         color: var(--color-10);
         height:38px;
@@ -515,27 +506,16 @@ body
         input, select
         {
             font-size: var(--font-size-default);
-            // padding:10px;
-            // padding-left:5px;
-            // height:100%;
-            // width:350px;
-            // background-color: var(--color-02);
-            // color: var(--color-12);
-            // float:right
         }
 
-        select {
-            // padding: 8px 9px !important;
-            // height: 56px;
-            // line-height: 56px;
+        select
+        {
             padding-left:10px;
             border: 1px solid transparent !important;
             border-radius: 10px;
             margin-right: 10px;
             max-width: 300px;
         }
-
-
     }
 
     #opNameDialogConsequences, #opNameDialogHints, #opcreateerrors
@@ -587,8 +567,6 @@ body
         display: block;
     }
 
-
-
     input
     {
         &::placeholder{
@@ -603,7 +581,6 @@ body
         {
             color: var(--color-special);
         }
-
     }
 
     #undev
@@ -645,7 +622,6 @@ body
     .uploadareaActive
     {
         border:2px dashed var(--color-09) !important;
-        // background-color: red !important;
         color: var(--color-special);
     }
 
@@ -662,8 +638,6 @@ body
         {
             background-color: var(--color-04);
             border: 1px solid var(--color-06);
-            // margin-left:3px;
-            // margin-right:3px;
             border-radius: 4px;
             padding:2px;
             padding-left: 4px;
@@ -680,11 +654,9 @@ body
         z-index: $zindex_high;
         padding:20px;
         position:absolute;
-        // background-color: rgba(0,0,0,1);
         background-color: #000;
         bottom:0px;
         display:none;
-
         font-family: monospace;
 
         td

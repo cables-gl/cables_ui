@@ -949,33 +949,35 @@ export default class PatchView extends Events
         {
             for (const i in ops)
             {
-                if (ops[i].portsIn.length > 0 &&
-                    ops[i].portsOut.length > 0 &&
-                    ops[i].portsOut[0].type == ops[i].portsIn[0].type &&
-                    (ops[i].portsOut[0].isLinked() || ops[i].portsIn[0].isLinked())
-                )
+                if (ops[i].portsIn.length > 0 && ops[i].portsOut.length > 0)
                 {
-                    let outerIn = [];
-                    let outerOut = [];
-                    let relink = ops[i].portsOut[0].isLinked() && ops[i].portsIn[0].isLinked();
+                    let portIn = ops[i].getFirstPortIn();
+                    let portOut = ops[i].getFirstPortOut();
 
-                    if (relink)
+                    if (portOut.type == portIn.type && (portOut.isLinked() || portIn.isLinked()))
                     {
-                        for (let o = 0; o < ops[i].portsIn[0].links.length; o++)
-                            outerOut.push(ops[i].portsIn[0].links[o].getOtherPort(ops[i].portsIn[0]));
+                        let outerIn = [];
+                        let outerOut = [];
+                        let relink = portOut.isLinked() && portIn.isLinked();
 
-                        for (let o = 0; o < ops[i].portsOut[0].links.length; o++)
-                            outerIn.push(ops[i].portsOut[0].links[o].getOtherPort(ops[i].portsOut[0]));
-                    }
+                        if (relink)
+                        {
+                            for (let o = 0; o < portIn.links.length; o++)
+                                outerOut.push(portIn.links[o].getOtherPort(portIn));
 
-                    ops[i].portsOut[0].removeLinks();
-                    ops[i].portsIn[0].removeLinks();
+                            for (let o = 0; o < portOut.links.length; o++)
+                                outerIn.push(portOut.links[o].getOtherPort(portOut));
+                        }
 
-                    if (relink)
-                    {
-                        for (let j = 0; j < outerIn.length; j++)
-                            for (let o = 0; o < outerOut.length; o++)
-                                ops[i].patch.link(outerIn[j].op, outerIn[j].getName(), outerOut[o].op, outerOut[o].getName());
+                        portOut.removeLinks();
+                        portIn.removeLinks();
+
+                        if (relink)
+                        {
+                            for (let j = 0; j < outerIn.length; j++)
+                                for (let o = 0; o < outerOut.length; o++)
+                                    ops[i].patch.link(outerIn[j].op, outerIn[j].getName(), outerOut[o].op, outerOut[o].getName());
+                        }
                     }
                 }
             }
@@ -1952,9 +1954,9 @@ export default class PatchView extends Events
         if (ops.length == 1)
         {
             const op = ops[0];
-            if (op.portsIn[0] && op.portsIn[0].links.length)
+            if (op.getFirstPortIn() && op.getFirstPortIn().links.length)
             {
-                const pre = op.portsIn[0].links[0].portOut.op;
+                const pre = op.getFirstPortIn().links[0].portOut.op;
 
                 if (pre.uiAttribs.translate && op.uiAttribs.translate)
                     op.setUiAttrib({ "translate": { "x": pre.uiAttribs.translate.x, "y": op.uiAttribs.translate.y } });
@@ -2627,8 +2629,8 @@ export default class PatchView extends Events
 
     insertOpInLink(oldLink, op, x, y)
     {
-        let newPortIn = op.portsIn[0];
-        let newPortOut = op.portsOut[0];
+        let newPortIn = op.getFirstPortIn();
+        let newPortOut = op.getFirstPortOut();
 
         if (!newPortIn || !newPortOut) return;
         if (newPortIn.isLinked() || newPortOut.isLinked()) return;

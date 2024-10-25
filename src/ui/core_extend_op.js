@@ -110,16 +110,20 @@ export default function extendCoreOp()
         if (tryRelink)
         {
             if (
-                this.portsIn.length > 0 &&
-                this.portsIn[0].isLinked() &&
-                this.portsOut.length > 0 &&
-                this.portsOut[0].isLinked()
+                this.getFirstPortIn() &&
+                this.getFirstPortOut() &&
+                this.getFirstPortIn().isLinked() &&
+                this.getFirstPortOut().isLinked()
+                // this.portsIn.length > 0 &&
+                // this.portsIn[0].isLinked() &&
+                // this.portsOut.length > 0 &&
+                // this.portsOut[0].isLinked()
             )
             {
-                if (this.portsIn[0].getType() == this.portsOut[0].getType() && this.portsIn[0].links[0])
+                if (this.getFirstPortIn().getType() == this.getFirstPortOut().getType() && this.getFirstPortIn().links[0])
                 {
-                    CABLES.Op.unLinkTempReLinkP1 = this.portsIn[0].links[0].getOtherPort(this.portsIn[0]);
-                    CABLES.Op.unLinkTempReLinkP2 = this.portsOut[0].links[0].getOtherPort(this.portsOut[0]);
+                    CABLES.Op.unLinkTempReLinkP1 = this.getFirstPortIn().links[0].getOtherPort(this.getFirstPortIn());
+                    CABLES.Op.unLinkTempReLinkP2 = this.getFirstPortOut().links[0].getOtherPort(this.getFirstPortOut());
                 }
             }
         }
@@ -405,17 +409,17 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.hasFirstInAndOutPortLinked = function ()
     {
-        return (this.portsIn.length > 0 && this.portsIn[0].isLinked() && this.portsOut.length > 0 && this.portsOut[0].isLinked());
+        return (this.portsIn.length > 0 && this.getFirstPortIn().isLinked() && this.portsOut.length > 0 && this.getFirstPortOut().isLinked());
     };
 
     CABLES.Op.prototype.hasFirstInLinked = function ()
     {
-        return (this.portsIn.length > 0 && this.portsIn[0].isLinked());
+        return (this.portsIn.length > 0 && this.getFirstPortIn().isLinked());
     };
 
     CABLES.Op.prototype.hasFirstOutLinked = function ()
     {
-        return (this.portsOut.length > 0 && this.portsOut[0].isLinked());
+        return (this.portsOut.length > 0 && this.getFirstPortOut().isLinked());
     };
     CABLES.Op.prototype.hasAnyOutLinked = function ()
     {
@@ -772,5 +776,23 @@ export default function extendCoreOp()
         // console.log("could not find port posx ", name, this.getTitle(), opid);
 
         return 2;
+    };
+
+    CABLES.Op.prototype.getFirstPortIn = function ()
+    {
+        if (this.portsIn.length == 0) return null;
+        let portIn = this.portsIn[0];
+        if (portIn.ports && portIn.ports.length > 0) portIn = portIn.ports[0];
+
+        return portIn;
+    };
+
+    CABLES.Op.prototype.getFirstPortOut = function ()
+    {
+        if (this.portsOut.length == 0) return null;
+        let portOut = this.portsOut[0];
+        if (portOut.ports && portOut.ports.length > 0) portOut = portOut.ports[0];
+
+        return portOut;
     };
 }
