@@ -292,12 +292,6 @@ export default class OpSelect
         if (this._minimal) return;
         this._eleSearchinfo = ele.byId("searchinfo");
 
-        if (this._getQuery().length < MIN_CHARS_QUERY)
-        {
-            this._eleSearchinfo.innerHTML = this.tree.html();
-            return;
-        }
-
 
         let opName = "";
         const selectedEle = ele.byClass("selected");
@@ -327,6 +321,11 @@ export default class OpSelect
 
 
             this._showSuggestionsInfo();
+        }
+        else if (this._getQuery().length < MIN_CHARS_QUERY)
+        {
+            this._eleSearchinfo.innerHTML = this.tree.html();
+            return;
         }
         else if (opName)
         {
