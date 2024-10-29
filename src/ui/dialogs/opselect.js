@@ -16,6 +16,9 @@ CABLES.UI.OPSELECT.linkNewOpToPort = null;
 CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;
 
+const MIN_CHARS_QUERY = 3;
+
+
 export default class OpSelect
 {
     constructor()
@@ -71,6 +74,7 @@ export default class OpSelect
             ele.show(this._eleTypeStart);
             this._showSuggestionsInfo();
 
+
             for (let i = 0; i < this._opSearch.list.length; i++)
                 if (this._opSearch.list[i].element && !this._opSearch.list[i].elementHidden)
                 {
@@ -80,7 +84,7 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeStart);
 
-        if (query.length === 1)
+        if (query.length < MIN_CHARS_QUERY)
         {
             ele.show(this._eleTypeMore);
             for (let i = 0; i < this._opSearch.list.length; i++)
@@ -94,7 +98,7 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeMore);
 
-        if (num === 0 && query.length > 1)
+        if (num === 0 && query.length >= MIN_CHARS_QUERY)
         {
             ele.show(this._eleNoResults);
             this._eleSearchinfo.innerHMTL = "";
