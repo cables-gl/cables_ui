@@ -84,7 +84,7 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeStart);
 
-        if (query.length < MIN_CHARS_QUERY)
+        if (query.length > 0 && query.length < MIN_CHARS_QUERY)
         {
             ele.show(this._eleTypeMore);
             for (let i = 0; i < this._opSearch.list.length; i++)
@@ -95,6 +95,7 @@ export default class OpSelect
                     ele.hide(this._opSearch.list[i].element);
                 }
             }
+            this._eleSearchinfo.innerHMTL = "abcccc";
         }
         else ele.hide(this._eleTypeMore);
 
@@ -108,40 +109,44 @@ export default class OpSelect
             ele.hide(this._eleNoResults);
         }
 
+
         let optionsHtml = "";
 
-        if (this._hideUserOps)
+        if (query.length >= MIN_CHARS_QUERY)
         {
-            optionsHtml += "<div class=\"warning\">Your user ops are hidden, patch is an op example</div>";
-        }
-        else
-        {
-            const isOwner = CABLES.platform.currentUserIsPatchOwner();
-            const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
-            const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
-
-            if (num === 0 && !(isOwner || isFullCollab || isReadOnlyCollab))
+            if (this._hideUserOps)
             {
-                optionsHtml += "<div class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </div>";
+                optionsHtml += "<div class=\"warning\">Your user ops are hidden, patch is an op example</div>";
             }
-        }
+            else
+            {
+                const isOwner = CABLES.platform.currentUserIsPatchOwner();
+                const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
+                const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
 
-        if (num > 0) optionsHtml += "&nbsp;Found " + num + " ops.";
+                if (num === 0 && !(isOwner || isFullCollab || isReadOnlyCollab))
+                {
+                    optionsHtml += "<div class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </div>";
+                }
+            }
 
-        let score = 0;
-        const selected = document.getElementsByClassName("selected");
+            if (num > 0) optionsHtml += "&nbsp;Found " + num + " ops.";
 
-        if (query.length > 0 && selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
+            let score = 0;
+            const selected = document.getElementsByClassName("selected");
 
-        if (score && score === score)
-        {
-            let scoredebug = "";
+            if (query.length > 0 && selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
 
-            if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
+            if (score && score === score)
+            {
+                let scoredebug = "";
 
-            optionsHtml += "&nbsp;&nbsp;|&nbsp;&nbsp;<span class=\"tt\" data-tt=\"" + scoredebug + "\">";
-            optionsHtml += "Score: " + score;
-            optionsHtml += "</span>";
+                if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
+
+                optionsHtml += "&nbsp;&nbsp;|&nbsp;&nbsp;<span class=\"tt\" data-tt=\"" + scoredebug + "\">";
+                optionsHtml += "Score: " + score;
+                optionsHtml += "</span>";
+            }
         }
 
         document.getElementById("opOptions").innerHTML = optionsHtml;
@@ -159,14 +164,15 @@ export default class OpSelect
         let ops = defaultOps.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultOps.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
-
         if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
         }
 
-        const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "link": CABLES.UI.OPSELECT.linkNewLink, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
+        let html = "nope...";
+        html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "link": CABLES.UI.OPSELECT.linkNewLink, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
+
         if (this._eleSearchinfo)
             this._eleSearchinfo.innerHTML = html;
 
@@ -284,8 +290,15 @@ export default class OpSelect
     updateInfo()
     {
         if (this._minimal) return;
-
         this._eleSearchinfo = ele.byId("searchinfo");
+
+        if (this._getQuery().length < MIN_CHARS_QUERY)
+        {
+            this._eleSearchinfo.innerHTML = this.tree.html();
+            return;
+        }
+
+
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
@@ -366,7 +379,7 @@ export default class OpSelect
         {
             this._currentInfo = "tree";
 
-            if (this._getQuery() == "")
+            if (this._getQuery().length < MIN_CHARS_QUERY)
                 if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
         }
     }
@@ -385,6 +398,12 @@ export default class OpSelect
     {
         if (!this._opSearch.list || !this._html) this.prepare();
 
+        // if (this._getQuery().length < MIN_CHARS_QUERY)
+        // {
+        //     this.updateInfo();
+        //     return;
+        // }
+
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
         for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
@@ -401,7 +420,13 @@ export default class OpSelect
 
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
 
-        this._opSearch.search(query);
+        if (this._getQuery().length < MIN_CHARS_QUERY)
+        {
+            this._opSearch.search("");
+        }
+        else
+            this._opSearch.search(query);
+
         const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
         for (let i = 0; i < this._opSearch.list.length; i++)
@@ -452,14 +477,11 @@ export default class OpSelect
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
 
         const oBoxCollection = ele.byQueryAll(".searchresult:not(.hidden)");
-        // const oBoxCollectionAll = ele.byClass("searchresult");
 
         if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length - 1;
         if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
 
         const cssClass = "selected";
-
-        // oBoxCollectionAll.classList.remove(cssClass);
 
         for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
 
