@@ -184,7 +184,10 @@
                             <br/><br/>
                         </div>
 
-                        <span id="portFilename_{{ portnum }}" onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');" style="cursor:pointer;">[???]</span>
+                        <span
+                            id="portFilename_{{ portnum }}"
+                            onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');"
+                            style="cursor:pointer;">[???]</span>
                         <span id="portFilename_{{ portnum }}_src"></span>
 
                 {{/compare}}
