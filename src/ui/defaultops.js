@@ -48,7 +48,7 @@ const defaultOpNames =
 
     "uiArea": "Ops.Ui.Area",
     "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
-    "defaultOpCss": "Ops.Html.CssFile",
+    "defaultOpCss": "Ops.Html.CSS.CssFile",
 
     "defaultOpVizTexture": "Ops.Ui.VizTexture",
 
