@@ -202,7 +202,7 @@ export default class GlPort
 
         this._posX = this._glop.getPortPos(this._name, false);
 
-        this._rect.setPosition(this._posX, y, -0.001);
+        this._rect.setPosition(this._posX, y, -0.0001);
         this._rect.setSize(gluiconfig.portWidth, h);
 
         if (this._longPortRect)
@@ -212,9 +212,7 @@ export default class GlPort
 
             const lastposX = this._port.op.posByIndex(this._port.uiAttribs.longPort + this.portIndex - 1, n);
 
-
             this._longPortRect.setSize(lastposX - this._posX, gluiconfig.portLongPortHeight);
-            // (this._port.uiAttribs.longPort) * (gluiconfig.portPadding + gluiconfig.portWidth) - gluiconfig.portPadding
 
             let yl = gluiconfig.portHeight - gluiconfig.portLongPortHeight;
             if (this._direction == CABLES.PORT_DIR_OUT) yl = this._parent.h - gluiconfig.portHeight;

@@ -660,13 +660,12 @@ export default class GlOp extends Events
 
     addLink(l)
     {
-        if (!this.opUiAttribs.translate)
-        {
-            this.opUiAttribs.translate = { "x": 0, "y": 0 };
-        }
+        if (!this.opUiAttribs.translate) this.opUiAttribs.translate = { "x": 0, "y": 0 };
+
 
         this._links[l.id] = l;
         l.updateVisible();
+        this.updatePosition();
     }
 
     isHovering()

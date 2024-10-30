@@ -281,7 +281,7 @@ class OpParampanel extends Events
                         const subOuterName = subouterOp.objName;
 
                         if (!defaultOps.isPatchOp(subOuterName) &&
-                            this._portsIn[i].get() &&
+                        this._portsIn[i].get() &&
                             defaultOps.isCoreOp(subOuterName) &&
                             defaultOps.isExtensionOp(subOuterName) &&
                             String(this._portsIn[i].get()).startsWith("/assets/") &&
@@ -291,7 +291,7 @@ class OpParampanel extends Events
                 }
 
                 if (ele.byId("portFilename_" + i))
-                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
+                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small tt\" data-tt=\"" + this._portsIn[i].get() + "\" style=\"text-transform:none;\"><span style=\"pointer-events:none;\" class=\"icon icon-file\"></span>" + shortName + "</span>";
 
                 let srcEle = ele.byId("portFilename_" + i + "_src");
                 if (srcEle)

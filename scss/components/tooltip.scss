@@ -239,7 +239,9 @@
         z-index: $zindex_highest+1;
         background-color: var(--color-03);
         border-radius: 5px;
-        text-transform: capitalize;
+        // text-transform: capitalize;
+        white-space: nowrap;
+
 
         color: var(--color-13);
         padding: 5px;

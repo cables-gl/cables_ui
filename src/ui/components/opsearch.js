@@ -388,9 +388,7 @@ export default class OpSearch extends Events
             {
                 let nquery = queryParts.join(" ");
                 nquery += " " + q;
-
-                if (nquery !== query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
-
+                if (nquery.trim() !== query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
                 query = nquery;
             }
             else document.getElementById("realsearch").innerHTML = "";
