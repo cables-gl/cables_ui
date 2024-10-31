@@ -129,6 +129,13 @@ export default class LogTab extends Events
         if (this.closed) return;
         let html = "";
 
+
+        if (gui.isRemoteClient)
+        {
+            const el = ele.byId("bottomtabs");
+            if (el)el.style.zIndex = 1111111;
+        }
+
         for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
         {
             const l = CABLES.UI.logFilter.logs[i];
