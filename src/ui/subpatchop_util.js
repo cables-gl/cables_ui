@@ -54,7 +54,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
             src += "(\"" + p.id + "\""; // 1. name
 
-            if (p.type == CABLES.OP_PORT_TYPE_STRING) src += ",\"" + p.value + "\""; // 2. param default value
+            if (p.type == CABLES.OP_PORT_TYPE_STRING) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
             if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "," + p.value; // 2. param default value
 
             src += ");";

@@ -135,7 +135,7 @@ export function notify(title, text, options = {})
 
     const timeout = options.timeout || 2000;
     const closeable = options.closeable || false;
-    const force = options.force || false;
+    const force = options.force || true;
 
     if (!force)
     {
