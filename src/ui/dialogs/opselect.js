@@ -410,12 +410,6 @@ export default class OpSelect
     {
         if (!this._opSearch.list || !this._html) this.prepare();
 
-        // if (this._getQuery().length < MIN_CHARS_QUERY)
-        // {
-        //     this.updateInfo();
-        //     return;
-        // }
-
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
         for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
@@ -433,9 +427,7 @@ export default class OpSelect
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
 
         if (this._getQuery().length < MIN_CHARS_QUERY && !this.isMathQuery())
-        {
             this._opSearch.search("");
-        }
         else
             this._opSearch.search(query);
 
