@@ -56,6 +56,17 @@ export default class OpSelect
         return el.value || "";
     }
 
+    isMathQuery()
+    {
+        if (this._getQuery().length > 0)
+        {
+            let mathPortType = this._getMathPortType();
+            for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
+                if (this._getQuery().charAt(0) === i) return true;
+        }
+        return false;
+    }
+
     updateStatusBar()
     {
         if (!this._eleSearchinfo) return;
@@ -95,7 +106,7 @@ export default class OpSelect
                     ele.hide(this._opSearch.list[i].element);
                 }
             }
-            this._eleSearchinfo.innerHMTL = "abcccc";
+            this._eleSearchinfo.innerHMTL = "";
         }
         else ele.hide(this._eleTypeMore);
 
@@ -111,6 +122,8 @@ export default class OpSelect
 
 
         let optionsHtml = "";
+
+
 
         if (query.length >= MIN_CHARS_QUERY)
         {
@@ -397,12 +410,6 @@ export default class OpSelect
     {
         if (!this._opSearch.list || !this._html) this.prepare();
 
-        // if (this._getQuery().length < MIN_CHARS_QUERY)
-        // {
-        //     this.updateInfo();
-        //     return;
-        // }
-
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
         for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
@@ -419,10 +426,8 @@ export default class OpSelect
 
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
 
-        if (this._getQuery().length < MIN_CHARS_QUERY)
-        {
+        if (this._getQuery().length < MIN_CHARS_QUERY && !this.isMathQuery())
             this._opSearch.search("");
-        }
         else
             this._opSearch.search(query);
 
