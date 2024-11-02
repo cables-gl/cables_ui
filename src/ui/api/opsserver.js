@@ -1438,13 +1438,18 @@ export default class ServerOps
                 inactive = true;
 
 
+        console.log("can save ", opname, attachmentName, this.canEditAttachment(gui.user, opname));
+
+
         let editorTab = new EditorTab({
             "title": title,
             "name": opId,
             // "content": content,
+            "loading": true,
             "syntax": syntax,
             "editorObj": editorObj,
             "allowEdit": this.canEditAttachment(gui.user, opname),
+            "showSaveButton": true,
             "inactive": inactive,
             "onClose": (which) =>
             {
