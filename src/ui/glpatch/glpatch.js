@@ -91,6 +91,7 @@ export default class GlPatch extends Events
 
         if (userSettings.get("devinfos"))
         {
+            CABLES.UI.showDevInfos = true;
             const idx = this._overlaySplines.getSplineIndex();
             this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
             this._overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
