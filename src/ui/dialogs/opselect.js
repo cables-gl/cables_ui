@@ -668,7 +668,7 @@ export default class OpSelect
         this._searching = true;
 
         let searchDelay = 0;
-        if (this._getQuery().length == 2)searchDelay = 300;
+        if (this._getQuery().length == 2 && !this.isMathQuery())searchDelay = 250;
         if (this._getQuery().length == 3)searchDelay = 50;
 
         this._keyTimeout = setTimeout(() =>
