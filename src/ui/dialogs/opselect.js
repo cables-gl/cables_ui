@@ -16,7 +16,7 @@ CABLES.UI.OPSELECT.linkNewOpToPort = null;
 CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;
 
-const MIN_CHARS_QUERY = 3;
+const MIN_CHARS_QUERY = 2;
 
 
 export default class OpSelect
@@ -416,6 +416,7 @@ export default class OpSelect
             if (sq.charAt(0) === i)
                 sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];
 
+
         this.firstTime = false;
         sq = sq || "";
         let query = sq.toLowerCase();
@@ -658,24 +659,29 @@ export default class OpSelect
 
     onInput(e)
     {
-        clearTimeout(this._keyTimeout);
+        if (this._keyTimeout)
+        {
+            console.log("cancel search...");
+            clearTimeout(this._keyTimeout);
+        }
         this._typedSinceOpening = true;
-        // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
         this._searching = true;
+
+        let searchDelay = 0;
+        if (this._getQuery().length == 2 && !this.isMathQuery())searchDelay = 250;
+        if (this._getQuery().length == 3)searchDelay = 50;
 
         this._keyTimeout = setTimeout(() =>
         {
             this._keyTimeout = null;
+            this._keyTimeout = null;
             this.displayBoxIndex = 0;
             this.updateInfo();
             this.search();
-            // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+
             this._searching = false;
-            if (this._enterPressedEarly)
-            {
-                this.addSelectedOp();
-            }
-        }, 100);
+            if (this._enterPressedEarly) this.addSelectedOp();
+        }, searchDelay);
     }
 
     addOp(opname, reopenModal = false, itemType = "op")
