@@ -713,14 +713,6 @@ class OpParampanel extends Events
             },
         });
 
-        items.push({
-            "title": "Show Op Serialized",
-            func()
-            {
-                CABLES.CMD.DEBUG.watchOpSerialized();
-            },
-        });
-
         CABLES.contextMenu.show({ items }, el);
     }
 }
