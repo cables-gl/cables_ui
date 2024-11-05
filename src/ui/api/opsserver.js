@@ -808,7 +808,7 @@ export default class ServerOps
         {
             if (!CABLES.platform.isTrustedPatch())
             {
-                new ModalDialog({ "title": "Untrusted Patch", "content": "You need write access in the patch to create ops<br/>Try creating a new patch and try there again", "showOkButton": true });
+                new ModalDialog({ "title": "Untrusted Patch", "text": "You need write access in the patch to create ops<br/>Try creating a new patch and try there again", "showOkButton": true });
                 return;
             }
 
