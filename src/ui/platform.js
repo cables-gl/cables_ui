@@ -531,10 +531,7 @@ export default class Platform extends Events
     exportPatch(projectId)
     {
         let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
-        if (this._versionId)
-        {
-            gotoUrl += "?version=" + this._versionId;
-        }
+        if (this._versionId) gotoUrl += "?version=" + this._versionId;
 
         const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
         const url = gotoUrl + iframeParam;
