@@ -244,59 +244,22 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
         {
-            console.log("talkerapi execute op");
             if (options && options.name)
             {
-                gui.closeModal();
-                const loadingModal = gui.startModalLoading("Saving and executing op...");
-                loadingModal.setTask("Saving Op");
                 const opname = options.name;
-                if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                if (!CABLES.Patch.getOpClass(opname)) gui.opSelect().reload();
 
-                if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
-
-                loadingModal.setTask("Executing code");
-
-                const selOps = gui.patchView.getSelectedOps();
-                let selOpTranslate = null;
-                if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
-
-                gui.serverOps.execute(opname, (newOps) =>
+                gui.serverOps.execute(options.id || options.name, () =>
                 {
-                    if (selOpTranslate)
+                    if (options.forceReload)
                     {
-                        for (let i = 0; i < gui.corePatch().ops.length; i++)
+                        const editorTab = gui.mainTabs.getTabByDataId(opname);
+                        if (editorTab && editorTab.editor && options.hasOwnProperty("code"))
                         {
-                            if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
-                            {
-                                gui.opParams.show(gui.corePatch().ops[i].id);
-                                gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
-                            }
+                            editorTab.editor.setContent(options.code, true);
                         }
                     }
-                    gui.endModalLoading();
-                    let reloadCode = options.forceReload;
-                    if (!reloadCode) reloadCode = editorTab && newOps && newOps[0];
-                    const editorTab = gui.mainTabs.activateTabByName(opname);
-                    if (reloadCode)
-                    {
-                        let opId = options.id;
-                        if (!opId) opId = newOps[0].opId;
-
-                        CABLESUILOADER.talkerAPI.send(
-                            "getOpCode",
-                            {
-                                "opname": opId,
-                                "projectId": this._patchId
-                            },
-                            (er, rslt) =>
-                            {
-                                if (rslt && rslt.hasOwnProperty("code"))
-                                {
-                                    if (editorTab && editorTab.editor) editorTab.editor.setContent(rslt.code, options.forceReload);
-                                }
-                            });
-                    }
+                    CABLES.UI.notify("reloaded op " + options.name);
                 });
             }
         });
