@@ -69,6 +69,7 @@ export default class EditorTab extends Events
 
     setContent(content, silent = false)
     {
+        content = content || "";
         if (!this._editor)
         {
             if (!ele.byId("editorcontent" + this._tab.id))
@@ -76,7 +77,7 @@ export default class EditorTab extends Events
                 this._log.error("ele not found!!", this);
                 return;
             }
-            this.createEditor("editorcontent" + this._tab.id, content || "", (editor) =>
+            this.createEditor("editorcontent" + this._tab.id, content, (editor) =>
             {
                 this._editor = editor;
 
