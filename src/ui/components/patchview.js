@@ -1188,11 +1188,6 @@ export default class PatchView extends Events
             if (x > b.maxX)x = b.maxX;
         }
 
-        if (x < -100000)
-        {
-            x = 0;
-        }
-
         if (patchInputOP)
         {
             let y = Math.min(patchInputOP.uiAttribs.translate.y, b.minY - gluiconfig.newOpDistanceY * 2);
@@ -1204,8 +1199,6 @@ export default class PatchView extends Events
                         "y": y
                     }
                 });
-
-            console.log("yyyy", x, y);
         }
 
         if (patchOutputOP)
@@ -1219,7 +1212,6 @@ export default class PatchView extends Events
                         "y": y
                     }
                 });
-            console.log("yyyy", x, y);
         }
     }
 

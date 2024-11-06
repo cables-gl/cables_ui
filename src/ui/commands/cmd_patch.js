@@ -507,8 +507,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                                                 if (!gui.savedState.getStateBlueprint(subPatchId))
                                                 {
-                                                    console.log("need so save subpatchop AGAIN");
-
                                                     subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
                                                         "next": () =>
                                                         {
