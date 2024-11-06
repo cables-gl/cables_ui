@@ -427,7 +427,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                     gui.patchView.addOp(newOpname,
                         {
-                            "uiAttribs": {
+                            "uiAttribs":
+                            {
                                 "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
                             },
                             "onOpAdd": (newOp) =>
@@ -471,23 +472,27 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 {
                                                     // outer linking
                                                     const oldLink = oldLinks[j];
-                                                    newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
 
-                                                    for (let i = 0; i < subOps.length; i++)
+                                                    if (oldLink.pJson)
                                                     {
-                                                        const op = subOps[i];
-                                                        if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
+                                                        newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+
+                                                        for (let i = 0; i < subOps.length; i++)
                                                         {
-                                                            let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                            let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
-
-                                                            if (!l)
+                                                            const op = subOps[i];
+                                                            if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                             {
-                                                                let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                                l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
-                                                            }
+                                                                let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                                let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
 
-                                                            if (!l)console.log("could not recreate oldlink", oldLink);
+                                                                if (!l)
+                                                                {
+                                                                    let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                    l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
+                                                                }
+
+                                                                if (!l)console.log("could not recreate oldlink", oldLink);
+                                                            }
                                                         }
                                                     }
                                                 }
