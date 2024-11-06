@@ -1719,6 +1719,8 @@ export default class ServerOps
         }
         else
         {
+            gui.jobs().finish("load_opcode_" + opname);
+
             gui.mainTabs.activateTabByName(opname);
             gui.maintabPanel.show(userInteraction);
         }

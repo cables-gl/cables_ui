@@ -488,7 +488,7 @@ export default class PatchSaveServer extends Events
                 let b64 = bytesArrToBase64(uint8data);
 
                 if (datastr.length > 12 * 1024 * 1024)
-                    notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
+                    notifyError("Patch is huge, try to reduce amount of data stored in patch/ports");
 
                 gui.savingTitleAnimStart("Saving Patch...");
 

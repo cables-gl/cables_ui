@@ -175,7 +175,6 @@ export default class LogTab extends Events
                 let currentLine = "";
                 const timediff = l.time - lastTime;
                 lastTime = l.time;
-                // console.log(l);
 
                 if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
 
@@ -248,10 +247,12 @@ export default class LogTab extends Events
                     else
                     {
                         if (arg)
-                            if (arg.constructor.name.indexOf("Error") > -1 || arg.constructor.name.indexOf("error") > -1)
+                        {
+                            if (arg.constructor.name.indexOf("Error") > -1 && (arg.hasOwnProperty("message") || arg.message))
                             {
-                                let txt = "Uncaught ErrorEvent ";
-                                if (arg.message)txt += " message: " + arg.message;
+                                let txt = "[<b>" + arg.constructor.name + "</b>]";
+                                if (arg.message)txt += ": " + arg.message.replaceAll("\n", "<br/>").replaceAll("  ", "&nbsp;&nbsp;");
+
                                 currentLine = txt;
                             }
                             else if (arg.constructor.name == "Op")
@@ -278,24 +279,32 @@ export default class LogTab extends Events
                             }
                             else
                             {
-                                currentLine += "Object " + arg.constructor.name + "<br/>";
+                                currentLine += "<br/>";
+                                currentLine += "Log Object Arg " + j + ": [<b>" + arg.constructor.name + "</b>]<br/>";
+                                currentLine += "{<br/>";
 
                                 for (let oi in arg)
                                 {
                                     if (arg[oi] && arg[oi].constructor)
                                     {
+                                        currentLine += "&nbsp;&nbsp;&nbsp;&nbsp;\"" + oi + "\": <b>";
+
                                         if (arg[oi].constructor.name == "Number" || arg[oi].constructor.name == "String" || arg[oi].constructor.name == "Boolean")
                                         {
-                                            currentLine += "&nbsp;&nbsp;" + oi + ":";
-
                                             if (arg[oi].constructor.name == "String")currentLine += "\"";
                                             currentLine += arg[oi];
                                             if (arg[oi].constructor.name == "String")currentLine += "\"";
-                                            currentLine += "<br/>";
                                         }
+                                        else
+                                        {
+                                            currentLine += "[" + arg[oi].constructor.name + "]";
+                                        }
+                                        currentLine += "</b>,<br/>";
                                     }
                                 }
+                                currentLine += "}<br/>";
                             }
+                        }
                     }
                 }
                 if (currentLine) html += this._logLine(l, currentLine, l.level, timediff);
