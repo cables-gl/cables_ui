@@ -7,7 +7,7 @@
         {{#if opLayoutSvg}}
             {{{opLayoutSvg}}}
         {{else}}
-            <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
+            <img src="{{layoutUrl}}" style="margin-top:10px;">
         {{/if}}
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
@@ -37,11 +37,11 @@
         {{/if}}
 
         {{#if frontendOptions.showLocalOpDirButton}}
-            <a class="button-small button-icon tt info" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
+            <a class="button-small button-icon tt" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
         {{/if}}
 
         {{#if opDoc.hasPublicRepo}}
-            <a class="button-small button-icon tt info" href="{{url}}/op/{{opname}}/github" target="_blank"><span class="icon icon-github">open on github</span></a>
+            <a class="button-small button-icon tt" href="{{url}}/op/{{opname}}/github" target="_blank"><span class="icon icon-github">open on github</span></a>
         {{/if}}
 
         <br/>

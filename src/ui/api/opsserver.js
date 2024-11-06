@@ -808,7 +808,7 @@ export default class ServerOps
         {
             if (!CABLES.platform.isTrustedPatch())
             {
-                new ModalDialog({ "title": "You need write access in the patch to create ops", "showOkButton": true });
+                new ModalDialog({ "title": "Untrusted Patch", "text": "You need write access in the patch to create ops<br/>Try creating a new patch and try there again", "showOkButton": true });
                 return;
             }
 
@@ -1437,10 +1437,6 @@ export default class ServerOps
             if (lastTab !== title)
                 inactive = true;
 
-
-        console.log("can save ", opname, attachmentName, this.canEditAttachment(gui.user, opname));
-
-
         let editorTab = new EditorTab({
             "title": title,
             "name": opId,
@@ -1453,7 +1449,7 @@ export default class ServerOps
             "inactive": inactive,
             "onClose": (which) =>
             {
-                if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
+                if (editorObj && editorObj.name) CABLES.editorSession.remove(editorObj.type, editorObj.name);
             }
         });
 

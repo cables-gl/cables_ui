@@ -356,6 +356,11 @@ export default class EditorTab extends Events
                     "content": "inTrigger(\"${1:name}\")",
                     "name": "inTrigger",
                 },
+
+                {
+                    "content": "inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
+                    "name": "inMultiPort",
+                },
                 {
                     "content": "outTrigger(\"${1:name}\")",
                     "name": "outTrigger",

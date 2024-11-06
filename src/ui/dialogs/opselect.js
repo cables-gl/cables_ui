@@ -38,6 +38,7 @@ export default class OpSelect
         this._lastScrollTop = -5711;
         this._eleOpsearchmodal = null;
         this._opSearch = new OpSearch();
+        this._keyTimeout = null;
     }
 
     close()
@@ -659,11 +660,7 @@ export default class OpSelect
 
     onInput(e)
     {
-        if (this._keyTimeout)
-        {
-            console.log("cancel search...");
-            clearTimeout(this._keyTimeout);
-        }
+        if (this._keyTimeout)clearTimeout(this._keyTimeout);
         this._typedSinceOpening = true;
         this._searching = true;
 

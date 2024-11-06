@@ -464,10 +464,12 @@ export default class OpDocs
             return "rgb(" + r + ", " + g + ", " + b + ")";
         }
 
+        let svgStr = "";
+
+
         const doc = this.getOpDocByName(opname);
         if (doc && doc.layout)
         {
-            let svgStr = "";
             let width = 200;
             if (doc.layout.portsIn)
                 width = Math.max(width, doc.layout.portsIn.length * (gluiconfig.portWidth + gluiconfig.portPadding));
@@ -526,11 +528,11 @@ export default class OpDocs
             const nsCol = GlPatch.getOpNamespaceColor(opname);
             const cssCol = glColorToHtml(nsCol);
 
-            svgStr += "<text x=\"" + gluiconfig.portWidth + "\" y=\"" + gluiconfig.opHeight * 0.63 + "\" style=\"font-family:roboto, arial;font-size:12px;\" fill=\"" + cssCol + "\">" + (doc.shortNameDisplay || "??" + opname) + "</text>";
+            svgStr += "<text x=\"" + gluiconfig.portWidth + "\" y=\"" + gluiconfig.opHeight * 0.63 + "\" style=\"font-family:roboto, arial;font-size:12px;\" fill=\"" + cssCol + "\">" + (doc.shortNameDisplay || opname) + "</text>";
 
             svgStr += "</svg>";
-
-            return svgStr;
         }
+
+        return svgStr;
     }
 }

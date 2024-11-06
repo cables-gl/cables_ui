@@ -1911,6 +1911,8 @@ export default class Gui extends Events
         if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.logGui("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
         if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.logGui("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
 
+        console.log(CABLESUILOADER.buildInfo);
+
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();
 
