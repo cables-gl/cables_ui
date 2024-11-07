@@ -233,6 +233,29 @@ export default class ManageOp
                                 });
                             }
                         }
+
+                        const depsEle = ele.byId("addopdependency_" + this._id);
+                        if (depsEle)
+                        {
+                            const editEle = depsEle.querySelector(".edit");
+                            if (editEle)
+                            {
+                                ele.show(editEle);
+                                const submitEle = editEle.querySelector(".add");
+                                if (submitEle)
+                                {
+                                    submitEle.addEventListener("click", () =>
+                                    {
+                                        submitEle.innerText = "working...";
+                                        gui.serverOps.addOpDependency(opName, depsEle.querySelector(".depName").value, editEle.querySelector(".depType").value, (err) =>
+                                        {
+                                            submitEle.innerText = "Add";
+                                        });
+                                    });
+                                }
+                            }
+                            onclick = "this.innerText = 'working...';";
+                        }
                     }
                     else
                     {

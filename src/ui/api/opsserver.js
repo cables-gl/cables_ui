@@ -594,15 +594,16 @@ export default class ServerOps
                         html += err.msg + "<br/><br/>";
                         new ModalDialog({ "title": "error adding op-dependency", "showOkButton": true, "html": html });
                     }
+                    if (next) next(err, null);
                 }
                 else
                 {
-                    gui.serverOps.loadOpDependencies(opName, () =>
+                    gui.serverOps.loadOpDependencies(opName, (op) =>
                     {
                         this._log.log("op-dependency added: " + opName + " " + depName);
 
                         gui.emitEvent("refreshManageOp", opName);
-                        if (next) next();
+                        if (next) next(null, op);
                     }, true);
                 }
             },
