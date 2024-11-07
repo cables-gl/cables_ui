@@ -129,7 +129,7 @@ export function notifyWarn(title, text, options = {})
  *     "closeable": false
  * });
  */
-export function notify(title, text, options = {})
+export function notify(title, text = "", options = {})
 {
     if (gui.isRemoteClient) return;
 

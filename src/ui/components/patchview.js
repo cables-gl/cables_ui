@@ -769,6 +769,7 @@ export default class PatchView extends Events
 
         let bounds = this.getOpBounds(theOps);
 
+
         perf.finish();
 
         return bounds;
