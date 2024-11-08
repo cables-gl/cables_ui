@@ -273,10 +273,13 @@
 
                 <div id="addopdependency_{{viewId}}">
                     <input class="depName" type="text" placeholder="@cables/cables">
-                    <select class="depType">
-                        {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
-                    </select>
-                    <a class="button-small" onclick="this.innerText = 'working...';gui.serverOps.addOpDependency('{{opname}}', ele.byQuery('#addopdependency_{{viewId}} .depName').value, ele.byQuery('#addopdependency_{{viewId}} .depType').value);">Add</a>
+                    <div class="edit hidden">
+                        <select class="depType">
+                            {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
+                        </select>
+                        <a class="button-small add">Add</a>
+                    </div>
+
                 </div>
             {{/if}}
         {{/if}}
