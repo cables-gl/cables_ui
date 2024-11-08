@@ -427,7 +427,7 @@ const defaultOps = {
         let namespace = gui.project().shortId;
         Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>
         {
-            namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
+            if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
         });
         return defaultOps.getPatchOpsPrefix() + namespace + ".";
     },
