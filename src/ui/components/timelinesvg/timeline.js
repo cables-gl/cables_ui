@@ -702,30 +702,44 @@ export default function TimeLineGui()
             break;
 
         case 77: // m move key
-            const frame = window.prompt("move keys", Math.round(cursorTime * gui.timeLine().getFPS()));
-            if (frame !== null)
-            {
-                console.log(frame);
-                let firstKeyTimeFPS = -1;
-                for (const i in anim.keys)
+
+
+
+            new ModalDialog({
+                "prompt": true,
+                "title": "Move keys",
+                "text": "to frame:",
+                "promptValue": Math.round(cursorTime * gui.timeLine().getFPS()),
+                "promptOk": function (inputStr)
                 {
-                    if (anim.keys[i].selected)
+                    const frame = (parseFloat(inputStr));
+                    if (frame !== null)
                     {
-                        const t = anim.keys[i].time;
-                        if (firstKeyTimeFPS == -1)
+                        console.log(frame);
+                        let firstKeyTimeFPS = -1;
+                        for (const i in anim.keys)
                         {
-                            firstKeyTimeFPS = t;
-                            anim.keys[i].time = frame / gui.timeLine().getFPS();
+                            if (anim.keys[i].selected)
+                            {
+                                const t = anim.keys[i].time;
+                                if (firstKeyTimeFPS == -1)
+                                {
+                                    firstKeyTimeFPS = t;
+                                    anim.keys[i].time = frame / gui.timeLine().getFPS();
+                                }
+                                else
+                                {
+                                    anim.keys[i].time = anim.keys[i].time - firstKeyTimeFPS + frame / gui.timeLine().getFPS();
+                                }
+                            }
                         }
-                        else
-                        {
-                            anim.keys[i].time = anim.keys[i].time - firstKeyTimeFPS + frame / gui.timeLine().getFPS();
-                        }
+                        anim.sortKeys();
+                        updateKeyLine();
                     }
-                }
-                anim.sortKeys();
-                updateKeyLine();
-            }
+                } });
+
+
+
             break;
 
 
@@ -970,16 +984,24 @@ export default function TimeLineGui()
         }
         else
         {
-            const frame = window.prompt("jump to key:", 0);
+            new ModalDialog({
+                "prompt": true,
+                "title": "Jump",
+                "text": "to frame:",
+                "promptValue": Math.round(cursorTime * gui.timeLine().getFPS()),
+                "promptOk": function (inputStr)
+                {
+                    const frame = (parseFloat(inputStr));
+                    if (frame !== null)
+                    {
+                        const t = frame / gui.timeLine().getFPS();
 
-            if (frame !== null)
-            {
-                const t = frame / gui.timeLine().getFPS();
-
-                gui.scene().timer.setTime(t);
-                setCursor(t);
-                self.centerCursor();
-            }
+                        gui.scene().timer.setTime(t);
+                        setCursor(t);
+                        self.centerCursor();
+                    }
+                }
+            });
         }
     };
 
