@@ -198,11 +198,13 @@ CMD_OP_COMMANDS.push(
     {
         "cmd": "Downgrade selected op",
         "func": CABLES_CMD_OP.downGradeOp,
+        "category": "op",
         "icon": "op"
     },
     {
         "cmd": "Upgrade selected ops",
         "func": CABLES_CMD_OP.upGradeOps,
+        "category": "op",
         "icon": "op"
     },
     {

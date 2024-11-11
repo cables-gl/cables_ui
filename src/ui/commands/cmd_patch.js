@@ -1528,42 +1528,50 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Align ops left",
         "func": CABLES_CMD_PATCH.alignOpsLeft,
+        "category": "patch",
         "icon": "align-left"
     },
     {
         "cmd": "Compress ops vertically",
         "func": CABLES_CMD_PATCH.compressOps,
+        "category": "patch",
         "icon": "list"
     },
     {
         "cmd": "Add space x",
         "func": CABLES_CMD_PATCH.addSpaceX,
+        "category": "patch",
         "icon": "list"
     },
     {
         "cmd": "Add space y",
         "func": CABLES_CMD_PATCH.addSpaceY,
+        "category": "patch",
         "icon": "list"
     },
     {
         "cmd": "Save patchfield screenshot",
         "func": CABLES_CMD_PATCH.savePatchScreenshot,
+        "category": "patch",
         "icon": "image"
     },
     {
         "cmd": "Replace ops",
         "func": CABLES_CMD_PATCH.replaceOp,
+        "category": "patch",
         "icon": "op"
     },
     {
         "cmd": "Link two selected ops",
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
+        "category": "patch",
         "icon": "op"
     },
 
     {
         "cmd": "Go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
+        "category": "patch",
     },
     {
         "cmd": "Open params in tab",
