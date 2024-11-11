@@ -827,6 +827,9 @@ export default class Gui extends Events
         else top = this.rendererHeightScaled + 1;
         ele.byId("canvasicons").style.top = top + "px";
 
+
+
+
         this._elMenubar.style.top = 0 + "px";
 
 
@@ -909,7 +912,7 @@ export default class Gui extends Events
             this._elCablesCanvasContainer.style.top = "0px";
             this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width;
             this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
-            this._elCablesCanvasContainer.style["z-index"] = 1;
+            this._elCablesCanvasContainer.style["z-index"] = -1;
         }
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
