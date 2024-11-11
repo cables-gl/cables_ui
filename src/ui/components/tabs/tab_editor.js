@@ -165,7 +165,7 @@ export default class EditorTab extends Events
                 }
 
                 this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
-                if (CABLES.platform.frontendOptions.openLocalFiles)
+                if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
                     this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-folder\"></span>", () => { CABLES.CMD.STANDALONE.openOpDir(opId, opname); });
                 }
