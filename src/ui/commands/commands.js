@@ -17,6 +17,7 @@ commands = commands.concat(opCommands.commands);
 
 CMD.DEBUG = debugCommands.functions;
 CMD.PATCH = patchCommands.functions;
+CMD.OP = opCommands.functions;
 CMD.RENDERER = rendererCommands.functions;
 CMD.TIMELINE = timelineCommands.functions;
 CMD.UI = uiCommands.functions;

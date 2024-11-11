@@ -706,7 +706,7 @@ class OpParampanel extends Events
             "title": "Manage Op Code",
             func()
             {
-                CABLES.CMD.PATCH.manageSelectedOp();
+                CABLES.CMD.OP.manageSelectedOp();
             },
         });
 
@@ -715,7 +715,7 @@ class OpParampanel extends Events
             "title": "Clone Op",
             func()
             {
-                CABLES.CMD.PATCH.cloneSelectedOp();
+                CABLES.CMD.OP.cloneSelectedOp();
             },
         });
 

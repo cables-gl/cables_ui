@@ -375,7 +375,7 @@ export default class OpSelect
                 if (docs)
                 {
                     if (docs.allowEdit)
-                        html += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+                        html += "<a class=\"button-small\" onclick=\"CABLES.CMD.OP.manageSelectedOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
 
                     if (docs.coreLibs && docs.coreLibs.indexOf("standalone_electron") > -1)
                         html += "<br/><br/>this is a <a class=\"link\" href=\"https://cables.gl/standalone\" target=\"_blank\">Standalone</a> op, it will not work fully in the web version.";
