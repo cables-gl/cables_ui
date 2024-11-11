@@ -22,9 +22,12 @@ export default class ParamTabInputListener
     {
         if (event.which == 9) // tab key
         {
+            let r = true;
             event.preventDefault();
-            if (event.shiftKey) this._switchToNextInput(-1);
-            else this._switchToNextInput(1);
+            if (event.shiftKey) r = this._switchToNextInput(-1);
+            else r = this._switchToNextInput(1);
+
+            return r;
         }
     }
 
@@ -71,6 +74,8 @@ export default class ParamTabInputListener
         else
         {
             console.log("element not found");
+            return true;
         }
+        return false;
     }
 }

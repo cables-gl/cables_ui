@@ -1606,27 +1606,31 @@ export default class Gui extends Events
             }
         });
 
-        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
+        this.keys.key(["Escape"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
         {
-            if (
-                !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
-                    (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) ||
-                (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
-            {
-                this.pressedEscape(e);
-                this.patchView.focus();
-            }
-            else
-            {
-                console.log("jaja");
-                return false;
+            if (document.activeElement)
+                if (
+                    gui.isShowingModal() ||
+                    (
+                        !document.activeElement.classList.contains("ace_text-input") &&
+                        document.activeElement.tagName != "INPUT" &&
+                        document.activeElement.tagName != "TEXTAREA"
+                    ) ||
+                    !document.activeElement.classList.contains("notIgnoreEscape"))
+                {
+                    this.pressedEscape(e);
+                    this.patchView.focus();
+                }
+                else
+                {
+                    return false;
                 // if (e.target.hasAttribute("data-portnum"))
                 // {
                 //     const n = e.target.dataset.portnum;
                 //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
                 //     if (nextInputEle) nextInputEle.focus();
                 // }
-            }
+                }
         });
 
         this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "cmdCtrl": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });

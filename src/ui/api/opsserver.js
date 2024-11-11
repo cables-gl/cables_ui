@@ -904,7 +904,8 @@ export default class ServerOps
                     "replace": false,
                 };
 
-                ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
+
+                ele.asButton(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
@@ -912,7 +913,7 @@ export default class ServerOps
 
                 if (options.showReplace)
                 {
-                    ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
+                    ele.asButton(ele.byId("opNameDialogSubmitReplace"), (event) =>
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;

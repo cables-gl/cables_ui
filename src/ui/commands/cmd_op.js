@@ -13,7 +13,7 @@ export default opCommands;
 
 CABLES_CMD_OP.codeNewOp = () =>
 {
-
+    gui.serverOps.createDialog();
 };
 
 CABLES_CMD_OP.downGradeOp = function ()

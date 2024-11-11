@@ -387,6 +387,12 @@ class OpParampanel extends Events
         }
 
 
+        ele.asButton(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
+        ele.asButton(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);
+        ele.asButton(ele.byId("watchOpDocsJson"), CABLES.CMD.DEBUG.watchOpDocsJson);
+
+
+
         ele.forEachClass("portCopyClipboard", (ell) =>
         {
             ell.addEventListener("click", (e) =>
