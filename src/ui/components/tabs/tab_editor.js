@@ -115,10 +115,10 @@ export default class EditorTab extends Events
                 if (this._options.editorObj.type === "op") opname = this._options.editorObj.name;
                 if (this._options.editorObj.data && this._options.editorObj.data.opname) opname = this._options.editorObj.data.opname;
 
+                let opId = null;
                 if (opname)
                 {
                     const opdoc = gui.opDocs.getOpDocByName(opname);
-                    let opId = null;
                     if (opdoc)
                     {
                         opId = opdoc.id;
@@ -165,6 +165,10 @@ export default class EditorTab extends Events
                 }
 
                 this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
+                if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
+                {
+                    this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-folder\"></span>", () => { CABLES.CMD.STANDALONE.openOpDir(opId, opname); });
+                }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
                 this._editor.resize();

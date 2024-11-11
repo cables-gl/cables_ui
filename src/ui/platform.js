@@ -246,14 +246,11 @@ export default class Platform extends Events
         {
             if (options && options.name)
             {
-                const opname = options.name;
-                if (!CABLES.Patch.getOpClass(opname)) gui.opSelect().reload();
-
                 gui.serverOps.execute(options.id || options.name, () =>
                 {
-                    if (options.forceReload)
+                    if (options.forceReload && options.name)
                     {
-                        const editorTab = gui.mainTabs.getTabByDataId(opname);
+                        const editorTab = gui.mainTabs.getTabByDataId(options.name);
                         if (editorTab && editorTab.editor && options.hasOwnProperty("code"))
                         {
                             editorTab.editor.setContent(options.code, true);
