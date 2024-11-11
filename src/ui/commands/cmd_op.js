@@ -54,13 +54,16 @@ CABLES_CMD_OP.manageCurrentSubpatchOp = function ()
 
 CABLES_CMD_OP.manageSelectedOp = function (opid)
 {
-    if (!opid)
-    {
-        const ops = gui.patchView.getSelectedOps();
-        if (ops.length > 0) opid = ops[0].opId;
-    }
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length > 0) opid = ops[0].opId;
+    new ManageOp(gui.mainTabs);
+};
+
+CABLES_CMD_OP.manageOp = function (opid)
+{
     new ManageOp(gui.mainTabs, opid);
 };
+
 
 
 CABLES_CMD_OP.cloneSelectedOps = (ops) =>

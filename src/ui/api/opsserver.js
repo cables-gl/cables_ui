@@ -1577,6 +1577,8 @@ export default class ServerOps
         let opid = op;
         let opname = opid;
 
+
+
         if (typeof op == "object")
         {
             opid = op.opId;
@@ -1723,7 +1725,7 @@ export default class ServerOps
         {
             gui.jobs().finish("load_opcode_" + opname);
 
-            gui.mainTabs.activateTabByName(opname);
+            gui.mainTabs.activateTabByName(title);
             gui.maintabPanel.show(userInteraction);
         }
     }
