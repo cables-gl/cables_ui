@@ -813,7 +813,7 @@ export default class ScConnection extends Events
         if (this._verboseLog)
         {
             const { token, ...logMsg } = msg;
-            console.log("[sc_connection]", prefix, channel, logMsg);
+            this._logVerbose(prefix, channel, logMsg);
         }
     }
 }

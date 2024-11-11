@@ -101,11 +101,11 @@ export default class Gui extends Events
         let patchConfig = {
             "editorMode": true,
             "canvas":
-                {
-                    // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
-                    "alpha": true,
-                    "premultipliedAlpha": true,
-                },
+            {
+                // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
+                "alpha": true,
+                "premultipliedAlpha": true,
+            },
             "variables": {}
         };
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
@@ -406,7 +406,7 @@ export default class Gui extends Events
 
     closeModal()
     {
-        if (gui.currentModal)gui.currentModal.close();
+        if (gui.currentModal) gui.currentModal.close();
     }
 
     showTwoMetaPanels()
@@ -555,7 +555,7 @@ export default class Gui extends Events
             this.rendererHeight = window.innerHeight;
         }
 
-        if (this._corePatch.cgl && this._corePatch.cgl.canvasScale)canvasScale = this._corePatch.cgl.canvasScale;
+        if (this._corePatch.cgl && this._corePatch.cgl.canvasScale) canvasScale = this._corePatch.cgl.canvasScale;
 
 
         this.rendererWidthScaled = this.rendererWidth * canvasScale;
@@ -863,13 +863,13 @@ export default class Gui extends Events
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
-        if (tabPanelTop)tabPanelTopHeight = tabPanelTop.getBoundingClientRect().height;
+        if (tabPanelTop) tabPanelTopHeight = tabPanelTop.getBoundingClientRect().height;
 
         ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - infoAreaHeight - timelineHeight - tabPanelTopHeight + "px";
 
         let metaTabPanelTabsHeight = 0;
         const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
-        if (metaTabPanelTabs)metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
+        if (metaTabPanelTabs) metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
 
 
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
@@ -1011,7 +1011,7 @@ export default class Gui extends Events
             this.rightPanelWidth = this.rendererWidth;
             this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
 
-            if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
+            if (!this.notifiedFullscreen) CABLES.UI.notify("press escape to exit fullscreen mode");
             this.notifiedFullscreen = true;
         }
 
@@ -1141,7 +1141,7 @@ export default class Gui extends Events
         this.fileManager.show(userInteraction);
         gui.mainTabs.activateTabByName("Files");
 
-        if (cb)cb();
+        if (cb) cb();
     }
 
     setProjectName(name)
@@ -1234,34 +1234,34 @@ export default class Gui extends Events
         CABLES.contextMenu.show(
             {
                 "items":
-                [
-                    {
-                        "title": "Reset canvas size",
-                        "func": CABLES.CMD.RENDERER.resetSize
-                    },
-                    {
-                        "title": "Set canvas size",
-                        "func": CABLES.CMD.RENDERER.changeSize
-                    },
-                    {
-                        "title": "Set canvas scale",
-                        "func": CABLES.CMD.RENDERER.scaleCanvas
-                    },
-                    {
-                        "title": "Canvas Magnifier",
-                        "func": CABLES.CMD.RENDERER.canvasMagnifier
-                    },
-                    {
-                        "title": "Maximize Canvas",
-                        "func": CABLES.CMD.UI.toggleMaxRenderer,
-                        "icon": "icon-picker"
-                    },
-                    {
-                        "title": "Canvas As Patch Background",
-                        "func": CABLES.CMD.UI.togglePatchBgRenderer
-                    }
+                    [
+                        {
+                            "title": "Reset canvas size",
+                            "func": CABLES.CMD.RENDERER.resetSize
+                        },
+                        {
+                            "title": "Set canvas size",
+                            "func": CABLES.CMD.RENDERER.changeSize
+                        },
+                        {
+                            "title": "Set canvas scale",
+                            "func": CABLES.CMD.RENDERER.scaleCanvas
+                        },
+                        {
+                            "title": "Canvas Magnifier",
+                            "func": CABLES.CMD.RENDERER.canvasMagnifier
+                        },
+                        {
+                            "title": "Maximize Canvas",
+                            "func": CABLES.CMD.UI.toggleMaxRenderer,
+                            "icon": "icon-picker"
+                        },
+                        {
+                            "title": "Canvas As Patch Background",
+                            "func": CABLES.CMD.UI.togglePatchBgRenderer
+                        }
 
-                ]
+                    ]
             }, el);
     }
 
@@ -1270,44 +1270,44 @@ export default class Gui extends Events
         CABLES.contextMenu.show(
             {
                 "items":
-                [
-                    {
-                        "title": "32:9",
-                        func() { CABLES.CMD.RENDERER.aspect(32 / 9); }
-                    },
-                    {
-                        "title": "21:9",
-                        func() { CABLES.CMD.RENDERER.aspect(21 / 9); }
-                    },
-                    {
-                        "title": "16:9",
-                        func() { CABLES.CMD.RENDERER.aspect(16 / 9); }
-                    },
-                    {
-                        "title": "16:10",
-                        func() { CABLES.CMD.RENDERER.aspect(16 / 10); }
-                    },
-                    {
-                        "title": "4:3",
-                        func() { CABLES.CMD.RENDERER.aspect(4 / 3); }
-                    },
-                    {
-                        "title": "5:4",
-                        func() { CABLES.CMD.RENDERER.aspect(5 / 4); }
-                    },
-                    {
-                        "title": "1:1",
-                        func() { CABLES.CMD.RENDERER.aspect(1); }
-                    },
-                    {
-                        "title": "1:2",
-                        func() { CABLES.CMD.RENDERER.aspect(1 / 2); }
-                    },
-                    {
-                        "title": "9:16",
-                        func() { CABLES.CMD.RENDERER.aspect(9 / 16); }
-                    }
-                ]
+                    [
+                        {
+                            "title": "32:9",
+                            func() { CABLES.CMD.RENDERER.aspect(32 / 9); }
+                        },
+                        {
+                            "title": "21:9",
+                            func() { CABLES.CMD.RENDERER.aspect(21 / 9); }
+                        },
+                        {
+                            "title": "16:9",
+                            func() { CABLES.CMD.RENDERER.aspect(16 / 9); }
+                        },
+                        {
+                            "title": "16:10",
+                            func() { CABLES.CMD.RENDERER.aspect(16 / 10); }
+                        },
+                        {
+                            "title": "4:3",
+                            func() { CABLES.CMD.RENDERER.aspect(4 / 3); }
+                        },
+                        {
+                            "title": "5:4",
+                            func() { CABLES.CMD.RENDERER.aspect(5 / 4); }
+                        },
+                        {
+                            "title": "1:1",
+                            func() { CABLES.CMD.RENDERER.aspect(1); }
+                        },
+                        {
+                            "title": "1:2",
+                            func() { CABLES.CMD.RENDERER.aspect(1 / 2); }
+                        },
+                        {
+                            "title": "9:16",
+                            func() { CABLES.CMD.RENDERER.aspect(9 / 16); }
+                        }
+                    ]
             }, el);
     }
 
@@ -1455,7 +1455,7 @@ export default class Gui extends Events
         if (uploadEle)
         {
             uploadEle.addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-            if (!CABLES.platform.frontendOptions.showAssetUpload)uploadEle.innerText = "Add file";
+            if (!CABLES.platform.frontendOptions.showAssetUpload) uploadEle.innerText = "Add file";
         }
 
         if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
@@ -1608,19 +1608,21 @@ export default class Gui extends Events
             if (
                 !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
                     (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) ||
-                    (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
+                (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
             {
                 this.pressedEscape(e);
                 this.patchView.focus();
             }
             else
             {
-                if (e.target.hasAttribute("data-portnum"))
-                {
-                    const n = e.target.dataset.portnum;
-                    const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
-                    if (nextInputEle) nextInputEle.focus();
-                }
+                console.log("jaja");
+                return false;
+                // if (e.target.hasAttribute("data-portnum"))
+                // {
+                //     const n = e.target.dataset.portnum;
+                //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                //     if (nextInputEle) nextInputEle.focus();
+                // }
             }
         });
 
@@ -1779,7 +1781,7 @@ export default class Gui extends Events
             if (e)
             {
                 CABLES.UI.OPSELECT.linkNewOpToPort =
-                CABLES.UI.OPSELECT.linkNewLink = null;
+                    CABLES.UI.OPSELECT.linkNewLink = null;
                 gui.opSelect().show({
                     "subPatch": this.patchView.getCurrentSubPatch(),
                     "x": 0,
@@ -1883,8 +1885,8 @@ export default class Gui extends Events
 
 
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
-                userSettings.get("showTipps") &&
-                userSettings.get("introCompleted")) gui.tips.show();
+            userSettings.get("showTipps") &&
+            userSettings.get("introCompleted")) gui.tips.show();
 
 
         if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
@@ -1966,7 +1968,7 @@ export default class Gui extends Events
 
     setCursor(str)
     {
-        if (!str)str = "auto";
+        if (!str) str = "auto";
         document.body.classList.remove("cursor_" + this._cursor);
         document.body.classList.add("cursor_" + str);
         this._cursor = str;
@@ -2041,7 +2043,7 @@ export default class Gui extends Events
     reloadDocs(cb)
     {
         gui.opDocs.addCoreOpDocs();
-        if (cb)cb();
+        if (cb) cb();
     }
 
     pauseProfiling()

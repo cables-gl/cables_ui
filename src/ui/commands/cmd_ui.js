@@ -238,12 +238,6 @@ CABLES_CMD_UI.toggleOverlays = function ()
     gui.canvasManager.getCanvasUiBar().updateIconState();
 };
 
-CABLES_CMD_UI.gradientTest = function ()
-{
-    const ge = new CABLES.GradientEditor();
-    ge.show();
-};
-
 CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
     userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
@@ -411,12 +405,7 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.windowFullscreen,
         "icon": "cables"
     },
-    {
-        "cmd": "Gradient test",
-        "category": "ui",
-        "func": CABLES_CMD_UI.gradientTest,
-        "icon": "command"
-    },
+
     {
         "cmd": "Toggle snap to grid",
         "category": "ui",

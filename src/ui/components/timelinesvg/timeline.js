@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import MouseState from "../../glpatch/mousestate.js";
 import text from "../../text.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
 
 export default function TimeLineGui()
 {
@@ -1733,11 +1734,17 @@ export default function TimeLineGui()
 
     this.setProjectLength = function ()
     {
-        const l = prompt("project length in frames:", Math.floor(projectLength * gui.timeLine().getFPS()));
-        if (l === null) return;
-        projectLength = (parseFloat(l)) / gui.timeLine().getFPS();
-        self.redraw();
-        gui.emitEvent("timelineControl", "setLength", projectLength);
+        new ModalDialog({
+            "prompt": true,
+            "title": "Animation Length",
+            "text": "Project length in frames:",
+            "promptValue": Math.floor(projectLength * gui.timeLine().getFPS()),
+            "promptOk": function (inputStr)
+            {
+                projectLength = (parseFloat(inputStr)) / gui.timeLine().getFPS();
+                self.redraw();
+                gui.emitEvent("timelineControl", "setLength", projectLength);
+            } });
     };
 
 

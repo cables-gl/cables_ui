@@ -1,4 +1,5 @@
 import debugCommands from "./cmd_debug.js";
+import opCommands from "./cmd_op.js";
 import patchCommands from "./cmd_patch.js";
 import rendererCommands from "./cmd_renderer.js";
 import timelineCommands from "./cmd_timeline.js";
@@ -12,6 +13,7 @@ commands = commands.concat(patchCommands.commands);
 commands = commands.concat(rendererCommands.commands);
 commands = commands.concat(timelineCommands.commands);
 commands = commands.concat(uiCommands.commands);
+commands = commands.concat(opCommands.commands);
 
 CMD.DEBUG = debugCommands.functions;
 CMD.PATCH = patchCommands.functions;

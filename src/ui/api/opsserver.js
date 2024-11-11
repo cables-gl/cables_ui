@@ -934,13 +934,13 @@ export default class ServerOps
         html += "<br/><br/>";
         if (options.rename)
         {
-            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
+            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
         }
         else
         {
-            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         }
-        html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
+        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
         if (options.hasOpDirectories)

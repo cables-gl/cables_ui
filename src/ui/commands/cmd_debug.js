@@ -6,10 +6,10 @@ import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
 import Gui from "../gui.js";
+import CMD from "./commands.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
-
 
 const debugCommands =
 {
@@ -19,6 +19,22 @@ const debugCommands =
 
 export default debugCommands;
 
+CABLES_CMD_DEBUG.testCommands = function ()
+{
+    for (let i = 0; i < CMD.commands.length; i++)
+    {
+        if (CMD.commands[i].cmd.indexOf("Test all") == -1 &&
+            CMD.commands[i].cmd != "Upload file" &&
+            CMD.commands[i].cmd != "Reload patch" &&
+            CMD.commands[i].cmd != "Open patch website" &&
+            CMD.commands[i].cmd != "Toggle window fullscreen")
+        {
+            console.log("CMD: " + CMD.commands[i].cmd);
+            if (!CMD.commands[i].func)console.error("cmd has no function");
+            else CMD.commands[i].func();
+        }
+    }
+};
 
 CABLES_CMD_DEBUG.testBlueprint2 = function ()
 {
@@ -40,7 +56,7 @@ CABLES_CMD_DEBUG.testBlueprint2 = function ()
 
 CABLES_CMD_DEBUG.globalVarDump = function ()
 {
-    CABLES.GlobalVarTester.after(window);
+    CABLESUILOADER.GlobalVarTester.after(window);
 };
 
 CABLES_CMD_DEBUG.glguiTab = function ()
@@ -369,6 +385,11 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "Undo history",
         "func": CABLES_CMD_DEBUG.undoHistory,
+        "category": "debug",
+    },
+    {
+        "cmd": "Test all commands",
+        "func": CABLES_CMD_DEBUG.testCommands,
         "category": "debug",
     },
 

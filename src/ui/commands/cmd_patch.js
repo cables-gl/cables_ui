@@ -106,64 +106,6 @@ CABLES_CMD_PATCH.reload = function ()
     CABLESUILOADER.talkerAPI.send("reload");
 };
 
-CABLES_CMD_PATCH.editOp = function (userInteraction = true)
-{
-    const selops = gui.patchView.getSelectedOps();
-
-    if (selops && selops.length > 0)
-    {
-        for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i], false, null, userInteraction);
-    }
-};
-
-CABLES_CMD_PATCH.createVersionSelectedOp = function ()
-{
-    const ops = gui.patchView.getSelectedOps();
-    if (ops.length == 0) return;
-
-    const opname = ops[0].objName;
-    let newOpname = "";
-    if (opname.contains("_v"))
-    {
-        const parts = opname.split("_v");
-        newOpname = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
-    }
-    else newOpname = opname + "_v2";
-
-    gui.serverOps.clone(ops[0].opId, newOpname, () =>
-    {
-        gui.serverOps.loadOpDependencies(opname, function ()
-        {
-            gui.patchView.replaceOp(ops[0].id, newOpname);
-
-            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
-        });
-    });
-};
-
-CABLES_CMD_PATCH.cloneSelectedOp = function ()
-{
-    const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
-};
-
-CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
-{
-    const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
-
-    new ManageOp(gui.mainTabs, subOuter.opId);
-};
-
-CABLES_CMD_PATCH.manageSelectedOp = function (opid)
-{
-    if (!opid)
-    {
-        const ops = gui.patchView.getSelectedOps();
-        if (ops.length > 0) opid = ops[0].opId;
-    }
-    new ManageOp(gui.mainTabs, opid);
-};
 
 CABLES_CMD_PATCH.save = function (force, cb)
 {
@@ -1101,27 +1043,6 @@ CABLES_CMD_PATCH.alignOpsLeft = () =>
 };
 
 
-
-CABLES_CMD_PATCH.upGradeOps = function ()
-{
-    const selops = gui.patchView.getSelectedOps();
-    for (let i = 0; i < selops.length; i++)
-    {
-        const opdoc = gui.opDocs.getOpDocById(selops[i].opId);
-        if (opdoc && opdoc.oldVersion && opdoc.newestVersion && opdoc.newestVersion.name)
-            gui.patchView.replaceOp(selops[i].id, opdoc.newestVersion.name);
-    }
-};
-
-CABLES_CMD_PATCH.downGradeOp = function ()
-{
-    const selops = gui.patchView.getSelectedOps();
-    for (let i = 0; i < selops.length; i++)
-    {
-        gui.patchView.downGradeOp(selops[i].id, selops[i].objName);
-    }
-};
-
 CABLES_CMD_PATCH.watchGlOp = function ()
 {
     new GlOpWatcher(gui.mainTabs);
@@ -1406,92 +1327,6 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
     });
 };
 
-CABLES_CMD_PATCH.cloneSelectedOps = (ops) =>
-{
-    if (!ops)
-    {
-        ops = gui.patchView.getSelectedOps();
-
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = ops[i];
-            const opname = op.objName;
-            let sanitizedOpName = opname.replaceAll(".", "_");
-
-
-            let newOpname = "Ops.Patch.P" + gui.patchId + "." + sanitizedOpName;
-            newOpname = newOpname.replaceAll(".Ops_", ".");
-
-            const newOpnameNoVer = newOpname.replaceAll("_v", "V");
-
-            let count = 0;
-            newOpname = newOpnameNoVer;
-            while (gui.opDocs.getOpDocByName(newOpname))
-            {
-                newOpname = newOpnameNoVer + count;
-                count++;
-            }
-            op.renameopto = newOpname;
-
-            console.log("new renameto name:", newOpname);
-        }
-
-        if (ops.length == 0) return;
-    }
-
-    // loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
-
-
-    if (ops.length == 0)
-    {
-        gui.endModalLoading();
-        return;
-    }
-    const op = ops.pop();
-    const opname = op.objName;
-    const newOpname = op.renameopto;
-
-    if (gui.opDocs.getOpDocByName(newOpname))
-    {
-        // that opname was already renamed in list
-        gui.patchView.replaceOp(op.id, newOpname);
-        CABLES_CMD_PATCH.cloneSelectedOps(ops);
-    }
-    else
-    {
-        gui.serverOps.clone(op.opId, newOpname, () =>
-        {
-            gui.serverOps.loadOpDependencies(opname, function ()
-            {
-                gui.patchView.replaceOp(op.id, newOpname);
-
-                CABLES.UI.notify("created op " + newOpname, null, { "force": true });
-
-                CABLES_CMD_PATCH.cloneSelectedOps(ops);
-            });
-        }, { "openEditor": false });
-    }
-};
-
-CABLES_CMD_PATCH.renameOp = (opName = null) =>
-{
-    if (!opName)
-    {
-        const ops = gui.patchView.getSelectedOps();
-        if (!ops.length) return;
-        const op = gui.patchView.getSelectedOps()[0];
-        opName = op.objName;
-    }
-
-    if (CABLES.platform.frontendOptions.opRenameInEditor)
-    {
-        gui.serverOps.renameDialog(opName);
-    }
-    else
-    {
-        gui.serverOps.renameDialogIframe(opName);
-    }
-};
 
 CABLES_CMD_PATCH.deleteOp = (opName = null) =>
 {
@@ -1617,12 +1452,6 @@ CMD_PATCH_COMMANDS.push(
         "icon": "op"
     },
     {
-        "cmd": "Edit op",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.editOp,
-        "icon": "edit"
-    },
-    {
         "cmd": "Set title",
         "category": "op",
         "func": CABLES_CMD_PATCH.setOpTitle,
@@ -1731,38 +1560,7 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "icon": "op"
     },
-    {
-        "cmd": "Downgrade selected op",
-        "func": CABLES_CMD_PATCH.downGradeOp,
-        "icon": "op"
-    },
-    {
-        "cmd": "Upgrade selected ops",
-        "func": CABLES_CMD_PATCH.upGradeOps,
-        "icon": "op"
-    },
-    {
-        "cmd": "Clone selected op",
-        "func": CABLES_CMD_PATCH.cloneSelectedOp,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "Clone selected ops to patch ops",
-        "func": CABLES_CMD_PATCH.cloneSelectedOps,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "Create new version of op",
-        "func": CABLES_CMD_PATCH.createVersionSelectedOp,
-        "icon": "op"
-    },
-    {
-        "cmd": "Manage selected op",
-        "func": CABLES_CMD_PATCH.manageSelectedOp,
-        "icon": "op"
-    },
+
     {
         "cmd": "Go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
@@ -1770,12 +1568,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "Point blueprints to local patch",
-        "func": CABLES_CMD_PATCH.localizeBlueprints,
         "category": "patch",
         "icon": "op"
     },
@@ -1819,12 +1611,6 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.setPatchTitle,
         "category": "patch",
         "icon": "edit"
-    },
-    {
-        "cmd": "Rename op",
-        "func": CABLES_CMD_PATCH.renameOp,
-        "category": "op",
-        "icon": "op"
     },
     {
         "cmd": "Auto position subpatch input output ops",
