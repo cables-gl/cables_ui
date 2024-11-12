@@ -41,10 +41,10 @@
             <a href="{{cablesDocsUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
         {{/if}}
 
-        <a class="button-small button-icon tt" data-tt="manage op" onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-op"></span></a>
+        <a class="button-small button-icon tt" data-tt="manage op" id="parampanel_manage_op"><span class="icon icon-op"></span></a>
 
         {{#if canEditOp}}
-            <a class="button-small button-icon tt info" data-info="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
+            <a class="button-small button-icon tt info" data-info="[e] - edit op" data-tt="[e] - edit op " id="parampanel_edit_op"><span class="icon icon-edit"></span></a>
         {{/if}}
 
         {{#if op.crashed }}
@@ -177,9 +177,9 @@
 
         <div class="groupSpacer"><h3>Watch</h3></div>
         <div class="panel" >
-            <span onclick="CABLES.CMD.DEBUG.watchOpSerialized()" class="button">Serialized</span>
-            <span onclick="CABLES.CMD.DEBUG.watchOpUiAttribs()" class="button">UiAttribs</span>
-            <span onclick="CABLES.CMD.DEBUG.watchOpDocsJson()" class="button">OpDocs</span>
+            <span id="watchOpSerialized" tabindex="0" class="button">Serialized</span>
+            <span id="watchOpUiAttribs" tabindex="0" class="button">UiAttribs</span>
+            <span id="watchOpDocsJson" tabindex="0" class="button">OpDocs</span>
 
         </div>
     {{/if}}

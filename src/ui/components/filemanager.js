@@ -830,7 +830,7 @@ export default class FileManager
                         gui.refreshFileManager();
                         return;
                     }
-                    notify("file created");
+                    if (res) notify("file created");
                     gui.refreshFileManager();
                 });
             }

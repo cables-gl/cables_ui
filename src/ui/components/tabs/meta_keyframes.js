@@ -1,4 +1,5 @@
 import defaultOps from "../../defaultops.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import userSettings from "../usersettings.js";
 
@@ -78,14 +79,25 @@ export default class MetaKeyframes
 
     addKey()
     {
-        const v = prompt("New Keyframe [frame value]");
-        if (v === null) return;
+        // const v = prompt(" []");
+        // if (v === null) return;
 
-        const values = v.split(" ");
+        new ModalDialog({
+            "prompt": true,
+            "title": "New Keyframe",
+            "text": "frame value:",
+            "promptValue": "",
+            "promptOk": function (inputStr)
+            {
+                const v = inputStr;
 
-        gui.timeLine().getAnim().setValue(values[0] / gui.timeLine().getFPS(), values[1] || 0);
-        gui.timeLine().refresh();
-        this.update();
+                const values = v.split(" ");
+
+                gui.timeLine().getAnim().setValue(values[0] / gui.timeLine().getFPS(), values[1] || 0);
+                gui.timeLine().refresh();
+                this.update();
+            }
+        });
     }
 
     setAnim(anim)

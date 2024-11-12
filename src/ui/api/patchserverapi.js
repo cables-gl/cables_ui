@@ -570,7 +570,7 @@ export default class PatchSaveServer extends Events
                                             });
                                         });
 
-                                        CABLES.CMD.PATCH.cloneSelectedOps();
+                                        CABLES.CMD.OP.cloneSelectedOps();
                                     }
                                 };
                             }

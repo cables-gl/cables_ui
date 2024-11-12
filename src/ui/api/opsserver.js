@@ -904,7 +904,8 @@ export default class ServerOps
                     "replace": false,
                 };
 
-                ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
+
+                ele.asButton(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
@@ -912,7 +913,7 @@ export default class ServerOps
 
                 if (options.showReplace)
                 {
-                    ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
+                    ele.asButton(ele.byId("opNameDialogSubmitReplace"), (event) =>
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
@@ -935,13 +936,13 @@ export default class ServerOps
         html += "<br/><br/>";
         if (options.rename)
         {
-            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
+            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
         }
         else
         {
-            html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         }
-        html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
+        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
         if (options.hasOpDirectories)
@@ -1576,6 +1577,8 @@ export default class ServerOps
         let opid = op;
         let opname = opid;
 
+
+
         if (typeof op == "object")
         {
             opid = op.opId;
@@ -1722,7 +1725,7 @@ export default class ServerOps
         {
             gui.jobs().finish("load_opcode_" + opname);
 
-            gui.mainTabs.activateTabByName(opname);
+            gui.mainTabs.activateTabByName(title);
             gui.maintabPanel.show(userInteraction);
         }
     }

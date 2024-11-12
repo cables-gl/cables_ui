@@ -387,6 +387,15 @@ class OpParampanel extends Events
         }
 
 
+
+        ele.asButton(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
+        ele.asButton(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
+        ele.asButton(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
+        ele.asButton(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);
+        ele.asButton(ele.byId("watchOpDocsJson"), CABLES.CMD.DEBUG.watchOpDocsJson);
+
+
+
         ele.forEachClass("portCopyClipboard", (ell) =>
         {
             ell.addEventListener("click", (e) =>
@@ -700,7 +709,7 @@ class OpParampanel extends Events
             "title": "Manage Op Code",
             func()
             {
-                CABLES.CMD.PATCH.manageSelectedOp();
+                CABLES.CMD.OP.manageSelectedOp();
             },
         });
 
@@ -709,7 +718,7 @@ class OpParampanel extends Events
             "title": "Clone Op",
             func()
             {
-                CABLES.CMD.PATCH.cloneSelectedOp();
+                CABLES.CMD.OP.cloneSelectedOp();
             },
         });
 

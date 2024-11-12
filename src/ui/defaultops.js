@@ -292,6 +292,7 @@ const defaultOps = {
     "getOpsForFilename": (filename) =>
     {
         const ops = [];
+        if (!filename) return ops;
 
         filename = filename.toLowerCase();
 
