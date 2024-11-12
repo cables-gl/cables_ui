@@ -574,7 +574,7 @@ export default class PatchSaveServer extends Events
                                     }
                                 };
                             }
-                            new ModalDialog(modalOptions);
+                            if (msg !== "CANCELLED") new ModalDialog(modalOptions);
 
                             this._log.log(r);
                             this.finishAnimations();
