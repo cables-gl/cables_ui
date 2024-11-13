@@ -1919,6 +1919,7 @@ export default class Gui extends Events
         if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
         if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.logGui("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
         if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.logGui("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
+        if (CABLESUILOADER.buildInfo.shared && CABLESUILOADER.buildInfo.shared.git) this._log.logGui("BuildInfo: SHARED buildmessage: " + CABLESUILOADER.buildInfo.shared.git.message);
 
         console.log(CABLESUILOADER.buildInfo);
 

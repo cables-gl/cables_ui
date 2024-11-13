@@ -14,14 +14,14 @@
         {{#if dirs}}
             <div id="dirlist" class="dragList draggable">
             {{#each dirs}}
-                    <div class="draggable" data-id="{{@index}}" data-dir="{{dir}}" {{#compare numUsedOps '==' 0}}style="background-color: var(--color-04);" {{/compare}}>
+                    <div class="draggable" data-id="{{@index}}" data-dir="{{dir}}">
                         {{#unless fixedPlace}}<span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>{{/unless}}
                         <span class="dir">{{dir}}</span>
-                        <span class="controls" style="float: right">
-                            <span class="usedOps">{{numUsedOps}}/</span><span class="ops">{{numOps}}</span>&nbsp;
+                        <div class="controls">
+                            using <span class="usedOps">{{numUsedOps}}</span> of <span class="ops">{{numOps}}</span> ops&nbsp;
                             <a class="icon icon-folder icon-0_75x" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>&nbsp;
                             {{#unless fixedPlace}}<a class="removeOpProjectDir icon icon-x icon-0_75x" data-dir="{{dir}}"></a>{{/unless}}
-                        </span>
+                        </div>
                     </div>
             {{/each}}
                 <div class="highlightBlock info hidden" style="margin-top: 20px;"></div>
