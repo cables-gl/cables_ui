@@ -1915,13 +1915,49 @@ export default class Gui extends Events
 
         this._log.logGui("browser: " + platform.description);
 
+        const branches = {};
+        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git)
+        {
+            const branch = CABLESUILOADER.buildInfo.ui.git.branch;
+            if (!branches.hasOwnProperty(branch)) branches[branch] = [];
+            branches[branch].push("ui");
+            this._log.logGui("BuildInfo: [" + branch + "] UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
+        }
+        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git)
+        {
+            const branch = CABLESUILOADER.buildInfo.core.git.branch;
+            if (!branches.hasOwnProperty(branch)) branches[branch] = [];
+            branches[branch].push("core");
+            this._log.logGui("BuildInfo: [" + branch + "] CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
+        }
+        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git)
+        {
+            const branch = CABLESUILOADER.buildInfo.api.git.branch;
+            if (!branches.hasOwnProperty(branch)) branches[branch] = [];
+            branches[branch].push("api");
+            this._log.logGui("BuildInfo: [" + branch + "] API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
+        }
+        if (CABLESUILOADER.buildInfo.shared && CABLESUILOADER.buildInfo.shared.git)
+        {
+            const branch = CABLESUILOADER.buildInfo.shared.git.branch;
+            if (!branches.hasOwnProperty(branch)) branches[branch] = [];
+            branches[branch].push("shared");
+            this._log.logGui("BuildInfo: [" + branch + "] SHARED buildmessage: " + CABLESUILOADER.buildInfo.shared.git.message);
+        }
 
-        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git) this._log.logGui("BuildInfo: UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
-        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git) this._log.logGui("BuildInfo: CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
-        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git) this._log.logGui("BuildInfo: API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
-        if (CABLESUILOADER.buildInfo.shared && CABLESUILOADER.buildInfo.shared.git) this._log.logGui("BuildInfo: SHARED buildmessage: " + CABLESUILOADER.buildInfo.shared.git.message);
-
-        console.log(CABLESUILOADER.buildInfo);
+        if (Object.keys(branches).length > 1)
+        {
+            let msg = "Diverting branches: ";
+            let first = true;
+            for (const branch in branches)
+            {
+                if (!first) msg += ", ";
+                first = false;
+                const repos = branches[branch].join(" and ");
+                msg += repos + " on " + branch;
+            }
+            this._log.error(msg);
+        }
 
         gui.savedState.setSavedAll("showUiElements");
         gui.savedState.resume();
