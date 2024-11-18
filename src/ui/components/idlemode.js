@@ -18,7 +18,7 @@ function startIdleMode()
 
     if (!CABLES.UI.loaded || !window.gui) return;
     if (idling) return;
-    if (CABLES.UI.userSettings.get("noidlemode")) return;
+    if (!CABLES.UI.userSettings.get("idlemode")) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
 
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
