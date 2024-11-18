@@ -1,8 +1,6 @@
-// import process from "node:process";
 import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
-
 
 /**
  * platform for standalone / electron version
@@ -178,5 +176,10 @@ export default class PlatformStandalone extends Platform
                 }
             }
         });
+    }
+
+    getPatchOpsNamespace()
+    {
+        return "Ops.Local.";
     }
 }

@@ -717,7 +717,7 @@ export default class ServerOps
 
     testServer()
     {
-        let opname = "Ops.Patch.P" + gui._currentProject.shortId + ".test_" + CABLES.shortId();
+        let opname = CABLES.platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
         let attachmentName = "att_test.js";
 
         const cont = "// " + CABLES.uuid();
@@ -1145,7 +1145,7 @@ export default class ServerOps
             return;
         }
 
-        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
 
         const dialogOptions = {
             "title": "Create operator",
@@ -1328,7 +1328,7 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
         if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
 
         const dialogOptions = {
