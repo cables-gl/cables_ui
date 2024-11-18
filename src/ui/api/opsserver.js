@@ -990,7 +990,6 @@ export default class ServerOps
 
         const _nameChangeListener = () =>
         {
-            const nameEle = ele.byId("opNameDialogInput");
             const newNamespace = ele.byId("opNameDialogNamespace").value;
             let nameInput = ele.byId("opNameDialogInput").value;
 
@@ -1002,8 +1001,6 @@ export default class ServerOps
                 return capitalize(part);
             });
             const fullName = capitalizedParts.join(".");
-
-            if (nameInput !== fullName) nameEle.value = fullName;
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
@@ -1025,8 +1022,10 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        this.showApiError(err);
-                        return;
+                        if (!res) res = {};
+                        if (!res.problems) res.problems = [];
+                        if (!res.checkedName) res.checkedName = fullName;
+                        res.problems.push("failed to check op-name with api, try again");
                     }
 
                     if (res.checkedName && res.checkedName === fullName)
