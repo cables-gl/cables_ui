@@ -717,7 +717,7 @@ export default class ServerOps
 
     testServer()
     {
-        let opname = "Ops.Patch.P" + gui._currentProject.shortId + ".test_" + CABLES.shortId();
+        let opname = CABLES.platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
         let attachmentName = "att_test.js";
 
         const cont = "// " + CABLES.uuid();
@@ -990,7 +990,6 @@ export default class ServerOps
 
         const _nameChangeListener = () =>
         {
-            const nameEle = ele.byId("opNameDialogInput");
             const newNamespace = ele.byId("opNameDialogNamespace").value;
             let nameInput = ele.byId("opNameDialogInput").value;
 
@@ -1002,8 +1001,6 @@ export default class ServerOps
                 return capitalize(part);
             });
             const fullName = capitalizedParts.join(".");
-
-            if (nameInput !== fullName) nameEle.value = fullName;
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
@@ -1025,8 +1022,10 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        this.showApiError(err);
-                        return;
+                        if (!res) res = {};
+                        if (!res.problems) res.problems = [];
+                        if (!res.checkedName) res.checkedName = fullName;
+                        res.problems.push("failed to check op-name with api, try again");
                     }
 
                     if (res.checkedName && res.checkedName === fullName)
@@ -1146,7 +1145,7 @@ export default class ServerOps
             return;
         }
 
-        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
 
         const dialogOptions = {
             "title": "Create operator",
@@ -1329,7 +1328,7 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
         if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
 
         const dialogOptions = {

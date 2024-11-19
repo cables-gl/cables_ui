@@ -507,4 +507,17 @@ export default class Platform extends Events
             },
             true);
     }
+
+    getPatchOpsNamespace()
+    {
+        const PATCHOPS_ID_REPLACEMENTS = {
+            "-": "___"
+        };
+        let namespace = gui.project().shortId;
+        Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>
+        {
+            if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
+        });
+        return defaultOps.getPatchOpsPrefix() + namespace + ".";
+    }
 }

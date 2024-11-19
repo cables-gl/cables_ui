@@ -210,8 +210,8 @@ const text =
         "title_quickLinkMiddleMouse": "Middle Mouse Quick Link",
         "subtitle_quickLinkMiddleMouse": "Middle mouse click an op and drag a line to another",
 
-        "title_noidlemode": "Idle Mode",
-        "subtitle_noidlemode": "go into idle mode after some time (to save energy and less fan activity)",
+        "title_idlemode": "Idle Mode",
+        "subtitle_idlemode": "go into idle mode after some time (to save energy and less fan activity)",
 
         "title_tipps": "Tips",
         "subtitle_tipps": "Show tips when opening editor (needs reload)",

@@ -523,7 +523,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 subPatchOpUtil.getAutoName = (short) =>
 {
     let newOpName = "";
-    const ns = defaultOps.getPatchOpsNamespace();
+    const ns = CABLES.platform.getPatchOpsNamespace();
 
     for (let i = 0; i < 1000; i++)
     {

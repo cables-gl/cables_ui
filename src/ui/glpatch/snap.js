@@ -106,8 +106,11 @@ export default class Snap extends Events
                 if (ports[j] == otherPort) break;
             }
 
-            const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
-            const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+            const glOp1 = this._glPatch.getGlOp(port.op);
+            const portPosx = glOp1.getGlPort(port.name).posX;
+
+            const glOp = this._glPatch.getGlOp(otherPort.op);
+            const otherPortPosx = glOp.getGlPort(otherPort.name).posX + otherPort.op.uiAttribs.translate.x;
 
             if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
         }

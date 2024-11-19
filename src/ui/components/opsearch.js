@@ -44,7 +44,7 @@ export default class OpSearch extends Events
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
         items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
-        const namespace = defaultOps.getPatchOpsNamespace();
+        const namespace = CABLES.platform.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
 
         this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;

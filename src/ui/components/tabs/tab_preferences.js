@@ -73,7 +73,7 @@ export default class Preferences
         this.setSwitchValue("hideSizeBar", userSettings.get("hideSizeBar"));
 
         this.setSwitchValue("helperMode", userSettings.get("helperMode"));
-        this.setSwitchValue("noidlemode", userSettings.get("noidlemode"));
+        this.setSwitchValue("idlemode", userSettings.get("idlemode"));
 
         this.setInputValue("wheelmultiplier", userSettings.get("wheelmultiplier") || 1);
         this.setInputValue("fontsize_ace", userSettings.get("fontsize_ace") || 12);

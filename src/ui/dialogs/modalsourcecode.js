@@ -90,14 +90,20 @@ export default class ModalSourceCode
     {
         CABLES.ajax(
             url,
-            (err, _data, xhr) =>
+            (err, _data) =>
             {
                 if (err)
                 {
                     cb(err);
                 }
                 cb(_data);
-            });
+            },
+            "GET",
+            null,
+            null,
+            false,
+            { },
+            { "credentials": true });
     }
 
     close()

@@ -193,7 +193,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         return;
     }
 
-    let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+    let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
     if (gui.patchView.getCurrentSubPatch() != 0)
     {
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
@@ -235,7 +235,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
     gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
     {
         gui.closeModal();
-        CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newName, "ignoreNsCheck": true });
+        CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newName, "ignoreNsCheck": true, ...options });
     });
 };
 
@@ -259,7 +259,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             }
         }
     }
-
 
     const origOpsBounds = gui.patchView.getSelectionBounds();
     gui.patchView.patchRenderer.subPatchOpAnimStart(origOpsBounds, () =>
@@ -467,7 +466,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         });
                 },
                 { "translate": { "x": 0, "y": 0 } });
-        }, false, { "noLoadOp": true });
+        }, false, { "noLoadOp": true, ...options });
     });
 };
 

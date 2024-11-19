@@ -67,6 +67,11 @@ export default class GlPort
         this._updateColor();
     }
 
+    get posX()
+    {
+        return this._posX;
+    }
+
     _onUiAttrChange(attribs)
     {
         if (this.disposed) return;

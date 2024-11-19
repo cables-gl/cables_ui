@@ -79,7 +79,7 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) =>
             let sanitizedOpName = opname.replaceAll(".", "_");
 
 
-            let newOpname = "Ops.Patch.P" + gui.patchId + "." + sanitizedOpName;
+            let newOpname = CABLES.platform.getPatchOpsNamespace() + sanitizedOpName;
             newOpname = newOpname.replaceAll(".Ops_", ".");
 
             const newOpnameNoVer = newOpname.replaceAll("_v", "V");
