@@ -588,11 +588,14 @@ export default class ServerOps
                         html += "to modify this op, try cloning it";
                         new ModalDialog({ "title": "error adding op-dependency", "showOkButton": true, "html": html });
                     }
+                    else if (err.msg === "NPM_ERROR" && err.data)
+                    {
+                        const opText = err.data.opName || opName ? " for " + err.data.opName || opName : "";
+                        this._log.error("failed dependency" + opText + ": " + err.data.stderr);
+                    }
                     else
                     {
-                        let html = "";
-                        html += err.msg + "<br/><br/>";
-                        new ModalDialog({ "title": "error adding op-dependency", "showOkButton": true, "html": html });
+                        this._log.error(err.msg, err);
                     }
                     if (next) next(err, null);
                 }
@@ -601,7 +604,6 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, (op) =>
                     {
                         this._log.log("op-dependency added: " + opName + " " + depName);
-
                         gui.emitEvent("refreshManageOp", opName);
                         if (next) next(null, op);
                     }, true);
