@@ -126,6 +126,20 @@
                         </select>
                         <input type="hidden" class="value" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" />
                 {{/compare}}
+
+                {{#compare port.uiAttribs._variableSelect '==' true }}
+
+                    {{#if port.value}}
+                    &nbsp;
+                        <a class="button-small button-icon" onclick="gui.find('#{{port.value}}')"><span class="icon icon-search"></span></a>
+
+                        {{#compare port.uiAttribs._variableSelectGet '==' true }}
+                            <a class="button-small button-icon" onclick="gui.find('set #{{port.value}}')"><span class="icon icon-search"></span>Set</a>
+                        {{/compare}}
+                    {{/if}}
+                {{/compare}}
+
+
                 {{#compare port.uiAttribs.display '==' 'switch' }}
                     </td><td>
                         <input class="value hide" type="hidden" id="portval_{{ portnum }}_{{ panelid }}" style="width:40px;" value="{{port.value}}"/>

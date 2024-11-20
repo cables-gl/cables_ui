@@ -483,11 +483,13 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.isBlueprint2 = function ()
     {
+        console.log("isBlueprint2...");
         if (this.storage.blueprintVer === 2) return this.patchId.get();
     };
 
     CABLES.Op.prototype.isInBlueprint2 = function ()
     {
+        console.log("isInBlueprint2...");
         if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == 0) return false;
 
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);

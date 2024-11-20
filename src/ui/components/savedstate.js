@@ -52,6 +52,7 @@ export default class SavedState extends Events
 
     getBlueprint()
     {
+        console.log("getBlueprint...");
         const sub = gui.patchView.getCurrentSubPatch() || 0;
         let subOuter = 0;
         let bp = 0;

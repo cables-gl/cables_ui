@@ -303,12 +303,12 @@ export default class Gui extends Events
         if (str == undefined) return this._find;
         gui.maintabPanel.show(true);
 
-        if (this._find)
-        {
-            this._find.search(str);
-            this._find.setSearchInputValue(str);
-        }
-        else this._find = new CABLES.UI.FindTab(gui.mainTabs, str);
+        if (!this._find) this._find = new CABLES.UI.FindTab(gui.mainTabs, str);
+        // setTimeout(() =>
+        // {
+        this._find.search(str);
+        // this._find.setSearchInputValue(str);
+        // }, 100);
 
         gui.maintabPanel.show(true);
         this._find.focus();

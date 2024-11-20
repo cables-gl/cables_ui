@@ -336,7 +336,7 @@ export default class GlPatchAPI
 
         let updateSubs = false;
 
-        if (op.storage && (op.storage.subPatchVer || op.storage.blueprintVer)) updateSubs = true;
+        if (op.isSubPatchOp()) updateSubs = true;
 
         this._glPatch.deleteOp(op.id);
 
