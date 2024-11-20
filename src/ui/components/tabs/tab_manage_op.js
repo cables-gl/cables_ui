@@ -246,10 +246,15 @@ export default class ManageOp
                                 {
                                     submitEle.addEventListener("click", () =>
                                     {
+                                        if (submitEle.disabled) return;
+                                        const depName = depsEle.querySelector(".depName").value;
+                                        if (!depName) return;
                                         submitEle.innerText = "working...";
-                                        gui.serverOps.addOpDependency(opName, depsEle.querySelector(".depName").value, editEle.querySelector(".depType").value, (err) =>
+                                        submitEle.disabled = true;
+                                        gui.serverOps.addOpDependency(opName, depName, editEle.querySelector(".depType").value, (err, opDepRes) =>
                                         {
                                             submitEle.innerText = "Add";
+                                            submitEle.disabled = false;
                                         });
                                     });
                                 }
