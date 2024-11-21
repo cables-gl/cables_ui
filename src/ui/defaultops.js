@@ -525,8 +525,9 @@ const defaultOps = {
 
     "isBlueprintOp": (op) =>
     {
-        if (op && op.storage)
-            return op.storage.blueprintVer || 0;
+        return op.isSubPatchOp();
+        // if (op && op.storage)
+        // return op.storage.blueprintVer || 0;
     },
 
     "isInBlueprint": (op) =>

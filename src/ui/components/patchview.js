@@ -472,7 +472,7 @@ export default class PatchView extends Events
 
             if (!op) return;
 
-            this.addBlueprintInfo(op, this.getSubPatchOuterOp(uiAttribs.subPatch));
+            // this.addBlueprintInfo(op, this.getSubPatchOuterOp(uiAttribs.subPatch));
 
             if (this._showingNavHelperEmpty)
             {
@@ -1235,24 +1235,15 @@ export default class PatchView extends Events
                 if (ops[i].patchId.get() == subId)
                 {
                     let type = "subpatch";
-                    if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
-                    if (ops[i].storage && ops[i].storage.blueprintVer == 2) type = "blueprint_subpatch2";
+                    // if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
+                    if (ops[i].isSubPatchOp()) type = "blueprint_subpatch2";
 
                     const patchInfo = {
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
                         "type": type
                     };
-                    if (ops[i].storage && ops[i].storage.blueprint)
-                    {
-                        patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
-                        const bpOp = gui.corePatch().getOpById(ops[i].uiAttribs.blueprintOpId);
-                        if (bpOp)
-                        {
-                            const port = bpOp.getPortByName("subPatchId");
-                            if (port && port.get()) patchInfo.blueprintLocalSubpatch = port.get();
-                        }
-                    }
+
                     arr.push(patchInfo);
                     if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
@@ -1364,7 +1355,7 @@ export default class PatchView extends Events
 
                     // if (defaultOps.isBlueprintOp(ops[j]) == 2)
                     // {
-                    o.blueprintVer = ops[j].storage.blueprintVer;
+                    o.blueprintVer = ops[j].isSubPatchOp();
                     // }
 
                     subPatches.push(o);
@@ -1446,24 +1437,24 @@ export default class PatchView extends Events
         return gui.corePatch().getSubPatchOuterOp(subPatchId);
     }
 
-    focusSubpatchOp(subPatchId)
-    {
-        console.log("dupe focusSubpatchOp2");
+    // focusSubpatchOp(subPatchId)
+    // {
+    //     console.log("dupe focusSubpatchOp2");
 
-        let gotoOp = this.getSubPatchOuterOp(subPatchId);
-        if (!gotoOp) return;
-        let parentSubId = gotoOp.uiAttribs.subPatch || 0;
-        let gotoOpId = gotoOp.id;
-        if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;
-        if (gotoOpId)
-            this.setCurrentSubPatch(parentSubId, () =>
-            {
-                this.focus();
-                this.focusOp(gotoOpId);
-                this.centerSelectOp(gotoOpId);
-            });
-        else console.warn("[focusSubpatchOp] goto op not found");
-    }
+    //     let gotoOp = this.getSubPatchOuterOp(subPatchId);
+    //     if (!gotoOp) return;
+    //     let parentSubId = gotoOp.uiAttribs.subPatch || 0;
+    //     let gotoOpId = gotoOp.id;
+    //     if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;
+    //     if (gotoOpId)
+    //         this.setCurrentSubPatch(parentSubId, () =>
+    //         {
+    //             this.focus();
+    //             this.focusOp(gotoOpId);
+    //             this.centerSelectOp(gotoOpId);
+    //         });
+    //     else console.warn("[focusSubpatchOp] goto op not found");
+    // }
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
@@ -1549,10 +1540,6 @@ export default class PatchView extends Events
             if (selectedOps[i].storage && selectedOps[i].storage.blueprint)
             {
                 delete selectedOps[i].storage.blueprint;
-            }
-            if (selectedOps[i].uiAttribs.hasOwnProperty("blueprintOpId"))
-            {
-                delete selectedOps[i].uiAttribs.blueprintOpId;
             }
             if (selectedOps[i].uiAttribs.hasOwnProperty("fromNetwork"))
             {
@@ -1699,7 +1686,7 @@ export default class PatchView extends Events
             for (const i in project.ops)
             {
                 project.ops[i].uiAttribs.pasted = true;
-                this.addBlueprintInfo(project.ops[i], outerOp);
+                // this.addBlueprintInfo(project.ops[i], outerOp);
             }
 
             { // change position of ops to paste
@@ -2847,13 +2834,13 @@ export default class PatchView extends Events
         gui.opParams.show(op);
     }
 
-    getSubPatchIdFromBlueprintOpId(opid)
-    {
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
-                return ops[i].uiAttribs.blueprintSubpatch;
-    }
+    // getSubPatchIdFromBlueprintOpId(opid)
+    // {
+    //     const ops = gui.corePatch().ops;
+    //     for (let i = 0; i < ops.length; i++)
+    //         if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
+    //             return ops[i].uiAttribs.blueprintSubpatch;
+    // }
 
     getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
     {
@@ -3137,24 +3124,24 @@ export default class PatchView extends Events
         });
     }
 
-    addBlueprintInfo(op, outerOp)
-    {
-        if (!op || !outerOp) return;
-        if (outerOp)
-        {
-            if (outerOp.uiAttribs && outerOp.uiAttribs.blueprintOpId)
-            {
-                op.uiAttribs.blueprintOpId = outerOp.uiAttribs.blueprintOpId;
-            }
-            if (outerOp.storage && outerOp.storage.blueprint)
-            {
-                op.setStorage({ "blueprint": { "patchId": outerOp.storage.blueprint.patchId } });
-                // op.storage = op.storage || {};
-                // op.storage.blueprint = {
-                //     "patchId": outerOp.storage.blueprint.patchId
-                // };
-            }
-        }
-        return op;
-    }
+    // addBlueprintInfo(op, outerOp)
+    // {
+    //     if (!op || !outerOp) return;
+    //     if (outerOp)
+    //     {
+    //         if (outerOp.uiAttribs && outerOp.uiAttribs.blueprintOpId)
+    //         {
+    //             op.uiAttribs.blueprintOpId = outerOp.uiAttribs.blueprintOpId;
+    //         }
+    //         if (outerOp.storage && outerOp.storage.blueprint)
+    //         {
+    //             op.setStorage({ "blueprint": { "patchId": outerOp.storage.blueprint.patchId } });
+    //             // op.storage = op.storage || {};
+    //             // op.storage.blueprint = {
+    //             //     "patchId": outerOp.storage.blueprint.patchId
+    //             // };
+    //         }
+    //     }
+    //     return op;
+    // }
 }

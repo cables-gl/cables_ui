@@ -266,9 +266,9 @@ export default class PatchOutline extends Events
             if (gui.patchView.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
             else sub.rowClass = "";
 
-            if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
+            if (subOp.isSubPatchOp() || subOp.isInBlueprint2())
             {
-                sub.blueprintVer = subOp.storage.blueprintVer;
+                sub.blueprintVer = subOp.isSubPatchOp();
                 sub.icon = "folder";
             }
         }

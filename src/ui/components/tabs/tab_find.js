@@ -18,7 +18,6 @@ export default class FindTab
     {
         this._toggles = ["recent", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
 
-
         this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
@@ -36,7 +35,6 @@ export default class FindTab
         this._listenerids = [];
 
         this._resultsVars = [];
-
         let colors = [];
         const warnOps = [];
 
@@ -142,11 +140,11 @@ export default class FindTab
         ele.byId(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
         clearTimeout(this._findTimeoutId);
-        this._findTimeoutId = setTimeout(() =>
-        {
-            this.search(this._lastSearch);
-            this.updateHistory();
-        }, 100);
+        // this._findTimeoutId = setTimeout(() =>
+        // {
+        this.search(this._lastSearch);
+        this.updateHistory();
+        // }, 100);
 
         this._onTrigger = gui.corePatch().on("namedTriggerSent", this._updateTriggers.bind(this));
 
@@ -192,6 +190,7 @@ export default class FindTab
         {
             this._eleInput.value = str;
             this.search(str);
+            this.setSearchInputValue(str);
         }
         this.focus();
     }
@@ -292,7 +291,7 @@ export default class FindTab
         html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.shortName;
         if (op.uiAttribs.extendTitle) html += " <span style=\"color: var(--color-13);\"> | " + op.uiAttribs.extendTitle + "</span>";
 
-        if (op.storage && (op.storage.blueprint || op.storage.blueprintVer))
+        if (op.isSubPatchOp())
             html += "<span data-eletype=\"icon\" class=\"icon icon-blueprint iconhover\" style=\"margin-left: 6px;vertical-align: bottom;margin-bottom: 2px;\"></span>";
 
         html += "</h3>";
