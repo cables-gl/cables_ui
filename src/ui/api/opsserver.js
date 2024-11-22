@@ -1234,7 +1234,7 @@ export default class ServerOps
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
-            "sourceOpName": null,
+            "sourceOpName": oldName,
             "rename": true,
             "hasOpDirectories": false
         };
@@ -1343,7 +1343,7 @@ export default class ServerOps
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
-            "sourceOpName": null,
+            "sourceOpName": oldName,
             "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
         };
 
