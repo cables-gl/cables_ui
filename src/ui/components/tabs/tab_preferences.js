@@ -129,6 +129,7 @@ export default class Preferences
 
         this.setSwitchValue("patch_wheelmode", userSettings.get("patch_wheelmode") || "zoom");
         this.setInputValue("patch_panspeed", userSettings.get("patch_panspeed") || 0.25);
+        this.setInputValue("keybind_escape", userSettings.get("keybind_escape") || "escape");
     }
 
     show()

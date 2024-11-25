@@ -29,7 +29,7 @@
 
         <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op</span>
         {{#if canEditOp}}
-            <a class="button-small" target="_blank" onclick="CABLES.CMD.PATCH.renameOp('{{opname}}')">Rename Op</a>
+            <a class="button-small" target="_blank" onclick="CABLES.CMD.OP.renameOp('{{opname}}')">Rename Op</a>
         {{/if}}
 
         {{#if canDeleteOp}}

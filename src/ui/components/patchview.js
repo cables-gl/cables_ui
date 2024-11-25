@@ -1624,13 +1624,14 @@ export default class PatchView extends Events
     {
         let selectedOps = this.getSelectedOps();
 
-        for (const i in selectedOps)
-        {
-            if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
-            {
-                this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
-            }
-        }
+        // for (const i in selectedOps)
+        // {
+        //     if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
+        //     {
+        //         console.log("yes....");
+        //         this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
+        //     }
+        // }
 
         selectedOps = this.getSelectedOps();
 

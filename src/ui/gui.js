@@ -1606,7 +1606,26 @@ export default class Gui extends Events
             }
         });
 
-        this.keys.key(["Escape"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
+
+        const getSettingKeys = (kebind_escape, defaultKey) =>
+        {
+            const setting = String(this.userSettings.get("keybind_escape"));
+            if (setting)
+            {
+                if (setting.indexOf(",") > 0)
+                {
+                    const keys = setting.split(",");
+                    if (keys) keys.map((item) => { return item.trim(); });
+                    return keys;
+                }
+                return setting;
+            }
+
+            return defaultKey;
+        };
+
+
+        this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
         {
             if (document.activeElement)
                 if (
@@ -1633,7 +1652,7 @@ export default class Gui extends Events
                 }
         });
 
-        this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "cmdCtrl": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });
+        this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });
 
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });

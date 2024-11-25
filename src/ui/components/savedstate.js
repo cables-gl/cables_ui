@@ -102,10 +102,7 @@ export default class SavedState extends Events
         else
         {
             let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
-            if (!subOuter || !subOuter.isBlueprint2())
-            {
-                subpatch = 0;
-            }
+            if (!subOuter || !subOuter.isSubPatchOp() >= 2) subpatch = 0;
         }
         subpatch = subpatch || 0;
 
