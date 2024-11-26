@@ -597,20 +597,14 @@ export default class ServerOps
                     {
                         this._log.error(err.msg, err);
                     }
-                    this._log.log("op-dependency added: " + opName + " " + depName);
-                    gui.emitEvent("refreshManageOp", opName);
-                    if (next) next(err, null);
                 }
-                else
+                gui.serverOps.loadOpDependencies(opName, (op) =>
                 {
-                    gui.serverOps.loadOpDependencies(opName, (op) =>
-                    {
-                        this._log.info("op-dependency added: " + opName + " " + depName);
-                        if (res && res.data && res.data.stdout) this._log.info("npm: " + res.data.stdout);
-                        gui.emitEvent("refreshManageOp", opName);
-                        if (next) next(null, op);
-                    }, true);
-                }
+                    this._log.info("op-dependency added: " + opName + " " + depName);
+                    if (res && res.data && res.data.stdout) this._log.info("npm: " + res.data.stdout);
+                    gui.emitEvent("refreshManageOp", opName);
+                    if (next) next(null, op);
+                }, true);
             },
         );
     }
