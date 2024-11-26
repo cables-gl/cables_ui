@@ -1263,6 +1263,12 @@ CABLES_CMD_PATCH.deleteOp = (opName = null) =>
     }
 };
 
+CABLES_CMD_PATCH.patchProfiler = () =>
+{
+    new CABLES.UI.Profiler(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Select all ops",
@@ -1549,6 +1555,12 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "Reload patch",
         "category": "patch",
         "func": CABLES_CMD_PATCH.reload
+    },
+    {
+        "cmd": "Patch Profiler",
+        "category": "patch",
+        "icon": "pie-chart",
+        "func": CABLES_CMD_PATCH.patchProfiler
     },
 
 );
