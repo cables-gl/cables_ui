@@ -1610,7 +1610,7 @@ export default class Gui extends Events
         const getSettingKeys = (keybindName, defaultKey) =>
         {
             let val = defaultKey;
-            const setting = String(this.userSettings.get(keybindName));
+            const setting = String(this.userSettings.get(keybindName) || "");
             if (setting)
             {
                 if (setting.indexOf(",") > 0)
