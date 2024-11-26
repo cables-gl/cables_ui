@@ -1607,21 +1607,25 @@ export default class Gui extends Events
         });
 
 
-        const getSettingKeys = (kebind_escape, defaultKey) =>
+        const getSettingKeys = (keybindName, defaultKey) =>
         {
-            const setting = String(this.userSettings.get("keybind_escape"));
+            let val = defaultKey;
+            const setting = String(this.userSettings.get(keybindName));
             if (setting)
             {
                 if (setting.indexOf(",") > 0)
                 {
                     const keys = setting.split(",");
                     if (keys) keys.map((item) => { return item.trim(); });
-                    return keys;
+                    val = keys;
                 }
-                return setting;
+                val = setting;
             }
 
-            return defaultKey;
+
+            console.log("keybindName", keybindName, val);
+
+            return val;
         };
 
 
