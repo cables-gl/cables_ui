@@ -182,4 +182,9 @@ export default class PlatformStandalone extends Platform
     {
         return "Ops.Local.";
     }
+
+    getSupportedOpDependencyTypes()
+    {
+        return ["npm"];
+    }
 }

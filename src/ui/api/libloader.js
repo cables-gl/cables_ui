@@ -1,28 +1,29 @@
+import { Logger } from "cables-shared-client";
+
 const loadedLibs = [];
-CABLES.onLoadedLib = {};
 
 export default class LibLoader
 {
-    constructor(libnames, cb, options = {})
+    constructor(modules, cb, options = {})
     {
-        this.libsToLoad = libnames.slice(0);
+        this._log = new Logger("libloader");
+
+        this.libsToLoad = modules.slice(0);
         this._cb = cb;
         this.id = options.id || "loadlibs";
         this.title = options.title || "loading libs";
         this.list = options.list || loadedLibs;
-        this.callbacks = options.callbacks || CABLES.onLoadedLib;
-        this.basePath = options.basePath || CABLES.platform.getCablesUrl() + "/api/lib/";
 
-        if (libnames.length > 0)
+        if (modules.length > 0)
         {
             gui.jobs().start({
                 "id": this.id,
                 "title": this.title
             });
 
-            for (const i in libnames)
+            for (const i in modules)
             {
-                this.loadLib(libnames[i]);
+                this.loadLib(modules[i]);
             }
         }
         else
@@ -40,69 +41,83 @@ export default class LibLoader
         }
     }
 
-    getCacheBusterNumber()
+    loadLib(module)
     {
-        let timestamp = Date.now();
-        if (CABLESUILOADER.buildInfo && CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.timestamp)
-        {
-            timestamp = CABLESUILOADER.buildInfo.api.timestamp;
-        }
-        return timestamp;
-    }
-
-    loadLib(name)
-    {
+        const name = module.name;
+        let type = module.type;
         if (this.list.indexOf(name) === -1)
         {
-            this.callbacks[name] = this.callbacks[name] || [];
-
-            this.callbacks[name].push({
-                "executed": false,
-                "cb": (libName) =>
-                {
-                    const i = this.libsToLoad.indexOf(libName);
-                    this.libsToLoad.splice(i, 1);
-                    this.list.push(libName);
-                    this.checkAllLoaded();
-                }
-            }
-            );
-
-            const elRef = this.id + "_" + name;
-            if (!document.querySelector("[data-libname=\"" + elRef + "\"]"))
+            if (!loadjs.isDefined(name))
             {
-                const newScript = document.createElement("script");
-                newScript.dataset.libname = elRef;
-                newScript.type = "text/javascript";
-                newScript.async = true;
-                newScript.crossOrigin = "use-credentials";
-                if (name.startsWith("/assets"))
+                let scriptSrc = "";
+                if (module.src.startsWith("/assets"))
                 {
                     if (gui && gui.corePatch() && gui.corePatch().config.prefixAssetPath)
                     {
-                        newScript.src = (gui.corePatch().config.prefixAssetPath + name).replace("//", "/");
+                        scriptSrc = (gui.corePatch().config.prefixAssetPath + name).replace("//", "/");
                     }
                     else
                     {
-                        newScript.src += name;// + "?nc=" + this.getCacheBusterNumber();
+                        scriptSrc += module.src;
                     }
-                    newScript.onload = () =>
-                    {
-                        CABLES.loadedLib(name);
-                    };
+                }
+                else if (module.src.startsWith("http"))
+                {
+                    scriptSrc = module.src;
+                }
+                else if (module.src.startsWith("./"))
+                {
+                    scriptSrc = "/api/oplib/" + module.op + module.src;
                 }
                 else
                 {
-                    newScript.src = this.basePath + name;// + "?nc=" + this.getCacheBusterNumber();
+                    const basePath = module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
+                    scriptSrc = basePath + module.src;
                 }
-                newScript.onerror = () =>
+
+                if (type === "module")
                 {
-                    const i = this.libsToLoad.indexOf(name);
-                    this.libsToLoad.splice(i, 1);
-                    this.checkAllLoaded();
-                    if (gui) gui.emitEvent("libLoadError", name);
-                };
-                (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newScript);
+                    import(/* webpackIgnore: true */scriptSrc).then((importedModule) =>
+                    {
+                        if (!window.hasOwnProperty(name)) window[name] = importedModule;
+                        const i = this.libsToLoad.indexOf(name);
+                        this.libsToLoad.splice(i, 1);
+                        this.list.push(name);
+                        this.checkAllLoaded();
+                    }).catch((e) =>
+                    {
+                        const i = this.libsToLoad.indexOf(name);
+                        this.libsToLoad.splice(i, 1);
+                        this.checkAllLoaded();
+                        this._log.error(e);
+                        if (gui) gui.emitEvent("libLoadError", name);
+                    });
+                }
+                else
+                {
+                    loadjs(scriptSrc, name, {
+                        "returnPromise": true,
+                        "async": true,
+                        "before": (path, scriptEl) =>
+                        {
+                            if (type === "module") scriptEl.setAttribute("type", "module");
+                            // scriptEl.setAttribute("crossorigin", "use-credentials");
+                        }
+                    }).then(() =>
+                    {
+                        const i = this.libsToLoad.indexOf(name);
+                        this.libsToLoad.splice(i, 1);
+                        this.list.push(name);
+                        this.checkAllLoaded();
+                    }).catch((e) =>
+                    {
+                        const i = this.libsToLoad.indexOf(name);
+                        this.libsToLoad.splice(i, 1);
+                        this.checkAllLoaded();
+                        this._log.error(e);
+                        if (gui) gui.emitEvent("libLoadError", name);
+                    });
+                }
             }
         }
         else
@@ -113,19 +128,3 @@ export default class LibLoader
         }
     }
 }
-
-// this will be called from loaded lib files (api inject the call into js files...)
-CABLES.loadedLib = function (name)
-{
-    if (CABLES.onLoadedLib[name])
-    {
-        for (let i = 0; i < CABLES.onLoadedLib[name].length; i++)
-        {
-            if (!CABLES.onLoadedLib[name][i].executed)
-            {
-                CABLES.onLoadedLib[name][i].cb(name);
-                CABLES.onLoadedLib[name][i].executed = true;
-            }
-        }
-    }
-};

@@ -87,6 +87,7 @@ export default class ManageOp
             this._tab.remove();
             return;
         }
+        console.log("GETTINGSHD11111S");
 
 
         clearTimeout(this._timeout);
@@ -95,6 +96,7 @@ export default class ManageOp
             {
                 CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
                 {
+                    console.log("GETTINGSHDS", res);
                     if (error) this._log.warn("error api?", error);
                     const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
                     const doc = {};
@@ -140,8 +142,8 @@ export default class ManageOp
                         doc.attachmentFiles = attachmentFiles;
                     }
 
-                    doc.libs = gui.serverOps.getOpLibs(opName, false);
-                    doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
+                    doc.libs = gui.serverOps.getOpLibs(opName, false).map((lib) => { return lib.name; });
+                    doc.coreLibs = gui.serverOps.getCoreLibs(opName, false).map((lib) => { return lib.name; });
                     summary = gui.opDocs.getSummary(opName) || "No Summary";
                     const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
                     if (portJson && portJson.ports)
@@ -184,7 +186,8 @@ export default class ManageOp
                             "libs": libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
-                            "warns": res.warns
+                            "warns": res.warns,
+                            "supportedOpDependencyTypes": CABLES.platform.getSupportedOpDependencyTypes()
                         });
 
                     this._tab.html(html);

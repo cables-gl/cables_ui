@@ -272,10 +272,12 @@
                 {{/if}}
 
                 <div id="addopdependency_{{viewId}}">
-                    <input class="depName" type="text">
+                    <input class="depName" type="text" placeholder="@cables/cables">
                     <div class="edit hidden">
                         <select class="depType">
-                            {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
+                        {{#each supportedOpDependencyTypes}}
+                            <option value="{{.}}">{{.}}</option>
+                        {{/each}}
                         </select>
                         <a class="button-small add">Add</a>
                     </div>
