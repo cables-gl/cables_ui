@@ -928,8 +928,10 @@ export default class ServerOps
         if (!CABLES.platform.isStandalone()) html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
-        html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
-        html += "<br/><br/>";
+        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
+        html += "&nbsp;";
+        html += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
+        html += "</div><br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
         html += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";

@@ -1525,7 +1525,7 @@ export default class Gui extends Events
         ele.byId("nav_gpuprofiler").addEventListener("click", (event) => { CABLES.CMD.UI.profileGPU(); });
         ele.byId("nav_log").addEventListener("click", (event) => { CABLES.CMD.DEBUG.logConsole(); });
 
-        ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
+        ele.byId("nav_profiler").addEventListener("click", (event) => { CABLES.CMD.PATCH.patchProfiler(); });
         ele.byId("nav_patchanalysis").addEventListener("click", (event) => { CABLES.CMD.PATCH.analyze(); });
 
         if (!CABLES.platform.isTrustedPatch())
@@ -1607,21 +1607,25 @@ export default class Gui extends Events
         });
 
 
-        const getSettingKeys = (kebind_escape, defaultKey) =>
+        const getSettingKeys = (keybindName, defaultKey) =>
         {
-            const setting = String(this.userSettings.get("keybind_escape"));
+            let val = defaultKey;
+            const setting = String(this.userSettings.get(keybindName) || "");
             if (setting)
             {
                 if (setting.indexOf(",") > 0)
                 {
                     const keys = setting.split(",");
                     if (keys) keys.map((item) => { return item.trim(); });
-                    return keys;
+                    val = keys;
                 }
-                return setting;
+                val = setting;
             }
 
-            return defaultKey;
+
+            console.log("keybindName", keybindName, val);
+
+            return val;
         };
 
 

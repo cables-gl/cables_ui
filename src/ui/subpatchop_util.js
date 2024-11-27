@@ -673,6 +673,12 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     let hasNoSaveError = false;
     let erro = "";
+
+    const a = {};
+    gui.patchView._patchRenderer.viewBox.serialize(a);
+    const viewbox = a.viewBoxesGl[oldSubId];
+
+
     ops.forEach((op) =>
     {
         if (op.hasUiError("subPatchOpNoSaveError"))
@@ -740,24 +746,28 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                 {
                     if (options.loadingModal) options.loadingModal.setTask("execute op...");
 
+
+
                     gui.serverOps.execute(newOp.opId,
                         (newOps, refNewOp) =>
                         {
                             gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
                             gui.corePatch().clearSubPatchCache(newOp.patchId.get());
 
-                            setTimeout(() =>
+                            // setTimeout(() =>
+                            // {
+                            if (refNewOp)
                             {
-                                if (refNewOp)
+                                gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId), () =>
                                 {
-                                    gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
-                                    gui.patchView.focusOp(refNewOp.id);
-                                    gui.patchView.centerSelectOp(refNewOp.id, true);
-                                }
+                                    gui.patchView._patchRenderer.viewBox.scrollTo(viewbox.x, viewbox.y, false);
+                                    gui.patchView._patchRenderer.viewBox.animateZoom(viewbox.z, 0.01);
+                                });
+                            }
 
-                                if (options.next)options.next();
-                                gui.savingTitleAnimEnd();
-                            }, 100);
+                            if (options.next)options.next();
+                            gui.savingTitleAnimEnd();
+                            // }, 100);
                         },
                         { "refOldOp": newOp });
                 }

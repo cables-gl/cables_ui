@@ -31,7 +31,10 @@ CABLES_CMD_UI.activityFeed = function ()
     gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
 };
 
-
+CABLES_CMD_UI.closeAllTabs = function ()
+{
+    gui.mainTabs.closeAllTabs();
+};
 
 CABLES_CMD_UI.openRemoteViewer = function ()
 {
@@ -492,6 +495,12 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.welcomeTab,
         "icon": "cables"
+    },
+    {
+        "cmd": "Close all tabs",
+        "category": "ui",
+        "func": CABLES_CMD_UI.closeAllTabs
+
     }
 
 

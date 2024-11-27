@@ -269,6 +269,11 @@ export default class TabPanel extends Events
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].id == id) return this._tabs[i];
     }
 
+    closeAllTabs()
+    {
+        while (this._tabs.length) this.closeTab(this._tabs[0].id);
+    }
+
     closeTab(id)
     {
         let tab = null;
