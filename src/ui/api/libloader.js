@@ -75,6 +75,8 @@ export default class LibLoader
                     scriptSrc = basePath + module.src;
                 }
 
+                scriptSrc = CABLES.platform.getCablesUrl() + scriptSrc;
+
                 if (type === "module")
                 {
                     import(/* webpackIgnore: true */scriptSrc).then((importedModule) =>
@@ -101,7 +103,7 @@ export default class LibLoader
                         "before": (path, scriptEl) =>
                         {
                             if (type === "module") scriptEl.setAttribute("type", "module");
-                            // scriptEl.setAttribute("crossorigin", "use-credentials");
+                            scriptEl.setAttribute("crossorigin", "use-credentials");
                         }
                     }).then(() =>
                     {
