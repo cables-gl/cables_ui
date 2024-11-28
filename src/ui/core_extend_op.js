@@ -723,7 +723,8 @@ export default function extendCoreOp()
         let index = 0;
 
 
-        if (this.isSubPatchOp() == 2)
+
+        if (this.isSubPatchOp() == 2 && this.patchId)
         {
             const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
 
