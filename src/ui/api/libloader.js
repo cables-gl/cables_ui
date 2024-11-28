@@ -43,18 +43,19 @@ export default class LibLoader
 
     loadLib(module)
     {
-        const name = module.name;
-        let type = module.type;
-        if (this.list.indexOf(name) === -1)
+        const libName = module.name;
+        let libType = module.type;
+        const moduleExport = module.export;
+        if (this.list.indexOf(libName) === -1)
         {
-            if (!loadjs.isDefined(name))
+            if (!loadjs.isDefined(libName))
             {
                 let scriptSrc = "";
                 if (module.src.startsWith("/assets"))
                 {
                     if (gui && gui.corePatch() && gui.corePatch().config.prefixAssetPath)
                     {
-                        scriptSrc = (gui.corePatch().config.prefixAssetPath + name).replace("//", "/");
+                        scriptSrc = (gui.corePatch().config.prefixAssetPath + libName).replace("//", "/");
                     }
                     else
                     {
@@ -75,56 +76,73 @@ export default class LibLoader
                     scriptSrc = basePath + module.src;
                 }
 
-                scriptSrc = CABLES.platform.getCablesUrl() + scriptSrc;
-
-                if (type === "module")
+                if (libType === "module")
                 {
                     import(/* webpackIgnore: true */scriptSrc).then((importedModule) =>
                     {
-                        if (!window.hasOwnProperty(name)) window[name] = importedModule;
-                        const i = this.libsToLoad.indexOf(name);
+                        if (moduleExport)
+                        {
+                            if (window.hasOwnProperty(moduleExport))
+                            {
+                                this._log.warn("module with export `" + moduleExport + "` already loaded.");
+                            }
+                            else
+                            {
+                                window[moduleExport] = importedModule;
+                            }
+                        }
+                        const i = this.libsToLoad.indexOf(libName);
                         this.libsToLoad.splice(i, 1);
-                        this.list.push(name);
+                        this.list.push(libName);
                         this.checkAllLoaded();
                     }).catch((e) =>
                     {
-                        const i = this.libsToLoad.indexOf(name);
+                        const i = this.libsToLoad.indexOf(libName);
                         this.libsToLoad.splice(i, 1);
                         this.checkAllLoaded();
                         this._log.error(e);
-                        if (gui) gui.emitEvent("libLoadError", name);
+                        if (gui) gui.emitEvent("libLoadError", libName);
                     });
+                }
+                else if (libType === "op")
+                {
+                    gui.serverOps.loadOpDependencies(module.src, () =>
+                    {
+                        const i = this.libsToLoad.indexOf(libName);
+                        this.libsToLoad.splice(i, 1);
+                        this.list.push(libName);
+                        this.checkAllLoaded();
+                    }, true);
                 }
                 else
                 {
-                    loadjs(scriptSrc, name, {
+                    loadjs(scriptSrc, libName, {
                         "returnPromise": true,
                         "async": true,
                         "before": (path, scriptEl) =>
                         {
-                            if (type === "module") scriptEl.setAttribute("type", "module");
-                            scriptEl.setAttribute("crossorigin", "use-credentials");
+                            if (libType === "module") scriptEl.setAttribute("type", "module");
                         }
                     }).then(() =>
                     {
-                        const i = this.libsToLoad.indexOf(name);
+                        const i = this.libsToLoad.indexOf(libName);
                         this.libsToLoad.splice(i, 1);
-                        this.list.push(name);
+                        this.list.push(libName);
                         this.checkAllLoaded();
                     }).catch((e) =>
                     {
-                        const i = this.libsToLoad.indexOf(name);
+                        const i = this.libsToLoad.indexOf(libName);
                         this.libsToLoad.splice(i, 1);
                         this.checkAllLoaded();
                         this._log.error(e);
-                        if (gui) gui.emitEvent("libLoadError", name);
+                        if (gui) gui.emitEvent("libLoadError", libName);
                     });
                 }
             }
         }
         else
         {
-            const i = this.libsToLoad.indexOf(name);
+            const i = this.libsToLoad.indexOf(libName);
             this.libsToLoad.splice(i, 1);
             this.checkAllLoaded();
         }

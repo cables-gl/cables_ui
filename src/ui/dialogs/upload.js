@@ -84,7 +84,7 @@ export default class FileUploader
     }
 
 
-    uploadFile(file, filename)
+    uploadFile(file, filename = null, opId = null, next = null)
     {
         if (gui.isRemoteClient) return;
 
@@ -96,10 +96,12 @@ export default class FileUploader
             reader.addEventListener("load",
                 () =>
                 {
-                    CABLESUILOADER.talkerAPI.send("fileUploadStr",
+                    const talkerCommand = opId ? "uploadFileToOp" : "fileUploadStr";
+                    CABLESUILOADER.talkerAPI.send(talkerCommand,
                         {
                             "fileStr": reader.result,
                             "filename": uploadFileName,
+                            "opId": opId
                         },
                         (err, res) =>
                         {
@@ -133,6 +135,7 @@ export default class FileUploader
                             {
                                 FileManager.updatedFiles.push(newFilename);
                             }
+                            if (next) next(err, newFilename);
                         });
                 },
                 false);
@@ -179,7 +182,7 @@ export default class FileUploader
         gui.jobs().finish("prepareuploadfiles");
     }
 
-    uploadFiles(files)
+    uploadFiles(files, opName)
     {
         if (!window.gui) return;
         if (gui.isRemoteClient) return;
@@ -187,7 +190,7 @@ export default class FileUploader
         gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
 
         for (let i = 0; i < files.length; i++)
-            this.uploadFile(files[i]);
+            this.uploadFile(files[i], files[i].name, opName);
 
         gui.jobs().finish("prepareuploadfiles");
     }

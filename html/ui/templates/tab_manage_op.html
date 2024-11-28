@@ -245,8 +245,8 @@
                     <table class="table">
                         <tr>
                             <th>Name</th>
-                            <!-- <th>Version</th> -->
                             <th>Type</th>
+                            <th>Export</th>
                             <th> </th>
                         </tr>
                         {{#each opDoc.dependencies}}
@@ -259,11 +259,11 @@
                                 {{/compare}}
 
                                 </td>
-                                <!-- <td>{{#if version}}{{version}}{{else}}latest{{/if}}</td> -->
                                 <td>{{type}}</td>
+                                <td>{{#if export}}{{export}}{{/if}}</td>
                                 <td>
                                     {{#if ../canEditOp}}
-                                        <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{name}}', '{{type}}');"></a>
+                                        <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{src}}', '{{type}}');"></a>
                                     {{/if}}
                                 </td>
                             </tr>
@@ -272,7 +272,10 @@
                 {{/if}}
 
                 <div id="addopdependency_{{viewId}}">
-                    <input class="depName" type="text" placeholder="@cables/cables">
+                    <input class="depSrc" type="text" placeholder="@cables/cables">
+                    <span class="exportName hidden">
+                        Export as: <input type="text" value="" >
+                    </span>
                     <div class="edit hidden">
                         <select class="depType">
                         {{#each supportedOpDependencyTypes}}
@@ -280,6 +283,8 @@
                         {{/each}}
                         </select>
                         <a class="button-small add">Add</a>
+                        <a class="button-small upload"><span class="icon icon-plus-circle icon-1_25x"></span>Upload</a>
+                        <input class="hidden" type="file" accept=".js,application/javascript"/>
                     </div>
 
                 </div>
