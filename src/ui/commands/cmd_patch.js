@@ -1228,6 +1228,7 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
     {
         if (!err && res.success && targetElement)
         {
+            if (targetElement.target)targetElement = targetElement.target;
             const icon = targetElement.querySelector(".icon");
             if (icon)
             {
