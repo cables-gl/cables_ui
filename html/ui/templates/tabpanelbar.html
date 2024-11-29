@@ -34,10 +34,11 @@
     <div class="tabtoolbar" id="toolbarContent{{id}}" style="float:left;"></div>
 
     {{#if options.closable}}
-        <div
+        <button
+            tabindex="0" onkeypress="ele.keyClick(event,this)"
             id="closetab{{id}}"
             data-id="{{id}}"
-            class="icon-x icon icon-1_5x fright iconhover closetabx" ></div>
+            class="icon-x icon icon-1_5x fright iconhover closetabx" ></button>
     {{/if}}
     <div style="clear:both;"></div>
 
