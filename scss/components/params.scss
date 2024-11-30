@@ -345,7 +345,7 @@
             &:focus
             {
                 background-color: $color-background-input-focussed;
-                outline: none;
+                // outline: none;
             }
 
             -moz-appearance:textfield;

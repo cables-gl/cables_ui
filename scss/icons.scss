@@ -80,10 +80,16 @@
     .iconhover
     {
         cursor:pointer;
-        &:hover
+        &:hover,&:focus-visible
         {
             background-color:var(--color-special) !important;
         }
+        &:focus-visible
+        {
+            outline: 2px solid red;
+        }
+
+
     }
 
     .iconToggleActive

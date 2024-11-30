@@ -77,18 +77,18 @@
 
         <div>
             {{#if frontendOptions.hasCommunity}}
-                <a class="iconbutton info" onclick="CABLES.CMD.UI.settings();" data-info="summary_settings"><span class="icon icon-settings"></span></a>
+                <a class="iconbutton info" id="btn_patch_settings" data-info="summary_settings"><span class="icon icon-settings"></span></a>
             {{/if}}
-            <a class="iconbutton info" onclick="CABLES.CMD.PATCH.analyze();" data-info="summary_analyze"><span class="icon icon-pie-chart"></span></a>
+            <a class="iconbutton info" id="btn_analyze_patch" data-info="summary_analyze"><span class="icon icon-pie-chart"></span></a>
 
             {{#if frontendOptions.hasCommunity}}
-                <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
+                <a class="iconbutton" id="btn_toggle_patch_like"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
             {{/if}}
             {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
             {{/if}}
             {{#if frontendOptions.openLocalFiles}}
-                <a class="iconbutton" onclick="CABLES.CMD.STANDALONE.openProjectDir();"><span class="icon icon-folder"></span></a>
+                <a class="iconbutton" id="btn_patch_opendir"><span class="icon icon-folder"></span></a>
             {{/if}}
         </div>
 
