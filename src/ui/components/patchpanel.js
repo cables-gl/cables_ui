@@ -88,6 +88,11 @@ export default class PatchPanel extends Events
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
+        if (ele.byId("btn_patch_opendir"))ele.asButton(ele.byId("btn_patch_opendir"), CABLES.CMD.STANDALONE.openProjectDir);
+        if (ele.byId("btn_patch_settings"))ele.asButton(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);
+        if (ele.byId("btn_analyze_patch"))ele.asButton(ele.byId("btn_analyze_patch"), CABLES.CMD.PATCH.analyze);
+        if (ele.byId("btn_toggle_patch_like"))ele.asButton(ele.byId("btn_toggle_patch_like"), CABLES.CMD.PATCH.togglePatchLike);
+
         this._outline.insert();
     }
 }

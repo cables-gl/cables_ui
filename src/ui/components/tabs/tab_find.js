@@ -282,8 +282,8 @@ export default class FindTab
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
         if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
-        html += "<div id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
-        html += "onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
+        html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
+        html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
 
         let colorHandle = "";
         if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";

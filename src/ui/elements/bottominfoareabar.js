@@ -151,12 +151,13 @@ export default class BottomInfoAreaBar extends Events
 
     hoverInfoEle(e)
     {
-        let txt = e.target.dataset.info;
-        if (text[e.target.dataset.info]) txt = text[e.target.dataset.info];
+        let key = e.target.dataset.info;
+        let txt = key;
+        if (text[key]) txt = text[key];
 
-        if (e.target.dataset && !e.target.dataset.info)
+        if (e.target.dataset.info && !txt)
         {
-            this._log.warn("element has info class but no info data", e.target);
+            this._log.warn("element has info class but no info data", key, e.target);
         }
 
         this.setContent(txt);
