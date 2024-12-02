@@ -38,6 +38,7 @@ class UserSettings extends Events
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("overlaysShow") === null) this.set("overlaysShow", true);
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
+        if (this.get("doubleClickAction") === null) this.set("doubleClickAction", "parentSub");
     }
 
     load(settings)

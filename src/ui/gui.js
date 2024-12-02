@@ -1619,7 +1619,7 @@ export default class Gui extends Events
                     if (keys) keys.map((item) => { return item.trim(); });
                     val = keys;
                 }
-                val = setting;
+                else val = setting;
             }
 
 
