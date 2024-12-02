@@ -1,7 +1,5 @@
 import { Logger } from "cables-shared-client";
 
-const loadedLibs = [];
-
 export default class LibLoader
 {
     constructor(modules, cb, options = {})
@@ -12,7 +10,7 @@ export default class LibLoader
         this._cb = cb;
         this.id = options.id || "loadlibs";
         this.title = options.title || "loading libs";
-        this.list = options.list || loadedLibs;
+        this.list = options.list || [];
 
         if (modules.length > 0)
         {

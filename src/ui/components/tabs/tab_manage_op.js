@@ -276,7 +276,7 @@ export default class ManageOp
                                 if (!depSrc) return;
                                 submitEle.innerText = "working...";
                                 submitEle.disabled = true;
-                                if (fileInput.files)
+                                if (fileInput.files && fileInput.files.length > 0)
                                 {
                                     const filename = fileInput.files[0].name;
                                     CABLES.fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
