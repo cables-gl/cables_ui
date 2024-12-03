@@ -62,7 +62,7 @@ export default class Tab extends Events
         // html += "<span class=\"icon icon-files\"></span>";
         html += title;
         button.innerHTML = html;
-        button.addEventListener("click", cb);
+        // button.addEventListener("click", cb);
         ele.asButton(button, cb);
         this.toolbarEle.appendChild(button);
         this.buttons.push({ "ele": button, cb, title });
