@@ -67,6 +67,11 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    get config()
+    {
+        return this._cfg;
+    }
+
     warnOpEdit(opName)
     {
         return (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opName) && !CABLES.platform.isStandalone());
@@ -122,6 +127,7 @@ export default class Platform extends Events
     {
         return this._cfg.patch.settings.manualScreenshot;
     }
+
 
     getCablesUrl()
     {

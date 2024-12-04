@@ -76,6 +76,8 @@ const text =
     "tab_debug": "## Debug \n\n",
     "tab_screen": "## Screen \n\n",
 
+    "standalone_openfolder": "## Open Folder\n[cmd_ctrl][LMB] Copy path to clipboard",
+
     "download_screenshot": "## Download screenshot \n\nDownload a HD-image (1920 x 1080) of your patch",
     "minimapContainer": "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate.",
     "timelineui": "## Timeline \n\nIn the timeline you can animate ports over time.",
