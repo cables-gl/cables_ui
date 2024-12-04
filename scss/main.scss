@@ -67,14 +67,12 @@ $border-radius-popups:12px;
 }
 
 html,body { // ipad overscroll fix...
-  position: fixed;
-  overflow: hidden;
-  width:100vw;
-  height:100vh;
-overscroll-behavior:none;
-overscroll-behavior-x: none;
-
-
+    position: fixed;
+    overflow: hidden;
+    width:100vw;
+    height:100vh;
+    overscroll-behavior:none;
+    overscroll-behavior-x: none;
 }
 
 body
@@ -87,20 +85,22 @@ body
     font-size: var(--font-size-default);
 }
 
-*,*:hover
-{
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
-    // outline: none !important;
-}
-
-*
-{
-    color:var(--text-color);
-}
 
 .cablesCssUi
 {
+    *,*:hover
+    {
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    *
+    {
+        color:var(--text-color);
+    }
+
+
+
 
     h3,h2
     {

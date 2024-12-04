@@ -167,7 +167,12 @@ export default class EditorTab extends Events
                 this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
                 if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
-                    this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-folder\"></span>", () => { CABLES.CMD.STANDALONE.openOpDir(opId, opname); });
+                    this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-folder\"></span>",
+                        (e) =>
+                        {
+                            if (e.ctrlKey || e.metaKey) CABLES.CMD.STANDALONE.copyOpDirToClipboard(opId);
+                            else CABLES.CMD.STANDALONE.openOpDir(opId, opname);
+                        });
                 }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 

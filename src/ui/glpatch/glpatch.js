@@ -631,8 +631,6 @@ export default class GlPatch extends Events
 
     _onCanvasDblClick(e)
     {
-        console.log(this.dblClickAction);
-
         if (!this.dblClickAction || this.dblClickAction == "parentSub")
         {
             if (this._hoverOps.length > 0)

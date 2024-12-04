@@ -52,17 +52,17 @@ CABLES_CMD_OP.manageCurrentSubpatchOp = function ()
     new ManageOp(gui.mainTabs, subOuter.opId);
 };
 
-CABLES_CMD_OP.manageSelectedOp = function (opid)
-{
-    const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) opid = ops[0].opId;
-    new ManageOp(gui.mainTabs);
-};
-
 CABLES_CMD_OP.manageOp = function (opid)
 {
+    if (!opid)
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length > 0) opid = ops[0].opId;
+    }
     new ManageOp(gui.mainTabs, opid);
 };
+
+
 
 
 
@@ -230,7 +230,7 @@ CMD_OP_COMMANDS.push(
     },
     {
         "cmd": "Manage selected op",
-        "func": CABLES_CMD_OP.manageSelectedOp,
+        "func": CABLES_CMD_OP.manageOp,
         "category": "op",
         "icon": "op"
     },
