@@ -130,7 +130,6 @@ export default class EditorTab extends Events
 
                     this._tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
 
-
                     if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                     {
                         const el = this._tab.addButton("<span class=\"icon icon-chevron-down\"></span>Op Files", () =>
@@ -144,8 +143,6 @@ export default class EditorTab extends Events
                                     gui.serverOps.edit(opdoc.name, false, null, true);
                                 }
                             });
-
-
 
                             for (let i = 0; i < opdoc.attachmentFiles.length; i++)
                             {
@@ -167,7 +164,12 @@ export default class EditorTab extends Events
                 this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
                 if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
-                    this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-folder\"></span>", () => { CABLES.CMD.STANDALONE.openOpDir(opId, opname); });
+                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"standalone_openfolder\" ></span>",
+                        (e) =>
+                        {
+                            if (e.ctrlKey || e.metaKey) CABLES.CMD.STANDALONE.copyOpDirToClipboard(opId);
+                            else CABLES.CMD.STANDALONE.openOpDir(opId, opname);
+                        });
                 }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 

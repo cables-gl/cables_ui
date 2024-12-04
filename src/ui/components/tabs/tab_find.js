@@ -94,10 +94,10 @@ export default class FindTab
                 toggleEle.classList.toggle("findToggleActive");
 
                 const toggles = ele.byClassAll("findToggleActive");
-
+                // console.log("toggles", toggles);
                 let srchStr = "";
                 for (let j = 0; j < toggles.length; j++)
-                    srchStr += toggles[j].dataset.togglestr + " ";
+                    srchStr += (toggles[j].dataset.togglestr || "") + " ";
 
                 const toggleInput = ele.byId(this._inputId + "_toggles");
                 toggleInput.value = srchStr;
