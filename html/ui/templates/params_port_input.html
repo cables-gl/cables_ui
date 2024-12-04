@@ -138,6 +138,13 @@
                         {{/compare}}
                     {{/if}}
                 {{/compare}}
+                {{#compare port.uiAttribs._triggerSelect '==' true }}
+
+                    {{#if port.value}}
+                        &nbsp;
+                        <a class="button-small button-icon" onclick="gui.find('trigger {{port.value}}')"><span class="icon icon-search"></span></a>
+                    {{/if}}
+                {{/compare}}
 
 
                 {{#compare port.uiAttribs.display '==' 'switch' }}

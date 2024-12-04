@@ -130,7 +130,7 @@ export default class EditorTab extends Events
 
                     this._tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
 
-
+                    console.log(opdoc);
                     if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                     {
                         const el = this._tab.addButton("<span class=\"icon icon-chevron-down\"></span>Op Files", () =>
@@ -144,8 +144,6 @@ export default class EditorTab extends Events
                                     gui.serverOps.edit(opdoc.name, false, null, true);
                                 }
                             });
-
-
 
                             for (let i = 0; i < opdoc.attachmentFiles.length; i++)
                             {
