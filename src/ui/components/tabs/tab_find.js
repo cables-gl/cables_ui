@@ -24,17 +24,14 @@ export default class FindTab
 
         this._lastSearch = "";
         this._findTimeoutId = 0;
-        this._canceledSearch = 0;
         this._lastClicked = -1;
         this._lastSelected = -1;
         this._maxIdx = -1;
         this._inputId = "tabFindInput" + CABLES.uuid();
         this._closed = false;
         this._eleInput = null;
-        this._resultsTriggersTimes = {};
         this._listenerids = [];
 
-        this._resultsVars = [];
         let colors = [];
         const warnOps = [];
 
@@ -140,51 +137,9 @@ export default class FindTab
         ele.byId(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
         clearTimeout(this._findTimeoutId);
-        // this._findTimeoutId = setTimeout(() =>
-        // {
+
         this.search(this._lastSearch);
         this.updateHistory();
-        // }, 100);
-
-        this._onTrigger = gui.corePatch().on("namedTriggerSent", this._updateTriggers.bind(this));
-
-
-        this._updateVarsInterval = setInterval(() =>
-        {
-            if (this._closed)clearInterval(this._updateVarsInterval);
-
-            if (this._resultsTriggers)
-            {
-                for (let i = 0; i < this._resultsTriggers.length; i++)
-                {
-                    const t = this._resultsTriggersTimes[this._resultsTriggers[i]];
-
-                    const el = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
-
-                    if (t)
-                    {
-                        const timediff = performance.now() - t;
-
-                        if (el) el.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
-                    }
-                    else if (el) el.style.opacity = 0.1;
-                }
-            }
-
-            for (let i = 0; i < this._resultsVars.length; i++)
-            {
-                const el = document.getElementById("varresult_" + this._resultsVars[i].getName());
-
-                let val = String(this._resultsVars[i].getValue());
-                if (val.length > 30)
-                {
-                    val = val.substr(0, 30);
-                    val += "...";
-                }
-
-                if (el)el.innerHTML = val;
-            }
-        }, 100);
 
         if (str)
         {
@@ -193,19 +148,6 @@ export default class FindTab
             this.setSearchInputValue(str);
         }
         this.focus();
-    }
-
-    _updateTriggers(n)
-    {
-        if (!this._resultsTriggers) return;
-        this._resultsTriggersTimes = this._resultsTriggersTimes || {};
-        for (let i = 0; i < this._resultsTriggers.length; i++)
-        {
-            if (this._resultsTriggers[i] == n)
-            {
-                this._resultsTriggersTimes[n] = performance.now();
-            }
-        }
     }
 
     focus()
@@ -237,32 +179,6 @@ export default class FindTab
     isVisible()
     {
         return this._tab.isVisible();
-    }
-
-    _addResultVar(v)
-    {
-        let html = "";
-
-        const colorClass = "" + defaultOps.getVarClass(v.type);
-
-        html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v.getName() + "\" > ";
-        html += "<span class=\"" + colorClass + "\">#" + v.getName() + "</span> <span class=\"monospace\" id=\"varresult_" + v.getName() + "\">/span>";
-        html += "</div>";
-
-        return html;
-    }
-
-    _addResultTrigger(v)
-    {
-        let html = "";
-
-        const colorClass = "" + defaultOps.getVarClass("trigger");
-
-        html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v + "\" > ";
-        html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"opacity:0.1;background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
-        html += "</div>";
-
-        return html;
     }
 
     _addResultOp(op, result, idx)
@@ -804,19 +720,12 @@ export default class FindTab
         }
         else
         {
-            this._resultsVars = resultsVars;
-            for (let i = 0; i < resultsVars.length; i++) html += this._addResultVar(resultsVars[i]);
-
-            this._resultsTriggers = resultsTriggers;
-            for (let i = 0; i < resultsTriggers.length; i++) html += this._addResultTrigger(resultsTriggers[i]);
-
-
             results.sort(function (a, b) { return b.score - a.score; });
             const numResults = results.length;
             const limitResults = 200;
             if (numResults > limitResults)
             {
-                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/>";
+                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/></div>";
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
