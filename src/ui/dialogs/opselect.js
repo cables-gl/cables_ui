@@ -96,7 +96,7 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeStart);
 
-        if (query.length > 0 && query.length < MIN_CHARS_QUERY && !this.isMathQuery)
+        if (query.length > 0 && query.length < MIN_CHARS_QUERY && !this.isMathQuery())
         {
             ele.show(this._eleTypeMore);
             for (let i = 0; i < this._opSearch.list.length; i++)
