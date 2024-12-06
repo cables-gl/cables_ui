@@ -725,7 +725,7 @@ export default class FindTab
             const limitResults = 200;
             if (numResults > limitResults)
             {
-                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/>";
+                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/></div>";
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
