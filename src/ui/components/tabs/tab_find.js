@@ -386,8 +386,11 @@ export default class FindTab
                     FindTab.searchOutDated(ops, results);
                     for (let i = 0; i < results.length; i++)
                     {
-                        if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
-                        else results[i].error = "example patch: Newer version of op available!";
+                        if (results[i].op)
+                        {
+                            if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
+                            else results[i].error = "example patch: Newer version of op available!";
+                        }
                     }
                 }
 
