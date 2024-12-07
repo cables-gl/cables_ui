@@ -1411,11 +1411,12 @@ export default class ServerOps
             else console.warn("could not find opid for ", opname);
         }
 
-
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
         const userInteraction = !fromListener;
+
+        if (gui.maintabPanel.tabs.getTabByTitle(title)) return;
 
         let editorObj = null;
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
