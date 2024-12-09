@@ -56,10 +56,10 @@ export default class PatchSaveServer extends Events
         });
     }
 
-    checkUpdated(cb, fromSave = false)
+    checkUpdated(cb = null, fromSave = false, forceRequest = false)
     {
         if (!gui.project()) return;
-        if (CABLES.platform.isOffline())
+        if (CABLES.platform.isOffline() && !forceRequest)
         {
             if (cb)cb();
             return;
@@ -81,8 +81,7 @@ export default class PatchSaveServer extends Events
                 return;
             }
 
-            ele.hide(ele.byId("nav-item-offline"));
-
+            CABLES.platform.setOnline();
             if (gui.isRemoteClient)
             {
                 gui.jobs().finish("checkupdated");
