@@ -170,20 +170,20 @@ export default class GlViewBox
         this.cursor = null;
     }
 
-    _onCanvasDblClick(e)
-    {
-        const z = GlUiConfig.zoomDefault;
-        if (Math.abs(this._zoom - GlUiConfig.zoomDefault) < 200)
-        {
-            this.glPatch.unselectAll();
-            this.centerSelectedOps();
-        }
-        else
-        {
-            this.animateZoom(z);
-            this.animateToCenterAtMouseCoords();
-        }
-    }
+    // _onCanvasDblClick(e)
+    // {
+    //     const z = GlUiConfig.zoomDefault;
+    //     if (Math.abs(this._zoom - GlUiConfig.zoomDefault) < 200)
+    //     {
+    //         this.glPatch.unselectAll();
+    //         this.centerSelectedOps();
+    //     }
+    //     else
+    //     {
+    //         this.animateZoom(z);
+    //         this.animateToCenterAtMouseCoords();
+    //     }
+    // }
 
     animateToCenterAtMouseCoords()
     {
