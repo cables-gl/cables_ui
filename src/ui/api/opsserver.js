@@ -1619,10 +1619,10 @@ export default class ServerOps
             editorTab = new EditorTab({
                 "title": title,
                 "name": editorObj.name,
-                "loading": true, // "content": rslt.code,
+                "loading": true,
                 "singleton": true,
                 "syntax": "js",
-                "allowEdit": this.canEditOp(gui.user, editorObj.name), // "onSave": save,
+                "allowEdit": this.canEditOp(gui.user, editorObj.name),
                 "showSaveButton": true,
                 "editorObj": editorObj,
                 "onClose": (which) =>
@@ -1637,18 +1637,16 @@ export default class ServerOps
                 "projectId": this._patchId
             }, (er, rslt) =>
             {
-                gui.jobs()
-                    .finish("load_opcode_" + opname);
-
-                editorTab.setContent(rslt.code);
-
+                gui.jobs().finish("load_opcode_" + opname);
 
                 if (er)
                 {
                     notifyError("Error receiving op code!");
+                    editorTab.setContent("");
                     CABLES.editorSession.remove("op", opname);
                     return;
                 }
+                editorTab.setContent(rslt.code);
 
 
                 if (!readOnly && editorTab)
