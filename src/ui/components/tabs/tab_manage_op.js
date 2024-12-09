@@ -3,7 +3,9 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
-import FileUploader from "../../dialogs/upload.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import OpDependencyTab from "./tab_opdependency.js";
+import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -165,6 +167,7 @@ export default class ManageOp
                         });
                     });
 
+
                     const html = getHandleBarHtml("tab_manage_op",
                         {
                             "layoutUrl": CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName,
@@ -181,19 +184,28 @@ export default class ManageOp
                             "canEditOp": canEditOp,
                             "canDeleteOp": CABLES.platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
                             "readOnly": !canEditOp,
-                            "libs": libs,
-                            "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
                             "warns": res.warns,
-                            "supportedOpDependencyTypes": CABLES.platform.getSupportedOpDependencyTypes()
                         });
 
                     this._tab.html(html);
 
-                    // CABLES.UI.Collapsable.setup();
-
                     if (canEditOp)
                     {
+                        const panelOptions = {
+                            "opDoc": opDoc,
+                            "libs": libs,
+                            "coreLibs": gui.opDocs.coreLibs,
+                            "user": gui.user,
+                            "canEditOp": canEditOp,
+                            "viewId": this._id
+                        };
+                        const dependencyTabId = "dependencytabs";
+                        const tabPanel = ele.byId(dependencyTabId);
+                        if (tabPanel) tabPanel.innerHTML = "";
+                        const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
+                        depTabs.init();
+
                         if (portJson && portJson.ports)
                         {
                             const buttonCreate = ele.byId(this._id + "_port_create");
@@ -201,7 +213,6 @@ export default class ManageOp
                             {
                                 subPatchOpUtil.portEditDialog(opName);
                             });
-
 
                             for (let i = 0; i < portJson.ports.length; i++)
                             {
@@ -233,73 +244,6 @@ export default class ManageOp
                                     subPatchOpUtil.portJsonMove(opName, id, 1);
                                 });
                             }
-                        }
-
-                        const depsEle = ele.byId("addopdependency_" + this._id);
-                        if (depsEle)
-                        {
-                            const editEle = depsEle.querySelector(".edit");
-
-                            ele.show(editEle);
-                            const srcEle = depsEle.querySelector(".depSrc");
-                            const submitEle = editEle.querySelector(".add");
-                            const typeSelect = editEle.querySelector(".depType");
-                            const exportNameEle = depsEle.querySelector(".exportName input");
-                            const uploadButton = editEle.querySelector(".upload");
-                            const fileInput = editEle.querySelector("input[type='file']");
-
-                            uploadButton.addEventListener("click", () => { fileInput.click(); });
-
-                            fileInput.addEventListener("change", () =>
-                            {
-                                const filename = fileInput.files[0].name;
-                                srcEle.value = "./" + filename;
-                            });
-
-                            typeSelect.addEventListener("change", () =>
-                            {
-                                const exportName = depsEle.querySelector(".exportName");
-                                if (typeSelect.value === "module")
-                                {
-                                    ele.show(exportName);
-                                }
-                                else
-                                {
-                                    ele.hide(exportName);
-                                }
-                            });
-
-                            submitEle.addEventListener("click", () =>
-                            {
-                                if (submitEle.disabled) return;
-                                const depSrc = srcEle.value;
-                                if (!depSrc) return;
-                                submitEle.innerText = "working...";
-                                submitEle.disabled = true;
-                                if (fileInput.files && fileInput.files.length > 0)
-                                {
-                                    const filename = fileInput.files[0].name;
-                                    CABLES.fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
-                                    {
-                                        if (!err)
-                                        {
-                                            gui.serverOps.addOpDependency(opName, "./" + newFilename, typeSelect.value, exportNameEle.value, () =>
-                                            {
-                                                submitEle.innerText = "Add";
-                                                submitEle.disabled = false;
-                                            });
-                                        }
-                                    });
-                                }
-                                else
-                                {
-                                    gui.serverOps.addOpDependency(opName, depSrc, typeSelect.value, exportNameEle.value, () =>
-                                    {
-                                        submitEle.innerText = "Add";
-                                        submitEle.disabled = false;
-                                    });
-                                }
-                            });
                         }
                     }
                     else

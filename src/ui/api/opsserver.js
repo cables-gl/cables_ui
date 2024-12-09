@@ -1800,7 +1800,6 @@ export default class ServerOps
         {
             const platformDeps = CABLES.platform.getSupportedOpDependencyTypes();
             const opDeps = opDoc.dependencies.filter((dep) => { return platformDeps.includes(dep.type); });
-
             for (let i = 0; i < opDeps.length; i++)
             {
                 const dep = opDeps[i];
@@ -1831,7 +1830,6 @@ export default class ServerOps
         {
             missingOps = this.getMissingOps(proj);
         }
-
         this.loadOps(missingOps, (newOps, newIds) =>
         {
             const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
@@ -1888,14 +1886,11 @@ export default class ServerOps
 
         let depsToLoad = {};
 
-        if (ops)
+        ops.forEach((op) =>
         {
-            ops.forEach((op) =>
-            {
-                const opDeps = this.getOpDeps(op);
-                opDeps.forEach((lib) => { depsToLoad[lib.name] = lib; });
-            });
-        }
+            const opDeps = this.getOpDeps(op);
+            opDeps.forEach((lib) => { depsToLoad[lib.name] = lib; });
+        });
         new CABLES.LibLoader(Object.values(depsToLoad), finishedCb);
     }
 

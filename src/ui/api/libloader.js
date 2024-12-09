@@ -2,37 +2,37 @@ import { Logger } from "cables-shared-client";
 
 export default class LibLoader
 {
-    constructor(modules, cb, options = {})
+    constructor(dependencies, cb, options = {})
     {
         this._log = new Logger("libloader");
 
-        this.libsToLoad = modules.slice(0);
+        this._libsToLoad = dependencies.slice(0);
         this._cb = cb;
         this.id = options.id || "loadlibs";
         this.title = options.title || "loading libs";
-        this.list = options.list || [];
+        this._list = options.list || [];
 
-        if (modules.length > 0)
+        if (dependencies.length > 0)
         {
             gui.jobs().start({
                 "id": this.id,
                 "title": this.title
             });
 
-            for (const i in modules)
+            for (const i in dependencies)
             {
-                this.loadLib(modules[i]);
+                this.loadLib(dependencies[i]);
             }
         }
         else
         {
-            this._cb();
+            if (this._cb) this._cb();
         }
     }
 
     checkAllLoaded()
     {
-        if (this.libsToLoad.length === 0)
+        if (this._libsToLoad.length === 0)
         {
             if (this._cb) this._cb();
             gui.jobs().finish(this.id);
@@ -44,11 +44,15 @@ export default class LibLoader
         const libName = module.name;
         let libType = module.type;
         const moduleExport = module.export;
-        if (this.list.indexOf(libName) === -1)
+        if (!this._list.includes(libName))
         {
             if (!loadjs.isDefined(libName))
             {
                 let scriptSrc = "";
+
+                // backwards compatibility...
+                if (Array.isArray(module.src)) module.src = module.src[0] || "";
+
                 if (module.src.startsWith("/assets"))
                 {
                     if (gui && gui.corePatch() && gui.corePatch().config.prefixAssetPath)
@@ -80,23 +84,19 @@ export default class LibLoader
                     {
                         if (moduleExport)
                         {
-                            if (window.hasOwnProperty(moduleExport))
-                            {
-                                this._log.warn("module with export `" + moduleExport + "` already loaded.");
-                            }
-                            else
+                            if (!window.hasOwnProperty(moduleExport))
                             {
                                 window[moduleExport] = importedModule;
                             }
                         }
-                        const i = this.libsToLoad.indexOf(libName);
-                        this.libsToLoad.splice(i, 1);
-                        this.list.push(libName);
+                        const i = this._libsToLoad.indexOf(libName);
+                        this._libsToLoad.splice(i, 1);
+                        this._list.push(libName);
                         this.checkAllLoaded();
                     }).catch((e) =>
                     {
-                        const i = this.libsToLoad.indexOf(libName);
-                        this.libsToLoad.splice(i, 1);
+                        const i = this._libsToLoad.indexOf(libName);
+                        this._libsToLoad.splice(i, 1);
                         this.checkAllLoaded();
                         this._log.error(e);
                         if (gui) gui.emitEvent("libLoadError", libName);
@@ -106,9 +106,9 @@ export default class LibLoader
                 {
                     gui.serverOps.loadOpDependencies(module.src, () =>
                     {
-                        const i = this.libsToLoad.indexOf(libName);
-                        this.libsToLoad.splice(i, 1);
-                        this.list.push(libName);
+                        const i = this._libsToLoad.indexOf(libName);
+                        this._libsToLoad.splice(i, 1);
+                        this._list.push(libName);
                         this.checkAllLoaded();
                     }, true);
                 }
@@ -123,25 +123,32 @@ export default class LibLoader
                         }
                     }).then(() =>
                     {
-                        const i = this.libsToLoad.indexOf(libName);
-                        this.libsToLoad.splice(i, 1);
-                        this.list.push(libName);
+                        const i = this._libsToLoad.indexOf(libName);
+                        this._libsToLoad.splice(i, 1);
+                        this._list.push(libName);
                         this.checkAllLoaded();
                     }).catch((e) =>
                     {
-                        const i = this.libsToLoad.indexOf(libName);
-                        this.libsToLoad.splice(i, 1);
+                        const i = this._libsToLoad.indexOf(libName);
+                        this._libsToLoad.splice(i, 1);
                         this.checkAllLoaded();
                         this._log.error(e);
                         if (gui) gui.emitEvent("libLoadError", libName);
                     });
                 }
             }
+            else
+            {
+                const i = this._libsToLoad.indexOf(libName);
+                this._libsToLoad.splice(i, 1);
+                this._list.push(libName);
+                this.checkAllLoaded();
+            }
         }
         else
         {
-            const i = this.libsToLoad.indexOf(libName);
-            this.libsToLoad.splice(i, 1);
+            const i = this._libsToLoad.indexOf(libName);
+            this._libsToLoad.splice(i, 1);
             this.checkAllLoaded();
         }
     }

@@ -529,7 +529,7 @@ export default class Platform extends Events
 
     getSupportedOpDependencyTypes()
     {
-        const types = ["commonjs", "module", "op"];
+        const types = ["lib", "corelib", "commonjs", "module", "op"];
         if (this.frontendOptions.npm) types.push("npm");
         return types;
     }
