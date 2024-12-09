@@ -1417,11 +1417,12 @@ export default class ServerOps
             if (docs) opId = docs.id; else console.warn("could not find opid for ", opname);
         }
 
-
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
         const userInteraction = !fromListener;
+
+        if (gui.maintabPanel.tabs.getTabByTitle(title)) return;
 
         let editorObj = null;
         gui.jobs()

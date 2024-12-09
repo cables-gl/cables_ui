@@ -92,6 +92,7 @@ const defaultOpNames =
     "Divide": "Ops.Math.Divide",
     "Multiply": "Ops.Math.Multiply",
     "Equals": "Ops.Math.Compare.Equals",
+    "Modulo": "Ops.Math.Modulo",
     "ArraySum": "Ops.Array.ArraySum",
     "ArraySubtract": "Ops.Array.ArraySubtract",
     "ArrayDivide": "Ops.Array.ArrayDivide",
@@ -244,6 +245,8 @@ const defaultOps = {
             "/": defaultOpNames.Divide,
             "*": defaultOpNames.Multiply,
             "=": defaultOpNames.Equals,
+            "%": defaultOpNames.Modulo,
+
         },
         "array":
         {

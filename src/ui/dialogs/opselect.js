@@ -96,7 +96,7 @@ export default class OpSelect
         }
         else ele.hide(this._eleTypeStart);
 
-        if (query.length > 0 && query.length < MIN_CHARS_QUERY)
+        if (query.length > 0 && query.length < MIN_CHARS_QUERY && !this.isMathQuery())
         {
             ele.show(this._eleTypeMore);
             for (let i = 0; i < this._opSearch.list.length; i++)
@@ -407,6 +407,11 @@ export default class OpSelect
         return "default";
     }
 
+    getSearchQuery()
+    {
+
+    }
+
     search()
     {
         if (!this._opSearch.list || !this._html) this.prepare();
@@ -418,9 +423,9 @@ export default class OpSelect
                 sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];
 
 
-        this.firstTime = false;
         sq = sq || "";
         let query = sq.toLowerCase();
+        this.firstTime = false;
 
         const options = {
             "linkNamespaceIsTextureEffects": false,

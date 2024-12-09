@@ -22,7 +22,10 @@ export default class EditorTab extends Events
 
         gui.maintabPanel.show();
 
+
         let title = gui.maintabPanel.tabs.getUniqueTitle(options.title);
+
+        // check if tab exists?
 
         this._tab = new Tab(title,
             {
@@ -115,6 +118,13 @@ export default class EditorTab extends Events
                 if (this._options.editorObj.type === "op") opname = this._options.editorObj.name;
                 if (this._options.editorObj.data && this._options.editorObj.data.opname) opname = this._options.editorObj.data.opname;
 
+
+                if (!opname)
+                {
+                    const d = gui.opDocs.getOpDocById(this._options.name);
+                    if (d)opname = d.name;
+                }
+
                 let opId = null;
                 if (opname)
                 {
@@ -159,9 +169,10 @@ export default class EditorTab extends Events
                             CABLES.contextMenu.show({ "items": items }, el);
                         });
                     }
+
+                    this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
                 }
 
-                this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
                 if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
                     this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"standalone_openfolder\" ></span>",
