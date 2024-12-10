@@ -631,25 +631,25 @@ export default class GlPatch extends Events
 
     _onCanvasDblClick(e)
     {
+        let isOverSubPatchOp = false;
+        if (this._hoverOps.length > 0)
+        {
+            isOverSubPatchOp = this._hoverOps[0].op && this._hoverOps[0].op.isSubPatchOp();
+        }
+
+        if (isOverSubPatchOp)
+        {
+            const hoverOp = this._hoverOps[0].op;
+            gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
+            gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
+        }
+        else
         if (!this.dblClickAction || this.dblClickAction == "parentSub")
         {
-            if (this._hoverOps.length > 0)
+            if (this._currentSubpatch != 0)
             {
-                const hoverOp = this._hoverOps[0].op;
-
-                if (hoverOp && hoverOp.isSubPatchOp())
-                {
-                    gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
-                    gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
-                }
-            }
-            else
-            {
-                if (this._currentSubpatch != 0)
-                {
-                    const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-                    if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
-                }
+                const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+                if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
             }
         }
         else if (this.dblClickAction == "addOp")

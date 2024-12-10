@@ -18,6 +18,9 @@ export default class Platform extends Events
 
         this._log = new Logger("platform");
         this._cfg = cfg;
+        this._isOffline = false;
+        this._checkOfflineInterval = null;
+        this._checkOfflineIntervalSeconds = 2000;
 
         this.paths = {};
         this.frontendOptions = {};
@@ -31,7 +34,7 @@ export default class Platform extends Events
                     const errorMessage = errorData.message || "unknown error";
                     if (errorData.type && errorData.type === "network")
                     {
-                        ele.show(ele.byId("nav-item-offline"));
+                        this.setOffline();
                     }
                     switch (errorData.level)
                     {
@@ -103,18 +106,35 @@ export default class Platform extends Events
         return "https://github.com/cables-gl/cables_docs/issues";
     }
 
+    isOffline()
+    {
+        return !navigator.onLine || this._isOffline;
+    }
+
+    setOnline()
+    {
+        this._isOffline = false;
+        ele.hide(ele.byId("nav-item-offline"));
+        if (this._checkOfflineInterval) clearInterval(this._checkOfflineInterval);
+    }
+
+    setOffline()
+    {
+        ele.show(ele.byId("nav-item-offline"));
+        this._isOffline = true;
+        if (!this._checkOfflineInterval) this._checkOfflineInterval = setInterval(() =>
+        {
+            gui.patchView.store.checkUpdated(() => {}, false, true);
+        }, this._checkOfflineIntervalSeconds);
+    }
+
     updateOnlineIndicator()
     {
         if (this.frontendOptions.needsInternet)
         {
-            if (this.isOffline()) ele.show(ele.byId("nav-item-offline"));
-            else ele.hide(ele.byId("nav-item-offline"));
+            if (this.isOffline()) this.setOffline();
+            else this.setOnline();
         }
-    }
-
-    isOffline()
-    {
-        return !navigator.onLine;
     }
 
     setManualScreenshot(b)
