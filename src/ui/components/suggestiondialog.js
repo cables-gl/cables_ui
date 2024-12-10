@@ -46,8 +46,10 @@ export default class SuggestionDialog
             if (suggestions[i].name) suggestions[i].shortName = suggestions[i].name;
         }
 
-        const html = getHandleBarHtml("suggestions", { suggestions, _showSelect });
-        this._eleDialog.innerHTML = html;
+        this._eleDialog.innerHTML = getHandleBarHtml("suggestions", {
+            suggestions,
+            _showSelect
+        });
         this._bg.show();
 
         ele.show(this._eleDialog);
