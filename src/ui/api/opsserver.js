@@ -1615,11 +1615,9 @@ export default class ServerOps
                 "title": title,
                 "name": editorObj.name,
                 "loading": true,
-                // "content": rslt.code,
                 "singleton": true,
                 "syntax": "js",
                 "allowEdit": this.canEditOp(gui.user, editorObj.name),
-                // "onSave": save,
                 "showSaveButton": true,
                 "editorObj": editorObj,
                 "onClose": (which) =>
@@ -1639,15 +1637,14 @@ export default class ServerOps
                 {
                     gui.jobs().finish("load_opcode_" + opname);
 
-                    editorTab.setContent(rslt.code);
-
-
                     if (er)
                     {
                         notifyError("Error receiving op code!");
+                        editorTab.setContent("");
                         CABLES.editorSession.remove("op", opname);
                         return;
                     }
+                    editorTab.setContent(rslt.code);
 
 
                     if (!readOnly && editorTab)
