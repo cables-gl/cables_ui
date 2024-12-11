@@ -69,8 +69,7 @@ export default class OpDocs
         {
             if (opDoc.docs.ports[i].name === port.name)
             {
-                const html = this.parseMarkdown(opDoc.docs.ports[i].text.trim()); // parse markdown
-                return html;
+                return opDoc.docs.ports[i].text.trim();
             }
         }
         perf.finish();
@@ -98,16 +97,6 @@ export default class OpDocs
             }
         }
     }
-
-    parseMarkdown(mdText)
-    {
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] parse markdown");
-        if (!mdText) { return ""; }
-        const s = marked.parse(mdText);
-        perf.finish();
-        return s;
-    }
-
 
     getStats()
     {
@@ -153,7 +142,6 @@ export default class OpDocs
                 {
                     this.addTypeStringToPorts(opDoc.layout.portsIn);
                     this.setPortDocTexts(opDoc.layout.portsIn, opDoc);
-                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
                     summaryParsed = true;
                 }
                 if (opDoc.layout.portsOut)
@@ -162,7 +150,6 @@ export default class OpDocs
                     this.setPortDocTexts(opDoc.layout.portsOut, opDoc);
                     if (!summaryParsed)
                     {
-                        opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
                         summaryParsed = true;
                     }
                 }
@@ -171,10 +158,8 @@ export default class OpDocs
             {
                 if (!summaryParsed)
                 {
-                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
                     summaryParsed = true;
                 }
-                opDoc.descriptionHtml = this.parseMarkdown(opDoc.description);
             }
         }
     }
@@ -269,18 +254,7 @@ export default class OpDocs
             }
         }
 
-        // console.log("could not find opdocs by name", opName);
-        // console.log((new Error()).stack);
-
-        const d = this.getOpDocById(opName);
-
-        if (!d)
-        {
-            // console.log("could not find opdocs by name", opName);
-            // console.log((new Error()).stack);
-        }
-
-        return d;
+        return this.getOpDocById(opName);
     }
 
     /**
@@ -317,23 +291,19 @@ export default class OpDocs
         {
             if (defaultOps.isCollection(opName))
             {
-                opDoc =
-                    {
-                        "name": "",
-                        "summaryHtml": "",
-                        "summary": "",
-                        "userOp": false
-                    };
+                opDoc = {
+                    "name": "",
+                    "summary": "",
+                    "userOp": false
+                };
             }
             else
             {
-                opDoc =
-                    {
-                        "name": opName,
-                        "summaryHtml": "No Op Documentation found",
-                        "summary": "No Op Documentation found",
-                        "userOp": opName.indexOf("Ops.User") == 0
-                    };
+                opDoc = {
+                    "name": opName,
+                    "summary": "No Op Documentation found",
+                    "userOp": defaultOps.isUserOp(opName)
+                };
             }
         }
 

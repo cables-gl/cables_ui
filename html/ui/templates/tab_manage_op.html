@@ -37,7 +37,10 @@
         {{/if}}
 
         {{#if frontendOptions.showLocalOpDirButton}}
-            <a class="button-small button-icon tt" data-tt="open folder" onclick="CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}')"><span class="icon icon-folder"></span></a>
+
+
+
+            <a class="button-small button-icon tt" data-tt="open folder" onclick="if (event.ctrlKey || event.metaKey) CABLES.CMD.STANDALONE.copyOpDirToClipboard('{{opDoc.id}}');  else CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}');"><span class="icon icon-folder"></span></a>
         {{/if}}
 
         {{#if opDoc.hasPublicRepo}}
@@ -51,7 +54,7 @@
             <div class="groupSpacer"><h3>Warnings</h3></div>
             <div class="params">
                 {{#each warns}}
-                    <div class="warning-error warning-error-level1"><b>{{id}}</b> {{{text}}}</div>
+                    <div class="warning-error warning-error-level1"><b>{{id}}</b> {{text}}</div>
                     <br/>
                 {{/each}}
             </div>
