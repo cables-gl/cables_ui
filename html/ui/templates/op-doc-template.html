@@ -8,15 +8,15 @@
                 {{#if opDoc.oldVersion}} OLD {{/if}}
             </p>
 
-            {{#if opDoc.summaryHtml}}
-                <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
+            {{#if opDoc.summary}}
+                <div class="op-doc__summary">{{md opDoc.summary}}</div>
             {{/if}}
             {{#if opDoc.hasScreenshot}}
                 <img class="op-doc__screenshot" src="{{cablesUrl}}/op/screenshot/{{ opDoc.name }}.png"/>
             {{/if}}
             {{#if opDoc.content}}
                 <div class="op-doc__description">
-                    {{{opDoc.content}}}
+                    {{md opDoc.content}}
                 </div>
             {{/if}}
         {{/if}}
@@ -33,11 +33,11 @@
         {{#if collectionInfo.teamName}}
             Maintained by Team <a target="_blank" href="{{cablesUrl}}{{collectionInfo.teamLink}}">{{collectionInfo.teamName}}</a><br/>
         {{/if}}
-        {{#if opDoc.summaryHtml}}
-            <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
+        {{#if opDoc.summary}}
+            <div class="op-doc__summary">{{md opDoc.summary}}</div>
         {{/if}}
-        {{#if opDoc.descriptionHtml}}
-            <div class="op-doc__description">{{{opDoc.descriptionHtml}}}</div>
+        {{#if opDoc.description}}
+            <div class="op-doc__description">{{md opDoc.description}}</div>
         {{/if}}
         {{#if collectionInfo.teamLink}}
             <a target=\"_blank\" href="{{cablesUrl}}{{collectionInfo.teamLink}}" class="button-small">View team</a>
@@ -61,11 +61,11 @@
         {{#if collectionInfo.teamName}}
             Maintained by Team <a target="_blank" href="{{cablesUrl}}{{collectionInfo.teamLink}}">{{collectionInfo.teamName}}</a><br/>
         {{/if}}
-        {{#if opDoc.summaryHtml}}
-            <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
+        {{#if opDoc.summary}}
+            <div class="op-doc__summary">{{md opDoc.summary}}</div>
         {{/if}}
-        {{#if opDoc.descriptionHtml}}
-            <div class="op-doc__description">{{{opDoc.descriptionHtml}}}</div>
+        {{#if opDoc.description}}
+            <div class="op-doc__description">{{md opDoc.description}}</div>
         {{/if}}
         {{#if collectionInfo.teamLink}}
             <a target=\"_blank\" href="{{cablesUrl}}{{collectionInfo.teamLink}}" class="button-small">View team</a>

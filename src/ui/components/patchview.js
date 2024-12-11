@@ -2179,7 +2179,6 @@ export default class PatchView extends Events
 
                 new SuggestionDialog(suggs, op2, event, null, function (sid)
                 {
-                    console.log("p1p2", p1, p2);
                     convertPorts(p1, p2, converters[sid]);
                 });
             }
