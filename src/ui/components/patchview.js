@@ -2225,7 +2225,7 @@ export default class PatchView extends Events
 
             for (let i = 0; i < ops.length; i++)
             {
-                if (ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
+                if (ops[i].op && outerOp && ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
                 {
                     let subid = ops[i].subId;
                     gui.restriction.setMessage("subpatchref", "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" + subid + "\")'>goto patch</a>");
