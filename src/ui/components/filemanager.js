@@ -156,17 +156,9 @@ export default class FileManager
 
         if (file.s) size = Math.ceil(file.s / 1024) + " kb";
 
-        let shortTitle = file.n;
-        if (shortTitle.length > 24)
-        {
-            shortTitle = shortTitle.substr(0, 24);
-            shortTitle += "...";
-        }
-        shortTitle = file.n.replaceAll(".", "<wbr>.");
-
         const item = {
             "title": file.n,
-            "shortTitle": shortTitle,
+            "shortTitle": file.n.replaceAll(".", "<wbr>."),
             "id": file._id || "lib" + CABLES.uuid(),
             "p": file.p,
             "dir": file.d,

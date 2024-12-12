@@ -85,7 +85,7 @@
                     <tr>
                         <td>
                             <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.op.id}}',true);">{{{ portIn.op.name }}}</span><br/>
+                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.op.id}}',true);">{{ portIn.op.name }}</span><br/>
                         </td>
                     </tr>
                 {{/each}}
@@ -95,7 +95,7 @@
                 {{#each port.links}}
 
                         <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.op.id}}',true);">{{{ portOut.op.name }}}</span><br/>
+                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.op.id}}',true);">{{ portOut.op.name }}</span><br/>
                 {{/each}}
             {{/if}}
         {{/if}}

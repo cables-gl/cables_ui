@@ -66,8 +66,6 @@ export default class ChangelogToast
                     function (instance, toast)
                     {
                         window.open(CABLES.platform.getCablesUrl() + "/changelog");
-                        // CABLES.CMD.UI.showChangelog();
-                        // iziToast.hide({}, toast);
                     },
                 ],
             ],
