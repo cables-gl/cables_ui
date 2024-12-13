@@ -37,9 +37,6 @@
         {{/if}}
 
         {{#if frontendOptions.showLocalOpDirButton}}
-
-
-
             <a class="button-small button-icon tt" data-tt="open folder" onclick="if (event.ctrlKey || event.metaKey) CABLES.CMD.STANDALONE.copyOpDirToClipboard('{{opDoc.id}}');  else CABLES.CMD.STANDALONE.openOpDir('{{opDoc.id}}', '{{opname}}');"><span class="icon icon-folder"></span></a>
         {{/if}}
 
