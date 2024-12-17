@@ -946,17 +946,6 @@ export default class Gui extends Events
         perf.finish();
     }
 
-    // _setCanvasMode(m)
-    // {
-    //     this.canvasManager.mode = m;
-    // }
-
-
-    // getCanvasMode()
-    // {
-    //     return this.canvasManager.mode;
-    // }
-
     _switchCanvasSizeNormal()
     {
         this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
