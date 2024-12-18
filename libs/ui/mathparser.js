@@ -65,7 +65,15 @@ MathParser.prototype.parse = function (e)
             l = (e = a + (x ? o.operator.f(c, ag) : o.eval(e.slice(n, ++i))) + e.slice(i)).length, i -= i - n + c.length;
         }
     }
-    return o.eval(e);
+    let r = o.eval(e);
+
+    if (!CABLES.UTILS.isNumeric(r))
+    {
+        console.warn("non numeric math eval result");
+        r = 0;
+    }
+
+    return r;
 };
 
 export default MathParser;
