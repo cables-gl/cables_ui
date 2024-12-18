@@ -65,6 +65,7 @@ export default class PatchSaveServer extends Events
             return;
         }
 
+
         gui.jobs().start({
             "id": "checkupdated",
             "title": "check patch was updated",
@@ -86,13 +87,6 @@ export default class PatchSaveServer extends Events
             {
                 gui.jobs().finish("checkupdated");
                 if (cb)cb(null);
-                return;
-            }
-            else if (gui.socket && gui.socket.inMultiplayerSession)
-            {
-                gui.jobs().finish("checkupdated");
-                if (cb)cb(null);
-
                 return;
             }
 
