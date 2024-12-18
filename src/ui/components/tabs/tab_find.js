@@ -81,6 +81,7 @@ export default class FindTab
             this.search(e.target.value);
         });
 
+        ele.byId(this._inputId).select();
 
         for (let i = 0; i < this._toggles.length; i++)
         {
@@ -147,13 +148,19 @@ export default class FindTab
             this.search(str);
             this.setSearchInputValue(str);
         }
+        console.log("construct");
         this.focus();
     }
 
     focus()
     {
         this._tabs.activateTab(this._tab.id);
-        if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
+
+        if (ele.byId(this._inputId) && document.activeElement != ele.byId(this._inputId))
+        {
+            ele.byId(this._inputId).focus();
+            ele.byId(this._inputId).select();
+        }
     }
 
     isClosed()
@@ -668,6 +675,8 @@ export default class FindTab
 
     search(str, userInvoked)
     {
+        str = str || this._lastSearch;
+        // console.log("search str", str, (new Error()).stack);
         this._maxIdx = -1;
         this.setSelectedOp(null);
         this.setClicked(-1);
