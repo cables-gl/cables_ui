@@ -74,6 +74,7 @@ export default class ParamTabInputListener
         else
         {
             console.log("element not found");
+            document.activeElement.blur(); // blur when tab in last element - to execute math evaluation
             return true;
         }
         return false;
