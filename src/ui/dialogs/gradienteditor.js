@@ -48,7 +48,6 @@ export default class GradientEditor
         this._bg = new ModalBackground();
         this._bg.on("hide", () =>
         {
-            console.log("CLOAEASE?Q!");
             this.close();
         });
 
