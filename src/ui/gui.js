@@ -198,7 +198,6 @@ export default class Gui extends Events
         this.currentModal = null;
     }
 
-
     get patchId()
     {
         return gui.project().shortId;
@@ -249,6 +248,18 @@ export default class Gui extends Events
 
         return true;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     startModalLoading(title)
     {
@@ -1636,12 +1647,12 @@ export default class Gui extends Events
                 else
                 {
                     return false;
-                // if (e.target.hasAttribute("data-portnum"))
-                // {
-                //     const n = e.target.dataset.portnum;
-                //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
-                //     if (nextInputEle) nextInputEle.focus();
-                // }
+                    // if (e.target.hasAttribute("data-portnum"))
+                    // {
+                    //     const n = e.target.dataset.portnum;
+                    //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                    //     if (nextInputEle) nextInputEle.focus();
+                    // }
                 }
         });
 
