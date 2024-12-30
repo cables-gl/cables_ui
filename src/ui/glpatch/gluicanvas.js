@@ -18,6 +18,12 @@ export default class GlUiCanvas extends GlCanvas
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
 
+
+        this.cgl.on("resize", () =>
+        {
+            this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+        });
+
         this.cgl.on("beginFrame", () =>
         {
             this.glPatch.vizLayer.renderVizLayer(false);
@@ -76,21 +82,6 @@ export default class GlUiCanvas extends GlCanvas
         this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
-    setSize(w, h)
-    {
-        this.width = w;
-        this.height = h;
-
-        this.canvas.style.width = this.width + "px";
-        this.canvas.style.height = this.height + "px";
-        this.canvas.width = this.width * window.devicePixelRatio;
-        this.canvas.height = this.height * window.devicePixelRatio;
-
-        this.cgl.pixelDensity = window.devicePixelRatio;
-
-        if (this.patch.isPlaying()) this.cgl.setSize(this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
-        this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
-    }
 
     render()
     {

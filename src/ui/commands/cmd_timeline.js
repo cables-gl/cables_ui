@@ -1,5 +1,6 @@
 import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen.js";
 import ParamsListener from "../components/opparampanel/params_listener.js";
+import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 
 const CABLES_CMD_TIMELINE = {};
 
@@ -163,6 +164,12 @@ timelineCommands.commands.push(
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.ListAnimatedPorts
     },
+    {
+        "cmd": "show gl timeline",
+        "category": "timeline",
+        "func": CABLES_CMD_TIMELINE.openGlTimeline
+    },
+
 
 
 );

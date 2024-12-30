@@ -1,6 +1,8 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
 
-export default class GlTimeline
+
+export default class GlTimelineTab
 {
     constructor(tabs)
     {
@@ -8,12 +10,16 @@ export default class GlTimeline
         tabs.addTab(this._tab, true);
         gui.maintabPanel.show();
         this._tab.contentEle.innerHTML = "";
-        const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, this._tab.contentEle);
+        const a = new glTimelineCanvas(CABLES.patch, this._tab.contentEle);
+
+
         a.parentResized();
 
         this._tab.on("resize", () =>
         {
             a.parentResized();
         });
+
+        // tabs.show(true);
     }
 }

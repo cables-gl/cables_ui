@@ -809,9 +809,8 @@ FindTab.searchSelected = (ops, results) =>
     {
         if (ops[i].uiAttribs.selected)
             results.push({ "op": ops[i], "score": 1 });
-        // const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        // if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(ops[i].objName))
     }
+
     return results;
 };
 

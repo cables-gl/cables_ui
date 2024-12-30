@@ -77,7 +77,7 @@ CABLES.GLGUI.CURSOR_HAND = 1;
 CABLES.GLGUI.CURSOR_POINTER = 2;
 
 // expose global classes
-CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
+// CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;

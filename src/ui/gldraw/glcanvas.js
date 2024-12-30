@@ -93,6 +93,22 @@ export default class GlCanvas
         return this.canvas;
     }
 
+    setSize(w, h)
+    {
+        this.width = w;
+        this.height = h;
+
+        this.canvas.style.width = this.width + "px";
+        this.canvas.style.height = this.height + "px";
+        this.canvas.width = this.width * window.devicePixelRatio;
+        this.canvas.height = this.height * window.devicePixelRatio;
+
+        this.cgl.pixelDensity = window.devicePixelRatio;
+
+        if (this.patch.isPlaying()) this.cgl.setSize(this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+    }
+
+
     dispose()
     {
         this.patch.removeEventListener("onRenderFrame", this.render.bind(this));
