@@ -98,6 +98,12 @@ CABLES_CMD_TIMELINE.showTimeline = function ()
     gui.showTiming();
 };
 
+CABLES_CMD_TIMELINE.openGlTimeline = function ()
+{
+    const t = new GlTimelineTab(gui.mainTabs);
+};
+
+
 timelineCommands.commands.push(
     {
         "cmd": "toggle timeline",

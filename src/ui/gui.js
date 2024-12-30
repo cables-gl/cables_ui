@@ -1126,7 +1126,7 @@ export default class Gui extends Events
 
     getFileManager(cb, userInteraction)
     {
-        if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
+        if (!this.fileManager) this.fileManager = new FileManager(cb, userInteraction);
         return this.fileManager;
     }
 
@@ -1138,7 +1138,6 @@ export default class Gui extends Events
 
     showFileManager(cb, userInteraction)
     {
-        // if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
         this.getFileManager(cb, userInteraction);
 
         this.fileManager.show(userInteraction);

@@ -1,29 +1,33 @@
+import GlUiCanvas from "./gluicanvas.js";
 
-export default function GlGuiFull()
+export default class GlGuiFull
 {
-    const views = document.getElementById("patchviews");
-    const ele = document.createElement("div");
-
-    views.appendChild(ele);
-    const id = "glpatch" + views.children.length;
-    ele.id = id;
-    ele.classList.add("glpatchcontainer");
-
-    if (!CABLES.patch.cgl.gl)
+    constructor()
     {
-        console.log("webgl not available! :/");
-        return;
-    }
+        const views = document.getElementById("patchviews");
+        const ele = document.createElement("div");
 
-    const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, ele);
+        views.appendChild(ele);
+        const id = "glpatch" + views.children.length;
+        ele.id = id;
+        ele.classList.add("glpatchcontainer");
 
-    gui.patchView.setPatchRenderer(id, a.glPatch);
-    gui.patchView.switch(ele.id);
+        if (!CABLES.patch.cgl.gl)
+        {
+            console.log("webgl not available! :/");
+            return;
+        }
 
-    a.parentResized();
+        const a = new GlUiCanvas(CABLES.patch, ele);
 
-    gui.on("setLayout", () =>
-    {
+        gui.patchView.setPatchRenderer(id, a.glPatch);
+        gui.patchView.switch(ele.id);
+
         a.parentResized();
-    });
+
+        gui.on("setLayout", () =>
+        {
+            a.parentResized();
+        });
+    }
 }

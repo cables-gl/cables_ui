@@ -41,8 +41,6 @@ import { hideInfo, hideToolTip, showToolTip, updateHoverToolTip } from "./elemen
 import GlPatch from "./glpatch/glpatch.js";
 import GlUiCanvas from "./glpatch/gluicanvas.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import GlGuiFull from "./glpatch/gluifull.js";
-import GlGuiTab from "./glpatch/gluitab.js";
 import GlPatchAPI from "./glpatch/patchapi.js";
 import extendCoreOp from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
@@ -95,15 +93,11 @@ CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
 CABLES.UI.FindTab = FindTab;
 CABLES.UI.SpreadSheetTab = SpreadSheetTab;
-CABLES.UI.FileManager = FileManager;
 CABLES.UI.Profiler = Profiler;
 CABLES.UI.Chat = Chat;
 CABLES.LibLoader = LibLoader;
 CABLES.UI.CanvasUi = CanvasUi;
 CABLES.UI.TexturePreviewer = TexturePreviewer;
-
-CABLES.GLGUI.GlGuiFull = GlGuiFull;
-CABLES.GLGUI.GlGuiTab = GlGuiTab;
 
 CABLES.UI.getOpsForFilename = defaultOps.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultOps.getVarGetterOpNameByType;
