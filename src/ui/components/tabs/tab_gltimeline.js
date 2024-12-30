@@ -13,6 +13,7 @@ export default class GlTimelineTab
         const a = new glTimelineCanvas(CABLES.patch, this._tab.contentEle);
 
 
+
         a.parentResized();
 
         this._tab.on("resize", () =>
