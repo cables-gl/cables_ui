@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanim.js";
+import glTlRuler from "./gltlruler.js";
 
 export default class GlTimeline extends Events
 {
@@ -15,10 +16,35 @@ export default class GlTimeline extends Events
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects" });
 
-        this.tlAnims = [new glTlAnim(this), new glTlAnim(this), new glTlAnim(this)];
+        this.ruler = new glTlRuler(this);
 
-        for (let i = 0; i < this.tlAnims.length; i++)
-            this.tlAnims[i].setIndex(i);
+        // this.tlAnims = [new glTlAnim(this), new glTlAnim(this), new glTlAnim(this)];
+        // for (let i = 0; i < this.tlAnims.length; i++)
+        //     this.tlAnims[i].setIndex(i);
+
+        this.init();
+    }
+
+    init()
+    {
+        this.tlAnims = [];// todo dispose
+        const p = gui.corePatch();
+        let count = 0;
+        for (let i = 0; i < p.ops.length; i++)
+        {
+            const op = p.ops[i];
+            for (let j = 0; j < op.portsIn.length; j++)
+            {
+                if (op.portsIn[j].anim)
+                {
+                    console.log(op.portsIn[j].anim);
+                    const a = new glTlAnim(this, op.portsIn[j].anim);
+                    this.tlAnims.push(a);
+                    a.setIndex(count);
+                    count++;
+                }
+            }
+        }
     }
 
     render(resX, resY)

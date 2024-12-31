@@ -249,18 +249,6 @@ export default class Gui extends Events
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     startModalLoading(title)
     {
         this._modalLoadingCount++;
@@ -295,8 +283,6 @@ export default class Gui extends Events
             this.patchView.selectOpId(opid);
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
-                // this.patchView.focus();
-
                 gui.opParams.show(opid);
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();

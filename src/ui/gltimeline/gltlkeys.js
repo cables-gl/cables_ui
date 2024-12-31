@@ -1,0 +1,39 @@
+import { Events } from "cables-shared-client";
+import GlText from "../gldraw/gltext.js";
+
+export default class glTlKeys extends Events
+{
+    constructor(glTl, anim, parentRect)
+    {
+        super();
+        this._anim = anim;
+        this._glTl = glTl;
+        this._parentRect = parentRect;
+
+
+        this.keys = [];
+        this.init();
+    }
+
+    init()
+    {
+        this.keys = []; // todo dispose/remove
+        console.log("adding keys ", this._anim.keys.length);
+        for (let i = 0; i < this._anim.keys.length; i++)
+        {
+            const kr = this._glTl.rects.createRect({ "draggable": false });
+            kr.setSize(10, 10);
+            kr.setShape(6);
+            kr.setParent(this._parentRect);
+            kr.setColor(1, 1, 1, 1);
+            kr.setPosition(this._anim.keys[i].time * 12, 0);
+
+            this.keys.push(kr);
+        }
+    }
+
+    setIndex(i)
+    {
+        this._glRectBg.setPosition(0, i * 31 + 50);
+    }
+}
