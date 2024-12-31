@@ -17,17 +17,25 @@ export default class GlTimeline extends Events
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects" });
 
         this.ruler = new glTlRuler(this);
+        this.tlAnims = [];
 
         // this.tlAnims = [new glTlAnim(this), new glTlAnim(this), new glTlAnim(this)];
         // for (let i = 0; i < this.tlAnims.length; i++)
         //     this.tlAnims[i].setIndex(i);
 
         this.init();
+
+        gui.on("opSelectChange", () =>
+        {
+            for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].update();
+        });
     }
 
     init()
     {
-        this.tlAnims = [];// todo dispose
+        for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].dispose();
+        this.tlAnims = [];
+
         const p = gui.corePatch();
         let count = 0;
         for (let i = 0; i < p.ops.length; i++)
@@ -38,13 +46,18 @@ export default class GlTimeline extends Events
                 if (op.portsIn[j].anim)
                 {
                     console.log(op.portsIn[j].anim);
-                    const a = new glTlAnim(this, op.portsIn[j].anim);
+                    const a = new glTlAnim(this, op.portsIn[j].anim, op, op.portsIn[j]);
                     this.tlAnims.push(a);
                     a.setIndex(count);
                     count++;
                 }
             }
         }
+    }
+
+    dispose()
+    {
+
     }
 
     render(resX, resY)
