@@ -1889,6 +1889,7 @@ export default class Gui extends Events
             return;
         }
 
+        if (userSettings.get("glTimelineOpened") == true) CABLES.CMD.TIMELINE.openGlTimeline();
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (userSettings.get("openLogTab") == true) this.showLogging();
 

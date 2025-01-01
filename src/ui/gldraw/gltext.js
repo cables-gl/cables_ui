@@ -87,8 +87,7 @@ export default class GlText
         if (this._parentRect) this._parentRect.removeEventListener(this.rebuild.bind(this));
 
         this._parentRect = r;
-        // this._parentRect.on("positionChanged",this.rebuild.bind(this));
-        this._parentRect.on("positionChanged", this.rebuild.bind(this));
+        if (this._parentRect) this._parentRect.on("positionChanged", this.rebuild.bind(this));
         this.rebuild();
     }
 

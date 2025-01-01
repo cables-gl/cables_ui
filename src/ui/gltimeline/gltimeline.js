@@ -9,6 +9,7 @@ export default class GlTimeline extends Events
     constructor(cgl)
     {
         super();
+        this._zoom = 20;
         this.isAnimated = false;
         this.paused = false;
         this.cgl = cgl;
@@ -19,16 +20,43 @@ export default class GlTimeline extends Events
         this.ruler = new glTlRuler(this);
         this.tlAnims = [];
 
-        // this.tlAnims = [new glTlAnim(this), new glTlAnim(this), new glTlAnim(this)];
-        // for (let i = 0; i < this.tlAnims.length; i++)
-        //     this.tlAnims[i].setIndex(i);
-
         this.init();
+
+        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
+
 
         gui.on("opSelectChange", () =>
         {
             for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].update();
         });
+    }
+
+    _onCanvasWheel(event)
+    {
+        let delta = 0;
+        if (event.deltaY > 0)delta = 1;
+        else delta = -1;
+
+        this._zoom += delta;
+        console.log("zoom", this._zoom);
+        this._zoom = CABLES.clamp(this._zoom, 1, 10000000);
+        this.ruler.update();
+    }
+
+    get offsetSeconds()
+    {
+        return 0;
+    }
+
+
+    pixelToTime()
+    {
+
+    }
+
+    timeToPixel(t)
+    {
+        return t * this._zoom * 12;
     }
 
     init()
