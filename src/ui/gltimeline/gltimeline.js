@@ -34,12 +34,12 @@ export default class GlTimeline extends Events
     _onCanvasWheel(event)
     {
         let delta = 0;
-        if (event.deltaY > 0)delta = 1;
-        else delta = -1;
+        if (event.deltaY > 0)delta = 1.1;
+        else delta = 0.9;
 
-        this._zoom += delta;
-        console.log("zoom", this._zoom);
-        this._zoom = CABLES.clamp(this._zoom, 1, 10000000);
+        this._zoom *= delta;
+        this._zoom = CABLES.clamp(this._zoom, 0.1, 10000000);
+        console.log("zoom", this._zoom, this.timeToPixel(1));
         this.ruler.update();
     }
 
@@ -48,6 +48,10 @@ export default class GlTimeline extends Events
         return 0;
     }
 
+    get width()
+    {
+        return this.cgl.canvasWidth;
+    }
 
     pixelToTime()
     {
