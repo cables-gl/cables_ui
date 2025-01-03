@@ -7,8 +7,10 @@ import GlTimeline from "./gltimeline.js";
  * @export
  * @class GlUiCanvas
  */
-export default class glTimelineCanvas extends GlCanvas {
-    constructor(_patch, parentEle) {
+export default class glTimelineCanvas extends GlCanvas
+{
+    constructor(_patch, parentEle)
+    {
         super(_patch, parentEle);
 
         this.setSize(100, 100);
@@ -19,14 +21,17 @@ export default class glTimelineCanvas extends GlCanvas {
         this.glTimeline = new GlTimeline(this.cgl);
     }
 
-    parentResized() {
+    parentResized()
+    {
+        console.log(this._parentEle.clientWidth, this._parentEle.clientHeight, this.cgl.pixelDensity);
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
 
-    render() {
+    render()
+    {
         // this.glPatch.updateTime();
-        if (this.glTimeline.paused) return;
+        // if (this.glTimeline.paused) return;
         if (this._targetFps != 0 && !this.glTimeline.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
@@ -37,7 +42,8 @@ export default class glTimelineCanvas extends GlCanvas {
 
         cgl.renderStart(cgl);
 
-        if (!this._inited) {
+        if (!this._inited)
+        {
             for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.cgl).tex);
             this._inited = true;
         }
