@@ -11,12 +11,12 @@ export default class glTlAnim extends Events
         this._glTl = glTl;
 
         this._glRectBg = this._glTl.rects.createRect({ "draggable": false });
-        this._glRectBg.setSize(1000, 30);
+        this._glRectBg.setSize(150, 30);
         this._glRectBg.setColor(0, 0, 0, 1);
 
         this._glRectKeysBg = this._glTl.rects.createRect({ "draggable": false });
         this._glRectKeysBg.setSize(1000, 30);
-        this._glRectKeysBg.setColor(0.2, 0.2, 0.2, 1);
+        this._glRectKeysBg.setColor(0.2, 0.2, 0.2, 0);
         this._glRectKeysBg.setPosition(150, 0);
         this._glRectKeysBg.setParent(this._glRectBg);
 
@@ -54,12 +54,12 @@ export default class glTlAnim extends Events
     updateColor()
     {
         this._glTitle.setColor(1, 1, 1, 1);
-        this._glRectKeysBg.setColor(0.3, 0.3, 0.3, 1);
+        this._glRectKeysBg.setColor(0.3, 0.3, 0.3, 0);
 
         if (gui.patchView.isCurrentOp(this._op))
         {
             this._glTitle.setColor(0.5, 1, 1, 1);
-            this._glRectKeysBg.setColor(0.4, 0.4, 0.4, 1);
+            this._glRectKeysBg.setColor(0.4, 0.4, 0.4, 0.1);
         }
     }
 

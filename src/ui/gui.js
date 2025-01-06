@@ -604,7 +604,6 @@ export default class Gui extends Events
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
-        const acds = 1;
 
         if (this.maintabPanel.isVisible())
         {
@@ -1396,16 +1395,16 @@ export default class Gui extends Events
                 str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
-                ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
+                ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
             });
         });
 
 
-        ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
-        ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
+        ele.byId("nav_cmdplt").addEventListener("click", () => { gui.cmdPallet.show(); });
+        ele.byId("nav_search").addEventListener("click", () => { gui.find(""); });
 
-        ele.byId("nav_createBackup").addEventListener("click", (event) => { CABLES.CMD.PATCH.createBackup(); });
-        ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
+        ele.byId("nav_createBackup").addEventListener("click", () => { CABLES.CMD.PATCH.createBackup(); });
+        ele.byId("nav_viewBackups").addEventListener("click", () => { CABLES.CMD.PATCH.showBackups(); });
 
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
@@ -1420,12 +1419,12 @@ export default class Gui extends Events
                 win.focus();
             }
         });
-        ele.byId("nav_remoteViewerLink").addEventListener("click", (event) => { CABLES.CMD.UI.openRemoteViewer(); });
+        ele.byId("nav_remoteViewerLink").addEventListener("click", () => { CABLES.CMD.UI.openRemoteViewer(); });
 
-        ele.byId("nav_patch_save").addEventListener("click", (event) => { CABLES.CMD.PATCH.save(); });
-        ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });
-        ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
-        ele.byId("nav_patch_export_patch").addEventListener("click", (event) => { CABLES.CMD.PATCH.export("patch"); });
+        ele.byId("nav_patch_save").addEventListener("click", () => { CABLES.CMD.PATCH.save(); });
+        ele.byId("nav_patch_saveas").addEventListener("click", () => { CABLES.CMD.PATCH.saveAs(); });
+        ele.byId("nav_patch_export").addEventListener("click", () => { CABLES.CMD.PATCH.export(); });
+        ele.byId("nav_patch_export_patch").addEventListener("click", () => { CABLES.CMD.PATCH.export("patch"); });
 
 
         if (CABLES.platform.frontendOptions.hasOpDirectories)
@@ -2206,21 +2205,21 @@ export default class Gui extends Events
 
         CABLES.UI.initSplitPanes();
 
-        ele.byId("undev").addEventListener("pointerEnter", (e) =>
+        ele.byId("undev").addEventListener("pointerEnter", () =>
         {
             gui.showInfo(text.undevLogo);
         });
-        ele.byId("undev").addEventListener("pointerLeave", (e) =>
+        ele.byId("undev").addEventListener("pointerLeave", () =>
         {
             CABLES.UI.hideInfo();
         });
 
-        ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
+        ele.byId("timelineui").addEventListener("pointerEnter", () =>
         {
             gui.showInfo(text.timelineui);
         });
 
-        ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
+        ele.byId("timelineui").addEventListener("pointerLeave", () =>
         {
             CABLES.UI.hideInfo();
         });

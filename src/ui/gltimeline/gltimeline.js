@@ -15,21 +15,62 @@ export default class GlTimeline extends Events
         this.cgl = cgl;
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
-        this.rects = new GlRectInstancer(cgl, { "name": "gltl rects" });
+        this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
         this.tlAnims = [];
 
+        this._canvasMouseDown = false;
         this.init();
 
-        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
 
 
         gui.on("opSelectChange", () =>
         {
             for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].update();
         });
+
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
     }
+
+    _onCanvasMouseMove(e)
+    {
+        this.emitEvent("mousemove", e);
+
+        let x = e.offsetX;
+        let y = e.offsetY;
+        this.rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
+        if (this.mouseDown)
+        {
+
+            // console.log("drag", x);s
+            // this.rects.mouseDrag(x, y);
+        }
+    }
+
+
+    _onCanvasMouseDown(e)
+    {
+        if (!e.pointerType) return;
+
+        try { this._cgl.canvas.setPointerCapture(e.pointerId); }
+        catch (er) { this._log.log(er); }
+
+        this.emitEvent("mousedown", e);
+        this.rects.mouseDown(e);
+        this.mouseDown = true;
+    }
+
+    _onCanvasMouseUp(e)
+    {
+        this.rects.mouseUp(e);
+
+        this.mouseDown = false;
+    }
+
 
     _onCanvasWheel(event)
     {
