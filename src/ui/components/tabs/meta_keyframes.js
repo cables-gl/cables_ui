@@ -95,7 +95,7 @@ export default class MetaKeyframes
 
                 gui.timeLine().getAnim().setValue(values[0] / gui.timeLine().getFPS(), values[1] || 0);
                 gui.timeLine().refresh();
-                this.update();
+                // this.update();
             }
         });
     }
