@@ -1,4 +1,5 @@
-import userSettings from "../components/usersettings.js";
+import text from "../text.js";
+import ModalDialog from "./modaldialog.js";
 
 /**
  * tips and tricks dialog with animated tips
@@ -12,7 +13,7 @@ export default class Tips
     {
         this._index = 0;
         this._wasShown = false;
-        this._index = Math.round(CABLES.UI.TIPS.length * Math.random());
+        this._index = Math.round(text.tips.length * Math.random());
     }
 
     next()
@@ -23,22 +24,22 @@ export default class Tips
 
     neverShow()
     {
-        userSettings.set("showTipps", false);
+        CABLES.UI.userSettings.set("showTipps", false);
         this.show();
     }
 
     showAlways()
     {
-        userSettings.set("showTipps", true);
+        CABLES.UI.userSettings.set("showTipps", true);
         this.show();
     }
 
     show()
     {
-        if (this._index >= CABLES.UI.TIPS.length) this._index = 0;
+        if (this._index >= text.tips.length) this._index = 0;
         let html = "";// '<h2>Tipps</h2>';
 
-        const tip = CABLES.UI.TIPS[this._index];
+        const tip = text.tips[this._index];
 
         html += "<div>";
         html += "</div>";
@@ -51,7 +52,7 @@ export default class Tips
         html += "    <h3>" + (tip.title || "Did you know...") + "</h3>";
         html += marked.parse(tip.descr);
         // html += '    <br/>';
-        html += "    " + (this._index + 1) + "/" + CABLES.UI.TIPS.length;
+        html += "    " + (this._index + 1) + "/" + text.tips.length;
         html += "  </div>";
         html += "<div style=\"clear:both;\"></div>";
         html += "</div>";
@@ -61,13 +62,13 @@ export default class Tips
         html += "  <a onclick=\"gui.tips.next();\" class=\"button\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";
-        if (userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">Do not show this on startup</a>";
+        if (CABLES.UI.userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">Do not show this on startup</a>";
         else html += "<a onclick=\"gui.tips.showAlways();\" class=\"button-small\">Show on startup again</a>";
         html += "  </div\">";
 
         html += "</div>";
 
-        new CABLES.UI.ModalDialog({ "html": html, "nopadding": true });
+        new ModalDialog({ "html": html, "nopadding": true });
     }
 
     showOnce()

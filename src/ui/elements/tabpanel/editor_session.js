@@ -1,6 +1,5 @@
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
-import userSettings from "../../components/usersettings.js";
 
 /**
  * stores opened editors to reopen when loading ui
@@ -32,7 +31,7 @@ export default class EditorSession
 
     store()
     {
-        userSettings.set("openEditors", this._openEditors);
+        CABLES.UI.userSettings.set("openEditors", this._openEditors);
     }
 
     loaded()
@@ -116,7 +115,7 @@ export default class EditorSession
         this._openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-            userSettings.set("editortab", name);
+            CABLES.UI.userSettings.set("editortab", name);
 
         return obj;
     }
@@ -128,7 +127,7 @@ export default class EditorSession
      */
     open()
     {
-        const sessions = userSettings.get("openEditors");
+        const sessions = CABLES.UI.userSettings.get("openEditors");
 
         if (sessions)
         {

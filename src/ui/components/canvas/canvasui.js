@@ -1,5 +1,4 @@
 import { ele } from "cables-shared-client";
-import userSettings from "../usersettings.js";
 
 export default class CanvasUi
 {
@@ -61,7 +60,7 @@ export default class CanvasUi
 
         cg.fpsCounter.on("performance", (perf) =>
         {
-            const p = CABLES.UI.uiProfiler.start("[canvasUi] on performance");
+            const p = gui.uiProfiler.start("[canvasUi] on performance");
 
             // if (this.isCanvasFocussed)
             // {
@@ -89,7 +88,7 @@ export default class CanvasUi
 
         this.canvasEle.addEventListener("focus", () =>
         {
-            const p = CABLES.UI.uiProfiler.start("[canvasUi] on focus");
+            const p = gui.uiProfiler.start("[canvasUi] on focus");
 
             this.showCanvasModal(true);
             gui.canvasManager.setCurrentCanvas(this.canvasEle);
@@ -117,7 +116,7 @@ export default class CanvasUi
     {
         if (!this._elCanvasIconbarContainer) return;
 
-        const perf = CABLES.UI.uiProfiler.start("[canvasUi] updateCanvasIconBar");
+        const perf = gui.uiProfiler.start("[canvasUi] updateCanvasIconBar");
 
         const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
         const bodyRect = document.body.getBoundingClientRect();
@@ -162,7 +161,7 @@ export default class CanvasUi
 
     updateIconState()
     {
-        const act = userSettings.get("overlaysShow");
+        const act = CABLES.UI.userSettings.get("overlaysShow");
         const icon = ele.byId("canvUitoggleOverlay");
         if (icon)
             if (act)icon.style.backgroundColor = "var(--color-special)";
@@ -171,9 +170,9 @@ export default class CanvasUi
 
     showCanvasModal(_show)
     {
-        if (userSettings.get("hideCanvasUi")) return;
+        if (CABLES.UI.userSettings.get("hideCanvasUi")) return;
 
-        const perf = CABLES.UI.uiProfiler.start("[canvasUi] showCanvasModal");
+        const perf = gui.uiProfiler.start("[canvasUi] showCanvasModal");
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 

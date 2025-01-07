@@ -3,7 +3,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
-import { updateHoverToolTip } from "../elements/tooltips.js";
+import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}
@@ -100,7 +100,7 @@ export default class GlPort
 
     updateShape()
     {
-        if (this._port.isLinked())
+        if (this._port.isLinked() && !this._port.isAnimated() && !this._port.isBoundToVar())
         {
             this._rect.setShape(0);
         }
@@ -109,7 +109,6 @@ export default class GlPort
             if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
             else this._rect.setShape(10);
         }
-        // this._rect.setShape(6);
     }
 
     _updateColor()
@@ -135,8 +134,8 @@ export default class GlPort
                 if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
                 else this._dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let dotPosY = gluiconfig.portHeight / 2 - dotSize / 2;
-                if (this.direction == CABLES.PORT_DIR_IN) dotPosY += gluiconfig.portHeight;
+                let dotPosY = this._rect.h / 4 - dotSize / 2;
+                if (this.direction == CABLES.PORT_DIR_IN) dotPosY += this._rect.h / 2;
 
                 if (this._port.uiAttribs.addPort) this._dot.setShape(12);
                 else this._dot.setShape(6);
@@ -188,7 +187,7 @@ export default class GlPort
 
         if (this._port.direction == CABLES.PORT_DIR_OUT) y = this._glop.h;
 
-        if (this._port.isLinked())
+        if (this._port.isLinked() && !this._port.isAnimated() && !this._port.isBoundToVar())
         {
             if (this._port.direction == CABLES.PORT_DIR_IN) y += gluiconfig.portHeight * 0.5;
             h = gluiconfig.portHeight * 1.5;
@@ -279,7 +278,7 @@ export default class GlPort
         this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
@@ -330,7 +329,7 @@ export default class GlPort
 
 GlPort.getInactiveColor = (type) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getInactiveColor");
+    const perf = gui.uiProfiler.start("[glport] getInactiveColor");
     let portname = "";
 
     if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
@@ -351,7 +350,7 @@ GlPort.getInactiveColor = (type) =>
 
 GlPort.getColorBorder = (type, hovering, selected) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolorBorder");
+    const perf = gui.uiProfiler.start("[glport] getcolorBorder");
     let name = "";
     let portname = "";
 
@@ -385,7 +384,7 @@ GlPort.getColorBorder = (type, hovering, selected) =>
 
 GlPort.getColor = (type, hovering, selected, activity) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    const perf = gui.uiProfiler.start("[glport] getcolor");
 
     let name = "";
     let portname = "";

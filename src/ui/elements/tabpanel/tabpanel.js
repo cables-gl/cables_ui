@@ -1,5 +1,4 @@
 import { Events, Logger } from "cables-shared-client";
-import userSettings from "../../components/usersettings.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
 
@@ -233,7 +232,7 @@ export default class TabPanel extends Events
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
+            if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
             {
                 this.activateTab(this._tabs[i].id);
                 found = true;
@@ -248,7 +247,7 @@ export default class TabPanel extends Events
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;
-        userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
+        CABLES.UI.userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
     }
 
     getTabByDataId(dataId)

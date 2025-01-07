@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
+import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 
 const paramsHelper =
 {
@@ -137,7 +138,7 @@ const paramsHelper =
         const port = op.getPortByName(portname);
         if (!port) return console.warn("paramedit port not found");
 
-        new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(), {
+        new SpreadSheetTab(gui.mainTabs, port, port.get(), {
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {

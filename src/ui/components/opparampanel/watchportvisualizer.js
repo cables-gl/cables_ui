@@ -1,6 +1,8 @@
 
 // shows a curve of the current hovering output number value in op param panel
 
+import uiconfig from "../../uiconfig.js";
+
 export default class WatchPortVisualizer
 {
     constructor()
@@ -123,7 +125,7 @@ export default class WatchPortVisualizer
         this.ctx.lineTo(this._canvasWidth, this._canvasHeight / 2);
         this.ctx.stroke();
 
-        this.ctx.strokeStyle = CABLES.UI.uiConfig.highlight;
+        this.ctx.strokeStyle = uiconfig.highlight;
         this.ctx.beginPath();
 
         this.ctx.lineWidth = 2;

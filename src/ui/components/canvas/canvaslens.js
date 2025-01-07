@@ -1,3 +1,4 @@
+import { notify } from "../../elements/notification.js";
 
 export default class CanvasLens
 {
@@ -46,7 +47,7 @@ export default class CanvasLens
 
     _onCopy(e)
     {
-        CABLES.UI.notify("Color copied");
+        notify("Color copied");
         e.clipboardData.setData("text/plain", this._hex);
         e.preventDefault();
     }

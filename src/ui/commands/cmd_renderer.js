@@ -1,3 +1,4 @@
+import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 
 
@@ -32,7 +33,7 @@ CABLES_CMD_RENDERER.resetSize = function ()
 
 CABLES_CMD_RENDERER.canvasMagnifier = function ()
 {
-    gui.canvasMagnifier = new CABLES.UI.CanvasLens();
+    gui.canvasMagnifier = new CanvasLens();
 };
 
 CABLES_CMD_RENDERER.scrollingPage = function ()

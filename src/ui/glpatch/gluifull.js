@@ -1,3 +1,4 @@
+import GlUiCanvas from "./gluicanvas.js";
 
 export default function GlGuiFull()
 {
@@ -15,7 +16,7 @@ export default function GlGuiFull()
         return;
     }
 
-    const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, ele);
+    const a = new GlUiCanvas(CABLES.patch, ele);
 
     gui.patchView.setPatchRenderer(id, a.glPatch);
     gui.patchView.switch(ele.id);

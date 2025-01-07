@@ -102,7 +102,8 @@ const text =
     "settings": "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",
 
     "working_connected_to": "To work, this op needs to be a child of: ",
-    "working_connected_needs_connections_to": "These ports should be connected: ",
+    "working_connected_needs_connections_to": "These ports should be linked: ",
+    "working_connected_needs_connections_or_string": "Ports should have a string value (or be linked): ",
     "working_shouldNotBeChildOf": "Should not be a child of ",
 
     "notOptimizedBrowser_title": "oops!",

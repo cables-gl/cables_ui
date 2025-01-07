@@ -321,6 +321,36 @@ export default function extendCoreOp()
             if (!working) notWorkingMsg = text.working_connected_to + this._linkTimeRules.needsParentOp + "";
         }
 
+        if (this._linkTimeRules.needsStringToWork.length > 0)
+        {
+            for (let i = 0; i < this._linkTimeRules.needsStringToWork.length; i++)
+            {
+                const p = this._linkTimeRules.needsStringToWork[i];
+                if (!p)
+                {
+                    console.warn("[needsStringToWork] port not found");
+                    continue;
+                }
+                if (p.linkTimeListener)p.off(p.linkTimeListener);
+                if (!p.isLinked() && p.get() == "")
+                {
+                    working = false;
+
+                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_or_string;
+                    else notWorkingMsg += ", ";
+                    notWorkingMsg += p.name.toUpperCase();
+
+                    p.linkTimeListener = p.on("change", (v, port) =>
+                    {
+                        if (port.op.checkLinkTimeWarnings)port.op.checkLinkTimeWarnings();
+                    });
+
+                    p.setUiAttribs({ "notWorking": true });
+                }
+                else p.setUiAttribs({ "notWorking": false });
+            }
+        }
+
         if (this._linkTimeRules.needsLinkedToWork.length > 0)
         {
             for (let i = 0; i < this._linkTimeRules.needsLinkedToWork.length; i++)
@@ -387,7 +417,7 @@ export default function extendCoreOp()
             CABLES.timeoutCheckLinkTimeWarning = setTimeout(() =>
             {
                 // check all ops for other follow up warnings to be resolved (possible optimization: check only ops under this one...)
-                const perf = CABLES.UI.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
+                const perf = gui.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
                 const ops = gui.corePatch().ops;
 
                 for (let i = 0; i < ops.length; i++)

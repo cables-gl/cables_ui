@@ -46,7 +46,7 @@ export default class GradientEditor
 
         this._elContainer = null;
         this._bg = new ModalBackground();
-        this._bg.on("click", () =>
+        this._bg.on("hide", () =>
         {
             this.close();
         });

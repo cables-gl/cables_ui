@@ -1,6 +1,5 @@
 import defaultOps from "../../defaultops.js";
 import text from "../../text.js";
-import userSettings from "../usersettings.js";
 
 class PortHtmlGenerator
 {
@@ -60,7 +59,7 @@ class PortHtmlGenerator
             "canEditOp": canEditOp,
             "showRenameButton": canEditOp && defaultOps.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
-            "minified": userSettings.get("minifiedOpHead"),
+            "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.platform.getCablesUrl(),
 

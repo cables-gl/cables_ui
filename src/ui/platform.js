@@ -2,7 +2,6 @@ import { Events, Logger } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
-import userSettings from "./components/usersettings.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
@@ -62,8 +61,8 @@ export default class Platform extends Events
             });
         }
 
-        if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
-        else userSettings.load({});
+        if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
+        else CABLES.UI.userSettings.load({});
 
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
@@ -207,7 +206,7 @@ export default class Platform extends Events
 
     showStartupChangelog()
     {
-        const lastView = userSettings.get("changelogLastView");
+        const lastView = CABLES.UI.userSettings.get("changelogLastView");
         const cl = new ChangelogToast();
         cl.getHtml((clhtml) =>
         {
@@ -222,7 +221,7 @@ export default class Platform extends Events
     {
         const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !userSettings.get("nobrowserWarning"))
+        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
         {
             iziToast.error({
                 "position": "topRight",
@@ -282,7 +281,7 @@ export default class Platform extends Events
                             editorTab.editor.setContent(options.code, true);
                         }
                     }
-                    CABLES.UI.notify("reloaded op " + options.name);
+                    notify("reloaded op " + options.name);
                 });
             }
         });
@@ -451,8 +450,7 @@ export default class Platform extends Events
                 {
                     CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
                     {
-                        if (result.success)
-                            CABLES.UI.notify("Backup created!");
+                        if (result.success) notify("Backup created!");
                     });
                 } });
         };
@@ -544,7 +542,7 @@ export default class Platform extends Events
         {
             if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
         });
-        return defaultOps.getPatchOpsPrefix() + namespace + ".";
+        return defaultOps.prefixes.patchOp + namespace + ".";
     }
 
     getSupportedOpDependencyTypes()

@@ -50,7 +50,7 @@
 
         <span onclick="CABLES.CMD.RENDERER.screenshot()" class="item"><span class="tt info icon icon-image icon-1_25x"  data-tt="save screenshot" data-info="save_screenshot"></span></span>
         <span onclick="CABLES.CMD.UI.toggleMute();" class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
-        <span onclick="new CABLES.UI.CanvasLens();" class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
+        <span onclick="CABLES.CMD.UI.canvasLens()" class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
         <span onclick="gui.helperContextMenu(this);" class="item"><span class="tt info icon icon-gizmo icon-1_25x" id="canvUitoggleOverlay" data-tt="[o] Toggle Overlays" data-info="toggle_helper"></span></span>
 
         <span onclick="gui.canvasManager.menu(this)" class="item textButton info" data-info="canvas_switch" id="canvasCtxSwitcher" >-</span>
@@ -92,10 +92,10 @@
             <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-plus"></span>
         </span>
 
-        <span class="item hidden" id="bgpreviewMax" onclick="gui.userSettings.set('bgpreviewMax',true);">
+        <span class="item hidden" id="bgpreviewMax" onclick="CABLES.UI.userSettings.set('bgpreviewMax',true);">
             <span class="icon icon-1_25x fright iconhover icon-chevron-left" ></span>
         </span>
-        <span class="item" id="bgpreviewMin" onclick="gui.userSettings.set('bgpreviewMax',false);">
+        <span class="item" id="bgpreviewMin" onclick="CABLES.UI.userSettings.set('bgpreviewMax',false);">
             <span class="icon icon-1_25x fright iconhover icon-chevron-right" ></span>
         </span>
     </div>

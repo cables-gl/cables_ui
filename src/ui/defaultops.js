@@ -17,6 +17,8 @@ const defaultOpNames =
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
     "defaultOpJson": "Ops.Json.HttpRequest_v3",
     "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
+    "defaultOpFallback": null,
+
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
     "VarTriggerNumber": "Ops.Vars.VarTriggerNumber",
     "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
@@ -74,7 +76,6 @@ const defaultOpNames =
     "VizNumberBar": "Ops.Ui.VizNumberBar",
     "VizObject": "Ops.Ui.VizObject",
     "VizString": "Ops.Ui.VizString",
-    // "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
     "vizTrigger": "Ops.Ui.VizTrigger",
@@ -128,6 +129,13 @@ const defaultOpNames =
  */
 const defaultOps = {
     "defaultOpNames": defaultOpNames,
+    "prefixes": {
+        "op": "Ops.",
+        "patchOp": "Ops.Patch.P",
+        "userOp": "Ops.User.",
+        "teamOp": "Ops.Team.",
+        "extensionOp": "Ops.Extension."
+    },
     "converterOps":
     [
         {
@@ -196,13 +204,6 @@ const defaultOps = {
             "portIn": "exe",
             "portOut": "timesTriggered",
         },
-        // {
-        //     "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
-        //     "typeTo": CONSTANTS.OP.OP_PORT_TYPE_NUMBER,
-        //     "op": defaultOpNames.triggerCounter,
-        //     "portIn": "exe",
-        //     "portOut": "num",
-        // },
         {
             "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
             "typeTo": CONSTANTS.OP.OP_PORT_TYPE_NUMBER,
@@ -308,6 +309,8 @@ const defaultOps = {
         else if (filename.endsWith(".exr")) ops.push(defaultOpNames.defaultOpExr);
         else if (filename.endsWith(".svg")) ops.push(defaultOpNames.defaultOpSvg);
         else if (filename.endsWith(".css")) ops.push(defaultOpNames.defaultOpCss);
+
+        if (ops.length === 0 && defaultOpNames.defaultOpFallback) ops.push(defaultOpNames.defaultOpFallback);
 
         return ops;
     },
@@ -418,39 +421,9 @@ const defaultOps = {
         return parts.join(".") + ".";
     },
 
-    "getPatchOpsPrefix": () =>
-    {
-        return "Ops.Patch.P";
-    },
-
-    "getOpsPrefix": () =>
-    {
-        return "Ops.";
-    },
-
-    "getUserOpsPrefix": () =>
-    {
-        return "Ops.User.";
-    },
-
-    "getTeamOpsPrefix": () =>
-    {
-        return "Ops.Team.";
-    },
-
-    "getExtensionOpsPrefix": () =>
-    {
-        return "Ops.Extension.";
-    },
-
     "isDevOp": (opname) =>
     {
         return opname && opname.includes(".Dev.");
-    },
-
-    "isAdminOp": (opname) =>
-    {
-        return opname && opname.indexOf("Ops.Admin.") === 0;
     },
 
     "isUserOp": (opname) =>
@@ -465,7 +438,7 @@ const defaultOps = {
 
     "isUserOpOfUser": (opname, userNameLowercase) =>
     {
-        return opname && opname.startsWith(defaultOps.getUserOpsPrefix() + userNameLowercase);
+        return opname && opname.startsWith(defaultOps.prefixes.userOp + userNameLowercase);
     },
 
     "isDeprecatedOp": (opname) =>
@@ -475,7 +448,7 @@ const defaultOps = {
 
     "isExtensionOp": (opname) =>
     {
-        return opname && opname.startsWith(defaultOps.getExtensionOpsPrefix());
+        return opname && opname.startsWith(defaultOps.prefixes.extensionOp);
     },
 
     "isCoreOp": (opname) =>
@@ -495,13 +468,13 @@ const defaultOps = {
 
     "isPatchOp": (opname) =>
     {
-        return opname && opname.indexOf(defaultOps.getPatchOpsPrefix()) === 0;
+        return opname && opname.indexOf(defaultOps.prefixes.patchOp) === 0;
     },
 
     "isExtension": (opname) =>
     {
         if (!opname) return false;
-        if (!opname.startsWith(defaultOps.getExtensionOpsPrefix())) return false;
+        if (!opname.startsWith(defaultOps.prefixes.extensionOp)) return false;
         if (!opname.endsWith(".")) opname += ".";
         const parts = opname.split(".");
         return parts.length < 5;
@@ -514,23 +487,16 @@ const defaultOps = {
 
     "isTeamOp": (opname) =>
     {
-        return opname && opname.startsWith(defaultOps.getTeamOpsPrefix());
+        return opname && opname.startsWith(defaultOps.prefixes.teamOp);
     },
 
     "isTeamNamespace": (opname) =>
     {
         if (!opname) return false;
-        if (!opname.startsWith(defaultOps.getTeamOpsPrefix())) return false;
+        if (!opname.startsWith(defaultOps.prefixes.teamOp)) return false;
         if (!opname.endsWith(".")) opname += ".";
         const parts = opname.split(".");
         return parts.length < 5;
-    },
-
-    "isBlueprintOp": (op) =>
-    {
-        return op.isSubPatchOp();
-        // if (op && op.storage)
-        // return op.storage.blueprintVer || 0;
     },
 
     "isInBlueprint": (op) =>

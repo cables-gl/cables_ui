@@ -152,6 +152,11 @@ export default class PatchOutline extends Events
         html += this._subTree.html(su);
 
         let el = ele.byId(id);
+        if (!el)
+        {
+            this._log.warn("no ele for outliner");
+            return;
+        }
         el.innerHTML = html;
         this._subTree.bindListeners();
 

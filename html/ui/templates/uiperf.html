@@ -1,7 +1,7 @@
 <script id="uiperformance" type="text/x-handlebars-template">
 
 <div style="text-align: right;">
-    <a class="icon-x icon icon-1_5x" onclick="CABLES.UI.uiProfiler.hide();"></a>
+    <a class="icon-x icon icon-1_5x" onclick="gui.uiProfiler.hide();"></a>
 </div>
 
     <table class="table">
@@ -13,7 +13,7 @@
         </tr>
 
         {{#each measures}}
-            <tr onclick="CABLES.UI.uiProfiler.highlight('{{name}}')" class="{{#if highlight}}highlighted{{/if}}" >
+            <tr onclick="gui.uiProfiler.highlight('{{name}}')" class="{{#if highlight}}highlighted{{/if}}" >
                 <td class="{{color}}">{{name}}</td>
                 <td class="{{color}}">{{count}}</td>
                 <td class="{{color}}">{{last}}</td>
@@ -22,6 +22,6 @@
         {{/each}}
     </table>
 
-    <a onclick="CABLES.UI.uiProfiler.clear();" class="button">reset</a>
+    <a onclick="gui.uiProfiler.clear();" class="button">reset</a>
 
 </script>

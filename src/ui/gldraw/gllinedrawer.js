@@ -158,7 +158,7 @@ export default class GlLinedrawer
 
     rebuild()
     {
-        const perf = CABLES.UI.uiProfiler.start("[glLineDrawer] rebuild");
+        const perf = gui.uiProfiler.start("[glLineDrawer] rebuild");
 
         // console.log("reupload lines...",this._num);
         // todo: this is basically ALWAYS! could be optimized

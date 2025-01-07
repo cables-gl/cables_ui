@@ -2,12 +2,12 @@ import { Logger, ele, helper } from "cables-shared-client";
 import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
-import userSettings from "../components/usersettings.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
+import LibLoader from "./libloader.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -27,27 +27,29 @@ export default class ServerOps
         this._patchId = patchId;
         this._ops = [];
 
-        CABLES.editorSession.addListener("op", (name, data) =>
-        {
-            // gui.jobs().start("open op editor" + name);
-            CABLES.editorSession.startLoadingTab();
-            const lastTab = userSettings.get("editortab");
-
-            if (data && data.opId)
+        CABLES.editorSession.addListener("op",
+            (name, data) =>
             {
-                name = {
-                    "opId": data.opId,
-                    "objName": name
-                };
+                // gui.jobs().start("open op editor" + name);
+                CABLES.editorSession.startLoadingTab();
+                const lastTab = CABLES.UI.userSettings.get("editortab");
+
+                if (data && data.opId)
+                {
+                    name = {
+                        "opId": data.opId,
+                        "objName": name
+                    };
+                }
+
+                this.edit(name, false, () =>
+                {
+                    gui.mainTabs.activateTabByName(lastTab);
+                    CABLES.UI.userSettings.set("editortab", lastTab);
+                    CABLES.editorSession.finishLoadingTab();
+                });
             }
-
-            this.edit(name, false, () =>
-            {
-                gui.mainTabs.activateTabByName(lastTab);
-                userSettings.set("editortab", lastTab);
-                CABLES.editorSession.finishLoadingTab();
-            });
-        });
+        );
 
         CABLES.editorSession.addListener("attachment", (name, data) =>
         {
@@ -55,15 +57,16 @@ export default class ServerOps
 
             if (data && data.opname)
             {
-                const lastTab = userSettings.get("editortab");
+                const lastTab = CABLES.UI.userSettings.get("editortab");
                 this.editAttachment(data.opname, data.name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    userSettings.set("editortab", lastTab);
+                    CABLES.UI.userSettings.set("editortab", lastTab);
                     CABLES.editorSession.finishLoadingTab();
                 }, true);
             }
-        });
+        }
+        );
 
         this.loaded = false;
         CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
@@ -673,7 +676,7 @@ export default class ServerOps
 
         let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
         // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "title": "Create attachment",
             "text": html,
             "prompt": true,
@@ -722,16 +725,7 @@ export default class ServerOps
                 }
                 // "name": attachmentName,
                 // "content": cont,
-            },
-
-            // CABLESUILOADER.talkerAPI.send(
-            //     "opAttachmentAdd",
-            //     {
-            //         "opname": opname,
-            //         "name": attachmentName,
-            //         "content": "hellowelt"
-            //     },
-            (err) =>
+            }, (err) =>
             {
                 if (err)
                 {
@@ -806,7 +800,7 @@ export default class ServerOps
                     return;
                 }
 
-                new CABLES.UI.ModalDialog({
+                new ModalDialog({
                     "title": options.title,
                     "text": html
                 });
@@ -818,7 +812,7 @@ export default class ServerOps
                     {
                         addButton.addEventListener("click", () =>
                         {
-                            CABLES.CMD.STANDALONE.addProjectOpDir(null, (dirErr, dirRes) =>
+                            CABLES.CMD.ELECTRON.addProjectOpDir((dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {
@@ -1282,7 +1276,7 @@ export default class ServerOps
                 {
                     new ModalDialog({
                         "title": "Failed to delete op",
-                        "text": e.message
+                        "text": err.message
                     });
                 }
                 else
@@ -1445,7 +1439,7 @@ export default class ServerOps
         if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
-        const lastTab = userSettings.get("editortab");
+        const lastTab = CABLES.UI.userSettings.get("editortab");
         let inactive = false;
         if (fromListener) if (lastTab !== title) inactive = true;
 
@@ -1655,58 +1649,62 @@ export default class ServerOps
                     {
                         gui.savingTitleAnimStart("Saving Op...");
 
-                        CABLESUILOADER.talkerAPI.send("saveOpCode", {
-                            "opname": opid,
-                            "code": content,
-                            "format": userSettings.get("formatcode") || false
-                        }, (err, res) =>
-                        {
-                            const selOps = gui.patchView.getSelectedOps();
-                            let selOpTranslate = null;
-                            if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
-
-                            if (err)
+                        CABLESUILOADER.talkerAPI.send(
+                            "saveOpCode",
                             {
-                                gui.endModalLoading();
-                                setStatus("Error: " + err.msg || "Unknown error");
-                                return;
-                            }
-
-                            if (!res.success)
+                                "opname": opid,
+                                "code": content,
+                                "format": CABLES.UI.userSettings.get("formatcode") || false
+                            },
+                            (err, res) =>
                             {
-                                gui.savingTitleAnimEnd();
+                                const selOps = gui.patchView.getSelectedOps();
+                                let selOpTranslate = null;
+                                if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
 
-                                if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true); else if (err) setStatus("Error: " + err.msg || "Unknown error");
-                            }
-                            else
-                            {
-                                if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
-                                if (!CABLES.Patch.getOpClass(opname)) gui.opSelect()
-                                    .reload();
-
-                                gui.serverOps.execute(opid, () =>
+                                if (err)
                                 {
-                                    setStatus("Saved " + opname);
-                                    editor.focus();
-
-                                    if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
-                                    {
-                                        gui.opParams.show(gui.corePatch().ops[i].id);
-                                        gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
-                                    }
-
-                                    gui.savingTitleAnimEnd();
                                     gui.endModalLoading();
-                                });
-                            }
-                        }, (result) =>
-                        {
-                            setStatus("ERROR: not saved - " + result.msg);
-                            this._log.log("err result", result);
+                                    setStatus("Error: " + err.msg || "Unknown error");
+                                    return;
+                                }
 
-                            // gui.endModalLoading();
-                            gui.savingTitleAnimEnd();
-                        });
+                                if (!res.success)
+                                {
+                                    gui.savingTitleAnimEnd();
+
+                                    if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true); else if (err) setStatus("Error: " + err.msg || "Unknown error");
+                                }
+                                else
+                                {
+                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.Patch.getOpClass(opname)) gui.opSelect()
+                                        .reload();
+
+                                    gui.serverOps.execute(opid, () =>
+                                    {
+                                        setStatus("Saved " + opname);
+                                        editor.focus();
+
+                                        if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                        {
+                                            gui.opParams.show(gui.corePatch().ops[i].id);
+                                            gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
+                                        }
+
+                                        gui.savingTitleAnimEnd();
+                                        gui.endModalLoading();
+                                    });
+                                }
+                            },
+                            (result) =>
+                            {
+                                setStatus("ERROR: not saved - " + result.msg);
+                                this._log.log("err result", result);
+
+                                // gui.endModalLoading();
+                                gui.savingTitleAnimEnd();
+                            });
                     });
                 }
 
@@ -1726,7 +1724,7 @@ export default class ServerOps
 
     getOpLibs(opName)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] getOpLibs");
+        const perf = gui.uiProfiler.start("[opsserver] getOpLibs");
         const opDoc = gui.opDocs.getOpDocByName(opName);
         const libs = [];
         if (opDoc && opDoc.libs)
@@ -1748,7 +1746,7 @@ export default class ServerOps
 
     getCoreLibs(opName)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] getCoreLibs");
+        const perf = gui.uiProfiler.start("[opsserver] getCoreLibs");
         const opDoc = gui.opDocs.getOpDocByName(opName);
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)
@@ -1831,7 +1829,7 @@ export default class ServerOps
         }
         this.loadOps(missingOps, (newOps, newIds) =>
         {
-            const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
+            const perf2 = gui.uiProfiler.start("[opsserver] loadProjectDependencies");
 
             if (gui && gui.opSelect() && newOps.length > 0)
             {
@@ -1890,7 +1888,7 @@ export default class ServerOps
             const opDeps = this.getOpDeps(op);
             opDeps.forEach((lib) => { depsToLoad[lib.name] = lib; });
         });
-        new CABLES.LibLoader(Object.values(depsToLoad), finishedCb);
+        new LibLoader(Object.values(depsToLoad), finishedCb);
     }
 
     finished()
@@ -1915,7 +1913,7 @@ export default class ServerOps
 
     getMissingOps(proj)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] gerMissingOps");
+        const perf = gui.uiProfiler.start("[opsserver] gerMissingOps");
 
         let missingOps = [];
         const missingOpsFound = [];
@@ -2227,7 +2225,7 @@ export default class ServerOps
     getOpNameByIdentifier(opIdentifier)
     {
         if (!opIdentifier) return undefined;
-        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        if (opIdentifier.startsWith(defaultOps.prefixes.op)) return opIdentifier;
         const opDoc = gui.opDocs.getOpDocById(opIdentifier);
         return opDoc ? opDoc.name : undefined;
     }

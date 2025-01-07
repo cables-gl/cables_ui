@@ -1,4 +1,5 @@
 import { ModalBackground, Logger } from "cables-shared-client";
+import uiConfig from "../uiconfig.js";
 
 
 
@@ -18,7 +19,7 @@ function startIdleMode()
 
     if (!CABLES.UI.loaded || !window.gui) return;
     if (idling) return;
-    if (!CABLES.UI.userSettings.get("idlemode")) return;
+    if (!gui.userSettings.get("idlemode")) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
 
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
@@ -45,7 +46,7 @@ function idleInteractivity()
     if (!document.hidden)
     {
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
+        idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
     }
 }
 
@@ -93,7 +94,7 @@ export default function startIdleListeners()
     {
         idleFocus = false;
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
+        idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
     });
 
     document.addEventListener("keydown", idleInteractivity, false);
@@ -101,5 +102,5 @@ export default function startIdleListeners()
     document.addEventListener("visibilitychange", visibilityChanged);
     gui.on("userActivity", idleInteractivity);
 
-    idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
+    idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
 }

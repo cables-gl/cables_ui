@@ -1,7 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
 import defaultOps from "../defaultops.js";
-import { notifyError } from "../elements/notification.js";
+import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -379,7 +379,7 @@ export default class PatchSaveServer extends Events
             const op = ops[i];
             if (!op || !op.uiAttribs) continue;
 
-            if (defaultOps.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
+            if (op.isSubPatchOp() && op.uiAttribs.blueprintSubpatch)
             {
                 blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 
@@ -584,21 +584,21 @@ export default class PatchSaveServer extends Events
                         {
                             if (gui.project().summary && gui.project().summary.isTest)
                             {
-                                CABLES.UI.notifyWarn("Test patch saved", null, { "force": true });
+                                notifyWarn("Test patch saved", null, { "force": true });
                             }
                             else
                             if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
                             {
-                                CABLES.UI.notifyWarn("Example patch saved", null, { "force": true });
+                                notifyWarn("Example patch saved", null, { "force": true });
                             }
                             else
                             if (gui.project().summary && gui.project().summary.isPublic)
                             {
-                                CABLES.UI.notifyWarn("Published patch saved", null, { "force": true });
+                                notifyWarn("Published patch saved", null, { "force": true });
                             }
                             else
                             {
-                                CABLES.UI.notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
+                                notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
                             }
                             if (gui.socket && !_afterClone)
                             {
@@ -675,7 +675,7 @@ export default class PatchSaveServer extends Events
     showModalTitleDialog(cb = null)
     {
         const currentProject = gui.project();
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Patch Title",
             "text": "Set the title of this patch",
@@ -699,7 +699,7 @@ export default class PatchSaveServer extends Events
                                 "warning": true,
                                 "showOkButton": true
                             };
-                            new CABLES.UI.ModalDialog(options);
+                            new ModalDialog(options);
                         }
                         else
                         {

@@ -7,8 +7,8 @@ import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./multiplayer/sc_connection.js";
 import text from "./text.js";
-import userSettings from "./components/usersettings.js";
 import { notifyError } from "./elements/notification.js";
+import startIdleListeners from "./components/idlemode.js";
 
 
 /**
@@ -69,7 +69,7 @@ export default function startUi(cfg)
 
                 incrementStartup();
                 gui.opSelect().prepare();
-                userSettings.init();
+                CABLES.UI.userSettings.init();
                 incrementStartup();
 
                 gui.opSelect().reload();
@@ -84,9 +84,9 @@ export default function startUi(cfg)
 
                 CABLES.editorSession.open();
 
-                gui.setFontSize(userSettings.get("fontSizeOff"));
+                gui.setFontSize(CABLES.UI.userSettings.get("fontSizeOff"));
 
-                userSettings.on("change", function (key, v)
+                CABLES.UI.userSettings.on("change", function (key, v)
                 {
                     if (key == "fontSizeOff")
                     {
@@ -105,7 +105,7 @@ export default function startUi(cfg)
                     }
                 });
 
-                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 gui.bindKeys();
 
@@ -115,12 +115,12 @@ export default function startUi(cfg)
                     gui.socket = new ScConnection(socketClusterConfig);
                 }
 
-                CABLES.UI.startIdleListeners();
+                startIdleListeners();
 
                 new HtmlInspector();
 
-                if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
-                if (userSettings.get("timelineOpened") == true) gui.showTiming();
+                if (CABLES.UI.userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
+                if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 gui.maintabPanel.init();
 
@@ -128,7 +128,7 @@ export default function startUi(cfg)
 
                 setTimeout(() =>
                 {
-                    if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
+                    if (CABLES.UI.userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
                 gui.patchView.checkPatchErrors();

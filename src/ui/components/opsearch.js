@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
+import uiprofiler from "./uiprofiler.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -30,7 +31,7 @@ export default class OpSearch extends Events
 
     _buildList()
     {
-        const perf = CABLES.UI.uiProfiler.start("opsearch.getlist");
+        const perf = gui.uiProfiler.start("opsearch.getlist");
 
         const codeOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
         let items = this._createListItemsByNames(codeOpNames);
@@ -94,7 +95,7 @@ export default class OpSearch extends Events
     {
         if (!query || query === " " || query === "") return;
 
-        const perf = CABLES.UI.uiProfiler.start("opsearch._searchWord");
+        const perf = gui.uiProfiler.start("opsearch._searchWord");
 
         for (let i = 0; i < list.length; i++)
         {
@@ -491,11 +492,6 @@ export default class OpSearch extends Events
                 }
             }
 
-            if (hidden)
-            {
-                if (defaultOps.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
-            }
-
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
 
             parts.length -= 1;
@@ -516,7 +512,6 @@ export default class OpSearch extends Events
                 if (hidden)oldState = "OLD";
                 if (opDocHidden)oldState = "OLD";
                 if (defaultOps.isDeprecatedOp(opName)) oldState = "DEPREC";
-                if (defaultOps.isAdminOp(opName)) oldState = "ADMIN";
 
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);

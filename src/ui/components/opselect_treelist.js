@@ -1,4 +1,5 @@
 import GlPatch from "../glpatch/glpatch.js";
+import uiprofiler from "./uiprofiler.js";
 
 /**
  * tree view for namespaces in op select dialog
@@ -56,7 +57,7 @@ export default class OpTreeList
 
     html()
     {
-        const perf = CABLES.UI.uiProfiler.start("opselect.treelist");
+        const perf = gui.uiProfiler.start("opselect.treelist");
 
         let html = "";
 

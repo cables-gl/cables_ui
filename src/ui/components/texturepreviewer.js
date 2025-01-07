@@ -1,8 +1,10 @@
 import { Logger, ele } from "cables-shared-client";
-import userSettings from "./usersettings.js";
 
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
+import { hideToolTip } from "../elements/tooltips.js";
+import uiprofiler from "./uiprofiler.js";
+import UiProfiler from "./uiprofiler.js";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;
@@ -22,7 +24,7 @@ export default class TexturePreviewer
         this._texturePorts = [];
         this._showing = false;
         this._lastTimeActivity = 0;
-        this._mode = userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
+        this._mode = CABLES.UI.userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
         this._paused = false;
         this._shader = null;
         this._shaderTexUniform = null;
@@ -40,10 +42,10 @@ export default class TexturePreviewer
         this._ele = document.getElementById("bgpreview");
         this.setSize();
 
-        userSettings.on("change", (key, v) =>
+        CABLES.UI.userSettings.on("change", (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
-            if (key == "texpreviewSize") this.setSize(userSettings.get(key));
+            if (key == "texpreviewSize") this.setSize(CABLES.UI.userSettings.get(key));
             if (key == "bgpreviewMax") this.enableBgPreview();
         });
 
@@ -121,6 +123,8 @@ export default class TexturePreviewer
             return;
         }
 
+        if (!window.gui) return;
+
         let port = tp;
         if (tp.port)port = tp.port;
 
@@ -143,7 +147,7 @@ export default class TexturePreviewer
 
         if (previewCanvas && port && port.get())
         {
-            const perf = CABLES.UI.uiProfiler.start("texpreview");
+            const perf = gui.uiProfiler.start("texpreview");
             const cgl = port.op.patch.cgl;
 
             if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
@@ -223,7 +227,7 @@ export default class TexturePreviewer
                 this._currentHeight = previewCanvasEle.height = s[1] * this.scale;
             }
 
-            const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
+            const perf2 = gui.uiProfiler.start("texpreview22");
 
             // if (this._mode == MODE_CORNER)
             // {
@@ -238,7 +242,7 @@ export default class TexturePreviewer
                 const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
                 vizCtx.save();
 
-                if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+                if (CABLES.UI.userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
 
                 let w = 150;
                 let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
@@ -276,7 +280,7 @@ export default class TexturePreviewer
         // {
         // // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
 
-        //     if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+        //     if (CABLES.UI.userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
         //     vizCtx.save();
         //     let w = 150;
         //     let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
@@ -305,7 +309,7 @@ export default class TexturePreviewer
 
     toggleSize(m)
     {
-        let size = userSettings.get("texpreviewSize");
+        let size = CABLES.UI.userSettings.get("texpreviewSize");
 
         if (size == null || size == undefined)size = 30;
 
@@ -316,19 +320,19 @@ export default class TexturePreviewer
 
         this.scale = size / 100;
 
-        userSettings.set("texpreviewSize", this.scale * 100);
+        CABLES.UI.userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     setSize(size)
     {
-        if (!size)size = userSettings.get("texpreviewSize") || 50;
+        if (!size)size = CABLES.UI.userSettings.get("texpreviewSize") || 50;
 
-        if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
+        if (CABLES.UI.userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
         else this._ele.style.opacity = 1;
 
         this.scale = size / 100;
 
-        userSettings.set("texpreviewSize", this.scale * 100);
+        CABLES.UI.userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     _getCanvasSize(port, tex, meta)
@@ -388,17 +392,17 @@ export default class TexturePreviewer
 
     enableBgPreview()
     {
-        const enabled = userSettings.get("bgpreviewMax");
+        const enabled = CABLES.UI.userSettings.get("bgpreviewMax");
         this._enabled = enabled;
 
         // if (storeSetting)
         // {
-        //     userSettings.set("bgpreviewMax", enabled);
+        //     CABLES.UI.userSettings.set("bgpreviewMax", enabled);
 
         //     console.log("store bgpreview max", enabled);
         // }
 
-        // console.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
+        // console.log("bgpreviewMax", CABLES.UI.userSettings.get("bgpreviewMax"), enabled);
 
 
         if (this._mode == MODE_CORNER)
@@ -435,7 +439,7 @@ export default class TexturePreviewer
     {
         this._paused = true;
 
-        if (this._mode == MODE_CORNER) CABLES.UI.hideToolTip();
+        if (this._mode == MODE_CORNER) hideToolTip();
     }
 
     pressedEscape()
@@ -501,7 +505,7 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
-        if (!userSettings.get("bgpreview"))
+        if (!gui.userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
             this._lastClicked = this.updateTexturePort(p);
@@ -513,7 +517,7 @@ export default class TexturePreviewer
         if (this._mode == MODE_CORNER)
             ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
 
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         if (!this._listeningFrame && p)
         {

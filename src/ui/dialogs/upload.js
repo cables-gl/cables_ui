@@ -51,15 +51,8 @@ export default class FileUploader
             return;
         }
 
-        // if (CABLES.DragNDrop.internal)
-        // {
-        //     this._log.error("cancel because internal");
-        //     return;
-        // }
-
         event.preventDefault();
         event.stopPropagation();
-
 
         if (CABLES.platform.frontendOptions.uploadFiles)
         {
