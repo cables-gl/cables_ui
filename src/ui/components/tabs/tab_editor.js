@@ -224,7 +224,7 @@ export default class EditorTab extends Events
                     {
                         this._editor.resize(true);
                         this._editor.focus();
-                        if (this._tab.editorObj && this._tab.editorObj.name)userSettings.set("editortab", this._tab.editorObj.name);
+                        if (this._tab.editorObj && this._tab.editorObj.name) CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
                     },
                 );
 
