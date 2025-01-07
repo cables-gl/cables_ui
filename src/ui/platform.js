@@ -5,6 +5,7 @@ import text from "./text.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
+import namespace from "./namespaceutils.js";
 
 /**
  * super class for platform implementations
@@ -76,7 +77,7 @@ export default class Platform extends Events
 
     warnOpEdit(opName)
     {
-        return (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opName) && !CABLES.platform.isStandalone());
+        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isStandalone());
     }
 
     isStandalone()
@@ -485,8 +486,10 @@ export default class Platform extends Events
 
     showFileSelect(inputId, filterType, opid, previewId)
     {
+        console.log("showFileSelect", inputId, filterType, opid, previewId);
         gui.showFileManager(() =>
         {
+            console.log("showFileSelect22222");
             const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {
@@ -537,12 +540,12 @@ export default class Platform extends Events
         const PATCHOPS_ID_REPLACEMENTS = {
             "-": "___"
         };
-        let namespace = gui.project().shortId;
+        let ns = gui.project().shortId;
         Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>
         {
-            if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
+            if (ns) ns = ns.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
         });
-        return defaultOps.prefixes.patchOp + namespace + ".";
+        return defaultOps.prefixes.patchOp + ns + ".";
     }
 
     getSupportedOpDependencyTypes()

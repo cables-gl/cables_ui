@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import paramsHelper from "./params_helper.js";
 
 
 let currentEle = null;
@@ -58,7 +59,7 @@ export default class ParamTabInputListener
                 const inputEleId = "portval_" + nextEle.dataset.portnum + "_" + nextEle.dataset.panelid;
                 const inputEle = ele.byId(inputEleId);
 
-                this._ele.removeEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
+                this._ele.removeEventListener("keydown", paramsHelper.inputListenerCursorKeys);
 
                 CABLES.UI.valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
 

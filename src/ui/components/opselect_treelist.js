@@ -37,8 +37,6 @@ export default class OpTreeList
         let i = 0;
         for (i = 0; i < level; i++) html += "&nbsp;&nbsp;&nbsp;";
 
-        // const style = defaultops.getNamespaceClassName(item.fullname);
-
         const color = GlPatch.getOpNamespaceColor(item.fullname) || [1, 1, 1, 1];
 
         html += "<a style=\"color:rgba(" + Math.round(color[0] * 255) + "," + Math.round(color[1] * 255) + "," + Math.round(color[2] * 255) + ",1);\" onclick=\"gui.opSelect().tree.searchFor('" + item.fullname + ".')\">";

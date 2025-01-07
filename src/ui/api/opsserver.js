@@ -8,6 +8,7 @@ import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
+import namespace from "../namespaceutils.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -1204,16 +1205,19 @@ export default class ServerOps
         });
     }
 
+    // rename dialog for non-api platforms like electron
     renameDialog(oldName)
     {
         if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
 
         if (gui.showGuestWarning()) return;
 
+        console.log("renamedialog");
+
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultOps.getNamespace(oldName);
+        let suggestedNamespace = namespace.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Rename operator",
@@ -1328,7 +1332,7 @@ export default class ServerOps
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
-        if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
+        if (namespace.isTeamOp(oldName)) suggestedNamespace = namespace.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Clone operator",
@@ -2132,16 +2136,14 @@ export default class ServerOps
         let collectionName = "";
         if (name && type === "extension")
         {
-            collectionName = name.split(".", 3)
-                .join(".");
-            valid = name && defaultOps.isExtensionOp(name);
+            collectionName = name.split(".", 3).join(".");
+            valid = name && namespace.isExtensionOp(name);
             apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
         }
         if (name && type === "team")
         {
-            collectionName = name.split(".", 3)
-                .join(".");
-            valid = name && defaultOps.isTeamOp(name);
+            collectionName = name.split(".", 3).join(".");
+            valid = name && namespace.isTeamOp(name);
             apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
         }
 

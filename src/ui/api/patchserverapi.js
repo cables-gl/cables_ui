@@ -1,7 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
-import defaultOps from "../defaultops.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
+import namespace from "../namespaceutils.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -198,7 +198,7 @@ export default class PatchSaveServer extends Events
                                 "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
                                 "checked": false,
                             };
-                            if (userOpsUsed.some((userOp) => { return defaultOps.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
+                            if (userOpsUsed.some((userOp) => { return namespace.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
                             {
                                 checkboxData.checked = true;
                                 checkboxData.title += "<br/><span class=\"warning\">Collaborator should not be removed, their userops are used in the patch</span>";

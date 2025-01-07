@@ -4,7 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
-import defaultOps from "../defaultops.js";
+import opNames from "../opnameutils.js";
 
 /**
  * manage files/assets of the patch
@@ -71,6 +71,8 @@ export default class FileManager
 
     setFilePort(portEle, op, previewEle)
     {
+        console.log("file port op", portEle, op);
+
         if (!portEle)
         {
             this._filePortElePreview = null;
@@ -88,6 +90,7 @@ export default class FileManager
             this._filePortElePreview = previewEle;
             this._filePortEle = portEle;
             this._filePortOp = op;
+
             gui.fileManager.setFilter("");
         }
         this.updateHeader();
@@ -440,7 +443,7 @@ export default class FileManager
                 },
                 function (err, r)
                 {
-                    if (r.fileDb) r.ops = defaultOps.getOpsForFilename(r.fileDb.fileName);
+                    if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
                         if (detailItem.isReference) delete r.converters;

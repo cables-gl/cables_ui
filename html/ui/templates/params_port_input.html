@@ -22,10 +22,8 @@
     {{else}}
     {{#if port.links}}
 
-
         {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-
 
         {{#compare port.uiAttribs.display '==' 'button' }}
         <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
@@ -95,15 +93,6 @@
                 </td><td>
                     <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
                 {{/compare}}
-
-
-                <!-- {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
-                    </td><td>
-
-                    <a class="button-small" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-plus-circle"></span></a>
-                {{/compare}} -->
-
-
 
 
                 {{#compare port.uiAttribs.display '==' 'range' }}
@@ -220,7 +209,7 @@
 
                         <span
                             id="portFilename_{{ portnum }}"
-                            onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');"
+                            onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port._op.id }}','portFileVal_{{ portnum }}_preview');"
                             style="cursor:pointer;">[???]</span>
                         <span id="portFilename_{{ portnum }}_src"></span>
 

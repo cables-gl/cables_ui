@@ -1,6 +1,8 @@
 import { ele } from "cables-shared-client";
 import text from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
+import undo from "../../utils/undo.js";
+import paramsHelper from "./params_helper.js";
 
 let pointerLockFirstTime = true;
 
@@ -39,8 +41,8 @@ function valueChanger(eleId, focus, portName, opid)
     if (focus)
     {
         setTextEdit(true);
-        eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
-        // elem.keydown(CABLES.UI.paramsHelper.inputListenerCursorKeys);
+        eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
+        // elem.keydown(paramsHelper.inputListenerCursorKeys);
     }
 
     function setTextEdit(enabled)
@@ -50,7 +52,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (enabled)
         {
             if (eleContainer.classList.contains("valuesliderinput"))
-                eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+                eleInput.addEventListener("input", () => { paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
             ele.hide(eleNumInputDisplay);
 
             eleContainer.classList.add("numberinputFocussed");
@@ -65,7 +67,7 @@ function valueChanger(eleId, focus, portName, opid)
             if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input",
                 () =>
                 {
-                    CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+                    paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
                 });
 
             ele.show(eleNumInputDisplay);
@@ -81,10 +83,10 @@ function valueChanger(eleId, focus, portName, opid)
     {
         if (ele.hasFocus(eleInput)) return;
 
-        eleInput.removeEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
+        eleInput.removeEventListener("wheel", paramsHelper.inputListenerMousewheel);
         // eleInput.removeEventListener("keydown", tabKeyListener);
-        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
-        eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
+        eleInput.addEventListener("wheel", paramsHelper.inputListenerMousewheel);
+        eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();
         isDown = true;
@@ -120,7 +122,7 @@ function valueChanger(eleId, focus, portName, opid)
             const undofunc = (function (_portName, opId, oldVal, newVal)
             {
                 if (oldVal != newVal)
-                    CABLES.UI.undo.add({
+                    undo.add({
                         "title": "Value mousedrag " + oldVal + " to " + newVal,
                         undo()
                         {
@@ -173,7 +175,7 @@ function valueChanger(eleId, focus, portName, opid)
 
     function setProgress(v)
     {
-        CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+        paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
         return v;
     }
 

@@ -10,6 +10,7 @@ import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import Exporter from "../dialogs/exporter.js";
+import opNames from "../opnameutils.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -687,7 +688,7 @@ CABLES_CMD_PATCH.analyze = function (force)
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
-    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = opNames.getVarGetterOpNameByType(p.type, p);
 
     let portName = getsetOp.portName;
     let portNameOut = getsetOp.portNameOut;
@@ -736,7 +737,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = opNames.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -762,7 +763,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = defaultOps.getVarGetterOpNameByType(type, p);
+    const getsetOp = opNames.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let getset = getsetOp.setter;
@@ -802,7 +803,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = opNames.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -832,7 +833,7 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = defaultOps.getRerouteOp(p.type);
+    const getsetOp = opNames.getRerouteOp(p.type);
 
     gui.patchView.addOp(
         getsetOp,
@@ -865,7 +866,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     gui.closeModal();
-    const getsetOp = defaultOps.getVarGetterOpNameByType(type, p);
+    const getsetOp = opNames.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let opFunction = getsetOp.getter;

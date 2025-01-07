@@ -1,4 +1,5 @@
 import uiconfig from "../../uiconfig.js";
+import undo from "../../utils/undo.js";
 
 export default function extendCoreAnim()
 {
@@ -238,7 +239,7 @@ export default function extendCoreAnim()
         {
             gui.timeLine().moveSelectedKeysFinished();
 
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "timeline move keys",
                 undo()
                 {
@@ -371,7 +372,7 @@ export default function extendCoreAnim()
 
         function undofunc(anim, objKey)
         {
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "timeline delete keys",
                 undo()
                 {

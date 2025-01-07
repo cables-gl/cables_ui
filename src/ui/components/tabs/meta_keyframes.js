@@ -1,5 +1,5 @@
-import defaultOps from "../../defaultops.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
+import opNames from "../../opnameutils.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 CABLES = CABLES || {};
@@ -41,7 +41,7 @@ export default class MetaKeyframes
                             "opname": ops[i].name,
                             "opid": ops[i].id,
                             "portname": p.name,
-                            "colorClass": "op_color_" + defaultOps.getNamespaceClassName(ops[i].objName)
+                            "colorClass": "op_color_" + opNames.getNamespaceClassName(ops[i].objName)
                         });
                 }
             }

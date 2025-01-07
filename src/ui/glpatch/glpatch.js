@@ -324,21 +324,6 @@ export default class GlPatch extends Events
         });
 
 
-        // gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
-        // {
-        //     if (!this.isMouseOverOp()) return;
-
-        //     console.log(this._hoverOps[0]);
-        //     if (defaultops.isSubPatchOpName(this._hoverOps[0].objName))
-        //     {
-        //         console.log("jo...");
-        //         gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
-        //     }
-        // });
-
-
-        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
-        // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
         gui.on("uiloaded", () =>
         {
@@ -1068,17 +1053,6 @@ export default class GlPatch extends Events
         }
 
         this.updateSubPatchOpAnim();
-
-        // if (
-        //     this._portDragLine.isActive &&
-        //     this._hoverOps.length == 1 &&
-        //     this._hoverOpLongStartTime != 0 &&
-        //     performance.now() - this._hoverOpLongStartTime > 1000 &&
-        //     defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
-        // {
-        //     gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get());
-        // }
-
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
 
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)

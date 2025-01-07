@@ -166,7 +166,7 @@ class ParamsListener extends Events
         for (let i = 0; i < els.length; i++)
         {
             const v = els[i].value;
-            CABLES.UI.paramsHelper.valueChangerSetSliderCSS(v, els[i].parentElement);
+            paramsHelper.valueChangerSetSliderCSS(v, els[i].parentElement);
         }
     }
 
@@ -338,7 +338,7 @@ class ParamsListener extends Events
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
+                paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
             });
 
         // /////////////////////
@@ -348,7 +348,7 @@ class ParamsListener extends Events
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            CABLES.UI.paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
+            paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
         });
 
         // /////////////////////
@@ -518,7 +518,7 @@ class ParamsListener extends Events
                         // gui.setStateUnsaved();
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
-                        CABLES.UI.paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
+                        paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                     }
                 });
             }
@@ -700,7 +700,7 @@ class ParamsListener extends Events
     initPortInputListener(ports, index, panelid)
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
-        CABLES.UI.paramsHelper.checkDefaultValue(ports[index], index, panelid);
+        paramsHelper.checkDefaultValue(ports[index], index, panelid);
 
         // added missing math constants
         CABLES.UI.mathparser.add("pi", function (n, m) { return Math.PI; });
@@ -894,7 +894,7 @@ class ParamsListener extends Events
                 op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
             }
 
-            CABLES.UI.paramsHelper.checkDefaultValue(ports[index], index, panelid);
+            paramsHelper.checkDefaultValue(ports[index], index, panelid);
             if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
             ports[index].emitEvent("onValueChangeUi");

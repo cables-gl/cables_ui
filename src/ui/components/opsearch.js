@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
-import uiprofiler from "./uiprofiler.js";
+import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -45,8 +46,8 @@ export default class OpSearch extends Events
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
         items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
-        const namespace = CABLES.platform.getPatchOpsNamespace();
-        const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
+        const ns = CABLES.platform.getPatchOpsNamespace();
+        const patchOpNames = gui.opDocs.getNamespaceDocs(ns).map((ext) => { return ext.name; });
 
         this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;
         items = items.concat(this._createListItemsByNames(patchOpNames, items));
@@ -82,9 +83,8 @@ export default class OpSearch extends Events
             this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
 
             const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
-            if (defaultOps.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
+            if (namespace.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
         }
-        // console.log("opselect build list...");
         this._rebuildWordList();
 
         CABLES.UI.OPSELECT.maxPop = maxPop;
@@ -443,7 +443,7 @@ export default class OpSearch extends Events
     }
 
 
-    _getOpsNamesFromCode(opNames, ns, val, parentname)
+    _getOpsNamesFromCode(opnames, ns, val, parentname)
     {
         if (Object.prototype.toString.call(val) === "[object Object]")
         {
@@ -452,21 +452,21 @@ export default class OpSearch extends Events
                 if (val.hasOwnProperty(propertyName))
                 {
                     const opName = ns + "." + parentname + propertyName;
-                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opNames.push(opName);
-                    opNames = this._getOpsNamesFromCode(opNames, ns, val[propertyName], parentname + propertyName + ".");
+                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opnames.push(opName);
+                    opnames = this._getOpsNamesFromCode(opnames, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
         }
-        return opNames;
+        return opnames;
     }
 
-    _createListItemsByNames(opNames, listItems = [])
+    _createListItemsByNames(_opNames, listItems = [])
     {
-        if (!opNames) return;
+        if (!_opNames) return;
         const items = [];
-        for (let i = 0; i < opNames.length; i++)
+        for (let i = 0; i < _opNames.length; i++)
         {
-            const opName = opNames[i];
+            const opName = _opNames[i];
             if (!opName) continue;
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
@@ -482,28 +482,19 @@ export default class OpSearch extends Events
                 opDocHidden = opDoc.hidden;
                 hidden = opDoc.hidden;
 
-                if (defaultOps.isNonCoreOp(opName))
-                {
-                    shortName = opDoc.shortName;
-                }
-                else
-                {
-                    shortName = opDoc.shortNameDisplay;
-                }
+                if (namespace.isNonCoreOp(opName)) shortName = opDoc.shortName;
+                else shortName = opDoc.shortNameDisplay;
             }
 
-            if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
+            if (namespace.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
 
-            if (defaultOps.isCollection(opName))
+            if (namespace.isCollection(opName))
             {
                 const inUse = listItems && listItems.some((op) => { return op.name.startsWith(opName); });
-                if (inUse)
-                {
-                    hidden = true;
-                }
+                if (inUse) hidden = true;
             }
 
             if (!hidden)
@@ -511,19 +502,17 @@ export default class OpSearch extends Events
                 let oldState = "";
                 if (hidden)oldState = "OLD";
                 if (opDocHidden)oldState = "OLD";
-                if (defaultOps.isDeprecatedOp(opName)) oldState = "DEPREC";
+                if (namespace.isDeprecatedOp(opName)) oldState = "DEPREC";
 
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);
                 let type = "op";
-                if (defaultOps.isTeamNamespace(opName)) type = "team";
-                if (defaultOps.isExtension(opName)) type = "extension";
-                if (defaultOps.isPatchOp(opName)) type = "patchop";
+                if (namespace.isTeamNamespace(opName)) type = "team";
+                if (namespace.isExtension(opName)) type = "extension";
+                if (namespace.isPatchOp(opName)) type = "patchop";
 
-
-                const isTeamOp = defaultOps.isTeamOp(opName);
-
-                const isCollection = defaultOps.isCollection(opName);
+                const isTeamOp = namespace.isTeamOp(opName);
+                const isCollection = namespace.isCollection(opName);
 
                 let collectionOpNames = null;
                 if (isCollection)
@@ -537,14 +526,14 @@ export default class OpSearch extends Events
                     "name": opName,
                     "summary": summary,
                     "collectionOpNames": collectionOpNames,
-                    "nscolor": defaultOps.getNamespaceClassName(opName),
-                    "isOp": !defaultOps.isCollection(opName),
-                    "userOp": defaultOps.isUserOp(opName),
-                    "devOp": defaultOps.isDevOp(opName),
-                    "extensionOp": defaultOps.isExtensionOp(opName),
-                    "teamOp": defaultOps.isTeamOp(opName),
-                    "patchOp": defaultOps.isPatchOp(opName),
-                    "isExtension": defaultOps.isExtension(opName),
+                    "nscolor": opNames.getNamespaceClassName(opName),
+                    "isOp": !namespace.isCollection(opName),
+                    "userOp": namespace.isUserOp(opName),
+                    "devOp": namespace.isDevOp(opName),
+                    "extensionOp": namespace.isExtensionOp(opName),
+                    "teamOp": namespace.isTeamOp(opName),
+                    "patchOp": namespace.isPatchOp(opName),
+                    "isExtension": namespace.isExtension(opName),
                     "isTeamNamespace": isTeamOp,
                     "shortName": shortName,
                     "nameSpace": nameSpace,
@@ -561,7 +550,7 @@ export default class OpSearch extends Events
                     op.notUsable = true;
                     op.notUsableReasons = opDoc.notUsableReasons;
                 }
-                if (defaultOps.isCollection(opName))
+                if (namespace.isCollection(opName))
                 {
                     op.isOp = false;
                     op.pop = 1;
