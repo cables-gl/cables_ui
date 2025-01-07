@@ -647,7 +647,7 @@ export default class FileManager
                 }.bind(this)
             );
 
-            if (this._filePortEle)
+            if (this._filePortEle && this._filePortOp)
             {
                 gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
                 this._filePortEle.value = detailItems[0].p;
