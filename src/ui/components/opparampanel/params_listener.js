@@ -879,17 +879,15 @@ class ParamsListener extends Events
                 ports[index].set(v || 0);
             }
 
-
-
-            if (ports[index].op.storage && ports[index].op.storage.ref)
-            {
-                const ops = ports[index].op.patch.getOpsByRefId(ports[index].op.storage.ref);
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const p = ops[i].getPort(ports[index].name);
-                    p.set(v || 0);
-                }
-            }
+            // if (ports[index].op.storage && ports[index].op.storage.ref)
+            // {
+            //     const ops = ports[index].op.patch.getOpsByRefId(ports[index].op.storage.ref);
+            //     for (let i = 0; i < ops.length; i++)
+            //     {
+            //         const p = ops[i].getPort(ports[index].name);
+            //         p.set(v || getDef0);
+            //     }
+            // }
 
 
 

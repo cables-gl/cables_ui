@@ -100,7 +100,7 @@ export default class GlPort
 
     updateShape()
     {
-        if (this._port.isLinked())
+        if (this._port.isLinked() && !this._port.isAnimated() && !this._port.isBoundToVar())
         {
             this._rect.setShape(0);
         }
@@ -109,7 +109,6 @@ export default class GlPort
             if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
             else this._rect.setShape(10);
         }
-        // this._rect.setShape(6);
     }
 
     _updateColor()
@@ -135,8 +134,8 @@ export default class GlPort
                 if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
                 else this._dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let dotPosY = gluiconfig.portHeight / 2 - dotSize / 2;
-                if (this.direction == CABLES.PORT_DIR_IN) dotPosY += gluiconfig.portHeight;
+                let dotPosY = this._rect.h / 4 - dotSize / 2;
+                if (this.direction == CABLES.PORT_DIR_IN) dotPosY += this._rect.h / 2;
 
                 if (this._port.uiAttribs.addPort) this._dot.setShape(12);
                 else this._dot.setShape(6);
@@ -188,7 +187,7 @@ export default class GlPort
 
         if (this._port.direction == CABLES.PORT_DIR_OUT) y = this._glop.h;
 
-        if (this._port.isLinked())
+        if (this._port.isLinked() && !this._port.isAnimated() && !this._port.isBoundToVar())
         {
             if (this._port.direction == CABLES.PORT_DIR_IN) y += gluiconfig.portHeight * 0.5;
             h = gluiconfig.portHeight * 1.5;

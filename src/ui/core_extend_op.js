@@ -321,6 +321,36 @@ export default function extendCoreOp()
             if (!working) notWorkingMsg = text.working_connected_to + this._linkTimeRules.needsParentOp + "";
         }
 
+        if (this._linkTimeRules.needsStringToWork.length > 0)
+        {
+            for (let i = 0; i < this._linkTimeRules.needsStringToWork.length; i++)
+            {
+                const p = this._linkTimeRules.needsStringToWork[i];
+                if (!p)
+                {
+                    console.warn("[needsStringToWork] port not found");
+                    continue;
+                }
+                if (p.linkTimeListener)p.off(p.linkTimeListener);
+                if (!p.isLinked() && p.get() == "")
+                {
+                    working = false;
+
+                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_or_string;
+                    else notWorkingMsg += ", ";
+                    notWorkingMsg += p.name.toUpperCase();
+
+                    p.linkTimeListener = p.on("change", (v, port) =>
+                    {
+                        if (port.op.checkLinkTimeWarnings)port.op.checkLinkTimeWarnings();
+                    });
+
+                    p.setUiAttribs({ "notWorking": true });
+                }
+                else p.setUiAttribs({ "notWorking": false });
+            }
+        }
+
         if (this._linkTimeRules.needsLinkedToWork.length > 0)
         {
             for (let i = 0; i < this._linkTimeRules.needsLinkedToWork.length; i++)
