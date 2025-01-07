@@ -2804,7 +2804,7 @@ export default class PatchView extends Events
         {
             const p = op.getPortByName(portname);
             const oldValue = p.get();
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "reset defaultvalue",
                 undo()
                 {

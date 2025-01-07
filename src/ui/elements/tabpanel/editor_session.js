@@ -1,3 +1,4 @@
+import paramsHelper from "../../components/opparampanel/params_helper.js";
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
 
@@ -15,7 +16,7 @@ export default class EditorSession
 
         this.addListener("param", (name, data) =>
         {
-            CABLES.UI.paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
+            paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
         });
 
         this.addListener("manageOp", (id, data) =>

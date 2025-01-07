@@ -482,19 +482,8 @@ export default class OpSearch extends Events
                 opDocHidden = opDoc.hidden;
                 hidden = opDoc.hidden;
 
-                if (defaultOps.isNonCoreOp(opName))
-                {
-                    shortName = opDoc.shortName;
-                }
-                else
-                {
-                    shortName = opDoc.shortNameDisplay;
-                }
-            }
-
-            if (hidden)
-            {
-                if (defaultOps.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
+                if (defaultOps.isNonCoreOp(opName)) shortName = opDoc.shortName;
+                else shortName = opDoc.shortNameDisplay;
             }
 
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;

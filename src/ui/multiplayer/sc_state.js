@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import Gui from "../gui.js";
 import ScClient from "./sc_client.js";
+import paramsHelper from "../components/opparampanel/params_helper.js";
 
 CABLES = CABLES || {};
 
@@ -505,7 +506,7 @@ export default class ScState extends Events
         gui.corePatch().on("pacoPortValueSetAnimated", (op, index, targetState, defaultValue) =>
         {
             if (!this._connection.inMultiplayerSession) return;
-            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, defaultValue);
+            paramsHelper.setPortAnimated(op, index, targetState, defaultValue);
         });
 
         gui.corePatch().on("pacoPortAnimUpdated", (port) =>
