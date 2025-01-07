@@ -195,7 +195,7 @@
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
                         {{#if openLocalFiles}}
-                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.STANDALONE.openAssetDir({'url': '{{port.value}}'})"></a>
+                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.ELECTRON.openFileManager('{{port.value}}')"></a>
                         {{else}}
                             <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
                         {{/if}}

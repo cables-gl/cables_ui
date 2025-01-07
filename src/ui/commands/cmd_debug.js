@@ -1,6 +1,5 @@
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
-import LogTab from "../components/tabs/tab_log.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
 import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";

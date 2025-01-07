@@ -506,7 +506,6 @@ export default class OpSearch extends Events
                 if (hidden)oldState = "OLD";
                 if (opDocHidden)oldState = "OLD";
                 if (defaultOps.isDeprecatedOp(opName)) oldState = "DEPREC";
-                if (defaultOps.isAdminOp(opName)) oldState = "ADMIN";
 
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);

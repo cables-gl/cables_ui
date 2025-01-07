@@ -379,7 +379,7 @@ export default class PatchSaveServer extends Events
             const op = ops[i];
             if (!op || !op.uiAttribs) continue;
 
-            if (defaultOps.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
+            if (op.isSubPatchOp() && op.uiAttribs.blueprintSubpatch)
             {
                 blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 

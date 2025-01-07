@@ -238,7 +238,7 @@
             {{/if}}
 
             {{#if frontendOptions.showLocalAssetDirOpen}}
-            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" onclick="CABLES.CMD.STANDALONE.openAssetDir({'url': '{{downloadUrl}}'})">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" onclick="CABLES.CMD.ELECTRON.openFileManager('{{downloadUrl}}')">
                 <span class="icon icon-1x icon-folder"></span>
             </a>
             {{/if}}
