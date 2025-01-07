@@ -29,7 +29,7 @@ export function getHandleBarHtml(name, obj)
     obj.cablesDocsUrl = obj.cablesUrl;
     if (CABLES.platform.getCablesDocsUrl)obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
-    const html = template(obj);
+    const html = template(obj, { "allowProtoMethodsByDefault": true, "allowedProtoProperties": true });
 
     if (perf)perf.finish();
 

@@ -71,7 +71,7 @@ export default class FileManager
 
     setFilePort(portEle, op, previewEle)
     {
-        console.log("file port op", op);
+        console.log("file port op", portEle, op);
 
         if (!portEle)
         {
