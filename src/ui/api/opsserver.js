@@ -1214,16 +1214,19 @@ export default class ServerOps
         });
     }
 
+    // rename dialog for non-api platforms like electron
     renameDialog(oldName)
     {
         if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
 
         if (gui.showGuestWarning()) return;
 
+        console.log("renamedialog");
+
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultOps.getNamespace(oldName);
+        let suggestedNamespace = namespace.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Rename operator",
@@ -1332,7 +1335,7 @@ export default class ServerOps
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
-        if (namespace.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
+        if (namespace.isTeamOp(oldName)) suggestedNamespace = namespace.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Clone operator",

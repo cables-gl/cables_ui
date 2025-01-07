@@ -193,11 +193,11 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
-    getNamespaceDocs(namespace)
+    getNamespaceDocs(ns)
     {
-        let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
-        docs = docs.concat(this._extensions.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
-        docs = docs.concat(this._teamnamespaces.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
+        let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); });
+        docs = docs.concat(this._extensions.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); }));
+        docs = docs.concat(this._teamnamespaces.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); }));
         return docs;
     }
 

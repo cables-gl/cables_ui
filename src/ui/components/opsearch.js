@@ -443,7 +443,7 @@ export default class OpSearch extends Events
     }
 
 
-    _getOpsNamesFromCode(opNames, ns, val, parentname)
+    _getOpsNamesFromCode(opnames, ns, val, parentname)
     {
         if (Object.prototype.toString.call(val) === "[object Object]")
         {
@@ -452,12 +452,12 @@ export default class OpSearch extends Events
                 if (val.hasOwnProperty(propertyName))
                 {
                     const opName = ns + "." + parentname + propertyName;
-                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opNames.push(opName);
-                    opNames = this._getOpsNamesFromCode(opNames, ns, val[propertyName], parentname + propertyName + ".");
+                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opnames.push(opName);
+                    opnames = this._getOpsNamesFromCode(opnames, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
         }
-        return opNames;
+        return opnames;
     }
 
     _createListItemsByNames(_opNames, listItems = [])

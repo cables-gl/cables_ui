@@ -1,6 +1,4 @@
-import defaultOps from "../../defaultops.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
-import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 

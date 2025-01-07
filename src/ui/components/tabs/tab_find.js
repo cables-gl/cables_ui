@@ -1,5 +1,4 @@
 import { ele } from "cables-shared-client";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
@@ -150,7 +149,6 @@ export default class FindTab
             this.search(str);
             this.setSearchInputValue(str);
         }
-        console.log("construct");
         this.focus();
     }
 

@@ -1,7 +1,5 @@
 import { Logger } from "cables-shared-client";
-import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";

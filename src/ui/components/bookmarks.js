@@ -1,10 +1,7 @@
-import defaultOps from "../defaultops.js";
 import { notify } from "../elements/notification.js";
-import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import uiprofiler from "./uiprofiler.js";
 
 
 /**

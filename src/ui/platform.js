@@ -538,11 +538,11 @@ export default class Platform extends Events
         const PATCHOPS_ID_REPLACEMENTS = {
             "-": "___"
         };
-        let namespace = gui.project().shortId;
+        let ns = gui.project().shortId;
         Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>
         {
-            if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
+            if (ns) ns = ns.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
         });
-        return defaultOps.prefixes.patchOp + namespace + ".";
+        return defaultOps.prefixes.patchOp + ns + ".";
     }
 }

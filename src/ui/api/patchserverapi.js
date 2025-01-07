@@ -1,6 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
-import defaultOps from "../defaultops.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
 

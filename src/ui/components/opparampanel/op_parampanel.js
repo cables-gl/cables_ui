@@ -4,7 +4,6 @@ import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
-import defaultOps from "../../defaultops.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
 
@@ -411,7 +410,7 @@ class OpParampanel extends Events
                     })
                     .catch((err) =>
                     {
-                        console.warn("copy to clipboard failed", err);
+                        this._log.warn("copy to clipboard failed", err);
                     });
 
                 e.preventDefault();
