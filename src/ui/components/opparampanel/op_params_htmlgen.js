@@ -8,8 +8,8 @@ class PortHtmlGenerator
     {
         this._panelId = panelId;
         this._templateHead = Handlebars.compile(document.getElementById("params_op_head").innerHTML);
-        this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
-        this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
+        // this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
+        // this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
         this._templatePortInput = Handlebars.compile(document.getElementById("params_port_input").innerHTML);
         this._templatePortOutput = Handlebars.compile(document.getElementById("params_port_output").innerHTML);
         this._templatePortsHead = Handlebars.compile(document.getElementById("params_ports_head").innerHTML);
