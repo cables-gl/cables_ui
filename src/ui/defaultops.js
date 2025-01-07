@@ -37,8 +37,6 @@ const defaultOpNames =
     "VarGetTrigger": "Ops.Trigger.TriggerReceive",
     "defaultFont": "Ops.Html.FontFile_v2",
 
-
-
     "incrementor": "Ops.Math.Incrementor",
 
     "performance": "Ops.Gl.Performance",
@@ -414,100 +412,7 @@ const defaultOps = {
         if (type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return defaultOpNames.rerouteArray;
         if (type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return defaultOpNames.rerouteObject;
         if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
-    },
-    "getNamespaceClassName": (opName) =>
-    {
-        const opNameParts = opName.split(".");
-        return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
-    },
-
-    "getNamespace": (opname) =>
-    {
-        if (!opname) return "";
-        const parts = opname.split(".");
-        parts.length -= 1;
-        return parts.join(".") + ".";
-    },
-
-    "isDevOp": (opname) =>
-    {
-        return opname && opname.includes(".Dev.");
-    },
-
-    "isUserOp": (opname) =>
-    {
-        return opname && opname.startsWith("Ops.User.");
-    },
-
-    "isCurrentUserOp": (opname) =>
-    {
-        return defaultOps.isUserOpOfUser(opname, gui.user.usernameLowercase);
-    },
-
-    "isUserOpOfUser": (opname, userNameLowercase) =>
-    {
-        return opname && opname.startsWith(defaultOps.prefixes.userOp + userNameLowercase);
-    },
-
-    "isDeprecatedOp": (opname) =>
-    {
-        return opname && opname.includes(".Deprecated.");
-    },
-
-    "isExtensionOp": (opname) =>
-    {
-        return opname && opname.startsWith(defaultOps.prefixes.extensionOp);
-    },
-
-    "isCoreOp": (opname) =>
-    {
-        return !defaultOps.isNonCoreOp(opname);
-    },
-
-    "isNonCoreOp": (opname) =>
-    {
-        return defaultOps.isUserOp(opname) || defaultOps.isExtensionOp(opname) || defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname);
-    },
-
-    "isPrivateOp": (opname) =>
-    {
-        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname);
-    },
-
-    "isPatchOp": (opname) =>
-    {
-        return opname && opname.indexOf(defaultOps.prefixes.patchOp) === 0;
-    },
-
-    "isExtension": (opname) =>
-    {
-        if (!opname) return false;
-        if (!opname.startsWith(defaultOps.prefixes.extensionOp)) return false;
-        if (!opname.endsWith(".")) opname += ".";
-        const parts = opname.split(".");
-        return parts.length < 5;
-    },
-
-    "isCollection": (opname) =>
-    {
-        return opname && (defaultOps.isExtension(opname) || defaultOps.isTeamNamespace(opname));
-    },
-
-    "isTeamOp": (opname) =>
-    {
-        return opname && opname.startsWith(defaultOps.prefixes.teamOp);
-    },
-
-    "isTeamNamespace": (opname) =>
-    {
-        if (!opname) return false;
-        if (!opname.startsWith(defaultOps.prefixes.teamOp)) return false;
-        if (!opname.endsWith(".")) opname += ".";
-        const parts = opname.split(".");
-        return parts.length < 5;
     }
-
-
 };
 
 

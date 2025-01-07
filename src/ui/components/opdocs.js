@@ -5,6 +5,7 @@ import gluiconfig from "../glpatch/gluiconfig.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
 import uiprofiler from "./uiprofiler.js";
+import namespace from "../namespaceutils.js";
 
 /**
  * op documentation loading
@@ -156,7 +157,7 @@ export default class OpDocs
                     }
                 }
             }
-            if (defaultOps.isCollection(opDoc.name))
+            if (namespace.isCollection(opDoc.name))
             {
                 if (!summaryParsed)
                 {
@@ -287,11 +288,11 @@ export default class OpDocs
         let opDoc = this.getOpDocByName(opName);
 
         let template = "op-doc-template";
-        if (defaultOps.isExtension(opName)) template = "op-doc-collection-template-extension";
-        if (defaultOps.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
+        if (namespace.isExtension(opName)) template = "op-doc-collection-template-extension";
+        if (namespace.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
         if (!opDoc)
         {
-            if (defaultOps.isCollection(opName))
+            if (namespace.isCollection(opName))
             {
                 opDoc = {
                     "name": "",
@@ -304,7 +305,7 @@ export default class OpDocs
                 opDoc = {
                     "name": opName,
                     "summary": "No Op Documentation found",
-                    "userOp": defaultOps.isUserOp(opName)
+                    "userOp": namespace.isUserOp(opName)
                 };
             }
         }

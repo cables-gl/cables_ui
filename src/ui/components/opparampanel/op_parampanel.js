@@ -6,6 +6,7 @@ import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import defaultOps from "../../defaultops.js";
 import { notify } from "../../elements/notification.js";
+import namespace from "../../namespaceutils.js";
 
 /**
  * op parameter panel
@@ -277,10 +278,10 @@ class OpParampanel extends Events
                     {
                         const subOuterName = subouterOp.objName;
 
-                        if (!defaultOps.isPatchOp(subOuterName) &&
+                        if (!namespace.isPatchOp(subOuterName) &&
                         this._portsIn[i].get() &&
-                            defaultOps.isCoreOp(subOuterName) &&
-                            defaultOps.isExtensionOp(subOuterName) &&
+                            namespace.isCoreOp(subOuterName) &&
+                            namespace.isExtensionOp(subOuterName) &&
                             String(this._portsIn[i].get()).startsWith("/assets/") &&
                             !this._portsIn[i].isLinked())
                             this._portsIn[i].op.setUiError("nonpatchopassets", "This Operator uses assets from a patch, this file will probably not be found when exporting the patch or using in standalone etc.!", 1);
@@ -575,11 +576,8 @@ class OpParampanel extends Events
     {
         if (this._currentOp) this._currentOp.setTitle(t);
 
-        // if (defaultops.isSubPatchOpName(this._currentOp.objName))
         if (this._currentOp && this._currentOp.storage && this._currentOp.storage.subPatchVer)
-        {
             this._currentOp.patch.emitEvent("subpatchesChanged");
-        }
     }
 
     isCurrentOp(op)

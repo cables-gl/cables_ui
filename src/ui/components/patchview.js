@@ -14,6 +14,7 @@ import SuggestPortDialog from "./suggestionportdialog.js";
 import Snap from "../glpatch/snap.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import uiconfig from "../uiconfig.js";
+import namespace from "../namespaceutils.js";
 
 /**
  * manage patch view and helper functions
@@ -663,7 +664,7 @@ export default class PatchView extends Events
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
 
-            if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(this._p.ops[i].objName))
+            if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
                 perf.finish();
@@ -3104,7 +3105,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultOps.isPatchOp(op.objName);
+            return namespace.isPatchOp(op.objName);
         });
     }
 
@@ -3114,7 +3115,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultOps.isUserOp(op.objName);
+            return namespace.isUserOp(op.objName);
         });
     }
 

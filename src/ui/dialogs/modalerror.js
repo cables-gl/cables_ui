@@ -1,6 +1,7 @@
 import { ele, Logger } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
+import namespace from "../namespaceutils.js";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -110,7 +111,7 @@ export default class ModalError
         if (this.opName)
         {
             // do not track errors in patchops/userops/teamops
-            if (defaultOps.isPrivateOp(this.opName)) doTrack = false;
+            if (namespace.isPrivateOp(this.opName)) doTrack = false;
             if (window.gui)
             {
                 const ops = gui.corePatch().getOpsByObjName(this.opName);
@@ -230,8 +231,8 @@ export default class ModalError
         let isPrivateOp = false;
         if (this.opName)
         {
-            isPrivateOp = defaultOps.isPrivateOp(this.opName);
-            if (window.gui && (gui.user.isStaff || defaultOps.isCurrentUserOp(this.opName)))
+            isPrivateOp = namespace.isPrivateOp(this.opName);
+            if (window.gui && (gui.user.isStaff || namespace.isCurrentUserOp(this.opName)))
             {
                 str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
             }

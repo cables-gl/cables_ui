@@ -4,6 +4,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
+import namespace from "../../namespaceutils.js";
 
 
 /**
@@ -41,7 +42,7 @@ export default class FindTab
             if (!op) continue;
             if (op.uiAttribs.error)
             {
-                if (defaultOps.isDeprecatedOp(op.objName)) op.isDeprecated = true;
+                if (namespace.isDeprecatedOp(op.objName)) op.isDeprecated = true;
             }
             if (op.uiAttribs.warning) warnOps.push(op);
             if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
@@ -311,7 +312,7 @@ export default class FindTab
                     {
                         if (results[i].op)
                         {
-                            if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
+                            if (namespace.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
                             else results[i].error = "example patch: Newer version of op available!";
                         }
                     }
@@ -356,10 +357,10 @@ export default class FindTab
                 {
                     const op = ops[i];
                     if (
-                        defaultOps.isPatchOp(op.objName) ||
-                        defaultOps.isUserOp(op.objName) ||
-                        defaultOps.isTeamOp(op.objName) ||
-                        defaultOps.isExtensionOp(op.objName)
+                        namespace.isPatchOp(op.objName) ||
+                        namespace.isUserOp(op.objName) ||
+                        namespace.isTeamOp(op.objName) ||
+                        namespace.isExtensionOp(op.objName)
                     )
                     {
                         results.push({ op });
@@ -797,7 +798,7 @@ FindTab.searchOutDated = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(ops[i].objName))
+        if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
     }
     return results;
@@ -810,7 +811,7 @@ FindTab.searchSelected = (ops, results) =>
         if (ops[i].uiAttribs.selected)
             results.push({ "op": ops[i], "score": 1 });
         // const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        // if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(ops[i].objName))
+        // if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(ops[i].objName))
     }
     return results;
 };
@@ -820,7 +821,7 @@ FindTab.searchUserOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultOps.isUserOp(op.objName))
+        if (namespace.isUserOp(op.objName))
             results.push({ "op": op, "score": 1, "where": op.objName });
     }
     return results;
@@ -831,7 +832,7 @@ FindTab.searchPatchOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultOps.isPatchOp(op.objName))
+        if (namespace.isPatchOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
@@ -842,7 +843,7 @@ FindTab.searchTeamOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultOps.isTeamOp(op.objName))
+        if (namespace.isTeamOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
@@ -853,7 +854,7 @@ FindTab.searchExtensionOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultOps.isExtensionOp(op.objName))
+        if (namespace.isExtensionOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;

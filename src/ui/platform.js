@@ -5,6 +5,7 @@ import text from "./text.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
+import namespace from "./namespaceutils.js";
 
 /**
  * super class for platform implementations
@@ -76,7 +77,7 @@ export default class Platform extends Events
 
     warnOpEdit(opName)
     {
-        return (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opName) && !CABLES.platform.isStandalone());
+        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isStandalone());
     }
 
     isStandalone()
