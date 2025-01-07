@@ -17,8 +17,6 @@ const defaultOpNames =
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
     "defaultOpJson": "Ops.Json.HttpRequest_v3",
     "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
-    "defaultOpFallback": null,
-
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
     "VarTriggerNumber": "Ops.Vars.VarTriggerNumber",
     "VarGetNumber": "Ops.Vars.VarGetNumber_v2",

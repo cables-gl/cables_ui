@@ -71,6 +71,8 @@ export default class FileManager
 
     setFilePort(portEle, op, previewEle)
     {
+        console.log("file port op", op);
+
         if (!portEle)
         {
             this._filePortElePreview = null;
@@ -88,6 +90,7 @@ export default class FileManager
             this._filePortElePreview = previewEle;
             this._filePortEle = portEle;
             this._filePortOp = op;
+
             gui.fileManager.setFilter("");
         }
         this.updateHeader();
@@ -647,7 +650,7 @@ export default class FileManager
                 }.bind(this)
             );
 
-            if (this._filePortEle && this._filePortOp)
+            if (this._filePortEle)
             {
                 gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
                 this._filePortEle.value = detailItems[0].p;
