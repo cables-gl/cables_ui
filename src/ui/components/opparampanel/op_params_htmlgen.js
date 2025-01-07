@@ -122,7 +122,7 @@ class PortHtmlGenerator
                 "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 
-            html += this._templatePortGeneral(tmplData);
+            // html += this._templatePortGeneral(tmplData);
             html += this._templatePortInput(tmplData);
             html += this._templatePortGeneralEnd(tmplData);
         }
