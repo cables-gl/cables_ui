@@ -5,6 +5,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
+import opNames from "../opnameutils.js";
 
 /**
  * manage files/assets of the patch
@@ -440,7 +441,7 @@ export default class FileManager
                 },
                 function (err, r)
                 {
-                    if (r.fileDb) r.ops = defaultOps.getOpsForFilename(r.fileDb.fileName);
+                    if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
                         if (detailItem.isReference) delete r.converters;

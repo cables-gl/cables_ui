@@ -15,6 +15,7 @@ import Snap from "../glpatch/snap.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * manage patch view and helper functions
@@ -412,7 +413,7 @@ export default class PatchView extends Events
     {
         if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
-        const ops = defaultOps.getOpsForFilename(filename);
+        const ops = opNames.getOpsForFilename(filename);
 
         if (ops.length == 0)
         {

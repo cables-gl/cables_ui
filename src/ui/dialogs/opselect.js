@@ -6,6 +6,7 @@ import text from "../text.js";
 import Gui from "../gui.js";
 import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
+import opNames from "../opnameutils.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -175,8 +176,8 @@ export default class OpSelect
 
         const perf = gui.uiProfiler.start("opselect.suggestioninfo");
 
-        let ops = defaultOps.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
-        let vizops = defaultOps.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let ops = opNames.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let vizops = opNames.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
         if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {

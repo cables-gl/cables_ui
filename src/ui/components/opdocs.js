@@ -6,6 +6,7 @@ import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
 import uiprofiler from "./uiprofiler.js";
 import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * op documentation loading
@@ -212,7 +213,7 @@ export default class OpDocs
     {
         let html = "";
 
-        const className = defaultOps.getPortTypeClassHtml(type);
+        const className = opNames.getPortTypeClassHtml(type);
         html += "<li>";
         html += "<span class=\"" + className + "\">" + portname + "</span>";
 
