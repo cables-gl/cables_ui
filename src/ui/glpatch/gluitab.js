@@ -1,4 +1,5 @@
 import Tab from "../elements/tabpanel/tab.js";
+import GlUiCanvas from "./gluicanvas.js";
 
 export default function GlGuiTab(tabs)
 {
@@ -6,7 +7,7 @@ export default function GlGuiTab(tabs)
     tabs.addTab(this._tab, true);
     gui.maintabPanel.show();
     this._tab.contentEle.innerHTML = "";
-    const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, this._tab.contentEle);
+    const a = new GlUiCanvas(CABLES.patch, this._tab.contentEle);
     a.parentResized();
 
     this._tab.on("resize", () =>

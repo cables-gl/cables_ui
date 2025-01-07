@@ -2,8 +2,6 @@ import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
-import userSettings from "../usersettings.js";
-
 
 export default class LoggingTab extends Events
 {

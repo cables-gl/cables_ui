@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import text from "../../text.js";
+import { hideToolTip } from "../../elements/tooltips.js";
 
 let pointerLockFirstTime = true;
 
@@ -294,12 +295,12 @@ function valueChanger(eleId, focus, portName, opid)
                     eleInput.value = mathParsed;
 
                     p.set(mathParsed);
-                    CABLES.UI.hideToolTip();
+                    hideToolTip();
                 }
             }
         }
 
-        CABLES.UI.hideToolTip();
+        hideToolTip();
         eleInput.removeEventListener("focusout", blur);
         eleNumInputDisplay.innerHTML = eleInput.value;
         setTextEdit(false);

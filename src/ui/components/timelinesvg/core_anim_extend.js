@@ -1,3 +1,4 @@
+import uiconfig from "../../uiconfig.js";
 
 export default function extendCoreAnim()
 {
@@ -123,7 +124,7 @@ export default function extendCoreAnim()
         this.bezX = this.x + this.bezTime * CABLES.ANIM.TIMESCALE;
         this.bezY = this.y + this.bezValue * CABLES.ANIM.VALUESCALE;
 
-        const discattr = { "fill": CABLES.UI.uiConfig.colorKey, "stroke": "none" };
+        const discattr = { "fill": uiconfig.colorKey, "stroke": "none" };
 
         if (this.circle)
         {

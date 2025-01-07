@@ -1,5 +1,4 @@
 import { Events } from "cables-shared-client";
-import userSettings from "../../components/usersettings.js";
 
 /**
  * the maintabpanel on the left side of the patchfield, can be minimized
@@ -47,7 +46,7 @@ export default class MainTabPanel extends Events
 
     init()
     {
-        const showMainTabs = userSettings.get("maintabsVisible");
+        const showMainTabs = CABLES.UI.userSettings.get("maintabsVisible");
         if (showMainTabs) this.show();
         else this.hide(true);
     }
@@ -67,7 +66,7 @@ export default class MainTabPanel extends Events
 
         if (!userInteraction)
         {
-            if (!userSettings.get("maintabsVisible"))
+            if (!CABLES.UI.userSettings.get("maintabsVisible"))
             {
                 return;
             }
@@ -78,7 +77,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (CABLES.UI.loaded && userInteraction) userSettings.set("maintabsVisible", true);
+        if (CABLES.UI.loaded && userInteraction) CABLES.UI.userSettings.set("maintabsVisible", true);
 
         gui.setLayout();
 
@@ -92,7 +91,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
 
-        if (!donotsave && CABLES.UI.loaded) userSettings.set("maintabsVisible", false);
+        if (!donotsave && CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible", false);
     }
 
     toggle(userInteraction)

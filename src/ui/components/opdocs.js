@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
+import uiprofiler from "./uiprofiler.js";
 
 /**
  * op documentation loading
@@ -64,7 +65,8 @@ export default class OpDocs
     {
         if (!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
 
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] portdocs inner");
+        const perf = gui.uiProfiler.start("[opdocs] portdocs inner");
+
         for (let i = 0; i < opDoc.docs.ports.length; i++)
         {
             if (opDoc.docs.ports[i].name === port.name)
@@ -321,7 +323,7 @@ export default class OpDocs
 
     showPortDoc(opname, portname)
     {
-        const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
+        const perf = gui.uiProfiler.start("opdocs.portdoc");
 
         for (let i = 0; i < this._opDocs.length; i++)
         {
@@ -363,7 +365,7 @@ export default class OpDocs
 
     addOpDocs(opDocs = [])
     {
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] addOpDocs");
+        const perf = gui.uiProfiler.start("[opdocs] addOpDocs");
         const newOpDocs = [];
 
         opDocs.forEach((doc) =>
@@ -409,15 +411,13 @@ export default class OpDocs
 
     checkDefaultOpsOutdated()
     {
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
+        const perf = gui.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
         for (const i in defaultOps.defaultOpNames)
         {
             const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
 
             if (!doc)
-            {
-                console.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated ?");
-            }
+                this._log.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated ?");
         }
 
         perf.finish();

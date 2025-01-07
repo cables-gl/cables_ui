@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { notify } from "../../elements/notification.js";
 
 export default class TabPortObjectInspect extends Events
 {
@@ -140,7 +141,7 @@ export default class TabPortObjectInspect extends Events
             .writeText(JSON.stringify(this.port.get()))
             .then(() =>
             {
-                CABLES.UI.notify("Copied value to clipboard");
+                notify("Copied value to clipboard");
             })
             .catch((err) =>
             {

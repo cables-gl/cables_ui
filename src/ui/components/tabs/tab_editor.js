@@ -1,9 +1,8 @@
 import { Events, Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
-import userSettings from "../usersettings.js";
 import ManageOp from "./tab_manage_op.js";
-import { notifyError } from "../../elements/notification.js";
+import { notify, notifyError } from "../../elements/notification.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
@@ -84,8 +83,8 @@ export default class EditorTab extends Events
             {
                 this._editor = editor;
 
-                editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
-                editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
+                editor.setFontSize(parseInt(CABLES.UI.userSettings.get("fontsize_ace")) || 12);
+                editor.getSession().setUseWrapMode(CABLES.UI.userSettings.get("wrapmode_ace") || false);
 
                 if (this._options.allowEdit)
                 {
@@ -287,7 +286,7 @@ export default class EditorTab extends Events
             if (txt.toLowerCase().indexOf("error") == 0) notifyError(txt);
             else
             {
-                CABLES.UI.notify(txt);
+                notify(txt);
                 gui.mainTabs.setChanged(this._tab.id, false);
             }
 

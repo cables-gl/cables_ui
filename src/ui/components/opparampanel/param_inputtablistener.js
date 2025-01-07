@@ -63,12 +63,12 @@ export default class ParamTabInputListener
                 CABLES.UI.valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
 
                 inputEle.focus();
-                new CABLES.UI.ParamTabInputListener(inputEle);
+                new ParamTabInputListener(inputEle);
             }
             else
             {
                 nextEle.focus();
-                new CABLES.UI.ParamTabInputListener(nextEle);
+                new ParamTabInputListener(nextEle);
             }
         }
         else

@@ -1,10 +1,10 @@
 import { Logger } from "cables-shared-client";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
-import userSettings from "../components/usersettings.js";
 import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
+import { hideToolTip } from "../elements/tooltips.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -24,7 +24,7 @@ export default class GlLink
         this._link = link;
         this._visible = visible;
         this._cable = null;
-        this._debugColor = true;// userSettings.get("devinfos");
+        this._debugColor = true;
 
         this._glPatch = glpatch;
         this._type = type;
@@ -136,7 +136,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (this._glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
+            if (this._glPatch.mouseState.buttonStateForLinkDrag && CABLES.UI.userSettings.get("patch_allowCableDrag"))
             {
                 this._glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;
@@ -198,7 +198,7 @@ export default class GlLink
 
         this._glPatch.linkStartedDragging = true;
 
-        CABLES.UI.hideToolTip();
+        hideToolTip();
         const
             opIn = gui.corePatch().getOpById(this._opIdInput),
             opOut = gui.corePatch().getOpById(this._opIdOutput);
@@ -677,7 +677,7 @@ export default class GlLink
 
     isAPortHovering()
     {
-        const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChangeisAPortHoveringd");
+        const perf = gui.uiProfiler.start("[gllink] cableHoverChangeisAPortHoveringd");
 
         if (this._glOpOut)
         {
@@ -706,7 +706,7 @@ export default class GlLink
 
     cableHoverChanged()
     {
-        const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChanged");
+        const perf = gui.uiProfiler.start("[gllink] cableHoverChanged");
 
         if (this._glOpOut && this._glOpOut.op)
         {

@@ -2,11 +2,11 @@ import { Events, Logger } from "cables-shared-client";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
-import userSettings from "../components/usersettings.js";
 import undo from "../utils/undo.js";
 import MouseState from "./mousestate.js";
 import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
+import defaultOps from "../defaultops.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -327,9 +327,9 @@ export default class GlOp extends Events
             return;
         }
 
-        const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
+        const perf = gui.uiProfiler.start("[glop] mouseDown");
 
-        if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
+        if (this._op.objName == defaultOps.defaultOpNames.uiArea)
         {
             if (this.opUiAttribs.translate)
                 this._glPatch._selectOpsInRect(
@@ -373,11 +373,11 @@ export default class GlOp extends Events
             if (e.buttons == MouseState.BUTTON_WHEEL)
             {
                 CABLES.mouseButtonWheelDown = true;
-                if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
+                if (CABLES.UI.userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
             }
             else
             {
-                if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
+                if (CABLES.UI.userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
             }
         }
 
@@ -401,7 +401,7 @@ export default class GlOp extends Events
 
     setUiAttribs(newAttribs, attr)
     {
-        const perf = CABLES.UI.uiProfiler.start("[glop] setuiattribs");
+        const perf = gui.uiProfiler.start("[glop] setuiattribs");
 
         if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
@@ -467,7 +467,7 @@ export default class GlOp extends Events
 
     setTitle(title, textWriter)
     {
-        const perf = CABLES.UI.uiProfiler.start("[glop] set title");
+        const perf = gui.uiProfiler.start("[glop] set title");
 
         if (!title) title = this._op.getTitle();
         if (textWriter) this._textWriter = textWriter;
@@ -579,7 +579,7 @@ export default class GlOp extends Events
 
         if (!this._glRectBg) return;
 
-        const perf = CABLES.UI.uiProfiler.start("[glop] updatesize");
+        const perf = gui.uiProfiler.start("[glop] updatesize");
 
 
         let oldGroup = "";

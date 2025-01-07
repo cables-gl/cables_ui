@@ -1,6 +1,7 @@
 import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
+import { notify } from "./elements/notification.js";
 
 /**
  * platform for standalone / electron version
@@ -121,7 +122,7 @@ export default class PlatformStandalone extends Platform
         {
             CABLESUILOADER.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
             {
-                if (result.success) CABLES.UI.notify("Backup created!");
+                if (result.success) notify("Backup created!");
             });
         };
 

@@ -1,5 +1,4 @@
 import { Events } from "cables-shared-client";
-import userSettings from "../../components/usersettings.js";
 
 export default class BottomTabPanel extends Events
 {
@@ -35,7 +34,7 @@ export default class BottomTabPanel extends Events
 
     init()
     {
-        const showtabs = userSettings.get("bottomTabsVisible");
+        const showtabs = CABLES.UI.userSettings.get("bottomTabsVisible");
         if (showtabs) this.show();
         else this.hide(true);
     }
@@ -47,7 +46,7 @@ export default class BottomTabPanel extends Events
 
     show(userInteraction)
     {
-        userSettings.set("bottomTabsOpened", true);
+        CABLES.UI.userSettings.set("bottomTabsOpened", true);
 
         if (this._tabs.getNumTabs() == 0)
         {
@@ -57,7 +56,7 @@ export default class BottomTabPanel extends Events
 
         if (!userInteraction)
         {
-            if (!userSettings.get("bottomTabsVisible"))
+            if (!CABLES.UI.userSettings.get("bottomTabsVisible"))
             {
                 return;
             }
@@ -68,7 +67,7 @@ export default class BottomTabPanel extends Events
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (CABLES.UI.loaded && userInteraction) userSettings.set("bottomTabsVisible", true);
+        if (CABLES.UI.loaded && userInteraction) CABLES.UI.userSettings.set("bottomTabsVisible", true);
 
         gui.setLayout();
 
@@ -77,14 +76,14 @@ export default class BottomTabPanel extends Events
 
     hide(donotsave)
     {
-        userSettings.set("bottomTabsOpened", false);
+        CABLES.UI.userSettings.set("bottomTabsOpened", false);
 
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
 
-        if (!donotsave && CABLES.UI.loaded) userSettings.set("bottomTabsVisible", false);
+        if (!donotsave && CABLES.UI.loaded) CABLES.UI.userSettings.set("bottomTabsVisible", false);
     }
 
     toggle(userInteraction)

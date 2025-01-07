@@ -1,4 +1,3 @@
-import userSettings from "../usersettings.js";
 
 import overlayShaderVert from "./overlaymeshes.vert";
 import overlayShaderFrag from "./overlaymeshes.frag";
@@ -528,17 +527,12 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
 helperMeshes.drawMarkerLayer = function (cgl, size)
 {
-    // CABLES.UI.renderHelper = userSettings.get("overlaysShow");
-
     if (!gui.shouldDrawOverlay) return;
 
     if (helperMeshes.count == 0) return;
     helperMeshes.count = 0;
 
-    if (!helperMeshes.FB || !helperMeshes.FB.fb)
-    {
-        return;
-    }
+    if (!helperMeshes.FB || !helperMeshes.FB.fb) return;
 
     const currentViewPort = cgl.getViewPort();
     const w = currentViewPort[2];

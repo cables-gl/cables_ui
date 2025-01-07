@@ -3,9 +3,9 @@ import PacoConnector from "./sc_paconnector.js";
 
 import ScState from "./sc_state.js";
 import ScUiMultiplayer from "./sc_ui_multiplayer.js";
-import { notify, notifyError } from "../elements/notification.js";
 import Gui from "../gui.js";
 import { PatchConnectionSender } from "./patchconnection.js";
+import Chat from "../components/tabs/tab_chat.js";
 
 export default class ScConnection extends Events
 {
@@ -52,7 +52,7 @@ export default class ScConnection extends Events
                 if (showMultiplayerUi)
                 {
                     this._multiplayerUi = new ScUiMultiplayer(this);
-                    this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
+                    this._chat = new Chat(gui.mainTabs, this);
                 }
             });
         }
@@ -642,7 +642,7 @@ export default class ScConnection extends Events
                 };
 
                 this.emitEvent("netActivityOut");
-                const perf = CABLES.UI.uiProfiler.start("[sc] send");
+                const perf = gui.uiProfiler.start("[sc] send");
                 const scTopic = channel + "/" + topic;
                 this._logVerbose("send:", scTopic, finalPayload);
                 this._socket.transmitPublish(scTopic, finalPayload);
@@ -699,7 +699,7 @@ export default class ScConnection extends Events
             }
             else
             {
-                const perf = CABLES.UI.uiProfiler.start("[sc] paco receive");
+                const perf = gui.uiProfiler.start("[sc] paco receive");
                 this._paco.receive(msg.data);
                 perf.finish();
                 this._pacoSynced = true;
@@ -732,7 +732,7 @@ export default class ScConnection extends Events
         if (!this._paco) return;
         this._pacoSynced = false;
         this.state.emitEvent("startPatchSync");
-        const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
+        const perf = gui.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>
         {
             this._log.verbose("patchloadend in paco");

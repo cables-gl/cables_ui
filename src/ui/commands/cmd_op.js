@@ -1,4 +1,5 @@
 import ManageOp from "../components/tabs/tab_manage_op.js";
+import { notify } from "../elements/notification.js";
 
 const CABLES_CMD_OP = {};
 const CMD_OP_COMMANDS = [];
@@ -125,7 +126,7 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) =>
             {
                 gui.patchView.replaceOp(op.id, newOpname);
 
-                CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+                notify("created op " + newOpname, null, { "force": true });
 
                 CABLES_CMD_OP.cloneSelectedOps(ops);
             });
@@ -173,7 +174,7 @@ CABLES_CMD_OP.createVersionSelectedOp = function ()
         {
             gui.patchView.replaceOp(ops[0].id, newOpname);
 
-            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+            notify("created op " + newOpname, null, { "force": true });
         });
     });
 };

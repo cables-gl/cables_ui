@@ -1,5 +1,4 @@
 import { Logger, Events } from "cables-shared-client";
-import userSettings from "../components/usersettings.js";
 import gluiconfig from "./gluiconfig.js";
 
 /**
@@ -22,14 +21,14 @@ export default class VizLayer extends Events
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
-        this.paused = userSettings.get("vizlayerpaused") || false;
+        this.paused = CABLES.UI.userSettings.get("vizlayerpaused") || false;
 
         gui.on("uiloaded", () =>
         {
             this._updateSize();
         });
 
-        userSettings.on("change", (key, value) =>
+        CABLES.UI.userSettings.on("change", (key, value) =>
         {
             if (key == "vizlayerpaused") this.paused = value;
         });
@@ -129,7 +128,7 @@ export default class VizLayer extends Events
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
         this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
 
-        const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderVizLayer");
+        const perf = gui.uiProfiler.start("glVizPreviewLayer.renderVizLayer");
         const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
 
         this._updateSize();

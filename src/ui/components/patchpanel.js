@@ -86,7 +86,7 @@ export default class PatchPanel extends Events
             html += gui.bookmarks.getHtml();
         }
 
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+        if (ele.byId(gui.getParamPanelEleId()))ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
         if (ele.byId("btn_patch_settings"))ele.asButton(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);
         if (ele.byId("btn_analyze_patch"))ele.asButton(ele.byId("btn_analyze_patch"), CABLES.CMD.PATCH.analyze);

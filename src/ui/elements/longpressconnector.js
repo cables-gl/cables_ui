@@ -1,7 +1,7 @@
 import { Events } from "cables-shared-client";
 import SuggestionDialog from "../components/suggestiondialog.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
-import userSettings from "../components/usersettings.js";
+import { notify } from "./notification.js";
 
 export default class LongPressConnector extends Events
 {
@@ -20,7 +20,7 @@ export default class LongPressConnector extends Events
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
-        this._enabled = userSettings.get("quickLinkLongPress") || userSettings.get("quickLinkMiddleMouse");
+        this._enabled = CABLES.UI.userSettings.get("quickLinkLongPress") || CABLES.UI.userSettings.get("quickLinkMiddleMouse");
     }
 
     getStartOp()
@@ -171,7 +171,7 @@ export default class LongPressConnector extends Events
 
         if (suggestions.length === 0)
         {
-            CABLES.UI.notify("can not link!");
+            notify("can not link!");
             return;
         }
 

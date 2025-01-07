@@ -3,11 +3,13 @@ import Gui from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notifyError } from "../elements/notification.js";
 import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
+import Profiler from "../components/tabs/tab_profiler.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
 import GlOpWatcher from "../components/tabs/tab_glop.js";
-import ManageOp from "../components/tabs/tab_manage_op.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
+import Exporter from "../dialogs/exporter.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -566,7 +568,7 @@ CABLES_CMD_PATCH.showBackups = () =>
 
 CABLES_CMD_PATCH.export = function (type)
 {
-    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion(), type);
+    const exporter = new Exporter(gui.project(), CABLES.platform.getPatchVersion(), type);
     exporter.show();
 };
 
@@ -614,7 +616,7 @@ CABLES_CMD_PATCH.reloadOp = function (x, y)
 
     gui.serverOps.execute(op.opId, () =>
     {
-        CABLES.UI.notify("reloaded op " + op.objName);
+        notify("reloaded op " + op.objName);
     });
 };
 
@@ -670,8 +672,8 @@ CABLES_CMD_PATCH.createVarNumber = function (next)
         "promptValue": "myNewVar",
         "promptOk": (str) =>
         {
-            const opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
-            const opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
+            const opSetter = gui.patchView.addOp(defaultOps.defaultOpNames.VarSetNumber);
+            const opGetter = gui.patchView.addOp(defaultOps.defaultOpNames.VarGetNumber);
 
             opSetter.varName.set(str);
             opGetter.varName.set(str);
@@ -685,7 +687,7 @@ CABLES_CMD_PATCH.analyze = function (force)
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
 
     let portName = getsetOp.portName;
     let portNameOut = getsetOp.portNameOut;
@@ -734,7 +736,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -760,7 +762,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
+    const getsetOp = defaultOps.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let getset = getsetOp.setter;
@@ -800,7 +802,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
     gui.opSelect().close();
     gui.closeModal();
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
+    const getsetOp = defaultOps.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -863,7 +865,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     gui.closeModal();
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
+    const getsetOp = defaultOps.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let opFunction = getsetOp.getter;
@@ -1213,7 +1215,7 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
                 (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
                 op.uiAttribs.translate.y == b.uiAttribs.translate.y)
             {
-                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
                 found = true;
             }
         }
@@ -1266,7 +1268,7 @@ CABLES_CMD_PATCH.deleteOp = (opName = null) =>
 
 CABLES_CMD_PATCH.patchProfiler = () =>
 {
-    new CABLES.UI.Profiler(gui.mainTabs);
+    new Profiler(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
 

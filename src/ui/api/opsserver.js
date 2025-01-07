@@ -3,12 +3,12 @@ import EditorTab from "../components/tabs/tab_editor.js";
 import CoreLibLoader from "./corelibloader.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
-import userSettings from "../components/usersettings.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
+import LibLoader from "./libloader.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -35,7 +35,7 @@ export default class ServerOps
             {
                 // gui.jobs().start("open op editor" + name);
                 CABLES.editorSession.startLoadingTab();
-                const lastTab = userSettings.get("editortab");
+                const lastTab = CABLES.UI.userSettings.get("editortab");
 
                 if (data && data.opId)
                 {
@@ -45,7 +45,7 @@ export default class ServerOps
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    userSettings.set("editortab", lastTab);
+                    CABLES.UI.userSettings.set("editortab", lastTab);
                     CABLES.editorSession.finishLoadingTab();
                 });
             }
@@ -59,11 +59,11 @@ export default class ServerOps
 
                 if (data && data.opname)
                 {
-                    const lastTab = userSettings.get("editortab");
+                    const lastTab = CABLES.UI.userSettings.get("editortab");
                     this.editAttachment(data.opname, data.name, false, () =>
                     {
                         gui.mainTabs.activateTabByName(lastTab);
-                        userSettings.set("editortab", lastTab);
+                        CABLES.UI.userSettings.set("editortab", lastTab);
                         CABLES.editorSession.finishLoadingTab();
                     }, true);
                 }
@@ -685,7 +685,7 @@ export default class ServerOps
 
         let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
         // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "title": "Create attachment",
             "text": html,
             "prompt": true,
@@ -829,7 +829,7 @@ export default class ServerOps
                     return;
                 }
 
-                new CABLES.UI.ModalDialog({
+                new ModalDialog({
                     "title": options.title,
                     "text": html
                 });
@@ -1283,7 +1283,7 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    new ModalDialog({ "title": "Failed to delete op", "text": e.message });
+                    new ModalDialog({ "title": "Failed to delete op", "text": err.message });
                 }
                 else
                 {
@@ -1435,7 +1435,7 @@ export default class ServerOps
         if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
-        const lastTab = userSettings.get("editortab");
+        const lastTab = CABLES.UI.userSettings.get("editortab");
         let inactive = false;
         if (fromListener)
             if (lastTab !== title)
@@ -1659,7 +1659,7 @@ export default class ServerOps
                                     {
                                         "opname": opid,
                                         "code": content,
-                                        "format": userSettings.get("formatcode") || false
+                                        "format": CABLES.UI.userSettings.get("formatcode") || false
                                     },
                                     (err, res) =>
                                     {
@@ -1732,7 +1732,7 @@ export default class ServerOps
 
     getOpLibs(opThing, checkLoaded)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] getOpLibs");
+        const perf = gui.uiProfiler.start("[opsserver] getOpLibs");
         let opDoc = null;
         if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
         else
@@ -1777,7 +1777,7 @@ export default class ServerOps
 
     getCoreLibs(opThing, checkLoaded)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] getCoreLibs");
+        const perf = gui.uiProfiler.start("[opsserver] getCoreLibs");
 
         let opDoc = null;
         if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
@@ -1840,7 +1840,7 @@ export default class ServerOps
 
         this.loadOps(missingOps, (newOps, newIds) =>
         {
-            const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
+            const perf2 = gui.uiProfiler.start("[opsserver] loadProjectDependencies");
 
             if (gui && gui.opSelect() && newOps.length > 0)
             {
@@ -1932,7 +1932,7 @@ export default class ServerOps
 
     _runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb)
     {
-        new CABLES.LibLoader(libsToLoad, () =>
+        new LibLoader(libsToLoad, () =>
         {
             this._loadedLibs = this._loadedLibs.concat(libsToLoad);
             new CoreLibLoader(coreLibsToLoad, () =>
@@ -1965,7 +1965,7 @@ export default class ServerOps
 
     getMissingOps(proj)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] gerMissingOps");
+        const perf = gui.uiProfiler.start("[opsserver] gerMissingOps");
 
         let missingOps = [];
         const missingOpsFound = [];

@@ -57,7 +57,7 @@ export default function extendCorePatch()
     {
         if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
         if (this.ops.length == 0) return [];
-        const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
+        const perf = gui.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
         this._subpatchOpCache = this._subpatchOpCache || {};
 
@@ -142,7 +142,7 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.buildSubPatchCache = () =>
     {
-        const perf = CABLES.UI.uiProfiler.start("[corePatch ext] buildSubPatchCache");
+        const perf = gui.uiProfiler.start("[corePatch ext] buildSubPatchCache");
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
@@ -212,7 +212,7 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getOpsInRect = function (xa, ya, xb, yb)
     {
-        const perf = CABLES.UI.uiProfiler.start("[extPatch] ops in rect");
+        const perf = gui.uiProfiler.start("[extPatch] ops in rect");
         const x = Math.min(xa, xb);
         const y = Math.min(ya, yb);
         const x2 = Math.max(xa, xb);

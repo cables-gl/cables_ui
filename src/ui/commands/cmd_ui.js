@@ -2,10 +2,11 @@ import GpuProfiler from "../components/tabs/tab_gpuprofiler.js";
 import Preferences from "../components/tabs/tab_preferences.js";
 import ChangelogToast from "../dialogs/changelog.js";
 import WatchVarTab from "../components/tabs/tab_watchvars.js";
-import userSettings from "../components/usersettings.js";
 import JobsTab from "../components/tabs/tab_jobs.js";
 import HtmlTab from "../components/tabs/tab_html.js";
 import WelcomeTab from "../components/tabs/tab_welcome.js";
+import CanvasLens from "../components/canvas/canvaslens.js";
+import Keypresenter from "../components/keypresenter.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -22,6 +23,12 @@ CABLES_CMD_UI.settings = function ()
 {
     if (gui.showGuestWarning()) return;
     gui.showSettings();
+};
+
+
+CABLES_CMD_UI.canvasLens = function ()
+{
+    new CanvasLens();
 };
 
 
@@ -90,26 +97,25 @@ CABLES_CMD_UI.showChat = function ()
 
 CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
-    userSettings.set("bgpreview", !userSettings.get("bgpreview"));
+    CABLES.UI.userSettings.set("bgpreview", !gui.userSettings.get("bgpreview"));
 };
 
 CABLES_CMD_UI.hideMinimap = function ()
 {
-    userSettings.set("showMinimap", false);
+    CABLES.UI.userSettings.set("showMinimap", false);
     gui.hideMiniMap();
 };
 
 
 CABLES_CMD_UI.toggleMinimap = function ()
 {
-    userSettings.set("showMinimap", !userSettings.get("showMinimap"));
-    if (userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
+    CABLES.UI.userSettings.set("showMinimap", !gui.userSettings.get("showMinimap"));
+    if (gui.userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
     else CABLES_CMD_UI.hideMinimap();
 };
 
 CABLES_CMD_UI.showSearch = function (str)
 {
-    // new CABLES.UI.FindTab(gui.mainTabs);
     gui.find(str || "");
 };
 
@@ -149,14 +155,14 @@ CABLES_CMD_UI.centerPatchOps = function ()
 
 CABLES_CMD_UI.flowVis = function ()
 {
-    userSettings.set("glflowmode", !userSettings.get("glflowmode"));
+    CABLES.UI.userSettings.set("glflowmode", !gui.userSettings.get("glflowmode"));
 };
 
 CABLES_CMD_UI.startPresentationMode = function ()
 {
     if (!CABLES.UI.keyPresenter)
     {
-        CABLES.UI.keyPresenter = new CABLES.UI.Keypresenter();
+        CABLES.UI.keyPresenter = new Keypresenter();
         CABLES.UI.keyPresenter.start();
     }
 };
@@ -234,8 +240,8 @@ CABLES_CMD_UI.welcomeTab = function (userInteraction)
 
 CABLES_CMD_UI.toggleOverlays = function ()
 {
-    const act = !userSettings.get("overlaysShow");
-    userSettings.set("overlaysShow", act);
+    const act = !gui.userSettings.get("overlaysShow");
+    CABLES.UI.userSettings.set("overlaysShow", act);
     gui.emitEvent("overlaysChanged", act);
     gui.transformOverlay.updateVisibility();
     gui.canvasManager.getCanvasUiBar().updateIconState();
@@ -243,14 +249,14 @@ CABLES_CMD_UI.toggleOverlays = function ()
 
 CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
-    userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
+    CABLES.UI.userSettings.set("snapToGrid", !gui.userSettings.get("snapToGrid2"));
 };
 
 CABLES_CMD_UI.toggleIntroCompleted = function ()
 {
-    userSettings.set("introCompleted", !userSettings.get("introCompleted"));
+    CABLES.UI.userSettings.set("introCompleted", !gui.userSettings.get("introCompleted"));
 
-    if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
+    if (!gui.userSettings.get("introCompleted")) gui.introduction.showIntroduction();
 };
 
 CABLES_CMD_UI.showAutomaton = function ()
@@ -274,7 +280,7 @@ CABLES_CMD_UI.profileGPU = function ()
 
 CABLES_CMD_UI.profileUI = function ()
 {
-    CABLES.UI.uiProfiler.show();
+    gui.uiProfiler.show();
 };
 
 CABLES_CMD_UI.zoomOut = function ()
@@ -300,7 +306,7 @@ CABLES_CMD_UI.jobs = function ()
 
 CABLES_CMD_UI.togglePauseVizLayer = function ()
 {
-    userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
+    CABLES.UI.userSettings.set("vizlayerpaused", !gui.userSettings.get("vizlayerpaused"));
 };
 
 
@@ -500,8 +506,13 @@ CMD_UI_COMMANDS.push(
         "cmd": "Close all tabs",
         "category": "ui",
         "func": CABLES_CMD_UI.closeAllTabs
-
+    },
+    {
+        "cmd": "Show Canvas Lens",
+        "category": "ui",
+        "func": CABLES_CMD_UI.canvasLens
     }
+
 
 
 );
