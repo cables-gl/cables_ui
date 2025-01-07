@@ -47,6 +47,8 @@ import LogTab from "./components/tabs/tab_log.js";
 import UiProfiler from "./components/uiprofiler.js";
 import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
+import undo from "./utils/undo.js";
+import paramsHelper from "./components/opparampanel/params_helper.js";
 
 /**
  * main singleton class for starting the editor
@@ -1579,7 +1581,7 @@ export default class Gui extends Events
             if (port)
             {
                 if (port.uiAttribs.display === "editor")
-                    CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
+                    paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
                 if (port.uiAttribs.display === "gradient")
                 {
                     const editor = new CABLES.GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") });
@@ -1646,8 +1648,8 @@ export default class Gui extends Events
             CABLES.CMD.UI.togglePatchBgPatchField();
         });
 
-        this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.UI.undo.undo(); });
-        this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { CABLES.UI.undo.redo(); });
+        this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { undo.undo(); });
+        this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { undo.redo(); });
         this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.CMD.UI.settings(); });
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>

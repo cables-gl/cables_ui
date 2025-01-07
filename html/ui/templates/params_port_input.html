@@ -22,10 +22,8 @@
     {{else}}
     {{#if port.links}}
 
-
         {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-
 
         {{#compare port.uiAttribs.display '==' 'button' }}
         <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
@@ -95,15 +93,6 @@
                 </td><td>
                     <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
                 {{/compare}}
-
-
-                <!-- {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
-                    </td><td>
-
-                    <a class="button-small" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-plus-circle"></span></a>
-                {{/compare}} -->
-
-
 
 
                 {{#compare port.uiAttribs.display '==' 'range' }}

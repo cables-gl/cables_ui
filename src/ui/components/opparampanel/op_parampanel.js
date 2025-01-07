@@ -173,10 +173,7 @@ class OpParampanel extends Events
         this._currentOp = op;
 
 
-        if (!op)
-        {
-            return;
-        }
+        if (!op) return;
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;

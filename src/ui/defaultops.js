@@ -407,6 +407,14 @@ const defaultOps = {
         else return "link_color_dynamic";
     },
 
+    "getRerouteOp": (type) =>
+    {
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return defaultOpNames.rerouteArray;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return defaultOpNames.rerouteObject;
+        if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
+    },
     "getNamespaceClassName": (opName) =>
     {
         const opNameParts = opName.split(".");
@@ -497,21 +505,9 @@ const defaultOps = {
         if (!opname.endsWith(".")) opname += ".";
         const parts = opname.split(".");
         return parts.length < 5;
-    },
-
-    "isInBlueprint": (op) =>
-    {
-        return op.storage && op.storage.hasOwnProperty("blueprint");
-    },
-
-    "getRerouteOp": (type) =>
-    {
-        if (type == CONSTANTS.OP.OP_PORT_TYPE_NUMBER) return defaultOpNames.rerouteNumber;
-        if (type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return defaultOpNames.rerouteString;
-        if (type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return defaultOpNames.rerouteArray;
-        if (type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return defaultOpNames.rerouteObject;
-        if (type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return defaultOpNames.rerouteTrigger;
     }
+
+
 };
 
 
