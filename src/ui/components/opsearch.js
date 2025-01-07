@@ -1,6 +1,5 @@
 import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
-import uiprofiler from "./uiprofiler.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -494,10 +493,7 @@ export default class OpSearch extends Events
             if (defaultOps.isCollection(opName))
             {
                 const inUse = listItems && listItems.some((op) => { return op.name.startsWith(opName); });
-                if (inUse)
-                {
-                    hidden = true;
-                }
+                if (inUse) hidden = true;
             }
 
             if (!hidden)
@@ -514,9 +510,7 @@ export default class OpSearch extends Events
                 if (defaultOps.isExtension(opName)) type = "extension";
                 if (defaultOps.isPatchOp(opName)) type = "patchop";
 
-
                 const isTeamOp = defaultOps.isTeamOp(opName);
-
                 const isCollection = defaultOps.isCollection(opName);
 
                 let collectionOpNames = null;
