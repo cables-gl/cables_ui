@@ -95,7 +95,7 @@ export default class PatchPanel extends Events
         if (ele.byId("btn_patch_opendir"))ele.asButton(ele.byId("btn_patch_opendir"), (e) =>
         {
             if (e.ctrlKey || e.metaKey) navigator.clipboard.writeText(CABLES.platform.config.currentPatchDir);
-            else CABLES.CMD.STANDALONE.openProjectDir();
+            else CABLES.CMD.ELECTRON.openProjectDir();
         });
 
 

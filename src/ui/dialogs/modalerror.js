@@ -99,7 +99,7 @@ export default class ModalError
         // if an acual op is given use the objName of that op
         // otherwise try to use the opname given in options, if set
         this.opName = "";
-        if (stack && stack.startsWith(defaultOps.getOpsPrefix()))
+        if (stack && stack.startsWith(defaultOps.prefixes.op))
         {
             this.opName = stack.split("/", 1)[0];
             this.opName = this.opName.substring(0, 128);

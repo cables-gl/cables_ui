@@ -492,11 +492,6 @@ export default class OpSearch extends Events
                 }
             }
 
-            if (hidden)
-            {
-                if (defaultOps.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
-            }
-
             if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
 
             parts.length -= 1;
@@ -517,7 +512,6 @@ export default class OpSearch extends Events
                 if (hidden)oldState = "OLD";
                 if (opDocHidden)oldState = "OLD";
                 if (defaultOps.isDeprecatedOp(opName)) oldState = "DEPREC";
-                if (defaultOps.isAdminOp(opName)) oldState = "ADMIN";
 
                 let popularity = -1;
                 let summary = gui.opDocs.getSummary(opName);

@@ -59,7 +59,6 @@ CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
 CABLES.UI.FindTab = FindTab; // move to command ?
 
-CABLES.UI.getOpsForFilename = defaultOps.getOpsForFilename; // can be removed when not used in standalone
 CABLES.UI.DEFAULTOPNAMES = defaultOps.defaultOpNames;
 
 CABLES.UI.DEFAULTOPS = defaultOps;

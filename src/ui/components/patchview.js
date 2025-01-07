@@ -1315,7 +1315,7 @@ export default class PatchView extends Events
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultOps.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
+            if (ops[i].isSubPatchOp() == 1 && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -1350,10 +1350,7 @@ export default class PatchView extends Events
                         o.type = "blueprintSub";
                     }
 
-                    // if (defaultOps.isBlueprintOp(ops[j]) == 2)
-                    // {
                     o.blueprintVer = ops[j].isSubPatchOp();
-                    // }
 
                     subPatches.push(o);
                     found = true;
@@ -2084,7 +2081,7 @@ export default class PatchView extends Events
         const numFitting = op2.countFittingPorts(p);
 
         const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
-        const isbpOp = defaultOps.isBlueprintOp(op2) || isInnerOp;
+        const isbpOp = op2.isSubPatchOp() || isInnerOp;
 
         if (isbpOp || numFitting > 1)
         {
@@ -3023,7 +3020,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         const relevantOps = ops.filter((op) =>
         {
-            if (!defaultOps.isBlueprintOp(op)) return false;
+            if (!op.isSubPatchOp()) return false;
             const port = op.getPortByName("externalPatchId");
             if (port)
             {
@@ -3073,7 +3070,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            if (!defaultOps.isBlueprintOp(op)) return false;
+            if (!op.isSubPatchOp()) return false;
             let isLocal = false;
             if (localOnly)
             {

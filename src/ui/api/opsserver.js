@@ -841,7 +841,7 @@ export default class ServerOps
                     {
                         addButton.addEventListener("click", () =>
                         {
-                            CABLES.CMD.STANDALONE.addProjectOpDir(null, (dirErr, dirRes) =>
+                            CABLES.CMD.ELECTRON.addProjectOpDir((dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {
@@ -2252,7 +2252,7 @@ export default class ServerOps
     getOpNameByIdentifier(opIdentifier)
     {
         if (!opIdentifier) return undefined;
-        if (opIdentifier.startsWith(defaultOps.getOpsPrefix())) return opIdentifier;
+        if (opIdentifier.startsWith(defaultOps.prefixes.op)) return opIdentifier;
         const opDoc = gui.opDocs.getOpDocById(opIdentifier);
         return opDoc ? opDoc.name : undefined;
     }

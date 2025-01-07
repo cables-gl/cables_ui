@@ -177,8 +177,8 @@ export default class EditorTab extends Events
                     this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"standalone_openfolder\" ></span>",
                         (e) =>
                         {
-                            if (e.ctrlKey || e.metaKey) CABLES.CMD.STANDALONE.copyOpDirToClipboard(opId);
-                            else CABLES.CMD.STANDALONE.openOpDir(opId, opname);
+                            if (e.ctrlKey || e.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
+                            else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
                         });
                 }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });

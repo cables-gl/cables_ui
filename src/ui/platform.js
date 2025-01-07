@@ -542,6 +542,6 @@ export default class Platform extends Events
         {
             if (namespace) namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
         });
-        return defaultOps.getPatchOpsPrefix() + namespace + ".";
+        return defaultOps.prefixes.patchOp + namespace + ".";
     }
 }
