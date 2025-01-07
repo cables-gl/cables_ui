@@ -137,7 +137,7 @@ export default class OpDocs
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
-            opDoc.category = defaultOps.getNamespaceClassName(opDoc.name);
+            opDoc.category = opNames.getNamespaceClassName(opDoc.name);
             let summaryParsed = false;
 
             if (opDoc.layout)

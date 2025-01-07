@@ -1,5 +1,7 @@
 import defaultOps from "../defaultops.js";
 import { notify } from "../elements/notification.js";
+import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import uiprofiler from "./uiprofiler.js";
@@ -90,7 +92,7 @@ export default class Bookmarks
                         "id": this._bookmarks[i],
                         "name": op.name,
                         "objName": op.objName,
-                        "class": defaultOps.getNamespaceClassName(op.objName),
+                        "class": opNames.getNamespaceClassName(op.objName),
                     });
             }
         }

@@ -1,4 +1,5 @@
 import namespace from "../../namespaceutils.js";
+import opNames from "../../opnameutils.js";
 import text from "../../text.js";
 
 class PortHtmlGenerator
@@ -52,7 +53,7 @@ class PortHtmlGenerator
             "panelid": this._panelId,
             "frontendOptions": CABLES.platform.frontendOptions,
             "isBookmarked": isBookmarked,
-            "colorClass": namespace.getNamespaceClassName(op.objName),
+            "colorClass": opNames.getNamespaceClassName(op.objName),
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),

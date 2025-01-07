@@ -5,6 +5,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
+import opNames from "../../opnameutils.js";
 
 
 /**
@@ -200,7 +201,7 @@ export default class FindTab
 
         if (op.op)op = op.op;
 
-        const colorClass = "" + defaultOps.getNamespaceClassName(op.objName);
+        const colorClass = opNames.getNamespaceClassName(op.objName);
 
         let hiddenClass = "";
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";

@@ -3,6 +3,12 @@ import defaultOps from "./defaultops.js";
 
 export default class opNames {}
 
+opNames.getNamespaceClassName = (opName) =>
+{
+    const opNameParts = opName.split(".");
+    return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
+};
+
 opNames.getVizOpsForPortLink = (p, l) =>
 {
     if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)

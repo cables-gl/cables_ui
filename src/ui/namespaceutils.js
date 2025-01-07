@@ -2,11 +2,7 @@ import defaultOps from "./defaultops.js";
 
 export default class namespace {}
 
-namespace.getNamespaceClassName = (opName) =>
-{
-    const opNameParts = opName.split(".");
-    return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
-};
+
 
 namespace.getNamespace = (opname) =>
 {

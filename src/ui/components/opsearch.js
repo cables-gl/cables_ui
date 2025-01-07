@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -459,13 +460,13 @@ export default class OpSearch extends Events
         return opNames;
     }
 
-    _createListItemsByNames(opNames, listItems = [])
+    _createListItemsByNames(_opNames, listItems = [])
     {
-        if (!opNames) return;
+        if (!_opNames) return;
         const items = [];
-        for (let i = 0; i < opNames.length; i++)
+        for (let i = 0; i < _opNames.length; i++)
         {
-            const opName = opNames[i];
+            const opName = _opNames[i];
             if (!opName) continue;
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
@@ -525,7 +526,7 @@ export default class OpSearch extends Events
                     "name": opName,
                     "summary": summary,
                     "collectionOpNames": collectionOpNames,
-                    "nscolor": namespace.getNamespaceClassName(opName),
+                    "nscolor": opNames.getNamespaceClassName(opName),
                     "isOp": !namespace.isCollection(opName),
                     "userOp": namespace.isUserOp(opName),
                     "devOp": namespace.isDevOp(opName),
