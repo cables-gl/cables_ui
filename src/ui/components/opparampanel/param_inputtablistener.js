@@ -1,15 +1,15 @@
-import { ele } from "cables-shared-client";
+import { ele, Logger } from "cables-shared-client";
 import paramsHelper from "./params_helper.js";
-
 
 let currentEle = null;
 let currentEleListener = null;
 
 export default class ParamTabInputListener
 {
-    constructor(ele)
+    constructor(el)
     {
-        this._ele = ele;
+        this._ele = el;
+        this._logger = new Logger("ParamTabInputListener");
 
         if (currentEle) currentEle.removeEventListener("keydown", currentEleListener);
 
@@ -74,7 +74,7 @@ export default class ParamTabInputListener
         }
         else
         {
-            console.log("element not found");
+            this._logger.warn("element not found");
             document.activeElement.blur(); // blur when tab in last element - to execute math evaluation
             return true;
         }

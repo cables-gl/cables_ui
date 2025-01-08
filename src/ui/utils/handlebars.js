@@ -1,7 +1,11 @@
+import { Logger } from "cables-shared-client";
+
 /**
  * Handlebars template helper functions
  */
 const handleBarsPrecompiled = {};
+
+const log = new Logger("handlebarsjs");
 
 export function handleBarPrecompiled(name)
 {
@@ -11,7 +15,7 @@ export function handleBarPrecompiled(name)
     const source = document.getElementById(name).innerHTML;
     if (!source)
     {
-        console.warn("template not found", "template " + name + " not found...");
+        log.warn("template not found", "template " + name + " not found...");
         return;
     }
     const p = handleBarsPrecompiled[name] = Handlebars.compile(source);
