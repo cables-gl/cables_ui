@@ -3,7 +3,7 @@
  *
  */
 
-import { CONSTANTS } from "../../../cables/src/core/constants.js";
+import { CONSTANTS } from "cables-shared-client";
 
 const defaultOpNames =
 {
