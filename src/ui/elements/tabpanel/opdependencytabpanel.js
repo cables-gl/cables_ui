@@ -27,11 +27,14 @@ export default class OpDependencyTabPanel extends TabPanel
 
     init()
     {
-        CABLES.platform.getSupportedOpDependencyTypes().forEach((depType) =>
+        let activeTab;
+        CABLES.platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
         {
             const title = this._titles[depType] || depType;
             const tabOptions = { "hideToolbar": true, "closable": false, "depType": depType, ...this._options };
-            new OpDependencyTab(this, title, tabOptions);
+            const depTab = new OpDependencyTab(this, title, tabOptions);
+            if (i === 0) activeTab = depTab;
         });
+        this.activateTab(activeTab.tabId);
     }
 }

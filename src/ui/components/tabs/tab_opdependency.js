@@ -10,12 +10,13 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
  */
 export default class OpDependencyTab extends Tab
 {
-    constructor(tabs, title, options)
+    constructor(tabs, title, options = {})
     {
         super(title, options);
         this._tabs = tabs || gui.mainTabs;
         this._tab = new Tab(title, this.options);
-        this._tabs.addTab(this._tab, true);
+        this.tabId = this._tab.id;
+        this._tabs.addTab(this._tab);
         gui.maintabPanel.show(true);
         this._tab.html(this.getHtml());
         this._initEventListeners();
