@@ -3,8 +3,6 @@
  *
  */
 
-import { CONSTANTS } from "../../../cables/src/core/constants.js";
-
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
@@ -135,74 +133,74 @@ const defaultOps = {
     "converterOps":
     [
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
+            "typeTo": CABLES.OP_PORT_TYPE_STRING,
             "op": defaultOpNames.NumberToString,
             "portIn": "Number",
             "portOut": "Result",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
+            "typeTo": CABLES.OP_PORT_TYPE_STRING,
             "op": defaultOpNames.BoolToString,
             "portIn": "Boolean",
             "portOut": "String",
         },
 
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
+            "typeTo": CABLES.OP_PORT_TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangeNumber,
             "portIn": "Value",
             "portOut": "Next",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
+            "typeTo": CABLES.OP_PORT_TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangedTrue,
             "portIn": "Value",
             "portOut": "Next",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeFrom": CABLES.OP_PORT_TYPE_STRING,
+            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
             "op": defaultOpNames.parseFloat,
             "portIn": "String",
             "portOut": "Number",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeFrom": CABLES.OP_PORT_TYPE_ARRAY,
+            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
             "op": defaultOpNames.arrayLength,
             "portIn": "array",
             "portOut": "length",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
+            "typeFrom": CABLES.OP_PORT_TYPE_STRING,
+            "typeTo": CABLES.OP_PORT_TYPE_ARRAY,
             "op": defaultOpNames.StringToArray,
 
             "portIn": "text",
             "portOut": "array",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeFrom": CABLES.OP_PORT_TYPE_ARRAY,
+            "typeTo": CABLES.OP_PORT_TYPE_STRING,
             "op": defaultOpNames.arrayToString,
             "portIn": "Array",
             "portOut": "Result",
         },
 
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeFrom": CABLES.OP_PORT_TYPE_TRIGGER,
+            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
             "op": defaultOpNames.triggerCounter,
             "portIn": "exe",
             "portOut": "timesTriggered",
         },
         {
-            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
-            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_NUMBER,
+            "typeFrom": CABLES.OP_PORT_TYPE_TRIGGER,
+            "typeTo": CABLES.OP_PORT_TYPE_NUMBER,
             "op": defaultOpNames.incrementor,
             "portIn": "Increment",
             "portOut": "Value",
