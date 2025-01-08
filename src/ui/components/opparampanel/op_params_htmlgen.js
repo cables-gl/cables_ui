@@ -63,8 +63,6 @@ class PortHtmlGenerator
             "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.platform.getCablesUrl(),
-
-
             "hasExample": hasExample,
         };
 
@@ -131,7 +129,6 @@ class PortHtmlGenerator
 
     getHtmlOutputPorts(ports)
     {
-        let foundPreview = false;
         let lastGroup = null;
         let html = "";
         for (const i in ports)
@@ -140,10 +137,7 @@ class PortHtmlGenerator
                 ports[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
                 ports[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
                 ports[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
-                ports[i].getType() == CABLES.OP_PORT_TYPE_OBJECT)
-            {
-                ports[i].watchId = "out_" + i;
-            }
+                ports[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) ports[i].watchId = "out_" + i;
 
             let startGroup = null;
             let groupSpacer = false;
@@ -157,8 +151,6 @@ class PortHtmlGenerator
                 lastGroup = opGroup;
                 startGroup = lastGroup;
             }
-
-
 
             const tmplData = {
                 "port": ports[i],
