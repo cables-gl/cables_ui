@@ -70,7 +70,7 @@ class PortHtmlGenerator
 
         o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
-        return this._templateHead(o);
+        return this._templateHead(o, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
     getHtmlHeaderPorts(dir, title)
@@ -79,7 +79,7 @@ class PortHtmlGenerator
             "dirStr": dir,
             "title": title,
             "texts": text,
-        });
+        }, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
     getHtmlInputPorts(ports)
@@ -122,9 +122,9 @@ class PortHtmlGenerator
                 "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 
-            html += this._templatePortGeneral(tmplData);
-            html += this._templatePortInput(tmplData);
-            html += this._templatePortGeneralEnd(tmplData);
+            html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortInput(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortGeneralEnd(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
         }
         return html;
     }
@@ -170,9 +170,9 @@ class PortHtmlGenerator
                 "isInput": false,
                 "op": ports[i].op
             };
-            html += this._templatePortGeneral(tmplData);
-            html += this._templatePortOutput(tmplData);
-            html += this._templatePortGeneralEnd(tmplData);
+            html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortOutput(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortGeneralEnd(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
         }
 
         return html;
