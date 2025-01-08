@@ -1,4 +1,4 @@
-import { CONSTANTS } from "../../../cables/src/core/constants.js";
+import { CONSTANTS } from "cables-shared-client";
 import defaultOps from "./defaultops.js";
 
 export default class opNames {}

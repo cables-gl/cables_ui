@@ -1,5 +1,5 @@
+import { CONSTANTS } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
-import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 
 

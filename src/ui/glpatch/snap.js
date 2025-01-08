@@ -1,5 +1,4 @@
-import { Events } from "cables-shared-client";
-import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import { Events, CONSTANTS } from "cables-shared-client";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
