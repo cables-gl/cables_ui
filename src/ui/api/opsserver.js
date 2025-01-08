@@ -1772,7 +1772,7 @@ export default class ServerOps
 
     getOpDeps(opThing)
     {
-        const perf = CABLES.UI.uiProfiler.start("[opsserver] getOpDeps");
+        const perf = gui.uiProfiler.start("[opsserver] getOpDeps");
 
         let opDoc = null;
         if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing); else
