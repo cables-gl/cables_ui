@@ -1,4 +1,4 @@
-import { ModalBackground, Logger, CONSTANTS } from "cables-shared-client";
+import { ModalBackground, Logger } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 /**
@@ -16,7 +16,7 @@ export default class GradientEditor
         this._portName = portname;
 
         this._keyWidth =
-        this._keyHeight = 7;
+            this._keyHeight = 7;
         this._keyStrokeWidth = 2;
         // this._keyStrokeWidth = 3;
         this._keyOpacity = 1;
@@ -41,7 +41,7 @@ export default class GradientEditor
 
         this._anim = new CABLES.Anim();
 
-        this._anim.defaultEasing = CONSTANTS.ANIM.EASING_SMOOTHSTEP;
+        this._anim.defaultEasing = CABLES.ANIM.EASING_SMOOTHSTEP;
 
         this._elContainer = null;
         this._bg = new ModalBackground();
@@ -88,11 +88,29 @@ export default class GradientEditor
         }
 
         let keys = [];
-        if (this._keys.length == 0) keys.push({ "posy": 0.5, "pos": 0, "r": 0, "g": 0, "b": 0 });
-        else keys = [{ "posy": this._keys[0].posy, "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
+        if (this._keys.length == 0) keys.push({
+            "posy": 0.5,
+            "pos": 0,
+            "r": 0,
+            "g": 0,
+            "b": 0
+        });
+        else keys = [{
+            "posy": this._keys[0].posy,
+            "pos": 0,
+            "r": this._keys[0].r,
+            "g": this._keys[0].g,
+            "b": this._keys[0].b
+        }].concat(this._keys);
 
         const last = keys[keys.length - 1];
-        keys.push({ "posy": last.posy, "pos": 1, "r": last.r, "g": last.g, "b": last.b });
+        keys.push({
+            "posy": last.posy,
+            "pos": 1,
+            "r": last.r,
+            "g": last.g,
+            "b": last.b
+        });
 
         if (this.type == "curve")
         {
@@ -151,8 +169,8 @@ export default class GradientEditor
                     x = Math.round(x);
                     let p = CABLES.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
 
-                    if (this._options.smoothStep)p = CABLES.smoothStep(p);
-                    if (this._options.step)p = Math.round(p);
+                    if (this._options.smoothStep) p = CABLES.smoothStep(p);
+                    if (this._options.step) p = Math.round(p);
 
                     if (this._options.oklab)
                     {
@@ -195,13 +213,13 @@ export default class GradientEditor
             for (let i = 0; i < keys.length; i++)
             {
                 keyData[i] =
-                {
-                    "pos": keys[i].pos,
-                    "posy": keys[i].posy,
-                    "r": keys[i].r,
-                    "g": keys[i].g,
-                    "b": keys[i].b
-                };
+                    {
+                        "pos": keys[i].pos,
+                        "posy": keys[i].posy,
+                        "r": keys[i].r,
+                        "g": keys[i].g,
+                        "b": keys[i].b
+                    };
             }
 
             this._port.set(JSON.stringify({ "keys": keyData }));
@@ -253,7 +271,7 @@ export default class GradientEditor
         this._timeout = setTimeout(
             () =>
             {
-                if (CABLES.GradientEditor.editor)CABLES.GradientEditor.editor.updateCanvas();
+                if (CABLES.GradientEditor.editor) CABLES.GradientEditor.editor.updateCanvas();
             }, 3);
 
 
@@ -282,7 +300,7 @@ export default class GradientEditor
         if (this.type == "curve") return "rgba(255,255,255,1)";
         let invCol = (r + g + b) / 3;
 
-        if (invCol < 0.5)invCol = 1.0;
+        if (invCol < 0.5) invCol = 1.0;
         else invCol = 0.0;
 
         const s = "rgba(" + invCol * 255 + "," + invCol * 255 + "," + invCol * 255 + ",1.0)";
@@ -309,7 +327,14 @@ export default class GradientEditor
                 "stroke-width": this._keyStrokeWidth
             });
 
-        const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
+        const key = {
+            "posy": posy,
+            "pos": pos,
+            "rect": rect,
+            "r": r,
+            "g": g,
+            "b": b
+        };
 
         this._setKeyStyle(key);
 
@@ -349,8 +374,10 @@ export default class GradientEditor
 
         const down = (x, y, e) =>
         {
-            try { e.target.setPointerCapture(e.pointerId); }
-            catch (_e) {}
+            try
+            { e.target.setPointerCapture(e.pointerId); }
+            catch (_e)
+            {}
 
             if (e.buttons == 2) shouldDelete = true;
 
@@ -361,8 +388,10 @@ export default class GradientEditor
 
         const up = (e) =>
         {
-            try { e.target.releasePointerCapture(e.pointerId); }
-            catch (_e) {}
+            try
+            { e.target.releasePointerCapture(e.pointerId); }
+            catch (_e)
+            {}
 
             setTimeout(() =>
             {
@@ -376,7 +405,7 @@ export default class GradientEditor
             }
         };
 
-        if (rect)rect.drag(move, down, up);
+        if (rect) rect.drag(move, down, up);
     }
 
     show(cb)
@@ -402,7 +431,7 @@ export default class GradientEditor
             const r = this._openerEle.getBoundingClientRect();
             const rge = this._elContainer.getBoundingClientRect();
             let ry = r.y;
-            if (window.innerHeight - ry < this._height * 1.5)ry -= this._height * 1.5;
+            if (window.innerHeight - ry < this._height * 1.5) ry -= this._height * 1.5;
             this._elContainer.style.left = r.x - rge.width - 20 + "px";
             this._elContainer.style.top = ry + "px";
         }
@@ -416,15 +445,19 @@ export default class GradientEditor
 
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
         {
-            try { e.target.setPointerCapture(e.pointerId); }
-            catch (_e) {}
+            try
+            { e.target.setPointerCapture(e.pointerId); }
+            catch (_e)
+            {}
         });
 
 
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerup", (e) =>
         {
-            try { e.target.releasePointerCapture(e.pointerId); }
-            catch (_e) {}
+            try
+            { e.target.releasePointerCapture(e.pointerId); }
+            catch (_e)
+            {}
         });
 
 
@@ -485,7 +518,7 @@ export default class GradientEditor
             }
         });
 
-        if (this.type == "curve")ele.byId("gradientColorInput").classList.add("hidden");
+        if (this.type == "curve") ele.byId("gradientColorInput").classList.add("hidden");
         else ele.byId("gradientColorInput").classList.remove("hidden");
 
         const colEle = ele.byId("gradientColorInput");
@@ -520,7 +553,9 @@ export default class GradientEditor
         let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
         let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
         let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
-        l = Math.cbrt(l); m = Math.cbrt(m); s = Math.cbrt(s);
+        l = Math.cbrt(l);
+        m = Math.cbrt(m);
+        s = Math.cbrt(s);
         return [
             l * +0.2104542553 + m * +0.7936177850 + s * -0.0040720468,
             l * +1.9779984951 + m * -2.4285922050 + s * +0.4505937099,
@@ -538,11 +573,15 @@ export default class GradientEditor
         let l = L + a * +0.3963377774 + b * +0.2158037573;
         let m = L + a * -0.1055613458 + b * -0.0638541728;
         let s = L + a * -0.0894841775 + b * -1.2914855480;
-        l **= 3; m **= 3; s **= 3;
+        l **= 3;
+        m **= 3;
+        s **= 3;
         let rgb_r = l * +4.0767416621 + m * -3.3077115913 + s * +0.2309699292;
         let rgb_g = l * -1.2684380046 + m * +2.6097574011 + s * -0.3413193965;
         let rgb_b = l * -0.0041960863 + m * -0.7034186147 + s * +1.7076147010;
-        rgb_r = CABLES.clamp(rgb_r, 0, 1); rgb_g = CABLES.clamp(rgb_g, 0, 1); rgb_b = CABLES.clamp(rgb_b, 0, 1);
+        rgb_r = CABLES.clamp(rgb_r, 0, 1);
+        rgb_g = CABLES.clamp(rgb_g, 0, 1);
+        rgb_b = CABLES.clamp(rgb_b, 0, 1);
         return [rgb_r, rgb_g, rgb_b];
     }
 }
