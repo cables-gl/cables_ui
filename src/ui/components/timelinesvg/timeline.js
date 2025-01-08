@@ -2,6 +2,8 @@ import { ele } from "cables-shared-client";
 import MouseState from "../../glpatch/mousestate.js";
 import text from "../../text.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
+import { hideInfo } from "../../elements/tooltips.js";
+import { notify } from "../../elements/notification.js";
 
 export default function TimeLineGui()
 {
@@ -1197,16 +1199,16 @@ export default function TimeLineGui()
     });
 
     ele.byId("overviewtimeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_overview); });
-    ele.byId("overviewtimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
+    ele.byId("overviewtimeline").addEventListener("pointerleave", hideInfo);
     ele.byId("timetimeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_frames); });
-    ele.byId("timetimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
+    ele.byId("timetimeline").addEventListener("pointerleave", hideInfo);
     ele.byId("timeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_keys); });
-    ele.byId("timeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
+    ele.byId("timeline").addEventListener("pointerleave", hideInfo);
 
     ele.byId("timelineprogress").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_progress); });
-    ele.byId("timelineprogress").addEventListener("pointerleave", CABLES.UI.hideInfo);
+    ele.byId("timelineprogress").addEventListener("pointerleave", hideInfo);
     ele.byId("timelinetime").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_time); });
-    ele.byId("timelinetime").addEventListener("pointerleave", CABLES.UI.hideInfo);
+    ele.byId("timelinetime").addEventListener("pointerleave", hideInfo);
 
 
     ele.byId("overviewtimeline").addEventListener("mousemove", function (e)
@@ -1606,7 +1608,7 @@ export default function TimeLineGui()
         const objStr = JSON.stringify(obj);
 
         // CABLES.UI.setStatusText(keys.length+' keys copied...');
-        CABLES.UI.notify(keys.length + " keys copied...");
+        notify(keys.length + " keys copied...");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();
@@ -1644,8 +1646,7 @@ export default function TimeLineGui()
                         minTime = Math.min(minTime, json.keys[i].t);
                     }
 
-                    // CABLES.UI.setStatusText(json.keys.length+' keys pasted...');
-                    CABLES.UI.notify(json.keys.length + " keys pasted");
+                    notify(json.keys.length + " keys pasted");
 
                     for (i in json.keys)
                     {
@@ -1664,8 +1665,8 @@ export default function TimeLineGui()
                     return;
                 }
             }
-            // CABLES.UI.setStatusText("paste failed / not cables data format...");
-            CABLES.UI.notify("Paste failed");
+
+            notify("Paste failed");
         }
     };
 

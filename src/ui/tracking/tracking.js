@@ -1,3 +1,4 @@
+
 export default class Tracking
 {
     constructor(gui)
@@ -35,7 +36,7 @@ export default class Tracking
         this.gui.on("logEvent", (initiator, level, args) =>
         {
             if (!["error"].includes(level)) return;
-            const perf = CABLES.UI.uiProfiler.start("logEvent");
+            const perf = gui.uiProfiler.start("logEvent");
             this._trackLogEvent("logging", level, initiator, args);
             perf.finish();
         });

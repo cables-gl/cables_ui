@@ -1,6 +1,6 @@
 import { ele, Events } from "cables-shared-client";
-import userSettings from "../components/usersettings.js";
 import text from "../text.js";
+import uiconfig from "../uiconfig.js";
 
 /**
  * info bar at the bottom of the window, showing context sensitive shortcuts etc.
@@ -20,7 +20,7 @@ export default class BottomInfoAreaBar extends Events
         this._eleInfoArea = ele.byId("infoArea");
         this._eleInfoAreaParam = ele.byId("infoAreaParam");
 
-        if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (!CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
 
         this.updateStyles();
@@ -30,7 +30,7 @@ export default class BottomInfoAreaBar extends Events
     {
         if (this.hidden) return 0;
         if (this.showing)
-            return CABLES.UI.uiConfig.infoAreaHeight;
+            return uiconfig.infoAreaHeight;
         else return 0;
     }
 
@@ -52,7 +52,7 @@ export default class BottomInfoAreaBar extends Events
 
     toggle()
     {
-        if (userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
 
         this.updateStyles();
@@ -60,7 +60,7 @@ export default class BottomInfoAreaBar extends Events
 
     openInfo()
     {
-        userSettings.set(this._SETTINGS_NAME, false);
+        CABLES.UI.userSettings.set(this._SETTINGS_NAME, false);
         const wasShowing = this.showing;
 
         this.showing = true;
@@ -69,7 +69,7 @@ export default class BottomInfoAreaBar extends Events
 
     closeInfo()
     {
-        userSettings.set(this._SETTINGS_NAME, true);
+        CABLES.UI.userSettings.set(this._SETTINGS_NAME, true);
         const wasShowing = this.showing;
         this.showing = false;
         if (wasShowing != this.showing) this.emitEvent("changed");

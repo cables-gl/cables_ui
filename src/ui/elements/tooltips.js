@@ -94,7 +94,7 @@ function eleInfoOver(e)
 function eleInfoOut(e)
 {
     clearTimeout(tooltipTimeout);
-    CABLES.UI.hideInfo();
+    hideInfo();
 }
 
 document.querySelector("body").addEventListener("mouseover", function (evt)
@@ -246,7 +246,7 @@ export function updateHoverToolTip(event, port, overlink)
 
     if (port.apf > 0) txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
 
-    CABLES.UI.showToolTip(event, txt, true);
+    showToolTip(event, txt, true);
 
     if (overlink)
     {

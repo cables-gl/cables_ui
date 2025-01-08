@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
+import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 
 const paramsHelper =
 {
@@ -25,13 +26,13 @@ const paramsHelper =
         {
             if (delta > 0)
             {
-                if (event.shiftKey) event.target.value = CABLES.UI.paramsHelper.inputIncrement(event.target.value, 0.1, event);
-                else event.target.value = CABLES.UI.paramsHelper.inputIncrement(event.target.value, 1, event);
+                if (event.shiftKey) event.target.value = paramsHelper.inputIncrement(event.target.value, 0.1, event);
+                else event.target.value = paramsHelper.inputIncrement(event.target.value, 1, event);
             }
             else
             {
-                if (event.shiftKey) event.target.value = CABLES.UI.paramsHelper.inputIncrement(event.target.value, -0.1, event);
-                else event.target.value = CABLES.UI.paramsHelper.inputIncrement(event.target.value, -1, event);
+                if (event.shiftKey) event.target.value = paramsHelper.inputIncrement(event.target.value, -0.1, event);
+                else event.target.value = paramsHelper.inputIncrement(event.target.value, -1, event);
             }
             event.target.dispatchEvent(new Event("input"));
 
@@ -47,12 +48,12 @@ const paramsHelper =
         switch (e.which)
         {
         case 38: // up
-            e.target.value = CABLES.UI.paramsHelper.inputIncrement(e.target.value, 1, e);
+            e.target.value = paramsHelper.inputIncrement(e.target.value, 1, e);
             e.target.dispatchEvent(new Event("input"));
             return false;
 
         case 40: // down
-            e.target.value = CABLES.UI.paramsHelper.inputIncrement(e.target.value, -1, e);
+            e.target.value = paramsHelper.inputIncrement(e.target.value, -1, e);
             e.target.dispatchEvent(new Event("input"));
             return false;
         }
@@ -137,7 +138,7 @@ const paramsHelper =
         const port = op.getPortByName(portname);
         if (!port) return console.warn("paramedit port not found");
 
-        new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(), {
+        new SpreadSheetTab(gui.mainTabs, port, port.get(), {
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {

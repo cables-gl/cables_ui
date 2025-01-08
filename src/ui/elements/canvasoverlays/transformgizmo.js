@@ -1,3 +1,5 @@
+import undo from "../../utils/undo.js";
+
 export default class Gizmo
 {
     constructor(cgl)
@@ -432,7 +434,7 @@ export default class Gizmo
                     const op = patch.getOpById(op1Id);
                     const p = op.getPortByName(p1Name);
 
-                    CABLES.UI.undo.add({
+                    undo.add({
                         "title": "move gizmo " + p.name,
                         undo()
                         {

@@ -230,10 +230,6 @@ export default class ModalPortValue
         }
     }
 
-
-
-
-
     updatePortValuePreview(title)
     {
         this._showPortValue(title);

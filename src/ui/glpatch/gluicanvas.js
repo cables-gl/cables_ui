@@ -139,25 +139,6 @@ export default class GlUiCanvas
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
-
-            // event.preventDefault();
-            // const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
-
-            // let delta = CGL.getWheelSpeed(event);
-            // delta *= wheelMultiplier;
-
-            // if (event.altKey) this._scrollY -= delta;
-            // else if (event.shiftKey) this._scrollX -= delta;
-            // else this._zoom += delta * (this._zoom / 155);
-
-            // this._zoom = Math.max(GlUiConfig.minZoom, this._zoom);
-            // this._smoothedZoom.set(this._zoom);
-
-            // if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-            // {
-            //     event.preventDefault();
-            //     event.stopImmediatePropagation();
-            // }
         }, { "passive": true });
 
 

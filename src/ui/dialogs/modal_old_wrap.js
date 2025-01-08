@@ -28,7 +28,7 @@ const oldModalWrap =
     "prompt": function (title, text, value, callback)
     {
         let logger = new Logger("modal");
-        logger.stack("deprecated CABLES.UI.MODAL.prompt, use CABLES.UI.ModalDialog ");
+        logger.stack("deprecated CABLES.UI.MODAL.prompt, use ModalDialog ");
 
         new ModalDialog({
             "prompt": true,

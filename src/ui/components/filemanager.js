@@ -3,8 +3,8 @@ import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
-import userSettings from "./usersettings.js";
-import { notify, notifyError } from "../elements/notification.js";
+import { notify, notifyError, notifyWarn } from "../elements/notification.js";
+import opNames from "../opnameutils.js";
 
 /**
  * manage files/assets of the patch
@@ -23,15 +23,15 @@ export default class FileManager
         this._firstTimeOpening = true;
         this._refreshDelay = null;
         this._orderReverse = false;
-        this._order = userSettings.get("filemanager_order") || "name";
+        this._order = CABLES.UI.userSettings.get("filemanager_order") || "name";
         this._files = [];
 
         gui.maintabPanel.show(userInteraction);
-        userSettings.set("fileManagerOpened", true);
+        CABLES.UI.userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
 
-        this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
+        this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager_display") || "icons");
 
         this.reload(cb);
 
@@ -42,7 +42,7 @@ export default class FileManager
 
         this._manager.addEventListener("close", () =>
         {
-            userSettings.set("fileManagerOpened", false);
+            CABLES.UI.userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
 
@@ -71,6 +71,8 @@ export default class FileManager
 
     setFilePort(portEle, op, previewEle)
     {
+        console.log("file port op", portEle, op);
+
         if (!portEle)
         {
             this._filePortElePreview = null;
@@ -88,6 +90,7 @@ export default class FileManager
             this._filePortElePreview = previewEle;
             this._filePortEle = portEle;
             this._filePortOp = op;
+
             gui.fileManager.setFilter("");
         }
         this.updateHeader();
@@ -310,7 +313,7 @@ export default class FileManager
         else this._orderReverse = !this._orderReverse;
 
         this._order = o;
-        userSettings.set("filemanager_order", this._order);
+        CABLES.UI.userSettings.set("filemanager_order", this._order);
         this._buildHtml();
     }
 
@@ -365,7 +368,7 @@ export default class FileManager
 
     setDisplay(type)
     {
-        userSettings.set("filemanager_display", type);
+        CABLES.UI.userSettings.set("filemanager_display", type);
         this._manager.setDisplay(type);
         this._manager.setItems();
         this.updateHeader();
@@ -440,7 +443,7 @@ export default class FileManager
                 },
                 function (err, r)
                 {
-                    if (r.fileDb) r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
+                    if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
                         if (detailItem.isReference) delete r.converters;
@@ -529,11 +532,11 @@ export default class FileManager
                                     .writeText(JSON.stringify(r.path))
                                     .then(() =>
                                     {
-                                        CABLES.UI.notify("Copied to clipboard");
+                                        notify("Copied to clipboard");
                                     })
                                     .catch((copyError) =>
                                     {
-                                        CABLES.UI.notifyWarn("Copied to clipboard failed");
+                                        notifyWarn("Copied to clipboard failed");
                                         console.warn("copy to clipboard failed", copyError);
                                     });
                             });

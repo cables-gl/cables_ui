@@ -1,7 +1,7 @@
 import { Logger } from "cables-shared-client";
 import GlLink from "./gllink.js";
-import userSettings from "../components/usersettings.js";
 import undo from "../utils/undo.js";
+import { hideToolTip } from "../elements/tooltips.js";
 
 
 const DEFAULT_ACTIVITY = 0;
@@ -86,46 +86,6 @@ export default class GlPatchAPI
 
     updateFlowModeActivity(flowMode)
     {
-        // if (flowMode == 0 && this._currentFlowMode != 0)
-        // {
-        //     const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
-        //     console.log("updflowmode0");
-
-        //     for (let i = 0; i < this._patch.ops.length; i++)
-        //     {
-        //         const op = this._patch.ops[i];
-        //         const glop = this._glPatch.getGlOp(op);
-
-        //         if (!op || !op.portOut) return;
-
-        //         if (!glop) continue;
-
-        //         for (let ip = 0; ip < op.portsOut.length; ip++)
-        //         {
-        //             const thePort = op.portsOut[ip];
-        //             thePort.apf = -1;
-        //             if (thePort)
-        //             {
-        //                 const glp = glop.getGlPort(thePort.name);
-        //                 if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
-        //             }
-        //         }
-        //         for (let ip = 0; ip < op.portsIn.length; ip++)
-        //         {
-        //             const thePort = op.portsIn[ip];
-        //             thePort.apf = -1;
-        //             const glp = glop.getGlPort(thePort.name);
-        //             if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
-        //         }
-        //     }
-
-        //     for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
-
-        //     perf.finish();
-        // }
-
-        // this._currentFlowMode = flowMode;
-
         if (flowMode == 0) return;
 
         const frameCount = this._glPatch._cgl.fpsCounter.frameCount;
@@ -135,7 +95,7 @@ export default class GlPatchAPI
 
         const frames = this._glPatch.frameCount - this._flowvisStartFrame;
 
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
+        const perf = gui.uiProfiler.start("[glpatch] update flow mode");
 
         let numUpdates = Math.min(350, this._patch.ops.length);
 
@@ -342,7 +302,7 @@ export default class GlPatchAPI
 
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         if (updateSubs)
             gui.bookmarks.needRefreshSubs = true;

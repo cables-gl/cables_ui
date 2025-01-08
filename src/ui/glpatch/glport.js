@@ -3,7 +3,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
-import { updateHoverToolTip } from "../elements/tooltips.js";
+import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}
@@ -278,7 +278,7 @@ export default class GlPort
         this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
@@ -329,7 +329,7 @@ export default class GlPort
 
 GlPort.getInactiveColor = (type) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getInactiveColor");
+    const perf = gui.uiProfiler.start("[glport] getInactiveColor");
     let portname = "";
 
     if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
@@ -350,7 +350,7 @@ GlPort.getInactiveColor = (type) =>
 
 GlPort.getColorBorder = (type, hovering, selected) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolorBorder");
+    const perf = gui.uiProfiler.start("[glport] getcolorBorder");
     let name = "";
     let portname = "";
 
@@ -384,7 +384,7 @@ GlPort.getColorBorder = (type, hovering, selected) =>
 
 GlPort.getColor = (type, hovering, selected, activity) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    const perf = gui.uiProfiler.start("[glport] getcolor");
 
     let name = "";
     let portname = "";

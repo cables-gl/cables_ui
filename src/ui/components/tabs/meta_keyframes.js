@@ -1,7 +1,6 @@
-import defaultOps from "../../defaultops.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
+import opNames from "../../opnameutils.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import userSettings from "../usersettings.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -42,7 +41,7 @@ export default class MetaKeyframes
                             "opname": ops[i].name,
                             "opid": ops[i].id,
                             "portname": p.name,
-                            "colorClass": "op_color_" + defaultOps.getNamespaceClassName(ops[i].objName)
+                            "colorClass": "op_color_" + opNames.getNamespaceClassName(ops[i].objName)
                         });
                 }
             }
@@ -104,7 +103,7 @@ export default class MetaKeyframes
     {
         if (!anim) return;
         this.anim = anim;
-        if (userSettings.get("metatab") == "keyframes")
+        if (CABLES.UI.userSettings.get("metatab") == "keyframes")
         {
             this.show();
         }

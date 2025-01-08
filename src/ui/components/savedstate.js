@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 /**
  * saved state of patch and subpatches, set orange icon if unsaved
@@ -17,7 +18,6 @@ export default class SavedState extends Events
         this._talkerState = null;
         this._timeout = null;
         this._addedGuiListener = false;
-
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -242,12 +242,21 @@ export default class SavedState extends Events
                     continue;
                 }
 
-                let onclick = "CABLES.UI.SubPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp('" + idx + "'), { 'oldSubId': '" + idx + "' })";
-                if (idx == 0) onclick = "CABLES.CMD.PATCH.save();";
-                str += "<li style=\"overflow:hidden;text-overflow:ellipsis\" onclick=\"" + onclick + "\" class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
+                str += "<li style=\"overflow:hidden;text-overflow:ellipsis\" id=\"clickSave_" + idx + "\"  class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
             }
             str += "<li class=\"divide\"></li>";
             ele.byId("savestates").innerHTML = str;
+
+            for (const idx in this._statesSaved)
+            {
+                const el = ele.byId("clickSave_" + idx);
+                if (el)el.addEventListener("click", () =>
+                {
+                    if (idx == 0) CABLES.CMD.PATCH.save();
+                    else subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(idx), { "oldSubId": idx });
+                });
+                else this._log.warn("unknown savestate click ele: clickSave_" + idx);
+            }
         }
         this.updateRestrictionDisplay();
     }

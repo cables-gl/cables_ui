@@ -1,5 +1,6 @@
 import defaultOps from "../defaultops.js";
 import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
 
 
 
@@ -32,7 +33,7 @@ export function convertPorts(p1, p2, converter)
                 gui.corePatch().link(pFrom.op, pFrom.getName(), newOp, converter.portIn);
                 gui.corePatch().link(pTo.op, pTo.getName(), newOp, converter.portOut);
 
-                newOp.setUiAttrib({ "translate": { "x": pTo.op.uiAttribs.translate.x, "y": pTo.op.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                newOp.setUiAttrib({ "translate": { "x": pTo.op.uiAttribs.translate.x, "y": pTo.op.uiAttribs.translate.y - gluiconfig.newOpDistanceY } });
             }
         });
 }

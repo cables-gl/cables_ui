@@ -1,6 +1,6 @@
-import defaultOps from "../../defaultops.js";
+import namespace from "../../namespaceutils.js";
+import opNames from "../../opnameutils.js";
 import text from "../../text.js";
-import userSettings from "../usersettings.js";
 
 class PortHtmlGenerator
 {
@@ -26,14 +26,14 @@ class PortHtmlGenerator
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
         const canEditOp = gui.serverOps.canEditOp(gui.user, op.objName);
-        if (defaultOps.isDeprecatedOp(op.objName))
+        if (namespace.isDeprecatedOp(op.objName))
         {
             op.isDeprecated = true;
             const notDeprecatedName = op.objName.replace("Deprecated.", "");
             const alt = CABLES.Patch.getOpClass(notDeprecatedName);
             if (alt) op.isDeprecatedAlternative = notDeprecatedName;
         }
-        if (defaultOps.isDevOp(op.objName)) op.isExperimental = true;
+        if (namespace.isDevOp(op.objName)) op.isExperimental = true;
 
         if (gui.opDocs)
         {
@@ -53,14 +53,14 @@ class PortHtmlGenerator
             "panelid": this._panelId,
             "frontendOptions": CABLES.platform.frontendOptions,
             "isBookmarked": isBookmarked,
-            "colorClass": defaultOps.getNamespaceClassName(op.objName),
+            "colorClass": opNames.getNamespaceClassName(op.objName),
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
-            "showRenameButton": canEditOp && defaultOps.isNonCoreOp(op.objName),
+            "showRenameButton": canEditOp && namespace.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
-            "minified": userSettings.get("minifiedOpHead"),
+            "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.platform.getCablesUrl(),
 

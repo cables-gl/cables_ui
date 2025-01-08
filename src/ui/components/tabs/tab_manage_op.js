@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
+import uiprofiler from "../uiprofiler.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -96,7 +97,7 @@ export default class ManageOp
                 CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
                 {
                     if (error) this._log.warn("error api?", error);
-                    const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
+                    const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
                     const doc = {};
                     const opName = this._currentName;
                     let summary = "";
@@ -188,8 +189,6 @@ export default class ManageOp
                         });
 
                     this._tab.html(html);
-
-                    // CABLES.UI.Collapsable.setup();
 
                     if (canEditOp)
                     {

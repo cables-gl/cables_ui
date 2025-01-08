@@ -1,4 +1,5 @@
-import defaultOps from "../defaultops.js";
+import { notify } from "../elements/notification.js";
+import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
@@ -42,7 +43,7 @@ export default class Bookmarks
         // if (this.needRefreshSubs)
         // {
         //     const subs = gui.patchView.getSubPatches(true);
-        //     const perf = CABLES.UI.uiProfiler.start("bookmark panel subpatches");
+        //     const perf = gui.uiProfiler.start("bookmark panel subpatches");
 
         //     this.needRefreshSubs = false;
         //     for (let i = 0; i < subs.length; i++)
@@ -74,7 +75,7 @@ export default class Bookmarks
         // }
 
 
-        const perf = CABLES.UI.uiProfiler.start("bookmarks");
+        const perf = gui.uiProfiler.start("bookmarks");
 
         const bm = [];
         for (const i in this._bookmarks)
@@ -88,7 +89,7 @@ export default class Bookmarks
                         "id": this._bookmarks[i],
                         "name": op.name,
                         "objName": op.objName,
-                        "class": defaultOps.getNamespaceClassName(op.objName),
+                        "class": opNames.getNamespaceClassName(op.objName),
                     });
             }
         }
@@ -96,11 +97,11 @@ export default class Bookmarks
 
         perf.finish();
 
-        const perf2 = CABLES.UI.uiProfiler.start("bookmarks handlebars");
+        const perf2 = gui.uiProfiler.start("bookmarks handlebars");
         let html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         perf2.finish();
 
-        // const perf3 = CABLES.UI.uiProfiler.start("update dynamic commands");
+        // const perf3 = gui.uiProfiler.start("update dynamic commands");
         // this.updateDynamicCommands();
         // perf3.finish();
 
@@ -155,7 +156,7 @@ export default class Bookmarks
                         elements[eli].classList.remove("icon-bookmark-filled");
                         elements[eli].classList.add("icon-bookmark");
                     }
-                    CABLES.UI.notify(text.bookmark_removed);
+                    notify(text.bookmark_removed);
                     return;
                 }
             }
@@ -170,7 +171,7 @@ export default class Bookmarks
             }
 
             gui.patchView.centerSelectOp(id);
-            CABLES.UI.notify(text.bookmark_added);
+            notify(text.bookmark_added);
             gui.corePatch().emitEvent("bookmarkschanged");
         }
 

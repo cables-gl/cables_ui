@@ -11,10 +11,11 @@ import opCleaner from "./cleanops.js";
 import { convertPorts, getConverters } from "./converterops.js";
 import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
-import userSettings from "./usersettings.js";
 import Snap from "../glpatch/snap.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-
+import uiconfig from "../uiconfig.js";
+import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * manage patch view and helper functions
@@ -162,7 +163,7 @@ export default class PatchView extends Events
             return;
         }
 
-        const perf = CABLES.UI.uiProfiler.start("[patchview] setproject");
+        const perf = gui.uiProfiler.start("[patchview] setproject");
         if (window.logStartup) logStartup("gui set project");
 
         if (proj && proj.ui)
@@ -207,11 +208,11 @@ export default class PatchView extends Events
             if (window.logStartup) logStartup("deserialize...");
 
 
-            const perf3 = CABLES.UI.uiProfiler.start("[core] deserialize");
+            const perf3 = gui.uiProfiler.start("[core] deserialize");
             gui.corePatch().deSerialize(project);
             perf3.finish();
 
-            const perf2 = CABLES.UI.uiProfiler.start("[patchview] setproject2");
+            const perf2 = gui.uiProfiler.start("[patchview] setproject2");
 
             if (window.logStartup) logStartup("deserialize done");
 
@@ -311,7 +312,6 @@ export default class PatchView extends Events
         return this._patchRenderer.isFocused();
     }
 
-
     testCollision(op)
     {
         if (!op || !op.uiAttribs) return;
@@ -361,7 +361,7 @@ export default class PatchView extends Events
                     {
                         let mulDirY = 1;
                         if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
-                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
+                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (uiconfig.snapY / 2 + glopB.h));
                         let x = op.uiAttribs.translate.x;
 
                         const link = op.isConnectedTo(b);
@@ -413,7 +413,7 @@ export default class PatchView extends Events
     {
         if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
-        const ops = CABLES.UI.getOpsForFilename(filename);
+        const ops = opNames.getOpsForFilename(filename);
 
         if (ops.length == 0)
         {
@@ -423,7 +423,6 @@ export default class PatchView extends Events
 
         const opname = ops[0];
         const uiAttr = { "subPatch": this.getCurrentSubPatch() };
-
 
         let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
 
@@ -489,13 +488,13 @@ export default class PatchView extends Events
                 const foundPort = op.findFittingPort(options.linkNewOpToPort);
                 if (foundPort)
                 {
-                    if (op.objName == CABLES.UI.DEFAULTOPNAMES.number)
+                    if (op.objName == defaultOps.defaultOpNames.number)
                     {
                         const oldValue = options.linkNewOpToPort.get();
                         op.getPort("value").set(oldValue);
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
-                    if (op.objName == CABLES.UI.DEFAULTOPNAMES.string)
+                    if (op.objName == defaultOps.defaultOpNames.string)
                     {
                         const oldValue = options.linkNewOpToPort.get();
                         op.getPort("value").set(oldValue);
@@ -570,7 +569,7 @@ export default class PatchView extends Events
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
             "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY
+            "y": oldOp.uiAttribs.translate.y - gluiconfig.newOpDistanceY
         };
 
 
@@ -609,7 +608,7 @@ export default class PatchView extends Events
                 "params_ops", {
                     "isDevEnv": CABLES.platform.isDevEnv(),
                     "config": CABLES.platform.cfg,
-                    "showDevInfos": userSettings.get("devinfos"),
+                    "showDevInfos": CABLES.UI.userSettings.get("devinfos"),
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs
@@ -659,14 +658,14 @@ export default class PatchView extends Events
 
     checkPatchOutdated()
     {
-        const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
+        const perf = gui.uiProfiler.start("checkpatcherrors");
         this.hasOldOps = false;
 
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
 
-            if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(this._p.ops[i].objName))
+            if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
                 perf.finish();
@@ -688,7 +687,7 @@ export default class PatchView extends Events
 
     checkPatchErrors()
     {
-        const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
+        const perf = gui.uiProfiler.start("checkpatcherrors");
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
@@ -757,7 +756,7 @@ export default class PatchView extends Events
     getSubPatchBounds(subPatchId)
     {
         if (subPatchId == undefined) subPatchId = this.getCurrentSubPatch();
-        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
+        const perf = gui.uiProfiler.start("patch.getSubPatchBounds");
         const ops = this._p.ops;
         const theOps = [];
 
@@ -915,7 +914,7 @@ export default class PatchView extends Events
 
     getSelectedOpsIds()
     {
-        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOpsIds");
+        const perf = gui.uiProfiler.start("patchview getSelectedOpsIds");
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
@@ -930,7 +929,7 @@ export default class PatchView extends Events
 
     getSelectedOps()
     {
-        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
+        const perf = gui.uiProfiler.start("patchview getSelectedOps");
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
@@ -1013,7 +1012,7 @@ export default class PatchView extends Events
             "x": Snap.snapOpPosX(bounds.minX - 0.8 * padding),
             "y": Snap.snapOpPosY(bounds.minY - 1.2 * padding) };
 
-        const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, {
+        const areaOp = this._p.addOp(defaultOps.defaultOpNames.uiArea, {
             "translate": trans,
             "subPatch": this.getCurrentSubPatch(),
             "area": {
@@ -1030,7 +1029,7 @@ export default class PatchView extends Events
                 },
                 redo()
                 {
-                    gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
+                    gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, { "translate": trans,
                         "area": {
                             "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
                             "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2.2 * padding)) } });
@@ -1318,7 +1317,7 @@ export default class PatchView extends Events
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultOps.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
+            if (ops[i].isSubPatchOp() == 1 && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -1353,10 +1352,7 @@ export default class PatchView extends Events
                         o.type = "blueprintSub";
                     }
 
-                    // if (defaultOps.isBlueprintOp(ops[j]) == 2)
-                    // {
                     o.blueprintVer = ops[j].isSubPatchOp();
-                    // }
 
                     subPatches.push(o);
                     found = true;
@@ -1709,7 +1705,7 @@ export default class PatchView extends Events
                     {
                         let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (userSettings.get("snapToGrid2"))
+                        if (CABLES.UI.userSettings.get("snapToGrid2"))
                         {
                             x = Snap.snapOpPosX(x);
                             y = Snap.snapOpPosY(y);
@@ -1841,7 +1837,7 @@ export default class PatchView extends Events
 
     //             let portIndex = otherPort.op.portsOut.indexOf(otherPort);
 
-    //             this.setTempOpPos(op, otherPort.op.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.op.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+    //             this.setTempOpPos(op, otherPort.op.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.op.getTempPosY() + extraLines * glUiConfig.newOpDistanceY);
     //         }
     //     }
 
@@ -1891,7 +1887,7 @@ export default class PatchView extends Events
         //         otherOps.push(ops[i]);
         //     }
 
-        //     let theOpWidth = Snap.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+        //     let theOpWidth = Snap.snapOpPosX((longestOpPorts + 1) * (glUiConfig.portWidth + glUiConfig.portPadding));
 
         //     for (let i = 0; i < ops.length; i++)
         //         this.setTempOpPos(ops[i], startPosX, startPosY);
@@ -1960,7 +1956,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1976,7 +1972,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
@@ -2087,7 +2083,7 @@ export default class PatchView extends Events
         const numFitting = op2.countFittingPorts(p);
 
         const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
-        const isbpOp = defaultOps.isBlueprintOp(op2) || isInnerOp;
+        const isbpOp = op2.isSubPatchOp() || isInnerOp;
 
         if (isbpOp || numFitting > 1)
         {
@@ -2390,7 +2386,7 @@ export default class PatchView extends Events
     {
         if (!gui.opDocs.getOpDocByName(opname))
         {
-            CABLES.UI.notify("op has no versions....");
+            notify("op has no versions....");
             return;
         }
 
@@ -2408,7 +2404,7 @@ export default class PatchView extends Events
         }
         else
         {
-            CABLES.UI.notify("could not downgrade: has no previous version");
+            notify("could not downgrade: has no previous version");
         }
 
         this.unselectAllOps();
@@ -2727,7 +2723,7 @@ export default class PatchView extends Events
 
         if (suggestions.length === 0)
         {
-            CABLES.UI.notify("can not link!");
+            notify("can not link!");
             return;
         }
 
@@ -2784,7 +2780,7 @@ export default class PatchView extends Events
         const selectedOps = this.getSelectedOps();
 
         for (let i = 0; i < selectedOps.length; i++)
-            if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
+            if (selectedOps[i].objName == defaultOps.defaultOpNames.uiArea)
                 return selectedOps[i].setUiAttrib({ "color": col });
 
         for (let i = 0; i < selectedOps.length; i++)
@@ -2807,7 +2803,7 @@ export default class PatchView extends Events
         {
             const p = op.getPortByName(portname);
             const oldValue = p.get();
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "reset defaultvalue",
                 undo()
                 {
@@ -3026,7 +3022,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         const relevantOps = ops.filter((op) =>
         {
-            if (!defaultOps.isBlueprintOp(op)) return false;
+            if (!op.isSubPatchOp()) return false;
             const port = op.getPortByName("externalPatchId");
             if (port)
             {
@@ -3076,7 +3072,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            if (!defaultOps.isBlueprintOp(op)) return false;
+            if (!op.isSubPatchOp()) return false;
             let isLocal = false;
             if (localOnly)
             {
@@ -3110,7 +3106,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultOps.isPatchOp(op.objName);
+            return namespace.isPatchOp(op.objName);
         });
     }
 
@@ -3120,7 +3116,7 @@ export default class PatchView extends Events
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultOps.isUserOp(op.objName);
+            return namespace.isUserOp(op.objName);
         });
     }
 

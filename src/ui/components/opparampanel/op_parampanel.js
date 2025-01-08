@@ -3,9 +3,9 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
-import userSettings from "../usersettings.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
-import defaultOps from "../../defaultops.js";
+import { notify } from "../../elements/notification.js";
+import namespace from "../../namespaceutils.js";
 
 /**
  * op parameter panel
@@ -159,7 +159,7 @@ class OpParampanel extends Events
                 this.refreshDelayed();
             });
 
-        const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
+        const perf = gui.uiProfiler.start("[opparampanel] show");
 
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
@@ -173,10 +173,7 @@ class OpParampanel extends Events
         this._currentOp = op;
 
 
-        if (!op)
-        {
-            return;
-        }
+        if (!op) return;
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
@@ -195,7 +192,7 @@ class OpParampanel extends Events
 
         op.emitEvent("uiParamPanel", op);
 
-        const perfHtml = CABLES.UI.uiProfiler.start("[opparampanel] build html ");
+        const perfHtml = gui.uiProfiler.start("[opparampanel] build html ");
 
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
@@ -235,7 +232,7 @@ class OpParampanel extends Events
 
         if (this._portsIn.length > 0)
         {
-            const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP IN");
+            const perfLoop = gui.uiProfiler.start("[opparampanel] _showOpParamsLOOP IN");
             html += this._htmlGen.getHtmlHeaderPorts("in", "Input");
             html += this._htmlGen.getHtmlInputPorts(this._portsIn);
 
@@ -246,14 +243,14 @@ class OpParampanel extends Events
         {
             html += this._htmlGen.getHtmlHeaderPorts("out", "Output");
 
-            const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
+            const perfLoopOut = gui.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
 
             html += this._htmlGen.getHtmlOutputPorts(this._portsOut);
 
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", { "op": op, "showDevInfos": userSettings.get("devinfos") });
+        html += getHandleBarHtml("params_op_foot", { "op": op, "showDevInfos": CABLES.UI.userSettings.get("devinfos") });
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
@@ -280,10 +277,10 @@ class OpParampanel extends Events
                     {
                         const subOuterName = subouterOp.objName;
 
-                        if (!defaultOps.isPatchOp(subOuterName) &&
+                        if (!namespace.isPatchOp(subOuterName) &&
                         this._portsIn[i].get() &&
-                            defaultOps.isCoreOp(subOuterName) &&
-                            defaultOps.isExtensionOp(subOuterName) &&
+                            namespace.isCoreOp(subOuterName) &&
+                            namespace.isExtensionOp(subOuterName) &&
                             String(this._portsIn[i].get()).startsWith("/assets/") &&
                             !this._portsIn[i].isLinked())
                             this._portsIn[i].op.setUiError("nonpatchopassets", "This Operator uses assets from a patch, this file will probably not be found when exporting the patch or using in standalone etc.!", 1);
@@ -409,11 +406,11 @@ class OpParampanel extends Events
                     .writeText(String(port.get()))
                     .then(() =>
                     {
-                        CABLES.UI.notify("Copied value to clipboard");
+                        notify("Copied value to clipboard");
                     })
                     .catch((err) =>
                     {
-                        console.warn("copy to clipboard failed", err);
+                        this._log.warn("copy to clipboard failed", err);
                     });
 
                 e.preventDefault();
@@ -495,7 +492,7 @@ class OpParampanel extends Events
             this._uiAttrFpsCount = 0;
         }
 
-        const perf = CABLES.UI.uiProfiler.start("[opparampanel] updateUiAttribs");
+        const perf = gui.uiProfiler.start("[opparampanel] updateUiAttribs");
         let el = null;
 
         el = document.getElementById("options_warning");
@@ -578,11 +575,8 @@ class OpParampanel extends Events
     {
         if (this._currentOp) this._currentOp.setTitle(t);
 
-        // if (defaultops.isSubPatchOpName(this._currentOp.objName))
         if (this._currentOp && this._currentOp.storage && this._currentOp.storage.subPatchVer)
-        {
             this._currentOp.patch.emitEvent("subpatchesChanged");
-        }
     }
 
     isCurrentOp(op)

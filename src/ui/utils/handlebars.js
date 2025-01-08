@@ -1,3 +1,4 @@
+
 /**
  * Handlebars template helper functions
  */
@@ -5,7 +6,9 @@ const handleBarsPrecompiled = {};
 
 export function getHandleBarHtml(name, obj)
 {
-    const perf = CABLES.UI.uiProfiler.start("getHandleBarHtml");
+    let perf;
+    if (window.gui)
+        perf = gui.uiProfiler.start("getHandleBarHtml");
 
     let template = handleBarsPrecompiled[name];
     if (!template && document.getElementById(name))
@@ -26,8 +29,9 @@ export function getHandleBarHtml(name, obj)
     obj.cablesDocsUrl = obj.cablesUrl;
     if (CABLES.platform.getCablesDocsUrl)obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
-    const html = template(obj);
-    perf.finish();
+    const html = template(obj, { "allowProtoMethodsByDefault": true, "allowedProtoProperties": true });
+
+    if (perf)perf.finish();
 
     return html;
 }

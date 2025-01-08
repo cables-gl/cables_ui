@@ -1,5 +1,4 @@
 import { Events } from "cables-shared-client";
-import userSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator = "")
 {
@@ -41,13 +40,13 @@ export default class LogFilter extends Events
         super();
         this._warned = false;
         this._initiators = {};
-        this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
+        this._settings = JSON.parse(CABLES.UI.userSettings.get("loggingFilter")) || {};
 
         this.logs = [];
 
-        userSettings.on("loaded", () =>
+        CABLES.UI.userSettings.on("loaded", () =>
         {
-            this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
+            this._settings = JSON.parse(CABLES.UI.userSettings.get("loggingFilter")) || {};
         });
     }
 
@@ -143,7 +142,7 @@ export default class LogFilter extends Events
             this._initiators[i].print = defaultSetting(i);
 
         this._settings = {};
-        userSettings.set("loggingFilter", JSON.stringify(this._settings));
+        CABLES.UI.userSettings.set("loggingFilter", JSON.stringify(this._settings));
 
         this.emitEvent("initiatorsChanged");
     }
@@ -154,7 +153,7 @@ export default class LogFilter extends Events
 
         this._settings[initiator] = !this._settings[initiator];
 
-        userSettings.set("loggingFilter", JSON.stringify(this._settings));
+        CABLES.UI.userSettings.set("loggingFilter", JSON.stringify(this._settings));
 
         this._initiators[initiator].print = this._settings[initiator];
         this.emitEvent("initiatorsChanged");

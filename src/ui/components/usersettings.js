@@ -6,7 +6,7 @@ import { Events } from "cables-shared-client";
  * @class UserSettings
  * @extends {Events}
  */
-class UserSettings extends Events
+export default class UserSettings extends Events
 {
     constructor()
     {
@@ -109,7 +109,3 @@ class UserSettings extends Events
     }
 }
 
-
-const userSettings = new UserSettings();
-
-export default userSettings;

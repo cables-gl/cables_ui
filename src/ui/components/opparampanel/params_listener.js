@@ -2,11 +2,13 @@ import { ele, Events } from "cables-shared-client";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
-import userSettings from "../usersettings.js";
 import paramsHelper from "./params_helper.js";
 import WatchPortVisualizer from "./watchportvisualizer.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
+import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
+import uiconfig from "../../uiconfig.js";
+import uiprofiler from "../uiprofiler.js";
 
 
 /**
@@ -28,7 +30,7 @@ class ParamsListener extends Events
         this._watchStrings = [];
         this._portsIn = [];
         this._portsOut = [];
-        this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
+        this._doFormatNumbers = !(CABLES.UI.userSettings.get("notlocalizeNumberformat") || false);
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();
@@ -164,7 +166,7 @@ class ParamsListener extends Events
         for (let i = 0; i < els.length; i++)
         {
             const v = els[i].value;
-            CABLES.UI.paramsHelper.valueChangerSetSliderCSS(v, els[i].parentElement);
+            paramsHelper.valueChangerSetSliderCSS(v, els[i].parentElement);
         }
     }
 
@@ -326,7 +328,7 @@ class ParamsListener extends Events
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
                 {
-                    gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
+                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, function (newop)
                     {
                         gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
@@ -336,7 +338,7 @@ class ParamsListener extends Events
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
+                paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
             });
 
         // /////////////////////
@@ -346,7 +348,7 @@ class ParamsListener extends Events
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            CABLES.UI.paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
+            paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
         });
 
         // /////////////////////
@@ -516,7 +518,7 @@ class ParamsListener extends Events
                         // gui.setStateUnsaved();
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
-                        CABLES.UI.paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
+                        paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                     }
                 });
             }
@@ -698,7 +700,7 @@ class ParamsListener extends Events
     initPortInputListener(ports, index, panelid)
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
-        CABLES.UI.paramsHelper.checkDefaultValue(ports[index], index, panelid);
+        paramsHelper.checkDefaultValue(ports[index], index, panelid);
 
         // added missing math constants
         CABLES.UI.mathparser.add("pi", function (n, m) { return Math.PI; });
@@ -737,7 +739,7 @@ class ParamsListener extends Events
                         e.target.value = mathParsed;
 
                         ports[index].set(mathParsed);
-                        CABLES.UI.hideToolTip();
+                        hideToolTip();
                     }
                 }
             });
@@ -771,7 +773,7 @@ class ParamsListener extends Events
                     }
                     if (!isNaN(mathParsed))
                     {
-                        CABLES.UI.showToolTip(e.target, " = " + mathParsed);
+                        showToolTip(e.target, " = " + mathParsed);
                         el.classList.remove("invalid");
                     }
                     else
@@ -879,16 +881,6 @@ class ParamsListener extends Events
                 ports[index].set(v || 0);
             }
 
-            // if (ports[index].op.storage && ports[index].op.storage.ref)
-            // {
-            //     const ops = ports[index].op.patch.getOpsByRefId(ports[index].op.storage.ref);
-            //     for (let i = 0; i < ops.length; i++)
-            //     {
-            //         const p = ops[i].getPort(ports[index].name);
-            //         p.set(v || getDef0);
-            //     }
-            // }
-
 
 
             const op = ports[index].op;
@@ -902,7 +894,7 @@ class ParamsListener extends Events
                 op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
             }
 
-            CABLES.UI.paramsHelper.checkDefaultValue(ports[index], index, panelid);
+            paramsHelper.checkDefaultValue(ports[index], index, panelid);
             if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
             ports[index].emitEvent("onValueChangeUi");
@@ -918,7 +910,7 @@ class ParamsListener extends Events
     {
         if (this._watchPorts.length)
         {
-            const perf = CABLES.UI.uiProfiler.start("[opparampanel] watch ports");
+            const perf = gui.uiProfiler.start("[opparampanel] watch ports");
 
             for (let i = 0; i < this._watchPorts.length; i++)
             {
@@ -955,8 +947,6 @@ class ParamsListener extends Events
                         if (thePort.get() === 0)newValue = "0 - false";
                         else if (thePort.get() === 1)newValue = "1 - true";
                         else newValue = "invlaid bool value! " + thePort.get();
-                        // if (!v || v == "false" || v == "0" || v == 0) v = false;
-                        // else v = true;
                     }
                     else
                         newValue = this._formatNumber(thePort.getValueForDisplay());
@@ -1028,9 +1018,9 @@ class ParamsListener extends Events
             perf.finish();
         }
 
-        if (CABLES.UI.uiConfig.watchValuesInterval == 0) return;
+        if (uiconfig.watchValuesInterval == 0) return;
 
-        setTimeout(this._updateWatchPorts.bind(this), CABLES.UI.uiConfig.watchValuesInterval);
+        setTimeout(this._updateWatchPorts.bind(this), uiconfig.watchValuesInterval);
     }
 
     removePorts()

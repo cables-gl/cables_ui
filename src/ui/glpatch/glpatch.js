@@ -13,12 +13,11 @@ import GlCursor from "./glcursor.js";
 import ShakeDetector from "./shakedetect.js";
 import VizLayer from "./vizlayer.js";
 import text from "../text.js";
-import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
-import { updateHoverToolTip } from "../elements/tooltips.js";
-
+import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
+import { notify } from "../elements/notification.js";
 
 /**
  * rendering the patchfield
@@ -65,7 +64,7 @@ export default class GlPatch extends Events
         this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
-        this.vizFlowMode = userSettings.get("glflowmode") || 0;
+        this.vizFlowMode = CABLES.UI.userSettings.get("glflowmode") || 0;
 
         this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
@@ -89,7 +88,7 @@ export default class GlPatch extends Events
 
 
 
-        if (userSettings.get("devinfos"))
+        if (CABLES.UI.userSettings.get("devinfos"))
         {
             CABLES.UI.showDevInfos = true;
             const idx = this._overlaySplines.getSplineIndex();
@@ -254,9 +253,9 @@ export default class GlPatch extends Events
 
             const modes = ["Off", "Highlight Active", "Show Dataflow"];
 
-            CABLES.UI.notify("Flow Visualization: ", modes[fm]);
+            notify("Flow Visualization: ", modes[fm]);
 
-            userSettings.set("glflowmode", fm);
+            CABLES.UI.userSettings.set("glflowmode", fm);
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -325,21 +324,6 @@ export default class GlPatch extends Events
         });
 
 
-        // gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
-        // {
-        //     if (!this.isMouseOverOp()) return;
-
-        //     console.log(this._hoverOps[0]);
-        //     if (defaultops.isSubPatchOpName(this._hoverOps[0].objName))
-        //     {
-        //         console.log("jo...");
-        //         gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
-        //     }
-        // });
-
-
-        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
-        // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
         gui.on("uiloaded", () =>
         {
@@ -453,10 +437,10 @@ export default class GlPatch extends Events
 
 
 
-        userSettings.on("change", (key, value) =>
+        CABLES.UI.userSettings.on("change", (key, value) =>
         {
-            this.dblClickAction = userSettings.get("doubleClickAction");
-            this.vizFlowMode = userSettings.get("glflowmode");
+            this.dblClickAction = CABLES.UI.userSettings.get("doubleClickAction");
+            this.vizFlowMode = CABLES.UI.userSettings.get("glflowmode");
             this.updateVizFlowMode();
 
             if (key == "linetype")
@@ -464,7 +448,7 @@ export default class GlPatch extends Events
                     this.links[i].updateLineStyle();
         });
 
-        if (userSettings.get("devinfos"))
+        if (CABLES.UI.userSettings.get("devinfos"))
         {
             gui.corePatch().on("subpatchesChanged", () =>
             {
@@ -678,7 +662,7 @@ export default class GlPatch extends Events
         {
             this._selectionArea.hideArea();
         }
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
@@ -775,7 +759,7 @@ export default class GlPatch extends Events
         }
 
         this._canvasMouseDown = false;
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
+        const perf = gui.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
         this._removeDropInRect();
         this._rectInstancer.mouseUp(e);
@@ -1019,7 +1003,7 @@ export default class GlPatch extends Events
 
     _drawCursor()
     {
-        const drawGlCursor = userSettings.get("glpatch_cursor");
+        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
 
         // if (drawGlCursor) this._cgl.setCursor("none");
         // else
@@ -1069,17 +1053,6 @@ export default class GlPatch extends Events
         }
 
         this.updateSubPatchOpAnim();
-
-        // if (
-        //     this._portDragLine.isActive &&
-        //     this._hoverOps.length == 1 &&
-        //     this._hoverOpLongStartTime != 0 &&
-        //     performance.now() - this._hoverOpLongStartTime > 1000 &&
-        //     defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
-        // {
-        //     gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get());
-        // }
-
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
 
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
@@ -1166,7 +1139,7 @@ export default class GlPatch extends Events
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] render");
+        const perf = gui.uiProfiler.start("[glpatch] render");
 
         // this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -1429,7 +1402,7 @@ export default class GlPatch extends Events
         if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
             return this.cacheOIRops;
 
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] ops in rect");
+        const perf = gui.uiProfiler.start("[glpatch] ops in rect");
         const x = Math.min(xa, xb);
         const y = Math.min(ya, yb);
         const x2 = Math.max(xa, xb);
@@ -1471,7 +1444,7 @@ export default class GlPatch extends Events
 
     unselectAll()
     {
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] unselectAll");
+        const perf = gui.uiProfiler.start("[glpatch] unselectAll");
 
         for (const i in this._glOpz) if (this._glOpz[i].selected) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
@@ -1625,7 +1598,7 @@ export default class GlPatch extends Events
     {
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] _selectOpsInRect");
+        const perf = gui.uiProfiler.start("[glpatch] _selectOpsInRect");
 
         const opIds = [];
         for (let i = 0; i < ops.length; i++)
@@ -1927,7 +1900,7 @@ export default class GlPatch extends Events
 
             this._ttTImeout = setTimeout(() =>
             {
-                CABLES.UI.hideToolTip();
+                hideToolTip();
             }, 100);
         }
     }

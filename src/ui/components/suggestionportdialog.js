@@ -42,7 +42,7 @@ export default class SuggestPortDialog
             op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
         }
 
-        if (defaultOps.isBlueprintOp(op))
+        if (op.isSubPatchOp())
         {
             this._suggestions.push({
                 "p": null,

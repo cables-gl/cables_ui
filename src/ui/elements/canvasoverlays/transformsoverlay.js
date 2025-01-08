@@ -1,4 +1,3 @@
-import userSettings from "../../components/usersettings.js";
 import TransformsIcon from "./transformsicon.js";
 
 export default class TransformsOverlay

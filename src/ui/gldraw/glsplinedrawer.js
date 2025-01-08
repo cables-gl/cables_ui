@@ -1,4 +1,3 @@
-import userSettings from "../components/usersettings.js";
 
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
@@ -64,13 +63,13 @@ export default class GlSplineDrawer
 
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
-        this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
-        this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+        this._shader.toggleDefine("FADEOUT", !CABLES.UI.userSettings.get("fadeOutOptions"));
+        this._shader.toggleDefine("DRAWSPEED", CABLES.UI.userSettings.get("glflowmode") != 0);
 
-        userSettings.on("change", (which, val) =>
+        CABLES.UI.userSettings.on("change", (which, val) =>
         {
             if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
-            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", CABLES.UI.userSettings.get("glflowmode") != 0);
         });
 
         gui.on("themeChanged", () =>
@@ -346,7 +345,7 @@ export default class GlSplineDrawer
 
     buildMesh()
     {
-        const perf = CABLES.UI.uiProfiler.start("[glspline] buildMesh");
+        const perf = gui.uiProfiler.start("[glspline] buildMesh");
 
 
         const num = this._thePoints.length / 3;
@@ -442,14 +441,14 @@ export default class GlSplineDrawer
         if (updateWhat == undefined) title = "all";
         else title = Object.keys(updateWhat).join(".");
 
-        const perf = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates " + title);
+        const perf = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates " + title);
 
         if (updateWhat === undefined)
         {
             if (this._splines[idx].pointsNeedProgressUpdate)
             {
                 this._splines[idx].pointsNeedProgressUpdate = false;
-                const perf2 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates progress coords");
+                const perf2 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates progress coords");
                 let totalDistance = 0;
                 const len = (points.length - 3) / 3;
 
@@ -501,7 +500,7 @@ export default class GlSplineDrawer
             }
         }
 
-        const perf4 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates color values");
+        const perf4 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates color values");
 
         count = 0;
         for (let i = 0; i < points.length / 3; i++)
@@ -538,7 +537,7 @@ export default class GlSplineDrawer
         }
         perf4.finish();
 
-        const perf3 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates setAttributeRanges");
+        const perf3 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates setAttributeRanges");
 
         if (updateWhat === undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
         if (updateWhat === undefined || updateWhat.colorsInactive) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
@@ -566,7 +565,7 @@ export default class GlSplineDrawer
 
         this._thePoints = []; // todo calc length beforehand
 
-        const perf = CABLES.UI.uiProfiler.start("[glspline] rebuild");
+        const perf = gui.uiProfiler.start("[glspline] rebuild");
 
         for (let i = 0; i < this._splines.length; i++)
         {
@@ -669,7 +668,7 @@ export default class GlSplineDrawer
         }
 
 
-        const perfAttribs = CABLES.UI.uiProfiler.start("[glspline] rebuild set Attribs");
+        const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
 
         this._mesh.setAttribute("speed", this._speeds, 1);
 
@@ -687,7 +686,7 @@ export default class GlSplineDrawer
 
         perfAttribs.finish();
 
-        const perfAttribs2 = CABLES.UI.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
+        const perfAttribs2 = gui.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
 
         for (const i in this._splines)
             this._updateAttribsCoordinates(this._splines[i].index);
@@ -735,14 +734,14 @@ export default class GlSplineDrawer
         let count = 0;
 
         let step = 0.001;
-        if (!userSettings.get("straightLines")) step = 0.01;
+        if (!CABLES.UI.userSettings.get("straightLines")) step = 0.01;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 
 
         if (!l || l < 0) return;
 
-        const perf = CABLES.UI.uiProfiler.start("[glspline] tessEdges");
+        const perf = gui.uiProfiler.start("[glspline] tessEdges");
 
 
         this._arrEdges = [];

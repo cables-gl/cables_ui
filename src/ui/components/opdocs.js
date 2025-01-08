@@ -4,6 +4,9 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
+import uiprofiler from "./uiprofiler.js";
+import namespace from "../namespaceutils.js";
+import opNames from "../opnameutils.js";
 
 /**
  * op documentation loading
@@ -64,7 +67,8 @@ export default class OpDocs
     {
         if (!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
 
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] portdocs inner");
+        const perf = gui.uiProfiler.start("[opdocs] portdocs inner");
+
         for (let i = 0; i < opDoc.docs.ports.length; i++)
         {
             if (opDoc.docs.ports[i].name === port.name)
@@ -133,7 +137,7 @@ export default class OpDocs
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
-            opDoc.category = defaultOps.getNamespaceClassName(opDoc.name);
+            opDoc.category = opNames.getNamespaceClassName(opDoc.name);
             let summaryParsed = false;
 
             if (opDoc.layout)
@@ -154,7 +158,7 @@ export default class OpDocs
                     }
                 }
             }
-            if (defaultOps.isCollection(opDoc.name))
+            if (namespace.isCollection(opDoc.name))
             {
                 if (!summaryParsed)
                 {
@@ -189,11 +193,11 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
-    getNamespaceDocs(namespace)
+    getNamespaceDocs(ns)
     {
-        let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
-        docs = docs.concat(this._extensions.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
-        docs = docs.concat(this._teamnamespaces.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
+        let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); });
+        docs = docs.concat(this._extensions.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); }));
+        docs = docs.concat(this._teamnamespaces.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); }));
         return docs;
     }
 
@@ -209,7 +213,7 @@ export default class OpDocs
     {
         let html = "";
 
-        const className = defaultOps.getPortTypeClassHtml(type);
+        const className = opNames.getPortTypeClassHtml(type);
         html += "<li>";
         html += "<span class=\"" + className + "\">" + portname + "</span>";
 
@@ -285,11 +289,11 @@ export default class OpDocs
         let opDoc = this.getOpDocByName(opName);
 
         let template = "op-doc-template";
-        if (defaultOps.isExtension(opName)) template = "op-doc-collection-template-extension";
-        if (defaultOps.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
+        if (namespace.isExtension(opName)) template = "op-doc-collection-template-extension";
+        if (namespace.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
         if (!opDoc)
         {
-            if (defaultOps.isCollection(opName))
+            if (namespace.isCollection(opName))
             {
                 opDoc = {
                     "name": "",
@@ -302,7 +306,7 @@ export default class OpDocs
                 opDoc = {
                     "name": opName,
                     "summary": "No Op Documentation found",
-                    "userOp": defaultOps.isUserOp(opName)
+                    "userOp": namespace.isUserOp(opName)
                 };
             }
         }
@@ -321,7 +325,7 @@ export default class OpDocs
 
     showPortDoc(opname, portname)
     {
-        const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
+        const perf = gui.uiProfiler.start("opdocs.portdoc");
 
         for (let i = 0; i < this._opDocs.length; i++)
         {
@@ -363,7 +367,7 @@ export default class OpDocs
 
     addOpDocs(opDocs = [])
     {
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] addOpDocs");
+        const perf = gui.uiProfiler.start("[opdocs] addOpDocs");
         const newOpDocs = [];
 
         opDocs.forEach((doc) =>
@@ -409,15 +413,13 @@ export default class OpDocs
 
     checkDefaultOpsOutdated()
     {
-        const perf = CABLES.UI.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
+        const perf = gui.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
         for (const i in defaultOps.defaultOpNames)
         {
             const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
 
             if (!doc)
-            {
-                console.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated ?");
-            }
+                this._log.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated ?");
         }
 
         perf.finish();

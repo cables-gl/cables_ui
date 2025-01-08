@@ -417,7 +417,7 @@ export default function extendCoreOp()
             CABLES.timeoutCheckLinkTimeWarning = setTimeout(() =>
             {
                 // check all ops for other follow up warnings to be resolved (possible optimization: check only ops under this one...)
-                const perf = CABLES.UI.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
+                const perf = gui.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
                 const ops = gui.corePatch().ops;
 
                 for (let i = 0; i < ops.length; i++)

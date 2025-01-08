@@ -1,8 +1,8 @@
 import { Events } from "cables-shared-client";
 import { CONSTANTS } from "../../../../cables/src/core/constants.js";
-import userSettings from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
+import uiconfig from "../uiconfig.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid
@@ -40,7 +40,7 @@ export default class Snap extends Events
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
-            const perf = CABLES.UI.uiProfiler.start("Snap.update");
+            const perf = gui.uiProfiler.start("Snap.update");
             const hashmap = {};
             const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());
             const selOps = gui.patchView.getSelectedOps();
@@ -71,7 +71,7 @@ export default class Snap extends Events
     snapX(_x)
     {
         let x = _x;
-        if (userSettings.get("snapToGrid2"))
+        if (CABLES.UI.userSettings.get("snapToGrid2"))
             x = Snap.snapOpPosX(_x);
 
         return x;
@@ -79,13 +79,13 @@ export default class Snap extends Events
 
     snapY(y, force)
     {
-        if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
+        if (CABLES.UI.userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
         else return y;
     }
 
     _snapPortX(_x, port, index, dist)
     {
-        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (CABLES.UI.userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
         for (let i = 0; i < port.links.length; i++)
         {
@@ -120,7 +120,7 @@ export default class Snap extends Events
 
     snapOpX(_x, op, dist)
     {
-        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (CABLES.UI.userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
 
         let hasLinks = false;
@@ -173,10 +173,10 @@ export default class Snap extends Events
 }
 Snap.snapOpPosX = function (posX)
 {
-    return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX) || 1;
+    return (Math.round(posX / uiconfig.snapX) * uiconfig.snapX) || 1;
 };
 
 Snap.snapOpPosY = function (posY)
 {
-    return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
+    return Math.round(posY / uiconfig.snapY) * uiconfig.snapY;
 };

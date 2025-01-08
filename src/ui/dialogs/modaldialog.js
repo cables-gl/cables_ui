@@ -1,4 +1,5 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
+import { hideToolTip } from "../elements/tooltips.js";
 
 /**
  * configuration object for a modal dialog
@@ -259,7 +260,7 @@ export default class ModalDialog extends Events
 
         this._addListeners();
 
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         this.emitEvent("onShow", this);
     }

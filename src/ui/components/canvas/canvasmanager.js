@@ -1,3 +1,5 @@
+import CanvasUi from "./canvasui.js";
+
 export default class CanvasManager
 {
     constructor()
@@ -58,7 +60,7 @@ export default class CanvasManager
     {
         for (let i = 0; i < this._contexts.length; i++) if (this._contexts[i] == c) return;
 
-        if (!c.canvasUi) c.canvasUi = new CABLES.UI.CanvasUi(c);
+        if (!c.canvasUi) c.canvasUi = new CanvasUi(c);
 
         this._contexts.push(c);
         const ctx = c;

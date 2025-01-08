@@ -1,6 +1,6 @@
 import GlUiConfig from "./gluiconfig.js";
-import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
+import { hideToolTip } from "../elements/tooltips.js";
 
 
 /**
@@ -33,7 +33,7 @@ export default class GlViewBox
         this._viewResX = 0;
         this._viewResY = 0;
         this._panStarted = 0;
-        this.wheelMode = userSettings.get("patch_wheelmode");
+        this.wheelMode = CABLES.UI.userSettings.get("patch_wheelmode");
         // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
@@ -62,11 +62,11 @@ export default class GlViewBox
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
-        // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
+        // this._drawBoundingRect = CABLES.UI.userSettings.get("glpatch_showboundings");
 
-        userSettings.on("change", (which, v) =>
+        CABLES.UI.userSettings.on("change", (which, v) =>
         {
-            this.wheelMode = userSettings.get("patch_wheelmode");
+            this.wheelMode = CABLES.UI.userSettings.get("patch_wheelmode");
         });
     }
 
@@ -152,7 +152,7 @@ export default class GlViewBox
             ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
         {
             this.cursor = "grabbing";
-            CABLES.UI.hideToolTip();
+            hideToolTip();
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
 
@@ -215,7 +215,7 @@ export default class GlViewBox
 
         if (doPan)
         {
-            let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
+            let speed = parseFloat(CABLES.UI.userSettings.get("patch_panspeed")) || 0.25;
 
             this.scrollTo(
                 this._scrollX - event.deltaX * speed,
@@ -247,7 +247,7 @@ export default class GlViewBox
 
         if (delta == 0) return;
 
-        const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
+        const wheelMultiplier = (CABLES.UI.userSettings.get("wheelmultiplier") || 1) * 1.5;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;

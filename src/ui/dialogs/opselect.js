@@ -3,9 +3,10 @@ import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
 import text from "../text.js";
-import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 import OpSearch from "../components/opsearch.js";
+import { hideToolTip } from "../elements/tooltips.js";
+import opNames from "../opnameutils.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -62,7 +63,7 @@ export default class OpSelect
         if (this._getQuery().length > 0)
         {
             let mathPortType = this._getMathPortType();
-            for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
+            for (let i in defaultOps.defaultMathOps[mathPortType])
                 if (this._getQuery().charAt(0) === i) return true;
         }
         return false;
@@ -73,7 +74,7 @@ export default class OpSelect
         if (!this._eleSearchinfo) return;
         this._hideUserOps = gui.project().isOpExample;
 
-        const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
+        const perf = gui.uiProfiler.start("opselect.udpateOptions");
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
 
@@ -173,10 +174,10 @@ export default class OpSelect
     {
         if (this._minimal) return;
 
-        const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
+        const perf = gui.uiProfiler.start("opselect.suggestioninfo");
 
-        let ops = defaultOps.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
-        let vizops = defaultOps.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let ops = opNames.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let vizops = opNames.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
         if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
@@ -348,7 +349,7 @@ export default class OpSelect
                 if (this._currentInfo == "docs_" + selectedEle.dataset.opname) return;
                 this._currentInfo = "docs_" + selectedEle.dataset.opname;
             }
-            const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
+            const perf = gui.uiProfiler.start("opselect.updateInfo");
 
             this._eleSearchinfo.innerHTML = "??";
             const listItem = this.getListItemByOpName(opName);
@@ -418,9 +419,9 @@ export default class OpSelect
 
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
-        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
+        for (let i in defaultOps.defaultMathOps[mathPortType])
             if (sq.charAt(0) === i)
-                sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];
+                sq = defaultOps.defaultMathOps[mathPortType][i];
 
 
         sq = sq || "";
@@ -438,7 +439,7 @@ export default class OpSelect
         else
             this._opSearch.search(query);
 
-        const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
+        const perf = gui.uiProfiler.start("opselect.searchLoop");
 
         for (let i = 0; i < this._opSearch.list.length; i++)
         {
@@ -462,14 +463,14 @@ export default class OpSelect
 
         perf.finish();
 
-        const perfTinysort = CABLES.UI.uiProfiler.start("opselect.tinysort");
+        const perfTinysort = gui.uiProfiler.start("opselect.tinysort");
         tinysort.defaults.order = "desc";
         tinysort(".searchresult", { "data": "score" });
         perfTinysort.finish();
 
         this.navigate(0);
 
-        const perf2 = CABLES.UI.uiProfiler.start("opselect.searchLoop2");
+        const perf2 = gui.uiProfiler.start("opselect.searchLoop2");
 
         if (this.itemHeight === 0)
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
@@ -480,7 +481,7 @@ export default class OpSelect
 
     navigate(diff)
     {
-        const perf2 = CABLES.UI.uiProfiler.start("opselect.navigate");
+        const perf2 = gui.uiProfiler.start("opselect.navigate");
 
         this._typedSinceOpening = true;
         this.displayBoxIndex += diff;
@@ -498,7 +499,7 @@ export default class OpSelect
 
         if (oBoxCollection[this.displayBoxIndex]) oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
 
-        const perf3 = CABLES.UI.uiProfiler.start("opselect.navigate.perf3");
+        const perf3 = gui.uiProfiler.start("opselect.navigate.perf3");
         const scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
 
         if (this._lastScrollTop != scrollTop)
@@ -527,7 +528,7 @@ export default class OpSelect
 
         if (!this._opSearch.list)
         {
-            const perf = CABLES.UI.uiProfiler.start("opselect.prepare.list");
+            const perf = gui.uiProfiler.start("opselect.prepare.list");
 
             this._opSearch._buildList();
 
@@ -536,7 +537,7 @@ export default class OpSelect
 
         if (!this._html)
         {
-            const perf = CABLES.UI.uiProfiler.start("opselect.html");
+            const perf = gui.uiProfiler.start("opselect.html");
 
             const head = getHandleBarHtml("op_select");
 
@@ -570,7 +571,7 @@ export default class OpSelect
     show(options, linkOp, linkPort, link)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
-        const perf = CABLES.UI.uiProfiler.start("opselect.show");
+        const perf = gui.uiProfiler.start("opselect.show");
 
         this._eleSearchinfo = document.getElementById("searchinfo");
 
@@ -578,10 +579,10 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
-        this._minimal = userSettings.get("miniopselect") == true;
+        this._minimal = CABLES.UI.userSettings.get("miniopselect") == true;
 
         this._options = options;
-        CABLES.UI.hideToolTip();
+        hideToolTip();
 
         this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
@@ -693,7 +694,7 @@ export default class OpSelect
         const sq = this._getQuery();
         const mathPortType = this._getMathPortType();
 
-        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
+        for (let i in defaultOps.defaultMathOps[mathPortType])
         {
             if (sq.charAt(0) === i)
             {
@@ -794,7 +795,7 @@ export default class OpSelect
             // prevent adding of ops that are not usable
 
             // if (sq.charAt(0) === i)
-            //     sq = CABLES.UI.DEFAULTMATHOPS[i]+" "+sq.substr(1);
+            //     sq = defaultOps.defaultMathOps[i]+" "+sq.substr(1);
 
             if (!(listItem && listItem.notUsable))
             {

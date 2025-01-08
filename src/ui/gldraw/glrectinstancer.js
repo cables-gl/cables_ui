@@ -101,7 +101,7 @@ export default class GlRectInstancer extends Events
     {
         if (this._needsBoundsRecalc)
         {
-            const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] recalcBounds");
+            const perf = gui.uiProfiler.start("[glRectInstancer] recalcBounds");
 
             const defaultMin = this._DEFAULT_BIGNUM;
             const defaultMax = -this._DEFAULT_BIGNUM;
@@ -344,7 +344,7 @@ export default class GlRectInstancer extends Events
 
         if (this._reUploadAttribs)
         {
-            const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
+            const perf = gui.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
@@ -571,7 +571,7 @@ export default class GlRectInstancer extends Events
 
     mouseMove(x, y, button, event)
     {
-        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mousemove");
+        const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this._interactive) return;
         if (this.allowDragging && this._draggingRect)
         {
@@ -590,7 +590,7 @@ export default class GlRectInstancer extends Events
     {
         if (!this._interactive) return;
 
-        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseDown");
+        const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this._rects.length; i++)
             if (!this._rects[i].parent)
                 this._rects[i].mouseDown(e);
@@ -600,7 +600,7 @@ export default class GlRectInstancer extends Events
     mouseUp(e)
     {
         if (!this._interactive) return;
-        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseup");
+        const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
         for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseUp(e);
         perf.finish();
