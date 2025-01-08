@@ -95,7 +95,7 @@ export default class Snap extends Events
             let otherPortIndex = 0;
 
             let ports = otherPort.op.portsOut;
-            if (otherPort.direction == CABLES.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
+            if (otherPort.direction == CABLES.PORT_DIR_IN) ports = otherPort.op.portsIn;
 
             otherPortIndex = 0;
             for (let j = 0; j < ports.length; j++)
