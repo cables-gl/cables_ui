@@ -1,18 +1,19 @@
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import text from "../../text.js";
+import { handleBarPrecompiled } from "../../utils/handlebars.js";
 
 class PortHtmlGenerator
 {
     constructor(panelId)
     {
         this._panelId = panelId;
-        this._templateHead = Handlebars.compile(document.getElementById("params_op_head").innerHTML);
-        this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
-        this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
-        this._templatePortInput = Handlebars.compile(document.getElementById("params_port_input").innerHTML);
-        this._templatePortOutput = Handlebars.compile(document.getElementById("params_port_output").innerHTML);
-        this._templatePortsHead = Handlebars.compile(document.getElementById("params_ports_head").innerHTML);
+        this._templateHead = handleBarPrecompiled("params_op_head");
+        this._templatePortGeneral = handleBarPrecompiled("params_port_general");
+        this._templatePortGeneralEnd = handleBarPrecompiled("params_port_general_end");
+        this._templatePortInput = handleBarPrecompiled("params_port_input");
+        this._templatePortOutput = handleBarPrecompiled("params_port_output");
+        this._templatePortsHead = handleBarPrecompiled("params_ports_head");
     }
 
     getHtmlOpHeader(op)

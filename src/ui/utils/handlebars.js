@@ -3,7 +3,7 @@
  */
 const handleBarsPrecompiled = {};
 
-function handleBarPrecompiled(name)
+export function handleBarPrecompiled(name)
 {
     let template = handleBarsPrecompiled[name];
     if (template) return template;
