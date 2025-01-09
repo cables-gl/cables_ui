@@ -268,9 +268,12 @@ export default class GlOp extends Events
 
         if (!this._op || !oldUiAttribs || !oldUiAttribs.translate) return;
 
+
         let changed =
             oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
+
+
 
         // if (this._preDragPosZ != this._glRectBg.z)
         // this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
@@ -310,6 +313,7 @@ export default class GlOp extends Events
 
 
             gui.patchView.testCollision(this._op);
+
 
             undo.endGroup(undoGroup, "Move Ops");
         }

@@ -572,7 +572,16 @@ export default class GlPatch extends Events
 
                         const border = 5;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
+
+                        // console.log("dragen2222!!!!!!", this._op.uiAttribs.translate.x, this._glPatch.snap.snapOpX(this._op.uiAttribs.translate.x, this._op));
+
+                        // this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": this._glPatch.snap.snapOpX(this._op.uiAttribs.translate.x, this._op), "y": this._glPatch.snap.snapY(this._op.uiAttribs.translate.y) });
+
+
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
+
+
+
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
                         this._dropInOpBorder.setOpacity(0.35);
                     }
@@ -808,7 +817,16 @@ export default class GlPatch extends Events
                     if (this.selectedGlOps[i].isHovering()) // && this.selectedGlOps[i].isDragging
                     {
                         const coord = this.screenToPatchCoord(e.offsetX, e.offsetY);
-                        gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, Snap.snapOpPosX(coord[0]), Snap.snapOpPosY(coord[1]));
+                        gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, coord[0], coord[1]);
+
+                        this._selectedGlOps[i].op.setUiAttribs(
+                            {
+                                "translate":
+                                {
+                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 100),
+                                    "y": coord[1]
+                                } });
+
                         return;
                     }
                 }
