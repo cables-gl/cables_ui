@@ -547,4 +547,11 @@ export default class Platform extends Events
         });
         return defaultOps.prefixes.patchOp + ns + ".";
     }
+
+    getSupportedOpDependencyTypes()
+    {
+        const types = ["lib", "corelib", "commonjs", "module", "op"];
+        if (this.frontendOptions.npm) types.push("npm");
+        return types;
+    }
 }

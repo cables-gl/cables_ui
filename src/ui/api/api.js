@@ -1,6 +1,5 @@
 import { Logger } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
-import undo from "../utils/undo.js";
 
 export default class Api
 {
@@ -9,7 +8,6 @@ export default class Api
         this._log = new Logger("api");
         this.cache = [];
         this.lastErrorReport = null;
-        this.maintenanceModeWarning = null;
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)
@@ -18,7 +16,7 @@ export default class Api
 
         const options = { "method": method };
 
-        if (method == "POST")
+        if (method === "POST")
         {
             options.headers = {
                 "Accept": "application/json",
@@ -38,12 +36,6 @@ export default class Api
                         console.log(e, url);
                     }).then((_data) =>
                     {
-                        // const tooktime = Math.round(performance.now() - startTime);
-                        // if (tooktime > 350.0)
-                        // {
-                        //     console.warn("- slow request: " + method + " " + url + ": " + tooktime + "ms");
-                        // }
-
                         if (cbSuccess) cbSuccess(_data);
                     });
                 }
@@ -63,7 +55,7 @@ export default class Api
                             {
                                 if (CABLES && CABLES.UI && CABLES.UI.MODAL)
                                 {
-                                    if (_data.statusText == "NOT_LOGGED_IN")
+                                    if (_data.statusText === "NOT_LOGGED_IN")
                                     {
                                         new ModalDialog({
                                             "warning": true,
@@ -71,7 +63,7 @@ export default class Api
                                             "html": "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">continue</a> <br/><br/> "
                                         });
                                     }
-                                    else if (_data.statusText == "Multiple Choices")
+                                    else if (_data.statusText === "Multiple Choices")
                                     {
                                         this._log.warn("Fetch unknown file response...");
                                         this._log.log(url);

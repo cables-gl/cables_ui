@@ -163,125 +163,61 @@
 
             <br/><br/>
 
+            <div class="groupSpacer"><h3>Dependencies</h3></div>
+            Add dependencies, like libs or modules to your op
 
-            <!-- core libs -->
-            <div class="groupSpacer"><h3>Core-Libs</h3></div>
-
-            {{#if doc.coreLibs}}
+            <div class="opDependencyList">
                 <table class="table">
                     <tr>
-                        <th>Filename</th>
+                        <th>Name</th>
+                        <th>Type</th>
                         <th> </th>
                     </tr>
-
-                    {{#each doc.coreLibs}}
+                    {{#each opDoc.coreLibs}}
                         <tr>
                             <td>{{.}}</td>
+                            <td>corelib</td>
                             <td>
                                 {{#if ../canEditOp}}
-                                <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../opname}}','{{.}}');"></a>
+                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../opname}}','{{.}}');"></a>
                                 {{/if}}
                             </td>
                         </tr>
                     {{/each}}
-                </table>
-            {{/if}}
-
-            <div class="libselect">
-                <select id="{{viewId}}_addcorelib">
-                    <option value="">---</option>
-                    {{#each coreLibs}}
-                    <option value="{{.}}">{{.}}</option>
-                    {{/each}}
-                </select>
-                <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addcorelib')));">Add</a>
-            </div>
-
-
-            <!-- libs -->
-            <br/><br/>
-            <div class="groupSpacer"><h3>Libs</h3></div>
-
-            You can upload .js files that can be used as libraries for your own ops
-
-            {{#if doc.libs}}
-                <table class="table">
-                    <tr>
-                        <th>Filename</th>
-                        <th> </th>
-                    </tr>
-                    {{#each doc.libs}}
+                    {{#each opDoc.libs}}
                         <tr>
                             <td>{{.}}</td>
+                            <td>lib</td>
                             <td>
                                 {{#if ../canEditOp}}
-                                <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../opname}}','{{.}}');"></a>
+                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../opname}}','{{.}}');"></a>
                                 {{/if}}
                             </td>
                         </tr>
                     {{/each}}
-                </table>
-            {{/if}}
-
-            <div class="libselect">
-                <select id="{{viewId}}_addoplib">
-                    <option value="">---</option>
-                    {{#each libs}}
-                    <option value="{{url}}">{{#if isAssetLib}}patch file - {{/if}}{{name}}</option>
-                    {{/each}}
-                </select>
-                <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addoplib')));">Add</a>
-            </div>
-
-
-            <!-- dependencies -->
-            {{#if frontendOptions.opDependencies}}
-                <br/><br/>
-                <div class="groupSpacer"><h3>Dependencies</h3></div>
-
-                Add dependencies, like libs or modules to your op
-
-                {{#if opDoc.dependencies}}
-                    <table class="table">
+                    {{#each opDoc.dependencies}}
                         <tr>
-                            <th>Name</th>
-                            <!-- <th>Version</th> -->
-                            <th>Type</th>
-                            <th> </th>
-                        </tr>
-                        {{#each opDoc.dependencies}}
-                            <tr>
-                                <td>
+                            <td>
                                 {{#compare type '==' 'npm'}}
                                     <a class="link" {{#if ../frontendOptions.isStandalone}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
                                 {{else}}
                                     {{name}}
                                 {{/compare}}
 
-                                </td>
-                                <!-- <td>{{#if version}}{{version}}{{else}}latest{{/if}}</td> -->
-                                <td>{{type}}</td>
-                                <td>
-                                    {{#if ../canEditOp}}
-                                        <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{name}}', '{{type}}');"></a>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/each}}
-                    </table>
-                {{/if}}
+                            </td>
+                            <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
+                            <td>
+                                {{#if ../canEditOp}}
+                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{src}}', '{{type}}');"></a>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
 
-                <div id="addopdependency_{{viewId}}">
-                    <input class="depName" type="text">
-                    <div class="edit hidden">
-                        <select class="depType">
-                            {{#if frontendOptions.npm}}<option value="npm">npm</option>{{/if}}
-                        </select>
-                        <a class="button-small add">Add</a>
-                    </div>
+            <div id="dependencytabs"></div>
 
-                </div>
-            {{/if}}
         {{/if}}
 
         {{#if doc.changelog}}

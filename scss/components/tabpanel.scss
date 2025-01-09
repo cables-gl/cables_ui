@@ -1,39 +1,33 @@
 
-
-.tabContentScrollContainer
-{
-    height:100%;
+.tabContentScrollContainer {
+    height: 100%;
     overflow-y: auto;
 }
-.tabtoolbar
-{
-    padding:15px;
-    padding-left:5px;
+
+.tabtoolbar {
+    padding: 15px;
+    padding-left: 5px;
 }
 
-#bottomtabs .tabtoolbar
-{
-    padding:2px;
+#bottomtabs .tabtoolbar {
+    padding: 2px;
 }
 
-.toolbar
-{
+.toolbar {
     // border:1px solid green;
     background-color: var(--color-01);
 }
 
-.tabpanel
-{
+.tabpanel {
     background-color: var(--color-02);
 
-    .tabs
-    {
+    .tabs {
         // height: 32px; // dont set height directly because scrollbars...
         // height: auto;
-        padding:0px;
+        padding: 0px;
         padding-left: 4px;
 
-        width:100%;
+        width: 100%;
         // margin-bottom: 3px;
         // height:32px;
         // overflow: hidden;
@@ -42,181 +36,162 @@
         background-color: var(--color-03);
         white-space: nowrap;
 
-        .tabcontainer
-        {
+        .tabcontainer {
             user-select: none;
-            display:inline-block;
+            display: inline-block;
         }
 
-        .taboptions
-        {
-            position:absolute;
-            min-width:20px;
+        .taboptions {
+            position: absolute;
+            min-width: 20px;
             max-width: 20px !important;
-            right:0px;
-            padding:4px;
-            padding-top:10px;
-            padding-bottom:8px;
+            right: 0px;
+            padding: 4px;
+            padding-top: 10px;
+            padding-bottom: 8px;
             background-color: var(--color-03);
             z-index: 2;
         }
 
-        .tab
-        {
-            float:left;
+        .tab {
+            float: left;
             font-size: 13px;
-            padding:4px;
-            padding-top:3px;
-            cursor:pointer;
+            padding: 4px;
+            padding-top: 3px;
+            cursor: pointer;
             padding-left: 8px;
             padding-right: 8px;
             margin-top: 7px;
             min-width: 70px !important;
-            opacity:0.8;
+            opacity: 0.8;
             color: var(--color-13);
             background-color: var(--color-02);
             border-bottom: 1px solid transparent;
 
-            &:hover
-            {
-                opacity:0.6;
+            &:hover {
+                opacity: 0.6;
                 border-bottom: 1px solid var(--color-08);
             }
 
-            &.active
-            {
-                opacity:1;
+            &.active {
+                opacity: 1;
                 background-color: var(--color-01);
                 border-bottom: 1px solid var(--color-special);
 
-                &:hover
-                {
-                    opacity:1;
+                &:hover {
+                    opacity: 1;
                 }
             }
 
-            .tabicon
-            {
+            .tabicon {
                 pointer-events: none !important;
             }
         }
 
-        .unsaved
-        {
-            color:var(--color-warning);
+        .unsaved {
+            color: var(--color-warning);
         }
     }
 }
 
 
-
-.contentcontainer
-{
+.contentcontainer {
     // outer container for tabs. can not scroll. scrolling must be handles in container childs!
     position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
     height: 100%;
 
-    .tabcontent-scroll
-    {
-        height:100%;
-        overflow-x:auto;
-        overflow-y:auto;
+    .tabcontent-scroll {
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
     }
 
-    .tabRows
-    {
+    .tabRows {
         display: flex;
-        flex-direction:column;
-        height:100%;
+        flex-direction: column;
+        height: 100%;
 
-        .tabRow
-        {
-            margin-bottom:10px;
+        .tabRow {
+            margin-bottom: 10px;
         }
 
-        .tabRowExpand
-        {
-            display:flex;
-            flex-grow:1;
+        .tabRowExpand {
+            display: flex;
+            flex-grow: 1;
             flex: 1 1 auto;
             overflow-y: auto;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
 
-        .hljs
-        {
-            width:100%;
-            height:100%;
+        .hljs {
+            width: 100%;
+            height: 100%;
             overflow: auto;
         }
     }
 
-    .padding
-    {
-        padding-left:10px;
+    .padding {
+        padding-left: 10px;
     }
 
-    .closetabx
-    {
+    .closetabx {
         margin-top: 4px;
-        margin-right:10px;
-        float:right;
+        margin-right: 10px;
+        float: right;
         position: absolute;
         right: 0px;
     }
 
-    .tabcontent
-    {
-        background-color:$background-color-dark;
-        max-height:100%;
-        height:auto;
+    .tabcontent {
+        background-color: $background-color-dark;
+        max-height: 100%;
+        height: auto;
 
-        &.readonly
-        {
+        &.readonly {
             opacity: 0.6;
             pointer-events: none !important;
             user-select: none !important;
 
-            input
-            {
+            input {
                 pointer-events: none !important;
                 user-select: none !important;
             }
         }
 
-        h1,h2,h3,h4
-        {
-            color:var(--color-13);
+        h1, h2, h3, h4 {
+            color: var(--color-13);
         }
 
-        hr
-        {
-            margin-top:20px;
-            border-top:2px solid var(--color-05);
+        hr {
+            margin-top: 20px;
+            border-top: 2px solid var(--color-05);
         }
     }
 }
 
-#metatabpanel .contentcontainer
-{
+#metatabpanel .contentcontainer {
     overflow-y: auto;
 }
 
-#metatabpanel .libselect.inactive
-{
-    opacity: 0.5;
+#dependencytabs .libselect {
+    select {
+        padding: 8px 9px !important;
+        width: 100%;
+    }
+
+    &.inactive {
+        opacity: 0.5;
+    }
 }
 
-#bottomtabs .tabpanel
-{
+#bottomtabs .tabpanel {
     display: none;
 }
 
-#maintabs,#bottomtabs
-{
-    background-color:$background-color-dark;
+#maintabs, #bottomtabs {
+    background-color: $background-color-dark;
     margin: 0;
     // background-color: blue;
     z-index: $zindex_over;
@@ -235,57 +210,50 @@
     // overflow-y:hide;
 
 
-    .ace_gutter-active-line
-    {
+    .ace_gutter-active-line {
         background-color: #696a6b;
     }
 
-    .ace_content *
-    {
+    .ace_content * {
         font-family: sourceCodePro;
         -webkit-font-smoothing: subpixel-antialiased;
 
     }
 
-    .ace_selection
-    {
+    .ace_selection {
         background-color: #188eac !important;
-        border:0 !important;
+        border: 0 !important;
     }
-    .ace_selected-word
-    {
+
+    .ace_selected-word {
         background-color: #14748b !important;
-        border:0 !important;
+        border: 0 !important;
     }
 
 }
 
 
-.tabSubtab
-{
-    padding-left:15px;
-    padding-right:15px;
-    padding:5px;
-    border-bottom:1px solid transparent;
-}
-.tabActiveSubtab
-{
-    border-bottom:1px solid var(--color-special);
+.tabSubtab {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding: 5px;
+    border-bottom: 1px solid transparent;
 }
 
-
-.fileTypeColor_gl
-{
-    color:var(--color_port_function);
+.tabActiveSubtab {
+    border-bottom: 1px solid var(--color-special);
 }
 
-.fileTypeColor_js
-{
-    color:var(--color_port_value);
+
+.fileTypeColor_gl {
+    color: var(--color_port_function);
 }
 
-.fileTypeColor_css
-{
-    color:var(--color_port_array);
+.fileTypeColor_js {
+    color: var(--color_port_value);
+}
+
+.fileTypeColor_css {
+    color: var(--color_port_array);
 }
 

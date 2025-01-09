@@ -1,5 +1,4 @@
 import { Events } from "cables-shared-client";
-import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
@@ -96,7 +95,7 @@ export default class Snap extends Events
             let otherPortIndex = 0;
 
             let ports = otherPort.op.portsOut;
-            if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
+            if (otherPort.direction == CABLES.PORT_DIR_IN) ports = otherPort.op.portsIn;
 
             otherPortIndex = 0;
             for (let j = 0; j < ports.length; j++)

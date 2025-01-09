@@ -1,18 +1,19 @@
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import text from "../../text.js";
+import { handleBarPrecompiled } from "../../utils/handlebars.js";
 
 class PortHtmlGenerator
 {
     constructor(panelId)
     {
         this._panelId = panelId;
-        this._templateHead = Handlebars.compile(document.getElementById("params_op_head").innerHTML);
-        this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
-        this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
-        this._templatePortInput = Handlebars.compile(document.getElementById("params_port_input").innerHTML);
-        this._templatePortOutput = Handlebars.compile(document.getElementById("params_port_output").innerHTML);
-        this._templatePortsHead = Handlebars.compile(document.getElementById("params_ports_head").innerHTML);
+        this._templateHead = handleBarPrecompiled("params_op_head");
+        this._templatePortGeneral = handleBarPrecompiled("params_port_general");
+        this._templatePortGeneralEnd = handleBarPrecompiled("params_port_general_end");
+        this._templatePortInput = handleBarPrecompiled("params_port_input");
+        this._templatePortOutput = handleBarPrecompiled("params_port_output");
+        this._templatePortsHead = handleBarPrecompiled("params_ports_head");
     }
 
     getHtmlOpHeader(op)
@@ -63,14 +64,12 @@ class PortHtmlGenerator
             "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.platform.getCablesUrl(),
-
-
             "hasExample": hasExample,
         };
 
         o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
-        return this._templateHead(o);
+        return this._templateHead(o, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
     getHtmlHeaderPorts(dir, title)
@@ -79,7 +78,7 @@ class PortHtmlGenerator
             "dirStr": dir,
             "title": title,
             "texts": text,
-        });
+        }, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
     getHtmlInputPorts(ports)
@@ -122,16 +121,15 @@ class PortHtmlGenerator
                 "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 
-            html += this._templatePortGeneral(tmplData);
-            html += this._templatePortInput(tmplData);
-            html += this._templatePortGeneralEnd(tmplData);
+            html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortInput(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortGeneralEnd(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
         }
         return html;
     }
 
     getHtmlOutputPorts(ports)
     {
-        let foundPreview = false;
         let lastGroup = null;
         let html = "";
         for (const i in ports)
@@ -140,10 +138,7 @@ class PortHtmlGenerator
                 ports[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
                 ports[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
                 ports[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
-                ports[i].getType() == CABLES.OP_PORT_TYPE_OBJECT)
-            {
-                ports[i].watchId = "out_" + i;
-            }
+                ports[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) ports[i].watchId = "out_" + i;
 
             let startGroup = null;
             let groupSpacer = false;
@@ -158,8 +153,6 @@ class PortHtmlGenerator
                 startGroup = lastGroup;
             }
 
-
-
             const tmplData = {
                 "port": ports[i],
                 "dirStr": "out",
@@ -170,9 +163,9 @@ class PortHtmlGenerator
                 "isInput": false,
                 "op": ports[i].op
             };
-            html += this._templatePortGeneral(tmplData);
-            html += this._templatePortOutput(tmplData);
-            html += this._templatePortGeneralEnd(tmplData);
+            html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortOutput(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
+            html += this._templatePortGeneralEnd(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
         }
 
         return html;

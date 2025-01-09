@@ -25,25 +25,22 @@ export default class TabPanel extends Events
         this.showTabListButton = false;
         this._dynCmds = [];
 
-        if (!this._eleTabPanel)
+        this._eleTabPanel = document.createElement("div");
+        this._eleTabPanel.classList.add("tabpanel");
+        this._eleTabPanel.innerHTML = "";
+
+        const el = ele.byId(this._eleId);
+        if (!el)
         {
-            this._eleTabPanel = document.createElement("div");
-            this._eleTabPanel.classList.add("tabpanel");
-            this._eleTabPanel.innerHTML = "";
-
-            const el = ele.byId(this._eleId);
-            if (!el)
-            {
-                console.error("could not find ele " + this._eleId);
-                return;
-            }
-            el.appendChild(this._eleTabPanel);
-
-            this._eleContentContainer = document.createElement("div");
-            this._eleContentContainer.classList.add("contentcontainer");
-            this._eleContentContainer.innerHTML = "";
-            el.appendChild(this._eleContentContainer);
+            console.error("could not find ele " + this._eleId);
+            return;
         }
+        el.appendChild(this._eleTabPanel);
+
+        this._eleContentContainer = document.createElement("div");
+        this._eleContentContainer.classList.add("contentcontainer");
+        this._eleContentContainer.innerHTML = "";
+        el.appendChild(this._eleContentContainer);
 
         this.on("resize", () =>
         {

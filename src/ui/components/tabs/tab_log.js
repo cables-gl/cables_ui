@@ -1,6 +1,8 @@
 import { Events, Logger } from "cables-shared-client";
+import ErrorStackParser from "error-stack-parser";
 import Tab from "../../elements/tabpanel/tab.js";
 import undo from "../../utils/undo.js";
+
 
 
 /**

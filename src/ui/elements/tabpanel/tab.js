@@ -9,14 +9,14 @@ export default class Tab extends Events
         super();
         this.id = CABLES.uuid();
         this.options = options || {};
-        if (!options.hasOwnProperty("showTitle")) this.options.showTitle = true;
-        if (!options.hasOwnProperty("hideToolbar")) this.options.hideToolbar = false;
-        if (!options.hasOwnProperty("closable")) this.options.closable = true;
-        if (!options.hasOwnProperty("name")) this.options.name = title || "???";
+        if (!this.options.hasOwnProperty("showTitle")) this.options.showTitle = true;
+        if (!this.options.hasOwnProperty("hideToolbar")) this.options.hideToolbar = false;
+        if (!this.options.hasOwnProperty("closable")) this.options.closable = true;
+        if (!this.options.hasOwnProperty("name")) this.options.name = title || "???";
 
-        this.tabPanel = options.tabPanel || null;
+        this.tabPanel = this.options.tabPanel || null;
         this.icon = this.options.icon || null;
-        this.dataId = options.dataId;
+        this.dataId = this.options.dataId;
         this.title = title;
         this.active = false;
         this.toolbarContainerEle = document.createElement("div");
@@ -114,6 +114,6 @@ export default class Tab extends Events
         this.active = false;
         this.contentEle.style.display = "none";
         this.toolbarContainerEle.style.display = "none";
-        this.emitEvent("ondeactivate");
+        this.emitEvent("onDeactivate");
     }
 }
