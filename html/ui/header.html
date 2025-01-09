@@ -75,22 +75,28 @@
     </head>
 <body>
 
-    <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
-    <div id="loadingstatusLog" style="font-family: monospace;padding:30px;"></div>
+    <div class="cablesCssUi">
+        <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
+        <div id="loadingstatusLog" style="font-family: monospace;padding:30px;"></div>
+    </div>
 
     <div id="cablescanvas" class="bgpatternDark hidden" style="width:640px;height:300px;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>
     </div>
 
-    <div id="mainContainer" class="hidden cablesCssUi">
+    <div class="cablesCssUi">
 
-    <div id="cmdpalette" class="hidden">
-		<div class="input-container">
-        	<input class="medium info" id="cmdinput" autocomplete="off" oninput="gui.cmdPallet.doSearch(this.value);" placeholder="search" style="width:85%;float:left;"/>
-			<div style="width:10%;float:left">
-				<a class="icon-x icon icon-2x" onclick="gui.cmdPallet.close();"></a>
-			</div>
-			<div class="clear"></div>
-		</div>
-        <div id="searchresult_cmd"></div>
+        <div id="mainContainer" class="hidden cablesCssUi"></div>
+
+        <div id="cmdpalette" class="hidden">
+            <div class="input-container">
+                <input class="medium info" id="cmdinput" autocomplete="off" oninput="gui.cmdPallet.doSearch(this.value);" placeholder="search" style="width:85%;float:left;"/>
+                <div style="width:10%;float:left">
+                    <a class="icon-x icon icon-2x" onclick="gui.cmdPallet.close();"></a>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div id="searchresult_cmd"></div>
+        </div>
     </div>
+
