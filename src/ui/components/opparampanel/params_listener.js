@@ -9,6 +9,7 @@ import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
 import uiprofiler from "../uiprofiler.js";
+import ParamTabInputListener from "./param_tabinputlistener.js";
 
 
 /**
@@ -758,9 +759,9 @@ class ParamsListener extends Events
                 {
                     CABLES.UI.valueChanger(theId, false, portName, opId);
 
-                    new CABLES.UI.ParamTabInputListener(el);
 
-                    // ele.byId(theId).focus();
+                    ele.byId(theId).focus();
+                    new ParamTabInputListener(el);
                 };
 
                 el.addEventListener("mousedown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................

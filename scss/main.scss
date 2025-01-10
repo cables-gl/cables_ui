@@ -576,7 +576,13 @@ body
         &::placeholder{
             color:$color-input-placeholder;
         }
-    }
+        outline:none;
+        &:focus-visible
+        {
+            outline:2px
+        }
+        }
+
 
     .underline
     {
