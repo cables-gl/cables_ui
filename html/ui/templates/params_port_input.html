@@ -62,8 +62,8 @@
 
                 {{#compare port.uiAttribs.display '==' 'bool' }}
             </td><td>
-                        <span class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
-                            <span id="portcheckbox_{{ portnum }}_{{ panelid }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.paramsHelper.togglePortValBool('portval_{{ portnum }}_{{ panelid }}','portcheckbox_{{ portnum }}_{{ panelid }}');" ></span>
+                        <span id="portcheckbox_{{ portnum }}_{{ panelid }}" class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
+                            <span tabindex="0"  style="height:20px;width:20px;" class="ccheckbox icon icon-check"  ></span>
                         </span>
                     <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}_{{ panelid }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                 {{/compare}}
@@ -152,10 +152,12 @@
                 {{#compare port.uiAttribs.display '==' 'switch' }}
                     </td><td>
                         <input class="value hide" type="hidden" id="portval_{{ portnum }}_{{ panelid }}" style="width:40px;" value="{{port.value}}"/>
-                        <div class="radioToggle">
+                        <div class="radioToggle" id="portSwitch_{{ portnum }}_{{ panelid }}">
                             {{#each port.uiAttribs.values}}
-                                <label><input type="radio" name="radio_portval_{{ ../portnum }}_{{ ../panelid }}" value="{{ this }}"
-                                    oninput="ele.byId('portval_{{ ../portnum }}_{{ ../panelid }}').value=this.value;ele.byId('portval_{{ ../portnum }}_{{ ../panelid }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
+                                <label tabindex="0" id="label_{{ @index }}">
+                                    <input type="radio" name="radio_portval_{{ ../portnum }}_{{ ../panelid }}" value="{{ this }}"{{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}>
+                                    <span>{{ this }}</span>
+                                </label>
                             {{/each}}
                         </div>
 
@@ -232,6 +234,7 @@
                     </td><td>
                             <!-- new value input2 -->
                             <div
+                                tabindex="0"
                                 class="numberinput tabable valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}"
                                 data-portnum="{{ portnum }}"
                                 data-panelid="{{ panelid }}"
@@ -239,14 +242,13 @@
                                 data-portname="{{ port.name }}"
                                 data-portname="{{ port.name }}"
                                 id="portval_{{ portnum }}_{{ panelid }}-container"
-                                onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');new CABLES.UI.ParamTabInputListener(this);"
+
                                 onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
                                 <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
                             </div>
                         {{/compare}}
                         {{#compare port.type '==' 3}}
-
                             {{#if port.uiAttribs.multiPort}}
                             {{else}}
                                 </td><td>

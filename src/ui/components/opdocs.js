@@ -343,7 +343,7 @@ export default class OpDocs
                 if (group) group += " - ";
                 else group = "";
 
-                if (this._opDocs[i].docs)
+                if (this._opDocs[i].docs && this._opDocs[i].docs.ports)
                 {
                     for (let j = 0; j < this._opDocs[i].docs.ports.length; j++)
                     {
