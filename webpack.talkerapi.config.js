@@ -3,6 +3,7 @@ import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import { fileURLToPath } from "url";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+import ModuleScopePlugin from "@k88/module-scope-plugin";
 
 export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
 {
@@ -36,6 +37,9 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
         "externals": ["CABLES"],
         "resolve": {
             "extensions": [".json", ".js"],
+            "plugins": [
+                new ModuleScopePlugin.default("src-talkerapi/"),
+            ],
         },
         "module": {
             "rules": [

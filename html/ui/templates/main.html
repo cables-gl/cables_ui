@@ -1,291 +1,293 @@
 
-<div id="library">
-    <div id="lib_head"></div>
-    <div style="clear:both"></div>
-
-    <div class="libContentContainer">
-        <div class="libleft">
-            <div id="lib_files"></div>
-        </div>
-        <div class="libright">
-            <div id="lib_preview"></div>
-        </div>
+<div class="cablesCssUi" id="maincomponents" style="display:none;">
+    <div id="library">
+        <div id="lib_head"></div>
         <div style="clear:both"></div>
+
+        <div class="libContentContainer">
+            <div class="libleft">
+                <div id="lib_files"></div>
+            </div>
+            <div class="libright">
+                <div id="lib_preview"></div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
     </div>
-</div>
 
-<div id="inspectHtmlOverlay"  class="hidden"></div>
+    <div id="inspectHtmlOverlay"  class="hidden"></div>
 
-<div id="breadcrumb_nav">
-    <div id="subpatch_nav">
-        <div id="subpatch_breadcrumb"></div>
+    <div id="breadcrumb_nav">
+        <div id="subpatch_nav">
+            <div id="subpatch_breadcrumb"></div>
+        </div>
     </div>
-</div>
 
-<div id="restriction_message" class="hidden"></div>
+    <div id="restriction_message" class="hidden"></div>
 
-<div id="drop-op-cursor" class="hidden"></div>
+    <div id="drop-op-cursor" class="hidden"></div>
 
-<div id="suggestionDialog" class="hidden"></div>
-<div id="modalbg"  onclick="gui.pressedEscape();" style="display:none;"></div>
-<div id="modalcontainer" class="cablesCssUi" style="display:none;">
-	<div id="modalclose" class="modalclose">
-		<a class="icon-x icon icon-1_5x" onclick="gui.pressedEscape();"></a>
-	</div>
+    <div id="suggestionDialog" class="hidden"></div>
+    <div id="modalbg"  onclick="gui.pressedEscape();" style="display:none;"></div>
+    <div id="modalcontainer" class="cablesCssUi" style="display:none;">
+        <div id="modalclose" class="modalclose">
+            <a class="icon-x icon icon-1_5x" onclick="gui.pressedEscape();"></a>
+        </div>
 
-	<div id="modalheader"></div>
-	<div id="modalcontent"></div>
-</div>
-<div id="opsearchmodal" class="hidden cablesCssUi"></div>
-
-<div id="canvasflash" class="hidden"></div>
-<div id="canvasmodal" class="hidden"></div>
-<div id="canvasicons" class="">
-    <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
-    <div id="canvasIconBar" class="cbl_iconbar cbl_iconbar_hor ">
-        <span onclick="CABLES.CMD.RENDERER.popoutCanvas()" class="item"><span class="tt info icon icon-external icon-1_25x"  data-tt="popout canvas" data-info="renderer_popout"></span></span>
-
-        <span onclick="CABLES.CMD.UI.toggleMaxRenderer()" class="item"><span class="tt info icon icon-canvas_max icon-1_25x"  data-tt="maximize canvas" data-info="renderer_maximize"></span></span>
-        <span onclick="CABLES.CMD.UI.togglePatchBgRenderer()" class="item"><span class="tt info icon icon-canvas_patchbg icon-1_25x"  data-tt="patch background" data-info="renderer_patchbg"></span></span>
-
-        <span onclick="CABLES.CMD.RENDERER.screenshot()" class="item"><span class="tt info icon icon-image icon-1_25x"  data-tt="save screenshot" data-info="save_screenshot"></span></span>
-        <span onclick="CABLES.CMD.UI.toggleMute();" class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
-        <span onclick="CABLES.CMD.UI.canvasLens()" class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
-        <span onclick="gui.helperContextMenu(this);" class="item"><span class="tt info icon icon-gizmo icon-1_25x" id="canvUitoggleOverlay" data-tt="[o] Toggle Overlays" data-info="toggle_helper"></span></span>
-
-        <span onclick="gui.canvasManager.menu(this)" class="item textButton info" data-info="canvas_switch" id="canvasCtxSwitcher" >-</span>
-        <span onclick="CABLES.CMD.RENDERER.changeSize()" class="item textButton info" data-info="canvas_size" id="canvasInfoSize" ></span>
-        <span onclick="gui.rendererAspectMenu(this)" class="item textButton info" data-info="canvas_aspect" id="canvasInfoAspect">Aspect</span>
-        <span class="item nonInteractive info" data-info="canvas_version" id="canvasInfoVersion"></span>
-        <span class="item nonInteractive info" data-info="canvas_fps" id="canvasInfoFPS">?? FPS</span>
-        <span class="item nonInteractive info" data-info="canvas_ms" id="canvasInfoMS">? MS</span>
-
-        <span onclick="gui.rendererContextMenu(this)" class="item threedotcanvas" ><span class="icon icon-three-dots icon-1_25x" ></span></span>
+        <div id="modalheader"></div>
+        <div id="modalcontent"></div>
     </div>
-</div>
-<div id="canvasInfoOverlay" class="hidden"></div>
-<div id="notify"></div>
+    <div id="opsearchmodal" class="hidden cablesCssUi"></div>
 
-<div id="maintabs"></div>
-<div id="bottomtabs"></div>
+    <div id="canvasflash" class="hidden"></div>
+    <div id="canvasmodal" class="hidden"></div>
+    <div id="canvasicons" >
+        <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
+        <div id="canvasIconBar" class="cbl_iconbar cbl_iconbar_hor ">
+            <span onclick="CABLES.CMD.RENDERER.popoutCanvas()" class="item"><span class="tt info icon icon-external icon-1_25x"  data-tt="popout canvas" data-info="renderer_popout"></span></span>
 
-<div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle(true);gui.setLayout();" data-info="minimize_tabpanel">
-    <span class="icon icon-chevron-left" style="pointer-events:none;"></span>
-</div>
+            <span onclick="CABLES.CMD.UI.toggleMaxRenderer()" class="item"><span class="tt info icon icon-canvas_max icon-1_25x"  data-tt="maximize canvas" data-info="renderer_maximize"></span></span>
+            <span onclick="CABLES.CMD.UI.togglePatchBgRenderer()" class="item"><span class="tt info icon icon-canvas_patchbg icon-1_25x"  data-tt="patch background" data-info="renderer_patchbg"></span></span>
 
-<div id="editorminimized" onclick="gui.maintabPanel.toggle(true);gui.setLayout();">
-    <span class="icon icon-chevron-right"></span>
-</div>
+            <span onclick="CABLES.CMD.RENDERER.screenshot()" class="item"><span class="tt info icon icon-image icon-1_25x"  data-tt="save screenshot" data-info="save_screenshot"></span></span>
+            <span onclick="CABLES.CMD.UI.toggleMute();" class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
+            <span onclick="CABLES.CMD.UI.canvasLens()" class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
+            <span onclick="gui.helperContextMenu(this);" class="item"><span class="tt info icon icon-gizmo icon-1_25x" id="canvUitoggleOverlay" data-tt="[o] Toggle Overlays" data-info="toggle_helper"></span></span>
 
-<canvas id="bgpreview" data-info="texpreview" class="info" style="border:1px solid #222;">
-</canvas>
+            <span onclick="gui.canvasManager.menu(this)" class="item textButton info" data-info="canvas_switch" id="canvasCtxSwitcher" >-</span>
+            <span onclick="CABLES.CMD.RENDERER.changeSize()" class="item textButton info" data-info="canvas_size" id="canvasInfoSize" ></span>
+            <span onclick="gui.rendererAspectMenu(this)" class="item textButton info" data-info="canvas_aspect" id="canvasInfoAspect">Aspect</span>
+            <span class="item nonInteractive info" data-info="canvas_version" id="canvasInfoVersion"></span>
+            <span class="item nonInteractive info" data-info="canvas_fps" id="canvasInfoFPS">?? FPS</span>
+            <span class="item nonInteractive info" data-info="canvas_ms" id="canvasInfoMS">? MS</span>
 
-<div id="bgpreviewButtonsContainer" class="hidden cbl_iconbarContainer cbl_iconbar_hor">
-    <div id="bgpreviewButtons" class="cbl_iconbar cbl_iconbar_hor">
-        <span class="item nonInteractive" style="float: left;" id="bgpreviewInfo"  onclick="gui.metaTexturePreviewer.gotoOp();">
-        </span>
-
-        <span class="item" id="texprevSize" onclick="gui.metaTexturePreviewer.toggleSize(-1);"  style="padding-right:0px !important;margin-right:0px !important" >
-            <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-minus"></span>
-        </span>
-        <span class="item" id="texprevSize2" onclick="gui.metaTexturePreviewer.toggleSize(1);"  style="padding-left:0px !important;margin-left:0px !important" >
-            <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-plus"></span>
-        </span>
-
-        <span class="item hidden" id="bgpreviewMax" onclick="CABLES.UI.userSettings.set('bgpreviewMax',true);">
-            <span class="icon icon-1_25x fright iconhover icon-chevron-left" ></span>
-        </span>
-        <span class="item" id="bgpreviewMin" onclick="CABLES.UI.userSettings.set('bgpreviewMax',false);">
-            <span class="icon icon-1_25x fright iconhover icon-chevron-right" ></span>
-        </span>
+            <span onclick="gui.rendererContextMenu(this)" class="item threedotcanvas" ><span class="icon icon-three-dots icon-1_25x" ></span></span>
+        </div>
     </div>
+    <div id="canvasInfoOverlay" class="hidden"></div>
+    <div id="notify"></div>
+
+    <div id="maintabs"></div>
+    <div id="bottomtabs"></div>
+
+    <div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle(true);gui.setLayout();" data-info="minimize_tabpanel">
+        <span class="icon icon-chevron-left" style="pointer-events:none;"></span>
+    </div>
+
+    <div id="editorminimized" onclick="gui.maintabPanel.toggle(true);gui.setLayout();">
+        <span class="icon icon-chevron-right"></span>
+    </div>
+
+    <canvas id="bgpreview" data-info="texpreview" class="info" style="border:1px solid #222;">
+    </canvas>
+
+    <div id="bgpreviewButtonsContainer" class="hidden cbl_iconbarContainer cbl_iconbar_hor">
+        <div id="bgpreviewButtons" class="cbl_iconbar cbl_iconbar_hor">
+            <span class="item nonInteractive" style="float: left;" id="bgpreviewInfo"  onclick="gui.metaTexturePreviewer.gotoOp();">
+            </span>
+
+            <span class="item" id="texprevSize" onclick="gui.metaTexturePreviewer.toggleSize(-1);"  style="padding-right:0px !important;margin-right:0px !important" >
+                <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-minus"></span>
+            </span>
+            <span class="item" id="texprevSize2" onclick="gui.metaTexturePreviewer.toggleSize(1);"  style="padding-left:0px !important;margin-left:0px !important" >
+                <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-plus"></span>
+            </span>
+
+            <span class="item hidden" id="bgpreviewMax" onclick="CABLES.UI.userSettings.set('bgpreviewMax',true);">
+                <span class="icon icon-1_25x fright iconhover icon-chevron-left" ></span>
+            </span>
+            <span class="item" id="bgpreviewMin" onclick="CABLES.UI.userSettings.set('bgpreviewMax',false);">
+                <span class="icon icon-1_25x fright iconhover icon-chevron-right" ></span>
+            </span>
+        </div>
+    </div>
+
+
+    <div id="patchviews">
+        <div id="patch" tabindex="1" class="visible"></div>
+    </div>
+
+    <div id="timing"></div>
+
+    <div id="splitterPatch" class="splitter"></div>
+    <div id="splitterRenderer" class="splitter"></div>
+    <div id="splitterTimeline" class="splitter"></div>
+    <div id="splitterMaintabs" class="splitter"></div>
+    <div id="splitterBottomTabs" class="splitter"></div>
+
+    <div id="uploadprogresscontainer" class="hidden">
+        <div id="uploadprogress"></div>
+    </div>
+
+    <div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
+        <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
+            <ul>
+                <li class="nav_logo main" id="nav_logo_area">
+                    <span id="nav-logo" class="icon-empty icon">
+                        <div id="nav-logo_idle"></div>
+                        <div id="nav-loading"></div>
+                    </span>
+                    <ul class="nav-submenu" id="nav_recentpatches">
+                    </ul>
+                </li>
+
+                <li class="main">
+                    <div id="patchname" onclick="CABLES.CMD.UI.settings();"></div>
+                    <ul class="nav-submenu">
+                        <div id="savestates">
+
+                        </div>
+                        <li id="nav_support" class="nav_support" onclick="">❤️ &nbsp;Support cables</li>
+
+
+                        <li id="nav_patch_settings" class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings<span class="shortcut">[cmd_ctrl]`,`</span></li>
+
+                        <li class="divide"></li>
+                        <li id="nav_createBackup">Create Backup</li>
+                        <li id="nav_viewBackups">Backups</li>
+
+                        <li class="divide"></li>
+                        <li id="nav_patch_save">Save <span class="shortcut">[cmd_ctrl]`S`</span></li>
+                        <li id="nav_patch_saveas">Clone Patch<span class="shortcut">[cmd_ctrl][shift]`S`</span></li>
+                        <li id="nav_patch_export">Export</li>
+                        <li id="nav_patch_export_patch">Export - Patch</li>
+
+                        <li class="divide"></li>
+
+                        <li id="nav_patch_page" class="nav-sub-submenu nav_patch_page">
+                            View Patch Page
+                            <span class="icon icon-chevron-right"></span>
+                            <ul>
+                                <li><a id="nav_viewProjectLink">Open in new window</a></li>
+                                <li class="divide"></li>
+                                <li><a>Open on mobile:</a>
+                                    <div id="patch_view_qr" style="border: 10px solid white;"></div>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <li class="nav-sub-submenu nav_remote_viewer hidden">
+                            Remote Viewer
+                            <span class="icon icon-chevron-right"></span>
+                            <ul>
+                                <li><a id="nav_remoteViewerLink">Open in new window</a></li>
+                                <li class="divide"></li>
+                                <li><a>Open on mobile:</a>
+                                    <div id="remote_view_qr" style="border: 10px solid white;"></div>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav_cables main" >
+                    <span class="icon icon-1_25x icon-user"></span>
+                    <ul class="nav-submenu">
+                        <li id="nav_preferences">My Editor Preferences</span></li>
+                        <li id="nav_op_createOp">Code a new op</li>
+                        <li id="nav_op_patchOp">Patch a new op</li>
+                        <li class="divide"></li>
+                        <li id="nav_patch_add_opdir" class="hidden">Manage Op Directories</li>
+                    </ul>
+                </li>
+
+                <li class="main">
+                    <span class="icon icon-1_25x icon-cables_editor"></span>
+
+                    <ul class="nav-submenu">
+                        <li id="nav_welcome" class="hidden">Welcome</li>
+                        <li id="nav_filemanager">Files</li>
+                        <li id="nav_timeline">Timeline</li>
+                        <li id="nav_profiler">Profiler</li>
+                        <li id="nav_log">Log Console</li>
+                        <li id="nav_gpuprofiler">GPU Profiler</li>
+                        <li id="nav_patchanalysis">Patch Analysis</li>
+                        <li id="nav_uploadfile">Upload file</li>
+                        <li id="nav_search">Search <span class="shortcut">[cmd_ctrl]`F`</span></li>
+                        <li id="nav_cmdplt">Command Palette <span class="shortcut">[cmd_ctrl]`P`</span></li>
+                        <li id="nav_buildinfo">Build Info</li>
+                    </ul>
+                </li>
+
+                <li class="nav-item-help main">
+                    <span class="icon icon-1_25x icon-help"></span>
+
+                    <ul class="nav-submenu">
+                        <li id="nav_help_documentation">Documentation</li>
+                        <li id="nav_help_introduction">Introduction</li>
+                        <li id="nav_help_video">Video Tutorials</li>
+                        <li id="nav_help_tipps">Tips</li>
+                        <li id="nav_help_keys">Keyboard shortcuts</li>
+
+                        <li class="divide"></li>
+                        <li id="nav_help_forum">Discussions</li>
+                        <li id="nav_changelog">View Changelog</li>
+                    </ul>
+                </li>
+
+                <li id="nav-item-activity" class="main hidden">
+                    <span class="dot hidden" style="border-radius:100%;width:6px;height:6px;background-color:red;z-index:100;position:absolute;margin-left:-6px;margin-top:0px;"></span>
+                    <span class="icon icon-activity icon-1_25x"></span>
+                </li>
+
+                <li class="nav-item-offline hidden"  id="nav-item-offline">
+                    <span class="icon-unplug icon tt" style="display:inherit;margin:-3px;background-color: red;" data-tt="Connection problems detected"></span>
+                </li>
+
+                <li class="nav-item-error hidden"  id="nav-item-error" onclick="gui.find(':attention');gui.patchView.checkPatchErrors();" >
+                    <span id="nav-item-error-icon" class="icon-alert-triangle icon" style="display:inherit;margin:-3px;"></span>&nbsp;
+                </li>
+                <!-- <li class="nav-item-log " id="nav-item-log" onclick="CABLES.CMD.DEBUG.logConsole()" >
+                    <span id="nav-item-log-icon" class="icon-logs icon" style="display:inherit;margin:-3px;"></span>&nbsp;
+                </li> -->
+                <li class="nav-item-bpReload hidden" id="nav-item-bpReload">
+                    <span id="nav-item-bpReload-icon" class="icon-refresh icon" style="display:inherit;margin:-3px;background-color: var(--color_port_array);"></span>&nbsp;
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+
+    <div id="multiplayerbar" class="menubar" style="cursor:pointer;">
+        <div class="nav-clientlist"  id="nav-clientlist"></div>
+    </div>
+
+
+    <div id="meta">
+        <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
+
+        <!-- <div id="splitterMeta" class="splitter">
+            <a class="icon-x icon fright iconhover" style="position: absolute;z-index: 9999;right: 10px;margin-top: 10px;" onclick="gui.closeInfo();">.</a>
+        </div> -->
+
+
+    </div>
+
+    <div id="options"></div>
+
+    <div id="infoAreaContainer">
+        <div id="infoArea" class=""></div>
+    </div>
+
+    <div id="infoAreaParam" class=""></div>
+
+    <div id="infoAreaToggle" onclick="gui.bottomInfoArea.toggle();"><span class="icon icon-chevron-down"></span></div>
+
+
+    <form id="hiddenupload" class="hide">
+        <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputUpload(this.files)"/>
+    </form>
+
+    <form id="hiddenreupload" class="hide">
+        <input id="hiddenfileElemReupload" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputReUpload(this.files)"/>
+    </form>
+
+    <div class="tooltip hidden" id="cbltooltip"></div>
+    <div id="uiperf" ></div>
+    <div id="patchnavhelperBounds" class="hidden" onclick=""></div>
+    <div id="patchnavhelperEmpty" class="hidden"></div>
 </div>
-
-
-<div id="patchviews">
-    <div id="patch" tabindex="1" class="visible"></div>
-</div>
-
-<div id="timing"></div>
-
-<div id="splitterPatch" class="splitter"></div>
-<div id="splitterRenderer" class="splitter"></div>
-<div id="splitterTimeline" class="splitter"></div>
-<div id="splitterMaintabs" class="splitter"></div>
-<div id="splitterBottomTabs" class="splitter"></div>
-
-<div id="uploadprogresscontainer" class="hidden">
-    <div id="uploadprogress"></div>
-</div>
-
-<div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
-    <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
-        <ul>
-            <li class="nav_logo main" id="nav_logo_area">
-                <span id="nav-logo" class="icon-empty icon">
-                    <div id="nav-logo_idle"></div>
-                    <div id="nav-loading"></div>
-                </span>
-                <ul class="nav-submenu" id="nav_recentpatches">
-                </ul>
-            </li>
-
-            <li class="main">
-                <div id="patchname" onclick="CABLES.CMD.UI.settings();"></div>
-                <ul class="nav-submenu">
-                    <div id="savestates">
-
-                    </div>
-                    <li id="nav_support" class="nav_support" onclick="">❤️ &nbsp;Support cables</li>
-
-
-                    <li id="nav_patch_settings" class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings<span class="shortcut">[cmd_ctrl]`,`</span></li>
-
-                    <li class="divide"></li>
-                    <li id="nav_createBackup">Create Backup</li>
-                    <li id="nav_viewBackups">Backups</li>
-
-                    <li class="divide"></li>
-                    <li id="nav_patch_save">Save <span class="shortcut">[cmd_ctrl]`S`</span></li>
-                    <li id="nav_patch_saveas">Clone Patch<span class="shortcut">[cmd_ctrl][shift]`S`</span></li>
-                    <li id="nav_patch_export">Export</li>
-                    <li id="nav_patch_export_patch">Export - Patch</li>
-
-                    <li class="divide"></li>
-
-                    <li id="nav_patch_page" class="nav-sub-submenu nav_patch_page">
-                        View Patch Page
-                        <span class="icon icon-chevron-right"></span>
-                        <ul>
-                            <li><a id="nav_viewProjectLink">Open in new window</a></li>
-                            <li class="divide"></li>
-                            <li><a>Open on mobile:</a>
-                                <div id="patch_view_qr" style="border: 10px solid white;"></div>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="nav-sub-submenu nav_remote_viewer hidden">
-                        Remote Viewer
-                        <span class="icon icon-chevron-right"></span>
-                        <ul>
-                            <li><a id="nav_remoteViewerLink">Open in new window</a></li>
-                            <li class="divide"></li>
-                            <li><a>Open on mobile:</a>
-                                <div id="remote_view_qr" style="border: 10px solid white;"></div>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                </ul>
-            </li>
-
-            <li class="nav_cables main" >
-                <span class="icon icon-1_25x icon-user"></span>
-                <ul class="nav-submenu">
-                    <li id="nav_preferences">My Editor Preferences</span></li>
-                    <li id="nav_op_createOp">Code a new op</li>
-                    <li id="nav_op_patchOp">Patch a new op</li>
-                    <li class="divide"></li>
-                    <li id="nav_patch_add_opdir" class="hidden">Manage Op Directories</li>
-                </ul>
-            </li>
-
-            <li class="main">
-                <span class="icon icon-1_25x icon-cables_editor"></span>
-
-                <ul class="nav-submenu">
-                    <li id="nav_welcome" class="hidden">Welcome</li>
-                    <li id="nav_filemanager">Files</li>
-                    <li id="nav_timeline">Timeline</li>
-                    <li id="nav_profiler">Profiler</li>
-                    <li id="nav_log">Log Console</li>
-                    <li id="nav_gpuprofiler">GPU Profiler</li>
-                    <li id="nav_patchanalysis">Patch Analysis</li>
-                    <li id="nav_uploadfile">Upload file</li>
-                    <li id="nav_search">Search <span class="shortcut">[cmd_ctrl]`F`</span></li>
-                    <li id="nav_cmdplt">Command Palette <span class="shortcut">[cmd_ctrl]`P`</span></li>
-                    <li id="nav_buildinfo">Build Info</li>
-                </ul>
-            </li>
-
-            <li class="nav-item-help main">
-                <span class="icon icon-1_25x icon-help"></span>
-
-                <ul class="nav-submenu">
-                    <li id="nav_help_documentation">Documentation</li>
-                    <li id="nav_help_introduction">Introduction</li>
-                    <li id="nav_help_video">Video Tutorials</li>
-                    <li id="nav_help_tipps">Tips</li>
-                    <li id="nav_help_keys">Keyboard shortcuts</li>
-
-                    <li class="divide"></li>
-                    <li id="nav_help_forum">Discussions</li>
-                    <li id="nav_changelog">View Changelog</li>
-                </ul>
-            </li>
-
-            <li id="nav-item-activity" class="main hidden">
-                <span class="dot hidden" style="border-radius:100%;width:6px;height:6px;background-color:red;z-index:100;position:absolute;margin-left:-6px;margin-top:0px;"></span>
-                <span class="icon icon-activity icon-1_25x"></span>
-            </li>
-
-            <li class="nav-item-offline hidden"  id="nav-item-offline">
-                <span class="icon-unplug icon tt" style="display:inherit;margin:-3px;background-color: red;" data-tt="Connection problems detected"></span>
-            </li>
-
-            <li class="nav-item-error hidden"  id="nav-item-error" onclick="gui.find(':attention');gui.patchView.checkPatchErrors();" >
-                <span id="nav-item-error-icon" class="icon-alert-triangle icon" style="display:inherit;margin:-3px;"></span>&nbsp;
-            </li>
-            <!-- <li class="nav-item-log " id="nav-item-log" onclick="CABLES.CMD.DEBUG.logConsole()" >
-                <span id="nav-item-log-icon" class="icon-logs icon" style="display:inherit;margin:-3px;"></span>&nbsp;
-            </li> -->
-            <li class="nav-item-bpReload hidden" id="nav-item-bpReload">
-                <span id="nav-item-bpReload-icon" class="icon-refresh icon" style="display:inherit;margin:-3px;background-color: var(--color_port_array);"></span>&nbsp;
-            </li>
-        </ul>
-    </nav>
-</div>
-
-
-
-<div id="multiplayerbar" class="menubar" style="cursor:pointer;">
-    <div class="nav-clientlist"  id="nav-clientlist"></div>
-</div>
-
-
-<div id="meta">
-    <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
-
-    <!-- <div id="splitterMeta" class="splitter">
-        <a class="icon-x icon fright iconhover" style="position: absolute;z-index: 9999;right: 10px;margin-top: 10px;" onclick="gui.closeInfo();">.</a>
-    </div> -->
-
-
-</div>
-
-<div id="options"></div>
-
-<div id="infoAreaContainer">
-    <div id="infoArea" class=""></div>
-</div>
-
-<div id="infoAreaParam" class=""></div>
-
-<div id="infoAreaToggle" onclick="gui.bottomInfoArea.toggle();"><span class="icon icon-chevron-down"></span></div>
-
-
-<form id="hiddenupload" class="hide">
-    <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputUpload(this.files)"/>
-</form>
-
-<form id="hiddenreupload" class="hide">
-    <input id="hiddenfileElemReupload" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputReUpload(this.files)"/>
-</form>
-
-<div class="tooltip hidden" id="cbltooltip"></div>
-<div id="uiperf" ></div>
-<div id="patchnavhelperBounds" class="hidden" onclick=""></div>
-<div id="patchnavhelperEmpty" class="hidden"></div>

@@ -108,6 +108,7 @@ export default function startUi(cfg)
                 if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 gui.bindKeys();
+                ele.byId("maincomponents").style.display = "inline";
 
                 const socketClusterConfig = CABLES.platform.getSocketclusterConfig();
                 if (!gui.socket && socketClusterConfig.enabled)

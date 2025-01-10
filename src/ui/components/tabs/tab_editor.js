@@ -204,6 +204,7 @@ export default class EditorTab extends Events
                 else if (this._options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
                 else if (this._options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
                 else if (this._options.syntax === "css") this._editor.session.setMode("ace/mode/css");
+                else if (this._options.syntax === "html") this._editor.session.setMode("ace/mode/html");
                 else if (this._options.syntax === "json") this._editor.session.setMode("ace/mode/json");
                 else if (this._options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
                 else if (this._options.syntax === "inline-css")
@@ -213,6 +214,7 @@ export default class EditorTab extends Events
                 }
                 else
                 {
+                    if (this._options.syntax) this._log.warn("unknown syntax highlighter for ace", this._options.syntax);
                     this._editor.session.setMode("ace/mode/plain_text");
                     this._editor.getSession().setUseWorker(false);
                 }
@@ -474,6 +476,12 @@ export default class EditorTab extends Events
                     "content": "op.toWorkPortsNeedToBeLinked(${1:port1},${2:port2});",
                     "name": "op.toWorkPortsNeedToBeLinked",
                 },
+                {
+                    "content": "op.toWorkPortsNeedsString(${1:port1},${2:port2});",
+                    "name": "op.toWorkPortsNeedsString",
+                },
+
+
                 {
                     "content": "vec3.create();",
                     "name": "vec3.create",
