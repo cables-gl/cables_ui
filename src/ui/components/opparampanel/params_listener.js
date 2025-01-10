@@ -745,32 +745,26 @@ class ParamsListener extends Events
         {
             // id = "portval_{{ portnum }}_{{ panelid }}-container";
             const id = "portval_" + index + "_" + panelid + "-container";
-            console.log("id", id);
             const el = ele.byId(id);
 
             // input element container div -> focus real input element
             if (el)
             {
-                console.log("has button!!!!", el);
-
-
                 let theId = "portval_" + index + "_" + panelid;
                 let portName = ports[index].name;
                 let opId = ports[index].op.id;
 
                 const cb = (e) =>
                 {
-                    console.log("ahjjaja", theId);
                     CABLES.UI.valueChanger(theId, false, portName, opId);
 
                     new CABLES.UI.ParamTabInputListener(el);
 
-                    ele.byId(theId).focus();
+                    // ele.byId(theId).focus();
                 };
 
-
-                el.addEventListener("mousedown", (e) => { cb(e); });
-                el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)el.dispatchEvent(new Event("mousedown")); });
+                el.addEventListener("mousedown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
+                el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)cb(e); }, false); // why u no work
             }
         }
 
