@@ -9,6 +9,7 @@ import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
 import uiprofiler from "../uiprofiler.js";
+import ParamTabInputListener from "./param_tabinputlistener.js";
 
 
 /**
@@ -707,6 +708,68 @@ class ParamsListener extends Events
 
         const eleId = "portval_" + index + "_" + panelid;
 
+
+        if (ports[index].uiAttribs.display == "bool")
+        {
+            const el = ele.byId("portcheckbox_" + index + "_" + panelid);
+            if (el)
+            {
+                ele.asButton(el, () =>
+                {
+                    CABLES.UI.paramsHelper.togglePortValBool("portval_" + index + "_" + panelid, "portcheckbox_" + index + "_" + panelid);
+                });
+            }
+        }
+        else if (ports[index].uiAttribs.display == "switch")
+        {
+            const el = ele.byId("portSwitch_" + index + "_" + panelid);
+            if (el)
+            {
+                const labels = ele.byQueryAll("#portSwitch_" + index + "_" + panelid + " label");
+
+                for (let j = 0; j < labels.length; j++)
+                {
+                    const l = labels[j];
+                    ele.asButton(l, (e) =>
+                    {
+                        const labelInput = ele.byQuery("#portSwitch_" + index + "_" + panelid + " #" + l.id + " input");
+
+                        ele.byId("portval_" + index + "_" + panelid).value = labelInput.value;
+                        ele.byId("portval_" + index + "_" + panelid).dispatchEvent(new Event("input"));
+
+                        setTimeout(() => { l.focus(); }, 200);
+                    });
+                }
+            }
+        }
+        else
+        {
+            // id = "portval_{{ portnum }}_{{ panelid }}-container";
+            const id = "portval_" + index + "_" + panelid + "-container";
+            const el = ele.byId(id);
+
+            // input element container div -> focus real input element
+            if (el)
+            {
+                let theId = "portval_" + index + "_" + panelid;
+                let portName = ports[index].name;
+                let opId = ports[index].op.id;
+
+                const cb = (e) =>
+                {
+                    CABLES.UI.valueChanger(theId, false, portName, opId);
+
+
+                    ele.byId(theId).focus();
+                    new ParamTabInputListener(el);
+                };
+
+                el.addEventListener("mousedown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
+                el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)cb(e); }, false); // why u no work
+            }
+        }
+
+
         if (ports[index].uiAttribs.type == "string")
         {
             const str = String(ports[index].get()) || "";
@@ -714,11 +777,9 @@ class ParamsListener extends Events
             if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1) ports[index].op.setUiError("utf8illegal" + ports[index].name, "Port " + ports[index].name + ": String contains unusual UTF8 characters", 1);
             else ports[index].op.setUiError("utf8illegal" + ports[index].name, null);
         }
-
+        const el = ele.byId(eleId);
         if (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number" || ports[index].uiAttribs.type == "int")
         {
-            const el = ele.byId(eleId);
-
             if (el)el.addEventListener("keypress", (e) =>
             {
                 const keyCode = e.keyCode || e.which;
@@ -745,15 +806,12 @@ class ParamsListener extends Events
             });
         }
 
-        const el = ele.byId(eleId);
 
         if (el) el.addEventListener("input", (e) =>
         {
             let v = "" + el.value;
 
-            // gui.setStateUnsaved();
             gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
-
 
             if (
                 ports[index].uiAttribs.display != "bool" &&

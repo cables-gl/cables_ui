@@ -16,7 +16,16 @@ export default class ParamTabInputListener
         currentEle = this._ele;
         currentEleListener = this._tabKeyListener.bind(this);
 
-        this._ele.addEventListener("keydown", currentEleListener);
+
+        try
+        {
+            this._ele.addEventListener("keydown", currentEleListener);
+        }
+        catch (e)
+        {
+            this._logger.warn("no element");
+            console.log(this._ele);
+        }
     }
 
     _tabKeyListener(event)

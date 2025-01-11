@@ -324,7 +324,7 @@ body
 
     input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus
     {
-        outline: none;
+        // outline: none;
         color: var(--color-13);
         border: 1px solid $highlight-color;
     }
@@ -576,7 +576,13 @@ body
         &::placeholder{
             color:$color-input-placeholder;
         }
-    }
+        outline:none;
+        &:focus-visible
+        {
+            outline:2px
+        }
+        }
+
 
     .underline
     {

@@ -848,6 +848,8 @@ export default class PatchView extends Events
         if (ops.length == 0) curOp = this.getClosestOp();
         else curOp = ops[0];
 
+        if (!curOp) return;
+
         const cursub = this.getCurrentSubPatch();
 
         let foundOp = null;
