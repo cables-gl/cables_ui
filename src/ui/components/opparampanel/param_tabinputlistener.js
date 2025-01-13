@@ -16,7 +16,6 @@ export default class ParamTabInputListener
         currentEle = this._ele;
         currentEleListener = this._tabKeyListener.bind(this);
 
-
         try
         {
             this._ele.addEventListener("keydown", currentEleListener);
@@ -70,7 +69,7 @@ export default class ParamTabInputListener
 
                 this._ele.removeEventListener("keydown", paramsHelper.inputListenerCursorKeys);
 
-                CABLES.UI.valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
+                valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
 
                 inputEle.focus();
                 new ParamTabInputListener(inputEle);

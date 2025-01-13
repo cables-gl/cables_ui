@@ -10,6 +10,7 @@ import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
 import uiprofiler from "../uiprofiler.js";
 import ParamTabInputListener from "./param_tabinputlistener.js";
+import valueChanger from "./valuechanger.js";
 
 
 /**
@@ -757,14 +758,13 @@ class ParamsListener extends Events
 
                 const cb = (e) =>
                 {
-                    CABLES.UI.valueChanger(theId, false, portName, opId);
-
-
+                    valueChanger(theId, false, portName, opId);
+                    console.log("valuechanger");
                     ele.byId(theId).focus();
                     new ParamTabInputListener(el);
                 };
 
-                el.addEventListener("mousedown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
+                el.addEventListener("pointerdown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
                 el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)cb(e); }, false); // why u no work
             }
         }

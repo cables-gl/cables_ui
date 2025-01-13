@@ -89,7 +89,6 @@ CABLES.GL_MARKER = OverlayMeshes;
 CABLES.UI.OverlayMeshes = OverlayMeshes;
 
 CABLES.UI.paramsHelper = paramsHelper;
-CABLES.UI.valueChanger = valueChanger;
 CABLES.UI.ParamTabInputListener = ParamTabInputListener;
 
 CABLES.UI.undo = undo;

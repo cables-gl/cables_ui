@@ -105,8 +105,6 @@
                         data-panelid="{{ panelid }}"
                         data-opid="{{op.id}}"
                         data-portname="{{ port.name }}"
-                        onmousedown="new CABLES.UI.ParamTabInputListener(this);CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');"
-                        ontouchstart="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');new CABLES.UI.ParamTabInputListener(this);"
                         onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
                         {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
 
