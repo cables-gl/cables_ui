@@ -63,7 +63,7 @@
                 {{#compare port.uiAttribs.display '==' 'bool' }}
             </td><td>
                         <span id="portcheckbox_{{ portnum }}_{{ panelid }}" class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
-                            <span tabindex="0"  style="height:20px;width:20px;" class="ccheckbox icon icon-check"  ></span>
+                            <span style="height:20px;width:20px;" class="ccheckbox icon icon-check"></span>
                         </span>
                     <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}_{{ panelid }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                 {{/compare}}
@@ -223,7 +223,7 @@
                         </td>
                     <td>
                     <!-- string -->
-                    <input onmousedown="new CABLES.UI.ParamTabInputListener(this);" spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
+                    <input spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
                 {{/compare}}
 
                 {{#compare port.type '==' '1' }} </td><td>[trigger]

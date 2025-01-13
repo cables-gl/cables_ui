@@ -703,7 +703,7 @@ class OpParampanel extends Events
             "title": "Manage Op Code",
             func()
             {
-                CABLES.CMD.OP.manageSelectedOp();
+                CABLES.CMD.OP.manageOp();
             },
         });
 

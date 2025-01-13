@@ -8,8 +8,8 @@ import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
-import uiprofiler from "../uiprofiler.js";
-import ParamTabInputListener from "./param_tabinputlistener.js";
+// import uiprofiler from "../uiprofiler.js";
+// import ParamTabInputListener from "./param_tabinputlistener.js";
 import valueChanger from "./valuechanger.js";
 
 
@@ -756,16 +756,34 @@ class ParamsListener extends Events
                 let portName = ports[index].name;
                 let opId = ports[index].op.id;
 
-                const cb = (e) =>
+                const cb = (e, keyboard) =>
                 {
-                    valueChanger(theId, false, portName, opId);
-                    console.log("valuechanger");
+                    valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
-                    new ParamTabInputListener(el);
+                    console.log("valuechanger", theId, portName, opId);
+                    // new ParamTabInputListener(el);
                 };
 
-                el.addEventListener("pointerdown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
-                el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)cb(e); }, false); // why u no work
+                el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
+
+                el.addEventListener("focus", (e) =>
+                {
+                    el.removeAttribute("tabindex");
+                    cb(e, true);
+
+                    ele.byId(theId).addEventListener("blur", () =>
+                    {
+                        el.setAttribute("tabindex", 0);
+                    });
+                });
+
+                // el.addEventListener("keydown", (e) =>
+                // {
+                //     if (e.keyCode == 13 || e.keyCode == 32)
+                //     {
+                //         cb(e, true);
+                //     }
+                // }); // why u no work
             }
         }
 

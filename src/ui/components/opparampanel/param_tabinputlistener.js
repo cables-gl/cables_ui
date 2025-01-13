@@ -1,92 +1,92 @@
-import { ele, Logger } from "cables-shared-client";
-import paramsHelper from "./params_helper.js";
-import valueChanger from "./valuechanger.js";
+// import { ele, Logger } from "cables-shared-client";
+// import paramsHelper from "./params_helper.js";
+// import valueChanger from "./valuechanger.js";
 
-let currentEle = null;
-let currentEleListener = null;
+// let currentEle = null;
+// let currentEleListener = null;
 
-export default class ParamTabInputListener
-{
-    constructor(el)
-    {
-        this._ele = el;
-        this._logger = new Logger("ParamTabInputListener");
+// export default class ParamTabInputListener
+// {
+//     constructor(el)
+//     {
+//         this._ele = el;
+//         this._logger = new Logger("ParamTabInputListener");
 
-        if (currentEle) currentEle.removeEventListener("keydown", currentEleListener);
+//         if (currentEle) currentEle.removeEventListener("keydown", currentEleListener);
 
-        currentEle = this._ele;
-        currentEleListener = this._tabKeyListener.bind(this);
+//         currentEle = this._ele;
+//         currentEleListener = this._tabKeyListener.bind(this);
 
-        try
-        {
-            this._ele.addEventListener("keydown", currentEleListener);
-        }
-        catch (e)
-        {
-            this._logger.warn("no element");
-            console.log(this._ele);
-        }
-    }
+//         try
+//         {
+//             this._ele.addEventListener("keydown", currentEleListener);
+//         }
+//         catch (e)
+//         {
+//             this._logger.warn("no element");
+//             console.log(this._ele);
+//         }
+//     }
 
-    _tabKeyListener(event)
-    {
-        if (event.which == 9) // tab key
-        {
-            let r = true;
-            event.preventDefault();
-            if (event.shiftKey) r = this._switchToNextInput(-1);
-            else r = this._switchToNextInput(1);
+//     _tabKeyListener(event)
+//     {
+//         if (event.which == 9) // tab key
+//         {
+//             let r = true;
+//             event.preventDefault();
+//             if (event.shiftKey) r = this._switchToNextInput(-1);
+//             else r = this._switchToNextInput(1);
 
-            return r;
-        }
-    }
+//             return r;
+//         }
+//     }
 
-    _switchToNextInput(dir)
-    {
-        const tabableInputs = ele.byClassAll("tabable");
-        let currentIdx = -1;
-        let prevIdx = -1;
+//     _switchToNextInput(dir)
+//     {
+//         const tabableInputs = ele.byClassAll("tabable");
+//         let currentIdx = -1;
+//         let prevIdx = -1;
 
-        for (let i = 0; i < tabableInputs.length; i++)
-        {
-            if (tabableInputs[i] == this._ele || tabableInputs[i] == this._ele.parentElement)
-            {
-                prevIdx = i - 1;
-                currentIdx = i;
-                break;
-            }
-        }
+//         for (let i = 0; i < tabableInputs.length; i++)
+//         {
+//             if (tabableInputs[i] == this._ele || tabableInputs[i] == this._ele.parentElement)
+//             {
+//                 prevIdx = i - 1;
+//                 currentIdx = i;
+//                 break;
+//             }
+//         }
 
-        const nextIdx = currentIdx + dir;
-        const nextEle = tabableInputs[nextIdx];
+//         const nextIdx = currentIdx + dir;
+//         const nextEle = tabableInputs[nextIdx];
 
-        if (nextEle)
-        {
-            if (nextEle.classList.contains("valuesliderinput") || nextEle.classList.contains("numberinput"))
-            {
-                nextEle.dispatchEvent(new Event("mousedown"));
-                const inputEleId = "portval_" + nextEle.dataset.portnum + "_" + nextEle.dataset.panelid;
-                const inputEle = ele.byId(inputEleId);
+//         if (nextEle)
+//         {
+//             if (nextEle.classList.contains("valuesliderinput") || nextEle.classList.contains("numberinput"))
+//             {
+//                 nextEle.dispatchEvent(new Event("mousedown"));
+//                 const inputEleId = "portval_" + nextEle.dataset.portnum + "_" + nextEle.dataset.panelid;
+//                 const inputEle = ele.byId(inputEleId);
 
-                this._ele.removeEventListener("keydown", paramsHelper.inputListenerCursorKeys);
+//                 this._ele.removeEventListener("keydown", paramsHelper.inputListenerCursorKeys);
 
-                valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
+//                 valueChanger(inputEleId, true, nextEle.dataset.portname, nextEle.dataset.opid);
 
-                inputEle.focus();
-                new ParamTabInputListener(inputEle);
-            }
-            else
-            {
-                nextEle.focus();
-                new ParamTabInputListener(nextEle);
-            }
-        }
-        else
-        {
-            this._logger.warn("element not found");
-            document.activeElement.blur(); // blur when tab in last element - to execute math evaluation
-            return true;
-        }
-        return false;
-    }
-}
+//                 inputEle.focus();
+//                 new ParamTabInputListener(inputEle);
+//             }
+//             else
+//             {
+//                 nextEle.focus();
+//                 new ParamTabInputListener(nextEle);
+//             }
+//         }
+//         else
+//         {
+//             this._logger.warn("element not found");
+//             document.activeElement.blur(); // blur when tab in last element - to execute math evaluation
+//             return true;
+//         }
+//         return false;
+//     }
+// }

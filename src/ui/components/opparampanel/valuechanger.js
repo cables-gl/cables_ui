@@ -49,6 +49,9 @@ function valueChanger(eleId, focus, portName, opid)
     {
         ele.forEachClass("numberinput", (elm) => { elm.classList.remove("numberinputFocussed"); });
 
+
+        console.log("setTextEdit");
+
         if (enabled)
         {
             if (eleContainer.classList.contains("valuesliderinput"))
@@ -81,10 +84,11 @@ function valueChanger(eleId, focus, portName, opid)
 
     function down(e)
     {
+        if (ele.hasFocus(eleInput)) return;
+
         console.log("down");
 
 
-        if (ele.hasFocus(eleInput)) return;
         eleInput.removeEventListener("wheel", paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("wheel", paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);

@@ -31,7 +31,7 @@ import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import extendCorePatch from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
-import ParamTabInputListener from "./components/opparampanel/param_tabinputlistener.js";
+
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -88,7 +88,6 @@ CABLES.GL_MARKER = OverlayMeshes;
 CABLES.UI.OverlayMeshes = OverlayMeshes;
 
 CABLES.UI.paramsHelper = paramsHelper;
-CABLES.UI.ParamTabInputListener = ParamTabInputListener;
 
 CABLES.UI.undo = undo;
 

@@ -573,16 +573,16 @@ body
 
     input
     {
-        &::placeholder{
+        &::placeholder
+        {
             color:$color-input-placeholder;
         }
-        outline:none;
+        // outline:none;
         &:focus-visible
         {
-            outline:2px
+            outline:2px;
         }
-        }
-
+    }
 
     .underline
     {
@@ -862,4 +862,10 @@ body
         pointer-events: none;
 
     }
+
+    *:focus-visible {
+        outline: 2px solid var(--color-special) !important;
+    }
+
+
 }
