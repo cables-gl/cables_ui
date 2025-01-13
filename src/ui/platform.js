@@ -172,12 +172,16 @@ export default class Platform extends Events
 
     getUrlOpsCode()
     {
-        return this.getSandboxUrl() + "/api/ops/code";
+        let url = this.getSandboxUrl() + "/api/ops/code";
+        if (this.config.previewMode) url += "?preview=true";
+        return url;
     }
 
     getUrlProjectOpsCode(projectId)
     {
-        return this.getCablesUrl() + "/api/ops/code/project/" + projectId;
+        let url = this.getCablesUrl() + "/api/ops/code/project/" + projectId;
+        if (this.config.previewMode) url += "?preview=true";
+        return url;
     }
 
     getUrlApiPrefix()
