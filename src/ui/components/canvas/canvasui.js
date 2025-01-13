@@ -95,7 +95,7 @@ export default class CanvasUi
             p.finish();
         });
 
-        document.body.addEventListener("mousedown",
+        document.body.addEventListener("pointerdown",
             (e) =>
             {
                 if (this.isCanvasFocussed &&
