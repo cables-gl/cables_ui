@@ -175,7 +175,7 @@
                 {{#compare port.uiAttribs.display '==' 'texture' }}
                     </td>
                     <td>
-                        <a class="button-small button-icon" onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage,'{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
+                        <a class="button-small button-icon clickable" data-click="addOpAndLink" data-opid="{{op.id}}" data-portname="{{port.name}}" ><span class="icon icon-plus-circle"></span></a>
 
                         {{#if port.uiAttribs.objType}}
                             <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>

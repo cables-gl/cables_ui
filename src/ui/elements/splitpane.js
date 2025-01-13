@@ -8,7 +8,7 @@ export default initSplitPanes;
 
 function initSplitPanes()
 {
-    document.getElementById("splitterPatch").addEventListener("mousedown", function (ev)
+    document.getElementById("splitterPatch").addEventListener("pointerdown", function (ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -30,19 +30,16 @@ function initSplitPanes()
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
         }
 
-        document.addEventListener("mousemove", mm);
+        document.addEventListener("pointermove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById("splitterPatch").addEventListener("mouseup", function (e)
+    document.getElementById("splitterPatch").addEventListener("pointerup", function (e)
     {
         gui.resumeInteractionSplitpanes();
     });
 
-    // ----------------
-
-
-    document.getElementById("splitterMaintabs").addEventListener("mouseup", function (e)
+    document.getElementById("splitterMaintabs").addEventListener("pointerup", function (e)
     {
         gui.resumeInteractionSplitpanes();
     });
@@ -62,15 +59,13 @@ function initSplitPanes()
             gui.mainTabs.emitEvent("resize");
         }
 
-        document.addEventListener("mousemove", mm, { "passive": false });
-        document.addEventListener("touchmove", mm, { "passive": false });
+        document.addEventListener("pointermove", mm, { "passive": false });
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs, { "passive": false });
-    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs, { "passive": false });
+    document.getElementById("splitterMaintabs").addEventListener("pointerdown", resizeTabs, { "passive": false });
 
-    document.getElementById("splitterRenderer").addEventListener("mousedown", function (ev)
+    document.getElementById("splitterRenderer").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
@@ -82,11 +77,11 @@ function initSplitPanes()
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
         }
 
-        document.addEventListener("mousemove", mm);
+        document.addEventListener("pointermove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById("splitterTimeline").addEventListener("mousedown", function (ev)
+    document.getElementById("splitterTimeline").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
@@ -98,10 +93,9 @@ function initSplitPanes()
             gui.setLayout();
         }
 
-        document.addEventListener("mousemove", mm);
+        document.addEventListener("pointermove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
-
 
     function resizeRenderer(ev)
     {
@@ -132,36 +126,27 @@ function initSplitPanes()
             if (CABLES.SPLITPANE.rendererAspect) gui.rendererHeight = 1 / CABLES.SPLITPANE.rendererAspect * gui.rendererWidth;
             else gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
 
-
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
             gui.canvasManager.focus();
             gui.emitEvent("resizecanvas");
             e.preventDefault();
-
-            // gui.canvasManager.getCanvasUiBar().updateSizeDisplay();
         }
 
-        document.addEventListener("mousemove", mm);
-        document.addEventListener("touchmove", mm);
+        document.addEventListener("pointermove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer, { "passive": false });
-    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer, { "passive": false });
-
+    document.getElementById("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
 
     function stopSplit(e)
     {
         if (CABLES.SPLITPANE.listeners.length > 0)
         {
             for (let i = 0; i < CABLES.SPLITPANE.listeners.length; i++)
-            {
-                document.removeEventListener("mousemove", CABLES.SPLITPANE.listeners[i]);
-                document.removeEventListener("touchmove", CABLES.SPLITPANE.listeners[i]);
-            }
-            gui.resumeInteractionSplitpanes();
+                document.removeEventListener("pointermove", CABLES.SPLITPANE.listeners[i]);
 
+            gui.resumeInteractionSplitpanes();
 
             CABLES.SPLITPANE.listeners.length = 0;
             CABLES.SPLITPANE.bound = false;
@@ -169,6 +154,5 @@ function initSplitPanes()
         }
     }
 
-    document.addEventListener("mouseup", stopSplit);
-    document.addEventListener("touchend", stopSplit);
+    document.addEventListener("pointerup", stopSplit);
 }

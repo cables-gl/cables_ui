@@ -34,8 +34,8 @@ function valueChanger(eleId, focus, portName, opid)
 
     if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) usePointerLock = false;
 
-    document.addEventListener("mouseup", up);
-    document.addEventListener("mousedown", down);
+    document.addEventListener("pointerup", up);
+    document.addEventListener("pointerdown", down);
     eleInput.addEventListener("focusout", blur);
 
     if (focus)
@@ -48,9 +48,6 @@ function valueChanger(eleId, focus, portName, opid)
     function setTextEdit(enabled)
     {
         ele.forEachClass("numberinput", (elm) => { elm.classList.remove("numberinputFocussed"); });
-
-
-        console.log("setTextEdit");
 
         if (enabled)
         {
@@ -77,17 +74,14 @@ function valueChanger(eleId, focus, portName, opid)
             ele.hide(eleInput);
             eleInput.blur();
 
-            document.removeEventListener("mouseup", up);
-            document.removeEventListener("mousedown", down);
+            document.removeEventListener("pointerup", up);
+            document.removeEventListener("pointerdown", down);
         }
     }
 
     function down(e)
     {
         if (ele.hasFocus(eleInput)) return;
-
-        console.log("down");
-
 
         eleInput.removeEventListener("wheel", paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("wheel", paramsHelper.inputListenerMousewheel);
@@ -109,7 +103,7 @@ function valueChanger(eleId, focus, portName, opid)
         }
         else
         {
-            document.addEventListener("mousemove", move);
+            document.addEventListener("pointermove", move);
         }
 
         CABLES.mouseDraggingValue = true;
@@ -171,9 +165,9 @@ function valueChanger(eleId, focus, portName, opid)
             if (document.exitPointerLock)document.exitPointerLock();
         }
 
-        document.removeEventListener("mouseup", up);
-        document.removeEventListener("mousedown", down);
-        document.removeEventListener("mousemove", move, false);
+        document.removeEventListener("pointerup", up);
+        document.removeEventListener("pointerdown", down);
+        document.removeEventListener("pointermove", move, false);
         if (performance.now() - mouseDownTime < 200) setTextEdit(true);
     }
 
@@ -261,7 +255,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (document.pointerLockElement === eleInput || document.mozPointerLockElement === eleInput || document.webkitPointerLockElement === eleInput)
         {
             pointerLockFirstTime = true;
-            document.addEventListener("mousemove", move);
+            document.addEventListener("pointermove", move);
         }
         else
         {

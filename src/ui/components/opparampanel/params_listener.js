@@ -71,6 +71,10 @@ class ParamsListener extends Events
                 case "resetOpValues":
                     gui.patchView.resetOpValues(data.opid, data.portname);
                     break;
+
+                case "addOpAndLink":
+                    gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, data.opid, data.portname);
+                    break;
                 }
             });
         }
@@ -282,7 +286,8 @@ class ParamsListener extends Events
 
 
 
-        colEle.addEventListener("click", (e) =>
+        ele.clickable(colEle, (e) =>
+        // colEle.addEventListener("click", (e) =>
         {
             let undoGroup;
             let opacity = 1;
