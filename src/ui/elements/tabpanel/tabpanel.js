@@ -88,7 +88,7 @@ export default class TabPanel extends Events
 
             editortabList.style.display = "block";
             editortabList.addEventListener(
-                "mousedown",
+                "pointerdown",
                 (e) =>
                 {
                     const items = [];
@@ -129,18 +129,15 @@ export default class TabPanel extends Events
             // ----------------
 
 
-            document.getElementById("editortab" + this._tabs[i].id).addEventListener(
-                "mousedown",
-                function (e)
-                {
-                    if (e.target.dataset.id) this.activateTab(e.target.dataset.id, true);
-                }.bind(this),
-            );
+            ele.clickable(ele.byId("editortab" + this._tabs[i].id), (e) =>
+            {
+                if (e.target.dataset.id) this.activateTab(e.target.dataset.id, true);
+            });
 
             if (this._tabs[i].options.closable)
             {
                 document.getElementById("editortab" + this._tabs[i].id).addEventListener(
-                    "mousedown",
+                    "pointerdown",
                     function (e)
                     {
                         if (e.button == 1) if (e.target.dataset.id) this.closeTab(e.target.dataset.id);
@@ -151,7 +148,7 @@ export default class TabPanel extends Events
             if (document.getElementById("closetab" + this._tabs[i].id))
             {
                 document.getElementById("closetab" + this._tabs[i].id).addEventListener(
-                    "mousedown",
+                    "pointerdown",
                     function (e)
                     {
                         this.closeTab(e.target.dataset.id);
