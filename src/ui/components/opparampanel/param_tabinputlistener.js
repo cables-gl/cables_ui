@@ -1,5 +1,6 @@
 import { ele, Logger } from "cables-shared-client";
 import paramsHelper from "./params_helper.js";
+import valueChanger from "./valuechanger.js";
 
 let currentEle = null;
 let currentEleListener = null;

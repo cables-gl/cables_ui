@@ -81,13 +81,13 @@ function valueChanger(eleId, focus, portName, opid)
 
     function down(e)
     {
-        if (ele.hasFocus(eleInput)) return;
+        console.log("down");
 
+
+        if (ele.hasFocus(eleInput)) return;
         eleInput.removeEventListener("wheel", paramsHelper.inputListenerMousewheel);
-        // eleInput.removeEventListener("keydown", tabKeyListener);
         eleInput.addEventListener("wheel", paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
-
         mouseDownTime = performance.now();
         isDown = true;
 

@@ -7,7 +7,6 @@ import DragNDrop from "./components/filemanager_dragdrop.js";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
 import UserSettings from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
-import valueChanger from "./components/opparampanel/valuechanger.js";
 import FindTab from "./components/tabs/tab_find.js";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend.js";
 import defaultOps from "./defaultops.js";
