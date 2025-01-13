@@ -88,11 +88,11 @@ export default class PatchPanel extends Events
 
         if (ele.byId(gui.getParamPanelEleId()))ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
-        if (ele.byId("btn_patch_settings"))ele.asButton(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);
-        if (ele.byId("btn_analyze_patch"))ele.asButton(ele.byId("btn_analyze_patch"), CABLES.CMD.PATCH.analyze);
-        if (ele.byId("btn_toggle_patch_like"))ele.asButton(ele.byId("btn_toggle_patch_like"), CABLES.CMD.PATCH.togglePatchLike);
+        if (ele.byId("btn_patch_settings"))ele.clickable(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);
+        if (ele.byId("btn_analyze_patch"))ele.clickable(ele.byId("btn_analyze_patch"), CABLES.CMD.PATCH.analyze);
+        if (ele.byId("btn_toggle_patch_like"))ele.clickable(ele.byId("btn_toggle_patch_like"), CABLES.CMD.PATCH.togglePatchLike);
 
-        if (ele.byId("btn_patch_opendir"))ele.asButton(ele.byId("btn_patch_opendir"), (e) =>
+        if (ele.byId("btn_patch_opendir"))ele.clickable(ele.byId("btn_patch_opendir"), (e) =>
         {
             if (e.ctrlKey || e.metaKey) navigator.clipboard.writeText(CABLES.platform.config.currentPatchDir);
             else CABLES.CMD.ELECTRON.openProjectDir();

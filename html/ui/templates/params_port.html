@@ -39,9 +39,6 @@
     {{/if}}
     <td class="port {{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}" id="portLineTitle_{{ dirStr }}_{{ portnum }}"  data-portname="{{port.name}}" >
 
-        <!-- {{#if port.uiAttribs.editableTitle}}
-            <a class="icon icon-edit iconhover" onclick="gui.patchView.setPortTitle('{{op.id}}','{{port.name}}');"></a>
-        {{/if}} -->
 
 
 
@@ -64,7 +61,9 @@
             {{/compare}}
         </span>
 
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset reset_hidden icon icon-undo icon-0_75x" onclick="gui.patchView.resetOpValues('{{op.id}}','{{port.name}}');"></span>
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset reset_hidden  clickable" data-click="resetOpValues" data-opid="{{op.id}}" data-portname="{{port.name}}" >
+            <span class="icon icon-undo icon-0_75x"></span>
+        </span>
 
         <!-- numberinput-val -->
 
@@ -85,7 +84,7 @@
                     <tr>
                         <td>
                             <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                            <a class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.op.id}}',true);">{{ portIn.op.name }}</a><br/>
+                            <a class="clickable paramsPortLink" data-click="centerSelectOp" data-op="{{portIn.op.id}}" >{{ portIn.op.name }}</a><br/>
                         </td>
                     </tr>
                 {{/each}}
@@ -94,7 +93,7 @@
                     </td><td>
                 {{#each port.links}}
                     <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                    <a class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.op.id}}',true);">{{ portOut.op.name }}</a><br/>
+                    <a class="clickable paramsPortLink" data-click="centerSelectOp" data-op="{{portOut.op.id}}" >{{ portOut.op.name }}</a><br/>
                 {{/each}}
             {{/if}}
         {{/if}}
@@ -123,7 +122,7 @@
                 {{else}}
 
                     {{#if port.uiAttribs.isAnimated}}
-                        <span class="button-small button-icon info" onclick="gui.metaKeyframesShowAnim('{{op.id}}','{{port.name}}');">
+                        <span class="button-small button-icon info clickable" data-click="showAnim" data-opid="{{op.id}}" data-portname="{{port.name}}">
                             <span class="icon icon-timeline"></span>
                         </span>
                     {{/if}}

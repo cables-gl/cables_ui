@@ -257,7 +257,7 @@ class OpParampanel extends Events
         if (el) el.innerHTML = html;
         else return;
 
-        this._paramsListener.init({ "op": op });
+        this._paramsListener.init({ "op": op, "element": el });
 
         perfHtml.finish();
 
@@ -385,11 +385,11 @@ class OpParampanel extends Events
 
 
 
-        ele.asButton(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
-        ele.asButton(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
-        ele.asButton(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
-        ele.asButton(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);
-        ele.asButton(ele.byId("watchOpDocsJson"), CABLES.CMD.DEBUG.watchOpDocsJson);
+        ele.clickable(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
+        ele.clickable(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
+        ele.clickable(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
+        ele.clickable(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);
+        ele.clickable(ele.byId("watchOpDocsJson"), CABLES.CMD.DEBUG.watchOpDocsJson);
 
 
 

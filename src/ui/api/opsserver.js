@@ -883,7 +883,7 @@ export default class ServerOps
                 };
 
 
-                ele.asButton(ele.byId("opNameDialogSubmit"), () =>
+                ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
@@ -891,7 +891,7 @@ export default class ServerOps
 
                 if (options.showReplace)
                 {
-                    ele.asButton(ele.byId("opNameDialogSubmitReplace"), (event) =>
+                    ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;

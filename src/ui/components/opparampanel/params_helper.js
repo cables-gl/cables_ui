@@ -98,8 +98,16 @@ const paramsHelper =
 
             if (resetEl)
             {
-                if (isDefault) resetEl.classList.add("reset_hidden");
-                else resetEl.classList.remove("reset_hidden");
+                if (isDefault)
+                {
+                    resetEl.classList.add("reset_hidden");
+                    resetEl.removeAttribute("tabindex");
+                }
+                else
+                {
+                    resetEl.classList.remove("reset_hidden");
+                    resetEl.setAttribute("tabindex", 0);
+                }
             }
         }
     },

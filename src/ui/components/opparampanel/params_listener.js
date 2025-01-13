@@ -53,6 +53,29 @@ class ParamsListener extends Events
             this._portsOut = options.portsOut || [];
         }
 
+        if (options.element)
+        {
+            ele.clickables(options.element, ".clickable", (e, data) =>
+            {
+                switch (data.click)
+                {
+                case "centerSelectOp":
+                    gui.patchView.centerSelectOp(data.op);
+                    gui.opParams.show(data.op);
+                    break;
+
+                case "showAnim":
+                    gui.metaKeyframesShowAnim(data.opid, data.portname);
+                    break;
+
+                case "resetOpValues":
+                    gui.patchView.resetOpValues(data.opid, data.portname);
+                    break;
+                }
+            });
+        }
+
+
         if (this._portsIn.length > 0)
         {
             for (let i = 0; i < this._portsIn.length; i++)
@@ -91,6 +114,10 @@ class ParamsListener extends Events
                 });
             })(i);
         }
+
+
+
+
 
         for (let i = 0; i < this._portsIn.length; i++) this.initPortInputListener(this._portsIn, i, this.panelId);
 
@@ -715,7 +742,7 @@ class ParamsListener extends Events
             const el = ele.byId("portcheckbox_" + index + "_" + panelid);
             if (el)
             {
-                ele.asButton(el, () =>
+                ele.clickable(el, () =>
                 {
                     CABLES.UI.paramsHelper.togglePortValBool("portval_" + index + "_" + panelid, "portcheckbox_" + index + "_" + panelid);
                 });
@@ -731,7 +758,7 @@ class ParamsListener extends Events
                 for (let j = 0; j < labels.length; j++)
                 {
                     const l = labels[j];
-                    ele.asButton(l, (e) =>
+                    ele.clickable(l, (e) =>
                     {
                         const labelInput = ele.byQuery("#portSwitch_" + index + "_" + panelid + " #" + l.id + " input");
 
@@ -760,14 +787,18 @@ class ParamsListener extends Events
                 {
                     valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
-                    console.log("valuechanger", theId, portName, opId);
+                    // console.log("valuechanger", theId, portName, opId);
                     // new ParamTabInputListener(el);
                 };
 
-                el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
+                let isMouse = false;
 
+                el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
+                el.addEventListener("pointerenter", () => { isMouse = true; });
+                el.addEventListener("pointerleave", () => { isMouse = false; });
                 el.addEventListener("focus", (e) =>
                 {
+                    if (isMouse) return;
                     el.removeAttribute("tabindex");
                     cb(e, true);
 

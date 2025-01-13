@@ -26,19 +26,16 @@
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
 
         {{#compare port.uiAttribs.display '==' 'button' }}
-        <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
-            {{#if port.uiAttribs.buttonTitle }}
-                {{port.uiAttribs.buttonTitle}}
-            {{else}}
-                {{#if port.uiAttribs.title }}{{port.uiAttribs.title}}{{else}}{{port.name}}{{/if}}
-            {{/if}}
-        </span>
-    {{/compare}}
+            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+                {{#if port.uiAttribs.buttonTitle }}
+                    {{port.uiAttribs.buttonTitle}}
+                {{else}}
+                    {{#if port.uiAttribs.title }}{{port.uiAttribs.title}}{{else}}{{port.name}}{{/if}}
+                {{/if}}
+            </span>
+        {{/compare}}
 
-
-
-        {{else}}
-
+    {{else}}
 
             {{#if port.uiAttribs.multiPort}}
                 </td><td>
@@ -56,7 +53,6 @@
                     {{/if}}
                 </td>
             {{/if}}
-
 
             {{#if port.uiAttribs.display}}
 
@@ -106,6 +102,7 @@
                         data-opid="{{op.id}}"
                         data-portname="{{ port.name }}"
                         onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
+                        tabindex="0"
                         {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
 
                         <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
@@ -145,7 +142,6 @@
                         <a class="button-small button-icon" onclick="gui.find('trigger {{port.value}}')"><span class="icon icon-search"></span></a>
                     {{/if}}
                 {{/compare}}
-
 
                 {{#compare port.uiAttribs.display '==' 'switch' }}
                     </td><td>
