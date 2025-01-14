@@ -2,7 +2,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 /**
- * tab panel to welcome users of the standalone editor
+ * tab panel to welcome users of the electron editor
  *
  * @export
  * @class WelcomeTab
@@ -34,7 +34,7 @@ export default class WelcomeTab
                 }
             });
 
-            if (CABLES.platform.frontendOptions.isStandalone)
+            if (CABLES.platform.frontendOptions.isElectron)
                 CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res, xhr) =>
                 {
                     if (!(err2 || (xhr && xhr.status === 0)))

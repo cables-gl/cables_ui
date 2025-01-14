@@ -7,10 +7,10 @@ import { notify } from "./elements/notification.js";
  * platform for standalone / electron version
  *
  * @export
- * @class PlatformStandalone
+ * @class PlatformElectron
  * @extends {Platform}
  */
-export default class PlatformStandalone extends Platform
+export default class PlatformElectron extends Platform
 {
     constructor(cfg)
     {
@@ -20,7 +20,7 @@ export default class PlatformStandalone extends Platform
 
         this.frontendOptions.npm = true;
 
-        this.frontendOptions.isStandalone =
+        this.frontendOptions.isElectron =
         this.frontendOptions.openLocalFiles =
         this.frontendOptions.selectableDownloadPath =
         this.frontendOptions.dragDropLocalFiles =
@@ -56,7 +56,7 @@ export default class PlatformStandalone extends Platform
         };
     }
 
-    isStandalone()
+    isElectron()
     {
         return true;
     }

@@ -21,7 +21,7 @@ import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import extendCoreOp from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
-import PlatformStandalone from "./platform_standalone.js";
+import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
 import { uniqueArray } from "./utils/helper.js";
@@ -44,7 +44,7 @@ CABLES.GLGUI.CURSOR_POINTER = 2;
 
 // used in footer.html
 CABLES.PlatformCommunity = PlatformCommunity;
-CABLES.PlatformStandalone = PlatformStandalone;
+CABLES.PlatformElectron = PlatformElectron;
 
 // expose global classes
 CABLES.GLUI.glUiConfig = gluiconfig; // todo: could be removed, needs workaround in gltf ops

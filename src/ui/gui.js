@@ -1463,7 +1463,7 @@ export default class Gui extends Events
         {
             ele.hide(exportLink);
         }
-        if (CABLES.platform.isStandalone())
+        if (CABLES.platform.isElectron())
         {
             if (exportLink) exportLink.innerText = "Export - HTML";
         }

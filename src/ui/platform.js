@@ -77,10 +77,10 @@ export default class Platform extends Events
 
     warnOpEdit(opName)
     {
-        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isStandalone());
+        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isElectron());
     }
 
-    isStandalone()
+    isElectron()
     {
         return false;
     }
