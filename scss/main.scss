@@ -251,7 +251,6 @@ body
     // all text input color, border and focus border / sizes can be individual for each and are defined wherever...
     input.medium,.opsearchInput,input[type=text], input[type=search],#commentTextarea
     {
-        // outline:none;
         background-color: var(--color-05);
         color:$mainColor;
         border: 1px solid transparent !important;
@@ -261,8 +260,6 @@ body
         {
             background-color: var(--color-05);
             color: var(--color-13);
-            border-bottom: 1px solid var(--color-special) !important;
-            // outline: none;
         }
     }
 
@@ -322,12 +319,6 @@ body
         font-size: 20px;
     }
 
-    input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus
-    {
-        // outline: none;
-        color: var(--color-13);
-        border: 1px solid $highlight-color;
-    }
 
 
 
@@ -577,11 +568,7 @@ body
         {
             color:$color-input-placeholder;
         }
-        // outline:none;
-        &:focus-visible
-        {
-            outline:2px;
-        }
+
     }
 
     .underline
@@ -863,9 +850,20 @@ body
 
     }
 
-    *:focus-visible {
+    .patchfield
+    {
+        border: 0px solid transparent;
+        outline: 0px !important;
+        position: absolute;
+    }
+
+    // ,input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus
+    *:focus-visible{
         outline: 2px solid var(--color-special) !important;
     }
 
+    canvas:focus-visible{
+        outline:none !important;
+    }
 
 }
