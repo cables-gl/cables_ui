@@ -35,7 +35,7 @@ export default class GlUiCanvas
 
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
-        this.canvas.setAttribute("tabindex", 10);
+        this.canvas.setAttribute("tabindex", 0);
         this._parentEle = parentEle;
 
         if (parentEle)parentEle.appendChild(this.canvas);

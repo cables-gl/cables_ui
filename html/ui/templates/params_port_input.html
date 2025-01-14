@@ -26,19 +26,16 @@
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
 
         {{#compare port.uiAttribs.display '==' 'button' }}
-        <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
-            {{#if port.uiAttribs.buttonTitle }}
-                {{port.uiAttribs.buttonTitle}}
-            {{else}}
-                {{#if port.uiAttribs.title }}{{port.uiAttribs.title}}{{else}}{{port.name}}{{/if}}
-            {{/if}}
-        </span>
-    {{/compare}}
+            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+                {{#if port.uiAttribs.buttonTitle }}
+                    {{port.uiAttribs.buttonTitle}}
+                {{else}}
+                    {{#if port.uiAttribs.title }}{{port.uiAttribs.title}}{{else}}{{port.name}}{{/if}}
+                {{/if}}
+            </span>
+        {{/compare}}
 
-
-
-        {{else}}
-
+    {{else}}
 
             {{#if port.uiAttribs.multiPort}}
                 </td><td>
@@ -57,13 +54,12 @@
                 </td>
             {{/if}}
 
-
             {{#if port.uiAttribs.display}}
 
                 {{#compare port.uiAttribs.display '==' 'bool' }}
             </td><td>
                         <span id="portcheckbox_{{ portnum }}_{{ panelid }}" class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
-                            <span tabindex="0"  style="height:20px;width:20px;" class="ccheckbox icon icon-check"  ></span>
+                            <span style="height:20px;width:20px;" class="ccheckbox icon icon-check"></span>
                         </span>
                     <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}_{{ panelid }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                 {{/compare}}
@@ -105,9 +101,8 @@
                         data-panelid="{{ panelid }}"
                         data-opid="{{op.id}}"
                         data-portname="{{ port.name }}"
-                        onmousedown="new CABLES.UI.ParamTabInputListener(this);CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');"
-                        ontouchstart="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');new CABLES.UI.ParamTabInputListener(this);"
                         onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
+                        tabindex="0"
                         {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
 
                         <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
@@ -148,7 +143,6 @@
                     {{/if}}
                 {{/compare}}
 
-
                 {{#compare port.uiAttribs.display '==' 'switch' }}
                     </td><td>
                         <input class="value hide" type="hidden" id="portval_{{ portnum }}_{{ panelid }}" style="width:40px;" value="{{port.value}}"/>
@@ -181,7 +175,7 @@
                 {{#compare port.uiAttribs.display '==' 'texture' }}
                     </td>
                     <td>
-                        <a class="button-small button-icon" onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage,'{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
+                        <a class="button-small button-icon clickable" data-click="addOpAndLink" data-opid="{{op.id}}" data-portname="{{port.name}}" ><span class="icon icon-plus-circle"></span></a>
 
                         {{#if port.uiAttribs.objType}}
                             <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
@@ -225,7 +219,7 @@
                         </td>
                     <td>
                     <!-- string -->
-                    <input onmousedown="new CABLES.UI.ParamTabInputListener(this);" spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
+                    <input spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
                 {{/compare}}
 
                 {{#compare port.type '==' '1' }} </td><td>[trigger]

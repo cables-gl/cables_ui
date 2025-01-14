@@ -84,7 +84,7 @@ export default class CanvasUi
             p.finish();
         });
 
-        this.canvasEle.setAttribute("tabindex", 3);
+        this.canvasEle.setAttribute("tabindex", 0);
 
         this.canvasEle.addEventListener("focus", () =>
         {
@@ -95,7 +95,7 @@ export default class CanvasUi
             p.finish();
         });
 
-        document.body.addEventListener("mousedown",
+        document.body.addEventListener("pointerdown",
             (e) =>
             {
                 if (this.isCanvasFocussed &&

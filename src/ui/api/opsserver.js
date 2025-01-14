@@ -883,7 +883,7 @@ export default class ServerOps
                 };
 
 
-                ele.asButton(ele.byId("opNameDialogSubmit"), () =>
+                ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
@@ -891,7 +891,7 @@ export default class ServerOps
 
                 if (options.showReplace)
                 {
-                    ele.asButton(ele.byId("opNameDialogSubmitReplace"), (event) =>
+                    ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
@@ -2085,6 +2085,7 @@ export default class ServerOps
                     allIdentifiers.forEach((identifier) =>
                     {
                         let url = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + identifier) + "?p=" + this._patchId;
+                        if (CABLES.platform.config.previewMode) url += "&preview=true";
                         missingOpUrl.push(url);
                     });
 
@@ -2139,12 +2140,14 @@ export default class ServerOps
             collectionName = name.split(".", 3).join(".");
             valid = name && namespace.isExtensionOp(name);
             apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
+            if (CABLES.platform.config.previewMode) apiUrl += "?preview=true";
         }
         if (name && type === "team")
         {
             collectionName = name.split(".", 3).join(".");
             valid = name && namespace.isTeamOp(name);
             apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
+            if (CABLES.platform.config.previewMode) apiUrl += "?preview=true";
         }
 
         if (valid)

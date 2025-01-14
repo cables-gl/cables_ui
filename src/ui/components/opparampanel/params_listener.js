@@ -8,8 +8,9 @@ import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
-import uiprofiler from "../uiprofiler.js";
-import ParamTabInputListener from "./param_tabinputlistener.js";
+// import uiprofiler from "../uiprofiler.js";
+// import ParamTabInputListener from "./param_tabinputlistener.js";
+import valueChanger from "./valuechanger.js";
 
 
 /**
@@ -52,6 +53,33 @@ class ParamsListener extends Events
             this._portsOut = options.portsOut || [];
         }
 
+        if (options.element)
+        {
+            ele.clickables(options.element, ".clickable", (e, data) =>
+            {
+                switch (data.click)
+                {
+                case "centerSelectOp":
+                    gui.patchView.centerSelectOp(data.op);
+                    gui.opParams.show(data.op);
+                    break;
+
+                case "showAnim":
+                    gui.metaKeyframesShowAnim(data.opid, data.portname);
+                    break;
+
+                case "resetOpValues":
+                    gui.patchView.resetOpValues(data.opid, data.portname);
+                    break;
+
+                case "addOpAndLink":
+                    gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, data.opid, data.portname);
+                    break;
+                }
+            });
+        }
+
+
         if (this._portsIn.length > 0)
         {
             for (let i = 0; i < this._portsIn.length; i++)
@@ -90,6 +118,10 @@ class ParamsListener extends Events
                 });
             })(i);
         }
+
+
+
+
 
         for (let i = 0; i < this._portsIn.length; i++) this.initPortInputListener(this._portsIn, i, this.panelId);
 
@@ -254,7 +286,8 @@ class ParamsListener extends Events
 
 
 
-        colEle.addEventListener("click", (e) =>
+        ele.clickable(colEle, (e) =>
+        // colEle.addEventListener("click", (e) =>
         {
             let undoGroup;
             let opacity = 1;
@@ -714,7 +747,7 @@ class ParamsListener extends Events
             const el = ele.byId("portcheckbox_" + index + "_" + panelid);
             if (el)
             {
-                ele.asButton(el, () =>
+                ele.clickable(el, () =>
                 {
                     CABLES.UI.paramsHelper.togglePortValBool("portval_" + index + "_" + panelid, "portcheckbox_" + index + "_" + panelid);
                 });
@@ -730,7 +763,7 @@ class ParamsListener extends Events
                 for (let j = 0; j < labels.length; j++)
                 {
                     const l = labels[j];
-                    ele.asButton(l, (e) =>
+                    ele.clickable(l, (e) =>
                     {
                         const labelInput = ele.byQuery("#portSwitch_" + index + "_" + panelid + " #" + l.id + " input");
 
@@ -755,17 +788,38 @@ class ParamsListener extends Events
                 let portName = ports[index].name;
                 let opId = ports[index].op.id;
 
-                const cb = (e) =>
+                const cb = (e, keyboard) =>
                 {
-                    CABLES.UI.valueChanger(theId, false, portName, opId);
-
-
+                    valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
-                    new ParamTabInputListener(el);
+                    // console.log("valuechanger", theId, portName, opId);
+                    // new ParamTabInputListener(el);
                 };
 
-                el.addEventListener("mousedown", (e) => { cb(e); }, false); // does only work with mousedown, not with click or keydown................
-                el.addEventListener("keydown", (e) => { if (e.keyCode == 13 || e.keyCode == 32)cb(e); }, false); // why u no work
+                let isMouse = false;
+
+                el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
+                el.addEventListener("pointerenter", () => { isMouse = true; });
+                el.addEventListener("pointerleave", () => { isMouse = false; });
+                el.addEventListener("focus", (e) =>
+                {
+                    if (isMouse) return;
+                    el.removeAttribute("tabindex");
+                    cb(e, true);
+
+                    ele.byId(theId).addEventListener("blur", () =>
+                    {
+                        el.setAttribute("tabindex", 0);
+                    });
+                });
+
+                // el.addEventListener("keydown", (e) =>
+                // {
+                //     if (e.keyCode == 13 || e.keyCode == 32)
+                //     {
+                //         cb(e, true);
+                //     }
+                // }); // why u no work
             }
         }
 

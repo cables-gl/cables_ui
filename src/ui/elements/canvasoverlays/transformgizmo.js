@@ -241,7 +241,7 @@ export default class Gizmo
             this.lineZ = new htmlLine(container, "#00f");
 
             this._eleX.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -256,7 +256,7 @@ export default class Gizmo
             );
 
             this._eleY.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -271,7 +271,7 @@ export default class Gizmo
             );
 
             this._eleZ.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -285,7 +285,7 @@ export default class Gizmo
             );
 
             this._eleXZ.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -301,7 +301,7 @@ export default class Gizmo
             );
 
             this._eleXY.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -321,7 +321,7 @@ export default class Gizmo
                 },
             );
             this._eleYZ.addEventListener(
-                "mousedown",
+                "pointerdown",
                 () =>
                 {
                     if (!this._params) return;
@@ -467,9 +467,9 @@ export default class Gizmo
             if (document.exitPointerLock) document.exitPointerLock();
 
             document.removeEventListener("mouseup", up);
-            document.removeEventListener("mousedown", down);
+            document.removeEventListener("pointerdown", down);
 
-            document.removeEventListener("mousemove", move, false);
+            document.removeEventListener("pointermove", move, false);
 
             if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
         };
@@ -518,7 +518,7 @@ export default class Gizmo
         {
             if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
             {
-                document.addEventListener("mousemove", move, false);
+                document.addEventListener("pointermove", move, false);
             }
             else
             {
@@ -529,7 +529,7 @@ export default class Gizmo
         }
 
         document.addEventListener("mouseup", up);
-        document.addEventListener("mousedown", down);
+        document.addEventListener("pointerdown", down);
     }
 }
 

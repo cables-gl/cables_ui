@@ -20,32 +20,33 @@
 
     .numberinputFocussed
     {
-        border-bottom: 1px solid var(--color-special) !important;
+        // border-bottom: 1px solid var(--color-special) !important;
+        // outline:none !important;
     }
+
 
     .numberinput,.numberinput-value
     {
-        overflow: hidden;
-        position: relative;
+        padding-left: 5px;
+        padding-right: 5px;
+        height:18px;
+        width:140px;
+        border-radius: 2px;
         font-family: monospace;
         font-size: var(--font-size-default);
+    }
+
+    .numberinput-value
+    {
+        overflow: hidden;
         color:var(--color-13);
-        border:none;
-        // outline: none;
+        margin-left:-5px;
     }
 
     .numberinput
     {
         background-color: $color-background-input;
-        width:140px;
-        padding:1px;
-        padding-top:1px;
-        height:18px;
-        padding-left: 5px;
-        padding-right: 5px;
         color:var(--color-11);
-        border-radius: 2px;
-        border-bottom: 1px solid transparent;
         user-select: none;
         cursor:ew-resize;
     }
@@ -55,11 +56,4 @@
         cursor:pointer !important;
     }
 
-    // .numberinput-progress
-    // {
-    //     width:50%;
-    //     background-color: red;
-    //     height:100%;
-    //     position: relative;
-    // }
 }
