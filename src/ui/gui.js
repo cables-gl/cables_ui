@@ -100,6 +100,7 @@ export default class Gui extends Events
         this._modalLoading = null;
         this._modalLoadingCount = 0;
 
+
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
 
@@ -945,6 +946,8 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
+
+        gui.patchView.patchRenderer.focus();
 
         perf.finish();
     }
