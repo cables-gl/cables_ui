@@ -796,7 +796,6 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    // new ModalError({ "title": "Error/Invalid response from server 6", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                     this.showApiError(err);
                     return;
                 }
@@ -813,7 +812,7 @@ export default class ServerOps
                     {
                         addButton.addEventListener("click", () =>
                         {
-                            CABLES.CMD.ELECTRON.addProjectOpDir((dirErr, dirRes) =>
+                            CABLESUILOADER.talkerAPI.send("addProjectOpDir", (dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {

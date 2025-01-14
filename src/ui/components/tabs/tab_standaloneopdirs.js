@@ -36,7 +36,7 @@ export default class StandaloneOpDirs
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        CABLES.CMD.ELECTRON.addProjectOpDir((dirErr, _dirRes) =>
+                        CABLESUILOADER.talkerAPI.send("addProjectOpDir", (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -57,7 +57,7 @@ export default class StandaloneOpDirs
                 {
                     packageButton.addEventListener("click", () =>
                     {
-                        CABLES.CMD.ELECTRON.addOpPackage(null, (dirErr, _dirRes) =>
+                        CABLESUILOADER.talkerAPI.send("addOpPackage", {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
