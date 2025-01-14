@@ -46,7 +46,7 @@ export default class FileManager
             gui.fileManager = null;
         });
 
-        if (CABLES.platform.frontendOptions.isStandalone)
+        if (CABLES.platform.frontendOptions.isElectron)
             gui.on("patchsaved", () =>
             {
                 if (!ele.byId("filemanagercontainer")) return;
@@ -457,7 +457,7 @@ export default class FileManager
 
                         let assetPath = "";
                         if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
-                        if (CABLES.platform.frontendOptions.isStandalone) assetPath = r.path;
+                        if (CABLES.platform.frontendOptions.isElectron) assetPath = r.path;
 
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
@@ -550,7 +550,7 @@ export default class FileManager
                             (e) =>
                             {
                                 let fileName = r.fileDb.fileName;
-                                if (CABLES.platform.frontendOptions.isStandalone) fileName = r.path;
+                                if (CABLES.platform.frontendOptions.isElectron) fileName = r.path;
                                 gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
                             });
                     }
