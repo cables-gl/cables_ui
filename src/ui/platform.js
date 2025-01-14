@@ -4,7 +4,7 @@ import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
-import StandaloneOpDirs from "./components/tabs/tab_standaloneopdirs.js";
+import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
 
 /**
@@ -514,7 +514,7 @@ export default class Platform extends Events
     {
         if (this.frontendOptions.hasOpDirectories)
         {
-            new StandaloneOpDirs(gui.mainTabs);
+            new ElectronOpDirs(gui.mainTabs);
             gui.maintabPanel.show(true);
         }
     }

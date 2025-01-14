@@ -3,11 +3,11 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 
-export default class StandaloneOpDirs
+export default class ElectronOpDirs
 {
     constructor(tabs)
     {
-        this._log = new Logger("StandaloneOpDirsTab");
+        this._log = new Logger("ElectronOpDirsTab");
 
         this._count = 0;
         this._timeout = null;
@@ -26,7 +26,7 @@ export default class StandaloneOpDirs
         {
             if (!err && r.data)
             {
-                const html = getHandleBarHtml("tab_standalone_opdirs", { "dirs": r.data });
+                const html = getHandleBarHtml("tab_electron_opdirs", { "dirs": r.data });
                 this._tab.html(html);
 
                 const listEle = ele.byId("dirlist");

@@ -174,7 +174,7 @@ export default class EditorTab extends Events
 
                 if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
-                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"standalone_openfolder\" ></span>",
+                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"electron_openfolder\" ></span>",
                         (e) =>
                         {
                             if (e.ctrlKey || e.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
