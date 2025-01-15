@@ -45,7 +45,7 @@ export default class ServerOps
 
                 this.edit(name, false, () =>
                 {
-                    Gui.mainTabs.activateTabByName(lastTab);
+                    gui.mainTabs.activateTabByName(lastTab);
                     CABLES.UI.userSettings.set("editortab", lastTab);
                     CABLES.editorSession.finishLoadingTab();
                 });
