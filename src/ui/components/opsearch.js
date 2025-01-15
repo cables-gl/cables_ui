@@ -481,9 +481,7 @@ export default class OpSearch extends Events
                 opId = opDoc.id;
                 opDocHidden = opDoc.hidden;
                 hidden = opDoc.hidden;
-
-                if (namespace.isNonCoreOp(opName)) shortName = opDoc.shortName;
-                else shortName = opDoc.shortNameDisplay;
+                shortName = opDoc.shortNameDisplay;
             }
 
             if (namespace.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;

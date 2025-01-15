@@ -59,7 +59,6 @@ class PortHtmlGenerator
             "user": gui.user,
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
-            "showRenameButton": canEditOp && namespace.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
