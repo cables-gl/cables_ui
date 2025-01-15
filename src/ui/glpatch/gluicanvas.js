@@ -27,14 +27,7 @@ export default class GlUiCanvas
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
-        // this.canvas.style.display='block';
-        // this.canvas.style.position='absolute';
-        this.canvas.style.border = "0px solid white";
-        this.canvas.style.outline = "0";
-        this.canvas.style.position = "absolute";
-
-        // this.canvas.style.cursor='none';
-        // this.canvas.style['z-index']=9999999991;
+        this.canvas.classList.add("patchfield");
         this.canvas.setAttribute("tabindex", 0);
         this._parentEle = parentEle;
 

@@ -169,6 +169,9 @@ export default class GlPatch extends Events
         this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
 
+
+
+
         // this._debugtext = new Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;

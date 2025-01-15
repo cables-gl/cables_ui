@@ -81,7 +81,7 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
-        if (CABLES.platform.frontendOptions.uploadFiles || filename) // allow reupload in standalone via `|| filename`
+        if (CABLES.platform.frontendOptions.uploadFiles || filename) // allow reupload in electron via `|| filename`
         {
             const reader = new FileReader();
 

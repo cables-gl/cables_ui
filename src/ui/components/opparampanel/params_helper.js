@@ -125,13 +125,13 @@ const paramsHelper =
 
         if (bool_value)
         {
-            checkBoxEle.parentElement.classList.add("checkbox-active");
-            checkBoxEle.parentElement.classList.remove("checkbox-inactive");
+            checkBoxEle.classList.add("checkbox-active");
+            checkBoxEle.classList.remove("checkbox-inactive");
         }
         else
         {
-            checkBoxEle.parentElement.classList.add("checkbox-inactive");
-            checkBoxEle.parentElement.classList.remove("checkbox-active");
+            checkBoxEle.classList.add("checkbox-inactive");
+            checkBoxEle.classList.remove("checkbox-active");
         }
 
         inputEle.value = bool_value;
