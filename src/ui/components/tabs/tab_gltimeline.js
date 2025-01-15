@@ -1,6 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
 import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
-import userSettings from "../usersettings.js";
 
 
 export default class GlTimelineTab
@@ -14,7 +13,7 @@ export default class GlTimelineTab
         const a = new glTimelineCanvas(CABLES.patch, this._tab.contentEle);
 
         a.parentResized();
-        userSettings.set("glTimelineOpened", true);
+        gui.userSettings.set("glTimelineOpened", true);
 
         this._tab.on("resize", () =>
         {
@@ -23,7 +22,7 @@ export default class GlTimelineTab
 
         this._tab.on("closed", () =>
         {
-            userSettings.set("glTimelineOpened", false);
+            gui.userSettings.set("glTimelineOpened", false);
         });
 
         // tabs.show(true);
