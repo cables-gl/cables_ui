@@ -5,8 +5,10 @@ import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
 import GlGuiTab from "../components/tabs/tab_glpatch.js";
-import Gui from "../gui.js";
+
 import CMD from "./commands.js";
+import Gui, { gui } from "../gui.js";
+
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -25,6 +27,7 @@ CABLES_CMD_DEBUG.testCommands = function ()
     {
         if (CMD.commands[i].cmd.indexOf("Test all") == -1 &&
             CMD.commands[i].cmd != "Upload file" &&
+            CMD.commands[i].cmd != "Clear" &&
             CMD.commands[i].cmd != "Reload patch" &&
             CMD.commands[i].cmd != "Open patch website" &&
             CMD.commands[i].cmd != "Toggle window fullscreen")
@@ -39,11 +42,10 @@ CABLES_CMD_DEBUG.testCommands = function ()
 CABLES_CMD_DEBUG.testBlueprint2 = function ()
 {
     const p = gui.corePatch();
-
     const sub = gui.patchView.getCurrentSubPatch();
 
     let ops = p.getSubPatchOps(sub, true);
-    console.log(ops);
+
     const serOps = [];
 
     for (let i = 0; i < ops.length; i++)

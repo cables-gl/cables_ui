@@ -6,6 +6,7 @@ import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
+import { gui } from "../../gui.js";
 
 /**
  * op parameter panel

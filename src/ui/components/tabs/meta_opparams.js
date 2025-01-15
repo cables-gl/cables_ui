@@ -1,4 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 
 export default class MetaOpParams
 {
@@ -17,7 +18,7 @@ export default class MetaOpParams
 
     updateVisibility(b)
     {
-        if (!window.gui) return;
+        if (!gui) return;
 
         if (this._tabs.getActiveTab() != this._tab) this._prevTab = this._tabs.getActiveTab();
         this._tabs.closeTab(this._tab.id);

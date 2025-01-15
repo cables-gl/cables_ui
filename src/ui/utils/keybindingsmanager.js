@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
 
 /**
@@ -30,10 +30,7 @@ export default class KeyBindingsManager extends Events
         const k = this._prepareKeysForDisplay(this._keys);
 
         let showDownloadButton = false;
-        if (gui && gui.user && (gui.user.isStaff || gui.user.isAdmin))
-        {
-            showDownloadButton = true;
-        }
+        if (gui && gui.user && (gui.user.isStaff || gui.user.isAdmin)) showDownloadButton = true;
 
         const html = getHandleBarHtml("tab_keys", { "keys": k, "showDownloadButton": showDownloadButton });
         this._tab.html(html);

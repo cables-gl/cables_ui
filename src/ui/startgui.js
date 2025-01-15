@@ -12,6 +12,7 @@ import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 
 
+
 /**
  * manage the start of the ui/editor
  *
@@ -23,7 +24,7 @@ export default function startUi(cfg)
     if (window.logStartup) logStartup("Init UI");
     HandlebarsHelper.initHandleBarsHelper();
 
-    window.gui = new Gui(cfg);
+    const gui = new Gui(cfg);
 
     gui.on("uiloaded", () =>
     {

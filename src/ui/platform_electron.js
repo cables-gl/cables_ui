@@ -2,6 +2,7 @@ import Platform from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import text from "./text.js";
 import { notify } from "./elements/notification.js";
+import { gui } from "./gui.js";
 
 /**
  * platform for standalone / electron version

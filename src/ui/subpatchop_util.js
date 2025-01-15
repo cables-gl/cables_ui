@@ -4,6 +4,7 @@ import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import { notify, notifyError } from "./elements/notification.js";
+import { gui } from "./gui.js";
 
 const subPatchOpUtil = {};
 

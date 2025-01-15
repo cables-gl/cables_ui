@@ -1,4 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
@@ -165,10 +166,10 @@ export default class Preferences
 
         ele.byId("resetPrefs").addEventListener("click", () =>
         {
-            CABLES.UI.userSettings.reset();
+            gui.userSettings.reset();
         });
 
-        CABLES.UI.userSettings.on("change", () =>
+        gui.userSettings.on("change", () =>
         {
             this.updateValues();
         });

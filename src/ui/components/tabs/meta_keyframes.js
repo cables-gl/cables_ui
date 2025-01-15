@@ -1,4 +1,5 @@
 import ModalDialog from "../../dialogs/modaldialog.js";
+import { gui } from "../../gui.js";
 import opNames from "../../opnameutils.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
