@@ -45,7 +45,10 @@ export default class LibLoader
         const libName = module.src;
         let libType = module.type;
         const moduleExport = module.export;
-        if (!this._list.includes(libName))
+
+        // loading npms is done by electron
+        const doLoadLib = libType !== "npm" && !this._list.includes(libName);
+        if (doLoadLib)
         {
             if (!loadjs.isDefined(libName))
             {
