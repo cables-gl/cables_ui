@@ -1889,7 +1889,7 @@ export default class ServerOps
         ops.forEach((op) =>
         {
             const opDeps = this.getOpDeps(op);
-            opDeps.forEach((lib) => { depsToLoad[lib.name] = lib; });
+            opDeps.forEach((lib) => { depsToLoad[lib.src] = lib; });
         });
         new LibLoader(Object.values(depsToLoad), finishedCb);
     }

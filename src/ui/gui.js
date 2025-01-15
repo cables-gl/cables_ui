@@ -180,7 +180,6 @@ export default class Gui extends Events
         this.savedState.pause();
         this._savedStateChangesBlueprintSubPatches = [];
 
-
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = null;
         this.bookmarks = new Bookmarks();
