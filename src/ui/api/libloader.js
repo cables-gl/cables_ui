@@ -70,7 +70,7 @@ export default class LibLoader
                 }
                 else if (module.src.startsWith("./"))
                 {
-                    scriptSrc = "/api/oplib/" + module.op + module.src;
+                    scriptSrc = CABLES.platform.getSandboxUrl() + "/api/oplib/" + module.op + module.src.replace(".", "");
                 }
                 else
                 {
