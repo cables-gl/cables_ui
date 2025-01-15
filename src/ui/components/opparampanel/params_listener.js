@@ -111,6 +111,7 @@ class ParamsListener extends Events
             ((index) =>
             {
                 const elm = ele.byId("portdelete_in_" + index);
+                // if (elm)ele.clickable(elm, () =>
                 if (elm)elm.addEventListener("click", (e) =>
                 {
                     this._portsIn[index].removeLinks();
@@ -448,7 +449,8 @@ class ParamsListener extends Events
         // });
 
         el = ele.byId("port_contextmenu_" + dirStr + "_" + index + "_" + panelid);
-        if (el) el.addEventListener("click", (e) =>
+        // if (el) el.addEventListener("click", (e) =>
+        if (el)ele.clickable(el, (e) =>
         {
             const port = thePort;// ports[index].op.getPortById(e.target.dataset.portid);
             if (!thePort) return;

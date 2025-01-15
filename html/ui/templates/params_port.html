@@ -61,9 +61,11 @@
             {{/compare}}
         </span>
 
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset reset_hidden  clickable" data-click="resetOpValues" data-opid="{{op.id}}" data-portname="{{port.name}}" >
-            <span class="icon icon-undo icon-0_75x"></span>
-        </span>
+        {{#compare port.type '!=' '1' }}
+            <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset reset_hidden  clickable" data-click="resetOpValues" data-opid="{{op.id}}" data-portname="{{port.name}}" >
+                <span class="icon icon-undo icon-0_75x"></span>
+            </span>
+        {{/compare}}
 
         <!-- numberinput-val -->
 
@@ -73,10 +75,7 @@
 
     </td>
     <td class="">
-
-
         {{#if port.links}}
-
             {{#if port.direction }}
             </td><td  style="overflow: hidden;text-overflow:ellipsis">
                 <table>
@@ -93,7 +92,7 @@
                     </td><td>
                 {{#each port.links}}
                     <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                    <a class="clickable paramsPortLink" data-click="centerSelectOp" data-op="{{portOut.op.id}}" >{{ portOut.op.name }}</a><br/>
+                    <a class="clickable paramsPortLink"  data-click="centerSelectOp" data-op="{{portOut.op.id}}" >{{ portOut.op.name }}</a><br/>
                 {{/each}}
             {{/if}}
         {{/if}}
