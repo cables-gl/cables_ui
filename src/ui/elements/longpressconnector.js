@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import SuggestionDialog from "../components/suggestiondialog.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { notify } from "./notification.js";
+import { gui } from "../gui.js";
 
 export default class LongPressConnector extends Events
 {

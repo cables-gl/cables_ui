@@ -1,3 +1,4 @@
+import { gui } from "../../gui.js";
 import undo from "../../utils/undo.js";
 
 export default class Gizmo

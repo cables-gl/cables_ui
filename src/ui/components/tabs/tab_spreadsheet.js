@@ -1,4 +1,4 @@
-import { ele, Events } from "cables-shared-client";
+import { ele, Events, Logger } from "cables-shared-client";
 
 export default class SpreadSheetTab extends Events
 {
@@ -6,6 +6,7 @@ export default class SpreadSheetTab extends Events
     {
         super();
         this._tabs = tabs;
+        this._log = new Logger("SpreadSheetTab");
 
         options = options || {};
 
@@ -172,12 +173,11 @@ export default class SpreadSheetTab extends Events
             this._focusCell(x + 1, y);
         }
         else this._onInputChange(e);
-        // else console.log(e.keyCode);
     }
 
     _checkNumRows()
     {
-        console.log(this.cells);
+        this._log.log(this.cells);
 
 
         let lastLine = this.cells.length - 1;
@@ -189,7 +189,7 @@ export default class SpreadSheetTab extends Events
                 for (let x = 0; x < this._numCols; x++)
                     if (this.cells[i][x] && this.cells[i][x].length > 0)
                     {
-                        console.log(i, this.cells[i]);
+                        this._log.log(i, this.cells[i]);
                         foundContent = true;
                         lastLine = i;
                     }
@@ -200,11 +200,11 @@ export default class SpreadSheetTab extends Events
 
             // for (let x = 0; x < this._numCols; x++)
             // {
-            //     console.log(this.cells[x]);
+            //     this._log.log(this.cells[x]);
             // }
         }
 
-        console.log("lastLine", lastLine);
+        this._log.log("lastLine", lastLine);
 
         lastLine += 10;
         if (this._rows != lastLine)
@@ -213,7 +213,7 @@ export default class SpreadSheetTab extends Events
             this.rebuildHtml();
         }
 
-        console.log("lastline", lastLine);
+        this._log.log("lastline", lastLine);
 
         // const newRows = lastLine + 10;
         // if (this._rows != newRows)
@@ -247,7 +247,7 @@ export default class SpreadSheetTab extends Events
     {
         if (y == -1)
         {
-            console.log("set colname", x, v);
+            this._log.log("set colname", x, v);
             this.colNames[x] = v;
             return;
         }
@@ -269,7 +269,7 @@ export default class SpreadSheetTab extends Events
 
     _onInputChange(e)
     {
-        console.log("onchange...", e.target.value);
+        this._log.log("onchange...", e.target.value);
         const x = e.target.dataset.x;
         const y = e.target.dataset.y;
 

@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 
 /**
  *simple tab to just show html

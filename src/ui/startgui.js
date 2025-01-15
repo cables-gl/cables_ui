@@ -28,7 +28,7 @@ export default function startUi(cfg)
 
     gui.on("uiloaded", () =>
     {
-        new Tracking(gui);
+        new Tracking();
     });
 
     if (gui.isRemoteClient)
@@ -37,7 +37,7 @@ export default function startUi(cfg)
         new GlGuiFull();
 
     incrementStartup();
-    gui.serverOps = new ServerOps(gui, cfg.patchId, () =>
+    gui.serverOps = new ServerOps(cfg.patchId, () =>
     {
         gui.init();
         gui.checkIdle();

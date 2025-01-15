@@ -5,6 +5,7 @@ import text from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
+import { gui } from "../../gui.js";
 
 
 /**

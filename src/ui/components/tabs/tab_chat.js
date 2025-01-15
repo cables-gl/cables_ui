@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { gui } from "../../gui.js";
 
 export default class Chat extends Events
 {

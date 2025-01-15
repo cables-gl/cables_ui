@@ -3,6 +3,7 @@ import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanim.js";
 import glTlRuler from "./gltlruler.js";
+import { gui } from "../gui.js";
 
 export default class GlTimeline extends Events
 {
@@ -22,8 +23,6 @@ export default class GlTimeline extends Events
 
         this._canvasMouseDown = false;
         this.init();
-
-
 
         gui.on("opSelectChange", () =>
         {
@@ -45,7 +44,6 @@ export default class GlTimeline extends Events
         this.rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
         if (this.mouseDown)
         {
-
             // console.log("drag", x);s
             // this.rects.mouseDrag(x, y);
         }

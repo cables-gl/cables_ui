@@ -2,6 +2,7 @@ import { Logger } from "cables-shared-client";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import GlUiConfig from "../../glpatch/gluiconfig.js";
 import defaultOps from "../../defaultops.js";
+import { gui } from "../../gui.js";
 
 export default class ModalPortValue
 {

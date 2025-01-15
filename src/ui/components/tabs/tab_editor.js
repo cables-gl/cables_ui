@@ -1,8 +1,9 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
 import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
+import { gui } from "../../gui.js";
 
 /**
  * tab panel for editing text and source code using the ace editor

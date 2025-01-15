@@ -1,5 +1,6 @@
 import Tab from "../../elements/tabpanel/tab.js";
 import GlUiCanvas from "../../glpatch/gluicanvas.js";
+import { gui } from "../../gui.js";
 
 export default class GlGuiTab
 {

@@ -1,5 +1,6 @@
 import { ele, Events } from "cables-shared-client";
 import { notify } from "../../elements/notification.js";
+import { gui } from "../../gui.js";
 
 export default class TabPortObjectInspect extends Events
 {

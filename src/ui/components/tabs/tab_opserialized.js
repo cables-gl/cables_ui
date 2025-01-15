@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { gui } from "../../gui.js";
 
 /**
  * debug: show current op in serialized form

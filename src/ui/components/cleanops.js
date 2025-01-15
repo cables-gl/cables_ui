@@ -1,4 +1,5 @@
 import gluiconfig from "../glpatch/gluiconfig.js";
+import { gui } from "../gui.js";
 
 export default class opCleaner
 {
@@ -49,8 +50,6 @@ export default class opCleaner
             }
             otherOps.push(ops[i]);
         }
-
-        // let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (gluiconfig.portWidth + gluiconfig.portPadding));
 
         for (let i = 0; i < ops.length; i++)
             ops[i].setTempOpPos(startPosX, startPosY);

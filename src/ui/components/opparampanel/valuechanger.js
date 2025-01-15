@@ -3,6 +3,7 @@ import text from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
 import paramsHelper from "./params_helper.js";
+import { gui } from "../../gui.js";
 
 let pointerLockFirstTime = true;
 

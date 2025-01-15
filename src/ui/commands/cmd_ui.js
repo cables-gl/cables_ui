@@ -8,6 +8,7 @@ import WelcomeTab from "../components/tabs/tab_welcome.js";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import Keypresenter from "../components/keypresenter.js";
 import Tips from "../dialogs/tips.js";
+import { gui } from "../gui.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];

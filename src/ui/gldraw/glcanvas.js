@@ -1,5 +1,6 @@
 import GlPatch from "../glpatch/glpatch.js";
 import GlPatchAPI from "../glpatch/patchapi.js";
+import { gui } from "../gui.js";
 
 export default class GlCanvas
 {

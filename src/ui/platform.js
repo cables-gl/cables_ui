@@ -1,4 +1,4 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
@@ -6,6 +6,7 @@ import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
+import { gui } from "./gui.js";
 
 /**
  * super class for platform implementations
@@ -566,10 +567,10 @@ export default class Platform extends Events
 
     showFileSelect(inputId, filterType, opid, previewId)
     {
-        console.log("showFileSelect", inputId, filterType, opid, previewId);
+        this._log.log("showFileSelect", inputId, filterType, opid, previewId);
         gui.showFileManager(() =>
         {
-            console.log("showFileSelect22222");
+            this._log.log("showFileSelect22222");
             const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {

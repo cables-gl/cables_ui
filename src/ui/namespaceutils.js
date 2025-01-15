@@ -1,8 +1,7 @@
 import defaultOps from "./defaultops.js";
+import { gui } from "./gui.js";
 
 export default class namespace {}
-
-
 
 namespace.getNamespace = (opname) =>
 {

@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 
 /**
  * treeview, e.g. for patch outline
@@ -94,17 +94,17 @@ export default class TreeView extends Events
                 el.addEventListener("click",
                     (event) =>
                     {
-                        const ele = event.target;
+                        const el2 = event.target;
                         const eletype = ele.dataset.eletype;
-                        this.emitEvent(eletype + "_click", this._clickListenerIds[i], ele, event);
+                        this.emitEvent(eletype + "_click", this._clickListenerIds[i], el2, event);
                     });
 
                 el.addEventListener("dblclick",
                     (event) =>
                     {
-                        const ele = event.target;
+                        const el2 = event.target;
                         const eletype = ele.dataset.eletype;
-                        this.emitEvent(eletype + "_dblclick", this._clickListenerIds[i], ele, event);
+                        this.emitEvent(eletype + "_dblclick", this._clickListenerIds[i], el2, event);
                     });
             }
             else

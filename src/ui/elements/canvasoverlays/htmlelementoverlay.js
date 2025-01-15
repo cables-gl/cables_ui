@@ -1,3 +1,4 @@
+import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 
 export default class HtmlElementOverlay

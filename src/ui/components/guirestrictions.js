@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client";
 
 /**
  * gui restrictions,e.g. show an editor to the user, the user can  make changes etc.
@@ -11,7 +12,6 @@ export default class GuiRestrictions
     {
         this._restrictionMultiplayer = 0;
         this._restrictionBlueprint = 0;
-
         this._messages = {};
 
         this._messageBox = ele.byId("restriction_message");

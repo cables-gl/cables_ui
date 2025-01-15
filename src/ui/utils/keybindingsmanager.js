@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
@@ -15,6 +15,7 @@ export default class KeyBindingsManager extends Events
     constructor()
     {
         super();
+        this._log = new Logger("KeyBindingsManager");
         this._keys = [];
         this.shiftKey = false;
         document.addEventListener("keydown", this._onKeyDown.bind(this), false);
@@ -130,7 +131,7 @@ export default class KeyBindingsManager extends Events
 
 
                 if (k.cb) k.cb(e);
-                else console.warn("[keys] key event has no callback", k);
+                else this._log.warn("[keys] key event has no callback", k);
 
                 if (!e.dontPreventDefault) e.preventDefault();
 
@@ -170,7 +171,7 @@ export default class KeyBindingsManager extends Events
                 // gui.log.userInteraction("pressed " + e.key);
 
                 if (k.cb) k.cb(e);
-                else console.warn("[keys] key event has no callback", k);
+                else this._log.warn("[keys] key event has no callback", k);
 
                 if (!e.dontPreventDefault) e.preventDefault();
 

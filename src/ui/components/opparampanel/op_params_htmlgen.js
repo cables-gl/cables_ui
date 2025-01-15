@@ -1,3 +1,4 @@
+import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import text from "../../text.js";

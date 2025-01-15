@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
@@ -48,9 +48,9 @@ export default class Tab extends Events
         eleContainer.appendChild(this.contentEle);
     }
 
-    addButtonBarElement(ele)
+    addButtonBarElement(el)
     {
-        this.toolbarEle.appendChild(ele);
+        this.toolbarEle.appendChild(el);
     }
 
     addButton(title, cb, options)

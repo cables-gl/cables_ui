@@ -1,5 +1,6 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 import { hideToolTip } from "../elements/tooltips.js";
+import { gui } from "../gui.js";
 
 /**
  * configuration object for a modal dialog

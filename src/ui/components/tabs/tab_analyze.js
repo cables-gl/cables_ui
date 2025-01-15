@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
+import { gui } from "../../gui.js";
 /**
  * tab panel analyze patch shows information and statistics about the current patch
  */

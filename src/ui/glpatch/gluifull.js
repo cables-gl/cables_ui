@@ -1,3 +1,4 @@
+import { gui } from "../gui.js";
 import GlUiCanvas from "./gluicanvas.js";
 
 export default class GlGuiFull

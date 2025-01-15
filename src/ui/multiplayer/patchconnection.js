@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 const PatchConnectionReceiver = function (patch, options, connector)
 {
@@ -197,7 +198,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
     {
         const serops = gui.corePatch().getOpsByObjName(data.vars.opName);
 
-        const ser = gui.patchView.serializeOps(serops);
+        // const ser = gui.patchView.serializeOps(serops);
 
         for (let i = 0; i < serops.length; i++)
         {

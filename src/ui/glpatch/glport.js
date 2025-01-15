@@ -4,6 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
 import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
+import { gui } from "../gui.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}

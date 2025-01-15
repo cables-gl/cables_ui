@@ -1,4 +1,4 @@
-import { Logger, Events } from "cables-shared-client";
+import { Logger, Events, ele } from "cables-shared-client";
 import platform from "platform";
 import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
@@ -1905,9 +1905,9 @@ export default class Gui extends Events
         if (CABLES.platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
-        console.log("start up times:");
-        console.table(CABLESUILOADER.startup.log);
-        console.groupEnd();
+        console.log("start up times:"); // eslint-disable-line no-console
+        console.table(CABLESUILOADER.startup.log); // eslint-disable-line no-console
+        console.groupEnd(); // eslint-disable-line no-console
 
 
         if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
@@ -2178,12 +2178,12 @@ export default class Gui extends Events
         {
             try
             {
-                console.log("🌈 found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
+                this._log.log("🌈 found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
                 this.setTheme(JSON.parse(window.localStorage.getItem("cables_theme")));
             }
             catch (e)
             {
-                console.log(e);
+                this._log.error(e);
             }
         }
 
@@ -2238,7 +2238,6 @@ export default class Gui extends Events
     {
         this._corePatch.on("criticalError", function (options)
         {
-            console.log("core error3");
             new ModalError(options);
         });
 

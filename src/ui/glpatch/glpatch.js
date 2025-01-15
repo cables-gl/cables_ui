@@ -13,7 +13,7 @@ import GlCursor from "./glcursor.js";
 import ShakeDetector from "./shakedetect.js";
 import VizLayer from "./vizlayer.js";
 import text from "../text.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
@@ -914,7 +914,6 @@ export default class GlPatch extends Events
 
         for (let i = 0; i < ops.length; i++)
         {
-            console.log("disabled", willDisable);
             ops[i].setUiAttribs({ "disabled": willDisable });
         }
         gui.opParams.refresh();
@@ -945,7 +944,6 @@ export default class GlPatch extends Events
     {
         const ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) return;
-        console.log(ops[0]);
     }
 
     addOp(op, fromDeserialize)

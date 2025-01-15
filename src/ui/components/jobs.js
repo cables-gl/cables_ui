@@ -1,4 +1,5 @@
 import { ele, Events, Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 export default class Jobs extends Events
 {

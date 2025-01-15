@@ -1,8 +1,9 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { escapeHTML } from "../utils/helper.js";
+import { gui } from "../gui.js";
 
 export default class PatchOutline extends Events
 {

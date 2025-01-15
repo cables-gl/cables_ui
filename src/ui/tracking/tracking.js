@@ -1,7 +1,8 @@
+import { gui } from "../gui.js";
 
 export default class Tracking
 {
-    constructor(gui)
+    constructor()
     {
         this.gui = gui;
         this._initListeners();

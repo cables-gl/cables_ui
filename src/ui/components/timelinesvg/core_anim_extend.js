@@ -1,3 +1,5 @@
+import { ele } from "cables-shared-client";
+import { gui } from "../../gui.js";
 import uiconfig from "../../uiconfig.js";
 import undo from "../../utils/undo.js";
 

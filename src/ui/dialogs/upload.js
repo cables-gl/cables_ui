@@ -3,6 +3,7 @@ import { Logger } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
 import ModalDialog from "./modaldialog.js";
+import { gui } from "../gui.js";
 
 
 /**

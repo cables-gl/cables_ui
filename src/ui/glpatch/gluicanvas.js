@@ -1,4 +1,5 @@
 import GlCanvas from "../gldraw/glcanvas.js";
+import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 
@@ -17,7 +18,6 @@ export default class GlUiCanvas extends GlCanvas
         this.glPatch = new GlPatch(this.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
-
 
         this.cgl.on("resize", () =>
         {

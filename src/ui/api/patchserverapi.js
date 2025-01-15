@@ -2,6 +2,7 @@ import { Logger, Events } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
+import { gui } from "../gui.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -76,7 +77,7 @@ export default class PatchSaveServer extends Events
         {
             if (err)
             {
-                console.log("error", err);
+                this._log.log("error", err);
                 gui.jobs().finish("checkupdated");
                 /* ignore errors */
                 return;
@@ -266,10 +267,6 @@ export default class PatchSaveServer extends Events
             let patchName = gui.project().name;
             if (gui.corePatch() && gui.corePatch().name && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
 
-            console.log("patch save as - gui.project().name", gui.project().name);
-            console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
-            console.log("patch save as - patchName", patchName);
-
             new ModalDialog({
                 "prompt": true,
                 "title": "Save As...",
@@ -362,7 +359,7 @@ export default class PatchSaveServer extends Events
     {
         if (gui.jobs().hasJob("projectsave"))
         {
-            console.log("already saving...");
+            this._log.log("already saving...");
             return;
         }
 
@@ -474,7 +471,7 @@ export default class PatchSaveServer extends Events
                 let uint8data = pako.deflate(datastr);
 
                 if (origSize > 1000)
-                    console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
+                    this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
                 // let b64 = Buffer.from(uint8data).toString("base64");
                 // bytesArrToBase
@@ -664,7 +661,7 @@ export default class PatchSaveServer extends Events
                 }
 
                 gui.jobs().finish("projectsave");
-                console.log(e);
+                this._log.log(e);
                 if (!found)
                     notifyError("error saving patch - try to delete disabled ops");
             }

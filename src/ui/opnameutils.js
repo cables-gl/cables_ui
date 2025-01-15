@@ -1,6 +1,9 @@
+import { Logger } from "cables-shared-client";
 import defaultOps from "./defaultops.js";
 
 export default class opNames {}
+
+const Log = new Logger("opnames");
 
 opNames.getNamespaceClassName = (opName) =>
 {
@@ -8,7 +11,7 @@ opNames.getNamespaceClassName = (opName) =>
     return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
 };
 
-opNames.getVizOpsForPortLink = (p, l) =>
+opNames.getVizOpsForPortLink = (p) =>
 {
     if (p && p.direction == CABLES.PORT_DIR_OUT)
     {
@@ -17,11 +20,11 @@ opNames.getVizOpsForPortLink = (p, l) =>
         else if (p.type == CABLES.OP_PORT_TYPE_VALUE) return [defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizGraph, defaultOps.defaultOpNames.VizNumberBar, defaultOps.defaultOpNames.VizLogger];
         else if (p.type == CABLES.OP_PORT_TYPE_ARRAY) return [defaultOps.defaultOpNames.VizArrayTable, defaultOps.defaultOpNames.VizArrayGraph];
         else if (p.type == CABLES.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
-        else if (p.type == CABLES.OP_PORT_TYPE_OBJECT) return [defaultOps.defaultOpNames.VizObject];
+        else if (p.pe == CABLES.OP_PORT_TYPE_OBJECT) return [defaultOps.defaultOpNames.VizObject];
     }
     return [];
 };
-opNames.getOpsForPortLink = (p, l) =>
+opNames.getOpsForPortLink = (p) =>
 {
     if (p && p.direction == CABLES.PORT_DIR_IN)
     {
@@ -110,7 +113,7 @@ opNames.getVarGetterOpNameByType = (type, port) =>
     }
     else
     {
-        console.log("createvar unknown var", type);
+        Log.warn("createvar unknown var", type);
     }
 
     return {

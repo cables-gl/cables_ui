@@ -1,4 +1,6 @@
+import { ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 /**

@@ -1,5 +1,6 @@
 import Tab from "../../elements/tabpanel/tab.js";
 import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
+import { gui } from "../../gui.js";
 
 
 export default class GlTimelineTab

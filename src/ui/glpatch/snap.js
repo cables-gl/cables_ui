@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
+import { gui } from "../gui.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid

@@ -1,5 +1,6 @@
 import { ModalBackground, Logger } from "cables-shared-client";
 import uiConfig from "../uiconfig.js";
+import { gui } from "../gui.js";
 
 
 

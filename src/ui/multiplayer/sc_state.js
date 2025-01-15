@@ -1,5 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import ScClient from "./sc_client.js";
 import paramsHelper from "../components/opparampanel/params_helper.js";
 

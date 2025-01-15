@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { gui } from "../../gui.js";
 
 /**
  * tab panel to debug patchfield gl Op rendering

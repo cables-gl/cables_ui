@@ -1,5 +1,6 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 import subPatchOpUtil from "../subpatchop_util.js";
+import { gui } from "../gui.js";
 
 /**
  * saved state of patch and subpatches, set orange icon if unsaved
@@ -52,7 +53,6 @@ export default class SavedState extends Events
 
     getBlueprint()
     {
-        console.log("getBlueprint...");
         const sub = gui.patchView.getCurrentSubPatch() || 0;
         let subOuter = 0;
         let bp = 0;

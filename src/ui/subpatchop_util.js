@@ -1,4 +1,4 @@
-import { Logger } from "cables-shared-client";
+import { Logger, ele } from "cables-shared-client";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";

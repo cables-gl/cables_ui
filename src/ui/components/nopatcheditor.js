@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 export default class NoPatchEditor extends Events
 {

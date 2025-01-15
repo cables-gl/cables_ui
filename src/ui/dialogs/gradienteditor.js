@@ -1,5 +1,6 @@
-import { ModalBackground, Logger } from "cables-shared-client";
+import { ModalBackground, Logger, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
+import { gui } from "../gui.js";
 
 /**
  * gradient editor dialog

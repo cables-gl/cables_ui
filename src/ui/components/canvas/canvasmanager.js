@@ -1,3 +1,5 @@
+import { ele } from "cables-shared-client";
+import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 
 export default class CanvasManager
@@ -198,8 +200,6 @@ export default class CanvasManager
         let nBody = nDocument.body;
 
         gui.corePatch().emitEvent("windowChanged", this.subWindow);
-
-
 
         const style = document.createElement("style");
         style.innerHTML = "body{padding:0;margin:0;background-color:black;overflow:hidden;color:#aaa;font-family:arial;}" +

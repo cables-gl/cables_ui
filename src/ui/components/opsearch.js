@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
+import { gui } from "../gui.js";
 
 /**
  * search through opdocs, e.g. for opselect

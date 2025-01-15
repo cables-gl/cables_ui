@@ -3,7 +3,7 @@ import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
 import text from "../text.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";

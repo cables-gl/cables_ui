@@ -1,5 +1,6 @@
 import { ele, ModalBackground } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
+import { gui } from "../gui.js";
 
 /**
  * show suggestion dialog (rotary mouse select menu)

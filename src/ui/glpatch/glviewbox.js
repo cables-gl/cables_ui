@@ -1,5 +1,5 @@
 import GlUiConfig from "./gluiconfig.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
 
 
@@ -145,7 +145,7 @@ export default class GlViewBox
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
             (this.glPatch.mouseState.buttonStateForScrolling) ||

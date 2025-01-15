@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 /**
  * show a searchable command palette (cmd/ctrl+p)

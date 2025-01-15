@@ -1,6 +1,7 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
+import { gui } from "../../gui.js";
 
 
 /**
@@ -32,7 +33,7 @@ export default class TabPanel extends Events
         const el = ele.byId(this._eleId);
         if (!el)
         {
-            console.error("could not find ele " + this._eleId);
+            this._log.error("could not find ele " + this._eleId);
             return;
         }
         el.appendChild(this._eleTabPanel);
@@ -74,7 +75,7 @@ export default class TabPanel extends Events
         const editortabList = document.getElementById("editortabList" + this.id);
         if (!editortabList)
         {
-            console.warn("no editortabList?!?");
+            this._log.warn("no editortabList?!?");
             return;
         }
         if (!this.showTabListButton)
@@ -177,7 +178,7 @@ export default class TabPanel extends Events
             else this._tabs[i].deactivate();
         }
 
-        if (!found) console.log("[activateTabByName] could not find tab", name);
+        if (!found) this._log.log("[activateTabByName] could not find tab", name);
 
         this.updateHtml();
         return tab;
@@ -216,10 +217,6 @@ export default class TabPanel extends Events
 
         this.updateHtml();
 
-        if (!found)
-        {
-            // console.log("could not find tab", id);
-        }
 
         if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
@@ -360,12 +357,9 @@ export default class TabPanel extends Events
 
         if (activate) this.activateTab(tab.id);
 
-        // var tabEl=document.getElementById("editortab"+tab.id)
-
         this.updateHtml();
         this.emitEvent("onTabAdded", tab, false);
 
-        // setTimeout(() => { this.updateSize(); console.log("update size of tab"); }, 200);
         return tab;
     }
 

@@ -1,6 +1,9 @@
+import { gui } from "../gui.js";
 
-export default class GlArea {
-    constructor(instancer, glop) {
+export default class GlArea
+{
+    constructor(instancer, glop)
+    {
         this._instancer = instancer;
 
         this._glop = glop;
@@ -24,11 +27,13 @@ export default class GlArea {
         this._rectResize.draggable = true;
         this._rectResize.draggableMove = true;
 
-        this._glop.on("drag", () => {
+        this._glop.on("drag", () =>
+        {
             this._update();
         });
 
-        this._rectResize.on("drag", (e) => {
+        this._rectResize.on("drag", (e) =>
+        {
             this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
             this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
 
@@ -42,7 +47,8 @@ export default class GlArea {
             this._update();
         });
 
-        if (this._glop.op.uiAttribs.area) {
+        if (this._glop.op.uiAttribs.area)
+        {
             if (this._glop.op.uiAttribs.area.id) this._id = this._glop.op.uiAttribs.area.id;
             this._w = this._glop.op.uiAttribs.area.w;
             this._h = this._glop.op.uiAttribs.area.h;
@@ -51,13 +57,16 @@ export default class GlArea {
         this._update();
     }
 
-    set visible(v) {
+    set visible(v)
+    {
         this._visible = v;
         this._update();
     }
 
-    _update() {
-        if (this._rectBg) {
+    _update()
+    {
+        if (this._rectBg)
+        {
             this._rectBg.visible = this._visible;
             this._rectResize.visible = this._visible;
 
@@ -79,10 +88,12 @@ export default class GlArea {
         this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });
     }
 
-    _updateColor() {
+    _updateColor()
+    {
         // this._rectBg.colorHoverMultiply = 1;
 
-        if (this._glop.opUiAttribs.color) {
+        if (this._glop.opUiAttribs.color)
+        {
             const cols = chroma.hex(this._glop.opUiAttribs.color).gl();
             cols[3] = 0.1;
             this._rectBg.setColor(cols);
@@ -90,7 +101,8 @@ export default class GlArea {
         else this._rectBg.setColor([0, 0, 0, 0.08]);
     }
 
-    dispose() {
+    dispose()
+    {
         this._rectBg.dispose();
         this._rectResize.dispose();
         this._rectBg = null;

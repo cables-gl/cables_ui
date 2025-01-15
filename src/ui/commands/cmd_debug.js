@@ -1,3 +1,4 @@
+import { Logger } from "cables-shared-client";
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
@@ -12,6 +13,8 @@ import Gui, { gui } from "../gui.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
+
+const log = new Logger("CMD DEBUG");
 
 const debugCommands =
 {
@@ -32,8 +35,8 @@ CABLES_CMD_DEBUG.testCommands = function ()
             CMD.commands[i].cmd != "Open patch website" &&
             CMD.commands[i].cmd != "Toggle window fullscreen")
         {
-            console.log("CMD: " + CMD.commands[i].cmd);
-            if (!CMD.commands[i].func)console.error("cmd has no function");
+            log.log("CMD: " + CMD.commands[i].cmd);
+            if (!CMD.commands[i].func)log.error("cmd has no function");
             else CMD.commands[i].func();
         }
     }
@@ -53,7 +56,7 @@ CABLES_CMD_DEBUG.testBlueprint2 = function ()
         serOps.push(ops[i].getSerialized());
     }
 
-    console.log(JSON.stringify(serOps));
+    log.log(JSON.stringify(serOps));
 };
 
 CABLES_CMD_DEBUG.globalVarDump = function ()
@@ -79,7 +82,7 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
     /*
     if (!gui.getSavedState())
     {
-        console.log("SHOW MODAL");
+        log.log("SHOW MODAL");
     }
     else
     {
@@ -139,11 +142,11 @@ CABLES_CMD_DEBUG.testAllOps = function ()
 {
     const ops = gui.opDocs.getAll();
 
-    console.log(ops);
+    log.log(ops);
 
     for (const i in ops)
     {
-        console.log(ops[i].name);
+        log.log(ops[i].name);
         const opname = ops[i].name;
 
         load(opname);
@@ -211,7 +214,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     const tests = [
                         () => { p.set(null); },
                         () => { p.set(undefined); },
-                        () => { p.set({ "a": () => { console.log(1); } }); },
+                        () => { p.set({ "a": () => { log.log(1); } }); },
                         () => { p.set({ "a": 1234 }); },
                         () => { p.set({ "b": null }); }
                     ];
@@ -229,7 +232,7 @@ CABLES_CMD_DEBUG.testOp = function ()
         }
     }
 
-    console.log("op test finished!");
+    log.log("op test finished!");
 };
 
 function load(opname)

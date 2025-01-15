@@ -1,4 +1,4 @@
-import { ele, Events } from "cables-shared-client";
+import { ele, Events, Logger } from "cables-shared-client";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
@@ -11,6 +11,7 @@ import uiconfig from "../../uiconfig.js";
 // import uiprofiler from "../uiprofiler.js";
 // import ParamTabInputListener from "./param_tabinputlistener.js";
 import valueChanger from "./valuechanger.js";
+import { gui } from "../../gui.js";
 
 
 /**
@@ -24,6 +25,8 @@ class ParamsListener extends Events
     constructor(panelid)
     {
         super();
+
+        this._log = new Logger("Paramslistener");
         this.panelId = panelid;
 
         this._watchPorts = [];
@@ -135,7 +138,7 @@ class ParamsListener extends Events
             {
                 port.toggleManual();
             });
-            else console.log("cant find multiport");
+            else this._log.log("cant find multiport");
 
 
             const elInc = ele.byId("multiport_inc_" + port.op.id + "_" + port.name);
@@ -211,7 +214,7 @@ class ParamsListener extends Events
 
     // togglePortValBool(which, checkbox)
     // {
-    //     console.log("HJSAHJKLSHJKLS");
+    //     this._log.log("HJSAHJKLSHJKLS");
     //     // gui.setStateUnsaved();
     //     gui.savedState.setUnSaved("togglePortValBool");
 
@@ -249,7 +252,7 @@ class ParamsListener extends Events
 
         if (!inputElements[0] || !inputElements[1] || !inputElements[2])
         {
-            // console.log("NOPEY", "portval_" + idx + "_" + panelid, ele.byId("portval_" + idx + "_" + panelid));
+            // this._log.log("NOPEY", "portval_" + idx + "_" + panelid, ele.byId("portval_" + idx + "_" + panelid));
             return;
         }
 
@@ -270,7 +273,7 @@ class ParamsListener extends Events
 
         if (!colEle)
         {
-            console.log("color ele not found!", id);
+            this._log.log("color ele not found!", id);
             return;
         }
 
@@ -432,7 +435,7 @@ class ParamsListener extends Events
             const port = ports[index].op.getPortById(e.target.dataset.portid);
 
             if (port) port.setVariable(e.target.value);
-            else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
+            else this._log.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
 
 
             // gui.setStateUnsaved();
@@ -580,7 +583,7 @@ class ParamsListener extends Events
                     });
             }
 
-            // console.log("port.op.uiAttribs",);
+            // this._log.log("port.op.uiAttribs",);
 
             if (port.op.isInBlueprint2() && port.op.objName.indexOf("Ops.Ui.") == -1)
             {
@@ -592,7 +595,7 @@ class ParamsListener extends Events
                         {
                             const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
 
-                            // console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
+                            // this._log.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
                             if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch))
                             {
                                 new ModalDialog({
@@ -633,7 +636,7 @@ class ParamsListener extends Events
             //                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
 
             //                 if (!subOp)
-            //                 { console.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
+            //                 { this._log.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
 
             //                 port.removeLinks();
 
@@ -693,7 +696,7 @@ class ParamsListener extends Events
 
             CABLES.contextMenu.show({ "items": items }, e.target);
         });
-        else console.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
+        else this._log.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
     }
 
     setPortAnimated(op, index, panelid, targetState, defaultValue)
@@ -794,7 +797,7 @@ class ParamsListener extends Events
                 {
                     valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
-                    // console.log("valuechanger", theId, portName, opId);
+                    // this._log.log("valuechanger", theId, portName, opId);
                     // new ParamTabInputListener(el);
                 };
 
@@ -893,7 +896,7 @@ class ParamsListener extends Events
                     else
                     {
                         el.classList.add("invalid");
-                        // console.log("invalid number", ports[index], mathParsed);
+                        // this._log.log("invalid number", ports[index], mathParsed);
                     }
                     return;
                 }
@@ -916,7 +919,7 @@ class ParamsListener extends Events
                 {
                     el.classList.remove("invalid");
                     v = parseInt(v, 10) || 0;
-                    // console.log("invalid int");
+                    // this._log.log("invalid int");
                 }
             }
 
@@ -948,7 +951,7 @@ class ParamsListener extends Events
                                     gui.patchView.focusOp(opid);
                                     gui.patchView.centerSelectOp(opid);
                                 }
-                                catch (ex) { console.warn("undo failed"); }
+                                catch (ex) { this._log.warn("undo failed"); }
                             },
                             redo()
                             {
@@ -965,7 +968,7 @@ class ParamsListener extends Events
                                     gui.patchView.focusOp(opid);
                                     gui.patchView.centerSelectOp(opid);
                                 }
-                                catch (ex) { console.warn("undo failed"); }
+                                catch (ex) { this._log.warn("undo failed"); }
                             }
                         });
                 }(ports[index].get(), v, ports[index].op.id, ports[index].name));
@@ -1110,7 +1113,7 @@ class ParamsListener extends Events
                     }
                     else
                     {
-                        console.log("paramlistener ele unknown", id);
+                        this._log.log("paramlistener ele unknown", id);
                     }
                 }
 

@@ -4,9 +4,9 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPort from "../glpatch/glport.js";
-import uiprofiler from "./uiprofiler.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
+import { gui } from "../gui.js";
 
 /**
  * op documentation loading
