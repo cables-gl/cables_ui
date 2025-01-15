@@ -183,9 +183,4 @@ export default class PlatformElectron extends Platform
     {
         return "Ops.Local.";
     }
-
-    getSupportedOpDependencyTypes()
-    {
-        return ["npm"];
-    }
 }
