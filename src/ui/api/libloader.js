@@ -41,7 +41,7 @@ export default class LibLoader
 
     loadLib(module)
     {
-        const libName = module.name;
+        const libName = module.src;
         let libType = module.type;
         const moduleExport = module.export;
         if (!this._list.includes(libName))
@@ -75,7 +75,7 @@ export default class LibLoader
                 else
                 {
                     const basePath = module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
-                    scriptSrc = basePath + module.src;
+                    scriptSrc = CABLES.platform.getSandboxUrl() + basePath + module.src;
                 }
 
                 if (libType === "module")
