@@ -9,6 +9,7 @@ import ScConnection from "./multiplayer/sc_connection.js";
 import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
+import GlGuiFull from "./glpatch/gluifull.js";
 
 
 /**
@@ -32,7 +33,7 @@ export default function startUi(cfg)
     if (gui.isRemoteClient)
         new NoPatchEditor();
     else
-        CABLES.CMD.DEBUG.glguiFull();
+        new GlGuiFull();
 
     incrementStartup();
     gui.serverOps = new ServerOps(gui, cfg.patchId, () =>

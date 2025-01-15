@@ -122,10 +122,11 @@ export default class Platform extends Events
     {
         ele.show(ele.byId("nav-item-offline"));
         this._isOffline = true;
-        if (!this._checkOfflineInterval) this._checkOfflineInterval = setInterval(() =>
-        {
-            gui.patchView.store.checkUpdated(() => {}, false, true);
-        }, this._checkOfflineIntervalSeconds);
+        if (!this._checkOfflineInterval)
+            this._checkOfflineInterval = setInterval(() =>
+            {
+                gui.patchView.store.checkUpdated(() => { }, false, true);
+            }, this._checkOfflineIntervalSeconds);
     }
 
     updateOnlineIndicator()
@@ -138,7 +139,6 @@ export default class Platform extends Events
     }
 
     setManualScreenshot(b)
-
     {
         this._cfg.patch.settings.manualScreenshot = b;
     }
@@ -147,7 +147,6 @@ export default class Platform extends Events
     {
         return this._cfg.patch.settings.manualScreenshot;
     }
-
 
     getCablesUrl()
     {
@@ -161,8 +160,19 @@ export default class Platform extends Events
 
     isPatchSameHost()
     {
-        if (!gui.project() || !gui.project().buildInfo || !gui.project().buildInfo.host) return true;
-        return gui.project().buildInfo.host == CABLES.platform.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
+        if (
+            !gui.project() ||
+            !gui.project().buildInfo ||
+            !gui.project().buildInfo.host
+        )
+            return true;
+        return (
+            gui.project().buildInfo.host ==
+            CABLES.platform
+                .getCablesUrl()
+                .replaceAll("https://", "")
+                .replaceAll("http://", "")
+        );
     }
 
     getSandboxUrl()
@@ -243,8 +253,20 @@ export default class Platform extends Events
 
     showGitBranchWarning()
     {
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") notifyError("core: using master branch not on live?!");
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") notifyError("UI: using master branch not on live?!");
+        if (
+            document.location.hostname != "cables.gl" &&
+            document.location.hostname != "sandbox.cables.gl" &&
+            CABLES.build &&
+            CABLES.build.git.branch == "master"
+        )
+            notifyError("core: using master branch not on live?!");
+        if (
+            document.location.hostname != "cables.gl" &&
+            document.location.hostname != "sandbox.cables.gl" &&
+            CABLES.UI.build &&
+            CABLES.UI.build.git.branch == "master"
+        )
+            notifyError("UI: using master branch not on live?!");
     }
 
     savePatch(options, cb)
@@ -261,16 +283,22 @@ export default class Platform extends Events
             notify(options.msg, options.text, options.options);
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener("notifyError", (options, next) =>
-        {
-            notifyError(options.msg, options.text, options.options);
-        });
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "notifyError",
+            (options, next) =>
+            {
+                notifyError(options.msg, options.text, options.options);
+            },
+        );
 
-        CABLESUILOADER.talkerAPI.addEventListener("refreshFileManager", (options, next) =>
-        {
-            gui.closeModal();
-            gui.refreshFileManager();
-        });
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "refreshFileManager",
+            (options, next) =>
+            {
+                gui.closeModal();
+                gui.refreshFileManager();
+            },
+        );
 
         CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
         {
@@ -281,7 +309,11 @@ export default class Platform extends Events
                     if (options.forceReload && options.name)
                     {
                         const editorTab = gui.mainTabs.getTabByDataId(options.name);
-                        if (editorTab && editorTab.editor && options.hasOwnProperty("code"))
+                        if (
+                            editorTab &&
+                            editorTab.editor &&
+                            options.hasOwnProperty("code")
+                        )
                         {
                             editorTab.editor.setContent(options.code, true);
                         }
@@ -291,55 +323,80 @@ export default class Platform extends Events
             }
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
-        {
-            if (options && options.filename)
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "fileUpdated",
+            (options, next) =>
             {
-                for (let j = 0; j < gui.corePatch().ops.length; j++)
+                if (options && options.filename)
                 {
-                    if (gui.corePatch().ops[j])
+                    for (let j = 0; j < gui.corePatch().ops.length; j++)
                     {
-                        if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.filename);
-                        else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+                        if (gui.corePatch().ops[j])
+                        {
+                            if (gui.corePatch().ops[j].onFileChanged)
+                                gui.corePatch().ops[j].onFileChanged(options.filename);
+                            else if (gui.corePatch().ops[j].onFileUploaded)
+                                gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+                        }
+                    }
+                    if (options.filename.endsWith(".js"))
+                    {
+                        const libUrl =
+                            "/assets/" + gui.project()._id + "/" + options.filename;
+                        if (
+                            gui &&
+                            gui.opDocs &&
+                            gui.opDocs.libs &&
+                            !gui.opDocs.libs.includes(libUrl)
+                        )
+                        {
+                            gui.opDocs.libs.push(libUrl);
+                            gui.emitEvent("refreshManageOp");
+                        }
                     }
                 }
-                if (options.filename.endsWith(".js"))
-                {
-                    const libUrl = "/assets/" + gui.project()._id + "/" + options.filename;
-                    if (gui && gui.opDocs && gui.opDocs.libs && !gui.opDocs.libs.includes(libUrl))
-                    {
-                        gui.opDocs.libs.push(libUrl);
-                        gui.emitEvent("refreshManageOp");
-                    }
-                }
-            }
-        });
+            },
+        );
 
-        CABLESUILOADER.talkerAPI.addEventListener("fileDeleted", (options, next) =>
-        {
-            if (options && options.fileName && options.fileName.endsWith(".js"))
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "fileDeleted",
+            (options, next) =>
             {
-                for (let j = 0; j < gui.corePatch().ops.length; j++)
+                if (options && options.fileName && options.fileName.endsWith(".js"))
                 {
-                    if (gui.corePatch().ops[j])
+                    for (let j = 0; j < gui.corePatch().ops.length; j++)
                     {
-                        if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.fileName);
-                        else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.fileName); // todo deprecate , rename to onFileChanged
+                        if (gui.corePatch().ops[j])
+                        {
+                            if (gui.corePatch().ops[j].onFileChanged)
+                                gui.corePatch().ops[j].onFileChanged(options.fileName);
+                            else if (gui.corePatch().ops[j].onFileUploaded)
+                                gui.corePatch().ops[j].onFileUploaded(options.fileName); // todo deprecate , rename to onFileChanged
+                        }
                     }
-                }
 
-                const libUrl = "/assets/" + gui.project()._id + "/" + options.fileName;
-                if (gui && gui.opDocs && gui.opDocs.libs && gui.opDocs.libs.includes(libUrl))
-                {
-                    const libIndex = gui.opDocs.libs.findIndex((lib) => { return lib === libUrl; });
-                    if (libIndex !== -1)
+                    const libUrl =
+                        "/assets/" + gui.project()._id + "/" + options.fileName;
+                    if (
+                        gui &&
+                        gui.opDocs &&
+                        gui.opDocs.libs &&
+                        gui.opDocs.libs.includes(libUrl)
+                    )
                     {
-                        gui.opDocs.libs.splice(libIndex, 1);
-                        gui.emitEvent("refreshManageOp");
+                        const libIndex = gui.opDocs.libs.findIndex((lib) =>
+                        {
+                            return lib === libUrl;
+                        });
+                        if (libIndex !== -1)
+                        {
+                            gui.opDocs.libs.splice(libIndex, 1);
+                            gui.emitEvent("refreshManageOp");
+                        }
                     }
                 }
-            }
-        });
+            },
+        );
 
         CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
         {
@@ -351,23 +408,32 @@ export default class Platform extends Events
             gui.jobs().finish(options.id);
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener("jobProgress", (options, next) =>
-        {
-            gui.jobs().setProgress(options.id, options.progress);
-        });
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "jobProgress",
+            (options, next) =>
+            {
+                gui.jobs().setProgress(options.id, options.progress);
+            },
+        );
 
-        CABLESUILOADER.talkerAPI.addEventListener("updatePatchName", (opts, next) =>
-        {
-            gui.setProjectName(opts.name);
-            CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
-        });
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "updatePatchName",
+            (opts, next) =>
+            {
+                gui.setProjectName(opts.name);
+                CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => { });
+            },
+        );
 
-        CABLESUILOADER.talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
-        {
-            const project = gui.project();
-            if (project) gui.project().summary = opts;
-            gui.patchParamPanel.show(true);
-        });
+        CABLESUILOADER.talkerAPI.addEventListener(
+            "updatePatchSummary",
+            (opts, next) =>
+            {
+                const project = gui.project();
+                if (project) gui.project().summary = opts;
+                gui.patchParamPanel.show(true);
+            },
+        );
 
         CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>
         {
@@ -389,18 +455,25 @@ export default class Platform extends Events
                 let saveText = "";
                 if (project.updated)
                 {
-                    saveText += "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
+                    saveText +=
+                        "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
                 }
-                let content = "<div>Do you want to restore your patch to the last version saved " + saveText + "</div>";
+                let content =
+                    "<div>Do you want to restore your patch to the last version saved " +
+                    saveText +
+                    "</div>";
                 content += "<div style='margin-top: 20px; text-align: center;'>";
                 content += "<a class=\"button bluebutton accept\">Ok</a>&nbsp;&nbsp;";
                 content += "<a class=\"button decline\">Cancel</a>";
                 content += "</div>";
 
-                const modal = new ModalDialog({
-                    "title": "Restore Patch",
-                    "html": content
-                }, false);
+                const modal = new ModalDialog(
+                    {
+                        "title": "Restore Patch",
+                        "html": content,
+                    },
+                    false,
+                );
                 modal.on("onShow", () =>
                 {
                     const modalElement = modal.getElement();
@@ -436,7 +509,10 @@ export default class Platform extends Events
                 new ModalDialog({
                     "showOkButton": true,
                     "title": "ERROR - Restore Patch",
-                    "text": "Error while trying to restore patch to last saved version: " + err + "<br/>Maybe try again?"
+                    "text":
+                        "Error while trying to restore patch to last saved version: " +
+                        err +
+                        "<br/>Maybe try again?",
                 });
             }
         });
@@ -466,7 +542,7 @@ export default class Platform extends Events
                 "choice": true,
                 "cancelButton": {
                     "text": "Backup last saved state",
-                    "callback": showBackupDialog
+                    "callback": showBackupDialog,
                 },
                 "title": "Backup",
                 "warning": true,
@@ -503,7 +579,11 @@ export default class Platform extends Events
             const fn = portInputEle.value;
 
             gui.fileManager.setFilterType(filterType);
-            gui.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
+            gui.fileManager.setFilePort(
+                portInputEle,
+                gui.corePatch().getOpById(opid),
+                ele.byId(previewId),
+            );
             gui.fileManager.selectFile(fn);
 
             ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
@@ -534,15 +614,16 @@ export default class Platform extends Events
                 "icon": "settings",
                 "closable": true,
                 "singleton": false,
-                "gotoUrl": gotoUrl
+                "gotoUrl": gotoUrl,
             },
-            true);
+            true,
+        );
     }
 
     getPatchOpsNamespace()
     {
         const PATCHOPS_ID_REPLACEMENTS = {
-            "-": "___"
+            "-": "___",
         };
         let ns = gui.project().shortId;
         Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>

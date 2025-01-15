@@ -248,18 +248,6 @@ export default class Gui extends Events
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     startModalLoading(title)
     {
         this._modalLoadingCount++;
@@ -611,7 +599,6 @@ export default class Gui extends Events
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
-        const acds = 1;
 
         if (this.maintabPanel.isVisible())
         {
@@ -1888,6 +1875,7 @@ export default class Gui extends Events
             return;
         }
 
+        if (this.userSettings.get("glTimelineOpened") == true) CABLES.CMD.TIMELINE.openGlTimeline();
         if (this.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (this.userSettings.get("openLogTab") == true) this.showLogging();
 

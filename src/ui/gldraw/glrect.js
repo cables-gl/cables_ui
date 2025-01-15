@@ -284,7 +284,7 @@ export default class GlRect extends Events
             this._dragStartY = this.y;
         }
         // this.setPosition( x - this._dragOffsetX, y - this._dragOffsetY);
-        this.emitEvent("drag", this);
+        this.emitEvent("drag", this, this._dragOffsetX, this._dragOffsetY);
     }
 
     mouseDragEnd()

@@ -4,8 +4,7 @@ import LoggingTab from "../components/tabs/tab_logfilter.js";
 import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
-import GlGuiFull from "../glpatch/gluifull.js";
-import GlGuiTab from "../glpatch/gluitab.js";
+import GlGuiTab from "../components/tabs/tab_glpatch.js";
 import Gui from "../gui.js";
 import CMD from "./commands.js";
 
@@ -60,7 +59,7 @@ CABLES_CMD_DEBUG.globalVarDump = function ()
     CABLESUILOADER.GlobalVarTester.after(window);
 };
 
-CABLES_CMD_DEBUG.glguiTab = function ()
+CABLES_CMD_DEBUG.newGlguiTab = function ()
 {
     const t = new GlGuiTab(gui.mainTabs);
 };
@@ -94,11 +93,6 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
      */
 };
 
-
-CABLES_CMD_DEBUG.glguiFull = function ()
-{
-    new GlGuiFull();
-};
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
@@ -315,7 +309,7 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "Glgui tab",
         "category": "debug",
-        "func": CABLES_CMD_DEBUG.glguiTab,
+        "func": CABLES_CMD_DEBUG.newGlguiTab,
         "icon": "command"
     },
     {
