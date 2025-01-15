@@ -199,11 +199,10 @@
                         <tr>
                             <td>
                                 {{#compare type '==' 'npm'}}
-                                    <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{name}}">{{name}}</a>
+                                    <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{src}}</a>
                                 {{else}}
-                                    {{name}}
+                                    {{src}}
                                 {{/compare}}
-
                             </td>
                             <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
                             <td>
