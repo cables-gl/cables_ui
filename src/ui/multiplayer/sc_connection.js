@@ -3,7 +3,7 @@ import PacoConnector from "./sc_paconnector.js";
 
 import ScState from "./sc_state.js";
 import ScUiMultiplayer from "./sc_ui_multiplayer.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { PatchConnectionSender } from "./patchconnection.js";
 import Chat from "../components/tabs/tab_chat.js";
 

@@ -1,4 +1,5 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 
 export default class GlDebugTab
 {

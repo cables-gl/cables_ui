@@ -5,6 +5,7 @@ import defaultOps from "../defaultops.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { hideToolTip } from "../elements/tooltips.js";
+import { gui } from "../gui.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -205,7 +206,7 @@ export default class GlLink
 
         if (!opIn || !opOut)
         {
-            console.log("[gllink] no in/out op");
+            this._log.log("[gllink] no in/out op");
             return;
         }
 
@@ -554,30 +555,26 @@ export default class GlLink
             this.addedOrderListeners = true;
             if (this._glOpIn) this._glOpIn.op.on("glportOrderChanged", () =>
             {
-                // console.log("glport order changed!@!!");
                 this.update();
             });
             if (this._glOpOut) this._glOpOut._op.on("glportOrderChanged", () =>
             {
-                // console.log("glport order changed!@!!");
                 this.update();
             });
 
             if (this._subPatchOp) this._subPatchOp.on("glportOrderChanged", () =>
             {
-                console.log("this._subPatchOp --- glport order changed!@!!");
+                this._log.log("this._subPatchOp --- glport order changed!@!!");
                 this.update();
             });
 
             if (this._subPatchInputOp) this._subPatchInputOp.on("glportOrderChanged", () =>
             {
-                // console.log("glport order changed!@!!");
                 this.update();
             });
 
             if (this._subPatchOutputOp) this._subPatchOutputOp.on("glportOrderChanged", () =>
             {
-                // console.log("glport order changed!@!!");
                 this.update();
             });
         }

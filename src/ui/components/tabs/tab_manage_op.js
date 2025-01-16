@@ -1,4 +1,4 @@
-import { Logger } from "cables-shared-client";
+import { Logger, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
@@ -7,6 +7,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import OpDependencyTab from "./tab_opdependency.js";
 import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
 import uiprofiler from "../uiprofiler.js";
+import { gui } from "../../gui.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.

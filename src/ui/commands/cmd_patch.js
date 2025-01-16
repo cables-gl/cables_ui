@@ -1,7 +1,8 @@
+import { Logger, ele } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { notifyError } from "../elements/notification.js";
+import { notify, notifyError } from "../elements/notification.js";
 import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
 import Profiler from "../components/tabs/tab_profiler.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
@@ -14,6 +15,8 @@ import opNames from "../opnameutils.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
+
+const log = new Logger("CMD_PATCH");
 
 const patchCommands =
 {
@@ -119,7 +122,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
     }
     if (gui.jobs().hasJob("projectsave"))
     {
-        console.log("already saving...");
+        log.log("already saving...");
         return;
     }
 
@@ -170,7 +173,7 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
             {
                 text += "- " + opdocs[i].name + "<br/>";
                 ids.push(opdocs[i].id);
-                console.log("found patch op", opdocs[i].id);
+                log.log("found patch op", opdocs[i].id);
             }
         }
     }
@@ -435,7 +438,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                                     l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
                                                                 }
 
-                                                                if (!l)console.log("could not recreate oldlink", oldLink);
+                                                                if (!l)log.log("could not recreate oldlink", oldLink);
                                                             }
                                                         }
                                                     }
@@ -454,7 +457,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
                                                         "next": () =>
                                                         {
-                                                            // console.log("bp", bp);
+                                                            // log.log("bp", bp);
                                                             // CABLES.CMD.PATCH.save();
                                                         } });
                                                 }
@@ -1023,7 +1026,7 @@ CABLES_CMD_PATCH.linkTwoSelectedOps = () =>
 {
     if (gui.patchView.getSelectedOps().length != 2)
     {
-        console.log("needs 2 selected ops");
+        log.log("needs 2 selected ops");
         return;
     }
 
@@ -1083,7 +1086,7 @@ CABLES_CMD_PATCH.setOpTitle = function ()
 
     if (ops.length != 1)
     {
-        console.warn("rename canceled - select one op!");
+        log.warn("rename canceled - select one op!");
         return;
     }
 
@@ -1131,16 +1134,16 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
                         {
                             if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
                             {
-                                console.log("filename:", ops[i].portsIn[j].get());
+                                log.log("filename:", ops[i].portsIn[j].get());
                                 let v = ops[i].portsIn[j].get();
 
-                                if (v) console.log("srch index", v.indexOf(srch));
+                                if (v) log.log("srch index", v.indexOf(srch));
                                 if (v && v.indexOf(srch) == 0)
                                 {
-                                    console.log("found str!");
+                                    log.log("found str!");
                                     v = rplc + v.substring(srch.length);
                                     ops[i].portsIn[j].set(v);
-                                    console.log("result filename:", v);
+                                    log.log("result filename:", v);
                                 }
                             }
                         }

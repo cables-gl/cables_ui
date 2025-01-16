@@ -1,5 +1,7 @@
+import { ele } from "cables-shared-client";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
+import { gui } from "../gui.js";
 
 
 const CABLES_CMD_RENDERER = {};

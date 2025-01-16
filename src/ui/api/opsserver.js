@@ -9,6 +9,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
 import namespace from "../namespaceutils.js";
+import Gui, { gui } from "../gui.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -22,7 +23,7 @@ function capitalize(str)
 
 export default class ServerOps
 {
-    constructor(gui, patchId, next)
+    constructor(patchId, next)
     {
         this._log = new Logger("opsserver");
         this._patchId = patchId;
@@ -31,7 +32,6 @@ export default class ServerOps
         CABLES.editorSession.addListener("op",
             (name, data) =>
             {
-                // gui.jobs().start("open op editor" + name);
                 CABLES.editorSession.startLoadingTab();
                 const lastTab = CABLES.UI.userSettings.get("editortab");
 
@@ -746,7 +746,7 @@ export default class ServerOps
                         return;
                     }
 
-                    if (res.content.trim() != cont.trim()) console.error("response", res.content, cont); else console.log("ok");
+                    if (res.content.trim() != cont.trim()) this._log.error("response", res.content, cont); else this._log.log("ok");
 
                     CABLES.shittyTest++;
                     if (CABLES.shittyTest < 30) setTimeout(() => { this.testServer(); }, 100); else CABLES.shittyTest = 0;
@@ -1211,7 +1211,7 @@ export default class ServerOps
 
         if (gui.showGuestWarning()) return;
 
-        console.log("renamedialog");
+        this._log.log("renamedialog");
 
         let name = "";
         let parts = oldName.split(".");
@@ -1411,7 +1411,7 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(opname);
-            if (docs) opId = docs.id; else console.warn("could not find opid for ", opname);
+            if (docs) opId = docs.id; else this._log.warn("could not find opid for ", opname);
         }
 
         const parts = opname.split(".");
@@ -1587,10 +1587,10 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(op);
-            if (!docs) return console.warn("[opsserver] could not find docs", op, opid);
+            if (!docs) return this._log.warn("[opsserver] could not find docs", op, opid);
             opid = docs.id;
 
-            if (!opid) console.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
+            if (!opid) this._log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1889,7 +1889,7 @@ export default class ServerOps
         ops.forEach((op) =>
         {
             const opDeps = this.getOpDeps(op);
-            opDeps.forEach((lib) => { depsToLoad[lib.name] = lib; });
+            opDeps.forEach((lib) => { depsToLoad[lib.src] = lib; });
         });
         new LibLoader(Object.values(depsToLoad), finishedCb);
     }

@@ -2,6 +2,7 @@ import { Logger } from "cables-shared-client";
 import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
+import { gui } from "../gui.js";
 
 
 const DEFAULT_ACTIVITY = 0;

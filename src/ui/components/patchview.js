@@ -16,6 +16,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
+import { gui } from "../gui.js";
 
 /**
  * manage patch view and helper functions
@@ -103,7 +104,7 @@ export default class PatchView extends Events
 
     focusSubpatchOp(subPatchId)
     {
-        console.log("dupe focusSubpatchOp1");
+        this._log.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
         gui.patchView.centerSelectOp(outerOp);
@@ -385,7 +386,7 @@ export default class PatchView extends Events
 
                     if (count > 100)
                     {
-                        console.log("count 100");
+                        this._log.log("count 100");
                         return;
                     }
                 }
@@ -863,7 +864,7 @@ export default class PatchView extends Events
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    // console.log("  score", op.name, score);
+                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -874,7 +875,7 @@ export default class PatchView extends Events
                 if (y == -1 && op.uiAttribs.translate.y < curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    // console.log("  score", op.name, score);
+                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -885,7 +886,7 @@ export default class PatchView extends Events
                 if (x == 1 && op.uiAttribs.translate.x > curOp.uiAttribs.translate.x)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    // console.log("  score", op.name, score);
+                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -896,7 +897,7 @@ export default class PatchView extends Events
                 if (x == -1 && op.uiAttribs.translate.x < curOp.uiAttribs.translate.x)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    // console.log("  score", op.name, score);
+                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -1276,10 +1277,10 @@ export default class PatchView extends Events
             {
                 if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
                 {
-                    console.warn("found lost subpatch...", subid);
+                    this._log.warn("found lost subpatch...", subid);
                     if (countSubs[subid] <= 2)
                     {
-                        console.warn("deleted lost subpatch! ", subid);
+                        this._log.warn("deleted lost subpatch! ", subid);
                         for (let i = ops.length - 1; i >= 0; i--)
                             if (ops[i].uiAttribs.subPatch == subid)
                                 ops[i].patch.deleteOp(ops[i].id);
@@ -1437,7 +1438,7 @@ export default class PatchView extends Events
 
     // focusSubpatchOp(subPatchId)
     // {
-    //     console.log("dupe focusSubpatchOp2");
+    //     this._log.log("dupe focusSubpatchOp2");
 
     //     let gotoOp = this.getSubPatchOuterOp(subPatchId);
     //     if (!gotoOp) return;
@@ -1451,7 +1452,7 @@ export default class PatchView extends Events
     //             this.focusOp(gotoOpId);
     //             this.centerSelectOp(gotoOpId);
     //         });
-    //     else console.warn("[focusSubpatchOp] goto op not found");
+    //     else this._log.warn("[focusSubpatchOp] goto op not found");
     // }
 
     updateSubPatchBreadCrumb(currentSubPatch)
@@ -1626,7 +1627,7 @@ export default class PatchView extends Events
         // {
         //     if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
         //     {
-        //         console.log("yes....");
+        //         this._log.log("yes....");
         //         this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
         //     }
         // }
@@ -1932,7 +1933,7 @@ export default class PatchView extends Events
         //     }
         // }
 
-        // console.log(count + "iterations");
+        // this._log.log(count + "iterations");
     }
 
 

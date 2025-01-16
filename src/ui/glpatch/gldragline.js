@@ -1,7 +1,7 @@
 import { Logger } from "cables-shared-client";
 import glUiConfig from "./gluiconfig.js";
 import MouseState from "./mousestate.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import GlPort from "./glport.js";
 
 /**

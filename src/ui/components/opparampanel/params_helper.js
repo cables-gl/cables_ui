@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
+import { gui } from "../../gui.js";
 
 const paramsHelper =
 {

@@ -2,7 +2,7 @@ import { ele, Events } from "cables-shared-client";
 import { notify } from "../elements/notification.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import Gui from "../gui.js";
+import Gui, { gui } from "../gui.js";
 
 export default class ScUiMultiplayer extends Events
 {
@@ -133,10 +133,8 @@ export default class ScUiMultiplayer extends Events
         //     }
         // }
         // else
-        {
-            gui.restriction.setMessage(null);
-            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        }
+        gui.restriction.setMessage(null);
+        gui.setRestriction(Gui.RESTRICT_MODE_FULL);
 
         const startButton = userList.querySelector(".start-button");
         const joinButton = userList.querySelector(".join-button");

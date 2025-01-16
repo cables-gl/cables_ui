@@ -1,4 +1,5 @@
 import { notify } from "../elements/notification.js";
+import { gui } from "../gui.js";
 import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";

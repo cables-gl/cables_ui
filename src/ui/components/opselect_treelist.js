@@ -1,4 +1,5 @@
 import GlPatch from "../glpatch/glpatch.js";
+import { gui } from "../gui.js";
 import uiprofiler from "./uiprofiler.js";
 
 /**

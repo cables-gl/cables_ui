@@ -7,6 +7,7 @@ import MouseState from "./mousestate.js";
 import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
 import defaultOps from "../defaultops.js";
+import { gui } from "../gui.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}

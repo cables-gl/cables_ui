@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import text from "../text.js";
+import { gui } from "../gui.js";
 
 let tooltipTimeout = null;
 let eleTooltip = null;

@@ -3,6 +3,7 @@
  */
 
 import gluiconfig from "./glpatch/gluiconfig.js";
+import { gui } from "./gui.js";
 import text from "./text.js";
 
 CABLES.Op.unLinkTempReLinkP1 = null;
@@ -184,7 +185,7 @@ export default function extendCoreOp()
         count++;
         if (count >= 1000)
         {
-            console.log("hasparent loop....", name);
+            this._log.log("hasparent loop....", name);
             this._ignoreParentChecks = true;
             return false;
         }
@@ -328,7 +329,7 @@ export default function extendCoreOp()
                 const p = this._linkTimeRules.needsStringToWork[i];
                 if (!p)
                 {
-                    console.warn("[needsStringToWork] port not found");
+                    this._log.warn("[needsStringToWork] port not found");
                     continue;
                 }
                 if (p.linkTimeListener)p.off(p.linkTimeListener);
@@ -358,7 +359,7 @@ export default function extendCoreOp()
                 const p = this._linkTimeRules.needsLinkedToWork[i];
                 if (!p)
                 {
-                    console.warn("[needsLinkedToWork] port not found");
+                    this._log.warn("[needsLinkedToWork] port not found");
                     continue;
                 }
                 if (!p.isLinked())
@@ -395,7 +396,7 @@ export default function extendCoreOp()
 
         if (!working)
         {
-            // console.log("ERRRRR");
+            // this._log.log("ERRRRR");
             // this.setUiAttrib({ working, notWorkingMsg });
             this.setUiError("notworking", notWorkingMsg, 3);
         }
@@ -621,13 +622,13 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.testTempCollision = function (ops, glpatch)
     {
-        // console.log("testTempCollision");
+        // this._log.log("testTempCollision");
         for (let j = 0; j < ops.length; j++)
         {
             const b = ops[j];
             if (b.deleted || b == this) continue;
 
-            // console.log(b.uiAttribs.translateTemp);
+            // this._log.log(b.uiAttribs.translateTemp);
 
             if (
                 (
@@ -639,7 +640,7 @@ export default function extendCoreOp()
                     this.getTempPosY() <= b.getTempPosY() + b.getHeight(glpatch)
                 ))
             {
-                // console.log("colliding!");
+                // this._log.log("colliding!");
                 return b;
             }
         }
@@ -726,7 +727,7 @@ export default function extendCoreOp()
         }
 
 
-        if (numports === undefined)console.log("posbyindex needs numports param");
+        if (numports === undefined) this._log.log("posbyindex needs numports param");
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 
@@ -804,7 +805,7 @@ export default function extendCoreOp()
             index++;
         }
 
-        // console.log("could not find port posx ", name, this.getTitle(), opid);
+        // this._log.log("could not find port posx ", name, this.getTitle(), opid);
 
         return 2;
     };

@@ -1,8 +1,7 @@
 import defaultOps from "./defaultops.js";
+import { gui } from "./gui.js";
 
 export default class namespace {}
-
-
 
 namespace.getNamespace = (opname) =>
 {
@@ -44,12 +43,7 @@ namespace.isExtensionOp = (opname) =>
 
 namespace.isCoreOp = (opname) =>
 {
-    return !namespace.isNonCoreOp(opname);
-};
-
-namespace.isNonCoreOp = (opname) =>
-{
-    return namespace.isUserOp(opname) || namespace.isExtensionOp(opname) || namespace.isTeamOp(opname) || namespace.isPatchOp(opname);
+    return !(namespace.isUserOp(opname) || namespace.isExtensionOp(opname) || namespace.isTeamOp(opname) || namespace.isPatchOp(opname));
 };
 
 namespace.isPrivateOp = (opname) =>

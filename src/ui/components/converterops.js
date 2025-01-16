@@ -1,5 +1,6 @@
 import defaultOps from "../defaultops.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
+import { gui } from "../gui.js";
 
 
 
@@ -22,8 +23,6 @@ export function convertPorts(p1, p2, converter)
         pTo = p1;
         found = true;
     }
-
-    console.log("converting./..", converter);
 
     gui.patchView.addOp(converter.op,
         {

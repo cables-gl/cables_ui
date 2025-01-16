@@ -1,3 +1,5 @@
+import GlCanvas from "../gldraw/glcanvas.js";
+import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 
@@ -7,73 +9,31 @@ import GlPatchAPI from "./patchapi.js";
  * @export
  * @class GlUiCanvas
  */
-export default class GlUiCanvas
+export default class GlUiCanvas extends GlCanvas
 {
     constructor(_patch, parentEle)
     {
-        this._moveover = true;
-        this._firstTime = true;
-        this._lastTime = 0;
-        this.width = 0;
-        this.height = 0;
-        this._mouseX = 0;
-        this._mouseY = 0;
-        this.loaded = false;
-        this._inited = false;
-        this.clear = true;
+        super(_patch, parentEle);
 
-        document.body.style["touch-action"] = "none";
-        // this._zoom = GlUiConfig.zoomDefault;
-
-        this.canvas = document.createElement("canvas");
-        this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
-        this.canvas.classList.add("patchfield");
-        this.canvas.setAttribute("tabindex", 0);
-        this._parentEle = parentEle;
-
-        if (parentEle)parentEle.appendChild(this.canvas);
-        else document.body.appendChild(this.canvas);
-
-        this.patch = new CABLES.Patch(
-            {
-                "glCanvasId": this.canvas.id,
-                "glCanvasResizeToParent": false,
-                "glCanvasResizeToWindow": false,
-                "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
-            });
-
-
-        // new GlAlwaysCheckError(this.patch.cgl);
-
-        this.glPatch = new GlPatch(this.patch.cgl);
+        this.glPatch = new GlPatch(this.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
 
+        this.cgl.on("resize", () =>
+        {
+            this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+        });
 
-        this.patch.cgl.pixelDensity = window.devicePixelRatio || 1;
-        this.patch.cgl.updateSize();
-
-        this.patch.cgl.on("beginFrame", () =>
+        this.cgl.on("beginFrame", () =>
         {
             this.glPatch.vizLayer.renderVizLayer(false);
         });
-
 
         this.setSize(100, 100);
 
         gui.on("canvasModeChange", (mode) =>
         {
             this.canvas.classList.toggle("gluiPatchBg", mode == gui.canvasManager.CANVASMODE_PATCHBG);
-        });
-
-        gui.on("uiIdleStart", () =>
-        {
-            this.patch.pause();
-        });
-
-        gui.on("uiIdleEnd", () =>
-        {
-            this.patch.resume();
         });
 
         this.glPatch.on("paused", () =>
@@ -83,48 +43,23 @@ export default class GlUiCanvas
 
         this.glPatch.on("resumed", () =>
         {
-            this.patch.cgl.setSize(this.width, this.height);
+            this.cgl.setSize(this.width, this.height);
             this.patch.resume();
         });
-
-        this.canvas.addEventListener("touchmove",
-            (e) =>
-            {
-                if (e.touches.length > 1) e.preventDefault();
-            });
-
         this.canvas.addEventListener("pointermove", (e) =>
         {
-            this.activityHigh();
-
-            this._mouseX = e.offsetX;
-            this._mouseY = e.offsetY;
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
 
         this.canvas.addEventListener("pointerdown", (e) =>
         {
-            this.activityHigh();
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
 
         this.canvas.addEventListener("pointerup", (e) =>
         {
-            this.activityHigh();
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
-
-        this.canvas.addEventListener("pointerleave", (e) =>
-        {
-            this.activityMedium();
-        }, { "passive": true });
-
-        this.canvas.addEventListener("pointerenter", (e) =>
-        {
-            this.activityHigh();
-        }, { "passive": true });
-
-
 
         // this is for disabling touchpad "pinch with two fingers" on macs, which would zoom in html
         this.canvas.addEventListener("wheel", (event) => { if (event.ctrlKey) event.preventDefault(); }, { "passive": false });
@@ -134,16 +69,11 @@ export default class GlUiCanvas
             this.activityHigh();
         }, { "passive": true });
 
-
         this.parentResized();
         this.activityHigh();
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
     }
 
-    get element()
-    {
-        return this.canvas;
-    }
 
     parentResized()
     {
@@ -152,84 +82,28 @@ export default class GlUiCanvas
         this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
-    setSize(w, h)
-    {
-        this.width = w;
-        this.height = h;
-
-        this.canvas.style.width = this.width + "px";
-        this.canvas.style.height = this.height + "px";
-        this.canvas.width = this.width * window.devicePixelRatio;
-        this.canvas.height = this.height * window.devicePixelRatio;
-
-        this.patch.cgl.pixelDensity = window.devicePixelRatio;
-
-        if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
-        this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
-    }
-
-    dispose()
-    {
-        this.patch.removeEventListener("onRenderFrame", this.render.bind(this));
-        this.patch.pause();
-        this.patch.dispose();
-        this.canvas.remove();
-    }
-
-    activityIdle()
-    {
-        this._targetFps = 10;
-    }
-
-    activityHigh()
-    {
-        this._targetFps = 0;
-        clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 40000);
-    }
-
-    activityMedium()
-    {
-        // console.log("activityMedium")
-        this._targetFps = 30;
-        // if (!this.glPatch.mouseOverCanvas) this._targetFps = 0;
-        clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
-    }
 
     render()
     {
         this.glPatch.updateTime();
         if (this.glPatch.paused) return;
-        if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
-        {
-            return;
-        }
+        if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
-        const cgl = this.patch.cgl;
-
-
+        const cgl = this.cgl;
 
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
 
-        if (this._oldTargetFps != this._targetFps)
-        {
-            this._oldTargetFps = this._targetFps;
-        }
+        if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
 
         cgl.renderStart(cgl);
 
         if (!this._inited)
         {
-            for (let i = 0; i <= 8; i++) this.patch.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
+            for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.cgl).tex);
             this._inited = true;
         }
 
-        if (this._firstTime)
-        {
-            this._firstTime = false;
-        }
-
+        if (this._firstTime) this._firstTime = false;
 
         this.glPatch.debugData.targetFps = this._targetFps;
 
@@ -240,11 +114,8 @@ export default class GlUiCanvas
             0, 0, // mouse
             this._mouseButton // mouse button
         );
-        if (this.glPatch.isAnimated)
-        {
-            this.activityHigh();
-            // this._targetFps = 0;
-        }
+
+        if (this.glPatch.isAnimated) this.activityHigh();
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();

@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 import { PatchConnectionReceiver } from "./patchconnection.js";
+import { gui } from "../gui.js";
 
 export default class PacoConnector extends Events
 {

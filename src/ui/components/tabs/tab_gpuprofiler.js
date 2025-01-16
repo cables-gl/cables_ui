@@ -1,5 +1,6 @@
 import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 
 
 /**

@@ -67,13 +67,13 @@
                 {{#compare port.uiAttribs.display '==' 'buttons' }}
                     </td><td>
                         {{#each port.value}}
-                            <span class="button-small" id="portbutton_{{ ../portnum }}_{{ ../panelid }}_{{@key}}" data-title="{{.}}">{{.}}</span>
+                            <span tabindex="0" class="button-small" id="portbutton_{{ ../portnum }}_{{ ../panelid }}_{{@key}}" data-title="{{.}}">{{.}}</span>
                         {{/each}}
                 {{/compare}}
 
                 {{#compare port.uiAttribs.display '==' 'button' }}
                 </td><td>
-                    <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+                    <span tabindex="0"  class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                         {{#if port.uiAttribs.buttonTitle }}
                             {{port.uiAttribs.buttonTitle}}
                         {{else}}

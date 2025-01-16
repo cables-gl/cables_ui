@@ -1,6 +1,7 @@
 
 import overlayShaderVert from "./overlaymeshes.vert";
 import overlayShaderFrag from "./overlaymeshes.frag";
+import { gui } from "../../gui.js";
 
 
 const helperMeshes = {};

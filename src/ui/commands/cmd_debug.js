@@ -1,16 +1,20 @@
+import { Logger } from "cables-shared-client";
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
 import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
 import OpSerialized from "../components/tabs/tab_opserialized.js";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
-import GlGuiFull from "../glpatch/gluifull.js";
-import GlGuiTab from "../glpatch/gluitab.js";
-import Gui from "../gui.js";
+import GlGuiTab from "../components/tabs/tab_glpatch.js";
+
 import CMD from "./commands.js";
+import Gui, { gui } from "../gui.js";
+
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
+
+const log = new Logger("CMD DEBUG");
 
 const debugCommands =
 {
@@ -26,12 +30,13 @@ CABLES_CMD_DEBUG.testCommands = function ()
     {
         if (CMD.commands[i].cmd.indexOf("Test all") == -1 &&
             CMD.commands[i].cmd != "Upload file" &&
+            CMD.commands[i].cmd != "Clear" &&
             CMD.commands[i].cmd != "Reload patch" &&
             CMD.commands[i].cmd != "Open patch website" &&
             CMD.commands[i].cmd != "Toggle window fullscreen")
         {
-            console.log("CMD: " + CMD.commands[i].cmd);
-            if (!CMD.commands[i].func)console.error("cmd has no function");
+            log.log("CMD: " + CMD.commands[i].cmd);
+            if (!CMD.commands[i].func)log.error("cmd has no function");
             else CMD.commands[i].func();
         }
     }
@@ -40,11 +45,10 @@ CABLES_CMD_DEBUG.testCommands = function ()
 CABLES_CMD_DEBUG.testBlueprint2 = function ()
 {
     const p = gui.corePatch();
-
     const sub = gui.patchView.getCurrentSubPatch();
 
     let ops = p.getSubPatchOps(sub, true);
-    console.log(ops);
+
     const serOps = [];
 
     for (let i = 0; i < ops.length; i++)
@@ -52,7 +56,7 @@ CABLES_CMD_DEBUG.testBlueprint2 = function ()
         serOps.push(ops[i].getSerialized());
     }
 
-    console.log(JSON.stringify(serOps));
+    log.log(JSON.stringify(serOps));
 };
 
 CABLES_CMD_DEBUG.globalVarDump = function ()
@@ -60,7 +64,7 @@ CABLES_CMD_DEBUG.globalVarDump = function ()
     CABLESUILOADER.GlobalVarTester.after(window);
 };
 
-CABLES_CMD_DEBUG.glguiTab = function ()
+CABLES_CMD_DEBUG.newGlguiTab = function ()
 {
     const t = new GlGuiTab(gui.mainTabs);
 };
@@ -78,7 +82,7 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
     /*
     if (!gui.getSavedState())
     {
-        console.log("SHOW MODAL");
+        log.log("SHOW MODAL");
     }
     else
     {
@@ -94,11 +98,6 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
      */
 };
 
-
-CABLES_CMD_DEBUG.glguiFull = function ()
-{
-    new GlGuiFull();
-};
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
@@ -143,11 +142,11 @@ CABLES_CMD_DEBUG.testAllOps = function ()
 {
     const ops = gui.opDocs.getAll();
 
-    console.log(ops);
+    log.log(ops);
 
     for (const i in ops)
     {
-        console.log(ops[i].name);
+        log.log(ops[i].name);
         const opname = ops[i].name;
 
         load(opname);
@@ -215,7 +214,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     const tests = [
                         () => { p.set(null); },
                         () => { p.set(undefined); },
-                        () => { p.set({ "a": () => { console.log(1); } }); },
+                        () => { p.set({ "a": () => { log.log(1); } }); },
                         () => { p.set({ "a": 1234 }); },
                         () => { p.set({ "b": null }); }
                     ];
@@ -233,7 +232,7 @@ CABLES_CMD_DEBUG.testOp = function ()
         }
     }
 
-    console.log("op test finished!");
+    log.log("op test finished!");
 };
 
 function load(opname)
@@ -315,7 +314,7 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "Glgui tab",
         "category": "debug",
-        "func": CABLES_CMD_DEBUG.glguiTab,
+        "func": CABLES_CMD_DEBUG.newGlguiTab,
         "icon": "command"
     },
     {

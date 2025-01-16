@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
+import { gui } from "../gui.js";
 
 /**
  * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
@@ -52,22 +53,12 @@ export default class VizLayer extends Events
             this.renderVizLayer(true);
         });
 
-
-        // gui.corePatch().on("reqAnimFrame", () =>
-        // {
-        //     if (!this._usingGl)
-        //     {
-        //         console.log(2);
-        //         this.renderVizLayer();
-        //     }
-        // });
-
         gui.corePatch().on("onOpAdd", (a) =>
         {
             if (a.renderVizLayer || a.renderVizLayerGl)
             {
                 let item = this._itemsLookup[a.id];
-                if (item)console.log("vizlayer id already exists...");
+                if (item) this._log.log("vizlayer id already exists...");
                 if (!item)
                 {
                     item = {
@@ -246,7 +237,7 @@ export default class VizLayer extends Events
     {
         if (!op)
         {
-            console.log("unknown vizlayer to remove");
+            this._log.log("unknown vizlayer to remove");
             return;
         }
         const it = this._itemsLookup[op.id];

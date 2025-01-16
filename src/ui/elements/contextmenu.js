@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client";
 
 export default class ContextMenu
 {
@@ -68,6 +69,7 @@ export default class ContextMenu
             {
                 const item = document.createElement("li");
                 item.classList.add("cm_item");
+                item.setAttribute("tabindex", 0);
                 item.innerText = obj.items[i].title;
 
                 if (obj.items[i].iconClass)
@@ -84,7 +86,8 @@ export default class ContextMenu
                 this._element.appendChild(item);
                 this._visible = true;
 
-                item.addEventListener("click", function ()
+                // item.addEventListener("click", function ()
+                ele.clickable(item, function ()
                 {
                     if (obj.refresh)
                     {

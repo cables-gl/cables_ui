@@ -1,6 +1,7 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
+import { gui } from "../../gui.js";
 
 /**
  * stores opened editors to reopen when loading ui

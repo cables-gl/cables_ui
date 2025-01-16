@@ -5,6 +5,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
+import { gui } from "../gui.js";
 
 /**
  * manage files/assets of the patch

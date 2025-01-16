@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
+import { gui } from "../gui.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -481,9 +482,7 @@ export default class OpSearch extends Events
                 opId = opDoc.id;
                 opDocHidden = opDoc.hidden;
                 hidden = opDoc.hidden;
-
-                if (namespace.isNonCoreOp(opName)) shortName = opDoc.shortName;
-                else shortName = opDoc.shortNameDisplay;
+                shortName = opDoc.shortNameDisplay;
             }
 
             if (namespace.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;

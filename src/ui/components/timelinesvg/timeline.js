@@ -1,13 +1,15 @@
-import { ele } from "cables-shared-client";
+import { Logger, ele } from "cables-shared-client";
 import MouseState from "../../glpatch/mousestate.js";
 import text from "../../text.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { hideInfo } from "../../elements/tooltips.js";
 import { notify } from "../../elements/notification.js";
+import { gui } from "../../gui.js";
 
 export default function TimeLineGui()
 {
     const self = this;
+    this._log = new Logger("timeline");
 
     CABLES.ANIM.MultiGraphKeyDisplayMode = CABLES.ANIM.MultiGraphKeyDisplayMode || true;
     CABLES.ANIM.MoveMode = CABLES.ANIM.MoveMode || 0;
@@ -195,7 +197,7 @@ export default function TimeLineGui()
 
         if (ele.byQueryAll("#timeline svg circle").length > 0)
         {
-            console.log("KEYS NOT REMOVED PROPERLY");
+            this._log.log("KEYS NOT REMOVED PROPERLY");
         }
     }
 
@@ -315,7 +317,7 @@ export default function TimeLineGui()
             }
             else
             {
-                console.log("no opid!");
+                this._log.log("no opid!");
             }
         });
 
@@ -464,8 +466,8 @@ export default function TimeLineGui()
         }
         catch (e)
         {
-            console.log(e);
-            console.log("strange values????", viewBox.x, -200, ele.byId("timeline").clientWidth, 400, false
+            this._log.log(e);
+            this._log.log("strange values????", viewBox.x, -200, ele.byId("timeline").clientWidth, 400, false
             );
         }
         viewBox.w = ele.byId("timeline").clientWidth;
@@ -675,7 +677,7 @@ export default function TimeLineGui()
 
     ele.byId("timeline").addEventListener("keydown", (e) =>
     {
-        // console.log(e.which);
+        // this._log.log(e.which);
         switch (e.which)
         {
         case 46: case 8:
@@ -717,7 +719,7 @@ export default function TimeLineGui()
                     const frame = (parseFloat(inputStr));
                     if (frame !== null)
                     {
-                        console.log(frame);
+                        this._log.log(frame);
                         let firstKeyTimeFPS = -1;
                         for (const i in anim.keys)
                         {
@@ -751,7 +753,7 @@ export default function TimeLineGui()
             break;
 
         case 68: // d
-            console.log("anim.keys", anim.keys);
+            this._log.log("anim.keys", anim.keys);
             break;
 
 
@@ -803,7 +805,7 @@ export default function TimeLineGui()
             break;
 
         default:
-            // console.log('key ',e.which);
+            // this._log.log('key ',e.which);
             break;
         }
     });
@@ -1065,7 +1067,7 @@ export default function TimeLineGui()
 
     //         for (let i = 0; i < anims.length; i++)
     //         {
-    //             console.log("anims[i]", anims[i]);
+    //             this._log.log("anims[i]", anims[i]);
     //             self.removeAnim(anims[i]);
     //         }
 
@@ -1075,7 +1077,7 @@ export default function TimeLineGui()
     //     else
     //     {
     //         CABLES.ANIM.MultiGraphKeyDisplayMode = !CABLES.ANIM.MultiGraphKeyDisplayMode;
-    //         console.log("CABLES.ANIM.MultiGraphKeyDisplayMode ", CABLES.ANIM.MultiGraphKeyDisplayMode);
+    //         this._log.log("CABLES.ANIM.MultiGraphKeyDisplayMode ", CABLES.ANIM.MultiGraphKeyDisplayMode);
     //     }
     //     updateKeyLine();
     // }
@@ -1451,7 +1453,7 @@ export default function TimeLineGui()
     this.toggleTimeDisplayMode = function ()
     {
         timeDisplayMode = !timeDisplayMode;
-        console.log("timeDisplayMode", timeDisplayMode);
+        this._log.log("timeDisplayMode", timeDisplayMode);
         this.updateTime();
         updateTimeDisplay();
     };
@@ -1773,10 +1775,10 @@ export default function TimeLineGui()
 
     setTimeout(() =>
     {
-        // console.log("gui.scene().timer.isPlaying", gui.scene().timer.isPlaying());
+        // this._log.log("gui.scene().timer.isPlaying", gui.scene().timer.isPlaying());
         if (gui.scene().timer.isPlaying())
         {
-            // console.log("playing!!!!!!!");
+            // this._log.log("playing!!!!!!!");
             this.updatePlayIcon();
             this.updateTime();
             updateTimeDisplay();
@@ -1785,7 +1787,7 @@ export default function TimeLineGui()
 
         gui.scene().timer.on("playPause", () =>
         {
-            // console.log("play pause!!!");
+            // this._log.log("play pause!!!");
             this.updatePlayIcon();
             this.updateTime();
             updateTimeDisplay();

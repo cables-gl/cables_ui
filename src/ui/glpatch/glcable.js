@@ -2,6 +2,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import text from "../text.js";
 import GlPort from "./glport.js";
+import { gui } from "../gui.js";
 
 
 /**

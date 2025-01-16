@@ -1,3 +1,4 @@
+import { gui } from "../../gui.js";
 
 
 export default class TransformsIcon
@@ -20,12 +21,6 @@ export default class TransformsIcon
         this._eleCenter.addEventListener("click", () =>
         {
             gui.transformOverlay.click(this._screenPos);
-            // const op = gui.corePatch().getOpById(id);
-            // if (!op) return;
-            // gui.patchView.setCurrentSubPatch(op.uiAttribs.subPatch || 0);
-            // gui.patchView.centerSelectOp(id);
-            // gui.opParams.show(id);
-            // gui.patchView.focus();
         });
     }
 

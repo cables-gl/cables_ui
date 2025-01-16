@@ -3,8 +3,7 @@ import { Logger, ele } from "cables-shared-client";
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import { hideToolTip } from "../elements/tooltips.js";
-import uiprofiler from "./uiprofiler.js";
-import UiProfiler from "./uiprofiler.js";
+import { gui } from "../gui.js";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;

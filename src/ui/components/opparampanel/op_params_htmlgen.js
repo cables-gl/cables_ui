@@ -1,3 +1,4 @@
+import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import text from "../../text.js";
@@ -59,7 +60,6 @@ class PortHtmlGenerator
             "user": gui.user,
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
-            "showRenameButton": canEditOp && namespace.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,

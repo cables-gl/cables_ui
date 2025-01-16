@@ -1,3 +1,4 @@
+import { gui } from "../gui.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
 

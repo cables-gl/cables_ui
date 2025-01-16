@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { gui } from "../../gui.js";
 
 /**
  * the maintabpanel on the left side of the patchfield, can be minimized

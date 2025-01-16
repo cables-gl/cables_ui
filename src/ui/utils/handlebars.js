@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 /**
  * Handlebars template helper functions

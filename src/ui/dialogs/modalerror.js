@@ -2,6 +2,7 @@ import { ele, Logger } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
+import { gui } from "../gui.js";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -52,10 +53,8 @@ export default class ModalError
         let stack = null;
         if (this._options.exception)
         {
-            // console.trace();
             try
             {
-                console.log(this._options);
                 if (this._options.exception.error)
                 {
                     info = stackinfo(this._options.exception.error);

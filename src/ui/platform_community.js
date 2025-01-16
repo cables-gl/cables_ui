@@ -1,3 +1,4 @@
+import { gui } from "./gui.js";
 import Platform from "./platform.js";
 
 

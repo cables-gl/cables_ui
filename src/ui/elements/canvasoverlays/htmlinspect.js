@@ -1,3 +1,5 @@
+import { gui } from "../../gui.js";
+
 export default class HtmlInspector
 {
     constructor()

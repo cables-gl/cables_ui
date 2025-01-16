@@ -7,6 +7,8 @@ import HtmlTab from "../components/tabs/tab_html.js";
 import WelcomeTab from "../components/tabs/tab_welcome.js";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import Keypresenter from "../components/keypresenter.js";
+import Tips from "../dialogs/tips.js";
+import { gui } from "../gui.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -25,6 +27,11 @@ CABLES_CMD_UI.settings = function ()
     gui.showSettings();
 };
 
+CABLES_CMD_UI.showTips = function ()
+{
+    this.tips = new Tips();
+    gui.tips.show();
+};
 
 CABLES_CMD_UI.canvasLens = function ()
 {
@@ -511,6 +518,11 @@ CMD_UI_COMMANDS.push(
         "cmd": "Show Canvas Lens",
         "category": "ui",
         "func": CABLES_CMD_UI.canvasLens
+    },
+    {
+        "cmd": "Show Tips",
+        "category": "ui",
+        "func": CABLES_CMD_UI.showTips
     }
 
 

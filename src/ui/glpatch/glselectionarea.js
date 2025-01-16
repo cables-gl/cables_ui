@@ -1,3 +1,4 @@
+import { gui } from "../gui.js";
 
 /**
  * selection area, when dragging the mouse on the patchfield

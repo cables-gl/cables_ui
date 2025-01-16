@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
+import { gui } from "../gui.js";
 
 export default class IconBar
 {

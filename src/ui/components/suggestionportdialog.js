@@ -1,4 +1,5 @@
 import defaultOps from "../defaultops.js";
+import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
 
 /**

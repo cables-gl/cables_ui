@@ -49,10 +49,7 @@ export default class GlAlwaysCheckError
                 console.log("arguments", arguments);
 
                 console.log("gl error [" + self._cgl.canvas.id + "]: ", error, errStr);
-                // op.patch.printTriggerStack();
                 console.log((new Error()).stack);
-
-                // op.patch.printTriggerStack();
 
                 const error2 = self._glGetError();
                 console.log("err after", error2);

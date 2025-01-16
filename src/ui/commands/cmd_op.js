@@ -1,5 +1,6 @@
 import ManageOp from "../components/tabs/tab_manage_op.js";
 import { notify } from "../elements/notification.js";
+import { gui } from "../gui.js";
 
 const CABLES_CMD_OP = {};
 const CMD_OP_COMMANDS = [];

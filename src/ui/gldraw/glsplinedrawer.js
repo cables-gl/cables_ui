@@ -1,4 +1,5 @@
 
+import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
 

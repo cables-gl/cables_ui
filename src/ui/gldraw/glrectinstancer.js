@@ -2,6 +2,7 @@ import { Logger, Events } from "cables-shared-client";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
+import { gui } from "../gui.js";
 
 /**
  * draw many rectangles quickly using GPU instancing (e.g. patchfield: ops,ports,text)

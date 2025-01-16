@@ -1,3 +1,4 @@
+import { gui } from "../gui.js";
 
 CABLES = CABLES || {};
 CABLES.SPLITPANE = {};

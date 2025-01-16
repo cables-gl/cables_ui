@@ -9,6 +9,8 @@ import ScConnection from "./multiplayer/sc_connection.js";
 import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
+import GlGuiFull from "./glpatch/gluifull.js";
+
 
 
 /**
@@ -22,20 +24,20 @@ export default function startUi(cfg)
     if (window.logStartup) logStartup("Init UI");
     HandlebarsHelper.initHandleBarsHelper();
 
-    window.gui = new Gui(cfg);
+    const gui = new Gui(cfg);
 
     gui.on("uiloaded", () =>
     {
-        new Tracking(gui);
+        new Tracking();
     });
 
     if (gui.isRemoteClient)
         new NoPatchEditor();
     else
-        CABLES.CMD.DEBUG.glguiFull();
+        new GlGuiFull();
 
     incrementStartup();
-    gui.serverOps = new ServerOps(gui, cfg.patchId, () =>
+    gui.serverOps = new ServerOps(cfg.patchId, () =>
     {
         gui.init();
         gui.checkIdle();

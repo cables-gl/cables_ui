@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 export default class LibLoader
 {
@@ -41,10 +42,13 @@ export default class LibLoader
 
     loadLib(module)
     {
-        const libName = module.name;
+        const libName = module.src;
         let libType = module.type;
         const moduleExport = module.export;
-        if (!this._list.includes(libName))
+
+        // loading npms is done by electron
+        const doLoadLib = libType !== "npm" && !this._list.includes(libName);
+        if (doLoadLib)
         {
             if (!loadjs.isDefined(libName))
             {
@@ -70,12 +74,12 @@ export default class LibLoader
                 }
                 else if (module.src.startsWith("./"))
                 {
-                    scriptSrc = "/api/oplib/" + module.op + module.src;
+                    scriptSrc = CABLES.platform.getSandboxUrl() + "/api/oplib/" + module.op + module.src.replace(".", "");
                 }
                 else
                 {
                     const basePath = module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
-                    scriptSrc = basePath + module.src;
+                    scriptSrc = CABLES.platform.getSandboxUrl() + basePath + module.src;
                 }
 
                 if (libType === "module")

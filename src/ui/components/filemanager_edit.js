@@ -1,3 +1,4 @@
+import { gui } from "../gui.js";
 import EditorTab from "./tabs/tab_editor.js";
 
 /**

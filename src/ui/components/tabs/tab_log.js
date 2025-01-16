@@ -1,7 +1,8 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import ErrorStackParser from "error-stack-parser";
 import Tab from "../../elements/tabpanel/tab.js";
 import undo from "../../utils/undo.js";
+import { gui } from "../../gui.js";
 
 
 
@@ -91,7 +92,7 @@ export default class LogTab extends Events
     _logLine(log, txt, level, timediff)
     {
         let spacerClass = "";
-        // console.log(Math.abs(timediff));
+
         if (Math.abs(timediff) > 300)spacerClass = "loglineSpacer";
         let html = "<div class=\"logLine " + spacerClass + " logLevel" + level + "\">";
         html += "<span style=\"float:left\" class=\"outerInitiator\">[<span class=\"initiator\">";
@@ -241,7 +242,7 @@ export default class LogTab extends Events
                         else
                         {
                             currentLine += "??? " + arg.constructor.name;
-                            console.log("what is this", arg);
+                            this._log.log("what is this", arg);
                         }
                     }
                     else
@@ -312,7 +313,7 @@ export default class LogTab extends Events
         }
         catch (e)
         {
-            console.log("error in error", e);
+            this._log.log("error in error", e);
         }
 
         const el = ele.byId("loggingHtmlId123");
@@ -334,7 +335,7 @@ export default class LogTab extends Events
             {
                 if (err)
                 {
-                    console.error("error fetching logline2", url, err, _data, xhr);
+                    this._log.error("error fetching logline2", url, err, _data, xhr);
                     return;
                 }
 
@@ -373,7 +374,7 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    console.log("could not parse lines.", e, url);
+                    this._log.log("could not parse lines.", e, url);
                 }
             },
             "GET",
@@ -435,7 +436,7 @@ export default class LogTab extends Events
                     }
                     else
                     {
-                        console.log("no arg", e);
+                        this._log.log("no arg", e);
                     }
                 }
                 newLine.args.push(neewArg);
@@ -492,7 +493,7 @@ export default class LogTab extends Events
                 this._log.log(e);
             }
         }
-        console.log("REPORT", report);
+        this._log.log("REPORT", report);
         return report;
     }
 }

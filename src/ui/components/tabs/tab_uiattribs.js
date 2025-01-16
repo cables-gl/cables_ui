@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { gui } from "../../gui.js";
 
 /**
  * debug: showing uiattribs of currently selected op

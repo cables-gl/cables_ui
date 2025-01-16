@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 /**
  * show a toast when cables changelog is new

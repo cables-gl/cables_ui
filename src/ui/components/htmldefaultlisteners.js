@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { gui } from "../gui.js";
 
 /**
  * handle global html events like uncaught exceptions, contextmenu, resize etc
@@ -60,7 +61,7 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("resize", () =>
     {
-        if (window.gui)gui.onResize();
+        if (window.gui) gui.onResize();
     }, false);
 
     window.addEventListener("message", (event) =>
