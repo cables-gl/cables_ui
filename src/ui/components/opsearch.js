@@ -3,6 +3,7 @@ import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * search through opdocs, e.g. for opselect
@@ -47,7 +48,7 @@ export default class OpSearch extends Events
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
         items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
-        const ns = CABLES.platform.getPatchOpsNamespace();
+        const ns = platform.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(ns).map((ext) => { return ext.name; });
 
         this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;
@@ -485,7 +486,7 @@ export default class OpSearch extends Events
                 shortName = opDoc.shortNameDisplay;
             }
 
-            if (namespace.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
+            if (namespace.isDevOp(opName) && !platform.isDevEnv()) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");

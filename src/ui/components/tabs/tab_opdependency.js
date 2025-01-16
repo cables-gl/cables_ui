@@ -2,6 +2,7 @@ import { ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { fileUploader } from "../../dialogs/upload.js";
 
 /**
  *simple tab to just show html
@@ -68,7 +69,7 @@ export default class OpDependencyTab extends Tab
                 if (fileInput && fileInput.files && fileInput.files.length > 0)
                 {
                     const filename = fileInput.files[0].name;
-                    CABLES.fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
+                    fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
                     {
                         if (!err)
                         {

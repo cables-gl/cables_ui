@@ -2,6 +2,9 @@ import { Events, Logger, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
+import { contextMenu } from "../contextmenu.js";
+import { editorSession } from "./editor_session.js";
 
 
 /**
@@ -101,7 +104,7 @@ export default class TabPanel extends Events
                             "func": () => { this.activateTab(tab.id); }
                         });
                     }
-                    CABLES.contextMenu.show(
+                    contextMenu.show(
                         {
                             "items": items
                         }, e.target);
@@ -218,7 +221,7 @@ export default class TabPanel extends Events
         this.updateHtml();
 
 
-        if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
+        if (editorSession && editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
 
     loadCurrentTabUsersettings()
@@ -386,7 +389,7 @@ export default class TabPanel extends Events
 
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {
-            CABLES.platform.setManualScreenshot(opts.manualScreenshot);
+            platform.setManualScreenshot(opts.manualScreenshot);
 
             if (opts.manualScreenshot)
             {

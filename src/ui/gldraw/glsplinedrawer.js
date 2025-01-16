@@ -1,4 +1,5 @@
 
+import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
@@ -64,13 +65,13 @@ export default class GlSplineDrawer
 
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
-        this._shader.toggleDefine("FADEOUT", !CABLES.UI.userSettings.get("fadeOutOptions"));
-        this._shader.toggleDefine("DRAWSPEED", CABLES.UI.userSettings.get("glflowmode") != 0);
+        this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
+        this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
 
-        CABLES.UI.userSettings.on("change", (which, val) =>
+        userSettings.on("change", (which, val) =>
         {
             if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
-            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", CABLES.UI.userSettings.get("glflowmode") != 0);
+            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
         gui.on("themeChanged", () =>
@@ -735,7 +736,7 @@ export default class GlSplineDrawer
         let count = 0;
 
         let step = 0.001;
-        if (!CABLES.UI.userSettings.get("straightLines")) step = 0.01;
+        if (!userSettings.get("straightLines")) step = 0.01;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 

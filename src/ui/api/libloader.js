@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 export default class LibLoader
 {
@@ -74,12 +75,12 @@ export default class LibLoader
                 }
                 else if (module.src.startsWith("./"))
                 {
-                    scriptSrc = CABLES.platform.getSandboxUrl() + "/api/oplib/" + module.op + module.src.replace(".", "");
+                    scriptSrc = platform.getSandboxUrl() + "/api/oplib/" + module.op + module.src.replace(".", "");
                 }
                 else
                 {
                     const basePath = module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
-                    scriptSrc = CABLES.platform.getSandboxUrl() + basePath + module.src;
+                    scriptSrc = platform.getSandboxUrl() + basePath + module.src;
                 }
 
                 if (libType === "module")
@@ -89,9 +90,7 @@ export default class LibLoader
                         if (moduleExport)
                         {
                             if (!window.hasOwnProperty(moduleExport))
-                            {
                                 window[moduleExport] = importedModule;
-                            }
                         }
                         const i = this._libsToLoad.indexOf(libName);
                         this._libsToLoad.splice(i, 1);

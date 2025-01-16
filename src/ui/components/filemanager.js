@@ -6,6 +6,7 @@ import text from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * manage files/assets of the patch
@@ -24,15 +25,15 @@ export default class FileManager
         this._firstTimeOpening = true;
         this._refreshDelay = null;
         this._orderReverse = false;
-        this._order = CABLES.UI.userSettings.get("filemanager_order") || "name";
+        this._order = userSettings.get("filemanager_order") || "name";
         this._files = [];
 
         gui.maintabPanel.show(userInteraction);
-        CABLES.UI.userSettings.set("fileManagerOpened", true);
+        userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
 
-        this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager_display") || "icons");
+        this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
 
         this.reload(cb);
 
@@ -43,11 +44,11 @@ export default class FileManager
 
         this._manager.addEventListener("close", () =>
         {
-            CABLES.UI.userSettings.set("fileManagerOpened", false);
+            userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
 
-        if (CABLES.platform.frontendOptions.isElectron)
+        if (platform.frontendOptions.isElectron)
             gui.on("patchsaved", () =>
             {
                 if (!ele.byId("filemanagercontainer")) return;
@@ -283,7 +284,7 @@ export default class FileManager
             if (els)
             {
                 let uploadText = "";
-                if (CABLES.platform.frontendOptions.uploadFiles)
+                if (platform.frontendOptions.uploadFiles)
                 {
                     uploadText = "<br/><br/><br/><br/><div class=\"text-center\">This Patch contains no files yet!<br/><br/>";
                     uploadText += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Upload files</a> or ";
@@ -312,7 +313,7 @@ export default class FileManager
         else this._orderReverse = !this._orderReverse;
 
         this._order = o;
-        CABLES.UI.userSettings.set("filemanager_order", this._order);
+        userSettings.set("filemanager_order", this._order);
         this._buildHtml();
     }
 
@@ -367,7 +368,7 @@ export default class FileManager
 
     setDisplay(type)
     {
-        CABLES.UI.userSettings.set("filemanager_display", type);
+        userSettings.set("filemanager_display", type);
         this._manager.setDisplay(type);
         this._manager.setItems();
         this.updateHeader();
@@ -456,7 +457,7 @@ export default class FileManager
 
                         let assetPath = "";
                         if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
-                        if (CABLES.platform.frontendOptions.isElectron) assetPath = r.path;
+                        if (platform.frontendOptions.isElectron) assetPath = r.path;
 
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
@@ -464,13 +465,13 @@ export default class FileManager
                             "source": this._fileSource,
                             "isEditable": editable,
                             "assetPath": assetPath,
-                            "isPlatformCommunity": CABLES.platform.hasCommunity,
+                            "isPlatformCommunity": platform.hasCommunity,
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
-                            "projectUrl": CABLES.platform.getCablesUrl() + "/edit/" + detailItem.projectId,
+                            "projectUrl": platform.getCablesUrl() + "/edit/" + detailItem.projectId,
                             "downloadUrl": downloadUrl,
-                            "assetPageUrl": CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
+                            "assetPageUrl": platform.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
                         });
                     }
                     else
@@ -549,7 +550,7 @@ export default class FileManager
                             (e) =>
                             {
                                 let fileName = r.fileDb.fileName;
-                                if (CABLES.platform.frontendOptions.isElectron) fileName = r.path;
+                                if (platform.frontendOptions.isElectron) fileName = r.path;
                                 gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
                             });
                     }
@@ -579,14 +580,14 @@ export default class FileManager
                                             {
                                                 let linkText = otherCount + " other patch";
                                                 if (otherCount > 1) linkText += "es";
-                                                content += "It is used in <a href=\"" + CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                             }
                                             if (countRes.data.countOps)
                                             {
                                                 let linkText = countRes.data.countOps + " op";
                                                 if (countRes.data.countOps > 1) linkText += "s";
                                                 if (otherCount) content += "<br/>";
-                                                content += "It is used in <a href=\"" + CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                                 allowDelete = false;
                                             }
                                         }
@@ -741,7 +742,7 @@ export default class FileManager
                                     content += "<br><ul>";
                                     countRes.data.assets.forEach((asset) =>
                                     {
-                                        const link = CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + asset;
+                                        const link = platform.getCablesUrl() + "/asset/patches/?filename=" + asset;
                                         content += "<li>Check usages of <a href='" + link + "' target='_blank'>" + CABLES.filename(asset) + "</a></li>";
                                     });
                                     content += "</ul>";

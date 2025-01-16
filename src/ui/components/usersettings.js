@@ -109,3 +109,10 @@ export default class UserSettings extends Events
     }
 }
 
+
+
+/**
+ * @type {UserSettings}
+ */
+let userSettings = new UserSettings();
+export { userSettings };

@@ -8,6 +8,8 @@ import OpDependencyTab from "./tab_opdependency.js";
 import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
 import uiprofiler from "../uiprofiler.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -22,7 +24,7 @@ export default class ManageOp
         this._log = new Logger("ManageOp");
         if (!opId)
         {
-            CABLES.editorSession.remove("manageOp", opId);
+            editorSession.remove("manageOp", opId);
             return;
         }
 
@@ -56,7 +58,7 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
-            CABLES.editorSession.remove("manageOp", this._currentId);
+            editorSession.remove("manageOp", this._currentId);
 
             for (let i in this._refreshListener)
                 gui.off(this._refreshListener[i]);
@@ -85,8 +87,8 @@ export default class ManageOp
 
     show()
     {
-        CABLES.editorSession.remove("manageOp", this._currentId);
-        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentId, {
+        editorSession.remove("manageOp", this._currentId);
+        editorSession.rememberOpenEditor("manageOp", this._currentId, {
             "opname": this._currentName,
             "opid": this._currentId
         }, true);
@@ -180,8 +182,8 @@ export default class ManageOp
 
                 const html = getHandleBarHtml("tab_manage_op",
                     {
-                        "layoutUrl": CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName,
-                        "url": CABLES.platform.getCablesDocsUrl(),
+                        "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
+                        "url": platform.getCablesDocsUrl(),
                         "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
                         "opid": opDoc.id,
                         "opname": opDoc.name,
@@ -192,7 +194,7 @@ export default class ManageOp
                         "portJson": portJson,
                         "summary": summary,
                         "canEditOp": canEditOp,
-                        "canDeleteOp": CABLES.platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
+                        "canDeleteOp": platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
                         "readOnly": !canEditOp,
                         "user": gui.user,
                         "warns": res.warns

@@ -2,6 +2,7 @@ import { ele } from "cables-shared-client";
 import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 const paramsHelper =
 {
@@ -225,7 +226,7 @@ const paramsHelper =
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op) return console.warn("paramedit op not found", opid);
-        CABLES.editorSession.startLoadingTab();
+        editorSession.startLoadingTab();
 
         const port = op.getPortByName(portname);
         if (!port) return console.warn("paramedit port not found", portname);
@@ -242,7 +243,7 @@ const paramsHelper =
             return;
         }
 
-        const editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
+        const editorObj = editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
 
         if (editorObj)
         {
@@ -257,7 +258,7 @@ const paramsHelper =
                     "editorObj": editorObj,
                     "onClose": function (which)
                     {
-                        CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
+                        editorSession.remove(which.editorObj.type, which.editorObj.name);
                     },
                     "onSave": function (setStatus, content)
                     {
@@ -292,7 +293,7 @@ const paramsHelper =
         if (cb)cb();
         else gui.maintabPanel.show(userInteraction);
 
-        CABLES.editorSession.finishLoadingTab();
+        editorSession.finishLoadingTab();
     },
 
 

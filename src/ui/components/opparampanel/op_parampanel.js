@@ -7,6 +7,8 @@ import gluiconfig from "../../glpatch/gluiconfig.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 /**
  * op parameter panel
@@ -313,7 +315,7 @@ class OpParampanel extends Events
                     if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
                     {
                         const parts = fn.split("/");
-                        if (parts && parts.length > 1) src = "<a target=\"_blank\" class=\"link\" href=\"" + CABLES.platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
+                        if (parts && parts.length > 1) src = "<a target=\"_blank\" class=\"link\" href=\"" + platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
                     }
                     if (fn.startsWith("/assets/library/")) src = "lib";
 
@@ -619,7 +621,7 @@ class OpParampanel extends Events
                 "iconClass": "icon icon-external",
                 func()
                 {
-                    const url = CABLES.platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
+                    const url = platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
                     window.open(url, "_blank");
                 },
             });
@@ -669,7 +671,7 @@ class OpParampanel extends Events
                 });
             }
         }
-        CABLES.contextMenu.show({ items }, el);
+        contextMenu.show({ items }, el);
     }
 
     opContextMenu(el)
@@ -717,7 +719,7 @@ class OpParampanel extends Events
             },
         });
 
-        CABLES.contextMenu.show({ items }, el);
+        contextMenu.show({ items }, el);
     }
 }
 

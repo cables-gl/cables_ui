@@ -1,4 +1,5 @@
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
@@ -21,6 +22,6 @@ export default class Exporter
 
         const projectId = this._project.shortId || this._project._id;
 
-        CABLES.platform.exportPatch(projectId, this._exportType);
+        platform.exportPatch(projectId, this._exportType);
     }
 }

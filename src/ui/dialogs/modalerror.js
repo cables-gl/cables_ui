@@ -3,6 +3,7 @@ import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -183,9 +184,9 @@ export default class ModalError
                 str += "Please check if you have the access rights to this op.<br/><br/>";
             }
             else
-            if (gui && gui.serverOps.canEditOp(gui.user, this.opName) && CABLES.platform)
+            if (gui && gui.serverOps.canEditOp(gui.user, this.opName) && platform)
             {
-                const url = CABLES.platform.getCablesUrl() + "/op/edit/" + this.opName;
+                const url = platform.getCablesUrl() + "/op/edit/" + this.opName;
                 str += "Error in op: <b><a href='" + url + "' target='_blank'>" + this.opName + "</a></b><br/><br/>";
             }
             else
@@ -194,7 +195,7 @@ export default class ModalError
             }
         }
 
-        const isSameHost = CABLES.platform.isPatchSameHost();
+        const isSameHost = platform.isPatchSameHost();
 
         if (!isSameHost)
         {
@@ -238,9 +239,9 @@ export default class ModalError
         }
 
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-        if (CABLES && CABLES.platform && CABLES.platform.getIssueTrackerUrl())
+        if (CABLES && platform && platform.getIssueTrackerUrl())
         {
-            str += "<a class=\"button\" target=\"_blankk\" href=\"" + CABLES.platform.getIssueTrackerUrl() + "\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
+            str += "<a class=\"button\" target=\"_blankk\" href=\"" + platform.getIssueTrackerUrl() + "\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
         }
 
         let ignoreErrorReport = false;
@@ -256,7 +257,7 @@ export default class ModalError
         }
 
         let showSendButton = true;
-        if (CABLES && CABLES.platform && !CABLES.platform.frontendOptions.sendErrorReports)
+        if (CABLES && platform && !platform.frontendOptions.sendErrorReports)
         {
             ignoreErrorReport = true;
             showSendButton = false;
@@ -264,7 +265,7 @@ export default class ModalError
 
         if (!isPrivateOp)
         {
-            if (CABLES && CABLES.platform && CABLES.platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
+            if (CABLES && platform && platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";

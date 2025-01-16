@@ -4,6 +4,8 @@ import text from "../../text.js";
 import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
@@ -96,7 +98,7 @@ export default class EditorTab extends Events
                     let hideFormatButton = !!this._options.hideFormatButton;
                     if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
                     else hideFormatButton = true;
-                    if (!CABLES.platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
+                    if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
 
                     if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
@@ -166,14 +168,14 @@ export default class EditorTab extends Events
                                 });
                             }
 
-                            CABLES.contextMenu.show({ "items": items }, el);
+                            contextMenu.show({ "items": items }, el);
                         });
                     }
 
-                    this._tab.addButton("Op Docs", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/op/" + opname); });
+                    this._tab.addButton("Op Docs", () => { window.open(platform.getCablesDocsUrl() + "/op/" + opname); });
                 }
 
-                if (CABLES.platform.frontendOptions.openLocalFiles && this._options.allowEdit)
+                if (platform.frontendOptions.openLocalFiles && this._options.allowEdit)
                 {
                     this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"electron_openfolder\" ></span>",
                         (e) =>
@@ -182,7 +184,7 @@ export default class EditorTab extends Events
                             else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
                         });
                 }
-                this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
+                this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
 
                 this._editor.resize();
 

@@ -10,6 +10,9 @@ import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
 import namespace from "../namespaceutils.js";
 import Gui, { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { editorSession } from "../elements/tabpanel/editor_session.js";
+import { userSettings } from "../components/usersettings.js";
 
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -29,11 +32,11 @@ export default class ServerOps
         this._patchId = patchId;
         this._ops = [];
 
-        CABLES.editorSession.addListener("op",
+        editorSession.addListener("op",
             (name, data) =>
             {
-                CABLES.editorSession.startLoadingTab();
-                const lastTab = CABLES.UI.userSettings.get("editortab");
+                editorSession.startLoadingTab();
+                const lastTab = userSettings.get("editortab");
 
                 if (data && data.opId)
                 {
@@ -46,24 +49,24 @@ export default class ServerOps
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    CABLES.UI.userSettings.set("editortab", lastTab);
-                    CABLES.editorSession.finishLoadingTab();
+                    userSettings.set("editortab", lastTab);
+                    editorSession.finishLoadingTab();
                 });
             }
         );
 
-        CABLES.editorSession.addListener("attachment", (name, data) =>
+        editorSession.addListener("attachment", (name, data) =>
         {
-            CABLES.editorSession.startLoadingTab();
+            editorSession.startLoadingTab();
 
             if (data && data.opname)
             {
-                const lastTab = CABLES.UI.userSettings.get("editortab");
+                const lastTab = userSettings.get("editortab");
                 this.editAttachment(data.opname, data.name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    CABLES.UI.userSettings.set("editortab", lastTab);
-                    CABLES.editorSession.finishLoadingTab();
+                    userSettings.set("editortab", lastTab);
+                    editorSession.finishLoadingTab();
                 }, true);
             }
         }
@@ -705,7 +708,7 @@ export default class ServerOps
 
     testServer()
     {
-        let opname = CABLES.platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
+        let opname = platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
         let attachmentName = "att_test.js";
 
         const cont = "// " + CABLES.uuid();
@@ -775,7 +778,7 @@ export default class ServerOps
         let opTargetDir = null;
         const _checkOpName = () =>
         {
-            if (!CABLES.platform.isTrustedPatch())
+            if (!platform.isTrustedPatch())
             {
                 new ModalDialog({
                     "title": "Untrusted Patch",
@@ -805,7 +808,7 @@ export default class ServerOps
                     "text": html
                 });
 
-                if (CABLES.platform.frontendOptions.hasOpDirectories)
+                if (platform.frontendOptions.hasOpDirectories)
                 {
                     const addButton = ele.byId("addOpTargetDir");
                     if (addButton)
@@ -902,7 +905,7 @@ export default class ServerOps
 
         let html = "";
 
-        if (!CABLES.platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
+        if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
@@ -1132,7 +1135,7 @@ export default class ServerOps
             return;
         }
 
-        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
+        let suggestedNamespace = platform.getPatchOpsNamespace();
 
         const dialogOptions = {
             "title": "Create operator",
@@ -1141,7 +1144,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
-            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
+            "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1176,7 +1179,7 @@ export default class ServerOps
 
     renameDialogIframe(opName)
     {
-        if (!CABLES.platform.isTrustedPatch())
+        if (!platform.isTrustedPatch())
         {
             new ModalDialog({
                 "title": "You need write access in the patch to rename ops",
@@ -1185,7 +1188,7 @@ export default class ServerOps
             return;
         }
 
-        const iframeSrc = CABLES.platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
+        const iframeSrc = platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
         const modal = new ModalIframe({
             "title": "Rename Op",
             "src": iframeSrc
@@ -1207,7 +1210,7 @@ export default class ServerOps
     // rename dialog for non-api platforms like electron
     renameDialog(oldName)
     {
-        if (!CABLES.platform.frontendOptions.opRenameInEditor) return;
+        if (!platform.frontendOptions.opRenameInEditor) return;
 
         if (gui.showGuestWarning()) return;
 
@@ -1262,7 +1265,7 @@ export default class ServerOps
 
     deleteDialog(opName)
     {
-        if (!CABLES.platform.frontendOptions.opDeleteInEditor) return;
+        if (!platform.frontendOptions.opDeleteInEditor) return;
 
         if (gui.showGuestWarning()) return;
 
@@ -1330,7 +1333,7 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
+        let suggestedNamespace = platform.getPatchOpsNamespace();
         if (namespace.isTeamOp(oldName)) suggestedNamespace = namespace.getNamespace(oldName);
 
         const dialogOptions = {
@@ -1340,7 +1343,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": oldName,
-            "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
+            "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
@@ -1442,7 +1445,7 @@ export default class ServerOps
         if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
-        const lastTab = CABLES.UI.userSettings.get("editortab");
+        const lastTab = userSettings.get("editortab");
         let inactive = false;
         if (fromListener) if (lastTab !== title) inactive = true;
 
@@ -1457,7 +1460,7 @@ export default class ServerOps
             "inactive": inactive,
             "onClose": (which) =>
             {
-                if (editorObj && editorObj.name) CABLES.editorSession.remove(editorObj.type, editorObj.name);
+                if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
             }
         });
 
@@ -1476,11 +1479,11 @@ export default class ServerOps
             if (err || !res || res.content === undefined)
             {
                 if (err) this._log.log("[editAttachment] err", err);
-                if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
                 return;
             }
 
-            editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, {
+            editorObj = editorSession.rememberOpenEditor("attachment", title, {
                 "opname": opname,
                 "opid": opId,
                 "name": attachmentName
@@ -1489,7 +1492,7 @@ export default class ServerOps
             if (err || !res || res.content == undefined)
             {
                 if (err) this._log.log("[editAttachment] err", err);
-                if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
                 return;
             }
             const content = res.content || "";
@@ -1507,7 +1510,7 @@ export default class ServerOps
                         "content": _content
                     }, (errr, re) =>
                     {
-                        if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                        if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
 
                         if (errr)
                         {
@@ -1556,7 +1559,7 @@ export default class ServerOps
                 .finish("load_attachment_" + attachmentName);
             this._log.error("error opening attachment " + attachmentName);
             this._log.log(err);
-            if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
+            if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
         });
 
         if (!editorObj)
@@ -1608,7 +1611,7 @@ export default class ServerOps
 
         const parts = opname.split(".");
         const title = "Op " + parts[parts.length - 1];
-        const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
+        const editorObj = editorSession.rememberOpenEditor("op", opname);
         let editorTab;
 
         if (editorObj)
@@ -1624,7 +1627,7 @@ export default class ServerOps
                 "editorObj": editorObj,
                 "onClose": (which) =>
                 {
-                    if (which.editorObj) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
+                    if (which.editorObj) editorSession.remove(which.editorObj.type, which.editorObj.name);
                 }
             });
 
@@ -1640,7 +1643,7 @@ export default class ServerOps
                 {
                     notifyError("Error receiving op code!");
                     editorTab.setContent("");
-                    CABLES.editorSession.remove("op", opname);
+                    editorSession.remove("op", opname);
                     return;
                 }
                 editorTab.setContent(rslt.code);
@@ -1657,7 +1660,7 @@ export default class ServerOps
                             {
                                 "opname": opid,
                                 "code": content,
-                                "format": CABLES.UI.userSettings.get("formatcode") || false
+                                "format": userSettings.get("formatcode") || false
                             },
                             (err, res) =>
                             {
@@ -1680,7 +1683,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (CABLES.platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
                                     if (!CABLES.Patch.getOpClass(opname)) gui.opSelect()
                                         .reload();
 
@@ -1798,7 +1801,7 @@ export default class ServerOps
         const opDependencies = [];
         if (opDoc && opDoc.dependencies)
         {
-            const platformDeps = CABLES.platform.getSupportedOpDependencyTypes();
+            const platformDeps = platform.getSupportedOpDependencyTypes();
             const opDeps = opDoc.dependencies.filter((dep) => { return platformDeps.includes(dep.type); });
             for (let i = 0; i < opDeps.length; i++)
             {
@@ -1901,7 +1904,7 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
-        if (!CABLES.platform.isTrustedPatch()) return false;
+        if (!platform.isTrustedPatch()) return false;
         if (!user) return false;
         if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });
@@ -2083,8 +2086,8 @@ export default class ServerOps
                     const missingOpUrl = [];
                     allIdentifiers.forEach((identifier) =>
                     {
-                        let url = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + identifier) + "?p=" + this._patchId;
-                        if (CABLES.platform.config.previewMode) url += "&preview=true";
+                        let url = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/op/" + identifier) + "?p=" + this._patchId;
+                        if (platform.config.previewMode) url += "&preview=true";
                         missingOpUrl.push(url);
                     });
 
@@ -2138,15 +2141,15 @@ export default class ServerOps
         {
             collectionName = name.split(".", 3).join(".");
             valid = name && namespace.isExtensionOp(name);
-            apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
-            if (CABLES.platform.config.previewMode) apiUrl += "?preview=true";
+            apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
+            if (platform.config.previewMode) apiUrl += "?preview=true";
         }
         if (name && type === "team")
         {
             collectionName = name.split(".", 3).join(".");
             valid = name && namespace.isTeamOp(name);
-            apiUrl = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
-            if (CABLES.platform.config.previewMode) apiUrl += "?preview=true";
+            apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
+            if (platform.config.previewMode) apiUrl += "?preview=true";
         }
 
         if (valid)

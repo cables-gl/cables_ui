@@ -1,4 +1,6 @@
+import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 import EditorTab from "./tabs/tab_editor.js";
 
 /**
@@ -11,7 +13,7 @@ export default class FileManagerEditor
 {
     constructor()
     {
-        CABLES.editorSession.addListener("editAssetFile",
+        editorSession.addListener("editAssetFile",
             (name, data) =>
             {
                 this.editAssetTextFile(data.filename, data.syntax, data.patchId);
@@ -25,7 +27,7 @@ export default class FileManagerEditor
         let url = filename;
         if (!filename.startsWith("file:"))
         {
-            url = CABLES.platform.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
+            url = platform.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
         }
 
         if (syntax == "javascript")syntax = "js";
@@ -37,7 +39,7 @@ export default class FileManagerEditor
             {
                 const name = filename;
 
-                const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
+                const editorObj = editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
 
                 new EditorTab(
                     {
@@ -47,7 +49,7 @@ export default class FileManagerEditor
                         "syntax": syntax,
                         "onClose": function (which)
                         {
-                            CABLES.editorSession.remove(editorObj.type, editorObj.name);
+                            editorSession.remove(editorObj.type, editorObj.name);
                         },
                         "onSave": function (setStatus, content)
                         {

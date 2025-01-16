@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * show a searchable command palette (cmd/ctrl+p)
@@ -184,7 +185,7 @@ export default class CommandPallete
 
             let show = true;
             if (CABLES.CMD.commands[i].frontendOption)
-                show = CABLES.platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
+                show = platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
 
             if (!show) continue;
             if (!str && CABLES.CMD.commands[i].category == "debug") continue;

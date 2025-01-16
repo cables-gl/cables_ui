@@ -1,5 +1,6 @@
 
 import { Events } from "cables-shared-client";
+import platform from "platform";
 import { gui } from "../gui.js";
 
 export default class GlCursor extends Events
@@ -109,7 +110,7 @@ export default class GlCursor extends Events
         if (gui.socket && !this._userId)
         {
             this._userId = gui.socket.state.getUserId(this._clientId);
-            if (this._userId) this._avatarEle.style["background-image"] = "url(" + CABLES.platform.getCablesUrl() + "/api/avatar/" + this._userId + ")";
+            if (this._userId) this._avatarEle.style["background-image"] = "url(" + platform.getCablesUrl() + "/api/avatar/" + this._userId + ")";
         }
     }
 

@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * show a toast when cables changelog is new
@@ -65,7 +66,7 @@ export default class ChangelogToast
                     "<button>Read More</button>",
                     function (instance, toast)
                     {
-                        window.open(CABLES.platform.getCablesUrl() + "/changelog");
+                        window.open(platform.getCablesUrl() + "/changelog");
                     },
                 ],
             ],
@@ -76,8 +77,8 @@ export default class ChangelogToast
     {
         if (gui.isRemoteClient) return;
 
-        const url = CABLES.platform.getCablesUrl() + "/changelog?iframe=true";
-        const gotoUrl = CABLES.platform.getCablesUrl() + "/changelog";
+        const url = platform.getCablesUrl() + "/changelog?iframe=true";
+        const gotoUrl = platform.getCablesUrl() + "/changelog";
 
         gui.mainTabs.addIframeTab("changelog", url, { "icon": "book-open", "closable": true, "gotoUrl": gotoUrl }, true);
     }

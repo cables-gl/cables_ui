@@ -4,6 +4,7 @@ import TreeView from "./treeview.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import PatchOutline from "./patchoutline.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * default panel when clicking into the pach background, shows patch summary and tree view
@@ -52,7 +53,7 @@ export default class PatchPanel extends Events
         if (project)
         {
             const projectId = project.shortId || project._id;
-            const isSameHost = CABLES.platform.isPatchSameHost();
+            const isSameHost = platform.isPatchSameHost();
 
             let host = "";
 
@@ -62,9 +63,9 @@ export default class PatchPanel extends Events
                 {
                     "projectId": projectId,
                     "project": project,
-                    "frontendOptions": CABLES.platform.frontendOptions,
-                    "isTrustedPatch": CABLES.platform.isTrustedPatch(),
-                    "cablesUrl": CABLES.platform.getCablesUrl(),
+                    "frontendOptions": platform.frontendOptions,
+                    "isTrustedPatch": platform.isTrustedPatch(),
+                    "cablesUrl": platform.getCablesUrl(),
                     "sameHost": isSameHost,
                     "patchHost": host
                 });
@@ -95,7 +96,7 @@ export default class PatchPanel extends Events
 
         if (ele.byId("btn_patch_opendir"))ele.clickable(ele.byId("btn_patch_opendir"), (e) =>
         {
-            if (e.ctrlKey || e.metaKey) navigator.clipboard.writeText(CABLES.platform.config.currentPatchDir);
+            if (e.ctrlKey || e.metaKey) navigator.clipboard.writeText(platform.config.currentPatchDir);
             else CABLES.CMD.ELECTRON.openProjectDir();
         });
 

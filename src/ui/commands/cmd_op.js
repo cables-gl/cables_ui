@@ -1,6 +1,7 @@
 import ManageOp from "../components/tabs/tab_manage_op.js";
 import { notify } from "../elements/notification.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 const CABLES_CMD_OP = {};
 const CMD_OP_COMMANDS = [];
@@ -81,7 +82,7 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) =>
             let sanitizedOpName = opname.replaceAll(".", "_");
 
 
-            let newOpname = CABLES.platform.getPatchOpsNamespace() + sanitizedOpName;
+            let newOpname = platform.getPatchOpsNamespace() + sanitizedOpName;
             newOpname = newOpname.replaceAll(".Ops_", ".");
 
             const newOpnameNoVer = newOpname.replaceAll("_v", "V");
@@ -145,7 +146,7 @@ CABLES_CMD_OP.renameOp = (opName = null) =>
         opName = op.objName;
     }
 
-    if (CABLES.platform.frontendOptions.opRenameInEditor)
+    if (platform.frontendOptions.opRenameInEditor)
     {
         gui.serverOps.renameDialog(opName);
     }

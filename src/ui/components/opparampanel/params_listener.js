@@ -12,6 +12,7 @@ import uiconfig from "../../uiconfig.js";
 // import ParamTabInputListener from "./param_tabinputlistener.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 
 /**
@@ -694,7 +695,7 @@ class ParamsListener extends Events
                 });
 
 
-            CABLES.contextMenu.show({ "items": items }, e.target);
+            contextMenu.show({ "items": items }, e.target);
         });
         else this._log.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
     }

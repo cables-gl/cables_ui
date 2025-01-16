@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
+import { platform } from "../platform.js";
 
 export default class Api
 {
@@ -12,7 +13,7 @@ export default class Api
 
     request(method, url, data, cbSuccess, cbError, doCache)
     {
-        url = CABLES.platform.getUrlApiPrefix() + url;
+        url = platform.getUrlApiPrefix() + url;
 
         const options = { "method": method };
 

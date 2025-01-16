@@ -68,7 +68,7 @@ export default class EditorSession
 
     /**
      * remove a editor session
-     * @name CABLES.EditorSession#remove
+     * @name remove
      * @param {string} type
      * @param {string} name
      * @function
@@ -97,7 +97,7 @@ export default class EditorSession
 
     /**
      * remember an open editor
-     * @name CABLES.EditorSession#rememberOpenEditor
+     * @name rememberOpenEditor
      * @param {string} type
      * @param {string} name
      * @param data
@@ -124,7 +124,7 @@ export default class EditorSession
 
     /**
      * reopen saved editors
-     * @name CABLES.EditorSession#open
+     * @name open
      * @function
      */
     open()
@@ -143,7 +143,7 @@ export default class EditorSession
 
     /**
      * add listener, a callback will be executed for this type when editor is reopened.
-     * @name CABLES.EditorSession#addListener
+     * @name addListener
      * @function
      */
     addListener(type, cb)
@@ -151,3 +151,10 @@ export default class EditorSession
         this._listeners[type] = cb;
     }
 }
+
+
+/**
+ * @type {EditorSession}
+ */
+let editorSession = new EditorSession();
+export { editorSession };

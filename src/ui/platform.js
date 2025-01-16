@@ -9,14 +9,20 @@ import namespace from "./namespaceutils.js";
 import { gui } from "./gui.js";
 
 /**
+ * @type {Platform}
+ */
+let platform = null;
+export { platform };
+
+/**
  * super class for platform implementations
  */
-export default class Platform extends Events
+export class Platform extends Events
 {
     constructor(cfg)
     {
         super();
-
+        platform = this;
         this._log = new Logger("platform");
         this._cfg = cfg;
         this._isOffline = false;
@@ -78,7 +84,7 @@ export default class Platform extends Events
 
     warnOpEdit(opName)
     {
-        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isElectron());
+        return (!platform.isDevEnv() && namespace.isCoreOp(opName) && !platform.isElectron());
     }
 
     isElectron()
@@ -169,7 +175,7 @@ export default class Platform extends Events
             return true;
         return (
             gui.project().buildInfo.host ==
-            CABLES.platform
+            platform
                 .getCablesUrl()
                 .replaceAll("https://", "")
                 .replaceAll("http://", "")
@@ -602,7 +608,7 @@ export default class Platform extends Events
 
     exportPatch(projectId)
     {
-        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
+        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
         if (this._versionId) gotoUrl += "?version=" + this._versionId;
 
         const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";

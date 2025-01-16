@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * Handlebars template helper functions
@@ -31,10 +32,10 @@ export function getHandleBarHtml(name, obj)
     const template = handleBarPrecompiled(name);
 
     obj = obj || {};
-    obj.frontendOptions = CABLES.platform.frontendOptions;
-    obj.cablesUrl = CABLES.platform.getCablesUrl();
+    obj.frontendOptions = platform.frontendOptions;
+    obj.cablesUrl = platform.getCablesUrl();
     obj.cablesDocsUrl = obj.cablesUrl;
-    if (CABLES.platform.getCablesDocsUrl)obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+    if (platform.getCablesDocsUrl)obj.cablesDocsUrl = platform.getCablesDocsUrl();
 
     const html = template(obj, { "allowProtoMethodsByDefault": true, "allowProtoPropertiesByDefault": true });
 
