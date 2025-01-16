@@ -2,10 +2,11 @@ import GlCanvas from "../gldraw/glcanvas.js";
 import GlTimeline from "./gltimeline.js";
 
 /**
- * canvas for the patchfield {@link GlPatch}
+ * canvas for the timeline {@link GlTimeline}
  *
  * @export
- * @class GlUiCanvas
+ * @class glTimelineCanvas
+ * @extends {Events}
  */
 export default class glTimelineCanvas extends GlCanvas
 {

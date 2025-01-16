@@ -1,6 +1,13 @@
 import { Events, Logger } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 
+/**
+ * gltl ruler display
+ *
+ * @export
+ * @class glTlRuler
+ * @extends {Events}
+ */
 export default class glTlRuler extends Events
 {
     constructor(glTl)

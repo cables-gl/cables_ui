@@ -5,6 +5,13 @@ import glTlAnim from "./gltlanim.js";
 import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
 
+/**
+ * gl timeline
+ *
+ * @export
+ * @class GlTimeline
+ * @extends {Events}
+ */
 export default class GlTimeline extends Events
 {
     /**
