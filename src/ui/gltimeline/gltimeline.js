@@ -7,6 +7,9 @@ import { gui } from "../gui.js";
 
 export default class GlTimeline extends Events
 {
+    /**
+     * @param {CG_State} cgl
+     */
     constructor(cgl)
     {
         super();
@@ -15,9 +18,12 @@ export default class GlTimeline extends Events
         this.paused = false;
         this.cgl = cgl;
 
+        /** @type {GlTextWriter} */
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
+        /** @type {GlRectInstancer} */
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
+        /** @type {glTlRuler} */
         this.ruler = new glTlRuler(this);
         this.tlAnims = [];
 
@@ -65,10 +71,8 @@ export default class GlTimeline extends Events
     _onCanvasMouseUp(e)
     {
         this.rects.mouseUp(e);
-
         this.mouseDown = false;
     }
-
 
     _onCanvasWheel(event)
     {

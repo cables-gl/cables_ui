@@ -138,7 +138,7 @@ export default class TexturePreviewer
 
         if (!previewCanvasEle)
         {
-            console.log("no previewCanvasEle");
+            this._log.log("no previewCanvasEle");
             return;
         }
 
@@ -398,10 +398,10 @@ export default class TexturePreviewer
         // {
         //     CABLES.UI.userSettings.set("bgpreviewMax", enabled);
 
-        //     console.log("store bgpreview max", enabled);
+        //     this._log.log("store bgpreview max", enabled);
         // }
 
-        // console.log("bgpreviewMax", CABLES.UI.userSettings.get("bgpreviewMax"), enabled);
+        // this._log.log("bgpreviewMax", CABLES.UI.userSettings.get("bgpreviewMax"), enabled);
 
 
         if (this._mode == MODE_CORNER)
@@ -613,7 +613,7 @@ export default class TexturePreviewer
 
         // if (!op)
         // {
-        //     console.log("texpreviewer cant find op");
+        //     this._log.log("texpreviewer cant find op");
         //     return;
         // }
 
@@ -643,7 +643,7 @@ export default class TexturePreviewer
         //         o.enabled = this._enabled;
         //     }
 
-        //     // console.log(o);
+        //     // this._log.log(o);
         // }
 
         return o;

@@ -23,10 +23,8 @@ export default class glTimelineCanvas extends GlCanvas
 
     parentResized()
     {
-        console.log(this._parentEle.clientWidth, this._parentEle.clientHeight, this.cgl.pixelDensity);
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
-
 
     render()
     {

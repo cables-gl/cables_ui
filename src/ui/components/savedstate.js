@@ -1,4 +1,4 @@
-import { Events, ele } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { gui } from "../gui.js";
 
@@ -14,6 +14,7 @@ export default class SavedState extends Events
     constructor()
     {
         super();
+        this._log = new Logger("SavedState");
         this._statesSaved = {};
         this._statesInitiator = {};
         this._talkerState = null;
@@ -72,8 +73,6 @@ export default class SavedState extends Events
 
         let savedStateStr = "saved";
         if (!savedState) savedStateStr = "unsaved!";
-
-        // console.log("[savestate]", initiator, section, savedStateStr);
     }
 
     setSavedAll(initiator)
@@ -126,7 +125,7 @@ export default class SavedState extends Events
         if (gui.isRemoteClient) return;
 
         if (subpatch === undefined)
-            console.log("setUnSaved subpatch undefined", initiator, subpatch);
+            this._log.log("setUnSaved subpatch undefined", initiator, subpatch);
 
         if (subpatch === undefined)
         {
@@ -173,7 +172,7 @@ export default class SavedState extends Events
     {
         if (!this._statesSaved.hasOwnProperty(bp))
         {
-            console.log("does not have state for ", bp);
+            this._log.log("does not have state for ", bp);
         }
         return this._statesSaved[bp];
     }
@@ -291,7 +290,7 @@ export default class SavedState extends Events
                 {
                     if (!gui.patchView.patchRenderer.greyOut)
                     {
-                        console.log("updaterestrict?!");
+                        this._log.log("updaterestrict?!");
 
                         let theIdx = null;
                         for (const idx in this._statesSaved)

@@ -36,7 +36,6 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
-        // console.log("clear subpatch cache", patchId);
         if (patchId === undefined)
         {
             this._subpatchOpCache = {};
@@ -316,7 +315,7 @@ export default function extendCorePatch()
                         oldOp.portsIn[j].links[0].remove();
 
                         l = this.link(op, oldName, oldOutOp, oldOutName);
-                        if (!l) console.log("[reloadOp] relink after op reload not successfull for port " + oldOutName);
+                        if (!l) this._log.warn("[reloadOp] relink after op reload not successfull for port " + oldOutName);
                         else l.setValue();
                     }
                 }
@@ -332,7 +331,7 @@ export default function extendCorePatch()
                     oldOp.portsOut[j].links[0].remove();
 
                     l = this.link(op, oldNewName, oldInOp, oldInName);
-                    if (!l) console.log("relink after op reload not successfull for port " + oldInName);
+                    if (!l) this._log.warn("relink after op reload not successfull for port " + oldInName);
                     else l.setValue();
                 }
             }

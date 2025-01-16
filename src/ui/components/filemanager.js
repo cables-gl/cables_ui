@@ -72,8 +72,6 @@ export default class FileManager
 
     setFilePort(portEle, op, previewEle)
     {
-        console.log("file port op", portEle, op);
-
         if (!portEle)
         {
             this._filePortElePreview = null;
@@ -538,7 +536,7 @@ export default class FileManager
                                     .catch((copyError) =>
                                     {
                                         notifyWarn("Copied to clipboard failed");
-                                        console.warn("copy to clipboard failed", copyError);
+                                        this._log.warn("copy to clipboard failed", copyError);
                                     });
                             });
                     }

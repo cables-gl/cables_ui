@@ -3,6 +3,8 @@ import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
+import GlPatch from "./glpatch.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid
@@ -17,8 +19,10 @@ export default class Snap extends Events
     {
         super();
 
+        /** @type {GlPatch} */
         this._glPatch = glPatch;
         this._xCoords = [];
+        /** @type {GlRectInstancer} */
         this._instancer = instancer;
         this._timeout = null;
         this._rectWidth = 1;
@@ -171,6 +175,7 @@ export default class Snap extends Events
         return _x;
     }
 }
+
 Snap.snapOpPosX = function (posX)
 {
     return (Math.round(posX / uiconfig.snapX) * uiconfig.snapX) || 1;
