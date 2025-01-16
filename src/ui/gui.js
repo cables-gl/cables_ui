@@ -50,6 +50,7 @@ import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import ServerOps from "./api/opsserver.js";
 import { contextMenu } from "./elements/contextmenu.js";
+import { userSettings } from "./components/usersettings.js";
 
 /**
  * @type {Gui}
@@ -77,7 +78,7 @@ export default class Gui extends Events
          */
         this.serverOps = null;
 
-        this.userSettings = CABLES.UI.userSettings;
+        this.userSettings = userSettings;
         this.uiProfiler = new UiProfiler();
 
         this.canvasManager = new CanvasManager();

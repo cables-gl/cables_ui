@@ -8,6 +8,7 @@ import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
+import { userSettings } from "../components/usersettings.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -580,7 +581,7 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
-        this._minimal = CABLES.UI.userSettings.get("miniopselect") == true;
+        this._minimal = userSettings.get("miniopselect") == true;
 
         this._options = options;
         hideToolTip();

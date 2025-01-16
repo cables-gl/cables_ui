@@ -2,6 +2,7 @@ import ModalDialog from "../../dialogs/modaldialog.js";
 import { gui } from "../../gui.js";
 import opNames from "../../opnameutils.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { userSettings } from "../usersettings.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -104,7 +105,7 @@ export default class MetaKeyframes
     {
         if (!anim) return;
         this.anim = anim;
-        if (CABLES.UI.userSettings.get("metatab") == "keyframes")
+        if (userSettings.get("metatab") == "keyframes")
         {
             this.show();
         }

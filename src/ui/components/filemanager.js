@@ -7,6 +7,7 @@ import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { userSettings } from "./usersettings.js";
 
 /**
  * manage files/assets of the patch

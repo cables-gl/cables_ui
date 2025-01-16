@@ -6,6 +6,7 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -137,7 +138,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (this._glPatch.mouseState.buttonStateForLinkDrag && CABLES.UI.userSettings.get("patch_allowCableDrag"))
+            if (this._glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
             {
                 this._glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;

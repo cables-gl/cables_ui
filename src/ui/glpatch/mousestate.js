@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 
 /**
@@ -35,7 +36,7 @@ export default class MouseState extends Events
 
         this._initUserPrefs();
 
-        CABLES.UI.userSettings.on("change", this._initUserPrefs.bind(this));
+        userSettings.on("change", this._initUserPrefs.bind(this));
 
         canvas.addEventListener("pointerenter", (e) =>
         {
@@ -89,7 +90,7 @@ export default class MouseState extends Events
 
     _initUserPrefs()
     {
-        const userSettingScrollButton = CABLES.UI.userSettings.get("patch_button_scroll");
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
         if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
         if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;

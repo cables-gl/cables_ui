@@ -1,3 +1,4 @@
+import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 
 CABLES = CABLES || {};
@@ -55,7 +56,7 @@ function initSplitPanes()
 
             gui.editorWidth = e.clientX;
             if (gui.editorWidth < 30)gui.editorWidth = 30;
-            CABLES.UI.userSettings.set("editorWidth", gui.editorWidth);
+            userSettings.set("editorWidth", gui.editorWidth);
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }

@@ -4,6 +4,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import undo from "../../utils/undo.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
+import { userSettings } from "../usersettings.js";
 
 
 
@@ -42,10 +43,10 @@ export default class LogTab extends Events
 
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
-        const alwaysOpenButton = this._tab.addButton("Always open: " + (CABLES.UI.userSettings.get("openLogTab") || false), () =>
+        const alwaysOpenButton = this._tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
         {
-            CABLES.UI.userSettings.set("openLogTab", !CABLES.UI.userSettings.get("openLogTab"));
-            alwaysOpenButton.innerHTML = "Always open: " + (CABLES.UI.userSettings.get("openLogTab") || false);
+            userSettings.set("openLogTab", !userSettings.get("openLogTab"));
+            alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get("openLogTab") || false);
         });
 
         this._tab.addButton("Clear", () =>

@@ -13,6 +13,7 @@ import uiconfig from "../../uiconfig.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import { userSettings } from "../usersettings.js";
 
 
 /**
@@ -36,7 +37,7 @@ class ParamsListener extends Events
         this._watchStrings = [];
         this._portsIn = [];
         this._portsOut = [];
-        this._doFormatNumbers = !(CABLES.UI.userSettings.get("notlocalizeNumberformat") || false);
+        this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();

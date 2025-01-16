@@ -1,6 +1,7 @@
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
+import { userSettings } from "../components/usersettings.js";
 
 
 /**
@@ -33,7 +34,7 @@ export default class GlViewBox
         this._viewResX = 0;
         this._viewResY = 0;
         this._panStarted = 0;
-        this.wheelMode = CABLES.UI.userSettings.get("patch_wheelmode");
+        this.wheelMode = userSettings.get("patch_wheelmode");
         // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
@@ -62,11 +63,11 @@ export default class GlViewBox
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
-        // this._drawBoundingRect = CABLES.UI.userSettings.get("glpatch_showboundings");
+        // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
-        CABLES.UI.userSettings.on("change", (which, v) =>
+        userSettings.on("change", (which, v) =>
         {
-            this.wheelMode = CABLES.UI.userSettings.get("patch_wheelmode");
+            this.wheelMode = userSettings.get("patch_wheelmode");
         });
     }
 
@@ -136,7 +137,6 @@ export default class GlViewBox
             this._mouseRightDownStartY = e.offsetY;
         }
     }
-
 
     _onCanvasMouseMove(e)
     {
@@ -215,7 +215,7 @@ export default class GlViewBox
 
         if (doPan)
         {
-            let speed = parseFloat(CABLES.UI.userSettings.get("patch_panspeed")) || 0.25;
+            let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
 
             this.scrollTo(
                 this._scrollX - event.deltaX * speed,
@@ -247,7 +247,7 @@ export default class GlViewBox
 
         if (delta == 0) return;
 
-        const wheelMultiplier = (CABLES.UI.userSettings.get("wheelmultiplier") || 1) * 1.5;
+        const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;

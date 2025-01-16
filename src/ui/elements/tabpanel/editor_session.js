@@ -1,6 +1,7 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
+import { userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
 
 /**
@@ -33,7 +34,7 @@ export default class EditorSession
 
     store()
     {
-        CABLES.UI.userSettings.set("openEditors", this._openEditors);
+        userSettings.set("openEditors", this._openEditors);
     }
 
     loaded()
@@ -117,7 +118,7 @@ export default class EditorSession
         this._openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-            CABLES.UI.userSettings.set("editortab", name);
+            userSettings.set("editortab", name);
 
         return obj;
     }
@@ -129,7 +130,7 @@ export default class EditorSession
      */
     open()
     {
-        const sessions = CABLES.UI.userSettings.get("openEditors");
+        const sessions = userSettings.get("openEditors");
 
         if (sessions)
         {

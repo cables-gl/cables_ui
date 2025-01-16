@@ -11,6 +11,7 @@ import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -422,11 +423,11 @@ export default class GlOp extends Events
             if (e.buttons == MouseState.BUTTON_WHEEL)
             {
                 CABLES.mouseButtonWheelDown = true;
-                if (CABLES.UI.userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
+                if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
             }
             else
             {
-                if (CABLES.UI.userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
+                if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
             }
         }
 

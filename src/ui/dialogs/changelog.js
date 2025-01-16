@@ -1,6 +1,7 @@
 import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * show a toast when cables changelog is new
@@ -27,13 +28,13 @@ export default class ChangelogToast
 
             let firstTime = false;
 
-            if (!CABLES.UI.userSettings.get("changelogLastView"))
+            if (!userSettings.get("changelogLastView"))
             {
                 firstTime = true;
                 this._log.log("first time changelog!");
             }
 
-            CABLES.UI.userSettings.set("changelogLastView", obj.ts);
+            userSettings.set("changelogLastView", obj.ts);
 
             if (!obj.items || obj.items.length === 0)
             {

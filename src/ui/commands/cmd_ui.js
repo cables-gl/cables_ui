@@ -32,7 +32,7 @@ CABLES_CMD_UI.settings = function ()
 CABLES_CMD_UI.showTips = function ()
 {
     this.tips = new Tips();
-    gui.tips.show();
+    this.tips.show();
 };
 
 CABLES_CMD_UI.canvasLens = function ()

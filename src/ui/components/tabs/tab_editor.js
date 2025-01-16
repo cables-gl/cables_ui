@@ -6,6 +6,7 @@ import { notify, notifyError } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import { userSettings } from "../usersettings.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
@@ -86,8 +87,8 @@ export default class EditorTab extends Events
             {
                 this._editor = editor;
 
-                editor.setFontSize(parseInt(CABLES.UI.userSettings.get("fontsize_ace")) || 12);
-                editor.getSession().setUseWrapMode(CABLES.UI.userSettings.get("wrapmode_ace") || false);
+                editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
+                editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
 
                 if (this._options.allowEdit)
                 {
@@ -229,7 +230,7 @@ export default class EditorTab extends Events
                     {
                         this._editor.resize(true);
                         this._editor.focus();
-                        if (this._tab.editorObj && this._tab.editorObj.name) CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+                        if (this._tab.editorObj && this._tab.editorObj.name) userSettings.set("editortab", this._tab.editorObj.name);
                     },
                 );
 
