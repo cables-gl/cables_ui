@@ -48,6 +48,7 @@ import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
+import ServerOps from "./api/opsserver.js";
 
 /**
  * @type {Gui}
@@ -82,7 +83,7 @@ export default class Gui extends Events
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
-        this.longPressConnector = new LongPressConnector(this);
+        this.longPressConnector = new LongPressConnector();
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
@@ -176,14 +177,14 @@ export default class Gui extends Events
 
         this.metaTabs = new TabPanel("metatabpanel");
 
-        this.savedState = new SavedState(this);
+        this.savedState = new SavedState();
         this.savedState.pause();
         this._savedStateChangesBlueprintSubPatches = [];
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = null;
         this.bookmarks = new Bookmarks();
-        this.bottomInfoArea = new BottomInfoAreaBar(this);
+        this.bottomInfoArea = new BottomInfoAreaBar();
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
@@ -424,11 +425,11 @@ export default class Gui extends Events
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            this._warn("opid not found:", opid);
+            this._log._warn("opid not found:", opid);
             return;
         }
         const port = op.getPort(which);
-        if (!port) this._warn("port not found:", which);
+        if (!port) this._log._warn("port not found:", which);
 
         new WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);

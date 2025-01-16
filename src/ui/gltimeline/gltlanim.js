@@ -23,6 +23,7 @@ export default class glTlAnim extends Events
     constructor(glTl, anim, op, port)
     {
         super();
+        /** @type {Anim} */
         this._anim = anim;
         /** @type {GlTimeline} */
         this._glTl = glTl;

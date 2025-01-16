@@ -173,6 +173,10 @@ export default class GlOp extends Events
         //     {
         //         this.refreshPorts();
         //     });
+
+        /** @type {Number} */
+        this.zahl = 1;
+        this.zahl = "csdcsdsdc";
     }
 
     _storageChanged()
@@ -255,7 +259,7 @@ export default class GlOp extends Events
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+        if (gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
@@ -713,6 +717,9 @@ export default class GlOp extends Events
         this.updatePosition();
     }
 
+    /**
+     * @returns {Boolean}
+     */
     isHovering()
     {
         if (this._glRectBg) return this._glRectBg.isHovering();
@@ -722,6 +729,9 @@ export default class GlOp extends Events
     {
     }
 
+    /**
+     * @param {Boolean} h
+     */
     setHover(h)
     {
         if (!this._isHovering && h) this.emitEvent("hoverStart");
@@ -861,6 +871,9 @@ export default class GlOp extends Events
         return ports;
     }
 
+    /**
+     * @private
+     */
     _initColorIndicators()
     {
         if (!this._op) return;
@@ -1214,9 +1227,6 @@ export default class GlOp extends Events
 
         if ((this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
-
-
-
 
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)
