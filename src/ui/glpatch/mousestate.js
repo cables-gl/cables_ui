@@ -126,7 +126,9 @@ export default class MouseState extends Events
         return this._buttonStates[button].down;
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _setButtonsUp()
     {
         for (const i in this._buttonStates)
@@ -135,7 +137,9 @@ export default class MouseState extends Events
         }
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _buttonUp(button)
     {
         if (this._buttonStates[button])
@@ -146,7 +150,9 @@ export default class MouseState extends Events
         this._updateDebug();
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _buttonDown(button)
     {
         if (!this._buttonStates[button].down)
@@ -157,7 +163,9 @@ export default class MouseState extends Events
         this._updateDebug();
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _setButton(button, newState)
     {
         if (button == MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT)
@@ -197,7 +205,9 @@ export default class MouseState extends Events
         data.mouse_buttonStates = JSON.stringify(this._buttonStates);// .join(",");
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _move(e)
     {
         if (!e.pointerType) return;
@@ -217,7 +227,9 @@ export default class MouseState extends Events
         else this._setButtonsUp();
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _down(e)
     {
         this._mouseDownX = e.offsetX;
@@ -227,7 +239,9 @@ export default class MouseState extends Events
         this._setButton(e.buttons, true);
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _up(e)
     {
         this._isDragging = false;

@@ -12,7 +12,9 @@ export default class GlPatchAPI
     {
         this._log = new Logger("glpatch");
 
-        /** @type {Patch} */
+        /**
+         * @type {Patch}
+         */
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
@@ -28,7 +30,9 @@ export default class GlPatchAPI
 
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _initPatch()
     {
         let i = 0;

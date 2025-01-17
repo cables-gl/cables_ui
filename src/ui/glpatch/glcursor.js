@@ -1,4 +1,3 @@
-
 import { Events } from "cables-shared-client";
 import platform from "platform";
 import { gui } from "../gui.js";
@@ -42,8 +41,11 @@ export default class GlCursor extends Events
 
             if (_clientId == this._clientId)
             {
-                // if (gui.patchView.getCurrentSubPatch() != _subPatch)
-                // {
+
+                /*
+                 * if (gui.patchView.getCurrentSubPatch() != _subPatch)
+                 * {
+                 */
                 this.updateAnim();
                 // }
             }

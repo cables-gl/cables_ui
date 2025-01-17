@@ -26,13 +26,19 @@ export default class GlTimeline extends Events
         this.paused = false;
         this.cgl = cgl;
 
-        /** @type {GlTextWriter} */
+        /**
+         * @type {GlTextWriter}
+         */
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
 
-        /** @type {GlRectInstancer} */
+        /**
+         * @type {GlRectInstancer}
+         */
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
-        /** @type {glTlRuler} */
+        /**
+         * @type {glTlRuler}
+         */
         this.ruler = new glTlRuler(this);
         this.tlAnims = [];
 

@@ -64,7 +64,8 @@ export default class GlOp extends Events
         this._glPatch = glPatch;
 
         /**
-         * @pribate @type {Op}
+         * @private
+         * @type {Op}
          */
         this._op = op;
 
