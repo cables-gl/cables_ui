@@ -7,6 +7,8 @@ import gluiconfig from "./gluiconfig.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
+import GlPatch from "./glpatch.js";
+import GlRect from "../gldraw/glrect.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -23,11 +25,16 @@ export default class GlLink
     {
         this._log = new Logger("gllink");
         this._id = id;
+
+        /** @type {Link} */
         this._link = link;
         this._visible = visible;
+
+        /** @type {GlCable} */
         this._cable = null;
         this._debugColor = true;
 
+        /** @type {GlPatch} */
         this._glPatch = glpatch;
         this._type = type;
         this._portNameInput = portNameIn;
@@ -43,10 +50,9 @@ export default class GlLink
         this._buttonDownTime = 0;
         this.crossSubpatch = false;
 
+        /** @type {GlRect} */
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
-        // this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setShape(1);
-
 
         this._buttonRect.on("mouseup", (e) =>
         {
@@ -56,6 +62,7 @@ export default class GlLink
             {
                 if (this._glPatch._portDragLine.isActive)
                 {
+
                     /**
                      * @type {Op}
                      */
@@ -98,21 +105,16 @@ export default class GlLink
                 // console
             }
 
-
-
-
             if (
                 this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
             {
                 const opIn = this._glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
-
 
                 const pIn = opIn.getPortById(this._portIdInput);
                 const opOut = this._glOpOut || gui.corePatch().getOpById(this._opIdOutput);
                 const pOut = this._glOpOut.op.getPortById(this._portIdOutput);
                 if (!pOut) return;
                 const llink = pOut.getLinkTo(pIn);
-
 
                 gui.opSelect().show(
                     {
@@ -328,7 +330,6 @@ export default class GlLink
         // if (this._cable.subPatch == sub) this._cable.visible = true;
         // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
 
-
         if (this._cable) this._cable.updateVisible();
         if (this._cableSub) this._cableSub.updateVisible();
 
@@ -401,7 +402,6 @@ export default class GlLink
 
                 if (!this._glOpIn || !this._glOpOut) this.update();
 
-
                 let foundCableSub = false;
                 let foundCable = false;
 
@@ -468,7 +468,6 @@ export default class GlLink
                     );
                 }
 
-
                 else
 
                 // outer input port op FROM subpatch op
@@ -521,7 +520,6 @@ export default class GlLink
             }
         }
     }
-
 
     update()
     {
@@ -728,7 +726,6 @@ export default class GlLink
             if (glport)glport._updateColor();
             // else console.log("no glport");
         }
-
 
         perf.finish();
 

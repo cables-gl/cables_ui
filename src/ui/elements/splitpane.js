@@ -1,10 +1,8 @@
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 
-CABLES = CABLES || {};
-CABLES.SPLITPANE = {};
-
-CABLES.SPLITPANE.listeners = [];
+const splitpane = {};
+splitpane.listeners = [];
 
 export default initSplitPanes;
 
@@ -14,7 +12,7 @@ function initSplitPanes()
     {
         gui.pauseProfiling();
         ev.preventDefault();
-        CABLES.SPLITPANE.bound = true;
+        splitpane.bound = true;
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
@@ -33,7 +31,7 @@ function initSplitPanes()
         }
 
         document.addEventListener("pointermove", mm);
-        CABLES.SPLITPANE.listeners.push(mm);
+        splitpane.listeners.push(mm);
     });
 
     document.getElementById("splitterPatch").addEventListener("pointerup", function (e)
@@ -49,7 +47,7 @@ function initSplitPanes()
     function resizeTabs(ev)
     {
         gui.pauseProfiling();
-        CABLES.SPLITPANE.bound = true;
+        splitpane.bound = true;
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
@@ -62,7 +60,7 @@ function initSplitPanes()
         }
 
         document.addEventListener("pointermove", mm, { "passive": false });
-        CABLES.SPLITPANE.listeners.push(mm);
+        splitpane.listeners.push(mm);
     }
 
     document.getElementById("splitterMaintabs").addEventListener("pointerdown", resizeTabs, { "passive": false });
@@ -70,7 +68,7 @@ function initSplitPanes()
     document.getElementById("splitterRenderer").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
-        CABLES.SPLITPANE.bound = true;
+        splitpane.bound = true;
         function mm(e)
         {
             e.preventDefault();
@@ -80,13 +78,13 @@ function initSplitPanes()
         }
 
         document.addEventListener("pointermove", mm);
-        CABLES.SPLITPANE.listeners.push(mm);
+        splitpane.listeners.push(mm);
     });
 
     document.getElementById("splitterTimeline").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
-        CABLES.SPLITPANE.bound = true;
+        splitpane.bound = true;
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
@@ -96,7 +94,7 @@ function initSplitPanes()
         }
 
         document.addEventListener("pointermove", mm);
-        CABLES.SPLITPANE.listeners.push(mm);
+        splitpane.listeners.push(mm);
     });
 
     function resizeRenderer(ev)
@@ -105,12 +103,12 @@ function initSplitPanes()
 
         if (ev.shiftKey)
         {
-            if (!CABLES.SPLITPANE.rendererAspect) CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;
+            if (!splitpane.rendererAspect) splitpane.rendererAspect = gui.rendererWidth / gui.rendererHeight;
         }
-        else CABLES.SPLITPANE.rendererAspect = 0.0;
+        else splitpane.rendererAspect = 0.0;
 
         ev.preventDefault();
-        CABLES.SPLITPANE.bound = true;
+        splitpane.bound = true;
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
@@ -125,7 +123,7 @@ function initSplitPanes()
 
             gui.rendererWidth = (window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3;
 
-            if (CABLES.SPLITPANE.rendererAspect) gui.rendererHeight = 1 / CABLES.SPLITPANE.rendererAspect * gui.rendererWidth;
+            if (splitpane.rendererAspect) gui.rendererHeight = 1 / splitpane.rendererAspect * gui.rendererWidth;
             else gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
 
             gui.setLayout();
@@ -136,22 +134,22 @@ function initSplitPanes()
         }
 
         document.addEventListener("pointermove", mm);
-        CABLES.SPLITPANE.listeners.push(mm);
+        splitpane.listeners.push(mm);
     }
 
     document.getElementById("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
 
     function stopSplit(e)
     {
-        if (CABLES.SPLITPANE.listeners.length > 0)
+        if (splitpane.listeners.length > 0)
         {
-            for (let i = 0; i < CABLES.SPLITPANE.listeners.length; i++)
-                document.removeEventListener("pointermove", CABLES.SPLITPANE.listeners[i]);
+            for (let i = 0; i < splitpane.listeners.length; i++)
+                document.removeEventListener("pointermove", splitpane.listeners[i]);
 
             gui.resumeInteractionSplitpanes();
 
-            CABLES.SPLITPANE.listeners.length = 0;
-            CABLES.SPLITPANE.bound = false;
+            splitpane.listeners.length = 0;
+            splitpane.bound = false;
             gui.setLayout();
         }
     }

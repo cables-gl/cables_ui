@@ -2,6 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import { portType } from "./core_constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import text from "./text.js";
@@ -270,7 +271,7 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
-        if (!CABLES.UI.loaded) return;
+        if (!gui.finishedLoading()) return;
 
         if (this.isInBlueprint2())
         {
@@ -290,7 +291,7 @@ export default function extendCoreOp()
 
         function hasTriggerInput(op)
         {
-            if (op.portsIn.length > 0 && op.portsIn[0].type == CABLES.OP_PORT_TYPE_FUNCTION) return true;
+            if (op.portsIn.length > 0 && op.portsIn[0].type == portType.trigger) return true;
             return false;
         }
 
@@ -300,8 +301,8 @@ export default function extendCoreOp()
         if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
         {
             working =
-                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
-                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
+                this.hasParent(portType.trigger, "TextureEffects.ImageCompose") ||
+                this.hasParent(portType.trigger, "TextureEffects.ImageCompose_v2");
 
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
@@ -375,7 +376,7 @@ export default function extendCoreOp()
         this.setUiError("wrongstride", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
-            if (this.portsIn[i].type == CABLES.OP_PORT_TYPE_ARRAY && this.portsIn[i].links.length && this.portsIn[i].links[0])
+            if (this.portsIn[i].type == portType.array && this.portsIn[i].links.length && this.portsIn[i].links[0])
             {
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
                 if (

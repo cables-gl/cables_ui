@@ -20,6 +20,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { fileUploader } from "../dialogs/upload.js";
 import { userSettings } from "./usersettings.js";
+import { portType } from "../core_constants.js";
 
 /**
  * manage patch view and helper functions
@@ -103,7 +104,6 @@ export default class PatchView extends Events
     //         };
     //     }
     // }
-
 
     focusSubpatchOp(subPatchId)
     {
@@ -210,7 +210,6 @@ export default class PatchView extends Events
         {
             if (window.logStartup) logStartup("loadProjectDependencies done");
             if (window.logStartup) logStartup("deserialize...");
-
 
             const perf3 = gui.uiProfiler.start("[core] deserialize");
             gui.corePatch().deSerialize(project);
@@ -576,14 +575,12 @@ export default class PatchView extends Events
             "y": oldOp.uiAttribs.translate.y - gluiconfig.newOpDistanceY
         };
 
-
         gui.patchView.addOp(opname, {
             "onOpAdd": (newOp) =>
             {
                 let newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
                 if (oldOp.getPortByName(portname).direction == CABLES.PORT_DIR_OUT)
                     newPort = newOp.getFirstInPortByType(oldOp.getPortByName(portname).type);
-
 
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
 
@@ -655,7 +652,6 @@ export default class PatchView extends Events
                 else if (!noUnselect) op.uiAttr({ "selected": false });
             }
         }
-
 
         this.showSelectedOpsPanel();
     }
@@ -738,8 +734,6 @@ export default class PatchView extends Events
         this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 
-
-
     centerSubPatchBounds(subPatch)
     {
         const bounds = this.getSubPatchBounds(subPatch);
@@ -771,7 +765,6 @@ export default class PatchView extends Events
                     theOps.push(ops[j]);
 
         let bounds = this.getOpBounds(theOps);
-
 
         perf.finish();
 
@@ -813,13 +806,11 @@ export default class PatchView extends Events
         if (primAxis != primAxisB)
             score = Math.abs(primAxis - primAxisB);
 
-
         if (secAxis != secAxisB)
             score += (Math.abs(secAxis - secAxisB)) * 2;
 
         return score;
     }
-
 
     getClosestOp()
     {
@@ -910,7 +901,6 @@ export default class PatchView extends Events
             }
         }
 
-
         if (foundOp)
         {
             this.setSelectedOpById(foundOp.id);
@@ -931,7 +921,6 @@ export default class PatchView extends Events
 
         return ops;
     }
-
 
     getSelectedOps()
     {
@@ -1044,7 +1033,6 @@ export default class PatchView extends Events
         }(areaOp.id));
     }
 
-
     createSubPatchFromSelection(version = 0, next = null, options = {})
     {
         let opname = defaultOps.defaultOpNames.subPatch;
@@ -1146,7 +1134,6 @@ export default class PatchView extends Events
 
                     this.setPositionSubPatchInputOutputOps();
 
-
                     if (next)next(patchId, patchOp);
 
                 // }, 100);
@@ -1156,10 +1143,6 @@ export default class PatchView extends Events
                 this._p.emitEvent("subpatchCreated");
             });
     }
-
-
-
-
 
     setPositionSubPatchInputOutputOps(patchId)
     {
@@ -1272,7 +1255,6 @@ export default class PatchView extends Events
             countSubs[sub] = countSubs[sub] || 0;
             countSubs[sub]++;
         }
-
 
         for (let subid in countSubs)
         {
@@ -1519,7 +1501,7 @@ export default class PatchView extends Events
                                 {
                                     const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
                                     ops[i].portsIn[j].links[k] = null;
-                                    if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                    if (p && (p.type === portType.string || p.type === portType.number))
                                     {
                                         ops[i].portsIn[j].value = p.get();
                                     }
@@ -1530,7 +1512,6 @@ export default class PatchView extends Events
                     }
                 }
             }
-
 
             if (ops[i].portsOut) for (let j = 0; j < ops[i].portsOut.length; j++)
             {
@@ -1547,21 +1528,19 @@ export default class PatchView extends Events
                             {
                                 const p = selectedOps[0].patch.getOpById(ops[i].portsOut[j].links[k].objOut).getPort(ops[i].portsOut[j].links[k].portOut);
                                 ops[i].portsOut[j].links[k] = null;
-                                if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                if (p && (p.type === portType.string || p.type === portType.number))
                                 {
                                     ops[i].portsOut[j].value = p.get();
                                 }
                             }
                         }
                     }
-                    // numLinks += ops[i].portsOut[j].links.length;
                 }
             }
         }
 
         return { "ops": ops };
     }
-
 
     clipboardCopyOps(e)
     {
@@ -1697,7 +1676,6 @@ export default class PatchView extends Events
         this.unselectOpsFromOtherSubpatches();
     }
 
-
     addSpaceBetweenOpsX()
     {
         const bounds = this.getSelectionBounds(0);
@@ -1756,7 +1734,6 @@ export default class PatchView extends Events
 
         undo.endGroup(undoGroup, "Compress Ops");
     }
-
 
     // _cleanOp(op, ops, theOpWidth)
     // {
@@ -1839,10 +1816,8 @@ export default class PatchView extends Events
         //     for (let i = 0; i < ops.length; i++)
         //         this.setTempOpPos(ops[i], startPosX, startPosY);
 
-
         // let firstRowX = Snap.snapOpPosX(startPosX);
         // startPosY = Snap.snapOpPosY(startPosY);
-
 
         // for (let i = 0; i < entranceOps.length; i++)
         // {
@@ -1855,7 +1830,6 @@ export default class PatchView extends Events
         //     this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
         //     firstRowX = Snap.snapOpPosX(firstRowX + theOpWidth);
         // }
-
 
         // let count = 0;
         // let found = true;
@@ -1879,7 +1853,6 @@ export default class PatchView extends Events
 
         // this._log.log(count + "iterations");
     }
-
 
     alignSelectedOpsVert(ops)
     {
@@ -2004,7 +1977,6 @@ export default class PatchView extends Events
         return selectedOps;
     }
 
-
     unlinkPort(opid, portid)
     {
         const op = gui.corePatch().getOpById(opid);
@@ -2066,7 +2038,6 @@ export default class PatchView extends Events
         let op2 = this._p.getOpById(opids[0]);
         const p = op2.getPort(portnames[0]);
         const numFitting = op1.countFittingPorts(p);
-
 
         if (numFitting > 1)
         {
@@ -2130,7 +2101,6 @@ export default class PatchView extends Events
         this._p.link(op1, pid, op2, p2id);
     }
 
-
     centerView(x, y)
     {
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
@@ -2146,7 +2116,6 @@ export default class PatchView extends Events
     {
         this._patchRenderer.resumeInteraction();
     }
-
 
     getCurrentSubPatch()
     {
@@ -2248,7 +2217,7 @@ export default class PatchView extends Events
 
     _portValidate(p1, p2)
     {
-        if (p1.type != CABLES.OP_PORT_TYPE_OBJECT) return;
+        if (p1.type != portType.object) return;
         let inp = null;
         let outp = null;
 
@@ -2299,7 +2268,6 @@ export default class PatchView extends Events
         }
     }
 
-
     refreshCurrentOpParamsByPort(p1, p2)
     {
         if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op)) gui.opParams.refresh();
@@ -2314,8 +2282,6 @@ export default class PatchView extends Events
     {
         return gui.opParams.isCurrentOpId(opid);
     }
-
-
 
     copyOpInputPorts(origOp, newOp)
     {
@@ -2356,7 +2322,6 @@ export default class PatchView extends Events
 
         this.unselectAllOps();
     }
-
 
     replaceOpCheck(opid, newOpObjName)
     {
@@ -2586,7 +2551,6 @@ export default class PatchView extends Events
             oldLink.remove();
         }
 
-
         if (portIn && portOut && newPortOut) // && !newPortIn.isLinked()
         {
             if (CABLES.Link.canLink(newPortIn, portOut)) //! portOut.isLinked() &&
@@ -2686,7 +2650,6 @@ export default class PatchView extends Events
                 "classname": ""
             }];
 
-
             for (let i = 0; i < op2.portsIn.length; i++)
             {
                 if (CABLES.Link.canLink(op2.portsIn[i], p))
@@ -2743,9 +2706,6 @@ export default class PatchView extends Events
             return;
         }
 
-
-
-
         if (portname)
         {
             const p = op.getPortByName(portname);
@@ -2793,8 +2753,6 @@ export default class PatchView extends Events
                 return ops[i];
     }
 
-
-
     getAllOpsInBlueprint(subid)
     {
         const foundOps = [];
@@ -2805,7 +2763,6 @@ export default class PatchView extends Events
         }
         return foundOps;
     }
-
 
     getAllSubPatchOps(subid)
     {
@@ -2840,7 +2797,6 @@ export default class PatchView extends Events
         exposeOp.emitEvent("portOrderChanged");
         exposeOp.emitEvent("glportOrderChanged");
     }
-
 
     getSubPatchExposedPorts(subid, dir)
     {
@@ -2893,7 +2849,6 @@ export default class PatchView extends Events
             const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
                 ops[i].setUiAttribs({ "color": null });
-
 
             for (let j = 0; j < gui.project().summary.exampleForOps.length; j++)
             {

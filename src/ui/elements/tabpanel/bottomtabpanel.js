@@ -64,12 +64,11 @@ export default class BottomTabPanel extends Events
             }
         }
 
-
         this._visible = true;
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (CABLES.UI.loaded && userInteraction) userSettings.set("bottomTabsVisible", true);
+        if (gui.finishedLoading() && userInteraction) userSettings.set("bottomTabsVisible", true);
 
         gui.setLayout();
 
@@ -85,12 +84,12 @@ export default class BottomTabPanel extends Events
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
 
-        if (!donotsave && CABLES.UI.loaded) userSettings.set("bottomTabsVisible", false);
+        if (!donotsave && gui.finishedLoading()) userSettings.set("bottomTabsVisible", false);
     }
 
     toggle(userInteraction)
     {
-        if (!CABLES.UI.loaded) return;
+        if (!gui.finishedLoading()) return;
         if (this._visible)
         {
             this.hide();

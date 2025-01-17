@@ -135,10 +135,7 @@ export default class Gizmo
             const screenY = toScreen(transY);
             const screenZ = toScreen(transZ);
 
-
-
             // console.log(screenZ);
-
 
             tempParams.x = zero.x;
             tempParams.y = zero.y;
@@ -219,8 +216,6 @@ export default class Gizmo
             this._eleYZ.style.borderRadius = "0";
             this._eleYZ.classList.add("gizmo");
             container.appendChild(this._eleYZ);
-
-
 
             this._eleY = document.createElement("div");
             this._eleY.id = "gizmoY";
@@ -412,7 +407,6 @@ export default class Gizmo
 
         const down = (e) =>
         {
-            // if (CABLES.UI) gui.setStateUnsaved();
             if (CABLES.UI) gui.savedState.setUnSaved("transformDown", this._params.posX.op.getSubPatch());
 
             isDown = true;
@@ -533,7 +527,6 @@ export default class Gizmo
         document.addEventListener("pointerdown", down);
     }
 }
-
 
 const htmlLine = function (parentElement, color)
 {

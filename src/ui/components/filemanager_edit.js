@@ -55,7 +55,7 @@ export default class FileManagerEditor
                         {
                             gui.jobs().start({ "id": "saveeditorcontent" + filename, "title": "saving file " + filename });
 
-                            CABLESUILOADER.talkerAPI.send(
+                            platform.talkerAPI.send(
                                 "updateFile",
                                 {
                                     "fileName": filename,

@@ -33,7 +33,6 @@ class LogInitiator
     }
 }
 
-
 export default class LogFilter extends Events
 {
     constructor()
@@ -117,8 +116,6 @@ export default class LogFilter extends Events
         o.level = level;
         o.time = performance.now();
 
-
-
         this.logs.push(o);
         while (this.logs.length > 50) this.logs.splice(0, 1);
 
@@ -160,3 +157,9 @@ export default class LogFilter extends Events
         this.emitEvent("initiatorsChanged");
     }
 }
+
+/**
+ * @type {LogFilter}
+ */
+const logFilter = new LogFilter();
+export { logFilter };

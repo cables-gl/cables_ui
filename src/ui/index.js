@@ -24,13 +24,12 @@ import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
 import { uniqueArray } from "./utils/helper.js";
-import LogFilter from "./utils/logfilter.js";
+import LogFilter, { logFilter } from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import extendCorePatch from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
-
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -80,7 +79,7 @@ CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
 
-CABLES.UI.logFilter = new LogFilter();
+CABLES.UI.logFilter = logFilter;
 
 CABLES.GL_MARKER = OverlayMeshes;
 CABLES.UI.OverlayMeshes = OverlayMeshes;
@@ -92,7 +91,6 @@ CABLES.UI.undo = undo;
 CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.Gizmo = Gizmo;
 CABLES.UI.ModalSourceCode = ModalSourceCode;
-
 
 setHtmlDefaultListeners();
 extendCoreOp();

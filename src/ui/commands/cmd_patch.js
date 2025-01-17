@@ -13,6 +13,7 @@ import gluiconfig from "../glpatch/gluiconfig.js";
 import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
+import { portType } from "../core_constants.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -109,7 +110,7 @@ CABLES_CMD_PATCH.deleteSelectedOps = function ()
 
 CABLES_CMD_PATCH.reload = function ()
 {
-    CABLESUILOADER.talkerAPI.send("reload");
+    platform.talkerAPI.send("reload");
 };
 
 CABLES_CMD_PATCH.save = function (force, cb)
@@ -383,7 +384,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     gui.corePatch().deleteOp(OpTempSubpatch.id);
                                     gui.patchView.setCurrentSubPatch(currentSubpatch);
 
-                                    CABLESUILOADER.talkerAPI.send("opUpdate",
+                                    platform.talkerAPI.send("opUpdate",
                                         {
                                             "opname": newOpname,
                                             "update": {
@@ -701,7 +702,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-            if (p.type != CABLES.OP_PORT_TYPE_FUNCTION)
+            if (p.type != portType.trigger)
                 opSetter.getPortByName(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
@@ -1172,7 +1173,7 @@ CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "")
         "promptOk": (summary) =>
         {
             gui.savingTitleAnimStart("Updating Op...");
-            CABLESUILOADER.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
+            platform.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
             {
                 if (!err)
                 {
@@ -1218,7 +1219,7 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
 
 CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
 {
-    CABLESUILOADER.talkerAPI.send("toggleFav", {}, (err, res) =>
+    platform.talkerAPI.send("toggleFav", {}, (err, res) =>
     {
         if (!err && res.success && targetElement)
         {

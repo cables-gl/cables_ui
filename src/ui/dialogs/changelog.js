@@ -18,7 +18,7 @@ export default class ChangelogToast
 
     getHtml(cb, since)
     {
-        CABLESUILOADER.talkerAPI.send("getChangelog", { "num": 1 }, (err, obj) =>
+        platform.talkerAPI.send("getChangelog", { "num": 1 }, (err, obj) =>
         {
             if (since)
             {

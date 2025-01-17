@@ -3,6 +3,8 @@
  *
  */
 
+import { portType } from "./core_constants.js";
+
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
@@ -117,7 +119,6 @@ const defaultOpNames =
 
 };
 
-
 /**
  * default ops structure for assets, ports, math operations etc.
  */
@@ -133,79 +134,78 @@ const defaultOps = {
     "converterOps":
     [
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
-            "typeTo": CABLES.OP_PORT_TYPE_STRING,
+            "typeFrom": portType.number,
+            "typeTo": portType.string,
             "op": defaultOpNames.NumberToString,
             "portIn": "Number",
             "portOut": "Result",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
-            "typeTo": CABLES.OP_PORT_TYPE_STRING,
+            "typeFrom": portType.number,
+            "typeTo": portType.string,
             "op": defaultOpNames.BoolToString,
             "portIn": "Boolean",
             "portOut": "String",
         },
 
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
-            "typeTo": CABLES.OP_PORT_TYPE_TRIGGER,
+            "typeFrom": portType.number,
+            "typeTo": portType.trigger,
             "op": defaultOpNames.TriggerOnChangeNumber,
             "portIn": "Value",
             "portOut": "Next",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_VALUE,
-            "typeTo": CABLES.OP_PORT_TYPE_TRIGGER,
+            "typeFrom": portType.number,
+            "typeTo": portType.trigger,
             "op": defaultOpNames.TriggerOnChangedTrue,
             "portIn": "Value",
             "portOut": "Next",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_STRING,
-            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
+            "typeFrom": portType.string,
+            "typeTo": portType.number,
             "op": defaultOpNames.parseFloat,
             "portIn": "String",
             "portOut": "Number",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_ARRAY,
-            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
+            "typeFrom": portType.array,
+            "typeTo": portType.number,
             "op": defaultOpNames.arrayLength,
             "portIn": "array",
             "portOut": "length",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_STRING,
-            "typeTo": CABLES.OP_PORT_TYPE_ARRAY,
+            "typeFrom": portType.string,
+            "typeTo": portType.array,
             "op": defaultOpNames.StringToArray,
 
             "portIn": "text",
             "portOut": "array",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_ARRAY,
-            "typeTo": CABLES.OP_PORT_TYPE_STRING,
+            "typeFrom": portType.array,
+            "typeTo": portType.string,
             "op": defaultOpNames.arrayToString,
             "portIn": "Array",
             "portOut": "Result",
         },
 
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_TRIGGER,
-            "typeTo": CABLES.OP_PORT_TYPE_VALUE,
+            "typeFrom": portType.trigger,
+            "typeTo": portType.number,
             "op": defaultOpNames.triggerCounter,
             "portIn": "exe",
             "portOut": "timesTriggered",
         },
         {
-            "typeFrom": CABLES.OP_PORT_TYPE_TRIGGER,
-            "typeTo": CABLES.OP_PORT_TYPE_NUMBER,
+            "typeFrom": portType.trigger,
+            "typeTo": portType.number,
             "op": defaultOpNames.incrementor,
             "portIn": "Increment",
             "portOut": "Value",
         }
-
 
     ],
     "jsonPathOps": {
@@ -256,6 +256,5 @@ const defaultOps = {
         }
     }
 };
-
 
 export default defaultOps;

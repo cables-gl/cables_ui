@@ -9,6 +9,7 @@ import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
+import { portType } from "../core_constants.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -20,7 +21,6 @@ CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;
 
 const MIN_CHARS_QUERY = 2;
-
 
 export default class OpSelect
 {
@@ -89,7 +89,6 @@ export default class OpSelect
             ele.show(this._eleTypeStart);
             this._showSuggestionsInfo();
 
-
             for (let i = 0; i < this._opSearch.list.length; i++)
                 if (this._opSearch.list[i].element && !this._opSearch.list[i].elementHidden)
                 {
@@ -124,10 +123,7 @@ export default class OpSelect
             ele.hide(this._eleNoResults);
         }
 
-
         let optionsHtml = "";
-
-
 
         if (query.length >= MIN_CHARS_QUERY)
         {
@@ -170,8 +166,6 @@ export default class OpSelect
         perf.finish();
     }
 
-
-
     _showSuggestionsInfo()
     {
         if (this._minimal) return;
@@ -193,7 +187,6 @@ export default class OpSelect
         if (this._eleSearchinfo)
             this._eleSearchinfo.innerHTML = html;
 
-
         /*
             var helper buttons / shortcuts
 
@@ -210,30 +203,29 @@ export default class OpSelect
         */
         const link = CABLES.UI.OPSELECT.linkNewLink;
         let found = false;
-        if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION))
+        if (link && link.portIn && (link.portIn.type == portType.trigger))
         {
             ele.show(ele.byId("opselect_createTrigger"));
             found = true;
         }
         else ele.hide(ele.byId("opselect_createTrigger"));
 
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_ARRAY || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_OBJECT))
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.number || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.string || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.array || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.object))
         {
             ele.show(ele.byId("opselect_createVar"));
             found = true;
         }
         else ele.hide(ele.byId("opselect_createVar"));
 
-        if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING || link.portIn.type == CABLES.OP_PORT_TYPE_ARRAY || link.portIn.type == CABLES.OP_PORT_TYPE_OBJECT))
+        if (link && link.portIn && (link.portIn.type == portType.number || link.portIn.type == portType.string || link.portIn.type == portType.array || link.portIn.type == portType.object))
         {
             ele.show(ele.byId("opselect_replaceVar"));
             found = true;
         }
         else ele.hide(ele.byId("opselect_replaceVar"));
 
-
         const eleReplaceLinkWithExistingTrigger = ele.byId("replaceLinkTriggerExists");
-        if (link && link.portIn && link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)
+        if (link && link.portIn && link.portIn.type == portType.trigger)
         {
             // show "replace with existing var button..."
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
@@ -249,7 +241,7 @@ export default class OpSelect
 
         // case 7 / 8
         const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_FUNCTION)
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.trigger)
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
@@ -272,7 +264,6 @@ export default class OpSelect
             }
         }
         else ele.hide(eleCreateWithExistingTrigger);
-
 
         const eleCreateWithExistingVar = ele.byId("createLinkVariableExists");
         if (CABLES.UI.OPSELECT.linkNewOpToPort)
@@ -309,7 +300,6 @@ export default class OpSelect
         if (this._minimal) return;
         this._eleSearchinfo = ele.byId("searchinfo");
 
-
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
@@ -335,7 +325,6 @@ export default class OpSelect
                     this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewLink.id;
                 }
             }
-
 
             this._showSuggestionsInfo();
         }
@@ -385,7 +374,6 @@ export default class OpSelect
                 }
                 else html += "no opDocs found";
 
-
                 html += opDocHtml;
             }
             this._eleSearchinfo.innerHTML = html;
@@ -402,11 +390,11 @@ export default class OpSelect
 
     _getMathPortType()
     {
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_STRING) return "string";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === portType.array) return "array";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === portType.string) return "string";
 
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_STRING) return "string";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.array) return "array";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.string) return "string";
         return "default";
     }
 
@@ -424,7 +412,6 @@ export default class OpSelect
         for (let i in defaultOps.defaultMathOps[mathPortType])
             if (sq.charAt(0) === i)
                 sq = defaultOps.defaultMathOps[mathPortType][i];
-
 
         sq = sq || "";
         let query = sq.toLowerCase();
@@ -527,7 +514,6 @@ export default class OpSelect
     {
         this.tree = new OpTreeList();
 
-
         if (!this._opSearch.list)
         {
             const perf = gui.uiProfiler.start("opselect.prepare.list");
@@ -591,10 +577,6 @@ export default class OpSelect
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
 
-
-
-
-
         this._newOpOptions =
         {
             "subPatch": options.subPatch,
@@ -627,9 +609,7 @@ export default class OpSelect
         if (this._minimal) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
-
         const eleOpsearch = ele.byId("opsearch");
-
 
         eleOpsearch.removeEventListener("keydown", this._boundKeydown);
         this._boundKeydown = this.keyDown.bind(this);
@@ -714,7 +694,6 @@ export default class OpSelect
                     };
             }
         }
-
 
         if (opname && opname.length > 2)
         {
@@ -855,7 +834,6 @@ export default class OpSelect
         }
         // prevent the default action (scroll / move caret)
     }
-
 
     getListItemByOpName(opName)
     {

@@ -7,7 +7,6 @@ import { contextMenu } from "../contextmenu.js";
 import { editorSession } from "./editor_session.js";
 import { userSettings } from "../../components/usersettings.js";
 
-
 /**
  * a tab panel, that can contain tabs
  *
@@ -52,7 +51,6 @@ export default class TabPanel extends Events
             for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent("resize");
         });
     }
-
 
     getUniqueTitle(title)
     {
@@ -113,7 +111,6 @@ export default class TabPanel extends Events
             );
         }
 
-
         for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPallet.removeDynamic(this._dynCmds[i]);
 
         for (let i = 0; i < this._tabs.length; i++)
@@ -132,7 +129,6 @@ export default class TabPanel extends Events
             }
 
             // ----------------
-
 
             ele.clickable(ele.byId("editortab" + this._tabs[i].id), (e) =>
             {
@@ -221,7 +217,7 @@ export default class TabPanel extends Events
 
         this.updateHtml();
 
-        if (editorSession && editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
+        if (editorSession && editorSession.loaded() && gui.finishedLoading()) this.saveCurrentTabUsersettings();
     }
 
     loadCurrentTabUsersettings()
@@ -384,7 +380,7 @@ export default class TabPanel extends Events
 
         const frame = document.getElementById("iframe" + id);
 
-        const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
+        const talkerAPI = new platform.TalkerAPI(frame.contentWindow);
 
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {
@@ -412,7 +408,7 @@ export default class TabPanel extends Events
         talkerAPI.addEventListener("updatePatchName", (opts, next) =>
         {
             gui.setProjectName(opts.name);
-            CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
+            platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
         });
 
         talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>

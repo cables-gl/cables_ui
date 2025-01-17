@@ -6,6 +6,7 @@ import { getHandleBarHtml } from "./utils/handlebars.js";
 import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { platform } from "./platform.js";
+import { portType } from "./core_constants.js";
 
 const subPatchOpUtil = {};
 
@@ -13,7 +14,6 @@ subPatchOpUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
 subPatchOpUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 
 const _log = new Logger("subPatchOpUtil");
-
 
 subPatchOpUtil.executeBlueprintIfMultiple = (opname, next) =>
 {
@@ -44,34 +44,32 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.dir == 0) // INPUT
         {
-            if (p.type == CABLES.OP_PORT_TYPE_STRING && p.display == "switch") src += "op.inSwitch";
-            else if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.inFloat";
-            else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.inTrigger";
-            else if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.inObject";
-            else if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.inArray";
-            else if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.inString";
-
+            if (p.type == portType.string && p.display == "switch") src += "op.inSwitch";
+            else if (p.type == portType.number) src += "op.inFloat";
+            else if (p.type == portType.trigger) src += "op.inTrigger";
+            else if (p.type == portType.object) src += "op.inObject";
+            else if (p.type == portType.array) src += "op.inArray";
+            else if (p.type == portType.string) src += "op.inString";
 
             src += "(\"" + p.id + "\""; // 1. name
 
-            if (p.type == CABLES.OP_PORT_TYPE_STRING) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
-            if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "," + p.value; // 2. param default value
+            if (p.type == portType.string) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
+            if (p.type == portType.number) src += "," + p.value; // 2. param default value
 
             src += ");";
         }
         else // OUTPUT
         {
-            if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.outNumber";
-            if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.outTrigger";
-            if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.outObject";
-            if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.outArray";
-            if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.outString";
+            if (p.type == portType.number) src += "op.outNumber";
+            if (p.type == portType.trigger) src += "op.outTrigger";
+            if (p.type == portType.object) src += "op.outObject";
+            if (p.type == portType.array) src += "op.outArray";
+            if (p.type == portType.string) src += "op.outString";
 
             src += "(\"" + p.id + "\""; // 1. name
 
             src += ");";
         }
-
 
         src += "".endl();
         src += "port_" + p.id + ".setUiAttribs({";
@@ -100,7 +98,6 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
             "    if(addedOps[i].innerInput)".endl() +
             "    {".endl();
 
-
     for (let i = 0; i < ports.ports.length; i++)
     {
         const p = ports.ports[i];
@@ -109,15 +106,15 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         let outPortFunc = "outNumber";
 
-        if (p.type == CABLES.OP_PORT_TYPE_OBJECT && p.uiDisplay == "texture") outPortFunc = "outTexture";
-        else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) outPortFunc = "outTrigger";
-        else if (p.type == CABLES.OP_PORT_TYPE_OBJECT) outPortFunc = "outObject";
-        else if (p.type == CABLES.OP_PORT_TYPE_ARRAY) outPortFunc = "outArray";
-        else if (p.type == CABLES.OP_PORT_TYPE_STRING) outPortFunc = "outString";
+        if (p.type == portType.object && p.uiDisplay == "texture") outPortFunc = "outTexture";
+        else if (p.type == portType.trigger) outPortFunc = "outTrigger";
+        else if (p.type == portType.object) outPortFunc = "outObject";
+        else if (p.type == portType.array) outPortFunc = "outArray";
+        else if (p.type == portType.string) outPortFunc = "outString";
 
         src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
 
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_VALUE || ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING)
+        if (ports.ports[i].type == portType.number || ports.ports[i].type == portType.string)
             src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
 
         if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
@@ -129,13 +126,10 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         src += "".endl();
     }
 
-
     src += "    }".endl();
-
 
     src += "if(addedOps[i].innerOutput)".endl() +
                 "{".endl();
-
 
     for (let i = 0; i < ports.ports.length; i++)
     {
@@ -144,10 +138,10 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.dir != 1) continue;
 
         let inPortFunc = "inFloat";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_FUNCTION) inPortFunc = "inTrigger";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_OBJECT) inPortFunc = "inObject";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_ARRAY) inPortFunc = "inArray";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING) inPortFunc = "inString";
+        if (ports.ports[i].type == portType.trigger) inPortFunc = "inTrigger";
+        if (ports.ports[i].type == portType.object) inPortFunc = "inObject";
+        if (ports.ports[i].type == portType.array) inPortFunc = "inArray";
+        if (ports.ports[i].type == portType.string) inPortFunc = "inString";
 
         src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
         if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
@@ -161,14 +155,12 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
     src +=
                 "}".endl();
 
-
     src +=
             "}".endl() +
         "};".endl();
 
     return src;
 };
-
 
 subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 {
@@ -187,7 +179,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
     }
 
     // loadingModal.setTask("getting ports json");
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "opAttachmentGet",
         {
             "opname": opId,
@@ -253,7 +245,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
     // loadingModal.setTask("getting ports json");
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "opAttachmentGet",
         {
             "opname": opId,
@@ -301,7 +293,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
     // loadingModal.setTask("getting ports json");
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "opAttachmentGet",
         {
             "opname": opId,
@@ -315,7 +307,6 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 
             let idx = -1;
             for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
-
 
             function array_move(arr, old_index, new_index)
             {
@@ -380,7 +371,7 @@ subPatchOpUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
         if (o.dir == 0)o.dir = 1;
         else o.dir = 0;
 
-    if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
+    if (port.type == portType.number || port.type == portType.string)
         o.value = port.get();
 
     return o;
@@ -400,7 +391,6 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
     atts[subPatchOpUtil.blueprintPortJsonAttachmentFilename] = JSON.stringify(portsJson, false, 4);
     atts["att_inc_gen_ports.js"] = subPatchOpUtil.generatePortsAttachmentJsSrc(portsJson);
 
-
     if (!gui.savedState.isSavedSubPatch(gui.patchView.getCurrentSubPatch()))
     {
         const subOuterOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
@@ -417,7 +407,7 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
         }
     }
 
-    CABLESUILOADER.talkerAPI.send("opUpdate",
+    platform.talkerAPI.send("opUpdate",
         {
             "opname": opname,
             "update":
@@ -453,7 +443,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
     // loadingModal.setTask("getting ports json");
     gui.savingTitleAnimStart("Adding Subpatch Port...");
 
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "opAttachmentGet",
         {
             "opname": opId,
@@ -506,7 +496,6 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
                         );
                     }
 
-
                     gui.savingTitleAnimEnd();
                     if (options.cb)options.cb(newPortJson, newOp);
 
@@ -518,7 +507,6 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
         }
     );
 };
-
 
 subPatchOpUtil.getAutoName = (short) =>
 {
@@ -550,7 +538,6 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
     const elSubmit = ele.byId("createPortSubmit");
 
-
     elSubmit.addEventListener("click",
         () =>
         {
@@ -563,15 +550,13 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
             const eleAddUiAttribs = ele.byId("createPortAddUiAttribs");
 
-
-
             let type = 0;
-            if (eleType.value.indexOf("Number") == 0)type = CABLES.OP_PORT_TYPE_VALUE;
-            if (eleType.value.indexOf("Boolean") == 0)type = CABLES.OP_PORT_TYPE_VALUE;
-            if (eleType.value.indexOf("String") == 0)type = CABLES.OP_PORT_TYPE_STRING;
-            if (eleType.value.indexOf("Array") == 0)type = CABLES.OP_PORT_TYPE_ARRAY;
-            if (eleType.value.indexOf("Object") == 0)type = CABLES.OP_PORT_TYPE_OBJECT;
-            if (eleType.value.indexOf("Trigger") == 0)type = CABLES.OP_PORT_TYPE_FUNCTION;
+            if (eleType.value.indexOf("Number") == 0)type = portType.number;
+            if (eleType.value.indexOf("Boolean") == 0)type = portType.number;
+            if (eleType.value.indexOf("String") == 0)type = portType.string;
+            if (eleType.value.indexOf("Array") == 0)type = portType.array;
+            if (eleType.value.indexOf("Object") == 0)type = portType.object;
+            if (eleType.value.indexOf("Trigger") == 0)type = portType.trigger;
 
             const values = String(eleValues.value);
 
@@ -606,8 +591,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 _log.warn("could not parse add ui attribs...");
             }
 
-
-            if (type == CABLES.OP_PORT_TYPE_STRING)
+            if (type == portType.string)
             {
                 port.value = eleValue.value;
                 if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
@@ -616,12 +600,12 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Dropdown") > -1) port.uiDisplay = "dropdown";
             }
 
-            if (type == CABLES.OP_PORT_TYPE_FUNCTION)
+            if (type == portType.trigger)
             {
                 if (eleType.value.indexOf("Button") > -1) port.uiDisplay = "button";
             }
 
-            if (type == CABLES.OP_PORT_TYPE_VALUE)
+            if (type == portType.number)
             {
                 port.value = parseFloat(eleValue.value) || 0;
 
@@ -630,7 +614,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Boolean") > -1) port.uiDisplay = "bool";
             }
 
-            if (type == CABLES.OP_PORT_TYPE_OBJECT)
+            if (type == portType.object)
             {
                 if (eleType.value.indexOf("Gradient") > -1) port.uiDisplay = port.objType = "gradient";
                 if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";
@@ -638,7 +622,6 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Element") > -1) port.objType = "element";
                 if (eleType.value.indexOf("AudioNode") > -1) port.objType = "audioNode";
             }
-
 
             subPatchOpUtil.portJsonUtil(opId, portId, { "port": port });
         });
@@ -678,7 +661,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
     gui.patchView._patchRenderer.viewBox.serialize(a);
     const viewbox = a.viewBoxesGl[oldSubId];
 
-
     ops.forEach((op) =>
     {
         if (op.hasUiError("subPatchOpNoSaveError"))
@@ -707,8 +689,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         this._log.log("subpatch huge... center subpatch...");
     }
 
-
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "opAttachmentSave",
         {
             "opname": newOp.opId,
@@ -732,7 +713,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
             // if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
-            // CABLESUILOADER.talkerAPI.send("setProjectUpdated", { }, (e, res) =>
+            // platform.talkerAPI.send("setProjectUpdated", { }, (e, res) =>
             // {
             //     gui.patchView.store._serverDate = res.data.updated;
             // });
@@ -745,8 +726,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                 if (gui.corePatch().getOpsByObjName(newOp.objName).length > 1)
                 {
                     if (options.loadingModal) options.loadingModal.setTask("execute op...");
-
-
 
                     gui.serverOps.execute(newOp.opId,
                         (newOps, refNewOp) =>
@@ -785,13 +764,11 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         });
 };
 
-
-
 subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
 {
     // const loadingModal = gui.startModalLoading("save op code");
 
-    CABLESUILOADER.talkerAPI.send("opUpdate",
+    platform.talkerAPI.send("opUpdate",
         {
             "opname": newOp.objName,
             "update": {
@@ -845,8 +822,4 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
         });
 };
 
-
-
 export default subPatchOpUtil;
-
-

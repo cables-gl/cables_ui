@@ -1,6 +1,7 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * saved state of patch and subpatches, set orange icon if unsaved
@@ -110,14 +111,11 @@ export default class SavedState extends Events
 
         this._statesSaved[subpatch] = true;
 
-
         this.log(initiator, subpatch, true);
 
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUi();
     }
-
-
 
     setUnSaved(initiator, subpatch)
     {
@@ -149,7 +147,6 @@ export default class SavedState extends Events
 
         this.log(initiator, subpatch, false);
 
-
         if (changed)gui.corePatch().emitEvent("savedStateChanged");
 
         if (changed)
@@ -177,7 +174,6 @@ export default class SavedState extends Events
         return this._statesSaved[bp];
     }
 
-
     getUnsavedPatchSubPatchOps()
     {
         const opIds = [];
@@ -196,7 +192,6 @@ export default class SavedState extends Events
         return opIds;
     }
 
-
     updateUiLater()
     {
         clearTimeout(this._timeout);
@@ -210,7 +205,7 @@ export default class SavedState extends Events
     {
         if (this.isSaved)
         {
-            if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconSaved");
+            if (this._talkerState != this.isSaved) platform.talkerAPI.send("setIconSaved");
             this._talkerState = this.isSaved;
 
             const elePatchName = ele.byId("patchname");
@@ -223,7 +218,7 @@ export default class SavedState extends Events
         }
         else
         {
-            if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconUnsaved");
+            if (this._talkerState != this.isSaved) platform.talkerAPI.send("setIconUnsaved");
             this._talkerState = this.isSaved;
 
             ele.byId("patchname").classList.add("warning");
@@ -259,7 +254,6 @@ export default class SavedState extends Events
         }
         this.updateRestrictionDisplay();
     }
-
 
     isSavedSubOp(subOpName)
     {

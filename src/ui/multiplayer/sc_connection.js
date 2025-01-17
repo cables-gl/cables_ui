@@ -175,8 +175,6 @@ export default class ScConnection extends Events
         }
     }
 
-
-
     showChat()
     {
         this._chat.show();
@@ -612,7 +610,7 @@ export default class ScConnection extends Events
                 payload.scrollY = scrollY;
             }
         }
-        if (payload.isRemoteClient && CABLESUILOADER.talkerAPI && !payload.isDisconnected)
+        if (payload.isRemoteClient && platform.talkerAPI && !payload.isDisconnected)
         {
             payload.platform = platform;
             this.sendControl("pingAnswer", payload);
@@ -749,7 +747,6 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/control", msg);
-
 
         if (msg.name === "pingMembers")
         {

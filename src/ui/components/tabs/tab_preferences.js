@@ -42,7 +42,6 @@ export default class Preferences
         if (value === null)value = false;
         const elements = document.getElementsByClassName("prefswitch");
 
-
         for (let i = 0; i < elements.length; i++)
         {
             if (elements[i].dataset.setting == name)
@@ -57,7 +56,6 @@ export default class Preferences
     {
         this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
-
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
@@ -86,7 +84,6 @@ export default class Preferences
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
         this.setSwitchValue("doubleClickAction", userSettings.get("doubleClickAction"));
 
-
         // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
 
@@ -98,7 +95,6 @@ export default class Preferences
         this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
 
         // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
-
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
         this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
@@ -120,7 +116,7 @@ export default class Preferences
                 if (valueEle) valueEle.innerText = currentValue;
                 pathSelectEle.addEventListener("click", () =>
                 {
-                    CABLESUILOADER.talkerAPI.send("selectDir", { "dir": currentValue }, (err, dirName) =>
+                    platform.talkerAPI.send("selectDir", { "dir": currentValue }, (err, dirName) =>
                     {
                         if (!err)
                         {

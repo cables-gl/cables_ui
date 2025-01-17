@@ -53,7 +53,7 @@ export default class PatchSaveServer extends Events
         {
             if (platform.getPatchVersion())
             {
-                CABLESUILOADER.talkerAPI.send("reload", { "patchId": gui.project().shortId });
+                platform.talkerAPI.send("reload", { "patchId": gui.project().shortId });
             }
         });
     }
@@ -73,7 +73,7 @@ export default class PatchSaveServer extends Events
             "indicator": "canvas"
         });
 
-        CABLESUILOADER.talkerAPI.send("checkProjectUpdated", { }, (err, data) =>
+        platform.talkerAPI.send("checkProjectUpdated", { }, (err, data) =>
         {
             if (err)
             {
@@ -159,7 +159,7 @@ export default class PatchSaveServer extends Events
     {
         if (gui.showGuestWarning()) return;
 
-        CABLESUILOADER.talkerAPI.send("getPatch", {}, (_err, project) =>
+        platform.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
             let hasPrivateUserOps = false;
             if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
@@ -292,7 +292,7 @@ export default class PatchSaveServer extends Events
                             }
                         });
                     }
-                    CABLESUILOADER.talkerAPI.send("saveProjectAs",
+                    platform.talkerAPI.send("saveProjectAs",
                         {
                             "name": name,
                             "copyCollaborators": copyCollaborators,
@@ -307,7 +307,7 @@ export default class PatchSaveServer extends Events
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.secret = "";
 
-                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
+                                this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
                             }
                             else
                             {
@@ -674,7 +674,7 @@ export default class PatchSaveServer extends Events
             "promptValue": currentProject.name,
             "promptOk": (v) =>
             {
-                CABLESUILOADER.talkerAPI.send(
+                platform.talkerAPI.send(
                     "setProjectName",
                     {
                         "id": currentProject._id,
@@ -700,7 +700,7 @@ export default class PatchSaveServer extends Events
                                 gui.project().summary = re.data.summary;
                                 gui.patchParamPanel.show(true);
                             }
-                            CABLESUILOADER.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                            platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
                             {
                                 gui.setProjectName(newName);
                             });
@@ -747,7 +747,7 @@ export default class PatchSaveServer extends Events
 
         const url = gui.canvasManager.currentCanvas().toDataURL();
 
-        CABLESUILOADER.talkerAPI.send(
+        platform.talkerAPI.send(
             "saveScreenshot",
             {
                 "screenshot": url

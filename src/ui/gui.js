@@ -68,14 +68,10 @@ export default class Gui extends Events
         super();
 
         this._log = new Logger("gui");
-
         this.theme = defaultTheme;
-
         this._showTiming = false;
 
-        /**
-         * @type {ServerOps}
-         */
+        /** @type {ServerOps} */
         this.serverOps = null;
 
         this.userSettings = userSettings;
@@ -137,12 +133,10 @@ export default class Gui extends Events
                 if (window.logStartup) logStartup("Patch loaded");
             });
 
-        /*
-         * this._corePatch.on("opcrash", (portTriggered) =>
-         * {
-         *     this.showOpCrash(portTriggered.op);
-         * });
-         */
+        // this._corePatch.on("opcrash", (portTriggered) =>
+        // {
+        //     this.showOpCrash(portTriggered.op);
+        // });
 
         this.on("libLoadError", (libName) =>
         {
@@ -380,11 +374,8 @@ export default class Gui extends Events
 
     canSaveInMultiplayer()
     {
-
-        /*
-         * if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
-         * else return true;
-         */
+        // if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
+        // else return true;
         return true;
     }
 
@@ -586,10 +577,8 @@ export default class Gui extends Events
             this.patchView.resume();
         }, 50);
 
-        /*
-         * document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
-         * this._elIconBar[0].style.width = iconBarWidth + "px";
-         */
+        // document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
+        // this._elIconBar[0].style.width = iconBarWidth + "px";
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
@@ -1148,7 +1137,7 @@ export default class Gui extends Events
             "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (randomize || name) CABLESUILOADER.talkerAPI.send("newPatch", { "name": name });
+                if (randomize || name) platform.talkerAPI.send("newPatch", { "name": name });
             }
         });
     }
@@ -1180,23 +1169,17 @@ export default class Gui extends Events
     {
         CABLES.CMD.UI.toggleOverlays();
 
-        /*
-         * let iconShowOverlays = "icon icon-empty";
-         * if (this.userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
-         */
+        // let iconShowOverlays = "icon icon-empty";
+        // if (this.userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
 
-        /*
-         * let iconTransforms = "icon icon-check hidden";
-         * if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
-         */
+        // let iconTransforms = "icon icon-check hidden";
+        // if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
-        /*
-         * let items = [{
-         *     "title": "Show Overlays",
-         *     "func": CABLES.CMD.UI.toggleOverlays,
-         *     "iconClass": iconShowOverlays,
-         * }];
-         */
+        // let items = [{
+        //     "title": "Show Overlays",
+        //     "func": CABLES.CMD.UI.toggleOverlays,
+        //     "iconClass": iconShowOverlays,
+        // }];
 
         // // if (this.userSettings.get("overlaysShow"))
         // //     items.push(
@@ -1206,13 +1189,11 @@ export default class Gui extends Events
         // //             "iconClass": iconTransforms,
         // //         });
 
-        /*
-         * contextMenu.show(
-         *     {
-         *         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
-         *         "items": items
-         *     }, el);
-         */
+        // contextMenu.show(
+        //     {
+        //         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
+        //         "items": items
+        //     }, el);
     }
 
     rendererContextMenu(el)
@@ -1316,7 +1297,7 @@ export default class Gui extends Events
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
 
-        CABLESUILOADER.talkerAPI.send("fileConvert",
+        platform.talkerAPI.send("fileConvert",
             {
                 "fileId": fileId,
                 "converterId": converterId,
@@ -1362,7 +1343,7 @@ export default class Gui extends Events
         navCablesLogo.addEventListener("pointerenter", () =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-            CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+            platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
 
@@ -1377,7 +1358,7 @@ export default class Gui extends Events
 
                 if (platform.frontendOptions.showOpenPatch)
                 {
-                    let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
+                    let item = "<li><a onclick='platform.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
@@ -1474,10 +1455,8 @@ export default class Gui extends Events
 
         ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
-        /*
-         * --- Help menu
-         * Documentation
-         */
+        // --- Help menu
+        // Documentation
 
         ele.byId("nav_help_keys").addEventListener("click", () => { CABLES.CMD.UI.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/docs", "_blank"); });
@@ -1614,15 +1593,12 @@ export default class Gui extends Events
                 else
                 {
                     return false;
-
-                    /*
-                     * if (e.target.hasAttribute("data-portnum"))
-                     * {
-                     *     const n = e.target.dataset.portnum;
-                     *     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
-                     *     if (nextInputEle) nextInputEle.focus();
-                     * }
-                     */
+                    // if (e.target.hasAttribute("data-portnum"))
+                    // {
+                    //     const n = e.target.dataset.portnum;
+                    //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                    //     if (nextInputEle) nextInputEle.focus();
+                    // }
                 }
         });
 
@@ -1715,13 +1691,10 @@ export default class Gui extends Events
 
     metaKeyframesShowAnim(opid, portname)
     {
-
-        /*
-         * if (!gui.metaKeyframes)
-         * {
-         * gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
-         * }
-         */
+        // if (!gui.metaKeyframes)
+        // {
+        // gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
+        // }
         gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
         gui.maintabPanel.show(true);
 
@@ -1801,28 +1774,26 @@ export default class Gui extends Events
         }, 50);
     }
 
-    /*
-     * showOpCrash(op)
-     * {
-     *     console.warn("an operator has crashed", op);
-     *     // iziToast.error({
-     *     //     "position": "topRight",
-     *     //     "theme": "dark",
-     *     //     "title": "error",
-     *     //     "message": "an operator has crashed",
-     *     //     "progressBar": false,
-     *     //     "animateInside": false,
-     *     //     "close": true,
-     *     //     "timeout": false,
-     *     //     "buttons": [
-     *     //         ["<button>reload</button>", function (instance, toast)
-     *     //         {
-     *     //             CABLES.CMD.PATCH.reload();
-     *     //         }]
-     *     //     ]
-     *     // });
-     * }
-     */
+    // showOpCrash(op)
+    // {
+    //     console.warn("an operator has crashed", op);
+    //     // iziToast.error({
+    //     //     "position": "topRight",
+    //     //     "theme": "dark",
+    //     //     "title": "error",
+    //     //     "message": "an operator has crashed",
+    //     //     "progressBar": false,
+    //     //     "animateInside": false,
+    //     //     "close": true,
+    //     //     "timeout": false,
+    //     //     "buttons": [
+    //     //         ["<button>reload</button>", function (instance, toast)
+    //     //         {
+    //     //             CABLES.CMD.PATCH.reload();
+    //     //         }]
+    //     //     ]
+    //     // });
+    // }
 
     showLibLoadError(libName)
     {

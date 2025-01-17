@@ -9,6 +9,7 @@ import GlGuiTab from "../components/tabs/tab_glpatch.js";
 
 import CMD from "./commands.js";
 import Gui, { gui } from "../gui.js";
+import { portType } from "../core_constants.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -70,7 +71,7 @@ CABLES_CMD_DEBUG.newGlguiTab = function ()
 
 CABLES_CMD_DEBUG.toggleMultiplayer = function ()
 {
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "toggleMultiplayerSession",
         { "projectId": this._patchId },
         (err, res) =>
@@ -86,7 +87,7 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
      *}
      *else
      *{
-     *    CABLESUILOADER.talkerAPI.send(
+     *    platform.talkerAPI.send(
      *        "toggleMultiplayerSession",
      *        { "projectId": this._patchId },
      *        (err, res) =>
@@ -170,7 +171,7 @@ CABLES_CMD_DEBUG.testOp = function ()
             {
                 const p = ops[i].portsIn[ip];
 
-                if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
+                if (p.type == portType.array)
                 {
                     const tests = [
                         () => { p.set([]); },
@@ -187,7 +188,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_VALUE)
+                if (p.type == portType.number)
                 {
                     const tests = [
                         () => { p.set(0); },
@@ -198,7 +199,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_STRING)
+                if (p.type == portType.string)
                 {
                     const tests = [
                         () => { p.set("hello"); },
@@ -208,7 +209,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
+                if (p.type == portType.object)
                 {
                     const tests = [
                         () => { p.set(null); },
@@ -219,7 +220,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_FUNCTION)
+                if (p.type == portType.trigger)
                 {
                     const tests = [
                         () => { p.trigger(); },

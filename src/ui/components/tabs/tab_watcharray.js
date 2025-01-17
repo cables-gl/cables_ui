@@ -1,4 +1,5 @@
-import { ele, Events } from "cables-shared-client";
+import { ele, Events, Logger } from "cables-shared-client";
+import { portType } from "../../core_constants.js";
 
 /**
  * debug: show content of an array in a tab
@@ -13,10 +14,11 @@ export default class WatchArrayTab extends Events
     {
         super();
         this._tabs = tabs;
+        this._log = new Logger("watcharray");
 
         this._numCols = 1;
         if (op.name.indexOf("Array3") > -1 || op.name.indexOf("Points") > -1) this._numCols = 3;
-        if (op.name.indexOf("glArray") > -1 || port.type == CABLES.OP_PORT_TYPE_TEXTURE) this._numCols = 4;
+        if (op.name.indexOf("glArray") > -1 || port.type == portType.object) this._numCols = 4;
 
         this._rows = 40;
 
@@ -50,8 +52,8 @@ export default class WatchArrayTab extends Events
         {
             if (this.port) this.port.off(this.portListenerId);
             this._tab.remove();
-            console.warn("ele is null");
-            console.warn(this);
+            this._log.warn("ele is null");
+            this._log.warn(this);
             return;
         }
 
@@ -63,7 +65,7 @@ export default class WatchArrayTab extends Events
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
 
-        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        if (this.port.type == portType.array)
         {
             this._eleIconMinus = ele.create("a");
             this._eleIconMinus.innerHTML = "-";
@@ -110,7 +112,7 @@ export default class WatchArrayTab extends Events
 
         while (c >= 0)
         {
-            if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE) str = "RGBAabcdefghijklmnopqrstuvwxyz"[c % 26] + str;
+            if (this.port.type == portType.object) str = "RGBAabcdefghijklmnopqrstuvwxyz"[c % 26] + str;
             else str = "abcdefghijklmnopqrstuvwxyz"[c % 26] + str;
             c = Math.floor(c / 26) - 1;
         }
@@ -123,12 +125,12 @@ export default class WatchArrayTab extends Events
     _getData()
     {
         if (!this.port) return [];
-        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        if (this.port.type == portType.array)
         {
             return this.port.get();
         }
 
-        if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
+        if (this.port.type == portType.object)
         {
             const realTexture = this.port.get(),
                 gl = this.port.op.patch.cgl.gl;
@@ -254,7 +256,7 @@ export default class WatchArrayTab extends Events
             }
         }
 
-        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        if (this.port.type == portType.array)
         {
             let showNum = 0;
             let showLength = 0;
@@ -266,7 +268,7 @@ export default class WatchArrayTab extends Events
 
             this._eleInfo.innerHTML = "showing " + showNum + " of " + showLength + " values ";
         }
-        if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
+        if (this.port.type == portType.object)
         {
             this._eleInfo.innerHTML = this.port.get().width + "x" + this.port.get().height + " - " + (this.port.get().height * this.port.get().width) + " Pixels";
         }

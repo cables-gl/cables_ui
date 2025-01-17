@@ -19,6 +19,7 @@ import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
+import { portType } from "../core_constants.js";
 
 /**
  * rendering the patchfield
@@ -970,7 +971,7 @@ export default class GlPatch extends Events
             glOp.update();
             this.unselectAll();
 
-            if (CABLES.UI.loaded && op.uiAttribs.subPatch == this.getCurrentSubPatch())
+            if (gui.finishedLoading() && op.uiAttribs.subPatch == this.getCurrentSubPatch())
             {
                 this.selectOpId(op.id);
                 gui.opParams.show(op.id);
@@ -1667,13 +1668,13 @@ export default class GlPatch extends Events
         let col = [0, 0, 0, 0];
         if (!gui.theme.colors.types) return;
 
-        if (t == CABLES.OP_PORT_TYPE_VALUE) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_STRING) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-
+        if (t == portType.number) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.trigger) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.object) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.array) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.string) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.dynamic) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else this._log.warn("unknown port color");
         e.setColor(col[0], col[1], col[2], col[3]);
     }
 

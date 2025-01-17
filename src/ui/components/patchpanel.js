@@ -35,7 +35,7 @@ export default class PatchPanel extends Events
 
     show(force)
     {
-        if (!CABLES.UI.loaded) return;
+        if (!gui.finishedLoading()) return;
 
         if (this._firstTime)
         {
@@ -71,7 +71,6 @@ export default class PatchPanel extends Events
                 });
         }
 
-
         html += "<br/><div id=\"_cbl_outlinetree\"></div>";
 
         if (gui.longPressConnector.isActive())
@@ -99,10 +98,6 @@ export default class PatchPanel extends Events
             if (e.ctrlKey || e.metaKey) navigator.clipboard.writeText(platform.config.currentPatchDir);
             else CABLES.CMD.ELECTRON.openProjectDir();
         });
-
-
-
-
 
         this._outline.insert();
     }

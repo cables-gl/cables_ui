@@ -3,8 +3,6 @@ import uiConfig from "../uiconfig.js";
 import { gui } from "../gui.js";
 import { userSettings } from "./usersettings.js";
 
-
-
 let idling = false;
 let idleTimeout = null;
 let idleModeStart = 0;
@@ -19,7 +17,7 @@ function startIdleMode()
     if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_POPOUT || gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FULLSCREEN) return;
     if (gui.patchView.hasFocus() && idleFocus) return;
 
-    if (!CABLES.UI.loaded || !window.gui) return;
+    if (!window.gui || !gui.finishedLoading()) return;
     if (idling) return;
     if (!userSettings.get("idlemode")) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
@@ -54,7 +52,7 @@ function idleInteractivity()
 
 function stopIdleMode()
 {
-    if (!CABLES.UI.loaded || !window.gui) return;
+    if (!window.gui || !gui.finishedLoading()) return;
     if (!idling) return;
 
     const idleSeconds = Math.round((Date.now() - idleModeStart) / 1000);

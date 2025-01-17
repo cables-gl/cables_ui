@@ -144,7 +144,7 @@ class OpParampanel extends Events
 
     show(op)
     {
-        if (!CABLES.UI.loaded) return;
+        if (!gui.finishedLoading()) return;
         if (!this._startedGlobalListeners)
         {
             this._startedGlobalListeners = true;

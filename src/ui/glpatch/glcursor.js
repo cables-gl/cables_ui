@@ -41,13 +41,7 @@ export default class GlCursor extends Events
 
             if (_clientId == this._clientId)
             {
-
-                /*
-                 * if (gui.patchView.getCurrentSubPatch() != _subPatch)
-                 * {
-                 */
                 this.updateAnim();
-                // }
             }
         });
     }

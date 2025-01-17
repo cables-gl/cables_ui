@@ -1,3 +1,4 @@
+import { portType } from "../../core_constants.js";
 import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
@@ -137,10 +138,10 @@ class PortHtmlGenerator
         for (const i in ports)
         {
             if (
-                ports[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
-                ports[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
-                ports[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
-                ports[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) ports[i].watchId = "out_" + i;
+                ports[i].getType() == portType.number ||
+                ports[i].getType() == portType.array ||
+                ports[i].getType() == portType.string ||
+                ports[i].getType() == portType.object) ports[i].watchId = "out_" + i;
 
             let startGroup = null;
             let groupSpacer = false;

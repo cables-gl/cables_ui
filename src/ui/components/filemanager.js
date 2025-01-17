@@ -134,7 +134,7 @@ export default class FileManager
 
     _getFilesFromSource(source, cb)
     {
-        CABLESUILOADER.talkerAPI.send(
+        platform.talkerAPI.send(
             "getFilelist",
             {
                 "source": source
@@ -178,7 +178,6 @@ export default class FileManager
             "icon": file.icon || "file"
         };
 
-
         if (file.t === "SVG") item.preview = file.p;
         else if (file.t === "image") item.preview = file.p;
         else if (file.t === "dir") item.divider = file.n;
@@ -203,7 +202,6 @@ export default class FileManager
                 }
             }
         }
-
 
         if (file.c) for (let i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
     }
@@ -270,7 +268,6 @@ export default class FileManager
         {
             this._createItem(items, this._files[i], this._filterType);
         }
-
 
         this._manager.listHtmlOptions.showHeader = this._fileSource !== "lib";
         this._manager.listHtmlOptions.order = this._order;
@@ -435,7 +432,7 @@ export default class FileManager
             if (detailItem.isReference && detailItem.file) projectId = detailItem.file.projectId;
             const filename = detailItem.file ? detailItem.file.p : null;
 
-            CABLESUILOADER.talkerAPI.send(
+            platform.talkerAPI.send(
                 "getFileDetails",
                 {
                     "projectId": projectId,
@@ -454,7 +451,6 @@ export default class FileManager
                         let editable = false;
                         if (r.fileDb && r.fileDb.fileName) editable = r.fileDb.fileName.endsWith(".md") || r.fileDb.fileName.endsWith(".scss");
                         editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
-
 
                         let assetPath = "";
                         if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
@@ -485,7 +481,7 @@ export default class FileManager
 
                         const fileCategory = fileInfoPath.split("/")[0];
                         const fileName = fileInfoPath.split("/")[1];
-                        CABLESUILOADER.talkerAPI.send(
+                        platform.talkerAPI.send(
                             "getLibraryFileInfo",
                             {
                                 "filename": fileName,
@@ -566,7 +562,7 @@ export default class FileManager
                                 const loadingModal = gui.startModalLoading("Checking asset dependencies");
                                 loadingModal.setTask("Checking patches and ops...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
-                                CABLESUILOADER.talkerAPI.send(
+                                platform.talkerAPI.send(
                                     "checkNumAssetPatches",
                                     { "filenames": [fullName] },
                                     (countErr, countRes) =>
@@ -602,7 +598,6 @@ export default class FileManager
 
                                         if (gui.project().summary.visibility)content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
 
-
                                         if (!allowDelete)
                                         {
                                             title = "You cannot delete this file!";
@@ -628,7 +623,7 @@ export default class FileManager
                                         {
                                             modal.on("onSubmit", () =>
                                             {
-                                                CABLESUILOADER.talkerAPI.send(
+                                                platform.talkerAPI.send(
                                                     "deleteFile",
                                                     { "fileid": r.fileDb._id },
                                                     (errr, rr) =>
@@ -704,7 +699,7 @@ export default class FileManager
 
                         const loadingModal = gui.startModalLoading("Checking asset dependencies");
                         loadingModal.setTask("Checking patches and ops...");
-                        CABLESUILOADER.talkerAPI.send(
+                        platform.talkerAPI.send(
                             "checkNumAssetPatches",
                             { "filenames": fullNames },
                             (countErr, countRes) =>
@@ -773,7 +768,7 @@ export default class FileManager
                                     {
                                         selectedFileIds.forEach((fileId) =>
                                         {
-                                            CABLESUILOADER.talkerAPI.send(
+                                            platform.talkerAPI.send(
                                                 "deleteFile",
                                                 {
                                                     "fileid": fileId
@@ -818,7 +813,7 @@ export default class FileManager
             "promptValue": "newfile.txt",
             "promptOk": (fn) =>
             {
-                CABLESUILOADER.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
+                platform.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
                 {
                     if (err)
                     {
@@ -833,14 +828,12 @@ export default class FileManager
         });
     }
 
-
-
     uploadFile(filename, content, cb)
     {
         gui.jobs().finish("uploadfile" + filename);
         gui.jobs().start({ "id": "uploadfile" + filename, "title": "uploading file " + filename });
 
-        CABLESUILOADER.talkerAPI.send(
+        platform.talkerAPI.send(
             "fileUploadStr",
             {
                 "fileStr": content,

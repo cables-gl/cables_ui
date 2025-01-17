@@ -5,8 +5,7 @@ import undo from "../../utils/undo.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
-
-
+import { logFilter } from "../../utils/logfilter.js";
 
 /**
  * Tab panel to display logging of cables logger
@@ -37,9 +36,9 @@ export default class LogTab extends Events
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
         this._html();
-        CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
+        logFilter.on("initiatorsChanged", this._html.bind(this));
 
-        this._showlogListener = CABLES.UI.logFilter.on("logAdded", this._showLog.bind(this));
+        this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));
 
         const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
@@ -51,9 +50,8 @@ export default class LogTab extends Events
 
         this._tab.addButton("Clear", () =>
         {
-            CABLES.UI.logFilter.logs.length = 0; this._html();
+            logFilter.logs.length = 0; this._html();
         });
-
 
         this._tab.addButton("Copy to clipboard", () =>
         {
@@ -66,7 +64,6 @@ export default class LogTab extends Events
             navigator.clipboard.writeText(txt);
         });
 
-
         this._tab.addEventListener(
             "close",
             () =>
@@ -78,11 +75,10 @@ export default class LogTab extends Events
     close()
     {
         this.closed = true;
-        CABLES.UI.logFilter.off(this._showlogListener);
+        logFilter.off(this._showlogListener);
         this.emitEvent("close");
         gui.hideBottomTabs();
     }
-
 
     _html()
     {
@@ -112,11 +108,9 @@ export default class LogTab extends Events
         html += "</div>";
         html += "</div>";
 
-
         if (html.indexOf("`") > -1)
         {
             const parts = html.split("`");
-
 
             parts.splice(1, 0, "<span class=\"logLineCode\">");
             parts.splice(3, 0, "</span>");
@@ -132,16 +126,15 @@ export default class LogTab extends Events
         if (this.closed) return;
         let html = "";
 
-
         if (gui.isRemoteClient)
         {
             const el = ele.byId("bottomtabs");
             if (el)el.style.zIndex = 1111111;
         }
 
-        for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
+        for (let i = logFilter.logs.length - 1; i >= 0; i--)
         {
-            const l = CABLES.UI.logFilter.logs[i];
+            const l = logFilter.logs[i];
             for (let j = 0; j < l.args.length; j++)
             {
                 const arg = l.args[j];
@@ -172,14 +165,14 @@ export default class LogTab extends Events
         try
         {
             let lastTime = 0;
-            for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
+            for (let i = logFilter.logs.length - 1; i >= 0; i--)
             {
-                const l = CABLES.UI.logFilter.logs[i];
+                const l = logFilter.logs[i];
                 let currentLine = "";
                 const timediff = l.time - lastTime;
                 lastTime = l.time;
 
-                if (!CABLES.UI.logFilter.shouldPrint(l)) continue;
+                if (!logFilter.shouldPrint(l)) continue;
 
                 for (let j = 0; j < l.args.length; j++)
                 {
@@ -203,7 +196,7 @@ export default class LogTab extends Events
                             let stackHtml = "<table>";
                             for (let k = 0; k < Math.min(2, errorStack.length); k++)
                             {
-                                if (k === 0 && i == CABLES.UI.logFilter.logs.length - 1)
+                                if (k === 0 && i == logFilter.logs.length - 1)
                                     this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
 
                                 errorStack[k].fileName = errorStack[k].fileName || null;
@@ -394,9 +387,9 @@ export default class LogTab extends Events
         report.patchTitle = gui.project().name;
 
         const log = [];
-        for (let i = CABLES.UI.logFilter.logs.length - 1; i >= 0; i--)
+        for (let i = logFilter.logs.length - 1; i >= 0; i--)
         {
-            const l = CABLES.UI.logFilter.logs[i];
+            const l = logFilter.logs[i];
             let newLine = {
                 "initiator": l.initiator,
                 "errorStack": l.errorStack,
@@ -475,7 +468,6 @@ export default class LogTab extends Events
         if (window.gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
         report.browserDescription = platform.description;
 
-
         if (window.gui)
         {
             if (gui.project()) report.projectId = gui.project()._id;
@@ -499,4 +491,3 @@ export default class LogTab extends Events
         return report;
     }
 }
-
