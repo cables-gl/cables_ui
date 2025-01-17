@@ -125,7 +125,6 @@ export default class Gui extends Events
         };
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
-
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
             {
@@ -422,16 +421,20 @@ export default class Gui extends Events
         return r;
     }
 
+    /**
+     * @param {String} opid
+     * @param {String} which
+     */
     watchArray(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            this._log._warn("opid not found:", opid);
+            this._log.warn("opid not found:", opid);
             return;
         }
         const port = op.getPort(which);
-        if (!port) this._log._warn("port not found:", which);
+        if (!port) this._log.warn("port not found:", which);
 
         new WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);

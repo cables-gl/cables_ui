@@ -221,7 +221,6 @@ export default class TabPanel extends Events
 
         this.updateHtml();
 
-
         if (editorSession && editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
 
@@ -238,7 +237,6 @@ export default class TabPanel extends Events
             }
         }
     }
-
 
     saveCurrentTabUsersettings()
     {

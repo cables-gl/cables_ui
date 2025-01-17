@@ -114,5 +114,5 @@ export default class UserSettings extends Events
 /**
  * @type {UserSettings}
  */
-let userSettings = new UserSettings();
+const userSettings = new UserSettings();
 export { userSettings };
