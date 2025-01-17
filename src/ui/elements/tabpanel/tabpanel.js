@@ -380,7 +380,7 @@ export default class TabPanel extends Events
 
         const frame = document.getElementById("iframe" + id);
 
-        const talkerAPI = new platform.TalkerAPI(frame.contentWindow);
+        const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {

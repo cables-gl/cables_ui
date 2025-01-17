@@ -10,6 +10,7 @@ import GlGuiTab from "../components/tabs/tab_glpatch.js";
 import CMD from "./commands.js";
 import Gui, { gui } from "../gui.js";
 import { portType } from "../core_constants.js";
+import { platform } from "../platform.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
