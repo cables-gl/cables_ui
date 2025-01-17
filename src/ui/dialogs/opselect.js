@@ -7,6 +7,8 @@ import Gui, { gui } from "../gui.js";
 import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
+import { platform } from "../platform.js";
+import { userSettings } from "../components/usersettings.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -135,7 +137,7 @@ export default class OpSelect
             }
             else
             {
-                const isOwner = CABLES.platform.currentUserIsPatchOwner();
+                const isOwner = platform.currentUserIsPatchOwner();
                 const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
                 const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
 
@@ -366,10 +368,10 @@ export default class OpSelect
 
                 const svg = gui.opDocs.getLayoutSvg(opName);
                 if (svg)html += svg;
-                else html += "<img src=\"" + CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+                else html += "<img src=\"" + platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
 
                 html += "</div>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesDocsUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+                html += "<a target=\"_blank\" href=\"" + platform.getCablesDocsUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
 
                 const docs = gui.opDocs.getOpDocByName(opName);
 
@@ -579,7 +581,7 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
-        this._minimal = CABLES.UI.userSettings.get("miniopselect") == true;
+        this._minimal = userSettings.get("miniopselect") == true;
 
         this._options = options;
         hideToolTip();

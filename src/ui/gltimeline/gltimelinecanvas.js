@@ -2,10 +2,11 @@ import GlCanvas from "../gldraw/glcanvas.js";
 import GlTimeline from "./gltimeline.js";
 
 /**
- * canvas for the patchfield {@link GlPatch}
+ * canvas for the timeline {@link GlTimeline}
  *
  * @export
- * @class GlUiCanvas
+ * @class glTimelineCanvas
+ * @extends {Events}
  */
 export default class glTimelineCanvas extends GlCanvas
 {
@@ -23,10 +24,8 @@ export default class glTimelineCanvas extends GlCanvas
 
     parentResized()
     {
-        console.log(this._parentEle.clientWidth, this._parentEle.clientHeight, this.cgl.pixelDensity);
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
-
 
     render()
     {

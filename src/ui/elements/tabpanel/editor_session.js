@@ -1,6 +1,7 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
 import ManageOp from "../../components/tabs/tab_manage_op.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
+import { userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
 
 /**
@@ -33,7 +34,7 @@ export default class EditorSession
 
     store()
     {
-        CABLES.UI.userSettings.set("openEditors", this._openEditors);
+        userSettings.set("openEditors", this._openEditors);
     }
 
     loaded()
@@ -68,7 +69,7 @@ export default class EditorSession
 
     /**
      * remove a editor session
-     * @name CABLES.EditorSession#remove
+     * @name remove
      * @param {string} type
      * @param {string} name
      * @function
@@ -97,7 +98,7 @@ export default class EditorSession
 
     /**
      * remember an open editor
-     * @name CABLES.EditorSession#rememberOpenEditor
+     * @name rememberOpenEditor
      * @param {string} type
      * @param {string} name
      * @param data
@@ -117,19 +118,19 @@ export default class EditorSession
         this._openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-            CABLES.UI.userSettings.set("editortab", name);
+            userSettings.set("editortab", name);
 
         return obj;
     }
 
     /**
      * reopen saved editors
-     * @name CABLES.EditorSession#open
+     * @name open
      * @function
      */
     open()
     {
-        const sessions = CABLES.UI.userSettings.get("openEditors");
+        const sessions = userSettings.get("openEditors");
 
         if (sessions)
         {
@@ -143,7 +144,7 @@ export default class EditorSession
 
     /**
      * add listener, a callback will be executed for this type when editor is reopened.
-     * @name CABLES.EditorSession#addListener
+     * @name addListener
      * @function
      */
     addListener(type, cb)
@@ -151,3 +152,10 @@ export default class EditorSession
         this._listeners[type] = cb;
     }
 }
+
+
+/**
+ * @type {EditorSession}
+ */
+let editorSession = new EditorSession();
+export { editorSession };

@@ -1,5 +1,8 @@
 import { ele } from "cables-shared-client";
 
+
+
+
 export default class ContextMenu
 {
     constructor()
@@ -32,7 +35,7 @@ export default class ContextMenu
             this._modalBg.addEventListener("click",
                 function ()
                 {
-                    CABLES.contextMenu.close();
+                    contextMenu.close();
                 });
 
             document.body.appendChild(this._modalBg);
@@ -93,11 +96,11 @@ export default class ContextMenu
                     {
                         setTimeout(function ()
                         {
-                            CABLES.contextMenu.close();
+                            contextMenu.close();
                             obj.refresh(parent);
                         }, 100);
                     }
-                    else CABLES.contextMenu.close();
+                    contextMenu.close();
 
                     setTimeout(this.func.bind(this), 20);
                 }.bind(obj.items[i]));
@@ -105,3 +108,9 @@ export default class ContextMenu
         }
     }
 }
+
+/**
+ * @type {Platform}
+ */
+let contextMenu = new ContextMenu();
+export { contextMenu };

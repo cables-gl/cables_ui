@@ -3,6 +3,9 @@ import glUiConfig from "./gluiconfig.js";
 import MouseState from "./mousestate.js";
 import Gui, { gui } from "../gui.js";
 import GlPort from "./glport.js";
+import GlPatch from "./glpatch.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * simple line e.g. when dragging a port
@@ -12,11 +15,14 @@ export default class GlDragLine
     constructor(splineDrawer, glpatch)
     {
         this._log = new Logger("gldragline");
+        /** @type {GlRect} */
         this._rect = null;
 
+        /** @type {GlSplineDrawer} */
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
+        /** @type {GlPatch} */
         this._glPatch = glpatch;
 
         this._startPortOpId = null;
@@ -61,8 +67,6 @@ export default class GlDragLine
             if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {
                 let x = this._glPatch.viewBox.mousePatchX;
-
-
                 let pos =
                 {
                     "subPatch": this._glPatch.subPatch,

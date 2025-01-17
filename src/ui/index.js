@@ -5,7 +5,7 @@ import OverlayMeshes from "./components/overlay/overlaymeshes.js";
 import Collapsable from "./components/collapsable.js";
 import DragNDrop from "./components/filemanager_dragdrop.js";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
-import UserSettings from "./components/usersettings.js";
+import { userSettings } from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend.js";
@@ -15,8 +15,7 @@ import ModalDialog from "./dialogs/modaldialog.js";
 import ModalError from "./dialogs/modalerror.js";
 import oldModalWrap from "./dialogs/modal_old_wrap.js";
 import FileUploader from "./dialogs/upload.js";
-import ContextMenu from "./elements/contextmenu.js";
-import EditorSession from "./elements/tabpanel/editor_session.js";
+import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import extendCoreOp from "./core_extend_op.js";
@@ -52,7 +51,7 @@ CABLES.UI.TabPortObjectInspect = TabPortObjectInspect;
 
 window.ele = ele;
 
-CABLES.UI.userSettings = new UserSettings();
+CABLES.UI.userSettings = userSettings;
 
 CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
@@ -63,9 +62,8 @@ CABLES.UI.DEFAULTOPNAMES = defaultOps.defaultOpNames;
 CABLES.UI.DEFAULTOPS = defaultOps;
 // expose global objects
 CABLES.api = new Api();
-CABLES.contextMenu = new ContextMenu();
+CABLES.contextMenu = contextMenu; // TODO: delete when old timeline is replaced
 CABLES.fileUploader = new FileUploader();
-CABLES.editorSession = new EditorSession();
 CABLES.UI.Collapsable = Collapsable;
 
 CABLES.UI.TEXTS = text;

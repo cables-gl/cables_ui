@@ -5,6 +5,7 @@ import ModalDialog from "./dialogs/modaldialog.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
+import { platform } from "./platform.js";
 
 const subPatchOpUtil = {};
 
@@ -522,7 +523,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 subPatchOpUtil.getAutoName = (short) =>
 {
     let newOpName = "";
-    const ns = CABLES.platform.getPatchOpsNamespace();
+    const ns = platform.getPatchOpsNamespace();
 
     for (let i = 0; i < 1000; i++)
     {

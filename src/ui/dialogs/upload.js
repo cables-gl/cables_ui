@@ -4,6 +4,7 @@ import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
 import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 
 /**
@@ -55,7 +56,7 @@ export default class FileUploader
         event.preventDefault();
         event.stopPropagation();
 
-        if (CABLES.platform.frontendOptions.uploadFiles)
+        if (platform.frontendOptions.uploadFiles)
         {
             const el = document.getElementById("uploadarea");
             if (el)
@@ -82,7 +83,7 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
-        if (CABLES.platform.frontendOptions.uploadFiles || filename) // allow reupload in electron via `|| filename`
+        if (platform.frontendOptions.uploadFiles || filename) // allow reupload in electron via `|| filename`
         {
             const reader = new FileReader();
 
@@ -135,9 +136,9 @@ export default class FileUploader
                 false);
             reader.readAsDataURL(file);
         }
-        else if (CABLES.platform.frontendOptions.dragDropLocalFiles)
+        else if (platform.frontendOptions.dragDropLocalFiles)
         {
-            const assetPath = CABLES.platform.getPrefixAssetPath();
+            const assetPath = platform.getPrefixAssetPath();
             let finalPath = "file://" + file.path;
             if (file.path.startsWith(assetPath))
             {
@@ -216,3 +217,9 @@ export default class FileUploader
         this.uploadFiles(files);
     }
 }
+
+/**
+ * @type {FileUploader}
+ */
+let fileUploader = new FileUploader();
+export { fileUploader };

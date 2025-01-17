@@ -5,6 +5,9 @@ import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
 import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import GlPatch from "./glpatch.js";
+import GlOp from "./glop.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}
@@ -18,26 +21,48 @@ export default class GlPort
     {
         this._log = new Logger("glPort");
 
+        /**
+         * @type {Port}
+         */
         this._port = p;
-        this._name = p.name;
-        this._id = p.id;
-        this._parent = oprect;
-        this.groupIndex = 0;
-
-        this._direction = p.direction;
-
+        /**
+         * @type {GlOp}
+         */
         this._glop = glop;
         this._type = p.type;
-        this._glPatch = glpatch;
-        this._rectInstancer = rectInstancer;
-        this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
-        this._longPortRect = null;
+        this._name = p.name;
+        this._id = p.id;
+        this.groupIndex = 0;
 
+        /**
+         * @type {GlRect}
+         */
+        this._parent = oprect;
+
+        this._direction = p.direction;
+        /**
+         * @type {GlPatch}
+         */
+        this._glPatch = glpatch;
+        /**
+         * @type {GlRectInstancer}
+         */
+        this._rectInstancer = rectInstancer;
+        /**
+         * @type {GlRect}
+         */
+        this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
+        /**
+         * @type {GlRect}
+         */
+        this._longPortRect = null;
+        /**
+         * @type {GlRect}
+         */
         this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
         this._mouseButtonRightTimeDown = 0;
         this._posX = posCount * (gluiconfig.portWidth + gluiconfig.portPadding);
-
         if (!this._parent) this._log.warn("no parent rect given");
         else this._parent.addChild(this._rect);
 
@@ -62,12 +87,14 @@ export default class GlPort
         p.on("onUiAttrChange", this._onUiAttrChange.bind(this));
 
         this._onUiAttrChange(p.uiAttribs);
-
         this.setFlowModeActivity(1);
         this.updateSize();
         this._updateColor();
     }
 
+        /**
+         * @type {GlRect}
+         */
     get posX()
     {
         return this._posX;

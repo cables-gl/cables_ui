@@ -18,6 +18,7 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * rendering the patchfield
@@ -64,7 +65,7 @@ export default class GlPatch extends Events
         this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
-        this.vizFlowMode = CABLES.UI.userSettings.get("glflowmode") || 0;
+        this.vizFlowMode = userSettings.get("glflowmode") || 0;
 
         this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
@@ -88,7 +89,7 @@ export default class GlPatch extends Events
 
 
 
-        if (CABLES.UI.userSettings.get("devinfos"))
+        if (userSettings.get("devinfos"))
         {
             CABLES.UI.showDevInfos = true;
             const idx = this._overlaySplines.getSplineIndex();
@@ -258,7 +259,7 @@ export default class GlPatch extends Events
 
             notify("Flow Visualization: ", modes[fm]);
 
-            CABLES.UI.userSettings.set("glflowmode", fm);
+            userSettings.set("glflowmode", fm);
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -440,10 +441,10 @@ export default class GlPatch extends Events
 
 
 
-        CABLES.UI.userSettings.on("change", (key, value) =>
+        userSettings.on("change", (key, value) =>
         {
-            this.dblClickAction = CABLES.UI.userSettings.get("doubleClickAction");
-            this.vizFlowMode = CABLES.UI.userSettings.get("glflowmode");
+            this.dblClickAction = userSettings.get("doubleClickAction");
+            this.vizFlowMode = userSettings.get("glflowmode");
             this.updateVizFlowMode();
 
             if (key == "linetype")
@@ -451,7 +452,7 @@ export default class GlPatch extends Events
                     this.links[i].updateLineStyle();
         });
 
-        if (CABLES.UI.userSettings.get("devinfos"))
+        if (userSettings.get("devinfos"))
         {
             gui.corePatch().on("subpatchesChanged", () =>
             {
@@ -1022,7 +1023,7 @@ export default class GlPatch extends Events
 
     _drawCursor()
     {
-        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
+        const drawGlCursor = userSettings.get("glpatch_cursor");
 
         // if (drawGlCursor) this._cgl.setCursor("none");
         // else

@@ -1,6 +1,8 @@
 import { ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { platform } from "../../platform.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * tab panel to welcome users of the electron editor
@@ -19,7 +21,7 @@ export default class WelcomeTab
 
         CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
         {
-            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesStaticUrl(), "version": CABLES.platform.getCablesVersion() });
+            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": platform.getCablesStaticUrl(), "version": platform.getCablesVersion() });
             this._tab.html(html);
 
             CABLES.ajax("https://dev.cables.gl/api/events/", (err2, res, xhr) =>
@@ -35,7 +37,7 @@ export default class WelcomeTab
                 }
             });
 
-            if (CABLES.platform.frontendOptions.isElectron)
+            if (platform.frontendOptions.isElectron)
                 CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res, xhr) =>
                 {
                     if (!(err2 || (xhr && xhr.status === 0)))
@@ -52,12 +54,12 @@ export default class WelcomeTab
                 });
         });
 
-        CABLES.editorSession.remove("welcometab", "Welcome");
-        CABLES.editorSession.rememberOpenEditor("welcometab", "Welcome", true);
+        editorSession.remove("welcometab", "Welcome");
+        editorSession.rememberOpenEditor("welcometab", "Welcome", true);
 
         this._tab.on("close", () =>
         {
-            CABLES.editorSession.remove("welcometab", "Welcome");
+            editorSession.remove("welcometab", "Welcome");
         });
     }
 }

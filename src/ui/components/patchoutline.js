@@ -1,9 +1,11 @@
-import { Events, ele } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import TreeView from "./treeview.js";
 import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { escapeHTML } from "../utils/helper.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { contextMenu } from "../elements/contextmenu.js";
 
 export default class PatchOutline extends Events
 {
@@ -11,6 +13,7 @@ export default class PatchOutline extends Events
     {
         super();
 
+        this._log = new Logger("PatchOutline");
         this.includeAreas =
         this.includeSubpatches =
         this.includeComments =
@@ -50,7 +53,7 @@ export default class PatchOutline extends Events
 
                     gui.patchView.centerSelectOp(item.id);
                 }
-                else console.log(item);
+                else this._log.warn("unknown", item);
             });
 
         this._subTree.on("icon_click",
@@ -220,7 +223,7 @@ export default class PatchOutline extends Events
 
         for (let i = 0; i < userIds.length; i++)
         {
-            str += "<img style='height:15px;border-radius:100%;margin-left:10px;' src=\"" + CABLES.platform.getCablesUrl() + "/api/avatar/" + userIds[i] + "/mini\"/>";
+            str += "<img style='height:15px;border-radius:100%;margin-left:10px;' src=\"" + platform.getCablesUrl() + "/api/avatar/" + userIds[i] + "/mini\"/>";
         }
 
         return str;
@@ -352,6 +355,6 @@ export default class PatchOutline extends Events
                 },
             });
         }
-        CABLES.contextMenu.show({ items }, el);
+        contextMenu.show({ items }, el);
     }
 }

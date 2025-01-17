@@ -1,5 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import platform from "platform";
+import { platform } from "./platform.js";
 import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -48,6 +48,9 @@ import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
+import ServerOps from "./api/opsserver.js";
+import { contextMenu } from "./elements/contextmenu.js";
+import { userSettings } from "./components/usersettings.js";
 
 /**
  * @type {Gui}
@@ -75,14 +78,14 @@ export default class Gui extends Events
          */
         this.serverOps = null;
 
-        this.userSettings = CABLES.UI.userSettings;
+        this.userSettings = userSettings;
         this.uiProfiler = new UiProfiler();
 
         this.canvasManager = new CanvasManager();
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
-        this.longPressConnector = new LongPressConnector(this);
+        this.longPressConnector = new LongPressConnector();
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
@@ -176,14 +179,14 @@ export default class Gui extends Events
 
         this.metaTabs = new TabPanel("metatabpanel");
 
-        this.savedState = new SavedState(this);
+        this.savedState = new SavedState();
         this.savedState.pause();
         this._savedStateChangesBlueprintSubPatches = [];
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = null;
         this.bookmarks = new Bookmarks();
-        this.bottomInfoArea = new BottomInfoAreaBar(this);
+        this.bottomInfoArea = new BottomInfoAreaBar();
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
@@ -342,7 +345,7 @@ export default class Gui extends Events
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                text.guestHint + "<br/><br/><a href=\"" + CABLES.platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
+                text.guestHint + "<br/><br/><a href=\"" + platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
             );
             return true;
         }
@@ -361,7 +364,7 @@ export default class Gui extends Events
 
     showBackupSaveWarning()
     {
-        if (!CABLES.platform.getPatchVersion()) return false;
+        if (!platform.getPatchVersion()) return false;
 
         const html = "You are overwriting your original patch with a backup! Are you sure?<br/><br/>Saving will redirect back to the original patch.<br/><br/>" +
             "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('');\"><span class=\"icon icon-save\"></span>Yes, save</a>&nbsp;&nbsp;" +
@@ -424,11 +427,11 @@ export default class Gui extends Events
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            this._warn("opid not found:", opid);
+            this._log._warn("opid not found:", opid);
             return;
         }
         const port = op.getPort(which);
-        if (!port) this._warn("port not found:", which);
+        if (!port) this._log._warn("port not found:", which);
 
         new WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);
@@ -1210,7 +1213,7 @@ export default class Gui extends Events
         // //             "iconClass": iconTransforms,
         // //         });
 
-        // CABLES.contextMenu.show(
+        // contextMenu.show(
         //     {
         //         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
         //         "items": items
@@ -1219,7 +1222,7 @@ export default class Gui extends Events
 
     rendererContextMenu(el)
     {
-        CABLES.contextMenu.show(
+        contextMenu.show(
             {
                 "items":
                     [
@@ -1255,7 +1258,7 @@ export default class Gui extends Events
 
     rendererAspectMenu(el)
     {
-        CABLES.contextMenu.show(
+        contextMenu.show(
             {
                 "items":
                     [
@@ -1370,15 +1373,15 @@ export default class Gui extends Events
 
                 let str = "";
 
-                if (CABLES.platform.frontendOptions.showMyLinks)
-                    str += "<li id=\"nav_mypatches\"><a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+                if (platform.frontendOptions.showMyLinks)
+                    str += "<li id=\"nav_mypatches\"><a target=\"_blank\" href=\"" + platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
 
                 str += "<li id=\"nav_patch_new\">Create New Empty Patch</li>";
 
                 str += "<li class=\"divide\"></li>";
 
 
-                if (CABLES.platform.frontendOptions.showOpenPatch)
+                if (platform.frontendOptions.showOpenPatch)
                 {
                     let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
@@ -1387,13 +1390,13 @@ export default class Gui extends Events
                 if (r)
                     for (let i = 0; i < Math.min(5, r.length); i++)
                     {
-                        const url = CABLES.platform.getCablesUrl() + "/edit/" + r[i].shortId;
+                        const url = platform.getCablesUrl() + "/edit/" + r[i].shortId;
                         str += "<li><a href=\"" + url + "\" class=\"mine\" target=\"_top\">Open Patch " + r[i].name + "</a></li>";
                     }
 
                 str += "<li class=\"divide\"></li>";
 
-                str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
+                str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
@@ -1415,7 +1418,7 @@ export default class Gui extends Events
             const projectId = this._currentProject ? this._currentProject.shortId : null;
             if (projectId)
             {
-                const url = CABLES.platform.getCablesUrl() + "/p/" + projectId;
+                const url = platform.getCablesUrl() + "/p/" + projectId;
                 const win = window.open(url, "_blank");
                 win.focus();
             }
@@ -1428,13 +1431,13 @@ export default class Gui extends Events
         ele.byId("nav_patch_export_patch").addEventListener("click", () => { CABLES.CMD.PATCH.export("patch"); });
 
 
-        if (CABLES.platform.frontendOptions.hasOpDirectories)
+        if (platform.frontendOptions.hasOpDirectories)
         {
             const opDirEle = ele.byId("nav_patch_add_opdir");
             if (opDirEle)
             {
                 ele.show(opDirEle);
-                opDirEle.addEventListener("click", () => { CABLES.platform.openOpDirsTab(); });
+                opDirEle.addEventListener("click", () => { platform.openOpDirsTab(); });
             }
         }
 
@@ -1443,50 +1446,50 @@ export default class Gui extends Events
         if (uploadEle)
         {
             uploadEle.addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-            if (!CABLES.platform.frontendOptions.showAssetUpload) uploadEle.innerText = "Add file";
+            if (!platform.frontendOptions.showAssetUpload) uploadEle.innerText = "Add file";
         }
 
-        if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
-        if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
+        if (!platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
+        if (!platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
 
         const exportLink = ele.byId("nav_patch_export");
-        if (!CABLES.platform.frontendOptions.showExport)
+        if (!platform.frontendOptions.showExport)
         {
             ele.hide(exportLink);
         }
-        if (CABLES.platform.isElectron())
+        if (platform.isElectron())
         {
             if (exportLink) exportLink.innerText = "Export - HTML";
         }
 
-        if (!CABLES.platform.frontendOptions.showExportPatch)
+        if (!platform.frontendOptions.showExportPatch)
         {
             ele.hide(ele.byId("nav_patch_export_patch"));
         }
 
-        if (!CABLES.platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
+        if (!platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
 
-        if (!CABLES.platform.frontendOptions.showPatchBackups)
+        if (!platform.frontendOptions.showPatchBackups)
         {
             ele.hide(ele.byId("nav_viewBackups"));
             ele.hide(ele.byId("nav_createBackup"));
         }
 
 
-        if (CABLES.platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/changelog", "_blank"); });
+        if (platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/changelog", "_blank"); });
         else ele.hide(ele.byId("nav_changelog"));
 
-        if (CABLES.platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
+        if (platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
         else ele.hide(ele.byId("nav_buildinfo"));
 
 
-        ele.byId("nav_support").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/support", "_blank"); });
+        ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
         // --- Help menu
         // Documentation
 
         ele.byId("nav_help_keys").addEventListener("click", () => { CABLES.CMD.UI.showKeys(); });
-        ele.byId("nav_help_documentation").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs", "_blank"); });
+        ele.byId("nav_help_documentation").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/docs", "_blank"); });
         ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/discussions", "_blank"); });
         ele.byId("nav_help_tips").addEventListener("click", () => { CABLES.CMD.UI.showTips(); });
 
@@ -1513,7 +1516,7 @@ export default class Gui extends Events
         ele.byId("nav_profiler").addEventListener("click", () => { CABLES.CMD.PATCH.patchProfiler(); });
         ele.byId("nav_patchanalysis").addEventListener("click", () => { CABLES.CMD.PATCH.analyze(); });
 
-        if (!CABLES.platform.isTrustedPatch())
+        if (!platform.isTrustedPatch())
         {
             ele.byId("nav_op_createOp").classList.add("nav-greyout");
             ele.byId("nav_op_patchOp").classList.add("nav-greyout");
@@ -1766,7 +1769,7 @@ export default class Gui extends Events
             CABLES.UI.suggestions = null;
         }
         else if (gui.cmdPallet.isVisible()) gui.cmdPallet.close();
-        else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
+        else if (contextMenu.isVisible()) contextMenu.close();
         else if (gui.isShowingModal())
         {
             gui.closeModal();
@@ -1895,14 +1898,14 @@ export default class Gui extends Events
             this.userSettings.get("introCompleted")) gui.tips.show();
 
 
-        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
+        if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
 
         let ver = "";
-        ver += CABLES.platform.getCablesVersion();
-        if (CABLES.platform.isDevEnv()) ver += " (dev)";
+        ver += platform.getCablesVersion();
+        if (platform.isDevEnv()) ver += " (dev)";
         this._log.groupCollapsed("welcome to cables " + ver + "!");
 
-        if (CABLES.platform.getPatchVersion())
+        if (platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
         console.log("start up times:"); // eslint-disable-line no-console
@@ -1982,9 +1985,9 @@ export default class Gui extends Events
 
     showWelcomeNotifications()
     {
-        if (!gui.isRemoteClient && CABLES.platform.showGitBranchWarning) CABLES.platform.showGitBranchWarning();
-        if (!gui.isRemoteClient && CABLES.platform.showBrowserWarning) CABLES.platform.showBrowserWarning();
-        if (!gui.isRemoteClient && CABLES.platform.showStartupChangelog) CABLES.platform.showStartupChangelog();
+        if (!gui.isRemoteClient && platform.showGitBranchWarning) platform.showGitBranchWarning();
+        if (!gui.isRemoteClient && platform.showBrowserWarning) platform.showBrowserWarning();
+        if (!gui.isRemoteClient && platform.showStartupChangelog) platform.showStartupChangelog();
     }
 
     getOpDoc(opname, html, cb)
@@ -2009,8 +2012,8 @@ export default class Gui extends Events
             }
         };
 
-        const url = CABLES.platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
+        const url = platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
     setCursor(str)

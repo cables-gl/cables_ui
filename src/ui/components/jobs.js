@@ -1,5 +1,6 @@
 import { ele, Events, Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 export default class Jobs extends Events
 {
@@ -37,7 +38,7 @@ export default class Jobs extends Events
 
         let str = "";
 
-        if (CABLES.platform.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
+        if (platform.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
 
         if (this._jobs.length === 0)
         {

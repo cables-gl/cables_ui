@@ -10,6 +10,9 @@ import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
+import { platform } from "./platform.js";
+import { editorSession } from "./elements/tabpanel/editor_session.js";
+import { userSettings } from "./components/usersettings.js";
 
 
 
@@ -58,7 +61,7 @@ export default function startUi(cfg)
         gui.bind(() =>
         {
             incrementStartup();
-            CABLES.platform.initRouting(() =>
+            platform.initRouting(() =>
             {
                 document.addEventListener("visibilitychange", function ()
                 {
@@ -71,7 +74,7 @@ export default function startUi(cfg)
 
                 incrementStartup();
                 gui.opSelect().prepare();
-                CABLES.UI.userSettings.init();
+                userSettings.init();
                 incrementStartup();
 
                 gui.opSelect().reload();
@@ -84,11 +87,11 @@ export default function startUi(cfg)
                 gui.opSelect().search();
                 gui.setElementBgPattern(ele.byId("cablescanvas"));
 
-                CABLES.editorSession.open();
+                editorSession.open();
 
-                gui.setFontSize(CABLES.UI.userSettings.get("fontSizeOff"));
+                gui.setFontSize(userSettings.get("fontSizeOff"));
 
-                CABLES.UI.userSettings.on("change", function (key, v)
+                userSettings.on("change", function (key, v)
                 {
                     if (key == "fontSizeOff")
                     {
@@ -107,12 +110,12 @@ export default function startUi(cfg)
                     }
                 });
 
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 gui.bindKeys();
                 ele.byId("maincomponents").style.display = "inline";
 
-                const socketClusterConfig = CABLES.platform.getSocketclusterConfig();
+                const socketClusterConfig = platform.getSocketclusterConfig();
                 if (!gui.socket && socketClusterConfig.enabled)
                 {
                     gui.socket = new ScConnection(socketClusterConfig);
@@ -122,8 +125,8 @@ export default function startUi(cfg)
 
                 new HtmlInspector();
 
-                if (CABLES.UI.userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
-                if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
+                if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
+                if (userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 gui.maintabPanel.init();
 
@@ -131,7 +134,7 @@ export default function startUi(cfg)
 
                 setTimeout(() =>
                 {
-                    if (CABLES.UI.userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
+                    if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
                 gui.patchView.checkPatchErrors();
@@ -149,7 +152,7 @@ export default function startUi(cfg)
                     projectId = gui.project().shortId || gui.project()._id;
                 }
                 new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": CABLES.platform.getCablesUrl() + "/remote_client/" + projectId,
+                    "text": platform.getCablesUrl() + "/remote_client/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -158,7 +161,7 @@ export default function startUi(cfg)
                 });
 
                 new QRCode(document.getElementById("patch_view_qr"), {
-                    "text": CABLES.platform.getCablesUrl() + "/p/" + projectId,
+                    "text": platform.getCablesUrl() + "/p/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",

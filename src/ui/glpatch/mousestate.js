@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 
 /**
@@ -33,10 +34,9 @@ export default class MouseState extends Events
         this.buttonForScrolling = MouseState.BUTTON_RIGHT;
         this.buttonForSelecting = MouseState.BUTTON_LEFT;
 
-
         this._initUserPrefs();
 
-        CABLES.UI.userSettings.on("change", this._initUserPrefs.bind(this));
+        userSettings.on("change", this._initUserPrefs.bind(this));
 
         canvas.addEventListener("pointerenter", (e) =>
         {
@@ -90,7 +90,7 @@ export default class MouseState extends Events
 
     _initUserPrefs()
     {
-        const userSettingScrollButton = CABLES.UI.userSettings.get("patch_button_scroll");
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
         if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
         if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
@@ -105,9 +105,7 @@ export default class MouseState extends Events
         let str = "";
 
         for (let i in this._buttonStates)
-        {
             str += i + ":" + (this._buttonStates[i].down ? "X" : "-") + " | ";
-        }
 
         gui.patchView._patchRenderer.debugData.mouseState = str;
     }
@@ -129,6 +127,7 @@ export default class MouseState extends Events
         return this._buttonStates[button].down;
     }
 
+    /** @private */
     _setButtonsUp()
     {
         for (const i in this._buttonStates)
@@ -137,6 +136,7 @@ export default class MouseState extends Events
         }
     }
 
+    /** @private */
     _buttonUp(button)
     {
         if (this._buttonStates[button])
@@ -147,6 +147,7 @@ export default class MouseState extends Events
         this._updateDebug();
     }
 
+    /** @private */
     _buttonDown(button)
     {
         if (!this._buttonStates[button].down)
@@ -158,6 +159,7 @@ export default class MouseState extends Events
     }
 
 
+    /** @private */
     _setButton(button, newState)
     {
         if (button == MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT)
@@ -197,6 +199,7 @@ export default class MouseState extends Events
         data.mouse_buttonStates = JSON.stringify(this._buttonStates);// .join(",");
     }
 
+    /** @private */
     _move(e)
     {
         if (!e.pointerType) return;
@@ -216,6 +219,7 @@ export default class MouseState extends Events
         else this._setButtonsUp();
     }
 
+    /** @private */
     _down(e)
     {
         this._mouseDownX = e.offsetX;
@@ -225,6 +229,7 @@ export default class MouseState extends Events
         this._setButton(e.buttons, true);
     }
 
+    /** @private */
     _up(e)
     {
         this._isDragging = false;

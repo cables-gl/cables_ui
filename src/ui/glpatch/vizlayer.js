@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
@@ -22,14 +23,14 @@ export default class VizLayer extends Events
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
-        this.paused = CABLES.UI.userSettings.get("vizlayerpaused") || false;
+        this.paused = userSettings.get("vizlayerpaused") || false;
 
         gui.on("uiloaded", () =>
         {
             this._updateSize();
         });
 
-        CABLES.UI.userSettings.on("change", (key, value) =>
+        userSettings.on("change", (key, value) =>
         {
             if (key == "vizlayerpaused") this.paused = value;
         });

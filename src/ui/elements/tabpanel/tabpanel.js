@@ -2,6 +2,10 @@ import { Events, Logger, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
+import { contextMenu } from "../contextmenu.js";
+import { editorSession } from "./editor_session.js";
+import { userSettings } from "../../components/usersettings.js";
 
 
 /**
@@ -101,7 +105,7 @@ export default class TabPanel extends Events
                             "func": () => { this.activateTab(tab.id); }
                         });
                     }
-                    CABLES.contextMenu.show(
+                    contextMenu.show(
                         {
                             "items": items
                         }, e.target);
@@ -218,7 +222,7 @@ export default class TabPanel extends Events
         this.updateHtml();
 
 
-        if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
+        if (editorSession && editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
 
     loadCurrentTabUsersettings()
@@ -226,7 +230,7 @@ export default class TabPanel extends Events
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
+            if (userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
             {
                 this.activateTab(this._tabs[i].id);
                 found = true;
@@ -241,7 +245,7 @@ export default class TabPanel extends Events
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;
-        CABLES.UI.userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
+        userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
     }
 
     getTabByDataId(dataId)
@@ -386,7 +390,7 @@ export default class TabPanel extends Events
 
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {
-            CABLES.platform.setManualScreenshot(opts.manualScreenshot);
+            platform.setManualScreenshot(opts.manualScreenshot);
 
             if (opts.manualScreenshot)
             {

@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 export default class IconBar
 {
@@ -46,13 +47,13 @@ export default class IconBar
         if (this._id == "sidebar_left")
         {
             const defaultItems = ["Save patch", "Add op", "Show settings", "Maximize canvas"];
-            const itemObj = CABLES.UI.userSettings.get(this._id) || {};
+            const itemObj = userSettings.get(this._id) || {};
 
             for (let i = 0; i < defaultItems.length; i++)
                 if (!itemObj.hasOwnProperty(defaultItems[i]))
                     itemObj[defaultItems[i]] = true;
 
-            CABLES.UI.userSettings.set(this._id, itemObj);
+            userSettings.set(this._id, itemObj);
 
             for (const i in itemObj)
                 if (itemObj[i]) items.push(i);

@@ -8,6 +8,10 @@ import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
 import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
+import GlRect from "../gldraw/glrect.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import GlTextWriter from "../gldraw/gltextwriter.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -18,9 +22,17 @@ import { gui } from "../gui.js";
  */
 export default class GlOp extends Events
 {
+    /**
+     * @param {GlPatch} glPatch
+     * @param {GlRectInstancer} instancer
+     * @param {Op} op
+     */
     constructor(glPatch, instancer, op)
     {
         super();
+        /** @private @type Logger */
+        this._log = new Logger("glop");
+
         this.DISPLAY_DEFAULT = 0;
         this.DISPLAY_COMMENT = 1;
         this.DISPLAY_UI_AREA = 2;
@@ -28,69 +40,99 @@ export default class GlOp extends Events
         this.DISPLAY_SUBPATCH = 3;
         this.DISPLAY_REROUTE_DOT = 4;
 
-        this._log = new Logger("glop");
+
+        /** @private @type String */
         this._id = op.id;
+        /** @private @type Boolean */
         this._visible = true;
+        /** @private @type {GlPatch} */
         this._glPatch = glPatch;
+        /** @pribate @type {Op} */
         this._op = op;
+        /** @private @type String */
         this._objName = op.objName;
+        /** @private @type {Array} */
         this._glRectNames = [];
+        /** @private @type GlRectInstancer */
         this._instancer = instancer;
+        /** @private @type {Number} */
         this._width = gluiconfig.opWidth;
+        /** @private @type {Number} */
         this._height = gluiconfig.opHeight;
+        /** @private @type {Boolean} */
         this._needsUpdate = true;
+        /** @private @type {GlTextWriter} */
         this._textWriter = null;
+        /** @private @type {GlArea} */
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+        /** @type {GlRect} */
         this._glRectSelected = null;
+        /** @type {GlRect} */
         this._glRectBg = null;
+        /** @type {GlRect} */
         this._rectResize = null;
+        /** @type {GlRect} */
         this._glColorIndicator = null;
+        /** @type {GlRect} */
         this._glRerouteDot = null;
+
         this.minWidth = 10;
 
         this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
 
+        /** @type {GlRect} */
         this._glRectArea = null;
 
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
         this._titleExtPort = null;
         this._titleExtPortListener = null;
+        /** @type GlRect */
         this._titleExt = null;
         this._glRectNames.push("_titleExt");
 
+        /** @type GlRect */
         this._glTitle = null;
         this._glRectNames.push("_glTitle");
 
+        /** @type GlRect */
         this._glComment = null;
         this._glRectNames.push("_glComment");
 
+        /** @type {Boolean} */
         this._hidePorts = false;
+        /** @type {Boolean} */
         this._hideBgRect = false;
-
 
         this.displayType = 0;
 
         this._glPorts = [];
         this.opUiAttribs = {};
         this._links = {};
+        /** @type {Boolean} */
         this._transparent = false;
         this.setUiAttribs({}, op.uiAttribs);
         this._visPort = null;
+        /** @type {GlRect} */
         this._glRectContent = null;
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
         this._dragOldUiAttribs = null;
         this._rectBorder = 0;
 
+        /** @type {GlRect} */
         this._glLoadingIndicator = null;
+        /** @type {GlRect} */
         this._glNotWorkingCross = null;
+        /** @type {GlRect} */
         this._glDotError = null;
+        /** @type {GlRect} */
         this._glDotWarning = null;
+        /** @type {GlRect} */
         this._glDotHint = null;
-        // this._glRectRightHandle = null;
+        /** @type {GlRect} */
 
         if (this._op)
         {
@@ -112,8 +154,9 @@ export default class GlOp extends Events
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
             else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
         }
+        /** @type {Boolean} */
         this._wasInited = false;
-
+        /** @type {Boolean} */
         this._wasInCurrentSubpatch = false;
 
         this._initGl();
@@ -131,6 +174,10 @@ export default class GlOp extends Events
         //     {
         //         this.refreshPorts();
         //     });
+
+        /** @type {Number} */
+        this.zahl = 1;
+        this.zahl = "csdcsdsdc";
     }
 
     _storageChanged()
@@ -209,13 +256,11 @@ export default class GlOp extends Events
 
     get op() { return this._op; }
 
-
-
     _onBgRectDrag(e)
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+        if (gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
@@ -378,11 +423,11 @@ export default class GlOp extends Events
             if (e.buttons == MouseState.BUTTON_WHEEL)
             {
                 CABLES.mouseButtonWheelDown = true;
-                if (CABLES.UI.userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
+                if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
             }
             else
             {
-                if (CABLES.UI.userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
+                if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
             }
         }
 
@@ -673,6 +718,9 @@ export default class GlOp extends Events
         this.updatePosition();
     }
 
+    /**
+     * @returns {Boolean}
+     */
     isHovering()
     {
         if (this._glRectBg) return this._glRectBg.isHovering();
@@ -682,6 +730,9 @@ export default class GlOp extends Events
     {
     }
 
+    /**
+     * @param {Boolean} h
+     */
     setHover(h)
     {
         if (!this._isHovering && h) this.emitEvent("hoverStart");
@@ -821,6 +872,9 @@ export default class GlOp extends Events
         return ports;
     }
 
+    /**
+     * @private
+     */
     _initColorIndicators()
     {
         if (!this._op) return;
@@ -1174,9 +1228,6 @@ export default class GlOp extends Events
 
         if ((this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
-
-
-
 
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)

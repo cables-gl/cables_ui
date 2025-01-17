@@ -3,6 +3,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -50,7 +51,7 @@ export default class PatchSaveServer extends Events
         gui.closeModal();
         CABLES.CMD.PATCH.save(true, () =>
         {
-            if (CABLES.platform.getPatchVersion())
+            if (platform.getPatchVersion())
             {
                 CABLESUILOADER.talkerAPI.send("reload", { "patchId": gui.project().shortId });
             }
@@ -60,7 +61,7 @@ export default class PatchSaveServer extends Events
     checkUpdated(cb = null, fromSave = false, forceRequest = false)
     {
         if (!gui.project()) return;
-        if (CABLES.platform.isOffline() && !forceRequest)
+        if (platform.isOffline() && !forceRequest)
         {
             if (cb)cb();
             return;
@@ -83,7 +84,7 @@ export default class PatchSaveServer extends Events
                 return;
             }
 
-            CABLES.platform.setOnline();
+            platform.setOnline();
             if (gui.isRemoteClient)
             {
                 gui.jobs().finish("checkupdated");
@@ -192,7 +193,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (user._id !== gui.user.id)
                         {
-                            const link = CABLES.platform.getCablesUrl() + "/user/" + user.username;
+                            const link = platform.getCablesUrl() + "/user/" + user.username;
                             const checkboxData = {
                                 "name": "copy-collab-user-" + i,
                                 "value": user._id,
@@ -224,7 +225,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (team.allowEdit)
                         {
-                            const link = CABLES.platform.getCablesUrl() + team.link;
+                            const link = platform.getCablesUrl() + team.link;
                             checkboxGroup.checkboxes.push({
                                 "name": "copy-collab-team-" + i,
                                 "value": team._id,
@@ -241,7 +242,7 @@ export default class PatchSaveServer extends Events
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
-                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. need to reuse ops ? create a <a href=\"" + CABLES.platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. need to reuse ops ? create a <a href=\"" + platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
                 modalNotices.push(patchOpsText);
             }
 
@@ -488,12 +489,12 @@ export default class PatchSaveServer extends Events
 
                 const startTime = performance.now();
 
-                CABLES.platform.savePatch(
+                platform.savePatch(
                     {
                         "name": name,
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
-                        "fromBackup": CABLES.platform.getPatchVersion() || false,
+                        "fromBackup": platform.getPatchVersion() || false,
                         "buildInfo":
                         {
                             "core": CABLES.build,
@@ -536,7 +537,7 @@ export default class PatchSaveServer extends Events
 
                             if (msg === "ILLEGAL_OPS")
                             {
-                                const docsUrl = CABLES.platform.getCablesDocsUrl();
+                                const docsUrl = platform.getCablesDocsUrl();
                                 modalOptions.text = "You lack permissions to the following ops:";
                                 modalOptions.footer = "Invite the owners of the ops to this patch, join the teams the ops belong to, or convert them to patch ops.";
                                 modalOptions.choice = true;
@@ -612,7 +613,7 @@ export default class PatchSaveServer extends Events
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot()) this.saveScreenshot();
+                        if (doSaveScreenshot && !platform.manualScreenshot()) this.saveScreenshot();
                         else this.finishAnimations();
                     }
 

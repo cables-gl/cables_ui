@@ -7,16 +7,23 @@ import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
 import { gui } from "./gui.js";
+import { userSettings } from "./components/usersettings.js";
+
+/**
+ * @type {Platform}
+ */
+let platform = null;
+export { platform };
 
 /**
  * super class for platform implementations
  */
-export default class Platform extends Events
+export class Platform extends Events
 {
     constructor(cfg)
     {
         super();
-
+        platform = this;
         this._log = new Logger("platform");
         this._cfg = cfg;
         this._isOffline = false;
@@ -63,8 +70,8 @@ export default class Platform extends Events
             });
         }
 
-        if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
-        else CABLES.UI.userSettings.load({});
+        if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
+        else userSettings.load({});
 
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
@@ -78,7 +85,7 @@ export default class Platform extends Events
 
     warnOpEdit(opName)
     {
-        return (!CABLES.platform.isDevEnv() && namespace.isCoreOp(opName) && !CABLES.platform.isElectron());
+        return (!platform.isDevEnv() && namespace.isCoreOp(opName) && !platform.isElectron());
     }
 
     isElectron()
@@ -169,7 +176,7 @@ export default class Platform extends Events
             return true;
         return (
             gui.project().buildInfo.host ==
-            CABLES.platform
+            platform
                 .getCablesUrl()
                 .replaceAll("https://", "")
                 .replaceAll("http://", "")
@@ -222,7 +229,7 @@ export default class Platform extends Events
 
     showStartupChangelog()
     {
-        const lastView = CABLES.UI.userSettings.get("changelogLastView");
+        const lastView = userSettings.get("changelogLastView");
         const cl = new ChangelogToast();
         cl.getHtml((clhtml) =>
         {
@@ -237,7 +244,7 @@ export default class Platform extends Events
     {
         const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
+        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !userSettings.get("nobrowserWarning"))
         {
             iziToast.error({
                 "position": "topRight",
@@ -602,7 +609,7 @@ export default class Platform extends Events
 
     exportPatch(projectId)
     {
-        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
+        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
         if (this._versionId) gotoUrl += "?version=" + this._versionId;
 
         const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";

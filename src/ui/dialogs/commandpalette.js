@@ -1,5 +1,7 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * show a searchable command palette (cmd/ctrl+p)
@@ -76,7 +78,7 @@ export default class CommandPallete
 
         const el = ev.target;
         const cmd = el.closest(".result").dataset.cmd;
-        const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
+        const itemObj = userSettings.get("sidebar_left") || {};
 
         // replace the pin-icon / set / remove icon from sidebar
         const addToSidebar = !this.isCmdInSidebar(cmd);
@@ -95,7 +97,7 @@ export default class CommandPallete
             itemObj[cmd] = false;
         }
 
-        CABLES.UI.userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
+        userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
 
         gui.iconBarLeft.refresh();
     }
@@ -118,7 +120,7 @@ export default class CommandPallete
 
     isCmdInSidebar(cmdName)
     {
-        const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
+        const itemObj = userSettings.get("sidebar_left") || {};
         return itemObj.hasOwnProperty(cmdName) && itemObj[cmdName];
     }
 
@@ -184,7 +186,7 @@ export default class CommandPallete
 
             let show = true;
             if (CABLES.CMD.commands[i].frontendOption)
-                show = CABLES.platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
+                show = platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
 
             if (!show) continue;
             if (!str && CABLES.CMD.commands[i].category == "debug") continue;

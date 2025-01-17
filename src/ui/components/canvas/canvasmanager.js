@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 export default class CanvasManager
 {
@@ -169,7 +170,7 @@ export default class CanvasManager
         this._menuEle = el;
         this.updateCanvasUi();
 
-        CABLES.contextMenu.show({ "items": items }, el);
+        contextMenu.show({ "items": items }, el);
     }
 
 

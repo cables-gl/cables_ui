@@ -12,6 +12,8 @@ import uiconfig from "../../uiconfig.js";
 // import ParamTabInputListener from "./param_tabinputlistener.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
+import { contextMenu } from "../../elements/contextmenu.js";
+import { userSettings } from "../usersettings.js";
 
 
 /**
@@ -35,7 +37,7 @@ class ParamsListener extends Events
         this._watchStrings = [];
         this._portsIn = [];
         this._portsOut = [];
-        this._doFormatNumbers = !(CABLES.UI.userSettings.get("notlocalizeNumberformat") || false);
+        this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();
@@ -694,7 +696,7 @@ class ParamsListener extends Events
                 });
 
 
-            CABLES.contextMenu.show({ "items": items }, e.target);
+            contextMenu.show({ "items": items }, e.target);
         });
         else this._log.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
     }

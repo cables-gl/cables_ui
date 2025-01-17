@@ -9,6 +9,8 @@ import CanvasLens from "../components/canvas/canvaslens.js";
 import Keypresenter from "../components/keypresenter.js";
 import Tips from "../dialogs/tips.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { userSettings } from "../components/usersettings.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -30,7 +32,7 @@ CABLES_CMD_UI.settings = function ()
 CABLES_CMD_UI.showTips = function ()
 {
     this.tips = new Tips();
-    gui.tips.show();
+    this.tips.show();
 };
 
 CABLES_CMD_UI.canvasLens = function ()
@@ -41,7 +43,7 @@ CABLES_CMD_UI.canvasLens = function ()
 
 CABLES_CMD_UI.activityFeed = function ()
 {
-    const url = CABLES.platform.getCablesUrl() + "/myactivityfeed";
+    const url = platform.getCablesUrl() + "/myactivityfeed";
     gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
 };
 
@@ -59,7 +61,7 @@ CABLES_CMD_UI.openRemoteViewer = function ()
     }
     if (gui.socket) gui.socket.startRemoteViewer(() =>
     {
-        window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId);
+        window.open(platform.getCablesUrl() + "/remote_client/" + projectId);
     });
 };
 
@@ -104,20 +106,20 @@ CABLES_CMD_UI.showChat = function ()
 
 CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
-    CABLES.UI.userSettings.set("bgpreview", !gui.userSettings.get("bgpreview"));
+    userSettings.set("bgpreview", !userSettings.get("bgpreview"));
 };
 
 CABLES_CMD_UI.hideMinimap = function ()
 {
-    CABLES.UI.userSettings.set("showMinimap", false);
+    userSettings.set("showMinimap", false);
     gui.hideMiniMap();
 };
 
 
 CABLES_CMD_UI.toggleMinimap = function ()
 {
-    CABLES.UI.userSettings.set("showMinimap", !gui.userSettings.get("showMinimap"));
-    if (gui.userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
+    userSettings.set("showMinimap", !userSettings.get("showMinimap"));
+    if (userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
     else CABLES_CMD_UI.hideMinimap();
 };
 
@@ -162,7 +164,7 @@ CABLES_CMD_UI.centerPatchOps = function ()
 
 CABLES_CMD_UI.flowVis = function ()
 {
-    CABLES.UI.userSettings.set("glflowmode", !gui.userSettings.get("glflowmode"));
+    userSettings.set("glflowmode", !userSettings.get("glflowmode"));
 };
 
 CABLES_CMD_UI.startPresentationMode = function ()
@@ -247,8 +249,8 @@ CABLES_CMD_UI.welcomeTab = function (userInteraction)
 
 CABLES_CMD_UI.toggleOverlays = function ()
 {
-    const act = !gui.userSettings.get("overlaysShow");
-    CABLES.UI.userSettings.set("overlaysShow", act);
+    const act = !userSettings.get("overlaysShow");
+    userSettings.set("overlaysShow", act);
     gui.emitEvent("overlaysChanged", act);
     gui.transformOverlay.updateVisibility();
     gui.canvasManager.getCanvasUiBar().updateIconState();
@@ -256,14 +258,14 @@ CABLES_CMD_UI.toggleOverlays = function ()
 
 CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
-    CABLES.UI.userSettings.set("snapToGrid", !gui.userSettings.get("snapToGrid2"));
+    userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
 };
 
 CABLES_CMD_UI.toggleIntroCompleted = function ()
 {
-    CABLES.UI.userSettings.set("introCompleted", !gui.userSettings.get("introCompleted"));
+    userSettings.set("introCompleted", !userSettings.get("introCompleted"));
 
-    if (!gui.userSettings.get("introCompleted")) gui.introduction.showIntroduction();
+    if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
 };
 
 CABLES_CMD_UI.showAutomaton = function ()
@@ -313,7 +315,7 @@ CABLES_CMD_UI.jobs = function ()
 
 CABLES_CMD_UI.togglePauseVizLayer = function ()
 {
-    CABLES.UI.userSettings.set("vizlayerpaused", !gui.userSettings.get("vizlayerpaused"));
+    userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
 };
 
 

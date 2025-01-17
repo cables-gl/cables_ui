@@ -3,6 +3,7 @@ import SuggestionDialog from "../components/suggestiondialog.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { notify } from "./notification.js";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 export default class LongPressConnector extends Events
 {
@@ -21,7 +22,7 @@ export default class LongPressConnector extends Events
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
-        this._enabled = CABLES.UI.userSettings.get("quickLinkLongPress") || CABLES.UI.userSettings.get("quickLinkMiddleMouse");
+        this._enabled = userSettings.get("quickLinkLongPress") || userSettings.get("quickLinkMiddleMouse");
     }
 
     getStartOp()

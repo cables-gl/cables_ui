@@ -1,28 +1,50 @@
 import { Events } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 import glTlKeys from "./gltlkeys.js";
+import GlTimeline from "./gltimeline.js";
+import GlRect from "../gldraw/glrect.js";
+import { gui } from "../gui.js";
 
+/**
+ * gltimeline anim
+ *
+ * @export
+ * @class glTlAnim
+ * @extends {Events}
+ */
 export default class glTlAnim extends Events
 {
+    /**
+     * @param {GlTimeline} glTl
+     * @param {Anim} anim
+     * @param {Op} op
+     * @param {Port} port
+     */
     constructor(glTl, anim, op, port)
     {
         super();
+        /** @type {Anim} */
         this._anim = anim;
+        /** @type {GlTimeline} */
         this._glTl = glTl;
 
+        /** @type {GlRect} */
         this._glRectBg = this._glTl.rects.createRect({ "draggable": false });
         this._glRectBg.setSize(150, 30);
         this._glRectBg.setColor(0, 0, 0, 1);
 
+        /** @type {GlRect} */
         this._glRectKeysBg = this._glTl.rects.createRect({ "draggable": false });
         this._glRectKeysBg.setSize(1000, 30);
         this._glRectKeysBg.setColor(0.2, 0.2, 0.2, 0);
         this._glRectKeysBg.setPosition(150, 0);
         this._glRectKeysBg.setParent(this._glRectBg);
 
+        /** @type GlText */
         this._glTitle = new GlText(this._glTl.texts, op.name + " - " + port.name || "unknown anim");
         this._glTitle.setParentRect(this._glRectBg);
 
+        /** @type glTlKeys */
         this.keys = new glTlKeys(glTl, anim, this._glRectKeysBg);
         this._op = op;
         this._port = port;

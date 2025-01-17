@@ -1,3 +1,4 @@
+import { userSettings } from "../components/usersettings.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
@@ -24,13 +25,13 @@ export default class Tips
 
     neverShow()
     {
-        CABLES.UI.userSettings.set("showTipps", false);
+        userSettings.set("showTipps", false);
         this.show();
     }
 
     showAlways()
     {
-        CABLES.UI.userSettings.set("showTipps", true);
+        userSettings.set("showTipps", true);
         this.show();
     }
 
@@ -62,7 +63,7 @@ export default class Tips
         html += "  <a onclick=\"gui.tips.next();\" class=\"button\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";
-        if (CABLES.UI.userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">Do not show this on startup</a>";
+        if (userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">Do not show this on startup</a>";
         else html += "<a onclick=\"gui.tips.showAlways();\" class=\"button-small\">Show on startup again</a>";
         html += "  </div\">";
 

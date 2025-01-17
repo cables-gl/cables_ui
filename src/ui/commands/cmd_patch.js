@@ -12,6 +12,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
+import { platform } from "../platform.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -144,7 +145,7 @@ CABLES_CMD_PATCH.saveAs = function ()
 
 CABLES_CMD_PATCH.createBackup = function ()
 {
-    CABLES.platform.createBackup();
+    platform.createBackup();
 };
 
 CABLES_CMD_PATCH.clear = function ()
@@ -186,8 +187,8 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
     {
         // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
         const idsParam = ids.join(",");
-        const url = CABLES.platform.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
-        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.platform.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
+        const url = platform.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
+        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
     }
 };
 
@@ -199,7 +200,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         return;
     }
 
-    let suggestedNamespace = CABLES.platform.getPatchOpsNamespace();
+    let suggestedNamespace = platform.getPatchOpsNamespace();
     if (gui.patchView.getCurrentSubPatch() != 0)
     {
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
@@ -225,7 +226,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
         "showReplace": false,
-        "hasOpDirectories": CABLES.platform.frontendOptions.hasOpDirectories
+        "hasOpDirectories": platform.frontendOptions.hasOpDirectories
     };
 
     if (gui.patchView.getCurrentSubPatch() != 0)
@@ -542,7 +543,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
 CABLES_CMD_PATCH.uploadFileTab = () =>
 {
-    const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings/upload?iframe=true";
+    const url = platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings/upload?iframe=true";
     gui.mainTabs.addIframeTab(
         "Upload File",
         url,
@@ -556,8 +557,8 @@ CABLES_CMD_PATCH.uploadFileTab = () =>
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
-    const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
-    const gotoUrl = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
+    const url = platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
+    const gotoUrl = platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
         url,
@@ -572,7 +573,7 @@ CABLES_CMD_PATCH.showBackups = () =>
 
 CABLES_CMD_PATCH.export = function (type)
 {
-    const exporter = new Exporter(gui.project(), CABLES.platform.getPatchVersion(), type);
+    const exporter = new Exporter(gui.project(), platform.getPatchVersion(), type);
     exporter.show();
 };
 
@@ -632,7 +633,7 @@ CABLES_CMD_PATCH.addOp = function (x, y)
 
 CABLES_CMD_PATCH.patchWebsite = function ()
 {
-    window.open(CABLES.platform.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
+    window.open(platform.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
 };
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
@@ -1172,7 +1173,7 @@ CABLES_CMD_PATCH.replaceOp = function ()
 
 CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "")
 {
-    if (!CABLES.platform.frontendOptions.editOpSummary) return;
+    if (!platform.frontendOptions.editOpSummary) return;
 
     new ModalDialog({
         "prompt": true,
@@ -1264,7 +1265,7 @@ CABLES_CMD_PATCH.deleteOp = (opName = null) =>
         opName = op.objName;
     }
 
-    if (CABLES.platform.frontendOptions.opDeleteInEditor)
+    if (platform.frontendOptions.opDeleteInEditor)
     {
         gui.serverOps.deleteDialog(opName);
     }

@@ -17,6 +17,9 @@ import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { fileUploader } from "../dialogs/upload.js";
+import { userSettings } from "./usersettings.js";
 
 /**
  * manage patch view and helper functions
@@ -264,7 +267,7 @@ export default class PatchView extends Events
                 if (item.kind === "file")
                 {
                     let blob = item.getAsFile();
-                    CABLES.fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
+                    fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
                     return;
                 }
             }
@@ -607,9 +610,9 @@ export default class PatchView extends Events
 
             const html = getHandleBarHtml(
                 "params_ops", {
-                    "isDevEnv": CABLES.platform.isDevEnv(),
-                    "config": CABLES.platform.cfg,
-                    "showDevInfos": CABLES.UI.userSettings.get("devinfos"),
+                    "isDevEnv": platform.isDevEnv(),
+                    "config": platform.cfg,
+                    "showDevInfos": userSettings.get("devinfos"),
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs
@@ -1391,69 +1394,10 @@ export default class PatchView extends Events
         return subPatches;
     }
 
-
-    // subpatchContextMenu(id, el)
-    // {
-    //     const ids = [];
-    //     const ops = gui.corePatch().ops;
-    //     for (let i = 0; i < ops.length; i++)
-    //     {
-    //         if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubPatchOp())
-    //         {
-    //             ids.push(ops[i].patchId.get());
-    //         }
-    //     }
-
-    //     const items = [];
-    //     for (let i = 0; i < ids.length; i++)
-    //     {
-    //         const theId = ids[i];
-    //         items.push({
-    //             "title": "› " + this.getSubPatchName(ids[i]),
-    //             "func": () =>
-    //             {
-    //                 gui.patchView.setCurrentSubPatch(theId);
-    //             }
-    //         });
-    //     }
-
-    //     items.push({
-    //         "title": "Go to op",
-    //         "func": () =>
-    //         {
-    //             gui.patchView.focusSubpatchOp(id);
-    //         }
-    //     });
-
-    //     CABLES.contextMenu.show(
-    //         {
-    //             "items": items,
-    //         }, el);
-    // }
-
     getSubPatchOuterOp(subPatchId)
     {
         return gui.corePatch().getSubPatchOuterOp(subPatchId);
     }
-
-    // focusSubpatchOp(subPatchId)
-    // {
-    //     this._log.log("dupe focusSubpatchOp2");
-
-    //     let gotoOp = this.getSubPatchOuterOp(subPatchId);
-    //     if (!gotoOp) return;
-    //     let parentSubId = gotoOp.uiAttribs.subPatch || 0;
-    //     let gotoOpId = gotoOp.id;
-    //     if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;
-    //     if (gotoOpId)
-    //         this.setCurrentSubPatch(parentSubId, () =>
-    //         {
-    //             this.focus();
-    //             this.focusOp(gotoOpId);
-    //             this.centerSelectOp(gotoOpId);
-    //         });
-    //     else this._log.warn("[focusSubpatchOp] goto op not found");
-    // }
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
@@ -1494,7 +1438,7 @@ export default class PatchView extends Events
                     if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
                 }
                 let bpText = "<span class=\"icon icon-external\"></span> Open patch";
-                let bpClick = "window.open('" + CABLES.platform.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
+                let bpClick = "window.open('" + platform.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
                 if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
                 {
                     bpText = "Go to subpatch";
@@ -1708,7 +1652,7 @@ export default class PatchView extends Events
                     {
                         let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (CABLES.UI.userSettings.get("snapToGrid2"))
+                        if (userSettings.get("snapToGrid2"))
                         {
                             x = Snap.snapOpPosX(x);
                             y = Snap.snapOpPosY(y);
@@ -1959,7 +1903,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
+            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1975,7 +1919,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
+            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }

@@ -3,6 +3,8 @@ import { notify } from "../elements/notification.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { contextMenu } from "../elements/contextmenu.js";
 
 export default class ScUiMultiplayer extends Events
 {
@@ -59,7 +61,7 @@ export default class ScUiMultiplayer extends Events
             "clients": clientList,
             "multiplayerCapable": this._connection.multiplayerCapable,
             "showMoreOptions": true,
-            "cablesurl": CABLES.platform.getCablesUrl()
+            "cablesurl": platform.getCablesUrl()
         };
 
         const html = getHandleBarHtml("sc_userlist", data);
@@ -105,7 +107,7 @@ export default class ScUiMultiplayer extends Events
             }
             elem.addEventListener("pointerdown", (event) =>
             {
-                CABLES.contextMenu.show({ "items": this._getContextMenuItems(event.currentTarget.dataset.clientId) }, event.currentTarget);
+                contextMenu.show({ "items": this._getContextMenuItems(event.currentTarget.dataset.clientId) }, event.currentTarget);
             });
         });
 
@@ -221,7 +223,7 @@ export default class ScUiMultiplayer extends Events
 
                 if (items.length > 0)
                 {
-                    CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
+                    contextMenu.show({ "items": items, }, event.currentTarget);
                 }
             });
         }
@@ -264,7 +266,7 @@ export default class ScUiMultiplayer extends Events
     _restoreLastSavedPatchVersion()
     {
         this._connection.setPacoPaused(true);
-        CABLES.platform.reloadLastSavedVersion((err, project) =>
+        platform.reloadLastSavedVersion((err, project) =>
         {
             this._connection.setPacoPaused(false);
             this._connection.sendCurrentVersion();
@@ -334,7 +336,7 @@ export default class ScUiMultiplayer extends Events
                             "title": "Open in new window",
                             "func": () =>
                             {
-                                window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId + "?u=" + client.userid);
+                                window.open(platform.getCablesUrl() + "/remote_client/" + projectId + "?u=" + client.userid);
                             }
                         });
                     }
@@ -579,7 +581,7 @@ export default class ScUiMultiplayer extends Events
                 // this._requestResync(msg.username + " changed " + opName, (next) =>
                 // {
                 //     const taskName = String(this._connection.getTimestamp());
-                //     loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
+                //     loadjs([CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
 
                 //     const loadJsCallback = () =>
                 //     {

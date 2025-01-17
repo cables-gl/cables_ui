@@ -4,6 +4,7 @@ import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import { userSettings } from "./usersettings.js";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;
@@ -23,7 +24,7 @@ export default class TexturePreviewer
         this._texturePorts = [];
         this._showing = false;
         this._lastTimeActivity = 0;
-        this._mode = CABLES.UI.userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
+        this._mode = userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
         this._paused = false;
         this._shader = null;
         this._shaderTexUniform = null;
@@ -41,10 +42,10 @@ export default class TexturePreviewer
         this._ele = document.getElementById("bgpreview");
         this.setSize();
 
-        CABLES.UI.userSettings.on("change", (key, v) =>
+        userSettings.on("change", (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
-            if (key == "texpreviewSize") this.setSize(CABLES.UI.userSettings.get(key));
+            if (key == "texpreviewSize") this.setSize(userSettings.get(key));
             if (key == "bgpreviewMax") this.enableBgPreview();
         });
 
@@ -138,7 +139,7 @@ export default class TexturePreviewer
 
         if (!previewCanvasEle)
         {
-            console.log("no previewCanvasEle");
+            this._log.log("no previewCanvasEle");
             return;
         }
 
@@ -241,7 +242,7 @@ export default class TexturePreviewer
                 const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
                 vizCtx.save();
 
-                if (CABLES.UI.userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+                if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
 
                 let w = 150;
                 let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
@@ -279,7 +280,7 @@ export default class TexturePreviewer
         // {
         // // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
 
-        //     if (CABLES.UI.userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+        //     if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
         //     vizCtx.save();
         //     let w = 150;
         //     let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
@@ -308,7 +309,7 @@ export default class TexturePreviewer
 
     toggleSize(m)
     {
-        let size = CABLES.UI.userSettings.get("texpreviewSize");
+        let size = userSettings.get("texpreviewSize");
 
         if (size == null || size == undefined)size = 30;
 
@@ -319,19 +320,19 @@ export default class TexturePreviewer
 
         this.scale = size / 100;
 
-        CABLES.UI.userSettings.set("texpreviewSize", this.scale * 100);
+        userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     setSize(size)
     {
-        if (!size)size = CABLES.UI.userSettings.get("texpreviewSize") || 50;
+        if (!size)size = userSettings.get("texpreviewSize") || 50;
 
-        if (CABLES.UI.userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
+        if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
         else this._ele.style.opacity = 1;
 
         this.scale = size / 100;
 
-        CABLES.UI.userSettings.set("texpreviewSize", this.scale * 100);
+        userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     _getCanvasSize(port, tex, meta)
@@ -391,17 +392,17 @@ export default class TexturePreviewer
 
     enableBgPreview()
     {
-        const enabled = CABLES.UI.userSettings.get("bgpreviewMax");
+        const enabled = userSettings.get("bgpreviewMax");
         this._enabled = enabled;
 
         // if (storeSetting)
         // {
-        //     CABLES.UI.userSettings.set("bgpreviewMax", enabled);
+        //     userSettings.set("bgpreviewMax", enabled);
 
-        //     console.log("store bgpreview max", enabled);
+        //     this._log.log("store bgpreview max", enabled);
         // }
 
-        // console.log("bgpreviewMax", CABLES.UI.userSettings.get("bgpreviewMax"), enabled);
+        // this._log.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
 
 
         if (this._mode == MODE_CORNER)
@@ -504,7 +505,7 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
-        if (!gui.userSettings.get("bgpreview"))
+        if (!userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
             this._lastClicked = this.updateTexturePort(p);
@@ -613,7 +614,7 @@ export default class TexturePreviewer
 
         // if (!op)
         // {
-        //     console.log("texpreviewer cant find op");
+        //     this._log.log("texpreviewer cant find op");
         //     return;
         // }
 
@@ -643,7 +644,7 @@ export default class TexturePreviewer
         //         o.enabled = this._enabled;
         //     }
 
-        //     // console.log(o);
+        //     // this._log.log(o);
         // }
 
         return o;

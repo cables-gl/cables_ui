@@ -1,8 +1,10 @@
 import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
+import { platform } from "../../platform.js";
 import text from "../../text.js";
 import { handleBarPrecompiled } from "../../utils/handlebars.js";
+import { userSettings } from "../usersettings.js";
 
 class PortHtmlGenerator
 {
@@ -53,7 +55,7 @@ class PortHtmlGenerator
         const o = {
             "op": op,
             "panelid": this._panelId,
-            "frontendOptions": CABLES.platform.frontendOptions,
+            "frontendOptions": platform.frontendOptions,
             "isBookmarked": isBookmarked,
             "colorClass": opNames.getNamespaceClassName(op.objName),
             "texts": text,
@@ -61,13 +63,13 @@ class PortHtmlGenerator
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
             "oldVersion": oldversion,
-            "minified": CABLES.UI.userSettings.get("minifiedOpHead"),
+            "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
-            "cablesUrl": CABLES.platform.getCablesUrl(),
+            "cablesUrl": platform.getCablesUrl(),
             "hasExample": hasExample,
         };
 
-        o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+        o.cablesDocsUrl = platform.getCablesDocsUrl();
 
         return this._templateHead(o, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
@@ -112,8 +114,8 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
-                "cablesUrl": CABLES.platform.getCablesUrl(),
-                "openLocalFiles": CABLES.platform.frontendOptions.openLocalFiles,
+                "cablesUrl": platform.getCablesUrl(),
+                "openLocalFiles": platform.frontendOptions.openLocalFiles,
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,

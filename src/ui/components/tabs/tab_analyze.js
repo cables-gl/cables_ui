@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
 /**
  * tab panel analyze patch shows information and statistics about the current patch
  */
@@ -29,7 +30,7 @@ export default class AnalyzePatchTab extends Events
 
         const opsCount = {};
         const opDirs = {};
-        const hasOpDirs = CABLES.platform.frontendOptions.hasOpDirectories;
+        const hasOpDirs = platform.frontendOptions.hasOpDirectories;
 
         for (let i = 0; i < patch.ops.length; i++)
         {
@@ -63,7 +64,7 @@ export default class AnalyzePatchTab extends Events
             });
         }
 
-        if (CABLES.platform.frontendOptions.hasAssetDirectories)
+        if (platform.frontendOptions.hasAssetDirectories)
         {
             const ops = gui.corePatch().ops;
             const assets = {};

@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
+import { userSettings } from "../usersettings.js";
 
 export default class CanvasUi
 {
@@ -162,7 +163,7 @@ export default class CanvasUi
 
     updateIconState()
     {
-        const act = CABLES.UI.userSettings.get("overlaysShow");
+        const act = userSettings.get("overlaysShow");
         const icon = ele.byId("canvUitoggleOverlay");
         if (icon)
             if (act)icon.style.backgroundColor = "var(--color-special)";
@@ -171,7 +172,7 @@ export default class CanvasUi
 
     showCanvasModal(_show)
     {
-        if (CABLES.UI.userSettings.get("hideCanvasUi")) return;
+        if (userSettings.get("hideCanvasUi")) return;
 
         const perf = gui.uiProfiler.start("[canvasUi] showCanvasModal");
 

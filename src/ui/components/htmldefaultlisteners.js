@@ -32,13 +32,13 @@ export default function setHtmlDefaultListeners()
     {
         if (e && e.message && e.message.indexOf("/js/ace/worker-javascript.") > -1)
         {
-            console.log("yay! suppressed nonsense ace editor exception... ");
+            _log.log("yay! suppressed nonsense ace editor exception... ");
             return;
         }
 
         if (e && e.exception && String(e.exception.stack).indexOf("file:blob:") == 0)
         {
-            console.log("ignore file blob exception...");
+            _log.log("ignore file blob exception...");
             return;
         }
 

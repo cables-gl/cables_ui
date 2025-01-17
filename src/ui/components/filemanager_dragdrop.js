@@ -1,5 +1,9 @@
+import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
+import { fileUploader } from "../dialogs/upload.js";
 
+const log = new Logger("dragndrop");
 
 /**
  * filemanager - dragging and dropping files handler/listener
@@ -28,12 +32,12 @@ DragNDrop.startDragLibraryFile = function (_event, p)
 
     _event.dataTransfer.setDragImage(CABLES.dragImage, 10, 10);
 
-    CABLES.fileUploader.unBindUploadDragNDrop();
+    fileUploader.unBindUploadDragNDrop();
 
     function dragover(event)
     {
         self.internal = true;
-        CABLES.fileUploader.unBindUploadDragNDrop();
+        fileUploader.unBindUploadDragNDrop();
 
         event.preventDefault();
         event.stopPropagation();
@@ -42,7 +46,7 @@ DragNDrop.startDragLibraryFile = function (_event, p)
     function dragleave(event)
     {
         self.internal = false;
-        CABLES.fileUploader.unBindUploadDragNDrop();
+        fileUploader.unBindUploadDragNDrop();
 
         event.preventDefault();
         event.stopPropagation();
@@ -50,11 +54,7 @@ DragNDrop.startDragLibraryFile = function (_event, p)
 
     function drop(event)
     {
-        if (!self.internal)
-        {
-            console.warn("not internal!");
-            return;
-        }
+        if (!self.internal) return log.warn("not internal!");
 
         event.preventDefault();
         event.stopPropagation();
@@ -64,10 +64,9 @@ DragNDrop.startDragLibraryFile = function (_event, p)
         if (event.dataTransfer.files[0])
         {
             // this drop is actually a real file...
-            return CABLES.fileUploader.uploadDrop(event);
+            return fileUploader.uploadDrop(event);
         }
 
-        console.log("drop event", filepath, event);
         gui.patchView.addAssetOpAuto(filepath, event);
 
         document.getElementById("patchviews").removeEventListener("drop", drop);
@@ -75,10 +74,10 @@ DragNDrop.startDragLibraryFile = function (_event, p)
         document.getElementById("patchviews").removeEventListener("dragleave", dragleave);
         document.getElementById("patchviews").removeEventListener("dragend", dragleave);
 
-        if (CABLES.platform.frontendOptions.uploadFiles)
+        if (platform.frontendOptions.uploadFiles)
         {
-            CABLES.fileUploader.unBindUploadDragNDrop();
-            CABLES.fileUploader.bindUploadDragNDrop();
+            fileUploader.unBindUploadDragNDrop();
+            fileUploader.bindUploadDragNDrop();
         }
         self.internal = false;
     }

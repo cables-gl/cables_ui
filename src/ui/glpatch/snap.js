@@ -3,6 +3,9 @@ import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
+import GlPatch from "./glpatch.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid
@@ -17,8 +20,10 @@ export default class Snap extends Events
     {
         super();
 
+        /** @type {GlPatch} */
         this._glPatch = glPatch;
         this._xCoords = [];
+        /** @type {GlRectInstancer} */
         this._instancer = instancer;
         this._timeout = null;
         this._rectWidth = 1;
@@ -71,7 +76,7 @@ export default class Snap extends Events
     snapX(_x)
     {
         let x = _x;
-        if (CABLES.UI.userSettings.get("snapToGrid2"))
+        if (userSettings.get("snapToGrid2"))
             x = Snap.snapOpPosX(_x);
 
         return x;
@@ -79,13 +84,13 @@ export default class Snap extends Events
 
     snapY(y, force)
     {
-        if (CABLES.UI.userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
+        if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
         else return y;
     }
 
     _snapPortX(_x, port, index, dist)
     {
-        if (CABLES.UI.userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
         for (let i = 0; i < port.links.length; i++)
         {
@@ -120,7 +125,7 @@ export default class Snap extends Events
 
     snapOpX(_x, op, dist)
     {
-        if (CABLES.UI.userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
 
         let hasLinks = false;
@@ -171,6 +176,7 @@ export default class Snap extends Events
         return _x;
     }
 }
+
 Snap.snapOpPosX = function (posX)
 {
     return (Math.round(posX / uiconfig.snapX) * uiconfig.snapX) || 1;

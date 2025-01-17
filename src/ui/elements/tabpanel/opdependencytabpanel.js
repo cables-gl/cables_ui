@@ -1,5 +1,6 @@
 import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
+import { platform } from "../../platform.js";
 
 
 /**
@@ -28,7 +29,7 @@ export default class OpDependencyTabPanel extends TabPanel
     init()
     {
         let activeTab;
-        CABLES.platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
+        platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
         {
             const title = this._titles[depType] || depType;
             const tabOptions = { "hideToolbar": true, "closable": false, "depType": depType, ...this._options };

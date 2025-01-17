@@ -1,3 +1,4 @@
+import { userSettings } from "./usersettings.js";
 
 /**
  * Show intro and explain gui elements
@@ -16,7 +17,7 @@ export default class Introduction
     /* Disables intro.js for the current logged-in user */
     disableIntroForUser()
     {
-        CABLES.UI.userSettings.set("introCompleted", true);
+        userSettings.set("introCompleted", true);
     }
 
     /**

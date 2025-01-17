@@ -1,24 +1,40 @@
+import { userSettings } from "../components/usersettings.js";
+import GlRect from "../gldraw/glrect.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
+import GlOp from "./glop.js";
 
 export default class GlArea
 {
+    /**
+     * @param {GlRectInstancer} instancer
+     * @param {GlOp} glop
+     */
     constructor(instancer, glop)
     {
         this._instancer = instancer;
 
+
+        /** @private @type {GlOp}  */
         this._glop = glop;
         this._id = CABLES.shortId();
 
+        /** @private @type {Number} */
         this._w = 300;
+        /** @private @type {Number} */
         this._h = 200;
+        /** @private @type {Boolean} */
         this._visible = true;
 
+        /** @type {GlRect} */
         this._rectBg = this._instancer.createRect({ "draggable": false });
         this._rectBg.setSize(this._w, this._h);
         this._updateColor();
 
+        /** @type {Number} */
         this.resizeCornerSize = 15;
 
+        /** @type {GlRect} */
         this._rectResize = this._instancer.createRect({ "draggable": true });
         this._rectResize.setShape(2);
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
@@ -37,7 +53,7 @@ export default class GlArea
             this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
             this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
 
-            if (CABLES.UI.userSettings.get("snapToGrid2"))
+            if (userSettings.get("snapToGrid2"))
             {
                 this._w = this._glop.glPatch.snap.snapX(this._w);
                 this._h = this._glop.glPatch.snap.snapY(this._h);
@@ -63,6 +79,7 @@ export default class GlArea
         this._update();
     }
 
+    /** @private */
     _update()
     {
         if (this._rectBg)
@@ -88,10 +105,9 @@ export default class GlArea
         this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });
     }
 
+    /** @private */
     _updateColor()
     {
-        // this._rectBg.colorHoverMultiply = 1;
-
         if (this._glop.opUiAttribs.color)
         {
             const cols = chroma.hex(this._glop.opUiAttribs.color).gl();

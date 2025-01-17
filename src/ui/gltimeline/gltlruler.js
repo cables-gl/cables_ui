@@ -1,11 +1,19 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 
+/**
+ * gltl ruler display
+ *
+ * @export
+ * @class glTlRuler
+ * @extends {Events}
+ */
 export default class glTlRuler extends Events
 {
     constructor(glTl)
     {
         super();
+        this._log = new Logger("glTlRuler");
         this._glTl = glTl;
         this._units = 0;
         this._fps = 30;
@@ -20,7 +28,7 @@ export default class glTlRuler extends Events
 
         this._glRectBg.on("drag", (r, ox, oy) =>
         {
-            console.log("rag", this._offset);
+            this._log.log("rag", this._offset);
             this._offset = ox / 100;
             this.update();
         });
@@ -99,7 +107,6 @@ export default class glTlRuler extends Events
         }
         const bps = this._bpm / 60;
         const onebeatPixel = this._glTl.timeToPixel(1 / bps - offset);
-        console.log(onebeatPixel, bps);
         for (let i = 0; i < this.markBeats.length; i++)
         {
             const mr = this.markBeats[i];

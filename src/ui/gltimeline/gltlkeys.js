@@ -1,8 +1,23 @@
 import { Events } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
+import GlTimeline from "./gltimeline.js";
+import GlRect from "../gldraw/glrect.js";
 
+
+/**
+ * gltl key rendering
+ *
+ * @export
+ * @class glTlKeys
+ * @extends {Events}
+ */
 export default class glTlKeys extends Events
 {
+    /**
+     * @param {GlTimeline} glTl
+     * @param {Anim} anim
+     * @param {GlRect} parentRect
+     */
     constructor(glTl, anim, parentRect)
     {
         super();
@@ -39,6 +54,6 @@ export default class glTlKeys extends Events
 
     setIndex(i)
     {
-        this._glRectBg.setPosition(0, i * 31 + 50);
+        // this._glRectBg.setPosition(0, i * 31 + 50);
     }
 }
