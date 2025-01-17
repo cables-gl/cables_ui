@@ -72,6 +72,9 @@ export default class CommandPallete
         document.addEventListener("keydown", this.keyDown);
     }
 
+    /**
+     * @param {Event} ev
+     */
     onBookmarkIconClick(ev)
     {
         ev.stopPropagation();
@@ -134,6 +137,14 @@ export default class CommandPallete
         return this._bookmarkInactiveIcon;
     }
 
+    /**
+     * add result
+     *
+     * @param {Object} cmd
+     * @param {Number} num
+     * @param {Number} idx
+     * @returns {String}
+     */
     addResult(cmd, num, idx)
     {
         let dynclass = "";
@@ -157,7 +168,10 @@ export default class CommandPallete
         return html;
     }
 
-
+    /**
+     * @param {String} str - String
+     * @param {String} searchId
+     */
     doSearch(str, searchId)
     {
         this._lastSearch = str;

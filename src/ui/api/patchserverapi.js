@@ -67,7 +67,6 @@ export default class PatchSaveServer extends Events
             return;
         }
 
-
         gui.jobs().start({
             "id": "checkupdated",
             "title": "check patch was updated",
@@ -80,6 +79,7 @@ export default class PatchSaveServer extends Events
             {
                 this._log.log("error", err);
                 gui.jobs().finish("checkupdated");
+
                 /* ignore errors */
                 return;
             }
@@ -154,7 +154,6 @@ export default class PatchSaveServer extends Events
             }
         });
     }
-
 
     saveAs()
     {
@@ -325,7 +324,6 @@ export default class PatchSaveServer extends Events
         });
     }
 
-
     saveCurrentProject(cb, _id, _name, _force, _afterClone)
     {
         if (gui.showGuestWarning()) return;
@@ -402,8 +400,6 @@ export default class PatchSaveServer extends Events
 
         data.ops = data.ops || [];
 
-
-
         for (let i = 0; i < data.ops.length; i++)
         {
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
@@ -420,13 +416,11 @@ export default class PatchSaveServer extends Events
             if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork")) delete data.ops[i].uiAttribs.fromNetwork;
         }
 
-
         // delete subpatch 2 ops
         let isu = data.ops.length;
         while (isu--)
             if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("bp2sub_") == 0))
                 data.ops.splice(isu, 1);
-
 
         if (blueprintIds.length > 0)
         {
@@ -474,8 +468,10 @@ export default class PatchSaveServer extends Events
                 if (origSize > 1000)
                     this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
-                // let b64 = Buffer.from(uint8data).toString("base64");
-                // bytesArrToBase
+                /*
+                 * let b64 = Buffer.from(uint8data).toString("base64");
+                 * bytesArrToBase
+                 */
                 let b64 = bytesArrToBase64(uint8data);
 
                 if (datastr.length > 12 * 1024 * 1024)
@@ -483,9 +479,10 @@ export default class PatchSaveServer extends Events
 
                 gui.savingTitleAnimStart("Saving Patch...");
 
-                // document.getElementById("patchname").innerHTML = "Saving Patch";
-                // document.getElementById("patchname").classList.add("blinking");
-
+                /*
+                 * document.getElementById("patchname").innerHTML = "Saving Patch";
+                 * document.getElementById("patchname").classList.add("blinking");
+                 */
 
                 const startTime = performance.now();
 
@@ -609,8 +606,6 @@ export default class PatchSaveServer extends Events
                             this._serverDate = r.updated;
                         }
 
-
-
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
                         if (doSaveScreenshot && !platform.manualScreenshot()) this.saveScreenshot();
@@ -655,7 +650,6 @@ export default class PatchSaveServer extends Events
                                 ]
                             ]
                         });
-
 
                         break;
                     }
@@ -716,7 +710,6 @@ export default class PatchSaveServer extends Events
             }
         });
     }
-
 
     saveScreenshot(hires, cb)
     {

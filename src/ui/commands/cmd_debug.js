@@ -10,7 +10,6 @@ import GlGuiTab from "../components/tabs/tab_glpatch.js";
 import CMD from "./commands.js";
 import Gui, { gui } from "../gui.js";
 
-
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
 
@@ -79,25 +78,25 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
             // window reloaded from outside
         },
     );
+
     /*
-    if (!gui.getSavedState())
-    {
-        log.log("SHOW MODAL");
-    }
-    else
-    {
-        CABLESUILOADER.talkerAPI.send(
-            "toggleMultiplayerSession",
-            { "projectId": this._patchId },
-            (err, res) =>
-            {
-                // window reloaded from outside
-            },
-        );
-    }
+     *if (!gui.getSavedState())
+     *{
+     *    log.log("SHOW MODAL");
+     *}
+     *else
+     *{
+     *    CABLESUILOADER.talkerAPI.send(
+     *        "toggleMultiplayerSession",
+     *        { "projectId": this._patchId },
+     *        (err, res) =>
+     *        {
+     *            // window reloaded from outside
+     *        },
+     *    );
+     *}
      */
 };
-
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
@@ -255,7 +254,6 @@ CABLES_CMD_DEBUG.watchOpDocsJson = function ()
     gui.maintabPanel.show(true);
 };
 
-
 CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
 {
     new OpWatchUiAttribs(gui.mainTabs);
@@ -272,7 +270,6 @@ CABLES_CMD_DEBUG.undoHistory = () =>
 {
     new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true);
 };
-
 
 CMD_DEBUG_COMMANDS.push(
     {
@@ -392,6 +389,5 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.testCommands,
         "category": "debug",
     },
-
 
 );

@@ -44,7 +44,6 @@ export default class WatchArrayTab extends Events
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
 
-
         this._ele = document.getElementById(this._id);
 
         if (!this._ele)
@@ -64,7 +63,6 @@ export default class WatchArrayTab extends Events
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
 
-
         if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
             this._eleIconMinus = ele.create("a");
@@ -73,7 +71,6 @@ export default class WatchArrayTab extends Events
             this._eleIconMinus.addEventListener("click", () => { this._changeColumns(-1); });
             this._eleIconbar.appendChild(this._eleIconMinus);
 
-
             this._eleIconPlus = ele.create("a");
             this._eleIconPlus.innerHTML = "+";
             this._eleIconPlus.classList.add("button");
@@ -81,17 +78,17 @@ export default class WatchArrayTab extends Events
             this._eleIconbar.appendChild(this._eleIconPlus);
         }
 
-
         // this._eleIconbar.innerHTML='<a href="http://localhost:5711/op/Ops.Array.RandomNumbersArray3_v2" class="button ">+</a>';
 
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
 
-
-        // if (!this.cells)
-        //     for (let y = 0; y < this._rows; y++)
-        //         for (let x = 0; x < this._numCols; x++)
-        //             this.set(x, y, "");
+        /*
+         * if (!this.cells)
+         *     for (let y = 0; y < this._rows; y++)
+         *         for (let x = 0; x < this._numCols; x++)
+         *             this.set(x, y, "");
+         */
 
         this._html();
     }
@@ -183,7 +180,6 @@ export default class WatchArrayTab extends Events
         }
     }
 
-
     _changeColumns(n)
     {
         this._numCols += n;
@@ -226,7 +222,6 @@ export default class WatchArrayTab extends Events
         }
         table.appendChild(tr1);
 
-
         for (let y = 0; y < this._rows; y++)
         {
             const tr = ele.create("tr");
@@ -259,7 +254,6 @@ export default class WatchArrayTab extends Events
             }
         }
 
-
         if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
             let showNum = 0;
@@ -278,7 +272,6 @@ export default class WatchArrayTab extends Events
         }
     }
 
-
     _focusCell(x, y)
     {
         const inp = this._inputs[(y * this._numCols) + x];
@@ -294,14 +287,12 @@ export default class WatchArrayTab extends Events
         }
     }
 
-
     get(x, y)
     {
         if (!this.data) return "???";
         if (this.data[x + y * this._numCols] === undefined) return "-";
         return this.data[x + y * this._numCols];
     }
-
 
     show()
     {

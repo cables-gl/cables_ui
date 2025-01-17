@@ -3,7 +3,6 @@ import GlText from "../gldraw/gltext.js";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 
-
 /**
  * gltl key rendering
  *
@@ -13,6 +12,7 @@ import GlRect from "../gldraw/glrect.js";
  */
 export default class glTlKeys extends Events
 {
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim

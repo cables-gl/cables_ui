@@ -14,6 +14,7 @@ import { gui } from "../gui.js";
  */
 export default class GlTimeline extends Events
 {
+
     /**
      * @param {CG_State} cgl
      */
@@ -27,6 +28,7 @@ export default class GlTimeline extends Events
 
         /** @type {GlTextWriter} */
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
+
         /** @type {GlRectInstancer} */
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
@@ -57,11 +59,13 @@ export default class GlTimeline extends Events
         this.rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
         if (this.mouseDown)
         {
-            // console.log("drag", x);s
-            // this.rects.mouseDrag(x, y);
+
+            /*
+             * console.log("drag", x);s
+             * this.rects.mouseDrag(x, y);
+             */
         }
     }
-
 
     _onCanvasMouseDown(e)
     {

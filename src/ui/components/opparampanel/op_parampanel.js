@@ -70,7 +70,6 @@ class OpParampanel extends Events
         this.show(this._currentOp);
     }
 
-
     _onUiAttrChangeOp(attr)
     {
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
@@ -134,7 +133,6 @@ class OpParampanel extends Events
         }
     }
 
-
     refreshDelayed()
     {
         clearTimeout(this.refreshTimeout);
@@ -165,17 +163,14 @@ class OpParampanel extends Events
 
         const perf = gui.uiProfiler.start("[opparampanel] show");
 
-
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab() && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
-
         if (this._currentOp) this._stopListeners();
 
         this._currentOp = op;
-
 
         if (!op) return;
 
@@ -203,32 +198,31 @@ class OpParampanel extends Events
 
         gui.emitEvent("opSelectChange", op);
 
-
         this.emitEvent("opSelected", op);
 
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
 
-        // show first anim in timeline
-        // if (self.timeLine)
-        // {
-        //     let foundAnim = false;
-        //     for (let i = 0; i < this._portsIn.length; i++)
-        //     {
-        //         if (this._portsIn[i].isAnimated())
-        //         {
-        //             self.timeLine.setAnim(this._portsIn[i].anim, {
-        //                 "name": this._portsIn[i].name,
-        //             });
-        //             foundAnim = true;
-        //             continue;
-        //         }
-        //     }
-        //     if (!foundAnim) self.timeLine.setAnim(null);
-        // }
-
+        /*
+         * show first anim in timeline
+         * if (self.timeLine)
+         * {
+         *     let foundAnim = false;
+         *     for (let i = 0; i < this._portsIn.length; i++)
+         *     {
+         *         if (this._portsIn[i].isAnimated())
+         *         {
+         *             self.timeLine.setAnim(this._portsIn[i].anim, {
+         *                 "name": this._portsIn[i].name,
+         *             });
+         *             foundAnim = true;
+         *             continue;
+         *         }
+         *     }
+         *     if (!foundAnim) self.timeLine.setAnim(null);
+         * }
+         */
 
         this._portsIn.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
-
 
         let html = this._htmlGen.getHtmlOpHeader(op);
 
@@ -320,7 +314,6 @@ class OpParampanel extends Events
                     }
                     if (fn.startsWith("/assets/library/")) src = "lib";
 
-
                     if (src != "") src = "[ " + src + " ]";
 
                     srcEle.innerHTML = src;
@@ -349,9 +342,6 @@ class OpParampanel extends Events
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; }, { "passive": false });
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
-
-
-
 
         for (const ipo in this._portsOut)
         {
@@ -387,15 +377,11 @@ class OpParampanel extends Events
             }, { "passive": false });
         }
 
-
-
         ele.clickable(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
         ele.clickable(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
         ele.clickable(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
         ele.clickable(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);
         ele.clickable(ele.byId("watchOpDocsJson"), CABLES.CMD.DEBUG.watchOpDocsJson);
-
-
 
         ele.forEachClass("portCopyClipboard", (ell) =>
         {
@@ -420,7 +406,6 @@ class OpParampanel extends Events
                 e.preventDefault();
             }, { "passive": false });
         });
-
 
         perf.finish();
     }
@@ -558,7 +543,6 @@ class OpParampanel extends Events
         });
     }
 
-
     setCurrentOpComment(v)
     {
         if (this._currentOp)
@@ -646,7 +630,6 @@ class OpParampanel extends Events
                 },
             });
 
-
             if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
                 items.push({
                     "title": "Create op from subpatch",
@@ -664,7 +647,6 @@ class OpParampanel extends Events
                     func()
                     {
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
-
 
                         gui.serverOps.updateSubPatchOpAttachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
@@ -711,7 +693,6 @@ class OpParampanel extends Events
             },
         });
 
-
         items.push({
             "title": "Clone Op",
             func()
@@ -723,6 +704,5 @@ class OpParampanel extends Events
         contextMenu.show({ items }, el);
     }
 }
-
 
 export default OpParampanel;

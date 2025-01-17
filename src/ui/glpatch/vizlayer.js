@@ -113,8 +113,6 @@ export default class VizLayer extends Events
             return;
         }
 
-
-
         if (gl) this.lastGlRendering = performance.now();
 
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
@@ -146,15 +144,11 @@ export default class VizLayer extends Events
             const glop = this._glPatch.getGlOp(item.op);
             if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
 
-
             let ww = glop.w;
             if (glop.opUiAttribs.resizable)ww += gluiconfig.rectResizeSize;
 
-
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(ww, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
-
-
 
             sizeOp[0] *= window.devicePixelRatio;
             sizeOp[1] *= window.devicePixelRatio;
@@ -166,11 +160,10 @@ export default class VizLayer extends Events
 
             this._canvasCtx.save();
 
-            // this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
-            // this._canvasCtx.strokeStyle = "transparent";
-
-
-
+            /*
+             * this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
+             * this._canvasCtx.strokeStyle = "transparent";
+             */
 
             let region = new Path2D();
             region.rect(pos[0], pos[1], size[0], size[1]);
@@ -204,9 +197,6 @@ export default class VizLayer extends Events
                     "pixelDensity": window.devicePixelRatio
                 };
 
-
-
-
                 if (!item.op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < item.op.uiAttribs.vizLayerMaxZoom)
                     if (pos[0] === pos[0] && size[0] === size[0])
                     {
@@ -222,7 +212,6 @@ export default class VizLayer extends Events
 
             count++;
         }
-
 
         if (gui.texturePreview().needsVizLayer())
         {
@@ -268,7 +257,6 @@ export default class VizLayer extends Events
         ctx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222" || "#222";
         ctx.fillRect(layer.x, layer.y, layer.width, layer.height);
     }
-
 
     _textWrap(str, max)
     {
@@ -325,16 +313,11 @@ export default class VizLayer extends Events
 
         if (options.showLineNum) for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
 
-
         let numChars = Math.ceil(layer.width / layer.scale / 6) - indent.length;
-
 
         ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
         let hl = options.syntax && options.syntax != "text";
-
-
-
 
         let linesIdx = null;
         let lb = "\n";
@@ -429,7 +412,6 @@ export default class VizLayer extends Events
                     layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
             }
         }
-
 
         const gradHeight = 30;
 

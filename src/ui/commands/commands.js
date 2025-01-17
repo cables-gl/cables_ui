@@ -26,7 +26,7 @@ CMD.commands = commands;
 
 for (let i = 0; i < commands.length; i++)
 {
-    if (!commands[i].category)console.log("cmd has no category ", commands[i].cmd);
+    if (!commands[i].category)console.warn("cmd has no category ", commands[i].cmd);
 }
 
 export default CMD;
@@ -50,7 +50,5 @@ CMD.exec = function (cmd)
         }
     }
 
-
     if (!found)console.warn("command not found:" + cmd);
 };
-

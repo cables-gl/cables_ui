@@ -178,13 +178,11 @@ export default class Profiler
 
                 html += "<span>";
 
-
                 html += item.title;
                 html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
 
                 if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
                 if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";
-
 
                 html += "</tr>";
 
@@ -202,7 +200,6 @@ export default class Profiler
         // peak list
         const htmlPeaks = "";
         sortedItems.sort(function (a, b) { return b.peak - a.peak; });
-
 
         // if (Object.keys(cumulatedSubPatches).length > 1)
         if (this._subTab == 1)
@@ -233,7 +230,6 @@ export default class Profiler
             html += "</table>";
         }
 
-
         if (this._subTab == 2)
         {
             html += "<h3>Peaks</h3>";
@@ -247,15 +243,12 @@ export default class Profiler
             }
         }
 
-
-
         let pauseStr = "Pause";
         if (gui.corePatch().profiler)
         {
             if (gui.corePatch().profiler.paused)pauseStr = "Resume";
             ele.byId("profiler_pause").innerHTML = pauseStr;
         }
-
 
         ele.byId("profilerui").style.display = "block";
         // ele.byId("profilerlistPeaks").innerHTML = htmlPeaks;

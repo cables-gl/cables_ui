@@ -22,7 +22,6 @@ export default class OpDocsJson extends Events
         });
     }
 
-
     setOp(op)
     {
         if (this._op == op) return;
@@ -33,8 +32,6 @@ export default class OpDocsJson extends Events
         }
 
         this._op = op;
-
-
 
         this.rebuildHtml();
     }

@@ -14,7 +14,6 @@ import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
 
-
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
 function capitalize(str)
@@ -98,8 +97,10 @@ export default class ServerOps
                 gui.opDocs.addOpDocs(res);
             }
 
-            // ops added to opdocs so they are available in opsearch
-            // make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
+            /*
+             * ops added to opdocs so they are available in opsearch
+             * make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
+             */
             const usedOps = res.filter((op) => { return op && op.usedInProject; });
             this.loadOpsLibs(usedOps, () =>
             {
@@ -116,7 +117,6 @@ export default class ServerOps
         for (let i = 0; i < this._ops.length; i++) if (this._ops[i].name === name) return true;
         return false;
     }
-
 
     create(name, cb, openEditor, options = {})
     {
@@ -181,7 +181,6 @@ export default class ServerOps
             this._saveOpLayout(op);
         }, 500);
     }
-
 
     _getOpLayout(op)
     {
@@ -256,7 +255,6 @@ export default class ServerOps
 
         return opObj;
     }
-
 
     _saveOpLayout(op)
     {
@@ -334,7 +332,6 @@ export default class ServerOps
 
         // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
         gui.savingTitleAnimStart("Cloning Op...");
-
 
         // loadingModal.setTask("cloning " + oldname + " to " + name);
 
@@ -601,7 +598,6 @@ export default class ServerOps
         });
     }
 
-
     removeOpDependency(opName, depSrc, depType, next = null)
     {
         const modal = new ModalDialog({
@@ -705,7 +701,6 @@ export default class ServerOps
         });
     }
 
-
     testServer()
     {
         let opname = platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
@@ -727,8 +722,11 @@ export default class ServerOps
                 "update": {
                     "attachments": atts
                 }
-                // "name": attachmentName,
-                // "content": cont,
+
+                /*
+                 * "name": attachmentName,
+                 * "content": cont,
+                 */
             }, (err) =>
             {
                 if (err)
@@ -883,7 +881,6 @@ export default class ServerOps
                 const cbOptions = {
                     "replace": false
                 };
-
 
                 ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
@@ -1399,12 +1396,10 @@ export default class ServerOps
         });
     }
 
-
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
     {
         let opname = op;
         let opId = opname;
-
 
         if (typeof opname == "object")
         {
@@ -1498,7 +1493,6 @@ export default class ServerOps
             const content = res.content || "";
             editorTab.setContent(content);
 
-
             if (editorObj)
             {
                 editorTab.on("save", (_setStatus, _content) =>
@@ -1551,7 +1545,6 @@ export default class ServerOps
                 });
             }
 
-
             if (cb) cb(); else gui.maintabPanel.show(userInteraction);
         }, (err) =>
         {
@@ -1581,7 +1574,6 @@ export default class ServerOps
         let opid = op;
         let opname = opid;
 
-
         if (typeof op == "object")
         {
             opid = op.opId;
@@ -1608,7 +1600,6 @@ export default class ServerOps
                 "title": "loading op code " + opname
             });
 
-
         const parts = opname.split(".");
         const title = "Op " + parts[parts.length - 1];
         const editorObj = editorSession.rememberOpenEditor("op", opname);
@@ -1631,7 +1622,6 @@ export default class ServerOps
                 }
             });
 
-
             CABLESUILOADER.talkerAPI.send("getOpCode", {
                 "opname": opid,
                 "projectId": this._patchId
@@ -1647,7 +1637,6 @@ export default class ServerOps
                     return;
                 }
                 editorTab.setContent(rslt.code);
-
 
                 if (!readOnly && editorTab)
                 {
@@ -1726,7 +1715,6 @@ export default class ServerOps
             gui.maintabPanel.show(userInteraction);
         }
     }
-
 
     getOpLibs(opName)
     {

@@ -1,8 +1,6 @@
-
 import overlayShaderVert from "./overlaymeshes.vert";
 import overlayShaderFrag from "./overlaymeshes.frag";
 import { gui } from "../../gui.js";
-
 
 const helperMeshes = {};
 helperMeshes.count = 0;
@@ -137,7 +135,6 @@ helperMeshes.drawCircle = function (op, size)
 
     if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl, { "billboarded": true });
     shader.glPrimitive = cgl.gl.LINE_STRIP;
-
 
     helperMeshes.CIRCLE.mesh.render(shader);
     helperMeshes.count++;
@@ -588,8 +585,11 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
                 + "IN vec2 texCoord;".endl()
                 + "void main()".endl()
                 + "{"
-                // .endl()+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
-                // .endl()+'   gl_FragColor = vec4(gray,1.0);'
+
+                /*
+                 * .endl()+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
+                 * .endl()+'   gl_FragColor = vec4(gray,1.0);'
+                 */
 
                     .endl()
                 + "   gl_FragColor = texture2D(tex,texCoord);"
@@ -616,12 +616,13 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
 
             helperMeshes.fullscreenRectShader = shader;
 
-
-            // shader.bindTextures = function ()
-            // {
-            //     cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            //     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, helperMeshes.FB.fb.getTextureColor().tex);
-            // };
+            /*
+             * shader.bindTextures = function ()
+             * {
+             *     cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+             *     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, helperMeshes.FB.fb.getTextureColor().tex);
+             * };
+             */
         }
     }
 
@@ -640,13 +641,18 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
     helperMeshes.fullscreenRectShader.pushTexture(helperMeshes.fullscreenRectShader.texUniform, helperMeshes.FB.fb.getTextureColor().tex);
 
     cgl.pushShader(helperMeshes.fullscreenRectShader);
-    // helperMeshes.fullscreenRectShader.bind();
-    // cgl.getShader().bind
 
-    // for (var i =0;i< cgl.gl.getProgramParameter(cgl.getShader().getProgram(), cgl.gl.ACTIVE_ATTRIBUTES) ; i++)
-    // {
-    //     console.log(i, cgl.gl.getActiveAttrib(cgl.getShader().getProgram(), i) );
-    // }
+    /*
+     * helperMeshes.fullscreenRectShader.bind();
+     * cgl.getShader().bind
+     */
+
+    /*
+     * for (var i =0;i< cgl.gl.getProgramParameter(cgl.getShader().getProgram(), cgl.gl.ACTIVE_ATTRIBUTES) ; i++)
+     * {
+     *     console.log(i, cgl.gl.getActiveAttrib(cgl.getShader().getProgram(), i) );
+     * }
+     */
 
     cgl.pushBlend(true);
 

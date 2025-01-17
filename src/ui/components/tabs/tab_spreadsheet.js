@@ -32,7 +32,6 @@ export default class SpreadSheetTab extends Events
             for (let i = 0; i < this._numCols; i++) this.getColName(i);
         }
 
-
         this._id = "spread" + CABLES.uuid();
         this._updateUiAttribs();
     }
@@ -84,7 +83,6 @@ export default class SpreadSheetTab extends Events
         return str;
     }
 
-
     _html()
     {
         for (let i = 0; i < this._inputs.length; i++) this._inputs[i].remove();
@@ -127,7 +125,6 @@ export default class SpreadSheetTab extends Events
 
                 td.appendChild(input);
 
-
                 input.addEventListener("change", this._checkNumRows.bind(this));
                 input.addEventListener("input", this._onInputChange.bind(this));
                 input.addEventListener("keydown", this._onKey.bind(this), false);
@@ -149,7 +146,6 @@ export default class SpreadSheetTab extends Events
             }, 50);
         }
     }
-
 
     _onKey(e)
     {
@@ -179,7 +175,6 @@ export default class SpreadSheetTab extends Events
     {
         this._log.log(this.cells);
 
-
         let lastLine = this.cells.length - 1;
         for (let i = this.cells.length - 1; i > 0; i--)
         {
@@ -197,11 +192,12 @@ export default class SpreadSheetTab extends Events
                 if (foundContent) break;
             }
 
-
-            // for (let x = 0; x < this._numCols; x++)
-            // {
-            //     this._log.log(this.cells[x]);
-            // }
+            /*
+             * for (let x = 0; x < this._numCols; x++)
+             * {
+             *     this._log.log(this.cells[x]);
+             * }
+             */
         }
 
         this._log.log("lastLine", lastLine);
@@ -215,17 +211,21 @@ export default class SpreadSheetTab extends Events
 
         this._log.log("lastline", lastLine);
 
-        // const newRows = lastLine + 10;
-        // if (this._rows != newRows)
-        // {
-        //     this._rows = this.cells.length + 10;
-        //     this.rebuildHtml();
-        // }
-        // if()
+        /*
+         * const newRows = lastLine + 10;
+         * if (this._rows != newRows)
+         * {
+         *     this._rows = this.cells.length + 10;
+         *     this.rebuildHtml();
+         * }
+         * if()
+         */
 
-        // if (this.cells.length >= this._rows)
-        // {
-        // }
+        /*
+         * if (this.cells.length >= this._rows)
+         * {
+         * }
+         */
     }
 
     initData(data)

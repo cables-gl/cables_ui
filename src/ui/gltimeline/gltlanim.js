@@ -14,6 +14,7 @@ import { gui } from "../gui.js";
  */
 export default class glTlAnim extends Events
 {
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -23,42 +24,57 @@ export default class glTlAnim extends Events
     constructor(glTl, anim, op, port)
     {
         super();
-        /** @type {Anim} */
+
+        /**
+         * @type {Anim}
+         */
         this._anim = anim;
-        /** @type {GlTimeline} */
+
+        /**
+         * @type {GlTimeline}
+         */
         this._glTl = glTl;
 
-        /** @type {GlRect} */
+        /**
+         * @type {GlRect}
+         */
         this._glRectBg = this._glTl.rects.createRect({ "draggable": false });
         this._glRectBg.setSize(150, 30);
         this._glRectBg.setColor(0, 0, 0, 1);
 
-        /** @type {GlRect} */
+        /**
+         * @type {GlRect}
+         */
         this._glRectKeysBg = this._glTl.rects.createRect({ "draggable": false });
         this._glRectKeysBg.setSize(1000, 30);
         this._glRectKeysBg.setColor(0.2, 0.2, 0.2, 0);
         this._glRectKeysBg.setPosition(150, 0);
         this._glRectKeysBg.setParent(this._glRectBg);
 
-        /** @type GlText */
+        /**
+         * @type GlText
+         */
         this._glTitle = new GlText(this._glTl.texts, op.name + " - " + port.name || "unknown anim");
         this._glTitle.setParentRect(this._glRectBg);
 
-        /** @type glTlKeys */
+        /**
+         * @type glTlKeys
+         */
         this.keys = new glTlKeys(glTl, anim, this._glRectKeysBg);
         this._op = op;
         this._port = port;
 
         console.log(anim);
 
-        // op.on("uiParamPanel", () =>
-        // {
-        //     if (gui.patchView.isCurrentOp(this.op))
-        //     {
-        //         this._glTitle.setColor(1, 0, 0, 1);
-        //     }
-        // });
-
+        /*
+         * op.on("uiParamPanel", () =>
+         * {
+         *     if (gui.patchView.isCurrentOp(this.op))
+         *     {
+         *         this._glTitle.setColor(1, 0, 0, 1);
+         *     }
+         * });
+         */
 
         anim.on("onChange", () =>
         {

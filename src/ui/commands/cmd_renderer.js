@@ -3,9 +3,7 @@ import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { gui } from "../gui.js";
 
-
 const CABLES_CMD_RENDERER = {};
-
 
 const rendererCommands =
 {
@@ -60,7 +58,6 @@ CABLES_CMD_RENDERER.scrollingPage = function ()
         ele.byId("testcontent").innerHTML = "";
     }
 };
-
 
 CABLES_CMD_RENDERER.aspect = function (a)
 {
@@ -147,7 +144,6 @@ CABLES_CMD_RENDERER.changeSize = function ()
 
     });
 };
-
 
 CABLES_CMD_RENDERER.popoutCanvas = function ()
 {

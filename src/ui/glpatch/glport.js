@@ -1,4 +1,3 @@
-
 import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
@@ -25,6 +24,7 @@ export default class GlPort
          * @type {Port}
          */
         this._port = p;
+
         /**
          * @type {GlOp}
          */
@@ -40,22 +40,27 @@ export default class GlPort
         this._parent = oprect;
 
         this._direction = p.direction;
+
         /**
          * @type {GlPatch}
          */
         this._glPatch = glpatch;
+
         /**
          * @type {GlRectInstancer}
          */
         this._rectInstancer = rectInstancer;
+
         /**
          * @type {GlRect}
          */
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
+
         /**
          * @type {GlRect}
          */
         this._longPortRect = null;
+
         /**
          * @type {GlRect}
          */
@@ -92,9 +97,9 @@ export default class GlPort
         this._updateColor();
     }
 
-        /**
-         * @type {GlRect}
-         */
+    /**
+     * @type {GlRect}
+     */
     get posX()
     {
         return this._posX;
@@ -116,8 +121,6 @@ export default class GlPort
         {
             if (!this._rect) return;
             if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
-
-
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor([col[0], col[1], col[2], 0.5]);
@@ -182,7 +185,6 @@ export default class GlPort
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 if (this._glop._links[i].hovering) { hover = true; break; }
-
 
         let act = this._activity;
         if (this._glPatch.vizFlowMode == 0)act = 10;
@@ -296,7 +298,6 @@ export default class GlPort
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);
 
-
         updateHoverToolTip(event, this._port, false);
         this._updateColor();
     }
@@ -353,7 +354,6 @@ export default class GlPort
         if (this._longPortRect) this._longPortRect = this._longPortRect.dispose();
     }
 }
-
 
 GlPort.getInactiveColor = (type) =>
 {

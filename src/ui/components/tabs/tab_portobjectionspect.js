@@ -63,7 +63,6 @@ export default class TabPortObjectInspect extends Events
             return htmlString;
         }
 
-
         try
         {
             const thing = port.get();

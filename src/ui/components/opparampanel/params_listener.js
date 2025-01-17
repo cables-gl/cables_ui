@@ -8,13 +8,10 @@ import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import uiconfig from "../../uiconfig.js";
-// import uiprofiler from "../uiprofiler.js";
-// import ParamTabInputListener from "./param_tabinputlistener.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
-
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -84,7 +81,6 @@ class ParamsListener extends Events
             });
         }
 
-
         if (this._portsIn.length > 0)
         {
             for (let i = 0; i < this._portsIn.length; i++)
@@ -125,13 +121,7 @@ class ParamsListener extends Events
             })(i);
         }
 
-
-
-
-
         for (let i = 0; i < this._portsIn.length; i++) this.initPortInputListener(this._portsIn, i, this.panelId);
-
-
 
         function addListenersMultiport(port)
         {
@@ -141,7 +131,6 @@ class ParamsListener extends Events
                 port.toggleManual();
             });
             else this._log.log("cant find multiport");
-
 
             const elInc = ele.byId("multiport_inc_" + port.op.id + "_" + port.name);
             if (elInc)elInc.addEventListener("click", () =>
@@ -163,7 +152,6 @@ class ParamsListener extends Events
         for (let i = 0; i < this._portsOut.length; i++)
             if (this._portsOut[i].uiAttribs.multiPort)
                 addListenersMultiport(this._portsOut[i]);
-
 
         // watch anim ports... this should be in initPOrtInputListener !!
         for (const iwap in this._watchAnimPorts)
@@ -198,7 +186,6 @@ class ParamsListener extends Events
         this._watchPortVisualizer.bind();
     }
 
-
     valueChangerInitSliders()
     {
         const els = document.querySelectorAll(".valuesliderinput input");
@@ -214,27 +201,39 @@ class ParamsListener extends Events
         gui.emitEvent("paramsChangedUserInteraction", { "port": port, "panelId": this.panelId });
     }
 
-    // togglePortValBool(which, checkbox)
-    // {
-    //     this._log.log("HJSAHJKLSHJKLS");
-    //     // gui.setStateUnsaved();
-    //     gui.savedState.setUnSaved("togglePortValBool");
+    /*
+     * togglePortValBool(which, checkbox)
+     * {
+     *     this._log.log("HJSAHJKLSHJKLS");
+     *     // gui.setStateUnsaved();
+     *     gui.savedState.setUnSaved("togglePortValBool");
+     */
 
-    //     const inputEle = document.getElementById(which);
-    //     const checkBoxEle = document.getElementById(checkbox);
+    /*
+     *     const inputEle = document.getElementById(which);
+     *     const checkBoxEle = document.getElementById(checkbox);
+     */
 
-    //     let bool_value = inputEle.value == "true";
-    //     bool_value = !bool_value;
+    /*
+     *     let bool_value = inputEle.value == "true";
+     *     bool_value = !bool_value;
+     */
 
-    //     checkBoxEle.opElement.classList.remove("checkbox-inactive");
-    //     checkBoxEle.opElement.classList.remove("checkbox-active");
+    /*
+     *     checkBoxEle.opElement.classList.remove("checkbox-inactive");
+     *     checkBoxEle.opElement.classList.remove("checkbox-active");
+     */
 
-    //     if (bool_value) checkBoxEle.opElement.classList.add("checkbox-active");
-    //     else checkBoxEle.opElement.classList.add("checkbox-inactive");
+    /*
+     *     if (bool_value) checkBoxEle.opElement.classList.add("checkbox-active");
+     *     else checkBoxEle.opElement.classList.add("checkbox-inactive");
+     */
 
-    //     inputEle.value = bool_value;
-    //     inputEle.dispatchEvent(new Event("input"));
-    // }
+    /*
+     *     inputEle.value = bool_value;
+     *     inputEle.dispatchEvent(new Event("input"));
+     * }
+     */
 
     watchColorPickerPort(thePort, panelid, idx)
     {
@@ -269,7 +268,6 @@ class ParamsListener extends Events
             return arr;
         };
 
-
         const id = "watchcolorpick_in_" + idx + "_" + panelid;
         const colEle = ele.byId(id);
 
@@ -289,8 +287,6 @@ class ParamsListener extends Events
         inputElements[2].addEventListener("input", updateColorBox);
 
         updateColorBox();
-
-
 
         ele.clickable(colEle, (e) =>
         // colEle.addEventListener("click", (e) =>
@@ -338,7 +334,6 @@ class ParamsListener extends Events
             });
         });
     }
-
 
     initPortClickListener(ports, index, panelid, dirStr)
     {
@@ -416,20 +411,24 @@ class ParamsListener extends Events
 
         //
 
-        // el = ele.byId("portgraph_" + dirStr + "_" + index);
-        // if (el)el.addEventListener("click", function (e)
-        // {
-        //     if (ports[index].isAnimated())
-        //     {
-        //         ports[index].anim.stayInTimeline = !ports[index].anim.stayInTimeline;
+        /*
+         * el = ele.byId("portgraph_" + dirStr + "_" + index);
+         * if (el)el.addEventListener("click", function (e)
+         * {
+         *     if (ports[index].isAnimated())
+         *     {
+         *         ports[index].anim.stayInTimeline = !ports[index].anim.stayInTimeline;
+         */
 
-        //         gui.timeLine().setAnim(ports[index].anim, {
-        //             "name": op.getTitle() + ": " + ports[index].name,
-        //             "opid": op.id,
-        //             "defaultValue": parseFloat(ele.byId("portval_" + index).value)
-        //         });
-        //     }
-        // });
+        /*
+         *         gui.timeLine().setAnim(ports[index].anim, {
+         *             "name": op.getTitle() + ": " + ports[index].name,
+         *             "opid": op.id,
+         *             "defaultValue": parseFloat(ele.byId("portval_" + index).value)
+         *         });
+         *     }
+         * });
+         */
 
         el = ele.byId("portsetvar_" + index);
         if (el)el.addEventListener("input", (e) =>
@@ -439,19 +438,20 @@ class ParamsListener extends Events
             if (port) port.setVariable(e.target.value);
             else this._log.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
 
-
             // gui.setStateUnsaved();
             gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
         });
 
-        // el = ele.byId("portremovevar_" + index);
-        // if (el)el.addEventListener("click", (e) =>
-        // {
-        //     const port = ports[index].op.getPortById(e.target.dataset.portid);
-        //     if (port) port.setVariable(null);
-        //     port.op.refreshParams();
-        //     gui.setStateUnsaved();
-        // });
+        /*
+         * el = ele.byId("portremovevar_" + index);
+         * if (el)el.addEventListener("click", (e) =>
+         * {
+         *     const port = ports[index].op.getPortById(e.target.dataset.portid);
+         *     if (port) port.setVariable(null);
+         *     port.op.refreshParams();
+         *     gui.setStateUnsaved();
+         * });
+         */
 
         el = ele.byId("port_contextmenu_" + dirStr + "_" + index + "_" + panelid);
         // if (el) el.addEventListener("click", (e) =>
@@ -504,7 +504,6 @@ class ParamsListener extends Events
                             }
                         });
 
-
                 if (
                     port.type != CABLES.OP_PORT_TYPE_FUNCTION &&
                     !port.uiAttribs.expose &&
@@ -518,7 +517,6 @@ class ParamsListener extends Events
                         {
                             // gui.setStateUnsaved();
                             gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
-
 
                             if (port.isBoundToVar()) port.setVariable(null);
                             else port.setVariable("unknown");
@@ -536,7 +534,6 @@ class ParamsListener extends Events
                     items.push(item);
                 }
             }
-
 
             if (
                 port.type == CABLES.OP_PORT_TYPE_VALUE &&
@@ -608,69 +605,81 @@ class ParamsListener extends Events
                                 return;
                             }
 
-
                             gui.patchView.unselectAllOps();
-
 
                             subPatchOpUtil.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
             }
-            // else
-            // if (
-            //     (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
-            //     !port.isAnimated())
-            // {
-            //     let title = "Subpatch Expose Port ";
-            //     let icon = "";
-            //     if (port.uiAttribs.expose)
-            //     {
-            //         title = "Subpatch Remove Exposed Port";
-            //         icon = "icon icon-x";
-            //     }
 
-            //     items.push(
-            //         {
-            //             "title": title,
-            //             "iconClass": icon,
-            //             "func": () =>
-            //             {
-            //                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
+            /*
+             * else
+             * if (
+             *     (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
+             *     !port.isAnimated())
+             * {
+             *     let title = "Subpatch Expose Port ";
+             *     let icon = "";
+             *     if (port.uiAttribs.expose)
+             *     {
+             *         title = "Subpatch Remove Exposed Port";
+             *         icon = "icon icon-x";
+             *     }
+             */
 
-            //                 if (!subOp)
-            //                 { this._log.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
+            /*
+             *     items.push(
+             *         {
+             *             "title": title,
+             *             "iconClass": icon,
+             *             "func": () =>
+             *             {
+             *                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
+             */
+
+            /*
+             *                 if (!subOp)
+             *                 { this._log.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
+             */
 
             //                 port.removeLinks();
 
-            //                 subOp.removePort(port);
-            //                 port.setUiAttribs({ "expose": !port.uiAttribs.expose });
-            //                 port.op.refreshParams();
+            /*
+             *                 subOp.removePort(port);
+             *                 port.setUiAttribs({ "expose": !port.uiAttribs.expose });
+             *                 port.op.refreshParams();
+             */
 
-            //                 gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
-            //             }
-            //         });
-            // }
+            /*
+             *                 gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
+             *             }
+             *         });
+             * }
+             */
 
             if (port.uiAttribs.expose)
             {
-                // items.push(
-                //     {
-                //         "title": "Exposed Port: move up",
-                //         "iconClass": "icon icon-chevron-up",
-                //         "func": () =>
-                //         {
-                //             gui.patchView.setExposedPortOrder(port, -1);
-                //         }
-                //     });
-                // items.push(
-                //     {
-                //         "title": "Exposed Port: move down",
-                //         "iconClass": "icon icon-chevron-down",
-                //         "func": () =>
-                //         {
-                //             gui.patchView.setExposedPortOrder(port, 1);
-                //         }
-                //     });
+
+                /*
+                 * items.push(
+                 *     {
+                 *         "title": "Exposed Port: move up",
+                 *         "iconClass": "icon icon-chevron-up",
+                 *         "func": () =>
+                 *         {
+                 *             gui.patchView.setExposedPortOrder(port, -1);
+                 *         }
+                 *     });
+                 * items.push(
+                 *     {
+                 *         "title": "Exposed Port: move down",
+                 *         "iconClass": "icon icon-chevron-down",
+                 *         "func": () =>
+                 *         {
+                 *             gui.patchView.setExposedPortOrder(port, 1);
+                 *         }
+                 *     });
+                 */
             }
 
             let strEditTitle = "Edit title";
@@ -694,7 +703,6 @@ class ParamsListener extends Events
                         else gui.patchView.setPortTitle(port.op.id, port.name, port.title);
                     }
                 });
-
 
             contextMenu.show({ "items": items }, e.target);
         });
@@ -748,7 +756,6 @@ class ParamsListener extends Events
 
         const eleId = "portval_" + index + "_" + panelid;
 
-
         if (ports[index].uiAttribs.display == "bool")
         {
             const el = ele.byId("portcheckbox_" + index + "_" + panelid);
@@ -799,8 +806,11 @@ class ParamsListener extends Events
                 {
                     valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
-                    // this._log.log("valuechanger", theId, portName, opId);
-                    // new ParamTabInputListener(el);
+
+                    /*
+                     * this._log.log("valuechanger", theId, portName, opId);
+                     * new ParamTabInputListener(el);
+                     */
                 };
 
                 let isMouse = false;
@@ -820,16 +830,17 @@ class ParamsListener extends Events
                     });
                 });
 
-                // el.addEventListener("keydown", (e) =>
-                // {
-                //     if (e.keyCode == 13 || e.keyCode == 32)
-                //     {
-                //         cb(e, true);
-                //     }
-                // }); // why u no work
+                /*
+                 * el.addEventListener("keydown", (e) =>
+                 * {
+                 *     if (e.keyCode == 13 || e.keyCode == 32)
+                 *     {
+                 *         cb(e, true);
+                 *     }
+                 * }); // why u no work
+                 */
             }
         }
-
 
         if (ports[index].uiAttribs.type == "string")
         {
@@ -866,7 +877,6 @@ class ParamsListener extends Events
                 }
             });
         }
-
 
         if (el) el.addEventListener("input", (e) =>
         {
@@ -909,7 +919,6 @@ class ParamsListener extends Events
                 }
             }
 
-
             if (ports[index].uiAttribs.type == "int")
             {
                 if (isNaN(v) || v === "")
@@ -924,8 +933,6 @@ class ParamsListener extends Events
                     // this._log.log("invalid int");
                 }
             }
-
-
 
             if (!CABLES.mouseDraggingValue)
             {
@@ -976,7 +983,6 @@ class ParamsListener extends Events
                 }(ports[index].get(), v, ports[index].op.id, ports[index].name));
             }
 
-
             if (ports[index].uiAttribs.type == "string")
             {
                 if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
@@ -999,8 +1005,6 @@ class ParamsListener extends Events
             {
                 ports[index].set(v || 0);
             }
-
-
 
             const op = ports[index].op;
             // update history on change
@@ -1044,7 +1048,6 @@ class ParamsListener extends Events
                 {
                     thePort._tempLastUiValue = thePort.get();
                     const valDisp = thePort.getValueForDisplay();
-
 
                     // hier
                     if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
@@ -1093,7 +1096,6 @@ class ParamsListener extends Events
                 {
                     newValue = String(thePort.get());
                 }
-
 
                 if (thePort._tempLastUiValue != newValue)
                 {
@@ -1165,6 +1167,5 @@ class ParamsListener extends Events
         else return String(n);
     }
 }
-
 
 export default ParamsListener;

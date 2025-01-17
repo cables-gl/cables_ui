@@ -95,7 +95,7 @@ export default class TreeView extends Events
                     (event) =>
                     {
                         const el2 = event.target;
-                        const eletype = ele.dataset.eletype;
+                        const eletype = el2.dataset.eletype;
                         this.emitEvent(eletype + "_click", this._clickListenerIds[i], el2, event);
                     });
 
@@ -103,7 +103,7 @@ export default class TreeView extends Events
                     (event) =>
                     {
                         const el2 = event.target;
-                        const eletype = ele.dataset.eletype;
+                        const eletype = el2.dataset.eletype;
                         this.emitEvent(eletype + "_dblclick", this._clickListenerIds[i], el2, event);
                     });
             }

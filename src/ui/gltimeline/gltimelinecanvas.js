@@ -29,8 +29,11 @@ export default class glTimelineCanvas extends GlCanvas
 
     render()
     {
-        // this.glPatch.updateTime()
-        // if (this.glTimeline.paused) return;
+
+        /*
+         * this.glPatch.updateTime()
+         * if (this.glTimeline.paused) return;
+         */
         if (this._targetFps != 0 && !this.glTimeline.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
