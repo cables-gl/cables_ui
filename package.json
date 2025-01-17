@@ -48,6 +48,7 @@
         "start": "gulp",
         "build": "gulp build",
         "build:live": "gulp build",
+        "svgcss": "gulp svgcss",
         "analyze": "gulp analyze"
     },
     "repository": {

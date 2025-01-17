@@ -145,7 +145,7 @@ function _sass(done)
 function _svgcss(done)
 {
     const task = gulp
-        .src("icons/**/*.svg")
+        .src("icons/acar/*.svg")
         .pipe(svgmin())
         .pipe(
             svgcss({
@@ -161,7 +161,7 @@ function _svgcss(done)
             })
         )
         .pipe(rename("svgicons.scss"))
-        .pipe(gulp.dest("scss/"));
+        .pipe(gulp.dest("acarscss/"));
     if (!process.env.cables_electron || process.env.cables_electron === "false")
     {
         return task.pipe(gulp.dest("../cables_api/scss/"));
@@ -220,6 +220,8 @@ gulp.task("default", gulp.series(
     defaultSeries,
     _watch
 ));
+
+gulp.task("svgcss", _svgcss);
 
 gulp.task("testui", gulp.series(
     _scripts_ui_webpack
