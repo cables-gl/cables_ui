@@ -221,6 +221,8 @@ gulp.task("default", gulp.series(
     _watch
 ));
 
+gulp.task("svgcss", _svgcss);
+
 gulp.task("testui", gulp.series(
     _scripts_ui_webpack
 ));
