@@ -15,14 +15,21 @@ export default class GlDragLine
     constructor(splineDrawer, glpatch)
     {
         this._log = new Logger("gldragline");
-        /** @type {GlRect} */
+
+        /**
+         * @type {GlRect}
+         */
         this._rect = null;
 
-        /** @type {GlSplineDrawer} */
+        /**
+         * @type {GlSplineDrawer}
+         */
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
-        /** @type {GlPatch} */
+        /**
+         * @type {GlPatch}
+         */
         this._glPatch = glpatch;
 
         this._startPortOpId = null;
@@ -116,7 +123,6 @@ export default class GlDragLine
             }
         });
 
-
         glpatch.on("mouseUpOverOp", (e, opid) =>
         {
             if (!this.isActive) return;
@@ -147,15 +153,17 @@ export default class GlDragLine
             this.stop();
         });
 
-
         glpatch.on("mouseUpOverPort", (opid, port, event) =>
         {
             let portId = port.id;
-            // this._log.log("mouseUpOverPort",
-            //     this._startPortOpId,
-            //     this._startPortId,
-            //     opid,
-            //     portName);
+
+            /*
+             * this._log.log("mouseUpOverPort",
+             *     this._startPortOpId,
+             *     this._startPortId,
+             *     opid,
+             *     portName);
+             */
 
             if (!this._startGlPorts) return;
             if (this._startGlPorts.length === 0)
@@ -240,15 +248,17 @@ export default class GlDragLine
             if (col) this.setColor(col);
         }
 
-
         if (this._startGlPorts && this._startGlPorts.length)
         {
             let count = 0;
             for (let i = 0; i < this._startGlPorts.length; i++)
             {
                 if (!this._startGlPorts[i]) continue;
-                // if (!this._startGlPorts[i].glOp) continue;
-                // if (!this._startGlPorts[i].rect) continue;
+
+                /*
+                 * if (!this._startGlPorts[i].glOp) continue;
+                 * if (!this._startGlPorts[i].rect) continue;
+                 */
                 if (count > this._lineIndices.length - 1) this._lineIndices[count] = this._splineDrawer.getSplineIndex();
 
                 if (this._startGlPorts[i].rect)

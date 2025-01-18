@@ -65,7 +65,6 @@ export default class OpSerialized extends Events
         this.rebuildHtml();
     }
 
-
     rebuildHtml()
     {
         if (this._op)

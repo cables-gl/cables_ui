@@ -49,7 +49,6 @@ export default class glTlRuler extends Events
             this.markBeats.push(mr);
         }
 
-
         this.marks = [];
         for (let i = 0; i < 300; i++)
         {
@@ -121,7 +120,6 @@ export default class glTlRuler extends Events
 
             mr.setColor(shade, shade, shade, 1);
         }
-
 
         for (let i = 0; i < this.marks.length; i++)
         {

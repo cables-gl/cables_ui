@@ -1,4 +1,3 @@
-
 // shows a curve of the current hovering output number value in op param panel
 
 import uiconfig from "../../uiconfig.js";

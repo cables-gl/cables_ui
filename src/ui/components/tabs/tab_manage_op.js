@@ -107,7 +107,7 @@ export default class ManageOp
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
-            CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
+            platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
             {
                 if (error) this._log.warn("error api?", error);
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
@@ -178,7 +178,6 @@ export default class ManageOp
                         "isAssetLib": lib.startsWith("/assets/")
                     });
                 });
-
 
                 const html = getHandleBarHtml("tab_manage_op",
                     {
@@ -283,5 +282,3 @@ export default class ManageOp
         }, 100);
     }
 }
-
-

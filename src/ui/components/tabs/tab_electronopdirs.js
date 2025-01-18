@@ -23,7 +23,7 @@ export default class ElectronOpDirs
     show()
     {
         if (!this._tab) return;
-        CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, r) =>
+        platform.talkerAPI.send("getProjectOpDirs", {}, (err, r) =>
         {
             if (!err && r.data)
             {
@@ -37,7 +37,7 @@ export default class ElectronOpDirs
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        CABLESUILOADER.talkerAPI.send("addProjectOpDir", (dirErr, _dirRes) =>
+                        platform.talkerAPI.send("addProjectOpDir", (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -58,7 +58,7 @@ export default class ElectronOpDirs
                 {
                     packageButton.addEventListener("click", () =>
                     {
-                        CABLESUILOADER.talkerAPI.send("addOpPackage", {}, (dirErr, _dirRes) =>
+                        platform.talkerAPI.send("addOpPackage", {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -80,7 +80,7 @@ export default class ElectronOpDirs
                     removeButton.addEventListener("click", () =>
                     {
                         const dir = removeButton.dataset.dir;
-                        CABLESUILOADER.talkerAPI.send("removeProjectOpDir", dir, () =>
+                        platform.talkerAPI.send("removeProjectOpDir", dir, () =>
                         {
                             this.show();
                             this._loadOpsInDirs();
@@ -104,7 +104,7 @@ export default class ElectronOpDirs
                         {
                             order.push(dirEle.dataset.dir);
                         });
-                        CABLESUILOADER.talkerAPI.send("saveProjectOpDirOrder", order, (orderErr, orderRes) =>
+                        platform.talkerAPI.send("saveProjectOpDirOrder", order, (orderErr, orderRes) =>
                         {
                             if (orderRes && orderRes.success)
                             {
@@ -127,7 +127,7 @@ export default class ElectronOpDirs
 
     _loadOpsInDirs()
     {
-        CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": gui.patchId }, (_err, _data) =>
+        platform.talkerAPI.send("getOpDocsAll", { "projectId": gui.patchId }, (_err, _data) =>
         {
             if (_err)
             {

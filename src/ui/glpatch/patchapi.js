@@ -4,7 +4,6 @@ import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
 
-
 const DEFAULT_ACTIVITY = 0;
 
 export default class GlPatchAPI
@@ -13,7 +12,9 @@ export default class GlPatchAPI
     {
         this._log = new Logger("glpatch");
 
-        /** @type {Patch} */
+        /**
+         * @type {Patch}
+         */
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
@@ -29,7 +30,9 @@ export default class GlPatchAPI
 
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _initPatch()
     {
         let i = 0;
@@ -102,19 +105,20 @@ export default class GlPatchAPI
 
         let numUpdates = Math.min(350, this._patch.ops.length);
 
-
         for (let ii = 0; ii < numUpdates; ii++)
         {
             let i = (ii + this._updateCounter) % this._patch.ops.length;
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            // if (!glop.visible)
-            // {
-            //     numUpdates++;
-            //     if (numUpdates > this._patch.ops.length) break;
-            //     continue;
-            // }
+            /*
+             * if (!glop.visible)
+             * {
+             *     numUpdates++;
+             *     if (numUpdates > this._patch.ops.length) break;
+             *     continue;
+             * }
+             */
 
             if (op && op.portsIn && op.portsIn[0] && op.portsIn[0].activityCounterStartFrame == frameCount) continue;
 
@@ -333,23 +337,24 @@ export default class GlPatchAPI
         else this._log.error("could not remove link");
     }
 
-
-    // addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
-    // {
-    //     const opIn = gui.corePatch().getOpById(opIdIn);
-    //     const pIn = opIn.getPortById(portIdIn);
-    //     const opOut = gui.corePatch().getOpById(opIdOut);
-    //     const pOut = opOut.getPortById(portIdOut);
-    //     const link = pOut.getLinkTo(pIn);
-    //     // options, linkOp, linkPort, link)
-    //     gui.opSelect().show({ "x": 0,
-    //         "y": 0,
-    //         "onOpAdd": (op) =>
-    //         {
-    //             // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
-    //             op.setUiAttrib({ "translate": { "x": x, "y": y } });
-    //         } }, null, null, link);
-    // }
+    /*
+     * addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
+     * {
+     *     const opIn = gui.corePatch().getOpById(opIdIn);
+     *     const pIn = opIn.getPortById(portIdIn);
+     *     const opOut = gui.corePatch().getOpById(opIdOut);
+     *     const pOut = opOut.getPortById(portIdOut);
+     *     const link = pOut.getLinkTo(pIn);
+     *     // options, linkOp, linkPort, link)
+     *     gui.opSelect().show({ "x": 0,
+     *         "y": 0,
+     *         "onOpAdd": (op) =>
+     *         {
+     *             // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
+     *             op.setUiAttrib({ "translate": { "x": x, "y": y } });
+     *         } }, null, null, link);
+     * }
+     */
 
     deleteOp(id)
     {

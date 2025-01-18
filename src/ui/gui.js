@@ -68,14 +68,10 @@ export default class Gui extends Events
         super();
 
         this._log = new Logger("gui");
-
         this.theme = defaultTheme;
-
         this._showTiming = false;
 
-        /**
-         * @type {ServerOps}
-         */
+        /** @type {ServerOps} */
         this.serverOps = null;
 
         this.userSettings = userSettings;
@@ -109,7 +105,6 @@ export default class Gui extends Events
         this._modalLoading = null;
         this._modalLoadingCount = 0;
 
-
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
 
@@ -125,7 +120,6 @@ export default class Gui extends Events
         };
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
-
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
             {
@@ -167,7 +161,6 @@ export default class Gui extends Events
 
         this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
-
 
         this.mainTabs = new TabPanel("maintabs");
         this.maintabPanel = new MainTabPanel(this.mainTabs);
@@ -422,16 +415,20 @@ export default class Gui extends Events
         return r;
     }
 
+    /**
+     * @param {String} opid
+     * @param {String} which
+     */
     watchArray(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            this._log._warn("opid not found:", opid);
+            this._log.warn("opid not found:", opid);
             return;
         }
         const port = op.getPort(which);
-        if (!port) this._log._warn("port not found:", which);
+        if (!port) this._log.warn("port not found:", which);
 
         new WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);
@@ -450,7 +447,6 @@ export default class Gui extends Events
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
         this.patchView.resumeInteraction();
     }
-
 
     showBottomTabs()
     {
@@ -556,7 +552,6 @@ export default class Gui extends Events
 
         if (this._corePatch.cgl && this._corePatch.cgl.canvasScale) canvasScale = this._corePatch.cgl.canvasScale;
 
-
         this.rendererWidthScaled = this.rendererWidth * canvasScale;
         this.rendererHeightScaled = this.rendererHeight * canvasScale;
 
@@ -571,8 +566,6 @@ export default class Gui extends Events
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
-
-
         this.corePatch().pause();
         this.patchView.pause();
 
@@ -583,7 +576,6 @@ export default class Gui extends Events
             this.corePatch().resume();
             this.patchView.resume();
         }, 50);
-
 
         // document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
         // this._elIconBar[0].style.width = iconBarWidth + "px";
@@ -617,7 +609,6 @@ export default class Gui extends Events
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth + "px";
 
-
             // if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
@@ -649,7 +640,6 @@ export default class Gui extends Events
 
             this._elBreadcrumbNav.style.left = iconBarWidth + 15 + "px";
         }
-
 
         // menu bar top
         let menupos = 0;
@@ -744,7 +734,6 @@ export default class Gui extends Events
 
         if (this.timeLine()) this.timeLine().updateViewBox();
 
-
         this._elIconbarBottom = this._elIconbarBottom || ele.byId("iconbar_sidebar_bottom");
         if (this._elIconbarBottom)
         {
@@ -819,17 +808,12 @@ export default class Gui extends Events
         const widthResizeIcon = 30;
         ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
 
-
         let top = 0;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) top = 0;
         else top = this.rendererHeightScaled + 1;
         ele.byId("canvasicons").style.top = top + "px";
 
-
-
-
         this._elMenubar.style.top = 0 + "px";
-
 
         if (!this.bottomInfoArea.showing)
         {
@@ -847,7 +831,6 @@ export default class Gui extends Events
 
         // this.mainTabs.updateSize();
 
-
         if (this.bottomTabPanel.isVisible())
         {
             this._eleBottomTabs = ele.byId("bottomtabs");
@@ -860,8 +843,6 @@ export default class Gui extends Events
             this.bottomTabs.updateSize();
         }
 
-
-
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
         if (tabPanelTop) tabPanelTopHeight = tabPanelTop.getBoundingClientRect().height;
@@ -872,10 +853,8 @@ export default class Gui extends Events
         const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
         if (metaTabPanelTabs) metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
 
-
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
         // console.log("tabPanelTopHeight", tabPanelTopHeight);
-
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
@@ -939,7 +918,6 @@ export default class Gui extends Events
         // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
 
         this.emitEvent("setLayout");
-
 
         this.patchView.patchRenderer.focus();
 
@@ -1094,7 +1072,6 @@ export default class Gui extends Events
         else this.showFileManager(null, true);
     }
 
-
     savingTitleAnimEnd()
     {
         const elePatchName = ele.byId("patchname");
@@ -1160,11 +1137,10 @@ export default class Gui extends Events
             "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (randomize || name) CABLESUILOADER.talkerAPI.send("newPatch", { "name": name });
+                if (randomize || name) platform.talkerAPI.send("newPatch", { "name": name });
             }
         });
     }
-
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
@@ -1321,7 +1297,7 @@ export default class Gui extends Events
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
 
-        CABLESUILOADER.talkerAPI.send("fileConvert",
+        platform.talkerAPI.send("fileConvert",
             {
                 "fileId": fileId,
                 "converterId": converterId,
@@ -1367,7 +1343,7 @@ export default class Gui extends Events
         navCablesLogo.addEventListener("pointerenter", () =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-            CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+            platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
 
@@ -1380,10 +1356,9 @@ export default class Gui extends Events
 
                 str += "<li class=\"divide\"></li>";
 
-
                 if (platform.frontendOptions.showOpenPatch)
                 {
-                    let item = "<li><a onclick='CABLESUILOADER.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
+                    let item = "<li><a onclick='platform.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
@@ -1402,7 +1377,6 @@ export default class Gui extends Events
                 ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
             });
         });
-
 
         ele.byId("nav_cmdplt").addEventListener("click", () => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", () => { gui.find(""); });
@@ -1430,7 +1404,6 @@ export default class Gui extends Events
         ele.byId("nav_patch_export").addEventListener("click", () => { CABLES.CMD.PATCH.export(); });
         ele.byId("nav_patch_export_patch").addEventListener("click", () => { CABLES.CMD.PATCH.export("patch"); });
 
-
         if (platform.frontendOptions.hasOpDirectories)
         {
             const opDirEle = ele.byId("nav_patch_add_opdir");
@@ -1440,7 +1413,6 @@ export default class Gui extends Events
                 opDirEle.addEventListener("click", () => { platform.openOpDirsTab(); });
             }
         }
-
 
         const uploadEle = ele.byId("nav_uploadfile");
         if (uploadEle)
@@ -1475,13 +1447,11 @@ export default class Gui extends Events
             ele.hide(ele.byId("nav_createBackup"));
         }
 
-
         if (platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/changelog", "_blank"); });
         else ele.hide(ele.byId("nav_changelog"));
 
         if (platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
         else ele.hide(ele.byId("nav_buildinfo"));
-
 
         ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
@@ -1587,7 +1557,6 @@ export default class Gui extends Events
             }
         });
 
-
         const getSettingKeys = (keybindName, defaultKey) =>
         {
             let val = defaultKey;
@@ -1605,7 +1574,6 @@ export default class Gui extends Events
 
             return val;
         };
-
 
         this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
         {
@@ -1635,7 +1603,6 @@ export default class Gui extends Events
         });
 
         this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
-
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.cycleFullscreen(); });
@@ -1852,15 +1819,12 @@ export default class Gui extends Events
         this._log.logGui("/___________)__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__________\\____________\\______&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\/________)diP");
         this._log.logGui("-&nbsp;------------/________/------------------------------\\_______\\-------------&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;");
 
-
         this._log.logGui("");
-
 
         ele.show(ele.byId("cablescanvas"));
         ele.show(ele.byId("mainContainer"));
 
         ele.byId("menubar").classList.remove("hidden");
-
 
         if (this.userSettings.get("showUIPerf") == true) gui.uiProfiler.show();
 
@@ -1892,11 +1856,9 @@ export default class Gui extends Events
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
         this.iconBarTimeline = new IconBar("sidebar_timeline");
 
-
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
             this.userSettings.get("showTipps") &&
             this.userSettings.get("introCompleted")) gui.tips.show();
-
 
         if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
 
@@ -1911,7 +1873,6 @@ export default class Gui extends Events
         console.log("start up times:"); // eslint-disable-line no-console
         console.table(CABLESUILOADER.startup.log); // eslint-disable-line no-console
         console.groupEnd(); // eslint-disable-line no-console
-
 
         if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
 
@@ -2307,7 +2268,6 @@ export default class Gui extends Events
             return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
         }
 
-
         const topics = Object.keys(defaultTheme);
 
         for (let i = 0; i < topics.length; i++)
@@ -2347,13 +2307,10 @@ export default class Gui extends Events
 
         this.theme = theme;
 
-
-
         const nsColors = document.createElement("style");
         document.body.appendChild(nsColors);
 
         let strNsCss = "";
-
 
         for (let i in theme.colors_namespaces)
         {
@@ -2374,11 +2331,9 @@ export default class Gui extends Events
     }
 }
 
-
 Gui.RESTRICT_MODE_LOADING = 0;
 Gui.RESTRICT_MODE_BLUEPRINT = 5;
 Gui.RESTRICT_MODE_REMOTEVIEW = 10;
 Gui.RESTRICT_MODE_FOLLOWER = 20;
 Gui.RESTRICT_MODE_EXPLORER = 30;
 Gui.RESTRICT_MODE_FULL = 40;
-

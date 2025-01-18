@@ -6,7 +6,6 @@ import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 const paramsHelper =
 {
-
     "valueChangerSetSliderCSS": (v, eleInput) =>
     {
         if (eleInput.dataset.min || eleInput.dataset.max)
@@ -37,7 +36,6 @@ const paramsHelper =
                 else event.target.value = paramsHelper.inputIncrement(event.target.value, -1, event);
             }
             event.target.dispatchEvent(new Event("input"));
-
 
             return false;
         }
@@ -208,7 +206,6 @@ const paramsHelper =
             return;
         }
 
-
         const portAnimEle = ele.byId("portanim_in_" + index);
         if (isOpen && portAnimEle) portAnimEle.classList.add("timingbutton_active");
 
@@ -296,8 +293,6 @@ const paramsHelper =
         editorSession.finishLoadingTab();
     },
 
-
 };
-
 
 export default paramsHelper;

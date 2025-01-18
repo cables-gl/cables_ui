@@ -26,7 +26,6 @@ export default class Api
             if (data) options.body = JSON.stringify(data);
         }
 
-
         fetch(url, options)
             .then((response) =>
             {
@@ -114,7 +113,6 @@ export default class Api
         this.request("PUT", url, data, cb, cbErr);
     }
 
-
     sendErrorReport(report, manualSend = true)
     {
         const doneCallback = (res) =>
@@ -131,7 +129,6 @@ export default class Api
 
             if (res && res.data && res.data.url)
                 this._log.log("sent error report: ", res.data.url);
-
 
             CABLES.lastError = null;
         };

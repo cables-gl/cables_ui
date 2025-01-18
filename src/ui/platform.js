@@ -33,9 +33,9 @@ export class Platform extends Events
         this.paths = {};
         this.frontendOptions = {};
 
-        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+        if (CABLESUILOADER && this.talkerAPI)
         {
-            CABLESUILOADER.talkerAPI.addEventListener("logError", (errorData) =>
+            this.talkerAPI.addEventListener("logError", (errorData) =>
             {
                 if (errorData)
                 {
@@ -81,6 +81,11 @@ export class Platform extends Events
     get config()
     {
         return this._cfg;
+    }
+
+    get talkerAPI()
+    {
+        return CABLESUILOADER.talkerAPI;
     }
 
     warnOpEdit(opName)
@@ -279,19 +284,19 @@ export class Platform extends Events
 
     savePatch(options, cb)
     {
-        CABLESUILOADER.talkerAPI.send("savePatch", options, cb);
+        this.talkerAPI.send("savePatch", options, cb);
     }
 
     initRouting(cb)
     {
         gui.setUser(this._cfg.user);
 
-        CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
+        this.talkerAPI.addEventListener("notify", (options, next) =>
         {
             notify(options.msg, options.text, options.options);
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "notifyError",
             (options, next) =>
             {
@@ -299,7 +304,7 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "refreshFileManager",
             (options, next) =>
             {
@@ -308,7 +313,7 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener("executeOp", (options, next) =>
+        this.talkerAPI.addEventListener("executeOp", (options, next) =>
         {
             if (options && options.name)
             {
@@ -331,7 +336,7 @@ export class Platform extends Events
             }
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "fileUpdated",
             (options, next) =>
             {
@@ -366,7 +371,7 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "fileDeleted",
             (options, next) =>
             {
@@ -406,17 +411,17 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
+        this.talkerAPI.addEventListener("jobStart", (options, next) =>
         {
             gui.jobs().start({ "id": options.id, "title": options.title });
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener("jobFinish", (options, next) =>
+        this.talkerAPI.addEventListener("jobFinish", (options, next) =>
         {
             gui.jobs().finish(options.id);
         });
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "jobProgress",
             (options, next) =>
             {
@@ -424,16 +429,16 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "updatePatchName",
             (opts, next) =>
             {
                 gui.setProjectName(opts.name);
-                CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => { });
+                this.talkerAPI.send("updatePatchName", opts, (err, r) => { });
             },
         );
 
-        CABLESUILOADER.talkerAPI.addEventListener(
+        this.talkerAPI.addEventListener(
             "updatePatchSummary",
             (opts, next) =>
             {
@@ -443,7 +448,7 @@ export class Platform extends Events
             },
         );
 
-        CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>
+        this.talkerAPI.send("getPatch", {}, (err, r) =>
         {
             this._cfg.patch = r;
             incrementStartup();
@@ -456,7 +461,7 @@ export class Platform extends Events
 
     reloadLastSavedVersion(cb)
     {
-        CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, project) =>
+        this.talkerAPI.send("getPatch", {}, (err, project) =>
         {
             if (!err)
             {
@@ -537,7 +542,7 @@ export class Platform extends Events
                 "promptValue": "Manual Backup",
                 "promptOk": function (name)
                 {
-                    CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
+                    this.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
                     {
                         if (result.success) notify("Backup created!");
                     });

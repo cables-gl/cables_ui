@@ -5,7 +5,6 @@ import GlPort from "./glport.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 
-
 /**
  * rendering cables for links
  *
@@ -178,11 +177,6 @@ export default class GlCable
                 const glop = this._glPatch.getGlOp(op);
                 if (glop.displayType === glop.DISPLAY_SUBPATCH)
                 {
-                    // const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
-                    // const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
-
-                    // if (portsIn.length < 1 || portsOut.lengh < 1 || !portsIn[0] || !portsOut[0]) return false;
-                    // if (!(portsIn[0].type == portsOut[0].type == this._type)) return false;
                 }
                 else
                 if (op.portsIn.length > 0 && op.portsOut.length > 0)
@@ -276,7 +270,6 @@ export default class GlCable
         //             this._x2, this._y2, 0,
         //             this._x2, this._y2, 0,
         //         ]));
-
 
         if (this._oldx != this._x || this._oldy != this._y || this._oldx2 != this._x2 || this._oldy2 != this._y2)
         {
@@ -390,13 +383,11 @@ export default class GlCable
             //         0, 0, 0
             //     ]);
 
-
             // this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
             // this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
             // this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
         }
     }
-
 
     _setPositionButton()
     {
@@ -538,13 +529,10 @@ export default class GlCable
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
 
-
         if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {
             const selectedOp = gui.patchView.getSelectedOps()[0];
             if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
-
-
 
             if (
                 this._glPatch.isDraggingOps() &&
@@ -624,7 +612,6 @@ export default class GlCable
         }
         return false;
     }
-
 
     // LINE/POINT
     _collideLinePoint(x1, y1, x2, y2, px, py)

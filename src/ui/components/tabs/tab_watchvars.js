@@ -33,7 +33,6 @@ export default class WatchVarTab extends Events
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
-
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
         this._ele = document.getElementById(this._id);
@@ -56,7 +55,6 @@ export default class WatchVarTab extends Events
         ele.byId("varfilter").focus();
     }
 
-
     _html()
     {
         this._eleTable.innerHTML = "";
@@ -75,7 +73,6 @@ export default class WatchVarTab extends Events
             trHead.appendChild(tdr);
         }
         table.appendChild(trHead);
-
 
         const filter = ele.byId("varfilter").value;
 

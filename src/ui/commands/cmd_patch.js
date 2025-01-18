@@ -13,6 +13,7 @@ import gluiconfig from "../glpatch/gluiconfig.js";
 import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
+import { portType } from "../core_constants.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -88,7 +89,6 @@ CABLES_CMD_PATCH.autoPosSubpatchInputOutputOps = function ()
     gui.patchView.setPositionSubPatchInputOutputOps(sub);
 };
 
-
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
@@ -110,9 +110,8 @@ CABLES_CMD_PATCH.deleteSelectedOps = function ()
 
 CABLES_CMD_PATCH.reload = function ()
 {
-    CABLESUILOADER.talkerAPI.send("reload");
+    platform.talkerAPI.send("reload");
 };
-
 
 CABLES_CMD_PATCH.save = function (force, cb)
 {
@@ -212,7 +211,6 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
                 return;
             }
 
-
             const parts = subOuter.objName.split(".");
 
             if (parts.length > 1)
@@ -245,7 +243,6 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newName, "ignoreNsCheck": true, ...options });
     });
 };
-
 
 CABLES_CMD_PATCH.centerOpsInSubpatch = function ()
 {
@@ -306,7 +303,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         newselectedOpIds.push(newops[j].id);
                 }
             }
-
 
             gui.patchView.createSubPatchFromSelection(2,
                 (patchId, OpTempSubpatch) =>
@@ -388,7 +384,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     gui.corePatch().deleteOp(OpTempSubpatch.id);
                                     gui.patchView.setCurrentSubPatch(currentSubpatch);
 
-                                    CABLESUILOADER.talkerAPI.send("opUpdate",
+                                    platform.talkerAPI.send("opUpdate",
                                         {
                                             "opname": newOpname,
                                             "update": {
@@ -458,11 +454,13 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
                                                         "next": () =>
                                                         {
-                                                            // log.log("bp", bp);
-                                                            // CABLES.CMD.PATCH.save();
+
+                                                            /*
+                                                             * log.log("bp", bp);
+                                                             * CABLES.CMD.PATCH.save();
+                                                             */
                                                         } });
                                                 }
-
 
                                                 gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                 gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
@@ -477,10 +475,12 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     });
 };
 
-// CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
-// {
-//     gui.patchView.createSubPatchFromSelection(version);
-// };
+/*
+ * CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
+ * {
+ *     gui.patchView.createSubPatchFromSelection(version);
+ * };
+ */
 
 CABLES_CMD_PATCH.findCommentedOps = function ()
 {
@@ -526,7 +526,6 @@ CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
     const uploadEle = ele.byId("hiddenfileElemReupload");
     if (uploadEle) uploadEle.click();
 };
-
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
@@ -610,8 +609,6 @@ CABLES_CMD_PATCH.addOpByName = (name) =>
     });
 };
 
-
-
 CABLES_CMD_PATCH.reloadOp = function (x, y)
 {
     const ops = gui.patchView.getSelectedOps();
@@ -624,7 +621,6 @@ CABLES_CMD_PATCH.reloadOp = function (x, y)
         notify("reloaded op " + op.objName);
     });
 };
-
 
 CABLES_CMD_PATCH.addOp = function (x, y)
 {
@@ -706,7 +702,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-            if (p.type != CABLES.OP_PORT_TYPE_FUNCTION)
+            if (p.type != portType.trigger)
                 opSetter.getPortByName(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
@@ -827,7 +823,6 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
         } });
 };
 
-
 CABLES_CMD_PATCH.addLinkReroute = function ()
 {
     const link = CABLES.UI.OPSELECT.linkNewLink;
@@ -861,7 +856,6 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
                 }, 100);
         } });
 };
-
 
 CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
 {
@@ -1048,13 +1042,11 @@ CABLES_CMD_PATCH.alignOpsLeft = () =>
     gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
 };
 
-
 CABLES_CMD_PATCH.watchGlOp = function ()
 {
     new GlOpWatcher(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
-
 
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
@@ -1079,7 +1071,6 @@ CABLES_CMD_PATCH.toggleResizable = function ()
         });
     }
 };
-
 
 CABLES_CMD_PATCH.setOpTitle = function ()
 {
@@ -1153,7 +1144,6 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
         } });
 };
 
-
 CABLES_CMD_PATCH.replaceOp = function ()
 {
     new ModalDialog({
@@ -1183,7 +1173,7 @@ CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "")
         "promptOk": (summary) =>
         {
             gui.savingTitleAnimStart("Updating Op...");
-            CABLESUILOADER.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
+            platform.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
             {
                 if (!err)
                 {
@@ -1227,11 +1217,9 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
     }
 };
 
-
-
 CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
 {
-    CABLESUILOADER.talkerAPI.send("toggleFav", {}, (err, res) =>
+    platform.talkerAPI.send("toggleFav", {}, (err, res) =>
     {
         if (!err && res.success && targetElement)
         {
@@ -1253,7 +1241,6 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
         }
     });
 };
-
 
 CABLES_CMD_PATCH.deleteOp = (opName = null) =>
 {
@@ -1338,12 +1325,15 @@ CMD_PATCH_COMMANDS.push(
         "category": "op",
         "func": CABLES_CMD_PATCH.clearOpTitles
     },
-    // {
-    //     "cmd": "Create subpatch",
-    //     "category": "patch",
-    //     "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
-    //     "icon": "subpatch"
-    // },
+
+    /*
+     * {
+     *     "cmd": "Create subpatch",
+     *     "category": "patch",
+     *     "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
+     *     "icon": "subpatch"
+     * },
+     */
     {
         "cmd": "Export static html",
         "category": "patch",

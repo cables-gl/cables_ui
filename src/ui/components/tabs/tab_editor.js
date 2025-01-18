@@ -25,7 +25,6 @@ export default class EditorTab extends Events
 
         gui.maintabPanel.show();
 
-
         let title = gui.maintabPanel.tabs.getUniqueTitle(options.title);
 
         // check if tab exists?
@@ -101,7 +100,6 @@ export default class EditorTab extends Events
                     else hideFormatButton = true;
                     if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-
                     if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
                 }
                 else
@@ -120,7 +118,6 @@ export default class EditorTab extends Events
                 this._options.editorObj = this._options.editorObj || {};
                 if (this._options.editorObj.type === "op") opname = this._options.editorObj.name;
                 if (this._options.editorObj.data && this._options.editorObj.data.opname) opname = this._options.editorObj.data.opname;
-
 
                 if (!opname)
                 {
@@ -257,7 +254,7 @@ export default class EditorTab extends Events
 
     format()
     {
-        CABLESUILOADER.talkerAPI.send(
+        platform.talkerAPI.send(
             "formatOpCode",
             {
                 "code": this._editor.getValue(),
@@ -314,9 +311,6 @@ export default class EditorTab extends Events
         }
         else this.emitEvent("save", onSaveCb.bind(this), this._editor.getValue(), this._editor);
     }
-
-
-
 
     createEditor(id, val, cb)
     {
@@ -485,7 +479,6 @@ export default class EditorTab extends Events
                     "name": "op.toWorkPortsNeedsString",
                 },
 
-
                 {
                     "content": "vec3.create();",
                     "name": "vec3.create",
@@ -522,7 +515,6 @@ export default class EditorTab extends Events
                     "content": "op.setUiError(\"id\", \"text or null\");",
                     "name": "op.setUiError",
                 },
-
 
             );
             snippetManager.register(snippets, "javascript");
@@ -789,4 +781,3 @@ function loadAce(cb)
         }
     }
 }
-

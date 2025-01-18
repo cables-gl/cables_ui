@@ -40,7 +40,6 @@ CABLES_CMD_UI.canvasLens = function ()
     new CanvasLens();
 };
 
-
 CABLES_CMD_UI.activityFeed = function ()
 {
     const url = platform.getCablesUrl() + "/myactivityfeed";
@@ -75,7 +74,6 @@ CABLES_CMD_UI.toggleFiles = function ()
     gui.showFileManager(null, true);
 };
 
-
 CABLES_CMD_UI.windowFullscreen = function ()
 {
     if (document.documentElement.mozRequestFullScreen) document.documentElement.mozRequestFullScreen();
@@ -103,7 +101,6 @@ CABLES_CMD_UI.showChat = function ()
     if (gui.socket) gui.socket.showChat();
 };
 
-
 CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
     userSettings.set("bgpreview", !userSettings.get("bgpreview"));
@@ -114,7 +111,6 @@ CABLES_CMD_UI.hideMinimap = function ()
     userSettings.set("showMinimap", false);
     gui.hideMiniMap();
 };
-
 
 CABLES_CMD_UI.toggleMinimap = function ()
 {
@@ -132,7 +128,6 @@ CABLES_CMD_UI.toggleMaxRenderer = function ()
 {
     gui.cycleFullscreen();
 };
-
 
 CABLES_CMD_UI.togglePatchBgPatchField = function ()
 {
@@ -180,7 +175,6 @@ CABLES_CMD_UI.showChangelog = function (since)
 {
     (new ChangelogToast()).show(since);
 };
-
 
 CABLES_CMD_UI.showBuildInfo = function ()
 {
@@ -236,10 +230,9 @@ CABLES_CMD_UI.showBuildInfo = function ()
     new HtmlTab(gui.mainTabs, infoHtml);
 };
 
-
 CABLES_CMD_UI.welcomeTab = function (userInteraction)
 {
-    CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+    platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
     {
         const t = new WelcomeTab(gui.mainTabs, { "patches": r });
         gui.mainTabs.activateTab(t.id);
@@ -280,7 +273,6 @@ CABLES_CMD_UI.showPreferences = function ()
     gui.maintabPanel.show(true);
 };
 
-
 CABLES_CMD_UI.profileGPU = function ()
 {
     new GpuProfiler(gui.mainTabs);
@@ -312,12 +304,10 @@ CABLES_CMD_UI.jobs = function ()
     gui.maintabPanel.show(true);
 };
 
-
 CABLES_CMD_UI.togglePauseVizLayer = function ()
 {
     userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
 };
-
 
 CMD_UI_COMMANDS.push(
     {
@@ -526,7 +516,5 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.showTips
     }
-
-
 
 );

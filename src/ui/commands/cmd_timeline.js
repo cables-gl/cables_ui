@@ -27,7 +27,6 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
                 ports.push(inputs[j]);
     }
 
-
     const htmlgen = new PortHtmlGenerator(panelid);
 
     let html = "<div class=\"panel params\" ><table>";
@@ -42,7 +41,6 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
     const paramsListener = new ParamsListener(panelid);
     paramsListener.init({ "portsIn": ports });
 };
-
 
 CABLES_CMD_TIMELINE.TimelinePlay = function ()
 {
@@ -104,7 +102,6 @@ CABLES_CMD_TIMELINE.openGlTimeline = function ()
 {
     const t = new GlTimelineTab(gui.mainTabs);
 };
-
 
 timelineCommands.commands.push(
     {
@@ -170,7 +167,5 @@ timelineCommands.commands.push(
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.openGlTimeline
     },
-
-
 
 );

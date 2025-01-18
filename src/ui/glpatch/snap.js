@@ -20,10 +20,15 @@ export default class Snap extends Events
     {
         super();
 
-        /** @type {GlPatch} */
+        /**
+         * @type {GlPatch}
+         */
         this._glPatch = glPatch;
         this._xCoords = [];
-        /** @type {GlRectInstancer} */
+
+        /**
+         * @type {GlRectInstancer}
+         */
         this._instancer = instancer;
         this._timeout = null;
         this._rectWidth = 1;
@@ -126,7 +131,6 @@ export default class Snap extends Events
     snapOpX(_x, op, dist)
     {
         if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
-
 
         let hasLinks = false;
         dist = dist || gluiconfig.portWidth;

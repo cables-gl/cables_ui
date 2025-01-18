@@ -7,7 +7,6 @@ import { gui } from "../../gui.js";
 
 let pointerLockFirstTime = true;
 
-
 export default valueChanger;
 
 /**
@@ -241,7 +240,6 @@ function valueChanger(eleId, focus, portName, opid)
 
         eleInput.value = v;
         eleNumInputDisplay.innerHTML = v;
-
 
         eleInput.dispatchEvent(new Event("input"));
     }

@@ -6,6 +6,7 @@ import GlOp from "./glop.js";
 
 export default class GlArea
 {
+
     /**
      * @param {GlRectInstancer} instancer
      * @param {GlOp} glop
@@ -14,27 +15,46 @@ export default class GlArea
     {
         this._instancer = instancer;
 
-
-        /** @private @type {GlOp}  */
+        /**
+         * @private
+         * @type {GlOp}
+         */
         this._glop = glop;
         this._id = CABLES.shortId();
 
-        /** @private @type {Number} */
+        /**
+         * @private
+         * @type {Number}
+         */
         this._w = 300;
-        /** @private @type {Number} */
+
+        /**
+         * @private
+         * @type {Number}
+         */
         this._h = 200;
-        /** @private @type {Boolean} */
+
+        /**
+         * @private
+         * @type {Boolean}
+         */
         this._visible = true;
 
-        /** @type {GlRect} */
+        /**
+         * @type {GlRect}
+         */
         this._rectBg = this._instancer.createRect({ "draggable": false });
         this._rectBg.setSize(this._w, this._h);
         this._updateColor();
 
-        /** @type {Number} */
+        /**
+         * @type {Number}
+         */
         this.resizeCornerSize = 15;
 
-        /** @type {GlRect} */
+        /**
+         * @type {GlRect}
+         */
         this._rectResize = this._instancer.createRect({ "draggable": true });
         this._rectResize.setShape(2);
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
@@ -79,7 +99,9 @@ export default class GlArea
         this._update();
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _update()
     {
         if (this._rectBg)
@@ -105,7 +127,9 @@ export default class GlArea
         this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });
     }
 
-    /** @private */
+    /**
+     * @private
+     */
     _updateColor()
     {
         if (this._glop.opUiAttribs.color)

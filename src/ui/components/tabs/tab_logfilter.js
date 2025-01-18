@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { gui } from "../../gui.js";
+import { logFilter } from "../../utils/logfilter.js";
 
 export default class LoggingTab extends Events
 {
@@ -18,8 +19,7 @@ export default class LoggingTab extends Events
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
         this._html();
-        CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
-
+        logFilter.on("initiatorsChanged", this._html.bind(this));
 
         this._tab.addEventListener(
             "close",
@@ -28,16 +28,14 @@ export default class LoggingTab extends Events
                 this.closed = true;
                 this.emitEvent("close");
 
-                CABLES.UI.logFilter.off(this._showlogListener);
+                logFilter.off(this._showlogListener);
             },
         );
     }
 
-
-
     _html()
     {
-        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
+        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": logFilter.getTabInfo() });
         this._tab.html(html);
     }
 
@@ -60,8 +58,6 @@ export default class LoggingTab extends Events
         html += "</div>";
         html += "</div>";
 
-
         return html;
     }
 }
-

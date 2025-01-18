@@ -2,6 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import { portType } from "./core_constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import text from "./text.js";
@@ -74,7 +75,6 @@ export default function extendCoreOp()
         }
     };
 
-
     /**
      * disconnect all links
      * @function
@@ -86,7 +86,6 @@ export default function extendCoreOp()
         for (let ipo = 0; ipo < this.portsOut.length; ipo++) this.portsOut[ipo].removeLinks();
         for (let ipi = 0; ipi < this.portsIn.length; ipi++) this.portsIn[ipi].removeLinks();
     };
-
 
     CABLES.Op.prototype.unLinkReconnectOthers = function ()
     {
@@ -149,7 +148,6 @@ export default function extendCoreOp()
                         "out": this.portsOut[ipo].links[i].portOut
                     });
         }
-
 
         this.unLink();
 
@@ -218,7 +216,6 @@ export default function extendCoreOp()
                     if (this.portsOut[i].links[j].getOtherPort(this.portsOut[i]).op == op2) return this.portsOut[i].links[j];
     };
 
-
     CABLES.Op.prototype.isPatchOp = function ()
     {
         return this.objName.indexOf("Ops.Patch") == 0;
@@ -274,7 +271,7 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
-        if (!CABLES.UI.loaded) return;
+        if (!gui.finishedLoading()) return;
 
         if (this.isInBlueprint2())
         {
@@ -294,7 +291,7 @@ export default function extendCoreOp()
 
         function hasTriggerInput(op)
         {
-            if (op.portsIn.length > 0 && op.portsIn[0].type == CABLES.OP_PORT_TYPE_FUNCTION) return true;
+            if (op.portsIn.length > 0 && op.portsIn[0].type == portType.trigger) return true;
             return false;
         }
 
@@ -304,8 +301,8 @@ export default function extendCoreOp()
         if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
         {
             working =
-                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
-                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
+                this.hasParent(portType.trigger, "TextureEffects.ImageCompose") ||
+                this.hasParent(portType.trigger, "TextureEffects.ImageCompose_v2");
 
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
@@ -379,7 +376,7 @@ export default function extendCoreOp()
         this.setUiError("wrongstride", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
-            if (this.portsIn[i].type == CABLES.OP_PORT_TYPE_ARRAY && this.portsIn[i].links.length && this.portsIn[i].links[0])
+            if (this.portsIn[i].type == portType.array && this.portsIn[i].links.length && this.portsIn[i].links[0])
             {
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
                 if (
@@ -429,7 +426,6 @@ export default function extendCoreOp()
             }, 33);
         }
     };
-
 
     CABLES.Op.prototype.hasLinks = function ()
     {
@@ -591,7 +587,6 @@ export default function extendCoreOp()
         this.setTempOpPos(x, this.getTempPosY());
     };
 
-
     // CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
     // {
     //     if (count > 100) return s;
@@ -604,7 +599,6 @@ export default function extendCoreOp()
 
     //     s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
     //     s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
-
 
     //     if (untilOp && this == untilOp) return s;
 
@@ -655,7 +649,6 @@ export default function extendCoreOp()
     {
         return glpatch.getGlOp(this).h;
     };
-
 
     CABLES.Op.prototype.selectChilds = function (options)
     {
@@ -726,7 +719,6 @@ export default function extendCoreOp()
             else return 0;
         }
 
-
         if (numports === undefined) this._log.log("posbyindex needs numports param");
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
@@ -735,25 +727,18 @@ export default function extendCoreOp()
 
         const onePort = (gluiconfig.portWidth + gluiconfig.portPadding);
 
-
-
         if (this.uiAttribs.stretchPorts && this.uiAttribs.resizable)
             p = portIndex * (((this.uiAttribs.width || ((numports - 1) * onePort + gluiconfig.rectResizeSize)) - gluiconfig.rectResizeSize) / (numports - 1));
         else
             p = portIndex * onePort;
 
-
-
         p += (offCenter || 0);
         return p;
     };
 
-
     CABLES.Op.prototype.getPortPosX = function (name, opid, center, opwidth)
     {
         let index = 0;
-
-
 
         if (this.isSubPatchOp() == 2 && this.patchId)
         {

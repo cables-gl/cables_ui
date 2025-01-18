@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { platform } from "../platform.js";
 
 /**
  * storing/loading user settings/ sending to the user and in localstorage etc.
@@ -64,10 +65,9 @@ export default class UserSettings extends Events
         return this._lsSettings[key];
     }
 
-
     save()
     {
-        CABLESUILOADER.talkerAPI.send("saveUserSettings", { "settings": this._settings });
+        platform.talkerAPI.send("saveUserSettings", { "settings": this._settings });
     }
 
     set(key, value)
@@ -109,10 +109,8 @@ export default class UserSettings extends Events
     }
 }
 
-
-
 /**
  * @type {UserSettings}
  */
-let userSettings = new UserSettings();
+const userSettings = new UserSettings();
 export { userSettings };

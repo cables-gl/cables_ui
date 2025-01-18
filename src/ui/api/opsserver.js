@@ -13,7 +13,7 @@ import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
-
+import { portType } from "../core_constants.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -83,7 +83,7 @@ export default class ServerOps
 
     load(cb)
     {
-        CABLESUILOADER.talkerAPI.send("getAllProjectOps", {}, (err, res) =>
+        platform.talkerAPI.send("getAllProjectOps", {}, (err, res) =>
         {
             if (err) this._log.error(err);
 
@@ -98,8 +98,10 @@ export default class ServerOps
                 gui.opDocs.addOpDocs(res);
             }
 
-            // ops added to opdocs so they are available in opsearch
-            // make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
+            /*
+             * ops added to opdocs so they are available in opsearch
+             * make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
+             */
             const usedOps = res.filter((op) => { return op && op.usedInProject; });
             this.loadOpsLibs(usedOps, () =>
             {
@@ -117,7 +119,6 @@ export default class ServerOps
         return false;
     }
 
-
     create(name, cb, openEditor, options = {})
     {
         // const loadingModal = gui.startModalLoading("Creating op...");
@@ -130,7 +131,7 @@ export default class ServerOps
         };
         if (options && options.opTargetDir) createRequest.opTargetDir = options.opTargetDir;
 
-        CABLESUILOADER.talkerAPI.send("opCreate", createRequest, (err, res) =>
+        platform.talkerAPI.send("opCreate", createRequest, (err, res) =>
         {
             if (err)
             {
@@ -182,7 +183,6 @@ export default class ServerOps
         }, 500);
     }
 
-
     _getOpLayout(op)
     {
         if (!op)
@@ -215,7 +215,7 @@ export default class ServerOps
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
-            if (op.portsIn[i].type === CABLES.OP_PORT_TYPE_VALUE)
+            if (op.portsIn[i].type === portType.number)
             {
                 if (op.portsIn[i].uiAttribs.display === "bool") l.subType = "boolean";
                 else if (op.portsIn[i].uiAttribs.display === "boolnum") l.subType = "boolean";
@@ -240,7 +240,7 @@ export default class ServerOps
             if (op.portsOut[i].uiAttribs.longPort) l.longPort = op.portsOut[i].uiAttribs.longPort;
 
             if (op.portsOut[i].uiAttribs.hidePort) continue;
-            if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
+            if (op.portsOut[i].type == portType.number)
             {
                 if (op.portsOut[i].uiAttribs.display === "bool") l.subType = "boolean";
                 else if (op.portsOut[i].uiAttribs.display === "boolnum") l.subType = "boolean";
@@ -257,7 +257,6 @@ export default class ServerOps
         return opObj;
     }
 
-
     _saveOpLayout(op)
     {
         if (!op)
@@ -272,7 +271,7 @@ export default class ServerOps
         const l = gui.opDocs.getOpDocById(op.opId);
         if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return false; // has not changed
 
-        CABLESUILOADER.talkerAPI.send("opSaveLayout", {
+        platform.talkerAPI.send("opSaveLayout", {
             "opname": op.opId,
             "layout": opObj
         }, (err, res) =>
@@ -335,7 +334,6 @@ export default class ServerOps
         // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
         gui.savingTitleAnimStart("Cloning Op...");
 
-
         // loadingModal.setTask("cloning " + oldname + " to " + name);
 
         const cloneRequest = {
@@ -344,7 +342,7 @@ export default class ServerOps
         };
         if (options.opTargetDir) cloneRequest.opTargetDir = options.opTargetDir;
 
-        CABLESUILOADER.talkerAPI.send("opClone", cloneRequest, (err, res) =>
+        platform.talkerAPI.send("opClone", cloneRequest, (err, res) =>
         {
             if (err)
             {
@@ -382,7 +380,7 @@ export default class ServerOps
                     "oldIdAsRef": true
                 });
 
-                CABLESUILOADER.talkerAPI.send("opAttachmentSave", {
+                platform.talkerAPI.send("opAttachmentSave", {
                     "opname": name,
                     "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
                     "content": JSON.stringify(sub)
@@ -401,7 +399,7 @@ export default class ServerOps
     addOpLib(opName, libName, next)
     {
         if (libName === "---") return;
-        CABLESUILOADER.talkerAPI.send("opAddLib", {
+        platform.talkerAPI.send("opAddLib", {
             "opname": opName,
             "name": libName
         }, (err, res) =>
@@ -451,7 +449,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            CABLESUILOADER.talkerAPI.send("opRemoveLib", {
+            platform.talkerAPI.send("opRemoveLib", {
                 "opname": opName,
                 "name": libName
             }, (err, res) =>
@@ -477,7 +475,7 @@ export default class ServerOps
     {
         if (libName === "---") return;
 
-        CABLESUILOADER.talkerAPI.send("opAddCoreLib", {
+        platform.talkerAPI.send("opAddCoreLib", {
             "opname": opName,
             "name": libName
         }, (err, res) =>
@@ -528,7 +526,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            CABLESUILOADER.talkerAPI.send("opRemoveCoreLib", {
+            platform.talkerAPI.send("opRemoveCoreLib", {
                 "opname": opName,
                 "name": libName
             }, (err, res) =>
@@ -559,7 +557,7 @@ export default class ServerOps
             "id": "addOpDependency",
             "title": "adding " + depSrc + " to " + opName
         });
-        CABLESUILOADER.talkerAPI.send("addOpDependency", {
+        platform.talkerAPI.send("addOpDependency", {
             "opName": opName,
             "src": depSrc,
             "type": depType,
@@ -601,7 +599,6 @@ export default class ServerOps
         });
     }
 
-
     removeOpDependency(opName, depSrc, depType, next = null)
     {
         const modal = new ModalDialog({
@@ -615,7 +612,7 @@ export default class ServerOps
                 "id": "removeOpDependency",
                 "title": "removing " + depSrc + " from " + opName
             });
-            CABLESUILOADER.talkerAPI.send("removeOpDependency", {
+            platform.talkerAPI.send("removeOpDependency", {
                 "opName": opName,
                 "src": depSrc,
                 "type": depType
@@ -650,7 +647,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            CABLESUILOADER.talkerAPI.send("opAttachmentDelete", {
+            platform.talkerAPI.send("opAttachmentDelete", {
                 "opname": opId,
                 "name": attName
             }, (err) =>
@@ -686,7 +683,7 @@ export default class ServerOps
             "prompt": true,
             "promptOk": (attName) =>
             {
-                CABLESUILOADER.talkerAPI.send("opAttachmentAdd", {
+                platform.talkerAPI.send("opAttachmentAdd", {
                     "opname": opid,
                     "name": attName
                 }, (err) =>
@@ -705,7 +702,6 @@ export default class ServerOps
         });
     }
 
-
     testServer()
     {
         let opname = platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
@@ -718,17 +714,20 @@ export default class ServerOps
 
         CABLES.shittyTest = CABLES.shittyTest || 1;
 
-        CABLESUILOADER.talkerAPI.send("opCreate", {
+        platform.talkerAPI.send("opCreate", {
             "opname": opname
         }, (err3, res) =>
         {
-            CABLESUILOADER.talkerAPI.send("opUpdate", {
+            platform.talkerAPI.send("opUpdate", {
                 "opname": opname,
                 "update": {
                     "attachments": atts
                 }
-                // "name": attachmentName,
-                // "content": cont,
+
+                /*
+                 * "name": attachmentName,
+                 * "content": cont,
+                 */
             }, (err) =>
             {
                 if (err)
@@ -737,7 +736,7 @@ export default class ServerOps
                     this.showApiError(err);
                 }
 
-                CABLESUILOADER.talkerAPI.send("opAttachmentGet", {
+                platform.talkerAPI.send("opAttachmentGet", {
                     "opname": opname,
                     "name": attachmentName
                 }, (err2, res2) =>
@@ -795,7 +794,7 @@ export default class ServerOps
                 "rename": options.rename
             };
             if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
-            CABLESUILOADER.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
+            platform.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
             {
                 if (err)
                 {
@@ -815,7 +814,7 @@ export default class ServerOps
                     {
                         addButton.addEventListener("click", () =>
                         {
-                            CABLESUILOADER.talkerAPI.send("addProjectOpDir", (dirErr, dirRes) =>
+                            platform.talkerAPI.send("addProjectOpDir", (dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {
@@ -884,7 +883,6 @@ export default class ServerOps
                     "replace": false
                 };
 
-
                 ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
@@ -929,7 +927,7 @@ export default class ServerOps
 
         if (options.hasOpDirectories)
         {
-            CABLESUILOADER.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
+            platform.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
             {
                 let opDirSelect = "Choose op directory:<br/><br/>";
                 opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
@@ -1004,7 +1002,7 @@ export default class ServerOps
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
 
-                CABLESUILOADER.talkerAPI.send("checkOpName", checkNameRequest, (err, res) =>
+                platform.talkerAPI.send("checkOpName", checkNameRequest, (err, res) =>
                 {
                     if (err)
                     {
@@ -1194,7 +1192,7 @@ export default class ServerOps
             "src": iframeSrc
         });
         const iframeEle = modal.iframeEle;
-        const talkerAPI = new CABLESUILOADER.TalkerAPI(iframeEle.contentWindow);
+        const talkerAPI = new platform.TalkerAPI(iframeEle.contentWindow);
         const renameListenerId = talkerAPI.addEventListener("opRenamed", (newOp) =>
         {
             talkerAPI.removeEventListener(renameListenerId);
@@ -1247,7 +1245,7 @@ export default class ServerOps
             };
             if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
-            CABLESUILOADER.talkerAPI.send("opRename", renameRequest, (err, res) =>
+            platform.talkerAPI.send("opRename", renameRequest, (err, res) =>
             {
                 if (err)
                 {
@@ -1276,7 +1274,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            CABLESUILOADER.talkerAPI.send("opDelete", { "opName": opName }, (err, res) =>
+            platform.talkerAPI.send("opDelete", { "opName": opName }, (err, res) =>
             {
                 if (err)
                 {
@@ -1399,12 +1397,10 @@ export default class ServerOps
         });
     }
 
-
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
     {
         let opname = op;
         let opId = opname;
-
 
         if (typeof opname == "object")
         {
@@ -1464,7 +1460,7 @@ export default class ServerOps
             }
         });
 
-        CABLESUILOADER.talkerAPI.send("opAttachmentGet", apiParams, (err, res) =>
+        platform.talkerAPI.send("opAttachmentGet", apiParams, (err, res) =>
         {
             if (err)
             {
@@ -1498,13 +1494,12 @@ export default class ServerOps
             const content = res.content || "";
             editorTab.setContent(content);
 
-
             if (editorObj)
             {
                 editorTab.on("save", (_setStatus, _content) =>
                 {
                     gui.savingTitleAnimStart("Saving Attachment...");
-                    CABLESUILOADER.talkerAPI.send("opAttachmentSave", {
+                    platform.talkerAPI.send("opAttachmentSave", {
                         "opname": opId,
                         "name": attachmentName,
                         "content": _content
@@ -1551,7 +1546,6 @@ export default class ServerOps
                 });
             }
 
-
             if (cb) cb(); else gui.maintabPanel.show(userInteraction);
         }, (err) =>
         {
@@ -1581,7 +1575,6 @@ export default class ServerOps
         let opid = op;
         let opname = opid;
 
-
         if (typeof op == "object")
         {
             opid = op.opId;
@@ -1608,7 +1601,6 @@ export default class ServerOps
                 "title": "loading op code " + opname
             });
 
-
         const parts = opname.split(".");
         const title = "Op " + parts[parts.length - 1];
         const editorObj = editorSession.rememberOpenEditor("op", opname);
@@ -1631,8 +1623,7 @@ export default class ServerOps
                 }
             });
 
-
-            CABLESUILOADER.talkerAPI.send("getOpCode", {
+            platform.talkerAPI.send("getOpCode", {
                 "opname": opid,
                 "projectId": this._patchId
             }, (er, rslt) =>
@@ -1648,14 +1639,13 @@ export default class ServerOps
                 }
                 editorTab.setContent(rslt.code);
 
-
                 if (!readOnly && editorTab)
                 {
                     editorTab.on("save", (setStatus, content, editor) =>
                     {
                         gui.savingTitleAnimStart("Saving Op...");
 
-                        CABLESUILOADER.talkerAPI.send(
+                        platform.talkerAPI.send(
                             "saveOpCode",
                             {
                                 "opname": opid,
@@ -1726,7 +1716,6 @@ export default class ServerOps
             gui.maintabPanel.show(userInteraction);
         }
     }
-
 
     getOpLibs(opName)
     {
@@ -2009,7 +1998,7 @@ export default class ServerOps
                     "id": "getopdocs",
                     "title": "load opdocs for " + oldName
                 });
-            CABLESUILOADER.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
+            platform.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs()
                     .finish("getopdocs");
@@ -2159,7 +2148,7 @@ export default class ServerOps
             const lid = type + "ops" + collectionName + CABLES.uuid();
             gui.jobs()
                 .start({ "id": "getCollectionOpDocs" });
-            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
+            platform.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
             {
                 gui.jobs()
                     .finish("getCollectionOpDocs");

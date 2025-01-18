@@ -6,7 +6,6 @@ import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
-
 /**
  * file upload dialog
  *
@@ -78,7 +77,6 @@ export default class FileUploader
         event.stopPropagation();
     }
 
-
     uploadFile(file, filename = null, opId = null, next = null)
     {
         if (gui.isRemoteClient) return;
@@ -92,7 +90,7 @@ export default class FileUploader
                 () =>
                 {
                     const talkerCommand = opId ? "uploadFileToOp" : "fileUploadStr";
-                    CABLESUILOADER.talkerAPI.send(talkerCommand,
+                    platform.talkerAPI.send(talkerCommand,
                         {
                             "fileStr": reader.result,
                             "filename": uploadFileName,
@@ -156,7 +154,6 @@ export default class FileUploader
 
         gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
 
-
         if (files.length > 0)
         {
             console.log("upload as", files[0].name, CABLES.reuploadName);
@@ -190,7 +187,6 @@ export default class FileUploader
         gui.jobs().finish("prepareuploadfiles");
     }
 
-
     uploadDrop(event)
     {
         if (event.dataTransfer.files.length === 0)
@@ -205,7 +201,6 @@ export default class FileUploader
         this._uploadDropEventOrig = event;
 
         gui.closeModal();
-
 
         const files = event.dataTransfer.files;
 

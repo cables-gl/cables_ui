@@ -9,7 +9,8 @@ import GlGuiTab from "../components/tabs/tab_glpatch.js";
 
 import CMD from "./commands.js";
 import Gui, { gui } from "../gui.js";
-
+import { portType } from "../core_constants.js";
+import { platform } from "../platform.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -71,7 +72,7 @@ CABLES_CMD_DEBUG.newGlguiTab = function ()
 
 CABLES_CMD_DEBUG.toggleMultiplayer = function ()
 {
-    CABLESUILOADER.talkerAPI.send(
+    platform.talkerAPI.send(
         "toggleMultiplayerSession",
         { "projectId": this._patchId },
         (err, res) =>
@@ -79,25 +80,25 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
             // window reloaded from outside
         },
     );
+
     /*
-    if (!gui.getSavedState())
-    {
-        log.log("SHOW MODAL");
-    }
-    else
-    {
-        CABLESUILOADER.talkerAPI.send(
-            "toggleMultiplayerSession",
-            { "projectId": this._patchId },
-            (err, res) =>
-            {
-                // window reloaded from outside
-            },
-        );
-    }
+     *if (!gui.getSavedState())
+     *{
+     *    log.log("SHOW MODAL");
+     *}
+     *else
+     *{
+     *    platform.talkerAPI.send(
+     *        "toggleMultiplayerSession",
+     *        { "projectId": this._patchId },
+     *        (err, res) =>
+     *        {
+     *            // window reloaded from outside
+     *        },
+     *    );
+     *}
      */
 };
-
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
@@ -171,7 +172,7 @@ CABLES_CMD_DEBUG.testOp = function ()
             {
                 const p = ops[i].portsIn[ip];
 
-                if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
+                if (p.type == portType.array)
                 {
                     const tests = [
                         () => { p.set([]); },
@@ -188,7 +189,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_VALUE)
+                if (p.type == portType.number)
                 {
                     const tests = [
                         () => { p.set(0); },
@@ -199,7 +200,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_STRING)
+                if (p.type == portType.string)
                 {
                     const tests = [
                         () => { p.set("hello"); },
@@ -209,7 +210,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
+                if (p.type == portType.object)
                 {
                     const tests = [
                         () => { p.set(null); },
@@ -220,7 +221,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_FUNCTION)
+                if (p.type == portType.trigger)
                 {
                     const tests = [
                         () => { p.trigger(); },
@@ -255,7 +256,6 @@ CABLES_CMD_DEBUG.watchOpDocsJson = function ()
     gui.maintabPanel.show(true);
 };
 
-
 CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
 {
     new OpWatchUiAttribs(gui.mainTabs);
@@ -272,7 +272,6 @@ CABLES_CMD_DEBUG.undoHistory = () =>
 {
     new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true);
 };
-
 
 CMD_DEBUG_COMMANDS.push(
     {
@@ -392,6 +391,5 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.testCommands,
         "category": "debug",
     },
-
 
 );

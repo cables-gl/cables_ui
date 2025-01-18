@@ -29,7 +29,6 @@ export default class OpWatchUiAttribs extends Events
         });
     }
 
-
     setOp(op)
     {
         if (this._op == op) return;

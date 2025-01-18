@@ -74,14 +74,12 @@ export default class GlUiCanvas extends GlCanvas
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
     }
 
-
     parentResized()
     {
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.glPatch.needsRedraw = true;
         this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
-
 
     render()
     {

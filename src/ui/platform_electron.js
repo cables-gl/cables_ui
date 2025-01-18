@@ -103,7 +103,7 @@ export default class PlatformElectron extends Platform
             inputEle = ele.byQuery(inputId);
             if (inputEle) value = inputEle.value;
         }
-        CABLESUILOADER.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
+        platform.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
             if (file && inputEle)
             {
@@ -122,7 +122,7 @@ export default class PlatformElectron extends Platform
     {
         const showBackupDialog = () =>
         {
-            CABLESUILOADER.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
+            platform.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
             {
                 if (result.success) notify("Backup created!");
             });
@@ -149,7 +149,6 @@ export default class PlatformElectron extends Platform
 
     showGitBranchWarning() {}
 
-
     currentUserIsPatchOwner()
     {
         return true;
@@ -161,7 +160,7 @@ export default class PlatformElectron extends Platform
         loadingModal.setTask("Exporting patch...");
         let talkerCommand = "exportPatch";
         if (exportType === "patch") talkerCommand = "exportPatchBundle";
-        CABLESUILOADER.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
+        platform.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {
             if (err)
             {

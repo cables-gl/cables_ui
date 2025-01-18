@@ -28,8 +28,6 @@ CABLES_CMD_OP.downGradeOp = function ()
     }
 };
 
-
-
 CABLES_CMD_OP.upGradeOps = function ()
 {
     const selops = gui.patchView.getSelectedOps();
@@ -65,10 +63,6 @@ CABLES_CMD_OP.manageOp = function (opid)
     new ManageOp(gui.mainTabs, opid);
 };
 
-
-
-
-
 CABLES_CMD_OP.cloneSelectedOps = (ops) =>
 {
     if (!ops)
@@ -80,7 +74,6 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) =>
             const op = ops[i];
             const opname = op.objName;
             let sanitizedOpName = opname.replaceAll(".", "_");
-
 
             let newOpname = platform.getPatchOpsNamespace() + sanitizedOpName;
             newOpname = newOpname.replaceAll(".Ops_", ".");
@@ -103,7 +96,6 @@ CABLES_CMD_OP.cloneSelectedOps = (ops) =>
     }
 
     // loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
-
 
     if (ops.length == 0)
     {
@@ -181,7 +173,6 @@ CABLES_CMD_OP.createVersionSelectedOp = function ()
     });
 };
 
-
 CABLES_CMD_OP.editOp = function (userInteraction = true)
 {
     const selops = gui.patchView.getSelectedOps();
@@ -191,8 +182,6 @@ CABLES_CMD_OP.editOp = function (userInteraction = true)
         for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i], false, null, userInteraction);
     }
 };
-
-
 
 CMD_OP_COMMANDS.push(
     {
@@ -249,6 +238,5 @@ CMD_OP_COMMANDS.push(
         "category": "op",
         "icon": "op"
     },
-
 
 );

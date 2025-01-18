@@ -39,6 +39,5 @@ class GlUiConfig
     }
 }
 
-
 const gluiconfig = new GlUiConfig();
 export default gluiconfig;

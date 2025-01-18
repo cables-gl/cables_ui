@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import text from "../text.js";
 import { gui } from "../gui.js";
+import { PortDir, portType } from "../core_constants.js";
 
 let tooltipTimeout = null;
 let eleTooltip = null;
@@ -54,7 +55,6 @@ export function hideToolTip()
     CABLES.UI.hoverInterval = -1;
     ele.hide(eleTooltip);
 }
-
 
 function eleTtOver(e)
 {
@@ -112,7 +112,6 @@ document.querySelector("body").addEventListener("mouseout", function (evt)
     if (evt.target.classList.contains("info")) eleInfoOut(evt);
 }, true);
 
-
 function isMultilineString(str)
 {
     if (!str || !str.match || !str.length) return false;
@@ -139,7 +138,6 @@ function getPortDescription(thePort, overlink)
         str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
     }
 
-
     // if (!overlink)
     // {
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
@@ -155,8 +153,8 @@ function getPortDescription(thePort, overlink)
     {
         let strInfo = "";
 
-        if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += text.portDirIn;
-        if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += text.portDirOut;
+        if (thePort.direction == PortDir.in) strInfo += text.portDirIn;
+        if (thePort.direction == PortDir.out) strInfo += text.portDirOut;
         if (thePort.isLinked()) strInfo += text.portMouseUnlink;
         else strInfo += text.portMouseCreate;
         gui.showInfo(strInfo);
@@ -175,14 +173,14 @@ export function updateHoverToolTip(event, port, overlink)
 
     if (port && !port.uiAttribs.hidePort) //! port.uiAttribs.hideParam
     {
-        if (port.type == CABLES.OP_PORT_TYPE_VALUE)
+        if (port.type == portType.number)
         {
             val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
 
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
-        else if (port.type == CABLES.OP_PORT_TYPE_STRING)
+        else if (port.type == portType.string)
         {
             val = port.getValueForDisplay();
             if (isMultilineString(val))
@@ -196,7 +194,7 @@ export function updateHoverToolTip(event, port, overlink)
                 txt += ": <span class=\"tooltip_value\">" + val + "</span>";
             }
         }
-        else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        else if (port.type == portType.array)
         {
             val = port.get();
             if (val)
@@ -219,7 +217,7 @@ export function updateHoverToolTip(event, port, overlink)
             }
             else txt += "<span class=\"tooltip_value\">null</span>";
         }
-        else if (port.type == CABLES.OP_PORT_TYPE_OBJECT)
+        else if (port.type == portType.object)
         {
             if (!port.get())txt += "<span class=\"tooltip_value\">null</span>";
             if (port.get())

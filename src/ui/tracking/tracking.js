@@ -1,4 +1,5 @@
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 export default class Tracking
 {
@@ -6,7 +7,6 @@ export default class Tracking
     {
         this.gui = gui;
         this._initListeners();
-
 
         this._trackEvent("ui", "userIsGuest", "", { "isGuest": gui.isGuestEditor() });
 
@@ -42,8 +42,6 @@ export default class Tracking
             perf.finish();
         });
 
-
-
         this.gui.on("uncaughtError", (report) =>
         {
             let initiator = "unknown";
@@ -62,7 +60,7 @@ export default class Tracking
         };
         const project = this.gui.project();
         if (project) payload.projectId = project._id;
-        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+        if (platform.talkerAPI)
         {
             payload.platform = platform;
             this._trackEvent("ui", actionName, level, payload);

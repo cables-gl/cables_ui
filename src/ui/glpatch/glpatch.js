@@ -19,6 +19,7 @@ import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
+import { portType } from "../core_constants.js";
 
 /**
  * rendering the patchfield
@@ -85,10 +86,6 @@ export default class GlPatch extends Events
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
 
-
-
-
-
         if (userSettings.get("devinfos"))
         {
             CABLES.UI.showDevInfos = true;
@@ -107,9 +104,11 @@ export default class GlPatch extends Events
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 0);
 
-        // this._hoverCable = new GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
-        // this._hoverCable.setPosition(0, 0, 100, 100);
-        // this._hoverCable.setColor(1, 1, 1, 0.5);
+        /*
+         * this._hoverCable = new GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
+         * this._hoverCable.setPosition(0, 0, 100, 100);
+         * this._hoverCable.setColor(1, 1, 1, 0.5);
+         */
         this._showingOpCursor = false;
         this._eleDropOp = ele.byId("drop-op-cursor");
 
@@ -120,7 +119,6 @@ export default class GlPatch extends Events
         this.cacheOIRxb = 0;
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
-
 
         this._subpatchoprect = null;
         this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
@@ -136,13 +134,13 @@ export default class GlPatch extends Events
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
-
-        // this._testAreaRect = this._overLayRects.createRect();
-        // this._testAreaRect.setSize(0, 0);
-        // this._testAreaRect.setShape(4);
-        // this._testAreaRect.setColor(0, 0, 0, 0.2);
-        // this._testAreaRect.visible = true;
-
+        /*
+         * this._testAreaRect = this._overLayRects.createRect();
+         * this._testAreaRect.setSize(0, 0);
+         * this._testAreaRect.setShape(4);
+         * this._testAreaRect.setColor(0, 0, 0, 0.2);
+         * this._testAreaRect.visible = true;
+         */
 
         this._glCursors = {};
         this._localGlCursor = new GlCursor(this, this._overLayRects);
@@ -169,10 +167,6 @@ export default class GlPatch extends Events
 
         this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
-
-
-
-
         // this._debugtext = new Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
@@ -194,14 +188,15 @@ export default class GlPatch extends Events
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
 
-        // cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
-        // cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
-        // cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
+        /*
+         * cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
+         * cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
+         * cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
+         */
 
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
-
 
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": false });
@@ -226,8 +221,6 @@ export default class GlPatch extends Events
             this.viewBox.keyScrollY(1);
         });
 
-
-
         gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, {}, () =>
         {
             gui.patchView.cursorNavOps(0, -1);
@@ -244,7 +237,6 @@ export default class GlPatch extends Events
         {
             gui.patchView.cursorNavOps(1, 0);
         });
-
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
@@ -327,8 +319,6 @@ export default class GlPatch extends Events
             this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
         });
 
-
-
         gui.on("uiloaded", () =>
         {
             this.snap.update();
@@ -337,15 +327,17 @@ export default class GlPatch extends Events
             {
                 if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
 
-
                 if (msg.hasOwnProperty("subpatch"))
                     this._glCursors[msg.clientId].setSubpatch(msg.subpatch);
-                // {
-                    // this._glCursors[msg.clientId].visible = false;
-                // }
-                // else
-                // {
-                    // this._glCursors[msg.clientId].visible = true;
+
+                /*
+                 * {
+                 * this._glCursors[msg.clientId].visible = false;
+                 * }
+                 * else
+                 * {
+                 * this._glCursors[msg.clientId].visible = true;
+                 */
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
                 // }
             });
@@ -374,8 +366,11 @@ export default class GlPatch extends Events
                 {
                     if (msg.hasOwnProperty("subpatch"))
                     {
-                        // set subpatch and revert greyout-state to what is appropriate for this
-                        // client in multiplayer session
+
+                        /*
+                         * set subpatch and revert greyout-state to what is appropriate for this
+                         * client in multiplayer session
+                         */
                         if (msg.subpatch !== this.getCurrentSubPatch())
                         {
                             const mpGreyOut = gui.patchView.patchRenderer.greyOut;
@@ -393,7 +388,6 @@ export default class GlPatch extends Events
                             gui.patchView.patchRenderer.viewBox.animateZoom(msg.zoom);
                         }
                     }
-
 
                     if (gui.patchView.patchRenderer.viewBox)
                     {
@@ -439,8 +433,6 @@ export default class GlPatch extends Events
 
         this.vizLayer = new VizLayer(this);
 
-
-
         userSettings.on("change", (key, value) =>
         {
             this.dblClickAction = userSettings.get("doubleClickAction");
@@ -478,11 +470,8 @@ export default class GlPatch extends Events
             });
         }
 
-
-
         this.snap.update();
     }
-
 
     get name() { return "glpatch"; }
 
@@ -500,13 +489,11 @@ export default class GlPatch extends Events
 
     get isAreaSelecting() { return this._selectionArea.active; }
 
-
     updateVizFlowMode()
     {
         for (let i in this._glOpz)
             this._glOpz[i].updateVizFlowMode(this.vizFlowMode);
     }
-
 
     zIndex()
     {
@@ -532,11 +519,9 @@ export default class GlPatch extends Events
         this._cursor = cur;
     }
 
-
     setCursor(c)
     {
         this._cursor = c;
-
 
         // this.mouseState.setCursor(this._cgl.canvas, c);
     }
@@ -581,10 +566,7 @@ export default class GlPatch extends Events
 
                         // this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": this._glPatch.snap.snapOpX(this._op.uiAttribs.translate.x, this._op), "y": this._glPatch.snap.snapY(this._op.uiAttribs.translate.y) });
 
-
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
-
-
 
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
                         this._dropInOpBorder.setOpacity(0.35);
@@ -621,10 +603,11 @@ export default class GlPatch extends Events
         this._textWriter.setDebugRenderer(this._debugRenderStyle);
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
 
-        // if (this._debugRenderStyle == 3) this.clear = false;
-        // else this.clear = true;
+        /*
+         * if (this._debugRenderStyle == 3) this.clear = false;
+         * else this.clear = true;
+         */
     }
-
 
     _onCanvasDblClick(e)
     {
@@ -722,14 +705,16 @@ export default class GlPatch extends Events
             this._greyOutRect = null;
         }
 
-        // if (this.greyOutBlue && this._greyOutRect)
-        // {
-        //     this._greyOutRect.setColor(
-        //         gui.theme.colors_patch.background[0] * 0.8,
-        //         gui.theme.colors_patch.background[1] * 1.5,
-        //         gui.theme.colors_patch.background[2] * 2.5,
-        //         0.25);
-        // }
+        /*
+         * if (this.greyOutBlue && this._greyOutRect)
+         * {
+         *     this._greyOutRect.setColor(
+         *         gui.theme.colors_patch.background[0] * 0.8,
+         *         gui.theme.colors_patch.background[1] * 1.5,
+         *         gui.theme.colors_patch.background[2] * 2.5,
+         *         0.25);
+         * }
+         */
     }
 
     _onCanvasMouseDown(e)
@@ -737,12 +722,8 @@ export default class GlPatch extends Events
         if (!e.pointerType) return;
         this._removeDropInRect();
 
-
-
         // this._onCanvasMouseMove(e);
         this.viewBox._onCanvasMouseMove(e);
-
-
 
         if (this.mouseState.buttonLeft && !this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
@@ -783,8 +764,6 @@ export default class GlPatch extends Events
         // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
-
-
         if (!this._selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
@@ -801,7 +780,6 @@ export default class GlPatch extends Events
         }
         this.emitEvent("mouseup", e);
 
-
         if (this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting) this._canvasMouseDownSelecting = false;
 
         if (CABLES.mouseButtonWheelDown)
@@ -809,7 +787,6 @@ export default class GlPatch extends Events
             CABLES.mouseButtonWheelDown = false;
             if (this._hoverOps.length == 0 && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         }
-
 
         if (this._dropInCircleLink)
         {
@@ -836,7 +813,6 @@ export default class GlPatch extends Events
                 }
             }
         }
-
 
         perf.finish();
 
@@ -903,7 +879,6 @@ export default class GlPatch extends Events
         glop.dispose();
     }
 
-
     toggleOpsEnable()
     {
         let willDisable = true;
@@ -953,7 +928,6 @@ export default class GlPatch extends Events
 
         if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
-
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -990,16 +964,14 @@ export default class GlPatch extends Events
             }
         }
 
-
         glOp.setTitle(op.uiAttribs.title, this._textWriter);
-
 
         if (!fromDeserialize)
         {
             glOp.update();
             this.unselectAll();
 
-            if (CABLES.UI.loaded && op.uiAttribs.subPatch == this.getCurrentSubPatch())
+            if (gui.finishedLoading() && op.uiAttribs.subPatch == this.getCurrentSubPatch())
             {
                 this.selectOpId(op.id);
                 gui.opParams.show(op.id);
@@ -1025,13 +997,15 @@ export default class GlPatch extends Events
     {
         const drawGlCursor = userSettings.get("glpatch_cursor");
 
-        // if (drawGlCursor) this._cgl.setCursor("none");
-        // else
-        // {
-        //     if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
-        //     else if (this._cursor == CABLES.GLGUI.CURSOR_POINTER) this._cgl.setCursor("pointer");
-        //     else this._cgl.setCursor("auto");
-        // }
+        /*
+         * if (drawGlCursor) this._cgl.setCursor("none");
+         * else
+         * {
+         *     if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
+         *     else if (this._cursor == CABLES.GLGUI.CURSOR_POINTER) this._cgl.setCursor("pointer");
+         *     else this._cgl.setCursor("auto");
+         * }
+         */
 
         this._localGlCursor.visible = drawGlCursor;
 
@@ -1098,27 +1072,30 @@ export default class GlPatch extends Events
         this.frameCount++;
         this.isAnimated = false;
 
-
         for (const i in this._glCursors)
             this._glCursors[i].updateAnim();
 
         this.snap.render(this._canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
-        // if (this._fadeOutRect.visible)
-        // {
-        //     this.isAnimated = true;
-        //     const v = this._fadeOutRectAnim.getValue(this._time);
+
+        /*
+         * if (this._fadeOutRect.visible)
+         * {
+         *     this.isAnimated = true;
+         *     const v = this._fadeOutRectAnim.getValue(this._time);
+         */
 
         // this.subPatchAnim = 1.0 - this._fadeOutRectAnim.getValue(this._time);
 
-        //     this._fadeOutRect.setColor(
-        //         gui.theme.colors_patch.background[0],
-        //         gui.theme.colors_patch.background[1],
-        //         gui.theme.colors_patch.background[2],
-        //         v);
-        // }
-
+        /*
+         *     this._fadeOutRect.setColor(
+         *         gui.theme.colors_patch.background[0],
+         *         gui.theme.colors_patch.background[1],
+         *         gui.theme.colors_patch.background[2],
+         *         v);
+         * }
+         */
 
         this._focusRect.visible = !this._focusRectAnim.isFinished(this._time);
         if (this._focusRect.visible)
@@ -1146,7 +1123,6 @@ export default class GlPatch extends Events
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
-
         this._patchAPI.updateFlowModeActivity(this.vizFlowMode);
 
         this.viewBox.setSize(resX, resY);
@@ -1162,8 +1138,6 @@ export default class GlPatch extends Events
         const perf = gui.uiProfiler.start("[glpatch] render");
 
         // this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
-
-
 
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -1208,7 +1182,6 @@ export default class GlPatch extends Events
         this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-
         this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
 
         // this.mouseState.debug(this.debugData);
@@ -1236,7 +1209,6 @@ export default class GlPatch extends Events
 
         this._cgl.profileData.clearGlQuery();
     }
-
 
     mouseMove(x, y)
     {
@@ -1284,12 +1256,13 @@ export default class GlPatch extends Events
 
         if (this._rectInstancer.isDragging()) return;
 
-        // if (!this.mouseState.isDragging)
-        // else this._hoverOps = [];
+        /*
+         * if (!this.mouseState.isDragging)
+         * else this._hoverOps = [];
+         */
 
         let preId = -1;
         if (this._hoverOps.length) preId = this._hoverOps[0].id;
-
 
         this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
@@ -1298,31 +1271,38 @@ export default class GlPatch extends Events
 
         if (this.mouseState.isButtonDown())
         {
-            // remmeber start coordinates when start dragging hovered op
-            // if(hoverops.length>0 && !this._hoverDragOp)
-            // {
-            //     this._log.log("START drag coords!!!");
-            //     this._dragOpStartX=x;
-            //     this._dragOpStartY=y;
-            //     this._dragOpOffsetX=x-hoverops[0].x;
-            //     this._dragOpOffsetY=y-hoverops[0].y;
-            // }
 
-            // if(hoverops.length>0) this._hoverDragOp=hoverops[0];
-            // else this._hoverDragOp=null;
+            /*
+             * remmeber start coordinates when start dragging hovered op
+             * if(hoverops.length>0 && !this._hoverDragOp)
+             * {
+             *     this._log.log("START drag coords!!!");
+             *     this._dragOpStartX=x;
+             *     this._dragOpStartY=y;
+             *     this._dragOpOffsetX=x-hoverops[0].x;
+             *     this._dragOpOffsetY=y-hoverops[0].y;
+             * }
+             */
 
-            // drag hoverered op
-            // if(this._hoverDragOp)
-            // {
-            //     this._log.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
-            //     if(this._dragOpStartX)
-            //         this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
-            //             "translate",
-            //             {
-            //                 "x":x-this._dragOpOffsetX,
-            //                 "y":y-this._dragOpOffsetY
-            //             });
-            // }
+            /*
+             * if(hoverops.length>0) this._hoverDragOp=hoverops[0];
+             * else this._hoverDragOp=null;
+             */
+
+            /*
+             * drag hoverered op
+             * if(this._hoverDragOp)
+             * {
+             *     this._log.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
+             *     if(this._dragOpStartX)
+             *         this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
+             *             "translate",
+             *             {
+             *                 "x":x-this._dragOpOffsetX,
+             *                 "y":y-this._dragOpOffsetY
+             *             });
+             * }
+             */
         }
         else
         {
@@ -1333,10 +1313,11 @@ export default class GlPatch extends Events
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
-        //     if (this._hoverOps.length > 0
-        // || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
-        //     else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
-
+        /*
+         *     if (this._hoverOps.length > 0
+         * || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
+         *     else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
+         */
 
         if (gui.longPressConnector.isActive())
         {
@@ -1345,7 +1326,6 @@ export default class GlPatch extends Events
             const ops = this._getGlOpsInRect(x, y, x + 1, y + 1);
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
-
 
         if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
@@ -1384,7 +1364,6 @@ export default class GlPatch extends Events
             }
 
             gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
-
 
             gui.patchView.showSelectedOpsPanel();
 
@@ -1428,7 +1407,6 @@ export default class GlPatch extends Events
         const x2 = Math.max(xa, xb);
         const y2 = Math.max(ya, yb);
         const ops = [];
-
 
         const cops = gui.corePatch().getSubPatchOps();
 
@@ -1529,7 +1507,6 @@ export default class GlPatch extends Events
         }
     }
 
-
     updateSubPatchOpAnim()
     {
         if (this._subpatchoprect)
@@ -1540,7 +1517,6 @@ export default class GlPatch extends Events
         }
     }
 
-
     subPatchOpAnimStart(bounds, next)
     {
         this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
@@ -1549,13 +1525,14 @@ export default class GlPatch extends Events
         this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
-        // this._subpatchAnimFade.clear();
-        // this._subpatchAnimFade.setValue(this._time, 0.0);
-        // this._subpatchAnimFade.setValue(this._time + 0.25, 1.0);
+        /*
+         * this._subpatchAnimFade.clear();
+         * this._subpatchAnimFade.setValue(this._time, 0.0);
+         * this._subpatchAnimFade.setValue(this._time + 0.25, 1.0);
+         */
 
         if (this._subpatchoprect) this._subpatchoprect.dispose();
         this._subpatchoprect = this._overLayRects.createRect();
-
 
         let col = gui.theme.colors_patch.opBgRect;
         this._subpatchoprect.setColor(col);
@@ -1613,7 +1590,6 @@ export default class GlPatch extends Events
         });
     }
 
-
     _selectOpsInRect(xa, ya, xb, yb)
     {
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
@@ -1654,7 +1630,6 @@ export default class GlPatch extends Events
         return gui.patchView.getOpBounds(ops);
     }
 
-
     dispose()
     {
         for (const i in this._glOpz)
@@ -1693,14 +1668,13 @@ export default class GlPatch extends Events
         let col = [0, 0, 0, 0];
         if (!gui.theme.colors.types) return;
 
-        if (t == CABLES.OP_PORT_TYPE_VALUE) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_STRING) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-
-
+        if (t == portType.number) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.trigger) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.object) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.array) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.string) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == portType.dynamic) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else this._log.warn("unknown port color");
         e.setColor(col[0], col[1], col[2], col[3]);
     }
 
@@ -1742,8 +1716,11 @@ export default class GlPatch extends Events
 
     copy(e)
     {
-        // todo play copy indicator anim
-        // for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+
+        /*
+         * todo play copy indicator anim
+         * for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+         */
         gui.patchView.clipboardCopyOps(e);
     }
 
@@ -1793,17 +1770,20 @@ export default class GlPatch extends Events
         if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
 
-
-        // this._fadeOutRectAnim.clear();
-        // this._fadeOutRectAnim.setValue(this._time, 0);
-        // this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
-        // this._fadeOutRectAnim.setValue(this._time + timeGrey + 2, 1);
-        // this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+        /*
+         * this._fadeOutRectAnim.clear();
+         * this._fadeOutRectAnim.setValue(this._time, 0);
+         * this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
+         * this._fadeOutRectAnim.setValue(this._time + timeGrey + 2, 1);
+         * this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+         */
 
         gui.patchView.updateSubPatchBreadCrumb(sub);
 
-        // setTimeout(() =>
-        // {
+        /*
+         * setTimeout(() =>
+         * {
+         */
         for (const i in this._glOpz)
         {
             this._glOpz[i].updateVisible();
@@ -1813,7 +1793,6 @@ export default class GlPatch extends Events
         {
             this.links[i].updateVisible();
         }
-
 
         this.restoreSubPatchViewBox(sub, next);
         this.snap.update();
@@ -1871,7 +1850,6 @@ export default class GlPatch extends Events
     {
         this.viewBox.zoomStep(s);
     }
-
 
     showOpCursor(show)
     {
@@ -1934,7 +1912,6 @@ export default class GlPatch extends Events
     }
 }
 
-
 // make static util thing...
 GlPatch.getOpNamespaceColor = (ns) =>
 {
@@ -1946,4 +1923,3 @@ GlPatch.getOpNamespaceColor = (ns) =>
     if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
     else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
 };
-

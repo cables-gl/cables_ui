@@ -1,4 +1,3 @@
-
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
@@ -59,8 +58,6 @@ export default class GlSplineDrawer
         this._uniWidth = new CGL.Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
         this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
 
-
-
         this._uniFadeoutOptions = new CGL.Uniform(this._shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
 
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
@@ -82,7 +79,6 @@ export default class GlSplineDrawer
         });
     }
 
-
     set zPos(v)
     {
         this._uniZpos.setValue(v);
@@ -91,7 +87,6 @@ export default class GlSplineDrawer
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {
         if (this._splines.length == 0) return;
-
 
         if (this._rebuildLater)
         {
@@ -125,9 +120,7 @@ export default class GlSplineDrawer
             const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
             if (zoom > 1400)fadeOutOpts[3] = CABLES.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
 
-
             this._uniFadeoutOptions.set(fadeOutOpts);
-
 
             // this._cgl.pushDepthTest(true);
             // this._cgl.pushDepthWrite(true);
@@ -242,7 +235,6 @@ export default class GlSplineDrawer
         this.setSpline(idx, this._splines[idx].origPoints);
     }
 
-
     showSpline(idx)
     {
         this._splines[idx].hidden = false;
@@ -266,8 +258,6 @@ export default class GlSplineDrawer
         let isDifferent = true;
         let isDifferentLength = false;
 
-
-
         if (!this._rebuildLater)
         {
             if (this._splines[idx] && this._splines[idx].origPoints)
@@ -290,8 +280,6 @@ export default class GlSplineDrawer
                         points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
-
-
 
                     this._splines[idx].pointsNeedProgressUpdate = true;
                 }
@@ -331,7 +319,6 @@ export default class GlSplineDrawer
         // this._splines[idx].points = points;
         this._splines[idx].pointsNeedProgressUpdate = true;
 
-
         if (!isDifferentLength) // length is the same, update vertices only
         {
             this._updateAttribsCoordinates(idx);
@@ -348,7 +335,6 @@ export default class GlSplineDrawer
     buildMesh()
     {
         const perf = gui.uiProfiler.start("[glspline] buildMesh");
-
 
         const num = this._thePoints.length / 3;
 
@@ -466,7 +452,6 @@ export default class GlSplineDrawer
                         this._pointsProgress[ofc3 + 3] =
                         this._pointsProgress[ofc3 + 4] = totalDistance;
 
-
                     if (
                         !isNaN(points[idx3 + 0]) &&
                         !isNaN(points[idx3 + 1]) &&
@@ -482,7 +467,6 @@ export default class GlSplineDrawer
                         }
                         if (d)totalDistance += d;
                     }
-
 
                     this._pointsProgress[ofc3 + 0] = totalDistance;
                     this._pointsProgress[ofc3 + 2] = totalDistance;
@@ -591,7 +575,6 @@ export default class GlSplineDrawer
                 }
         }
 
-
         if (this._thePoints.length === 0) return;
 
         let newLength = numPoints * 3 * 6;
@@ -605,7 +588,6 @@ export default class GlSplineDrawer
         count = 0;
         let lastIndex = 0;
         let drawable = 0;
-
 
         // console.log("LENGTH", this._thePoints.length, newLength / 6);
 
@@ -625,7 +607,6 @@ export default class GlSplineDrawer
             this._speeds = new Float32Array(newLength / 3);
         }
 
-
         for (let i = 0; i < this._thePoints.length / 3; i++)
         {
             if (this._splineIndex)
@@ -641,7 +622,6 @@ export default class GlSplineDrawer
                 lastIndex = this._splineIndex[i];
             }
             else drawable = 1.0;
-
 
             for (let j = 0; j < 6; j++)
             {
@@ -668,7 +648,6 @@ export default class GlSplineDrawer
             }
             // console.log(this._splines[this._splineIndex[i]], this._splineIndex[i]);
         }
-
 
         const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
 
@@ -700,7 +679,6 @@ export default class GlSplineDrawer
         //     "origPoints",
         //     "offset",
         //     "verts"]];
-
 
         // for (let i = 0; i < this._splines.length; i++)
         // {
@@ -740,11 +718,9 @@ export default class GlSplineDrawer
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 
-
         if (!l || l < 0) return;
 
         const perf = gui.uiProfiler.start("[glspline] tessEdges");
-
 
         this._arrEdges = [];
         this._arrEdges.length = l;
