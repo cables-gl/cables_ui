@@ -42,7 +42,7 @@ function _scripts_libs_ui(done)
             if (err) done(err);
             if (stats.hasErrors())
             {
-                done(new Error(stats.compilation.errors.join("\n")));
+                done(new Error(getWebpackErrorMessage(stats)));
             }
             else
             {
@@ -61,7 +61,7 @@ function _scripts_talkerapi(done)
             if (err) done(err);
             if (stats.hasErrors())
             {
-                done(new Error(stats.compilation.errors.join("\n")));
+                done(new Error(getWebpackErrorMessage(stats)));
             }
             else
             {
@@ -88,7 +88,7 @@ function _scripts_ui_webpack(done)
             if (err) done(err);
             if (stats.hasErrors())
             {
-                done(new Error(stats.compilation.errors.join("\n")));
+                done(new Error(getWebpackErrorMessage(stats)));
             }
             else
             {
@@ -118,6 +118,26 @@ function getBuildInfo(cb)
             cb(buildInfo);
         });
     });
+}
+
+function getWebpackErrorMessage(stats)
+{
+    let errorMessage = stats.compilation.errors.join("\n");
+    const errorsWarnings = stats.toJson("errors-warnings");
+    if (errorsWarnings && errorsWarnings.errors)
+    {
+        const modules = errorsWarnings.errors.filter((e) => { return !!e.moduleIdentifier; });
+        if (modules && modules.length > 0)
+        {
+            modules.forEach((m) =>
+            {
+                const parts = m.moduleIdentifier.split("|");
+                const filename = parts.length > 0 ? parts[1] : m.moduleIdentifier;
+                errorMessage = filename + ":" + m.loc + " - " + m.message;
+            });
+        }
+    }
+    return errorMessage;
 }
 
 function _html_ui(done)
