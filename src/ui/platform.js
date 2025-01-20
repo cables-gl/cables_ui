@@ -459,77 +459,77 @@ export class Platform extends Events
         });
     }
 
-    reloadLastSavedVersion(cb)
-    {
-        this.talkerAPI.send("getPatch", {}, (err, project) =>
-        {
-            if (!err)
-            {
-                let saveText = "";
-                if (project.updated)
-                {
-                    saveText +=
-                        "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
-                }
-                let content =
-                    "<div>Do you want to restore your patch to the last version saved " +
-                    saveText +
-                    "</div>";
-                content += "<div style='margin-top: 20px; text-align: center;'>";
-                content += "<a class=\"button bluebutton accept\">Ok</a>&nbsp;&nbsp;";
-                content += "<a class=\"button decline\">Cancel</a>";
-                content += "</div>";
+    // reloadLastSavedVersion(cb)
+    // {
+    //     this.talkerAPI.send("getPatch", {}, (err, project) =>
+    //     {
+    //         if (!err)
+    //         {
+    //             let saveText = "";
+    //             if (project.updated)
+    //             {
+    //                 saveText +=
+    //                     "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
+    //             }
+    //             let content =
+    //                 "<div>Do you want to restore your patch to the last version saved " +
+    //                 saveText +
+    //                 "</div>";
+    //             content += "<div style='margin-top: 20px; text-align: center;'>";
+    //             content += "<a class=\"button bluebutton accept\">Ok</a>&nbsp;&nbsp;";
+    //             content += "<a class=\"button decline\">Cancel</a>";
+    //             content += "</div>";
 
-                const modal = new ModalDialog(
-                    {
-                        "title": "Restore Patch",
-                        "html": content,
-                    },
-                    false,
-                );
-                modal.on("onShow", () =>
-                {
-                    const modalElement = modal.getElement();
-                    const acceptButton = modalElement.querySelector(".button.accept");
-                    const declineButton = modalElement.querySelector(".button.decline");
+    //             const modal = new ModalDialog(
+    //                 {
+    //                     "title": "Restore Patch",
+    //                     "html": content,
+    //                 },
+    //                 false,
+    //             );
+    //             modal.on("onShow", () =>
+    //             {
+    //                 const modalElement = modal.getElement();
+    //                 const acceptButton = modalElement.querySelector(".button.accept");
+    //                 const declineButton = modalElement.querySelector(".button.decline");
 
-                    if (acceptButton)
-                    {
-                        acceptButton.addEventListener("pointerdown", () =>
-                        {
-                            gui.corePatch().clear();
-                            this._cfg.patch = project;
-                            incrementStartup();
-                            this.initializeProject(() =>
-                            {
-                                if (cb) cb(null, project);
-                            });
-                            modal.close();
-                        });
-                    }
-                    if (declineButton)
-                    {
-                        declineButton.addEventListener("pointerdown", () =>
-                        {
-                            modal.close();
-                        });
-                    }
-                });
-                modal.show();
-            }
-            else
-            {
-                new ModalDialog({
-                    "showOkButton": true,
-                    "title": "ERROR - Restore Patch",
-                    "text":
-                        "Error while trying to restore patch to last saved version: " +
-                        err +
-                        "<br/>Maybe try again?",
-                });
-            }
-        });
-    }
+    //                 if (acceptButton)
+    //                 {
+    //                     acceptButton.addEventListener("pointerdown", () =>
+    //                     {
+    //                         gui.corePatch().clear();
+    //                         this._cfg.patch = project;
+    //                         incrementStartup();
+    //                         this.initializeProject(() =>
+    //                         {
+    //                             if (cb) cb(null, project);
+    //                         });
+    //                         modal.close();
+    //                     });
+    //                 }
+    //                 if (declineButton)
+    //                 {
+    //                     declineButton.addEventListener("pointerdown", () =>
+    //                     {
+    //                         modal.close();
+    //                     });
+    //                 }
+    //             });
+    //             modal.show();
+    //         }
+    //         else
+    //         {
+    //             new ModalDialog({
+    //                 "showOkButton": true,
+    //                 "title": "ERROR - Restore Patch",
+    //                 "text":
+    //                     "Error while trying to restore patch to last saved version: " +
+    //                     err +
+    //                     "<br/>Maybe try again?",
+    //             });
+    //         }
+    //     });
+    // }
 
     createBackup()
     {
