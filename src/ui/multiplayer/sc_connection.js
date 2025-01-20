@@ -341,12 +341,7 @@ export default class ScConnection extends Events
 
     sendNotification(title, text)
     {
-        this._send(this.patchChannelName, "info", { "name": "notify", title, text });
-    }
-
-    sendInfo(name, text)
-    {
-        this._send(this.patchChannelName, "info", { "name": "info", text });
+        this._send(this.patchChannelName, "info", { "name": "notify", "title": title, "text": text });
     }
 
     sendControl(name, payload)
