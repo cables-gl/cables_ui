@@ -211,15 +211,6 @@ export default class ScUiMultiplayer extends Events
                     "func": () => { CABLES.CMD.UI.showChat(); }
                 });
 
-                // if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
-                // {
-                //     items.push({
-                //         "title": "load last saved version",
-                //         "iconClass": "icon icon-refresh",
-                //         "func": () => { this._restoreLastSavedPatchVersion(); }
-                //     });
-                // }
-
                 if (items.length > 0)
                 {
                     contextMenu.show({ "items": items, }, event.currentTarget);

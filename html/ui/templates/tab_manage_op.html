@@ -179,7 +179,7 @@
                             <td>corelib</td>
                             <td>
                                 {{#if ../canEditOp}}
-                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../opname}}','{{.}}');"></a>
+                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
                                 {{/if}}
                             </td>
                         </tr>
@@ -190,7 +190,7 @@
                             <td>lib</td>
                             <td>
                                 {{#if ../canEditOp}}
-                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../opname}}','{{.}}');"></a>
+                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
                                 {{/if}}
                             </td>
                         </tr>
@@ -207,7 +207,7 @@
                             <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
                             <td>
                                 {{#if ../canEditOp}}
-                                    <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpDependency('{{../opname}}','{{src}}', '{{type}}');"></a>
+                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
                                 {{/if}}
                             </td>
                         </tr>

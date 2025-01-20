@@ -27,7 +27,6 @@ export default class OpDependencyTabPanel extends TabPanel
 
     init()
     {
-        console.log("init panel?");
         let activeTab;
         platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
         {
