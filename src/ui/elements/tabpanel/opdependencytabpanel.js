@@ -2,7 +2,6 @@ import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
 
-
 /**
  * a tab panel, that can contain tabs
  *
@@ -28,6 +27,7 @@ export default class OpDependencyTabPanel extends TabPanel
 
     init()
     {
+        console.log("init panel?");
         let activeTab;
         platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
         {

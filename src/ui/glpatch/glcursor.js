@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
-import platform from "platform";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 export default class GlCursor extends Events
 {
