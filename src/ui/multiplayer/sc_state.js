@@ -39,13 +39,11 @@ export default class ScState extends Events
 
     get followers() { return this._followers; }
 
-
     getUserId(clientId)
     {
         if (this._clients[clientId])
             return this._clients[clientId].userid;
     }
-
 
     getUserInSubpatch(subPatch)
     {
@@ -161,8 +159,6 @@ export default class ScState extends Events
         }
     }
 
-
-
     getNumClients()
     {
         return Object.keys(this._clients).length;
@@ -261,7 +257,6 @@ export default class ScState extends Events
     {
         if (!gui.isRemoteClient)
         {
-            this._log.verbose("this client became multiplayer pilot");
             this._connection.client.isPilot = true;
             this.emitEvent("becamePilot");
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
@@ -641,7 +636,6 @@ export default class ScState extends Events
                         selectedOp.refreshParams();
                     }, 50);
 
-
                     // const elePortId = "portval_" + portIndex;
                     // const elePort = document.getElementById(elePortId);
                     // if (elePort)
@@ -665,7 +659,6 @@ export default class ScState extends Events
 
         if (this._lastMouseX === x || this._lastMouseY === y) return;
 
-
         this._lastMouseX = x;
         this._lastMouseY = y;
 
@@ -675,7 +668,6 @@ export default class ScState extends Events
         const zoom = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.zoom : null;
         const scrollX = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollX : null;
         const scrollY = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollY : null;
-
 
         this._mouseTimeout = setTimeout(() =>
         {
