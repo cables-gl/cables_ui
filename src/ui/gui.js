@@ -1858,7 +1858,7 @@ export default class Gui extends Events
 
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
             this.userSettings.get("showTipps") &&
-            this.userSettings.get("introCompleted")) gui.tips.show();
+            this.userSettings.get("introCompleted")) CABLES.CMD.UI.showTips();
 
         if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
 

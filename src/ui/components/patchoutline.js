@@ -140,7 +140,6 @@ export default class PatchOutline extends Events
             });
         }
 
-
         let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
         html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_bookmarks\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
@@ -213,13 +212,11 @@ export default class PatchOutline extends Events
         return cmt;
     }
 
-
     _getUserImagesStringSubpatch(patchId)
     {
         let str = "";
         if (!gui.socket) return "";
         const userIds = gui.socket.state.getUserInSubpatch(patchId);
-
 
         for (let i = 0; i < userIds.length; i++)
         {
@@ -249,7 +246,6 @@ export default class PatchOutline extends Events
         if (gui.patchView.getCurrentSubPatch() == 0)sub.rowClass = "active";
 
         let subs = [sub];
-
 
         if (patchId)
         {
@@ -320,7 +316,6 @@ export default class PatchOutline extends Events
         if (patchId == 0) return subs;
         else return sub;
     }
-
 
     subPatchContextMenu(item, el)
     {
