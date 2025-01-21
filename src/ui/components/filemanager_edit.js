@@ -49,7 +49,7 @@ export default class FileManagerEditor
                         "syntax": syntax,
                         "onClose": function (which)
                         {
-                            editorSession.remove(editorObj.type, editorObj.name);
+                            if (editorSession) editorSession.remove(editorObj.type, editorObj.name);
                         },
                         "onSave": function (setStatus, content)
                         {
