@@ -2,7 +2,6 @@ import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
 
-
 /**
  * a tab panel, that can contain tabs
  *

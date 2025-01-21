@@ -211,16 +211,6 @@ export default class ScUiMultiplayer extends Events
                     "func": () => { CABLES.CMD.UI.showChat(); }
                 });
 
-
-                if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
-                {
-                    items.push({
-                        "title": "load last saved version",
-                        "iconClass": "icon icon-refresh",
-                        "func": () => { this._restoreLastSavedPatchVersion(); }
-                    });
-                }
-
                 if (items.length > 0)
                 {
                     contextMenu.show({ "items": items, }, event.currentTarget);
@@ -246,6 +236,7 @@ export default class ScUiMultiplayer extends Events
         {
             guiEvent.subpatch = client.subpatch;
         }
+
         /*
         if (client.hasOwnProperty("zoom"))
         {
@@ -263,15 +254,15 @@ export default class ScUiMultiplayer extends Events
         }
     }
 
-    _restoreLastSavedPatchVersion()
-    {
-        this._connection.setPacoPaused(true);
-        platform.reloadLastSavedVersion((err, project) =>
-        {
-            this._connection.setPacoPaused(false);
-            this._connection.sendCurrentVersion();
-        });
-    }
+    // _restoreLastSavedPatchVersion()
+    // {
+    //     this._connection.setPacoPaused(true);
+    //     platform.reloadLastSavedVersion((err, project) =>
+    //     {
+    //         this._connection.setPacoPaused(false);
+    //         this._connection.sendCurrentVersion();
+    //     });
+    // }
 
     _getContextMenuItems(clientId)
     {
@@ -394,7 +385,6 @@ export default class ScUiMultiplayer extends Events
             }
         }
     }
-
 
     // _requestResync(title, callbackBeforeSync)
     // {

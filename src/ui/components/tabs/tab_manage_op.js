@@ -10,6 +10,7 @@ import uiprofiler from "../uiprofiler.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -200,6 +201,63 @@ export default class ManageOp
                     });
 
                 this._tab.html(html);
+
+                ele.clickables(this._tab.contentEle, ".dependency-options", (e, dataset) =>
+                {
+                    const depSrc = dataset.depsrc;
+                    const depType = dataset.deptype;
+
+                    const items = [];
+
+                    if (depType !== "corelib" && depType !== "lib")
+                    {
+                        items.push({
+                            "title": "download",
+                            "iconClass": "icon icon-download",
+                            "func": () =>
+                            {
+                                let scriptSrc = "";
+                                if (depSrc.startsWith("http"))
+                                {
+                                    scriptSrc = depSrc;
+                                }
+                                else if (depSrc.startsWith("./"))
+                                {
+                                    scriptSrc = platform.getSandboxUrl() + "/api/oplib/" + opName + depSrc.replace(".", "");
+                                }
+                                if (scriptSrc) window.open(scriptSrc);
+                            }
+                        });
+                    }
+
+                    items.push({
+                        "title": "remove",
+                        "iconClass": "icon icon-x",
+                        "func": (ee) =>
+                        {
+                            switch (depType)
+                            {
+                            case "corelib":
+                                gui.serverOps.removeCoreLib(opName, depSrc);
+                                break;
+                            case "lib":
+                                gui.serverOps.removeOpLib(opName, depSrc);
+                                break;
+                            case "commonjs":
+                            case "module":
+                            default:
+                                gui.serverOps.removeOpDependency(opName, depSrc, depType);
+                                break;
+                            }
+                        }
+                    });
+
+                    if (items.length > 0)
+                    {
+                        contextMenu.show({ "items": items, }, event.currentTarget);
+                    }
+
+                });
 
                 const panelOptions = {
                     "opDoc": opDoc,
