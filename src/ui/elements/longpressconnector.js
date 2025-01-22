@@ -203,9 +203,9 @@ export default class LongPressConnector extends Events
             if (sugIn.length == 1)
             {
                 gui.corePatch().link(
-                    p.parent,
+                    p.op,
                     p.name,
-                    sugIn[0].p.parent,
+                    sugIn[0].p.op,
                     sugIn[0].p.name);
                 return;
             }
@@ -213,9 +213,9 @@ export default class LongPressConnector extends Events
             new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid)
             {
                 gui.corePatch().link(
-                    p.parent,
+                    p.op,
                     p.name,
-                    sugIn[sid].p.parent,
+                    sugIn[sid].p.op,
                     sugIn[sid].p.name);
             });
         }

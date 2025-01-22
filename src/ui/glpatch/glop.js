@@ -521,16 +521,14 @@ export default class GlOp extends Events
         {
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
 
-            if (e.buttons == MouseState.BUTTON_WHEEL)
+            if (this._glPatch.mouseState.buttonMiddle)
             {
-                CABLES.mouseButtonWheelDown = true;
                 if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
             }
             else
             {
                 if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
             }
-            console.log("mouseButtonWheelDownDown", CABLES.mouseButtonWheelDown, this._glPatch.mouseState.buttonMiddle);
         }
 
         perf.finish();
@@ -538,12 +536,10 @@ export default class GlOp extends Events
 
     _onMouseUp(e)
     {
-        if (CABLES.mouseButtonWheelDown)
+        if (this._glPatch.mouseState.buttonMiddle)
         {
             if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
-            this.mouseButtonWheelDown = false;
         }
-        console.log("mouseButtonWheelUp", CABLES.mouseButtonWheelDown, this._glPatch.mouseState.buttonMiddle);
 
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
