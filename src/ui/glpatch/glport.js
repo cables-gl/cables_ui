@@ -20,12 +20,12 @@ export default class GlPort
 
     /**
      * Description
-     * @param {any} glpatch
-     * @param {any} glop
-     * @param {any} rectInstancer
+     * @param {GlPatch} glpatch
+     * @param {GlOp} glop
+     * @param {GlRectInstancer} rectInstancer
      * @param {CABLES.Port} p
-     * @param {any} posCount
-     * @param {any} oprect
+     * @param {number} posCount
+     * @param {GlRect} oprect
      */
     constructor(glpatch, glop, rectInstancer, p, posCount, oprect)
     {
@@ -109,7 +109,7 @@ export default class GlPort
     }
 
     /**
-     * @type {GlRect}
+     * @type {number}
      */
     get posX()
     {

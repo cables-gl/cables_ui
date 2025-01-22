@@ -111,7 +111,6 @@ export default class TexturePreviewer
         return this._mode == MODE_HOVER;
     }
 
-
     _renderTexture(tp, element)
     {
         if (!tp && this._lastClickedP)
@@ -218,7 +217,6 @@ export default class TexturePreviewer
             const s = this._getCanvasSize(port, port.get(), meta);
             if (s[0] == 0 || s[1] == 0) return;
 
-
             if (texType == 1)s[0] *= 1.33;
 
             if (this._currentWidth != s[0] * this.scale || this._currentHeight != s[1] * this.scale)
@@ -263,7 +261,6 @@ export default class TexturePreviewer
                 vizCtx.restore();
             }
 
-
             perf2.finish();
 
             cgl.gl.clearColor(0, 0, 0, 0);
@@ -290,7 +287,6 @@ export default class TexturePreviewer
 
         //     if (this._ele.width < w && this._ele.height < h)vizCtx.imageSmoothingEnabled = false;
 
-
         //     if (w <= 1)w = h / 2;
         //     if (h <= 1)h = w / 2;
         //     vizCtx.scale(1, -1);
@@ -299,13 +295,11 @@ export default class TexturePreviewer
         //     vizCtx.strokeStyle = "black";
         //     vizCtx.strokeRect(0, 0, w + 1, h + 1);
 
-
         //     vizCtx.scale(1, 1);
         //     vizCtx.globalAlpha = 1;
         //     vizCtx.restore();
         // }
     }
-
 
     toggleSize(m)
     {
@@ -388,8 +382,6 @@ export default class TexturePreviewer
         }
     }
 
-
-
     enableBgPreview()
     {
         const enabled = userSettings.get("bgpreviewMax");
@@ -403,7 +395,6 @@ export default class TexturePreviewer
         // }
 
         // this._log.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
-
 
         if (this._mode == MODE_CORNER)
         {
@@ -512,7 +503,6 @@ export default class TexturePreviewer
 
             return;
         }
-
 
         if (this._mode == MODE_CORNER)
             ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");

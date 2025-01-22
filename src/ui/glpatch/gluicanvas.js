@@ -105,13 +105,7 @@ export default class GlUiCanvas extends GlCanvas
 
         this.glPatch.debugData.targetFps = this._targetFps;
 
-        this.glPatch.render(
-            this.width, this.height, //
-            0, 0, // scroll
-            0, //
-            0, 0, // mouse
-            this._mouseButton // mouse button
-        );
+        this.glPatch.render(this.width, this.height);
 
         if (this.glPatch.isAnimated) this.activityHigh();
 

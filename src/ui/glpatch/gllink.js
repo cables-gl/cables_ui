@@ -26,7 +26,7 @@ export default class GlLink
         this._log = new Logger("gllink");
         this._id = id;
 
-        /** @type {Link} */
+        /** @type {CABLES.Link} */
         this._link = link;
         this._visible = visible;
 

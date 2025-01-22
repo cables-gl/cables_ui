@@ -6,6 +6,7 @@ import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { userSettings } from "../components/usersettings.js";
+import { PortDir } from "../core_constants.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid
@@ -93,6 +94,12 @@ export default class Snap extends Events
         else return y;
     }
 
+    /**
+     * @param {number} _x
+     * @param {CABLES.Port} port
+     * @param {number} index
+     * @param {number} dist
+     */
     _snapPortX(_x, port, index, dist)
     {
         if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
@@ -106,7 +113,7 @@ export default class Snap extends Events
             let otherPortIndex = 0;
 
             let ports = otherPort.op.portsOut;
-            if (otherPort.direction == CABLES.PORT_DIR_IN) ports = otherPort.op.portsIn;
+            if (otherPort.direction == PortDir.in) ports = otherPort.op.portsIn;
 
             otherPortIndex = 0;
             for (let j = 0; j < ports.length; j++)

@@ -94,6 +94,9 @@ export class Platform extends Events
         return "";
     }
 
+    /**
+     * @param {String} opName
+     */
     warnOpEdit(opName)
     {
         return (!platform.isDevEnv() && namespace.isCoreOp(opName) && !platform.isElectron());
@@ -157,6 +160,9 @@ export class Platform extends Events
         }
     }
 
+    /**
+     * @param {boolean} b
+     */
     setManualScreenshot(b)
     {
         this._cfg.patch.settings.manualScreenshot = b;
@@ -251,7 +257,7 @@ export class Platform extends Events
         }, lastView);
     }
 
-    showBrowserWarning(id)
+    showBrowserWarning()
     {
         const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 

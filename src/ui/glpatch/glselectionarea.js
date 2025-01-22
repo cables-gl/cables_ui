@@ -1,3 +1,4 @@
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
 
 /**
@@ -8,7 +9,11 @@ import { gui } from "../gui.js";
  */
 export default class GlSelectionArea
 {
-    constructor(rectinstancer, glpatch)
+
+    /**
+     * @param {GlRectInstancer} rectinstancer
+     */
+    constructor(rectinstancer)
     {
         this._selectRect = rectinstancer.createRect();
 
@@ -50,6 +55,7 @@ export default class GlSelectionArea
         return this._selectRect._w != 0 && this._selectRect._h != 0;
     }
 
+    /** @deprecated */
     setMousePos(x, y)
     {
 
@@ -65,6 +71,10 @@ export default class GlSelectionArea
         gui.emitEvent("hideSelectionArea");
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     setPos(x, y)
     {
         this._x = x;
@@ -72,6 +82,10 @@ export default class GlSelectionArea
         this._selectRect.setPosition(x, y, -0.1);
     }
 
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
     setSize(w, h)
     {
         this._w = w;

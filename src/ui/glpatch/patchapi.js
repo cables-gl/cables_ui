@@ -13,7 +13,7 @@ export default class GlPatchAPI
         this._log = new Logger("glpatch");
 
         /**
-         * @type {Patch}
+         * @type {CABLES.Patch}
          */
         this._patch = patch;
         this._glPatch = glpatch;
@@ -27,7 +27,6 @@ export default class GlPatchAPI
 
         this._patch.addEventListener("onLink", this._onLink.bind(this));
         this._patch.addEventListener("onUnLink", this._onUnLink.bind(this));
-
     }
 
     /**

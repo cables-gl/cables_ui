@@ -1,4 +1,5 @@
 import font from "../glpatch/sdf_font.json";
+import GlTextWriter from "./gltextwriter.js";
 
 /**
  * draw text using msdf font texture, using {@link GlRectInstancer}
@@ -8,6 +9,11 @@ import font from "../glpatch/sdf_font.json";
  */
 export default class GlText
 {
+
+    /**
+     * @param {GlTextWriter} textWriter
+     * @param {string} string
+     */
     constructor(textWriter, string)
     {
         if (!textWriter)
@@ -54,7 +60,12 @@ export default class GlText
 
     get height() { return this._height * 0.5 * this._scale; }
 
-    setPosition(x, y, z)
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
+    setPosition(x, y, z = 0)
     {
         this._x = x;
         this._y = y;
@@ -63,12 +74,18 @@ export default class GlText
         this.rebuild();
     }
 
+    /**
+     * @param {number} s
+     */
     set scale(s)
     {
         this._scale = s;
         this.rebuild();
     }
 
+    /**
+     * @param {boolean} v
+     */
     set visible(v)
     {
         if (this._visible === v) return;
@@ -77,6 +94,9 @@ export default class GlText
             if (this._rects[i]) this._rects[i].visible = v;
     }
 
+    /**
+     * @param {number} x
+     */
     _map(x)
     {
         return x * 0.11 * this._scale;
@@ -91,16 +111,24 @@ export default class GlText
         this.rebuild();
     }
 
+    /**
+     * @param {number} a
+     */
     setOpacity(a)
     {
         this.setColor(this._color[0], this._color[1], this._color[2], a);
     }
 
-    setColor(r, g, b, a)
+    /**
+     * @param {(number|array)} r
+     * @param {number} g
+     * @param {number} b
+     * @param {number} a
+     */
+    setColor(r, g, b, a = 1)
     {
-        if (a === undefined)a = 1.0;
         if (r === undefined)r = g = b = 1.0;
-        if (r.length) vec4.set(this._color, r[0], r[1], r[2], 1);
+        if (r.length) vec4.set(this._color, r[0], r[1], r[2], a);
         else vec4.set(this._color, r, g, b, a);
 
         for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColor(this._color);

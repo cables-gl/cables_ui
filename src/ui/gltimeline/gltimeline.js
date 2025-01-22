@@ -16,7 +16,7 @@ export default class GlTimeline extends Events
 {
 
     /**
-     * @param {CG_State} cgl
+     * @param {CABLES.CGState} cgl
      */
     constructor(cgl)
     {

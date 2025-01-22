@@ -5,13 +5,18 @@ import Gui, { gui } from "../gui.js";
 import GlPort from "./glport.js";
 import GlPatch from "./glpatch.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import GlRect from "../gldraw/glrect.js";
 
 /**
  * simple line e.g. when dragging a port
  */
 export default class GlDragLine
 {
+
+    /**
+     * @param {GlSplineDrawer} splineDrawer
+     * @param {GlPatch} glpatch
+     */
     constructor(splineDrawer, glpatch)
     {
         this._log = new Logger("gldragline");
@@ -99,7 +104,7 @@ export default class GlDragLine
 
         glpatch.on("mouseDragLink", (glport, opid, portName, e) =>
         {
-            this.setPort(glport, opid, portName);
+            this.setPort(glport);
         });
 
         glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
@@ -110,11 +115,11 @@ export default class GlDragLine
 
             if (this._button == MouseState.BUTTON_LEFT)
             {
-                this.setPort(glport, opid, portName);
+                this.setPort(glport);
             }
             else if (this._button == MouseState.BUTTON_RIGHT)
             {
-                this.setPort(glport, opid, portName);
+                this.setPort(glport);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
                 if (!e.altKey && glport) gui.patchView.unlinkPort(opid, glport.id);
@@ -201,6 +206,9 @@ export default class GlDragLine
         return this._glPort;
     }
 
+    /**
+     * @param {GlPort} glp
+     */
     setPort(glp)
     {
         if (!glp)
@@ -308,6 +316,10 @@ export default class GlDragLine
         this._clearSpline();
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     setPosition(x, y)
     {
         this._x = x;
@@ -315,9 +327,12 @@ export default class GlDragLine
         this._update();
     }
 
+    /**
+     * @param {Array} rgba
+     */
     setColor(rgba)
     {
-        this.color = rgba;
+        this._color = rgba;
         for (let i = 0; i < this._lineIndices.length; i++)
             this._splineDrawer.setSplineColor(this._lineIndices[i], this._color);
 

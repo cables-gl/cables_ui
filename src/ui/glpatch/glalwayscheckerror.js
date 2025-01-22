@@ -1,22 +1,17 @@
-
 export default class GlAlwaysCheckError
 {
     constructor(cgl)
     {
         this._cgl = cgl;
         this._originals = {};
-        // this.shouldStart = true;
         this._count = 0;
-
         this.start();
     }
-
 
     _glGetError()
     {
         return this._cgl.gl.getError();
     }
-
 
     _profile(func, funcName)
     {
@@ -25,9 +20,7 @@ export default class GlAlwaysCheckError
         return function ()
         {
             self._count++;
-            // const start = performance.now(),
             let returnVal = func.apply(this, arguments);
-            // op.patch.cgl.gl.getError();
             const error = self._glGetError();
 
             if (error != gl.NO_ERROR)
@@ -45,13 +38,17 @@ export default class GlAlwaysCheckError
                 }
                 if (error == gl.NO_ERROR) errStr = "NO_ERROR";
 
+                // eslint-disable-next-line no-console
                 console.warn("GL ERROR " + self._count + "th command: ", funcName);
+                // eslint-disable-next-line no-console
                 console.log("arguments", arguments);
-
+                // eslint-disable-next-line no-console
                 console.log("gl error [" + self._cgl.canvas.id + "]: ", error, errStr);
+                // eslint-disable-next-line no-console
                 console.log((new Error()).stack);
 
                 const error2 = self._glGetError();
+                // eslint-disable-next-line no-console
                 console.log("err after", error2);
             }
 

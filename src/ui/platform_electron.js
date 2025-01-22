@@ -21,7 +21,6 @@ export default class PlatformElectron extends Platform
         this.paths = cfg.paths;
 
         this.frontendOptions.npm = true;
-
         this.frontendOptions.isElectron =
         this.frontendOptions.openLocalFiles =
         this.frontendOptions.selectableDownloadPath =
@@ -41,7 +40,6 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.opDeleteInEditor =
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
-
         this.frontendOptions.showFormatCodeButton = false;
 
         this.bindHrTimer();

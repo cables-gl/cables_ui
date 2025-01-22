@@ -167,21 +167,17 @@ export default class GlPatch extends Events
 
         this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
-        // this._debugtext = new Text(this._textWriterOverlay, "hello");
-
         this._viewZoom = 0;
         this.needsRedraw = false;
         this._selectedGlOps = {};
 
         this.links = {};
-        this.zIndex = 0;
 
         this._dropInCircleLink = null;
         this._dropInCircleRect = null;
 
         this._dropInOpBorder = this._overLayRects.createRect();
         this._dropInOpBorder.setSize(100, 100);
-        // this._dropInOpBorder.setShape(4);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 
@@ -493,11 +489,6 @@ export default class GlPatch extends Events
     {
         for (let i in this._glOpz)
             this._glOpz[i].updateVizFlowMode(this.vizFlowMode);
-    }
-
-    zIndex()
-    {
-        return this.zIndex++;
     }
 
     updateCursor()
@@ -909,18 +900,29 @@ export default class GlPatch extends Events
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
 
+    /**
+     * @param {Opid} opid
+     */
     focusOp(opid)
     {
         gui.opParams.show(opid);
         this.focusOpAnim(opid);
     }
 
+    /**
+     * @param {boolean} x
+     * @param {boolean} y
+     */
     cursorNavOps(x, y)
     {
         const ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) return;
     }
 
+    /**
+     * @param {CABLES.Op} op
+     * @param {boolean} fromDeserialize
+     */
     addOp(op, fromDeserialize)
     {
         if (!op) this._log.error("no op at addop", op);
@@ -987,6 +989,10 @@ export default class GlPatch extends Events
         this._portDragLine.stop();
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     screenToPatchCoord(x, y)
     {
         return this.viewBox.screenToPatchCoord(x, y);
@@ -1029,6 +1035,10 @@ export default class GlPatch extends Events
         this._time = (performance.now() - this._timeStart) / 1000;
     }
 
+    /**
+     * @param {number} resX
+     * @param {number} resY
+     */
     render(resX, resY)
     {
         if (!gui || !gui.canvasManager) return;
