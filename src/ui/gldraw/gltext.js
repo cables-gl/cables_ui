@@ -182,5 +182,6 @@ export default class GlText
 
         this._rects.length = 0;
         this._string = "";
+        return null;
     }
 }

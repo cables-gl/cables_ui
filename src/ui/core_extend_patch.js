@@ -6,6 +6,7 @@ import { gui } from "./gui.js";
 
 export default function extendCorePatch()
 {
+    // @ts-expect-error
     CABLES.Patch.prototype._opIdsToOps = function (opids)
     {
         let ops = [];
@@ -209,8 +210,6 @@ export default function extendCorePatch()
         return null;
     };
 
-
-
     CABLES.Patch.prototype.getOpsInRect = function (xa, ya, xb, yb)
     {
         const perf = gui.uiProfiler.start("[extPatch] ops in rect");
@@ -243,10 +242,8 @@ export default function extendCorePatch()
 
         perf.finish();
 
-
         return ops;
     };
-
 
     CABLES.Patch.prototype.reloadOp = function (objName, cb, refOldOp)
     {
@@ -344,4 +341,3 @@ export default function extendCorePatch()
         cb(count, ops, refNewOp);
     };
 }
-

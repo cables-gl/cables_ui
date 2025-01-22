@@ -147,5 +147,6 @@ export default class GlArea
         this._rectResize.dispose();
         this._rectBg = null;
         this._rectResize = null;
+        return null;
     }
 }

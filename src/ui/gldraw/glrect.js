@@ -324,7 +324,6 @@ export default class GlRect extends Events
             // }
         }
 
-
         for (let i = 0; i < this.childs.length; i++)
         {
             this.childs[i].mouseMove(x, y, button);
@@ -362,5 +361,6 @@ export default class GlRect extends Events
         this.setShape(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
+        return null;
     }
 }

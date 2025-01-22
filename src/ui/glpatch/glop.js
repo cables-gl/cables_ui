@@ -12,6 +12,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import { userSettings } from "../components/usersettings.js";
+import { PortDir, portType } from "../core_constants.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -26,7 +27,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {Op} op
+     * @param {CABLES.Op} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -158,19 +159,19 @@ export default class GlOp extends Events
         this._titleExtPortListener = null;
 
         /**
-         * @type GlRect
+         * @type GlText
          */
         this._titleExt = null;
         this._glRectNames.push("_titleExt");
 
         /**
-         * @type GlRect
+         * @type GlText
          */
         this._glTitle = null;
         this._glRectNames.push("_glTitle");
 
         /**
-         * @type GlRect
+         * @type GlText
          */
         this._glComment = null;
         this._glRectNames.push("_glComment");
@@ -281,11 +282,6 @@ export default class GlOp extends Events
          *     });
          */
 
-        /**
-         * @type {Number}
-         */
-        this.zahl = 1;
-        this.zahl = "csdcsdsdc";
     }
 
     _storageChanged()
@@ -413,7 +409,7 @@ export default class GlOp extends Events
         }
     }
 
-    _onBgRectDragEnd(rect)
+    _onBgRectDragEnd()
     {
         const glOps = this._glPatch.selectedGlOps;
 
@@ -475,7 +471,7 @@ export default class GlOp extends Events
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
+        if (gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
 
         if (!this._op)
         {
@@ -827,10 +823,6 @@ export default class GlOp extends Events
         if (this._glRectBg) return this._glRectBg.isHovering();
     }
 
-    mouseMove(x, y)
-    {
-    }
-
     /**
      * @param {Boolean} h
      */
@@ -902,7 +894,7 @@ export default class GlOp extends Events
 
         if (this.displayType === this.DISPLAY_SUBPATCH)
         {
-            const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
+            const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), PortDir.in);
 
             for (let i = 0; i < ports.length; i++)
                 if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
@@ -912,7 +904,7 @@ export default class GlOp extends Events
 
         if (this.displayType === this.DISPLAY_SUBPATCH)
         {
-            const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_OUT));
+            const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), PortDir.out));
             for (let i = 0; i < ports.length; i++)
                 if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }

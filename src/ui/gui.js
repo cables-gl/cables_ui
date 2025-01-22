@@ -50,6 +50,7 @@ import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import { userSettings } from "./components/usersettings.js";
+import ServerOps from "./api/opsserver.js";
 
 /**
  * @type {Gui}
@@ -67,6 +68,8 @@ export default class Gui extends Events
     {
         super();
 
+        new CABLES.Patch();
+
         this._log = new Logger("gui");
         this.theme = defaultTheme;
         this._showTiming = false;
@@ -81,7 +84,7 @@ export default class Gui extends Events
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
-        this.longPressConnector = new LongPressConnector("wwwwwww");
+        this.longPressConnector = new LongPressConnector();
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
