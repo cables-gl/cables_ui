@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { gui } from "../../gui.js";
+import { platform } from "../../platform.js";
 
 export default class ElectronOpDirs
 {
