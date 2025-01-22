@@ -5,8 +5,14 @@ import { notify } from "./notification.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 
+/** Your class description */
 export default class LongPressConnector extends Events
 {
+
+    /**
+     * @constructor
+     * @params
+     */
     constructor()
     {
         super();
@@ -217,7 +223,6 @@ export default class LongPressConnector extends Events
         if (suggestions.length == 1) showSuggestions2(0);
         else new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
     }
-
 
     glRender(glpatch, cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {

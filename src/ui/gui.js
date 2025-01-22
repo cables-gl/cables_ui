@@ -81,7 +81,7 @@ export default class Gui extends Events
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
-        this.longPressConnector = new LongPressConnector();
+        this.longPressConnector = new LongPressConnector("wwwwwww");
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
@@ -176,7 +176,7 @@ export default class Gui extends Events
         this.savedState.pause();
         this._savedStateChangesBlueprintSubPatches = [];
 
-        this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+        this.metaTexturePreviewer = new TexturePreviewer();
         this.metaKeyframes = null;
         this.bookmarks = new Bookmarks();
         this.bottomInfoArea = new BottomInfoAreaBar();

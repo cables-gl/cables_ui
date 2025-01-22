@@ -88,6 +88,12 @@ export class Platform extends Events
         return CABLESUILOADER.talkerAPI;
     }
 
+    /** @abstract */
+    getCablesDocsUrl()
+    {
+        return "";
+    }
+
     warnOpEdit(opName)
     {
         return (!platform.isDevEnv() && namespace.isCoreOp(opName) && !platform.isElectron());
