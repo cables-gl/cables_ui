@@ -27,6 +27,7 @@
     "devDependencies": {
         "@k88/module-scope-plugin": "1.1.0",
         "@rbarilani/remove-source-map-url-webpack-plugin": "1.1.0",
+        "cables-shared-types": "file:../shared/types/",
         "git-last-commit": "1.0.1",
         "gulp": "5.0.0",
         "gulp-autoprefixer": "8.0.0",
