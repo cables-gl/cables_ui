@@ -48,13 +48,13 @@ import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
-import ServerOps from "./api/opsserver.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import { userSettings } from "./components/usersettings.js";
 
 /**
  * @type {Gui}
  */
+// eslint-disable-next-line import/no-mutable-exports
 let gui = null;
 export { gui };
 
@@ -1858,7 +1858,7 @@ export default class Gui extends Events
 
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
             this.userSettings.get("showTipps") &&
-            this.userSettings.get("introCompleted")) gui.tips.show();
+            this.userSettings.get("introCompleted")) CABLES.CMD.UI.showTips();
 
         if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
 

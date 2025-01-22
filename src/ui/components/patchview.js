@@ -821,8 +821,9 @@ export default class PatchView extends Events
 
         for (let i = 0; i < this._p.ops.length; i++)
         {
-            if (this._p.ops[i].getSubPatch() == cursub)
+            if (this._p.ops[i].getSubPatch() == cursub && this._p.ops[i].uiAttribs.translate)
             {
+
                 const a = this.getDistScore(this._p.ops[i].uiAttribs.translate.x, this._p.ops[i].uiAttribs.translate.y, coordArr[0], coordArr[1]);
 
                 if (a < minDist)
@@ -853,7 +854,7 @@ export default class PatchView extends Events
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const op = this._p.ops[i];
-            if (op.getSubPatch() == cursub)
+            if (op.getSubPatch() == cursub && op.uiAttribs.translate)
             {
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
