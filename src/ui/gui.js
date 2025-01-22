@@ -68,8 +68,6 @@ export default class Gui extends Events
     {
         super();
 
-        new CABLES.Patch();
-
         this._log = new Logger("gui");
         this.theme = defaultTheme;
         this._showTiming = false;
