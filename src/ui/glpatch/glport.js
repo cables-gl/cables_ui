@@ -36,8 +36,6 @@ export default class GlPort
          */
         this._port = p;
 
-        // this._port.isLi
-
         /**
          * @type {GlOp}
          */

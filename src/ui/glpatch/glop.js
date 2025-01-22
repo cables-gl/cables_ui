@@ -530,6 +530,7 @@ export default class GlOp extends Events
             {
                 if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
             }
+            console.log("mouseButtonWheelDownDown", CABLES.mouseButtonWheelDown, this._glPatch.mouseState.buttonMiddle);
         }
 
         perf.finish();
@@ -542,6 +543,7 @@ export default class GlOp extends Events
             if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
             this.mouseButtonWheelDown = false;
         }
+        console.log("mouseButtonWheelUp", CABLES.mouseButtonWheelDown, this._glPatch.mouseState.buttonMiddle);
 
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);

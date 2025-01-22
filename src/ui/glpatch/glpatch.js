@@ -790,18 +790,12 @@ export default class GlPatch extends Events
 
         if (this._dropInCircleLink)
         {
-            console.log(1);
-            // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
-            console.log("gui.patchView.getSelectedOps().length", gui.patchView.getSelectedOps().length);
             if (gui.patchView.getSelectedOps().length == 1)
             {
-                console.log(2);
                 for (const i in this.selectedGlOps)
                 {
-                    console.log(3);
                     if (this.selectedGlOps[i].isHovering()) // && this.selectedGlOps[i].isDragging
                     {
-                        console.log(4);
                         const coord = this.screenToPatchCoord(e.offsetX, e.offsetY);
                         gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, coord[0], coord[1]);
 
