@@ -1877,7 +1877,7 @@ export default class Gui extends Events
 
         if (this.isRemoteClient) this._log.logGui("REMOTE CLIENT SESSION");
 
-        this._log.logGui("browser: " + platform.description);
+        this._log.logGui("browser: " + platformLib.description);
 
         const branches = {};
 
