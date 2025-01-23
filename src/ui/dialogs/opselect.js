@@ -367,7 +367,13 @@ export default class OpSelect
                 if (docs)
                 {
                     if (docs.allowEdit)
+                    {
+
                         html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.OP.manageOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+                        if (platform.frontendOptions.hasOpDirectories && docs.opDirFull)
+                            html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.ELECTRON.openOpDir('', '" + opName + "');gui.pressedEscape();\"><span class=\"icon icon-folder\"></span></a>";
+
+                    }
 
                     if (docs.coreLibs && docs.coreLibs.indexOf("standalone_electron") > -1)
                         html += "<br/><br/>this is a <a class=\"link\" href=\"https://cables.gl/standalone\" target=\"_blank\">Standalone</a> op, it will not work fully in the web version.";
@@ -561,7 +567,7 @@ export default class OpSelect
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
         const perf = gui.uiProfiler.start("opselect.show");
 
-        this._eleSearchinfo = document.getElementById("searchinfo");
+        this._eleSearchinfo = ele.byId("searchinfo");
 
         if (window.gui) gui.currentModal = this;
 
