@@ -6,6 +6,7 @@ import { platform } from "../../platform.js";
 import { contextMenu } from "../contextmenu.js";
 import { editorSession } from "./editor_session.js";
 import { userSettings } from "../../components/usersettings.js";
+import Tab from "./tab.js";
 
 /**
  * a tab panel, that can contain tabs
@@ -16,6 +17,10 @@ import { userSettings } from "../../components/usersettings.js";
  */
 export default class TabPanel extends Events
 {
+
+    /**
+     * @param {string} eleId
+     */
     constructor(eleId)
     {
         super();
@@ -52,6 +57,10 @@ export default class TabPanel extends Events
         });
     }
 
+    /**
+     * @param {string} title
+     * @returns {string}
+     */
     getUniqueTitle(title)
     {
         const existingTab = this.getTabByTitle(title);
@@ -197,6 +206,9 @@ export default class TabPanel extends Events
         if (tabContainer && left > w) tabContainer.scrollLeft = left;
     }
 
+    /**
+     * @param {string} id
+     */
     activateTab(id)
     {
         let found = false;
@@ -242,16 +254,25 @@ export default class TabPanel extends Events
         userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
     }
 
+    /**
+     * @param {string} dataId
+     */
     getTabByDataId(dataId)
     {
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].dataId == dataId) return this._tabs[i];
     }
 
+    /**
+     * @param {string} title
+     */
     getTabByTitle(title)
     {
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].title == title) return this._tabs[i];
     }
 
+    /**
+     * @param {string} id
+     */
     getTabById(id)
     {
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].id == id) return this._tabs[i];
@@ -262,6 +283,9 @@ export default class TabPanel extends Events
         while (this._tabs.length) this.closeTab(this._tabs[0].id);
     }
 
+    /**
+     * @param {string} id
+     */
     closeTab(id)
     {
         let tab = null;
@@ -335,6 +359,10 @@ export default class TabPanel extends Events
         if (b) return b;
     }
 
+    /**
+     * @param {Tab} tab
+     * @param {boolean} activate
+     */
     addTab(tab, activate)
     {
         if (tab.options.singleton)

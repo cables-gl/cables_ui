@@ -3,7 +3,6 @@ import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { userSettings } from "../components/usersettings.js";
 
-
 /**
  * Viewbox of current patch
  *
@@ -71,6 +70,10 @@ export default class GlViewBox
         });
     }
 
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
     setSize(w, h)
     {
         const first = (this._viewResX === 0 && this._viewResY === 0);
@@ -80,6 +83,10 @@ export default class GlViewBox
         if (first) this.setMousePos(this._cgl.canvasWidth / 2, this._cgl.canvasHeight / 2);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     setMousePos(x, y)
     {
         const dx = 0;
@@ -128,7 +135,6 @@ export default class GlViewBox
     _onCanvasMouseDown(e)
     {
         this._onCanvasMouseMove(e);
-        // (e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonStateForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
@@ -199,7 +205,6 @@ export default class GlViewBox
 
         if (event.deltaY < 0)delta *= -1;
 
-
         let doPan = this.wheelMode == "pan";
         let doZoom = this.wheelMode == "zoom";
 
@@ -230,7 +235,6 @@ export default class GlViewBox
             this.wheelZoom(delta);
         }
 
-
         this.setMousePos(this._mouseX, this._mouseY);
 
         if (this._touchpadMode && event.metaKey) this.wheelZoom(delta);
@@ -258,7 +262,6 @@ export default class GlViewBox
 
         const x = this._scrollX + mouse[0];
         const y = this._scrollY + mouse[1];
-
 
         const oldZoom = this._zoom;
         this._zoom = newZoom;
@@ -429,7 +432,6 @@ export default class GlViewBox
 
         if (cy != cy) cy = 0;
 
-
         gui.patchView.getSubPatchBounds();
         this.animateScrollTo(bb.center[0], cy);
     }
@@ -528,8 +530,6 @@ export default class GlViewBox
             this.centerSelectedOps(true);
         }
     }
-
-
 
     animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next)
     {

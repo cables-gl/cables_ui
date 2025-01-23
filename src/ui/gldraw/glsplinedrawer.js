@@ -11,6 +11,11 @@ import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
  */
 export default class GlSplineDrawer
 {
+
+    /**
+     * @param {CABLES.CGState} cgl
+     * @param {String} name
+     */
     constructor(cgl, name)
     {
         this.name = name;

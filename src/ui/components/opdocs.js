@@ -168,7 +168,9 @@ export default class OpDocs
         }
     }
 
-
+    /**
+     * @param {string} opname
+     */
     getSummary(opname)
     {
         for (let i = 0; i < this._opDocs.length; i++)
@@ -193,6 +195,9 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
+    /**
+     * @param {string} ns
+     */
     getNamespaceDocs(ns)
     {
         let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(ns); });
@@ -201,6 +206,9 @@ export default class OpDocs
         return docs;
     }
 
+    /**
+     * @param {string} opname
+     */
     getAttachmentFiles(opname)
     {
         for (let i = 0; i < this._opDocs.length; i++)
@@ -209,6 +217,11 @@ export default class OpDocs
         return [];
     }
 
+    /**
+     * @param {Object} op_docs
+     * @param {string} portname
+     * @param {number} type
+     */
     getPortDoc(op_docs, portname, type)
     {
         let html = "";
@@ -382,7 +395,6 @@ export default class OpDocs
                 this._opDocs[oldDoc] = doc;
             }
 
-
             if (defaultOps.hideInOpSelect.indexOf(doc.name) > -1)
             {
                 doc.hidden = true;
@@ -410,7 +422,6 @@ export default class OpDocs
         return this._opDocs;
     }
 
-
     checkDefaultOpsOutdated()
     {
         const perf = gui.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
@@ -425,6 +436,9 @@ export default class OpDocs
         perf.finish();
     }
 
+    /**
+     * @param {string} opname
+     */
     getLayoutSvg(opname)
     {
         function glColorToHtml(glCol)
@@ -438,7 +452,6 @@ export default class OpDocs
 
         let svgStr = "";
 
-
         const doc = this.getOpDocByName(opname);
         if (doc && doc.layout)
         {
@@ -450,8 +463,6 @@ export default class OpDocs
             svgStr += "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\">";
 
             svgStr += "<rect width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
-
-
 
             let svgOver = "";
 
@@ -484,7 +495,6 @@ export default class OpDocs
                     let posx = i * (gluiconfig.portWidth + gluiconfig.portPadding);
                     const pcol = GlPort.getColor(doc.layout.portsOut[i].type);
                     const cssCol = glColorToHtml(pcol);
-
 
                     if (doc.layout.portsOut[i].longPort)
                     {

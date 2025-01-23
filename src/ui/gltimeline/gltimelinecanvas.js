@@ -6,10 +6,15 @@ import GlTimeline from "./gltimeline.js";
  *
  * @export
  * @class glTimelineCanvas
- * @extends {Events}
+ * @extends {GlCanvas}
  */
 export default class glTimelineCanvas extends GlCanvas
 {
+
+    /**
+     * @param {CABLES.Patch} _patch
+     * @param {HTMLElement} parentEle
+     */
     constructor(_patch, parentEle)
     {
         super(_patch, parentEle);

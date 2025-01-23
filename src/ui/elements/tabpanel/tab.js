@@ -4,6 +4,11 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 export default class Tab extends Events
 {
+
+    /**
+     * @param {String} title
+     * @param {Object} options
+     */
     constructor(title, options)
     {
         super();
@@ -48,11 +53,19 @@ export default class Tab extends Events
         eleContainer.appendChild(this.contentEle);
     }
 
+    /**
+     * @param {HTMLElement} el
+     */
     addButtonBarElement(el)
     {
         this.toolbarEle.appendChild(el);
     }
 
+    /**
+     * @param {string} title
+     * @param {Function} cb
+     * @param {object} options
+     */
     addButton(title, cb, options)
     {
         const button = document.createElement("a");
@@ -82,6 +95,9 @@ export default class Tab extends Events
         if (this.tabPanel) this.tabPanel.closeTab(this.id);
     }
 
+    /**
+     * @param {string} html
+     */
     html(html)
     {
         this.contentEle.innerHTML = html;

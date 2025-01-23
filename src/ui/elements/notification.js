@@ -25,7 +25,6 @@ let lastTextWarn = "";
  * @param title
  * @param text
  * @param {NotificationDisplayOptions} options The option object.
- * @class
  * @example
  * notifyError("error", "something broke",
  * {
@@ -73,7 +72,6 @@ export function notifyError(title, text, options = {})
     return toastId;
 }
 
-
 export function notifyWarn(title, text, options = {})
 {
     const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
@@ -114,7 +112,6 @@ export function notifyWarn(title, text, options = {})
     return toastId;
 }
 
-
 /**
  * notify displays a toast-notification
  *
@@ -122,7 +119,6 @@ export function notifyWarn(title, text, options = {})
  * @param title
  * @param text
  * @param {NotificationDisplayOptions} options The option object.
- * @class
  * @example
  * notify("update", "cables has been updated",
  * {

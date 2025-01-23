@@ -1,4 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
+import GlRectInstancer from "./glrectinstancer.js";
 
 /**
  * rectangle data structure for {@link GlRectInstancer}
@@ -9,6 +10,11 @@ import { Logger, Events } from "cables-shared-client";
  */
 export default class GlRect extends Events
 {
+
+    /**
+     * @param {GlRectInstancer} instancer
+     * @param {Object} options
+     */
     constructor(instancer, options)
     {
         super();
@@ -93,6 +99,9 @@ export default class GlRect extends Events
         if (!this.hasChild(c)) this.childs.push(c);
     }
 
+    /**
+     * @param {number} c
+     */
     setShape(c)
     {
         if (this._shape != c)
@@ -105,6 +114,9 @@ export default class GlRect extends Events
         if (this._selected != 0) this._rectInstancer.setSelected(this._attrIndex, 0);
     }
 
+    /**
+     * @param {number} c
+     */
     setBorder(c)
     {
         if (this._border != c)
@@ -114,6 +126,9 @@ export default class GlRect extends Events
         }
     }
 
+    /**
+     * @param {boolean} c
+     */
     setSelected(c)
     {
         if (this._selected != c)
@@ -153,13 +168,25 @@ export default class GlRect extends Events
         this._updateSize();
     }
 
+    /**
+     * @param {number} r
+     * @param {number} g
+     * @param {number} b
+     * @param {number} a
+     */
     setColorHover(r, g, b, a)
     {
         this.colorHover = vec4.create();
         vec4.set(this.colorHover, r, g, b, a);
     }
 
-    setColor(r, g, b, a)
+    /**
+     * @param {number} r
+     * @param {number} g
+     * @param {number} b
+     * @param {number} a=1
+     */
+    setColor(r, g, b, a = 1)
     {
         if (r === undefined)r = g = b = a = 1.0;
         if (r.length) vec4.set(this.color, r[0], r[1], r[2], r[3]);
@@ -200,11 +227,16 @@ export default class GlRect extends Events
         this.emitEvent("textureChanged");
     }
 
-    setPosition(_x, _y, _z)
+    /**
+     * @param {number} _x
+     * @param {number} _y
+     * @param {number} _z
+     */
+    setPosition(_x, _y, _z = 0)
     {
         this._x = _x;
         this._y = _y;
-        this._z = _z || 0;
+        this._z = _z;
 
         this._absX = this._x;
         this._absY = this._y;
@@ -223,6 +255,10 @@ export default class GlRect extends Events
         this.emitEvent("positionChanged");
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     isPointInside(x, y)
     {
         return x > this._absX && x < this._absX + this._w && y > this._absY && y < this._absY + this._h;
@@ -268,7 +304,11 @@ export default class GlRect extends Events
         return this._parent._absZ;
     }
 
-    mouseDrag(x, y, button)
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    mouseDrag(x, y)
     {
         if (!this.interactive) return;
 
@@ -294,6 +334,11 @@ export default class GlRect extends Events
         this._isDragging = false;
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} button
+     */
     mouseMove(x, y, button)
     {
         if (!this.interactive) return;
@@ -323,7 +368,6 @@ export default class GlRect extends Events
             //     else this._rectInstancer.setColor(this._attrIndex, this.color[0] * this.colorHoverMultiply, this.color[1] * this.colorHoverMultiply, this.color[2] * this.colorHoverMultiply, this.color[3] * this.colorHoverMultiply);
             // }
         }
-
 
         for (let i = 0; i < this.childs.length; i++)
         {
@@ -362,5 +406,6 @@ export default class GlRect extends Events
         this.setShape(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
+        return null;
     }
 }

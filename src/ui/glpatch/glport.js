@@ -17,12 +17,22 @@ import { PortDir, portType } from "../core_constants.js";
  */
 export default class GlPort
 {
+
+    /**
+     * Description
+     * @param {GlPatch} glpatch
+     * @param {GlOp} glop
+     * @param {GlRectInstancer} rectInstancer
+     * @param {CABLES.Port} p
+     * @param {number} posCount
+     * @param {GlRect} oprect
+     */
     constructor(glpatch, glop, rectInstancer, p, posCount, oprect)
     {
         this._log = new Logger("glPort");
 
         /**
-         * @type {Port}
+         * @type {CABLES.Port}
          */
         this._port = p;
 
@@ -99,7 +109,7 @@ export default class GlPort
     }
 
     /**
-     * @type {GlRect}
+     * @type {number}
      */
     get posX()
     {

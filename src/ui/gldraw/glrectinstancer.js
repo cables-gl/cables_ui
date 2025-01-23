@@ -55,7 +55,6 @@ export default class GlRectInstancer extends Events
         this._meshAttrTexRect = null;
         this._meshAttrTex = null;
 
-
         this._setupAttribBuffers();
 
         this.ATTR_TEXRECT = "texRect";
@@ -201,7 +200,6 @@ export default class GlRectInstancer extends Events
         let minIdx = this._DEFAULT_BIGNUM;
         let maxIdx = -this._DEFAULT_BIGNUM;
 
-
         for (let i = 0; i < this._rects.length; i++)
         {
             let changed = false;
@@ -210,7 +208,6 @@ export default class GlRectInstancer extends Events
             if (this._rects[i].texture)
             {
                 let found = false;
-
 
                 for (let j = 0; j < this._textures.length; j++)
                 {
@@ -262,6 +259,13 @@ export default class GlRectInstancer extends Events
         if (this._textures[0]) this._cgl.setTexture(0, this._textures[0].texture.tex);
     }
 
+    /**
+     * @param {number} resX
+     * @param {number} resY
+     * @param {number} scrollX
+     * @param {number} scrollY
+     * @param {number} zoom
+     */
     render(resX, resY, scrollX, scrollY, zoom)
     {
         // console.log(zoom);
@@ -321,7 +325,6 @@ export default class GlRectInstancer extends Events
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0 / zoom);
-
 
         this._uniTime.set(performance.now() / 1000);
 
@@ -384,6 +387,12 @@ export default class GlRectInstancer extends Events
         return Math.abs(a - b) > 0.0001;
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     setPosition(idx, x, y, z)
     {
         const buffIdx = idx * 3;

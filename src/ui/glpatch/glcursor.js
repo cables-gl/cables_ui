@@ -1,9 +1,17 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import GlPatch from "./glpatch.js";
 
 export default class GlCursor extends Events
 {
+
+    /**
+     * @param {GlPatch} glPatch
+     * @param {GlRectInstancer} instancer
+     * @param {number} clientId
+     */
     constructor(glPatch, instancer, clientId)
     {
         super();

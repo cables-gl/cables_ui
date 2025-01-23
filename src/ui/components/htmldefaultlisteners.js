@@ -49,7 +49,6 @@ export default function setHtmlDefaultListeners()
         }
     });
 
-
     document.body.addEventListener("dragstart", (e) =>
     {
         if (!e.target.draggable || !e.target.classList.contains("draggable") || e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT")

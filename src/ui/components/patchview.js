@@ -20,7 +20,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { fileUploader } from "../dialogs/upload.js";
 import { userSettings } from "./usersettings.js";
-import { portType } from "../core_constants.js";
+import { PortDir, portType } from "../core_constants.js";
 
 /**
  * manage patch view and helper functions
@@ -579,7 +579,7 @@ export default class PatchView extends Events
             "onOpAdd": (newOp) =>
             {
                 let newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
-                if (oldOp.getPortByName(portname).direction == CABLES.PORT_DIR_OUT)
+                if (oldOp.getPortByName(portname).direction == PortDir.out)
                     newPort = newOp.getFirstInPortByType(oldOp.getPortByName(portname).type);
 
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
@@ -2222,7 +2222,7 @@ export default class PatchView extends Events
         let inp = null;
         let outp = null;
 
-        if (p1.direction === CABLES.PORT_DIR_IN)
+        if (p1.direction === PortDir.in)
         {
             inp = p1;
             outp = p2;
@@ -2540,7 +2540,7 @@ export default class PatchView extends Events
             portIn = oldLink.p1.thePort;
             portOut = oldLink.p2.thePort;
 
-            if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN)
+            if (oldLink.p2.thePort.direction == PortDir.in)
             {
                 portIn = oldLink.p2.thePort;
                 portOut = oldLink.p1.thePort;
@@ -2806,7 +2806,7 @@ export default class PatchView extends Events
 
         // for (let i = 0; i < ops.length; i++)
         // {
-        //     if (dir == undefined || dir === CABLES.PORT_DIR_IN)
+        //     if (dir == undefined || dir === PortDir.in)
         //         if (ops[i].portsIn)
         //             for (let j = 0; j < ops[i].portsIn.length; j++)
         //                 if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);

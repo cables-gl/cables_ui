@@ -14,8 +14,6 @@ import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
 import { userSettings } from "./components/usersettings.js";
 
-
-
 /**
  * manage the start of the ui/editor
  *
@@ -56,7 +54,6 @@ export default function startUi(cfg)
             new ModalDialog({ "title": "GL Error", "html": "Could not initialize webgl, or it crashed. Try to restart your browser, or try another one..." });
             return;
         }
-
 
         gui.bind(() =>
         {
@@ -179,7 +176,6 @@ export default function startUi(cfg)
                 for (let i = 0; i < gui.corePatch().ops.length; i++) gui.corePatch().ops[i].checkLinkTimeWarnings();
 
                 gui.patchParamPanel.show();
-
 
                 setTimeout(() =>
                 {

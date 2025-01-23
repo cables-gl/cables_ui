@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client/index.js";
 import { userSettings } from "../components/usersettings.js";
 import text from "../text.js";
 import ModalDialog from "./modaldialog.js";
@@ -60,16 +61,31 @@ export default class Tips
 
         html += "<div style=\"clear:both;padding:20px;\">";
         html += "  <a id=\"modalClose\" class=\"bluebutton\">Close</a>";
-        html += "  <a onclick=\"gui.tips.next();\" class=\"button\">Next tip</a>";
+        html += "  <a id=\"tips_next\" class=\"button\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";
-        if (userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">Do not show this on startup</a>";
-        else html += "<a onclick=\"gui.tips.showAlways();\" class=\"button-small\">Show on startup again</a>";
+        if (userSettings.get("showTipps")) html += "<a id=\"tips_showNever\" class=\"button-small\">Do not show this on startup</a>";
+        else html += "<a id=\"tips_showAlways\" class=\"button-small\">Show on startup again</a>";
         html += "  </div\">";
 
         html += "</div>";
 
         new ModalDialog({ "html": html, "nopadding": true });
+
+        ele.clickable(ele.byId("tips_next"), () =>
+        {
+            this.next();
+        });
+
+        ele.clickable(ele.byId("tips_showAlways"), () =>
+        {
+            this.showAlways();
+        });
+
+        ele.clickable(ele.byId("tips_showNever"), () =>
+        {
+            this.neverShow();
+        });
     }
 
     showOnce()

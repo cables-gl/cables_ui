@@ -12,6 +12,9 @@ opNames.getNamespaceClassName = (opName) =>
     return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
 };
 
+/**
+ * @param {CABLES.Port} p
+ */
 opNames.getVizOpsForPortLink = (p) =>
 {
     if (p && p.direction == PortDir.out)
@@ -25,6 +28,10 @@ opNames.getVizOpsForPortLink = (p) =>
     }
     return [];
 };
+
+/**
+ * @param {CABLES.Port} p
+ */
 opNames.getOpsForPortLink = (p) =>
 {
     if (p && p.direction == PortDir.in)
@@ -44,6 +51,9 @@ opNames.getOpsForPortLink = (p) =>
     return [];
 };
 
+/**
+ * @param {String} filename
+ */
 opNames.getOpsForFilename = (filename) =>
 {
     const ops = [];
@@ -126,6 +136,9 @@ opNames.getVarGetterOpNameByType = (type, port) =>
     };
 };
 
+/**
+ * @param {number} type
+ */
 opNames.getPortTypeClassHtml = (type) =>
 {
     if (type == portType.number) return "port_text_color_value";
@@ -137,6 +150,9 @@ opNames.getPortTypeClassHtml = (type) =>
     return "port_text_color_unknown";
 };
 
+/**
+ * @param {number} type
+ */
 opNames.getPortTypeClass = (type) =>
 {
     if (type == portType.number) return "port_color_value";
@@ -158,6 +174,9 @@ opNames.getPortTypeClass = (type) =>
 //     else return "link_color_dynamic";
 // };
 
+/**
+ * @param {number} type
+ */
 opNames.getRerouteOp = (type) =>
 {
     if (type == portType.number) return defaultOps.defaultOpNames.rerouteNumber;

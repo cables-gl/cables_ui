@@ -4,6 +4,10 @@ import text from "../text.js";
 import GlPort from "./glport.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
+import GlPatch from "./glpatch.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import GlRect from "../gldraw/glrect.js";
+import GlLink from "./gllink.js";
 
 /**
  * rendering cables for links
@@ -13,6 +17,15 @@ import { userSettings } from "../components/usersettings.js";
  */
 export default class GlCable
 {
+
+    /**
+     * @param {GlPatch} glPatch
+     * @param {GlSplineDrawer} splineDrawer
+     * @param {GlRect} buttonRect
+     * @param {number} type
+     * @param {GlLink} link
+     * @param {String} subpatch
+     */
     constructor(glPatch, splineDrawer, buttonRect, type, link, subpatch)
     {
         this.LINETYPE_CURVED = 0;

@@ -50,6 +50,7 @@ import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import { userSettings } from "./components/usersettings.js";
+import ServerOps from "./api/opsserver.js";
 
 /**
  * @type {Gui}
@@ -176,7 +177,7 @@ export default class Gui extends Events
         this.savedState.pause();
         this._savedStateChangesBlueprintSubPatches = [];
 
-        this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+        this.metaTexturePreviewer = new TexturePreviewer();
         this.metaKeyframes = null;
         this.bookmarks = new Bookmarks();
         this.bottomInfoArea = new BottomInfoAreaBar();
