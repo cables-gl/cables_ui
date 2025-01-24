@@ -36,4 +36,4 @@ window.ErrorStackParser = ErrorStackParser;
 window.tinysort = tinysort;
 window.UndoManager = UndoManager;
 window.Sortable = Sortable;
-window.platform = platform;
+window.platformLib = platform;
