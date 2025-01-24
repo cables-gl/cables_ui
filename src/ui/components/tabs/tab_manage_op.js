@@ -105,12 +105,19 @@ export default class ManageOp
             return;
         }
 
+        // timeout needed to not have multiple requests and refreshes when saving i.e. subpatchops
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
             platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
             {
                 if (error) this._log.warn("error api?", error);
+
+                const dependencyTabId = "dependencytabs";
+                const tabPanel = ele.byId(dependencyTabId);
+
+                if (!tabPanel) return;
+
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
                 const doc = {};
                 const opName = this._currentName;
@@ -267,8 +274,7 @@ export default class ManageOp
                     "canEditOp": canEditOp,
                     "viewId": this._id
                 };
-                const dependencyTabId = "dependencytabs";
-                const tabPanel = ele.byId(dependencyTabId);
+
                 if (tabPanel) tabPanel.innerHTML = "";
                 const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
                 depTabs.init();
