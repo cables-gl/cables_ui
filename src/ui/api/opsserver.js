@@ -802,23 +802,24 @@ export default class ServerOps
                     return;
                 }
 
-                new ModalDialog({
+                const modalDialog = new ModalDialog({
                     "title": options.title,
                     "text": html
                 });
 
                 if (platform.frontendOptions.hasOpDirectories)
                 {
-                    const addButton = ele.byId("addOpTargetDir");
-                    if (addButton)
+                    ele.clickables(modalDialog.getElement(), ".clickable", (event, dataset) =>
                     {
-                        addButton.addEventListener("click", () =>
+                        const selectElement = ele.byId("opTargetDir");
+                        const selectedDir = ele.getSelectValue(selectElement);
+                        switch (event.currentTarget.id)
                         {
-                            platform.talkerAPI.send("addProjectOpDir", (dirErr, dirRes) =>
+                        case "addOpTargetDir":
+                            platform.talkerAPI.send("addProjectOpDir", {}, (dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {
-                                    const selectElement = ele.byId("opTargetDir");
                                     if (selectElement)
                                     {
                                         selectElement.length = 0;
@@ -841,8 +842,13 @@ export default class ServerOps
                                     this._log.info(dirErr.msg);
                                 }
                             });
-                        });
-                    }
+                            break;
+                        case "openOpTargetDir":
+                        default:
+                            platform.talkerAPI.send("openDir", { "dir": selectedDir });
+                            break;
+                        }
+                    });
                 }
 
                 _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
@@ -938,7 +944,8 @@ export default class ServerOps
                     opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
                 }
                 opDirSelect += "</select>";
-                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
+                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
+                opDirSelect += "&nbsp;<a id=\"openOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"open dir\" data-tt=\"open dir\"><span class=\"icon icon-folder\"></span></a>\n";
                 opDirSelect += "<hr/>";
                 html = opDirSelect + html;
                 _checkOpName();
@@ -1095,9 +1102,7 @@ export default class ServerOps
                 else
                 {
                     ele.byId("opcreateerrors").innerHTML = "";
-                    ele.byId("opcreateerrors")
-                        .classList
-                        .add("hidden");
+                    ele.byId("opcreateerrors").classList.add("hidden");
                     ele.show(ele.byId("opNameDialogSubmit"));
                     if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
                 }
@@ -1117,8 +1122,7 @@ export default class ServerOps
                 });
             }
 
-            ele.byId("opNameDialogInput")
-                .focus();
+            ele.byId("opNameDialogInput").focus();
         };
     }
 

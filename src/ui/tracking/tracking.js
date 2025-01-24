@@ -62,7 +62,7 @@ export default class Tracking
         if (project) payload.projectId = project._id;
         if (platform.talkerAPI)
         {
-            payload.platform = platform;
+            payload.platform = platformLib;
             this._trackEvent("ui", actionName, level, payload);
         }
         else

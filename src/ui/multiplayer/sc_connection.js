@@ -6,6 +6,7 @@ import ScUiMultiplayer from "./sc_ui_multiplayer.js";
 import Gui, { gui } from "../gui.js";
 import { PatchConnectionSender } from "./patchconnection.js";
 import Chat from "../components/tabs/tab_chat.js";
+import { platform } from "../platform.js";
 
 export default class ScConnection extends Events
 {
@@ -607,7 +608,7 @@ export default class ScConnection extends Events
         }
         if (payload.isRemoteClient && platform.talkerAPI && !payload.isDisconnected)
         {
-            payload.platform = platform;
+            payload.platform = platformLib;
             this.sendControl("pingAnswer", payload);
         }
         else

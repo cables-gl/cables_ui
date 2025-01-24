@@ -148,7 +148,7 @@ export default class Api
         else
         {
             this.lastErrorReport = performance.now();
-            report.browserInfo = platform;
+            report.browserInfo = platformLib;
             CABLES.api.post("errorReport", report, doneCallback);
         }
     }
