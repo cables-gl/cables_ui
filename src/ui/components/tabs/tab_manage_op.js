@@ -116,8 +116,6 @@ export default class ManageOp
                 const dependencyTabId = "dependencytabs";
                 const tabPanel = ele.byId(dependencyTabId);
 
-                if (!tabPanel) return;
-
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
                 const doc = {};
                 const opName = this._currentName;
