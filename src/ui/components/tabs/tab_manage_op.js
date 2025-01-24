@@ -46,6 +46,7 @@ export default class ManageOp
         this._currentId = opId;
         this._id = CABLES.shortId();
         this._refreshListener = [];
+        this._refreshCoreListener = [];
 
         this._tab = new Tab(opObjName, {
             "icon": "op",
@@ -62,7 +63,14 @@ export default class ManageOp
             editorSession.remove("manageOp", this._currentId);
 
             for (let i in this._refreshListener)
+            {
                 gui.off(this._refreshListener[i]);
+            }
+            for (let i in this._refreshCoreListener)
+            {
+                gui.corePatch().off(this._refreshCoreListener[i]);
+            }
+
         });
 
         gui.maintabPanel.show(true);
@@ -73,7 +81,7 @@ export default class ManageOp
                 if (name === undefined || this._currentName == name) this.show();
             }));
 
-        this._refreshListener.push(
+        this._refreshCoreListener.push(
             gui.corePatch().on("opReloaded", (name) =>
             {
                 if (name === undefined || this._currentName == name) this.show();
