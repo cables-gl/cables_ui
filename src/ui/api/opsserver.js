@@ -1,4 +1,4 @@
-import { Logger, ele, helper } from "cables-shared-client";
+import { Logger, TalkerAPI, ele, helper } from "cables-shared-client";
 import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
@@ -1196,7 +1196,7 @@ export default class ServerOps
             "src": iframeSrc
         });
         const iframeEle = modal.iframeEle;
-        const talkerAPI = new platform.TalkerAPI(iframeEle.contentWindow);
+        const talkerAPI = new TalkerAPI(iframeEle.contentWindow);
         const renameListenerId = talkerAPI.addEventListener("opRenamed", (newOp) =>
         {
             talkerAPI.removeEventListener(renameListenerId);
