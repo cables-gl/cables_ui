@@ -46,6 +46,7 @@ export default class ManageOp
         this._currentId = opId;
         this._id = CABLES.shortId();
         this._refreshListener = [];
+        this._refreshCoreListener = [];
 
         this._tab = new Tab(opObjName, {
             "icon": "op",
@@ -62,7 +63,14 @@ export default class ManageOp
             editorSession.remove("manageOp", this._currentId);
 
             for (let i in this._refreshListener)
+            {
                 gui.off(this._refreshListener[i]);
+            }
+            for (let i in this._refreshCoreListener)
+            {
+                gui.corePatch().off(this._refreshCoreListener[i]);
+            }
+
         });
 
         gui.maintabPanel.show(true);
@@ -73,7 +81,7 @@ export default class ManageOp
                 if (name === undefined || this._currentName == name) this.show();
             }));
 
-        this._refreshListener.push(
+        this._refreshCoreListener.push(
             gui.corePatch().on("opReloaded", (name) =>
             {
                 if (name === undefined || this._currentName == name) this.show();
@@ -105,234 +113,242 @@ export default class ManageOp
             return;
         }
 
-        platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
+        // timeout needed to not have multiple requests and refreshes when saving i.e. subpatchops
+        clearTimeout(this._timeout);
+        this._timeout = setTimeout(() =>
         {
-            if (error) this._log.warn("error api?", error);
-            const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
-            const doc = {};
-            const opName = this._currentName;
-            let summary = "";
-            let portJson = null;
-
-            if (res.changelog && res.changelog.length > 0) doc.changelog = res.changelog;
-
-            if (res.attachmentFiles)
+            platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
             {
-                const attachmentFiles = [];
-                for (let i = 0; i < res.attachmentFiles.length; i++)
+                if (error) this._log.warn("error api?", error);
+
+                const dependencyTabId = "dependencytabs";
+                const tabPanel = ele.byId(dependencyTabId);
+
+                const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
+                const doc = {};
+                const opName = this._currentName;
+                let summary = "";
+                let portJson = null;
+
+                if (res.changelog && res.changelog.length > 0) doc.changelog = res.changelog;
+
+                if (res.attachmentFiles)
                 {
-                    const parts = res.attachmentFiles[i].split(".");
-                    let suffix = "";
-                    suffix = parts[parts.length - 1];
-
-                    attachmentFiles.push(
-                        {
-                            "suffix": suffix,
-                            "readable": res.attachmentFiles[i].substr(4),
-                            "original": res.attachmentFiles[i]
-                        });
-
-                    if (res.attachmentFiles[i] === "att_ports.json")
+                    const attachmentFiles = [];
+                    for (let i = 0; i < res.attachmentFiles.length; i++)
                     {
-                        const ops = gui.corePatch().getOpsByObjName(opName);
+                        const parts = res.attachmentFiles[i].split(".");
+                        let suffix = "";
+                        suffix = parts[parts.length - 1];
 
-                        if (ops && ops.length > 0)
+                        attachmentFiles.push(
+                            {
+                                "suffix": suffix,
+                                "readable": res.attachmentFiles[i].substr(4),
+                                "original": res.attachmentFiles[i]
+                            });
+
+                        if (res.attachmentFiles[i] === "att_ports.json")
                         {
-                            try
+                            const ops = gui.corePatch().getOpsByObjName(opName);
+
+                            if (ops && ops.length > 0)
                             {
-                                portJson = JSON.parse(ops[0].attachments.ports_json);
-                            }
-                            catch (e)
-                            {
-                                this._log.error(e);
+                                try
+                                {
+                                    portJson = JSON.parse(ops[0].attachments.ports_json);
+                                }
+                                catch (e)
+                                {
+                                    this._log.error(e);
+                                }
                             }
                         }
                     }
-                }
-                doc.attachmentFiles = attachmentFiles;
-            }
-
-            doc.libs = gui.serverOps.getOpLibs(opName, false).map((lib) => { return lib.name; });
-            doc.coreLibs = gui.serverOps.getCoreLibs(opName, false).map((lib) => { return lib.name; });
-            summary = gui.opDocs.getSummary(opName) || "No Summary";
-            const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
-            if (portJson && portJson.ports)
-            {
-                portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
-
-                if (portJson.ports.length > 1)
-                    for (let i = 1; i < portJson.ports.length; i++)
-                    {
-                        if (portJson.ports[i - 1].dir != portJson.ports[i].dir) portJson.ports[i].divider = true;
-                    }
-            }
-            const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
-            const libs = [];
-            allLibs.forEach((lib) =>
-            {
-                libs.push({
-                    "url": lib,
-                    "name": CABLES.basename(lib),
-                    "isAssetLib": lib.startsWith("/assets/")
-                });
-            });
-
-            const html = getHandleBarHtml("tab_manage_op",
-                {
-                    "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
-                    "url": platform.getCablesDocsUrl(),
-                    "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
-                    "opid": opDoc.id,
-                    "opname": opDoc.name,
-                    "doc": doc,
-                    "opDoc": opDoc,
-                    "viewId": this._id,
-                    "subPatchSaved": gui.savedState.isSavedSubOp(opName),
-                    "portJson": portJson,
-                    "summary": summary,
-                    "canEditOp": canEditOp,
-                    "canDeleteOp": platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
-                    "readOnly": !canEditOp,
-                    "user": gui.user,
-                    "warns": res.warns
-                });
-
-            this._tab.html(html);
-
-            ele.clickables(this._tab.contentEle, ".dependency-options", (e, dataset) =>
-            {
-                const depSrc = dataset.depsrc;
-                const depType = dataset.deptype;
-
-                const items = [];
-
-                if (depType !== "corelib" && depType !== "lib")
-                {
-                    items.push({
-                        "title": "download",
-                        "iconClass": "icon icon-download",
-                        "func": () =>
-                        {
-                            let scriptSrc = "";
-                            if (depSrc.startsWith("http"))
-                            {
-                                scriptSrc = depSrc;
-                            }
-                            else if (depSrc.startsWith("./"))
-                            {
-                                scriptSrc = platform.getSandboxUrl() + "/api/oplib/" + opName + depSrc.replace(".", "");
-                            }
-                            if (scriptSrc) window.open(scriptSrc);
-                        }
-                    });
+                    doc.attachmentFiles = attachmentFiles;
                 }
 
-                items.push({
-                    "title": "remove",
-                    "iconClass": "icon icon-x",
-                    "func": (ee) =>
-                    {
-                        switch (depType)
-                        {
-                        case "corelib":
-                            gui.serverOps.removeCoreLib(opName, depSrc);
-                            break;
-                        case "lib":
-                            gui.serverOps.removeOpLib(opName, depSrc);
-                            break;
-                        case "commonjs":
-                        case "module":
-                        default:
-                            gui.serverOps.removeOpDependency(opName, depSrc, depType);
-                            break;
-                        }
-                    }
-                });
-
-                if (items.length > 0)
-                {
-                    contextMenu.show({ "items": items, }, event.currentTarget);
-                }
-
-            });
-
-            const panelOptions = {
-                "opDoc": opDoc,
-                "libs": libs,
-                "coreLibs": gui.opDocs.coreLibs,
-                "user": gui.user,
-                "canEditOp": canEditOp,
-                "viewId": this._id
-            };
-            const dependencyTabId = "dependencytabs";
-            const tabPanel = ele.byId(dependencyTabId);
-            if (tabPanel) tabPanel.innerHTML = "";
-            const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
-            depTabs.init();
-
-            if (canEditOp)
-            {
+                doc.libs = gui.serverOps.getOpLibs(opName, false).map((lib) => { return lib.name; });
+                doc.coreLibs = gui.serverOps.getCoreLibs(opName, false).map((lib) => { return lib.name; });
+                summary = gui.opDocs.getSummary(opName) || "No Summary";
+                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
                 if (portJson && portJson.ports)
                 {
-                    const buttonCreate = ele.byId(this._id + "_port_create");
-                    if (buttonCreate) buttonCreate.addEventListener("click", () =>
+                    portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
+
+                    if (portJson.ports.length > 1)
+                        for (let i = 1; i < portJson.ports.length; i++)
+                        {
+                            if (portJson.ports[i - 1].dir != portJson.ports[i].dir) portJson.ports[i].divider = true;
+                        }
+                }
+                const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
+                const libs = [];
+                allLibs.forEach((lib) =>
+                {
+                    libs.push({
+                        "url": lib,
+                        "name": CABLES.basename(lib),
+                        "isAssetLib": lib.startsWith("/assets/")
+                    });
+                });
+
+                const html = getHandleBarHtml("tab_manage_op",
                     {
-                        subPatchOpUtil.portEditDialog(opName);
+                        "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
+                        "url": platform.getCablesDocsUrl(),
+                        "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
+                        "opid": opDoc.id,
+                        "opname": opDoc.name,
+                        "doc": doc,
+                        "opDoc": opDoc,
+                        "viewId": this._id,
+                        "subPatchSaved": gui.savedState.isSavedSubOp(opName),
+                        "portJson": portJson,
+                        "summary": summary,
+                        "canEditOp": canEditOp,
+                        "canDeleteOp": platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
+                        "readOnly": !canEditOp,
+                        "user": gui.user,
+                        "warns": res.warns
                     });
 
-                    for (let i = 0; i < portJson.ports.length; i++)
+                this._tab.html(html);
+
+                ele.clickables(this._tab.contentEle, ".dependency-options", (e, dataset) =>
+                {
+                    const depSrc = dataset.depsrc;
+                    const depType = dataset.deptype;
+
+                    const items = [];
+
+                    if (depType !== "corelib" && depType !== "lib")
                     {
-                        const p = portJson.ports[i];
-                        if (!p || !p.id) continue;
-
-                        const id = p.id;
-                        const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
-                        if (buttonDelete) buttonDelete.addEventListener("click", () =>
-                        {
-                            subPatchOpUtil.portJsonDelete(opName, id);
-                        });
-
-                        const buttonTitle = ele.byId(this._id + "_port_title_" + id);
-                        if (buttonTitle) buttonTitle.addEventListener("click", () =>
-                        {
-                            subPatchOpUtil.portEditDialog(opName, id, p);
-                        });
-
-                        const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
-                        if (buttonMoveUp) buttonMoveUp.addEventListener("click", () =>
-                        {
-                            subPatchOpUtil.portJsonMove(opName, id, -1);
-                        });
-
-                        const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
-                        if (buttonMoveDown) buttonMoveDown.addEventListener("click", () =>
-                        {
-                            subPatchOpUtil.portJsonMove(opName, id, 1);
+                        items.push({
+                            "title": "download",
+                            "iconClass": "icon icon-download",
+                            "func": () =>
+                            {
+                                let scriptSrc = "";
+                                if (depSrc.startsWith("http"))
+                                {
+                                    scriptSrc = depSrc;
+                                }
+                                else if (depSrc.startsWith("./"))
+                                {
+                                    scriptSrc = platform.getSandboxUrl() + "/api/oplib/" + opName + depSrc.replace(".", "");
+                                }
+                                if (scriptSrc) window.open(scriptSrc);
+                            }
                         });
                     }
-                }
-            }
-            else
-            {
-                document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
-                {
-                    opLibSelect.disabled = true;
-                    opLibSelect.addEventListener("pointerenter", (event) =>
-                    {
-                        showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+
+                    items.push({
+                        "title": "remove",
+                        "iconClass": "icon icon-x",
+                        "func": (ee) =>
+                        {
+                            switch (depType)
+                            {
+                            case "corelib":
+                                gui.serverOps.removeCoreLib(opName, depSrc);
+                                break;
+                            case "lib":
+                                gui.serverOps.removeOpLib(opName, depSrc);
+                                break;
+                            case "commonjs":
+                            case "module":
+                            default:
+                                gui.serverOps.removeOpDependency(opName, depSrc, depType);
+                                break;
+                            }
+                        }
                     });
-                    opLibSelect.addEventListener("pointerleave", (event) =>
+
+                    if (items.length > 0)
                     {
-                        hideToolTip();
-                    });
+                        contextMenu.show({ "items": items, }, event.currentTarget);
+                    }
+
                 });
 
-                document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
+                const panelOptions = {
+                    "opDoc": opDoc,
+                    "libs": libs,
+                    "coreLibs": gui.opDocs.coreLibs,
+                    "user": gui.user,
+                    "canEditOp": canEditOp,
+                    "viewId": this._id
+                };
+
+                if (tabPanel) tabPanel.innerHTML = "";
+                const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
+                depTabs.init();
+
+                if (canEditOp)
                 {
-                    select.classList.add("inactive");
-                });
-            }
-            perf.finish();
-        });
+                    if (portJson && portJson.ports)
+                    {
+                        const buttonCreate = ele.byId(this._id + "_port_create");
+                        if (buttonCreate) buttonCreate.addEventListener("click", () =>
+                        {
+                            subPatchOpUtil.portEditDialog(opName);
+                        });
+
+                        for (let i = 0; i < portJson.ports.length; i++)
+                        {
+                            const p = portJson.ports[i];
+                            if (!p || !p.id) continue;
+
+                            const id = p.id;
+                            const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
+                            if (buttonDelete) buttonDelete.addEventListener("click", () =>
+                            {
+                                subPatchOpUtil.portJsonDelete(opName, id);
+                            });
+
+                            const buttonTitle = ele.byId(this._id + "_port_title_" + id);
+                            if (buttonTitle) buttonTitle.addEventListener("click", () =>
+                            {
+                                subPatchOpUtil.portEditDialog(opName, id, p);
+                            });
+
+                            const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
+                            if (buttonMoveUp) buttonMoveUp.addEventListener("click", () =>
+                            {
+                                subPatchOpUtil.portJsonMove(opName, id, -1);
+                            });
+
+                            const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
+                            if (buttonMoveDown) buttonMoveDown.addEventListener("click", () =>
+                            {
+                                subPatchOpUtil.portJsonMove(opName, id, 1);
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
+                    {
+                        opLibSelect.disabled = true;
+                        opLibSelect.addEventListener("pointerenter", (event) =>
+                        {
+                            showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+                        });
+                        opLibSelect.addEventListener("pointerleave", (event) =>
+                        {
+                            hideToolTip();
+                        });
+                    });
+
+                    document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
+                    {
+                        select.classList.add("inactive");
+                    });
+                }
+                perf.finish();
+            });
+        }, 100);
     }
 }

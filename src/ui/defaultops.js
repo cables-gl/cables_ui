@@ -56,8 +56,12 @@ const defaultOpNames =
 
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 
+    "TriggerNumber": "Ops.Trigger.TriggerNumber",
+    "TriggerString": "Ops.Trigger.TriggerString",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "triggerCounter": "Ops.Trigger.TriggerCounter",
+
+    "StringLength": "Ops.String.StringLength",
     "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v2",
@@ -156,6 +160,27 @@ const defaultOps = {
             "portOut": "Next",
         },
         {
+            "typeFrom": portType.string,
+            "typeTo": portType.trigger,
+            "op": defaultOpNames.TriggerOnChangeString,
+            "portIn": "String",
+            "portOut": "Changed",
+        },
+        {
+            "typeFrom": portType.trigger,
+            "typeTo": portType.string,
+            "op": defaultOpNames.TriggerString,
+            "portIn": "Trigger",
+            "portOut": "Result",
+        },
+        {
+            "typeFrom": portType.trigger,
+            "typeTo": portType.number,
+            "op": defaultOpNames.TriggerNumber,
+            "portIn": "Set",
+            "portOut": "Out Value",
+        },
+        {
             "typeFrom": portType.number,
             "typeTo": portType.trigger,
             "op": defaultOpNames.TriggerOnChangedTrue,
@@ -168,6 +193,13 @@ const defaultOps = {
             "op": defaultOpNames.parseFloat,
             "portIn": "String",
             "portOut": "Number",
+        },
+        {
+            "typeFrom": portType.string,
+            "typeTo": portType.number,
+            "op": defaultOpNames.StringLength,
+            "portIn": "String",
+            "portOut": "Result",
         },
         {
             "typeFrom": portType.array,

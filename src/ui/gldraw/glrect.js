@@ -10,6 +10,11 @@ import GlRectInstancer from "./glrectinstancer.js";
  */
 export default class GlRect extends Events
 {
+    color = vec4.create();
+    colorHover = null;
+    interactive = true;
+    childs = [];
+
     #parent = null;
     #visible = true;
     #hovering = false;
@@ -35,6 +40,9 @@ export default class GlRect extends Events
     #dragStartY = 0;
     #dragOffsetX = 0;
     #dragOffsetY = 0;
+    draggableX = true;
+    draggableY = true;
+    draggableMove = false;
 
     #log = new Logger("GlRect");
 
@@ -46,23 +54,12 @@ export default class GlRect extends Events
     {
         super();
 
-        if (!instancer || !instancer.getIndex)
-            this.#log.warn("no instancer given!");
+        if (!instancer || !instancer.getIndex) this.#log.warn("no instancer given!");
 
-        options = options || {};
         this.#rectInstancer = instancer;
         this.#attrIndex = instancer.getIndex();
-
-        this.childs = [];
-
         this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
-        this.color = vec4.create();
-        this.colorHover = null;
-        this.interactive = true;
-
-        this.draggableX = true;
-        this.draggableY = true;
-        this.draggableMove = false;
+        options = options || {};
 
         if (options.hasOwnProperty("interactive")) this.interactive = options.interactive;
         if (options.parent) this.setParent(options.parent);

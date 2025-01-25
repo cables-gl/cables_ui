@@ -1,6 +1,7 @@
 import { Logger } from "cables-shared-client";
-import ModalDialog from "../dialogs/modaldialog.js";
+import platformLib from "platform";
 import { platform } from "../platform.js";
+import ModalDialog from "../dialogs/modaldialog.js";
 
 export default class Api
 {

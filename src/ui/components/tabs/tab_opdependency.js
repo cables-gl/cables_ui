@@ -66,6 +66,10 @@ export default class OpDependencyTab extends Tab
                 if (!depSrc) return;
                 submitEle.innerText = "working...";
                 submitEle.disabled = true;
+
+                let exportName = null;
+                if (exportNameEle) exportName = exportNameEle.value;
+
                 if (fileInput && fileInput.files && fileInput.files.length > 0)
                 {
                     const filename = fileInput.files[0].name;
@@ -73,7 +77,7 @@ export default class OpDependencyTab extends Tab
                     {
                         if (!err)
                         {
-                            gui.serverOps.addOpDependency(opName, "./" + newFilename, depType, () =>
+                            gui.serverOps.addOpDependency(opName, "./" + newFilename, depType, exportName, () =>
                             {
                                 submitEle.innerText = "Add";
                                 submitEle.disabled = false;
@@ -83,8 +87,6 @@ export default class OpDependencyTab extends Tab
                 }
                 else
                 {
-                    let exportName = null;
-                    if (exportNameEle) exportName = exportNameEle.value;
                     gui.serverOps.addOpDependency(opName, depSrc, depType, exportName, () =>
                     {
                         submitEle.innerText = "Add";
