@@ -579,8 +579,6 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 "type": type
             };
 
-            _log.log(port);
-
             try
             {
                 if (eleAddUiAttribs.value)
@@ -733,8 +731,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                             gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
                             gui.corePatch().clearSubPatchCache(newOp.patchId.get());
 
-                            // setTimeout(() =>
-                            // {
                             if (refNewOp)
                             {
                                 gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId), () =>
@@ -746,7 +742,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
                             if (options.next)options.next();
                             gui.savingTitleAnimEnd();
-                            // }, 100);
                         },
                         { "refOldOp": newOp });
                 }

@@ -7,8 +7,8 @@ import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import text from "./text.js";
 
-CABLES.Op.unLinkTempReLinkP1 = null;
-CABLES.Op.unLinkTempReLinkP2 = null;
+CABLES.OpUnLinkTempReLinkP1 = null;
+CABLES.OpUnLinkTempReLinkP2 = null;
 
 export default function extendCoreOp()
 {
@@ -47,8 +47,8 @@ export default function extendCoreOp()
             this.oldLinks.length = 0;
         }
 
-        CABLES.Op.unLinkTempReLinkP1 = null;
-        CABLES.Op.unLinkTempReLinkP2 = null;
+        CABLES.OpUnLinkTempReLinkP1 = null;
+        CABLES.OpUnLinkTempReLinkP2 = null;
     };
 
     CABLES.Op.prototype.countFittingPorts = function (otherPort)
@@ -104,8 +104,8 @@ export default function extendCoreOp()
         this.shakeLink = null;
         this.oldLinks = [];
 
-        CABLES.Op.unLinkTempReLinkP1 = null;
-        CABLES.Op.unLinkTempReLinkP2 = null;
+        CABLES.OpUnLinkTempReLinkP1 = null;
+        CABLES.OpUnLinkTempReLinkP2 = null;
 
         if (tryRelink)
         {
@@ -122,8 +122,8 @@ export default function extendCoreOp()
             {
                 if (this.getFirstPortIn().getType() == this.getFirstPortOut().getType() && this.getFirstPortIn().links[0])
                 {
-                    CABLES.Op.unLinkTempReLinkP1 = this.getFirstPortIn().links[0].getOtherPort(this.getFirstPortIn());
-                    CABLES.Op.unLinkTempReLinkP2 = this.getFirstPortOut().links[0].getOtherPort(this.getFirstPortOut());
+                    CABLES.OpUnLinkTempReLinkP1 = this.getFirstPortIn().links[0].getOtherPort(this.getFirstPortIn());
+                    CABLES.OpUnLinkTempReLinkP2 = this.getFirstPortOut().links[0].getOtherPort(this.getFirstPortOut());
                 }
             }
         }
@@ -151,12 +151,12 @@ export default function extendCoreOp()
 
         this.unLink();
 
-        if (CABLES.Op.unLinkTempReLinkP1 && CABLES.Op.unLinkTempReLinkP2)
+        if (CABLES.OpUnLinkTempReLinkP1 && CABLES.OpUnLinkTempReLinkP2)
             this.shakeLink = this.patch.link(
-                CABLES.Op.unLinkTempReLinkP1.op,
-                CABLES.Op.unLinkTempReLinkP1.getName(),
-                CABLES.Op.unLinkTempReLinkP2.op,
-                CABLES.Op.unLinkTempReLinkP2.getName()
+                CABLES.OpUnLinkTempReLinkP1.op,
+                CABLES.OpUnLinkTempReLinkP1.getName(),
+                CABLES.OpUnLinkTempReLinkP2.op,
+                CABLES.OpUnLinkTempReLinkP2.getName()
             );
     };
 

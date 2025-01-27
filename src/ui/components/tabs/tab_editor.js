@@ -515,6 +515,10 @@ export default class EditorTab extends Events
                     "content": "op.setUiError(\"id\", \"text or null\");",
                     "name": "op.setUiError",
                 },
+                {
+                    "content": "op.patch.isEditorMode()",
+                    "name": "op.patch.isEditorMode",
+                },
 
             );
             snippetManager.register(snippets, "javascript");
