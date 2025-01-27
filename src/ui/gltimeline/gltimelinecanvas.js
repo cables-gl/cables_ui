@@ -26,7 +26,7 @@ export default class glTimelineCanvas extends GlCanvas
 
         this.patch.cgl.on("resize", () =>
         {
-            console.log("resized,.,...", this.patch.cgl.canvasWidth, this.patch.cgl.canvasHeight);
+            // console.log("resized,.,...", this.patch.cgl.canvasWidth, this.patch.cgl.canvasHeight);
         });
 
         this.glTimeline = new GlTimeline(this.cgl);

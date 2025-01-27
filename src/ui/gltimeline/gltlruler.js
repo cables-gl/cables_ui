@@ -23,8 +23,8 @@ export default class glTlRuler extends Events
         this._offset = 0;
 
         this._glRectBg = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this._glRectBg.setSize(21000, this._height);
-        this._glRectBg.setColor(0.3, 0.3, 0.3, 1);
+        this._glRectBg.setSize(222, this.height);
+        this._glRectBg.setColor(0.5, 0.3, 0.3, 1);
         this._glRectBg.setPosition(0, this.y);
 
         // this._glRectBg.setColorHover(0.4,0.4,0.4)
@@ -223,5 +223,12 @@ export default class glTlRuler extends Events
                 titleCounter++;
             }
         }
+    }
+
+    setWidth(w)
+    {
+        this.width = w;
+        this._glRectBg.setSize(this.width, this.height);
+
     }
 }

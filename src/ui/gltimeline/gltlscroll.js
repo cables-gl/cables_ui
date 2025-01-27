@@ -9,6 +9,7 @@ export default class glTlScroll extends Events
 
     /** @type {GlRect} */
     #rectBar = null;
+    #width = 222;
 
     /**
      * @param {any} GlTimeline
@@ -21,10 +22,11 @@ export default class glTlScroll extends Events
         this.height = 24;
 
         this.#mainRect = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#mainRect.setColor(0.5, 0.3, 0.3, 1);
+        this.#mainRect.setColor(0.3, 0.5, 0.3, 1);
+        this.#mainRect.setSize(this.#width, this.height);
 
         this.#rectBar = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#rectBar.setSize(200, this.height);
+        this.#rectBar.setSize(222, this.height);
         this.#rectBar.setColor(0.3, 0.9, 0.3, 1);
         this.#rectBar.setParent(this.#mainRect);
     }
@@ -36,6 +38,12 @@ export default class glTlScroll extends Events
     setPosition(x, y)
     {
         this.#mainRect.setPosition(x, y);
+    }
+
+    setWidth(w)
+    {
+        this.#width = w;
+        this.#mainRect.setSize(this.#width, this.height);
     }
 
     update()

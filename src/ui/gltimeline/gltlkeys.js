@@ -13,6 +13,18 @@ import GlRect from "../gldraw/glrect.js";
 export default class glTlKeys extends Events
 {
 
+    /** @type {Anim} */
+    #anim = null;
+
+    /** @type {GlTimeline} */
+    #glTl = null;
+
+    /** @type {Array<GlRect} */
+    #keyRect = [];
+
+    /** @type {GlRect} */
+    #parentRect = null;
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -21,11 +33,10 @@ export default class glTlKeys extends Events
     constructor(glTl, anim, parentRect)
     {
         super();
-        this._anim = anim;
-        this._glTl = glTl;
-        this._parentRect = parentRect;
+        this.#anim = anim;
+        this.#glTl = glTl;
+        this.#parentRect = parentRect;
 
-        this.keys = [];
         this.init();
     }
 
@@ -33,23 +44,23 @@ export default class glTlKeys extends Events
     {
         this.dispose();
 
-        for (let i = 0; i < this._anim.keys.length; i++)
+        for (let i = 0; i < this.#anim.keys.length; i++)
         {
-            const kr = this._glTl.rects.createRect({ "draggable": true });
+            const kr = this.#glTl.rects.createRect({ "draggable": true });
             kr.setSize(10, 10);
             kr.setShape(6);
-            kr.setParent(this._parentRect);
+            kr.setParent(this.#parentRect);
             kr.setColor(1, 1, 1, 1);
-            kr.setPosition(this._anim.keys[i].time * 12, 10, 0.1);
+            kr.setPosition(this.#anim.keys[i].time * 12, 10, 0.1);
 
-            this.keys.push(kr);
+            this.#keyRect.push(kr);
         }
     }
 
     dispose()
     {
-        for (let i = 0; i < this.keys.length; i++) this.keys[i].dispose();
-        this.keys = [];
+        for (let i = 0; i < this.#keyRect.length; i++) this.#keyRect[i].dispose();
+        this.#keyRect = [];
     }
 
 }

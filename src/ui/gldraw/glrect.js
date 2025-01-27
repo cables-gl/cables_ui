@@ -233,7 +233,7 @@ export default class GlRect extends Events
         this.#parent = p;
         p.addChild(this);
         this.#visible = p.visible;
-        this.setPosition(this.#x, this.#y, this.#z);
+        this.updateParentPosition();
     }
 
     get texture()
