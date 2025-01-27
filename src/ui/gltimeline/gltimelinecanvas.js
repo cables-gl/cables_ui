@@ -24,6 +24,11 @@ export default class glTimelineCanvas extends GlCanvas
         this.activityHigh();
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
 
+        this.patch.cgl.on("resize", () =>
+        {
+            console.log("resized,.,...", this.patch.cgl.canvasWidth, this.patch.cgl.canvasHeight);
+        });
+
         this.glTimeline = new GlTimeline(this.cgl);
     }
 

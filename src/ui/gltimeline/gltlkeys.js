@@ -52,8 +52,4 @@ export default class glTlKeys extends Events
         this.keys = [];
     }
 
-    setIndex(i)
-    {
-        // this._glRectBg.setPosition(0, i * 31 + 50);
-    }
 }

@@ -4,6 +4,7 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanim.js";
 import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
+import glTlScroll from "./gltlscroll.js";
 
 /**
  * gl timeline
@@ -14,6 +15,9 @@ import { gui } from "../gui.js";
  */
 export default class GlTimeline extends Events
 {
+
+    /** @type {Array<glTlAnim>} */
+    #tlAnims = [];
 
     /**
      * @param {CABLES.CGState} cgl
@@ -31,23 +35,18 @@ export default class GlTimeline extends Events
          */
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
 
-        /**
-         * @type {GlRectInstancer}
-         */
         this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
-        /**
-         * @type {glTlRuler}
-         */
         this.ruler = new glTlRuler(this);
-        this.tlAnims = [];
+
+        this.scroll = new glTlScroll(this);
 
         this._canvasMouseDown = false;
         this.init();
 
         gui.on("opSelectChange", () =>
         {
-            for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].update();
+            for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
 
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
@@ -101,6 +100,7 @@ export default class GlTimeline extends Events
         this._zoom = CABLES.clamp(this._zoom, 0.1, 10000000);
         console.log("zoom", this._zoom, this.timeToPixel(1));
         this.ruler.update();
+        this.scroll.update();
     }
 
     get offsetSeconds()
@@ -125,8 +125,8 @@ export default class GlTimeline extends Events
 
     init()
     {
-        for (let i = 0; i < this.tlAnims.length; i++) this.tlAnims[i].dispose();
-        this.tlAnims = [];
+        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
+        this.#tlAnims = [];
 
         const p = gui.corePatch();
         let count = 0;
@@ -139,15 +139,39 @@ export default class GlTimeline extends Events
                 {
                     console.log(op.portsIn[j].anim);
                     const a = new glTlAnim(this, op.portsIn[j].anim, op, op.portsIn[j]);
-                    this.tlAnims.push(a);
-                    a.setIndex(count);
+                    this.#tlAnims.push(a);
+                    // a.setIndex(count);
                     count++;
                 }
             }
         }
+        this.setPositions();
+    }
+
+    setPositions()
+    {
+        let posy = 0;
+
+        this.scroll.setPosition(0, posy);
+        posy += this.scroll.height;
+
+        this.ruler.setPosition(0, posy);
+        posy += this.ruler.height;
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+        {
+            this.#tlAnims[i].setPosition(0, posy);
+            posy += this.#tlAnims[i].height;
+        }
+
     }
 
     dispose()
+    {
+
+    }
+
+    updateSize()
     {
 
     }
