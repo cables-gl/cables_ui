@@ -31,6 +31,12 @@ export default class GlTimeline extends Events
     /** @type {Array<glTlAnim>} */
     #tlAnims = [];
 
+    fps = 30;
+    duration = 120;
+    bpm = 120;
+
+    titleSpace = 150;
+
     #zoom = 20;
     #canvasMouseDown = false;
     #paused = false;
@@ -68,17 +74,22 @@ export default class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         cgl.addEventListener("resize", this.resize.bind(this));
+
+        gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
+    }
+
+    get offset()
+    {
+        return this.ruler.offset;
     }
 
     resize()
     {
-        // console.log("resize.....");
-
-        this.scroll.setWidth(this.#cgl.canvasWidth);
-        this.ruler.setWidth(this.#cgl.canvasWidth);
+        this.scroll.setWidth(this.#cgl.canvasWidth - this.titleSpace);
+        this.ruler.setWidth(this.#cgl.canvasWidth - this.titleSpace);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
-
+        this.updateAllElements();
     }
 
     _onCanvasMouseMove(e)
@@ -124,14 +135,9 @@ export default class GlTimeline extends Events
 
         this.#zoom *= delta;
         this.#zoom = CABLES.clamp(this.#zoom, 0.1, 10000000);
-        console.log("zoom", this.#zoom, this.timeToPixel(1));
-        this.ruler.update();
-        this.scroll.update();
-    }
 
-    get offsetSeconds()
-    {
-        return 0;
+        this.pixelPerSecond = this.timeToPixel(1);
+        this.updateAllElements();
     }
 
     get width()
@@ -139,14 +145,14 @@ export default class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
-    pixelToTime()
-    {
-
-    }
-
     timeToPixel(t)
     {
         return t * this.#zoom * 12;
+    }
+
+    pixelToTime(p)
+    {
+        return p / this.timeToPixel(1);
     }
 
     init()
@@ -178,10 +184,10 @@ export default class GlTimeline extends Events
     {
         let posy = 0;
 
-        this.scroll.setPosition(0, posy);
+        this.scroll.setPosition(this.titleSpace, posy);
         posy += this.scroll.height;
 
-        this.ruler.setPosition(0, posy);
+        this.ruler.setPosition(this.titleSpace, posy);
         posy += this.ruler.height;
 
         for (let i = 0; i < this.#tlAnims.length; i++)
@@ -217,5 +223,21 @@ export default class GlTimeline extends Events
         this.texts.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
+    }
+
+    updateAllElements()
+    {
+        this.ruler.update();
+        this.scroll.update();
+        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+
+    }
+
+    onConfig(cfg)
+    {
+        this.fps = cfg.fps;
+        this.duration = cfg.duration;
+        this.bpm = cfg.bpm;
+        this.updateAllElements();
     }
 }

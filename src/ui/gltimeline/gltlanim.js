@@ -52,7 +52,7 @@ export default class glTlAnim extends Events
         this.#glTl = glTl;
 
         this.#glRectBg = this.#glTl.rects.createRect({ "draggable": false });
-        this.#glRectBg.setSize(150, this.height);
+        this.#glRectBg.setSize(this.#glTl.titleSpace, this.height);
         this.#glRectBg.setColor(0, 0, 0);
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
@@ -79,6 +79,7 @@ export default class glTlAnim extends Events
     update()
     {
         this.updateColor();
+        this.#keys.update();
     }
 
     updateColor()

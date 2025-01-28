@@ -20,7 +20,7 @@ export default class glTlKeys extends Events
     #glTl = null;
 
     /** @type {Array<GlRect} */
-    #keyRect = [];
+    #keyRects = [];
 
     /** @type {GlRect} */
     #parentRect = null;
@@ -40,27 +40,39 @@ export default class glTlKeys extends Events
         this.init();
     }
 
+    update()
+    {
+        if (this.#keyRects.length != this.#anim.keys.length) return this.init();
+
+        for (let i = 0; i < this.#keyRects.length; i++)
+        {
+            const kr = this.#keyRects[i];
+
+            console.log(this.#anim.keys[i].time);
+            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time + this.#glTl.offset), 10, 0.1);
+        }
+
+    }
+
     init()
     {
         this.dispose();
-
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
             const kr = this.#glTl.rects.createRect({ "draggable": true });
-            kr.setSize(10, 10);
             kr.setShape(6);
-            kr.setParent(this.#parentRect);
+            kr.setSize(10, 10);
             kr.setColor(1, 1, 1, 1);
-            kr.setPosition(this.#anim.keys[i].time * 12, 10, 0.1);
-
-            this.#keyRect.push(kr);
+            kr.setParent(this.#parentRect);
+            this.#keyRects.push(kr);
         }
+        this.update();
     }
 
     dispose()
     {
-        for (let i = 0; i < this.#keyRect.length; i++) this.#keyRect[i].dispose();
-        this.#keyRect = [];
+        for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
+        this.#keyRects = [];
     }
 
 }

@@ -91,7 +91,6 @@ export default function TimeLineGui()
         "x": 0, "y": 0, "width": overviewAreaResizeWidth, "height": 30
     });
 
-
     // -- resize handle left
 
     let oldEndSeconds = 0;
@@ -115,7 +114,6 @@ export default function TimeLineGui()
         },
         function () {}
     );
-
 
     // -- resize handle right
 
@@ -175,7 +173,6 @@ export default function TimeLineGui()
     {
         return fps;
     };
-
 
     function getFrame(time)
     {
@@ -250,7 +247,6 @@ export default function TimeLineGui()
         // }
         // if(newanim) anims.push(newanim);
     };
-
 
     this.removeAnim = function (an)
     {
@@ -346,7 +342,6 @@ export default function TimeLineGui()
             ele.hide(elTimelineTitle);
         }
 
-
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
             anim.addKey(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
@@ -433,7 +428,6 @@ export default function TimeLineGui()
     const zeroLine2 = paper.path("M 0 0 L 111000 0");
     // zeroLine2.attr({ stroke: "#999", "stroke-width": 1});
     zeroLine2.node.classList.add("timeline-timesteplines");
-
 
     this.updateViewBox = function ()
     {
@@ -537,7 +531,6 @@ export default function TimeLineGui()
                 }
                 timePoints.push(1000);
 
-
                 for (let i = 0; i < timePoints.length; i++)
                 {
                     // var t=start+i*width/numSteps;
@@ -566,7 +559,6 @@ export default function TimeLineGui()
                     ani.keys[ik].updateCircle(ani == anim);
                     if (ani.keys[ik].onChange === null) ani.keys[ik].onChange = updateKeyLineDelayed;
                 }
-
 
                 // if(ani.keyLine)
                 //     if(ani==anim) ani.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
@@ -691,12 +683,10 @@ export default function TimeLineGui()
             spacePressed = true;
             break;
 
-
         case 72: // h
             self.scaleHeight();
             self.scaleWidth();
             break;
-
 
         case 74: // j
             self.jumpKey(-1);
@@ -706,8 +696,6 @@ export default function TimeLineGui()
             break;
 
         case 77: // m move key
-
-
 
             new ModalDialog({
                 "prompt": true,
@@ -742,10 +730,7 @@ export default function TimeLineGui()
                     }
                 } });
 
-
-
             break;
-
 
         case 65: // a
             if (e.metaKey || e.ctrlKey) self.selectAllKeys();
@@ -755,7 +740,6 @@ export default function TimeLineGui()
         case 68: // d
             this._log.log("anim.keys", anim.keys);
             break;
-
 
         case 37: // left
             let num = 1;
@@ -784,7 +768,6 @@ export default function TimeLineGui()
 
         case 34: // pg down
             break;
-
 
         case 66: // b BEGIN
             if (self._loopBegin == self.getTime() || self._loopBegin > self._loopEnd)
@@ -1040,7 +1023,6 @@ export default function TimeLineGui()
         return event;
     };
 
-
     this.setSelectedKeysEasing = function (e)
     {
         for (const anii in anims)
@@ -1057,7 +1039,6 @@ export default function TimeLineGui()
         updateKeyLine();
         self.updateEasingsSelect();
     };
-
 
     // function toggleMultiGraphKeyDisplay(e)
     // {
@@ -1082,13 +1063,11 @@ export default function TimeLineGui()
     //     updateKeyLine();
     // }
 
-
     ele.byId("keymovemode").addEventListener("click", toggleMoveMode);
     ele.byId("keyscaleheight").addEventListener("click", this.scaleHeight);
     ele.byId("keyscalelength").addEventListener("click", this.scaleHeight);
     ele.byId("keyscalewidth").addEventListener("click", this.scaleWidth);
     ele.byId("timelinetime").addEventListener("click", this.timeLineTimeClick);
-
 
     ele.byId("keyframe_previous").addEventListener("click", () => { this.jumpKey(-1); });
     ele.byId("keyframe_next").addEventListener("click", () => { this.jumpKey(1); });
@@ -1099,7 +1078,6 @@ export default function TimeLineGui()
         // else
         gui.metaKeyframesShowAnim();
     });
-
 
     ele.byId("loop").addEventListener("click", this.toggleLoop);
     ele.byId("centercursor").addEventListener("click", this.centerCursor);
@@ -1114,7 +1092,6 @@ export default function TimeLineGui()
             updateKeyLine();
         }
     });
-
 
     let startMouseDown = 0;
     ele.byId("timeline").addEventListener("pointerdown", function (event)
@@ -1176,7 +1153,6 @@ export default function TimeLineGui()
         isScrollingOverview = false;
     });
 
-
     function scrollTime(e)
     {
         if (e.buttons == 1 || e.buttons == 2)
@@ -1211,7 +1187,6 @@ export default function TimeLineGui()
     ele.byId("timelineprogress").addEventListener("pointerleave", hideInfo);
     ele.byId("timelinetime").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_time); });
     ele.byId("timelinetime").addEventListener("pointerleave", hideInfo);
-
 
     ele.byId("overviewtimeline").addEventListener("mousemove", function (e)
     {
@@ -1290,7 +1265,6 @@ export default function TimeLineGui()
             return;
         }
 
-
         const oldTime = self.getTimeLeft();
         CABLES.ANIM.TIMESCALE += CABLES.ANIM.TIMESCALE * delta * 0.01;
         viewBox.x = oldTime * CABLES.ANIM.TIMESCALE;
@@ -1336,7 +1310,6 @@ export default function TimeLineGui()
         let step = 1;
         const start = (viewBox.x / CABLES.ANIM.TIMESCALE);
         const width = viewBox.w / CABLES.ANIM.TIMESCALE;
-
 
         if (width > 1.5)step = 5;
         if (width > 5.5)step = 10;
@@ -1557,7 +1530,6 @@ export default function TimeLineGui()
                 "fill-opacity": 0.1
             });
 
-
             if (!enabled) return;
             let count = 0;
 
@@ -1771,7 +1743,6 @@ export default function TimeLineGui()
                 gui.emitEvent("timelineControl", "setLength", projectLength);
             } });
     };
-
 
     setTimeout(() =>
     {
