@@ -3,6 +3,7 @@
  */
 
 import { portType } from "./core_constants.js";
+import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import text from "./text.js";
@@ -10,6 +11,9 @@ import text from "./text.js";
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
+/**
+ * @extends {CABLES.Op}
+ */
 export default function extendCoreOp()
 {
     CABLES.Op.prototype.initUi = function ()
@@ -373,18 +377,31 @@ export default function extendCoreOp()
             }
         }
 
+        let isWebGpu = this.objName.indexOf(defaultOps.prefixes.webgpu) == 0;
+
         this.setUiError("wrongstride", null);
+        this.setUiError("webglgpu", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
-            if (this.portsIn[i].type == portType.array && this.portsIn[i].links.length && this.portsIn[i].links[0])
+            if (this.portsIn[i].links.length && this.portsIn[i].links[0])
             {
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-                if (
-                    otherPort.uiAttribs.stride != undefined &&
-                    this.portsIn[i].uiAttribs.stride != undefined &&
-                    otherPort.uiAttribs.stride != this.portsIn[i].uiAttribs.stride)
+
+                if (isWebGpu && otherPort.op.objName.indexOf(defaultOps.prefixes.webgl) == 0)
                 {
-                    this.setUiError("wrongstride", "Port \"" + this.portsIn[i].name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + this.portsIn[i].uiAttribs.stride, 1);
+                    this.setUiError("webglgpu", "mixing webgl/webgpu ops: " + otherPort.op.objName, 1);
+                }
+
+                if (this.portsIn[i].type == portType.array)
+                {
+
+                    if (
+                        otherPort.uiAttribs.stride != undefined &&
+                        this.portsIn[i].uiAttribs.stride != undefined &&
+                        otherPort.uiAttribs.stride != this.portsIn[i].uiAttribs.stride)
+                    {
+                        this.setUiError("wrongstride", "Port \"" + this.portsIn[i].name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + this.portsIn[i].uiAttribs.stride, 1);
+                    }
                 }
             }
         }
