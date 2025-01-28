@@ -5,6 +5,7 @@ import glTlAnim from "./gltlanim.js";
 import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
+import GlRect from "../gldraw/glrect.js";
 
 /**
  * gl timeline
@@ -20,7 +21,7 @@ export default class GlTimeline extends Events
     texts = null;
 
     /** @type {GlRectInstancer} */
-    rects = null;
+    #rects = null;
 
     /** @type {glTlRuler} */
     ruler = null;
@@ -31,9 +32,13 @@ export default class GlTimeline extends Events
     /** @type {Array<glTlAnim>} */
     #tlAnims = [];
 
+    /** @type {GlRect} */
+    #glRectCursor;
+
     fps = 30;
     duration = 120;
     bpm = 120;
+    displayUnits = "Seconds";
 
     titleSpace = 150;
 
@@ -56,11 +61,16 @@ export default class GlTimeline extends Events
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
 
-        this.rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+        this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
 
         this.scroll = new glTlScroll(this);
+
+        this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
+        this.#glRectCursor.setSize(1, cgl.canvasHeight);
+        this.#glRectCursor.setColor(0, 1, 1, 1);
+        this.#glRectCursor.setPosition(0, 0);
 
         this.init();
 
@@ -76,10 +86,17 @@ export default class GlTimeline extends Events
         cgl.addEventListener("resize", this.resize.bind(this));
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
+        this.updateAllElements();
+    }
+
+    get rects()
+    {
+        return this.#rects;
     }
 
     get offset()
     {
+        if (!this.ruler) return 0;
         return this.ruler.offset;
     }
 
@@ -98,7 +115,7 @@ export default class GlTimeline extends Events
 
         let x = e.offsetX;
         let y = e.offsetY;
-        this.rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
+        this.#rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
         if (this.mouseDown)
         {
 
@@ -117,13 +134,13 @@ export default class GlTimeline extends Events
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
-        this.rects.mouseDown(e);
+        this.#rects.mouseDown(e);
         this.mouseDown = true;
     }
 
     _onCanvasMouseUp(e)
     {
-        this.rects.mouseUp(e);
+        this.#rects.mouseUp(e);
         this.mouseDown = false;
     }
 
@@ -143,6 +160,11 @@ export default class GlTimeline extends Events
     get width()
     {
         return this.#cgl.canvasWidth;
+    }
+
+    timeToPixelScreen(t)
+    {
+        return this.timeToPixel(t) + this.titleSpace - this.timeToPixel(this.offset);
     }
 
     timeToPixel(t)
@@ -214,15 +236,21 @@ export default class GlTimeline extends Events
      */
     render(resX, resY)
     {
+        this.udpateCursor();
         this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
         this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
-        this.#cgl.pushDepthTest(false);
+        this.#cgl.pushDepthTest(true);
 
-        this.rects.render(resX, resY, -1, 1, resX / 2);
+        this.#rects.render(resX, resY, -1, 1, resX / 2);
         this.texts.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
+    }
+
+    udpateCursor()
+    {
+        this.#glRectCursor.setPosition(this.timeToPixelScreen(gui.corePatch().timer.getTime()), 0, -0.3);
     }
 
     updateAllElements()
@@ -230,6 +258,8 @@ export default class GlTimeline extends Events
         this.ruler.update();
         this.scroll.update();
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+        this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
+        this.udpateCursor();
 
     }
 
@@ -238,6 +268,7 @@ export default class GlTimeline extends Events
         this.fps = cfg.fps;
         this.duration = cfg.duration;
         this.bpm = cfg.bpm;
+        this.displayUnits = cfg.displayUnits;
         this.updateAllElements();
     }
 }

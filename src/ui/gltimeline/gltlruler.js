@@ -20,9 +20,6 @@ export default class glTlRuler extends Events
         super();
         this._log = new Logger("glTlRuler");
         this.#glTl = glTl;
-        this._units = 0;
-        this._fps = 30;
-        this._bpm = 180;
         this.y = 30;
         this.height = 50;
         this._offset = 0;
@@ -34,7 +31,6 @@ export default class glTlRuler extends Events
 
         this._glRectBg.on("drag", (r, ox, oy) =>
         {
-            this._log.log("rag", this._offset);
             this._offset = ox / 100;
             this.#glTl.updateAllElements();
         });
@@ -95,7 +91,7 @@ export default class glTlRuler extends Events
         let pixel1 = this.#glTl.timeToPixel(1);
         let titleCounter = 0;
         let offset = -Math.floor(this._offset);
-        let offsetPixel = this.#glTl.timeToPixel(this._offset % 1);
+        let offsetPixel = this.#glTl.timeToPixelScreen(this._offset % 1);
 
         for (let i = 0; i < this.titles.length; i++)
         {
@@ -103,17 +99,17 @@ export default class glTlRuler extends Events
             this.titles[i].setParentRect(null);
         }
 
-        const oneframePixel = this.#glTl.timeToPixel(1 / this._fps);
+        const oneframePixel = this.#glTl.timeToPixel(1 / this.#glTl.fps);
         if (oneframePixel >= 5)
         {
             for (let i = 0; i < this.markf.length; i++)
             {
                 const mr = this.markf[i];
-                const t = offset + i * (1 / this._fps);
-                const x = this.#glTl.timeToPixel(t) - offsetPixel;
+                const t = offset + i * (1 / this.#glTl.fps);
+                const x = this.#glTl.timeToPixel(t - this._offset);
                 const a = CABLES.map(oneframePixel, 5, 15, 0.04, 0.5);
 
-                mr.setSize(oneframePixel - 1, this._height);
+                mr.setSize(oneframePixel - 1, this.height);
                 mr.setPosition(x, 0);
                 mr.setColor(0.2, 0.2, 0.2, a);
             }
@@ -123,16 +119,16 @@ export default class glTlRuler extends Events
             for (let i = 0; i < this.markf.length; i++)
                 this.markf[i].setSize(0, 0);
         }
-        const bps = this._bpm / 60;
+        const bps = this.#glTl.bpm / 60;
         const onebeatPixel = this.#glTl.timeToPixel(1 / bps - offset);
         for (let i = 0; i < this.markBeats.length; i++)
         {
             const mr = this.markBeats[i];
             const t = offset + i * 1 / bps;
-            const x = this.#glTl.timeToPixel(t) - offsetPixel;
+            const x = this.#glTl.timeToPixel(t - this._offset);
 
-            mr.setSize(onebeatPixel - 2, 8);
-            mr.setPosition(x, 50 - 5);
+            mr.setSize(onebeatPixel - 2, 5);
+            mr.setPosition(x, 0);
 
             let shade = 0.2;
             if (i % 4 == 0)shade = 0;
@@ -148,19 +144,19 @@ export default class glTlRuler extends Events
             let title = null;
             titleCounter %= this.titles.length;
 
-            if (this._units == 0)
+            if (this.#glTl.displayUnits == "Seconds")
             {
                 if (pixel1 > 50)
                 {
                     const t = offset + i * 0.1;
-                    x = this.#glTl.timeToPixel(t) - offsetPixel;
+                    x = this.#glTl.timeToPixel(t - this._offset);
                     if (t % 1 == 0.5)
                     {
-                        h = 15;
+                        h = 20;
                     }
                     if (t % 1 == 0) // full seconds
                     {
-                        h = 20;
+                        h = 15;
                         title = (t - offset) + "s";
                     }
                 }
@@ -212,11 +208,11 @@ export default class glTlRuler extends Events
                 const t = (offset + i);
                 x = this.#glTl.timeToPixel(t) - offsetPixel;
                 h = 20;
-                title = i * this._fps + "f";
+                title = i * this.#glTl.fps + "f";
             }
             mr.setColor(1, 1, 1, 0.4);
             mr.setSize(1, h);
-            mr.setPosition(x, 0);
+            mr.setPosition(x, this.height - h);
 
             if (title && x < this.#glTl.width)
             {

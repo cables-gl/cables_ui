@@ -62,6 +62,7 @@ export default class glTlAnim extends Events
         this.#glRectKeysBg.setParent(this.#glRectBg);
 
         this.#glTitle = new GlText(this.#glTl.texts, op.name + " - " + port.name || "unknown anim");
+        this.#glTitle.setPosition(10, 0);
         this.#glTitle.setParentRect(this.#glRectBg);
 
         this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
