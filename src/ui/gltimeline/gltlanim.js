@@ -56,8 +56,8 @@ export default class glTlAnim extends Events
         this.#glRectBg.setColor(0, 0, 0);
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
-        this.#glRectKeysBg.setSize(this.width, this.height - 1);
-        this.#glRectKeysBg.setPosition(150, 0);
+        this.#glRectKeysBg.setSize(this.width, this.height - 2);
+        this.#glRectKeysBg.setPosition(150, 1);
         this.#glRectKeysBg.setColor(0.2, 0.2, 0.9);
         this.#glRectKeysBg.setParent(this.#glRectBg);
 
@@ -91,7 +91,7 @@ export default class glTlAnim extends Events
         if (gui.patchView.isCurrentOp(this.#op))
         {
             this.#glTitle.setColor(0.5, 1, 1, 1);
-            this.#glRectKeysBg.setColor(0.4, 0.4, 0.4, 0.1);
+            this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
         }
     }
 

@@ -29,8 +29,11 @@ export default class glTlRuler extends Events
         this._glRectBg.setColor(0.5, 0.3, 0.3, 1);
         this._glRectBg.setPosition(0, this.y);
 
-        this._glRectBg.on("drag", (r, ox, oy) =>
+        this._glRectBg.on("drag", (r, ox, oy, button) =>
         {
+
+            console.log("button", button);
+
             this._offset = ox / 100;
             this.#glTl.updateAllElements();
         });

@@ -18,6 +18,16 @@ export default class GlRectInstancer extends Events
     #name = "";
     #needsRebuild = true;
     #needsRebuildReason = "";
+    #cgl;
+    #interactive = true;
+    #needsTextureUpdate = false;
+    #reUploadAttribs = true;
+    allowDragging = false;
+    #debugRenderStyle = 0;
+    doBulkUploads = true;
+    #updateRangesMin = {};
+    #updateRangesMax = {};
+    #bounds = null;
 
     /** @type {Array<GlRect>} */
     #rects = [];
@@ -25,6 +35,38 @@ export default class GlRectInstancer extends Events
     /** @type {Array<Texture>} */
     #textures = [];
 
+    /** @type {GlRect} */
+    #draggingRect = null;
+
+    /** @type {CgShader} */
+    #shader = null;
+
+    /** @type {Geometry} */
+    #geom = null;
+
+    /** @type {Mesh} */
+    #mesh = null;
+
+    #meshAttrPos = null;
+    #meshAttrCol = null;
+    #meshAttrSize = null;
+    #meshAttrDeco = null;
+    #meshAttrTexRect = null;
+    #meshAttrTex = null;
+
+    static DEFAULT_BIGNUM = 999999;
+    static ATTR_TEXRECT = "texRect";
+    static ATTR_CONTENT_TEX = "contentTexture";
+    static ATTR_POS = "instPos";
+    static ATTR_COLOR = "instCol";
+    static ATTR_SIZE = "instSize";
+    static ATTR_DECO = "instDeco";
+
+    /**
+     * Description
+     * @param {CGState} cgl
+     * @param {Object} options
+     */
     constructor(cgl, options)
     {
         super();
@@ -37,69 +79,42 @@ export default class GlRectInstancer extends Events
             throw new Error("[RectInstancer] no cgl");
         }
 
+        this.#cgl = cgl;
         this.#name = options.name || "unknown";
-
-        this._debugRenderStyle = 0;
-        this.doBulkUploads = true;
-
-        this._DEFAULT_BIGNUM = 999999;
-
         this.#num = options.initNum || 5000;
 
-        this._interactive = true;
-        this.allowDragging = false;
-        this._cgl = cgl;
-        this._needsTextureUpdate = false;
-        this._draggingRect = null;
-        this._reUploadAttribs = true;
-        this._updateRangesMin = {};
-        this._updateRangesMax = {};
-        this._bounds = { "minX": this._DEFAULT_BIGNUM, "maxX": -this._DEFAULT_BIGNUM, "minY": this._DEFAULT_BIGNUM, "maxY": -this._DEFAULT_MBIGNUM9, "minZ": this._DEFAULT_BIGNUM, "maxZ": -this._DEFAULT_BIGNUM };
-
-        this._meshAttrPos = null;
-        this._meshAttrCol = null;
-        this._meshAttrSize = null;
-        this._meshAttrDeco = null;
-        this._meshAttrTexRect = null;
-        this._meshAttrTex = null;
+        this.#bounds = { "minX": GlRectInstancer.DEFAULT_BIGNUM, "maxX": -GlRectInstancer.DEFAULT_BIGNUM, "minY": GlRectInstancer.DEFAULT_BIGNUM, "maxY": -GlRectInstancer.DEFAULT_BIGNUM, "minZ": GlRectInstancer.DEFAULT_BIGNUM, "maxZ": -GlRectInstancer.DEFAULT_BIGNUM };
 
         this._setupAttribBuffers();
 
-        this.ATTR_TEXRECT = "texRect";
-        this.ATTR_CONTENT_TEX = "contentTexture";
-        this.ATTR_POS = "instPos";
-        this.ATTR_COLOR = "instCol";
-        this.ATTR_SIZE = "instSize";
-        this.ATTR_DECO = "instDeco";
+        this.#shader = new CGL.Shader(cgl, "rectinstancer " + this.#name);
+        this.#shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
+        this.#shader.ignoreMissingUniforms = true;
 
-        this._shader = new CGL.Shader(cgl, "rectinstancer " + this.#name);
-        this._shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
-        this._shader.ignoreMissingUniforms = true;
+        this._uniTime = new CGL.Uniform(this.#shader, "f", "time", 0);
+        this._uniZoom = new CGL.Uniform(this.#shader, "f", "zoom", 0);
+        this._uniResX = new CGL.Uniform(this.#shader, "f", "resX", 0);
+        this._uniResY = new CGL.Uniform(this.#shader, "f", "resY", 0);
+        this._uniscrollX = new CGL.Uniform(this.#shader, "f", "scrollX", 0);
+        this._uniscrollY = new CGL.Uniform(this.#shader, "f", "scrollY", 0);
+        this._unimsdfUnit = new CGL.Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
+        this._uniTexture = new CGL.Uniform(this.#shader, "t", "tex", 0);
 
-        this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
-        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
-        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
-        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
-        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
-        this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
-        this._unimsdfUnit = new CGL.Uniform(this._shader, "f", "msdfUnit", 8 / 1024);
-        this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
+        this.#geom = new CGL.Geometry("rectinstancer " + this.#name);
+        this.#geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
+        this.#geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
+        this.#geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
 
-        this._geom = new CGL.Geometry("rectinstancer " + this.#name);
-        this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
-        this._geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
-        this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
-
-        if (this._cgl.glVersion == 1) this._shader.enableExtension("GL_OES_standard_derivatives");
-        this._mesh = new CGL.Mesh(cgl, this._geom);
-        this._mesh.numInstances = this.#num;
+        if (this.#cgl.glVersion == 1) this.#shader.enableExtension("GL_OES_standard_derivatives");
+        this.#mesh = new CGL.Mesh(cgl, this.#geom);
+        this.#mesh.numInstances = this.#num;
 
         this.clear();
     }
 
-    set interactive(i) { this._interactive = i; }
+    set interactive(i) { this.#interactive = i; }
 
-    get interactive() { return this._interactive; }
+    get interactive() { return this.#interactive; }
 
     dispose()
     {
@@ -111,13 +126,13 @@ export default class GlRectInstancer extends Events
         {
             const perf = gui.uiProfiler.start("[glRectInstancer] recalcBounds");
 
-            const defaultMin = this._DEFAULT_BIGNUM;
-            const defaultMax = -this._DEFAULT_BIGNUM;
+            const defaultMin = GlRectInstancer.DEFAULT_BIGNUM;
+            const defaultMax = -GlRectInstancer.DEFAULT_BIGNUM;
             this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
             for (let i = 0; i < this.#rects.length; i++)
             {
                 if (!this.#rects[i].visible) continue;
-                if (this.#rects[i].x == this._bounds.minX && this.#rects[i].y == this._bounds.minY && this.#rects[i].w == this._bounds.maxX - this._bounds.minX && this.#rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
+                if (this.#rects[i].x == this.#bounds.minX && this.#rects[i].y == this.#bounds.minY && this.#rects[i].w == this.#bounds.maxX - this.#bounds.minX && this.#rects[i].h == this.#bounds.maxY - this.#bounds.minY) continue;
 
                 const x = this.#rects[i].x || 0;
                 const y = this.#rects[i].y || 0;
@@ -139,8 +154,8 @@ export default class GlRectInstancer extends Events
             perf.finish();
         }
 
-        this._bounds = this._newBounds;
-        return this._bounds;
+        this.#bounds = this._newBounds;
+        return this.#bounds;
     }
 
     getDebug()
@@ -196,17 +211,17 @@ export default class GlRectInstancer extends Events
 
     isDragging()
     {
-        return this._draggingRect != null;
+        return this.#draggingRect != null;
     }
 
     _setupTextures()
     {
-        this._needsTextureUpdate = false;
+        this.#needsTextureUpdate = false;
         this.#textures.length = 0;
         let count = 0;
 
-        let minIdx = this._DEFAULT_BIGNUM;
-        let maxIdx = -this._DEFAULT_BIGNUM;
+        let minIdx = GlRectInstancer.DEFAULT_BIGNUM;
+        let maxIdx = -GlRectInstancer.DEFAULT_BIGNUM;
 
         for (let i = 0; i < this.#rects.length; i++)
         {
@@ -255,16 +270,16 @@ export default class GlRectInstancer extends Events
             }
         }
 
-        this._mesh.setAttributeRange(this._meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
+        this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
     }
 
     _bindTextures()
     {
         for (let i = 0; i < 4; i++)
             if (this.#textures[0])
-                this._cgl.setTexture(i, this.#textures[0].texture.tex);
+                this.#cgl.setTexture(i, this.#textures[0].texture.tex);
 
-        if (this.#textures[0]) this._cgl.setTexture(0, this.#textures[0].texture.tex);
+        if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
     }
 
     /**
@@ -296,35 +311,35 @@ export default class GlRectInstancer extends Events
 
         if (this.doBulkUploads)
         {
-            if (this._updateRangesMin[this.ATTR_POS] != this._DEFAULT_BIGNUM)
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_POS] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
-                this._resetAttrRange(this.ATTR_POS);
+                this.#mesh.setAttributeRange(this.#meshAttrPos, this._attrBuffPos, this.#updateRangesMin[GlRectInstancer.ATTR_POS], this.#updateRangesMax[GlRectInstancer.ATTR_POS]);
+                this._resetAttrRange(GlRectInstancer.ATTR_POS);
             }
 
-            if (this._updateRangesMin[this.ATTR_COLOR] != this._DEFAULT_BIGNUM)
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_COLOR] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                // console.log("update colors,", this._updateRangesMax[this.ATTR_COLOR] - this._updateRangesMin[this.ATTR_COLOR]);
-                this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
-                this._resetAttrRange(this.ATTR_COLOR);
+                // console.log("update colors,", this._updateRangesMax[GlRectInstancer.ATTR_COLOR] - this._updateRangesMin[GlRectInstancer.ATTR_COLOR]);
+                this.#mesh.setAttributeRange(this.#meshAttrCol, this._attrBuffCol, this.#updateRangesMin[GlRectInstancer.ATTR_COLOR], this.#updateRangesMax[GlRectInstancer.ATTR_COLOR]);
+                this._resetAttrRange(GlRectInstancer.ATTR_COLOR);
             }
 
-            if (this._updateRangesMin[this.ATTR_SIZE] != this._DEFAULT_BIGNUM)
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_SIZE] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
-                this._resetAttrRange(this.ATTR_SIZE);
+                this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, this.#updateRangesMin[GlRectInstancer.ATTR_SIZE], this.#updateRangesMax[GlRectInstancer.ATTR_SIZE]);
+                this._resetAttrRange(GlRectInstancer.ATTR_SIZE);
             }
 
-            if (this._updateRangesMin[this.ATTR_DECO] != this._DEFAULT_BIGNUM)
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_DECO] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
-                this._resetAttrRange(this.ATTR_DECO);
+                this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, this.#updateRangesMin[GlRectInstancer.ATTR_DECO], this.#updateRangesMax[GlRectInstancer.ATTR_DECO]);
+                this._resetAttrRange(GlRectInstancer.ATTR_DECO);
             }
 
-            if (this._updateRangesMin[this.ATTR_TEXRECT] != this._DEFAULT_BIGNUM)
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_TEXRECT] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrBuffTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
-                this._resetAttrRange(this.ATTR_TEXRECT);
+                this.#mesh.setAttributeRange(this.#meshAttrTexRect, this._attrBuffTexRect, this.#updateRangesMin[GlRectInstancer.ATTR_TEXRECT], this.#updateRangesMax[GlRectInstancer.ATTR_TEXRECT]);
+                this._resetAttrRange(GlRectInstancer.ATTR_TEXRECT);
             }
         }
 
@@ -336,14 +351,14 @@ export default class GlRectInstancer extends Events
 
         this._uniTime.set(performance.now() / 1000);
 
-        if (this._needsTextureUpdate) this._setupTextures();
+        if (this.#needsTextureUpdate) this._setupTextures();
         this._bindTextures();
 
         if (this.#needsRebuild) this.rebuild();
 
         this.emitEvent("render");
 
-        this._mesh.render(this._shader);
+        this.#mesh.render(this.#shader);
     }
 
     rebuild()
@@ -352,18 +367,18 @@ export default class GlRectInstancer extends Events
         this.#needsRebuildReason = "";
         // todo only update whats needed
 
-        this._mesh.numInstances = this.#num;
+        this.#mesh.numInstances = this.#num;
 
-        if (this._reUploadAttribs)
+        if (this.#reUploadAttribs)
         {
             const perf = gui.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
-            this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
-            this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
-            this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
-            this._meshAttrDeco = this._mesh.setAttribute(this.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
-            this._meshAttrTexRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrBuffTexRect, 4, { "instanced": true });
-            this._meshAttrTex = this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
-            this._reUploadAttribs = false;
+            this.#meshAttrPos = this.#mesh.setAttribute(GlRectInstancer.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
+            this.#meshAttrCol = this.#mesh.setAttribute(GlRectInstancer.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
+            this.#meshAttrSize = this.#mesh.setAttribute(GlRectInstancer.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
+            this.#meshAttrDeco = this.#mesh.setAttribute(GlRectInstancer.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
+            this.#meshAttrTexRect = this.#mesh.setAttribute(GlRectInstancer.ATTR_TEXRECT, this._attrBuffTexRect, 4, { "instanced": true });
+            this.#meshAttrTex = this.#mesh.setAttribute(GlRectInstancer.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+            this.#reUploadAttribs = false;
             perf.finish();
         }
 
@@ -384,8 +399,8 @@ export default class GlRectInstancer extends Events
             this._setupAttribBuffers();
             this.#needsRebuild = true;
             this.#needsRebuildReason = "resize";
-            this._needsTextureUpdate = true;
-            this._reUploadAttribs = true;
+            this.#needsTextureUpdate = true;
+            this.#reUploadAttribs = true;
         }
         return this.#counter;
     }
@@ -412,8 +427,8 @@ export default class GlRectInstancer extends Events
         else return;
 
         if (
-            this._attrBuffPos[buffIdx + 0] >= this._bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this._bounds.minX ||
-            this._attrBuffPos[buffIdx + 1] >= this._bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this._bounds.minY)
+            this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
+            this._attrBuffPos[buffIdx + 1] >= this.#bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this.#bounds.minY)
         {
             this._needsBoundsRecalc = true;
         }
@@ -423,26 +438,26 @@ export default class GlRectInstancer extends Events
         this._attrBuffPos[buffIdx + 2] = z;
 
         if (
-            this._attrBuffPos[buffIdx + 0] >= this._bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this._bounds.minX ||
-            this._attrBuffPos[buffIdx + 1] >= this._bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this._bounds.minY)
+            this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
+            this._attrBuffPos[buffIdx + 1] >= this.#bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this.#bounds.minY)
         {
             this._needsBoundsRecalc = true;
         }
 
         if (!this._needsBoundsRecalc)
         {
-            this._bounds.minX = Math.min(this._attrBuffPos[buffIdx + 0], this._bounds.minX);
-            this._bounds.maxX = Math.max(this._attrBuffPos[buffIdx + 0], this._bounds.maxX);
+            this.#bounds.minX = Math.min(this._attrBuffPos[buffIdx + 0], this.#bounds.minX);
+            this.#bounds.maxX = Math.max(this._attrBuffPos[buffIdx + 0], this.#bounds.maxX);
 
-            this._bounds.minY = Math.min(this._attrBuffPos[buffIdx + 1], this._bounds.minY);
-            this._bounds.maxY = Math.max(this._attrBuffPos[buffIdx + 1], this._bounds.maxY);
+            this.#bounds.minY = Math.min(this._attrBuffPos[buffIdx + 1], this.#bounds.minY);
+            this.#bounds.maxY = Math.max(this._attrBuffPos[buffIdx + 1], this.#bounds.maxY);
 
-            this._bounds.minZ = Math.min(this._attrBuffPos[buffIdx + 2], this._bounds.minZ);
-            this._bounds.maxZ = Math.max(this._attrBuffPos[buffIdx + 2], this._bounds.maxZ);
+            this.#bounds.minZ = Math.min(this._attrBuffPos[buffIdx + 2], this.#bounds.minZ);
+            this.#bounds.maxZ = Math.max(this._attrBuffPos[buffIdx + 2], this.#bounds.maxZ);
         }
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_POS, buffIdx, buffIdx + 3);
-        else this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, buffIdx, buffIdx + 3);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_POS, buffIdx, buffIdx + 3);
+        else this.#mesh.setAttributeRange(this.#meshAttrPos, this._attrBuffPos, buffIdx, buffIdx + 3);
 
         this._needsBoundsRecalc = true;
     }
@@ -459,8 +474,8 @@ export default class GlRectInstancer extends Events
         this._attrBuffSizes[idx * 2 + 0] = x;
         this._attrBuffSizes[idx * 2 + 1] = y;
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_SIZE, idx * 2, (idx + 1) * 2);
-        else this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_SIZE, idx * 2, (idx + 1) * 2);
+        else this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
     }
 
     setTexRect(idx, x, y, w, h)
@@ -481,8 +496,8 @@ export default class GlRectInstancer extends Events
         this._attrBuffTexRect[idx * 4 + 2] = w;
         this._attrBuffTexRect[idx * 4 + 3] = h;
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrBuffTexRect, idx * 4, idx * 4 + 4);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrTexRect, this._attrBuffTexRect, idx * 4, idx * 4 + 4);
     }
 
     setColor(idx, r, g, b, a)
@@ -511,41 +526,41 @@ export default class GlRectInstancer extends Events
         this._attrBuffCol[idx * 4 + 2] = b;
         this._attrBuffCol[idx * 4 + 3] = a;
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, idx * 4, idx * 4 + 4);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_COLOR, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrCol, this._attrBuffCol, idx * 4, idx * 4 + 4);
     }
 
     setShape(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 0] = o;
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
     setBorder(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 1] = o;
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
     setSelected(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 2] = o;
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
     setDebugRenderer(i)
     {
-        this._shader.toggleDefine("DEBUG_1", i == 1);
-        this._shader.toggleDefine("DEBUG_2", i == 2);
+        this.#shader.toggleDefine("DEBUG_1", i == 1);
+        this.#shader.toggleDefine("DEBUG_2", i == 2);
     }
 
     setAllTexture(tex, sdf)
     {
-        this._shader.toggleDefine("SDF_TEXTURE", sdf);
+        this.#shader.toggleDefine("SDF_TEXTURE", sdf);
 
         for (let i = 0; i < this.#rects.length; i++)
             this.#rects[i].setTexture(tex);
@@ -553,21 +568,20 @@ export default class GlRectInstancer extends Events
 
     _resetAttrRange(attr)
     {
-        this._updateRangesMin[attr] = this._DEFAULT_BIGNUM;
-        this._updateRangesMax[attr] = -this._DEFAULT_BIGNUM;
+        this.#updateRangesMin[attr] = GlRectInstancer.DEFAULT_BIGNUM;
+        this.#updateRangesMax[attr] = -GlRectInstancer.DEFAULT_BIGNUM;
     }
 
+    /**
+     * @param {string} attr index
+     * @param {number} start
+     * @param {number} end
+     */
     _setAttrRange(attr, start, end)
     {
-        this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
-        this._updateRangesMax[attr] = Math.max(end, this._updateRangesMax[attr]);
+        this.#updateRangesMin[attr] = Math.min(start, this.#updateRangesMin[attr]);
+        this.#updateRangesMax[attr] = Math.max(end, this.#updateRangesMax[attr]);
     }
-
-    // setOutline(idx,o)
-    // {
-    //     if(this._attrOutline[idx]!=o) { this._needsRebuild=true; }
-    //     this._attrOutline[idx]=o;
-    // }
 
     createRect(options)
     {
@@ -578,22 +592,28 @@ export default class GlRectInstancer extends Events
         if (options.draggable)
         {
             this.allowDragging = options.draggable;
-            r.on("dragStart", (rect) => { if (this.allowDragging) this._draggingRect = rect; });
-            r.on("dragEnd", () => { this._draggingRect = null; });
+            r.on("dragStart", (rect) => { if (this.allowDragging) this.#draggingRect = rect; });
+            r.on("dragEnd", () => { this.#draggingRect = null; });
         }
 
-        r.on("textureChanged", () => { this._needsTextureUpdate = true; });
+        r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
 
         return r;
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} button
+     * @param {MouseEvent} event
+     */
     mouseMove(x, y, button, event)
     {
         const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
-        if (!this._interactive) return;
-        if (this.allowDragging && this._draggingRect)
+        if (!this.#interactive) return;
+        if (this.allowDragging && this.#draggingRect)
         {
-            this._draggingRect.mouseDrag(x, y, button);
+            this.#draggingRect.mouseDrag(x, y, button);
             return;
         }
 
@@ -604,9 +624,12 @@ export default class GlRectInstancer extends Events
         perf.finish();
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     mouseDown(e)
     {
-        if (!this._interactive) return;
+        if (!this.#interactive) return;
 
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this.#rects.length; i++)
@@ -615,14 +638,17 @@ export default class GlRectInstancer extends Events
         perf.finish();
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     mouseUp(e)
     {
-        if (!this._interactive) return;
+        if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
-        if (this._draggingRect) this._draggingRect.mouseDragEnd();
+        if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
     }
 }

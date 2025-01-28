@@ -122,13 +122,18 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseMove(e)
     {
         this.emitEvent("mousemove", e);
 
         let x = e.offsetX;
         let y = e.offsetY;
-        this.#rects.mouseMove(x, y, this.mouseDown ? 1 : 0);
+
+        this.#rects.mouseMove(x, y, e.buttons, e);
+
         if (this.mouseDown)
         {
 
@@ -139,6 +144,9 @@ export default class GlTimeline extends Events
         }
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;

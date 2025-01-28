@@ -367,8 +367,9 @@ export default class GlRect extends Events
     /**
      * @param {number} x
      * @param {number} y
+     * @param {number} button
      */
-    mouseDrag(x, y)
+    mouseDrag(x, y, button)
     {
         if (!this.interactive) return;
 
@@ -384,7 +385,7 @@ export default class GlRect extends Events
             this.#dragStartY = this.y;
         }
         // this.setPosition( x - this.#dragOffsetX, y - this.#dragOffsetY);
-        this.emitEvent("drag", this, this.#dragOffsetX, this.#dragOffsetY);
+        this.emitEvent("drag", this, this.#dragOffsetX, this.#dragOffsetY, button);
     }
 
     mouseDragEnd()
