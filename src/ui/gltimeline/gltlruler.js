@@ -18,12 +18,15 @@ export default class glTlRuler extends Events
         this._units = 0;
         this._fps = 30;
         this._bpm = 180;
-        this._height = 50;
+        this.y = 30;
+        this.height = 50;
         this._offset = 0;
 
         this._glRectBg = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this._glRectBg.setSize(21000, this._height);
-        this._glRectBg.setColor(0.3, 0.3, 0.3, 1);
+        this._glRectBg.setSize(222, this.height);
+        this._glRectBg.setColor(0.5, 0.3, 0.3, 1);
+        this._glRectBg.setPosition(0, this.y);
+
         // this._glRectBg.setColorHover(0.4,0.4,0.4)
 
         this._glRectBg.on("drag", (r, ox, oy) =>
@@ -38,6 +41,7 @@ export default class glTlRuler extends Events
         {
             const mr = this._glTl.rects.createRect({ "draggable": false });
             mr.setColor(0.2, 0.2, 0.2, 1);
+            mr.setParent(this._glRectBg);
             this.markf.push(mr);
         }
 
@@ -46,6 +50,7 @@ export default class glTlRuler extends Events
         {
             const mr = this._glTl.rects.createRect({ "draggable": false });
             mr.setColor(0.2, 0.2, 0.2, 1);
+            mr.setParent(this._glRectBg);
             this.markBeats.push(mr);
         }
 
@@ -53,6 +58,7 @@ export default class glTlRuler extends Events
         for (let i = 0; i < 300; i++)
         {
             const mr = this._glTl.rects.createRect({ "draggable": false });
+            mr.setParent(this._glRectBg);
             this.marks.push(mr);
         }
 
@@ -60,6 +66,7 @@ export default class glTlRuler extends Events
         for (let i = 0; i < 100; i++)
         {
             const mt = new GlText(this._glTl.texts, "");
+
             this.titles.push(mt);
         }
 
@@ -69,6 +76,15 @@ export default class glTlRuler extends Events
     get offset()
     {
         return this._offset;
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    setPosition(x, y)
+    {
+        this._glRectBg.setPosition(x, y);
     }
 
     update()
@@ -207,5 +223,12 @@ export default class glTlRuler extends Events
                 titleCounter++;
             }
         }
+    }
+
+    setWidth(w)
+    {
+        this.width = w;
+        this._glRectBg.setSize(this.width, this.height);
+
     }
 }

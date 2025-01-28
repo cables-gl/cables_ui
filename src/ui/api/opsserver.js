@@ -992,12 +992,6 @@ export default class ServerOps
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
 
-            gui.jobs()
-                .start({
-                    "id": "checkOpName" + fullName,
-                    "title": "checking op name" + fullName
-                });
-
             if (fullName)
             {
                 const checkNameRequest = {
@@ -1008,6 +1002,12 @@ export default class ServerOps
                 };
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
+
+                gui.jobs()
+                    .start({
+                        "id": "checkOpName" + fullName,
+                        "title": "checking op name" + fullName
+                    });
 
                 platform.talkerAPI.send("checkOpName", checkNameRequest, (err, res) =>
                 {

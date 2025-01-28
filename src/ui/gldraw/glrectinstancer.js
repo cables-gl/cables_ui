@@ -13,6 +13,18 @@ import { gui } from "../gui.js";
  */
 export default class GlRectInstancer extends Events
 {
+    #counter = 0;
+    #num = 0;
+    #name = "";
+    #needsRebuild = true;
+    #needsRebuildReason = "";
+
+    /** @type {Array<GlRect>} */
+    #rects = [];
+
+    /** @type {Array<Texture>} */
+    #textures = [];
+
     constructor(cgl, options)
     {
         super();
@@ -25,19 +37,15 @@ export default class GlRectInstancer extends Events
             throw new Error("[RectInstancer] no cgl");
         }
 
-        this._name = options.name || "unknown";
+        this.#name = options.name || "unknown";
 
         this._debugRenderStyle = 0;
         this.doBulkUploads = true;
 
         this._DEFAULT_BIGNUM = 999999;
 
-        this._counter = 0;
-        this._num = options.initNum || 5000;
-        this._needsRebuild = true;
-        this._needsRebuildReason = "";
-        this._rects = [];
-        this._textures = [];
+        this.#num = options.initNum || 5000;
+
         this._interactive = true;
         this.allowDragging = false;
         this._cgl = cgl;
@@ -64,7 +72,7 @@ export default class GlRectInstancer extends Events
         this.ATTR_SIZE = "instSize";
         this.ATTR_DECO = "instDeco";
 
-        this._shader = new CGL.Shader(cgl, "rectinstancer " + this._name);
+        this._shader = new CGL.Shader(cgl, "rectinstancer " + this.#name);
         this._shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
         this._shader.ignoreMissingUniforms = true;
 
@@ -77,14 +85,14 @@ export default class GlRectInstancer extends Events
         this._unimsdfUnit = new CGL.Uniform(this._shader, "f", "msdfUnit", 8 / 1024);
         this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
-        this._geom = new CGL.Geometry("rectinstancer " + this._name);
+        this._geom = new CGL.Geometry("rectinstancer " + this.#name);
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
         this._geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
         this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
 
         if (this._cgl.glVersion == 1) this._shader.enableExtension("GL_OES_standard_derivatives");
         this._mesh = new CGL.Mesh(cgl, this._geom);
-        this._mesh.numInstances = this._num;
+        this._mesh.numInstances = this.#num;
 
         this.clear();
     }
@@ -106,16 +114,16 @@ export default class GlRectInstancer extends Events
             const defaultMin = this._DEFAULT_BIGNUM;
             const defaultMax = -this._DEFAULT_BIGNUM;
             this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
-            for (let i = 0; i < this._rects.length; i++)
+            for (let i = 0; i < this.#rects.length; i++)
             {
-                if (!this._rects[i].visible) continue;
-                if (this._rects[i].x == this._bounds.minX && this._rects[i].y == this._bounds.minY && this._rects[i].w == this._bounds.maxX - this._bounds.minX && this._rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
+                if (!this.#rects[i].visible) continue;
+                if (this.#rects[i].x == this._bounds.minX && this.#rects[i].y == this._bounds.minY && this.#rects[i].w == this._bounds.maxX - this._bounds.minX && this.#rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
 
-                const x = this._rects[i].x || 0;
-                const y = this._rects[i].y || 0;
-                const z = this._rects[i].z || 0;
-                const x2 = x + this._rects[i].w;
-                const y2 = y + this._rects[i].h;
+                const x = this.#rects[i].x || 0;
+                const y = this.#rects[i].y || 0;
+                const z = this.#rects[i].z || 0;
+                const x2 = x + this.#rects[i].w;
+                const y2 = y + this.#rects[i].h;
 
                 this._newBounds.minX = Math.min(x, this._newBounds.minX);
                 this._newBounds.maxX = Math.max(x2, this._newBounds.maxX);
@@ -138,7 +146,7 @@ export default class GlRectInstancer extends Events
     getDebug()
     {
         return {
-            "num": this._num,
+            "num": this.#num,
             "len_attrBuffSizes": this._attrBuffSizes.length,
             "len_attrBuffPos": this._attrBuffPos.length,
             "len_attrBuffCol": this._attrBuffCol.length,
@@ -148,13 +156,13 @@ export default class GlRectInstancer extends Events
 
     clear()
     {
-        for (let i = 0; i < 2 * this._num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
-        for (let i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
-        for (let i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
-        for (let i = 0; i < 4 * this._num; i++) this._attrBuffDeco[i] = 0;// Math.random();
-        for (let i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
+        for (let i = 0; i < 2 * this.#num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
+        for (let i = 0; i < 3 * this.#num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
+        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffCol[i] = 1;// Math.random();
+        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffDeco[i] = 0;// Math.random();
+        for (let i = 0; i < this.#num; i++) this._attrBuffTextures[i] = -1;// Math.random();
 
-        for (let i = 0; i < 4 * this._num; i += 4)
+        for (let i = 0; i < 4 * this.#num; i += 4)
         {
             this._attrBuffTexRect[i + 0] = this._attrBuffTexRect[i + 1] = 0;
             this._attrBuffTexRect[i + 2] = this._attrBuffTexRect[i + 3] = 1;
@@ -170,12 +178,12 @@ export default class GlRectInstancer extends Events
         const oldAttrDeco = this._attrBuffDeco;
         const oldAttrTexRect = this._attrBuffTexRect;
 
-        this._attrBuffPos = new Float32Array(3 * this._num);
-        this._attrBuffTextures = new Float32Array(this._num);
-        this._attrBuffCol = new Float32Array(4 * this._num);
-        this._attrBuffSizes = new Float32Array(2 * this._num);
-        this._attrBuffDeco = new Float32Array(4 * this._num);
-        this._attrBuffTexRect = new Float32Array(4 * this._num);
+        this._attrBuffPos = new Float32Array(3 * this.#num);
+        this._attrBuffTextures = new Float32Array(this.#num);
+        this._attrBuffCol = new Float32Array(4 * this.#num);
+        this._attrBuffSizes = new Float32Array(2 * this.#num);
+        this._attrBuffDeco = new Float32Array(4 * this.#num);
+        this._attrBuffTexRect = new Float32Array(4 * this.#num);
         this.clear();
 
         if (oldAttrPositions) this._attrBuffPos.set(oldAttrPositions);
@@ -194,30 +202,30 @@ export default class GlRectInstancer extends Events
     _setupTextures()
     {
         this._needsTextureUpdate = false;
-        this._textures.length = 0;
+        this.#textures.length = 0;
         let count = 0;
 
         let minIdx = this._DEFAULT_BIGNUM;
         let maxIdx = -this._DEFAULT_BIGNUM;
 
-        for (let i = 0; i < this._rects.length; i++)
+        for (let i = 0; i < this.#rects.length; i++)
         {
             let changed = false;
-            const thatRectIdx = this._rects[i].idx;
+            const thatRectIdx = this.#rects[i].idx;
 
-            if (this._rects[i].texture)
+            if (this.#rects[i].texture)
             {
                 let found = false;
 
-                for (let j = 0; j < this._textures.length; j++)
+                for (let j = 0; j < this.#textures.length; j++)
                 {
-                    if (this._textures[j] && this._textures[j].texture == this._rects[i].texture)
+                    if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
                     {
                         found = true;
 
-                        if (this._attrBuffTextures[thatRectIdx] != this._textures[j].num)changed = true;
+                        if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
 
-                        this._attrBuffTextures[thatRectIdx] = this._textures[j].num;
+                        this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
                         minIdx = Math.min(thatRectIdx, minIdx);
                         maxIdx = Math.max(thatRectIdx, maxIdx);
                     }
@@ -226,9 +234,9 @@ export default class GlRectInstancer extends Events
                 if (!found)
                 {
                     this._attrBuffTextures[thatRectIdx] = count;
-                    this._textures[count] =
+                    this.#textures[count] =
                         {
-                            "texture": this._rects[i].texture,
+                            "texture": this.#rects[i].texture,
                             "num": count
                         };
                     count++;
@@ -242,8 +250,8 @@ export default class GlRectInstancer extends Events
 
             if (changed)
             {
-                minIdx = Math.min(this._rects[i].idx, minIdx);
-                maxIdx = Math.max(this._rects[i].idx, maxIdx);
+                minIdx = Math.min(this.#rects[i].idx, minIdx);
+                maxIdx = Math.max(this.#rects[i].idx, maxIdx);
             }
         }
 
@@ -253,10 +261,10 @@ export default class GlRectInstancer extends Events
     _bindTextures()
     {
         for (let i = 0; i < 4; i++)
-            if (this._textures[0])
-                this._cgl.setTexture(i, this._textures[0].texture.tex);
+            if (this.#textures[0])
+                this._cgl.setTexture(i, this.#textures[0].texture.tex);
 
-        if (this._textures[0]) this._cgl.setTexture(0, this._textures[0].texture.tex);
+        if (this.#textures[0]) this._cgl.setTexture(0, this.#textures[0].texture.tex);
     }
 
     /**
@@ -331,7 +339,7 @@ export default class GlRectInstancer extends Events
         if (this._needsTextureUpdate) this._setupTextures();
         this._bindTextures();
 
-        if (this._needsRebuild) this.rebuild();
+        if (this.#needsRebuild) this.rebuild();
 
         this.emitEvent("render");
 
@@ -341,10 +349,10 @@ export default class GlRectInstancer extends Events
     rebuild()
     {
         // this._log.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
-        this._needsRebuildReason = "";
+        this.#needsRebuildReason = "";
         // todo only update whats needed
 
-        this._mesh.numInstances = this._num;
+        this._mesh.numInstances = this.#num;
 
         if (this._reUploadAttribs)
         {
@@ -359,27 +367,27 @@ export default class GlRectInstancer extends Events
             perf.finish();
         }
 
-        this._needsRebuild = false;
+        this.#needsRebuild = false;
     }
 
     getNumRects()
     {
-        return this._counter;
+        return this.#counter;
     }
 
     getIndex()
     {
-        this._counter++;
-        if (this._counter > this._num - 100)
+        this.#counter++;
+        if (this.#counter > this.#num - 100)
         {
-            this._num += Math.max(5000, Math.ceil(this._num));
+            this.#num += Math.max(5000, Math.ceil(this.#num));
             this._setupAttribBuffers();
-            this._needsRebuild = true;
-            this._needsRebuildReason = "resize";
+            this.#needsRebuild = true;
+            this.#needsRebuildReason = "resize";
             this._needsTextureUpdate = true;
             this._reUploadAttribs = true;
         }
-        return this._counter;
+        return this.#counter;
     }
 
     _float32Diff(a, b)
@@ -539,8 +547,8 @@ export default class GlRectInstancer extends Events
     {
         this._shader.toggleDefine("SDF_TEXTURE", sdf);
 
-        for (let i = 0; i < this._rects.length; i++)
-            this._rects[i].setTexture(tex);
+        for (let i = 0; i < this.#rects.length; i++)
+            this.#rects[i].setTexture(tex);
     }
 
     _resetAttrRange(attr)
@@ -565,7 +573,7 @@ export default class GlRectInstancer extends Events
     {
         options = options || {};
         const r = new GlRect(this, options);
-        this._rects.push(r);
+        this.#rects.push(r);
 
         if (options.draggable)
         {
@@ -589,9 +597,9 @@ export default class GlRectInstancer extends Events
             return;
         }
 
-        for (let i = 0; i < this._rects.length; i++)
-            if (!this._rects[i].parent)
-                this._rects[i].mouseMove(x, y, button);
+        for (let i = 0; i < this.#rects.length; i++)
+            if (!this.#rects[i].parent)
+                this.#rects[i].mouseMove(x, y, button);
 
         perf.finish();
     }
@@ -601,9 +609,9 @@ export default class GlRectInstancer extends Events
         if (!this._interactive) return;
 
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
-        for (let i = 0; i < this._rects.length; i++)
-            if (!this._rects[i].parent)
-                this._rects[i].mouseDown(e);
+        for (let i = 0; i < this.#rects.length; i++)
+            if (!this.#rects[i].parent)
+                this.#rects[i].mouseDown(e);
         perf.finish();
     }
 
@@ -612,7 +620,7 @@ export default class GlRectInstancer extends Events
         if (!this._interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
-        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseUp(e);
+        for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
         if (this._draggingRect) this._draggingRect.mouseDragEnd();

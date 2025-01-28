@@ -88,6 +88,8 @@ export default class GlRect extends Events
 
     get idx() { return this.#attrIndex; }
 
+    get parent() { return this.#parent; }
+
     hasChild(c)
     {
         return this.childs.indexOf(c) > -1;
@@ -231,7 +233,7 @@ export default class GlRect extends Events
         this.#parent = p;
         p.addChild(this);
         this.#visible = p.visible;
-        this.setPosition(this.#x, this.#y, this.#z);
+        this.updateParentPosition();
     }
 
     get texture()
@@ -273,8 +275,13 @@ export default class GlRect extends Events
 
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].setPosition(this.childs[i].x, this.childs[i].y, this.childs[i].z);
+        for (let i = 0; i < this.childs.length; i++) this.childs[i].updateParentPosition();
         this.emitEvent("positionChanged");
+    }
+
+    updateParentPosition()
+    {
+        this.setPosition(this.x, this.y, this.z);
     }
 
     /**
@@ -320,9 +327,15 @@ export default class GlRect extends Events
      */
     getParentX()
     {
-        // todo: add up all parents
-        if (!this.#parent) return 0;
-        return this.#parent.absX;
+        let px = 0;
+        let p = this.#parent;
+        while (p)
+        {
+            px += p.x;
+            p = p.parent;
+        }
+
+        return px;
     }
 
     /**
@@ -330,9 +343,15 @@ export default class GlRect extends Events
      */
     getParentY()
     {
-        // todo: add up all parents
-        if (!this.#parent) return 0;
-        return this.#parent.absY;
+        let py = 0;
+        let p = this.#parent;
+        while (p)
+        {
+            py += p.y;
+            p = p.parent;
+        }
+
+        return py;
     }
 
     /**

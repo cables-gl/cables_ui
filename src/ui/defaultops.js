@@ -61,7 +61,7 @@ const defaultOpNames =
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "triggerCounter": "Ops.Trigger.TriggerCounter",
 
-    "StringLength": "Ops.String.StringLength",
+    "StringLength": "Ops.String.StringLength_v2",
     "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v2",
