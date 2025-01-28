@@ -72,10 +72,8 @@ export default class Tab extends Events
         button.classList.add("button-small");
 
         let html = "";
-        // html += "<span class=\"icon icon-files\"></span>";
         html += title;
         button.innerHTML = html;
-        // button.addEventListener("click", cb);
         ele.clickable(button, cb);
         this.toolbarEle.appendChild(button);
         this.buttons.push({ "ele": button, cb, title });

@@ -3,7 +3,6 @@ import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
-
 export default class GlTimelineTab
 {
     constructor(tabs)
@@ -16,6 +15,31 @@ export default class GlTimelineTab
 
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
+
+        this._tab.addButton("rewind", () =>
+        {
+            gui.corePatch().timer.setTime(0);
+
+        });
+
+        this._tab.addButton("rr", () =>
+        {
+            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1);
+        });
+
+        const buttonPlay = this._tab.addButton("playpause", () =>
+        {
+            gui.corePatch().timer.togglePlay();
+
+            if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "pause";
+            else buttonPlay.innerHTML = "play";
+
+        });
+
+        this._tab.addButton("ff", () =>
+        {
+            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1);
+        });
 
         this._tab.on("resize", () =>
         {

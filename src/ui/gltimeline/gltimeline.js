@@ -6,6 +6,7 @@ import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
 import GlRect from "../gldraw/glrect.js";
+import GlText from "../gldraw/gltext.js";
 
 /**
  * gl timeline
@@ -40,6 +41,12 @@ export default class GlTimeline extends Events
     bpm = 120;
     displayUnits = "Seconds";
 
+    /** @type {GlText} */
+    #textTimeS;
+
+    /** @type {GlText} */
+    #textTimeF;
+
     titleSpace = 150;
 
     #zoom = 20;
@@ -71,6 +78,12 @@ export default class GlTimeline extends Events
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
         this.#glRectCursor.setColor(0, 1, 1, 1);
         this.#glRectCursor.setPosition(0, 0);
+
+        this.#textTimeS = new GlText(this.texts, "time");
+        this.#textTimeS.setPosition(10, 0);
+
+        this.#textTimeF = new GlText(this.texts, "frames");
+        this.#textTimeF.setPosition(10, 20);
 
         this.init();
 
@@ -251,6 +264,14 @@ export default class GlTimeline extends Events
     udpateCursor()
     {
         this.#glRectCursor.setPosition(this.timeToPixelScreen(gui.corePatch().timer.getTime()), 0, -0.3);
+
+        let s = "" + Math.round(gui.corePatch().timer.getTime() * 1000) / 1000;
+        const parts = s.split(".");
+        parts[1] = parts[1] || "000";
+        while (parts[1].length < 3)parts[1] += "0";
+        this.#textTimeS.text = parts[0] + "." + parts[1] + " seconds";
+        this.#textTimeF.text = Math.floor(gui.corePatch().timer.getTime() * this.fps) + "f";
+
     }
 
     updateAllElements()
