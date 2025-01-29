@@ -1,4 +1,4 @@
-import { ele, Logger } from "cables-shared-client";
+import { ele } from "cables-shared-client";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
@@ -25,7 +25,6 @@ export default class ModalError
     {
         this._options = options;
 
-
         const s = typeof gui !== "undefined" ? gui.corePatch()._triggerStack : [];
         let stackStr = "";
         for (let i = 0; i < s.length; i++)
@@ -33,8 +32,6 @@ export default class ModalError
             stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
             if (i != s.length - 1)stackStr += " -> \n";
         }
-
-
 
         this.opDoc = null;
 
@@ -88,7 +85,6 @@ export default class ModalError
                 // browser not supported, we don't care at this point
             }
 
-
             console.log("exception:", this._options.exception, info);
             if (this._options.exception && this._options.exception.error && this._options.exception.error.message) this._options.title = this._options.exception.error.message;
         }
@@ -122,7 +118,6 @@ export default class ModalError
             }
         }
 
-
         CABLES.lastError = {
             "title": this._options.title,
             "exception": this._options.exception || this._options.codeText,
@@ -141,7 +136,6 @@ export default class ModalError
 
         this._dialog = new ModalDialog(modalOptions);
     }
-
 
     _getFileSnippet(url, line, cb)
     {

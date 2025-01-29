@@ -163,59 +163,67 @@
 
             <br/><br/>
 
-            <div class="groupSpacer"><h3>Dependencies</h3></div>
-            Add dependencies, like libs or modules to your op
+            {{#if hasDependencies}}
+                <div class="groupSpacer"><h3>Dependencies</h3></div>
+                <div class="opDependencyList">
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th> </th>
+                        </tr>
+                        {{#each opDoc.coreLibs}}
+                            <tr>
+                                <td>{{.}}</td>
+                                <td>corelib</td>
+                                <td>
+                                    {{#if ../canEditOp}}
+                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                        {{#each opDoc.libs}}
+                            <tr>
+                                <td>{{.}}</td>
+                                <td>lib</td>
+                                <td>
+                                    {{#if ../canEditOp}}
+                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                        {{#each opDoc.dependencies}}
+                            <tr>
+                                <td>
+                                    {{#compare type '==' 'npm'}}
+                                        <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{src}}</a>
+                                    {{else}}
+                                        {{#compare type '==' 'op'}}
+                                            {{opName}}
+                                        {{else}}
+                                            {{src}}
+                                        {{/compare}}
+                                    {{/compare}}
+                                </td>
+                                <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
+                                <td>
+                                    {{#if ../canEditOp}}
+                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                </div>
+            {{/if}}
 
-            <div class="opDependencyList">
-                <table class="table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th> </th>
-                    </tr>
-                    {{#each opDoc.coreLibs}}
-                        <tr>
-                            <td>{{.}}</td>
-                            <td>corelib</td>
-                            <td>
-                                {{#if ../canEditOp}}
-                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
-                                {{/if}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    {{#each opDoc.libs}}
-                        <tr>
-                            <td>{{.}}</td>
-                            <td>lib</td>
-                            <td>
-                                {{#if ../canEditOp}}
-                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
-                                {{/if}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    {{#each opDoc.dependencies}}
-                        <tr>
-                            <td>
-                                {{#compare type '==' 'npm'}}
-                                    <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{src}}</a>
-                                {{else}}
-                                    {{src}}
-                                {{/compare}}
-                            </td>
-                            <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
-                            <td>
-                                {{#if ../canEditOp}}
-                                    <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
-                                {{/if}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                </table>
-            </div>
-
-            <div id="{{viewId}}_dependencytabs" class="dependencytabs"></div>
+            {{#if canEditOp}}
+                <div class="groupSpacer"><h3>Add Dependencies</h3></div>
+                Add javascript libraries/modules to your op:<br/><br/>
+                <div id="{{viewId}}_dependencytabs" class="dependencytabs"></div>
+            {{/if}}
 
         {{/if}}
 
