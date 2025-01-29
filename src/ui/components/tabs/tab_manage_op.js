@@ -121,7 +121,7 @@ export default class ManageOp
             {
                 if (error) this._log.warn("error api?", error);
 
-                const dependencyTabId = "dependencytabs";
+                const dependencyTabId = this._id + "_dependencytabs";
                 const tabPanel = ele.byId(dependencyTabId);
 
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
