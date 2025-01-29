@@ -1,10 +1,15 @@
 import Tab from "../../elements/tabpanel/tab.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
 export default class GlTimelineTab
 {
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
         this._tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline" });
@@ -16,10 +21,14 @@ export default class GlTimelineTab
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
 
+        this._tab.on("onActivate", () =>
+        {
+            a.parentResized();
+        });
+
         this._tab.addButton("rewind", () =>
         {
             gui.corePatch().timer.setTime(0);
-
         });
 
         this._tab.addButton("rr", () =>
@@ -33,7 +42,6 @@ export default class GlTimelineTab
 
             if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "pause";
             else buttonPlay.innerHTML = "play";
-
         });
 
         this._tab.addButton("ff", () =>
@@ -51,6 +59,5 @@ export default class GlTimelineTab
             userSettings.set("glTimelineOpened", false);
         });
 
-        // tabs.show(true);
     }
 }
