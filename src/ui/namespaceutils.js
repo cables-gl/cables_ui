@@ -83,6 +83,3 @@ namespace.isTeamNamespace = (opname) =>
     const parts = opname.split(".");
     return parts.length < 5;
 };
-
-
-

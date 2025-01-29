@@ -52,16 +52,17 @@ export default class glTlAnim extends Events
         this.#glTl = glTl;
 
         this.#glRectBg = this.#glTl.rects.createRect({ "draggable": false });
-        this.#glRectBg.setSize(150, this.height);
+        this.#glRectBg.setSize(this.#glTl.titleSpace, this.height);
         this.#glRectBg.setColor(0, 0, 0);
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
-        this.#glRectKeysBg.setSize(this.width, this.height - 1);
-        this.#glRectKeysBg.setPosition(150, 0);
+        this.#glRectKeysBg.setSize(this.width, this.height - 2);
+        this.#glRectKeysBg.setPosition(150, 1);
         this.#glRectKeysBg.setColor(0.2, 0.2, 0.9);
         this.#glRectKeysBg.setParent(this.#glRectBg);
 
         this.#glTitle = new GlText(this.#glTl.texts, op.name + " - " + port.name || "unknown anim");
+        this.#glTitle.setPosition(10, 0);
         this.#glTitle.setParentRect(this.#glRectBg);
 
         this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
@@ -79,6 +80,7 @@ export default class glTlAnim extends Events
     update()
     {
         this.updateColor();
+        this.#keys.update();
     }
 
     updateColor()
@@ -89,7 +91,7 @@ export default class glTlAnim extends Events
         if (gui.patchView.isCurrentOp(this.#op))
         {
             this.#glTitle.setColor(0.5, 1, 1, 1);
-            this.#glRectKeysBg.setColor(0.4, 0.4, 0.4, 0.1);
+            this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
         }
     }
 

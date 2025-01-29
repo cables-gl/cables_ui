@@ -133,7 +133,9 @@ const defaultOps = {
         "patchOp": "Ops.Patch.P",
         "userOp": "Ops.User.",
         "teamOp": "Ops.Team.",
-        "extensionOp": "Ops.Extension."
+        "extensionOp": "Ops.Extension.",
+        "webgpu": "Ops.Team.WebGpu",
+        "webgl": "Ops.Gl.",
     },
     "converterOps":
     [
