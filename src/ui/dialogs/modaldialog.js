@@ -264,6 +264,11 @@ export default class ModalDialog extends Events
         hideToolTip();
 
         this.emitEvent("onShow", this);
+
+        setTimeout(() =>
+        {
+            if (ele.byId("modalpromptinput"))ele.byId("modalpromptinput").focus();
+        }, 50); // why is this delay needed in some cases (e.g. resolution button below canvas)
     }
 
     getElement()
