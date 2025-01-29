@@ -85,7 +85,6 @@ export default class OpTreeList
 
         for (const i in root)
         {
-            // console.log(i);
             if (i != "Deprecated" && i != "Admin" && i != "Dev")
                 items.push(
                     {

@@ -6,14 +6,18 @@
     {{#if ops}}
     <h3>Ops</h3>
         {{#each ops}}
-            <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"> {{.}}</a><br/>
+            <a class="opLayoutButton" onclick="gui.opSelect().addOp('{{.}}');">
+                {{opLayout .}}
+            </a><br/>
         {{/each}}
     {{/if}}
 
     {{#if vizops}}
         <h3>Visualize</h3>
         {{#each vizops}}
-            <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"><span class="icon icon-eye"></span> {{.}}</a><br/>
+            <a class="opLayoutButton" onclick="gui.opSelect().addOp('{{.}}');">
+                {{opLayout .}}
+                </a><br/>
         {{/each}}
     {{/if}}
 

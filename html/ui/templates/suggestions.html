@@ -6,9 +6,9 @@
     {{#each suggestions}}
         <div class="suggestion {{#if recommended}}recommended-suggestion{{/if}}" id="suggestion{{id}}" onClick="CABLES.UI.suggestions.action({{id}});" style="transform:rotate({{rot}}deg);margin-left:{{left}}px;margin-top:{{top}}px;transform-origin:center left;">
 
-        {{#if classname}}
-            <span class="{{classname}}">◼</span>
-        {{/if}}
+            {{#if classname}}
+                <span class="{{classname}}">◼</span>
+            {{/if}}
 
             {{shortName}}
             {{#if isBoundToVar}}[##]{{/if}}

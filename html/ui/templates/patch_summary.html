@@ -63,8 +63,9 @@
         {{/if}}
 
         {{#if project.summary.exampleForOps }}
+            Example for:
             {{#each project.summary.exampleForOps}}
-                <a target="_blank" href="{{../cablesUrl}}/op/{{.}}" class="button-small">Example for {{.}}</a>
+                <a target="_blank" href="{{../cablesUrl}}/op/{{.}}"> {{.}}</a>
             {{/each}}
             <br/><br/>
         {{/if}}
