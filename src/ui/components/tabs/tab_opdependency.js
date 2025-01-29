@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
+import namespace from "../../namespaceutils.js";
 
 /**
  *simple tab to just show html
@@ -27,73 +28,115 @@ export default class OpDependencyTab extends Tab
 
     getHtml()
     {
-        return getHandleBarHtml("op_add_dependency_" + this.options.depType, this.options);
+        return getHandleBarHtml("op_add_dependency_" + this.options.depSource, this.options);
     }
 
     _initEventListeners()
     {
-        const depType = this.options.depType;
+        const depSource = this.options.depSource;
         const viewId = this.options.viewId;
         const opName = this.options.opDoc.name;
         const opDoc = this.options.opDoc;
 
-        const depsEle = ele.byId("addopdependency_" + depType + "_" + viewId);
-        depsEle.style.minHeight = "150px";
-        const editEle = depsEle.querySelector(".edit");
-        if (depsEle && editEle)
+        const selector = "addopdependency_" + depSource + "_" + viewId;
+        const depsEle = ele.byId(selector);
+        if (depsEle)
         {
-            const srcEle = depsEle.querySelector(".depSrc");
-            const submitEle = editEle.querySelector(".add");
-
-            const exportNameEle = depsEle.querySelector(".exportName input");
-
-            let fileInput = null;
-            const selectFileButton = editEle.querySelector(".upload");
-            if (selectFileButton)
+            const editEle = depsEle.querySelector(".edit");
+            if (editEle)
             {
-                fileInput = editEle.querySelector("input[type='file']");
-                selectFileButton.addEventListener("click", () => { fileInput.click(); });
-                fileInput.addEventListener("change", () =>
+                const srcEle = depsEle.querySelector(".depSrc");
+                const submitEle = editEle.querySelector(".add");
+                const depTypeEle = depsEle.querySelector("input[name='depType']");
+                const exportNameEle = depsEle.querySelector(".exportName");
+                const typeSelectEle = editEle.querySelector("select.type");
+
+                if (typeSelectEle)
                 {
-                    srcEle.value = fileInput.files[0].name;
-                });
-            }
-
-            submitEle.addEventListener("click", () =>
-            {
-                if (submitEle.disabled) return;
-                const depSrc = srcEle.value;
-                if (!depSrc) return;
-                submitEle.innerText = "working...";
-                submitEle.disabled = true;
-
-                let exportName = null;
-                if (exportNameEle) exportName = exportNameEle.value;
-
-                if (fileInput && fileInput.files && fileInput.files.length > 0)
-                {
-                    const filename = fileInput.files[0].name;
-                    fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
+                    typeSelectEle.addEventListener("change", () =>
                     {
-                        if (!err)
+                        depTypeEle.value = typeSelectEle.value;
+                        if (exportNameEle && typeSelectEle.value === "module")
                         {
-                            gui.serverOps.addOpDependency(opName, "./" + newFilename, depType, exportName, () =>
-                            {
-                                submitEle.innerText = "Add";
-                                submitEle.disabled = false;
-                            });
+                            ele.show(exportNameEle);
+                        }
+                        else
+                        {
+                            ele.hide(exportNameEle);
                         }
                     });
                 }
-                else
+
+                const warningEle = depsEle.querySelector(".warning-error");
+                if (warningEle && depTypeEle.value === "op")
                 {
-                    gui.serverOps.addOpDependency(opName, depSrc, depType, exportName, () =>
+                    srcEle.addEventListener("input", () =>
                     {
-                        submitEle.innerText = "Add";
-                        submitEle.disabled = false;
+                        if (namespace.isOpNameValid(srcEle.value))
+                        {
+                            ele.hide(warningEle);
+                        }
+                        else
+                        {
+                            ele.show(warningEle);
+                        }
                     });
                 }
-            });
+
+                let fileInput = null;
+                const selectFileButton = editEle.querySelector(".button.upload");
+                if (selectFileButton)
+                {
+                    fileInput = editEle.querySelector("input[type='file']");
+                    selectFileButton.addEventListener("click", () => { fileInput.click(); });
+                    fileInput.addEventListener("change", () =>
+                    {
+                        srcEle.value = fileInput.files[0].name;
+                    });
+                }
+
+                submitEle.addEventListener("click", () =>
+                {
+                    if (submitEle.disabled) return;
+                    const depSrc = srcEle.value;
+                    if (!depSrc) return;
+                    submitEle.innerText = "working...";
+                    submitEle.disabled = true;
+
+                    let exportName = null;
+                    if (exportNameEle)
+                    {
+                        const exportNameInput = exportNameEle.querySelector("input");
+                        if (exportNameInput) exportName = exportNameInput.value;
+                    }
+
+                    const depType = depTypeEle.value;
+                    if (fileInput && fileInput.files && fileInput.files.length > 0)
+                    {
+                        const filename = fileInput.files[0].name;
+                        fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
+                        {
+                            if (!err)
+                            {
+                                gui.serverOps.addOpDependency(opName, "./" + newFilename, depType, exportName, () =>
+                                {
+                                    submitEle.innerText = "Add";
+                                    submitEle.disabled = false;
+                                });
+                            }
+                        });
+                    }
+                    else
+                    {
+                        gui.serverOps.addOpDependency(opName, depSrc, depType, exportName, () =>
+                        {
+                            submitEle.innerText = "Add";
+                            submitEle.disabled = false;
+                        });
+                    }
+                });
+            }
+
         }
     }
 }

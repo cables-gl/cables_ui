@@ -582,7 +582,11 @@ export default class ServerOps
                 else if (err.msg === "NPM_ERROR" && err.data)
                 {
                     const opText = err.data.opName || opName ? " for " + err.data.opName || opName : "";
-                    this._log.error("failed dependency" + opText + ": " + err.data.stderr);
+                    this._log.error("failed dependency " + opText + ": " + err.data.stderr);
+                }
+                else if(err.msg === "FAILED_TO_ADD_DEPENDENCY" && depType === "op")
+                {
+                    this._log.error("failed op dependency for " + opName + ": " + depSrc);
                 }
                 else
                 {

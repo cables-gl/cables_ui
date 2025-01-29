@@ -3,10 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
-import TabPanel from "../../elements/tabpanel/tabpanel.js";
-import OpDependencyTab from "./tab_opdependency.js";
 import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
-import uiprofiler from "../uiprofiler.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
@@ -121,9 +118,6 @@ export default class ManageOp
             {
                 if (error) this._log.warn("error api?", error);
 
-                const dependencyTabId = this._id + "_dependencytabs";
-                const tabPanel = ele.byId(dependencyTabId);
-
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
                 const doc = {};
                 const opName = this._currentName;
@@ -210,7 +204,8 @@ export default class ManageOp
                         "canDeleteOp": platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
                         "readOnly": !canEditOp,
                         "user": gui.user,
-                        "warns": res.warns
+                        "warns": res.warns,
+                        "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
                     });
 
                 this._tab.html(html);
@@ -272,21 +267,26 @@ export default class ManageOp
 
                 });
 
-                const panelOptions = {
-                    "opDoc": opDoc,
-                    "libs": libs,
-                    "coreLibs": gui.opDocs.coreLibs,
-                    "user": gui.user,
-                    "canEditOp": canEditOp,
-                    "viewId": this._id
-                };
-
-                if (tabPanel) tabPanel.innerHTML = "";
-                const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
-                depTabs.init();
-
                 if (canEditOp)
                 {
+                    const dependencyTabId = this._id + "_dependencytabs";
+                    const tabPanel = ele.byId(dependencyTabId);
+                    if (tabPanel)
+                    {
+                        const panelOptions = {
+                            "opDoc": opDoc,
+                            "libs": libs,
+                            "coreLibs": gui.opDocs.coreLibs,
+                            "user": gui.user,
+                            "canEditOp": canEditOp,
+                            "viewId": this._id
+                        };
+
+                        if (tabPanel) tabPanel.innerHTML = "";
+                        const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
+                        depTabs.init();
+                    }
+
                     if (portJson && portJson.ports)
                     {
                         const buttonCreate = ele.byId(this._id + "_port_create");

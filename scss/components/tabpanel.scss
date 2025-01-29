@@ -175,14 +175,31 @@
     overflow-y: auto;
 }
 
-.dependencytabs .libselect {
-    select {
-        padding: 8px 9px !important;
-        width: 100%;
+.dependencytabs {
+
+    .addopdependency {
+        min-height: 150px;
+        padding: 5px;
+
+        .depSrc.upload {
+            width: 75%;
+        }
+
+        select {
+            padding: 4px;
+        }
     }
 
-    &.inactive {
-        opacity: 0.5;
+    .libselect {
+        select {
+            padding: 8px 9px !important;
+            width: 100%;
+            margin-bottom: 3px;
+        }
+
+        &.inactive {
+            opacity: 0.5;
+        }
     }
 }
 
