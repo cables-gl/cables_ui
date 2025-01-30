@@ -56,7 +56,7 @@ export default class VizLayer extends Events
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
-            if (a.renderVizLayer || a.renderVizLayerGl)
+            if (a.renderVizLayer || a.renderVizLayerGl || a.renderVizLayerGpu)
             {
                 let item = this._itemsLookup[a.id];
                 if (item) this._log.log("vizlayer id already exists...");
@@ -98,6 +98,18 @@ export default class VizLayer extends Events
     render()
     {
 
+    }
+
+    /**
+     * @param {WebGpuCOntext} cgp
+     */
+    renderWebGpuPreviews(cgp)
+    {
+        for (let i = 0; i < this._items.length; i++)
+        {
+            const item = this._items[i];
+            if (item.op.renderVizLayerGpu) item.op.renderVizLayerGpu(cgp);
+        }
     }
 
     renderVizLayer(gl)
@@ -214,9 +226,7 @@ export default class VizLayer extends Events
         }
 
         if (gui.texturePreview().needsVizLayer())
-        {
             gui.texturePreview().drawVizLayer(this._canvasCtx);
-        }
 
         this._glPatch.debugData.numVizLayers = count;
 

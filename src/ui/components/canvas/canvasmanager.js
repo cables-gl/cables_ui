@@ -47,7 +47,6 @@ export default class CanvasManager
         return this._canvasMode;
     }
 
-
     currentContext()
     {
         return this._contexts[this._curContextIdx];
@@ -132,7 +131,6 @@ export default class CanvasManager
         }
     }
 
-
     screenShot(cb, mimeType = "image/png", quality = 1)
     {
         if (this.currentCanvas() && this.currentCanvas().toBlob)
@@ -172,7 +170,6 @@ export default class CanvasManager
 
         contextMenu.show({ "items": items }, el);
     }
-
 
     popOut()
     {
@@ -225,7 +222,6 @@ export default class CanvasManager
         // const base = document.createElement("base");
         // base.setAttribute("href", "https://meineSeite.de/");
         // document.head.appendChild(base);
-
 
         const p = gui.corePatch().cgl.canvas.parentElement;
 
