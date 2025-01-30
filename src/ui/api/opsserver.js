@@ -584,7 +584,7 @@ export default class ServerOps
                     const opText = err.data.opName || opName ? " for " + err.data.opName || opName : "";
                     this._log.error("failed dependency " + opText + ": " + err.data.stderr);
                 }
-                else if(err.msg === "FAILED_TO_ADD_DEPENDENCY" && depType === "op")
+                else if (err.msg === "FAILED_TO_ADD_DEPENDENCY" && depType === "op")
                 {
                     this._log.error("failed op dependency for " + opName + ": " + depSrc);
                 }
@@ -1791,6 +1791,11 @@ export default class ServerOps
                 // probably opDoc object
                 opDoc = gui.opDocs.getOpDocById(opThing.id);
             }
+        }
+
+        if (!opDoc)
+        {
+            return [];
         }
 
         const opLibs = this.getOpLibs(opDoc.name);
