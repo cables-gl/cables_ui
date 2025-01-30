@@ -34,11 +34,12 @@ export default class ElectronOpDirs
                 const listEle = ele.byId("dirlist");
                 const infoBlock = listEle.querySelector(".highlightBlock");
                 const addButton = this._tab.contentEle.querySelector("#addOpProjectDir");
+
                 if (addButton)
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        platform.talkerAPI.send("addProjectOpDir", (dirErr, _dirRes) =>
+                        platform.talkerAPI.send("addProjectOpDir", {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
