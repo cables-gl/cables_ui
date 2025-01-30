@@ -1359,7 +1359,7 @@ export default class Gui extends Events
 
                 if (platform.frontendOptions.showOpenPatch)
                 {
-                    let item = "<li><a onclick='platform.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
+                    let item = "<li><a onclick='CABLES.platform.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
 
