@@ -202,7 +202,7 @@ body
 
         &.invalid
         {
-            border:1px solid red
+            border:1px solid red;
         }
     }
 
@@ -760,7 +760,7 @@ body
 
 @import 'components/draglist.scss';
 @import 'components/searchbox.scss';
-@import 'components/opsearch.scss';
+@import 'components/opselect.scss';
 @import 'components/modal.scss';
 @import 'components/cmdpalette.scss';
 @import 'components/project_settings.scss';

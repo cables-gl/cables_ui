@@ -126,6 +126,7 @@ CABLES_CMD_RENDERER.changeSize = function ()
 
     if (gui.canvasManager.getCanvasUiBar())
         gui.canvasManager.getCanvasUiBar().showCanvasModal(false);
+
     const p = new ModalDialog({
         "prompt": true,
         "title": "Change Canvas size",

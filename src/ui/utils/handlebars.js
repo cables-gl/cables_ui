@@ -14,13 +14,13 @@ export function handleBarPrecompiled(name)
     let template = handleBarsPrecompiled[name];
     if (template) return template;
 
-    const source = document.getElementById(name).innerHTML;
-    if (!source)
+    const source = document.getElementById(name);
+    if (!source || !source.innerHTML)
     {
         log.warn("template not found", "template " + name + " not found...");
         return;
     }
-    const p = handleBarsPrecompiled[name] = Handlebars.compile(source);
+    const p = handleBarsPrecompiled[name] = Handlebars.compile(source.innerHTML);
     return p;
 }
 

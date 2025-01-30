@@ -2606,7 +2606,7 @@ export default class PatchView extends Events
         const suggestions = [
             {
                 "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
-                "name": "<span class=\"icon icon-op\"></span>OUT: " + op1.getTitle(),
+                "name": "OUT: " + op1.getTitle(),
                 "classname": ""
             }];
         if (!op1 || !op2) return;
@@ -2627,7 +2627,7 @@ export default class PatchView extends Events
 
                 suggestions.push({
                     "p": p,
-                    "name": p.title + "<span class=\"icon icon-arrow-right\"></span>" + addText,
+                    "name": p.title + " → " + addText,
                     "classname": "port_text_color_" + p.getTypeString().toLowerCase()
                 });
             }

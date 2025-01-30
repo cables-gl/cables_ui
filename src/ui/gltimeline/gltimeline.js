@@ -131,7 +131,7 @@ export default class GlTimeline extends Events
 
         let x = e.offsetX;
         let y = e.offsetY;
-
+        console.log("gltl move", e.buttons);
         this.#rects.mouseMove(x, y, e.buttons, e);
 
         if (this.mouseDown)
@@ -159,6 +159,9 @@ export default class GlTimeline extends Events
         this.mouseDown = true;
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseUp(e)
     {
         this.#rects.mouseUp(e);
@@ -183,16 +186,25 @@ export default class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
+    /**
+     * @param {number} t
+     */
     timeToPixelScreen(t)
     {
         return this.timeToPixel(t) + this.titleSpace - this.timeToPixel(this.offset);
     }
 
+    /**
+     * @param {number} t
+     */
     timeToPixel(t)
     {
         return t * this.#zoom * 12;
     }
 
+    /**
+     * @param {number} p
+     */
     pixelToTime(p)
     {
         return p / this.timeToPixel(1);

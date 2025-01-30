@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client";
 import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
@@ -14,24 +15,32 @@ export default class OpDependencyTabPanel extends TabPanel
     constructor(eleId, options)
     {
         super(eleId);
+
         this._options = options;
-        this._titles = {
-            "lib": "Add Lib",
-            "corelib": "Add Core-Lib",
-            "commonjs": "Add CommonJs",
-            "module": "Add JS-Module",
-            "npm": "Add NPM",
-            "op": "Add Op"
-        };
+        this._sources = [
+            { "title": "Upload File", "value": "file" },
+            { "title": "From URL", "value": "url" },
+            { "title": "Op", "value": "op" },
+            { "title": "Core-Lib", "value": "corelib" },
+        ];
+        if (gui && gui.user && gui.user.isStaff)
+        {
+            this._sources.push({ "title": "Lib", "value": "lib" });
+        }
+        if (platform.getSupportedOpDependencyTypes().includes("npm"))
+        {
+            this._sources.splice(2, 0, { "title": "From NPM", "value": "npm" });
+        }
+
     }
 
     init()
     {
         let activeTab;
-        platform.getSupportedOpDependencyTypes().forEach((depType, i) =>
+        this._sources.forEach((depSource, i) =>
         {
-            const title = this._titles[depType] || depType;
-            const tabOptions = { "hideToolbar": true, "closable": false, "depType": depType, ...this._options };
+            const title = depSource.title || depSource.value;
+            const tabOptions = { "hideToolbar": true, "closable": false, "depSource": depSource.value, ...this._options };
             const depTab = new OpDependencyTab(this, title, tabOptions);
             if (i === 0) activeTab = depTab;
         });

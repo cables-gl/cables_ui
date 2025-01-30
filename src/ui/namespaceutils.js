@@ -11,6 +11,33 @@ namespace.getNamespace = (opname) =>
     return parts.join(".") + ".";
 };
 
+namespace.isOpNameValid = (opName) =>
+{
+    if (!opName) return false;
+    if (opName.length < 6) return false;
+    if (opName.indexOf("..") !== -1) return false;
+    let matchString = "[^abcdefghijklmnopqrstuvwxyz._ABCDEFGHIJKLMNOPQRSTUVWXYZ0-9";
+    // patchops can have - because they contain the patch shortid
+    if (namespace.isPatchOp(opName) || namespace.isTeamOp(opName)) matchString += "\\-";
+    matchString += "]";
+    if (opName.match(matchString)) return false;
+
+    const parts = opName.split(".");
+    if(parts.length < 3) return false;
+
+    for (let i = 0; i < parts.length; i++) // do not start
+    {
+        const firstChar = parts[i].charAt(0);
+        const isnum = !isNaN(firstChar);
+        if (isnum) return false;
+        if (firstChar === "-") return false;
+    }
+
+    if (opName.endsWith(".json")) return false;
+
+    return opName.startsWith(defaultOps.prefixes.op);
+};
+
 namespace.isDevOp = (opname) =>
 {
     return opname && opname.includes(".Dev.");
