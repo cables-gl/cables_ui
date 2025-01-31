@@ -59,5 +59,14 @@ export default class GlTimelineTab
             userSettings.set("glTimelineOpened", false);
         });
 
+        this._tab.addButton("+", () =>
+        {
+            a.glTimeline.setZoomOffset(1.4, 0.5);
+        });
+        this._tab.addButton("-", () =>
+        {
+            a.glTimeline.setZoomOffset(0.6, 0.5);
+        });
+
     }
 }

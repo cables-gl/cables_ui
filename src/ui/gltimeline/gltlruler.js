@@ -38,7 +38,7 @@ export default class glTlRuler extends Events
         for (let i = 0; i < 300; i++)
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false });
-            mr.setColor(0.2, 0.2, 0.2, 1);
+            mr.setColor(0.0, 0.0, 0.0, 1);
             mr.setParent(this._glRectBg);
             this.markf.push(mr);
         }
@@ -104,26 +104,32 @@ export default class glTlRuler extends Events
             this.titles[i].setParentRect(null);
         }
 
-        const oneframePixel = this.#glTl.timeToPixel(1 / this.#glTl.fps);
-        if (oneframePixel >= 5)
+        if (this.#glTl.cfg.fadeInFrames)
         {
-            for (let i = 0; i < this.markf.length; i++)
+            const oneframePixel = this.#glTl.timeToPixel(1 / this.#glTl.fps);
+            if (oneframePixel >= 5)
             {
-                const mr = this.markf[i];
-                const t = offset + i * (1 / this.#glTl.fps);
-                const x = this.#glTl.timeToPixel(t - this._offset);
-                const a = CABLES.map(oneframePixel, 5, 15, 0.04, 0.5);
+                for (let i = 0; i < this.markf.length; i++)
+                {
+                    const mr = this.markf[i];
+                    const t = offset + i * (1 / this.#glTl.fps);
+                    const x = this.#glTl.timeToPixel(t - this._offset);
+                    const a = CABLES.map(oneframePixel, 5, 15, 0.04, 1.0);
 
-                mr.setSize(oneframePixel - 1, this.height);
-                mr.setPosition(x, 0);
-                mr.setColor(0.2, 0.2, 0.2, a);
+                    mr.setSize(oneframePixel - 1, this.height / 2);
+                    mr.setPosition(x, this.height / 2);
+                    mr.setColor(0.1, 0.1, 0.1, a);
+                }
+            }
+            else
+            {
+                for (let i = 0; i < this.markf.length; i++)
+                    this.markf[i].setSize(0, 0);
             }
         }
         else
-        {
-            for (let i = 0; i < this.markf.length; i++)
-                this.markf[i].setSize(0, 0);
-        }
+            for (let i = 0; i < this.markf.length; i++) this.markf[i].setSize(0, 0);
+
         const bps = this.#glTl.bpm / 60;
         const onebeatPixel = this.#glTl.timeToPixel(1 / bps - offset);
         for (let i = 0; i < this.markBeats.length; i++)
@@ -173,7 +179,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 4)
                 {
                     time = offset + (i * 10);
-                    x = this.#glTl.timeToPixel(time) - offsetPixel;
+                    x = this.#glTl.timeToPixel(time - this._offset);
                     if (time % 30 == 0)
                     {
                         h = 20;
@@ -185,7 +191,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 8)
                 {
                     time = offset + (i * 10);
-                    x = this.#glTl.timeToPixel(time) - offsetPixel;
+                    x = this.#glTl.timeToPixel(time - this._offset);
                     if (time % 10 == 0)
                     {
                         h = 20;
@@ -197,7 +203,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 50)
                 {
                     time = offset + i;
-                    x = this.#glTl.timeToPixel(time) - offsetPixel;
+                    x = this.#glTl.timeToPixel(time - this._offset);
                     if (time % 1 == 0)
                     {
                         h = 10;
@@ -218,7 +224,7 @@ export default class glTlRuler extends Events
             if (this.#glTl.displayUnits == "Frames")
             {
                 time = (offset + i);
-                x = this.#glTl.timeToPixel(time) - offsetPixel;
+                x = this.#glTl.timeToPixel(time - this._offset);
                 h = 20;
                 title = i * this.#glTl.fps + "f";
             }
