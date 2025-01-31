@@ -15,7 +15,8 @@ export default rendererCommands;
 
 CABLES_CMD_RENDERER.screenshot = function ()
 {
-    gui.corePatch().cgl.saveScreenshot();
+
+    gui.canvasManager.currentContext().saveScreenshot();
     gui.corePatch().resume();
 };
 

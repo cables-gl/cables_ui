@@ -101,7 +101,7 @@ export default class PlatformElectron extends Platform
             inputEle = ele.byQuery(inputId);
             if (inputEle) value = inputEle.value;
         }
-        platform.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
+        this.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
             if (file && inputEle)
             {
@@ -120,7 +120,7 @@ export default class PlatformElectron extends Platform
     {
         const showBackupDialog = () =>
         {
-            platform.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
+            this.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
             {
                 if (result.success) notify("Backup created!");
             });
@@ -158,7 +158,7 @@ export default class PlatformElectron extends Platform
         loadingModal.setTask("Exporting patch...");
         let talkerCommand = "exportPatch";
         if (exportType === "patch") talkerCommand = "exportPatchBundle";
-        platform.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
+        this.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {
             if (err)
             {

@@ -58,7 +58,7 @@ const defaultOpNames =
 
     "TriggerNumber": "Ops.Trigger.TriggerNumber",
     "TriggerString": "Ops.Trigger.TriggerString",
-    "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
+    "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString_v2",
     "triggerCounter": "Ops.Trigger.TriggerCounter",
 
     "StringLength": "Ops.String.StringLength_v2",

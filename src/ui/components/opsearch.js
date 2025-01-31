@@ -92,7 +92,6 @@ export default class OpSearch extends Events
         CABLES.UI.OPSELECT.maxPop = maxPop;
     }
 
-
     _searchWord(wordIndex, orig, list, query)
     {
         if (!query || query === " " || query === "") return;
@@ -120,9 +119,9 @@ export default class OpSearch extends Events
             if (list[i].abbrev && list[i].abbrev.indexOf(orig) === 0)
             {
                 found = true;
-                let p = 2;
-                if (orig.length === 2)p = 6;
-                if (orig.length === 3)p = 4;
+                let p = 4;
+                if (orig.length === 2)p = 10;
+                if (orig.length === 3)p = 8;
                 scoreDebug += "+" + p + " abbreviation<br/>";
                 points += p;
             }
@@ -160,14 +159,12 @@ export default class OpSearch extends Events
                 scoreDebug += "+5 query quals shortname<br/>";
             }
 
-
             if (orig.length > 1 && list[i]._lowerCaseName.indexOf(orig) > -1)
             {
                 found = true;
                 points += 2;
                 scoreDebug += "+2 found full namespace (" + query + ")<br/>";
             }
-
 
             if (points == 0)
             {
@@ -201,7 +198,6 @@ export default class OpSearch extends Events
                         points += p;
                         scoreDebug += "+" + p + " version<br/>";
                     }
-
 
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
@@ -275,7 +271,6 @@ export default class OpSearch extends Events
                                     scoreDebug += firstportfitsText;
                                 }
 
-
                                 for (let j = 0; j < docs.layout.portsOut.length; j++)
                                 {
                                     if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewOpToPort.type)
@@ -307,7 +302,6 @@ export default class OpSearch extends Events
                     }
                 }
 
-
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
                 {
                     points += 1;
@@ -323,7 +317,6 @@ export default class OpSearch extends Events
                     points += 2;
                     scoreDebug += "+2 is team op (" + query + ")<br/>";
                 }
-
 
                 const shortnessPoints = 2 * Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
                 points += shortnessPoints;
@@ -431,7 +424,6 @@ export default class OpSearch extends Events
                 if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
             }
 
-
             let shortName = "";
             const ccParts = this._list[i].shortName.split(/(?=[A-Z,0-9,/.])/);
             for (let j = 0; j < ccParts.length; j++)
@@ -439,11 +431,9 @@ export default class OpSearch extends Events
             this._list[i].abbrev = shortName.toLocaleLowerCase();
         }
 
-
         this._wordsDb = Object.keys(buildWordDB);
         this._wordsDb.sort((a, b) => { return b.length - a.length; });
     }
-
 
     _getOpsNamesFromCode(opnames, ns, val, parentname)
     {
