@@ -50,10 +50,16 @@ export default class glTlAnim extends Events
 
         this.#anim = anim;
         this.#glTl = glTl;
+        this.#op = op;
+        this.#port = port;
 
-        this.#glRectBg = this.#glTl.rects.createRect({ "draggable": false });
+        this.#glRectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectBg.setSize(this.#glTl.titleSpace, this.height);
         this.#glRectBg.setColor(0, 0, 0);
+        this.#glRectBg.on("mousedown", () =>
+        {
+            gui.patchView.focusOp(this.#op.id);
+        });
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
@@ -66,8 +72,6 @@ export default class glTlAnim extends Events
         this.#glTitle.setParentRect(this.#glRectBg);
 
         this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
-        this.#op = op;
-        this.#port = port;
 
         anim.on("onChange", () =>
         {

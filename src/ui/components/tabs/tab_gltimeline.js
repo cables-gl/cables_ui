@@ -54,7 +54,7 @@ export default class GlTimelineTab
             a.parentResized();
         });
 
-        this._tab.on("closed", () =>
+        this._tab.on("close", () =>
         {
             userSettings.set("glTimelineOpened", false);
         });
