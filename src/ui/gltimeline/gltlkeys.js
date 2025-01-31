@@ -47,9 +47,8 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
-            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time + this.#glTl.offset), 10, -0.1);
+            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset), 10, -0.1);
         }
-
     }
 
     init()

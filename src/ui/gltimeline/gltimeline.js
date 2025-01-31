@@ -76,7 +76,7 @@ export default class GlTimeline extends Events
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setColor(0, 1, 1, 1);
+        this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0);
 
         this.#textTimeS = new GlText(this.texts, "time");
@@ -131,17 +131,20 @@ export default class GlTimeline extends Events
 
         let x = e.offsetX;
         let y = e.offsetY;
-        console.log("gltl move", e.buttons);
         this.#rects.mouseMove(x, y, e.buttons, e);
 
-        if (this.mouseDown)
+        if (e.buttons == 1)
         {
-
-            /*
-             * console.log("drag", x);s
-             * this.rects.mouseDrag(x, y);
-             */
+            gui.corePatch().timer.setTime(this.pixelToTime(e.offsetX - this.titleSpace) + this.offset);
+            this.updateAllElements();
         }
+        else
+        if (e.buttons == 2)
+        {
+            this.ruler.scroll(-1 * this.pixelToTime(e.movementX));
+            this.updateAllElements();
+        }
+
     }
 
     /**
@@ -203,11 +206,19 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {number} p
+     * @param {number} x
      */
-    pixelToTime(p)
+    pixelToTime(x)
     {
-        return p / this.timeToPixel(1);
+        return x / this.timeToPixel(1);
+    }
+
+    /**
+     * @param {number} x
+     */
+    pixelScreenToTime(x)
+    {
+        return this.pixelToTime(x - this.titleSpace);
     }
 
     init()
