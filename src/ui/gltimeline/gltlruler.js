@@ -116,9 +116,9 @@ export default class glTlRuler extends Events
                     const x = this.#glTl.timeToPixel(t - this._offset);
                     const a = CABLES.map(oneframePixel, 5, 15, 0.04, 1.0);
 
-                    mr.setSize(oneframePixel - 1, this.height / 2);
-                    mr.setPosition(x, this.height / 2);
-                    mr.setColor(0.1, 0.1, 0.1, a);
+                    mr.setSize(oneframePixel - 2, this.height / 2);
+                    mr.setPosition(x + 1, this.height / 2);
+                    mr.setColor(0.13, 0.13, 0.13, a);
                 }
             }
             else
@@ -136,12 +136,12 @@ export default class glTlRuler extends Events
         {
             const mr = this.markBeats[i];
             const t = offset + i * 1 / bps;
-            const x = this.#glTl.timeToPixel(t - this._offset);
+            const x = this.#glTl.timeToPixel(t);
             mr.setSize(onebeatPixel - 2, 5);
             mr.setPosition(x, 0);
 
-            let shade = 0.2;
-            if (i % 4 == 0)shade = 0;
+            let shade = 0.5;
+            if (i % 4 == 0)shade = 0.8;
 
             mr.setColor(shade, shade, shade, 1);
         }

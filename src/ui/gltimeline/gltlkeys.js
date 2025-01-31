@@ -25,6 +25,8 @@ export default class glTlKeys extends Events
     /** @type {GlRect} */
     #parentRect = null;
 
+    sizeKey = 13;
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -47,7 +49,7 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
-            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset), 10, -0.1);
+            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, 10, -0.1);
         }
     }
 
@@ -56,9 +58,10 @@ export default class glTlKeys extends Events
         this.dispose();
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
+
             const kr = this.#glTl.rects.createRect({ "draggable": true });
-            kr.setShape(6);
-            kr.setSize(10, 10);
+            kr.setShape(13);
+            kr.setSize(this.sizeKey, this.sizeKey);
             kr.setColor(1, 1, 1, 1);
             kr.setParent(this.#parentRect);
             this.#keyRects.push(kr);

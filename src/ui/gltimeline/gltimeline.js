@@ -66,7 +66,8 @@ export default class GlTimeline extends Events
         "fps": 30,
         "bpm": 120,
         "fadeInFrames": true,
-        "displayUnits": "Seconds"
+        "displayUnits": "Seconds",
+        "restrictToFrames": true
     };
 
     /**
@@ -106,6 +107,10 @@ export default class GlTimeline extends Events
         this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
         this.#textTimeF.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
 
+        gui.corePatch().timer.on("playPause", () =>
+        {
+            gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
+        });
         this.init();
 
         gui.on("opSelectChange", () =>
@@ -126,6 +131,11 @@ export default class GlTimeline extends Events
         cgl.addEventListener("resize", this.resize.bind(this));
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
+
+        gui.corePatch().on("onOpDelete", () => { this.init(); });
+        gui.corePatch().on("onOpAdd", () => { this.init(); });
+        gui.corePatch().on("portAnimToggle", () => { this.init(); });
+
         this.updateAllElements();
     }
 
@@ -223,7 +233,7 @@ export default class GlTimeline extends Events
     _onCanvasWheel(event)
     {
         let delta = 0;
-        if (event.deltaY > 0)delta = 1.1;
+        if (event.deltaY < 0)delta = 1.1;
         else delta = 0.9;
 
         this.setZoomOffset(delta);
@@ -292,7 +302,9 @@ export default class GlTimeline extends Events
                 }
             }
         }
+        this.updateAllElements();
         this.setPositions();
+        this.resize();
     }
 
     setPositions()
@@ -320,7 +332,8 @@ export default class GlTimeline extends Events
 
     updateSize()
     {
-
+        this.setPositions();
+        this.updateAllElements();
     }
 
     /**
@@ -375,7 +388,6 @@ export default class GlTimeline extends Events
         this.duration = cfg.duration;
         this.bpm = cfg.bpm;
         this.displayUnits = cfg.displayUnits;
-        console.log(this.cfg);
         this.updateAllElements();
     }
 }

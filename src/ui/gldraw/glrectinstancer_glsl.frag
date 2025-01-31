@@ -208,6 +208,19 @@ float samp(in vec2 uv, float w) {
     {
         finalColor.a=1.0-step(0.1,abs(uv.x-0.5))*step(0.1,abs(uv.y-0.5));
     }
+    else if (shape==13.0) // rhomb
+    {
+        vec2 uw=uv;
+        uw=clamp(uw,0.0,1.0);
+
+        if(uw.x>0.5)
+            if(abs(uw.y-0.5) < abs(mod( (1.0-uw.x)-0.5,0.5))) finalColor.a=1.0;
+            else discard;
+        else
+            if(abs(uw.y-0.5) < abs(mod(uw.x,0.5))) finalColor.a=1.0;
+            else discard;
+
+    }
 
 
     if(border>=1.0) // border

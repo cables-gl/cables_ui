@@ -38,6 +38,9 @@ export default class glTlAnim extends Events
     width = 222;
     height = 30;
 
+    /** @type {Array<Object >} */
+    #disposeRects = [];
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -54,22 +57,21 @@ export default class glTlAnim extends Events
         this.#port = port;
 
         this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
-
         this.#glRectTitle.setColor(0, 0, 0);
-
         this.#glRectTitle.on("mousedown", () =>
         {
             gui.patchView.focusOp(this.#op.id);
         });
+        this.#disposeRects.push(this.#glRectTitle);
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
-
-        // this.#glRectKeysBg.setParent(this.#glRectTitle);
+        this.#disposeRects.push(this.#glRectKeysBg);
 
         this.#glTitle = new GlText(this.#glTl.texts, op.name + " - " + port.name || "unknown anim");
         this.#glTitle.setPosition(10, 0);
         this.#glTitle.setParentRect(this.#glRectTitle);
+        this.#disposeRects.push(this.#glTitle);
 
         this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
 
@@ -89,12 +91,12 @@ export default class glTlAnim extends Events
 
     updateColor()
     {
-        this.#glTitle.setColor(1, 1, 1, 1);
+        this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
         if (gui.patchView.isCurrentOp(this.#op))
         {
-            this.#glTitle.setColor(0.5, 1, 1, 1);
+            this.#glTitle.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
             this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
         }
     }
@@ -118,6 +120,8 @@ export default class glTlAnim extends Events
 
     dispose()
     {
+        for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
+        this.#keys.dispose();
 
     }
 }
