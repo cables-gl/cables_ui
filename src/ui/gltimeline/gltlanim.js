@@ -73,7 +73,7 @@ export default class glTlAnim extends Events
         this.#glTitle.setParentRect(this.#glRectTitle);
         this.#disposeRects.push(this.#glTitle);
 
-        this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
+        this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg, this.#port);
 
         anim.on("onChange", () =>
         {

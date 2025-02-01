@@ -4,6 +4,11 @@ import { gui } from "../gui.js";
 
 export default class GlCanvas
 {
+
+    /**
+     * @param {Patch}} _patch
+     * @param {HTMLElement} parentEle
+     */
     constructor(_patch, parentEle)
     {
         this._moveover = true;
@@ -25,9 +30,8 @@ export default class GlCanvas
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
 
-        this.canvas.setAttribute("tabindex", 10);
+        this.canvas.setAttribute("tabindex", 0);
         this._parentEle = parentEle;
-
 
         if (parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
@@ -53,7 +57,6 @@ export default class GlCanvas
         {
             this.patch.resume();
         });
-
 
         this.canvas.addEventListener("touchmove",
             (e) =>
@@ -94,6 +97,10 @@ export default class GlCanvas
         return this.canvas;
     }
 
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
     setSize(w, h)
     {
         this.width = w;
@@ -104,11 +111,11 @@ export default class GlCanvas
         this.canvas.width = this.width * window.devicePixelRatio;
         this.canvas.height = this.height * window.devicePixelRatio;
 
+        console.log("sets", this.canvas.width);
+
         this.cgl.pixelDensity = window.devicePixelRatio;
-
-        if (this.patch.isPlaying()) this.cgl.setSize(this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+        if (this.patch.isPlaying()) this.cgl.setSize(this.width, this.height);
     }
-
 
     dispose()
     {
