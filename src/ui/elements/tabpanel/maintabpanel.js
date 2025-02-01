@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
+import TabPanel from "./tabpanel.js";
 
 /**
  * the maintabpanel on the left side of the patchfield, can be minimized
@@ -14,6 +15,8 @@ export default class MainTabPanel extends Events
     constructor(tabs)
     {
         super();
+
+        /** @type {TabPanel} */
         this._tabs = tabs;
         this._tabs.showTabListButton = true;
         this._visible = false;
@@ -102,6 +105,8 @@ export default class MainTabPanel extends Events
         {
             this.hide();
             gui.patchView.focus();
+            const actTab = this.tabs.getActiveTab();
+            actTab.activate();
         }
         else this.show(userInteraction);
     }

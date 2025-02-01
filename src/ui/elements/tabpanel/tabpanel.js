@@ -329,6 +329,9 @@ export default class TabPanel extends Events
         return this._tabs.length;
     }
 
+    /**
+     * @returns {Tab}
+     */
     cycleActiveTab()
     {
         if (this._tabs.length <= 1) return;
@@ -340,6 +343,9 @@ export default class TabPanel extends Events
         return this.activateTab(this._tabs[0].id);
     }
 
+    /**
+     * @returns {Tab}
+     */
     getActiveTab()
     {
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].active) return this._tabs[i];
