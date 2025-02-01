@@ -368,8 +368,9 @@ export default class GlRect extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} button
+     * * @param {MouseEvent} event
      */
-    mouseDrag(x, y, button)
+    mouseDrag(x, y, button, event)
     {
         if (!this.interactive) return;
 
@@ -385,7 +386,7 @@ export default class GlRect extends Events
             this.#dragStartY = this.y;
         }
         // this.setPosition( x - this.#dragOffsetX, y - this.#dragOffsetY);
-        this.emitEvent("drag", this, this.#dragOffsetX, this.#dragOffsetY, button);
+        this.emitEvent("drag", this, this.#dragOffsetX, this.#dragOffsetY, button, event);
     }
 
     mouseDragEnd()
@@ -400,7 +401,7 @@ export default class GlRect extends Events
      * @param {number} y
      * @param {number} button
      */
-    mouseMove(x, y, button)
+    mouseMove(x, y, button, e)
     {
         if (!this.interactive) return;
         if (!this.#visible) return;
@@ -427,7 +428,7 @@ export default class GlRect extends Events
 
         for (let i = 0; i < this.childs.length; i++)
         {
-            this.childs[i].mouseMove(x, y, button);
+            this.childs[i].mouseMove(x, y, button, e);
             if (this.childs[i].isHovering()) this.#hovering = false;
         }
 

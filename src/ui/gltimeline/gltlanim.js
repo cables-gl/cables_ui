@@ -21,7 +21,7 @@ export default class glTlAnim extends Events
     #glRectKeysBg = null;
 
     /** @type {GlRect} */
-    #glRectBg = null;
+    #glRectTitle = null;
 
     /** @type {GlText} */
     #glTitle = null;
@@ -38,6 +38,9 @@ export default class glTlAnim extends Events
     width = 222;
     height = 30;
 
+    /** @type {Array<Object >} */
+    #disposeRects = [];
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -50,24 +53,27 @@ export default class glTlAnim extends Events
 
         this.#anim = anim;
         this.#glTl = glTl;
+        this.#op = op;
+        this.#port = port;
 
-        this.#glRectBg = this.#glTl.rects.createRect({ "draggable": false });
-        this.#glRectBg.setSize(this.#glTl.titleSpace, this.height);
-        this.#glRectBg.setColor(0, 0, 0);
+        this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
+        this.#glRectTitle.setColor(0, 0, 0);
+        this.#glRectTitle.on("mousedown", () =>
+        {
+            gui.patchView.focusOp(this.#op.id);
+        });
+        this.#disposeRects.push(this.#glRectTitle);
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
-        this.#glRectKeysBg.setPosition(150, 1);
-        this.#glRectKeysBg.setColor(0.2, 0.2, 0.9);
-        this.#glRectKeysBg.setParent(this.#glRectBg);
+        this.#disposeRects.push(this.#glRectKeysBg);
 
         this.#glTitle = new GlText(this.#glTl.texts, op.name + " - " + port.name || "unknown anim");
         this.#glTitle.setPosition(10, 0);
-        this.#glTitle.setParentRect(this.#glRectBg);
+        this.#glTitle.setParentRect(this.#glRectTitle);
+        this.#disposeRects.push(this.#glTitle);
 
         this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg);
-        this.#op = op;
-        this.#port = port;
 
         anim.on("onChange", () =>
         {
@@ -85,12 +91,12 @@ export default class glTlAnim extends Events
 
     updateColor()
     {
-        this.#glTitle.setColor(1, 1, 1, 1);
+        this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
         if (gui.patchView.isCurrentOp(this.#op))
         {
-            this.#glTitle.setColor(0.5, 1, 1, 1);
+            this.#glTitle.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
             this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
         }
     }
@@ -101,23 +107,21 @@ export default class glTlAnim extends Events
      */
     setPosition(x, y)
     {
-        this.#glRectBg.setPosition(x, y);
-
-        console.log("setpos", x, y);
-        console.log("glRectBg.absY", this.#glRectBg.absY);
-
-        console.log("glRectKeysBg.absY", this.#glRectKeysBg.absY);
+        this.#glRectTitle.setPosition(x, y, -0.5);
+        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
     }
 
     setWidth(w)
     {
         this.width = w;
-        this.#glRectBg.setSize(this.width, this.height);
-        this.#glRectKeysBg.setSize(this.width, this.height - 1);
+        this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
+        this.#glRectKeysBg.setSize(this.width, this.height - 2);
     }
 
     dispose()
     {
+        for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
+        this.#keys.dispose();
 
     }
 }

@@ -613,13 +613,13 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         if (this.allowDragging && this.#draggingRect)
         {
-            this.#draggingRect.mouseDrag(x, y, button);
+            this.#draggingRect.mouseDrag(x, y, button, event);
             return;
         }
 
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
-                this.#rects[i].mouseMove(x, y, button);
+                this.#rects[i].mouseMove(x, y, button, event);
 
         perf.finish();
     }
