@@ -22,7 +22,6 @@ export default class glTlRuler extends Events
         this.#glTl = glTl;
         this.y = 30;
         this.height = 50;
-        this._offset = 0;
 
         this._glRectBg = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
         this._glRectBg.setSize(222, this.height);
@@ -72,16 +71,6 @@ export default class glTlRuler extends Events
         this.update();
     }
 
-    get offset()
-    {
-        return this._offset;
-    }
-
-    scroll(off)
-    {
-        this._offset += off;
-    }
-
     /**
      * @param {number} x
      * @param {number} y
@@ -95,8 +84,8 @@ export default class glTlRuler extends Events
     {
         let pixelScale = this.#glTl.view.timeToPixel(1);
         let titleCounter = 0;
-        let offset = Math.floor(this._offset);
-        let offsetPixel = this.#glTl.view.timeToPixelScreen(this._offset % 1);
+        let offset = Math.floor(this.#glTl.view.offset);
+        let offsetPixel = this.#glTl.view.timeToPixelScreen(this.#glTl.view.offset % 1);
 
         for (let i = 0; i < this.titles.length; i++)
         {
@@ -114,7 +103,7 @@ export default class glTlRuler extends Events
                 {
                     const mr = this.markf[i];
                     const t = offset + i * (1 / this.#glTl.fps);
-                    const x = this.#glTl.view.timeToPixel(t - this._offset);
+                    const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
                     const a = CABLES.map(oneframePixel, 5, 15, 0.04, 1.0);
 
                     mr.setSize(oneframePixel - 2, this.height / 2);
@@ -143,7 +132,7 @@ export default class glTlRuler extends Events
             {
                 const mr = this.markBeats[i];
                 const t = offset + i * (1 / bps);
-                const x = this.#glTl.view.timeToPixel(t - this._offset);
+                const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
                 mr.setSize(onebeatPixel - 2, 5);
                 mr.setPosition(x, 1);
 
@@ -178,7 +167,7 @@ export default class glTlRuler extends Events
                 if (pixelScale > 50)
                 {
                     time = offset + i * 0.1;
-                    x = this.#glTl.view.timeToPixel(time - this._offset);
+                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 1 == 0.5)
                     {
                         h = 25;
@@ -194,7 +183,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 4)
                 {
                     time = offset + (i * 10);
-                    x = this.#glTl.view.timeToPixel(time - this._offset);
+                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 30 == 0)
                     {
                         h = 20;
@@ -206,7 +195,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 8)
                 {
                     time = offset + (i * 10);
-                    x = this.#glTl.view.timeToPixel(time - this._offset);
+                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 10 == 0)
                     {
                         h = 20;
@@ -218,7 +207,7 @@ export default class glTlRuler extends Events
                 if (pixelScale < 50)
                 {
                     time = offset + i;
-                    x = this.#glTl.view.timeToPixel(time - this._offset);
+                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 1 == 0)
                     {
                         h = 10;
@@ -239,7 +228,7 @@ export default class glTlRuler extends Events
             if (this.#glTl.displayUnits == "Frames")
             {
                 time = (offset + i);
-                x = this.#glTl.view.timeToPixel(time - this._offset);
+                x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                 h = 20;
                 title = i * this.#glTl.fps + "f";
             }

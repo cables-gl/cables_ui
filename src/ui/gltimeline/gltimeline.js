@@ -202,7 +202,7 @@ export default class GlTimeline extends Events
         else
         if (e.buttons == 2)
         {
-            this.ruler.scroll(-1 * this.view.pixelToTime(e.movementX));
+            this.view.scroll(-1 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
         }
 
@@ -234,6 +234,12 @@ export default class GlTimeline extends Events
 
     _onCanvasWheel(event)
     {
+
+        if (event.metaKey)
+        {
+            this.view.scroll(event.deltaY * 0.002);
+        }
+        else
         if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
@@ -244,7 +250,7 @@ export default class GlTimeline extends Events
         }
         else
         {
-            this.ruler.scroll(event.deltaX * 0.01);
+            this.view.scroll(event.deltaX * 0.01);
         }
 
         this.pixelPerSecond = this.view.timeToPixel(1);

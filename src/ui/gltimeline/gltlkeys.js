@@ -56,7 +56,7 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
-            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
+            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
         }
 
         for (let i = 0; i < this.#anim.keys.length; i++)

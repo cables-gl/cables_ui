@@ -35,12 +35,12 @@ export default class GlTimelineTab
             gui.corePatch().timer.setTime(0);
         });
 
-        this.#tab.addButton("rr", () =>
+        this.#tab.addButton("<span class=\"icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1);
         });
 
-        const buttonPlay = this.#tab.addButton("playpause", () =>
+        const buttonPlay = this.#tab.addButton("<span class=\"icon icon-play\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
 
@@ -48,7 +48,7 @@ export default class GlTimelineTab
             else buttonPlay.innerHTML = "play";
         });
 
-        this.#tab.addButton("ff", () =>
+        this.#tab.addButton("<span class=\"icon icon-fast-forward\"></span>", () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1);
         });
@@ -71,6 +71,16 @@ export default class GlTimelineTab
         this.#tab.addButton("-", () =>
         {
             a.glTimeline.view.setZoomOffset(0.6, 0.5);
+        });
+
+        this.#tab.addButton("<span class=\"icon icon-arrow-left\"></span>", () =>
+        {
+            a.glTimeline.view.scroll(-1);
+        });
+
+        this.#tab.addButton("<span class=\"icon icon-arrow-right\"></span>", () =>
+        {
+            a.glTimeline.view.scroll(1);
         });
 
     }

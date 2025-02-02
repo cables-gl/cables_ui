@@ -8,7 +8,13 @@ export default class GlTlView
 
     /** @type {Anim} */
     #animZoom;
+
+    /** @type {Anim} */
+    #animScroll;
+
     #zoom = 20;
+
+    #offset = 0;
 
     #timer = new CABLES.Timer();
 
@@ -16,10 +22,14 @@ export default class GlTlView
     {
         this.#tl = tl;
 
-        const defaultEasing = CABLES.EASING_EXPO_OUT;
+        const defaultEasing = CABLES.EASING_CUBIC_OUT;
 
         this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animZoom.setValue(0, this.#zoom);
+
+        this.#animScroll = new CABLES.Anim({ "defaultEasing": defaultEasing });
+        this.#animScroll.setValue(0, this.#offset);
+
         this.#timer.play();
 
     }
@@ -37,9 +47,7 @@ export default class GlTlView
     /** @returns {number} */
     get offset()
     {
-        if (!this.#tl) return 0;
-        if (!this.#tl.ruler) return 0;
-        return this.#tl.ruler.offset;
+        return this.#offset;
     }
 
     /** @returns {number} */
@@ -53,7 +61,7 @@ export default class GlTlView
         let zoom = this.#zoom * delta;
         zoom = CABLES.clamp(zoom, 0.1, 10000000);
 
-        this.#animZoom.clear();
+        this.#animZoom.clear(this.#timer.getTime());
         this.#animZoom.setValue(this.#timer.getTime(), this.#zoom);
         this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
     }
@@ -62,12 +70,20 @@ export default class GlTlView
     {
     }
 
+    scroll(off, dur = 0.2)
+    {
+        this.#animScroll.clear(this.#timer.getTime());
+        this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
+        this.#animScroll.setValue(this.#timer.getTime() + dur, this.#offset + off);
+
+    }
+
     /**
      * @param {number} t
      */
     timeToPixelScreen(t)
     {
-        return this.timeToPixel(t) + this.#tl.titleSpace - this.timeToPixel(this.offset);
+        return this.timeToPixel(t) + this.#tl.titleSpace - this.timeToPixel(this.#offset);
     }
 
     /**
@@ -98,5 +114,6 @@ export default class GlTlView
     {
         this.#timer.update();
         this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
+        this.#offset = this.#animScroll.getValue(this.#timer.getTime());
     }
 }
