@@ -44,11 +44,12 @@ export default class glTlRuler extends Events
         }
 
         this.markBeats = [];
-        for (let i = 0; i < 100; i++)
+        for (let i = 0; i < 400; i++)
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false });
             mr.setColor(0.2, 0.2, 0.2, 1);
             mr.setParent(this._glRectBg);
+            mr.setSize(0, 0);
             this.markBeats.push(mr);
         }
 
@@ -119,6 +120,9 @@ export default class glTlRuler extends Events
                     mr.setSize(oneframePixel - 2, this.height / 2);
                     mr.setPosition(x + 1, this.height / 2);
                     mr.setColor(0.13, 0.13, 0.13, a);
+
+                    if (t < 0)
+                        this.markf[i].setSize(0, 0);
                 }
             }
             else
@@ -130,20 +134,33 @@ export default class glTlRuler extends Events
         else
             for (let i = 0; i < this.markf.length; i++) this.markf[i].setSize(0, 0);
 
-        const bps = this.#glTl.bpm / 60;
-        const onebeatPixel = this.#glTl.timeToPixel(1 / bps - offset);
-        for (let i = 0; i < this.markBeats.length; i++)
+        if (this.#glTl.cfg.showBeats)
         {
-            const mr = this.markBeats[i];
-            const t = offset + i * 1 / bps;
-            const x = this.#glTl.timeToPixel(t);
-            mr.setSize(onebeatPixel - 2, 5);
-            mr.setPosition(x, 0);
+            const bps = this.#glTl.bpm / 60;
+            const onebeatPixel = this.#glTl.timeToPixel(1 / bps);
+            const spb = 1 / bps;
+            for (let i = 0; i < this.markBeats.length; i++)
+            {
+                const mr = this.markBeats[i];
+                const t = offset + i * (1 / bps);
+                const x = this.#glTl.timeToPixel(t - this._offset);
+                mr.setSize(onebeatPixel - 2, 5);
+                mr.setPosition(x, 1);
 
-            let shade = 0.5;
-            if (i % 4 == 0)shade = 0.8;
+                // const absBeat = Math.floor(t / (spb));
+                let shade = 0.5;
+                // if (absBeat % 4 == 0)shade = 0.8;
 
-            mr.setColor(shade, shade, shade, 1);
+                mr.setColor(shade, shade, shade, 1);
+
+                if (t < 0)
+                    mr.setSize(0, 0);
+
+            }
+        }
+        else
+        {
+            for (let i = 0; i < this.markBeats.length; i++) this.markBeats[i].setSize(0, 0);
         }
 
         for (let i = 0; i < this.marks.length; i++)

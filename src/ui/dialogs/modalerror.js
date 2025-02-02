@@ -247,7 +247,11 @@ export default class ModalError
             if (CABLES.lastError.opTriggerStack.indexOf("Ops.Gl.Shader.CustomShader_") >= 0 ||
                 CABLES.lastError.opTriggerStack.indexOf("Ops.User.") >= 0 ||
                 CABLES.lastError.opTriggerStack.indexOf("Ops.Team.") >= 0 ||
-                CABLES.lastError.opTriggerStack.indexOf("Ops.Patch.") >= 0) ignoreErrorReport = true;
+                CABLES.lastError.opTriggerStack.indexOf("Ops.Patch.") >= 0)
+            {
+                console.log("suppressed error report...");
+                ignoreErrorReport = true;
+            }
         }
 
         let showSendButton = true;

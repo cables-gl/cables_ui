@@ -22,8 +22,14 @@ export default class glTlKeys extends Events
     /** @type {Array<GlRect} */
     #keyRects = [];
 
+    /** @type {Array<GlRect} */
+    #dopeRects = [];
+
     /** @type {GlRect} */
     #parentRect = null;
+
+    /** @type {CABLES.Port} */
+    #port;
 
     sizeKey = 13;
 
@@ -32,12 +38,13 @@ export default class glTlKeys extends Events
      * @param {Anim} anim
      * @param {GlRect} parentRect
      */
-    constructor(glTl, anim, parentRect)
+    constructor(glTl, anim, parentRect, port)
     {
         super();
         this.#anim = anim;
         this.#glTl = glTl;
         this.#parentRect = parentRect;
+        this.#port = port;
 
         this.init();
     }
@@ -49,7 +56,32 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
-            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, 10, -0.1);
+            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
+        }
+
+        for (let i = 0; i < this.#anim.keys.length; i++)
+        {
+            const kr = this.#dopeRects[i];
+            if (kr)
+            {
+                kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset), 0, -0.1);
+
+                if (this.#anim.keys[i + 1])
+                {
+                    if (i == 0)
+                    {
+                        kr.setPosition(this.#glTl.timeToPixel(0 - this.#glTl.offset), 0);
+                        kr.setSize(this.#glTl.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
+                    }
+                    else
+                        kr.setSize(this.#glTl.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
+                }
+                else
+                {
+                    // after last
+                    kr.setSize(this.#glTl.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
+                }
+            }
         }
     }
 
@@ -58,13 +90,34 @@ export default class glTlKeys extends Events
         this.dispose();
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
-
             const kr = this.#glTl.rects.createRect({ "draggable": true });
             kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
             kr.setColor(1, 1, 1, 1);
             kr.setParent(this.#parentRect);
             this.#keyRects.push(kr);
+
+            if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
+            {
+                const krDop = this.#glTl.rects.createRect({ "draggable": true });
+                krDop.setSize(this.sizeKey, this.sizeKey);
+
+                if (this.#port.uiAttribs.display == "bool")
+                {
+                    if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
+                    else krDop.setColor(0.4, 0.4, 0.4, 1);
+                }
+                if (this.#port.uiAttribs.increment == "integer")
+                {
+                    if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
+                    else krDop.setColor(0.4, 0.4, 0.4, 1);
+
+                }
+
+                krDop.setParent(this.#parentRect);
+                this.#dopeRects.push(krDop);
+            }
+
         }
         this.update();
     }
@@ -73,6 +126,8 @@ export default class glTlKeys extends Events
     {
         for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
         this.#keyRects = [];
+        for (let i = 0; i < this.#dopeRects.length; i++) this.#dopeRects[i].dispose();
+        this.#dopeRects = [];
     }
 
 }

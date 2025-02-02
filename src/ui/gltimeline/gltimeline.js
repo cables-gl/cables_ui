@@ -37,7 +37,7 @@ export default class GlTimeline extends Events
     #glRectCursor;
 
     duration = 120;
-    bpm = 120;
+
     displayUnits = "Seconds";
 
     /** @type {GlText} */
@@ -45,6 +45,9 @@ export default class GlTimeline extends Events
 
     /** @type {GlText} */
     #textTimeF;
+
+    /** @type {GlText} */
+    #textTimeB;
 
     /** @type {GlRect} */
     #timeBg;
@@ -64,8 +67,9 @@ export default class GlTimeline extends Events
 
     cfg = {
         "fps": 30,
-        "bpm": 120,
+        "bpm": 180,
         "fadeInFrames": true,
+        "showBeats": true,
         "displayUnits": "Seconds",
         "restrictToFrames": true
     };
@@ -107,6 +111,10 @@ export default class GlTimeline extends Events
         this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
         this.#textTimeF.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
 
+        this.#textTimeB = new GlText(this.texts, "");
+        this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
+        this.#textTimeB.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+
         gui.corePatch().timer.on("playPause", () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
@@ -137,6 +145,11 @@ export default class GlTimeline extends Events
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.updateAllElements();
+    }
+
+    get bpm()
+    {
+        return this.cfg.bpm;
     }
 
     get fps()
@@ -369,6 +382,11 @@ export default class GlTimeline extends Events
         while (parts[1].length < 3)parts[1] += "0";
         this.#textTimeS.text = "second " + parts[0] + "." + parts[1];
         this.#textTimeF.text = "frame " + Math.floor(gui.corePatch().timer.getTime() * this.fps);
+
+        if (this.cfg.showBeats)
+        {
+            this.#textTimeB.text = "beat " + Math.floor(gui.corePatch().timer.getTime() * (this.bpm / 60));
+        }
 
     }
 
