@@ -86,8 +86,12 @@ export default class MainTabPanel extends Events
         gui.setLayout();
 
         this._tabs.updateSize();
+        if (this._tabs.getActiveTab()) this._tabs.getActiveTab().activate();
     }
 
+    /**
+     * @param {boolean} donotsave
+     */
     hide(donotsave)
     {
         this._visible = false;

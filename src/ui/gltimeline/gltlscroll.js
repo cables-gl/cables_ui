@@ -80,11 +80,11 @@ export default class glTlScroll extends Events
     update()
     {
         const pixelPerSecond = (this.#width - this._glTl.titleSpace) / this._glTl.duration;
-        const visibleTime = this._glTl.pixelToTime(this.#width - this._glTl.titleSpace);
+        const visibleTime = this._glTl.view.pixelToTime(this.#width - this._glTl.titleSpace);
 
         const pixelVisible = (visibleTime) * pixelPerSecond;
 
-        let x = this._glTl.offset * pixelPerSecond;
+        let x = this._glTl.view.offset * pixelPerSecond;
 
         this.#rectBar.setPosition(x, 0);
         this.#rectBar.setSize(pixelVisible, this.height);

@@ -7,6 +7,7 @@ import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
+import GlTlView from "./gltlview.js";
 
 /**
  * gl timeline
@@ -54,16 +55,13 @@ export default class GlTimeline extends Events
 
     titleSpace = 150;
 
-    #zoom = 20;
+    /** @type {GlTlView} */
+    view = null;
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
     #isAnimated = false;
-
-    /** @type {Anim} */
-    #animZoom;
-
-    #timer = new CABLES.Timer();
 
     cfg = {
         "fps": 30,
@@ -84,6 +82,7 @@ export default class GlTimeline extends Events
         this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;
+        this.view = new GlTlView(this);
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
 
@@ -125,12 +124,6 @@ export default class GlTimeline extends Events
         {
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
-        const defaultEasing = CABLES.EASING_EXPO_OUT;
-
-        this.#timer.play();
-
-        this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
-        this.#animZoom.setValue(0, this.#zoom);
 
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
@@ -147,11 +140,13 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
+    /** @returns {number} */
     get bpm()
     {
         return this.cfg.bpm;
     }
 
+    /** @returns {number} */
     get fps()
     {
         return this.cfg.fps;
@@ -162,10 +157,14 @@ export default class GlTimeline extends Events
         return this.#rects;
     }
 
-    get offset()
+    get isAnimated()
     {
-        if (!this.ruler) return 0;
-        return this.ruler.offset;
+        return !this.view.animsFinished;
+    }
+
+    get cursorTime()
+    {
+        return gui.corePatch().timer.getTime();
     }
 
     resize()
@@ -196,14 +195,14 @@ export default class GlTimeline extends Events
 
         if (e.buttons == 1)
         {
-            gui.corePatch().timer.setTime(this.snapTime(this.pixelToTime(e.offsetX - this.titleSpace) + this.offset));
+            gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
 
             this.updateAllElements();
         }
         else
         if (e.buttons == 2)
         {
-            this.ruler.scroll(-1 * this.pixelToTime(e.movementX));
+            this.ruler.scroll(-1 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
         }
 
@@ -233,64 +232,31 @@ export default class GlTimeline extends Events
         this.mouseDown = false;
     }
 
-    setZoomOffset(delta, dur = 0.3)
-    {
-        let zoom = this.#zoom * delta;
-        zoom = CABLES.clamp(zoom, 0.1, 10000000);
-
-        this.#animZoom.clear();
-        this.#animZoom.setValue(this.#timer.getTime(), this.#zoom);
-        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
-    }
-
     _onCanvasWheel(event)
     {
-        let delta = 0;
-        if (event.deltaY < 0)delta = 1.1;
-        else delta = 0.9;
 
-        this.setZoomOffset(delta);
+        if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
+        {
+            let delta = 0;
+            if (event.deltaY < 0)delta = 1.1;
+            else delta = 0.9;
 
-        this.pixelPerSecond = this.timeToPixel(1);
+            this.view.setZoomOffset(delta);
+        }
+        else
+        {
+
+            this.ruler.scroll(event.deltaX * 0.01);
+
+        }
+
+        this.pixelPerSecond = this.view.timeToPixel(1);
         this.updateAllElements();
     }
 
     get width()
     {
         return this.#cgl.canvasWidth;
-    }
-
-    /**
-     * @param {number} t
-     */
-    timeToPixelScreen(t)
-    {
-        return this.timeToPixel(t) + this.titleSpace - this.timeToPixel(this.offset);
-    }
-
-    /**
-     * @param {number} t
-     */
-    timeToPixel(t)
-    {
-
-        return t * this.#zoom * 12;
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelToTime(x)
-    {
-        return x / this.timeToPixel(1);
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelScreenToTime(x)
-    {
-        return this.pixelToTime(x - this.titleSpace);
     }
 
     init()
@@ -355,10 +321,9 @@ export default class GlTimeline extends Events
      */
     render(resX, resY)
     {
-        this.#timer.update();
-        this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
+        this.view.updateAnims();
 
-        if (!this.#animZoom.isFinished()) this.updateAllElements();
+        if (!this.view.animsFinished) this.updateAllElements();
 
         this.udpateCursor();
         this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
@@ -374,19 +339,17 @@ export default class GlTimeline extends Events
 
     udpateCursor()
     {
-        this.#glRectCursor.setPosition(this.timeToPixelScreen(gui.corePatch().timer.getTime()), 0, -0.3);
+        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0, -0.3);
 
-        let s = "" + Math.round(gui.corePatch().timer.getTime() * 1000) / 1000;
+        let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3)parts[1] += "0";
         this.#textTimeS.text = "second " + parts[0] + "." + parts[1];
-        this.#textTimeF.text = "frame " + Math.floor(gui.corePatch().timer.getTime() * this.fps);
+        this.#textTimeF.text = "frame " + Math.floor(this.cursorTime * this.fps);
 
         if (this.cfg.showBeats)
-        {
-            this.#textTimeB.text = "beat " + Math.floor(gui.corePatch().timer.getTime() * (this.bpm / 60));
-        }
+            this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
 
     }
 
@@ -397,15 +360,53 @@ export default class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
-
     }
 
     onConfig(cfg)
     {
         this.cfg = cfg;
         this.duration = cfg.duration;
-        this.bpm = cfg.bpm;
         this.displayUnits = cfg.displayUnits;
         this.updateAllElements();
     }
+
+    /**
+     * @param {number} dir 1 or -1
+     */
+    jumpKey(dir)
+    {
+        let theKey = null;
+
+        // for (const anii in this.#tlAnims)
+        // {
+        //     const index = this.#tlAnims[anii].getKeyIndex(cursorTime);
+
+        //     if (dir == -1 && this.#tlAnims[anii].keys[index].time != cursorTime)dir = 0;
+
+        //     let newIndex = parseInt(index, 10) + parseInt(dir, 10);
+
+        //     if (newIndex == 1 && cursorTime < this.#tlAnims[anii].keys[0].time)newIndex = 0;
+        //     if (newIndex == this.#tlAnims[anii].keys.length - 2 && cursorTime > this.#tlAnims[anii].keys[this.#tlAnims[anii].keys.length - 1].time)newIndex = this.#tlAnims[anii].keys.length - 1;
+
+        //     if (this.#tlAnims[anii].keys.length > newIndex && newIndex >= 0)
+        //     {
+        //         const thetime = this.#tlAnims[anii].keys[newIndex].time;
+
+        //         if (!theKey)theKey = this.#tlAnims[anii].keys[newIndex];
+
+        //         if (Math.abs(cursorTime - thetime) < Math.abs(cursorTime - theKey.time))
+        //             theKey = this.#tlAnims[anii].keys[newIndex];
+        //     }
+        // }
+
+        // if (theKey)
+        // {
+        //     gui.scene().timer.setTime(theKey.time);
+        //     // self.updateTime();
+
+        //     // if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
+        //     // gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+        // }
+    }
+
 }

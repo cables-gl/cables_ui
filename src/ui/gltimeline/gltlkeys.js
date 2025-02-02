@@ -56,7 +56,7 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
-            kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
+            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
         }
 
         for (let i = 0; i < this.#anim.keys.length; i++)
@@ -64,22 +64,22 @@ export default class glTlKeys extends Events
             const kr = this.#dopeRects[i];
             if (kr)
             {
-                kr.setPosition(this.#glTl.timeToPixel(this.#anim.keys[i].time - this.#glTl.offset), 0, -0.1);
+                kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset), 0, -0.1);
 
                 if (this.#anim.keys[i + 1])
                 {
                     if (i == 0)
                     {
-                        kr.setPosition(this.#glTl.timeToPixel(0 - this.#glTl.offset), 0);
-                        kr.setSize(this.#glTl.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
+                        kr.setPosition(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), 0);
+                        kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
                     }
                     else
-                        kr.setSize(this.#glTl.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
+                        kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
                 }
                 else
                 {
                     // after last
-                    kr.setSize(this.#glTl.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
+                    kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
                 }
             }
         }
