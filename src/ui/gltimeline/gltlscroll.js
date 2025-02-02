@@ -74,7 +74,6 @@ export default class glTlScroll extends Events
     {
         this.#width = w;
         this.#mainRect.setSize(this.#width, this.height);
-
     }
 
     update()

@@ -75,7 +75,6 @@ export default class GlTlView
      */
     timeToPixel(t)
     {
-
         return t * this.#zoom * 12;
     }
 
@@ -97,10 +96,7 @@ export default class GlTlView
 
     updateAnims()
     {
-
         this.#timer.update();
         this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
-
-        console.log(this.#zoom);
     }
 }

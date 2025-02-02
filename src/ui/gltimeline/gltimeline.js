@@ -234,7 +234,6 @@ export default class GlTimeline extends Events
 
     _onCanvasWheel(event)
     {
-
         if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
@@ -245,9 +244,7 @@ export default class GlTimeline extends Events
         }
         else
         {
-
             this.ruler.scroll(event.deltaX * 0.01);
-
         }
 
         this.pixelPerSecond = this.view.timeToPixel(1);
