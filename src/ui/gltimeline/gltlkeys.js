@@ -31,7 +31,7 @@ export default class glTlKeys extends Events
     /** @type {CABLES.Port} */
     #port;
 
-    sizeKey = 13;
+    sizeKey = 14;
 
     /**
      * @param {GlTimeline} glTl
@@ -56,6 +56,9 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
+            if (this.#anim.keys[i].time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
+            else kr.setColor(1, 1, 1);
+
             kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
         }
 

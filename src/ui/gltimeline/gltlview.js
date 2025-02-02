@@ -56,6 +56,16 @@ export default class GlTlView
         return gui.corePatch().timer.getTime();
     }
 
+    get pixelPerSecond()
+    {
+        return (this.#tl.width - this.#tl.titleSpace) / this.#tl.duration;
+    }
+
+    get visibleTime()
+    {
+        return this.pixelToTime(this.#tl.width - this.#tl.titleSpace);
+    }
+
     setZoomOffset(delta, dur = 0.3)
     {
         let zoom = this.#zoom * delta;
@@ -68,6 +78,9 @@ export default class GlTlView
 
     centerCursor()
     {
+
+        console.log(this.visibleTime);
+        this.scroll(this.cursorTime - this.#offset - (this.visibleTime / 2));
     }
 
     scroll(off, dur = 0.2)
@@ -116,4 +129,5 @@ export default class GlTlView
         this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
         this.#offset = this.#animScroll.getValue(this.#timer.getTime());
     }
+
 }

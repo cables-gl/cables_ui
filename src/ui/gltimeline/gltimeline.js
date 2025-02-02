@@ -72,6 +72,11 @@ export default class GlTimeline extends Events
         "restrictToFrames": true
     };
 
+    setColorRectSpecial(r)
+    {
+        r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+    }
+
     /**
      * @param {CABLES.CGState} cgl
     */
@@ -94,8 +99,8 @@ export default class GlTimeline extends Events
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0);
+        this.setColorRectSpecial(this.#glRectCursor);
 
         this.#timeBg = this.#rects.createRect({ });
         this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
@@ -104,15 +109,15 @@ export default class GlTimeline extends Events
 
         this.#textTimeS = new GlText(this.texts, "time");
         this.#textTimeS.setPosition(10, this.ruler.y, -0.5);
-        this.#textTimeS.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeS);
 
         this.#textTimeF = new GlText(this.texts, "frames");
         this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
-        this.#textTimeF.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeF);
 
         this.#textTimeB = new GlText(this.texts, "");
         this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
-        this.#textTimeB.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeB);
 
         gui.corePatch().timer.on("playPause", () =>
         {
@@ -138,6 +143,22 @@ export default class GlTimeline extends Events
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.updateAllElements();
+
+        gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.view.centerCursor();
+        });
+
+        gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.jumpKey(-1);
+        });
+        gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.jumpKey(1);
+
+        });
+
     }
 
     /** @returns {number} */
@@ -379,37 +400,59 @@ export default class GlTimeline extends Events
     jumpKey(dir)
     {
         let theKey = null;
+        console.log("duir", dir);
 
         // for (const anii in this.#tlAnims)
-        // {
-        //     const index = this.#tlAnims[anii].getKeyIndex(cursorTime);
+        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+        {
+            const anim = this.#tlAnims[anii].anim;
+            const index = 0;
 
-        //     if (dir == -1 && this.#tlAnims[anii].keys[index].time != cursorTime)dir = 0;
+            for (let ik = 0; ik < anim.keys.length; ik++)
+            {
+                if (ik < 0) continue;
+                let newIndex = ik;
+                // if (dir == -1 && anim.keys[index].time != this.view.cursorTime)dir = 0;
 
-        //     let newIndex = parseInt(index, 10) + parseInt(dir, 10);
+                // let newIndex = index + dir;
 
-        //     if (newIndex == 1 && cursorTime < this.#tlAnims[anii].keys[0].time)newIndex = 0;
-        //     if (newIndex == this.#tlAnims[anii].keys.length - 2 && cursorTime > this.#tlAnims[anii].keys[this.#tlAnims[anii].keys.length - 1].time)newIndex = this.#tlAnims[anii].keys.length - 1;
+                // if (newIndex == 1 && this.view.cursorTime < anim.keys[0].time)newIndex = 0;
+                // if (newIndex == anim.keys.length - 2 && this.view.cursorTime > anim.keys[anim.keys.length - 1].time)newIndex = anim.keys.length - 1;
 
-        //     if (this.#tlAnims[anii].keys.length > newIndex && newIndex >= 0)
-        //     {
-        //         const thetime = this.#tlAnims[anii].keys[newIndex].time;
+                // if (anim.keys.length > newIndex && newIndex >= 0)
+                // const thetime = anim.keys[newIndex].time;
+                // if (!theKey)theKey = anim.keys[newIndex];
 
-        //         if (!theKey)theKey = this.#tlAnims[anii].keys[newIndex];
+                if (anim.keys[newIndex].time != this.view.cursorTime)
+                {
 
-        //         if (Math.abs(cursorTime - thetime) < Math.abs(cursorTime - theKey.time))
-        //             theKey = this.#tlAnims[anii].keys[newIndex];
-        //     }
-        // }
+                    if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                    {
+                        if (!theKey)theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time < theKey.time)
+                            theKey = anim.keys[newIndex];
+                    }
 
-        // if (theKey)
-        // {
-        //     gui.scene().timer.setTime(theKey.time);
-        //     // self.updateTime();
+                    if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
+                    {
+                        if (!theKey)theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time > theKey.time)
+                            theKey = anim.keys[newIndex];
+                    }
+                }
 
-        //     // if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
-        //     // gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
-        // }
+            }
+        }
+
+        if (theKey)
+        {
+            console.log("thekey", theKey.time);
+            gui.scene().timer.setTime(theKey.time);
+            // self.updateTime();
+
+            // if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
+            // gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+        }
     }
 
 }

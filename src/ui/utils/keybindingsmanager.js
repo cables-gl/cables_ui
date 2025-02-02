@@ -70,7 +70,6 @@ export default class KeyBindingsManager extends Events
             return a.target.localeCompare(b.target);
         });
 
-
         // remove double entries
         let lastCombined = "";
         let lines = [];
@@ -80,7 +79,6 @@ export default class KeyBindingsManager extends Events
             if (combined != lastCombined) lines.push(k[i]);
             lastCombined = combined;
         }
-
 
         let lastTarget = "";
         for (let i = 0; i < lines.length; i++)
@@ -118,7 +116,6 @@ export default class KeyBindingsManager extends Events
             if (!k.options.shiftKey && e.shiftKey) continue;
             if (!k.options.ctrlKey && e.ctrlKey) continue;
 
-
             if (!k.target || k.target == e.target.id)
             {
                 if (k.options.minRestriction > window.gui.getRestriction())
@@ -128,7 +125,6 @@ export default class KeyBindingsManager extends Events
 
                     continue;
                 }
-
 
                 if (k.cb) k.cb(e);
                 else this._log.warn("[keys] key event has no callback", k);
