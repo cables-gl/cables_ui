@@ -7,6 +7,7 @@ import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
+import GlTlView from "./gltlview.js";
 
 /**
  * gl timeline
@@ -54,16 +55,13 @@ export default class GlTimeline extends Events
 
     titleSpace = 150;
 
-    #zoom = 20;
+    /** @type {GlTlView} */
+    view = null;
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
     #isAnimated = false;
-
-    /** @type {Anim} */
-    #animZoom;
-
-    #timer = new CABLES.Timer();
 
     cfg = {
         "fps": 30,
@@ -73,6 +71,11 @@ export default class GlTimeline extends Events
         "displayUnits": "Seconds",
         "restrictToFrames": true
     };
+
+    setColorRectSpecial(r)
+    {
+        r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+    }
 
     /**
      * @param {CABLES.CGState} cgl
@@ -84,6 +87,7 @@ export default class GlTimeline extends Events
         this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;
+        this.view = new GlTlView(this);
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
 
@@ -95,8 +99,8 @@ export default class GlTimeline extends Events
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0);
+        this.setColorRectSpecial(this.#glRectCursor);
 
         this.#timeBg = this.#rects.createRect({ });
         this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
@@ -105,15 +109,15 @@ export default class GlTimeline extends Events
 
         this.#textTimeS = new GlText(this.texts, "time");
         this.#textTimeS.setPosition(10, this.ruler.y, -0.5);
-        this.#textTimeS.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeS);
 
         this.#textTimeF = new GlText(this.texts, "frames");
         this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
-        this.#textTimeF.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeF);
 
         this.#textTimeB = new GlText(this.texts, "");
         this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
-        this.#textTimeB.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        this.setColorRectSpecial(this.#textTimeB);
 
         gui.corePatch().timer.on("playPause", () =>
         {
@@ -125,12 +129,6 @@ export default class GlTimeline extends Events
         {
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
-        const defaultEasing = CABLES.EASING_EXPO_OUT;
-
-        this.#timer.play();
-
-        this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
-        this.#animZoom.setValue(0, this.#zoom);
 
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
@@ -145,13 +143,31 @@ export default class GlTimeline extends Events
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.updateAllElements();
+
+        gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.view.centerCursor();
+        });
+
+        gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.jumpKey(-1);
+        });
+        gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.jumpKey(1);
+
+        });
+
     }
 
+    /** @returns {number} */
     get bpm()
     {
         return this.cfg.bpm;
     }
 
+    /** @returns {number} */
     get fps()
     {
         return this.cfg.fps;
@@ -162,10 +178,14 @@ export default class GlTimeline extends Events
         return this.#rects;
     }
 
-    get offset()
+    get isAnimated()
     {
-        if (!this.ruler) return 0;
-        return this.ruler.offset;
+        return !this.view.animsFinished;
+    }
+
+    get cursorTime()
+    {
+        return gui.corePatch().timer.getTime();
     }
 
     resize()
@@ -196,14 +216,14 @@ export default class GlTimeline extends Events
 
         if (e.buttons == 1)
         {
-            gui.corePatch().timer.setTime(this.snapTime(this.pixelToTime(e.offsetX - this.titleSpace) + this.offset));
+            gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
 
             this.updateAllElements();
         }
         else
         if (e.buttons == 2)
         {
-            this.ruler.scroll(-1 * this.pixelToTime(e.movementX));
+            this.view.scroll(-1 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
         }
 
@@ -233,64 +253,34 @@ export default class GlTimeline extends Events
         this.mouseDown = false;
     }
 
-    setZoomOffset(delta, dur = 0.3)
-    {
-        let zoom = this.#zoom * delta;
-        zoom = CABLES.clamp(zoom, 0.1, 10000000);
-
-        this.#animZoom.clear();
-        this.#animZoom.setValue(this.#timer.getTime(), this.#zoom);
-        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
-    }
-
     _onCanvasWheel(event)
     {
-        let delta = 0;
-        if (event.deltaY < 0)delta = 1.1;
-        else delta = 0.9;
 
-        this.setZoomOffset(delta);
+        if (event.metaKey)
+        {
+            this.view.scroll(event.deltaY * 0.002);
+        }
+        else
+        if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
+        {
+            let delta = 0;
+            if (event.deltaY < 0)delta = 1.1;
+            else delta = 0.9;
 
-        this.pixelPerSecond = this.timeToPixel(1);
+            this.view.setZoomOffset(delta);
+        }
+        else
+        {
+            this.view.scroll(event.deltaX * 0.01);
+        }
+
+        this.pixelPerSecond = this.view.timeToPixel(1);
         this.updateAllElements();
     }
 
     get width()
     {
         return this.#cgl.canvasWidth;
-    }
-
-    /**
-     * @param {number} t
-     */
-    timeToPixelScreen(t)
-    {
-        return this.timeToPixel(t) + this.titleSpace - this.timeToPixel(this.offset);
-    }
-
-    /**
-     * @param {number} t
-     */
-    timeToPixel(t)
-    {
-
-        return t * this.#zoom * 12;
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelToTime(x)
-    {
-        return x / this.timeToPixel(1);
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelScreenToTime(x)
-    {
-        return this.pixelToTime(x - this.titleSpace);
     }
 
     init()
@@ -355,10 +345,9 @@ export default class GlTimeline extends Events
      */
     render(resX, resY)
     {
-        this.#timer.update();
-        this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
+        this.view.updateAnims();
 
-        if (!this.#animZoom.isFinished()) this.updateAllElements();
+        if (!this.view.animsFinished) this.updateAllElements();
 
         this.udpateCursor();
         this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
@@ -374,19 +363,17 @@ export default class GlTimeline extends Events
 
     udpateCursor()
     {
-        this.#glRectCursor.setPosition(this.timeToPixelScreen(gui.corePatch().timer.getTime()), 0, -0.3);
+        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0, -0.3);
 
-        let s = "" + Math.round(gui.corePatch().timer.getTime() * 1000) / 1000;
+        let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3)parts[1] += "0";
         this.#textTimeS.text = "second " + parts[0] + "." + parts[1];
-        this.#textTimeF.text = "frame " + Math.floor(gui.corePatch().timer.getTime() * this.fps);
+        this.#textTimeF.text = "frame " + Math.floor(this.cursorTime * this.fps);
 
         if (this.cfg.showBeats)
-        {
-            this.#textTimeB.text = "beat " + Math.floor(gui.corePatch().timer.getTime() * (this.bpm / 60));
-        }
+            this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
 
     }
 
@@ -397,15 +384,75 @@ export default class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
-
     }
 
     onConfig(cfg)
     {
         this.cfg = cfg;
         this.duration = cfg.duration;
-        this.bpm = cfg.bpm;
         this.displayUnits = cfg.displayUnits;
         this.updateAllElements();
     }
+
+    /**
+     * @param {number} dir 1 or -1
+     */
+    jumpKey(dir)
+    {
+        let theKey = null;
+        console.log("duir", dir);
+
+        // for (const anii in this.#tlAnims)
+        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+        {
+            const anim = this.#tlAnims[anii].anim;
+            const index = 0;
+
+            for (let ik = 0; ik < anim.keys.length; ik++)
+            {
+                if (ik < 0) continue;
+                let newIndex = ik;
+                // if (dir == -1 && anim.keys[index].time != this.view.cursorTime)dir = 0;
+
+                // let newIndex = index + dir;
+
+                // if (newIndex == 1 && this.view.cursorTime < anim.keys[0].time)newIndex = 0;
+                // if (newIndex == anim.keys.length - 2 && this.view.cursorTime > anim.keys[anim.keys.length - 1].time)newIndex = anim.keys.length - 1;
+
+                // if (anim.keys.length > newIndex && newIndex >= 0)
+                // const thetime = anim.keys[newIndex].time;
+                // if (!theKey)theKey = anim.keys[newIndex];
+
+                if (anim.keys[newIndex].time != this.view.cursorTime)
+                {
+
+                    if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                    {
+                        if (!theKey)theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time < theKey.time)
+                            theKey = anim.keys[newIndex];
+                    }
+
+                    if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
+                    {
+                        if (!theKey)theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time > theKey.time)
+                            theKey = anim.keys[newIndex];
+                    }
+                }
+
+            }
+        }
+
+        if (theKey)
+        {
+            console.log("thekey", theKey.time);
+            gui.scene().timer.setTime(theKey.time);
+            // self.updateTime();
+
+            // if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
+            // gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+        }
+    }
+
 }

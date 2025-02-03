@@ -83,6 +83,11 @@ export default class glTlAnim extends Events
         this.updateColor();
     }
 
+    get anim()
+    {
+        return this.#anim;
+    }
+
     update()
     {
         this.updateColor();

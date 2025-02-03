@@ -101,6 +101,7 @@ CABLES_CMD_TIMELINE.showTimeline = function ()
 CABLES_CMD_TIMELINE.openGlTimeline = function ()
 {
     const t = new GlTimelineTab(gui.mainTabs);
+
 };
 
 timelineCommands.commands.push(

@@ -111,8 +111,6 @@ export default class GlCanvas
         this.canvas.width = this.width * window.devicePixelRatio;
         this.canvas.height = this.height * window.devicePixelRatio;
 
-        console.log("sets", this.canvas.width);
-
         this.cgl.pixelDensity = window.devicePixelRatio;
         if (this.patch.isPlaying()) this.cgl.setSize(this.width, this.height);
     }

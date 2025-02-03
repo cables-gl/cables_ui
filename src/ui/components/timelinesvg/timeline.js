@@ -641,9 +641,7 @@ export default function TimeLineGui()
                 if (!theKey)theKey = anims[anii].keys[newIndex];
 
                 if (Math.abs(cursorTime - thetime) < Math.abs(cursorTime - theKey.time))
-                {
                     theKey = anims[anii].keys[newIndex];
-                }
             }
         }
 
