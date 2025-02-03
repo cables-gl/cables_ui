@@ -238,6 +238,19 @@ export default class PatchSaveServer extends Events
                 }
             }
 
+            if (gui.user && gui.user.supporterFeatures && gui.user.supporterFeatures.includes("copy_assets_on_clone"))
+            {
+                const checkboxGroup = { "title": "Handle assets:", "checkboxes": [] };
+                checkboxGroup.checkboxes.push({
+                    "name": "copy-assets-on-clone",
+                    "value": true,
+                    "title": "<span title=\"Supporter Feature\" class=\"icon icon-0_5x icon-star\"></span>Copy assets to cloned patch",
+                    "checked": false,
+                    "disabled": false
+                });
+                checkboxGroups.push(checkboxGroup);
+            }
+
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
@@ -278,6 +291,7 @@ export default class PatchSaveServer extends Events
                 {
                     const collabUsers = [];
                     const collabTeams = [];
+                    let copyAssets = false;
 
                     if (checkboxStates)
                     {
@@ -289,6 +303,7 @@ export default class PatchSaveServer extends Events
                             {
                                 if (key.startsWith("copy-collab-team")) collabTeams.push(value);
                                 if (key.startsWith("copy-collab-user")) collabUsers.push(value);
+                                if (key === "copy_assets_on_clone") copyAssets = value;
                             }
                         });
                     }
@@ -297,7 +312,8 @@ export default class PatchSaveServer extends Events
                             "name": name,
                             "copyCollaborators": copyCollaborators,
                             "collabUsers": collabUsers,
-                            "collabTeams": collabTeams
+                            "collabTeams": collabTeams,
+                            "copyAssets": copyAssets
                         },
                         (err, d) =>
                         {
