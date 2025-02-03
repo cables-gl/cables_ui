@@ -134,7 +134,7 @@ const defaultOps = {
         "userOp": "Ops.User.",
         "teamOp": "Ops.Team.",
         "extensionOp": "Ops.Extension.",
-        "webgpu": "Ops.Extensions.WebGpu",
+        "webgpu": "Ops.Extension.WebGpu",
         "webgl": "Ops.Gl.",
     },
     "converterOps":
@@ -225,7 +225,6 @@ const defaultOps = {
             "portIn": "Array",
             "portOut": "Result",
         },
-
         {
             "typeFrom": portType.trigger,
             "typeTo": portType.number,
