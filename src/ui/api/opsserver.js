@@ -364,8 +364,7 @@ export default class ServerOps
                     // loadingModal.setTask("loading new op: " + name);
                     gui.serverOps.execute(name, () =>
                     {
-                        gui.opSelect()
-                            .reload();
+                        gui.opSelect().reload();
                         gui.savingTitleAnimEnd();
                         if (cb) cb();
                     });
@@ -654,13 +653,21 @@ export default class ServerOps
             platform.talkerAPI.send("opAttachmentDelete", {
                 "opname": opId,
                 "name": attName
-            }, (err) =>
+            }, (err, res) =>
             {
                 if (err)
                 {
-                    // new ModalError({ "title": "Error/Invalid response from server 3", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                     this.showApiError(err);
                     return;
+                }
+
+                if (res && res.data && res.data.name)
+                {
+                    const opDoc = gui.opDocs.getOpDocByName(opName);
+                    if (opDoc)
+                    {
+                        if (opDoc.attachmentFiles) opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => { return att !== res.data.name; });
+                    }
                 }
 
                 gui.emitEvent("refreshManageOp", opName);
@@ -673,14 +680,13 @@ export default class ServerOps
         });
     }
 
-    addAttachmentDialog(opname)
+    addAttachmentDialog(opName)
     {
-        let opid = opname;
-        const docs = gui.opDocs.getOpDocByName(opname);
+        let opid = opName;
+        const docs = gui.opDocs.getOpDocByName(opName);
         if (docs && docs) opid = docs.id;
 
-        let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
-        // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
+        let html = "Use this attachment in " + opName + " by accessing <code>attachments[\"my_attachment\"]</code>.";
         new ModalDialog({
             "title": "Create attachment",
             "text": html,
@@ -690,17 +696,26 @@ export default class ServerOps
                 platform.talkerAPI.send("opAttachmentAdd", {
                     "opname": opid,
                     "name": attName
-                }, (err) =>
+                }, (err, res) =>
                 {
                     if (err)
                     {
-                        // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         this.showApiError(err);
                         return;
                     }
 
-                    this.editAttachment(opname, "att_" + attName);
-                    gui.emitEvent("refreshManageOp", opname);
+                    if (res && res.data && res.data.name)
+                    {
+                        const opDoc = gui.opDocs.getOpDocByName(opName);
+                        if (opDoc)
+                        {
+                            if (!opDoc.attachmentFiles) opDoc.attachmentFiles = [];
+                            if (opDoc.attachmentFiles && !opDoc.attachmentFiles.includes(res.data.name)) opDoc.attachmentFiles.push(res.data.name);
+                        }
+                    }
+
+                    this.editAttachment(opName, "att_" + attName);
+                    gui.emitEvent("refreshManageOp", opName);
                 });
             }
         });
@@ -1319,10 +1334,8 @@ export default class ServerOps
             {
                 gui.patchView.replaceOp(usedOp.id, newOp.objName);
             });
-            gui.opSelect()
-                .reload();
-            gui.opSelect()
-                .prepare();
+            gui.opSelect().reload();
+            gui.opSelect().prepare();
         }, true);
     }
 
@@ -1429,11 +1442,10 @@ export default class ServerOps
         if (gui.maintabPanel.tabs.getTabByTitle(title)) return;
 
         let editorObj = null;
-        gui.jobs()
-            .start({
-                "id": "load_attachment_" + attachmentName,
-                "title": "loading attachment " + attachmentName
-            });
+        gui.jobs().start({
+            "id": "load_attachment_" + attachmentName,
+            "title": "loading attachment " + attachmentName
+        });
 
         const apiParams = {
             "opname": opId,
@@ -1472,13 +1484,11 @@ export default class ServerOps
         {
             if (err)
             {
-                // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                 this.showApiError(err);
                 return;
             }
 
-            gui.jobs()
-                .finish("load_attachment_" + attachmentName);
+            gui.jobs().finish("load_attachment_" + attachmentName);
 
             if (err || !res || res.content === undefined)
             {
@@ -1557,8 +1567,7 @@ export default class ServerOps
             if (cb) cb(); else gui.maintabPanel.show(userInteraction);
         }, (err) =>
         {
-            gui.jobs()
-                .finish("load_attachment_" + attachmentName);
+            gui.jobs().finish("load_attachment_" + attachmentName);
             this._log.error("error opening attachment " + attachmentName);
             this._log.log(err);
             if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
@@ -1682,8 +1691,7 @@ export default class ServerOps
                                 else
                                 {
                                     if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
-                                    if (!CABLES.Patch.getOpClass(opname)) gui.opSelect()
-                                        .reload();
+                                    if (!CABLES.Patch.getOpClass(opname)) gui.opSelect().reload();
 
                                     gui.serverOps.execute(opid, () =>
                                     {
@@ -2007,15 +2015,13 @@ export default class ServerOps
         {
             const opIdentifier = this.getOpIdentifier(op);
             const oldName = this.getOpNameByIdentifier(opIdentifier);
-            gui.jobs()
-                .start({
-                    "id": "getopdocs",
-                    "title": "load opdocs for " + oldName
-                });
+            gui.jobs().start({
+                "id": "getopdocs",
+                "title": "load opdocs for " + oldName
+            });
             platform.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
-                gui.jobs()
-                    .finish("getopdocs");
+                gui.jobs().finish("getopdocs");
                 if (err)
                 {
                     let title = "Failed to load op";
@@ -2119,9 +2125,7 @@ export default class ServerOps
                                 gui.opDocs.addOpDocs(res.opDocs);
                             }
                         }
-                        gui.jobs()
-                            .finish("missingops");
-
+                        gui.jobs().finish("missingops");
                         cb(newOps);
                     });
                     loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
