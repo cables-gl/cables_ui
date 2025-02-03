@@ -729,7 +729,7 @@ export default class PatchSaveServer extends Events
 
         cgl.setSize(screenshotWidth, screenshotHeight);
 
-        const screenshotTimeout = setTimeout(() =>
+        setTimeout(() =>
         {
             cgl.setSize(w, h);
             thePatch.resume();
@@ -739,32 +739,36 @@ export default class PatchSaveServer extends Events
         document.getElementById("canvasflash").classList.remove("hidden");
         document.getElementById("canvasflash").classList.add("flash");
 
-        thePatch.renderOneFrame();
-        thePatch.renderOneFrame();
-        gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
+        setTimeout(() =>
+        {
+            // thePatch.renderOneFrame();
+            // thePatch.renderOneFrame();
+            gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
+            if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
 
-        const url = gui.canvasManager.currentCanvas().toDataURL();
+            const url = gui.canvasManager.currentCanvas().toDataURL();
 
-        platform.talkerAPI.send(
-            "saveScreenshot",
-            {
-                "screenshot": url
-            },
-            (error, re) =>
-            {
-                if (error) this._log.warn("[screenshot save error]", error);
+            platform.talkerAPI.send(
+                "saveScreenshot",
+                {
+                    "screenshot": url
+                },
+                (error, re) =>
+                {
+                    if (error) this._log.warn("[screenshot save error]", error);
 
-                cgl.setSize(w, h + 1);
-                cgl.setSize(w, h);
+                    cgl.setSize(w, h + 1);
+                    cgl.setSize(w, h);
 
-                thePatch.resume(); // must resume here for webgpu
-                gui.jobs().finish("screenshotsave");
-                if (gui.onSaveProject) gui.onSaveProject();
-                if (cb)cb();
+                    thePatch.resume(); // must resume here for webgpu
+                    gui.jobs().finish("screenshotsave");
+                    if (gui.onSaveProject) gui.onSaveProject();
+                    if (cb)cb();
 
-                this.finishAnimations();
-            });
+                    this.finishAnimations();
+                });
+
+        }, 200);
     }
 }
