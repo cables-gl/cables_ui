@@ -134,7 +134,7 @@ const defaultOps = {
         "userOp": "Ops.User.",
         "teamOp": "Ops.Team.",
         "extensionOp": "Ops.Extension.",
-        "webgpu": "Ops.Team.WebGpu",
+        "webgpu": "Ops.Extensions.WebGpu",
         "webgl": "Ops.Gl.",
     },
     "converterOps":

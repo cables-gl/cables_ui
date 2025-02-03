@@ -1519,6 +1519,7 @@ export default class Gui extends Events
         this.mainTabs.emitEvent("resize");
         this.setLayout();
         this.setLayout(); // yes, twice....
+        gui.emitEvent("resize");
     }
 
     bindKeys()
