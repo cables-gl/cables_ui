@@ -680,6 +680,8 @@ export default class ScState extends Events
     _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
     {
         return;
+
+        /*
         if (!this._connection.isConnected()) return;
         if (!this._connection.inMultiplayerSession) return;
 
@@ -691,5 +693,6 @@ export default class ScState extends Events
             this._connection.sendUi("netSelectionArea", payload);
             this._mouseTimeout = null;
         }, this._connection.netMouseCursorDelay);
+         */
     }
 }
