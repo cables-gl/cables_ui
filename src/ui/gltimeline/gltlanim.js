@@ -92,6 +92,7 @@ export default class glTlAnim extends Events
         this.#disposeRects.push(this.#glTitle);
 
         this.updateColor();
+
     }
 
     get anims()

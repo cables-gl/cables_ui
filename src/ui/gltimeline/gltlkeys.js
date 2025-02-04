@@ -74,7 +74,9 @@ export default class glTlKeys extends Events
     {
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
 
-        this.#points.length = this.#keyRects.length * 3;
+        const sizeKey2 = this.sizeKey / 2;
+        this.#points = [];// .length = this.#keyRects.length * 3;
+        const pointsSort = [];
 
         let minVal = 9999999;
         let maxVal = -9999999;
@@ -83,7 +85,6 @@ export default class glTlKeys extends Events
             minVal = Math.min(minVal, this.#anim.keys[i].value);
             maxVal = Math.max(maxVal, this.#anim.keys[i].value);
         }
-        const sizeKey2 = this.sizeKey / 2;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
@@ -95,15 +96,40 @@ export default class glTlKeys extends Events
             if (this.#options.keyYpos)
                 y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
-            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, y - sizeKey2, -0.2);
+            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2, y - sizeKey2, -0.2);
 
-            this.#points[i * 3] = kr.x + sizeKey2;
-            this.#points[i * 3 + 1] = y;
-            this.#points[i * 3 + 2] = 0;
+            const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time);
+            const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+            pointsSort.push([lx, ly, 0]);
+            // pointsSort.push([kr.x - 1 - sizeKey2, y + sizeKey2, 0]);
+            // pointsSort.push([kr.x + 1 - sizeKey2, y + sizeKey2, 0]);
         }
 
+        const timeKeyOff = this.#glTl.view.pixelToTime(sizeKey2);
+        for (let i = 0; i < 100; i++)
+        {
+            const t = CABLES.map(i, 0, 100, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
+            const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
+
+            const y = this.#parentRect.h - CABLES.map(this.#anim.getValue(t), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+
+            pointsSort.push([x, y, 0]);
+        }
+
+        pointsSort.sort((a, b) =>
+        {
+            return a[0] - b[0];
+        });
+
+        this.#points = pointsSort.flat();
+
         if (this.#options.keyYpos)
+        {
+            if (gui.patchView.isCurrentOp(this.#port.op)) this.#glTl.setColorRectSpecial(this.#spline);
+            else this.#spline.setColor(0.7, 0.7, 0.7, 1);
+
             this.#spline.setPoints(this.#points);
+        }
         else
             for (let i = 0; i < this.#anim.keys.length; i++)
             {
