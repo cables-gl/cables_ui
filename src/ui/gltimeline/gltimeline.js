@@ -295,6 +295,7 @@ export default class GlTimeline extends Events
 
         const p = gui.corePatch();
         let count = 0;
+        const ports = [];
         for (let i = 0; i < p.ops.length; i++)
         {
             const op = p.ops[i];
@@ -302,14 +303,20 @@ export default class GlTimeline extends Events
             {
                 if (op.portsIn[j].anim)
                 {
+                    ports.push(op.portsIn[j]);
                     // console.log(op.portsIn[j].anim);
-                    const a = new glTlAnim(this, op.portsIn[j].anim, op, op.portsIn[j]);
+                    const a = new glTlAnim(this, [op.portsIn[j]]);
                     this.#tlAnims.push(a);
                     // a.setIndex(count);
                     count++;
                 }
             }
         }
+
+        const a = new glTlAnim(this, ports, { "keyYpos": true });
+        a.setHeight(250);
+        this.#tlAnims.push(a);
+
         this.updateAllElements();
         this.setPositions();
         this.resize();
@@ -408,27 +415,30 @@ export default class GlTimeline extends Events
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
         {
-            const anim = this.#tlAnims[anii].anim;
-            const index = 0;
-
-            for (let ik = 0; ik < anim.keys.length; ik++)
+            for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
             {
-                if (ik < 0) continue;
-                let newIndex = ik;
+                const anim = this.#tlAnims[anii].anims[ans];
+                const index = 0;
 
-                if (anim.keys[newIndex].time != this.view.cursorTime)
+                for (let ik = 0; ik < anim.keys.length; ik++)
                 {
+                    if (ik < 0) continue;
+                    let newIndex = ik;
 
-                    if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                    if (anim.keys[newIndex].time != this.view.cursorTime)
                     {
-                        if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
-                    }
 
-                    if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
-                    {
-                        if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
+                        if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                        {
+                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
+                        }
+
+                        if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
+                        {
+                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
+                        }
                     }
                 }
             }

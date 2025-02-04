@@ -49,11 +49,19 @@ export default class GlSpline
     rebuild()
     {
         const finalPoints = [];
+        let x = 0, y = 0, z = 0;
+
+        if (this.#parentRect)
+        {
+            x = this.#parentRect.x;
+            y = this.#parentRect.y;
+            z = this.#parentRect.z;
+        }
         for (let i = 0; i < this.#points.length; i += 3)
         {
-            finalPoints[i + 0] = this.#points[i + 0] + this.#parentRect.x;
-            finalPoints[i + 1] = this.#points[i + 1] + this.#parentRect.y;
-            finalPoints[i + 2] = this.#points[i + 2] + this.#parentRect.z;
+            finalPoints[i + 0] = this.#points[i + 0] + x;
+            finalPoints[i + 1] = this.#points[i + 1] + y;
+            finalPoints[i + 2] = this.#points[i + 2] + z;
         }
         this.#splineDrawer.setSpline(this.#splineIdx, finalPoints);
     }

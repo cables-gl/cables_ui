@@ -1,5 +1,4 @@
-import { Events } from "cables-shared-client";
-import GlText from "../gldraw/gltext.js";
+import { Events, Logger } from "cables-shared-client";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
@@ -37,25 +36,36 @@ export default class glTlKeys extends Events
 
     sizeKey = 14;
     #points = [];
+    #options = {};
 
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
      * @param {GlRect} parentRect
+     * @param {Port} port
+     * @param {Object} options
      */
-    constructor(glTl, anim, parentRect, port)
+    constructor(glTl, anim, parentRect, port, options)
     {
         super();
+        this._log = new Logger("gltlKeys");
+        if (!anim) this._log.error("no anim");
+        if (!parentRect) this._log.error("no parentRect");
+        if (!port) this._log.error("no port");
         this.#anim = anim;
         this.#glTl = glTl;
         this.#parentRect = parentRect;
+        this.#options = options || {};
         this.#port = port;
-        this.#spline = new GlSpline(this.#glTl.splines);
-        this.#spline.setColor(0, 1, 1, 1);
-        this.#spline.setParentRect(parentRect);
-        let z = -0.7;
-        this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
+        if (this.#options.keyYpos)
+        {
+            this.#spline = new GlSpline(this.#glTl.splines);
+            this.#spline.setColor(0.7, 0.7, 0.7, 1);
+            this.#spline.setParentRect(parentRect);
+            let z = -0.7;
+            this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
 
+        }
         this.points = [];
         this.init();
     }
@@ -73,6 +83,7 @@ export default class glTlKeys extends Events
             minVal = Math.min(minVal, this.#anim.keys[i].value);
             maxVal = Math.max(maxVal, this.#anim.keys[i].value);
         }
+        const sizeKey2 = this.sizeKey / 2;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
@@ -80,39 +91,44 @@ export default class glTlKeys extends Events
             if (this.#anim.keys[i].time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
             else kr.setColor(1, 1, 1);
 
-            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
+            let y = (this.#parentRect.h / 2 - this.sizeKey / 2);
+            if (this.#options.keyYpos)
+                y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
-            this.#points[i * 3] = kr.x;
-            this.#points[i * 3 + 1] = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, 0, this.#parentRect.h);
+            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, y - sizeKey2, -0.2);
+
+            this.#points[i * 3] = kr.x + sizeKey2;
+            this.#points[i * 3 + 1] = y;
             this.#points[i * 3 + 2] = 0;
         }
 
-        this.#spline.setPoints(this.#points);
-
-        for (let i = 0; i < this.#anim.keys.length; i++)
-        {
-            const kr = this.#dopeRects[i];
-            if (kr)
+        if (this.#options.keyYpos)
+            this.#spline.setPoints(this.#points);
+        else
+            for (let i = 0; i < this.#anim.keys.length; i++)
             {
-                kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset), 0, -0.1);
-
-                if (this.#anim.keys[i + 1])
+                const kr = this.#dopeRects[i];
+                if (kr)
                 {
-                    if (i == 0)
+                    kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset), 0, -0.1);
+
+                    if (this.#anim.keys[i + 1])
                     {
-                        kr.setPosition(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), 0);
-                        kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
+                        if (i == 0)
+                        {
+                            kr.setPosition(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), 0);
+                            kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
+                        }
+                        else
+                            kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
                     }
                     else
-                        kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
-                }
-                else
-                {
+                    {
                     // after last
-                    kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
+                        kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
+                    }
                 }
             }
-        }
     }
 
     init()

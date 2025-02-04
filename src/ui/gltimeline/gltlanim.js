@@ -14,8 +14,8 @@ import { gui } from "../gui.js";
  */
 export default class glTlAnim extends Events
 {
-    #anim = null;
-    #op = null;
+    #anims = [];
+    #ops = [];
 
     /** @type {GlRect} */
     #glRectKeysBg = null;
@@ -29,11 +29,11 @@ export default class glTlAnim extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
-    /** @type {glTlKeys} */
-    #keys = null;
+    /** @type {Array<glTlKeys>} */
+    #keys = [];
 
-    /** @type {CABLES.Port} */
-    #port = null;
+    /** @type {Array<CABLES.Port>} */
+    #ports = [];
 
     width = 222;
     height = 30;
@@ -41,57 +41,70 @@ export default class glTlAnim extends Events
     /** @type {Array<Object >} */
     #disposeRects = [];
 
+    #options = {};
+
     /**
      * @param {GlTimeline} glTl
-     * @param {Anim} anim
-     * @param {Op} op
-     * @param {Port} port
+     * @param {Array<Port>} port
+     * @param {Object} options
     */
-    constructor(glTl, anim, op, port)
+    constructor(glTl, ports, options = {})
     {
         super();
 
-        this.#anim = anim;
-        this.#glTl = glTl;
-        this.#op = op;
-        this.#port = port;
+        this.#options = options;
 
-        this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
-        this.#glRectTitle.setColor(0, 0, 0);
-        this.#glRectTitle.on("mousedown", () =>
-        {
-            gui.patchView.focusOp(this.#op.id);
-        });
-        this.#disposeRects.push(this.#glRectTitle);
+        this.#glTl = glTl;
 
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#disposeRects.push(this.#glRectKeysBg);
 
-        this.#glTitle = new GlText(this.#glTl.texts, op.name + " - " + port.name || "unknown anim");
+        for (let i = 0; i < ports.length; i++)
+        {
+            this.#anims[i] = ports[i].anim;
+            this.#ops[i] = ports[i].op;
+            this.#ports[i] = ports[i];
+
+            this.#keys[i] = new glTlKeys(glTl, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
+
+            ports[i].anim.on("onChange", () =>
+            {
+                this.#keys[i].init();
+            });
+
+        }
+        this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
+        this.#glRectTitle.setColor(0, 0, 0);
+        this.#glRectTitle.on("mousedown", () =>
+        {
+            gui.patchView.focusOp(this.#ops[0].id);
+        });
+        this.#disposeRects.push(this.#glRectTitle);
+
+        let title = ports[0].op.name + " - " + ports[0].name;
+        if (ports.length > 1)title = ports.length + " anims";
+
+        this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
+
         this.#glTitle.setPosition(10, 0);
         this.#glTitle.setParentRect(this.#glRectTitle);
         this.#disposeRects.push(this.#glTitle);
 
-        this.#keys = new glTlKeys(glTl, anim, this.#glRectKeysBg, this.#port);
-
-        anim.on("onChange", () =>
-        {
-            this.#keys.init();
-        });
-
         this.updateColor();
     }
 
-    get anim()
+    get anims()
     {
-        return this.#anim;
+        return this.#anims;
     }
 
     update()
     {
         this.updateColor();
-        this.#keys.update();
+
+        for (let i = 0; i < this.#keys.length; i++)
+            this.#keys[i].update();
     }
 
     updateColor()
@@ -99,7 +112,7 @@ export default class glTlAnim extends Events
         this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
-        if (gui.patchView.isCurrentOp(this.#op))
+        if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
             this.#glTitle.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
             this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
@@ -114,6 +127,14 @@ export default class glTlAnim extends Events
     {
         this.#glRectTitle.setPosition(x, y, -0.5);
         this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
+    }
+
+    setHeight(h)
+    {
+        this.height = h;
+        this.setWidth(this.width);
+        this.update();
+
     }
 
     setWidth(w)
