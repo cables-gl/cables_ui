@@ -240,11 +240,11 @@ export default class PatchSaveServer extends Events
 
             if (gui.user && gui.user.supporterFeatures && gui.user.supporterFeatures.includes("copy_assets_on_clone"))
             {
-                const checkboxGroup = { "title": "Handle assets:", "checkboxes": [] };
+                const checkboxGroup = { "title": "Files:", "checkboxes": [] };
                 checkboxGroup.checkboxes.push({
                     "name": "copy-assets-on-clone",
                     "value": true,
-                    "title": "<span title=\"Supporter Feature\" class=\"icon icon-0_5x icon-star\"></span>Copy assets to cloned patch",
+                    "title": "Copy assets to new patch",
                     "checked": false,
                     "disabled": false
                 });
@@ -254,7 +254,7 @@ export default class PatchSaveServer extends Events
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
-                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. need to reuse ops ? create a <a href=\"" + platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. Need to reuse ops? Create a <a href=\"" + platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
                 modalNotices.push(patchOpsText);
             }
 
@@ -303,7 +303,7 @@ export default class PatchSaveServer extends Events
                             {
                                 if (key.startsWith("copy-collab-team")) collabTeams.push(value);
                                 if (key.startsWith("copy-collab-user")) collabUsers.push(value);
-                                if (key === "copy_assets_on_clone") copyAssets = value;
+                                if (key === "copy-assets-on-clone") copyAssets = value;
                             }
                         });
                     }
@@ -323,7 +323,14 @@ export default class PatchSaveServer extends Events
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.secret = "";
 
-                                this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
+                                if (copyAssets)
+                                {
+                                    platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
+                                }
+                                else
+                                {
+                                    this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
+                                }
                             }
                             else
                             {
