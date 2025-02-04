@@ -748,7 +748,6 @@ export default class PatchSaveServer extends Events
             if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
 
             const url = gui.canvasManager.currentCanvas().toDataURL();
-            console.log("save screenshot ", url.length);
 
             platform.talkerAPI.send(
                 "saveScreenshot",

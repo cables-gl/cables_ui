@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
+import GlSpline from "../gldraw/glspline.js";
 
 /**
  * gltl key rendering
@@ -31,7 +32,11 @@ export default class glTlKeys extends Events
     /** @type {CABLES.Port} */
     #port;
 
+    /** @type {GlSpline} */
+    #spline;
+
     sizeKey = 14;
+    #points = [];
 
     /**
      * @param {GlTimeline} glTl
@@ -45,13 +50,29 @@ export default class glTlKeys extends Events
         this.#glTl = glTl;
         this.#parentRect = parentRect;
         this.#port = port;
+        this.#spline = new GlSpline(this.#glTl.splines);
+        this.#spline.setColor(0, 1, 1, 1);
+        this.#spline.setParentRect(parentRect);
+        let z = -0.7;
+        this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
 
+        this.points = [];
         this.init();
     }
 
     update()
     {
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
+
+        this.#points.length = this.#keyRects.length * 3;
+
+        let minVal = 9999999;
+        let maxVal = -9999999;
+        for (let i = 0; i < this.#anim.keys.length; i++)
+        {
+            minVal = Math.min(minVal, this.#anim.keys[i].value);
+            maxVal = Math.max(maxVal, this.#anim.keys[i].value);
+        }
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
@@ -60,7 +81,13 @@ export default class glTlKeys extends Events
             else kr.setColor(1, 1, 1);
 
             kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - this.sizeKey / 2, (this.#parentRect.h / 2 - this.sizeKey / 2), -0.2);
+
+            this.#points[i * 3] = kr.x;
+            this.#points[i * 3 + 1] = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, 0, this.#parentRect.h);
+            this.#points[i * 3 + 2] = 0;
         }
+
+        this.#spline.setPoints(this.#points);
 
         for (let i = 0; i < this.#anim.keys.length; i++)
         {

@@ -8,6 +8,7 @@ import glTlScroll from "./gltlscroll.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import GlTlView from "./gltlview.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 /**
  * gl timeline
@@ -21,6 +22,9 @@ export default class GlTimeline extends Events
 
     /** @type {GlTextWriter} */
     texts = null;
+
+    /** @type {GlSplineDrawer} */
+    #splines;
 
     /** @type {GlRectInstancer} */
     #rects = null;
@@ -90,11 +94,12 @@ export default class GlTimeline extends Events
         this.view = new GlTlView(this);
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
-
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+        this.splines = new GlSplineDrawer(cgl, "gltlSplines_0");
+        this.splines.setWidth(2);
+        this.splines.setFadeout(false);
 
         this.ruler = new glTlRuler(this);
-
         this.scroll = new glTlScroll(this);
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
@@ -356,6 +361,7 @@ export default class GlTimeline extends Events
 
         this.#rects.render(resX, resY, -1, 1, resX / 2);
         this.texts.render(resX, resY, -1, 1, resX / 2);
+        this.splines.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
     }

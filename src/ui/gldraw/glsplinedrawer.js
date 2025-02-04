@@ -89,6 +89,14 @@ export default class GlSplineDrawer
         this._uniZpos.setValue(v);
     }
 
+    /**
+     * @param boolean} b
+     */
+    setFadeout(b)
+    {
+        this._shader.toggleDefine("FADEOUT", b);
+    }
+
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {
         if (this._splines.length == 0) return;
@@ -334,7 +342,7 @@ export default class GlSplineDrawer
 
     setWidth(w)
     {
-        this._uniWidth.set(w * 10);
+        this._uniWidth.set(w);
     }
 
     buildMesh()
