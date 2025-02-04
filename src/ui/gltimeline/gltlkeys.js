@@ -68,13 +68,21 @@ export default class glTlKeys extends Events
         }
         this.points = [];
         this.init();
+
     }
 
     update()
     {
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
+        let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
+
+        if (this.#options.multiAnims && !isCurrentOp) this.sizeKey = 10;
+        else this.sizeKey = 14;
+
+        // this.sizeKey = 8;
 
         const sizeKey2 = this.sizeKey / 2;
+
         this.#points = [];// .length = this.#keyRects.length * 3;
         const pointsSort = [];
 
@@ -85,7 +93,6 @@ export default class glTlKeys extends Events
             minVal = Math.min(minVal, this.#anim.keys[i].value);
             maxVal = Math.max(maxVal, this.#anim.keys[i].value);
         }
-        let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
 
         let z = 0.0;
         if (isCurrentOp)z = -0.1;
@@ -93,6 +100,9 @@ export default class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
+
+            kr.setSize(this.sizeKey, this.sizeKey);
+
             if (this.#anim.keys[i].time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
             else
             {
@@ -100,7 +110,7 @@ export default class glTlKeys extends Events
                 else kr.setColor(0.7, 0.7, 0.7);
             }
 
-            let y = (this.#parentRect.h / 2 - this.sizeKey / 2);
+            let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
                 y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
@@ -188,7 +198,7 @@ export default class glTlKeys extends Events
             kr.setParent(this.#parentRect);
             this.#keyRects.push(kr);
 
-            if (!this.#options.multiLine)
+            if (!this.#options.multiAnims)
                 if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
                 {
                     const krDop = this.#glTl.rects.createRect({ "draggable": true });

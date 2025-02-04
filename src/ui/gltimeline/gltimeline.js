@@ -313,7 +313,7 @@ export default class GlTimeline extends Events
             }
         }
 
-        const a = new glTlAnim(this, ports, { "keyYpos": true, "multiKeys": true });
+        const a = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
         a.setHeight(250);
         this.#tlAnims.push(a);
 
