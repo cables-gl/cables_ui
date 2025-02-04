@@ -14,7 +14,11 @@ import { gui } from "../gui.js";
  */
 export default class glTlAnim extends Events
 {
+
+    /** @type {Array<CABLES.Anim>} */
     #anims = [];
+
+    /** @type {Array<CABLES.Op>} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -65,7 +69,6 @@ export default class glTlAnim extends Events
             this.#anims[i] = ports[i].anim;
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
-
             this.#keys[i] = new glTlKeys(glTl, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
 
             ports[i].anim.on("onChange", () =>
