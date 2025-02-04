@@ -116,7 +116,7 @@ export default class glTlAnim extends Events
         if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
             this.#glTitle.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
-            this.#glRectKeysBg.setColor(0.45, 0.45, 0.45);
+            this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
         }
     }
 
@@ -135,7 +135,6 @@ export default class glTlAnim extends Events
         this.height = h;
         this.setWidth(this.width);
         this.update();
-
     }
 
     setWidth(w)
@@ -148,7 +147,6 @@ export default class glTlAnim extends Events
     dispose()
     {
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
-        this.#keys.dispose();
-
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
     }
 }

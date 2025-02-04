@@ -60,7 +60,7 @@ export default class glTlKeys extends Events
         if (this.#options.keyYpos)
         {
             this.#spline = new GlSpline(this.#glTl.splines);
-            this.#spline.setColor(0.7, 0.7, 0.7, 1);
+
             this.#spline.setParentRect(parentRect);
             let z = -0.7;
             this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
@@ -85,12 +85,20 @@ export default class glTlKeys extends Events
             minVal = Math.min(minVal, this.#anim.keys[i].value);
             maxVal = Math.max(maxVal, this.#anim.keys[i].value);
         }
+        let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
+
+        let z = 0.0;
+        if (isCurrentOp)z = -0.1;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const kr = this.#keyRects[i];
             if (this.#anim.keys[i].time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
-            else kr.setColor(1, 1, 1);
+            else
+            {
+                if (isCurrentOp) kr.setColor(1, 1, 1);
+                else kr.setColor(0.7, 0.7, 0.7);
+            }
 
             let y = (this.#parentRect.h / 2 - this.sizeKey / 2);
             if (this.#options.keyYpos)
@@ -98,22 +106,33 @@ export default class glTlKeys extends Events
 
             kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2, y - sizeKey2, -0.2);
 
-            const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time);
+            const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
             const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
-            pointsSort.push([lx, ly, 0]);
-            // pointsSort.push([kr.x - 1 - sizeKey2, y + sizeKey2, 0]);
-            // pointsSort.push([kr.x + 1 - sizeKey2, y + sizeKey2, 0]);
+            pointsSort.push([lx, ly, z]);
+
+            const onepixelTime = this.#glTl.view.pixelToTime(1);
+            pointsSort.push([
+                this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset - onepixelTime),
+                this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                z]);
+            pointsSort.push([
+                this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset + onepixelTime),
+                this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                z]);
+
         }
 
         const timeKeyOff = this.#glTl.view.pixelToTime(sizeKey2);
-        for (let i = 0; i < 100; i++)
+        const steps = (this.#glTl.width - this.#glTl.titleSpace) / 5;
+
+        for (let i = 0; i < steps; i++)
         {
-            const t = CABLES.map(i, 0, 100, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
+            const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
             const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
             const y = this.#parentRect.h - CABLES.map(this.#anim.getValue(t), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
-            pointsSort.push([x, y, 0]);
+            pointsSort.push([x, y, z]);
         }
 
         pointsSort.sort((a, b) =>
@@ -125,8 +144,8 @@ export default class glTlKeys extends Events
 
         if (this.#options.keyYpos)
         {
-            if (gui.patchView.isCurrentOp(this.#port.op)) this.#glTl.setColorRectSpecial(this.#spline);
-            else this.#spline.setColor(0.7, 0.7, 0.7, 1);
+            if (isCurrentOp) this.#glTl.setColorRectSpecial(this.#spline);
+            else this.#spline.setColor(0.5, 0.5, 0.5, 1);
 
             this.#spline.setPoints(this.#points);
         }
@@ -169,26 +188,26 @@ export default class glTlKeys extends Events
             kr.setParent(this.#parentRect);
             this.#keyRects.push(kr);
 
-            if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
-            {
-                const krDop = this.#glTl.rects.createRect({ "draggable": true });
-                krDop.setSize(this.sizeKey, this.sizeKey);
-
-                if (this.#port.uiAttribs.display == "bool")
+            if (!this.#options.multiLine)
+                if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
                 {
-                    if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
-                    else krDop.setColor(0.4, 0.4, 0.4, 1);
-                }
-                if (this.#port.uiAttribs.increment == "integer")
-                {
-                    if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
-                    else krDop.setColor(0.4, 0.4, 0.4, 1);
+                    const krDop = this.#glTl.rects.createRect({ "draggable": true });
+                    krDop.setSize(this.sizeKey, this.sizeKey);
 
-                }
+                    if (this.#port.uiAttribs.display == "bool")
+                    {
+                        if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
+                        else krDop.setColor(0.4, 0.4, 0.4, 1);
+                    }
+                    if (this.#port.uiAttribs.increment == "integer")
+                    {
+                        if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
+                        else krDop.setColor(0.4, 0.4, 0.4, 1);
+                    }
 
-                krDop.setParent(this.#parentRect);
-                this.#dopeRects.push(krDop);
-            }
+                    krDop.setParent(this.#parentRect);
+                    this.#dopeRects.push(krDop);
+                }
 
         }
         this.update();
