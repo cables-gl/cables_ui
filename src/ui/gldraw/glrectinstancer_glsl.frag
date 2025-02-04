@@ -219,8 +219,8 @@ float samp(in vec2 uv, float w) {
         else
             if(abs(uw.y-0.5) < abs(mod(uw.x,0.5))) finalColor.a=1.0;
             else discard;
-
     }
+
 
 
     if(border>=1.0) // border

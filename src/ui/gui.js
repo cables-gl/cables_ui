@@ -1519,6 +1519,7 @@ export default class Gui extends Events
         this.mainTabs.emitEvent("resize");
         this.setLayout();
         this.setLayout(); // yes, twice....
+        gui.emitEvent("resize");
     }
 
     bindKeys()
@@ -2196,7 +2197,7 @@ export default class Gui extends Events
     setUser(u)
     {
         this.user = u;
-        if (this.user.isPatron) ele.hide(ele.byId("nav_support"));
+        if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
     }
 
     initCoreListeners()

@@ -238,6 +238,19 @@ export default class PatchSaveServer extends Events
                 }
             }
 
+            if (gui.user && gui.user.supporterFeatures && gui.user.supporterFeatures.includes("copy_assets_on_clone"))
+            {
+                const checkboxGroup = { "title": "Handle assets:", "checkboxes": [] };
+                checkboxGroup.checkboxes.push({
+                    "name": "copy-assets-on-clone",
+                    "value": true,
+                    "title": "<span title=\"Supporter Feature\" class=\"icon icon-0_5x icon-star\"></span>Copy assets to cloned patch",
+                    "checked": false,
+                    "disabled": false
+                });
+                checkboxGroups.push(checkboxGroup);
+            }
+
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
@@ -278,6 +291,7 @@ export default class PatchSaveServer extends Events
                 {
                     const collabUsers = [];
                     const collabTeams = [];
+                    let copyAssets = false;
 
                     if (checkboxStates)
                     {
@@ -289,6 +303,7 @@ export default class PatchSaveServer extends Events
                             {
                                 if (key.startsWith("copy-collab-team")) collabTeams.push(value);
                                 if (key.startsWith("copy-collab-user")) collabUsers.push(value);
+                                if (key === "copy_assets_on_clone") copyAssets = value;
                             }
                         });
                     }
@@ -297,7 +312,8 @@ export default class PatchSaveServer extends Events
                             "name": name,
                             "copyCollaborators": copyCollaborators,
                             "collabUsers": collabUsers,
-                            "collabTeams": collabTeams
+                            "collabTeams": collabTeams,
+                            "copyAssets": copyAssets
                         },
                         (err, d) =>
                         {
@@ -729,7 +745,7 @@ export default class PatchSaveServer extends Events
 
         cgl.setSize(screenshotWidth, screenshotHeight);
 
-        const screenshotTimeout = setTimeout(() =>
+        setTimeout(() =>
         {
             cgl.setSize(w, h);
             thePatch.resume();
@@ -739,32 +755,37 @@ export default class PatchSaveServer extends Events
         document.getElementById("canvasflash").classList.remove("hidden");
         document.getElementById("canvasflash").classList.add("flash");
 
-        thePatch.renderOneFrame();
-        thePatch.renderOneFrame();
-        gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
+        setTimeout(() =>
+        {
+            // thePatch.renderOneFrame();
+            // thePatch.renderOneFrame();
+            gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
+            if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
 
-        const url = gui.canvasManager.currentCanvas().toDataURL();
+            const url = gui.canvasManager.currentCanvas().toDataURL();
+            console.log("save screenshot ", url.length);
 
-        platform.talkerAPI.send(
-            "saveScreenshot",
-            {
-                "screenshot": url
-            },
-            (error, re) =>
-            {
-                if (error) this._log.warn("[screenshot save error]", error);
+            platform.talkerAPI.send(
+                "saveScreenshot",
+                {
+                    "screenshot": url
+                },
+                (error, re) =>
+                {
+                    if (error) this._log.warn("[screenshot save error]", error);
 
-                cgl.setSize(w, h + 1);
-                cgl.setSize(w, h);
+                    cgl.setSize(w, h + 1);
+                    cgl.setSize(w, h);
 
-                thePatch.resume(); // must resume here for webgpu
-                gui.jobs().finish("screenshotsave");
-                if (gui.onSaveProject) gui.onSaveProject();
-                if (cb)cb();
+                    thePatch.resume(); // must resume here for webgpu
+                    gui.jobs().finish("screenshotsave");
+                    if (gui.onSaveProject) gui.onSaveProject();
+                    if (cb)cb();
 
-                this.finishAnimations();
-            });
+                    this.finishAnimations();
+                });
+
+        }, 200);
     }
 }

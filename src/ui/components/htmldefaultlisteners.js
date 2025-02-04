@@ -10,16 +10,35 @@ export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");
 
-    // show context menu only on input fields/images etc...
-    document.body.addEventListener("contextmenu", (e) =>
-    {
-        if (e.target.currentSrc) return;
-        if (e.target.classList.contains("selectable")) return;
-        if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
+    // const observer = new PerformanceObserver((list) =>
+    // {
 
-        // if (ele.byId("cablescanvas").contains(e.target)) return;
-        e.preventDefault();
-    });
+    //     let entries = list.getEntries();
+    //     for (let i = 0; i < entries.length; i++)
+    //     {
+    //         console.log(entries[i]);
+    //     }
+    //     // longestBlockingLoAFs = longestBlockingLoAFs.concat(list.getEntries()).sort(
+    //     //   (a, b) => b.blockingDuration - a.blockingDuration
+    //     // ).slice(0, MAX_LOAFS_TO_CONSIDER);
+    // });
+    // observer.observe({ "type": "long-animation-frame", "buffered": true });
+
+    // show context menu only on input fields/images etc...
+    document.body.addEventListener("contextmenu",
+
+        /**
+         * @param {Event} e
+         */
+        (e) =>
+        {
+            if (e.target.currentSrc) return;
+            if (e.target.classList.contains("selectable")) return;
+            if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
+
+            // if (ele.byId("cablescanvas").contains(e.target)) return;
+            e.preventDefault();
+        });
 
     window.addEventListener("unhandledrejection", function (e)
     {
@@ -61,6 +80,7 @@ export default function setHtmlDefaultListeners()
     window.addEventListener("resize", () =>
     {
         if (window.gui) gui.onResize();
+
     }, false);
 
     window.addEventListener("message", (event) =>

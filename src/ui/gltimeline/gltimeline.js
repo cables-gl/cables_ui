@@ -223,7 +223,7 @@ export default class GlTimeline extends Events
         else
         if (e.buttons == 2)
         {
-            this.view.scroll(-1 * this.view.pixelToTime(e.movementX));
+            this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
         }
 
@@ -330,7 +330,6 @@ export default class GlTimeline extends Events
 
     dispose()
     {
-
     }
 
     updateSize()
@@ -400,9 +399,7 @@ export default class GlTimeline extends Events
     jumpKey(dir)
     {
         let theKey = null;
-        console.log("duir", dir);
 
-        // for (const anii in this.#tlAnims)
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
         {
             const anim = this.#tlAnims[anii].anim;
@@ -412,16 +409,6 @@ export default class GlTimeline extends Events
             {
                 if (ik < 0) continue;
                 let newIndex = ik;
-                // if (dir == -1 && anim.keys[index].time != this.view.cursorTime)dir = 0;
-
-                // let newIndex = index + dir;
-
-                // if (newIndex == 1 && this.view.cursorTime < anim.keys[0].time)newIndex = 0;
-                // if (newIndex == anim.keys.length - 2 && this.view.cursorTime > anim.keys[anim.keys.length - 1].time)newIndex = anim.keys.length - 1;
-
-                // if (anim.keys.length > newIndex && newIndex >= 0)
-                // const thetime = anim.keys[newIndex].time;
-                // if (!theKey)theKey = anim.keys[newIndex];
 
                 if (anim.keys[newIndex].time != this.view.cursorTime)
                 {
@@ -429,29 +416,23 @@ export default class GlTimeline extends Events
                     if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
                     {
                         if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time < theKey.time)
-                            theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
                     }
 
                     if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
                     {
                         if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time > theKey.time)
-                            theKey = anim.keys[newIndex];
+                        if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
                     }
                 }
-
             }
         }
 
         if (theKey)
         {
-            console.log("thekey", theKey.time);
             gui.scene().timer.setTime(theKey.time);
-            // self.updateTime();
 
-            // if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
-            // gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+            if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
     }
 
