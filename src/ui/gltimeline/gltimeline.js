@@ -95,9 +95,6 @@ export default class GlTimeline extends Events
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
-        this.splines = new GlSplineDrawer(cgl, "gltlSplines_0");
-        this.splines.setWidth(2);
-        this.splines.setFadeout(false);
 
         this.ruler = new glTlRuler(this);
         this.scroll = new glTlScroll(this);
@@ -290,6 +287,10 @@ export default class GlTimeline extends Events
 
     init()
     {
+        this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
+        this.splines.setWidth(2);
+        this.splines.setFadeout(false);
+
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
@@ -386,7 +387,6 @@ export default class GlTimeline extends Events
 
         if (this.cfg.showBeats)
             this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
-
     }
 
     updateAllElements()
@@ -447,7 +447,6 @@ export default class GlTimeline extends Events
         if (theKey)
         {
             gui.scene().timer.setTime(theKey.time);
-
             if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
     }

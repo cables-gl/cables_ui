@@ -14,14 +14,19 @@ export default class GlSpline
     /** @type {GlRect} */
     #parentRect;
 
+    /** @type {String} */
+    #name = "unknown spline";
+
     /**
      * @param {GlSplineDrawer} splineDrawer
+     * @param {string} name
      * @param {object} options
      */
-    constructor(splineDrawer, options)
+    constructor(splineDrawer, name, options)
     {
+        this.#name = name;
         this.#splineDrawer = splineDrawer;
-        this.#splineIdx = this.#splineDrawer.getSplineIndex();
+        this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
     }
 
@@ -80,6 +85,7 @@ export default class GlSpline
     dispose()
     {
         this.#splineDrawer.deleteSpline(this.#splineIdx);
+        this.#splineIdx = -1;
 
     }
 }

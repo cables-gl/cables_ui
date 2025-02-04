@@ -57,15 +57,16 @@ export default class glTlKeys extends Events
         this.#parentRect = parentRect;
         this.#options = options || {};
         this.#port = port;
+
         if (this.#options.keyYpos)
         {
-            this.#spline = new GlSpline(this.#glTl.splines);
+            this.#spline = new GlSpline(this.#glTl.splines, port.name);
 
             this.#spline.setParentRect(parentRect);
             let z = -0.7;
             this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
-
         }
+
         this.points = [];
         this.init();
 
@@ -116,41 +117,48 @@ export default class glTlKeys extends Events
 
             kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2, y - sizeKey2, -0.2);
 
-            const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
-            const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
-            pointsSort.push([lx, ly, z]);
+            if (this.#options.keyYpos)
+            {
+                const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
+                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+                pointsSort.push([lx, ly, z]);
 
-            const onepixelTime = this.#glTl.view.pixelToTime(1);
-            pointsSort.push([
-                this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset - onepixelTime),
-                this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
-                z]);
-            pointsSort.push([
-                this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset + onepixelTime),
-                this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
-                z]);
+                const onepixelTime = this.#glTl.view.pixelToTime(1);
+                pointsSort.push([
+                    this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset - onepixelTime),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    z]);
+                pointsSort.push([
+                    this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset + onepixelTime),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    z]);
+            }
 
         }
 
-        const timeKeyOff = this.#glTl.view.pixelToTime(sizeKey2);
-        const steps = (this.#glTl.width - this.#glTl.titleSpace) / 5;
-
-        for (let i = 0; i < steps; i++)
+        if (this.#options.keyYpos)
         {
-            const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
-            const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
+            const timeKeyOff = this.#glTl.view.pixelToTime(sizeKey2);
+            const steps = (this.#glTl.width - this.#glTl.titleSpace) / 5;
 
-            const y = this.#parentRect.h - CABLES.map(this.#anim.getValue(t), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+            for (let i = 0; i < steps; i++)
+            {
+                const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
+                const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
-            pointsSort.push([x, y, z]);
+                const y = this.#parentRect.h - CABLES.map(this.#anim.getValue(t), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+
+                pointsSort.push([x, y, z]);
+            }
+
+            pointsSort.sort((a, b) =>
+            {
+                return a[0] - b[0];
+            });
+
+            this.#points = pointsSort.flat();
+
         }
-
-        pointsSort.sort((a, b) =>
-        {
-            return a[0] - b[0];
-        });
-
-        this.#points = pointsSort.flat();
 
         if (this.#options.keyYpos)
         {
@@ -188,7 +196,7 @@ export default class glTlKeys extends Events
 
     init()
     {
-        this.dispose();
+        this.reset();
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
             const kr = this.#glTl.rects.createRect({ "draggable": true });
@@ -223,12 +231,20 @@ export default class glTlKeys extends Events
         this.update();
     }
 
-    dispose()
+    reset()
     {
         for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
         this.#keyRects = [];
         for (let i = 0; i < this.#dopeRects.length; i++) this.#dopeRects[i].dispose();
         this.#dopeRects = [];
+
+    }
+
+    dispose()
+    {
+        this.reset();
+
+        if (this.#spline) this.#spline.dispose();
     }
 
 }
