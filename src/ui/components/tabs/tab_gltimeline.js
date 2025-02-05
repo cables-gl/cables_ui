@@ -1,3 +1,4 @@
+import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
@@ -91,6 +92,29 @@ export default class GlTimelineTab
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { a.glTimeline.toggleGraphLayout(); });
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
+        {
+            console.log(e);
+            contextMenu.show(
+                {
+                    "items":
+                        [
+                            {
+                                "title": "Delete Selected Keys",
+                                "func": () => { a.glTimeline.deleteSelectedKeys(); }
+                            },
+                            {
+                                "title": "Move Selected Keys to cursor",
+                                "func": () =>
+                                {
+                                    a.glTimeline.moveSelectedKeys();
+                                }
+                            },
+
+                        ]
+                }, e.target);
+        });
 
     }
 }
