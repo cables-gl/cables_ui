@@ -25,8 +25,18 @@ export default class GlTimelineTab
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
 
+        this.#tab.on("onDeactivate", () =>
+        {
+            a.pause();
+        });
+        this.#tab.on("close", () =>
+        {
+            a.dispose();
+        });
+
         this.#tab.on("onActivate", () =>
         {
+            a.resume();
             a.parentResized();
         });
 

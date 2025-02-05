@@ -123,6 +123,16 @@ export default class GlCanvas
         this.canvas.remove();
     }
 
+    pause()
+    {
+        this.patch.pause();
+    }
+
+    resume()
+    {
+        this.patch.resume();
+    }
+
     activityIdle()
     {
         this._targetFps = 10;

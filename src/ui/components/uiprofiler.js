@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client/index.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { userSettings } from "./usersettings.js";
 
@@ -12,22 +13,27 @@ export default class UiProfiler
         this._timeout = null;
 
         this._currentHighlight = userSettings.get("uiPerfLastHighlight");
+        this.#filter = userSettings.get("showUIPerfFilter") || "";
         this._ignore = false;
+        ele.byId("uiPerfFilter").value = this.#filter;
+
     }
 
     hide()
     {
         this._eleContainer.style.display = "none";
         clearTimeout(this._timeout);
-        this.#filter = "";
 
         userSettings.set("showUIPerf", false);
+
     }
 
     filter(str)
     {
         this.#filter = str;
         this.update();
+        userSettings.set("showUIPerfFilter", this.#filter);
+
     }
 
     show()
