@@ -121,10 +121,7 @@ export default class ServerOps
 
     create(name, cb, openEditor, options = {})
     {
-        // const loadingModal = gui.startModalLoading("Creating op...");
         gui.savingTitleAnimStart("Creating Op...");
-
-        // loadingModal.setTask("Creating Op");
 
         const createRequest = {
             "opname": name
@@ -137,31 +134,28 @@ export default class ServerOps
             {
                 gui.serverOps.showApiError(err);
                 gui.savingTitleAnimEnd();
-                // loadingModal.close();
                 if (cb) cb();
             }
             else
             {
-                // loadingModal.setTask("Loading Op");
-
                 function done()
                 {
                     gui.opSelect().reload();
                     gui.endModalLoading();
                     gui.savingTitleAnimEnd();
-                    if (cb) cb();
+                    if (cb) cb(res);
                 }
 
                 if (!options.noLoadOp)
                 {
-                    this.loadOp(res, () =>
+                    this.loadOp(res, (newOps) =>
                     {
                         if (openEditor)
                         {
                             gui.maintabPanel.show(true);
-                            this.edit(name, false, null, true);
+                            this.edit(res.name, false, null, true);
                         }
-                        gui.serverOps.execute(name, () =>
+                        gui.serverOps.execute(res.name, () =>
                         {
                             done();
                         });
@@ -1022,14 +1016,14 @@ export default class ServerOps
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
 
-                gui.jobs()
-                    .start({
-                        "id": "checkOpName" + fullName,
-                        "title": "checking op name" + fullName
-                    });
+                gui.jobs().start({
+                    "id": "checkOpName" + fullName,
+                    "title": "checking op name" + fullName
+                });
 
                 platform.talkerAPI.send("checkOpName", checkNameRequest, (err, res) =>
                 {
+
                     if (err)
                     {
                         if (!res) res = {};
@@ -1045,8 +1039,7 @@ export default class ServerOps
 
                         _updateFormFromApi(res, fullName, newNamespace);
                     }
-                    gui.jobs()
-                        .finish("checkOpName" + res.checkedName);
+                    gui.jobs().finish("checkOpName" + res.checkedName);
                 });
             }
         };
@@ -1170,10 +1163,12 @@ export default class ServerOps
 
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
-            const opname = newName;
-            this.create(opname, () =>
+            let opname = newName;
+            this.create(opname, (newOp) =>
             {
                 gui.closeModal();
+
+                opname = newOp && newOp.name ? newOp.name : opname;
 
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {
@@ -2100,11 +2095,10 @@ export default class ServerOps
                         missingOpUrl.push(url);
                     });
 
-                    gui.jobs()
-                        .start({
-                            "id": "missingops",
-                            "title": "load missing ops"
-                        });
+                    gui.jobs().start({
+                        "id": "missingops",
+                        "title": "load missing ops"
+                    });
 
                     loadjs.ready(lid, () =>
                     {
