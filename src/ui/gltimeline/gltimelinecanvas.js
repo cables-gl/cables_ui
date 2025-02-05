@@ -26,9 +26,7 @@ export default class glTimelineCanvas extends GlCanvas
 
         this.patch.cgl.on("resize", () =>
         {
-            console.log("resized,.,...", this.patch.cgl.canvasWidth, this.patch.cgl.canvasHeight);
-            // this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
-
+            this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         });
 
         this.glTimeline = new GlTimeline(this.cgl);
@@ -36,7 +34,6 @@ export default class glTimelineCanvas extends GlCanvas
 
     parentResized()
     {
-        console.log("parentResized", this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 

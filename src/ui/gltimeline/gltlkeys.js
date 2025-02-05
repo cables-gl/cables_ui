@@ -122,7 +122,18 @@ export default class glTlKeys extends Events
             if (this.#options.keyYpos)
                 y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
-            kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2, y - sizeKey2, -0.2);
+            const rx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2;
+            const ry = y - sizeKey2;
+
+            kr.setPosition(rx, ry, -0.2);
+
+            if (this.#glTl.selectRect &&
+                this.#glTl.selectRect.x < kr.absX && this.#glTl.selectRect.x2 > kr.absX &&
+                this.#glTl.selectRect.y < kr.absY && this.#glTl.selectRect.y2 > kr.absY)
+            {
+                kr.setColor(1, 1, 0, 1);
+            }
+            else kr.setShape(13);
 
             if (this.#options.keyYpos)
             {
@@ -180,7 +191,9 @@ export default class glTlKeys extends Events
                 const kr = this.#dopeRects[i];
                 if (kr)
                 {
-                    kr.setPosition(this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset), 0, -0.1);
+                    let x = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
+                    let y = 0;
+                    kr.setPosition(x, y, -0.1);
 
                     if (this.#anim.keys[i + 1])
                     {
@@ -194,7 +207,7 @@ export default class glTlKeys extends Events
                     }
                     else
                     {
-                    // after last
+                        // after last
                         kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
                     }
                 }

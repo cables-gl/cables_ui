@@ -30,6 +30,9 @@ export default class GlTimeline extends Events
     /** @type {GlRectInstancer} */
     #rects = null;
 
+    /** @type {GlRectInstancer} */
+    #rectsOver = null;
+
     /** @type {glTlRuler} */
     ruler = null;
 
@@ -58,6 +61,9 @@ export default class GlTimeline extends Events
     /** @type {GlRect} */
     #timeBg;
 
+    /** @type {GlRect} */
+    #rectSelect;
+
     titleSpace = 150;
 
     /** @type {GlTlView} */
@@ -80,6 +86,10 @@ export default class GlTimeline extends Events
     };
 
     #selOpsStr;
+    #lastXnoButton;
+    #lastYnoButton;
+
+    selectRect = null;
 
     /**
      * @param {CABLES.CGState} cgl
@@ -95,6 +105,8 @@ export default class GlTimeline extends Events
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+
+        this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
         this.scroll = new glTlScroll(this);
@@ -129,7 +141,6 @@ export default class GlTimeline extends Events
 
         gui.on("opSelectChange", () =>
         {
-            console.log("opSelectChange", this.#tlAnims.length);
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
 
@@ -174,6 +185,11 @@ export default class GlTimeline extends Events
                 this.#selOpsStr = selOpsStr;
             }
         });
+
+        this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.#rectSelect.setSize(100, 100);
+        this.#rectSelect.setPosition(0, 0, -0.9);
+        this.#rectSelect.setColor(gui.theme.colors_patch.patchSelectionArea);
 
         this._initUserPrefs();
 
@@ -260,11 +276,21 @@ export default class GlTimeline extends Events
 
         let x = e.offsetX;
         let y = e.offsetY;
+
         this.#rects.mouseMove(x, y, e.buttons, e);
 
         if (e.buttons == 1)
         {
             gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+
+            this.selectRect = {
+                "x": Math.min(this.#lastXnoButton, x),
+                "y": Math.min(this.#lastYnoButton, y),
+                "x2": Math.max(this.#lastXnoButton, x),
+                "y2": Math.max(this.#lastYnoButton, y) };
+
+            this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
+            this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
 
             this.updateAllElements();
         }
@@ -273,6 +299,12 @@ export default class GlTimeline extends Events
         {
             this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
+        }
+        else
+        {
+            this.#lastXnoButton = x;
+            this.#lastYnoButton = y;
+
         }
 
     }
@@ -299,6 +331,9 @@ export default class GlTimeline extends Events
     {
         this.#rects.mouseUp(e);
         this.mouseDown = false;
+        this.selectRect = null;
+        this.#rectSelect.setSize(0, 0);
+
     }
 
     _onCanvasWheel(event)
@@ -439,7 +474,8 @@ export default class GlTimeline extends Events
 
         this.#rects.render(resX, resY, -1, 1, resX / 2);
         this.texts.render(resX, resY, -1, 1, resX / 2);
-        this.splines.render(resX, resY, -1, 1, resX / 2);
+        this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+        this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
     }
