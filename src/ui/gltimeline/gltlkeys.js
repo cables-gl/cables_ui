@@ -72,7 +72,12 @@ export default class glTlKeys extends Events
 
     }
 
-    update()
+    get anim()
+    {
+        return this.#anim;
+    }
+
+    update(minVal, maxVal)
     {
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
@@ -86,14 +91,6 @@ export default class glTlKeys extends Events
 
         this.#points = [];// .length = this.#keyRects.length * 3;
         const pointsSort = [];
-
-        let minVal = 9999999;
-        let maxVal = -9999999;
-        for (let i = 0; i < this.#anim.keys.length; i++)
-        {
-            minVal = Math.min(minVal, this.#anim.keys[i].value);
-            maxVal = Math.max(maxVal, this.#anim.keys[i].value);
-        }
 
         let z = 0.0;
         if (isCurrentOp)z = -0.1;

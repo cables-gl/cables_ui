@@ -71,11 +71,13 @@ export default class glTlAnim extends Events
             this.#ports[i] = ports[i];
             this.#keys[i] = new glTlKeys(glTl, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
 
+            const keys = this.#keys[i];
+
             ports[i].anim.on("onChange", () =>
             {
-                this.#keys[i].init();
-            });
 
+                keys.init();
+            });
         }
         this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectTitle.setColor(0, 0, 0);
@@ -85,7 +87,8 @@ export default class glTlAnim extends Events
         });
         this.#disposeRects.push(this.#glRectTitle);
 
-        let title = ports[0].op.name + " - " + ports[0].name;
+        let title = "???";
+        if (ports[0]) title = ports[0].op.name + " - " + ports[0].name;
         if (ports.length > 1)title = ports.length + " anims";
 
         this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
@@ -107,8 +110,27 @@ export default class glTlAnim extends Events
     {
         this.updateColor();
 
+        let minVal = -2;
+        let maxVal = 2;
+
+        for (let j = 0; j < this.#keys.length; j++)
+        {
+            const anim = this.#keys[j].anim;
+
+            for (let i = 0; i < anim.keys.length; i++)
+            {
+                minVal = Math.min(minVal, anim.keys[i].value);
+                maxVal = Math.max(maxVal, anim.keys[i].value);
+            }
+        }
+
+        minVal -= Math.abs(minVal * 0.5);
+        maxVal += Math.abs(maxVal * 0.5);
+
         for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].update();
+        {
+            this.#keys[i].update(minVal, maxVal);
+        }
     }
 
     updateColor()

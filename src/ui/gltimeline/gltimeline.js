@@ -160,7 +160,15 @@ export default class GlTimeline extends Events
         gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, (e) =>
         {
             this.jumpKey(1);
+        });
 
+        gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
+        {
+            this.updateAllElements();
+            if (this.#layout == 1)
+            {
+                this.init();
+            }
         });
 
     }
@@ -305,11 +313,18 @@ export default class GlTimeline extends Events
         this.#tlAnims = [];
 
         const p = gui.corePatch();
+        let ops = p.ops;
         let count = 0;
         const ports = [];
-        for (let i = 0; i < p.ops.length; i++)
+
+        let selops = gui.patchView.getSelectedOps();
+        if (this.#layout == 1 && selops.length > 0)
         {
-            const op = p.ops[i];
+            ops = selops;
+        }
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
             for (let j = 0; j < op.portsIn.length; j++)
             {
                 if (op.portsIn[j].anim)
@@ -327,13 +342,12 @@ export default class GlTimeline extends Events
         }
 
         if (this.#layout === 1)
-            if (ports.length > 2)
-            {
-                const multiAnim = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
-                multiAnim.setHeight(400);
-                multiAnim.setPosition(0, this.getFirstLinePosy());
-                this.#tlAnims.push(multiAnim);
-            }
+        {
+            const multiAnim = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
+            multiAnim.setHeight(400);
+            multiAnim.setPosition(0, this.getFirstLinePosy());
+            this.#tlAnims.push(multiAnim);
+        }
 
         this.updateAllElements();
         this.setPositions();
