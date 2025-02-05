@@ -4,7 +4,6 @@ import sass from "gulp-sass-no-nodesass";
 
 import webpack from "webpack";
 import git from "git-last-commit";
-import autoprefixer from "gulp-autoprefixer";
 import replace from "gulp-replace";
 import fs from "fs";
 import svgmin from "gulp-svgmin";
@@ -154,11 +153,7 @@ function _sass(done)
         .src("scss/style-dark.scss")
         .pipe(sass().on("error", sass.logError))
         .pipe(rename("style-dark.css"))
-        .pipe(
-            autoprefixer({
-                "cascade": false,
-            })
-        )
+
         .pipe(gulp.dest("dist/css"));
 }
 
@@ -175,11 +170,7 @@ function _svgcss(done)
             })
         )
         .pipe(replace("background-image", "mask"))
-        .pipe(
-            autoprefixer({
-                "cascade": false,
-            })
-        )
+
         .pipe(rename("svgicons.scss"))
         .pipe(gulp.dest("scss/"));
     if (!process.env.cables_electron || process.env.cables_electron === "false")

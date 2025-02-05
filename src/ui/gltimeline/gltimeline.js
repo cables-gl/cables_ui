@@ -80,7 +80,8 @@ export default class GlTimeline extends Events
 
     setColorRectSpecial(r)
     {
-        r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+        if (r)
+            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
     }
 
     /**
@@ -352,6 +353,7 @@ export default class GlTimeline extends Events
         this.updateAllElements();
         this.setPositions();
         this.resize();
+
     }
 
     getFirstLinePosy()

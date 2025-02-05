@@ -30,25 +30,37 @@ export default class GlTimelineTab
             a.parentResized();
         });
 
-        this.#tab.addButton("rewind", () =>
+        this.#tab.addButton("+", () =>
+        {
+            a.glTimeline.view.setZoomOffset(1.4, 0.5);
+        });
+
+        this.#tab.addButton("-", () =>
+        {
+            a.glTimeline.view.setZoomOffset(0.6, 0.5);
+        });
+
+        this.#tab.addButtonSpacer();
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-skip-back\"></span>", () =>
         {
             gui.corePatch().timer.setTime(0);
         });
 
-        this.#tab.addButton("<span class=\"icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1);
         });
 
-        const buttonPlay = this.#tab.addButton("<span class=\"icon icon-play\"></span>", () =>
+        const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
 
-            if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "pause";
-            else buttonPlay.innerHTML = "play";
+            if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "<span class=\"nomargin icon icon-pause\"></span>";
+            else buttonPlay.innerHTML = "<span class=\"nomargin icon icon-play\"></span>";
         });
 
-        this.#tab.addButton("<span class=\"icon icon-fast-forward\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1);
         });
@@ -63,27 +75,21 @@ export default class GlTimelineTab
             userSettings.set("glTimelineOpened", false);
         });
 
-        this.#tab.addButton("+", () =>
-        {
-            a.glTimeline.view.setZoomOffset(1.4, 0.5);
-        });
+        this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("-", () =>
-        {
-            a.glTimeline.view.setZoomOffset(0.6, 0.5);
-        });
-
-        this.#tab.addButton("<span class=\"icon icon-arrow-left\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () =>
         {
             a.glTimeline.view.scroll(-1);
         });
 
-        this.#tab.addButton("<span class=\"icon icon-arrow-right\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () =>
         {
             a.glTimeline.view.scroll(1);
         });
 
-        this.#tab.addButton("graph", () =>
+        this.#tab.addButtonSpacer();
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () =>
         {
             a.glTimeline.toggleGraphLayout();
         });

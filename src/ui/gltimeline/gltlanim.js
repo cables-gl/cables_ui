@@ -47,6 +47,8 @@ export default class glTlAnim extends Events
 
     #options = {};
 
+    #animChangeListeners = [];
+
     /**
      * @param {GlTimeline} glTl
      * @param {Array<Port>} port
@@ -57,9 +59,7 @@ export default class glTlAnim extends Events
         super();
 
         this.#options = options;
-
         this.#glTl = glTl;
-
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#disposeRects.push(this.#glRectKeysBg);
@@ -73,11 +73,11 @@ export default class glTlAnim extends Events
 
             const keys = this.#keys[i];
 
-            ports[i].anim.on("onChange", () =>
+            const lid = ports[i].anim.on("onChange", () =>
             {
-
                 keys.init();
             });
+            this.#animChangeListeners.push({ "id": lid, "anim": ports[i].anim });
         }
         this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectTitle.setColor(0, 0, 0);
@@ -98,7 +98,6 @@ export default class glTlAnim extends Events
         this.#disposeRects.push(this.#glTitle);
 
         this.updateColor();
-
     }
 
     get anims()
@@ -110,8 +109,8 @@ export default class glTlAnim extends Events
     {
         this.updateColor();
 
-        let minVal = -2;
-        let maxVal = 2;
+        let minVal = -1;
+        let maxVal = 1;
 
         for (let j = 0; j < this.#keys.length; j++)
         {
@@ -128,9 +127,7 @@ export default class glTlAnim extends Events
         maxVal += Math.abs(maxVal * 0.5);
 
         for (let i = 0; i < this.#keys.length; i++)
-        {
             this.#keys[i].update(minVal, maxVal);
-        }
     }
 
     updateColor()
@@ -155,6 +152,9 @@ export default class glTlAnim extends Events
         this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
     }
 
+    /**
+     * @param {number} h
+     */
     setHeight(h)
     {
         this.height = h;
@@ -162,6 +162,9 @@ export default class glTlAnim extends Events
         this.update();
     }
 
+    /**
+     * @param {number} w
+     */
     setWidth(w)
     {
         this.width = w;
@@ -171,6 +174,8 @@ export default class glTlAnim extends Events
 
     dispose()
     {
+        for (let i = 0; i < this.#animChangeListeners.length; i++) this.#animChangeListeners[i].anim.off(this.#animChangeListeners[i].lid);
+
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
 

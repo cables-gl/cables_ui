@@ -61,6 +61,15 @@ export default class Tab extends Events
         this.toolbarEle.appendChild(el);
     }
 
+    addButtonSpacer()
+    {
+        const button = document.createElement("span");
+        button.innerHTML = "&nbsp;&nbsp;&nbsp;";
+        this.toolbarEle.appendChild(button);
+        this.buttons.push({ "ele": button });
+        return button;
+    }
+
     /**
      * @param {string} title
      * @param {Function} cb

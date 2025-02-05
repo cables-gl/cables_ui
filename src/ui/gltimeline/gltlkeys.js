@@ -77,6 +77,10 @@ export default class glTlKeys extends Events
         return this.#anim;
     }
 
+    /**
+     * @param {number} minVal
+     * @param {number} maxVal
+     */
     update(minVal, maxVal)
     {
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
@@ -234,14 +238,13 @@ export default class glTlKeys extends Events
         this.#keyRects = [];
         for (let i = 0; i < this.#dopeRects.length; i++) this.#dopeRects[i].dispose();
         this.#dopeRects = [];
-
     }
 
     dispose()
     {
         this.reset();
 
-        if (this.#spline) this.#spline.dispose();
+        if (this.#spline) this.#spline = this.#spline.dispose();
     }
 
 }

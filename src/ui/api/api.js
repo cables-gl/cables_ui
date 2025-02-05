@@ -1,5 +1,4 @@
 import { Logger } from "cables-shared-client";
-import platformLib from "platform";
 import { platform } from "../platform.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 
@@ -149,6 +148,7 @@ export default class Api
         {
             this.lastErrorReport = performance.now();
             report.browserInfo = platformLib;
+            console.log(report);
             CABLES.api.post("errorReport", report, doneCallback);
         }
     }
