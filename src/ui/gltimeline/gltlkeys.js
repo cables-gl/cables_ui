@@ -131,9 +131,10 @@ export default class glTlKeys extends Events
                 this.#glTl.selectRect.x < kr.absX && this.#glTl.selectRect.x2 > kr.absX &&
                 this.#glTl.selectRect.y < kr.absY && this.#glTl.selectRect.y2 > kr.absY)
             {
-                kr.setColor(1, 1, 0, 1);
+                this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
             }
-            else kr.setShape(13);
+
+            if (this.#glTl.isKeySelected(this.#anim.keys[i])) kr.setColor(1, 1, 0, 1);
 
             if (this.#options.keyYpos)
             {

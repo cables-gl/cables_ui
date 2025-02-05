@@ -71,6 +71,8 @@ export default class GlTimeline extends Events
 
     #layout = 0;
 
+    #selectedKeys = [];
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
@@ -90,6 +92,7 @@ export default class GlTimeline extends Events
     #lastYnoButton;
 
     selectRect = null;
+    #selectedKeyAnims = [];
 
     /**
      * @param {CABLES.CGState} cgl
@@ -172,6 +175,11 @@ export default class GlTimeline extends Events
             this.jumpKey(1);
         });
 
+        gui.keys.key("delete", "delete", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.deleteSelectedKeys();
+        });
+
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
         {
             let selops = gui.patchView.getSelectedOps();
@@ -187,7 +195,7 @@ export default class GlTimeline extends Events
         });
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
-        this.#rectSelect.setSize(100, 100);
+        this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColor(gui.theme.colors_patch.patchSelectionArea);
 
@@ -281,6 +289,11 @@ export default class GlTimeline extends Events
 
         if (e.buttons == 1)
         {
+            if (this.selectRect == null) // when beginning to draw selection area
+            {
+                this.unSelectAllKeys();
+            }
+
             gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
 
             this.selectRect = {
@@ -304,9 +317,35 @@ export default class GlTimeline extends Events
         {
             this.#lastXnoButton = x;
             this.#lastYnoButton = y;
-
         }
+    }
 
+    unSelectAllKeys()
+    {
+        this.#selectedKeys = [];
+        this.#selectedKeyAnims = [];
+    }
+
+    isKeySelected(k)
+    {
+        return this.#selectedKeys.indexOf(k) != -1;
+    }
+
+    deleteSelectedKeys()
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+
+        this.unSelectAllKeys();
+    }
+
+    selectKey(k, a)
+    {
+        if (!this.isKeySelected(k))
+        {
+            this.#selectedKeys.push(k);
+            this.#selectedKeyAnims.push(a);
+        }
     }
 
     /**
