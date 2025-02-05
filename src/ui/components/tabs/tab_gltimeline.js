@@ -30,15 +30,8 @@ export default class GlTimelineTab
             a.parentResized();
         });
 
-        this.#tab.addButton("+", () =>
-        {
-            a.glTimeline.view.setZoomOffset(1.4, 0.5);
-        });
-
-        this.#tab.addButton("-", () =>
-        {
-            a.glTimeline.view.setZoomOffset(0.6, 0.5);
-        });
+        this.#tab.addButton("+", () => { a.glTimeline.view.setZoomOffset(1.4, 0.5); });
+        this.#tab.addButton("-", () => { a.glTimeline.view.setZoomOffset(0.6, 0.5); });
 
         this.#tab.addButtonSpacer();
 
@@ -77,22 +70,17 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () =>
-        {
-            a.glTimeline.view.scroll(-1);
-        });
-
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () =>
-        {
-            a.glTimeline.view.scroll(1);
-        });
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () => { a.glTimeline.view.scroll(-1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { a.glTimeline.view.scroll(1); });
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () =>
-        {
-            a.glTimeline.toggleGraphLayout();
-        });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous\"></span>", () => { a.glTimeline.jumpKey(-1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next\"></span>", () => { a.glTimeline.jumpKey(1); });
+
+        this.#tab.addButtonSpacer();
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { a.glTimeline.toggleGraphLayout(); });
 
     }
 }

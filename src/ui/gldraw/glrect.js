@@ -446,6 +446,7 @@ export default class GlRect extends Events
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }
+            this.emitEvent("pointerMove", x, y);
         }
     }
 

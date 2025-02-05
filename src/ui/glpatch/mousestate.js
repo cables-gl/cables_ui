@@ -93,10 +93,7 @@ export default class MouseState extends Events
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
         if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
-        if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
         if (userSettingScrollButton == 1) this.buttonForScrolling = MouseState.BUTTON_LEFT;
-        if (userSettingScrollButton == 1) this.buttonForScrolling = MouseState.BUTTON_LEFT;
-        if (userSettingScrollButton == 2) this.buttonForScrolling = MouseState.BUTTON_RIGHT;
         if (userSettingScrollButton == 2) this.buttonForScrolling = MouseState.BUTTON_RIGHT;
     }
 

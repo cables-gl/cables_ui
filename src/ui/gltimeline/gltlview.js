@@ -14,7 +14,7 @@ export default class GlTlView
 
     #zoom = 20;
 
-    #offset = 0;
+    #offset = -0.1;
 
     #timer = new CABLES.Timer();
 

@@ -1,7 +1,7 @@
 import { Events, Logger } from "cables-shared-client";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import glTlAnim from "./gltlanim.js";
+import glTlAnim from "./gltlanimline.js";
 import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
@@ -9,6 +9,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import GlTlView from "./gltlview.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * gl timeline
@@ -24,7 +25,7 @@ export default class GlTimeline extends Events
     texts = null;
 
     /** @type {GlSplineDrawer} */
-    #splines;
+    splines;
 
     /** @type {GlRectInstancer} */
     #rects = null;
@@ -68,7 +69,7 @@ export default class GlTimeline extends Events
     #paused = false;
     #cgl = null;
     #isAnimated = false;
-
+    buttonForScrolling = 2;
     cfg = {
         "fps": 30,
         "bpm": 180,
@@ -78,11 +79,7 @@ export default class GlTimeline extends Events
         "restrictToFrames": true
     };
 
-    setColorRectSpecial(r)
-    {
-        if (r)
-            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
-    }
+    #selOpsStr;
 
     /**
      * @param {CABLES.CGState} cgl
@@ -132,6 +129,7 @@ export default class GlTimeline extends Events
 
         gui.on("opSelectChange", () =>
         {
+            console.log("opSelectChange", this.#tlAnims.length);
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
 
@@ -165,13 +163,26 @@ export default class GlTimeline extends Events
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
         {
+            let selops = gui.patchView.getSelectedOps();
+            let selOpsStr = "";
+            for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].opId;
+
             this.updateAllElements();
-            if (this.#layout == 1)
+            if (this.#layout == 1 && selOpsStr != this.#selOpsStr)
             {
                 this.init();
+                this.#selOpsStr = selOpsStr;
             }
         });
 
+        this._initUserPrefs();
+
+    }
+
+    _initUserPrefs()
+    {
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+        this.buttonForScrolling = userSettingScrollButton;
     }
 
     /** @returns {number} */
@@ -224,6 +235,22 @@ export default class GlTimeline extends Events
         this.init();
     }
 
+    setColorRectSpecial(r)
+    {
+        if (r)
+            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+    }
+
+    setMaxTitleSpace(w)
+    {
+        if (w > this.titleSpace)
+        {
+            this.titleSpace = w;
+            this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
+            this.updateAllElements();
+        }
+    }
+
     /**
      * @param {MouseEvent} e
      */
@@ -242,7 +269,7 @@ export default class GlTimeline extends Events
             this.updateAllElements();
         }
         else
-        if (e.buttons == 2)
+        if (e.buttons == this.buttonForScrolling)
         {
             this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
@@ -306,6 +333,8 @@ export default class GlTimeline extends Events
 
     init()
     {
+        const perf = gui.uiProfiler.start("[gltimeline] init");
+
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
         this.splines.setFadeout(false);
@@ -353,6 +382,8 @@ export default class GlTimeline extends Events
         this.updateAllElements();
         this.setPositions();
         this.resize();
+
+        perf.finish();
 
     }
 
@@ -430,11 +461,15 @@ export default class GlTimeline extends Events
 
     updateAllElements()
     {
+        const perf = gui.uiProfiler.start("[gltimeline] udpateAllElements");
+
         this.ruler.update();
         this.scroll.update();
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
+
+        perf.finish();
     }
 
     onConfig(cfg)

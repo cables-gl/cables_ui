@@ -12,7 +12,7 @@ import { gui } from "../gui.js";
  * @class glTlAnim
  * @extends {Events}
  */
-export default class glTlAnim extends Events
+export default class glTlAnimLine extends Events
 {
 
     /** @type {Array<CABLES.Anim>} */
@@ -30,6 +30,9 @@ export default class glTlAnim extends Events
     /** @type {GlText} */
     #glTitle = null;
 
+    /** @type {GlText} */
+    #glTitleValue = null;
+
     /** @type {GlTimeline} */
     #glTl = null;
 
@@ -40,7 +43,7 @@ export default class glTlAnim extends Events
     #ports = [];
 
     width = 222;
-    height = 30;
+    height = 25;
 
     /** @type {Array<Object >} */
     #disposeRects = [];
@@ -50,6 +53,9 @@ export default class glTlAnim extends Events
     #animChangeListeners = [];
 
     #disposed = false;
+
+    #minVal = -1;
+    #maxVal = 1;
 
     /**
      * @param {GlTimeline} glTl
@@ -64,6 +70,21 @@ export default class glTlAnim extends Events
         this.#glTl = glTl;
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
+
+        if (ports.length > 1)
+        {
+            this.#glTitleValue = new GlText(this.#glTl.texts, "");
+            this.#glTitleValue.setParentRect(this.#glRectTitle);
+            this.#disposeRects.push(this.#glTitleValue);
+
+            this.#glRectKeysBg.on("pointerMove", (x, y) =>
+            {
+                this.#glTitleValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#minVal, this.#maxVal) * 1000) / 1000);
+                this.#glTitleValue.setPosition(this.width - this.#glTitleValue.width - 10, y, -0.5);
+                // console.log("xyyy", , y / this.height, this.#minVal, this.#maxVal);
+            });
+        }
+
         this.#disposeRects.push(this.#glRectKeysBg);
 
         for (let i = 0; i < ports.length; i++)
@@ -96,10 +117,14 @@ export default class glTlAnim extends Events
         if (ports[0]) title = ports[0].op.name + " - " + ports[0].name;
         if (ports.length > 1)title = ports.length + " anims";
 
+        const padding = 10;
         this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
 
-        this.#glTitle.setPosition(10, 0);
+        this.#glTl.setMaxTitleSpace(this.#glTitle.width + (padding * 2));
+
+        this.#glTitle.setPosition(padding, 0);
         this.#glTitle.setParentRect(this.#glRectTitle);
+
         this.#disposeRects.push(this.#glTitle);
 
         this.updateColor();
@@ -115,8 +140,8 @@ export default class glTlAnim extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        let minVal = -1;
-        let maxVal = 1;
+        this.#minVal = -1;
+        this.#maxVal = 1;
 
         for (let j = 0; j < this.#keys.length; j++)
         {
@@ -124,16 +149,16 @@ export default class glTlAnim extends Events
 
             for (let i = 0; i < anim.keys.length; i++)
             {
-                minVal = Math.min(minVal, anim.keys[i].value);
-                maxVal = Math.max(maxVal, anim.keys[i].value);
+                this.#minVal = Math.min(this.#minVal, anim.keys[i].value);
+                this.#maxVal = Math.max(this.#maxVal, anim.keys[i].value);
             }
         }
 
-        minVal -= Math.abs(minVal * 0.5);
-        maxVal += Math.abs(maxVal * 0.5);
+        this.#minVal -= Math.abs(this.#minVal * 0.5);
+        this.#maxVal += Math.abs(this.#maxVal * 0.5);
 
         for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].update(minVal, maxVal);
+            this.#keys[i].update(this.#minVal, this.#maxVal);
     }
 
     updateColor()
