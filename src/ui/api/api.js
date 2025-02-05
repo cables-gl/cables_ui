@@ -24,12 +24,6 @@ export default class Api
                 "Content-Type": "application/json"
             };
             if (data) options.body = JSON.stringify(data);
-            if (options.body.length > 10 * 1024 * 1024)
-            {
-                this._log.warn("did not send error report - too big! " + Math.round(options.body.length / 1024 / 1024) + " mb");
-                console.log(data);
-                return;
-            }
         }
 
         fetch(url, options)
@@ -154,8 +148,25 @@ export default class Api
         {
             this.lastErrorReport = performance.now();
             report.browserInfo = platformLib;
-            console.log(report);
-            CABLES.api.post("errorReport", report, doneCallback);
+            try
+            {
+                const stringReport = JSON.stringify(report);
+                if (stringReport.length > 10 * 1024 * 1024)
+                {
+                    this._log.warn("did not send error report - too big! " + Math.round(stringReport.length / 1024 / 1024) + " mb");
+                    doneCallback();
+                }
+                else
+                {
+                    CABLES.api.post("errorReport", report, doneCallback);
+                }
+            }
+            catch (e)
+            {
+                this._log.warn("did not send error report - failed to stringify", e.message);
+                doneCallback();
+            }
+
         }
     }
 }
