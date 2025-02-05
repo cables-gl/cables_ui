@@ -462,7 +462,7 @@ export default class GlRect extends Events
         if (this.#parent) this.#parent.removeChild(this);
         this.setShape(0);
         this.setSize(0, 0);
-        this.setPosition(0, 0);
+        // this.setPosition(0, 0);
         return null;
     }
 }

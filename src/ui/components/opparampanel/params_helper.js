@@ -202,7 +202,7 @@ const paramsHelper =
                 elVal.focus();
             }
 
-            op.portsIn[index].parent.refreshParams();
+            op.portsIn[index].op.refreshParams();
             return;
         }
 
@@ -216,7 +216,7 @@ const paramsHelper =
             "defaultValue": defaultValue
         };
         gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
-        op.portsIn[index].parent.refreshParams();
+        op.portsIn[index].op.refreshParams();
     },
 
     "openParamStringEditor": (opid, portname, cb, userInteraction) =>

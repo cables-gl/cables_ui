@@ -8,6 +8,7 @@ import glTlScroll from "./gltlscroll.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import GlTlView from "./gltlview.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 /**
  * gl timeline
@@ -21,6 +22,9 @@ export default class GlTimeline extends Events
 
     /** @type {GlTextWriter} */
     texts = null;
+
+    /** @type {GlSplineDrawer} */
+    #splines;
 
     /** @type {GlRectInstancer} */
     #rects = null;
@@ -90,11 +94,9 @@ export default class GlTimeline extends Events
         this.view = new GlTlView(this);
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
-
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
-
         this.scroll = new glTlScroll(this);
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
@@ -285,11 +287,16 @@ export default class GlTimeline extends Events
 
     init()
     {
+        this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
+        this.splines.setWidth(2);
+        this.splines.setFadeout(false);
+
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
         const p = gui.corePatch();
         let count = 0;
+        const ports = [];
         for (let i = 0; i < p.ops.length; i++)
         {
             const op = p.ops[i];
@@ -297,14 +304,23 @@ export default class GlTimeline extends Events
             {
                 if (op.portsIn[j].anim)
                 {
+                    ports.push(op.portsIn[j]);
                     // console.log(op.portsIn[j].anim);
-                    const a = new glTlAnim(this, op.portsIn[j].anim, op, op.portsIn[j]);
+                    const a = new glTlAnim(this, [op.portsIn[j]]);
                     this.#tlAnims.push(a);
                     // a.setIndex(count);
                     count++;
                 }
             }
         }
+
+        if (ports.length > 2)
+        {
+            const a = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
+            a.setHeight(250);
+            this.#tlAnims.push(a);
+        }
+
         this.updateAllElements();
         this.setPositions();
         this.resize();
@@ -356,6 +372,7 @@ export default class GlTimeline extends Events
 
         this.#rects.render(resX, resY, -1, 1, resX / 2);
         this.texts.render(resX, resY, -1, 1, resX / 2);
+        this.splines.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
     }
@@ -373,7 +390,6 @@ export default class GlTimeline extends Events
 
         if (this.cfg.showBeats)
             this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
-
     }
 
     updateAllElements()
@@ -402,27 +418,30 @@ export default class GlTimeline extends Events
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
         {
-            const anim = this.#tlAnims[anii].anim;
-            const index = 0;
-
-            for (let ik = 0; ik < anim.keys.length; ik++)
+            for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
             {
-                if (ik < 0) continue;
-                let newIndex = ik;
+                const anim = this.#tlAnims[anii].anims[ans];
+                const index = 0;
 
-                if (anim.keys[newIndex].time != this.view.cursorTime)
+                for (let ik = 0; ik < anim.keys.length; ik++)
                 {
+                    if (ik < 0) continue;
+                    let newIndex = ik;
 
-                    if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                    if (anim.keys[newIndex].time != this.view.cursorTime)
                     {
-                        if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
-                    }
 
-                    if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
-                    {
-                        if (!theKey)theKey = anim.keys[newIndex];
-                        if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
+                        if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
+                        {
+                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
+                        }
+
+                        if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
+                        {
+                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
+                        }
                     }
                 }
             }
@@ -431,7 +450,6 @@ export default class GlTimeline extends Events
         if (theKey)
         {
             gui.scene().timer.setTime(theKey.time);
-
             if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
     }

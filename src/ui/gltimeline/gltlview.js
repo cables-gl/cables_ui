@@ -96,8 +96,6 @@ export default class GlTlView
         this.#animScroll.clear(this.#timer.getTime());
         this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
         this.#animScroll.setValue(this.#timer.getTime() + dur, this.#offset + off);
-        console.log("time1,tuime2", this.timeLeft, this.timeRight);
-
     }
 
     /**
