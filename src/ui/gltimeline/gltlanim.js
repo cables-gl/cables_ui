@@ -151,6 +151,9 @@ export default class glTlAnim extends Events
     {
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
-        this.#glRectTitle.dispose();
+
+        this.#disposeRects = [];
+        this.#keys = [];
+        if (this.#glRectTitle) this.#glRectTitle = this.#glRectTitle.dispose();
     }
 }

@@ -62,6 +62,8 @@ export default class GlTimeline extends Events
     /** @type {GlTlView} */
     view = null;
 
+    #layout = 0;
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
@@ -205,6 +207,14 @@ export default class GlTimeline extends Events
         return t;
     }
 
+    toggleGraphLayout()
+    {
+        if (this.#layout == 1) this.#layout = 0;
+        else this.#layout = 1;
+
+        this.init();
+    }
+
     /**
      * @param {MouseEvent} e
      */
@@ -305,28 +315,32 @@ export default class GlTimeline extends Events
                 if (op.portsIn[j].anim)
                 {
                     ports.push(op.portsIn[j]);
-                    // console.log(op.portsIn[j].anim);
-                    const a = new glTlAnim(this, [op.portsIn[j]]);
-                    this.#tlAnims.push(a);
-                    // a.setIndex(count);
+
+                    if (this.#layout === 0)
+                    {
+                        const a = new glTlAnim(this, [op.portsIn[j]]);
+                        this.#tlAnims.push(a);
+                    }
                     count++;
                 }
             }
         }
 
-        if (ports.length > 2)
-        {
-            const a = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
-            a.setHeight(250);
-            this.#tlAnims.push(a);
-        }
+        if (this.#layout === 1)
+            if (ports.length > 2)
+            {
+                const multiAnim = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
+                multiAnim.setHeight(400);
+                multiAnim.setPosition(0, this.getFirstLinePosy());
+                this.#tlAnims.push(multiAnim);
+            }
 
         this.updateAllElements();
         this.setPositions();
         this.resize();
     }
 
-    setPositions()
+    getFirstLinePosy()
     {
         let posy = 0;
 
@@ -335,6 +349,12 @@ export default class GlTimeline extends Events
 
         this.ruler.setPosition(this.titleSpace, posy);
         posy += this.ruler.height;
+        return posy;
+    }
+
+    setPositions()
+    {
+        let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
         {

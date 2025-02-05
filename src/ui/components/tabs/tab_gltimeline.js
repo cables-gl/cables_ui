@@ -83,5 +83,10 @@ export default class GlTimelineTab
             a.glTimeline.view.scroll(1);
         });
 
+        this.#tab.addButton("graph", () =>
+        {
+            a.glTimeline.toggleGraphLayout();
+        });
+
     }
 }
