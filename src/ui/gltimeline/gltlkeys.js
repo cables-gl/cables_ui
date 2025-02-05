@@ -34,6 +34,8 @@ export default class glTlKeys extends Events
     /** @type {GlSpline} */
     #spline;
 
+    #disposed = false;
+
     sizeKey = 14;
     #points = [];
     #options = {};
@@ -83,17 +85,21 @@ export default class glTlKeys extends Events
      */
     update(minVal, maxVal)
     {
+        if (this.#disposed)
+        {
+            this._log.warn("disposed", this);
+            this._log.stack("ss");
+            return;
+        }
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
 
         if (this.#options.multiAnims && !isCurrentOp) this.sizeKey = 10;
         else this.sizeKey = 14;
 
-        // this.sizeKey = 8;
-
         const sizeKey2 = this.sizeKey / 2;
 
-        this.#points = [];// .length = this.#keyRects.length * 3;
+        this.#points = [];
         const pointsSort = [];
 
         let z = 0.0;
@@ -245,6 +251,7 @@ export default class glTlKeys extends Events
         this.reset();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
+        this.#disposed = true;
     }
 
 }

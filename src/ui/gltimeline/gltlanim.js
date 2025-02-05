@@ -49,6 +49,8 @@ export default class glTlAnim extends Events
 
     #animChangeListeners = [];
 
+    #disposed = false;
+
     /**
      * @param {GlTimeline} glTl
      * @param {Array<Port>} port
@@ -69,15 +71,18 @@ export default class glTlAnim extends Events
             this.#anims[i] = ports[i].anim;
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
+            if (this.#keys[i]) this.#keys[i].dispose();
             this.#keys[i] = new glTlKeys(glTl, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
 
             const keys = this.#keys[i];
+            const anim = ports[i].anim;
 
-            const lid = ports[i].anim.on("onChange", () =>
+            const lid = anim.addEventListener("onChange", () =>
             {
                 keys.init();
             });
-            this.#animChangeListeners.push({ "id": lid, "anim": ports[i].anim });
+
+            this.#animChangeListeners.push({ "id": lid, "anim": anim });
         }
         this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectTitle.setColor(0, 0, 0);
@@ -107,6 +112,7 @@ export default class glTlAnim extends Events
 
     update()
     {
+        if (this.checkDisposed()) return;
         this.updateColor();
 
         let minVal = -1;
@@ -132,6 +138,7 @@ export default class glTlAnim extends Events
 
     updateColor()
     {
+        if (this.checkDisposed()) return;
         this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
@@ -148,6 +155,7 @@ export default class glTlAnim extends Events
      */
     setPosition(x, y)
     {
+        if (this.checkDisposed()) return;
         this.#glRectTitle.setPosition(x, y, -0.5);
         this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
     }
@@ -157,6 +165,7 @@ export default class glTlAnim extends Events
      */
     setHeight(h)
     {
+        if (this.checkDisposed()) return;
         this.height = h;
         this.setWidth(this.width);
         this.update();
@@ -167,20 +176,32 @@ export default class glTlAnim extends Events
      */
     setWidth(w)
     {
+        if (this.checkDisposed()) return;
         this.width = w;
         this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
     }
 
+    checkDisposed()
+    {
+        if (this.#disposed)console.log("disposed object...", this);
+        return this.#disposed;
+    }
+
     dispose()
     {
-        for (let i = 0; i < this.#animChangeListeners.length; i++) this.#animChangeListeners[i].anim.off(this.#animChangeListeners[i].lid);
+        this.#disposed = true;
+
+        for (let i = 0; i < this.#animChangeListeners.length; i++)
+            this.#animChangeListeners[i].anim.removeEventListener(this.#animChangeListeners[i].id);
+
+        this.#animChangeListeners = [];
+
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
+        this.#keys = [];
 
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
-
         this.#disposeRects = [];
-        this.#keys = [];
-        if (this.#glRectTitle) this.#glRectTitle = this.#glRectTitle.dispose();
+
     }
 }

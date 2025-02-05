@@ -24,6 +24,12 @@ export default class Api
                 "Content-Type": "application/json"
             };
             if (data) options.body = JSON.stringify(data);
+            if (options.body.length > 10 * 1024 * 1024)
+            {
+                this._log.warn("did not send error report - too big! " + Math.round(options.body.length / 1024 / 1024) + " mb");
+                console.log(data);
+                return;
+            }
         }
 
         fetch(url, options)
