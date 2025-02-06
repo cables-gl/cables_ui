@@ -265,6 +265,7 @@ export default class ModalError
         {
             if (CABLES && platform && platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
+
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
             }

@@ -1,5 +1,4 @@
 import { Logger } from "cables-shared-client";
-import platformLib from "platform";
 import { platform } from "../platform.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 
@@ -149,7 +148,25 @@ export default class Api
         {
             this.lastErrorReport = performance.now();
             report.browserInfo = platformLib;
-            CABLES.api.post("errorReport", report, doneCallback);
+            try
+            {
+                const stringReport = JSON.stringify(report);
+                if (stringReport.length > 10 * 1024 * 1024)
+                {
+                    this._log.warn("did not send error report - too big! " + Math.round(stringReport.length / 1024 / 1024) + " mb");
+                    doneCallback();
+                }
+                else
+                {
+                    CABLES.api.post("errorReport", report, doneCallback);
+                }
+            }
+            catch (e)
+            {
+                this._log.warn("did not send error report - failed to stringify", e.message);
+                doneCallback();
+            }
+
         }
     }
 }

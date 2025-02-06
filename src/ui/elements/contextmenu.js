@@ -1,8 +1,5 @@
 import { ele } from "cables-shared-client";
 
-
-
-
 export default class ContextMenu
 {
     constructor()
@@ -40,7 +37,6 @@ export default class ContextMenu
 
             document.body.appendChild(this._modalBg);
         }
-
 
         if (!this._element)
         {

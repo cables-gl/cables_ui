@@ -1,7 +1,7 @@
 import { Events, Logger } from "cables-shared-client";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import glTlAnim from "./gltlanim.js";
+import glTlAnim from "./gltlanimline.js";
 import glTlRuler from "./gltlruler.js";
 import { gui } from "../gui.js";
 import glTlScroll from "./gltlscroll.js";
@@ -9,6 +9,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import GlTlView from "./gltlview.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * gl timeline
@@ -24,10 +25,13 @@ export default class GlTimeline extends Events
     texts = null;
 
     /** @type {GlSplineDrawer} */
-    #splines;
+    splines;
 
     /** @type {GlRectInstancer} */
     #rects = null;
+
+    /** @type {GlRectInstancer} */
+    #rectsOver = null;
 
     /** @type {glTlRuler} */
     ruler = null;
@@ -57,16 +61,23 @@ export default class GlTimeline extends Events
     /** @type {GlRect} */
     #timeBg;
 
+    /** @type {GlRect} */
+    #rectSelect;
+
     titleSpace = 150;
 
     /** @type {GlTlView} */
     view = null;
 
+    #layout = 0;
+
+    #selectedKeys = [];
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
     #isAnimated = false;
-
+    buttonForScrolling = 2;
     cfg = {
         "fps": 30,
         "bpm": 180,
@@ -76,10 +87,12 @@ export default class GlTimeline extends Events
         "restrictToFrames": true
     };
 
-    setColorRectSpecial(r)
-    {
-        r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
-    }
+    #selOpsStr;
+    #lastXnoButton;
+    #lastYnoButton;
+
+    selectRect = null;
+    #selectedKeyAnims = [];
 
     /**
      * @param {CABLES.CGState} cgl
@@ -95,6 +108,8 @@ export default class GlTimeline extends Events
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+
+        this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
         this.scroll = new glTlScroll(this);
@@ -158,9 +173,40 @@ export default class GlTimeline extends Events
         gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, (e) =>
         {
             this.jumpKey(1);
-
         });
 
+        gui.keys.key("delete", "delete", "down", cgl.canvas.id, {}, (e) =>
+        {
+            this.deleteSelectedKeys();
+        });
+
+        gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
+        {
+            let selops = gui.patchView.getSelectedOps();
+            let selOpsStr = "";
+            for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].opId;
+
+            this.updateAllElements();
+            if (this.#layout == 1 && selOpsStr != this.#selOpsStr)
+            {
+                this.init();
+                this.#selOpsStr = selOpsStr;
+            }
+        });
+
+        this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.#rectSelect.setSize(0, 0);
+        this.#rectSelect.setPosition(0, 0, -0.9);
+        this.#rectSelect.setColor(gui.theme.colors_patch.patchSelectionArea);
+
+        this._initUserPrefs();
+
+    }
+
+    _initUserPrefs()
+    {
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+        this.buttonForScrolling = userSettingScrollButton;
     }
 
     /** @returns {number} */
@@ -205,6 +251,30 @@ export default class GlTimeline extends Events
         return t;
     }
 
+    toggleGraphLayout()
+    {
+        if (this.#layout == 1) this.#layout = 0;
+        else this.#layout = 1;
+
+        this.init();
+    }
+
+    setColorRectSpecial(r)
+    {
+        if (r)
+            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+    }
+
+    setMaxTitleSpace(w)
+    {
+        if (w > this.titleSpace)
+        {
+            this.titleSpace = w;
+            this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
+            this.updateAllElements();
+        }
+    }
+
     /**
      * @param {MouseEvent} e
      */
@@ -214,21 +284,97 @@ export default class GlTimeline extends Events
 
         let x = e.offsetX;
         let y = e.offsetY;
+
         this.#rects.mouseMove(x, y, e.buttons, e);
 
         if (e.buttons == 1)
         {
-            gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+
+            if (y > this.getFirstLinePosy())
+            {
+
+                // if (this.selectRect == null) // when beginning to draw selection area
+                this.unSelectAllKeys();
+
+                this.selectRect = {
+                    "x": Math.min(this.#lastXnoButton, x),
+                    "y": Math.min(this.#lastYnoButton, y),
+                    "x2": Math.max(this.#lastXnoButton, x),
+                    "y2": Math.max(this.#lastYnoButton, y) };
+
+                this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
+                this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+            }
+            if (y < this.getFirstLinePosy())
+            {
+                gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+            }
 
             this.updateAllElements();
         }
         else
-        if (e.buttons == 2)
+        if (e.buttons == this.buttonForScrolling)
         {
             this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
             this.updateAllElements();
         }
+        else
+        {
+            this.#lastXnoButton = x;
+            this.#lastYnoButton = y;
+        }
+    }
 
+    unSelectAllKeys()
+    {
+        this.#selectedKeys = [];
+        this.#selectedKeyAnims = [];
+    }
+
+    isKeySelected(k)
+    {
+        return this.#selectedKeys.indexOf(k) != -1;
+    }
+
+    getKeysSmallestTime(keys)
+    {
+        let minTime = 9999999;
+        for (let i = 0; i < keys.length; i++)
+        {
+            minTime = Math.min(minTime, keys[i].time);
+        }
+
+        return minTime;
+
+    }
+
+    moveSelectedKeys(time)
+    {
+        if (time === undefined)time = this.cursorTime;
+        let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + minTime });
+        }
+        this.updateAllElements();
+
+    }
+
+    deleteSelectedKeys()
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+
+        this.unSelectAllKeys();
+    }
+
+    selectKey(k, a)
+    {
+        if (!this.isKeySelected(k))
+        {
+            this.#selectedKeys.push(k);
+            this.#selectedKeyAnims.push(a);
+        }
     }
 
     /**
@@ -253,6 +399,9 @@ export default class GlTimeline extends Events
     {
         this.#rects.mouseUp(e);
         this.mouseDown = false;
+        this.selectRect = null;
+        this.#rectSelect.setSize(0, 0);
+
     }
 
     _onCanvasWheel(event)
@@ -287,6 +436,8 @@ export default class GlTimeline extends Events
 
     init()
     {
+        const perf = gui.uiProfiler.start("[gltimeline] init");
+
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
         this.splines.setFadeout(false);
@@ -295,38 +446,51 @@ export default class GlTimeline extends Events
         this.#tlAnims = [];
 
         const p = gui.corePatch();
+        let ops = p.ops;
         let count = 0;
         const ports = [];
-        for (let i = 0; i < p.ops.length; i++)
+
+        let selops = gui.patchView.getSelectedOps();
+        if (this.#layout == 1 && selops.length > 0)
         {
-            const op = p.ops[i];
+            ops = selops;
+        }
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
             for (let j = 0; j < op.portsIn.length; j++)
             {
                 if (op.portsIn[j].anim)
                 {
                     ports.push(op.portsIn[j]);
-                    // console.log(op.portsIn[j].anim);
-                    const a = new glTlAnim(this, [op.portsIn[j]]);
-                    this.#tlAnims.push(a);
-                    // a.setIndex(count);
+
+                    if (this.#layout === 0)
+                    {
+                        const a = new glTlAnim(this, [op.portsIn[j]]);
+                        this.#tlAnims.push(a);
+                    }
                     count++;
                 }
             }
         }
 
-        if (ports.length > 2)
+        if (this.#layout === 1)
         {
-            const a = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
-            a.setHeight(250);
-            this.#tlAnims.push(a);
+            const multiAnim = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
+            multiAnim.setHeight(400);
+            multiAnim.setPosition(0, this.getFirstLinePosy());
+            this.#tlAnims.push(multiAnim);
         }
 
         this.updateAllElements();
         this.setPositions();
         this.resize();
+
+        perf.finish();
+
     }
 
-    setPositions()
+    getFirstLinePosy()
     {
         let posy = 0;
 
@@ -335,6 +499,12 @@ export default class GlTimeline extends Events
 
         this.ruler.setPosition(this.titleSpace, posy);
         posy += this.ruler.height;
+        return posy;
+    }
+
+    setPositions()
+    {
+        let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
@@ -372,7 +542,8 @@ export default class GlTimeline extends Events
 
         this.#rects.render(resX, resY, -1, 1, resX / 2);
         this.texts.render(resX, resY, -1, 1, resX / 2);
-        this.splines.render(resX, resY, -1, 1, resX / 2);
+        this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+        this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
     }
@@ -394,11 +565,15 @@ export default class GlTimeline extends Events
 
     updateAllElements()
     {
+        const perf = gui.uiProfiler.start("[gltimeline] udpateAllElements");
+
         this.ruler.update();
         this.scroll.update();
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
+
+        perf.finish();
     }
 
     onConfig(cfg)

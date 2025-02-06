@@ -17,6 +17,8 @@ export default class GlSpline
     /** @type {String} */
     #name = "unknown spline";
 
+    #disposed = false;
+
     /**
      * @param {GlSplineDrawer} splineDrawer
      * @param {string} name
@@ -35,6 +37,7 @@ export default class GlSpline
      */
     setParentRect(r)
     {
+        if (this.checkDisposed()) return;
         if (this.#parentRect) this.#parentRect.removeEventListener(this.rebuild.bind(this));
 
         this.#parentRect = r;
@@ -47,12 +50,14 @@ export default class GlSpline
      */
     setPoints(p)
     {
+        if (this.checkDisposed()) return;
         this.#points = p;
         this.rebuild();
     }
 
     rebuild()
     {
+        if (this.checkDisposed()) return;
         const finalPoints = [];
         let x = 0, y = 0, z = 0;
 
@@ -79,13 +84,21 @@ export default class GlSpline
      */
     setColor(r, g, b, a = 1)
     {
+        if (this.checkDisposed()) return;
         this.#splineDrawer.setSplineColor(this.#splineIdx, [r, g, b, a]);
+    }
+
+    checkDisposed()
+    {
+        if (this.#disposed)console.log("disposed object...", this);
+        return this.#disposed;
     }
 
     dispose()
     {
+        this.#disposed = true;
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.#splineIdx = -1;
-
+        return null;
     }
 }

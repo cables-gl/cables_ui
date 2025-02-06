@@ -29,7 +29,6 @@
         "@rbarilani/remove-source-map-url-webpack-plugin": "1.1.0",
         "git-last-commit": "1.0.1",
         "gulp": "5.0.0",
-        "gulp-autoprefixer": "8.0.0",
         "gulp-concat": "2.6.1",
         "gulp-jshint": "2.1.0",
         "gulp-rename": "2.0.0",

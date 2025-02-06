@@ -287,7 +287,18 @@
     </form>
 
     <div class="tooltip hidden" id="cbltooltip"></div>
-    <div id="uiperf" ></div>
+
+
+
+    <div id="uiperfcontainer">
+
+        <a onclick="gui.uiProfiler.clear();" class="button">reset</a>
+        <input id="uiPerfFilter" class="medium" placeholder="Filter" style="width:50%" type="search" oninput="gui.uiProfiler.filter(this.value)"/>
+        <a onclick="gui.uiProfiler.hide();" class="button" >close</a>
+        <div id="uiperf">
+        </div>
+    </div>
+
     <div id="patchnavhelperBounds" class="hidden" onclick=""></div>
     <div id="patchnavhelperEmpty" class="hidden"></div>
 </div>

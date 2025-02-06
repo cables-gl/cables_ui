@@ -65,7 +65,6 @@ export default function extendCoreAnim()
         }
     };
 
-
     CABLES.ANIM.Key.prototype.isMainAnim = false;
 
     CABLES.ANIM.Key.prototype.updateCircle = function (_isMainAnim)
@@ -179,7 +178,6 @@ export default function extendCoreAnim()
             self.isDragging = false;
         };
 
-
         this.doMove = function (dx, dy, a, b, e, newPos)
         {
             if (!this.showCircle) return;
@@ -196,7 +194,6 @@ export default function extendCoreAnim()
             let time = gui.timeLine().getTimeFromPaper(newPos.x);
             const frame = parseInt((time + 0.5 * 1 / gui.timeLine().getFPS()) * gui.timeLine().getFPS(), 10);
             time = frame / gui.timeLine().getFPS();
-
 
             if (CABLES.ANIM.MoveMode === 0)
             {
@@ -309,9 +306,7 @@ export default function extendCoreAnim()
         if (self.circleBezierIn) self.circleBezierIn.drag(moveBezierIn, upBezierIn);
     };
 
-
     // -----------------------------------------------
-
 
     CABLES.Anim.prototype.hasSelectedKeys = function ()
     {
@@ -354,21 +349,7 @@ export default function extendCoreAnim()
             this.keys[i].setSelected(false);
     };
 
-    CABLES.Anim.prototype.deleteKeyAt = function (t)
-    {
-        for (const i in this.keys)
-        {
-            if (this.keys[i].time == t)
-            {
-                this.keys[i].removeUi();
-                this.keys.splice(i, 1);
-                return;
-            }
-        }
-        if (gui.metaKeyframes)gui.metaKeyframes.update();
-    };
-
-    CABLES.Anim.prototype.deleteSelectedKeys = function ()
+    CABLES.Anim.prototype.deleteSelectedKeys = function () // TODO: Remove witgh raphael
     {
         let found = true;
 

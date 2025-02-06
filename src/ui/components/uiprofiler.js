@@ -1,8 +1,11 @@
+import { ele } from "cables-shared-client/index.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { userSettings } from "./usersettings.js";
 
 export default class UiProfiler
 {
+    #filter = "";
+
     constructor()
     {
         this._measures = {};
@@ -10,15 +13,27 @@ export default class UiProfiler
         this._timeout = null;
 
         this._currentHighlight = userSettings.get("uiPerfLastHighlight");
+        this.#filter = userSettings.get("showUIPerfFilter") || "";
         this._ignore = false;
+        ele.byId("uiPerfFilter").value = this.#filter;
+
     }
 
     hide()
     {
-        this._ele.style.display = "none";
+        this._eleContainer.style.display = "none";
         clearTimeout(this._timeout);
 
         userSettings.set("showUIPerf", false);
+
+    }
+
+    filter(str)
+    {
+        this.#filter = str;
+        this.update();
+        userSettings.set("showUIPerfFilter", this.#filter);
+
     }
 
     show()
@@ -37,7 +52,8 @@ export default class UiProfiler
 
     update()
     {
-        this._ele = this._ele || document.getElementById("uiperf");
+        this._eleContainer = this._eleContainer || ele.byId("uiperfcontainer");
+        this._ele = this._ele || ele.byId("uiperf");
         const data = [];
 
         for (const i in this._measures)
@@ -60,15 +76,16 @@ export default class UiProfiler
             if (dist > 2000) color = "col_inactive";
             if (dist < 600) color = "col_active";
 
-            data.push(
-                {
-                    "highlight": this._measures[i].highlight,
-                    "color": color,
-                    "name": i,
-                    "count": this._measures[i].count,
-                    "last": lastTime,
-                    "avg": avg
-                });
+            if (!this.#filter || i.indexOf(this.#filter) >= 0)
+                data.push(
+                    {
+                        "highlight": this._measures[i].highlight,
+                        "color": color,
+                        "name": i,
+                        "count": this._measures[i].count,
+                        "last": lastTime,
+                        "avg": avg
+                    });
         }
 
         data.sort(function (a, b)
@@ -80,7 +97,7 @@ export default class UiProfiler
         const html = getHandleBarHtml("uiperformance", { "measures": data });
 
         this._ele.innerHTML = html;
-        this._ele.style.display = "block";
+        this._eleContainer.style.display = "block";
         this._ignore = false;
 
         clearTimeout(this._timeout);
@@ -89,7 +106,6 @@ export default class UiProfiler
             if (userSettings.get("showUIPerf")) this.update();
         }, 500);
     }
-
 
     print()
     {
@@ -151,4 +167,3 @@ export default class UiProfiler
         return r;
     }
 }
-

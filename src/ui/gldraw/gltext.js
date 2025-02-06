@@ -104,10 +104,10 @@ export default class GlText
 
     setParentRect(r)
     {
-        if (this._parentRect) this._parentRect.removeEventListener(this.rebuild.bind(this));
+        if (this._parentRectListener && this._parentRect) this._parentRectListener = this._parentRect.removeEventListener(this._parentRectListener);
 
         this._parentRect = r;
-        if (this._parentRect) this._parentRect.on("positionChanged", this.rebuild.bind(this));
+        if (this._parentRect) this._parentRectListener = this._parentRect.on("positionChanged", this.rebuild.bind(this));
         this.rebuild();
     }
 
