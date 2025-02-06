@@ -113,6 +113,14 @@ export default class GlTimelineTab
                                     a.glTimeline.moveSelectedKeys();
                                 }
                             },
+                            {
+                                "title": "Set same time for selected keys",
+                                "func": () =>
+                                {
+                                    a.glTimeline.setSelectedKeysTime();
+
+                                }
+                            },
 
                         ]
                 }, e.target);

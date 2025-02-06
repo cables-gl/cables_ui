@@ -355,7 +355,6 @@ export default class GlTimeline extends Events
 
     getNumSelectedKeys()
     {
-        console.log("this.#selectedKeys.length", this.#selectedKeys.length);
         return this.#selectedKeys.length;
     }
 
@@ -364,6 +363,16 @@ export default class GlTimeline extends Events
         if (time === undefined)time = this.cursorTime;
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
         this.moveSelectedKeysDelta(minTime);
+    }
+
+    setSelectedKeysTime(time)
+    {
+        if (time === undefined)time = this.cursorTime;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeys[i].set({ "time": time });
+
+        this.updateAllElements();
     }
 
     moveSelectedKeysDelta(d)
