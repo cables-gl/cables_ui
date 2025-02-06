@@ -466,7 +466,7 @@ export default class GlRect extends Events
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
-                    this.emitEvent(GlRect.EVENT_DRAGSTART, this);
+                    this.emitEvent(GlRect.EVENT_DRAGSTART, this, x, y, button, e);
                 }
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;

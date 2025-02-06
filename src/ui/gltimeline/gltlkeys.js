@@ -39,7 +39,7 @@ export default class glTlKeys extends Events
 
     #disposed = false;
 
-    sizeKey = 14;
+    sizeKey = 12;
     #points = [];
     #options = {};
 
@@ -102,7 +102,7 @@ export default class glTlKeys extends Events
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
 
-        if (this.#options.multiAnims && !isCurrentOp) this.sizeKey = 10;
+        if (this.#options.multiAnims && !isCurrentOp) this.sizeKey = 12;
         else this.sizeKey = 14;
 
         const sizeKey2 = this.sizeKey / 2;
@@ -237,6 +237,8 @@ export default class glTlKeys extends Events
             kr.setParent(this.#parentRect);
             kr.key = this.#anim.keys[i];
 
+            let startDrag = -1111;
+
             kr.draggableMove = true;
             kr.on(GlRect.EVENT_POINTER_HOVER, () =>
             {
@@ -251,26 +253,40 @@ export default class glTlKeys extends Events
                 this.update(0, 0);
             });
 
-            kr.on(GlRect.EVENT_DRAGEND, (x, y, z) =>
+            kr.on(GlRect.EVENT_DRAGEND, () =>
             {
-                console.log("dragend", x, y, z);
-
+                this.#anim.sortKeys();
             });
-            kr.on(GlRect.EVENT_DRAG, (x, y, z) =>
+
+            kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
             {
+                // this.#anim.sortKeys();
+                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+            });
+
+            // , this, this.#dragOffsetX, this.#dragOffsetY, button, event);
+            kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+            {
+                if (this.#glTl.selectRect) return;
+
                 const offX = kr.dragOffsetX;
                 const offY = kr.dragOffsetY;
-                const offTime = this.#glTl.view.pixelToTime(kr.dragOffsetX);
+                console.log(e);
+                const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
+                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+
+                console.log("offTime", offTime);
 
                 if (this.#glTl.getNumSelectedKeys() > 0)
                 {
-                    console.log(offTime);
                     this.#glTl.moveSelectedKeysDelta(offTime);
+                    this.#anim.sortKeys();
+
                 }
-                else
-                {
-                    kr.key.set({ "time": kr.key.time + offTime });
-                }
+                // else
+                // {
+                //     kr.key.set({ "time": kr.key.time + offTime });
+                // }
                 this.update(0, 0); // console.log("drag", x, y, z);
             });
 
