@@ -46,6 +46,22 @@ export default class GlRect extends Events
 
     #log = new Logger("GlRect");
 
+    static EVENT_POINTER_HOVER = "hover";
+    static EVENT_POINTER_UNHOVER = "unhover";
+    static EVENT_POINTER_MOVE = "pointerMove";
+    static EVENT_POINTER_UP = "mouseup";
+    static EVENT_POINTER_DOWN = "mousedown";
+
+    static EVENT_DRAG = "drag";
+    static EVENT_DRAGSTART = "dragStart";
+    static EVENT_DRAGEND = "dragEnd";
+
+    static EVENT_POSITIONCHANGED = "positionChanged";
+    static EVENT_TEXTURECHANGED = "textureChanged";
+
+    static OPTION_INTERACTIVE = "interactive";
+    static OPTION_PARENT = "parent";
+
     /**
      * @param {GlRectInstancer} instancer
      * @param {Object} options
@@ -61,8 +77,8 @@ export default class GlRect extends Events
         this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
         options = options || {};
 
-        if (options.hasOwnProperty("interactive")) this.interactive = options.interactive;
-        if (options.parent) this.setParent(options.parent);
+        if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options.interactive;
+        if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
     }
 
     get x() { return this.#x; }
@@ -90,11 +106,17 @@ export default class GlRect extends Events
 
     get parent() { return this.#parent; }
 
+    /**
+     * @param {GlRect} c
+     */
     hasChild(c)
     {
         return this.childs.indexOf(c) > -1;
     }
 
+    /**
+     * @param {GlRect} c
+     */
     addChild(c)
     {
         if (!this.hasChild(c)) this.childs.push(c);
@@ -139,6 +161,9 @@ export default class GlRect extends Events
         }
     }
 
+    /**
+     * @returns {boolean}
+     */
     get visible() { return this.#visible; }
 
     /**
@@ -248,7 +273,7 @@ export default class GlRect extends Events
     {
         if (this.#texture == t) return;
         this.#texture = t;
-        this.emitEvent("textureChanged");
+        this.emitEvent(GlRect.EVENT_TEXTURECHANGED);
     }
 
     /**
@@ -276,7 +301,7 @@ export default class GlRect extends Events
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
         for (let i = 0; i < this.childs.length; i++) this.childs[i].updateParentPosition();
-        this.emitEvent("positionChanged");
+        this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
 
     updateParentPosition()
@@ -299,7 +324,7 @@ export default class GlRect extends Events
      */
     mouseUp(e)
     {
-        if (this.#hovering) this.emitEvent("mouseup", e, this);
+        if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_UP, e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseUp(e);
 
         if (this.#isDragging) this.mouseDragEnd();
@@ -310,7 +335,7 @@ export default class GlRect extends Events
      */
     mouseDown(e)
     {
-        if (this.#hovering) this.emitEvent("mousedown", e, this);
+        if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e);
     }
 
@@ -385,14 +410,14 @@ export default class GlRect extends Events
             this.#dragStartX = this.x;
             this.#dragStartY = this.y;
         }
-        // this.setPosition( x - this.#dragOffsetX, y - this.#dragOffsetY);
-        this.emitEvent("drag", this, this.#dragOffsetX, this.#dragOffsetY, button, event);
+
+        this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event);
     }
 
     mouseDragEnd()
     {
         if (!this.interactive) return;
-        this.emitEvent("dragEnd", this);
+        this.emitEvent(GlRect.EVENT_DRAGEND, this);
         this.#isDragging = false;
     }
 
@@ -412,8 +437,8 @@ export default class GlRect extends Events
         const hoverChanged = this.#hovering != hovering;
         this.#hovering = hovering;
 
-        if (hovering && !isHovered) this.emitEvent("hover", this);
-        else if (!hovering && isHovered) this.emitEvent("unhover", this);
+        if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this);
+        else if (!hovering && isHovered) this.emitEvent(GlRect.EVENT_POINTER_UNHOVER, this);
 
         if (hoverChanged)
         {
@@ -441,12 +466,12 @@ export default class GlRect extends Events
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
-                    this.emitEvent("dragStart", this);
+                    this.emitEvent(GlRect.EVENT_DRAGSTART, this);
                 }
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }
-            this.emitEvent("pointerMove", x, y);
+            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y);
         }
     }
 
@@ -463,7 +488,6 @@ export default class GlRect extends Events
         if (this.#parent) this.#parent.removeChild(this);
         this.setShape(0);
         this.setSize(0, 0);
-        // this.setPosition(0, 0);
         return null;
     }
 }

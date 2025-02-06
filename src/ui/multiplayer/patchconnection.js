@@ -33,7 +33,6 @@ PatchConnectionReceiver.prototype._receive = function (ev)
     if (ev.hasOwnProperty("event")) data = ev;
     else data = JSON.parse(ev.data);
 
-
     if (data.event == CABLES.PACO_OP_CREATE)
     {
         if (this._patch.getOpById(data.vars.opId)) return;
@@ -207,7 +206,6 @@ PatchConnectionReceiver.prototype._receive = function (ev)
 
         // gui.serverOps.execute(data.vars.opName);
 
-
         if (gui)gui.serverOps.loadOpDependencies(data.vars.opName, (ops) =>
         {
 
@@ -229,9 +227,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
     }
 };
 
-
 // ---------------
-
 
 const PatchConnectionSender = function (patch)
 {

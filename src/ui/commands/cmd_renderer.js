@@ -1,7 +1,7 @@
 import { ele } from "cables-shared-client";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 
 const CABLES_CMD_RENDERER = {};
 
@@ -99,7 +99,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
         gui.rendererWidth = gui.rendererHeight * a;
     }
 
-    gui.emitEvent("resizecanvas");
+    gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
     gui.setLayout();
     gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
 };

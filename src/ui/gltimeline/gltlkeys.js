@@ -13,6 +13,9 @@ import GlSpline from "../gldraw/glspline.js";
 export default class glTlKeys extends Events
 {
 
+    #minVal;
+    #maxVal;
+
     /** @type {Anim} */
     #anim = null;
 
@@ -85,6 +88,11 @@ export default class glTlKeys extends Events
      */
     update(minVal, maxVal)
     {
+        if (minVal != 0 && maxVal != 0)
+        {
+            this.#minVal = minVal;
+            this.#maxVal = maxVal;
+        }
         if (this.#disposed)
         {
             this._log.warn("disposed", this);
@@ -116,11 +124,12 @@ export default class glTlKeys extends Events
             {
                 if (isCurrentOp) kr.setColor(1, 1, 1);
                 else kr.setColor(0.7, 0.7, 0.7);
+
             }
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
-                y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+                y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
             const rx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2;
             const ry = y - sizeKey2;
@@ -139,17 +148,17 @@ export default class glTlKeys extends Events
             if (this.#options.keyYpos)
             {
                 const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
-                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
                 pointsSort.push([lx, ly, z]);
 
                 const onepixelTime = this.#glTl.view.pixelToTime(1);
                 pointsSort.push([
                     this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset - onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
                     z]);
                 pointsSort.push([
                     this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset + onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), minVal, maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
                     z]);
             }
 
@@ -220,11 +229,51 @@ export default class glTlKeys extends Events
         this.reset();
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
-            const kr = this.#glTl.rects.createRect({ "draggable": true });
+            const kr = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
             kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
             kr.setColor(1, 1, 1, 1);
+            kr.setColorHover(1, 0, 0, 1);
             kr.setParent(this.#parentRect);
+            kr.key = this.#anim.keys[i];
+
+            kr.draggableMove = true;
+            kr.on(GlRect.EVENT_POINTER_HOVER, () =>
+            {
+                this.#glTl.hoverKeyRect = kr;
+                this.update(0, 0);
+                // kr.setColor(1, 0, 0, 1);
+            });
+            kr.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+            {
+                this.#glTl.hoverKeyRect = null;
+                kr.setColor(1, 1, 1, 1);
+                this.update(0, 0);
+            });
+
+            kr.on(GlRect.EVENT_DRAGEND, (x, y, z) =>
+            {
+                console.log("dragend", x, y, z);
+
+            });
+            kr.on(GlRect.EVENT_DRAG, (x, y, z) =>
+            {
+                const offX = kr.dragOffsetX;
+                const offY = kr.dragOffsetY;
+                const offTime = this.#glTl.view.pixelToTime(kr.dragOffsetX);
+
+                if (this.#glTl.getNumSelectedKeys() > 0)
+                {
+                    console.log(offTime);
+                    this.#glTl.moveSelectedKeysDelta(offTime);
+                }
+                else
+                {
+                    kr.key.set({ "time": kr.key.time + offTime });
+                }
+                this.update(0, 0); // console.log("drag", x, y, z);
+            });
+
             this.#keyRects.push(kr);
 
             if (!this.#options.multiAnims)

@@ -1,4 +1,5 @@
 import font from "../glpatch/sdf_font.json";
+import GlRect from "./glrect.js";
 import GlTextWriter from "./gltextwriter.js";
 
 /**
@@ -107,7 +108,7 @@ export default class GlText
         if (this._parentRectListener && this._parentRect) this._parentRectListener = this._parentRect.removeEventListener(this._parentRectListener);
 
         this._parentRect = r;
-        if (this._parentRect) this._parentRectListener = this._parentRect.on("positionChanged", this.rebuild.bind(this));
+        if (this._parentRect) this._parentRectListener = this._parentRect.on(GlRect.EVENT_POSITIONCHANGED, this.rebuild.bind(this));
         this.rebuild();
     }
 
