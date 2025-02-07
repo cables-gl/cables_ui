@@ -123,7 +123,6 @@ export default function startUi(cfg)
                 new HtmlInspector();
 
                 if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
-                if (userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 gui.maintabPanel.init();
 

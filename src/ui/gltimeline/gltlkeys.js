@@ -13,8 +13,8 @@ import GlSpline from "../gldraw/glspline.js";
 export default class glTlKeys extends Events
 {
 
-    #minVal;
-    #maxVal;
+    #minVal = 999999;
+    #maxVal = -999999;
 
     /** @type {Anim} */
     #anim = null;
@@ -124,7 +124,6 @@ export default class glTlKeys extends Events
             {
                 if (isCurrentOp) kr.setColor(1, 1, 1);
                 else kr.setColor(0.7, 0.7, 0.7);
-
             }
 
             let y = (this.#parentRect.h / 2);
@@ -137,8 +136,8 @@ export default class glTlKeys extends Events
             kr.setPosition(rx, ry, -0.2);
 
             if (this.#glTl.selectRect &&
-                this.#glTl.selectRect.x < kr.absX && this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < kr.absY && this.#glTl.selectRect.y2 > kr.absY)
+                this.#glTl.selectRect.x < kr.absX + this.sizeKey && this.#glTl.selectRect.x2 > kr.absX &&
+                this.#glTl.selectRect.y < kr.absY + this.sizeKey && this.#glTl.selectRect.y2 > kr.absY)
             {
                 this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
             }
@@ -260,34 +259,23 @@ export default class glTlKeys extends Events
 
             kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
             {
-                // this.#anim.sortKeys();
                 startDrag = this.#glTl.view.pixelToTime(e.offsetX);
             });
 
-            // , this, this.#dragOffsetX, this.#dragOffsetY, button, event);
             kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 if (this.#glTl.selectRect) return;
 
-                const offX = kr.dragOffsetX;
-                const offY = kr.dragOffsetY;
-                console.log(e);
                 const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
                 startDrag = this.#glTl.view.pixelToTime(e.offsetX);
-
-                console.log("offTime", offTime);
 
                 if (this.#glTl.getNumSelectedKeys() > 0)
                 {
                     this.#glTl.moveSelectedKeysDelta(offTime);
                     this.#anim.sortKeys();
-
                 }
-                // else
-                // {
-                //     kr.key.set({ "time": kr.key.time + offTime });
-                // }
-                this.update(0, 0); // console.log("drag", x, y, z);
+
+                this.update(0, 0);
             });
 
             this.#keyRects.push(kr);

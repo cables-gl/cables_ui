@@ -461,7 +461,7 @@ export default class PatchSaveServer extends Events
 
         data.ui = {
             "viewBox": {},
-            "timeLineLength": gui.timeLine().getTimeLineLength()
+            "timeLineLength": gui.getTimeLineLength()
         };
 
         data.ui.texPreview = gui.metaTexturePreviewer.serialize();

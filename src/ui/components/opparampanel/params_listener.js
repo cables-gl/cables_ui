@@ -718,14 +718,14 @@ class ParamsListener extends Events
 
         if (!targetState)
         {
-            const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
+            // const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 
             gui.timeLine().setAnim(null);
 
             if (isOpen && elVal)
             {
-                elVal.value = val;
+                // elVal.value = val;
                 elVal.dispatchEvent(new Event("input"));
                 elVal.focus();
             }
@@ -743,7 +743,7 @@ class ParamsListener extends Events
             "name": op.getTitle() + ": " + op.portsIn[index].name,
             "defaultValue": defaultValue
         };
-        gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
+        // gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
         op.portsIn[index].op.refreshParams();
     }
 
@@ -1019,7 +1019,7 @@ class ParamsListener extends Events
             }
 
             paramsHelper.checkDefaultValue(ports[index], index, panelid);
-            if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+            // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
             ports[index].emitEvent("onValueChangeUi");
 

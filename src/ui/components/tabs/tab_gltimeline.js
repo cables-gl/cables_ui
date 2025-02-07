@@ -18,10 +18,13 @@ export default class GlTimelineTab
     {
         this.#tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline" });
         tabs.addTab(this.#tab, true);
-        gui.maintabPanel.show(true);
+        gui.bottomTabPanel.show(true);
+        // gui.maintabPanel.show(true);
         this.#tab.contentEle.innerHTML = "";
         const a = new glTimelineCanvas(CABLES.patch, this.#tab.contentEle);
         this.#tab.activate();
+
+        gui.timeLineTab = this;
 
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
@@ -48,12 +51,12 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-skip-back\"></span>", () =>
         {
-            gui.corePatch().timer.setTime(0);
+            CABLES.CMD.TIMELINE.TimelineRewindStart();
         });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
         {
-            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1);
+            CABLES.CMD.TIMELINE.TimelineForward();
         });
 
         const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play\"></span>", () =>
@@ -66,7 +69,7 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
         {
-            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1);
+            CABLES.CMD.TIMELINE.TimelineForward();
         });
 
         this.#tab.on("resize", () =>
@@ -97,7 +100,6 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
         {
-            console.log(e);
             contextMenu.show(
                 {
                     "items":
@@ -125,6 +127,8 @@ export default class GlTimelineTab
                         ]
                 }, e.target);
         });
+
+        this.#tab.addButtonSpacer();
 
     }
 }
