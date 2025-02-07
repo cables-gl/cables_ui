@@ -1,4 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
+import { Core } from "cables-shared-types";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
@@ -31,7 +32,7 @@ export default class glTlKeys extends Events
     /** @type {GlRect} */
     #parentRect = null;
 
-    /** @type {CABLES.Port} */
+    /** @type {Core.Port} */
     #port;
 
     /** @type {GlSpline} */

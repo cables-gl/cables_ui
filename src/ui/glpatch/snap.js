@@ -1,3 +1,4 @@
+import { Core } from "cables-shared-types";
 import { Events } from "cables-shared-client";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
@@ -96,7 +97,7 @@ export default class Snap extends Events
 
     /**
      * @param {number} _x
-     * @param {CABLES.Port} port
+     * @param {Core.Port} port
      * @param {number} index
      * @param {number} dist
      */

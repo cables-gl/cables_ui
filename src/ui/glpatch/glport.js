@@ -1,3 +1,4 @@
+import { Core } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
@@ -23,7 +24,7 @@ export default class GlPort
      * @param {GlPatch} glpatch
      * @param {GlOp} glop
      * @param {GlRectInstancer} rectInstancer
-     * @param {CABLES.Port} p
+     * @param {Core.Port} p
      * @param {number} posCount
      * @param {GlRect} oprect
      */

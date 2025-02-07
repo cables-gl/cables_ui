@@ -1,3 +1,4 @@
+import { Core } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
@@ -13,7 +14,7 @@ export default class GlPatchAPI
         this._log = new Logger("glpatch");
 
         /**
-         * @type {CABLES.Patch}
+         * @type {Core.Patch}
          */
         this._patch = patch;
         this._glPatch = glpatch;
