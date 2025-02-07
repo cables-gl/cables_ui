@@ -73,6 +73,8 @@ export default class GlTimeline extends Events
 
     #selectedKeys = [];
 
+    hoverKeyRect = null;
+
     #canvasMouseDown = false;
     #paused = false;
     #cgl = null;
@@ -112,6 +114,7 @@ export default class GlTimeline extends Events
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
+
         this.scroll = new glTlScroll(this);
 
         this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
@@ -290,24 +293,29 @@ export default class GlTimeline extends Events
         if (e.buttons == 1)
         {
 
-            if (y > this.getFirstLinePosy())
+            if (this.getNumSelectedKeys() > 0 && !this.selectRect)
             {
-
-                // if (this.selectRect == null) // when beginning to draw selection area
-                this.unSelectAllKeys();
-
-                this.selectRect = {
-                    "x": Math.min(this.#lastXnoButton, x),
-                    "y": Math.min(this.#lastYnoButton, y),
-                    "x2": Math.max(this.#lastXnoButton, x),
-                    "y2": Math.max(this.#lastYnoButton, y) };
-
-                this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
-                this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                return;
             }
-            if (y < this.getFirstLinePosy())
+            else
             {
-                gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+                if (y > this.getFirstLinePosy())
+                {
+                    this.unSelectAllKeys();
+
+                    this.selectRect = {
+                        "x": Math.min(this.#lastXnoButton, x),
+                        "y": Math.min(this.#lastYnoButton, y),
+                        "x2": Math.max(this.#lastXnoButton, x),
+                        "y2": Math.max(this.#lastYnoButton, y) };
+
+                    this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
+                    this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                }
+                if (y < this.getFirstLinePosy())
+                {
+                    gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+                }
             }
 
             this.updateAllElements();
@@ -340,24 +348,39 @@ export default class GlTimeline extends Events
     {
         let minTime = 9999999;
         for (let i = 0; i < keys.length; i++)
-        {
             minTime = Math.min(minTime, keys[i].time);
-        }
 
         return minTime;
+    }
 
+    getNumSelectedKeys()
+    {
+        return this.#selectedKeys.length;
     }
 
     moveSelectedKeys(time)
     {
         if (time === undefined)time = this.cursorTime;
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
-        for (let i = 0; i < this.#selectedKeys.length; i++)
-        {
-            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + minTime });
-        }
-        this.updateAllElements();
+        this.moveSelectedKeysDelta(minTime);
+    }
 
+    setSelectedKeysTime(time)
+    {
+        if (time === undefined)time = this.cursorTime;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeys[i].set({ "time": time });
+
+        this.updateAllElements();
+    }
+
+    moveSelectedKeysDelta(d)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + d });
+
+        this.updateAllElements();
     }
 
     deleteSelectedKeys()
@@ -383,6 +406,9 @@ export default class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
+
+        if (this.hoverKeyRect == null)
+            this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }

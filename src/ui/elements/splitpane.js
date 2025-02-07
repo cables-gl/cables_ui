@@ -1,5 +1,5 @@
 import { userSettings } from "../components/usersettings.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 
 const splitpane = {};
 splitpane.listeners = [];
@@ -26,7 +26,7 @@ function initSplitPanes()
             gui.splitpanePatchPos = pos;
 
             gui.setLayout();
-            gui.emitEvent("resizecanvas");
+            gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
         }
 
@@ -129,7 +129,7 @@ function initSplitPanes()
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
             gui.canvasManager.focus();
-            gui.emitEvent("resizecanvas");
+            gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
             e.preventDefault();
         }
 

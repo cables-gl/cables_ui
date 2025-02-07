@@ -93,6 +93,8 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { a.glTimeline.toggleGraphLayout(); });
 
+        this.#tab.addButtonSpacer();
+
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
         {
             console.log(e);
@@ -109,6 +111,14 @@ export default class GlTimelineTab
                                 "func": () =>
                                 {
                                     a.glTimeline.moveSelectedKeys();
+                                }
+                            },
+                            {
+                                "title": "Set same time for selected keys",
+                                "func": () =>
+                                {
+                                    a.glTimeline.setSelectedKeysTime();
+
                                 }
                             },
 

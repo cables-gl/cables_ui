@@ -314,10 +314,10 @@ export default class GlOp extends Events
 
         if (this._glRectBg)
         {
-            this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
-            this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
-            this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
-            this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+            this._glRectBg.on(GlRect.EVENT_DRAG, this._onBgRectDrag.bind(this));
+            this._glRectBg.on(GlRect.EVENT_DRAGEND, this._onBgRectDragEnd.bind(this));
+            this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, this._onMouseDown.bind(this));
+            this._glRectBg.on(GlRect.EVENT_POINTER_UP, this._onMouseUp.bind(this));
         }
 
         this._needsUpdate = true;

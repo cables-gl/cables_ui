@@ -64,6 +64,10 @@ export { gui };
  */
 export default class Gui extends Events
 {
+
+    static EVENT_RESIZE = "resize";
+    static EVENT_RESIZE_CANVAS = "resizecanvas";
+
     constructor(cfg)
     {
         super();
@@ -1519,7 +1523,7 @@ export default class Gui extends Events
         this.mainTabs.emitEvent("resize");
         this.setLayout();
         this.setLayout(); // yes, twice....
-        gui.emitEvent("resize");
+        gui.emitEvent(Gui.EVENT_RESIZE);
     }
 
     bindKeys()
