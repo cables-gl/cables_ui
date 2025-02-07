@@ -44,6 +44,10 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
         "module": {
             "rules": [
                 { "sideEffects": false },
+                {
+                    "test": /\.d.ts/,
+                    "use": "null-loader",
+                }
             ]
         },
         "plugins": plugins
