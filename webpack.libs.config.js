@@ -66,6 +66,10 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
                 {
                     "test": /\.txt/,
                     "use": "raw-loader",
+                },
+                {
+                    "test": /\.d.ts/,
+                    "use": "null-loader",
                 }
             ]
         },

@@ -435,47 +435,47 @@ export default class ScState extends Events
         //     }
         // });
 
-        this._connection.on("timelineControl", (msg) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            const timeline = gui.timeLine();
-            if (!timeline) return;
+        // this._connection.on("timelineControl", (msg) =>
+        // {
+        //     if (!this._connection.inMultiplayerSession) return;
+        //     const timeline = gui.timeLine();
+        //     if (!timeline) return;
 
-            switch (msg.command)
-            {
-            case "setTime":
-                if (msg.hasOwnProperty("value"))
-                {
-                    gui.timeLine().gotoTime(msg.value);
-                }
-                break;
-            case "setPlay":
-                const timer = gui.scene().timer;
-                if (timer)
-                {
-                    const targetState = !!msg.value;
-                    const isPlaying = timer.isPlaying();
-                    if (targetState !== isPlaying)
-                    {
-                        timeline.togglePlay();
-                    }
-                    if (msg.hasOwnProperty("time"))
-                    {
-                        gui.timeLine().gotoTime(msg.time);
-                    }
-                }
-                break;
-            case "setLoop":
-                timeline.setLoop(msg.value);
-                break;
-            case "setAnim":
-                timeline.setAnim(msg.value.newanim, msg.value.config);
-                break;
-            case "setLength":
-                timeline.setTimeLineLength(msg.value);
-                break;
-            }
-        });
+        //     switch (msg.command)
+        //     {
+        //     case "setTime":
+        //         if (msg.hasOwnProperty("value"))
+        //         {
+        //             gui.timeLine().gotoTime(msg.value);
+        //         }
+        //         break;
+        //     case "setPlay":
+        //         const timer = gui.scene().timer;
+        //         if (timer)
+        //         {
+        //             const targetState = !!msg.value;
+        //             const isPlaying = timer.isPlaying();
+        //             if (targetState !== isPlaying)
+        //             {
+        //                 timeline.togglePlay();
+        //             }
+        //             if (msg.hasOwnProperty("time"))
+        //             {
+        //                 gui.timeLine().gotoTime(msg.time);
+        //             }
+        //         }
+        //         break;
+        //     case "setLoop":
+        //         timeline.setLoop(msg.value);
+        //         break;
+        //     case "setAnim":
+        //         timeline.setAnim(msg.value.newanim, msg.value.config);
+        //         break;
+        //     case "setLength":
+        //         timeline.setTimeLineLength(msg.value);
+        //         break;
+        //     }
+        // });
 
         gui.on("portValueEdited", (op, port, value) =>
         {

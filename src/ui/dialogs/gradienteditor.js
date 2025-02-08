@@ -27,7 +27,7 @@ export default class GradientEditor
 
         this._oldKeys = [];
         this._keys = [];
-        this._paper = null;
+        // this._paper = null;
 
         this._movingkey = false;
         this._callback = null;
@@ -55,7 +55,6 @@ export default class GradientEditor
         this._options.smoothStep = this._port.uiAttribs.gradEditSmoothstep;
         this._options.step = this._port.uiAttribs.gradEditStep;
         this._options.oklab = this._port.uiAttribs.gradOklab;
-
 
         this._previousContent = "";
         this._openerEle = (options || {}).openerEle;
@@ -117,7 +116,6 @@ export default class GradientEditor
         {
             this._ctxCurve.fillStyle = "#444";
             this._ctxCurve.fillRect(0, 0, this._width, this._height);
-
 
             // --------- 0.5 line...
 
@@ -254,7 +252,6 @@ export default class GradientEditor
 
         this._keys.sort(compare);
 
-
         this._anim.clear();
         let html = "";
         for (let i = 0; i < this._keys.length; i++)
@@ -275,7 +272,6 @@ export default class GradientEditor
                 if (CABLES.GradientEditor.editor) CABLES.GradientEditor.editor.updateCanvas();
             }, 3);
 
-
         if (this._callback) this._callback();
     }
 
@@ -291,7 +287,6 @@ export default class GradientEditor
         this._currentKey = key;
 
         if (key == this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth * 2 });
-
 
         ele.byId("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
@@ -426,7 +421,6 @@ export default class GradientEditor
         document.body.appendChild(this._elContainer);
         this._elContainer.innerHTML = html;
 
-
         if (this._openerEle)
         {
             const r = this._openerEle.getBoundingClientRect();
@@ -442,8 +436,6 @@ export default class GradientEditor
             this._elContainer.style.top = 100 + "px";
         }
 
-        this._paper = Raphael("gradienteditorbar", 0, 0);
-
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
         {
             try
@@ -452,7 +444,6 @@ export default class GradientEditor
             {}
         });
 
-
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerup", (e) =>
         {
             try
@@ -460,7 +451,6 @@ export default class GradientEditor
             catch (_e)
             {}
         });
-
 
         document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
         {
@@ -547,7 +537,6 @@ export default class GradientEditor
             });
         });
     }
-
 
     rgbToOklab(r, g, b)
     {

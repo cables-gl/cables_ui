@@ -68,37 +68,12 @@ export default class MetaKeyframes
 
     showAnim(opid, portname)
     {
-        CABLES.CMD.TIMELINE.showTimeline();
-        gui.patchView.centerSelectOp(opid, true);
-        const op = gui.corePatch().getOpById(opid);
-        const p = op.getPort(portname);
 
-        if (p.anim) gui.timeLine().setAnim(p.anim);
-        this.show();
     }
-
 
     addKey()
     {
-        // const v = prompt(" []");
-        // if (v === null) return;
 
-        new ModalDialog({
-            "prompt": true,
-            "title": "New Keyframe",
-            "text": "frame value:",
-            "promptValue": "",
-            "promptOk": function (inputStr)
-            {
-                const v = inputStr;
-
-                const values = v.split(" ");
-
-                gui.timeLine().getAnim().setValue(values[0] / gui.timeLine().getFPS(), values[1] || 0);
-                gui.timeLine().refresh();
-                // this.update();
-            }
-        });
     }
 
     setAnim(anim)

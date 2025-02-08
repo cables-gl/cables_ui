@@ -219,7 +219,7 @@ export default class GlRect extends Events
      * @param {number} b
      * @param {number} a=1
      */
-    setColor(r, g, b, a = 1)
+    setColor(r, g = 1, b = 1, a = 1)
     {
         if (r === undefined)r = g = b = a = 1.0;
         if (r.length) vec4.set(this.color, r[0], r[1], r[2], r[3]);

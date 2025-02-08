@@ -63,9 +63,8 @@ export default class IconBar
         {
             this.vertical = false;
 
-            items.push("timeline rewind to 0", "timeline rewind", "timeline play", "timeline pause", "timeline forward");
+            items.push("timeline rewind to 0", "timeline rewind", "timeline play", "timeline pause", "timeline forward", "toggle timeline");
         }
-
 
         for (let i = 0; i < items.length; i++)
             for (let j = 0; j < CABLES.CMD.commands.length; j++)
@@ -79,7 +78,6 @@ export default class IconBar
     {
         if (this._eleContainer) this._eleContainer.innerHTML = "";
         else this._eleContainer = document.createElement("div");
-
 
         this._eleContainer.id = "iconbar_" + this._id;
         this._eleContainer.classList.add("cbl_iconbarContainer");

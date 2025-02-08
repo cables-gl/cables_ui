@@ -45,7 +45,7 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
 CABLES_CMD_TIMELINE.TimelinePlay = function ()
 {
     gui.corePatch().timer.play();
-    gui.emitEvent("timelineControl", "setPlay", true, gui.scene().timer.getTime());
+    gui.emitEvent("timelineControl", "setPlay", true, gui.corePatch().timer.getTime());
 };
 
 CABLES_CMD_TIMELINE.setLength = function ()
@@ -55,53 +55,50 @@ CABLES_CMD_TIMELINE.setLength = function ()
 
 CABLES_CMD_TIMELINE.TimelineForward = function ()
 {
-    gui.timeLine().gotoOffset(2);
-    gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+    gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 2);
 };
 
 CABLES_CMD_TIMELINE.TimelineRewind = function ()
 {
-    gui.timeLine().gotoOffset(-2);
-    gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
+    gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 2);
 };
 
 CABLES_CMD_TIMELINE.TimelineRewindStart = function ()
 {
-    gui.timeLine().gotoZero();
-    gui.emitEvent("timelineControl", "setTime", 0);
+    gui.corePatch().timer.setTime(0);
 };
 
 CABLES_CMD_TIMELINE.TimelinePause = function ()
 {
     gui.corePatch().timer.pause();
-    gui.emitEvent("timelineControl", "setPlay", false, gui.scene().timer.getTime());
+    gui.emitEvent("timelineControl", "setPlay", false, gui.corePatch().timer.getTime());
 };
 
 CABLES_CMD_TIMELINE.togglePlay = function ()
 {
-    gui.timeLine().togglePlay();
-    gui.emitEvent("timelineControl", "setPlay", gui.scene().timer.isPlaying(), gui.scene().timer.getTime());
+    if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
+    else gui.corePatch().timer.play();
+};
+
+CABLES_CMD_TIMELINE.openGlTimeline = function ()
+{
+    gui.glTimeline = new GlTimelineTab(gui.bottomTabs);
+
 };
 
 CABLES_CMD_TIMELINE.toggleTimeline = function ()
 {
-    gui.toggleTiming();
+    gui.toggleTimeline();
 };
 
 CABLES_CMD_TIMELINE.hideTimeline = function ()
 {
-    gui.hideTiming();
+    gui.hideTimeline();
 };
 
 CABLES_CMD_TIMELINE.showTimeline = function ()
 {
     gui.showTiming();
-};
-
-CABLES_CMD_TIMELINE.openGlTimeline = function ()
-{
-    const t = new GlTimelineTab(gui.mainTabs);
-
 };
 
 timelineCommands.commands.push(
@@ -114,7 +111,7 @@ timelineCommands.commands.push(
     {
         "cmd": "show timeline",
         "category": "ui",
-        "func": CABLES_CMD_TIMELINE.showTimeline,
+        "func": CABLES_CMD_TIMELINE.openGlTimeline,
         "icon": "timeline"
     },
     {
@@ -162,11 +159,6 @@ timelineCommands.commands.push(
         "cmd": "show all animated ports",
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.ListAnimatedPorts
-    },
-    {
-        "cmd": "show gl timeline",
-        "category": "timeline",
-        "func": CABLES_CMD_TIMELINE.openGlTimeline
-    },
+    }
 
 );

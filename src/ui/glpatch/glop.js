@@ -1,9 +1,9 @@
 import { Events, Logger } from "cables-shared-client";
+import { Core } from "cables-shared-types";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
 import undo from "../utils/undo.js";
-import MouseState from "./mousestate.js";
 import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
 import defaultOps from "../defaultops.js";
@@ -27,7 +27,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {CABLES.Op} op
+     * @param {Core.Op} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -66,7 +66,7 @@ export default class GlOp extends Events
 
         /**
          * @private
-         * @type {Op}
+         * @type {Core.Op}
          */
         this._op = op;
 

@@ -1,4 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
+import { Core } from "cables-shared-types";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanimline.js";
@@ -97,7 +98,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {Core.CGState} cgl
     */
     constructor(cgl)
     {
@@ -150,6 +151,7 @@ export default class GlTimeline extends Events
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         });
 
+        cgl.canvas.classList.add("cblgltimelineEle");
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
@@ -311,6 +313,7 @@ export default class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+
                 }
                 if (y < this.getFirstLinePosy())
                 {
@@ -319,6 +322,8 @@ export default class GlTimeline extends Events
             }
 
             this.updateAllElements();
+
+            console.log(this.getNumSelectedKeys() + "keys selected");
         }
         else
         if (e.buttons == this.buttonForScrolling)
@@ -427,7 +432,6 @@ export default class GlTimeline extends Events
         this.mouseDown = false;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
-
     }
 
     _onCanvasWheel(event)
