@@ -51,6 +51,8 @@ import { contextMenu } from "./elements/contextmenu.js";
 import { userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
+import Tab from "./elements/tabpanel/tab.js";
+import GlTimeline from "./gltimeline/gltimeline.js";
 
 /**
  * @type {Gui}
@@ -69,6 +71,12 @@ export default class Gui extends Events
     static EVENT_RESIZE_CANVAS = "resizecanvas";
 
     hasAnims = false;
+
+    /** @type {GlTimeline} */
+    glTimeline = null;
+
+    /** @type {GlTimelineTab} */
+    timeLineTab = null;
 
     constructor(cfg)
     {
@@ -201,8 +209,6 @@ export default class Gui extends Events
 
         this.currentModal = null;
         gui = window.gui = this;
-        this.glTimeline = null;
-        this.timeLineTab = null;
 
     }
 
@@ -983,23 +989,27 @@ export default class Gui extends Events
 
     hideTiming()
     {
-        // gui.timeLine().hidden = true;
         this._showTiming = false;
         ele.hide(ele.byId("timing"));
         gui.setLayout();
 
     }
 
+    hideTimeline()
+    {
+        if (this.timeLineTab)
+            this.timeLineTab.close();
+    }
+
     toggleTimeline()
     {
         if (this.timeLineTab)
         {
-            gui.glTimeline = new GlTimelineTab(gui.bottomTabs);
+
+            this.timeLineTab = this.timeLineTab.close();
         }
         else
-        {
-            this.timeLineTab.close();
-        }
+            this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
     }
 
     toggleTiming()

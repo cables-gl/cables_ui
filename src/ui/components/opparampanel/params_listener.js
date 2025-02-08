@@ -721,7 +721,7 @@ class ParamsListener extends Events
             // const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 
-            gui.timeLine().setAnim(null);
+            // gui.timeLine().setAnim(null);
 
             if (isOpen && elVal)
             {

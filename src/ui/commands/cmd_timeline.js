@@ -50,7 +50,7 @@ CABLES_CMD_TIMELINE.TimelinePlay = function ()
 
 CABLES_CMD_TIMELINE.setLength = function ()
 {
-    gui.timeLine().setProjectLength();
+    // gui.timeLine().setProjectLength();
 };
 
 CABLES_CMD_TIMELINE.TimelineForward = function ()
@@ -83,7 +83,6 @@ CABLES_CMD_TIMELINE.togglePlay = function ()
 CABLES_CMD_TIMELINE.openGlTimeline = function ()
 {
     gui.glTimeline = new GlTimelineTab(gui.bottomTabs);
-
 };
 
 CABLES_CMD_TIMELINE.toggleTimeline = function ()
