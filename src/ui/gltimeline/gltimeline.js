@@ -1,4 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
+import { Core } from "cables-shared-types";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanimline.js";
@@ -98,7 +99,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {Core.CGState} cgl
     */
     constructor(cgl)
     {
@@ -674,6 +675,24 @@ export default class GlTimeline extends Events
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
+    }
+
+    copy()
+    {
+        console.log("copy");
+
+    }
+
+    paste()
+    {
+        console.log("paste");
+
+    }
+
+    isFocused()
+    {
+        // todo
+        return true;
     }
 
 }

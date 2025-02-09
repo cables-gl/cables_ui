@@ -1,3 +1,4 @@
+import { Core } from "cables-shared-types";
 import { Logger, ele, Events } from "cables-shared-client";
 import GlLinedrawer from "../gldraw/gllinedrawer.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -920,7 +921,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {CABLES.Op} op
+     * @param {Core.Op} op
      * @param {boolean} fromDeserialize
      */
     addOp(op, fromDeserialize)

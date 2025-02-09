@@ -491,7 +491,9 @@ export default class FileManager
                             (_err, _r) =>
                             {
                                 const itemInfo = _r;
-                                const templateName = "filemanager_details_lib_" + itemInfo.type;
+
+                                let templateName = "filemanager_details_lib";
+                                if (itemInfo.type) templateName += "_" + itemInfo.type;
                                 const templateOptions = {
                                     "filename": item.p,
                                     "file": item,

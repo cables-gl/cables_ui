@@ -1,6 +1,7 @@
 /**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
+import { Core } from "cables-shared-types";
 
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
@@ -12,7 +13,7 @@ CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
 /**
- * @extends {CABLES.Op}
+ * @extends {Core.Op}
  */
 export default function extendCoreOp()
 {

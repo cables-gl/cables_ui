@@ -252,7 +252,7 @@ export default class PatchView extends Events
         {
             if (!this._patchRenderer) return;
             if (this._patchRenderer.isFocused()) this._patchRenderer.copy(e);
-            else if (gui.timeLine().isFocused()) gui.timeLine().copy(e);
+            else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().copy(e);
         });
 
         document.addEventListener("paste", (e) =>
@@ -282,14 +282,14 @@ export default class PatchView extends Events
             (e) =>
             {
                 if (!this._patchRenderer) return;
-                if (this._patchRenderer.isFocused()) this._patchRenderer.cut(e);
-                else if (gui.timeLine().isFocused()) gui.timeLine().cut(e);
+                if (this._patchrenderer.isfocused()) this._patchrenderer.cut(e);
+                else if (gui.timeline().isfocused()) gui.timeline().cut(e);
             });
     }
 
     switch(id)
     {
-        const views = document.getElementById("patchviews");
+        const views = ele.byId("patchviews");
 
         for (let i = 0; i < views.children.length; i++)
         {

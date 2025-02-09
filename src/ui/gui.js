@@ -237,8 +237,7 @@ export default class Gui extends Events
 
     timeLine()
     {
-        // if (!this._timeline) this._timeLine = new TimeLineUI();
-        return this._timeLine;
+        return this.glTimeline;
     }
 
     /** @deprecated */
@@ -1006,7 +1005,8 @@ export default class Gui extends Events
         if (this.timeLineTab)
         {
 
-            this.timeLineTab = this.timeLineTab.close();
+            this.timeLineTab.close();
+            this.timeLineTab = null;
         }
         else
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
