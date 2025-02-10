@@ -30,10 +30,9 @@ export default class GlPort
      */
     constructor(glpatch, glop, rectInstancer, p, posCount, oprect)
     {
-
         this._log = new Logger("glPort");
 
-        /** @type {module:Port} */
+        /** @type {Core.Port} */
         this._port = p;
 
         /**

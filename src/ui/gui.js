@@ -76,7 +76,7 @@ export default class Gui extends Events
     glTimeline = null;
 
     /** @type {GlTimelineTab} */
-    timeLineTab = null;
+    glTimeLineTab = null;
 
     constructor(cfg)
     {
@@ -235,6 +235,7 @@ export default class Gui extends Events
         return this._opselect;
     }
 
+    /** @returns {GlTimeline} */
     timeLine()
     {
         return this.glTimeline;

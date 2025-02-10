@@ -1,15 +1,15 @@
-
-
 <script id="params_keys" type="text/x-handlebars-template">
 
     <div class="panel">
 
-        <h3><a onclick="new CABLES.UI.FindTab(gui.mainTabs, ':selected');">{{numKeys}} keys selected</a></h3>
+        <h3>{{numKeys}} keys selected</h3>
+
 
         <hr/>
 
-        <a onclick="" class="icon-button button-small "><span class="icon icon-trash icon-1_25x"></span>Delete keys</a>
-
+        <a id="keyscopy" class="icon-button button-small"><span class="icon icon-copy icon-1_25x"></span>Copy keys to clipboard</a>
+        <br/>
+        <a id="keysdelete" class="icon-button button-small"><span class="icon icon-trash icon-1_25x"></span>Delete keys</a>
 
 
     </div>

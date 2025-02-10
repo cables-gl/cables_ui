@@ -251,13 +251,15 @@ export default class PatchView extends Events
         document.addEventListener("copy", (e) =>
         {
             if (!this._patchRenderer) return;
+
+            console.log("copy listener", gui.timeLine() && gui.timeLine().isFocused());
             if (this._patchRenderer.isFocused()) this._patchRenderer.copy(e);
             else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().copy(e);
         });
 
         document.addEventListener("paste", (e) =>
         {
-            if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+            if (gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
             let items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let index in items)
@@ -278,13 +280,11 @@ export default class PatchView extends Events
             }
         });
 
-        document.addEventListener("cut",
-            (e) =>
-            {
-                if (!this._patchRenderer) return;
-                if (this._patchrenderer.isfocused()) this._patchrenderer.cut(e);
-                else if (gui.timeline().isfocused()) gui.timeline().cut(e);
-            });
+        document.addEventListener("cut", (e) =>
+        {
+            if (this._patchRenderer && this._patchRenderer.isFocused()) this._patchRenderer.cut(e);
+            else if (gui.timeLine().isFocused()) gui.timeLine().cut(e);
+        });
     }
 
     switch(id)

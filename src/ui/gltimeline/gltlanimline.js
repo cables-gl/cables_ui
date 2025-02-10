@@ -230,4 +230,18 @@ export default class glTlAnimLine extends Events
         this.#disposeRects = [];
 
     }
+
+    /**
+     * @param {string} animName
+     * @returns {Anim}
+     */
+    getAnimByName(animName)
+    {
+        for (let i = 0; i < this.#anims.length; i++)
+        {
+            if (animName == this.#anims[i].name) return this.#anims[i];
+        }
+        return null;
+    }
+
 }

@@ -11,6 +11,14 @@ import { userSettings } from "../components/usersettings.js";
  */
 export default class MouseState extends Events
 {
+
+    static BUTTON_NONE = 0;
+    static BUTTON_LEFT = 1;
+    static BUTTON_RIGHT = 2;
+    static BUTTON_WHEEL = 4;
+    static BUTTON_4 = 8;
+    static BUTTON_5 = 16;
+
     constructor(canvas)
     {
         super();
@@ -282,10 +290,3 @@ export default class MouseState extends Events
         return MouseState.BUTTON_LEFT;
     }
 }
-
-MouseState.BUTTON_NONE = 0;
-MouseState.BUTTON_LEFT = 1;
-MouseState.BUTTON_RIGHT = 2;
-MouseState.BUTTON_WHEEL = 4;
-MouseState.BUTTON_4 = 8;
-MouseState.BUTTON_5 = 16;

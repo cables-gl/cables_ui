@@ -12,6 +12,7 @@ import GlTlView from "./gltlview.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { userSettings } from "../components/usersettings.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
+import { notify, notifyWarn } from "../elements/notification.js";
 
 /**
  * gl timeline
@@ -199,6 +200,7 @@ export default class GlTimeline extends Events
                 this.#selOpsStr = selOpsStr;
             }
         });
+        gui.glTimeline = this;
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -385,10 +387,26 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
-    moveSelectedKeysDelta(d)
+    serializeSelectedKeys()
+    {
+        const keys = [];
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const o = this.#selectedKeys[i].getSerialized();
+            o.animName = this.#selectedKeyAnims[i].name;
+            keys.push(o);
+        }
+
+        return keys;
+    }
+
+    /**
+     * @param {number} delta
+     */
+    moveSelectedKeysDelta(delta)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
-            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + d });
+            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + delta });
 
         this.updateAllElements();
     }
@@ -401,6 +419,11 @@ export default class GlTimeline extends Events
         this.unSelectAllKeys();
     }
 
+    /**
+     * @param {Anim} a
+     * @param {AnimKey} a
+     *
+     */
     selectKey(k, a)
     {
         if (!this.isKeySelected(k))
@@ -671,24 +694,110 @@ export default class GlTimeline extends Events
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
             });
+
         gui.opParams.clear();
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
+        ele.clickable(ele.byId("keyscopy"), () =>
+        {
+            this.copy(new ClipboardEvent("copy"));
+        });
+
+        ele.clickable(ele.byId("keysdelete"), () =>
+        {
+            this.deleteSelectedKeys();
+        });
+
     }
 
-    copy()
+    /**
+     * @param {ClipboardEvent} event
+     */
+    copy(event)
     {
-        console.log("copy");
+        const obj = { "keys": this.serializeSelectedKeys() };
+        const objStr = JSON.stringify(obj);
+
+        console.log("copy", obj);
+
+        event.clipboardData.setData("text/plain", objStr);
+        event.preventDefault();
 
     }
 
-    paste()
+    /**
+     * @param {ClipboardEvent} e
+     */
+    paste(e)
     {
-        console.log("paste");
+        if (e.clipboardData.types.indexOf("text/plain") > -1)
+        {
+            e.preventDefault();
 
+            const str = e.clipboardData.getData("text/plain");
+
+            e.preventDefault();
+
+            const json = JSON.parse(str);
+            if (json)
+            {
+                if (json.keys)
+                {
+
+                    let minTime = Number.MAX_VALUE;
+                    for (let i in json.keys)
+                    {
+                        minTime = Math.min(minTime, json.keys[i].t);
+                    }
+                    let notfoundallAnims = false;
+
+                    for (let i = 0; i < json.keys.length; i++)
+                    {
+                        const k = json.keys[i];
+                        k.t = k.t - minTime + this.cursorTime;
+
+                        let found = false;
+                        for (let j = 0; j < this.#tlAnims.length; j++)
+                        {
+                            let an = this.#tlAnims[j].getAnimByName(k.animName);
+                            if (an)
+                            {
+                                an.addKey(new CABLES.ANIM.Key(json.keys[i]));
+                                found = true;
+                            }
+                        }
+
+                        if (!found)
+                            notfoundallAnims = true;
+
+                    }
+
+                    if (notfoundallAnims)
+                    {
+                        notifyWarn("could not find all anims for pasted keys");
+                    }
+                    else
+                    {
+                        notify(json.keys.length + " keys pasted");
+                    }
+
+                    // anim.sortKeys();
+
+                    // for (let i in anim.keys)
+                    // {
+                    //     anim.keys[i].updateCircle(true);
+                    // }
+
+                    return;
+                }
+            }
+            // CABLES.UI.setStatusText("paste failed / not cables data format...");
+            CABLES.UI.notify("Paste failed");
+        }
     }
 
+    /** @returns {boolean} */
     isFocused()
     {
         // todo
