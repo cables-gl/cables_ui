@@ -276,14 +276,14 @@ export default class PatchView extends Events
             if (this._patchRenderer)
             {
                 if (this._patchRenderer.isFocused()) this._patchRenderer.paste(e);
-                else if (gui.timeLine().isFocused()) gui.timeLine().paste(e);
+                else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().paste(e);
             }
         });
 
         document.addEventListener("cut", (e) =>
         {
             if (this._patchRenderer && this._patchRenderer.isFocused()) this._patchRenderer.cut(e);
-            else if (gui.timeLine().isFocused()) gui.timeLine().cut(e);
+            else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().cut(e);
         });
     }
 
