@@ -24,8 +24,6 @@ export default class GlTimelineTab
         const a = new glTimelineCanvas(CABLES.patch, this.#tab.contentEle);
         this.#tab.activate();
 
-        gui.timeLineTab = this;
-
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
 
@@ -130,5 +128,11 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
 
+    }
+
+    close()
+    {
+        this.#tab.remove();
+        console.log(gui.bottomTabPanel);
     }
 }

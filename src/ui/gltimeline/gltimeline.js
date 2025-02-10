@@ -1,4 +1,4 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 import { Core } from "cables-shared-types";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -11,6 +11,7 @@ import GlText from "../gldraw/gltext.js";
 import GlTlView from "./gltlview.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { userSettings } from "../components/usersettings.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
 
 /**
  * gl timeline
@@ -323,7 +324,11 @@ export default class GlTimeline extends Events
 
             this.updateAllElements();
 
-            console.log(this.getNumSelectedKeys() + "keys selected");
+            // console.log(this.getNumSelectedKeys() + "keys selected");
+            if (this.getNumSelectedKeys() > 0)
+            {
+                this.showKeyParams();
+            }
         }
         else
         if (e.buttons == this.buttonForScrolling)
@@ -657,6 +662,37 @@ export default class GlTimeline extends Events
             gui.scene().timer.setTime(theKey.time);
             if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
+    }
+
+    showKeyParams()
+    {
+
+        const html = getHandleBarHtml(
+            "params_keys", {
+                "numKeys": this.#selectedKeys.length,
+            });
+        gui.opParams.clear();
+
+        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+
+    }
+
+    copy()
+    {
+        console.log("copy");
+
+    }
+
+    paste()
+    {
+        console.log("paste");
+
+    }
+
+    isFocused()
+    {
+        // todo
+        return true;
     }
 
 }
