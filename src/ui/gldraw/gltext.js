@@ -121,12 +121,12 @@ export default class GlText
     }
 
     /**
-     * @param {(number|array)} r
+     * @param {number|array} r
      * @param {number} g
      * @param {number} b
      * @param {number} a
      */
-    setColor(r, g, b, a = 1)
+    setColor(r, g = 1, b = 1, a = 1)
     {
         if (r === undefined)r = g = b = 1.0;
         if (r.length) vec4.set(this._color, r[0], r[1], r[2], a);

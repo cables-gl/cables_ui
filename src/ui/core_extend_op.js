@@ -1,7 +1,6 @@
 /**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
-import { Core } from "cables-shared-types";
 
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
@@ -13,10 +12,12 @@ CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
 /**
- * @extends {Core.Op}
+ * @external CABLES.Op
  */
+
 export default function extendCoreOp()
 {
+
     CABLES.Op.prototype.initUi = function ()
     {
         this.on("onPortAdd", () =>
@@ -243,33 +244,33 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.getUiError = function (id)
     {
-        return this._uiErrors[id];
+        return this.uiErrors[id];
     };
 
     CABLES.Op.prototype.setUiError = function (id, txt, level)
     {
         if (!txt && !this.hasUiErrors) return;
-        if (!txt && !this._uiErrors.hasOwnProperty(id)) return;
-        if (this._uiErrors.hasOwnProperty(id) && this._uiErrors[id].txt == txt) return;
+        if (!txt && !this.uiErrors.hasOwnProperty(id)) return;
+        if (this.uiErrors.hasOwnProperty(id) && this.uiErrors[id].txt == txt) return;
 
         if (id.indexOf(" ") > -1) this._log.warn("setuierror id cant have spaces! ", id);
         id = id.replaceAll(" ", "_");
 
-        if (!txt && this._uiErrors.hasOwnProperty(id)) delete this._uiErrors[id];
+        if (!txt && this.uiErrors.hasOwnProperty(id)) delete this.uiErrors[id];
         else
         {
-            if (txt && (!this._uiErrors.hasOwnProperty(id) || this._uiErrors[id].txt != txt))
+            if (txt && (!this.uiErrors.hasOwnProperty(id) || this.uiErrors[id].txt != txt))
             {
                 if (level == undefined) level = 2;
-                this._uiErrors[id] = { "txt": txt, "level": level, "id": id };
+                this.uiErrors[id] = { "txt": txt, "level": level, "id": id };
             }
         }
 
         const errorArr = [];
-        for (const i in this._uiErrors) errorArr.push(this._uiErrors[i]);
+        for (const i in this.uiErrors) errorArr.push(this.uiErrors[i]);
 
         this.uiAttr({ "uierrors": errorArr });
-        this.hasUiErrors = Object.keys(this._uiErrors).length;
+        this.hasUiErrors = Object.keys(this.uiErrors).length;
 
         this.emitEvent("uiErrorChange");
     };
@@ -312,23 +313,23 @@ export default function extendCoreOp()
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
 
-        if (this._linkTimeRules.forbiddenParent && working)
+        if (this.linkTimeRules.forbiddenParent && working)
         {
-            working = !this.hasParent(this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
-            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._linkTimeRules.forbiddenParent + "";
+            working = !this.hasParent(this.linkTimeRules.forbiddenParentType || null, this.linkTimeRules.forbiddenParent);
+            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this.linkTimeRules.forbiddenParent + "";
         }
 
-        if (this._linkTimeRules.needsParentOp && working)
+        if (this.linkTimeRules.needsParentOp && working)
         {
-            working = this.hasParent(null, this._linkTimeRules.needsParentOp);
-            if (!working) notWorkingMsg = text.working_connected_to + this._linkTimeRules.needsParentOp + "";
+            working = this.hasParent(null, this.linkTimeRules.needsParentOp);
+            if (!working) notWorkingMsg = text.working_connected_to + this.linkTimeRules.needsParentOp + "";
         }
 
-        if (this._linkTimeRules.needsStringToWork.length > 0)
+        if (this.linkTimeRules.needsStringToWork.length > 0)
         {
-            for (let i = 0; i < this._linkTimeRules.needsStringToWork.length; i++)
+            for (let i = 0; i < this.linkTimeRules.needsStringToWork.length; i++)
             {
-                const p = this._linkTimeRules.needsStringToWork[i];
+                const p = this.linkTimeRules.needsStringToWork[i];
                 if (!p)
                 {
                     this._log.warn("[needsStringToWork] port not found");
@@ -354,11 +355,11 @@ export default function extendCoreOp()
             }
         }
 
-        if (this._linkTimeRules.needsLinkedToWork.length > 0)
+        if (this.linkTimeRules.needsLinkedToWork.length > 0)
         {
-            for (let i = 0; i < this._linkTimeRules.needsLinkedToWork.length; i++)
+            for (let i = 0; i < this.linkTimeRules.needsLinkedToWork.length; i++)
             {
-                const p = this._linkTimeRules.needsLinkedToWork[i];
+                const p = this.linkTimeRules.needsLinkedToWork[i];
                 if (!p)
                 {
                     this._log.warn("[needsLinkedToWork] port not found");

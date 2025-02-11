@@ -1,4 +1,4 @@
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
@@ -15,7 +15,7 @@ export default class GlSplineDrawer
 {
 
     /**
-     * @param {Core.CGState} cgl
+     * @param {CABLES.CGState} cgl
      * @param {String} name
      */
     constructor(cgl, name)

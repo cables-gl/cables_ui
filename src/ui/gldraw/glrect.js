@@ -214,7 +214,7 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {number} r
+     * @param {number|Array} r
      * @param {number} g
      * @param {number} b
      * @param {number} a=1

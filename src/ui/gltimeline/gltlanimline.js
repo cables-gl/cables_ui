@@ -1,5 +1,5 @@
 import { Events } from "cables-shared-client";
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import GlText from "../gldraw/gltext.js";
 import glTlKeys from "./gltlkeys.js";
 import GlTimeline from "./gltimeline.js";
@@ -234,7 +234,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {string} id
-     * @returns {Core.Anim}
+     * @returns {CABLES.Anim}
      */
     getAnimById(id)
     {
@@ -247,7 +247,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {string} animName
-     * @returns {Core.Anim}
+     * @returns {CABLES.Anim}
      */
     getAnimByName(animName)
     {

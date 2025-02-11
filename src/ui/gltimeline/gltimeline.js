@@ -1,5 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanimline.js";
@@ -74,7 +74,7 @@ export default class GlTimeline extends Events
 
     #layout = 0;
 
-    /** @type {Array<Core.Key>} */
+    /** @type {Array<Types.AnimKey>} */
     #selectedKeys = [];
 
     hoverKeyRect = null;
@@ -101,7 +101,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {Core.CGState} cgl
+     * @param {CABLES.CGState} cgl
     */
     constructor(cgl)
     {
@@ -437,8 +437,8 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {Core.Key} a
-     * @param {Core.Anim} a
+     * @param {CABLES.Key} a
+     * @param {CABLES.Anim} a
      *
      */
     selectKey(k, a)
@@ -756,7 +756,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {Array<AnimKey>} keys
+     * @param {Array<Object>} keys
      * @param {boolean} setCursorTime=true
      */
     deserializeKeys(keys, setCursorTime = true)
@@ -773,9 +773,7 @@ export default class GlTimeline extends Events
         {
             const k = keys[i];
             if (setCursorTime)
-            {
                 k.t = k.t - minTime + this.cursorTime;
-            }
 
             let found = false;
             for (let j = 0; j < this.#tlAnims.length; j++)
@@ -785,7 +783,7 @@ export default class GlTimeline extends Events
 
                 if (an)
                 {
-                    an.addKey(new CABLES.ANIM.Key(keys[i]));
+                    an.addKey(new CABLES.AnimKey(keys[i]));
                     found = true;
                 }
             }
