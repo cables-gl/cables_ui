@@ -177,7 +177,7 @@ class OpParampanel extends Events
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
 
-        if (op.storage && op.storage.subPatchVer)
+        if (op.storage && op.storage.subPatchVer && op.patchId)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)

@@ -1,4 +1,4 @@
-import { Events, Logger } from "cables-shared-client";
+import { Logger, Events } from "cables-shared-client";
 import { Core } from "cables-shared-types";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
@@ -155,6 +155,8 @@ export default class GlOp extends Events
 
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
+
+        /** @type {Core.Port} */
         this._titleExtPort = null;
         this._titleExtPortListener = null;
 

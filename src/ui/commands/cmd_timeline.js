@@ -82,7 +82,7 @@ CABLES_CMD_TIMELINE.togglePlay = function ()
 
 CABLES_CMD_TIMELINE.openGlTimeline = function ()
 {
-    gui.glTimeline = new GlTimelineTab(gui.bottomTabs);
+    gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
 };
 
 CABLES_CMD_TIMELINE.toggleTimeline = function ()

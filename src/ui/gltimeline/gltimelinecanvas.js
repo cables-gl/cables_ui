@@ -1,6 +1,7 @@
 import { Core } from "cables-shared-types";
 import GlCanvas from "../gldraw/glcanvas.js";
 import GlTimeline from "./gltimeline.js";
+import { gui } from "../gui.js";
 
 /**
  * canvas for the timeline {@link GlTimeline}
