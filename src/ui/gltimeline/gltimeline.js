@@ -13,6 +13,7 @@ import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { userSettings } from "../components/usersettings.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notify, notifyWarn } from "../elements/notification.js";
+import undo from "../utils/undo.js";
 
 /**
  * gl timeline
@@ -430,8 +431,24 @@ export default class GlTimeline extends Events
 
     deleteSelectedKeys()
     {
+        const oldKeys = this.serializeSelectedKeys();
+        const gltl = this;
+        undo.add({
+            "title": "timeline move keys",
+            undo()
+            {
+                gltl.deserializeKeys(oldKeys);
+
+            },
+            redo()
+            {
+            } });
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+
+        }
 
         this.unSelectAllKeys();
     }
@@ -759,7 +776,7 @@ export default class GlTimeline extends Events
      * @param {Array<Object>} keys
      * @param {boolean} setCursorTime=true
      */
-    deserializeKeys(keys, setCursorTime = true)
+    deserializeKeys(keys, setCursorTime = false)
     {
 
         let minTime = Number.MAX_VALUE;
@@ -768,6 +785,8 @@ export default class GlTimeline extends Events
             minTime = Math.min(minTime, keys[i].t);
         }
         let notfoundallAnims = false;
+
+        let newKeys = [];
 
         for (let i = 0; i < keys.length; i++)
         {
@@ -783,7 +802,9 @@ export default class GlTimeline extends Events
 
                 if (an)
                 {
-                    an.addKey(new CABLES.AnimKey(keys[i]));
+                    const l = new CABLES.AnimKey(keys[i], an);
+                    newKeys.push(l);
+                    an.addKey(l);
                     found = true;
                 }
             }
@@ -792,7 +813,7 @@ export default class GlTimeline extends Events
                 notfoundallAnims = true;
 
         }
-        return notfoundallAnims;
+        return { "keys": newKeys, "notfoundallAnims": notfoundallAnims };
     }
 
     /**
@@ -813,7 +834,7 @@ export default class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-                    const notfoundallAnims = this.deserializeKeys(json.keys);
+                    const notfoundallAnims = this.deserializeKeys(json.keys, true).notfoundallAnims;
                     if (notfoundallAnims)
                     {
                         notifyWarn("could not find all anims for pasted keys");
@@ -856,8 +877,23 @@ export default class GlTimeline extends Events
     {
         const o = this.copy();
 
-        this.deserializeKeys(o.keys, false);
+        const newKeys = this.deserializeKeys(o.keys, false).keys;
 
+        undo.add({
+            "title": "timeline duplicate keys",
+            undo()
+            {
+                for (let i = 0; i < newKeys.length; i++)
+                {
+                    console.log("delete...dupes");
+                    newKeys[i].delete();
+                }
+                // key.set(oldValues);
+
+            },
+            redo()
+            {
+            } });
     }
 
 }

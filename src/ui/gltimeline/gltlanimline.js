@@ -234,7 +234,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {string} id
-     * @returns {CABLES.Anim}
+     * @returns {Types.Anim}
      */
     getAnimById(id)
     {
@@ -247,7 +247,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {string} animName
-     * @returns {CABLES.Anim}
+     * @returns {Types.Anim}
      */
     getAnimByName(animName)
     {

@@ -3,6 +3,7 @@ import { Types } from "cables-shared-types";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
+import undo from "../utils/undo.js";
 
 /**
  * gltl key rendering
@@ -23,10 +24,10 @@ export default class glTlKeys extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
-    /** @type {Array<GlRect} */
+    /** @type {Array<GlRect>} */
     #keyRects = [];
 
-    /** @type {Array<GlRect} */
+    /** @type {Array<GlRect>} */
     #dopeRects = [];
 
     /** @type {GlRect} */
@@ -248,8 +249,10 @@ export default class glTlKeys extends Events
             kr.setColorHover(1, 0, 0, 1);
             kr.setParent(this.#parentRect);
             kr.key = this.#anim.keys[i];
+            const key = this.#anim.keys[i];
 
             let startDrag = -1111;
+            let oldValues = {};
 
             kr.draggableMove = true;
             kr.on(GlRect.EVENT_POINTER_HOVER, () =>
@@ -269,6 +272,17 @@ export default class glTlKeys extends Events
             {
                 this.#anim.sortKeys();
                 this.#dragStarted = false;
+
+                undo.add({
+                    "title": "timeline move keys",
+                    undo()
+                    {
+                        key.set(oldValues);
+
+                    },
+                    redo()
+                    {
+                    } });
             });
 
             kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
@@ -276,6 +290,7 @@ export default class glTlKeys extends Events
 
                 if (button == 1 && !this.#dragStarted)
                 {
+                    oldValues = key.getSerialized();
                     this.#dragStarted = true;
                     startDrag = this.#glTl.view.pixelToTime(e.offsetX);
 
