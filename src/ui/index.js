@@ -23,7 +23,6 @@ import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
-import { uniqueArray } from "./utils/helper.js";
 import LogFilter, { logFilter } from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
@@ -35,7 +34,6 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
-CABLES.UTILS = CABLES.UTILS || {};
 CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
 CABLES.GLGUI.CURSOR_POINTER = 2;
@@ -71,9 +69,6 @@ CABLES.UI.ModalDialog = ModalDialog; // needs to stay - is used in ops
 CABLES.UI.ModalError = ModalError;
 
 // expose global functions
-
-CABLES.UTILS.uniqueArray =
-    CABLES.uniqueArray = uniqueArray;
 
 CABLES.DragNDrop = DragNDrop;
 

@@ -17,7 +17,7 @@ export default class glTlKeys extends Events
     #minVal = 999999;
     #maxVal = -999999;
 
-    /** @type {CABLES.Anim} */
+    /** @type {Types.Anim} */
     #anim = null;
 
     /** @type {GlTimeline} */
@@ -93,7 +93,7 @@ export default class glTlKeys extends Events
      * @param {number} minVal
      * @param {number} maxVal
      */
-    update(minVal, maxVal)
+    update(minVal = 0, maxVal = 0)
     {
         if (minVal != 0 && maxVal != 0)
         {
