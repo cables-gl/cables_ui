@@ -312,26 +312,29 @@ export default class glTlKeys extends Events
 
             this.#keyRects.push(kr);
 
-            if (!this.#options.multiAnims)
-                if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
-                {
-                    const krDop = this.#glTl.rects.createRect({ "draggable": true });
-                    krDop.setSize(this.sizeKey, this.sizeKey);
+            // if (!this.#options.multiAnims)
+            // {
+            //     if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
+            //     {
+            //         const krDop = this.#glTl.rects.createRect({ "draggable": true });
+            //         krDop.setSize(this.sizeKey, this.sizeKey);
 
-                    if (this.#port.uiAttribs.display == "bool")
-                    {
-                        if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
-                        else krDop.setColor(0.4, 0.4, 0.4, 1);
-                    }
-                    if (this.#port.uiAttribs.increment == "integer")
-                    {
-                        if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
-                        else krDop.setColor(0.4, 0.4, 0.4, 1);
-                    }
+            //         if (this.#port.uiAttribs.display == "bool")
+            //         {
+            //             if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
+            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
+            //         }
+            //         if (this.#port.uiAttribs.increment == "integer")
+            //         {
+            //             if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
+            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
+            //         }
 
-                    krDop.setParent(this.#parentRect);
-                    this.#dopeRects.push(krDop);
-                }
+            //         krDop.setParent(this.#parentRect);
+            //         this.#dopeRects.push(krDop);
+            //     }
+
+            // }
 
         }
         this.update();

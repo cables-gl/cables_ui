@@ -1,6 +1,7 @@
 import { Events, Logger } from "cables-shared-client/index.js";
 import GlRect from "../gldraw/glrect.js";
 import GlTimeline from "./gltimeline.js";
+import glTlDragArea from "./gltldragarea.js";
 
 export default class glTlScroll extends Events
 {
@@ -8,19 +9,13 @@ export default class glTlScroll extends Events
     /** @type {GlRect} */
     #mainRect = null;
 
-    /** @type {GlRect} */
-    #rectBar = null;
-
-    /** @type {GlRect} */
-    #rectSizeLeft = null;
-
-    /** @type {GlRect} */
-    #rectSizeRight;
+    #dragBar = null;
 
     /** @type {GlRect} */
     #glRectCursor;
 
     #width = 222;
+    #dragStart = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -37,20 +32,39 @@ export default class glTlScroll extends Events
         this.#mainRect.setSize(this.#width, this.height);
         this.#mainRect.setPosition(0, 0, -0.5);
 
-        this.#rectBar = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#rectBar.setSize(222, this.height);
-        this.#rectBar.setColor(0.5, 0.5, 0.5, 1);
-        this.#rectBar.setParent(this.#mainRect);
+        this.#dragBar = new glTlDragArea(glTl, this.#mainRect);
+        // this.#dragBar.on("drag", (off) =>
+        // {
+        //     const pixelVisible = this._glTl.view.visibleTime * this._glTl.view.pixelPerSecond;
+        //     console.log(this._glTl.view.pixelPerSecond, off / this.#width);
 
-        this.#rectSizeLeft = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#rectSizeLeft.setSize(3, this.height);
-        this.#rectSizeLeft.setColor(0.4, 0.4, 0.4, 1);
-        this.#rectSizeLeft.setParent(this.#mainRect);
+        //     this._glTl.view.scrollTo(((off / this.#width) * this._glTl.view.visibleTime), 0);
+        //     this.update();
+        // });
 
-        this.#rectSizeRight = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#rectSizeRight.setSize(3, this.height);
-        this.#rectSizeRight.setColor(0.4, 0.4, 0.4, 1);
-        this.#rectSizeRight.setParent(this.#mainRect);
+        this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
+        {
+            console.log(e, x);
+            const perc = (x - this._glTl.titleSpace) / this.#width;
+
+            this._glTl.view.scrollTo((perc * this._glTl.duration));
+
+        });
+
+        this.#mainRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
+        {
+            this.#dragStart = x;
+        });
+
+        // this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
+
+        this.#mainRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
+        {
+            const perc = (this.#dragStart + offX - this._glTl.titleSpace) / this.#width;
+
+            this._glTl.view.scrollTo((perc * this._glTl.duration));
+
+        });
 
         this.#glRectCursor = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, this.height);
@@ -79,14 +93,11 @@ export default class glTlScroll extends Events
     update()
     {
 
-        const pixelVisible = (this._glTl.view.visibleTime) * this._glTl.view.pixelPerSecond;
+        const pixelVisible = this._glTl.view.visibleTime * this._glTl.view.pixelPerSecond;
 
         let x = this._glTl.view.offset * this._glTl.view.pixelPerSecond;
 
-        this.#rectBar.setPosition(x, 0);
-        this.#rectBar.setSize(pixelVisible, this.height);
-        this.#rectSizeLeft.setPosition(x, 0);
-        this.#rectSizeRight.setPosition(x + pixelVisible, 0);
+        this.#dragBar.set(x, 0, pixelVisible);
 
         let cx = gui.corePatch().timer.getTime() * this._glTl.view.pixelPerSecond;
         this.#glRectCursor.setPosition(cx, 0);

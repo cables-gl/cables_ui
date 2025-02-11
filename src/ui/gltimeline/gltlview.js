@@ -91,11 +91,28 @@ export default class GlTlView
         this.scroll(this.cursorTime - this.#offset - (this.visibleTime / 2));
     }
 
-    scroll(off, dur = 0.2)
+    /**
+     * @param {number} delta
+     * @param {number} duration
+     */
+    scroll(delta, duration = 0.2)
+    {
+        let finalTime = this.#offset + delta;
+
+        this.#animScroll.clear(this.#timer.getTime());
+        this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
+        this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
+    }
+
+    /**
+     * @param {number} finalTime
+     * @param {number} duration=0.2
+     */
+    scrollTo(finalTime, duration = 0.2)
     {
         this.#animScroll.clear(this.#timer.getTime());
         this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
-        this.#animScroll.setValue(this.#timer.getTime() + dur, this.#offset + off);
+        this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
     }
 
     /**

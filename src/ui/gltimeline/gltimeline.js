@@ -437,8 +437,8 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {CABLES.Key} a
-     * @param {CABLES.Anim} a
+     * @param {Types.AnimKey} a
+     * @param {Types.Anim} a
      *
      */
     selectKey(k, a)
@@ -465,7 +465,7 @@ export default class GlTimeline extends Events
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
-        this.#rects.mouseDown(e);
+        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
         this.mouseDown = true;
     }
 

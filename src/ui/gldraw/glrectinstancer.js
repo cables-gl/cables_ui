@@ -629,14 +629,14 @@ export default class GlRectInstancer extends Events
     /**
      * @param {MouseEvent} e
      */
-    mouseDown(e)
+    mouseDown(e, x, y)
     {
         if (!this.#interactive) return;
 
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
-                this.#rects[i].mouseDown(e);
+                this.#rects[i].mouseDown(e, x, y);
         perf.finish();
     }
 
