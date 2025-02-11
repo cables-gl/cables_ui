@@ -233,8 +233,21 @@ export default class glTlAnimLine extends Events
     }
 
     /**
+     * @param {string} id
+     * @returns {Core.Anim}
+     */
+    getAnimById(id)
+    {
+        for (let i = 0; i < this.#anims.length; i++)
+        {
+            if (id == this.#anims[i].id) return this.#anims[i];
+        }
+        return null;
+    }
+
+    /**
      * @param {string} animName
-     * @returns {Anim}
+     * @returns {Core.Anim}
      */
     getAnimByName(animName)
     {

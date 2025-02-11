@@ -398,6 +398,7 @@ export default class GlTimeline extends Events
         {
             const o = this.#selectedKeys[i].getSerialized();
             o.animName = this.#selectedKeyAnims[i].name;
+            o.animId = this.#selectedKeyAnims[i].id;
             keys.push(o);
         }
 
@@ -436,8 +437,8 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {Anim} a
-     * @param {AnimKey} a
+     * @param {Core.Key} a
+     * @param {Core.Anim} a
      *
      */
     selectKey(k, a)
@@ -770,7 +771,6 @@ export default class GlTimeline extends Events
 
         for (let i = 0; i < keys.length; i++)
         {
-            console.log("add key...");
             const k = keys[i];
             if (setCursorTime)
             {
@@ -780,7 +780,9 @@ export default class GlTimeline extends Events
             let found = false;
             for (let j = 0; j < this.#tlAnims.length; j++)
             {
-                let an = this.#tlAnims[j].getAnimByName(k.animName);
+                let an = null;
+                if (k.animId)an = this.#tlAnims[j].getAnimById(k.animId);
+
                 if (an)
                 {
                     an.addKey(new CABLES.ANIM.Key(keys[i]));

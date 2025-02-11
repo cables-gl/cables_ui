@@ -1314,15 +1314,41 @@ export default class ServerOps
         });
     }
 
+    _deletePropertyByPath(obj, path)
+    {
+        if (!obj || !path)
+        {
+            return;
+        }
+
+        if (typeof path === "string")
+        {
+            path = path.split(".");
+        }
+
+        for (let i = 0; i < path.length - 1; i++)
+        {
+            obj = obj[path[i]];
+
+            if (typeof obj === "undefined")
+            {
+                return;
+            }
+        }
+
+        delete obj[path.pop()];
+    }
+
     _afterOpRename(newOp)
     {
+
         this._log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
         this.loadOp(newOp, () =>
         {
             let properties = newOp.oldName.split(".");
             properties.shift();
             const path = properties.join(".");
-            helper.deletePropertyByPath(Ops, path);
+            this._deletePropertyByPath(Ops, path);
             const usedOps = gui.corePatch()
                 .getOpsByOpId(newOp.opId);
             usedOps.forEach((usedOp) =>

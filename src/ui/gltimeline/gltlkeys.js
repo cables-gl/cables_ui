@@ -140,7 +140,15 @@ export default class glTlKeys extends Events
             const rx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2;
             const ry = y - sizeKey2;
 
-            kr.setPosition(rx, ry, -0.2);
+            let zpos = -0.2;
+
+            if (this.#glTl.isKeySelected(this.#anim.keys[i]))
+            {
+                kr.setColor(1, 1, 0, 1);
+                zpos = -0.3;
+            }
+
+            kr.setPosition(rx, ry, zpos);
 
             if (this.#glTl.selectRect &&
                 this.#glTl.selectRect.x < kr.absX + this.sizeKey && this.#glTl.selectRect.x2 > kr.absX &&
@@ -148,8 +156,6 @@ export default class glTlKeys extends Events
             {
                 this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
             }
-
-            if (this.#glTl.isKeySelected(this.#anim.keys[i])) kr.setColor(1, 1, 0, 1);
 
             if (this.#options.keyYpos)
             {
