@@ -74,6 +74,7 @@ export default class GlTimeline extends Events
 
     #layout = 0;
 
+    /** @type {Array<Core.Key>} */
     #selectedKeys = [];
 
     hoverKeyRect = null;
@@ -253,10 +254,13 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
-    snapTime(t)
+    /**
+     * @param {number} time
+     */
+    snapTime(time)
     {
-        if (this.cfg.restrictToFrames) t = Math.floor(t * this.fps) / this.fps;
-        return t;
+        if (this.cfg.restrictToFrames) time = Math.floor(time * this.fps) / this.fps;
+        return time;
     }
 
     toggleGraphLayout()
@@ -316,8 +320,8 @@ export default class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
-
                 }
+
                 if (y < this.getFirstLinePosy())
                 {
                     gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
@@ -411,6 +415,18 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
+    getSelectedKeysBoundsTime()
+    {
+        let min = 999999;
+        let max = -999999;
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            min = Math.min(min, this.#selectedKeys[i].time);
+            max = Math.max(max, this.#selectedKeys[i].time);
+        }
+        return { "min": min, "max": max };
+    }
+
     deleteSelectedKeys()
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -440,8 +456,9 @@ export default class GlTimeline extends Events
     {
         if (!e.pointerType) return;
 
-        if (this.hoverKeyRect == null)
-            this.unSelectAllKeys();
+        if (e.buttons == 1)
+            if (this.hoverKeyRect == null)
+                this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
@@ -714,16 +731,68 @@ export default class GlTimeline extends Events
     /**
      * @param {ClipboardEvent} event
      */
-    copy(event)
+    copy(event = null)
     {
         const obj = { "keys": this.serializeSelectedKeys() };
-        const objStr = JSON.stringify(obj);
 
-        console.log("copy", obj);
+        if (event)
+        {
+            const objStr = JSON.stringify(obj);
+            event.clipboardData.setData("text/plain", objStr);
+            event.preventDefault();
+        }
+        return obj;
 
-        event.clipboardData.setData("text/plain", objStr);
-        event.preventDefault();
+    }
 
+    /**
+     * @param {ClipboardEvent} event
+     */
+    cut(event)
+    {
+        this.copy(event);
+        this.deleteSelectedKeys();
+    }
+
+    /**
+     * @param {Array<AnimKey>} keys
+     * @param {boolean} setCursorTime=true
+     */
+    deserializeKeys(keys, setCursorTime = true)
+    {
+
+        let minTime = Number.MAX_VALUE;
+        for (let i in keys)
+        {
+            minTime = Math.min(minTime, keys[i].t);
+        }
+        let notfoundallAnims = false;
+
+        for (let i = 0; i < keys.length; i++)
+        {
+            console.log("add key...");
+            const k = keys[i];
+            if (setCursorTime)
+            {
+                k.t = k.t - minTime + this.cursorTime;
+            }
+
+            let found = false;
+            for (let j = 0; j < this.#tlAnims.length; j++)
+            {
+                let an = this.#tlAnims[j].getAnimByName(k.animName);
+                if (an)
+                {
+                    an.addKey(new CABLES.ANIM.Key(keys[i]));
+                    found = true;
+                }
+            }
+
+            if (!found)
+                notfoundallAnims = true;
+
+        }
+        return notfoundallAnims;
     }
 
     /**
@@ -744,35 +813,7 @@ export default class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-
-                    let minTime = Number.MAX_VALUE;
-                    for (let i in json.keys)
-                    {
-                        minTime = Math.min(minTime, json.keys[i].t);
-                    }
-                    let notfoundallAnims = false;
-
-                    for (let i = 0; i < json.keys.length; i++)
-                    {
-                        const k = json.keys[i];
-                        k.t = k.t - minTime + this.cursorTime;
-
-                        let found = false;
-                        for (let j = 0; j < this.#tlAnims.length; j++)
-                        {
-                            let an = this.#tlAnims[j].getAnimByName(k.animName);
-                            if (an)
-                            {
-                                an.addKey(new CABLES.ANIM.Key(json.keys[i]));
-                                found = true;
-                            }
-                        }
-
-                        if (!found)
-                            notfoundallAnims = true;
-
-                    }
-
+                    const notfoundallAnims = this.deserializeKeys(json.keys);
                     if (notfoundallAnims)
                     {
                         notifyWarn("could not find all anims for pasted keys");
@@ -782,6 +823,13 @@ export default class GlTimeline extends Events
                         notify(json.keys.length + " keys pasted");
                     }
 
+                    const animPorts = gui.corePatch().getAllAnimPorts();
+                    for (let i = 0; i < animPorts.length; i++)
+                    {
+
+                        if (animPorts[i].anim)
+                            animPorts[i].anim.removeDuplicates();
+                    }
                     // anim.sortKeys();
 
                     // for (let i in anim.keys)
@@ -802,6 +850,14 @@ export default class GlTimeline extends Events
     {
         // todo
         return true;
+    }
+
+    duplicateSelectedKeys()
+    {
+        const o = this.copy();
+
+        this.deserializeKeys(o.keys, false);
+
     }
 
 }

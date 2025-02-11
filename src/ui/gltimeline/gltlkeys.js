@@ -44,6 +44,8 @@ export default class glTlKeys extends Events
     #points = [];
     #options = {};
 
+    #dragStarted = false;
+
     /**
      * @param {GlTimeline} glTl
      * @param {Anim} anim
@@ -75,7 +77,11 @@ export default class glTlKeys extends Events
 
         this.points = [];
         this.init();
+    }
 
+    isDragging()
+    {
+        return this.#dragStarted;
     }
 
     get anim()
@@ -256,27 +262,46 @@ export default class glTlKeys extends Events
             kr.on(GlRect.EVENT_DRAGEND, () =>
             {
                 this.#anim.sortKeys();
+                this.#dragStarted = false;
             });
 
             kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
             {
-                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+
+                if (button == 1 && !this.#dragStarted)
+                {
+                    this.#dragStarted = true;
+                    startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+
+                    console.log("dragstart", button, e.shiftKey);
+
+                    if (e.shiftKey)
+                    {
+                        this.#glTl.duplicateSelectedKeys();
+                    }
+
+                }
             });
 
             kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 if (this.#glTl.selectRect) return;
 
-                const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
-                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
-
-                if (this.#glTl.getNumSelectedKeys() > 0)
+                if (button == 1)
                 {
-                    this.#glTl.moveSelectedKeysDelta(offTime);
-                    this.#anim.sortKeys();
-                }
 
-                this.update(0, 0);
+                    const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
+                    startDrag = this.#glTl.snapTime(this.#glTl.view.pixelToTime(e.offsetX));
+
+                    if (this.#glTl.getNumSelectedKeys() > 0)
+                    {
+                        this.#glTl.moveSelectedKeysDelta(this.#glTl.snapTime(offTime));
+                        this.#anim.sortKeys();
+                    }
+
+                    this.update(0, 0);
+
+                }
             });
 
             this.#keyRects.push(kr);

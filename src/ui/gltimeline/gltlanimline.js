@@ -60,7 +60,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {GlTimeline} glTl
-     * @param {Array<Port>} ports
+     * @param {Array<Core.Port>} ports
      * @param {Object} options
     */
     constructor(glTl, ports, options = {})
@@ -101,7 +101,8 @@ export default class glTlAnimLine extends Events
 
             const lid = anim.addEventListener("onChange", () =>
             {
-                keys.init();
+                if (!keys.isDragging())
+                    keys.init();
             });
 
             this.#animChangeListeners.push({ "id": lid, "anim": anim });
