@@ -27,8 +27,8 @@ export default class GlPatchAPI
         this._currentFlowMode = -1;
         this._updateCounter = 0;
 
-        this._patch.on("onOpAdd", this._onAddOp.bind(this));
-        this._patch.on("onOpDelete", this._onDeleteOp.bind(this));
+        this._patch.on(CABLES.Patch.EVENT_OP_ADDED, this._onAddOp.bind(this));
+        this._patch.on(CABLES.Patch.EVENT_OP_DELETED, this._onDeleteOp.bind(this));
 
         this._patch.on("onLink", this._onLink.bind(this));
         this._patch.on("onUnLink", this._onUnLink.bind(this));

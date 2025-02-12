@@ -1,4 +1,4 @@
-import { TypesCore } from "cables-shared-types";
+import { Types, TypesCore } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
@@ -19,6 +19,22 @@ import GlRect from "../gldraw/glrect.js";
  */
 export default class GlLink
 {
+
+    /**
+     *
+     * @param {GlPatch} glpatch
+     * @param {Types.Link} link
+     * @param {string} id
+     * @param {string} opIdInput
+     * @param {string} opIdOutput
+     * @param {string} portNameIn
+     * @param {string} portNameOut
+     * @param {string} portIdInput
+     * @param {string} portIdOutput
+     * @param {number} type
+     * @param {boolean} visible
+     * @param {string|number} subpatch
+     */
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
@@ -27,7 +43,7 @@ export default class GlLink
         this._log = new Logger("gllink");
         this._id = id;
 
-        /** @type {CABLES.Link} */
+        /** @type {Types.Link} */
         this._link = link;
         this._visible = visible;
 

@@ -12,7 +12,7 @@ export default class GlTextWriter
 {
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {Types.CGState} cgl
      * @param {Object} options
      */
     constructor(cgl, options)

@@ -54,7 +54,7 @@ export default class VizLayer extends Events
             this.renderVizLayer(true);
         });
 
-        gui.corePatch().on("onOpAdd", (a) =>
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, (a) =>
         {
             if (a.renderVizLayer || a.renderVizLayerGl || a.renderVizLayerGpu)
             {

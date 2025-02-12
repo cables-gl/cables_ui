@@ -57,10 +57,10 @@ export default class PatchView extends Events
         corepatch.on("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
 
         // corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
-        corepatch.on("onOpDelete", this._onDeleteOpUndo.bind(this));
+        corepatch.on(CABLES.Patch.EVENT_OP_DELETED, this._onDeleteOpUndo.bind(this));
 
-        corepatch.on("onOpAdd", (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
-        corepatch.on("onOpDelete", (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
+        corepatch.on(CABLES.Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
+        corepatch.on(CABLES.Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
         corepatch.on("onLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
         corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
     }

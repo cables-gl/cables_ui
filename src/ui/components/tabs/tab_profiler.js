@@ -23,8 +23,8 @@ export default class Profiler
         this._subTab = 0;
 
         gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
-        gui.corePatch().on("onOpAdd", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
-        gui.corePatch().on("onOpDelete", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
         gui.corePatch().on("onUnLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     }
 

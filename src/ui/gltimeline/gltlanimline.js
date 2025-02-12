@@ -16,10 +16,10 @@ import { gui } from "../gui.js";
 export default class glTlAnimLine extends Events
 {
 
-    /** @type {Array<Core.Anim>} */
+    /** @type {Array<Types.Anim>} */
     #anims = [];
 
-    /** @type {Array<Core.Op>} */
+    /** @type {Array<Types.Op>} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -40,7 +40,7 @@ export default class glTlAnimLine extends Events
     /** @type {Array<glTlKeys>} */
     #keys = [];
 
-    /** @type {Array<Core.Port>} */
+    /** @type {Array<Types.Port>} */
     #ports = [];
 
     width = 222;

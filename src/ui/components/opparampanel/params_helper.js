@@ -277,7 +277,7 @@ const paramsHelper =
                     }
                 });
 
-            gui.corePatch().on("onOpDelete", (deletedOp) =>
+            gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, (deletedOp) =>
             {
                 if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
             });

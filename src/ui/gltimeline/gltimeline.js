@@ -102,7 +102,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {CABLES.CglContext} cgl
+     * @param {Types.CglContext} cgl
     */
     constructor(cgl)
     {
@@ -164,8 +164,8 @@ export default class GlTimeline extends Events
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-        gui.corePatch().on("onOpDelete", () => { this.init(); });
-        gui.corePatch().on("onOpAdd", () => { this.init(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { this.init(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.updateAllElements();
@@ -187,6 +187,7 @@ export default class GlTimeline extends Events
         gui.keys.key("delete", "delete", "down", cgl.canvas.id, {}, (e) =>
         {
             this.deleteSelectedKeys();
+            this.updateAllElements();
         });
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
@@ -314,15 +315,19 @@ export default class GlTimeline extends Events
         if (e.buttons == 1)
         {
 
-            if (this.getNumSelectedKeys() > 0 && !this.selectRect)
+            // if (this.getNumSelectedKeys() > 0 && !this.selectRect)
+            // {
+            //     return;
+            // }
+            if (this.hoverKeyRect)
             {
-                return;
             }
             else
             {
                 if (y > this.getFirstLinePosy())
                 {
-                    this.unSelectAllKeys();
+                    if (!e.shiftKey)
+                        this.unSelectAllKeys();
 
                     this.selectRect = {
                         "x": Math.min(this.#lastXnoButton, x),
@@ -490,7 +495,7 @@ export default class GlTimeline extends Events
         if (!e.pointerType) return;
 
         if (e.buttons == 1)
-            if (this.hoverKeyRect == null)
+            if (this.hoverKeyRect == null && !e.shiftKey)
                 this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
@@ -791,7 +796,7 @@ export default class GlTimeline extends Events
      * @param {Array<Object>} keys
      * @param {Object} options
      */
-    deserializeKeys(keys, options)
+    deserializeKeys(keys, options = {})
     {
         const useId = options.useId || false;
         const setCursorTime = options.setCursorTime || false;

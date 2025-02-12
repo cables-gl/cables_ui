@@ -49,7 +49,7 @@ export default class glTlKeys extends Events
 
     /**
      * @param {GlTimeline} glTl
-     * @param {CABLES.Anim} anim
+     * @param {Types.Anim} anim
      * @param {GlRect} parentRect
      * @param {Types.Port} port
      * @param {Object} options
