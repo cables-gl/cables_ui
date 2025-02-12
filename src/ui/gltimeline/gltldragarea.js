@@ -54,6 +54,7 @@ export default class glTlDragArea extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} width
+     * @param {number} height
      */
     set(x, y, width, height = this.height)
     {

@@ -87,7 +87,7 @@ export default class GlSplineDrawer
     }
 
     /**
-     * @param boolean} b
+     * @param {boolean} b
      */
     setFadeout(b)
     {

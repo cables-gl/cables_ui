@@ -628,6 +628,8 @@ export default class GlRectInstancer extends Events
 
     /**
      * @param {MouseEvent} e
+     * @param {number} x
+     * @param {number} y
      */
     mouseDown(e, x, y)
     {

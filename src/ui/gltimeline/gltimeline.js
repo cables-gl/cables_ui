@@ -94,9 +94,9 @@ export default class GlTimeline extends Events
         "restrictToFrames": true
     };
 
-    #selOpsStr;
-    #lastXnoButton;
-    #lastYnoButton;
+    #selOpsStr = "";
+    #lastXnoButton = 0;
+    #lastYnoButton = 0;
 
     selectRect = null;
     #selectedKeyAnims = [];
@@ -766,7 +766,7 @@ export default class GlTimeline extends Events
      */
     copy(event = null)
     {
-        const obj = { "keys": this.serializeSelectedKeys() };
+        const obj = { "keys": this.serializeSelectedKeys(true) };
 
         if (event)
         {
@@ -793,13 +793,18 @@ export default class GlTimeline extends Events
      */
     deserializeKeys(keys, options)
     {
-        const deleteOld = options.deleteOld || false;
+        const useId = options.useId || false;
         const setCursorTime = options.setCursorTime || false;
 
         let minTime = Number.MAX_VALUE;
         for (let i in keys)
         {
             minTime = Math.min(minTime, keys[i].t);
+
+            if (useId)
+            {
+
+            }
         }
 
         let notfoundallAnims = false;

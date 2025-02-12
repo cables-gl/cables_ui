@@ -36,9 +36,10 @@ export default class GlPatch extends Events
         super();
 
         this.logEvents(false, "glpatch");
-        if (!cgl) this._logonsole.error("[glpatch] need cgl");
-
         this._log = new Logger("glpatch");
+
+        if (!cgl) this._log.error("[glpatch] need cgl");
+
         this.paused = false;
         this.pauseTimeOut = null;
         this.blueprint = false;
