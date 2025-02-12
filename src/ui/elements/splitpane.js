@@ -81,7 +81,7 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    document.getElementById("splitterTimeline").addEventListener("pointerdown", function (ev)
+    document.getElementById("splitterBottomTabs").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
         splitpane.bound = true;

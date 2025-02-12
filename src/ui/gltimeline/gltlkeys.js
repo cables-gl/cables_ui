@@ -94,13 +94,11 @@ export default class glTlKeys extends Events
      * @param {number} minVal
      * @param {number} maxVal
      */
-    update(minVal = 0, maxVal = 0)
+    update(minVal = this.#minVal, maxVal = this.#maxVal)
     {
-        if (minVal != 0 && maxVal != 0)
-        {
-            this.#minVal = minVal;
-            this.#maxVal = maxVal;
-        }
+        this.#minVal = minVal;
+        this.#maxVal = maxVal;
+
         if (this.#disposed)
         {
             this._log.warn("disposed", this);
@@ -119,59 +117,59 @@ export default class glTlKeys extends Events
         const pointsSort = [];
 
         let z = 0.0;
+        let col = [0.7, 0.7, 0.7, 1];
+
         if (isCurrentOp)z = -0.1;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
+            const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
 
-            kr.setSize(this.sizeKey, this.sizeKey);
-
-            if (this.#anim.keys[i].time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
+            if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
             else
-            {
-                if (isCurrentOp) kr.setColor(1, 1, 1);
-                else kr.setColor(0.7, 0.7, 0.7);
-            }
+            if (isCurrentOp) col = [1, 1, 1];
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
-                y = this.#parentRect.h - CABLES.map(this.#anim.keys[i].value, this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+                y = this.#parentRect.h - CABLES.map(animKey.value, this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
 
-            const rx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2;
+            const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - sizeKey2;
             const ry = y - sizeKey2;
 
             let zpos = -0.2;
-
-            if (this.#glTl.isKeySelected(this.#anim.keys[i]))
-            {
-                kr.setColor(1, 1, 0, 1);
-                zpos = -0.3;
-            }
-
             kr.setPosition(rx, ry, zpos);
+            kr.setSize(this.sizeKey, this.sizeKey);
 
             if (this.#glTl.selectRect &&
                 this.#glTl.selectRect.x < kr.absX + this.sizeKey && this.#glTl.selectRect.x2 > kr.absX &&
                 this.#glTl.selectRect.y < kr.absY + this.sizeKey && this.#glTl.selectRect.y2 > kr.absY)
             {
-                this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
+                this.#glTl.selectKey(animKey, this.#anim);
             }
+
+            if (this.#glTl.isKeySelected(animKey))
+            {
+                col = [1, 1, 0, 1];
+                zpos = -0.3;
+            }
+
+            kr.setColor(col);
 
             if (this.#options.keyYpos)
             {
-                const lx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
-                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
+                const lx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
+                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2);
                 pointsSort.push([lx, ly, z]);
 
                 const onepixelTime = this.#glTl.view.pixelToTime(1);
                 pointsSort.push([
-                    this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset - onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time - onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset - onepixelTime),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time - onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
                     z]);
                 pointsSort.push([
-                    this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset + onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(this.#anim.keys[i].time + onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
+                    this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset + onepixelTime),
+                    this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time + onepixelTime), this.#minVal, this.#maxVal, sizeKey2, this.#parentRect.h - sizeKey2),
                     z]);
             }
 
@@ -208,34 +206,39 @@ export default class glTlKeys extends Events
 
             this.#spline.setPoints(this.#points);
         }
-        else
-            for (let i = 0; i < this.#anim.keys.length; i++)
-            {
-                // const kr = this.#dopeRects[i];
+        // else
+        // for (let i = 0; i < this.#anim.keys.length; i++)
+        // {
+        // const kr = this.#dopeRects[i];
 
-                // if (kr)
-                // {
-                //     let x = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset);
-                //     let y = 0;
-                //     kr.setPosition(x, y, -0.1);
+        // if (kr)
+        // {
+        //     let x = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
+        //     let y = 0;
+        //     kr.setPosition(x, y, -0.1);
 
-                //     if (this.#anim.keys[i + 1])
-                //     {
-                //         if (i == 0)
-                //         {
-                //             kr.setPosition(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), 0);
-                //             kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
-                //         }
-                //         else
-                //             kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time - this.#anim.keys[i].time), this.#parentRect.h);
-                //     }
-                //     else
-                //     {
-                //         // after last
-                //         kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#anim.keys[i].time), this.#parentRect.h);
-                //     }
-                // }
-            }
+        //     if (this.#anim.keys[i + 1])
+        //     {
+        //         if (i == 0)
+        //         {
+        //             kr.setPosition(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), 0);
+        //             kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time), this.#parentRect.h);
+        //         }
+        //         else
+        //             kr.setSize(this.#glTl.view.timeToPixel(this.#anim.keys[i + 1].time - animKey.time), this.#parentRect.h);
+        //     }
+        //     else
+        //     {
+        //         // after last
+        //         kr.setSize(this.#glTl.view.timeToPixel(this.#glTl.duration - animKey.time), this.#parentRect.h);
+        //     }
+        // }
+        // }
+    }
+
+    updateKeyRects()
+    {
+
     }
 
     init()
@@ -247,10 +250,9 @@ export default class glTlKeys extends Events
             kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
             kr.setColor(1, 1, 1, 1);
-            // kr.setColorHover(1, 0, 0, 1);
             kr.setParent(this.#parentRect);
-            kr.key = this.#anim.keys[i];
             const key = this.#anim.keys[i];
+            kr.key = key;
 
             let startDrag = -1111;
             let oldValues = {};
@@ -259,14 +261,12 @@ export default class glTlKeys extends Events
             kr.on(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = kr;
-                this.update(0, 0);
-                // kr.setColor(1, 0, 0, 1);
+                this.update();
             });
             kr.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
-                kr.setColor(1, 1, 1, 1);
-                this.update(0, 0);
+                this.update();
             });
 
             kr.on(GlRect.EVENT_DRAGEND, () =>
@@ -279,11 +279,9 @@ export default class glTlKeys extends Events
                     undo()
                     {
                         key.set(oldValues);
-
                     },
-                    redo()
-                    {
-                    } });
+                    redo() {}
+                });
             });
 
             kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
@@ -321,7 +319,7 @@ export default class glTlKeys extends Events
                         this.#anim.sortKeys();
                     }
 
-                    this.update(0, 0);
+                    this.update();
 
                 }
             });
@@ -337,7 +335,7 @@ export default class glTlKeys extends Events
 
             //         if (this.#port.uiAttribs.display == "bool")
             //         {
-            //             if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
+            //             if (animKey.value) krDop.setColor(0.6, 0.6, 0.6, 1);
             //             else krDop.setColor(0.4, 0.4, 0.4, 1);
             //         }
             //         if (this.#port.uiAttribs.increment == "integer")

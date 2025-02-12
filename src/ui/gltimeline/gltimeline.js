@@ -272,12 +272,23 @@ export default class GlTimeline extends Events
         this.init();
     }
 
+    getColorSpecial()
+    {
+        return [0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1];
+    }
+
+    /**
+     * @param {GlRect} r
+     */
     setColorRectSpecial(r)
     {
         if (r)
-            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+            r.setColor(this.getColorSpecial());
     }
 
+    /**
+     * @param {number} w
+     */
     setMaxTitleSpace(w)
     {
         if (w > this.titleSpace)
@@ -454,7 +465,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {Types.AnimKey} a
+     * @param {Types.AnimKey} k
      * @param {Types.Anim} a
      *
      */

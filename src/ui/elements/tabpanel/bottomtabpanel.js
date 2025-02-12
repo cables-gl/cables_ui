@@ -66,6 +66,9 @@ export default class BottomTabPanel extends Events
 
         this._visible = true;
         this._ele.style.display = "block";
+
+        ele.byId("splitterBottomTabs").style.display = "block";
+
         document.getElementById("editorminimized").style.display = "none";
 
         if (gui.finishedLoading() && userInteraction) userSettings.set("bottomTabsVisible", true);
@@ -77,6 +80,8 @@ export default class BottomTabPanel extends Events
 
     hide(donotsave)
     {
+        ele.byId("splitterBottomTabs").style.display = "none";
+
         userSettings.set("bottomTabsOpened", false);
 
         this._visible = false;
