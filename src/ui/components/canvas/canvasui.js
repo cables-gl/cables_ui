@@ -24,7 +24,6 @@ export default class CanvasUi
 
         this._elCanvasInfoSizeOverlay = ele.byId("canvasInfoOverlay");
 
-
         this._elCanvasIconbarContainer.addEventListener("click", () =>
         {
             this.canvasEle.focus();
@@ -58,7 +57,6 @@ export default class CanvasUi
         {
             this.updateSizeDisplay();
         });
-
 
         cg.fpsCounter.on("performance", (perf) =>
         {
@@ -123,7 +121,6 @@ export default class CanvasUi
         const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
         const bodyRect = document.body.getBoundingClientRect();
 
-
         perf.finish();
     }
 
@@ -141,7 +138,6 @@ export default class CanvasUi
         if (ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
         gui.canvasManager.updateCanvasUi();
-
 
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
@@ -185,9 +181,6 @@ export default class CanvasUi
         if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
         else this._elCanvasIconbar.classList.add("hidden");
 
-
-
-
         if (_show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
@@ -201,8 +194,6 @@ export default class CanvasUi
             }
 
             // if (!this._showing) ele.show(this._elCanvasIconbarContainer);
-
-
 
             // const sizeStr = this.getCanvasSizeString();
 
