@@ -20,6 +20,7 @@ export default class OpSearch extends Events
         this._list = null;
         this._wordsDb = null;
         this.numPatchops = 0;
+        this.originalSearch = "";
     }
 
     get list()
@@ -120,20 +121,23 @@ export default class OpSearch extends Events
             {
                 found = true;
                 let p = 4;
-                if (orig.length === 2)p = 10;
-                if (orig.length === 3)p = 8;
+                if (orig.length === 2)p = 12;
+                if (orig.length === 3)p = 10;
+                if (orig.length === 4)p = 8;
 
-                console.log(orig, query);
-                if (orig === orig.toUpperCase())p *= 3;
+                if (query === query.toUpperCase())
+                {
+                    const ppo = 5;
+                    p += ppo;
+                    scoreDebug += "+" + ppo + " uppercase abbreviation<br/>";
+                }
 
                 scoreDebug += "+" + p + " abbreviation<br/>";
+
                 points += p;
             }
 
-            if (list[i].userOp && this._hideUserOps)
-            {
-                continue;
-            }
+            if (list[i].userOp && this._hideUserOps) continue;
 
             if (list[i]._summary.indexOf(query) > -1)
             {
@@ -357,6 +361,7 @@ export default class OpSearch extends Events
 
     search(query, originalSearch)
     {
+
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
         if (!query) return;
@@ -408,7 +413,7 @@ export default class OpSearch extends Events
             }
             else
             {
-                this._searchWord(0, query, this._list, query);
+                this._searchWord(0, query, this._list, originalSearch);
             }
         }
     }

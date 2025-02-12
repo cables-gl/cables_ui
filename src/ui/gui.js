@@ -104,7 +104,6 @@ export default class Gui extends Events
         this.isRemoteClient = cfg.remoteClient;
         this._spaceBarStart = 0;
 
-        this.bottomPanelHeight = this.userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
         this.rendererWidth = uiconfig.rendererDefaultWidth;
         this.rendererHeight = uiconfig.rendererDefaultHeight;
         this.showingtwoMetaPanel = true;
@@ -368,17 +367,6 @@ export default class Gui extends Events
         }
     }
 
-    setBottomPanelHeight(h)
-    {
-        this.bottomPanelHeight = h;
-
-        clearTimeout(this._toBottomPanel);
-        this._toBottomPanel = setTimeout(() =>
-        {
-            this.userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
-        });
-    }
-
     showBackupSaveWarning()
     {
         if (!platform.getPatchVersion()) return false;
@@ -613,7 +601,7 @@ export default class Gui extends Events
         if (this.maintabPanel.isVisible())
         {
             const editorbarHeight = 767;
-            const editorHeight = patchHeight - editorbarHeight - this.bottomPanelHeight;
+            const editorHeight = patchHeight - editorbarHeight - this.bottomTabPanel.getHeight();
 
             this._elMaintab.style.left = iconBarWidth + "px";
             this._elMaintab.style.top = 0 + "px";
@@ -623,7 +611,7 @@ export default class Gui extends Events
             // if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = (patchHeight - this.bottomPanelHeight) + 2 + "px";
+            this._elSplitterMaintabs.style.height = (patchHeight - this.bottomTabPanel.getHeight()) + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
@@ -783,18 +771,18 @@ export default class Gui extends Events
         this._elInfoAreaParam.style.width = this.rendererWidth + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
-        ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - infoAreaHeight - this.bottomPanelHeight) + "px";
+        ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - infoAreaHeight - this.bottomTabPanel.getHeight()) + "px";
 
         if (this.bottomTabPanel.isVisible())
         {
             this._elSplitterBottom.style.display = "block";
             this._elSplitterBottom.style.width = patchWidth + "px";
-            this._elSplitterBottom.style.bottom = (infoAreaHeight + this.bottomPanelHeight) + "px";
+            this._elSplitterBottom.style.bottom = (infoAreaHeight + this.bottomTabPanel.getHeight()) + "px";
 
             this._eleBottomTabs = ele.byId("bottomtabs");
             this._eleBottomTabs.style.width = timelineWidth + "px";
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
-            this._eleBottomTabs.style.height = this.bottomPanelHeight + "px";
+            this._eleBottomTabs.style.height = this.bottomTabPanel.getHeight() + "px";
             this._eleBottomTabs.style.left = iconBarWidth + "px";
 
             this.bottomTabs.updateSize();
@@ -804,13 +792,13 @@ export default class Gui extends Events
         let tabPanelTopHeight = 0;
         if (tabPanelTop) tabPanelTopHeight = tabPanelTop.getBoundingClientRect().height;
 
-        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - infoAreaHeight - this.bottomPanelHeight - tabPanelTopHeight + "px";
+        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - infoAreaHeight - this.bottomTabPanel.getHeight() - tabPanelTopHeight + "px";
 
         let metaTabPanelTabsHeight = 0;
         const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
         if (metaTabPanelTabs) metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
 
-        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - this.bottomPanelHeight - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - this.bottomTabPanel.getHeight() - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {

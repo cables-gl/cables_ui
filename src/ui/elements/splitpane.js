@@ -91,7 +91,7 @@ function initSplitPanes()
             {
                 gui.pauseInteractionSplitpanes();
                 e.preventDefault();
-                gui.setBottomPanelHeight(window.innerHeight - e.clientY);
+                gui.bottomTabPanel.setHeight(window.innerHeight - e.clientY);
                 gui.setLayout();
             }
 
