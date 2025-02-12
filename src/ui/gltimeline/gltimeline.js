@@ -1,5 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import glTlAnim from "./gltlanimline.js";
@@ -13,6 +13,7 @@ import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { userSettings } from "../components/usersettings.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notify, notifyWarn } from "../elements/notification.js";
+import undo from "../utils/undo.js";
 
 /**
  * gl timeline
@@ -74,6 +75,7 @@ export default class GlTimeline extends Events
 
     #layout = 0;
 
+    /** @type {Array<Types.AnimKey>} */
     #selectedKeys = [];
 
     hoverKeyRect = null;
@@ -100,7 +102,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {Core.CGState} cgl
+     * @param {CABLES.CGState} cgl
     */
     constructor(cgl)
     {
@@ -253,10 +255,13 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
-    snapTime(t)
+    /**
+     * @param {number} time
+     */
+    snapTime(time)
     {
-        if (this.cfg.restrictToFrames) t = Math.floor(t * this.fps) / this.fps;
-        return t;
+        if (this.cfg.restrictToFrames) time = Math.floor(time * this.fps) / this.fps;
+        return time;
     }
 
     toggleGraphLayout()
@@ -316,8 +321,8 @@ export default class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
-
                 }
+
                 if (y < this.getFirstLinePosy())
                 {
                     gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
@@ -394,6 +399,7 @@ export default class GlTimeline extends Events
         {
             const o = this.#selectedKeys[i].getSerialized();
             o.animName = this.#selectedKeyAnims[i].name;
+            o.animId = this.#selectedKeyAnims[i].id;
             keys.push(o);
         }
 
@@ -411,17 +417,45 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
+    getSelectedKeysBoundsTime()
+    {
+        let min = 999999;
+        let max = -999999;
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            min = Math.min(min, this.#selectedKeys[i].time);
+            max = Math.max(max, this.#selectedKeys[i].time);
+        }
+        return { "min": min, "max": max };
+    }
+
     deleteSelectedKeys()
     {
+        const oldKeys = this.serializeSelectedKeys();
+        const gltl = this;
+        undo.add({
+            "title": "timeline move keys",
+            undo()
+            {
+                gltl.deserializeKeys(oldKeys);
+
+            },
+            redo()
+            {
+            } });
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+
+        }
 
         this.unSelectAllKeys();
     }
 
     /**
-     * @param {Anim} a
-     * @param {AnimKey} a
+     * @param {Types.AnimKey} a
+     * @param {Types.Anim} a
      *
      */
     selectKey(k, a)
@@ -440,14 +474,15 @@ export default class GlTimeline extends Events
     {
         if (!e.pointerType) return;
 
-        if (this.hoverKeyRect == null)
-            this.unSelectAllKeys();
+        if (e.buttons == 1)
+            if (this.hoverKeyRect == null)
+                this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
-        this.#rects.mouseDown(e);
+        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
         this.mouseDown = true;
     }
 
@@ -714,16 +749,71 @@ export default class GlTimeline extends Events
     /**
      * @param {ClipboardEvent} event
      */
-    copy(event)
+    copy(event = null)
     {
         const obj = { "keys": this.serializeSelectedKeys() };
-        const objStr = JSON.stringify(obj);
 
-        console.log("copy", obj);
+        if (event)
+        {
+            const objStr = JSON.stringify(obj);
+            event.clipboardData.setData("text/plain", objStr);
+            event.preventDefault();
+        }
+        return obj;
 
-        event.clipboardData.setData("text/plain", objStr);
-        event.preventDefault();
+    }
 
+    /**
+     * @param {ClipboardEvent} event
+     */
+    cut(event)
+    {
+        this.copy(event);
+        this.deleteSelectedKeys();
+    }
+
+    /**
+     * @param {Array<Object>} keys
+     * @param {boolean} setCursorTime=true
+     */
+    deserializeKeys(keys, setCursorTime = false)
+    {
+
+        let minTime = Number.MAX_VALUE;
+        for (let i in keys)
+        {
+            minTime = Math.min(minTime, keys[i].t);
+        }
+        let notfoundallAnims = false;
+
+        let newKeys = [];
+
+        for (let i = 0; i < keys.length; i++)
+        {
+            const k = keys[i];
+            if (setCursorTime)
+                k.t = k.t - minTime + this.cursorTime;
+
+            let found = false;
+            for (let j = 0; j < this.#tlAnims.length; j++)
+            {
+                let an = null;
+                if (k.animId)an = this.#tlAnims[j].getAnimById(k.animId);
+
+                if (an)
+                {
+                    const l = new CABLES.AnimKey(keys[i], an);
+                    newKeys.push(l);
+                    an.addKey(l);
+                    found = true;
+                }
+            }
+
+            if (!found)
+                notfoundallAnims = true;
+
+        }
+        return { "keys": newKeys, "notfoundallAnims": notfoundallAnims };
     }
 
     /**
@@ -744,35 +834,7 @@ export default class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-
-                    let minTime = Number.MAX_VALUE;
-                    for (let i in json.keys)
-                    {
-                        minTime = Math.min(minTime, json.keys[i].t);
-                    }
-                    let notfoundallAnims = false;
-
-                    for (let i = 0; i < json.keys.length; i++)
-                    {
-                        const k = json.keys[i];
-                        k.t = k.t - minTime + this.cursorTime;
-
-                        let found = false;
-                        for (let j = 0; j < this.#tlAnims.length; j++)
-                        {
-                            let an = this.#tlAnims[j].getAnimByName(k.animName);
-                            if (an)
-                            {
-                                an.addKey(new CABLES.ANIM.Key(json.keys[i]));
-                                found = true;
-                            }
-                        }
-
-                        if (!found)
-                            notfoundallAnims = true;
-
-                    }
-
+                    const notfoundallAnims = this.deserializeKeys(json.keys, true).notfoundallAnims;
                     if (notfoundallAnims)
                     {
                         notifyWarn("could not find all anims for pasted keys");
@@ -782,6 +844,13 @@ export default class GlTimeline extends Events
                         notify(json.keys.length + " keys pasted");
                     }
 
+                    const animPorts = gui.corePatch().getAllAnimPorts();
+                    for (let i = 0; i < animPorts.length; i++)
+                    {
+
+                        if (animPorts[i].anim)
+                            animPorts[i].anim.removeDuplicates();
+                    }
                     // anim.sortKeys();
 
                     // for (let i in anim.keys)
@@ -802,6 +871,29 @@ export default class GlTimeline extends Events
     {
         // todo
         return true;
+    }
+
+    duplicateSelectedKeys()
+    {
+        const o = this.copy();
+
+        const newKeys = this.deserializeKeys(o.keys, false).keys;
+
+        undo.add({
+            "title": "timeline duplicate keys",
+            undo()
+            {
+                for (let i = 0; i < newKeys.length; i++)
+                {
+                    console.log("delete...dupes");
+                    newKeys[i].delete();
+                }
+                // key.set(oldValues);
+
+            },
+            redo()
+            {
+            } });
     }
 
 }

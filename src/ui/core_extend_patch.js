@@ -245,6 +245,22 @@ export default function extendCorePatch()
         return ops;
     };
 
+    CABLES.Patch.prototype.getAllAnimPorts = function ()
+    {
+        const ports = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            for (let j = 0; j < ops[i].portsIn.length; j++)
+            {
+                if (ops[i].portsIn[j].isAnimated())ports.push(ops[i].portsIn[j]);
+
+            }
+        }
+
+        return ports;
+    };
+
     CABLES.Patch.prototype.reloadOp = function (objName, cb, refOldOp)
     {
         let count = 0;

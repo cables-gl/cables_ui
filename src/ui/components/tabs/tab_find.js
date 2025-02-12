@@ -7,7 +7,6 @@ import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { gui } from "../../gui.js";
 
-
 /**
  * tab panel for searching through the patch
  *
@@ -227,13 +226,10 @@ export default class FindTab
         // html += "" + op.objName + "<br/>";
         html += result.where || "";
 
-
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-
         if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
-
 
         html += "</div>";
 
@@ -259,7 +255,6 @@ export default class FindTab
         return str;
     }
 
-
     _doSearchTriggers(str, userInvoked, ops, results)
     {
         const triggers = gui.corePatch().namedTriggers;
@@ -274,7 +269,6 @@ export default class FindTab
         }
         return foundtriggers;
     }
-
 
     _doSearchVars(str, userInvoked, ops, results)
     {
@@ -318,7 +312,6 @@ export default class FindTab
                     }
                 }
 
-
                 for (let i = 0; i < ops.length; i++)
                 {
                     const op = ops[i];
@@ -329,7 +322,6 @@ export default class FindTab
                 }
             }
 
-
             if (str == ":outdated")
             {
                 FindTab.searchOutDated(ops, results);
@@ -339,7 +331,6 @@ export default class FindTab
             {
                 FindTab.searchSelected(ops, results);
             }
-
 
             if (str == ":recent")
             {
@@ -363,7 +354,7 @@ export default class FindTab
                         namespace.isExtensionOp(op.objName)
                     )
                     {
-                        results.push({ op });
+                        results.push(Op);
                     }
                 }
             }
@@ -598,7 +589,6 @@ export default class FindTab
                     found = true;
                 }
 
-
                 if (
                     ops[i].uiAttribs.extendTitle &&
                     (ops[i].uiAttribs.extendTitle + "").toLowerCase().indexOf(str) > -1)
@@ -630,7 +620,6 @@ export default class FindTab
                     score += 1;
                     found = true;
                 }
-
 
                 if (String(ops[i].name || "").toLowerCase().indexOf(str) > -1)
                 {
@@ -702,7 +691,6 @@ export default class FindTab
         let resultsTriggers = this._doSearchTriggers(strs[0]);
         let resultsVars = [];
         // resultsVars=this._doSearchVars(strs[0]);
-
 
         if (strs.length > 1)
         {

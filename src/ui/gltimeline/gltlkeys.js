@@ -1,8 +1,9 @@
 import { Events, Logger } from "cables-shared-client";
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
+import undo from "../utils/undo.js";
 
 /**
  * gltl key rendering
@@ -17,22 +18,22 @@ export default class glTlKeys extends Events
     #minVal = 999999;
     #maxVal = -999999;
 
-    /** @type {Anim} */
+    /** @type {Types.Anim} */
     #anim = null;
 
     /** @type {GlTimeline} */
     #glTl = null;
 
-    /** @type {Array<GlRect} */
+    /** @type {Array<GlRect>} */
     #keyRects = [];
 
-    /** @type {Array<GlRect} */
+    /** @type {Array<GlRect>} */
     #dopeRects = [];
 
     /** @type {GlRect} */
     #parentRect = null;
 
-    /** @type {Core.Port} */
+    /** @type {CABLES.Port} */
     #port;
 
     /** @type {GlSpline} */
@@ -44,11 +45,13 @@ export default class glTlKeys extends Events
     #points = [];
     #options = {};
 
+    #dragStarted = false;
+
     /**
      * @param {GlTimeline} glTl
-     * @param {Anim} anim
+     * @param {CABLES.Anim} anim
      * @param {GlRect} parentRect
-     * @param {Port} port
+     * @param {CABLES.Port} port
      * @param {Object} options
      */
     constructor(glTl, anim, parentRect, port, options)
@@ -75,7 +78,11 @@ export default class glTlKeys extends Events
 
         this.points = [];
         this.init();
+    }
 
+    isDragging()
+    {
+        return this.#dragStarted;
     }
 
     get anim()
@@ -87,7 +94,7 @@ export default class glTlKeys extends Events
      * @param {number} minVal
      * @param {number} maxVal
      */
-    update(minVal, maxVal)
+    update(minVal = 0, maxVal = 0)
     {
         if (minVal != 0 && maxVal != 0)
         {
@@ -134,7 +141,15 @@ export default class glTlKeys extends Events
             const rx = this.#glTl.view.timeToPixel(this.#anim.keys[i].time - this.#glTl.view.offset) - sizeKey2;
             const ry = y - sizeKey2;
 
-            kr.setPosition(rx, ry, -0.2);
+            let zpos = -0.2;
+
+            if (this.#glTl.isKeySelected(this.#anim.keys[i]))
+            {
+                kr.setColor(1, 1, 0, 1);
+                zpos = -0.3;
+            }
+
+            kr.setPosition(rx, ry, zpos);
 
             if (this.#glTl.selectRect &&
                 this.#glTl.selectRect.x < kr.absX + this.sizeKey && this.#glTl.selectRect.x2 > kr.absX &&
@@ -142,8 +157,6 @@ export default class glTlKeys extends Events
             {
                 this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
             }
-
-            if (this.#glTl.isKeySelected(this.#anim.keys[i])) kr.setColor(1, 1, 0, 1);
 
             if (this.#options.keyYpos)
             {
@@ -236,8 +249,10 @@ export default class glTlKeys extends Events
             kr.setColorHover(1, 0, 0, 1);
             kr.setParent(this.#parentRect);
             kr.key = this.#anim.keys[i];
+            const key = this.#anim.keys[i];
 
             let startDrag = -1111;
+            let oldValues = {};
 
             kr.draggableMove = true;
             kr.on(GlRect.EVENT_POINTER_HOVER, () =>
@@ -256,51 +271,85 @@ export default class glTlKeys extends Events
             kr.on(GlRect.EVENT_DRAGEND, () =>
             {
                 this.#anim.sortKeys();
+                this.#dragStarted = false;
+
+                undo.add({
+                    "title": "timeline move keys",
+                    undo()
+                    {
+                        key.set(oldValues);
+
+                    },
+                    redo()
+                    {
+                    } });
             });
 
             kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
             {
-                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+
+                if (button == 1 && !this.#dragStarted)
+                {
+                    oldValues = key.getSerialized();
+                    this.#dragStarted = true;
+                    startDrag = this.#glTl.view.pixelToTime(e.offsetX);
+
+                    console.log("dragstart", button, e.shiftKey);
+
+                    if (e.shiftKey)
+                    {
+                        this.#glTl.duplicateSelectedKeys();
+                    }
+
+                }
             });
 
             kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 if (this.#glTl.selectRect) return;
 
-                const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
-                startDrag = this.#glTl.view.pixelToTime(e.offsetX);
-
-                if (this.#glTl.getNumSelectedKeys() > 0)
+                if (button == 1)
                 {
-                    this.#glTl.moveSelectedKeysDelta(offTime);
-                    this.#anim.sortKeys();
-                }
 
-                this.update(0, 0);
+                    const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDrag;
+                    startDrag = this.#glTl.snapTime(this.#glTl.view.pixelToTime(e.offsetX));
+
+                    if (this.#glTl.getNumSelectedKeys() > 0)
+                    {
+                        this.#glTl.moveSelectedKeysDelta(this.#glTl.snapTime(offTime));
+                        this.#anim.sortKeys();
+                    }
+
+                    this.update(0, 0);
+
+                }
             });
 
             this.#keyRects.push(kr);
 
-            if (!this.#options.multiAnims)
-                if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
-                {
-                    const krDop = this.#glTl.rects.createRect({ "draggable": true });
-                    krDop.setSize(this.sizeKey, this.sizeKey);
+            // if (!this.#options.multiAnims)
+            // {
+            //     if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
+            //     {
+            //         const krDop = this.#glTl.rects.createRect({ "draggable": true });
+            //         krDop.setSize(this.sizeKey, this.sizeKey);
 
-                    if (this.#port.uiAttribs.display == "bool")
-                    {
-                        if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
-                        else krDop.setColor(0.4, 0.4, 0.4, 1);
-                    }
-                    if (this.#port.uiAttribs.increment == "integer")
-                    {
-                        if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
-                        else krDop.setColor(0.4, 0.4, 0.4, 1);
-                    }
+            //         if (this.#port.uiAttribs.display == "bool")
+            //         {
+            //             if (this.#anim.keys[i].value) krDop.setColor(0.6, 0.6, 0.6, 1);
+            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
+            //         }
+            //         if (this.#port.uiAttribs.increment == "integer")
+            //         {
+            //             if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
+            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
+            //         }
 
-                    krDop.setParent(this.#parentRect);
-                    this.#dopeRects.push(krDop);
-                }
+            //         krDop.setParent(this.#parentRect);
+            //         this.#dopeRects.push(krDop);
+            //     }
+
+            // }
 
         }
         this.update();

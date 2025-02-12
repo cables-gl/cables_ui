@@ -176,7 +176,7 @@ export function updateHoverToolTip(event, port, overlink)
         if (port.type == portType.number)
         {
             val = port.getValueForDisplay();
-            if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
+            if (CABLES.isNumeric(val))val = Math.round(val * 1000) / 1000;
 
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
@@ -204,7 +204,7 @@ export function updateHoverToolTip(event, port, overlink)
                 {
                     if (i != 0)txt += ", ";
 
-                    if (CABLES.UTILS.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
+                    if (CABLES.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
                     else if (typeof val[i] == "string")txt += "\"" + val[i] + "\"";
                     else if (typeof val[i] == "object")
                     {

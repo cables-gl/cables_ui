@@ -1,4 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
+import { Types } from "cables-shared-types";
 import { platform } from "./platform.js";
 import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
@@ -133,6 +134,8 @@ export default class Gui extends Events
             "variables": {}
         };
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
+
+        /** @type {Types.Patch} */
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
@@ -247,6 +250,9 @@ export default class Gui extends Events
         return this._corePatch;
     }
 
+    /**
+     * @returns {Types.Patch}
+     */
     corePatch()
     {
         return this._corePatch;

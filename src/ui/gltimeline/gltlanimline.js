@@ -1,5 +1,5 @@
 import { Events } from "cables-shared-client";
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import GlText from "../gldraw/gltext.js";
 import glTlKeys from "./gltlkeys.js";
 import GlTimeline from "./gltimeline.js";
@@ -60,7 +60,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {GlTimeline} glTl
-     * @param {Array<Port>} ports
+     * @param {Array<Core.Port>} ports
      * @param {Object} options
     */
     constructor(glTl, ports, options = {})
@@ -101,7 +101,8 @@ export default class glTlAnimLine extends Events
 
             const lid = anim.addEventListener("onChange", () =>
             {
-                keys.init();
+                if (!keys.isDragging())
+                    keys.init();
             });
 
             this.#animChangeListeners.push({ "id": lid, "anim": anim });
@@ -232,8 +233,21 @@ export default class glTlAnimLine extends Events
     }
 
     /**
+     * @param {string} id
+     * @returns {Types.Anim}
+     */
+    getAnimById(id)
+    {
+        for (let i = 0; i < this.#anims.length; i++)
+        {
+            if (id == this.#anims[i].id) return this.#anims[i];
+        }
+        return null;
+    }
+
+    /**
      * @param {string} animName
-     * @returns {Anim}
+     * @returns {Types.Anim}
      */
     getAnimByName(animName)
     {

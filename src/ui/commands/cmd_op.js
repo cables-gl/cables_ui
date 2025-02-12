@@ -155,7 +155,7 @@ CABLES_CMD_OP.createVersionSelectedOp = function ()
 
     const opname = ops[0].objName;
     let newOpname = "";
-    if (opname.contains("_v"))
+    if (opname.includes("_v"))
     {
         const parts = opname.split("_v");
         newOpname = parts[0] + "_v" + (parseFloat(parts[1]) + 1);

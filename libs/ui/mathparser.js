@@ -67,7 +67,7 @@ MathParser.prototype.parse = function (e)
     }
     let r = o.eval(e);
 
-    if (!CABLES.UTILS.isNumeric(r))
+    if (!CABLES.isNumeric(r))
     {
         console.warn("non numeric math eval result");
         r = 0;
@@ -77,5 +77,3 @@ MathParser.prototype.parse = function (e)
 };
 
 export default MathParser;
-
-

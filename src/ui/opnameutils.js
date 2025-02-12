@@ -1,4 +1,4 @@
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import defaultOps from "./defaultops.js";
 import { PortDir, portType } from "./core_constants.js";
@@ -14,7 +14,7 @@ opNames.getNamespaceClassName = (opName) =>
 };
 
 /**
- * @param {Core.Port} p
+ * @param {CABLES.Port} p
  */
 opNames.getVizOpsForPortLink = (p) =>
 {
@@ -31,7 +31,7 @@ opNames.getVizOpsForPortLink = (p) =>
 };
 
 /**
- * @param {Core.Port} p
+ * @param {CABLES.Port} p
  */
 opNames.getOpsForPortLink = (p) =>
 {

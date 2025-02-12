@@ -41,7 +41,8 @@ export default class GlViewBox
         this._spaceDown = false;
         this._outOfBounds = false;
 
-        this._defaultEasing = CABLES.EASING_EXPO_OUT;
+        this._defaultEasing = CABLES.Anim.EASING_EXPO_OUT;
+        console.log("CABLES.Anim.EASING_EXPO_OUT", CABLES.Anim.EASING_EXPO_OUT);
 
         this._animScrollX = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
         this._animScrollY = new CABLES.Anim({ "defaultEasing": this._defaultEasing });

@@ -1,6 +1,5 @@
 import GlPatch from "../glpatch/glpatch.js";
 import { gui } from "../gui.js";
-import uiprofiler from "./uiprofiler.js";
 
 /**
  * tree view for namespaces in op select dialog
@@ -12,7 +11,7 @@ export default class OpTreeList
 {
     constructor()
     {
-        this.data = this._serializeOps(window.Ops, "Ops");
+        this.data = this._serializeOps();
     }
 
     /**
@@ -39,7 +38,6 @@ export default class OpTreeList
      */
     itemHtml(item, html, level)
     {
-        if (!item.childs || item.childs.length == 0) return "";
         if (!item) return "";
         html = "";
 
@@ -51,8 +49,6 @@ export default class OpTreeList
         html += "" + item.name;
         html += "</a>";
 
-        // if (item.childs && item.childs.length > 0)html += " (" + item.childs.length + ")";
-        // if (item.childs.length == 2)console.log(item, item.childs);
         html += "<br/>";
 
         if (item.childs)
@@ -75,24 +71,47 @@ export default class OpTreeList
         return html;
     }
 
-    /**
-     * @param {array} root
-     * @param {string} prefix
-     */
-    _serializeOps(root, prefix)
+    _serOpRec(root, prefix)
     {
         let items = [];
 
         for (const i in root)
         {
+
             if (i != "Deprecated" && i != "Admin" && i != "Dev")
+            {
+
                 items.push(
                     {
                         "name": i,
                         "fullname": prefix + "." + i,
-                        "childs": this._serializeOps(root[i], prefix + "." + i)
+                        "childs": this._serOpRec(root[i], prefix + "." + i)
                     });
+            }
         }
+        return items;
+
+    }
+
+    _serializeOps()
+    {
+        const ns = { "Ops": {} };
+
+        for (let i in CABLES.OPS)
+        {
+            const parts = CABLES.OPS[i].objName.split(".");
+
+            parts.length -= 1;
+
+            if (parts.length >= 2) ns[parts[0]][parts[1]] = ns[parts[0]][parts[1]] || {};
+            if (parts.length >= 3) ns[parts[0]][parts[1]][parts[2]] = ns[parts[0]][parts[1]][parts[2]] || {};
+            if (parts.length >= 4) ns[parts[0]][parts[1]][parts[2]][parts[3]] = ns[parts[0]][parts[1]][parts[2]][parts[3]] || {};
+            if (parts.length >= 5) ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]] = ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]] || {};
+            if (parts.length >= 6) ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]] = ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]] || {};
+            if (parts.length > 6) ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]] = ns[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]] || {};
+        }
+
+        let items = this._serOpRec(ns.Ops, "Ops");
 
         items = items.sort(
             function (a, b)
@@ -101,7 +120,6 @@ export default class OpTreeList
                 if (a.name > b.name) return 1;
                 return 0;
             });
-
         return items;
     }
 }

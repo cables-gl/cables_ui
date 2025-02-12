@@ -1,4 +1,4 @@
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 
 import GlRectInstancer from "./glrectinstancer.js";
 
@@ -12,7 +12,7 @@ export default class GlTextWriter
 {
 
     /**
-     * @param {Core.CGState} cgl
+     * @param {CABLES.CGState} cgl
      * @param {Object} options
      */
     constructor(cgl, options)

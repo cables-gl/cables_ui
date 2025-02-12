@@ -19,7 +19,6 @@ export default class GradientEditor
         this._keyWidth =
             this._keyHeight = 7;
         this._keyStrokeWidth = 2;
-        // this._keyStrokeWidth = 3;
         this._keyOpacity = 1;
         this._dragDownDeleteThreshold = 120;
         this._width = 512;
@@ -27,7 +26,6 @@ export default class GradientEditor
 
         this._oldKeys = [];
         this._keys = [];
-        // this._paper = null;
 
         this._movingkey = false;
         this._callback = null;
@@ -42,7 +40,7 @@ export default class GradientEditor
 
         this._anim = new CABLES.Anim();
 
-        this._anim.defaultEasing = CABLES.ANIM.EASING_SMOOTHSTEP;
+        this._anim.defaultEasing = CABLES.Anim.EASING_SMOOTHSTEP;
 
         this._elContainer = null;
         this._bg = new ModalBackground();

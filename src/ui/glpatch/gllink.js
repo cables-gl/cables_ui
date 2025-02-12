@@ -1,4 +1,4 @@
-import { Core } from "cables-shared-types";
+import { Types } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
@@ -27,7 +27,7 @@ export default class GlLink
         this._log = new Logger("gllink");
         this._id = id;
 
-        /** @type {Core.Link} */
+        /** @type {CABLES.Link} */
         this._link = link;
         this._visible = visible;
 

@@ -214,7 +214,7 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {number} r
+     * @param {number|Array} r
      * @param {number} g
      * @param {number} b
      * @param {number} a=1
@@ -331,15 +331,6 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {MouseEvent} e
-     */
-    mouseDown(e)
-    {
-        if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this);
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e);
-    }
-
-    /**
      * @returns {boolean}
      */
     isHovering()
@@ -390,6 +381,15 @@ export default class GlRect extends Events
     }
 
     /**
+     * @param {MouseEvent} e
+     */
+    mouseDown(e, x, y)
+    {
+        if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this, x, y);
+        for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e);
+    }
+
+    /**
      * @param {number} x
      * @param {number} y
      * @param {number} button
@@ -411,7 +411,7 @@ export default class GlRect extends Events
             this.#dragStartY = this.y;
         }
 
-        this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event);
+        this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
     mouseDragEnd()
