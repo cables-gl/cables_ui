@@ -340,7 +340,7 @@ export default class GlTimeline extends Events
         else
         if (e.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
+            this.view.scroll(-this.view.pixelToTime(e.movementX) * 2, 0);
             this.updateAllElements();
         }
         else

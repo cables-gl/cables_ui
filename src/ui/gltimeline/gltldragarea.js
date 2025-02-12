@@ -32,12 +32,11 @@ export default class glTlDragArea extends Events
         this.#glTl = glTl;
         this.height = 24;
 
-        this.#rectBar = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#rectBar = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
         this.#rectBar.setSize(222, this.height);
         this.#rectBar.setColor(0.5, 0.5, 0.5, 1);
         this.#rectBar.setParent(parent);
         this.#rectBar.setColorHover(0.65, 0.65, 0.65, 1);
-        // this.#rectBar.draggableMove = true;
 
         this.#rectSizeLeft = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);

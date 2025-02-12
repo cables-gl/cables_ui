@@ -1,4 +1,4 @@
-import { Types } from "cables-shared-types";
+import { TypesCore } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";

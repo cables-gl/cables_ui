@@ -432,7 +432,7 @@ export default class OpSelect
         if (this._getQuery().length < MIN_CHARS_QUERY && !this.isMathQuery())
             this._opSearch.search("");
         else
-            this._opSearch.search(query);
+            this._opSearch.search(query, sq);
 
         const perf = gui.uiProfiler.start("opselect.searchLoop");
 

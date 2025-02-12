@@ -122,6 +122,10 @@ export default class OpSearch extends Events
                 let p = 4;
                 if (orig.length === 2)p = 10;
                 if (orig.length === 3)p = 8;
+
+                console.log(orig, query);
+                if (orig === orig.toUpperCase())p *= 3;
+
                 scoreDebug += "+" + p + " abbreviation<br/>";
                 points += p;
             }
@@ -351,7 +355,7 @@ export default class OpSearch extends Events
         perf.finish();
     }
 
-    search(query)
+    search(query, originalSearch)
     {
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
