@@ -23,7 +23,7 @@ namespace.isOpNameValid = (opName) =>
     if (opName.match(matchString)) return false;
 
     const parts = opName.split(".");
-    if(parts.length < 3) return false;
+    if (parts.length < 3) return false;
 
     for (let i = 0; i < parts.length; i++) // do not start
     {

@@ -156,7 +156,7 @@ export default class GlOp extends Events
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
 
-        /** @type {CABLES.Port} */
+        /** @type {Types.Port} */
         this._titleExtPort = null;
         this._titleExtPortListener = null;
 

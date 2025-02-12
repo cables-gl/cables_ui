@@ -291,7 +291,7 @@ export default class GlCable
             this._oldx2 = this._x2;
             this._oldy2 = this._y2;
 
-            if (this._x !== this._x2 !== 0)
+            if (this._x !== 0 && this._x2 !== 0)
             {
                 posX = this._x + gluiconfig.portWidth / 2 - 5;
                 posX2 = this._x2 + gluiconfig.portWidth / 2 - 5;
@@ -430,7 +430,7 @@ export default class GlCable
 
     get hovering()
     {
-        return this._buttonRect._hovering || (this._glOpIn && this._glOpIn.hovering) || (this._glOpOut && this._glOpOut.hovering);
+        return this._buttonRect.isHovering || (this._glOpIn && this._glOpIn.hovering) || (this._glOpOut && this._glOpOut.hovering);
     }
 
     updateColor()
@@ -594,7 +594,7 @@ export default class GlCable
 
     setText(t)
     {
-        if (this._buttonRect._hovering && this._glPatch.cablesHoverText)
+        if (this._buttonRect.isHovering && this._glPatch.cablesHoverText)
         {
             this._glPatch.cablesHoverText.text = t || "";
         }

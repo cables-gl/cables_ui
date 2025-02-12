@@ -924,7 +924,7 @@ export default class GlPatch extends Events
      * @param {CABLES.Op} op
      * @param {boolean} fromDeserialize
      */
-    addOp(op, fromDeserialize)
+    addOp(op, fromDeserialize = false)
     {
         if (!op) this._log.error("no op at addop", op);
 

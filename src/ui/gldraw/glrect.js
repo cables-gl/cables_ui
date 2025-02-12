@@ -231,7 +231,7 @@ export default class GlRect extends Events
      * @param {number} a
      * @param {boolean} childs
      */
-    setOpacity(a, childs)
+    setOpacity(a, childs = false)
     {
         this.setColor(this.color[0], this.color[1], this.color[2], a);
 

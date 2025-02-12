@@ -4,18 +4,22 @@ import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import GlPatch from "./glpatch.js";
 
 const DEFAULT_ACTIVITY = 0;
 
 export default class GlPatchAPI
 {
+
+    /**
+     * @param {Types.Patch} patch
+     * @param {GlPatch} glpatch
+     */
     constructor(patch, glpatch)
     {
         this._log = new Logger("glpatch");
 
-        /**
-         * @type {CABLES.Patch}
-         */
+        /** @type {Types.Patch} */
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
@@ -23,11 +27,11 @@ export default class GlPatchAPI
         this._currentFlowMode = -1;
         this._updateCounter = 0;
 
-        this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
-        this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
+        this._patch.on("onOpAdd", this._onAddOp.bind(this));
+        this._patch.on("onOpDelete", this._onDeleteOp.bind(this));
 
-        this._patch.addEventListener("onLink", this._onLink.bind(this));
-        this._patch.addEventListener("onUnLink", this._onUnLink.bind(this));
+        this._patch.on("onLink", this._onLink.bind(this));
+        this._patch.on("onUnLink", this._onUnLink.bind(this));
     }
 
     /**

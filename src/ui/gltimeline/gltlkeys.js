@@ -33,7 +33,7 @@ export default class glTlKeys extends Events
     /** @type {GlRect} */
     #parentRect = null;
 
-    /** @type {CABLES.Port} */
+    /** @type {Types.Port} */
     #port;
 
     /** @type {GlSpline} */
@@ -51,7 +51,7 @@ export default class glTlKeys extends Events
      * @param {GlTimeline} glTl
      * @param {CABLES.Anim} anim
      * @param {GlRect} parentRect
-     * @param {CABLES.Port} port
+     * @param {Types.Port} port
      * @param {Object} options
      */
     constructor(glTl, anim, parentRect, port, options)
