@@ -73,7 +73,7 @@ export default class Tab extends Events
     /**
      * @param {string} title
      * @param {Function} cb
-     * @param {object} options
+     * @param {Object} options
      */
     addButton(title, cb, options)
     {

@@ -32,7 +32,7 @@ export default class OpTreeList
 
     /**
      * Description
-     * @param {object} item
+     * @param {Object} item
      * @param {string} html
      * @param {number} level
      */

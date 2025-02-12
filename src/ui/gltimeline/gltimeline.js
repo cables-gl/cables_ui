@@ -102,7 +102,7 @@ export default class GlTimeline extends Events
     #selectedKeyAnims = [];
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {CABLES.CglContext} cgl
     */
     constructor(cgl)
     {
@@ -278,7 +278,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {GlRect} r
+     * @param {GlRect|GlText} r
      */
     setColorRectSpecial(r)
     {
@@ -332,6 +332,7 @@ export default class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+
                 }
 
                 if (y < this.getFirstLinePosy())
@@ -403,14 +404,17 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
-    serializeSelectedKeys()
+    serializeSelectedKeys(newId)
     {
         const keys = [];
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             const o = this.#selectedKeys[i].getSerialized();
+            o.id = this.#selectedKeys[i].id;
             o.animName = this.#selectedKeyAnims[i].name;
             o.animId = this.#selectedKeyAnims[i].id;
+
+            if (newId)o.id = CABLES.shortId();
             keys.push(o);
         }
 
@@ -479,7 +483,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
     {
@@ -785,18 +789,20 @@ export default class GlTimeline extends Events
 
     /**
      * @param {Array<Object>} keys
-     * @param {boolean} setCursorTime=true
+     * @param {Object} options
      */
-    deserializeKeys(keys, setCursorTime = false)
+    deserializeKeys(keys, options)
     {
+        const deleteOld = options.deleteOld || false;
+        const setCursorTime = options.setCursorTime || false;
 
         let minTime = Number.MAX_VALUE;
         for (let i in keys)
         {
             minTime = Math.min(minTime, keys[i].t);
         }
-        let notfoundallAnims = false;
 
+        let notfoundallAnims = false;
         let newKeys = [];
 
         for (let i = 0; i < keys.length; i++)

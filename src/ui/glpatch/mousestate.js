@@ -211,7 +211,7 @@ export default class MouseState extends Events
     }
 
     /**
-     * @private
+     * @param {PointerEvent} e
      */
     _move(e)
     {

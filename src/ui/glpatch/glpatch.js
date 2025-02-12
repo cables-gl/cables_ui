@@ -122,13 +122,13 @@ export default class GlPatch extends Events
         this.cacheOIRops = null;
 
         this._subpatchoprect = null;
-        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
 
-        this._focusRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._focusRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
         this._focusRect.setShape(4);
@@ -636,6 +636,9 @@ export default class GlPatch extends Events
         e.preventDefault();
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     _onCanvasMouseLeave(e)
     {
         if (e.pointerType == "touch") return;
@@ -657,6 +660,9 @@ export default class GlPatch extends Events
         this.emitEvent("mouseleave", e);
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     _onCanvasMouseEnter(e)
     {
         if (e.pointerType == "touch") return;
@@ -709,6 +715,9 @@ export default class GlPatch extends Events
          */
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
@@ -921,7 +930,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {CABLES.Op} op
+     * @param {Types.Op} op
      * @param {boolean} fromDeserialize
      */
     addOp(op, fromDeserialize = false)

@@ -117,12 +117,13 @@ export default class glTlKeys extends Events
         const pointsSort = [];
 
         let z = 0.0;
-        let col = [0.7, 0.7, 0.7, 1];
 
         if (isCurrentOp)z = -0.1;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
+            let col = [0.7, 0.7, 0.7, 1];
+
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
 
@@ -142,8 +143,8 @@ export default class glTlKeys extends Events
             kr.setSize(this.sizeKey, this.sizeKey);
 
             if (this.#glTl.selectRect &&
-                this.#glTl.selectRect.x < kr.absX + this.sizeKey && this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < kr.absY + this.sizeKey && this.#glTl.selectRect.y2 > kr.absY)
+                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
+                this.#glTl.selectRect.y < (kr.absY + this.sizeKey) && this.#glTl.selectRect.y2 > kr.absY)
             {
                 this.#glTl.selectKey(animKey, this.#anim);
             }
@@ -276,9 +277,13 @@ export default class glTlKeys extends Events
 
                 undo.add({
                     "title": "timeline move keys",
-                    undo()
+                    "undo": () =>
                     {
-                        key.set(oldValues);
+                        console.log(oldValues);
+
+                        this.#glTl.deserializeKeys(oldValues);
+
+                        // key.set(oldValues);
                     },
                     redo() {}
                 });
@@ -289,7 +294,8 @@ export default class glTlKeys extends Events
 
                 if (button == 1 && !this.#dragStarted)
                 {
-                    oldValues = key.getSerialized();
+
+                    oldValues = this.#glTl.serializeSelectedKeys();
                     this.#dragStarted = true;
                     startDrag = this.#glTl.view.pixelToTime(e.offsetX);
 

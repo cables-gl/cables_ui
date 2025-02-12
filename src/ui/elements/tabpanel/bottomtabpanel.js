@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 

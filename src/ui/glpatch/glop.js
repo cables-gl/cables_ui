@@ -27,7 +27,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {CABLES.Op} op
+     * @param {Types.Op} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -66,7 +66,7 @@ export default class GlOp extends Events
 
         /**
          * @private
-         * @type {CABLES.Op}
+         * @type {Types.Op}
          */
         this._op = op;
 

@@ -84,6 +84,8 @@ export default class Gui extends Events
         super();
 
         this._log = new Logger("gui");
+
+        /** @type {Object} */
         this.theme = defaultTheme;
 
         /** @type {ServerOps} */
@@ -782,8 +784,6 @@ export default class Gui extends Events
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - infoAreaHeight - this.bottomPanelHeight) + "px";
-        // this.mainTabs.updateSize();
-        console.log(window.innerHeight, menubarHeight, infoAreaHeight, this.bottomPanelHeight);
 
         if (this.bottomTabPanel.isVisible())
         {
