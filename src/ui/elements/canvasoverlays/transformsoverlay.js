@@ -1,4 +1,3 @@
-import { CGState } from "../../../../../cables/src/core/cg/cg_state.js";
 import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 

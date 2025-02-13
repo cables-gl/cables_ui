@@ -1012,21 +1012,6 @@ export default class Gui extends Events
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
     }
 
-    toggleTiming()
-    {
-        // gui.glTimeline = new GlTimelineTab(gui.bottomTabs);
-
-        // gui.timeLine().hidden = false;
-        // ele.show(ele.byId("timing"));
-        // this.userSettings.set("timelineOpened", true);
-
-        // this._showTiming = !this._showTiming;
-        // this.userSettings.set("timelineOpened", this._showTiming);
-
-        // this.setLayout();
-        // gui.timeLine().redraw();
-    }
-
     refreshFileManager()
     {
         if (this.fileManager) this.fileManager.refresh();
@@ -1740,27 +1725,6 @@ export default class Gui extends Events
             });
         }, 50);
     }
-
-    // showOpCrash(op)
-    // {
-    //     console.warn("an operator has crashed", op);
-    //     // iziToast.error({
-    //     //     "position": "topRight",
-    //     //     "theme": "dark",
-    //     //     "title": "error",
-    //     //     "message": "an operator has crashed",
-    //     //     "progressBar": false,
-    //     //     "animateInside": false,
-    //     //     "close": true,
-    //     //     "timeout": false,
-    //     //     "buttons": [
-    //     //         ["<button>reload</button>", function (instance, toast)
-    //     //         {
-    //     //             CABLES.CMD.PATCH.reload();
-    //     //         }]
-    //     //     ]
-    //     // });
-    // }
 
     showLibLoadError(libName)
     {
