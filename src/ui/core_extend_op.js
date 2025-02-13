@@ -247,7 +247,7 @@ export default function extendCoreOp()
         return this.uiErrors[id];
     };
 
-    CABLES.Op.prototype.setUiError = function (id, txt, level)
+    CABLES.Op.prototype.setUiError = function (id, txt, level = 2)
     {
         if (!txt && !this.hasUiErrors) return;
         if (!txt && !this.uiErrors.hasOwnProperty(id)) return;
