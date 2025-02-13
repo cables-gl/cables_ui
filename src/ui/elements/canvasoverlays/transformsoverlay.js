@@ -1,3 +1,4 @@
+import { CGState } from "../../../../../cables/src/core/cg/cg_state.js";
 import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 
@@ -63,6 +64,14 @@ export default class TransformsOverlay
         activateTransform(op, trans.id);
     }
 
+    /**
+     * Description
+     * @param {CGState} cgl
+     * @param {string} id
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     add(cgl, id, x, y, z)
     {
         if (gui.isRemoteClient) return;

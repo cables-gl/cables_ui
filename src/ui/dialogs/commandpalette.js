@@ -14,7 +14,7 @@ export default class CommandPallete
     constructor()
     {
         this._lastSearch = "";
-        this._findTimeoutId = 0;
+        this._findTimeoutId = null;
         this._cursorIndex = 0;
         this._numResults = 0;
         this._bookmarkActiveIcon = "icon-pin-filled";
@@ -50,7 +50,7 @@ export default class CommandPallete
 
     isVisible()
     {
-        return ele.isVisible(ele.byId("cmdpalette"));
+        return !ele.byId("cmdpalette").classList.contains("hidden");
     }
 
     show()
@@ -73,7 +73,7 @@ export default class CommandPallete
     }
 
     /**
-     * @param {Event} ev
+     * @param {MouseEvent} ev
      */
     onBookmarkIconClick(ev)
     {
@@ -130,6 +130,9 @@ export default class CommandPallete
     /*
      * Checks if a commad is currently in the sidebar and returns the fitting icon (class name)
      * (filled pin or outline pin)
+     */
+    /**
+     * @param {String} cmdName
      */
     getBookmarkIconForCmd(cmdName)
     {

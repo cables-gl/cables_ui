@@ -79,6 +79,8 @@ export default class Gui extends Events
     /** @type {GlTimelineTab} */
     glTimeLineTab = null;
 
+    splitpanePatchPos = 0;
+
     constructor(cfg)
     {
         super();
@@ -1845,36 +1847,37 @@ export default class Gui extends Events
 
         const branches = {};
 
-        if (CABLESUILOADER.buildInfo.ui && CABLESUILOADER.buildInfo.ui.git)
+        const buildInfo = CABLESUILOADER.buildInfo;
+        if (buildInfo.ui && buildInfo.ui.git)
         {
-            const branch = CABLESUILOADER.buildInfo.ui.git.branch;
+            const branch = buildInfo.ui.git.branch;
             if (!branches.hasOwnProperty(branch)) branches[branch] = [];
             branches[branch].push("ui");
-            this._log.logGui("BuildInfo: [" + branch + "] UI buildmessage: " + CABLESUILOADER.buildInfo.ui.git.message);
+            this._log.logGui("BuildInfo: [" + branch + "] UI buildmessage: " + buildInfo.ui.git.message);
         }
 
-        if (CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.git)
+        if (buildInfo.core && buildInfo.core.git)
         {
-            const branch = CABLESUILOADER.buildInfo.core.git.branch;
+            const branch = buildInfo.core.git.branch;
             if (!branches.hasOwnProperty(branch)) branches[branch] = [];
             branches[branch].push("core");
-            this._log.logGui("BuildInfo: [" + branch + "] CORE buildmessage: " + CABLESUILOADER.buildInfo.core.git.message);
+            this._log.logGui("BuildInfo: [" + branch + "] CORE buildmessage: " + buildInfo.core.git.message);
         }
 
-        if (CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.git)
+        if (buildInfo.api && buildInfo.api.git)
         {
-            const branch = CABLESUILOADER.buildInfo.api.git.branch;
+            const branch = buildInfo.api.git.branch;
             if (!branches.hasOwnProperty(branch)) branches[branch] = [];
             branches[branch].push("api");
-            this._log.logGui("BuildInfo: [" + branch + "] API buildmessage: " + CABLESUILOADER.buildInfo.api.git.message);
+            this._log.logGui("BuildInfo: [" + branch + "] API buildmessage: " + buildInfo.api.git.message);
         }
 
-        if (CABLESUILOADER.buildInfo.shared && CABLESUILOADER.buildInfo.shared.git)
+        if (buildInfo.shared && buildInfo.shared.git)
         {
-            const branch = CABLESUILOADER.buildInfo.shared.git.branch;
+            const branch = buildInfo.shared.git.branch;
             if (!branches.hasOwnProperty(branch)) branches[branch] = [];
             branches[branch].push("shared");
-            this._log.logGui("BuildInfo: [" + branch + "] SHARED buildmessage: " + CABLESUILOADER.buildInfo.shared.git.message);
+            this._log.logGui("BuildInfo: [" + branch + "] SHARED buildmessage: " + buildInfo.shared.git.message);
         }
 
         if (Object.keys(branches).length > 1)
@@ -1901,7 +1904,7 @@ export default class Gui extends Events
         {
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
-        }, 1000);
+        }, 100);
 
         setTimeout(() =>
         {
@@ -1933,7 +1936,7 @@ export default class Gui extends Events
                     if (c[0] == "projectname") this.setProjectName(c[1]);
                     if (c[0] == "notify") notify(c[1]);
                     if (c[0] == "notifyerror") notifyError(c[1]);
-                    if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
+                    if (c[0] == "cmd" && c[1] == "saveproject") this.patchView.store.saveCurrentProject();
                 }
             }
         };
@@ -1964,7 +1967,7 @@ export default class Gui extends Events
         }
 
         idx = idx || 0;
-        if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.scene().cgl);
+        if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.corePatch().cgl);
 
         if (!this.userSettings.get("overlaysShow"))
         {
@@ -1975,9 +1978,15 @@ export default class Gui extends Events
         this._gizmo[idx].set(params);
     }
 
+    /**
+     * @param {string} id
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     setTransform(id, x, y, z)
     {
-        if (this.shouldDrawOverlay) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
+        if (this.shouldDrawOverlay) this.transformOverlay.add(this.corePatch().cgl, id, x, y, z);
     }
 
     setElementBgPattern(el)
@@ -2054,11 +2063,12 @@ export default class Gui extends Events
             const tabpanel = ele.byId("metatabpanel");
             if (tabpanel)
             {
-                tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
-                {
-                    tab.classList.add("readonly");
-                    tab.inert = true;
-                });
+                tabpanel.querySelectorAll(".tabcontent").forEach(
+                    (tab) =>
+                    {
+                        tab.classList.add("readonly");
+                        tab.inert = true;
+                    });
             }
             const timeline = ele.byId("timing");
             if (timeline) timeline.classList.add("readonly");
@@ -2159,7 +2169,6 @@ export default class Gui extends Events
             {
                 this.hasAnims = true;
                 this.setLayout();
-                console.log("yay animmmm");
             }
         });
 

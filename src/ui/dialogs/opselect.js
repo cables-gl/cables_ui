@@ -42,6 +42,7 @@ export default class OpSelect
         this._eleOpsearchmodal = null;
         this._opSearch = new OpSearch();
         this._keyTimeout = null;
+        this._hideUserOps = false;
     }
 
     close()
@@ -146,9 +147,11 @@ export default class OpSelect
             if (num > 0) optionsHtml += "&nbsp;Found " + num + " ops.";
 
             let score = 0;
+
+            /** @type {HTMLCollectionOf<Element>} */
             const selected = document.getElementsByClassName("selected");
 
-            if (query.length > 0 && selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
+            if (query.length > 0 && selected.length > 0)score = Math.round(100 * parseFloat(selected[0].dataset.score)) / 100;
 
             if (score && score === score)
             {
@@ -245,7 +248,7 @@ export default class OpSelect
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
-            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === CABLES.PORT_DIR_IN);
+            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === CABLES.Port.DIR_IN);
             const eleTitle = ele.byId("createLinkTriggerExists");
             if (eleTitle)
             {
@@ -422,8 +425,6 @@ export default class OpSelect
         sq = sq || "";
         let query = sq.toLowerCase();
         this.firstTime = false;
-
-        console.log(query, sq);
 
         const options = {
             "linkNamespaceIsTextureEffects": false,

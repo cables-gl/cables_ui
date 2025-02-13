@@ -61,7 +61,10 @@ export default class MainTabPanel extends Events
         return this._visible;
     }
 
-    show(userInteraction)
+    /**
+     * @param {boolean} userInteraction
+     */
+    show(userInteraction = false)
     {
         if (this._tabs.getNumTabs() == 0)
         {
@@ -92,7 +95,7 @@ export default class MainTabPanel extends Events
     /**
      * @param {boolean} donotsave
      */
-    hide(donotsave)
+    hide(donotsave = false)
     {
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
@@ -102,7 +105,10 @@ export default class MainTabPanel extends Events
         if (!donotsave && gui.finishedLoading()) userSettings.set("maintabsVisible", false);
     }
 
-    toggle(userInteraction)
+    /**
+     * @param {boolean} userInteraction
+     */
+    toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
         if (this._visible)

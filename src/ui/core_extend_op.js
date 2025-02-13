@@ -761,7 +761,7 @@ export default function extendCoreOp()
 
         if (this.isSubPatchOp() == 2 && this.patchId)
         {
-            const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
+            const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.Port.DIR_IN);
 
             index = 0;
             for (let i = 0; i < portsIn.length; i++)
@@ -772,7 +772,7 @@ export default function extendCoreOp()
                 index++;
             }
 
-            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
+            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.Port.DIR_OUT);
             index = 0;
 
             for (let i = 0; i < portsOut.length; i++)

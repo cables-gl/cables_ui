@@ -746,7 +746,7 @@ export default class GlOp extends Events
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
-            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN) portsWidthIn += this._glPorts[i].width + gluiconfig.portPadding;
+            if (this._glPorts[i].direction == CABLES.Port.DIR_IN) portsWidthIn += this._glPorts[i].width + gluiconfig.portPadding;
             else portsWidthOut += this._glPorts[i].width + gluiconfig.portPadding;
         }
 
