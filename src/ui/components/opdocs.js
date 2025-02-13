@@ -59,8 +59,8 @@ export default class OpDocs
 
     /**
      * Checks for the existence of a documentation text for the port with name `port.name`
-     * @param {object} port - The port-object containing a `name` property to look for
-     * @param {object} opDoc - The doc object of the op
+     * @param {Object} port - The port-object containing a `name` property to look for
+     * @param {Object} opDoc - The doc object of the op
      * @returns {string} - The documeentation for the port as html (markdown parsed)
      */
     getPortDocText(port, opDoc)
@@ -81,8 +81,8 @@ export default class OpDocs
 
     /**
      * Sets a `text` property for each port with the documentation
-     * @param {object} ports - Array-like object with ports
-     * @param {object} opDoc - The op doc
+     * @param {Object} ports - Array-like object with ports
+     * @param {Object} opDoc - The op doc
      */
     setPortDocTexts(ports, opDoc)
     {

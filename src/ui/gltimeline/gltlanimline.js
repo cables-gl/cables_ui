@@ -16,10 +16,10 @@ import { gui } from "../gui.js";
 export default class glTlAnimLine extends Events
 {
 
-    /** @type {Array<Core.Anim>} */
+    /** @type {Array<Types.Anim>} */
     #anims = [];
 
-    /** @type {Array<Core.Op>} */
+    /** @type {Array<Types.Op>} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -40,7 +40,7 @@ export default class glTlAnimLine extends Events
     /** @type {Array<glTlKeys>} */
     #keys = [];
 
-    /** @type {Array<Core.Port>} */
+    /** @type {Array<Types.Port>} */
     #ports = [];
 
     width = 222;
@@ -60,7 +60,7 @@ export default class glTlAnimLine extends Events
 
     /**
      * @param {GlTimeline} glTl
-     * @param {Array<Core.Port>} ports
+     * @param {Array<Types.Port>} ports
      * @param {Object} options
     */
     constructor(glTl, ports, options = {})
@@ -101,8 +101,7 @@ export default class glTlAnimLine extends Events
 
             const lid = anim.addEventListener("onChange", () =>
             {
-                if (!keys.isDragging())
-                    keys.init();
+                if (!keys.isDragging()) keys.init();
             });
 
             this.#animChangeListeners.push({ "id": lid, "anim": anim });
@@ -171,7 +170,7 @@ export default class glTlAnimLine extends Events
 
         if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
-            this.#glTitle.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+            this.#glTitle.setColor(this.#glTl.getColorSpecial());
             this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
         }
     }

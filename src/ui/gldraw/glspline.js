@@ -22,7 +22,7 @@ export default class GlSpline
     /**
      * @param {GlSplineDrawer} splineDrawer
      * @param {string} name
-     * @param {object} options
+     * @param {Object} options
      */
     constructor(splineDrawer, name, options)
     {

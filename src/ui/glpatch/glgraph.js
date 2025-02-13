@@ -1,5 +1,3 @@
-
-
 export default class GlGraph
 {
     constructor(splineRenderer)
@@ -42,7 +40,6 @@ export default class GlGraph
         this._splineRenderer.setWidth(0.12);
     }
 
-
     set(value)
     {
         // const points = [];
@@ -67,7 +64,6 @@ export default class GlGraph
         this._values[0] = value;
         // this._values.push(value);
         const points = [];
-
 
         for (let i = 0; i < this._values.length; i++)
         {

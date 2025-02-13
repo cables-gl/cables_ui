@@ -423,6 +423,8 @@ export default class OpSelect
         let query = sq.toLowerCase();
         this.firstTime = false;
 
+        console.log(query, sq);
+
         const options = {
             "linkNamespaceIsTextureEffects": false,
         };
@@ -432,7 +434,7 @@ export default class OpSelect
         if (this._getQuery().length < MIN_CHARS_QUERY && !this.isMathQuery())
             this._opSearch.search("");
         else
-            this._opSearch.search(query);
+            this._opSearch.search(query, sq);
 
         const perf = gui.uiProfiler.start("opselect.searchLoop");
 
@@ -594,13 +596,9 @@ export default class OpSelect
 
         this._searchInputEle = ele.byId("opsearch");
 
-        if (options.search)
-        {
-            this._searchInputEle.value = options.search;
-            this.search();
-        }
+        if (options.search) this._searchInputEle.value = options.search;
 
-        if (this.firstTime) this.search();
+        if (this.firstTime || options.search) this.search();
 
         if (!this._opSearch.list || !this._html) this.prepare();
 

@@ -61,14 +61,14 @@ export default class GlCable
         this._buttonRect.setShape(1);
         this._buttonRect.visible = false;
 
-        this._buttonRect.on("hover", () =>
+        this._buttonRect.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             this.setCloseToMouse(true);
             this._link.cableHoverChanged(this, true);
             this.updateColor();
         });
 
-        this._buttonRect.on("unhover", () =>
+        this._buttonRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
             this._unHover();
         });
@@ -150,7 +150,7 @@ export default class GlCable
     _unHover()
     {
         this.setCloseToMouse(false);
-        this._link.cableHoverChanged(this, false);
+        this._link.cableHoverChanged();
         this.updateColor();
     }
 
@@ -291,7 +291,7 @@ export default class GlCable
             this._oldx2 = this._x2;
             this._oldy2 = this._y2;
 
-            if (this._x !== this._x2 !== 0)
+            if (this._x !== 0 && this._x2 !== 0)
             {
                 posX = this._x + gluiconfig.portWidth / 2 - 5;
                 posX2 = this._x2 + gluiconfig.portWidth / 2 - 5;
@@ -430,16 +430,12 @@ export default class GlCable
 
     get hovering()
     {
-        return this._buttonRect._hovering || (this._glOpIn && this._glOpIn.hovering) || (this._glOpOut && this._glOpOut.hovering);
+        return this._buttonRect.isHovering() || (this._link._glOpIn && this._link._glOpIn.hovering) || (this._link._glOpOut && this._link._glOpOut.hovering);
     }
 
     updateColor()
     {
-        if (this._disposed)
-        {
-            // console.log((new Error()).stack);
-            return;
-        }
+        if (this._disposed) return;
 
         let hover = this.hovering;
         let selected = false;
@@ -594,7 +590,7 @@ export default class GlCable
 
     setText(t)
     {
-        if (this._buttonRect._hovering && this._glPatch.cablesHoverText)
+        if (this._buttonRect.isHovering && this._glPatch.cablesHoverText)
         {
             this._glPatch.cablesHoverText.text = t || "";
         }

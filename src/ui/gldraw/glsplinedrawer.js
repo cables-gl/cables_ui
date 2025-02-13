@@ -15,7 +15,7 @@ export default class GlSplineDrawer
 {
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {Types.CGState} cgl
      * @param {String} name
      */
     constructor(cgl, name)
@@ -87,7 +87,7 @@ export default class GlSplineDrawer
     }
 
     /**
-     * @param boolean} b
+     * @param {boolean} b
      */
     setFadeout(b)
     {

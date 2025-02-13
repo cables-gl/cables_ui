@@ -15,7 +15,7 @@ export default class Tracking
 
     _initListeners()
     {
-        this.gui._corePatch.on("onOpAdd", (op, fromDeserialize) =>
+        this.gui._corePatch.on(CABLES.Patch.EVENT_OP_ADDED, (op, fromDeserialize) =>
         {
             if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")))
             {

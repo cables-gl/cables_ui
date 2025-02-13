@@ -97,7 +97,7 @@ export default class Snap extends Events
 
     /**
      * @param {number} _x
-     * @param {CABLES.Port} port
+     * @param {Types.Port} port
      * @param {number} index
      * @param {number} dist
      */

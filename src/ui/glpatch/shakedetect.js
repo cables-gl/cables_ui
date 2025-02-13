@@ -17,7 +17,7 @@ export default class ShakeDetector extends Events
         this.shakeCountN = 0;
         this.shakeLastX = -1;
         this.shakeStartTime = 0;
-        this.shakeTimeOut = 0;
+        this.shakeTimeOut = null;
         this.lastShakeDir = false;
     }
 

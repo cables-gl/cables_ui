@@ -31,7 +31,6 @@ export default class HtmlInspector
         }, { "passive": true });
     }
 
-
     _move(e)
     {
         clearTimeout(this._timeoutHide);

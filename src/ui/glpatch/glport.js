@@ -24,7 +24,7 @@ export default class GlPort
      * @param {GlPatch} glpatch
      * @param {GlOp} glop
      * @param {GlRectInstancer} rectInstancer
-     * @param {CABLES.Port} p
+     * @param {Types.Port} p
      * @param {number} posCount
      * @param {GlRect} oprect
      */
@@ -32,7 +32,7 @@ export default class GlPort
     {
         this._log = new Logger("glPort");
 
-        /** @type {CABLES.Port} */
+        /** @type {Types.Port} */
         this._port = p;
 
         /**

@@ -1,6 +1,7 @@
-import { Events } from "cables-shared-client";
+import { Events, ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
+import uiconfig from "../../uiconfig.js";
 
 export default class BottomTabPanel extends Events
 {
@@ -12,6 +13,7 @@ export default class BottomTabPanel extends Events
         this._visible = false;
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
+        this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
 
         this._tabs.addEventListener("onTabAdded", (tab, existedBefore) =>
         {
@@ -66,6 +68,9 @@ export default class BottomTabPanel extends Events
 
         this._visible = true;
         this._ele.style.display = "block";
+
+        ele.byId("splitterBottomTabs").style.display = "block";
+
         document.getElementById("editorminimized").style.display = "none";
 
         if (gui.finishedLoading() && userInteraction) userSettings.set("bottomTabsVisible", true);
@@ -75,8 +80,25 @@ export default class BottomTabPanel extends Events
         this._tabs.updateSize();
     }
 
+    getHeight()
+    {
+        if (!this._visible) return 0;
+        return this.height;
+    }
+
+    setHeight(h)
+    {
+        this.height = h;
+
+        clearTimeout(this._toBottomPanel);
+        userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+        gui.setLayout();
+    }
+
     hide(donotsave)
     {
+        ele.byId("splitterBottomTabs").style.display = "none";
+
         userSettings.set("bottomTabsOpened", false);
 
         this._visible = false;

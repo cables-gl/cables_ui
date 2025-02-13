@@ -1,3 +1,4 @@
+import { Types } from "cables-shared-types";
 import GlTimeline from "./gltimeline.js";
 
 export default class GlTlView
@@ -6,10 +7,10 @@ export default class GlTlView
     /** @type {GlTimeline} */
     #tl;
 
-    /** @type {Anim} */
+    /** @type {Types.Anim} */
     #animZoom;
 
-    /** @type {Anim} */
+    /** @type {Types.Anim} */
     #animScroll;
 
     #zoom = 20;
@@ -18,11 +19,14 @@ export default class GlTlView
 
     #timer = new CABLES.Timer();
 
+    /**
+     * @param {GlTimeline} tl
+     */
     constructor(tl)
     {
         this.#tl = tl;
 
-        const defaultEasing = CABLES.EASING_CUBIC_OUT;
+        const defaultEasing = CABLES.Anim.EASING_CUBIC_OUT;
 
         this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animZoom.setValue(0, this.#zoom);
@@ -31,12 +35,11 @@ export default class GlTlView
         this.#animScroll.setValue(0, this.#offset);
 
         this.#timer.play();
-
     }
 
     get animsFinished()
     {
-        return this.#animZoom.isFinished();
+        return this.#animZoom.isFinished(this.#timer.getTime()) && this.#animScroll.isFinished(this.#timer.getTime());
     }
 
     get zoom()
@@ -100,7 +103,6 @@ export default class GlTlView
         let finalTime = this.#offset + delta;
 
         this.#animScroll.clear(this.#timer.getTime());
-        this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
         this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
     }
 
@@ -111,7 +113,6 @@ export default class GlTlView
     scrollTo(finalTime, duration = 0.2)
     {
         this.#animScroll.clear(this.#timer.getTime());
-        this.#animScroll.setValue(this.#timer.getTime(), this.#offset);
         this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
     }
 

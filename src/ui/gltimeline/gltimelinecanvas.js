@@ -14,7 +14,7 @@ export default class glTimelineCanvas extends GlCanvas
 {
 
     /**
-     * @param {CABLES.Patch} _patch
+     * @param {Types.Patch} _patch
      * @param {HTMLElement} parentEle
      */
     constructor(_patch, parentEle)
@@ -43,7 +43,7 @@ export default class glTimelineCanvas extends GlCanvas
     {
         if (gui && gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
 
-        if (this._targetFps != 0 && !this.glTimeline.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
+        if (this._targetFps != 0 && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
 

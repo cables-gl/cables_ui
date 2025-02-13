@@ -94,15 +94,15 @@ export default class GlTimeline extends Events
         "restrictToFrames": true
     };
 
-    #selOpsStr;
-    #lastXnoButton;
-    #lastYnoButton;
+    #selOpsStr = "";
+    #lastXnoButton = 0;
+    #lastYnoButton = 0;
 
     selectRect = null;
     #selectedKeyAnims = [];
 
     /**
-     * @param {CABLES.CGState} cgl
+     * @param {Types.CglContext} cgl
     */
     constructor(cgl)
     {
@@ -164,8 +164,8 @@ export default class GlTimeline extends Events
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-        gui.corePatch().on("onOpDelete", () => { this.init(); });
-        gui.corePatch().on("onOpAdd", () => { this.init(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { this.init(); });
+        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.updateAllElements();
@@ -187,6 +187,7 @@ export default class GlTimeline extends Events
         gui.keys.key("delete", "delete", "down", cgl.canvas.id, {}, (e) =>
         {
             this.deleteSelectedKeys();
+            this.updateAllElements();
         });
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
@@ -272,12 +273,23 @@ export default class GlTimeline extends Events
         this.init();
     }
 
+    getColorSpecial()
+    {
+        return [0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1];
+    }
+
+    /**
+     * @param {GlRect|GlText} r
+     */
     setColorRectSpecial(r)
     {
         if (r)
-            r.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
+            r.setColor(this.getColorSpecial());
     }
 
+    /**
+     * @param {number} w
+     */
     setMaxTitleSpace(w)
     {
         if (w > this.titleSpace)
@@ -303,15 +315,19 @@ export default class GlTimeline extends Events
         if (e.buttons == 1)
         {
 
-            if (this.getNumSelectedKeys() > 0 && !this.selectRect)
+            // if (this.getNumSelectedKeys() > 0 && !this.selectRect)
+            // {
+            //     return;
+            // }
+            if (this.hoverKeyRect)
             {
-                return;
             }
             else
             {
                 if (y > this.getFirstLinePosy())
                 {
-                    this.unSelectAllKeys();
+                    if (!e.shiftKey)
+                        this.unSelectAllKeys();
 
                     this.selectRect = {
                         "x": Math.min(this.#lastXnoButton, x),
@@ -321,6 +337,7 @@ export default class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+
                 }
 
                 if (y < this.getFirstLinePosy())
@@ -340,7 +357,7 @@ export default class GlTimeline extends Events
         else
         if (e.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-25 * this.view.pixelToTime(e.movementX));
+            this.view.scroll(-this.view.pixelToTime(e.movementX) * 2, 0);
             this.updateAllElements();
         }
         else
@@ -392,14 +409,17 @@ export default class GlTimeline extends Events
         this.updateAllElements();
     }
 
-    serializeSelectedKeys()
+    serializeSelectedKeys(newId)
     {
         const keys = [];
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             const o = this.#selectedKeys[i].getSerialized();
+            o.id = this.#selectedKeys[i].id;
             o.animName = this.#selectedKeyAnims[i].name;
             o.animId = this.#selectedKeyAnims[i].id;
+
+            if (newId)o.id = CABLES.shortId();
             keys.push(o);
         }
 
@@ -454,7 +474,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {Types.AnimKey} a
+     * @param {Types.AnimKey} k
      * @param {Types.Anim} a
      *
      */
@@ -468,14 +488,14 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
 
         if (e.buttons == 1)
-            if (this.hoverKeyRect == null)
+            if (this.hoverKeyRect == null && !e.shiftKey)
                 this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
@@ -751,7 +771,7 @@ export default class GlTimeline extends Events
      */
     copy(event = null)
     {
-        const obj = { "keys": this.serializeSelectedKeys() };
+        const obj = { "keys": this.serializeSelectedKeys(true) };
 
         if (event)
         {
@@ -774,18 +794,25 @@ export default class GlTimeline extends Events
 
     /**
      * @param {Array<Object>} keys
-     * @param {boolean} setCursorTime=true
+     * @param {Object} options
      */
-    deserializeKeys(keys, setCursorTime = false)
+    deserializeKeys(keys, options = {})
     {
+        const useId = options.useId || false;
+        const setCursorTime = options.setCursorTime || false;
 
         let minTime = Number.MAX_VALUE;
         for (let i in keys)
         {
             minTime = Math.min(minTime, keys[i].t);
-        }
-        let notfoundallAnims = false;
 
+            if (useId)
+            {
+
+            }
+        }
+
+        let notfoundallAnims = false;
         let newKeys = [];
 
         for (let i = 0; i < keys.length; i++)

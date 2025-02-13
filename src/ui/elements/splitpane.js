@@ -1,3 +1,4 @@
+import { ele } from "cables-shared-client";
 import { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 
@@ -8,7 +9,7 @@ export default initSplitPanes;
 
 function initSplitPanes()
 {
-    document.getElementById("splitterPatch").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterPatch").addEventListener("pointerdown", function (ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -34,12 +35,12 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    document.getElementById("splitterPatch").addEventListener("pointerup", function (e)
+    ele.byId("splitterPatch").addEventListener("pointerup", function (e)
     {
         gui.resumeInteractionSplitpanes();
     });
 
-    document.getElementById("splitterMaintabs").addEventListener("pointerup", function (e)
+    ele.byId("splitterMaintabs").addEventListener("pointerup", function (e)
     {
         gui.resumeInteractionSplitpanes();
     });
@@ -63,9 +64,9 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     }
 
-    document.getElementById("splitterMaintabs").addEventListener("pointerdown", resizeTabs, { "passive": false });
+    ele.byId("splitterMaintabs").addEventListener("pointerdown", resizeTabs, { "passive": false });
 
-    document.getElementById("splitterRenderer").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterRenderer").addEventListener("pointerdown", function (ev)
     {
         ev.preventDefault();
         splitpane.bound = true;
@@ -81,21 +82,22 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    document.getElementById("splitterTimeline").addEventListener("pointerdown", function (ev)
-    {
-        ev.preventDefault();
-        splitpane.bound = true;
-        function mm(e)
+    ele.byId("splitterBottomTabs").addEventListener("pointerdown",
+        function (ev)
         {
-            gui.pauseInteractionSplitpanes();
-            e.preventDefault();
-            gui.setBottomPanelHeight(window.innerHeight - e.clientY);
-            gui.setLayout();
-        }
+            ev.preventDefault();
+            splitpane.bound = true;
+            function mm(e)
+            {
+                gui.pauseInteractionSplitpanes();
+                e.preventDefault();
+                gui.bottomTabPanel.setHeight(window.innerHeight - e.clientY);
+                gui.setLayout();
+            }
 
-        document.addEventListener("pointermove", mm);
-        splitpane.listeners.push(mm);
-    });
+            document.addEventListener("pointermove", mm);
+            splitpane.listeners.push(mm);
+        });
 
     function resizeRenderer(ev)
     {
@@ -137,7 +139,7 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     }
 
-    document.getElementById("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
+    ele.byId("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
 
     function stopSplit(e)
     {

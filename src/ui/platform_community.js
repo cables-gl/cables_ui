@@ -1,7 +1,6 @@
 import { gui } from "./gui.js";
 import { Platform } from "./platform.js";
 
-
 /**
  * platform implementation for community (https://cables.gl)
  *

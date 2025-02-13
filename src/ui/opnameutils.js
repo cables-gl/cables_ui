@@ -14,7 +14,7 @@ opNames.getNamespaceClassName = (opName) =>
 };
 
 /**
- * @param {CABLES.Port} p
+ * @param {Types.Port} p
  */
 opNames.getVizOpsForPortLink = (p) =>
 {
@@ -31,7 +31,7 @@ opNames.getVizOpsForPortLink = (p) =>
 };
 
 /**
- * @param {CABLES.Port} p
+ * @param {Types.Port} p
  */
 opNames.getOpsForPortLink = (p) =>
 {
