@@ -10,7 +10,7 @@
             <select name="type" class="type">
                 <option value="commonjs">Common JS</option>
                 <option value="module">JS Module</option>
-            </select><br/><br/>
+            </select><br/>
             <a class="button add">Add</a>
             <input class="hidden" type="file" accept=".js,application/javascript"/>
         </div>
@@ -23,11 +23,12 @@
         <div class="edit">
             <input class="depSrc" type="text">
             <div class="exportName hidden">Export as: <input type="text" value=""/></div>
+            <br/>
             Type of library:
             <select name="type" class="type">
                 <option value="commonjs">Common JS</option>
                 <option value="module">JS Module</option>
-            </select><br/><br/>
+            </select><br/>
             <a class="button add">Add</a>
         </div>
     </div>
@@ -57,7 +58,7 @@
     <div id="addopdependency_corelib_{{viewId}}" class="libselect addopdependency">
         Add a cables core library to your op:<br/>
         <input type="hidden" name="depType" value="corelib"/>
-        <select id="{{viewId}}_addcorelib">
+        <select class="bigsel" id="{{viewId}}_addcorelib">
             <option value="">---</option>
             {{#each coreLibs}}
                 <option value="{{.}}">{{.}}</option>
@@ -70,7 +71,7 @@
     <div id="addopdependency_lib_{{viewId}}" class="libselect addopdependency">
         Add a lib from the cables library to your op:<br/>
         <input type="hidden" name="depType" value="lib"/>
-        <select id="{{viewId}}_addoplib">
+        <select  class="bigsel" id="{{viewId}}_addoplib">
             <option value="">---</option>
             {{#each libs}}
                 <option value="{{url}}">{{#if isAssetLib}}patch file - {{/if}}{{name}}</option>
