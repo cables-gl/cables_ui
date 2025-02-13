@@ -65,7 +65,7 @@ export default class TransformsOverlay
 
     /**
      * Description
-     * @param {CGState} cgl
+     * @param {CABLES.CGState} cgl
      * @param {string} id
      * @param {number} x
      * @param {number} y
