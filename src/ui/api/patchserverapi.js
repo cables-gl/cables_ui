@@ -269,6 +269,11 @@ export default class PatchSaveServer extends Events
                     let patchOpsText = "You are out of storage space, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
                     modalNotices.push(patchOpsText);
                 }
+                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
+                    modalNotices.push(patchOpsText);
+                }
 
             }
 
