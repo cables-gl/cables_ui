@@ -156,7 +156,7 @@ export default class TabPanel extends Events
                 if (e.target.dataset.id) this.activateTab(e.target.dataset.id, true);
             });
 
-            if (this._tabs[i].options.options)
+            if (this._tabs[i].options.closable)
             {
                 document.getElementById("editortab" + this._tabs[i].id).addEventListener(
                     "pointerdown",
