@@ -14,7 +14,7 @@ import TabPanel from "./tabpanel.js";
  * @property {TabPanel} [tabPanel]
  * @property {string} [dataId]
  * @property {string} [icon]
- *
+ * @property {string} [infotext]
  */
 
 export default class Tab extends Events
