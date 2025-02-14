@@ -5,6 +5,12 @@ import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
 
 /**
+ * @typedef {Object} GlRectInstancerOptions
+ * @property {String} [name]
+ * @property {Number} [initNum]
+ */
+
+/**
  * draw many rectangles quickly using GPU instancing (e.g. patchfield: ops,ports,text)
  *
  * @export
@@ -64,8 +70,8 @@ export default class GlRectInstancer extends Events
 
     /**
      * Description
-     * @param {CGState} cgl
-     * @param {Object} options
+     * @param {CABLES.CGState} cgl
+     * @param {GlRectInstancerOptions} options
      */
     constructor(cgl, options)
     {
@@ -594,8 +600,8 @@ export default class GlRectInstancer extends Events
         if (options.draggable)
         {
             this.allowDragging = options.draggable;
-            r.on("dragStart", (rect) => { if (this.allowDragging) this.#draggingRect = rect; });
-            r.on("dragEnd", () => { this.#draggingRect = null; });
+            r.on(GlRect.EVENT_DRAGSTART, (rect) => { if (this.allowDragging) this.#draggingRect = rect; });
+            r.on(GlRect.EVENT_DRAGEND, () => { this.#draggingRect = null; });
         }
 
         r.on("textureChanged", () => { this.#needsTextureUpdate = true; });

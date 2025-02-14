@@ -2,6 +2,7 @@ import { ele } from "cables-shared-client";
 import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
+import { gui } from "../../gui.js";
 
 /**
  * a tab panel, that can contain tabs
@@ -14,7 +15,7 @@ export default class OpDependencyTabPanel extends TabPanel
 {
     constructor(eleId, options)
     {
-        super(eleId);
+        super(eleId, { "noUserSetting": true });
 
         this._options = options;
         this._sources = [

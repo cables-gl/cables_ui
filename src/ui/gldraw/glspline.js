@@ -24,7 +24,7 @@ export default class GlSpline
      * @param {string} name
      * @param {Object} options
      */
-    constructor(splineDrawer, name, options)
+    constructor(splineDrawer, name, options = {})
     {
         this.#name = name;
         this.#splineDrawer = splineDrawer;

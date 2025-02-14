@@ -2811,7 +2811,7 @@ export default class PatchView extends Events
         //             for (let j = 0; j < ops[i].portsIn.length; j++)
         //                 if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
 
-        //     if (dir == undefined || dir === CABLES.PORT_DIR_OUT)
+        //     if (dir == undefined || dir === CABLES.Port.DIR_OUT)
         //         for (let j = 0; j < ops[i].portsOut.length; j++)
         //             if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         // }

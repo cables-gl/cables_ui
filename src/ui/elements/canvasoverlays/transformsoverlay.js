@@ -63,6 +63,14 @@ export default class TransformsOverlay
         activateTransform(op, trans.id);
     }
 
+    /**
+     * Description
+     * @param {CABLES.CGState} cgl
+     * @param {string} id
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     add(cgl, id, x, y, z)
     {
         if (gui.isRemoteClient) return;

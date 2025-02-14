@@ -14,6 +14,7 @@ export default class BottomTabPanel extends Events
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
         this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
+        this._toBottomPanel = null;
 
         this._tabs.addEventListener("onTabAdded", (tab, existedBefore) =>
         {
@@ -91,7 +92,10 @@ export default class BottomTabPanel extends Events
         this.height = h;
 
         clearTimeout(this._toBottomPanel);
-        userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+        this._toBottomPanel = setTimeout(() =>
+        {
+            userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+        }, 100);
         gui.setLayout();
     }
 

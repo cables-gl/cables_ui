@@ -3,6 +3,12 @@ import { Types } from "cables-shared-types";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
+ * @typedef {Object} GlTextWriterOptions
+ * @property {String} [name]
+ * @property {Number} [initNum]
+ */
+
+/**
  * draw text using msdf font texture, using {@link GlRectInstancer}
  *
  * @export
@@ -13,7 +19,7 @@ export default class GlTextWriter
 
     /**
      * @param {Types.CGState} cgl
-     * @param {Object} options
+     * @param {GlTextWriterOptions} options
      */
     constructor(cgl, options)
     {
@@ -28,6 +34,13 @@ export default class GlTextWriter
 
     get rectDrawer() { return this._rectDrawer; }
 
+    /**
+     * @param {Number} resX
+     * @param {Number} resY
+     * @param {Number} scrollX
+     * @param {Number} scrollY
+     * @param {Number} zoom
+     */
     render(resX, resY, scrollX, scrollY, zoom)
     {
         if (!this._fontTex)

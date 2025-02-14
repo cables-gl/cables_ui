@@ -2,6 +2,11 @@ import { Logger, Events } from "cables-shared-client";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
+ * @typedef {Object} GlRectOptions
+ * @property {Boolean} [interactive]
+ * @property {GlRect} [parent]
+ */
+/**
  * rectangle data structure for {@link GlRectInstancer}
  *
  * @export
@@ -64,7 +69,7 @@ export default class GlRect extends Events
 
     /**
      * @param {GlRectInstancer} instancer
-     * @param {Object} options
+     * @param {GlRectOptions} options
      */
     constructor(instancer, options)
     {

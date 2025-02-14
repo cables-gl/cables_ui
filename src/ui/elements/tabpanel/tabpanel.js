@@ -18,14 +18,17 @@ import Tab from "./tab.js";
 export default class TabPanel extends Events
 {
 
+    #options;
+
     /**
      * @param {string} eleId
      */
-    constructor(eleId)
+    constructor(eleId, options = {})
     {
         super();
         this._log = new Logger("TabPanel " + eleId);
 
+        this.#options = options;
         this.id = CABLES.uuid();
         this._eleId = eleId;
         this._tabs = [];
@@ -234,6 +237,7 @@ export default class TabPanel extends Events
 
     loadCurrentTabUsersettings()
     {
+        if (this.#options.noUserSetting) return;
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
@@ -248,6 +252,7 @@ export default class TabPanel extends Events
 
     saveCurrentTabUsersettings()
     {
+        if (this.#options.noUserSetting) return;
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;

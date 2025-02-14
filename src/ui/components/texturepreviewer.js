@@ -471,7 +471,7 @@ export default class TexturePreviewer
     hover(p)
     {
         let thePort = p;
-        if (p.direction == CABLES.PORT_DIR_IN && p.isLinked())
+        if (p.direction == CABLES.Port.DIR_IN && p.isLinked())
             thePort = p.links[0].getOtherPort(p);
 
         if (this._lastClickedP != thePort)
@@ -543,7 +543,7 @@ export default class TexturePreviewer
         const p = port;
         let idx = -1;
 
-        if (p && p.get() && p.get().tex && port.direction == CABLES.PORT_DIR_OUT)
+        if (p && p.get() && p.get().tex && port.direction == CABLES.Port.DIR_OUT)
         {
             const id = port.op.id + port.name;
 

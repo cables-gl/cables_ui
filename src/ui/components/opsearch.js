@@ -14,6 +14,7 @@ import { platform } from "../platform.js";
  */
 export default class OpSearch extends Events
 {
+    _newOpOptions = {};
     constructor()
     {
         super();
@@ -21,6 +22,7 @@ export default class OpSearch extends Events
         this._wordsDb = null;
         this.numPatchops = 0;
         this.originalSearch = "";
+        this._hideUserOps = false;
     }
 
     get list()
@@ -254,7 +256,7 @@ export default class OpSearch extends Events
                         if (this._newOpOptions.linkNewOpToPort)
                         {
                             let foundPortType = false;
-                            if (this._newOpOptions.linkNewOpToPort.direction === CABLES.PORT_DIR_OUT)
+                            if (this._newOpOptions.linkNewOpToPort.direction === CABLES.Port.DIR_OUT)
                             {
                                 if (docs.layout.portsIn[0].type == this._newOpOptions.linkNewOpToPort.type)
                                 {

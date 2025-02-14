@@ -238,24 +238,43 @@ export default class PatchSaveServer extends Events
                 }
             }
 
-            if (gui.user && gui.user.supporterFeatures && gui.user.supporterFeatures.includes("copy_assets_on_clone"))
-            {
-                const checkboxGroup = { "title": "Files:", "checkboxes": [] };
-                checkboxGroup.checkboxes.push({
-                    "name": "copy-assets-on-clone",
-                    "value": true,
-                    "title": "Copy assets to new patch",
-                    "checked": false,
-                    "disabled": false
-                });
-                checkboxGroups.push(checkboxGroup);
-            }
-
             const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
             if (usedPatchOps.length > 0)
             {
-                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. Need to reuse ops? Create a <a href=\"" + platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> and share your ops between patches and users!";
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch. Create a <a href=\"" + platform.getCablesUrl() + "/myteams/\" target=\"_blank\">team</a> to share ops between patches and users!";
                 modalNotices.push(patchOpsText);
+            }
+
+            if (gui.user && gui.user.supporterFeatures)
+            {
+                if (gui.user.supporterFeatures.includes("copy_assets_on_clone"))
+                {
+                    const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
+                    checkboxGroup.checkboxes.push({
+                        "name": "copy-assets-on-clone",
+                        "value": true,
+                        "title": "Copy used files to new patch"
+                    });
+                    checkboxGroup.checkboxes.push({
+                        "name": "copy-all-assets-on-clone",
+                        "value": true,
+                        "title": "Copy all files to new patch"
+                    });
+                    checkboxGroups.push(checkboxGroup);
+                    let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
+                    modalNotices.push(patchOpsText);
+                }
+                else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "You are out of storage space, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
+                    modalNotices.push(patchOpsText);
+                }
+                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
+                    modalNotices.push(patchOpsText);
+                }
+
             }
 
             if (project.userId !== gui.user.id)
@@ -303,7 +322,8 @@ export default class PatchSaveServer extends Events
                             {
                                 if (key.startsWith("copy-collab-team")) collabTeams.push(value);
                                 if (key.startsWith("copy-collab-user")) collabUsers.push(value);
-                                if (key === "copy-assets-on-clone") copyAssets = value;
+                                if (key === "copy-assets-on-clone") copyAssets = "used";
+                                if (key === "copy-all-assets-on-clone") copyAssets = "all";
                             }
                         });
                     }
