@@ -10,6 +10,15 @@ import SuggestionDialog from "./suggestiondialog.js";
  */
 export default class SuggestPortDialog
 {
+
+    /**
+     * Description
+     * @param {CABLES.Op} op
+     * @param {CABLES.Port} port
+     * @param {MouseEvent} mouseEvent
+     * @param {Function} cb
+     * @param {Function} cbCancel
+     */
     constructor(op, port, mouseEvent, cb, cbCancel)
     {
         this._suggestions = [];
@@ -37,7 +46,6 @@ export default class SuggestPortDialog
                 CABLES.Link.canLink(theport, port)) this._addPort(theport);
         }
 
-
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
         {
             op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
@@ -53,8 +61,6 @@ export default class SuggestPortDialog
             });
         }
 
-
-
         new SuggestionDialog(this._suggestions, op, mouseEvent, cb, (id) =>
         {
             for (const i in this._suggestions)
@@ -69,7 +75,6 @@ export default class SuggestPortDialog
     {
         for (let i = 0; i < this._suggestions.length; i++)
             if (this._suggestions[i].p == p) return;
-
 
         let className = "portSuggest" + p.type;
         if (p.isLinked()) className += "Linked";

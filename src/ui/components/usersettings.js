@@ -70,12 +70,16 @@ export default class UserSettings extends Events
         platform.talkerAPI.send("saveUserSettings", { "settings": this._settings });
     }
 
+    /**
+     * @param {String} key
+     * @param {any} value
+     */
     set(key, value)
     {
         if (value === "true") value = true;
         else if (value === "false") value = false;
 
-        if (CABLES.isNumeric(value)) value = parseFloat(value);
+        if (typeof value == "string" && CABLES.isNumeric(value)) value = parseFloat(value);
 
         const wasChanged = this._settings[key] != value;
 
@@ -97,6 +101,10 @@ export default class UserSettings extends Events
         }
     }
 
+    /**
+     * @param {String} key
+     * @param {any} defaultValue=null
+     */
     get(key, defaultValue = null)
     {
         if (!this._settings || !this._settings.hasOwnProperty(key)) return defaultValue;

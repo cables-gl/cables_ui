@@ -10,7 +10,7 @@ export default class WatchPortVisualizer
         this._canvasHeight = 120;
 
         this.created = false;
-        this._lastId = 0;
+        this._lastId = "";
         this._visible = false;
 
         this._num = this._canvasWidth / 2;

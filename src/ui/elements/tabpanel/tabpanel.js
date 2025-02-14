@@ -349,6 +349,9 @@ export default class TabPanel extends Events
         this.activateTab(tab.id);
     }
 
+    /**
+     * @returns {number}
+     */
     getNumTabs()
     {
         return this._tabs.length;
@@ -393,6 +396,7 @@ export default class TabPanel extends Events
     /**
      * @param {Tab} tab
      * @param {boolean} [activate]
+     * @returns {Tab}
      */
     addTab(tab, activate)
     {

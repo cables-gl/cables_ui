@@ -1,4 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
+import { Types } from "cables-shared-types";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
@@ -19,6 +20,10 @@ import { userSettings } from "../usersettings.js";
  */
 class OpParampanel extends Events
 {
+
+    /**
+     * @param {string} eleid
+     */
     constructor(eleid)
     {
         super();
@@ -32,7 +37,10 @@ class OpParampanel extends Events
         this._eventPrefix = CABLES.shortId();
         this._isPortLineDragDown = false;
 
+        /** @type {Array<Types.Port>} */
         this._portsIn = [];
+
+        /** @type {Array<Types.Port>} */
         this._portsOut = [];
 
         this._paramsListener = new ParamsListener(this.panelId);
@@ -56,7 +64,6 @@ class OpParampanel extends Events
     dispose()
     {
         this._stopListeners();
-        this._watchPorts.length = 0;
     }
 
     clear()
@@ -142,6 +149,9 @@ class OpParampanel extends Events
         }, 50);
     }
 
+    /**
+     * @param {Types.Op} op
+     */
     show(op)
     {
         if (!gui.finishedLoading()) return;
@@ -657,6 +667,9 @@ class OpParampanel extends Events
         contextMenu.show({ items }, el);
     }
 
+    /**
+     * @param {HTMLElement} el
+     */
     opContextMenu(el)
     {
         const items = [];

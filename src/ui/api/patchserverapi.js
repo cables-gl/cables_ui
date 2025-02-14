@@ -788,7 +788,7 @@ export default class PatchSaveServer extends Events
             // thePatch.renderOneFrame();
             gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-            if (cgl.gApi == CABLES.CG.GAPI_WEBGL) thePatch.resume();
+            if (cgl.gApi == CABLES.CGState.API_WEBGL) thePatch.resume();
 
             const url = gui.canvasManager.currentCanvas().toDataURL();
 

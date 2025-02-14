@@ -43,7 +43,7 @@ export default class OpDependencyTabPanel extends TabPanel
 
     init()
     {
-        let activeTab;
+        let activeTab = null;
         this._sources.forEach((depSource, i) =>
         {
             const title = depSource.title || depSource.value;
@@ -51,6 +51,6 @@ export default class OpDependencyTabPanel extends TabPanel
             const depTab = new OpDependencyTab(this, title, tabOptions);
             if (i === 0) activeTab = depTab;
         });
-        this.activateTab(activeTab.tabId);
+        if (activeTab) this.activateTab(activeTab.tabId);
     }
 }

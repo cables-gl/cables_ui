@@ -269,7 +269,7 @@ export default function extendCoreOp()
         const errorArr = [];
         for (const i in this.uiErrors) errorArr.push(this.uiErrors[i]);
 
-        this.uiAttr({ "uierrors": errorArr });
+        this.setUiAttrib({ "uierrors": errorArr });
         this.hasUiErrors = Object.keys(this.uiErrors).length;
 
         this.emitEvent("uiErrorChange");
