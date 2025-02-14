@@ -30,7 +30,6 @@ export default class GlTimelineTab
 
         this.#tab.on("resize", () =>
         {
-            console.log("resize");
             a.glTimeline.resize();
         });
 

@@ -4,7 +4,7 @@ import GlTimeline from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
-import glTlAnimLine from "./gltlanimline.js";
+import { glTlAnimLine } from "./gltlanimline.js";
 
 /**
  * gltl key rendering
@@ -51,8 +51,8 @@ export default class glTlKeys extends Events
 
     #dragStarted = false;
     #animLine = null;
-    #dragStartX;
-    #dragStartY;
+    #dragStartX = 0;
+    #dragStartY = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -81,13 +81,11 @@ export default class glTlKeys extends Events
             this.#spline = new GlSpline(this.#glTl.splines, port.name);
 
             this.#spline.setParentRect(parentRect);
-            let z = -0.7;
-            this.#spline.setPoints([0, 0, z, 100, 10, z, 10, 10, z]);
+            this.#spline.setPoints([0, 0, 0, 100, 10, 0, 10, 10, 0]);
 
             this.#zeroSpline = new GlSpline(this.#glTl.splines, "zero");
-            this.#zeroSpline.setPoints([0, 1, -0.7, 100000, 110, -0.7, 100000, 110, -0.7]);
-            this.#zeroSpline.setColor(1, 1, 0, 1);
-
+            this.#zeroSpline.setPoints([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            this.#zeroSpline.setColor(0.3, 0.3, 0.3, 1);
         }
 
         this.points = [];
@@ -126,8 +124,6 @@ export default class glTlKeys extends Events
         this.#minVal = minVal;
         this.#maxVal = maxVal;
 
-        console.log("minmaxc", this.#minVal, this.#maxVal);
-
         if (this.#disposed)
         {
             this._log.warn("disposed", this);
@@ -142,7 +138,7 @@ export default class glTlKeys extends Events
         this.#points = [];
         const pointsSort = [];
 
-        let z = 0.0;
+        let z = -0.4;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
@@ -183,17 +179,17 @@ export default class glTlKeys extends Events
             if (this.#options.keyYpos)
             {
                 const lx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
-                const ly = this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time), this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2);
+                const ly = this.valueToPixel(this.#anim.getValue(animKey.time));
                 pointsSort.push([lx, ly, z]);
 
                 const onepixelTime = this.#glTl.view.pixelToTime(1);
                 pointsSort.push([
                     this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset - onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time - onepixelTime), this.#minVal, this.#maxVal, this.#parentRect.h - this.sizeKey2, this.sizeKey2),
+                    this.valueToPixel(this.#anim.getValue(animKey.time)),
                     z]);
                 pointsSort.push([
                     this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset + onepixelTime),
-                    this.#parentRect.h - CABLES.map(this.#anim.getValue(animKey.time + onepixelTime), this.#minVal, this.#maxVal, this.#parentRect.h - this.sizeKey2, this.sizeKey2),
+                    this.valueToPixel(this.#anim.getValue(animKey.time)),
                     z]);
             }
 
@@ -215,9 +211,6 @@ export default class glTlKeys extends Events
 
                 pointsSort.push([x, y, z]);
             }
-
-            const y = this.valueToPixel(0);
-            this.#zeroSpline.setPoints([0, y, -0.7, 100, y, -0.7, 111111110, y, -0.7, 111111111, y, -0.7]);
 
             pointsSort.sort((a, b) =>
             {
@@ -267,7 +260,6 @@ export default class glTlKeys extends Events
 
     setKeyPositions()
     {
-
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             let col = [0.7, 0.7, 0.7, 1];
@@ -281,7 +273,7 @@ export default class glTlKeys extends Events
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
-                y = this.#parentRect.h - CABLES.map(animKey.value, this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2);
+                y = this.valueToPixel(animKey.value);
 
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.sizeKey2;
@@ -300,6 +292,13 @@ export default class glTlKeys extends Events
             }
 
         }
+
+        const y = this.valueToPixel(0) + this.#parentRect.absY;
+
+        this.#zeroSpline.setPoints([0, y, -0.1,
+            100, y, -0.1,
+            111111111, y, -0.1]);
+
     }
 
     updateKeyRects()
@@ -346,7 +345,6 @@ export default class glTlKeys extends Events
                     "title": "timeline move keys",
                     "undo": () =>
                     {
-                        console.log(oldValues);
 
                         this.#glTl.deserializeKeys(oldValues);
 
@@ -368,8 +366,6 @@ export default class glTlKeys extends Events
                     this.#dragStarted = true;
                     startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                     startDragValue = this.pixelToValue(e.offsetY);
-
-                    console.log("dragstart", button, e.shiftKey);
 
                     if (e.shiftKey)
                     {
@@ -444,11 +440,17 @@ export default class glTlKeys extends Events
         return this.#parentRect.h;
     }
 
+    /**
+     * @param {Number} posy
+     */
     pixelToValue(posy)
     {
         return CABLES.map(posy, 0, this.height, this.#minVal, this.#maxVal);
     }
 
+    /**
+     * @param {Number} v
+     */
     valueToPixel(v)
     {
         return this.#parentRect.h - CABLES.map(v, this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2);

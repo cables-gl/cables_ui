@@ -12,11 +12,17 @@ CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
 /**
- * @external CABLES.Op
+ * @external Types.Op
  */
 
 export default function extendCoreOp()
 {
+    CABLES.Op.prototype.isAnimated = function ()
+    {
+        for (let j = 0; j < this.portsIn.length; j++)
+            if (this.portsIn[j].isAnimated()) return true;
+        return false;
+    };
 
     CABLES.Op.prototype.initUi = function ()
     {

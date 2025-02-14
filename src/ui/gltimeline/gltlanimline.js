@@ -13,7 +13,7 @@ import { gui } from "../gui.js";
  * @class glTlAnim
  * @extends {Events}
  */
-export default class glTlAnimLine extends Events
+export class glTlAnimLine extends Events
 {
 
     /** @type {Array<Types.Anim>} */
@@ -98,7 +98,7 @@ export default class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.addEventListener("onChange", () =>
+            const lid = anim.on("onChange", () =>
             {
                 if (!keys.isDragging()) keys.init();
             });
@@ -227,7 +227,6 @@ export default class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
         this.#disposeRects = [];
-
     }
 
     /**
