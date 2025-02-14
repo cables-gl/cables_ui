@@ -9,6 +9,13 @@ import { userSettings } from "../../components/usersettings.js";
 import Tab from "./tab.js";
 
 /**
+ * @typedef TabPanelOptions
+ * @property {String} [name]
+ * @property {boolean} [closable]
+ * @property {boolean} [noUserSetting] - does not store last opened tab in userSettings
+ */
+
+/**
  * a tab panel, that can contain tabs
  *
  * @export
@@ -18,10 +25,12 @@ import Tab from "./tab.js";
 export default class TabPanel extends Events
 {
 
+    /** @type {TabPanelOptions} */
     #options;
 
     /**
-     * @param {string} eleId
+     * @param {String} eleId
+     * @param {TabPanelOptions} options
      */
     constructor(eleId, options = {})
     {
@@ -147,7 +156,7 @@ export default class TabPanel extends Events
                 if (e.target.dataset.id) this.activateTab(e.target.dataset.id, true);
             });
 
-            if (this._tabs[i].options.closable)
+            if (this._tabs[i].options.options)
             {
                 document.getElementById("editortab" + this._tabs[i].id).addEventListener(
                     "pointerdown",
@@ -173,6 +182,9 @@ export default class TabPanel extends Events
         this.scrollToActiveTab();
     }
 
+    /**
+     * @param {string} name
+     */
     activateTabByName(name)
     {
         name = name || "";
@@ -214,12 +226,12 @@ export default class TabPanel extends Events
      */
     activateTab(id)
     {
-        let found = false;
+        let found = null;
         for (let i = 0; i < this._tabs.length; i++)
         {
             if (this._tabs[i].id === id)
             {
-                found = true;
+                found = this._tabs[i];
                 this.emitEvent("onTabActivated", this._tabs[i]);
                 this._tabs[i].activate();
             }
@@ -233,6 +245,7 @@ export default class TabPanel extends Events
         this.updateHtml();
 
         if (editorSession && editorSession.loaded() && gui.finishedLoading()) this.saveCurrentTabUsersettings();
+        return found;
     }
 
     loadCurrentTabUsersettings()
@@ -317,12 +330,19 @@ export default class TabPanel extends Events
         this.updateHtml();
     }
 
+    /**
+     * @param {string} id
+     * @param {boolean} changed
+     */
     setChanged(id, changed)
     {
         if (this.getTabById(id)) this.getTabById(id).options.wasChanged = changed;
         this.updateHtml();
     }
 
+    /**
+     * @param {number} num
+     */
     setTabNum(num)
     {
         const tab = this._tabs[Math.min(this._tabs.length, num)];
@@ -372,7 +392,7 @@ export default class TabPanel extends Events
 
     /**
      * @param {Tab} tab
-     * @param {boolean} activate
+     * @param {boolean} [activate]
      */
     addTab(tab, activate)
     {
@@ -400,6 +420,13 @@ export default class TabPanel extends Events
         return tab;
     }
 
+    /**
+     * @param {String} title
+     * @param {String} url
+     * @param {Object} options
+     * @param {boolean} userInteraction
+     * @returns {Tab}
+     */
     addIframeTab(title, url, options, userInteraction)
     {
         const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));

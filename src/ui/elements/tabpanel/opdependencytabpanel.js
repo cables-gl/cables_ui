@@ -9,10 +9,16 @@ import { gui } from "../../gui.js";
  *
  * @export
  * @class OpDependencyTabPanel
- * @extends {Events}
+ * @extends {TabPanel}
  */
 export default class OpDependencyTabPanel extends TabPanel
 {
+
+    /**
+     * Description
+     * @param {any} eleId
+     * @param {any} options
+     */
     constructor(eleId, options)
     {
         super(eleId, { "noUserSetting": true });

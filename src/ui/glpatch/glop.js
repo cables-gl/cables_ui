@@ -31,6 +31,7 @@ export default class GlOp extends Events
      */
     constructor(glPatch, instancer, op)
     {
+
         super();
 
         /**

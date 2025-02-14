@@ -1,18 +1,35 @@
 import { Events, ele } from "cables-shared-client";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import TabPanel from "./tabpanel.js";
+
+/**
+ * @typedef TabOptions
+ * @property {String} [name]
+ * @property {boolean} [singleton]
+ * @property {boolean} [closable]
+ * @property {boolean} [hideToolbar]
+ * @property {boolean} [showTitle]
+ * @property {boolean} [padding]
+ * @property {TabPanel} [tabPanel]
+ * @property {string} [dataId]
+ * @property {string} [icon]
+ *
+ */
 
 export default class Tab extends Events
 {
 
     /**
      * @param {String} title
-     * @param {Object} options
+     * @param {TabOptions} options
      */
     constructor(title, options)
     {
         super();
         this.id = CABLES.uuid();
+
+        /** @type {TabOptions} */
         this.options = options || {};
         if (!this.options.hasOwnProperty("showTitle")) this.options.showTitle = true;
         if (!this.options.hasOwnProperty("hideToolbar")) this.options.hideToolbar = false;
@@ -73,9 +90,8 @@ export default class Tab extends Events
     /**
      * @param {string} title
      * @param {Function} cb
-     * @param {Object} options
      */
-    addButton(title, cb, options)
+    addButton(title, cb)
     {
         const button = document.createElement("a");
         button.classList.add("button-small");
