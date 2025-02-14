@@ -19,6 +19,7 @@ export default class GlTimelineTab
         this.#tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline" });
         tabs.addTab(this.#tab, true);
         gui.bottomTabPanel.show(true);
+
         // gui.maintabPanel.show(true);
         this.#tab.contentEle.innerHTML = "";
         const a = new glTimelineCanvas(CABLES.patch, this.#tab.contentEle);
@@ -26,6 +27,12 @@ export default class GlTimelineTab
 
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
+
+        this.#tab.on("resize", () =>
+        {
+            console.log("resize");
+            a.glTimeline.resize();
+        });
 
         this.#tab.on("onDeactivate", () =>
         {

@@ -14,6 +14,7 @@ import { userSettings } from "../components/usersettings.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import undo from "../utils/undo.js";
+import GlSpline from "../gldraw/glspline.js";
 
 /**
  * gl timeline
@@ -112,6 +113,8 @@ export default class GlTimeline extends Events
 
         this.#cgl = cgl;
         this.view = new GlTlView(this);
+
+        this.#layout = userSettings.get("gltl_layout") || 0;
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
@@ -253,7 +256,9 @@ export default class GlTimeline extends Events
         this.ruler.setWidth(this.#cgl.canvasWidth - this.titleSpace);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
+
         this.updateAllElements();
+        console.log("resize");
     }
 
     /**
@@ -270,6 +275,8 @@ export default class GlTimeline extends Events
         if (this.#layout == 1) this.#layout = 0;
         else this.#layout = 1;
 
+        userSettings.set("gltl_layout", this.#layout);
+
         this.init();
     }
 
@@ -279,7 +286,7 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {GlRect|GlText} r
+     * @param {GlRect|GlText|GlSpline} r
      */
     setColorRectSpecial(r)
     {
@@ -427,12 +434,15 @@ export default class GlTimeline extends Events
     }
 
     /**
-     * @param {number} delta
+     * @param {number} deltaTime
+     * @param {number} deltaValue
      */
-    moveSelectedKeysDelta(delta)
+    moveSelectedKeysDelta(deltaTime, deltaValue = 0)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
-            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + delta });
+        {
+            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
+        }
 
         this.updateAllElements();
     }
@@ -590,7 +600,7 @@ export default class GlTimeline extends Events
         if (this.#layout === 1)
         {
             const multiAnim = new glTlAnim(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(400);
+            multiAnim.setHeight(this.#cgl.canvasHeight);
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -685,6 +695,11 @@ export default class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
+
+        if (this.#layout === 1)
+        {
+            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
+        }
 
         perf.finish();
     }

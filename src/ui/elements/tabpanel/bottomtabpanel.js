@@ -86,7 +86,6 @@ export default class BottomTabPanel extends Events
 
         gui.setLayout();
 
-        this._tabs.updateSize();
     }
 
     getHeight()
@@ -105,9 +104,11 @@ export default class BottomTabPanel extends Events
         clearTimeout(this._toBottomPanel);
         this._toBottomPanel = setTimeout(() =>
         {
-            userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+            userSettings.set("bottomPanelHeight", this.height);
         }, 100);
         gui.setLayout();
+
+        this._tabs.emitEvent("resize");
     }
 
     /**

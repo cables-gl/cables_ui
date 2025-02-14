@@ -11,6 +11,7 @@
         "cables-shared-client": "file:../shared/client/",
         "cables-shared-types": "file:../shared/types/",
         "chroma-js": "2.1.0",
+        "raphael": "2.2.0",
         "davidshimjs-qrcodejs": "0.0.2",
         "error-stack-parser": "2.1.4",
         "intro.js": "2.9.0",
