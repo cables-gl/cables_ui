@@ -71,6 +71,13 @@ export default class Gui extends Events
     static EVENT_RESIZE = "resize";
     static EVENT_RESIZE_CANVAS = "resizecanvas";
 
+    static RESTRICT_MODE_LOADING = 0;
+    static RESTRICT_MODE_BLUEPRINT = 5;
+    static RESTRICT_MODE_REMOTEVIEW = 10;
+    static RESTRICT_MODE_FOLLOWER = 20;
+    static RESTRICT_MODE_EXPLORER = 30;
+    static RESTRICT_MODE_FULL = 40;
+
     hasAnims = false;
 
     /** @type {GlTimeline} */
@@ -2276,10 +2283,3 @@ export default class Gui extends Events
         console.log("timeline length", dur);
     }
 }
-
-Gui.RESTRICT_MODE_LOADING = 0;
-Gui.RESTRICT_MODE_BLUEPRINT = 5;
-Gui.RESTRICT_MODE_REMOTEVIEW = 10;
-Gui.RESTRICT_MODE_FOLLOWER = 20;
-Gui.RESTRICT_MODE_EXPLORER = 30;
-Gui.RESTRICT_MODE_FULL = 40;

@@ -16,7 +16,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { fileUploader } from "../dialogs/upload.js";
 import { userSettings } from "./usersettings.js";
@@ -248,43 +248,7 @@ export default class PatchView extends Events
 
     _initListeners()
     {
-        document.addEventListener("copy", (e) =>
-        {
-            if (!this._patchRenderer) return;
 
-            console.log("copy listener", gui.timeLine() && gui.timeLine().isFocused());
-            if (this._patchRenderer.isFocused()) this._patchRenderer.copy(e);
-            else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().copy(e);
-        });
-
-        document.addEventListener("paste", (e) =>
-        {
-            if (gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
-
-            let items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let index in items)
-            {
-                let item = items[index];
-                if (item.kind === "file")
-                {
-                    let blob = item.getAsFile();
-                    fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
-                    return;
-                }
-            }
-
-            if (this._patchRenderer)
-            {
-                if (this._patchRenderer.isFocused()) this._patchRenderer.paste(e);
-                else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().paste(e);
-            }
-        });
-
-        document.addEventListener("cut", (e) =>
-        {
-            if (this._patchRenderer && this._patchRenderer.isFocused()) this._patchRenderer.cut(e);
-            else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().cut(e);
-        });
     }
 
     switch(id)
@@ -414,7 +378,7 @@ export default class PatchView extends Events
 
     addAssetOpAuto(filename, event)
     {
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const ops = opNames.getOpsForFilename(filename);
 
@@ -990,7 +954,7 @@ export default class PatchView extends Events
 
     deleteSelectedOps()
     {
-        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const undoGroup = undo.startGroup();
         const ids = [];
