@@ -9,10 +9,16 @@ import { gui } from "../../gui.js";
  *
  * @export
  * @class OpDependencyTabPanel
- * @extends {Events}
+ * @extends {TabPanel}
  */
 export default class OpDependencyTabPanel extends TabPanel
 {
+
+    /**
+     * Description
+     * @param {any} eleId
+     * @param {any} options
+     */
     constructor(eleId, options)
     {
         super(eleId, { "noUserSetting": true });
@@ -37,7 +43,7 @@ export default class OpDependencyTabPanel extends TabPanel
 
     init()
     {
-        let activeTab;
+        let activeTab = null;
         this._sources.forEach((depSource, i) =>
         {
             const title = depSource.title || depSource.value;
@@ -45,6 +51,6 @@ export default class OpDependencyTabPanel extends TabPanel
             const depTab = new OpDependencyTab(this, title, tabOptions);
             if (i === 0) activeTab = depTab;
         });
-        this.activateTab(activeTab.tabId);
+        if (activeTab) this.activateTab(activeTab.tabId);
     }
 }

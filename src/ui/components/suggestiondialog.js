@@ -2,6 +2,17 @@ import { ele, ModalBackground } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 
+/** @typedef SuggestionItem
+ * @property {String} name
+ * @property {String} class
+ * @property {Number} id
+ *
+ * @property {Number} rot - internal: do not set manually
+ * @property {Number} top - internal: do not set manually
+ * @property {Number} left - internal: do not set manually
+ * @property {String} shortName - internal: do not set manually
+*/
+
 /**
  * show suggestion dialog (rotary mouse select menu)
  *
@@ -10,6 +21,16 @@ import { gui } from "../gui.js";
  */
 export default class SuggestionDialog
 {
+
+    /**
+     * @param {Array<SuggestionItem>} suggestions
+     * @param {CABLES.Op} op
+     * @param {MouseEvent} mouseEvent
+     * @param {Function} cb
+     * @param {Function} _action
+     * @param {boolean} _showSelect
+     * @param {Function} cbCancel
+     */
     constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel)
     {
         this._cb = cb;

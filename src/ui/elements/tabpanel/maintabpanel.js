@@ -12,6 +12,10 @@ import TabPanel from "./tabpanel.js";
  */
 export default class MainTabPanel extends Events
 {
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
         super();
@@ -23,7 +27,7 @@ export default class MainTabPanel extends Events
         this._ele = document.getElementById("maintabs");
         this._ele.style.display = "none";
 
-        this._tabs.addEventListener("onTabAdded", (tab, existedBefore) =>
+        this._tabs.on("onTabAdded", (tab, existedBefore) =>
         {
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
@@ -34,7 +38,7 @@ export default class MainTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this._tabs.addEventListener("onTabRemoved", (tab) =>
+        this._tabs.on("onTabRemoved", (tab) =>
         {
             if (this._tabs.getNumTabs() == 0)
             {

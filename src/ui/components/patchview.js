@@ -923,6 +923,9 @@ export default class PatchView extends Events
         return ops;
     }
 
+    /**
+     * @returns {Array<CABLES.Op>}
+     */
     getSelectedOps()
     {
         const perf = gui.uiProfiler.start("patchview getSelectedOps");

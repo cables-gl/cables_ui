@@ -710,6 +710,13 @@ class ParamsListener extends Events
         else this._log.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
     }
 
+    /**
+     * @param {any} op
+     * @param {any} index
+     * @param {any} panelid
+     * @param {any} targetState
+     * @param {any} defaultValue
+     */
     setPortAnimated(op, index, panelid, targetState, defaultValue)
     {
         const isOpen = gui.patchView.getSelectedOps()[0] ? op.id === gui.patchView.getSelectedOps()[0].id : false;
@@ -853,181 +860,184 @@ class ParamsListener extends Events
         const el = ele.byId(eleId);
         if (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number" || ports[index].uiAttribs.type == "int")
         {
-            if (el)el.addEventListener("keypress", (e) =>
-            {
-                const keyCode = e.keyCode || e.which;
-                if (keyCode == 13 || keyCode == 8)
+            if (el)el.addEventListener("keypress",
+                (e) =>
                 {
-                    if (isNaN(e.target.value))
+                    const keyCode = e.keyCode || e.which;
+                    if (keyCode == 13 || keyCode == 8)
                     {
-                        let mathParsed = e.target.value;
+                        if (isNaN(e.target.value))
+                        {
+                            let mathParsed = e.target.value;
+                            try
+                            {
+                                mathParsed = CABLES.UI.mathparser.parse(e.target.value);
+                            }
+                            catch (ex)
+                            {
+                            // failed to parse math, use unparsed value
+                                mathParsed = e.target.value || 0;
+                            }
+                            e.target.value = mathParsed;
+
+                            ports[index].set(mathParsed);
+                            hideToolTip();
+                        }
+                    }
+                });
+        }
+
+        if (el) el.addEventListener("input",
+
+            (e) =>
+            {
+                let v = "" + el.value;
+
+                gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
+
+                if (
+                    ports[index].uiAttribs.display != "bool" &&
+                (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
+                {
+                    if (v.length >= 3 && (isNaN(v) || v === ""))
+                    {
+                        let mathParsed = v;
                         try
                         {
-                            mathParsed = CABLES.UI.mathparser.parse(e.target.value);
+                            mathParsed = CABLES.UI.mathparser.parse(v);
                         }
                         catch (ex)
                         {
-                            // failed to parse math, use unparsed value
-                            mathParsed = e.target.value || 0;
-                        }
-                        e.target.value = mathParsed;
-
-                        ports[index].set(mathParsed);
-                        hideToolTip();
-                    }
-                }
-            });
-        }
-
-        if (el) el.addEventListener("input", (e) =>
-        {
-            let v = "" + el.value;
-
-            gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
-
-            if (
-                ports[index].uiAttribs.display != "bool" &&
-                (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
-            {
-                if (v.length >= 3 && (isNaN(v) || v === ""))
-                {
-                    let mathParsed = v;
-                    try
-                    {
-                        mathParsed = CABLES.UI.mathparser.parse(v);
-                    }
-                    catch (ex)
-                    {
                         // failed to parse math, use unparsed value
-                        mathParsed = v;
-                    }
-                    if (!isNaN(mathParsed))
-                    {
-                        showToolTip(e.target, " = " + mathParsed);
-                        el.classList.remove("invalid");
+                            mathParsed = v;
+                        }
+                        if (!isNaN(mathParsed))
+                        {
+                            showToolTip(e.target, " = " + mathParsed);
+                            el.classList.remove("invalid");
+                        }
+                        else
+                        {
+                            el.classList.add("invalid");
+                        // this._log.log("invalid number", ports[index], mathParsed);
+                        }
+                        return;
                     }
                     else
                     {
-                        el.classList.add("invalid");
-                        // this._log.log("invalid number", ports[index], mathParsed);
+                        el.classList.remove("invalid");
+                        v = parseFloat(v) || 0;
                     }
-                    return;
                 }
-                else
-                {
-                    el.classList.remove("invalid");
-                    v = parseFloat(v) || 0;
-                }
-            }
 
-            if (ports[index].uiAttribs.type == "int")
-            {
-                if (isNaN(v) || v === "")
+                if (ports[index].uiAttribs.type == "int")
                 {
-                    el.classList.add("invalid");
-                    return;
-                }
-                else
-                {
-                    el.classList.remove("invalid");
-                    v = parseInt(v, 10) || 0;
+                    if (isNaN(v) || v === "")
+                    {
+                        el.classList.add("invalid");
+                        return;
+                    }
+                    else
+                    {
+                        el.classList.remove("invalid");
+                        v = parseInt(v, 10) || 0;
                     // this._log.log("invalid int");
+                    }
                 }
-            }
 
-            if (!CABLES.mouseDraggingValue)
-            {
-                const undoAdd = (function (oldv, newv, opid, portname)
+                if (!CABLES.mouseDraggingValue)
                 {
-                    if (oldv != newv)
-                        undo.add({
-                            "title": "Value change " + oldv + " to " + newv,
-                            "context": {
-                                portname
-                            },
-                            undo()
-                            {
-                                try
+                    const undoAdd = (function (oldv, newv, opid, portname)
+                    {
+                        if (oldv != newv)
+                            undo.add({
+                                "title": "Value change " + oldv + " to " + newv,
+                                "context": {
+                                    portname
+                                },
+                                undo()
                                 {
-                                    const uop = gui.corePatch().getOpById(opid);
-                                    const p = uop.getPort(portname);
-                                    gui.patchView.showDefaultPanel();
+                                    try
+                                    {
+                                        const uop = gui.corePatch().getOpById(opid);
+                                        const p = uop.getPort(portname);
+                                        gui.patchView.showDefaultPanel();
 
-                                    p.set(oldv);
-                                    gui.emitEvent("portValueEdited", op, p, oldv);
+                                        p.set(oldv);
+                                        gui.emitEvent("portValueEdited", op, p, oldv);
 
-                                    gui.opParams.show(uop);
-                                    gui.patchView.focusOp(null);
-                                    gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
-                                }
-                                catch (ex) { this._log.warn("undo failed"); }
-                            },
-                            redo()
-                            {
-                                try
+                                        gui.opParams.show(uop);
+                                        gui.patchView.focusOp(null);
+                                        gui.patchView.focusOp(opid);
+                                        gui.patchView.centerSelectOp(opid);
+                                    }
+                                    catch (ex) { this._log.warn("undo failed"); }
+                                },
+                                redo()
                                 {
-                                    const rop = gui.corePatch().getOpById(opid);
-                                    const p = rop.getPort(portname);
-                                    gui.patchView.showDefaultPanel();
+                                    try
+                                    {
+                                        const rop = gui.corePatch().getOpById(opid);
+                                        const p = rop.getPort(portname);
+                                        gui.patchView.showDefaultPanel();
 
-                                    p.set(newv);
-                                    gui.emitEvent("portValueEdited", op, p, newv);
-                                    gui.opParams.show(rop);
-                                    gui.patchView.focusOp(null);
-                                    gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
+                                        p.set(newv);
+                                        gui.emitEvent("portValueEdited", op, p, newv);
+                                        gui.opParams.show(rop);
+                                        gui.patchView.focusOp(null);
+                                        gui.patchView.focusOp(opid);
+                                        gui.patchView.centerSelectOp(opid);
+                                    }
+                                    catch (ex) { this._log.warn("undo failed"); }
                                 }
-                                catch (ex) { this._log.warn("undo failed"); }
-                            }
-                        });
-                }(ports[index].get(), v, ports[index].op.id, ports[index].name));
-            }
-
-            if (ports[index].uiAttribs.type == "string")
-            {
-                if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
-                if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
-                {
-                    ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
+                            });
+                    }(ports[index].get(), v, ports[index].op.id, ports[index].name));
                 }
-                else ports[index].op.setUiError("uiminlength", null);
 
-                ports[index].set(v || "");
-            }
-            else if (ports[index].uiAttribs.display == "bool")
-            {
-                if (!v || v == "false" || v == "0" || v == 0) v = false;
-                else v = true;
+                if (ports[index].uiAttribs.type == "string")
+                {
+                    if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
+                    if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
+                    {
+                        ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
+                    }
+                    else ports[index].op.setUiError("uiminlength", null);
 
-                ports[index].set(v ? 1 : 0);
-            }
-            else
-            {
-                ports[index].set(v || 0);
-            }
+                    ports[index].set(v || "");
+                }
+                else if (ports[index].uiAttribs.display == "bool")
+                {
+                    if (!v || v == "false" || v == "0" || v == 0) v = false;
+                    else v = true;
 
-            const op = ports[index].op;
-            // update history on change
-            if (op && !op.uiAttribs) op.uiAttribs = {};
-            if (op && !op.uiAttribs.history) op.uiAttribs.history = {};
+                    ports[index].set(v ? 1 : 0);
+                }
+                else
+                {
+                    ports[index].set(v || 0);
+                }
 
-            if (op)
-            {
-                op.uiAttribs.history.lastInteractionAt = Date.now();
-                op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
-            }
+                const op = ports[index].op;
+                // update history on change
+                if (op && !op.uiAttribs) op.uiAttribs = {};
+                if (op && !op.uiAttribs.history) op.uiAttribs.history = {};
 
-            paramsHelper.checkDefaultValue(ports[index], index, panelid);
-            // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+                if (op)
+                {
+                    op.uiAttribs.history.lastInteractionAt = Date.now();
+                    op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
+                }
 
-            ports[index].emitEvent("onValueChangeUi");
+                paramsHelper.checkDefaultValue(ports[index], index, panelid);
+                // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
-            if (!e.detail || !e.detail.ignorePaco)
-            {
-                gui.emitEvent("portValueEdited", op, ports[index], v);
-            }
-        });
+                ports[index].emitEvent("onValueChangeUi");
+
+                if (!e.detail || !e.detail.ignorePaco)
+                {
+                    gui.emitEvent("portValueEdited", op, ports[index], v);
+                }
+            });
     }
 
     _updateWatchPorts()

@@ -2,9 +2,14 @@ import { Events, ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 import uiconfig from "../../uiconfig.js";
+import TabPanel from "./tabpanel.js";
 
 export default class BottomTabPanel extends Events
 {
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
         super();
@@ -16,7 +21,7 @@ export default class BottomTabPanel extends Events
         this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
         this._toBottomPanel = null;
 
-        this._tabs.addEventListener("onTabAdded", (tab, existedBefore) =>
+        this._tabs.on("onTabAdded", (tab, existedBefore) =>
         {
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
@@ -27,7 +32,7 @@ export default class BottomTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this._tabs.addEventListener("onTabRemoved", (tab) =>
+        this._tabs.on("onTabRemoved", (tab) =>
         {
             if (this._tabs.getNumTabs() == 0)
             {
@@ -49,7 +54,10 @@ export default class BottomTabPanel extends Events
         return this._visible;
     }
 
-    show(userInteraction)
+    /**
+     * @param {Boolean} userInteraction
+     */
+    show(userInteraction = false)
     {
         userSettings.set("bottomTabsOpened", true);
 
@@ -78,7 +86,6 @@ export default class BottomTabPanel extends Events
 
         gui.setLayout();
 
-        this._tabs.updateSize();
     }
 
     getHeight()
@@ -87,6 +94,9 @@ export default class BottomTabPanel extends Events
         return this.height;
     }
 
+    /**
+     * @param {number} h
+     */
     setHeight(h)
     {
         this.height = h;
@@ -94,12 +104,17 @@ export default class BottomTabPanel extends Events
         clearTimeout(this._toBottomPanel);
         this._toBottomPanel = setTimeout(() =>
         {
-            userSettings.set("bottomPanelHeight", this.bottomPanelHeight);
+            userSettings.set("bottomPanelHeight", this.height);
         }, 100);
         gui.setLayout();
+
+        this._tabs.emitEvent("resize");
     }
 
-    hide(donotsave)
+    /**
+     * @param {boolean} donotsave
+     */
+    hide(donotsave = false)
     {
         ele.byId("splitterBottomTabs").style.display = "none";
 
@@ -113,7 +128,10 @@ export default class BottomTabPanel extends Events
         if (!donotsave && gui.finishedLoading()) userSettings.set("bottomTabsVisible", false);
     }
 
-    toggle(userInteraction)
+    /**
+     * @param {boolean} userInteraction
+     */
+    toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
         if (this._visible)

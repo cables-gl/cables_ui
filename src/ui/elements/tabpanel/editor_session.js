@@ -9,6 +9,10 @@ import { gui } from "../../gui.js";
  */
 export default class EditorSession
 {
+
+    /**
+     * @param {boolean} userInteraction
+     */
     constructor(userInteraction)
     {
         this._openEditors = [];
@@ -28,7 +32,7 @@ export default class EditorSession
 
         this.addListener("welcometab", (name, data) =>
         {
-            new WelcomeTab(gui.mainTabs, name);
+            new WelcomeTab(gui.mainTabs);
         });
     }
 
@@ -65,7 +69,6 @@ export default class EditorSession
             }
         }, 100);
     }
-
 
     /**
      * remove a editor session
@@ -152,7 +155,6 @@ export default class EditorSession
         this._listeners[type] = cb;
     }
 }
-
 
 /**
  * @type {EditorSession}

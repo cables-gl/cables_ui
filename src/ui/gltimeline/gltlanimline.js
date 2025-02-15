@@ -13,7 +13,7 @@ import { gui } from "../gui.js";
  * @class glTlAnim
  * @extends {Events}
  */
-export default class glTlAnimLine extends Events
+export class glTlAnimLine extends Events
 {
 
     /** @type {Array<Types.Anim>} */
@@ -32,7 +32,7 @@ export default class glTlAnimLine extends Events
     #glTitle = null;
 
     /** @type {GlText} */
-    #glTitleValue = null;
+    #glTextSideValue = null;
 
     /** @type {GlTimeline} */
     #glTl = null;
@@ -74,15 +74,14 @@ export default class glTlAnimLine extends Events
 
         if (ports.length > 1)
         {
-            this.#glTitleValue = new GlText(this.#glTl.texts, "");
-            this.#glTitleValue.setParentRect(this.#glRectTitle);
-            this.#disposeRects.push(this.#glTitleValue);
+            this.#glTextSideValue = new GlText(this.#glTl.texts, "");
+            this.#glTextSideValue.setParentRect(this.#glRectTitle);
+            this.#disposeRects.push(this.#glTextSideValue);
 
             this.#glRectKeysBg.on("pointerMove", (x, y) =>
             {
-                this.#glTitleValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#minVal, this.#maxVal) * 1000) / 1000);
-                this.#glTitleValue.setPosition(this.width - this.#glTitleValue.width - 10, y, -0.5);
-                // console.log("xyyy", , y / this.height, this.#minVal, this.#maxVal);
+                this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#minVal, this.#maxVal) * 1000) / 1000);
+                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y, -0.5);
             });
         }
 
@@ -94,12 +93,12 @@ export default class glTlAnimLine extends Events
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
             if (this.#keys[i]) this.#keys[i].dispose();
-            this.#keys[i] = new glTlKeys(glTl, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
+            this.#keys[i] = new glTlKeys(glTl, this, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.addEventListener("onChange", () =>
+            const lid = anim.on("onChange", () =>
             {
                 if (!keys.isDragging()) keys.init();
             });
@@ -228,7 +227,6 @@ export default class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
         this.#disposeRects = [];
-
     }
 
     /**

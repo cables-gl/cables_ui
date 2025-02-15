@@ -433,7 +433,7 @@ export default class GradientEditor
             this._elContainer.style.left = 100 + "px";
             this._elContainer.style.top = 100 + "px";
         }
-
+        this._paper = Raphael("gradienteditorbar", 0, 0);
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
         {
             try

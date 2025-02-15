@@ -1,5 +1,12 @@
 import { ele } from "cables-shared-client";
 
+/**
+ * @typedef ContextMenuItem
+ * @property {String} title
+ * @property {String} iconClass
+ * @property {Function} func
+*/
+
 export default class ContextMenu
 {
     constructor()
@@ -23,6 +30,10 @@ export default class ContextMenu
         return this._visible;
     }
 
+    /**
+     * @param {Array<ContextMenuItem>} obj
+     * @param {HTMLElement} parent
+     */
     show(obj, parent)
     {
         if (!this._modalBg)

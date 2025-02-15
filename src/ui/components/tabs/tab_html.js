@@ -16,7 +16,7 @@ export default class HtmlTab extends Events
         super();
         this._tabs = tabs || gui.mainTabs;
 
-        this._tab = new Tab(title, { "icon": options.icon || "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+        this._tab = new Tab(title, { "icon": options.icon || "list", "infotext": "tab_logging", "padding": true, "singleton": true });
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
