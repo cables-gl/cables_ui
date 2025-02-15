@@ -18,7 +18,7 @@ import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { fileUploader } from "../dialogs/upload.js";
+
 import { userSettings } from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
 

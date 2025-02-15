@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import Gui, { gui } from "../gui.js";
+import { fileUploader } from "../dialogs/upload.js";
 
 /**
  * handle global html events like uncaught exceptions, contextmenu, resize etc

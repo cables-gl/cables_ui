@@ -276,15 +276,6 @@ export default class GlOp extends Events
             if (this._glRectSelected) this.updateSize();
         });
 
-        /*
-         * this.refreshPorts();
-         * if (this.displayType === this.DISPLAY_SUBPATCH)
-         *     this._op.patch.on("patchLoadEnd", () =>
-         *     {
-         *         this.refreshPorts();
-         *     });
-         */
-
     }
 
     _storageChanged()
