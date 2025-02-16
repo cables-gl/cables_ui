@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
+import { fileUploader } from "../dialogs/upload.js";
 
 /**
  * handle global html events like uncaught exceptions, contextmenu, resize etc
@@ -10,19 +11,44 @@ export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");
 
-    // const observer = new PerformanceObserver((list) =>
-    // {
+    document.addEventListener("paste", (e) =>
+    {
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
-    //     let entries = list.getEntries();
-    //     for (let i = 0; i < entries.length; i++)
-    //     {
-    //         console.log(entries[i]);
-    //     }
-    //     // longestBlockingLoAFs = longestBlockingLoAFs.concat(list.getEntries()).sort(
-    //     //   (a, b) => b.blockingDuration - a.blockingDuration
-    //     // ).slice(0, MAX_LOAFS_TO_CONSIDER);
-    // });
-    // observer.observe({ "type": "long-animation-frame", "buffered": true });
+        let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let index in items)
+        {
+            let item = items[index];
+            if (item.kind === "file")
+            {
+                let blob = item.getAsFile();
+                fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
+                return;
+            }
+        }
+
+        const aEl = document.activeElement;
+        if (aEl.tagName == "TEXTAREA" || aEl.tagName == "INPUT") return;
+        else if (gui.patchView._patchRenderer && gui.patchView._patchRenderer.isFocused()) gui.patchView._patchRenderer.paste(e);
+        else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().paste(e);
+    });
+
+    document.addEventListener("copy", (e) =>
+    {
+        if (!gui.patchView._patchRenderer) return;
+
+        const aEl = document.activeElement;
+
+        if (aEl.tagName == "TEXTAREA" || aEl.tagName == "INPUT") return;
+        else if (gui.patchView._patchRenderer && gui.patchView._patchRenderer.isFocused()) gui.patchView._patchRenderer.copy(e);
+        else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().copy(e);
+    });
+
+    document.addEventListener("cut", (e) =>
+    {
+        if (gui.patchView._patchRenderer && gui.patchView._patchRenderer.isFocused()) gui.patchView._patchRenderer.cut(e);
+        else if (gui.timeLine() && gui.timeLine().isFocused()) gui.timeLine().cut(e);
+    });
 
     // show context menu only on input fields/images etc...
     document.body.addEventListener("contextmenu",

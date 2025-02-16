@@ -17,7 +17,6 @@ export default class GuiRestrictions
         this._messageBox = ele.byId("restriction_message");
     }
 
-
     get visible()
     {
         return Object.keys(this._messages).length > 0;
@@ -43,12 +42,3 @@ export default class GuiRestrictions
         this._messageBox.innerHTML = msg;// + "<span class=\"icon icon-1_5x icon-x\"></span>"; //
     }
 }
-
-GuiRestrictions.RESTRICT_MODE_LOADING = 0;
-GuiRestrictions.RESTRICT_MODE_PAUSE = 1;
-GuiRestrictions.RESTRICT_MODE_BLUEPRINT = 5;
-
-GuiRestrictions.RESTRICT_MODE_REMOTEVIEW = 10;
-GuiRestrictions.RESTRICT_MODE_FOLLOWER = 20;
-GuiRestrictions.RESTRICT_MODE_EXPLORER = 30;
-GuiRestrictions.RESTRICT_MODE_FULL = 40;

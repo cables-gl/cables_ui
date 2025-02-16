@@ -7,7 +7,7 @@ import undo from "../utils/undo.js";
 import gluiconfig from "./gluiconfig.js";
 import GlPatch from "./glpatch.js";
 import defaultOps from "../defaultops.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
@@ -276,15 +276,6 @@ export default class GlOp extends Events
             if (this._glRectSelected) this.updateSize();
         });
 
-        /*
-         * this.refreshPorts();
-         * if (this.displayType === this.DISPLAY_SUBPATCH)
-         *     this._op.patch.on("patchLoadEnd", () =>
-         *     {
-         *         this.refreshPorts();
-         *     });
-         */
-
     }
 
     _storageChanged()
@@ -366,7 +357,7 @@ export default class GlOp extends Events
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
-        if (gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
@@ -474,7 +465,7 @@ export default class GlOp extends Events
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;
-        if (gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (!this._op)
         {
