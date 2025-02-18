@@ -475,18 +475,47 @@ export class Platform extends Events
     {
         const showBackupDialog = () =>
         {
+            const backupOptions = { "title": name || "" };
+
+            const checkboxGroups = [];
+            const modalNotices = [];
+            if (gui && gui.user && gui.user.supporterFeatures)
+            {
+                if (gui.user.supporterFeatures.includes("full_project_backup"))
+                {
+                    const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
+                    checkboxGroup.checkboxes.push({
+                        "name": "full_project_backup",
+                        "value": true,
+                        "title": "Backup full project (including assets and ops)."
+                    });
+                    checkboxGroups.push(checkboxGroup);
+                }
+                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!</a> ";
+                    // modalNotices.push(patchOpsText);
+                }
+            }
             new ModalDialog({
                 "prompt": true,
                 "title": "New Backup",
                 "text": "Enter a name for the backup",
+                "notices": modalNotices,
+                "checkboxGroups": checkboxGroups,
                 "promptValue": "Manual Backup",
-                "promptOk": (name) =>
+                "promptOk": (name, checkboxStates) =>
                 {
-                    this.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
+                    if (checkboxStates && checkboxStates.full_project_backup === "true")
+                    {
+                        backupOptions.destination = 1;
+                    }
+                    this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
                     {
                         if (result.success) notify("Backup created!");
                     });
-                } });
+                }
+            });
         };
 
         if (!gui.getSavedState())
