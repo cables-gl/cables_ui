@@ -10,7 +10,7 @@ import namespace from "../../namespaceutils.js";
  *
  * @export
  * @class OpDependencyTab
- * @extends {Events}
+ * @extends {Tab}
  */
 export default class OpDependencyTab extends Tab
 {
@@ -18,11 +18,9 @@ export default class OpDependencyTab extends Tab
     {
         super(title, options);
         this._tabs = tabs || gui.mainTabs;
-        this._tab = new Tab(title, this.options);
-        this.tabId = this._tab.id;
-        this._tabs.addTab(this._tab);
+        this._tabs.addTab(this);
         gui.maintabPanel.show(true);
-        this._tab.html(this.getHtml());
+        this.html(this.getHtml());
         this._initEventListeners();
     }
 
@@ -40,6 +38,7 @@ export default class OpDependencyTab extends Tab
 
         const selector = "addopdependency_" + depSource + "_" + viewId;
         const depsEle = ele.byId(selector);
+
         if (depsEle)
         {
             const editEle = depsEle.querySelector(".edit");

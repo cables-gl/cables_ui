@@ -407,7 +407,7 @@ export default class EditorTab extends Events
                     "name": "inSwitch",
                 },
                 {
-                    "content": "inStringEditor(\"${1:name}\",\"${2:default}\")",
+                    "content": "inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
                     "name": "inStringEditor",
                 },
                 {

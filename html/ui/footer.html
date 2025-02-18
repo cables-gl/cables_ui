@@ -62,7 +62,6 @@
 
         if (!window.CABLES || !CABLES.platform || !CABLES.platform.isDevEnv()) return;
         document.getElementById("loadingstatusLog").innerHTML += title + " (" + timeUsed + ") <br/>";
-        document.querySelectorAll(".devOnly").forEach(e => e.style.display = "inherit");
     }
 
     CABLESUILOADER.noCacheUrl = function (url)

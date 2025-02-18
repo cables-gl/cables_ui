@@ -6,7 +6,6 @@ import { gui } from "./gui.js";
 
 export default function extendCorePatch()
 {
-    // @ts-expect-error
     CABLES.Patch.prototype._opIdsToOps = function (opids)
     {
         let ops = [];

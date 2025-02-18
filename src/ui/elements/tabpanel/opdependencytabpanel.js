@@ -16,8 +16,8 @@ export default class OpDependencyTabPanel extends TabPanel
 
     /**
      * Description
-     * @param {any} eleId
-     * @param {any} options
+     * @param {string} eleId
+     * @param {object} options
      */
     constructor(eleId, options)
     {
@@ -32,7 +32,7 @@ export default class OpDependencyTabPanel extends TabPanel
         ];
         if (gui && gui.user && gui.user.isStaff)
         {
-            this._sources.push({ "title": "Lib", "value": "lib" });
+            this._sources.push({ "title": "Lib", "value": "lib", "icon": "lock" });
         }
         if (platform.getSupportedOpDependencyTypes().includes("npm"))
         {
@@ -47,7 +47,7 @@ export default class OpDependencyTabPanel extends TabPanel
         this._sources.forEach((depSource, i) =>
         {
             const title = depSource.title || depSource.value;
-            const tabOptions = { "hideToolbar": true, "closable": false, "depSource": depSource.value, ...this._options };
+            const tabOptions = { "hideToolbar": true, "closable": false, "depSource": depSource.value, "icon": depSource.icon, ...this._options };
             const depTab = new OpDependencyTab(this, title, tabOptions);
             if (i === 0) activeTab = depTab;
         });
