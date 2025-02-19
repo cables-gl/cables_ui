@@ -471,94 +471,51 @@ export class Platform extends Events
         });
     }
 
-    // reloadLastSavedVersion(cb)
-    // {
-    //     this.talkerAPI.send("getPatch", {}, (err, project) =>
-    //     {
-    //         if (!err)
-    //         {
-    //             let saveText = "";
-    //             if (project.updated)
-    //             {
-    //                 saveText +=
-    //                     "on " + DateTime(project.updated).format("DD.MM.YYYY HH:mm");
-    //             }
-    //             let content =
-    //                 "<div>Do you want to restore your patch to the last version saved " +
-    //                 saveText +
-    //                 "</div>";
-    //             content += "<div style='margin-top: 20px; text-align: center;'>";
-    //             content += "<a class=\"button bluebutton accept\">Ok</a>&nbsp;&nbsp;";
-    //             content += "<a class=\"button decline\">Cancel</a>";
-    //             content += "</div>";
-
-    //             const modal = new ModalDialog(
-    //                 {
-    //                     "title": "Restore Patch",
-    //                     "html": content,
-    //                 },
-    //                 false,
-    //             );
-    //             modal.on("onShow", () =>
-    //             {
-    //                 const modalElement = modal.getElement();
-    //                 const acceptButton = modalElement.querySelector(".button.accept");
-    //                 const declineButton = modalElement.querySelector(".button.decline");
-
-    //                 if (acceptButton)
-    //                 {
-    //                     acceptButton.addEventListener("pointerdown", () =>
-    //                     {
-    //                         gui.corePatch().clear();
-    //                         this._cfg.patch = project;
-    //                         incrementStartup();
-    //                         this.initializeProject(() =>
-    //                         {
-    //                             if (cb) cb(null, project);
-    //                         });
-    //                         modal.close();
-    //                     });
-    //                 }
-    //                 if (declineButton)
-    //                 {
-    //                     declineButton.addEventListener("pointerdown", () =>
-    //                     {
-    //                         modal.close();
-    //                     });
-    //                 }
-    //             });
-    //             modal.show();
-    //         }
-    //         else
-    //         {
-    //             new ModalDialog({
-    //                 "showOkButton": true,
-    //                 "title": "ERROR - Restore Patch",
-    //                 "text":
-    //                     "Error while trying to restore patch to last saved version: " +
-    //                     err +
-    //                     "<br/>Maybe try again?",
-    //             });
-    //         }
-    //     });
-    // }
-
     createBackup()
     {
         const showBackupDialog = () =>
         {
+            const backupOptions = { "title": name || "" };
+
+            const checkboxGroups = [];
+            const modalNotices = [];
+            if (gui && gui.user && gui.user.supporterFeatures)
+            {
+                if (gui.user.supporterFeatures.includes("full_project_backup"))
+                {
+                    const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
+                    checkboxGroup.checkboxes.push({
+                        "name": "full_project_backup",
+                        "value": true,
+                        "title": "Backup full project (including assets and ops)."
+                    });
+                    checkboxGroups.push(checkboxGroup);
+                }
+                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!</a> ";
+                    // modalNotices.push(patchOpsText);
+                }
+            }
             new ModalDialog({
                 "prompt": true,
                 "title": "New Backup",
                 "text": "Enter a name for the backup",
+                "notices": modalNotices,
+                "checkboxGroups": checkboxGroups,
                 "promptValue": "Manual Backup",
-                "promptOk": function (name)
+                "promptOk": (name, checkboxStates) =>
                 {
-                    this.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
+                    if (checkboxStates && checkboxStates.full_project_backup === "true")
+                    {
+                        backupOptions.destination = 1;
+                    }
+                    this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
                     {
                         if (result.success) notify("Backup created!");
                     });
-                } });
+                }
+            });
         };
 
         if (!gui.getSavedState())
