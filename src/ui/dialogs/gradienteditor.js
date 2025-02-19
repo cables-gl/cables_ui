@@ -17,7 +17,7 @@ export default class GradientEditor
         this._portName = portname;
 
         this._keyWidth =
-            this._keyHeight = 7;
+        this._keyHeight = 7;
         this._keyStrokeWidth = 2;
         this._keyOpacity = 1;
         this._dragDownDeleteThreshold = 120;
