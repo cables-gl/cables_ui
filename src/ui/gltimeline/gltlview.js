@@ -1,7 +1,7 @@
 import { Types } from "cables-shared-types";
-import GlTimeline from "./gltimeline.js";
+import { GlTimeline } from "./gltimeline.js";
 
-export default class GlTlView
+export class GlTlView
 {
 
     /** @type {GlTimeline} */

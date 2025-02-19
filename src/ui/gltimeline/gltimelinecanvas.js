@@ -1,6 +1,6 @@
 import { Types } from "cables-shared-types";
 import GlCanvas from "../gldraw/glcanvas.js";
-import GlTimeline from "./gltimeline.js";
+import { GlTimeline } from "./gltimeline.js";
 import { gui } from "../gui.js";
 
 /**
@@ -10,7 +10,7 @@ import { gui } from "../gui.js";
  * @class glTimelineCanvas
  * @extends {GlCanvas}
  */
-export default class glTimelineCanvas extends GlCanvas
+export class glTimelineCanvas extends GlCanvas
 {
 
     /**

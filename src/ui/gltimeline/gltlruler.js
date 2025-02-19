@@ -1,6 +1,6 @@
 import { Events, Logger } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
-import GlTimeline from "./gltimeline.js";
+import { GlTimeline } from "./gltimeline.js";
 
 /**
  * gltl ruler display
@@ -9,7 +9,7 @@ import GlTimeline from "./gltimeline.js";
  * @class glTlRuler
  * @extends {Events}
  */
-export default class glTlRuler extends Events
+export class glTlRuler extends Events
 {
 
     /** @type {GlTimeline} */

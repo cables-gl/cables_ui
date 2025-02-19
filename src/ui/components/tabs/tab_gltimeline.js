@@ -1,7 +1,7 @@
 import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
-import glTimelineCanvas from "../../gltimeline/gltimelinecanvas.js";
+import { glTimelineCanvas } from "../../gltimeline/gltimelinecanvas.js";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
@@ -22,7 +22,7 @@ export default class GlTimelineTab
 
         // gui.maintabPanel.show(true);
         this.#tab.contentEle.innerHTML = "";
-        const a = new glTimelineCanvas(CABLES.patch, this.#tab.contentEle);
+        const a = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle);
         this.#tab.activate();
 
         a.parentResized();
