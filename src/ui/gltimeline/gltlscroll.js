@@ -1,9 +1,9 @@
 import { Events, Logger } from "cables-shared-client/index.js";
 import GlRect from "../gldraw/glrect.js";
-import GlTimeline from "./gltimeline.js";
-import glTlDragArea from "./gltldragarea.js";
+import { GlTimeline } from "./gltimeline.js";
+import { glTlDragArea } from "./gltldragarea.js";
 
-export default class glTlScroll extends Events
+export class glTlScroll extends Events
 {
 
     /** @type {GlRect} */

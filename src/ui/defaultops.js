@@ -52,7 +52,7 @@ const defaultOpNames =
 
     "BoolToString": "Ops.Boolean.BoolToString",
     "NumberToString": "Ops.String.NumberToString_v2",
-    "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
+    "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber_v2",
 
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 

@@ -1,10 +1,10 @@
 import { Events } from "cables-shared-client";
 import { Types } from "cables-shared-types";
-import GlText from "../gldraw/gltext.js";
-import glTlKeys from "./gltlkeys.js";
-import GlTimeline from "./gltimeline.js";
-import GlRect from "../gldraw/glrect.js";
+import { GlTimeline } from "./gltimeline.js";
+import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
+import GlRect from "../gldraw/glrect.js";
+import GlText from "../gldraw/gltext.js";
 
 /**
  * gltimeline anim

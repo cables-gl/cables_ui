@@ -1,20 +1,20 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Types } from "cables-shared-types";
-import GlTextWriter from "../gldraw/gltextwriter.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import glTlRuler from "./gltlruler.js";
-import { gui } from "../gui.js";
-import glTlScroll from "./gltlscroll.js";
-import GlRect from "../gldraw/glrect.js";
-import GlText from "../gldraw/gltext.js";
-import GlTlView from "./gltlview.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
-import { userSettings } from "../components/usersettings.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { notify, notifyWarn } from "../elements/notification.js";
-import undo from "../utils/undo.js";
-import GlSpline from "../gldraw/glspline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
+import { glTlRuler } from "./gltlruler.js";
+import { glTlScroll } from "./gltlscroll.js";
+import { GlTlView } from "./gltlview.js";
+import { gui } from "../gui.js";
+import { notify, notifyWarn } from "../elements/notification.js";
+import { userSettings } from "../components/usersettings.js";
+import GlRect from "../gldraw/glrect.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import GlSpline from "../gldraw/glspline.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import GlText from "../gldraw/gltext.js";
+import GlTextWriter from "../gldraw/gltextwriter.js";
+import undo from "../utils/undo.js";
 
 /**
  * gl timeline
@@ -23,7 +23,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
  * @class GlTimeline
  * @extends {Events}
  */
-export default class GlTimeline extends Events
+export class GlTimeline extends Events
 {
 
     /** @type {GlTextWriter} */

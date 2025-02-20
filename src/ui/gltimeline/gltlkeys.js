@@ -1,6 +1,6 @@
 import { Events, Logger } from "cables-shared-client";
 import { Types } from "cables-shared-types";
-import GlTimeline from "./gltimeline.js";
+import { GlTimeline } from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
@@ -13,7 +13,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
  * @class glTlKeys
  * @extends {Events}
  */
-export default class glTlKeys extends Events
+export class glTlKeys extends Events
 {
 
     #minVal = 999999;

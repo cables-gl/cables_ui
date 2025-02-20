@@ -70,6 +70,10 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
                 {
                     "test": /\.d.ts/,
                     "use": "null-loader",
+                },
+                {
+                    "test": /\.wgsl/,
+                    "use": "raw-loader",
                 }
             ]
         },

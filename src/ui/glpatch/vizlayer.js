@@ -101,7 +101,7 @@ export default class VizLayer extends Events
     }
 
     /**
-     * @param {WebGpuCOntext} cgp
+     * @param {CgpContext} cgp
      */
     renderWebGpuPreviews(cgp)
     {
