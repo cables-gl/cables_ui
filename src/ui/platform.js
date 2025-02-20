@@ -502,9 +502,11 @@ export class Platform extends Events
                 }
                 else
                 {
+                    const exportUrl = platform.getCablesUrl() + "/export/" + gui.patchId + "#patch";
+                    const importUrl = platform.getCablesUrl() + "/mydata#import";
                     new ModalDialog({
                         "title": "Patch Backup",
-                        "text": "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!</a>",
+                        "text": "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!</a><br/>You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.",
                         "showOkButton": true
                     });
                 }
