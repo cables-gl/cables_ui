@@ -477,7 +477,6 @@ export class Platform extends Events
         {
             const backupOptions = { "title": name || "" };
 
-            const checkboxGroups = [];
             const modalNotices = [];
             if (gui && gui.user && gui.user.supporterFeatures)
             {
@@ -488,11 +487,9 @@ export class Platform extends Events
                         "title": "Patch Backup",
                         "text": "Enter a name for the backup",
                         "notices": modalNotices,
-                        "checkboxGroups": checkboxGroups,
                         "promptValue": "Manual Backup",
-                        "promptOk": (name, checkboxStates) =>
+                        "promptOk": () =>
                         {
-                            backupOptions.destination = 1;
                             this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
                             {
                                 if (result.success) notify("Backup created!");
