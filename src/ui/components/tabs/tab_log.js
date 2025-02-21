@@ -318,6 +318,7 @@ export default class LogTab extends Events
     _logErrorSrcCodeLine(l, url, line)
     {
         if (!url) return;
+        if (url.includes("[native code]")) return;
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 
