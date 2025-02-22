@@ -49,8 +49,15 @@ export default class OpDependencyTabPanel extends TabPanel
             const title = depSource.title || depSource.value;
             const tabOptions = { "hideToolbar": true, "closable": false, "depSource": depSource.value, "icon": depSource.icon, ...this._options };
             const depTab = new OpDependencyTab(this, title, tabOptions);
-            if (i === 0) activeTab = depTab;
+            if (i > 0)
+            {
+                depTab.deactivate();
+            }
+            else
+            {
+                activeTab = depTab;
+            }
         });
-        if (activeTab) this.activateTab(activeTab.tabId);
+        if (activeTab) this.activateTab(activeTab.id);
     }
 }
