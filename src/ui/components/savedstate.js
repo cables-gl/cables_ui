@@ -94,26 +94,15 @@ export default class SavedState extends Events
 
     setSaved(initiator, subpatch)
     {
-        if (subpatch === undefined)
-        {
-            // subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
-            subpatch = 0;// this._statesSaved[this.getBlueprint() || 0] = true;
-        }
-        else
-        {
-            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
-            if (!subOuter || !subOuter.isSubPatchOp() >= 2) subpatch = 0;
-        }
-        subpatch = subpatch || 0;
+        if (subpatch === undefined) subpatch = 0;
 
-        const changed = this._statesSaved[subpatch] != true;
-        if (changed)gui.corePatch().emitEvent("savedStateChanged");
+        const changed = this._statesSaved[subpatch] !== true;
+        if (changed) gui.corePatch().emitEvent("savedStateChanged");
 
         this._statesSaved[subpatch] = true;
-
         this.log(initiator, subpatch, true);
-
         gui.corePatch().emitEvent("subpatchesChanged");
+
         this.updateUi();
     }
 

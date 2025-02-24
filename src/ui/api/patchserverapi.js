@@ -47,7 +47,7 @@ export default class PatchSaveServer extends Events
 
     checkUpdatedSaveForce(updated)
     {
-        this._serverDate = updated;
+        this.setServerDate(updated);
         gui.closeModal();
         CABLES.CMD.PATCH.save(true, () =>
         {
@@ -106,7 +106,7 @@ export default class PatchSaveServer extends Events
 
                 gui.jobs().finish("checkupdated");
             }
-            else if (data.updated && (this._serverDate != data.updated))
+            else if (data.updated && (this._serverDate !== data.updated))
             {
 
                 if (fromSave)
@@ -434,7 +434,7 @@ export default class PatchSaveServer extends Events
                 }
             }
 
-            if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
+            if (op.uiAttribs.title === CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
@@ -652,7 +652,7 @@ export default class PatchSaveServer extends Events
                                     gui.socket.sendNotification("Patch saved in other window");
                             }
 
-                            this._serverDate = r.updated;
+                            this.setServerDate(r.updated);
                         }
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
