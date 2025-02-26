@@ -1449,6 +1449,10 @@ export default class Gui extends Events
             ele.byId("nav_viewBackups").classList.add("nav-greyout");
             ele.byId("nav_patch_save").classList.add("nav-greyout");
         }
+        else if (platform.patchIsBackup())
+        {
+            ele.hide(ele.byId("nav_createBackup"));
+        }
 
         ele.byId("nav-item-activity").addEventListener("click", () =>
         {

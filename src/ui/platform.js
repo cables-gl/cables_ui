@@ -473,68 +473,88 @@ export class Platform extends Events
 
     createBackup()
     {
-        const showBackupDialog = () =>
-        {
-            const backupOptions = { "title": name || "" };
+        const backupOptions = { "title": name || "" };
 
-            const checkboxGroups = [];
-            const modalNotices = [];
-            if (gui && gui.user && gui.user.supporterFeatures)
+        const modalNotices = [];
+        if (gui && gui.user && gui.user.supporterFeatures && !this.patchIsBackup())
+        {
+            const exportUrl = platform.getCablesUrl() + "/export/" + gui.patchId + "#patch";
+            const importUrl = platform.getCablesUrl() + "/mydata#import";
+            const quotaOverviewUrl = platform.getCablesUrl() + "/mydata";
+
+            if (gui.user.supporterFeatures.includes("full_project_backup"))
             {
-                if (gui.user.supporterFeatures.includes("full_project_backup"))
-                {
-                    const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
-                    checkboxGroup.checkboxes.push({
-                        "name": "full_project_backup",
-                        "value": true,
-                        "title": "Backup full project (including assets and ops)."
-                    });
-                    checkboxGroups.push(checkboxGroup);
-                }
-                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
-                {
-                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!</a> ";
-                    // modalNotices.push(patchOpsText);
-                }
-            }
-            new ModalDialog({
-                "prompt": true,
-                "title": "New Backup",
-                "text": "Enter a name for the backup",
-                "notices": modalNotices,
-                "checkboxGroups": checkboxGroups,
-                "promptValue": "Manual Backup",
-                "promptOk": (name, checkboxStates) =>
-                {
-                    if (checkboxStates && checkboxStates.full_project_backup === "true")
+                const backupModalOptions = {
+                    "prompt": true,
+                    "title": "Patch Backup",
+                    "text": "Enter a name for the backup",
+                    "notices": modalNotices,
+                    "promptValue": "Manual Backup",
+                    "promptOk": () =>
                     {
-                        backupOptions.destination = 1;
+                        this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
+                        {
+                            if (result.success) notify("Backup created!");
+                        });
                     }
-                    this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
-                    {
-                        if (result.success) notify("Backup created!");
+                };
+
+                if (!gui.getSavedState())
+                {
+                    new ModalDialog({
+                        "choice": true,
+                        "cancelButton": {
+                            "text": "Backup last saved state",
+                            "callback": () =>
+                            {
+                                new ModalDialog(backupModalOptions);
+                            },
+                        },
+                        "title": "Backup",
+                        "warning": true,
+                        "text": text.projectBackupNotSaved,
                     });
+
                 }
-            });
-        };
+                else
+                {
+                    new ModalDialog(backupModalOptions);
+                }
 
-        if (!gui.getSavedState())
+            }
+            else if (gui.user.supporterFeatures.includes("overquota_full_project_backup"))
+            {
+                let modalText = "You are currently using all of your<a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage space</a>, upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
+                modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
+                new ModalDialog({
+                    "title": "Patch Backup",
+                    "text": modalText,
+                    "showOkButton": true
+                });
+            }
+            else
+            {
+                let modalText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to backup projects including assets and ops!<br/>";
+                modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
+                new ModalDialog({
+                    "title": "Patch Backup",
+                    "text": modalText,
+                    "showOkButton": true
+                });
+            }
+        }
+        else
         {
+            let modalText = "Not possible to create a backup of this patch.";
+            if (this.patchIsBackup()) modalText += "<br/>You cannot create a backup of a backup!";
             new ModalDialog({
-                "choice": true,
-                "cancelButton": {
-                    "text": "Backup last saved state",
-                    "callback": showBackupDialog,
-                },
-                "title": "Backup",
+                "showOkButton": true,
                 "warning": true,
-                "text": text.projectBackupNotSaved,
+                "title": "Patch Backup",
+                "text": modalText
             });
-
-            return;
         }
 
-        showBackupDialog();
     }
 
     initializeProject(cb)
@@ -581,13 +601,17 @@ export class Platform extends Events
         }
     }
 
+    patchIsBackup()
+    {
+        return this._cfg && !!this._cfg.patchVersion;
+    }
+
     exportPatch(projectId)
     {
         let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
-        if (this._versionId) gotoUrl += "?version=" + this._versionId;
+        if (this.patchIsBackup()) gotoUrl += "?version=" + this._cfg.patchVersion;
 
-        const iframeParam = this._versionId ? "&iframe=true" : "?iframe=true";
-        const url = gotoUrl + iframeParam;
+        const url = gotoUrl + "&iframe=true";
 
         gui.mainTabs.addIframeTab(
             "Export Patch ",
