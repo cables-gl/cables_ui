@@ -2228,7 +2228,6 @@ export default class ServerOps
 
     showApiError(err)
     {
-        CABLES.logStack();
         if (err && err.msg == "ILLEGAL_OPS")
         {
             new ModalDialog({
