@@ -7,6 +7,7 @@ import Gui, { gui } from "../gui.js";
 import { PatchConnectionSender } from "./patchconnection.js";
 import Chat from "../components/tabs/tab_chat.js";
 import { platform } from "../platform.js";
+import ScUi from "./sc_ui.js";
 
 export default class ScConnection extends Events
 {
@@ -50,6 +51,7 @@ export default class ScConnection extends Events
                 if (this.showGuestUsers) showMultiplayerUi = true;
                 if (gui.isRemoteClient) showMultiplayerUi = false;
 
+                this._scUi = new ScUi(this);
                 if (showMultiplayerUi)
                 {
                     this._multiplayerUi = new ScUiMultiplayer(this);
@@ -199,7 +201,6 @@ export default class ScConnection extends Events
                 if (!this.client.isRemoteClient)
                 {
                     this.client.isPilot = true;
-                    // this.sendNotification(this.client.username + " just started a multiplayer session");
                 }
                 this._inSessionSince = this.getTimestamp();
                 this.client.inMultiplayerSession = true;
@@ -211,10 +212,6 @@ export default class ScConnection extends Events
 
     joinMultiplayerSession()
     {
-        // if (gui && !gui.isRemoteClient)
-        // {
-        //     gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
-        // }
         this.client.isPilot = false;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
@@ -479,6 +476,21 @@ export default class ScConnection extends Events
             }
         })();
 
+        if (this.userChannelName)
+        {
+            (async () =>
+            {
+                const userChannel = this._socket.subscribe(this.userChannelName + "/activity");
+                for await (const msg of userChannel)
+                {
+                    if (msg && msg.data)
+                    {
+                        gui.updateActivityFeedIcon(msg.data);
+                    }
+                }
+            })();
+        }
+
         (async () =>
         {
             const controlChannel = this._socket.subscribe(this.patchChannelName + "/control");
@@ -500,21 +512,6 @@ export default class ScConnection extends Events
             }
         })();
 
-        if (this.userChannelName)
-        {
-            (async () =>
-            {
-                const userChannel = this._socket.subscribe(this.userChannelName + "/activity");
-                for await (const msg of userChannel)
-                {
-                    if (msg && msg.data)
-                    {
-                        gui.updateActivityFeedIcon(msg.data);
-                    }
-                }
-            })();
-        }
-
         (async () =>
         {
             const infoChannel = this._socket.subscribe(this.patchChannelName + "/info");
@@ -534,6 +531,19 @@ export default class ScConnection extends Events
                 this.emitEvent("netActivityIn");
             }
         })();
+
+        if (this.userPatchChannelName)
+        {
+            (async () =>
+            {
+                const userChannel = this._socket.subscribe(this.userPatchChannelName + "/info");
+                for await (const msg of userChannel)
+                {
+                    this._handleInfoChannelMsg(msg);
+                    this.emitEvent("netActivityIn");
+                }
+            })();
+        }
 
         window.addEventListener("beforeunload", () =>
         {
@@ -653,6 +663,7 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/chat", msg);
+        if (msg.data && msg.data.senderEditorId && (msg.data.senderEditorId === gui.editorSessionId)) msg.isOwn = true;
 
         if (msg.name === "chatmsg")
         {
@@ -664,6 +675,8 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         if (msg.clientId === this._socket.clientId) return;
+        if (msg.data && msg.data.senderEditorId && (msg.data.senderEditorId === gui.editorSessionId)) msg.isOwn = true;
+
         this._logVerbose("received:", this.patchChannelName + "/paco", msg);
 
         if (this.inMultiplayerSession && msg.name === "paco")
@@ -743,6 +756,7 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/control", msg);
+        if (msg.data && msg.data.senderEditorId && (msg.data.senderEditorId === gui.editorSessionId)) msg.isOwn = true;
 
         if (msg.name === "pingMembers")
         {
@@ -787,6 +801,7 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/ui", msg);
+        if (msg.data && msg.data.senderEditorId && (msg.data.senderEditorId === gui.editorSessionId)) msg.isOwn = true;
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
@@ -796,6 +811,7 @@ export default class ScConnection extends Events
     {
         if (!this.client) return;
         this._logVerbose("received:", this.patchChannelName + "/info", msg);
+        if (msg.data && msg.data.senderEditorId && (msg.data.senderEditorId === gui.editorSessionId)) msg.isOwn = true;
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);

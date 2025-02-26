@@ -17,15 +17,17 @@ export default class Api
 
         const options = { "method": method };
 
+        const headers = {};
+        if (gui.editorSessionId) headers["X-Cables-Editor-Session"] = gui.editorSessionId;
+
         if (method === "POST")
         {
-            options.headers = {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            };
+            headers.Accept = "application/json";
+            headers["Content-Type"] = "application/json";
             if (data) options.body = JSON.stringify(data);
         }
 
+        options.headers = headers;
         fetch(url, options)
             .then((response) =>
             {

@@ -120,7 +120,7 @@ export default class PlatformElectron extends Platform
     {
         const showBackupDialog = () =>
         {
-            this.talkerAPI.send("patchCreateBackup", { }, (err, result) =>
+            this.talkerAPI.send("patchCreateBackup", {}, (err, result) =>
             {
                 if (result.success) notify("Backup created!");
             });

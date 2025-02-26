@@ -72,7 +72,7 @@ export function notifyError(title, text, options = {})
     return toastId;
 }
 
-export function notifyWarn(title, text, options = {})
+export function notifyWarn(title, text = "", options = {})
 {
     const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
     const closeable = options.closeable || false;

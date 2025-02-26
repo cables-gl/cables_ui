@@ -492,10 +492,7 @@ export class Platform extends Events
                     "promptValue": "Manual Backup",
                     "promptOk": () =>
                     {
-                        this.talkerAPI.send("patchCreateBackup", backupOptions, (err, result) =>
-                        {
-                            if (result.success) notify("Backup created!");
-                        });
+                        this.talkerAPI.send("patchCreateBackup", backupOptions);
                     }
                 };
 
