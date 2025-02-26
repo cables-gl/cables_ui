@@ -115,16 +115,15 @@ export default class PatchSaveServer extends Events
                     "This patch was changed. Your version is out of date. <br/><br/>Last update: " + moment(data.updated).fromNow() + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
                     "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
                     html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
-                    // html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                    html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
+                    new ModalDialog({
+                        "title": "Meanwhile...",
+                        "html": html
+                    });
 
                 }
                 else gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
-
-                // new ModalDialog(
-                //     {
-                //         "title": "Meanwhile...",
-                //         "html": html
-                //     });
 
                 gui.jobs().finish("checkupdated");
             }
