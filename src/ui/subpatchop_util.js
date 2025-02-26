@@ -226,7 +226,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false) gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -275,7 +275,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false) gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -347,7 +347,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false) gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -694,7 +694,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
             "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
             "content": JSON.stringify(o, null, "  "),
         },
-        (err) =>
+        (err, res) =>
         {
             if (err)
             {
@@ -707,17 +707,11 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                 notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
             }
 
+            if (res && res.data && res.data.updated) gui.patchView.store.setServerDate(res.data.updated);
+
             gui.showLoadingProgress(false);
 
-            // if (options.loadingModal) options.loadingModal.setTask("update project date...");
-
-            // platform.talkerAPI.send("setProjectUpdated", { }, (e, res) =>
-            // {
-            //     gui.patchView.store._serverDate = res.data.updated;
-            // });
-
-            if (newOp.patchId)
-                gui.savedState.setSaved("saved bp", newOp.patchId.get());
+            if (newOp.patchId) gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
             if (options.execute !== false)
             {

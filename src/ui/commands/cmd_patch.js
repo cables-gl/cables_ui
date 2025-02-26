@@ -307,6 +307,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             gui.patchView.createSubPatchFromSelection(2,
                 (patchId, OpTempSubpatch) =>
                 {
+
                     const portJson = { "ports": [] };
                     const oldLinks = [];
 
@@ -399,7 +400,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                         {
                                             if (err)
                                             {
-                                                // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                                                 this.showApiError(err);
                                                 return;
                                             }
