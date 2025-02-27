@@ -608,14 +608,12 @@ export class Platform extends Events
 
     exportPatch(projectId)
     {
-        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
-        if (this.patchIsBackup()) gotoUrl += "?version=" + this._cfg.patchVersion;
-
-        const url = gotoUrl + "&iframe=true";
+        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId + "?iframe=true";
+        if (this.patchIsBackup()) gotoUrl += "&version=" + this._cfg.patchVersion;
 
         gui.mainTabs.addIframeTab(
-            "Export Patch ",
-            url,
+            "Export Patch",
+            gotoUrl,
             {
                 "icon": "settings",
                 "closable": true,
