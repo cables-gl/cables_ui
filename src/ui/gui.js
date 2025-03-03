@@ -53,7 +53,7 @@ import { userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import Tab from "./elements/tabpanel/tab.js";
-import GlTimeline from "./gltimeline/gltimeline.js";
+import { GlTimeline } from "./gltimeline/gltimeline.js";
 
 /**
  * @type {Gui}

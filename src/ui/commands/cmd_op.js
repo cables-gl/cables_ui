@@ -28,6 +28,19 @@ CABLES_CMD_OP.downGradeOp = function ()
     }
 };
 
+CABLES_CMD_OP.copyNameClipboard = function ()
+{
+    let str = "";
+    const selops = gui.patchView.getSelectedOps();
+
+    for (let i = 0; i < selops.length; i++)
+        str += selops[i].objName.endl();
+
+    navigator.clipboard.writeText(str);
+    notify("copied " + selops.length + " op names to clipboard ", null, { "force": true });
+
+};
+
 CABLES_CMD_OP.upGradeOps = function ()
 {
     const selops = gui.patchView.getSelectedOps();
@@ -238,5 +251,11 @@ CMD_OP_COMMANDS.push(
         "category": "op",
         "icon": "op"
     },
+    {
+        "cmd": "Copy op names to clipboard",
+        "func": CABLES_CMD_OP.copyNameClipboard,
+        "category": "op",
+        "icon": "op"
+    }
 
 );

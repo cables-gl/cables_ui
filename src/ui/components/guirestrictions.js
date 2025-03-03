@@ -14,7 +14,14 @@ export default class GuiRestrictions
         this._restrictionBlueprint = 0;
         this._messages = {};
 
+        this._restrictionDialog = ele.byId("restriction_container");
         this._messageBox = ele.byId("restriction_message");
+
+        ele.clickable(ele.byId("restriction_close"), () =>
+        {
+            this._restrictionDialog.classList.add("hidden");
+        });
+
     }
 
     get visible()
@@ -36,9 +43,10 @@ export default class GuiRestrictions
         }
         else this._messages[id] = msg;
 
-        if (msg) this._messageBox.classList.remove("hidden");
-        else this._messageBox.classList.add("hidden");
+        this._messageBox.innerHTML = msg;
 
-        this._messageBox.innerHTML = msg;// + "<span class=\"icon icon-1_5x icon-x\"></span>"; //
+        if (msg) this._restrictionDialog.classList.remove("hidden");
+        else this._restrictionDialog.classList.add("hidden");
+
     }
 }
