@@ -737,10 +737,8 @@ export class GlTimeline extends Events
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
 
-        console.log("updateAllElements #tlAnims", this.#tlAnims.length);
-        if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
-            if (this.#tlAnims[0])
-                this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
+        if (this.#layout === GlTimeline.LAYOUT_GRAPHS && this.#tlAnims[0])
+            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
 
         perf.finish();
     }
