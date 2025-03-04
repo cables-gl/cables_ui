@@ -159,6 +159,7 @@ export class GlTimeline extends Events
         gui.on("opSelectChange", () =>
         {
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+            this.updateAllElements();
         });
 
         cgl.canvas.classList.add("cblgltimelineEle");
@@ -338,8 +339,9 @@ export class GlTimeline extends Events
             // {
             //     return;
             // }
-            if (this.hoverKeyRect)
+            if (this.hoverKeyRect && !this.selectRect)
             {
+                console.log("hoverKeyRect");
             }
             else
             {
@@ -537,7 +539,7 @@ export class GlTimeline extends Events
     {
         if (!e.pointerType) return;
 
-        if (e.buttons == 1)
+        if (!this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
                 this.unSelectAllKeys();
 
@@ -556,6 +558,7 @@ export class GlTimeline extends Events
     {
         this.#rects.mouseUp(e);
         this.mouseDown = false;
+        this.hoverKeyRect = null;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
     }
