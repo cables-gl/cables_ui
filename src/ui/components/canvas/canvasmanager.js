@@ -47,6 +47,9 @@ export default class CanvasManager
         return this._canvasMode;
     }
 
+    /**
+     * @returns {CABLES.CgContext}
+     */
     currentContext()
     {
         return this._contexts[this._curContextIdx];

@@ -23,7 +23,10 @@
         </div>
     </div>
 
-    <div id="restriction_message" class="hidden"></div>
+    <div id="restriction_container" class="hidden">
+        <span id="restriction_close" class="icon icon-x"></span>
+        <div id="restriction_message" ></div>
+    </div>
 
     <div id="drop-op-cursor" class="hidden"></div>
 
@@ -74,7 +77,7 @@
         <span class="icon icon-chevron-left" style="pointer-events:none;"></span>
     </div>
 
-    <div id="editorminimized" onclick="gui.maintabPanel.toggle(true);gui.setLayout();">
+    <div id="editorminimized" onclick="gui.maintabPanel.toggle(true);gui.setLayout();" data-info="minimize_tabpanel">
         <span class="icon icon-chevron-right"></span>
     </div>
 

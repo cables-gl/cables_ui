@@ -202,7 +202,7 @@
 //     }
 // }
 
-#restriction_message
+#restriction_container
 {
     cursor:pointer;
     position: absolute;
@@ -216,6 +216,21 @@
     padding: 15px 21px;
     border-radius: 4px;
     margin: 4px 8px 5px 5px;
+    text-align: right;
+
+    #restriction_close
+    {
+        position: absolute;
+        margin-top: -9px;
+        margin-left: 3px;
+        display: none;
+    }
+
+    &:hover #restriction_close
+    {
+        display:inline-block;
+
+    }
 }
 
 #breadcrumb_nav {

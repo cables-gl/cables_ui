@@ -84,6 +84,8 @@ export default class GlLink
                      * @type {Op}
                      */
                     const fromOp = gui.corePatch().getOpById(this._glPatch._portDragLine._startPortOpId);
+
+                    if (!fromOp) return;
                     const fromPort = fromOp.getPortById(this._glPatch._portDragLine._startPortId);
 
                     let otherPort = link.portOut;
