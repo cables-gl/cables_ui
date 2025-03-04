@@ -391,7 +391,7 @@ export default class VizLayer extends Events
                         if (child.scope && child.children)
                         {
                             if (child.scope == "built_in")ctx.fillStyle = "#418ce9"; // blue
-                            else if (child.scope == "comment")ctx.fillStyle = "#0b0"; // green
+                            else if (child.scope == "comment")ctx.fillStyle = "#49d6b2"; // green
                             else if (child.scope == "number")ctx.fillStyle = "#49d6b2"; // cyan
                             else if (options.syntax == "js" && child.scope == "string" && nextChild && nextChild == ": ")
                             {

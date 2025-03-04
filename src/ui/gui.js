@@ -1,7 +1,6 @@
 import { Logger, Events, ele } from "cables-shared-client";
 import { Types } from "cables-shared-types";
 import { platform } from "./platform.js";
-import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
 import Jobs from "./components/jobs.js";

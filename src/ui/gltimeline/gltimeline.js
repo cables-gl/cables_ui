@@ -44,7 +44,7 @@ export class GlTimeline extends Events
     /** @type {glTlScroll} */
     scroll = null;
 
-    /** @type {Array<glTlAnim>} */
+    /** @type {Array<glTlAnimLine>} */
     #tlAnims = [];
 
     /** @type {GlRect} */
@@ -74,7 +74,9 @@ export class GlTimeline extends Events
     /** @type {GlTlView} */
     view = null;
 
-    #layout = 0;
+    static LAYOUT_LINES = 0;
+    static LAYOUT_GRAPHS = 1;
+    #layout = GlTimeline.LAYOUT_LINES;
 
     /** @type {Array<Types.AnimKey>} */
     #selectedKeys = [];
@@ -101,6 +103,7 @@ export class GlTimeline extends Events
 
     selectRect = null;
     #selectedKeyAnims = [];
+    #firstInit = true;
 
     /**
      * @param {Types.CglContext} cgl
@@ -114,7 +117,7 @@ export class GlTimeline extends Events
         this.#cgl = cgl;
         this.view = new GlTlView(this);
 
-        this.#layout = userSettings.get("gltl_layout") || 0;
+        this.#layout = userSettings.get("gltl_layout") || GlTimeline.LAYOUT_LINES;
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
@@ -195,6 +198,7 @@ export class GlTimeline extends Events
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
         {
+
             let selops = gui.patchView.getSelectedOps();
 
             if (selops.length == 0) return;
@@ -208,9 +212,9 @@ export class GlTimeline extends Events
 
             let selOpsStr = "";
             for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].opId;
-            // console.log(selops.length);
+
             this.updateAllElements();
-            if (this.#layout == 1 && selOpsStr != this.#selOpsStr)
+            if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selOpsStr != this.#selOpsStr)
             {
                 this.init();
                 this.#selOpsStr = selOpsStr;
@@ -224,7 +228,6 @@ export class GlTimeline extends Events
         this.#rectSelect.setColor(gui.theme.colors_patch.patchSelectionArea);
 
         this._initUserPrefs();
-
     }
 
     _initUserPrefs()
@@ -281,8 +284,8 @@ export class GlTimeline extends Events
 
     toggleGraphLayout()
     {
-        if (this.#layout == 1) this.#layout = 0;
-        else this.#layout = 1;
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
+        else this.#layout = GlTimeline.LAYOUT_GRAPHS;
 
         userSettings.set("gltl_layout", this.#layout);
 
@@ -394,6 +397,10 @@ export class GlTimeline extends Events
         return this.#selectedKeys.indexOf(k) != -1;
     }
 
+    /**
+     * @param {Array<AnimKey>} keys
+     * @returns {Number}
+     */
     getKeysSmallestTime(keys)
     {
         let minTime = 9999999;
@@ -408,6 +415,9 @@ export class GlTimeline extends Events
         return this.#selectedKeys.length;
     }
 
+    /**
+     * @param {Number} time
+     */
     moveSelectedKeys(time)
     {
         if (time === undefined)time = this.cursorTime;
@@ -415,6 +425,20 @@ export class GlTimeline extends Events
         this.moveSelectedKeysDelta(minTime);
     }
 
+    /**
+     * @param {Number} easing
+     */
+    setSelectedKeysEasing(easing)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+            this.#selectedKeys[i].set({ "e": easing });
+
+        this.updateAllElements();
+    }
+
+    /**
+     * @param {Number} time
+     */
     setSelectedKeysTime(time)
     {
         if (time === undefined)time = this.cursorTime;
@@ -583,8 +607,13 @@ export class GlTimeline extends Events
         const ports = [];
 
         let selops = gui.patchView.getSelectedOps();
+        if (this.#layout == GlTimeline.LAYOUT_LINES)ops = gui.corePatch().ops;
 
-        if (this.#layout == 1 && selops.length > 0) ops = selops;
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = ops = gui.corePatch().ops;
+        this.#firstInit = false;
+
+        console.log("init selops", selops.length);
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -594,24 +623,28 @@ export class GlTimeline extends Events
                 if (op.portsIn[j].anim)
                 {
                     ports.push(op.portsIn[j]);
+                    console.log("2", this.#layout);
 
-                    if (this.#layout === 0)
+                    if (this.#layout === GlTimeline.LAYOUT_LINES)
                     {
                         const a = new glTlAnimLine(this, [op.portsIn[j]]);
                         this.#tlAnims.push(a);
                     }
                     count++;
                 }
+                else console.log("has no anim,,,");
             }
         }
 
-        if (this.#layout === 1)
+        if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setHeight(this.#cgl.canvasHeight);
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
+
+        console.log("init finished this.#tlAnims", this.#tlAnims.length);
 
         this.updateAllElements();
         this.setPositions();
@@ -704,7 +737,8 @@ export class GlTimeline extends Events
         this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
         this.udpateCursor();
 
-        if (this.#layout === 1)
+        console.log("updateAllElements #tlAnims", this.#tlAnims.length);
+        if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
             if (this.#tlAnims[0])
                 this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
 
