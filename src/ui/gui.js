@@ -1651,19 +1651,6 @@ export default class Gui extends Events
 
     }
 
-    metaKeyframesShowAnim(opid, portname)
-    {
-        // if (!gui.metaKeyframes)
-        // {
-        // gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
-        // }
-        gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
-        gui.maintabPanel.show(true);
-
-        if (opid && portname)
-            gui.metaKeyframes.showAnim(opid, portname);
-    }
-
     pressedEscape(e)
     {
         if (this.canvasManager.getCanvasUiBar())

@@ -68,7 +68,7 @@ class ParamsListener extends Events
                     break;
 
                 case "showAnim":
-                    gui.metaKeyframesShowAnim(data.opid, data.portname);
+                    gui.toggleTimeline();
                     break;
 
                 case "resetOpValues":
