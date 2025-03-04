@@ -807,7 +807,7 @@ export default class Gui extends Events
         const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
         if (metaTabPanelTabs) metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
 
-        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - this.bottomTabPanel.getHeight() - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
