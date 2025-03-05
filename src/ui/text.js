@@ -120,7 +120,6 @@ const text =
     "filemanager_reupload": "Replace contents of this file",
     "filemanager_copy_file_url": "Copy file URL",
 
-
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",
 
@@ -227,8 +226,6 @@ const text =
 
         "title_fadeOutCables": "Fade Cables",
         "subtitle_fadeOutCables": "Fade out long cables",
-
-
 
         "title_fontsize": "Text Size",
         "subtitle_fontsize": "Size Of Text and Icons in cables",

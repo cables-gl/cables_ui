@@ -4,7 +4,6 @@ import opNames from "../opnameutils.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
-
 /**
  * Managing bookmarks of a patch. bookmarks will be displayed in the param panel when no op is selected
  *
@@ -75,7 +74,6 @@ export default class Bookmarks
         //     perf.finish();
         // }
 
-
         const perf = gui.uiProfiler.start("bookmarks");
 
         const bm = [];
@@ -105,7 +103,6 @@ export default class Bookmarks
         // const perf3 = gui.uiProfiler.start("update dynamic commands");
         // this.updateDynamicCommands();
         // perf3.finish();
-
 
         return html;
     }
@@ -222,7 +219,6 @@ export default class Bookmarks
 
             this._dynCmds.push(cmd);
         }
-
 
         const subs = gui.patchView.getSubPatches(false);
         for (let i = 0; i < subs.length; i++)

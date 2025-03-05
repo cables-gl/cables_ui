@@ -85,7 +85,6 @@ export default class Introduction
         );
     }
 
-
     showIntroduction()
     {
         if (!this._introStepsDefined)

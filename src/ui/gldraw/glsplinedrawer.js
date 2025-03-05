@@ -105,6 +105,7 @@ export default class GlSplineDrawer
      */
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {
+
         if (this._splines.length == 0) return;
 
         if (this._rebuildLater)
@@ -167,7 +168,6 @@ export default class GlSplineDrawer
             "hidden": false,
             "pointsNeedProgressUpdate": true,
             "deleted": false
-
         };
 
         this._rebuildLater = true;
@@ -355,16 +355,11 @@ export default class GlSplineDrawer
     buildMesh()
     {
         const perf = gui.uiProfiler.start("[glspline] buildMesh");
-
         const num = this._thePoints.length / 3;
-
-        // console.log(this._verts.length / 3, num, this._thePoints.length / 3);
-        // console.log("verlen", this._verts.length, num * 18);
 
         if (this._verts.length != num * 18)
         {
             this._verts = new Float32Array(num * 18);
-            // console.log("resize spline!");
         }
 
         const max = 1;

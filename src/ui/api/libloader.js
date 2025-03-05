@@ -58,7 +58,7 @@ export default class LibLoader
                 // backwards compatibility...
                 if (Array.isArray(module.src)) module.src = module.src[0] || "";
 
-                if(!module || !module.src || !module.type)
+                if (!module || !module.src || !module.type)
                 {
                     const i = this._libsToLoad.indexOf(libName);
                     this._libsToLoad.splice(i, 1);

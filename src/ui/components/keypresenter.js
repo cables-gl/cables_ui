@@ -14,7 +14,6 @@ export default class Keypresenter
         this._container = keypresenter;
     }
 
-
     addLine()
     {
         if (Date.now() - this._lastKeyEvent > 500)
@@ -47,7 +46,6 @@ export default class Keypresenter
         this.counter++;
         return id;
     }
-
 
     start()
     {

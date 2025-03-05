@@ -12,7 +12,6 @@ export default class ModalPortValue
         this._port = null;
     }
 
-
     showJsonStructure(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
