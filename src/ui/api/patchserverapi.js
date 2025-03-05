@@ -623,6 +623,27 @@ export default class PatchSaveServer extends Events
                             this.finishAnimations();
                             return;
                         }
+                        else
+                        {
+                            if (gui.project().summary && gui.project().summary.isTest)
+                            {
+                                notifyWarn("Test patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            {
+                                notifyWarn("Example patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.isPublic)
+                            {
+                                notifyWarn("Published patch saved", null, { "force": true });
+                            }
+                            else
+                            {
+                                notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
+                            }
+                        }
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
