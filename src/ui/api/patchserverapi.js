@@ -32,6 +32,9 @@ export default class PatchSaveServer extends Events
         this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
+
+        this.isSaving = false;
+
     }
 
     setProject(proj)
@@ -404,7 +407,7 @@ export default class PatchSaveServer extends Events
 
     _saveCurrentProject(cb, _id, _name)
     {
-        if (gui.jobs().hasJob("projectsave"))
+        if (gui.patchView.store.isSaving)
         {
             this._log.log("already saving...");
             return;
@@ -413,6 +416,8 @@ export default class PatchSaveServer extends Events
         gui.corePatch().emitEvent("uiSavePatch");
 
         if (gui.showGuestWarning()) return;
+
+        gui.patchView.store.isSaving = true;
 
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
@@ -550,6 +555,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (err)
                         {
+                            gui.patchView.store.isSaving = false;
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
 
@@ -623,6 +629,27 @@ export default class PatchSaveServer extends Events
                             this.finishAnimations();
                             return;
                         }
+                        else
+                        {
+                            if (gui.project().summary && gui.project().summary.isTest)
+                            {
+                                notifyWarn("Test patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            {
+                                notifyWarn("Example patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.isPublic)
+                            {
+                                notifyWarn("Published patch saved", null, { "force": true });
+                            }
+                            else
+                            {
+                                notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
+                            }
+                        }
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
@@ -634,6 +661,8 @@ export default class PatchSaveServer extends Events
             }
             catch (e)
             {
+                gui.patchView.store.isSaving = false;
+
                 let found = false;
 
                 for (let i = 0; i < gui.corePatch().ops.length; i++)
@@ -675,8 +704,7 @@ export default class PatchSaveServer extends Events
 
                 gui.jobs().finish("projectsave");
                 this._log.log(e);
-                if (!found)
-                    notifyError("error saving patch - try to delete disabled ops");
+                if (!found) notifyError("error saving patch - try to delete disabled ops");
             }
             finally {}
         }, 100);

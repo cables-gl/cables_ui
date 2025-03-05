@@ -46,6 +46,7 @@ export default class ScUi
         const data = payload.data || {};
         if (payload.isOwn)
         {
+            gui.patchView.store.isSaving = false;
             if (data.error)
             {
                 this._connection._log.warn("[save patch error] ", data.msg);
@@ -58,24 +59,6 @@ export default class ScUi
             }
             else
             {
-                if (gui.project().summary && gui.project().summary.isTest)
-                {
-                    notifyWarn("Test patch saved", null, { "force": true });
-                }
-                else
-                if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
-                {
-                    notifyWarn("Example patch saved", null, { "force": true });
-                }
-                else
-                if (gui.project().summary && gui.project().summary.isPublic)
-                {
-                    notifyWarn("Published patch saved", null, { "force": true });
-                }
-                else
-                {
-                    notify("Patch saved (" + data.numOps + " ops / " + Math.ceil(data.size) + " kb)", null, { "force": true });
-                }
                 gui.patchView.store.setServerDate(data.updated);
             }
         }
