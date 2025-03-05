@@ -5,7 +5,7 @@ import Gui from "./gui.js";
 import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
-import ScConnection from "./multiplayer/sc_connection.js";
+import ScConnection from "./socketcluster/sc_connection.js";
 import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
