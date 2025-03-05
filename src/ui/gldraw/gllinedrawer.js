@@ -1,4 +1,3 @@
-
 /**
  * draw lines on the patchfield
  *
@@ -87,7 +86,6 @@ export default class GlLinedrawer
             .endl() + "   finalColor.a = showSpeed;"
         // .endl() + "   finalColor.a = 1.0;"
         // .endl()+'   color.r = 1.0;'
-
 
         // .endl()+'   color.rgb += (1.0-showSpeed) * col.rgb;'
 
@@ -235,7 +233,6 @@ export default class GlLinedrawer
             this._float32Diff(this._positions[idx * 6 + 1], y) ||
             this._float32Diff(this._positions[idx * 6 + 3], x2) ||
             this._float32Diff(this._positions[idx * 6 + 4], y2)) { this._needsUpload = true; }
-
 
         this._positions[idx * 6 + 0] = x;
         this._positions[idx * 6 + 1] = y;

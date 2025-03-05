@@ -1176,7 +1176,7 @@ export default class GlOp extends Events
 
         if (this.opUiAttribs.loading)
         {
-            if (!this._glLoadingIndicator)
+            if (!this._glLoadingIndicator && this.isInCurrentSubPatch())
             {
                 this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
@@ -1190,10 +1190,7 @@ export default class GlOp extends Events
             }
         }
         if (!this.opUiAttribs.loading && this._glLoadingIndicator)
-        {
             this._glLoadingIndicator = this._glLoadingIndicator.dispose();
-            // this._log.log("stop loading!", this._glLoadingIndicator);
-        }
 
         if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
         {

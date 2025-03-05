@@ -1,6 +1,5 @@
 import { gui } from "../../gui.js";
 
-
 export default class TransformsIcon
 {
     constructor(cgl, id)

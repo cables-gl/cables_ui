@@ -32,7 +32,6 @@ export default class GlOpWatcher extends Events
         setInterval(this.rebuildHtml.bind(this), 100);
     }
 
-
     setOp(op)
     {
         if (this._op == op) return;
@@ -56,7 +55,6 @@ export default class GlOpWatcher extends Events
         this.rebuildHtml();
     }
 
-
     rebuildHtml()
     {
         if (this._op)
@@ -74,7 +72,6 @@ export default class GlOpWatcher extends Events
             html += "<tr><td>_glRectBg.x</td><td>" + this._glop._glRectBg.x + "</td></tr>";
             html += "<tr><td>_glRectBg.y</td><td>" + this._glop._glRectBg.y + "</td></tr>";
             html += "<tr><td>isPassiveDrag</td><td>" + this._glop.isPassiveDrag() + "</td></tr>";
-
 
             html += "</table>";
 

@@ -52,13 +52,15 @@ const defaultOpNames =
 
     "BoolToString": "Ops.Boolean.BoolToString",
     "NumberToString": "Ops.String.NumberToString_v2",
+
+    "TriggerOnChangeString": " Ops.Trigger.TriggerOnChangeString_v2",
+    "TriggerOnChangeArray": " Ops.Trigger.TriggerOnChangeArray_v2",
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber_v2",
 
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 
     "TriggerNumber": "Ops.Trigger.TriggerNumber",
     "TriggerString": "Ops.Trigger.TriggerString",
-    "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString_v2",
     "triggerCounter": "Ops.Trigger.TriggerCounter",
 
     "StringLength": "Ops.String.StringLength_v2",
@@ -165,6 +167,13 @@ const defaultOps = {
             "typeFrom": portType.string,
             "typeTo": portType.trigger,
             "op": defaultOpNames.TriggerOnChangeString,
+            "portIn": "String",
+            "portOut": "Changed",
+        },
+        {
+            "typeFrom": portType.array,
+            "typeTo": portType.trigger,
+            "op": defaultOpNames.TriggerOnChangeArray,
             "portIn": "String",
             "portOut": "Changed",
         },

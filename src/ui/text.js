@@ -60,7 +60,7 @@ const text =
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",
 
-    "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - Minimize panel || [alt]`ESC` - Unminimize panel",
+    "minimize_tabpanel": "## [cmd_ctrl]`ESC` - Toggle main tab panel",
 
     "tab_files": "## Files \n\nUpload and manage your files",
     "tab_code": "## Code\n\nOperator code",
@@ -119,7 +119,6 @@ const text =
     "filemanager_file_create": "Create a file",
     "filemanager_reupload": "Replace contents of this file",
     "filemanager_copy_file_url": "Copy file URL",
-
 
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",
@@ -227,8 +226,6 @@ const text =
 
         "title_fadeOutCables": "Fade Cables",
         "subtitle_fadeOutCables": "Fade out long cables",
-
-
 
         "title_fontsize": "Text Size",
         "subtitle_fontsize": "Size Of Text and Icons in cables",

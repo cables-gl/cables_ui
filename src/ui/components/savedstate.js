@@ -233,12 +233,13 @@ export default class SavedState extends Events
             for (const idx in this._statesSaved)
             {
                 const el = ele.byId("clickSave_" + idx);
-                if (el)el.addEventListener("click", () =>
-                {
-                    if (idx == 0) CABLES.CMD.PATCH.save();
-                    else subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(idx), { "oldSubId": idx });
-                });
-                else this._log.warn("unknown savestate click ele: clickSave_" + idx);
+                if (el)
+                    el.addEventListener("click", () =>
+                    {
+                        if (idx == 0) CABLES.CMD.PATCH.save();
+                        else subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(idx), { "oldSubId": idx });
+                    });
+
             }
         }
         this.updateRestrictionDisplay();

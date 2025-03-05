@@ -2,7 +2,6 @@ import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 
-
 /**
  * tab panel to profile and analyze GPU performance
  *
@@ -29,7 +28,6 @@ export default class GpuProfiler
         gui.corePatch().cgl.profileData.glQueryData = {};
         this.update();
     }
-
 
     update()
     {
