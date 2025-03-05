@@ -46,6 +46,7 @@ export default class ScUi
         const data = payload.data || {};
         if (payload.isOwn)
         {
+            gui.patchView.store.isSaving = false;
             if (data.error)
             {
                 this._connection._log.warn("[save patch error] ", data.msg);
