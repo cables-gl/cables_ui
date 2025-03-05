@@ -35,7 +35,7 @@ export default function startUi(cfg)
     if (gui.isRemoteClient)
         new NoPatchEditor();
     else
-        new GlGuiFull();
+        new GlGuiFull(gui.corePatch());
 
     incrementStartup();
     gui.serverOps = new ServerOps(cfg.patchId, () =>

@@ -1,4 +1,6 @@
+import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
+import HtmlElementOverlay from "./htmlelementoverlay.js";
 
 export default class HtmlInspector
 {
@@ -9,10 +11,10 @@ export default class HtmlInspector
         this._offsetEle = 0;
 
         this._hoveringOpId = null;
-
+        this._timeoutHide = null;
         this._inspectEle = document.getElementById("inspectHtmlOverlay");
 
-        this._inspectEle.addEventListener("click", () =>
+        this._inspectEle.addEventListener("mousedown", () =>
         {
             gui.patchView.centerSelectOp(this._hoveringOpId);
             gui.opParams.show(this._hoveringOpId);
@@ -37,8 +39,9 @@ export default class HtmlInspector
 
         if (!e.ctrlKey) return;
 
-        const eles = document.getElementsByClassName("cablesEle");
+        const eles = ele.byClassAll("cablesEle");
 
+        /** @type {Array<HTMLElement>} */
         const found = [];
 
         for (let i = 0; i < eles.length; i++)
@@ -55,6 +58,8 @@ export default class HtmlInspector
         if (found.length)
         {
             const index = this._offsetEle % found.length;
+
+            /** @type {HTMLElement} */
             const theEle = found[index];
 
             this._hoveringOpId = theEle.dataset.op;

@@ -29,6 +29,10 @@ export default class GuiRestrictions
         return Object.keys(this._messages).length > 0;
     }
 
+    /**
+     * @param {String} id
+     * @param {String} msg
+     */
     setMessage(id, msg)
     {
         if (!msg)

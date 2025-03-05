@@ -150,7 +150,7 @@ class OpParampanel extends Events
     }
 
     /**
-     * @param {Types.Op} op
+     * @param {Types.Op|String} op
      */
     show(op)
     {

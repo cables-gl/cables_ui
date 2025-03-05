@@ -98,6 +98,9 @@ export default class ServerOps
         delete this.opIdsChangedOnServer[opId];
     }
 
+    /**
+     * @param {Function} cb
+     */
     load(cb)
     {
         platform.talkerAPI.send("getAllProjectOps", {}, (err, res) =>
