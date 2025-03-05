@@ -9,7 +9,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
 import namespace from "../namespaceutils.js";
-import Gui, { gui } from "../gui.js";
+import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
@@ -31,6 +31,8 @@ export default class ServerOps
         this._log = new Logger("opsserver");
         this._patchId = patchId;
         this._ops = [];
+
+        this.opIdsChangedOnServer = {};
 
         editorSession.addListener("op",
             (name, data) =>
@@ -79,6 +81,21 @@ export default class ServerOps
         });
         gui.opDocs.addCoreOpDocs();
         this.load(next);
+    }
+
+    addOpIdChangedOnServer(opId, data = {})
+    {
+        if (!opId) return;
+        if (!this.opIdsChangedOnServer.hasOwnProperty(opId))
+        {
+            this.opIdsChangedOnServer[opId] = data;
+        }
+    }
+
+    removeOpIdChangedOnSever(opId)
+    {
+        if (!opId) return;
+        delete this.opIdsChangedOnServer[opId];
     }
 
     load(cb)

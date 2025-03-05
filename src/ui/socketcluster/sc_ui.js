@@ -35,9 +35,10 @@ export default class ScUi
     _patchOpSaved(payload)
     {
         const data = payload.data || {};
-        let msg = "Op " + data.opName + " was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow();
-        msg += "<br/><a class=\"button\" onclick=\"CABLES.CMD.PATCH.reloadOp();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest version!";
-        gui.restriction.setMessage("patchOpUpdate", msg);
+        if (!payload.isOwn)
+        {
+            gui.serverOps.addOpIdChangedOnServer(data.opId, data);
+        }
     }
 
     _patchSaved(payload)
