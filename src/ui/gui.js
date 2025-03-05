@@ -1,7 +1,6 @@
 import { Logger, Events, ele } from "cables-shared-client";
 import { Types } from "cables-shared-types";
 import { platform } from "./platform.js";
-import MetaKeyframes from "./components/tabs/meta_keyframes.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
 import Jobs from "./components/jobs.js";
@@ -807,7 +806,7 @@ export default class Gui extends Events
         const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
         if (metaTabPanelTabs) metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
 
-        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - this.bottomTabPanel.getHeight() - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
@@ -1650,19 +1649,6 @@ export default class Gui extends Events
     {
         gui.corePatch().timer.togglePlay();
 
-    }
-
-    metaKeyframesShowAnim(opid, portname)
-    {
-        // if (!gui.metaKeyframes)
-        // {
-        // gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
-        // }
-        gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
-        gui.maintabPanel.show(true);
-
-        if (opid && portname)
-            gui.metaKeyframes.showAnim(opid, portname);
     }
 
     pressedEscape(e)

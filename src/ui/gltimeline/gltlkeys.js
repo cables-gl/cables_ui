@@ -295,9 +295,10 @@ export class glTlKeys extends Events
 
         const y = this.valueToPixel(0) + this.#parentRect.absY;
 
-        this.#zeroSpline.setPoints([0, y, -0.1,
-            100, y, -0.1,
-            111111111, y, -0.1]);
+        if (this.#zeroSpline)
+            this.#zeroSpline.setPoints([0, y, -0.1,
+                100, y, -0.1,
+                111111111, y, -0.1]);
 
     }
 
