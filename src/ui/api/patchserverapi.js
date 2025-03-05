@@ -553,10 +553,9 @@ export default class PatchSaveServer extends Events
                     },
                     (err, r) =>
                     {
-                        gui.patchView.store.isSaving = false;
-
                         if (err)
                         {
+                            gui.patchView.store.isSaving = false;
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
 
