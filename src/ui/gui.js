@@ -1302,6 +1302,10 @@ export default class Gui extends Events
                 lastTimeRecent = performance.now();
 
                 let str = "";
+                str += "<li id=\"nav_support\" class=\"nav_support\" >❤️ &nbsp;Support cables</li>";
+                str += "<li id=\"nav_help_forum\">Report Problems</li>";
+
+                str += "<li class=\"divide\"></li>";
 
                 if (platform.frontendOptions.showMyLinks)
                     str += "<li id=\"nav_mypatches\"><a target=\"_blank\" href=\"" + platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
@@ -1329,6 +1333,9 @@ export default class Gui extends Events
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
+                ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/issues", "_blank"); });
+                ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
+
             });
         });
 
@@ -1406,14 +1413,12 @@ export default class Gui extends Events
         if (platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
         else ele.hide(ele.byId("nav_buildinfo"));
 
-        ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
-
         // --- Help menu
         // Documentation
 
         ele.byId("nav_help_keys").addEventListener("click", () => { CABLES.CMD.UI.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/docs", "_blank"); });
-        ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/discussions", "_blank"); });
+
         ele.byId("nav_help_tips").addEventListener("click", () => { CABLES.CMD.UI.showTips(); });
 
         // Introduction
