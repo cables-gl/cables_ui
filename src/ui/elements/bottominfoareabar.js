@@ -90,12 +90,10 @@ export default class BottomInfoAreaBar extends Events
 
         txt = txt.replaceAll("[updown]", "<span class=\"key_updown\"></span>");
 
-
         txt = txt.replaceAll("[up]", "<span class=\"key_up\"></span>");
         txt = txt.replaceAll("[down]", "<span class=\"key_down\"></span>");
         txt = txt.replaceAll("[left]", "<span class=\"key_left\"></span>");
         txt = txt.replaceAll("[right]", "<span class=\"key_right\"></span>");
-
 
         txt = txt.replaceAll("[shift]", "<span class=\"key\">shift</span>");
         txt = txt.replaceAll("[enter]", "<span class=\"key\">enter</span>");

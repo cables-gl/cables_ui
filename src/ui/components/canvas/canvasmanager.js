@@ -153,7 +153,7 @@ export default class CanvasManager
         }
     }
 
-    menu(el)
+    menu(ele)
     {
         let items = [];
 
@@ -168,10 +168,10 @@ export default class CanvasManager
                 } });
         }
 
-        this._menuEle = el;
+        this._menuEle = ele;
         this.updateCanvasUi();
 
-        contextMenu.show({ "items": items }, el);
+        contextMenu.show({ "items": items }, ele);
     }
 
     popOut()

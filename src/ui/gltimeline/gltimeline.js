@@ -299,12 +299,12 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {GlRect|GlText|GlSpline} r
+     * @param {GlRect|GlText|GlSpline} rect
      */
-    setColorRectSpecial(r)
+    setColorRectSpecial(rect)
     {
-        if (r)
-            r.setColor(this.getColorSpecial());
+        if (rect)
+            rect.setColor(this.getColorSpecial());
     }
 
     /**
@@ -321,18 +321,18 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {MouseEvent} e
+     * @param {MouseEvent} event
      */
-    _onCanvasMouseMove(e)
+    _onCanvasMouseMove(event)
     {
-        this.emitEvent("mousemove", e);
+        this.emitEvent("mousemove", event);
 
-        let x = e.offsetX;
-        let y = e.offsetY;
+        let x = event.offsetX;
+        let y = event.offsetY;
 
-        this.#rects.mouseMove(x, y, e.buttons, e);
+        this.#rects.mouseMove(x, y, event.buttons, event);
 
-        if (e.buttons == 1)
+        if (event.buttons == 1)
         {
 
             // if (this.getNumSelectedKeys() > 0 && !this.selectRect)
@@ -347,7 +347,7 @@ export class GlTimeline extends Events
             {
                 if (y > this.getFirstLinePosy())
                 {
-                    if (!e.shiftKey)
+                    if (!event.shiftKey)
                         this.unSelectAllKeys();
 
                     this.selectRect = {
@@ -363,7 +363,7 @@ export class GlTimeline extends Events
 
                 if (y < this.getFirstLinePosy())
                 {
-                    gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(e.offsetX - this.titleSpace) + this.view.offset));
+                    gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(event.offsetX - this.titleSpace) + this.view.offset));
                 }
             }
 
@@ -376,9 +376,9 @@ export class GlTimeline extends Events
             }
         }
         else
-        if (e.buttons == this.buttonForScrolling)
+        if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(e.movementX) * 2, 0);
+            this.view.scroll(-this.view.pixelToTime(event.movementX) * 2, 0);
             this.updateAllElements();
         }
         else

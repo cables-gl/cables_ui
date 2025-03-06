@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
+
 /**
  * tab panel analyze patch shows information and statistics about the current patch
  */
@@ -19,7 +20,6 @@ export default class AnalyzePatchTab extends Events
 
         this._html();
     }
-
 
     _html()
     {
@@ -131,7 +131,6 @@ export default class AnalyzePatchTab extends Events
         report += "<h2>Vars</h2>";
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";
 
-
         report += "<hr/>";
         report += "<h2>Most used Ops</h2>";
 
@@ -163,7 +162,6 @@ export default class AnalyzePatchTab extends Events
         for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
 
         /// /////////////////////////////////////////////////
-
 
         const serializeSizes = [];
         for (let i = 0; i < patch.ops.length; i++)

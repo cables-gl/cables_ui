@@ -7,7 +7,6 @@ export default class Exporter
 {
     constructor(project, versionId, type = null)
     {
-        this._versionId = versionId;
         this._project = project;
         this._exportType = type;
     }

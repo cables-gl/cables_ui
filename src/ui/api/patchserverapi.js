@@ -32,6 +32,9 @@ export default class PatchSaveServer extends Events
         this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
+
+        this.isSaving = false;
+
     }
 
     setProject(proj)
@@ -354,7 +357,7 @@ export default class PatchSaveServer extends Events
                                 }
                                 else
                                 {
-                                    this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
+                                    this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
                                 }
                             }
                             else
@@ -372,20 +375,20 @@ export default class PatchSaveServer extends Events
         });
     }
 
-    saveCurrentProject(cb, _id, _name, _force, _afterClone)
+    saveCurrentProject(cb, _id, _name, _force)
     {
         if (gui.showGuestWarning()) return;
         if (!_force && gui.showSaveWarning()) return;
 
         if (_force)
         {
-            this._saveCurrentProject(cb, _id, _name, _afterClone);
+            this._saveCurrentProject(cb, _id, _name);
         }
         else
             this.checkUpdated(
                 function (err)
                 {
-                    if (!err) this._saveCurrentProject(cb, _id, _name, _afterClone);
+                    if (!err) this._saveCurrentProject(cb, _id, _name);
                 }.bind(this), true);
 
         gui.patchView.removeLostSubpatches();
@@ -402,9 +405,9 @@ export default class PatchSaveServer extends Events
         }, 320);
     }
 
-    _saveCurrentProject(cb, _id, _name, _afterClone)
+    _saveCurrentProject(cb, _id, _name)
     {
-        if (gui.jobs().hasJob("projectsave"))
+        if (gui.patchView.store.isSaving)
         {
             this._log.log("already saving...");
             return;
@@ -413,6 +416,8 @@ export default class PatchSaveServer extends Events
         gui.corePatch().emitEvent("uiSavePatch");
 
         if (gui.showGuestWarning()) return;
+
+        gui.patchView.store.isSaving = true;
 
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
@@ -550,6 +555,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (err)
                         {
+                            gui.patchView.store.isSaving = false;
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
 
@@ -643,15 +649,6 @@ export default class PatchSaveServer extends Events
                             {
                                 notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
                             }
-                            if (gui.socket && !_afterClone)
-                            {
-                                if (gui.user.usernameLowercase)
-                                    gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");
-                                else
-                                    gui.socket.sendNotification("Patch saved in other window");
-                            }
-
-                            this.setServerDate(r.updated);
                         }
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
@@ -664,6 +661,8 @@ export default class PatchSaveServer extends Events
             }
             catch (e)
             {
+                gui.patchView.store.isSaving = false;
+
                 let found = false;
 
                 for (let i = 0; i < gui.corePatch().ops.length; i++)
@@ -705,8 +704,7 @@ export default class PatchSaveServer extends Events
 
                 gui.jobs().finish("projectsave");
                 this._log.log(e);
-                if (!found)
-                    notifyError("error saving patch - try to delete disabled ops");
+                if (!found) notifyError("error saving patch - try to delete disabled ops");
             }
             finally {}
         }, 100);

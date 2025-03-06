@@ -91,6 +91,8 @@ export default class Gui extends Events
     {
         super();
 
+        this.editorSessionId = cfg.editorSessionId;
+
         this._log = new Logger("gui");
 
         /** @type {Object} */

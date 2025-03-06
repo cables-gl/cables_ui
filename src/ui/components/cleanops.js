@@ -56,15 +56,11 @@ export default class opCleaner
 
         // //////
 
-
         ops.sort((a, b) => { return a.getTempPosY() - b.getTempPosY(); });
-
 
         // /apply rules...
 
-
         let cont = false;
-
 
         // order by parent y position
 
@@ -74,7 +70,6 @@ export default class opCleaner
             for (let i = 0; i < ops.length; i++) cont = cont || this.checkCollisionXTopOps(ops[i]);
         } while (cont);
 
-
         do
         {
             cont = false;
@@ -82,7 +77,6 @@ export default class opCleaner
         } while (cont);
 
         // move op on x axis
-
 
         do
         {
@@ -104,9 +98,7 @@ export default class opCleaner
                 cont = cont || this.checkCollisionY(ops[i]);
         } while (cont);
 
-
         // //////////////////////
-
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -118,7 +110,6 @@ export default class opCleaner
             }
         }
     }
-
 
     // only test collision on ops that have no inputs, but output links
     checkCollisionXTopOps(op)
@@ -138,7 +129,6 @@ export default class opCleaner
             }
         }
     }
-
 
     checkCollisionY(op)
     {
@@ -254,7 +244,6 @@ export default class opCleaner
                 }
 
                 count *= (gluiconfig.portWidth + gluiconfig.portPadding);
-
 
                 // const s = op.getChildsBoundings(this._glpatch, null, op);
                 // console.log(s);
