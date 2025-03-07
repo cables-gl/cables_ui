@@ -253,7 +253,7 @@ export default function extendCoreOp()
         return this.uiErrors[id];
     };
 
-    CABLES.Op.prototype.setUiError = function (id, txt, level = 2)
+    CABLES.Op.prototype.setUiError = function (id, txt, level = 2, options = {})
     {
         if (!txt && !this.hasUiErrors) return;
         if (!txt && !this.uiErrors.hasOwnProperty(id)) return;
@@ -268,7 +268,7 @@ export default function extendCoreOp()
             if (txt && (!this.uiErrors.hasOwnProperty(id) || this.uiErrors[id].txt != txt))
             {
                 if (level == undefined) level = 2;
-                this.uiErrors[id] = { "txt": txt, "level": level, "id": id };
+                this.uiErrors[id] = { "txt": txt, "level": level, "id": id, "options": options };
             }
         }
 
