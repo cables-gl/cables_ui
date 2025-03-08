@@ -120,7 +120,7 @@ export default class MainTabPanel extends Events
             this.hide();
             gui.patchView.focus();
             const actTab = this.tabs.getActiveTab();
-            actTab.activate();
+            if (actTab) actTab.activate();
         }
         else this.show(userInteraction);
     }

@@ -454,6 +454,12 @@ class OpParampanel extends Events
                 if (err.level == 2) str += "<b>Error: </b>";
                 str += err.txt;
 
+                if (err.options)
+                {
+                    if (err.options.button)
+                        str += "&nbsp;<a class=\"button-small\" id=\"err_button_" + err.id + "\">" + err.options.button + "</a>";
+                }
+
                 if (!div)
                 {
                     div = document.createElement("div");
@@ -471,9 +477,21 @@ class OpParampanel extends Events
                 }
 
                 div.innerHTML = str;
+
             }
             gui.patchView.checkPatchErrors();
         }
+
+        for (let i = 0; i < this._currentOp.uiAttribs.uierrors.length; i++)
+        {
+            if (this._currentOp.uiAttribs.uierrors[i].options.button)
+                ele.clickable(ele.byId("err_button_" + this._currentOp.uiAttribs.uierrors[i].id), () =>
+                {
+                    if (this._currentOp.uiAttribs.uierrors[i].options.buttonCb) this._currentOp.uiAttribs.uierrors[i].options.buttonCb();
+                    else this._log.log("uierror button has no callback");
+                });
+        }
+
     }
 
     updateUiAttribs()

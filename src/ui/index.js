@@ -29,6 +29,7 @@ import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import extendCorePatch from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
+import { showShaderError } from "./dialogs/modalshadererror.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -86,6 +87,7 @@ CABLES.UI.undo = undo;
 CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.Gizmo = Gizmo;
 CABLES.UI.ModalSourceCode = ModalSourceCode;
+CABLES.UI.showShaderError = showShaderError;
 
 setHtmlDefaultListeners();
 extendCoreOp();
