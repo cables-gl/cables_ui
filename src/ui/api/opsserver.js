@@ -399,6 +399,7 @@ export default class ServerOps
                     "content": JSON.stringify(sub)
                 }, (errr, re) =>
                 {
+                    if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
                     finished();
                 });
             }
@@ -1572,6 +1573,8 @@ export default class ServerOps
                             this._log.warn("[opAttachmentSave]", errr);
                             return;
                         }
+
+                        if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
 
                         _setStatus("saved");
 
