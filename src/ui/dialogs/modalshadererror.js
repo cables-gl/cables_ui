@@ -1,5 +1,7 @@
+import { ele } from "cables-shared-client";
 import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
+import { userSettings } from "../components/usersettings.js";
 
 function getBadLines(infoLog)
 {
@@ -22,9 +24,10 @@ export function showShaderError(shader)
     }
     let infoLog = shader.error.infoLog;
     const badLines = getBadLines(infoLog);
-    let htmlWarning = "<pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
+
     const lines = shader.error.str.match(/^.*((\r\n|\n|\r)|$)/gm);
 
+    let htmlWarning = "<pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
     if (infoLog)
     {
         // if (type == cgl.gl.VERTEX_SHADER) this._log.log("VERTEX_SHADER");
@@ -57,11 +60,24 @@ export function showShaderError(shader)
     }
 
     infoLog = infoLog.replace(/\n/g, "<br/>");
-    // if (cgl.patch.isEditorMode()) cglShader._log.warn("Shader error ", cglShader._name, infoLog, this);
 
-    htmlWarning = infoLog + "<br/>" + htmlWarning + "<br/><br/>";
-    htmlWarning += "</code></pre>";
+    let html = infoLog;
+    html += "<a id=\"alwaysshowbutton\" class=\"button-small right\">" + getShowAlwaysButtonText() + "</a>";
+    html += "<br/>" + htmlWarning + "<br/>";
+    html += "</code></pre>";
 
-    new ModalDialog({ "html": htmlWarning });
+    new ModalDialog({ "html": html, "title": "Shader Error" });
 
+    ele.clickable(ele.byId("alwaysshowbutton"), () =>
+    {
+        userSettings.set("showAllShaderErrors", !userSettings.get("showAllShaderErrors"));
+        ele.byId("alwaysshowbutton").innerHTML = getShowAlwaysButtonText();
+    });
+
+}
+
+function getShowAlwaysButtonText()
+{
+    if (!userSettings.get("showAllShaderErrors")) return "<icon class=\"icon icon-x\"></icon>Always open on shader errors";
+    return "<icon class=\"icon icon-check\"></icon>Always open on shader errors";
 }
