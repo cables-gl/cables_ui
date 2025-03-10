@@ -1731,6 +1731,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
+                                    if (res.updated) gui.patchView.store.setServerDate(res.updated);
                                     if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
                                     if (!CABLES.Patch.getOpClass(opname)) gui.opSelect().reload();
 
