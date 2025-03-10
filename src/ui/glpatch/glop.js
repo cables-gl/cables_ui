@@ -392,17 +392,6 @@ export default class GlOp extends Events
         return gluiconfig.zPosOpUnSelected;
     }
 
-    sendNetPos()
-    {
-        if (this._op && this._op.uiAttribs && this._op.uiAttribs.translate)
-        {
-            gui.emitEvent("netOpPos", {
-                "opId": this._op.id,
-                "x": this._op.uiAttribs.translate.x,
-                "y": this._op.uiAttribs.translate.y });
-        }
-    }
-
     _onBgRectDragEnd()
     {
         const glOps = this._glPatch.selectedGlOps;
@@ -583,7 +572,6 @@ export default class GlOp extends Events
         if (newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
-        if (newAttribs.translate) this.sendNetPos();
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
