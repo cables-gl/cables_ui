@@ -31,7 +31,6 @@ export default class ScUiMultiplayer extends Events
         if (!this._connection.isConnected())
         {
             ele.byId("multiplayerbar").style.display = "none";
-            // ele.byId("multiplayer_message_nav").style.display = "none";
             return;
         }
 
@@ -52,7 +51,6 @@ export default class ScUiMultiplayer extends Events
         if (clientList.length < 2)
         {
             if (!this._connection.client.isPilot) ele.byId("multiplayerbar").style.display = "none";
-            // ele.byId("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             return;
         }
@@ -75,27 +73,6 @@ export default class ScUiMultiplayer extends Events
             let client = this._connection.clients[itemId];
             if (client)
             {
-                // const cursorColorEl = elem.querySelector(".cursorcolor");
-                // if (cursorColorEl)
-                // {
-                //     const clientColor = this._connection.getClientColor(itemId);
-                //     let alpha = "0.0";
-                //     if (client.inMultiplayerSession)
-                //     {
-                //         alpha = "1.0";
-                //     }
-                //     cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
-                // }
-
-                // if (client.isPilot)
-                // {
-                //     elem.classList.add("pilot");
-                // }
-                // else
-                // {
-                //     elem.classList.remove("pilot");
-                // }
-
                 if (client.isMe)
                 {
                     elem.classList.add("me");
@@ -111,30 +88,6 @@ export default class ScUiMultiplayer extends Events
             });
         });
 
-        // if (this._connection.inMultiplayerSession)
-        // {
-        //     if (this._connection.client && !this._connection.client.isPilot)
-        //     {
-        //         if (!this._connection.client.isRemoteClient) gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
-        //
-        //         if (this._connection.client.following)
-        //         {
-        //             let userName = "someone";
-        //             if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
-        //             gui.restriction.setMessage("You are following  " + userName + " in a multiplayer session - editing is restricted");
-        //         }
-        //         else
-        //         {
-        //             gui.restriction.setMessage("You are NOT the pilot in this multiplayer session - changes will not be saved");
-        //         }
-        //     }
-        //     else
-        //     {
-        //         gui.restriction.setMessage("You are the pilot in this multiplayer session - changes will be sent to others");
-        //         gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        //     }
-        // }
-        // else
         gui.restriction.setMessage(null);
         gui.setRestriction(Gui.RESTRICT_MODE_FULL);
 
@@ -237,12 +190,6 @@ export default class ScUiMultiplayer extends Events
             guiEvent.subpatch = client.subpatch;
         }
 
-        /*
-        if (client.hasOwnProperty("zoom"))
-        {
-            guiEvent.zoom = client.zoom;
-        }
-         */
         if (client.hasOwnProperty("scrollX") && client.hasOwnProperty("scrollY"))
         {
             guiEvent.scrollX = client.scrollX;
@@ -253,16 +200,6 @@ export default class ScUiMultiplayer extends Events
             gui.emitEvent("netGotoPos", guiEvent);
         }
     }
-
-    // _restoreLastSavedPatchVersion()
-    // {
-    //     this._connection.setPacoPaused(true);
-    //     platform.reloadLastSavedVersion((err, project) =>
-    //     {
-    //         this._connection.setPacoPaused(false);
-    //         this._connection.sendCurrentVersion();
-    //     });
-    // }
 
     _getContextMenuItems(clientId)
     {
@@ -277,44 +214,23 @@ export default class ScUiMultiplayer extends Events
 
             if (this._connection.inMultiplayerSession)
             {
-                // if (client.isPilot && this._connection.clientId !== client.clientId)
-                // {
-                //     items.push({
-                //         "title": "request pilot seat",
-                //         "iconClass": "icon icon-user",
-                //         "func": () =>
-                //         {
-                //             this._connection.state.requestPilotSeat();
-                //         }
-                //     });
-                //
-                //     items.push({
-                //         "title": "sync patch with pilot",
-                //         "iconClass": "icon icon-refresh",
-                //         "func": () =>
-                //         {
-                //             this._connection.requestPilotPatch();
-                //         }
-                //     });
-                // }
-
                 if (client.isRemoteClient)
                 {
                     let title = "remoteviewer";
-                    if (client.platform)
+                    const platformInfo = client.platform || {};
+                    if (platformInfo)
                     {
                         title = "";
-                        const platform = client.platform;
-                        if (platform.name)
+                        if (platformInfo.name)
                         {
-                            title += " " + platform.name;
+                            title += " " + platformInfo.name;
                         }
-                        if (platform.os && platform.os.family)
+                        if (platformInfo.os && platformInfo.os.family)
                         {
-                            title += " on " + platform.os.family;
+                            title += " on " + platformInfo.os.family;
                         }
                     }
-                    const icon = platform.isMobile ? "icon-smartphone" : "icon-remoteviewer";
+                    const icon = platformInfo.isMobile ? "icon-smartphone" : "icon-remoteviewer";
                     items.push({
                         "title": title,
                         "iconClass": "icon " + icon,
@@ -331,18 +247,6 @@ export default class ScUiMultiplayer extends Events
                             }
                         });
                     }
-
-                    // if (this._connection.client.isPilot)
-                    // {
-                    //     items.push({
-                    //         "title": "send resync command",
-                    //         "iconClass": "icon icon-refresh",
-                    //         "func": () =>
-                    //         {
-                    //             this._sendForceResync(client);
-                    //         }
-                    //     });
-                    // }
                 }
             }
         }
@@ -386,56 +290,6 @@ export default class ScUiMultiplayer extends Events
         }
     }
 
-    // _requestResync(title, callbackBeforeSync)
-    // {
-    //     let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
-    //     content += "<div style='margin-top: 20px; text-align: center;'>";
-    //     content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
-    //     content += "<a class=\"button decline\">Ignore</a>";
-    //     content += "</div>";
-
-    //     const options = {
-    //         "title": title,
-    //         "html": content
-    //     };
-
-    //     const modal = new ModalDialog(options, false);
-    //     modal.on("onShow", () =>
-    //     {
-    //         const modalElement = modal.getElement();
-    //         const acceptButton = modalElement.querySelector(".button.accept");
-    //         const declineButton = modalElement.querySelector(".button.decline");
-
-    //         if (acceptButton)
-    //         {
-    //             acceptButton.addEventListener("pointerdown", () =>
-    //             {
-    //                 if (callbackBeforeSync)
-    //                 {
-    //                     callbackBeforeSync(() =>
-    //                     {
-    //                         this._connection.requestPilotPatch();
-    //                         modal.close();
-    //                     });
-    //                 }
-    //                 else
-    //                 {
-    //                     this._connection.requestPilotPatch();
-    //                     modal.close();
-    //                 }
-    //             });
-    //         }
-    //         if (declineButton)
-    //         {
-    //             declineButton.addEventListener("pointerdown", () =>
-    //             {
-    //                 modal.close();
-    //             });
-    //         }
-    //     });
-    //     modal.show();
-    // }
-
     _registerEventListeners()
     {
         if (this._connection.client.isRemoteClient) return;
@@ -472,58 +326,6 @@ export default class ScUiMultiplayer extends Events
                 notify(payload.title, payload.text, payload.options);
             }
         });
-
-        // this._connection.state.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
-        // {
-        //     return;
-        //     if (client.clientId === this._connection.clientId) return;
-        //
-        //     if (this._connection.inMultiplayerSession)
-        //     {
-        //         if (client.isRemoteClient)
-        //         {
-        //             notify("remote viewer closed by " + client.username);
-        //         }
-        //         else
-        //         {
-        //             notify(client.username + " just left the multiplayer session");
-        //         }
-        //     }
-        // });
-        //
-        // this._connection.state.on("clientJoined", (client) =>
-        // {
-        //     if (client.clientId === this._connection.clientId) return;
-        //
-        //     if (this._connection.inMultiplayerSession)
-        //     {
-        //         if (client.isRemoteClient)
-        //         {
-        //             notify("remote viewer opened by " + client.username);
-        //         }
-        //         else
-        //         {
-        //             notify(client.username + " just joined the multiplayer session");
-        //         }
-        //     }
-        // });
-        //
-        // this._connection.state.on("clientLeft", (client) =>
-        // {
-        //     if (client.clientId === this._connection.clientId) return;
-        //
-        //     if (this._connection.inMultiplayerSession)
-        //     {
-        //         if (client.isRemoteClient)
-        //         {
-        //             notify("remote viewer closed by " + client.username);
-        //         }
-        //         else
-        //         {
-        //             notify(client.username + " just left the multiplayer session");
-        //         }
-        //     }
-        // });
 
         this._connection.state.on("pilotChanged", (pilot) =>
         {
@@ -567,18 +369,6 @@ export default class ScUiMultiplayer extends Events
             {
                 const opName = msg.opName;
                 notify("reloaded code for op", opName);
-
-                // this._requestResync(msg.username + " changed " + opName, (next) =>
-                // {
-                //     const taskName = String(this._connection.getTimestamp());
-                //     loadjs([CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
-
-                //     const loadJsCallback = () =>
-                //     {
-                //         next();
-                //     };
-                //     loadjs.ready(taskName, loadJsCallback, loadJsCallback);
-                // });
             }
         });
 

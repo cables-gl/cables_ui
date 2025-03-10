@@ -33,7 +33,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
     if (ev.hasOwnProperty("event")) data = ev;
     else data = JSON.parse(ev.data);
 
-    if (data.event == CABLES.PACO_OP_CREATE)
+    if (data.event === CABLES.PACO_OP_CREATE)
     {
         if (this._patch.getOpById(data.vars.opId)) return;
         this._log.verbose("op create:", data.vars.objName);
@@ -50,7 +50,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             this._addOp(data);
         }
     }
-    else if (data.event == CABLES.PACO_DESERIALIZE)
+    else if (data.event === CABLES.PACO_DESERIALIZE)
     {
         if (data.vars.json)
         {
@@ -67,7 +67,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             }
         }
     }
-    else if (data.event == CABLES.PACO_LOAD)
+    else if (data.event === CABLES.PACO_LOAD)
     {
         this._log.verbose("PACO load patch.....");
         this._patch.clear();
@@ -83,50 +83,49 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             this._patch.deSerialize(data.vars.patch);
         }
     }
-    else if (data.event == CABLES.PACO_CLEAR)
+    else if (data.event === CABLES.PACO_CLEAR)
     {
         this._patch.clear();
         this._log.log("clear");
     }
-    else if (data.event == CABLES.PACO_OP_DELETE)
+    else if (data.event === CABLES.PACO_OP_DELETE)
     {
         this._log.verbose("op delete", data.vars.objName);
         const op = this._patch.getOpById(data.vars.op);
         this._patch.deleteOp(data.vars.op, true);
     }
-    else if (data.event == CABLES.PACO_OP_ENABLE)
+    else if (data.event === CABLES.PACO_OP_ENABLE)
     {
         const op = this._patch.getOpById(data.vars.op);
         if (op) op.enabled = true;
     }
-    else if (data.event == CABLES.PACO_OP_DISABLE)
+    else if (data.event === CABLES.PACO_OP_DISABLE)
     {
         const op = this._patch.getOpById(data.vars.op);
         if (op) op.enabled = false;
     }
-    else if (data.event == CABLES.PACO_UIATTRIBS)
+    else if (data.event === CABLES.PACO_UIATTRIBS)
     {
         const op = this._patch.getOpById(data.vars.op);
         op?.setUiAttrib(data.vars.uiAttribs);
     }
-    else if (data.event == CABLES.PACO_UNLINK)
+    else if (data.event === CABLES.PACO_UNLINK)
     {
         const op1 = this._patch.getOpById(data.vars.op1);
         const op2 = this._patch.getOpById(data.vars.op2);
-        // if (!op1 || !op2) return;
         const port1 = op1?.getPort(data.vars.port1);
         const port2 = op2?.getPort(data.vars.port2);
 
         if (port1 && port2) port1.removeLinkTo(port2);
         else this._log.warn("paco unlink could not find port...");
     }
-    else if (data.event == CABLES.PACO_LINK)
+    else if (data.event === CABLES.PACO_LINK)
     {
         const op1 = this._patch.getOpById(data.vars.op1);
         const op2 = this._patch.getOpById(data.vars.op2);
         if (op1 && op2) this._patch.link(op1, data.vars.port1, op2, data.vars.port2);
     }
-    else if (data.event == CABLES.PACO_VALUECHANGE)
+    else if (data.event === CABLES.PACO_VALUECHANGE)
     {
         // do not handle variable creation events
         if (data.vars.v === "+ create new one") return;
@@ -137,7 +136,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             if (p) p.set(data.vars.v);
         }
     }
-    else if (data.event == CABLES.PACO_VARIABLES)
+    else if (data.event === CABLES.PACO_VARIABLES)
     {
         const op = this._patch.getOpById(data.vars.opId);
         if (op)
@@ -145,7 +144,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             if (op.varName) op.varName.set(data.vars.varName);
         }
     }
-    else if (data.event == CABLES.PACO_TRIGGERS)
+    else if (data.event === CABLES.PACO_TRIGGERS)
     {
         const op = this._patch.getOpById(data.vars.opId);
         if (op)
@@ -153,7 +152,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             if (op.varName) op.varName.set(data.vars.varName);
         }
     }
-    else if (data.event == CABLES.PACO_PORT_SETVARIABLE)
+    else if (data.event === CABLES.PACO_PORT_SETVARIABLE)
     {
         const op = this._patch.getOpById(data.vars.opId);
         if (op)
@@ -162,7 +161,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             if (p) p.setVariable(data.vars.variableName);
         }
     }
-    else if (data.event == CABLES.PACO_PORT_SETANIMATED)
+    else if (data.event === CABLES.PACO_PORT_SETANIMATED)
     {
         const op = this._patch.getOpById(data.vars.opId);
         if (op)
@@ -177,7 +176,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             }
         }
     }
-    else if (data.event == CABLES.PACO_PORT_ANIM_UPDATED)
+    else if (data.event === CABLES.PACO_PORT_ANIM_UPDATED)
     {
         const op = this._patch.getOpById(data.vars.opId);
         if (op)
@@ -193,7 +192,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
             }
         }
     }
-    else if (data.event == CABLES.PACO_OP_RELOAD)
+    else if (data.event === CABLES.PACO_OP_RELOAD)
     {
         const serops = gui.corePatch().getOpsByObjName(data.vars.opName);
 

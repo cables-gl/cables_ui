@@ -991,7 +991,6 @@ export default class GlPatch extends Events
 
             if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
             {
-                glOp.sendNetPos();
                 glOp.updatePosition();
             }
         }
