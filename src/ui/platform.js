@@ -492,8 +492,9 @@ export class Platform extends Events
                     "text": "Enter a name for the backup",
                     "notices": modalNotices,
                     "promptValue": "Manual Backup",
-                    "promptOk": () =>
+                    "promptOk": (title) =>
                     {
+                        backupOptions.title = title;
                         this.talkerAPI.send("patchCreateBackup", backupOptions);
                     }
                 };

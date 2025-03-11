@@ -346,12 +346,6 @@ export default class ScState extends Events
 
         this.on("patchSynchronized", () =>
         {
-            // if (!this._connection.client.isPilot)
-            // {
-            //     // set patchsave state if not pilot after sync
-            //     // gui.setStateSaved();
-            //     gui.savedState.setSaved("sc", 0);
-            // }
             if (this._connection.client.isRemoteClient)
             {
                 const menubar = document.getElementById("menubar");
@@ -367,17 +361,7 @@ export default class ScState extends Events
 
         gui.patchView.on("mouseMove", (x, y) =>
         {
-            // if (!this._connection.inMultiplayerSession) return;
             this._sendCursorPos(x, y);
-        });
-
-        gui.on("netOpPos", (payload) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client && this._connection.client.isPilot)
-            {
-                this._connection.sendUi("netOpPos", payload);
-            }
         });
 
         gui.on("timelineControl", (command, value) =>
@@ -409,73 +393,6 @@ export default class ScState extends Events
                 }
             }
         });
-
-        // gui.opParams.addEventListener("opSelected", (op) =>
-        // {
-        //     if (!this._connection.inMultiplayerSession) return;
-        //     if (this._connection.client && this._connection.client.isPilot)
-        //     {
-        //         if (op)
-        //             this._connection.sendUi("opSelected", { "opId": op.id });
-        //     }
-        // });
-
-        // this._connection.on("opSelected", (msg) =>
-        // {
-        //     if (!this._connection.inMultiplayerSession) return;
-        //     if (this._connection.client.isRemoteClient) return;
-        //     if (!this._connection.client.following) return;
-        //     if (!this._connection.client.following === msg.clientId) return;
-        //     const op = gui.corePatch().getOpById(msg.opId);
-        //     if (op)
-        //     {
-        //         gui.patchView.unselectAllOps();
-        //         gui.patchView.selectOpId(msg.opId);
-        //         gui.patchView.focusOp(msg.opId);
-        //     }
-        // });
-
-        // this._connection.on("timelineControl", (msg) =>
-        // {
-        //     if (!this._connection.inMultiplayerSession) return;
-        //     const timeline = gui.timeLine();
-        //     if (!timeline) return;
-
-        //     switch (msg.command)
-        //     {
-        //     case "setTime":
-        //         if (msg.hasOwnProperty("value"))
-        //         {
-        //             gui.timeLine().gotoTime(msg.value);
-        //         }
-        //         break;
-        //     case "setPlay":
-        //         const timer = gui.scene().timer;
-        //         if (timer)
-        //         {
-        //             const targetState = !!msg.value;
-        //             const isPlaying = timer.isPlaying();
-        //             if (targetState !== isPlaying)
-        //             {
-        //                 timeline.togglePlay();
-        //             }
-        //             if (msg.hasOwnProperty("time"))
-        //             {
-        //                 gui.timeLine().gotoTime(msg.time);
-        //             }
-        //         }
-        //         break;
-        //     case "setLoop":
-        //         timeline.setLoop(msg.value);
-        //         break;
-        //     case "setAnim":
-        //         timeline.setAnim(msg.value.newanim, msg.value.config);
-        //         break;
-        //     case "setLength":
-        //         timeline.setTimeLineLength(msg.value);
-        //         break;
-        //     }
-        // });
 
         gui.on("portValueEdited", (op, port, value) =>
         {
@@ -542,18 +459,6 @@ export default class ScState extends Events
             }
         });
 
-        gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
-        {
-            // if (!this._connection.inMultiplayerSession) return;
-            this._sendSelectionArea(x, y, sizeX, sizeY);
-        });
-
-        gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
-        {
-            // if (!this._connection.inMultiplayerSession) return;
-            this._sendSelectionArea(x, y, sizeX, sizeY, true);
-        });
-
         gui.on("gizmoMove", (opId, portName, newValue) =>
         {
             if (!this._connection.inMultiplayerSession) return;
@@ -575,38 +480,9 @@ export default class ScState extends Events
             }
         });
 
-        this._connection.on("netOpPos", (msg) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client.isRemoteClient) return;
-            const op = gui.corePatch().getOpById(msg.opId);
-            if (op)
-            {
-                op.setUiAttrib({ "translate": { "x": msg.x, "y": msg.y } });
-            }
-            else
-            {
-                setTimeout(
-                    () =>
-                    {
-                        this._connection.emitEvent("netOpPos", msg);
-                    }, 100);
-            }
-        });
-
-        this._connection.on("netSelectionArea", (msg) =>
-        {
-            gui.emitEvent("netSelectionArea", msg);
-        });
-
         this._connection.on("netCursorPos", (msg) =>
         {
-            // if (!this._connection.inMultiplayerSession) return;
             delete msg.zoom;
-            // if (this._connection.client.following && msg.clientId === this._connection.client.following)
-            // {
-            //     gui.emitEvent("netGotoPos", msg);
-            // }
             gui.emitEvent("netCursorPos", msg);
         });
 
@@ -635,18 +511,6 @@ export default class ScState extends Events
                     {
                         selectedOp.refreshParams();
                     }, 50);
-
-                    // const elePortId = "portval_" + portIndex;
-                    // const elePort = document.getElementById(elePortId);
-                    // if (elePort)
-                    // {
-                    //     gui.opParams.refreshDelayed();
-                    //     const elePortContainer = document.getElementById("tr_in_" + portIndex);
-                    //     if (elePortContainer)
-                    //     {
-                    //         elePortContainer.scrollIntoView({ "block": "center" });
-                    //     }
-                    // }
                 }
             }
         });
@@ -655,8 +519,6 @@ export default class ScState extends Events
     _sendCursorPos(x, y)
     {
         if (!this._connection.isConnected()) return;
-        // if (!this._connection.inMultiplayerSession) return;
-
         if (this._lastMouseX === x || this._lastMouseY === y) return;
 
         this._lastMouseX = x;
@@ -675,24 +537,5 @@ export default class ScState extends Events
             this._connection.sendUi("netCursorPos", payload);
             this._mouseTimeout = null;
         }, this._connection.netMouseCursorDelay);
-    }
-
-    _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
-    {
-        return;
-
-        /*
-        if (!this._connection.isConnected()) return;
-        if (!this._connection.inMultiplayerSession) return;
-
-        if (!hide && this._mouseTimeout) return;
-
-        this._mouseTimeout = setTimeout(() =>
-        {
-            const payload = { x, y, sizeX, sizeY, hide };
-            this._connection.sendUi("netSelectionArea", payload);
-            this._mouseTimeout = null;
-        }, this._connection.netMouseCursorDelay);
-         */
     }
 }

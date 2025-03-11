@@ -1606,13 +1606,6 @@ export default class PatchView extends Events
                         }
                         project.ops[i].uiAttribs.translate.x = x;
                         project.ops[i].uiAttribs.translate.y = y;
-
-                        gui.emitEvent(
-                            "netOpPos", {
-                                "opId": project.ops[i].id,
-                                "x": project.ops[i].uiAttribs.translate.x,
-                                "y": project.ops[i].uiAttribs.translate.y
-                            });
                     }
 
                     const undofunc = (function (opid)

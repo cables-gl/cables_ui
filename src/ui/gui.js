@@ -171,6 +171,14 @@ export default class Gui extends Events
             this.showLibLoadError(libName);
         });
 
+        this.on("ShaderError", (shader) =>
+        {
+            if (this.userSettings.get("showAllShaderErrors"))
+            {
+                CABLES.UI.showShaderError(shader);
+            }
+        });
+
         this.patchView = new PatchView(this._corePatch);
 
         this._corePatch.gui = true;

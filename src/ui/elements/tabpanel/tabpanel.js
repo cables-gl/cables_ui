@@ -452,7 +452,19 @@ export default class TabPanel extends Events
 
         const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
-        talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
+        talkerAPI.on("setSavedState", (opts) =>
+        {
+            if (opts.state)
+            {
+                gui.savedState.setSaved("talkerAPI", opts.subpatch);
+            }
+            else
+            {
+                gui.savedState.setUnSaved("talkerAPI", opts.subpatch);
+            }
+        });
+
+        talkerAPI.on("manualScreenshot", (opts, next) =>
         {
             platform.setManualScreenshot(opts.manualScreenshot);
 
@@ -465,29 +477,29 @@ export default class TabPanel extends Events
             }
         });
 
-        talkerAPI.addEventListener("notify", (opts, next) =>
+        talkerAPI.on("notify", (opts, next) =>
         {
             notify(opts.msg, opts.text, opts.options);
         });
 
-        talkerAPI.addEventListener("notifyError", (opts, next) =>
+        talkerAPI.on("notifyError", (opts, next) =>
         {
             notifyError(opts.msg, opts.text, opts.options);
         });
 
-        talkerAPI.addEventListener("updatePatchName", (opts, next) =>
+        talkerAPI.on("updatePatchName", (opts, next) =>
         {
             gui.setProjectName(opts.name);
             platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
         });
 
-        talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
+        talkerAPI.on("updatePatchSummary", (opts, next) =>
         {
             gui.project().summary = opts;
             gui.patchParamPanel.show(true);
         });
 
-        talkerAPI.addEventListener("opsDeleted", (opts, next) =>
+        talkerAPI.on("opsDeleted", (opts, next) =>
         {
             const opdocs = gui.opDocs.getAll();
             const deletedOps = opts.ops || [];

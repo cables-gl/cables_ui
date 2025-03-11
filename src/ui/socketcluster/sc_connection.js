@@ -25,7 +25,6 @@ export default class ScConnection extends Events
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._lastPingReceived = this.getTimestamp();
-        this._lastPingSent = null;
 
         this._socket = null;
         this._connected = false;
@@ -570,7 +569,6 @@ export default class ScConnection extends Events
     _updateMembers()
     {
         this.sendControl("pingMembers", {});
-        this._lastPingSent = this.getTimestamp();
 
         setTimeout(() =>
         {
@@ -771,7 +769,6 @@ export default class ScConnection extends Events
             if (msg.clientId !== this.clientId)
             {
                 this._sendPing();
-                this._lastPingSent = this.getTimestamp();
             }
             else
             {
