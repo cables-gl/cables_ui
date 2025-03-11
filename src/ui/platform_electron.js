@@ -182,4 +182,9 @@ export default class PlatformElectron extends Platform
     {
         return "Ops.Local.";
     }
+
+    isSaving()
+    {
+        return false;
+    }
 }

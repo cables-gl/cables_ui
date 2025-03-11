@@ -120,7 +120,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
         notifyError("Not allowed");
         return;
     }
-    if (gui.patchView.store.isSaving)
+    if (platform.isSaving())
     {
         log.log("already saving...");
         return;
