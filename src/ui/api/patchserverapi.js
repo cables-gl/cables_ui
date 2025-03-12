@@ -76,7 +76,7 @@ export default class PatchSaveServer extends Events
             "indicator": "canvas"
         });
 
-        platform.talkerAPI.send("checkProjectUpdated", { }, (err, data) =>
+        platform.talkerAPI.send("checkProjectUpdated", {}, (err, data) =>
         {
             if (err)
             {
@@ -407,7 +407,7 @@ export default class PatchSaveServer extends Events
 
     _saveCurrentProject(cb, _id, _name)
     {
-        if (gui.patchView.store.isSaving)
+        if (platform.isSaving())
         {
             this._log.log("already saving...");
             return;
@@ -417,7 +417,7 @@ export default class PatchSaveServer extends Events
 
         if (gui.showGuestWarning()) return;
 
-        gui.patchView.store.isSaving = true;
+        platform.setSaving(true);
 
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
@@ -555,7 +555,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (err)
                         {
-                            gui.patchView.store.isSaving = false;
+                            platform.setSaving(false);
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
 
@@ -661,7 +661,7 @@ export default class PatchSaveServer extends Events
             }
             catch (e)
             {
-                gui.patchView.store.isSaving = false;
+                platform.setSaving(false);
 
                 let found = false;
 

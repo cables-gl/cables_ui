@@ -1,6 +1,7 @@
 import { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import ModalDialog from "../dialogs/modaldialog.js";
+import { platform } from "../platform.js";
 
 export default class ScUi
 {
@@ -46,7 +47,7 @@ export default class ScUi
         const data = payload.data || {};
         if (payload.isOwn)
         {
-            gui.patchView.store.isSaving = false;
+            platform.setSaving(false);
             if (data.error)
             {
                 this._connection._log.warn("[save patch error] ", data.msg);
@@ -83,6 +84,7 @@ export default class ScUi
         const data = payload.data || {};
         if (payload.isOwn)
         {
+            gui.jobs().finish("patchCreateBackup");
             if (data.error)
             {
                 notifyWarn("Backup failed! " + data.msg);
