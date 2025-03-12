@@ -48,11 +48,12 @@ import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
-import { userSettings } from "./components/usersettings.js";
+import UserSettings, { userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import Tab from "./elements/tabpanel/tab.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
+import JobsTab from "./components/tabs/tab_jobs.js";
 
 /**
  * @type {Gui}
@@ -101,6 +102,7 @@ export default class Gui extends Events
         /** @type {ServerOps} */
         this.serverOps = null;
 
+        /** @type {UserSettings} */
         this.userSettings = userSettings;
         this.uiProfiler = new UiProfiler();
 
@@ -166,18 +168,23 @@ export default class Gui extends Events
         //     this.showOpCrash(portTriggered.op);
         // });
 
-        this.on("libLoadError", (libName) =>
-        {
-            this.showLibLoadError(libName);
-        });
+        this.on("libLoadError",
 
-        this.on("ShaderError", (shader) =>
-        {
-            if (this.userSettings.get("showAllShaderErrors"))
+            (/** @type {String} */ libName) =>
             {
-                CABLES.UI.showShaderError(shader);
-            }
-        });
+                this.showLibLoadError(libName);
+            });
+
+        this.on("ShaderError",
+
+            /**
+             * @param {CgShader} shader
+             */
+            (shader) =>
+            {
+                if (this.userSettings.get("showAllShaderErrors"))
+                    CABLES.UI.showShaderError(shader);
+            });
 
         this.patchView = new PatchView(this._corePatch);
 
@@ -2119,6 +2126,9 @@ export default class Gui extends Events
         this.replaceNavShortcuts();
     }
 
+    /**
+     * @param {number} v
+     */
     setFontSize(v)
     {
         v = v || 0;

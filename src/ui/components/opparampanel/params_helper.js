@@ -234,7 +234,6 @@ const paramsHelper =
         const existingTab = gui.mainTabs.getTabByDataId(dataId);
         if (existingTab)
         {
-            console.log("existing tab");
             gui.mainTabs.activateTabByName(existingTab.title);
             gui.maintabPanel.show(userInteraction);
             return;

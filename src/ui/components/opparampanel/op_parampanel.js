@@ -24,7 +24,7 @@ class OpParampanel extends Events
     /**
      * @param {string} eleid
      */
-    constructor(eleid)
+    constructor(eleid = null)
     {
         super();
 

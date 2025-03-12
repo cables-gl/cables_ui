@@ -60,16 +60,20 @@ export default class ServerOps
         editorSession.addListener("attachment", (name, data) =>
         {
             editorSession.startLoadingTab();
-
             if (data && data.opname)
             {
                 const lastTab = userSettings.get("editortab");
                 this.editAttachment(data.opname, data.name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
+                    console.log("act tab", lastTab);
                     userSettings.set("editortab", lastTab);
                     editorSession.finishLoadingTab();
                 }, true);
+            }
+            else
+            {
+                console.log("no data", data);
             }
         }
         );
@@ -1481,7 +1485,13 @@ export default class ServerOps
         const title = shortname + "/" + attachmentName;
         const userInteraction = !fromListener;
 
-        if (gui.maintabPanel.tabs.getTabByTitle(title)) return;
+        let existingTab = gui.maintabPanel.tabs.getTabByTitle(title);
+        if (existingTab)
+        {
+            gui.mainTabs.activateTabByName(existingTab.title);
+            gui.maintabPanel.show(true);
+            return;
+        }
 
         let editorObj = null;
         gui.jobs().start({
