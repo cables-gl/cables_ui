@@ -495,6 +495,7 @@ export class Platform extends Events
                     "promptOk": (title) =>
                     {
                         backupOptions.title = title;
+                        gui.jobs().start({ "id": "patchCreateBackup", "title": "creating backup", "indicator": "canvas" });
                         this.talkerAPI.send("patchCreateBackup", backupOptions);
                     }
                 };
@@ -642,5 +643,23 @@ export class Platform extends Events
         const types = ["lib", "corelib", "commonjs", "module", "op"];
         if (this.frontendOptions.npm) types.push("npm");
         return types;
+    }
+
+    /**
+     *
+     * @param {Boolean} state
+     */
+    setSaving(state)
+    {
+        gui.patchView.store.isSaving = state;
+    }
+
+    /**
+     *
+     * @return {Boolean}
+     */
+    isSaving()
+    {
+        return gui.patchView.store.isSaving;
     }
 }
