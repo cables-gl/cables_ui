@@ -154,27 +154,37 @@ export default class PlatformElectron extends Platform
 
     exportPatch(projectId, exportType = null)
     {
-        const loadingModal = gui.startModalLoading("Exporting patch...");
-        loadingModal.setTask("Exporting patch...");
         let talkerCommand = "exportPatch";
         if (exportType === "patch") talkerCommand = "exportPatchBundle";
+        gui.jobs().start({ "id": "exportPatch", "title": "export patch", "indicator": "canvas" });
         this.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {
-            if (err)
+            const modalOptions = {
+                "title": "Patch Export"
+            };
+            gui.jobs().finish("exportPatch");
+            if (err || result.error)
             {
-                loadingModal.setTask("ERROR", err.msg);
-                loadingModal.setTask(err.data);
+                modalOptions.warning = true;
+                modalOptions.text = "Failed to export patch:<br/>" + (err || "") + (result.error || "");
             }
             else
             {
-                if (result.data && result.data.log)
-                {
-                    result.data.log.forEach((log) =>
+                modalOptions.showOkButton = true;
+                modalOptions.okButton = {
+                    "text": "Show",
+                    "callback": (a, b, c) =>
                     {
-                        loadingModal.setTask(log.text);
-                    });
-                }
+                        CABLES.CMD.ELECTRON.openFileManager(result.data.url);
+                    }
+                };
+                modalOptions.text = "Successfully exported patch:";
             }
+            if (result && result.data && result.data.log)
+            {
+                modalOptions.notices = result.data.log.map((l) => { return l.text; });
+            }
+            new ModalDialog(modalOptions);
         });
     }
 
