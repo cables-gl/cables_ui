@@ -38,6 +38,7 @@ export default class ModalDialog extends Events
         this._options.okButton = this._options.okButton || {};
         if (!this._options.okButton.text) this._options.okButton.text = "Ok";
         if (!this._options.okButton.cssClasses) this._options.okButton.cssClasses = "bluebutton";
+        if (!this._options.okButton.callback) this._options.okButton.callback = null;
 
         this._options.cancelButton = this._options.cancelButton || {};
         if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
@@ -212,6 +213,7 @@ export default class ModalDialog extends Events
             eleModalOk.addEventListener("pointerdown", () =>
             {
                 this.close();
+                if (this._options.okButton.callback) this._options.okButton.callback();
             });
         }
     }
