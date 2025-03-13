@@ -407,7 +407,7 @@ export default class PatchSaveServer extends Events
                 {
                     this._saveCurrentProject(cb, _id, _name);
                 }
-                else if (err && err.code === 404)
+                else
                 {
                     let msg = err || "no response";
                     if (err && err.msg) msg = err.msg;
