@@ -618,7 +618,7 @@ class OpParampanel extends Events
                 "title": "Goto Blueprint Op",
                 func()
                 {
-                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                    // gui.patchView.focusSubpatchOp(el.dataset.id);
                 },
             });
             items.push({
