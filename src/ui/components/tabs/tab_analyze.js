@@ -3,13 +3,18 @@ import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /**
  * tab panel analyze patch shows information and statistics about the current patch
  */
 export default class AnalyzePatchTab extends Events
 {
-    constructor(tabs)
+
+    /**
+     * @param {TabPanel} tabs
+     */
+    constructor(tabs = null)
     {
         super();
         this._tabs = tabs || gui.mainTabs;

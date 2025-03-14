@@ -177,11 +177,18 @@ export default function extendCoreOp()
         return this.isLinkedIn() || this.isLinkedOut();
     };
 
+    /**
+     * @returns {Boolean}
+     */
     CABLES.Op.prototype.isLinkedIn = function ()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i] && this.portsIn[i].isLinked()) return true;
         return false;
     };
+
+    /**
+     * @returns {Boolean}
+     */
     CABLES.Op.prototype.isLinkedOut = function ()
     {
         for (let i = 0; i < this.portsOut.length; i++) if (this.portsOut[i] && this.portsOut[i].isLinked()) return true;

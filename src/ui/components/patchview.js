@@ -1,4 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
+import { Types } from "cables-shared-types";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -21,6 +22,7 @@ import { platform } from "../platform.js";
 
 import { userSettings } from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
+import GlPatch from "../glpatch/glpatch.js";
 
 /**
  * manage patch view and helper functions
@@ -39,6 +41,8 @@ export default class PatchView extends Events
         this._log = new Logger("patchview");
         this._element = null;
         this._pvRenderers = {};
+
+        /** @type {GlPatch} */
         this._patchRenderer = null;
         // this._cachedSubpatchNames = {};
         this.isPasting = false;
@@ -274,11 +278,17 @@ export default class PatchView extends Events
         this.boundingRect = PatchView.getElement().getBoundingClientRect();
     }
 
+    /**
+     * @returns {Boolean}
+     */
     hasFocus()
     {
         return this._patchRenderer.isFocused();
     }
 
+    /**
+ * @param {CABLES.Op} op
+ */
     testCollision(op)
     {
         if (!op || !op.uiAttribs) return;
@@ -888,7 +898,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Array<CABLES.Op>}
+     * @returns {Array<Types.Op>}
      */
     getSelectedOps()
     {
@@ -904,6 +914,7 @@ export default class PatchView extends Events
         return ops;
     }
 
+    /** @param {boolean} firstOnly */
     unlinkSelectedOps(firstOnly)
     {
         const undoGroup = undo.startGroup();
@@ -2549,6 +2560,12 @@ export default class PatchView extends Events
         if (this._patchRenderer && this._patchRenderer.resume) this._patchRenderer.resume();
     }
 
+    /**
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} w
+     * @param {Number} h
+     */
     setSize(x, y, w, h)
     {
         if (this._patchRenderer) this._patchRenderer.setSize(x, y, w, h);

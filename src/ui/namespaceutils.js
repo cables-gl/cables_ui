@@ -3,6 +3,10 @@ import { gui } from "./gui.js";
 
 export default class namespace {}
 
+/**
+ * @param {String} opname
+ * @returns {String}
+ */
 namespace.getNamespace = (opname) =>
 {
     if (!opname) return "";
@@ -11,6 +15,10 @@ namespace.getNamespace = (opname) =>
     return parts.join(".") + ".";
 };
 
+/**
+ * @param {String} opName
+ * @returns {Boolean}
+ */
 namespace.isOpNameValid = (opName) =>
 {
     if (!opName) return false;
@@ -38,51 +46,92 @@ namespace.isOpNameValid = (opName) =>
     return opName.startsWith(defaultOps.prefixes.op);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isDevOp = (opname) =>
 {
     return opname && opname.includes(".Dev.");
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isUserOp = (opname) =>
 {
     return opname && opname.startsWith(defaultOps.prefixes.userOp);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isCurrentUserOp = (opname) =>
 {
     return namespace.isUserOpOfUser(opname, gui.user.usernameLowercase);
 };
 
+/**
+ * @param {String} opname
+ * @param {String} userNameLowercase
+ * @returns {Boolean}
+ */
 namespace.isUserOpOfUser = (opname, userNameLowercase) =>
 {
     return opname && opname.startsWith(defaultOps.prefixes.userOp + userNameLowercase);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isDeprecatedOp = (opname) =>
 {
     return opname && opname.includes(".Deprecated.");
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isExtensionOp = (opname) =>
 {
     return opname && opname.startsWith(defaultOps.prefixes.extensionOp);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isCoreOp = (opname) =>
 {
     return !(namespace.isUserOp(opname) || namespace.isExtensionOp(opname) || namespace.isTeamOp(opname) || namespace.isPatchOp(opname));
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isPrivateOp = (opname) =>
 {
     return namespace.isTeamOp(opname) || namespace.isPatchOp(opname) || namespace.isUserOp(opname);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isPatchOp = (opname) =>
 {
     return opname && opname.indexOf(defaultOps.prefixes.patchOp) === 0;
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isExtension = (opname) =>
 {
     if (!opname) return false;
@@ -92,16 +141,28 @@ namespace.isExtension = (opname) =>
     return parts.length < 5;
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isCollection = (opname) =>
 {
     return opname && (namespace.isExtension(opname) || namespace.isTeamNamespace(opname));
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isTeamOp = (opname) =>
 {
     return opname && opname.startsWith(defaultOps.prefixes.teamOp);
 };
 
+/**
+ * @param {String} opname
+ * @returns {Boolean}
+ */
 namespace.isTeamNamespace = (opname) =>
 {
     if (!opname) return false;
