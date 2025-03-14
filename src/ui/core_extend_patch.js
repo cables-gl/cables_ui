@@ -359,7 +359,6 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.checkExtensionOpPatchAssets = function ()
     {
-
         const perf = gui.uiProfiler.start("checkExtOpsPatchAssets");
         const allops = this.ops;
         for (let i = 0; i < allops.length; i++)
@@ -380,7 +379,7 @@ export default function extendCorePatch()
                             if (!op.portsIn[j].isLinked() && op.portsIn[j].uiAttribs && op.portsIn[j].uiAttribs.display && op.portsIn[j].uiAttribs.display === "file")
                             {
                                 const asset = op.portsIn[j].get();
-                                if (asset && asset.startsWith("/assets/"))
+                                if (asset && asset.startsWith("/assets/") && !asset.startsWith("/assets/library")))
                                 {
                                     op.setUiError("patchassetext", "patch asset in extension op");
                                 }
