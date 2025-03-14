@@ -83,7 +83,8 @@ export default class PatchSaveServer extends Events
                 this._log.log("error", err);
                 gui.jobs().finish("checkupdated");
 
-                /* ignore errors */
+                /* ignore errors, unless project got deleted */
+                if (cb && err.code === 404) cb(err);
                 return;
             }
 
@@ -91,7 +92,7 @@ export default class PatchSaveServer extends Events
             if (gui.isRemoteClient)
             {
                 gui.jobs().finish("checkupdated");
-                if (cb)cb(null);
+                if (cb) cb(null);
                 return;
             }
 
@@ -169,6 +170,20 @@ export default class PatchSaveServer extends Events
 
         platform.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
+            if (_err)
+            {
+                let msg = _err || "no response";
+                if (_err && _err.msg) msg = _err.msg;
+                this._log.warn("[save patch error] ", msg);
+                const modalOptions = {
+                    "warning": true,
+                    "title": "Could not clone patch",
+                    "text": msg
+                };
+                new ModalDialog(modalOptions);
+                return;
+            }
+
             let hasPrivateUserOps = false;
             if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
             {
@@ -385,12 +400,27 @@ export default class PatchSaveServer extends Events
             this._saveCurrentProject(cb, _id, _name);
         }
         else
-            this.checkUpdated(
-                function (err)
+        {
+            this.checkUpdated((err) =>
+            {
+                if (!err)
                 {
-                    if (!err) this._saveCurrentProject(cb, _id, _name);
-                }.bind(this), true);
-
+                    this._saveCurrentProject(cb, _id, _name);
+                }
+                else
+                {
+                    let msg = err || "no response";
+                    if (err && err.msg) msg = err.msg;
+                    this._log.warn("[save patch error] ", msg);
+                    const modalOptions = {
+                        "warning": true,
+                        "title": "Patch not saved",
+                        "text": "Could not save patch: " + msg
+                    };
+                    new ModalDialog(modalOptions);
+                }
+            }, true);
+        }
         gui.patchView.removeLostSubpatches();
     }
 
@@ -413,10 +443,9 @@ export default class PatchSaveServer extends Events
             return;
         }
 
-        gui.corePatch().emitEvent("uiSavePatch");
-
         if (gui.showGuestWarning()) return;
 
+        gui.corePatch().emitEvent("uiSavePatch");
         platform.setSaving(true);
 
         const ops = gui.corePatch().ops;
