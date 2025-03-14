@@ -147,10 +147,12 @@ export class Platform extends Events
         ele.show(ele.byId("nav-item-offline"));
         this._isOffline = true;
         if (!this._checkOfflineInterval)
+        {
             this._checkOfflineInterval = setInterval(() =>
             {
-                gui.patchView.store.checkUpdated(() => { }, false, true);
+                gui.patchView.store.checkUpdated(() => {}, false, true);
             }, this._checkOfflineIntervalSeconds);
+        }
     }
 
     updateOnlineIndicator()
