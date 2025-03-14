@@ -3,6 +3,7 @@
  */
 
 import { gui } from "./gui.js";
+import namespace from "./namespaceutils.js";
 
 export default function extendCorePatch()
 {
