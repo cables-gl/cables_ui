@@ -611,12 +611,21 @@ export class Platform extends Events
 
     exportPatch(projectId)
     {
-        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId + "?iframe=true";
-        if (this.patchIsBackup()) gotoUrl += "&version=" + this._cfg.patchVersion;
+        let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
+        let url = "";
+        if (this.patchIsBackup())
+        {
+            gotoUrl += "?version=" + this._cfg.patchVersion;
+            url = gotoUrl + "&iframe=true";
+        }
+        else
+        {
+            url = gotoUrl + "?iframe=true";
+        }
 
         gui.mainTabs.addIframeTab(
             "Export Patch",
-            gotoUrl,
+            url,
             {
                 "icon": "settings",
                 "closable": true,
