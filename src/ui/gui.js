@@ -1609,6 +1609,8 @@ export default class Gui extends Events
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, () =>
         {
+            gui.corePatch().checkExtensionOpPatchAssets();
+
             if (document.activeElement.classList.contains("ace_text-input") && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible()) // && !this.patchView.hasFocus()
             {
                 gui.mainTabs.getSaveButton().cb();
@@ -2180,6 +2182,9 @@ export default class Gui extends Events
                 "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
             });
         });
+
+        this._corePatch.checkExtensionOpPatchAssets();
+
     }
 
     showInfoParam(txt)
