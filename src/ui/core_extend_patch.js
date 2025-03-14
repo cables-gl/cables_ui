@@ -379,7 +379,7 @@ export default function extendCorePatch()
                             if (!op.portsIn[j].isLinked() && op.portsIn[j].uiAttribs && op.portsIn[j].uiAttribs.display && op.portsIn[j].uiAttribs.display === "file")
                             {
                                 const asset = op.portsIn[j].get();
-                                if (asset && asset.startsWith("/assets/") && !asset.startsWith("/assets/library")))
+                                if (asset && asset.startsWith("/assets/") && !asset.startsWith("/assets/library"))))
                                 {
                                     op.setUiError("patchassetext", "patch asset in extension op");
                                 }
