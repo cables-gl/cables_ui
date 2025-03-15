@@ -117,8 +117,8 @@ export default class PatchView extends Events
         this._log.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
-        console.log("lala", outerOp);
-        gui.patchView.centerSelectOp(outerOp);
+        console.log("lala", outerOp.opId);
+        gui.patchView.centerSelectOp(outerOp.opId);
     }
 
     /**
@@ -2184,21 +2184,30 @@ export default class PatchView extends Events
                 ops[i].setUiAttribs({ "selected": false });
     }
 
+    /**
+     * @param {String} id
+     */
     selectOpId(id)
     {
         const op = this._p.getOpById(id);
         if (op)op.setUiAttribs({ "selected": true });
     }
 
+    /**
+     * @param {String} opid
+     */
     centerSelectOp(opid)
     {
         this.setSelectedOpById(opid);
         this._patchRenderer.viewBox.centerSelectedOps();
-
+        console.log(gui.patchView.getSelectedOps());
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         this.focus();
     }
 
+    /**
+     * @param {String} opid
+     */
     setSelectedOpById(opid)
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
@@ -2206,6 +2215,9 @@ export default class PatchView extends Events
         else this._log.warn("patchRenderer has no function setSelectedOpById");
     }
 
+    /**
+     * @param {String} id
+     */
     selectChilds(id)
     {
         const op = gui.corePatch().getOpById(id);

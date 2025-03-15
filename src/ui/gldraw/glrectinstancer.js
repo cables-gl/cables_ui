@@ -8,6 +8,7 @@ import { gui } from "../gui.js";
  * @typedef {Object} GlRectInstancerOptions
  * @property {String} [name]
  * @property {Number} [initNum]
+ * @property {Number} [allowDragging]
  */
 
 /**
@@ -179,11 +180,11 @@ export default class GlRectInstancer extends Events
 
     clear()
     {
-        for (let i = 0; i < 2 * this.#num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
-        for (let i = 0; i < 3 * this.#num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
-        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffCol[i] = 1;// Math.random();
-        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffDeco[i] = 0;// Math.random();
-        for (let i = 0; i < this.#num; i++) this._attrBuffTextures[i] = -1;// Math.random();
+        for (let i = 0; i < 2 * this.#num; i++) this._attrBuffSizes[i] = 0;
+        for (let i = 0; i < 3 * this.#num; i++) this._attrBuffPos[i] = 0;
+        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffCol[i] = 1;
+        for (let i = 0; i < 4 * this.#num; i++) this._attrBuffDeco[i] = 0;
+        for (let i = 0; i < this.#num; i++) this._attrBuffTextures[i] = -1;
 
         for (let i = 0; i < 4 * this.#num; i += 4)
         {
