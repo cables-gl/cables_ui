@@ -1,4 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
+import { Types } from "cables-shared-types";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -21,6 +22,7 @@ import { platform } from "../platform.js";
 
 import { userSettings } from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
+import GlPatch from "../glpatch/glpatch.js";
 
 /**
  * manage patch view and helper functions
@@ -39,6 +41,8 @@ export default class PatchView extends Events
         this._log = new Logger("patchview");
         this._element = null;
         this._pvRenderers = {};
+
+        /** @type {GlPatch} */
         this._patchRenderer = null;
         // this._cachedSubpatchNames = {};
         this.isPasting = false;
@@ -105,14 +109,21 @@ export default class PatchView extends Events
     //     }
     // }
 
+    /**
+     * @param {String} subPatchId
+     */
     focusSubpatchOp(subPatchId)
     {
         this._log.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
+        console.log("lala", outerOp);
         gui.patchView.centerSelectOp(outerOp);
     }
 
+    /**
+     * @param {String} subPatchId
+     */
     clickSubPatchNav(subPatchId)
     {
         gui.patchView.setCurrentSubPatch(subPatchId);
@@ -120,11 +131,14 @@ export default class PatchView extends Events
         this.focus();
     }
 
+    /**
+     * @param {Types.Op} op
+     */
     _onDeleteOpUndo(op)
     {
         this.checkPatchErrorsSoon();
 
-        const undofunc = (function (opname, _opid)
+        (function (opname, _opid)
         {
             const oldValues = {};
             for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
@@ -160,6 +174,8 @@ export default class PatchView extends Events
 
     setProject(proj, cb)
     {
+        const logStartup = window.logStartup;
+
         if (!this._patchRenderer)
         {
             this._log.error("no patchrenderer...");
@@ -168,7 +184,7 @@ export default class PatchView extends Events
         }
 
         const perf = gui.uiProfiler.start("[patchview] setproject");
-        if (window.logStartup) logStartup("gui set project");
+        if (logStartup) logStartup("gui set project");
 
         if (proj && proj.ui)
         {
@@ -205,11 +221,11 @@ export default class PatchView extends Events
 
         perf.finish();
 
-        if (window.logStartup) logStartup("loadProjectDependencies...");
+        if (logStartup) logStartup("loadProjectDependencies...");
         gui.serverOps.loadProjectDependencies(proj, (project) =>
         {
-            if (window.logStartup) logStartup("loadProjectDependencies done");
-            if (window.logStartup) logStartup("deserialize...");
+            if (logStartup) logStartup("loadProjectDependencies done");
+            if (logStartup) logStartup("deserialize...");
 
             const perf3 = gui.uiProfiler.start("[core] deserialize");
             gui.corePatch().deSerialize(project);
@@ -217,7 +233,7 @@ export default class PatchView extends Events
 
             const perf2 = gui.uiProfiler.start("[patchview] setproject2");
 
-            if (window.logStartup) logStartup("deserialize done");
+            if (logStartup) logStartup("deserialize done");
 
             undo.clear();
 
@@ -251,6 +267,9 @@ export default class PatchView extends Events
 
     }
 
+    /**
+     * @param {String} id
+     */
     switch(id)
     {
         const views = ele.byId("patchviews");
@@ -274,11 +293,17 @@ export default class PatchView extends Events
         this.boundingRect = PatchView.getElement().getBoundingClientRect();
     }
 
+    /**
+     * @returns {Boolean}
+     */
     hasFocus()
     {
         return this._patchRenderer.isFocused();
     }
 
+    /**
+     * @param {Types.Op} op
+     */
     testCollision(op)
     {
         if (!op || !op.uiAttribs) return;
@@ -888,7 +913,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Array<CABLES.Op>}
+     * @returns {Array<Types.Op>}
      */
     getSelectedOps()
     {
@@ -904,6 +929,7 @@ export default class PatchView extends Events
         return ops;
     }
 
+    /** @param {boolean} firstOnly */
     unlinkSelectedOps(firstOnly)
     {
         const undoGroup = undo.startGroup();
@@ -1344,11 +1370,17 @@ export default class PatchView extends Events
         return subPatches;
     }
 
+    /**
+     * @param {String|Number} subPatchId
+     */
     getSubPatchOuterOp(subPatchId)
     {
         return gui.corePatch().getSubPatchOuterOp(subPatchId);
     }
 
+    /**
+     * @param {String|Number} currentSubPatch
+     */
     updateSubPatchBreadCrumb(currentSubPatch)
     {
         // this._patchRenderer.greyOutBlue =
@@ -1365,7 +1397,7 @@ export default class PatchView extends Events
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             if (i == 0)
-                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "</a>";
+                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "!</a>";
             else
                 str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
@@ -1408,6 +1440,9 @@ export default class PatchView extends Events
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     */
     clipboardCutOps(e)
     {
         this.clipboardCopyOps(e);
@@ -1441,8 +1476,6 @@ export default class PatchView extends Events
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
         }
-
-        let numLinks = 0;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -1510,6 +1543,9 @@ export default class PatchView extends Events
         return { "ops": ops };
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     */
     clipboardCopyOps(e)
     {
         let selectedOps = this.getSelectedOps();
@@ -1537,6 +1573,13 @@ export default class PatchView extends Events
         e.preventDefault();
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     * @param {String} oldSub
+     * @param {Number} mouseX
+     * @param {Number} mouseY
+     * @param {Function} next
+     */
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
         const currentSubPatch = this.getCurrentSubPatch();
@@ -2549,6 +2592,12 @@ export default class PatchView extends Events
         if (this._patchRenderer && this._patchRenderer.resume) this._patchRenderer.resume();
     }
 
+    /**
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} w
+     * @param {Number} h
+     */
     setSize(x, y, w, h)
     {
         if (this._patchRenderer) this._patchRenderer.setSize(x, y, w, h);

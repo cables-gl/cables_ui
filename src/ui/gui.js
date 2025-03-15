@@ -51,9 +51,7 @@ import { contextMenu } from "./elements/contextmenu.js";
 import UserSettings, { userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
-import Tab from "./elements/tabpanel/tab.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
-import JobsTab from "./components/tabs/tab_jobs.js";
 
 /**
  * @type {Gui}
@@ -178,7 +176,7 @@ export default class Gui extends Events
         this.on("ShaderError",
 
             /**
-             * @param {CgShader} shader
+             * @param {CABLES.CgShader} shader
              */
             (shader) =>
             {
@@ -340,7 +338,10 @@ export default class Gui extends Events
         if (this.find()) this.find().setClicked(idx);
     }
 
-    find(str)
+    /**
+     * @param {String} str
+     */
+    find(str = "")
     {
         if (this._find && this._find.isClosed()) this._find = null;
 
@@ -1608,6 +1609,8 @@ export default class Gui extends Events
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, () =>
         {
+            gui.corePatch().checkExtensionOpPatchAssets();
+
             if (document.activeElement.classList.contains("ace_text-input") && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible()) // && !this.patchView.hasFocus()
             {
                 gui.mainTabs.getSaveButton().cb();
@@ -2179,6 +2182,9 @@ export default class Gui extends Events
                 "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
             });
         });
+
+        this._corePatch.checkExtensionOpPatchAssets();
+
     }
 
     showInfoParam(txt)
@@ -2221,6 +2227,9 @@ export default class Gui extends Events
 
         const missing = {};
 
+        /**
+         * @param {Array<Number>} rgb
+         */
         function rgbtohex(rgb)
         {
             return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
@@ -2293,6 +2302,9 @@ export default class Gui extends Events
         return 1;
     }
 
+    /**
+     * @param {Number} dur
+     */
     setTimeLineLength(dur)
     {
         console.log("timeline length", dur);

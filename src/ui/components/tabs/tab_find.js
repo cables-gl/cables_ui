@@ -354,7 +354,7 @@ export default class FindTab
                         namespace.isExtensionOp(op.objName)
                     )
                     {
-                        results.push(Op);
+                        results.push(op);
                     }
                 }
             }
