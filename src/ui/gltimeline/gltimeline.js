@@ -17,6 +17,16 @@ import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";
 
 /**
+ * @typedef TlConfig
+ * @property {Number} fps
+ * @property {Number} bpm
+ * @property {Boolean} fadeInFrames
+ * @property {Boolean} showBeats
+ * @property {String} displayUnits
+ * @property {Boolean} restrictToFrames
+ */
+
+/**
  * gl timeline
  *
  * @export
@@ -88,6 +98,8 @@ export class GlTimeline extends Events
     #cgl = null;
     #isAnimated = false;
     buttonForScrolling = 2;
+
+    /** @type {TlConfig} */
     cfg = {
         "fps": 30,
         "bpm": 180,
@@ -746,6 +758,7 @@ export class GlTimeline extends Events
         perf.finish();
     }
 
+    /** @param {TlConfig} cfg */
     onConfig(cfg)
     {
         this.cfg = cfg;
@@ -794,7 +807,7 @@ export class GlTimeline extends Events
 
         if (theKey)
         {
-            gui.scene().timer.setTime(theKey.time);
+            gui.corePatch().timer.setTime(theKey.time);
             if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
     }

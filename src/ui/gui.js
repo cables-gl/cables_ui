@@ -236,7 +236,6 @@ export default class Gui extends Events
 
         this.currentModal = null;
         gui = window.gui = this;
-
     }
 
     get patchId()
@@ -249,6 +248,9 @@ export default class Gui extends Events
         return this._currentProject;
     }
 
+    /**
+     * @param {Object} p
+     */
     setProject(p)
     {
         this._currentProject = p;
@@ -294,6 +296,9 @@ export default class Gui extends Events
         return true;
     }
 
+    /**
+     * @param {string} title
+     */
     startModalLoading(title)
     {
         this._modalLoadingCount++;
@@ -316,6 +321,11 @@ export default class Gui extends Events
         return CABLES.UI.loaded;
     }
 
+    /**
+     * @param {Number} idx
+     * @param {string} opid
+     * @param {String} subpatch
+     */
     focusFindResult(idx, opid, subpatch)
     {
         if (this.keys.shiftKey)
@@ -563,11 +573,9 @@ export default class Gui extends Events
             this._elMenubar.style.zIndex = 40;
             const lis = ele.byQueryAll("#menubar li");
 
-            lis[0].onclick = "";
+            lis[0].setAttribute("onclick", "");
             for (let i = 1; i < lis.length; i++)
-            {
                 lis[i].classList.add("hidden");
-            }
         }
 
         if (this.rendererWidth === undefined || this.rendererHeight === undefined)
@@ -608,14 +616,9 @@ export default class Gui extends Events
             this.patchView.resume();
         }, 50);
 
-        // document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
-        // this._elIconBar[0].style.width = iconBarWidth + "px";
-
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
-
-        const timedisplayheight = 25;
 
         patchHeight -= infoAreaHeight;
 
@@ -634,7 +637,6 @@ export default class Gui extends Events
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth + "px";
 
-            // if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
             this._elSplitterMaintabs.style.height = (patchHeight - this.bottomTabPanel.getHeight()) + 2 + "px";
@@ -643,11 +645,9 @@ export default class Gui extends Events
 
             this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth + "px";
-            // this._elEditorMinimized.style.top = subPatchNavPosY + "px";
 
             this._elEditorMaximized.style.display = "block";
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
-            // this._elEditorMaximized.style.top = subPatchNavPosY + "px";
 
             this._elBreadcrumbNav.style.left = editorWidth + iconBarWidth + 15 + "px";
 
@@ -971,6 +971,9 @@ export default class Gui extends Events
         this.setLayout();
     }
 
+    /**
+     * @param {boolean} show
+     */
     showLoadingProgress(show)
     {
         if (show)
@@ -990,6 +993,9 @@ export default class Gui extends Events
         }
     }
 
+    /**
+     * @param {Object} data
+     */
     updateActivityFeedIcon(data)
     {
         if (!data) return;
@@ -1054,12 +1060,19 @@ export default class Gui extends Events
             }, 200);
     }
 
+    /**
+     * @param {string} title
+     */
     savingTitleAnimStart(title)
     {
         document.getElementById("patchname").innerHTML = title;
         document.getElementById("patchname").classList.add("blinking");
     }
 
+    /**
+     * @param {Function} cb
+     * @param {boolean} userInteraction
+     */
     getFileManager(cb, userInteraction)
     {
         if (!this.fileManager) this.fileManager = new FileManager(cb, userInteraction);
@@ -1072,7 +1085,11 @@ export default class Gui extends Events
         gui.maintabPanel.show(true);
     }
 
-    showFileManager(cb, userInteraction)
+    /**
+     * @param {Function} cb
+     * @param {boolean} userInteraction
+     */
+    showFileManager(cb = null, userInteraction = false)
     {
         this.getFileManager(cb, userInteraction);
 
@@ -1082,6 +1099,9 @@ export default class Gui extends Events
         if (cb) cb();
     }
 
+    /**
+     * @param {string} name
+     */
     setProjectName(name)
     {
         if (name && name !== "undefined")
@@ -1120,11 +1140,13 @@ export default class Gui extends Events
         for (let i in els)
         {
             const newShortcut = this.bottomInfoArea.replaceShortcuts(els[i].innerHTML || "");
-            // const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
             if (els[i].innerHTML) els[i].innerHTML = newShortcut;
         }
     }
 
+    /**
+     * @param {string} selector
+     */
     serializeForm(selector)
     {
         const json = {};
@@ -1135,37 +1157,14 @@ export default class Gui extends Events
         return json;
     }
 
-    helperContextMenu(el)
+    helperContextMenu()
     {
         CABLES.CMD.UI.toggleOverlays();
-
-        // let iconShowOverlays = "icon icon-empty";
-        // if (this.userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
-
-        // let iconTransforms = "icon icon-check hidden";
-        // if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
-
-        // let items = [{
-        //     "title": "Show Overlays",
-        //     "func": CABLES.CMD.UI.toggleOverlays,
-        //     "iconClass": iconShowOverlays,
-        // }];
-
-        // // if (this.userSettings.get("overlaysShow"))
-        // //     items.push(
-        // //         {
-        // //             "title": "Show all transforms",
-        // //             "func": CABLES.CMD.UI.toggleTransformOverlay,
-        // //             "iconClass": iconTransforms,
-        // //         });
-
-        // contextMenu.show(
-        //     {
-        //         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
-        //         "items": items
-        //     }, el);
     }
 
+    /**
+     * @param {HTMLBaseElement} el
+     */
     rendererContextMenu(el)
     {
         contextMenu.show(
@@ -1202,6 +1201,9 @@ export default class Gui extends Events
             }, el);
     }
 
+    /**
+     * @param {HTMLElement} el
+     */
     rendererAspectMenu(el)
     {
         contextMenu.show(
@@ -1248,6 +1250,12 @@ export default class Gui extends Events
             }, el);
     }
 
+    /**
+     * @param {String} converterId
+     * @param {String} projectId
+     * @param {String} fileId
+     * @param {String} converterName
+     */
     showConverter(converterId, projectId, fileId, converterName, fileName = null)
     {
         const html = getHandleBarHtml(
@@ -1262,6 +1270,11 @@ export default class Gui extends Events
         new ModalDialog({ "html": html });
     }
 
+    /**
+     * @param {String} projectId
+     * @param {String} fileId
+     * @param {String} converterId
+     */
     converterStart(projectId, fileId, converterId)
     {
         ele.show(ele.byId("converterprogress"));
@@ -1299,6 +1312,9 @@ export default class Gui extends Events
             });
     }
 
+    /**
+     * @param {Function} cb
+     */
     bind(cb)
     {
         this.canvasManager.addContext(this.corePatch().cgl);
@@ -1591,11 +1607,11 @@ export default class Gui extends Events
             CABLES.CMD.UI.togglePatchBgPatchField();
         });
 
-        this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { undo.undo(); });
-        this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { undo.redo(); });
-        this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.CMD.UI.settings(); });
+        this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { undo.undo(); });
+        this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, () => { undo.redo(); });
+        this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { CABLES.CMD.UI.settings(); });
 
-        this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
+        this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (/** @type {HtmlElementOverlay} */ e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
             if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CABLES.CMD.UI.showSearch();
@@ -1741,13 +1757,16 @@ export default class Gui extends Events
 
         setTimeout(() =>
         {
-            ele.forEachClass("tooltip", (el) =>
+            ele.forEachClass("tooltip", (/** @type {Element | HTMLElement} */ el) =>
             {
                 ele.hide(el);
             });
         }, 50);
     }
 
+    /**
+     * @param {string} libName
+     */
     showLibLoadError(libName)
     {
         iziToast.error({
@@ -2187,16 +2206,25 @@ export default class Gui extends Events
 
     }
 
+    /**
+     * @param {string} txt
+     */
     showInfoParam(txt)
     {
         showInfo(txt, true);
     }
 
+    /**
+     * @param {string} txt
+     */
     showInfo(txt)
     {
         showInfo(txt);
     }
 
+    /**
+     * @param {number} r
+     */
     setRestriction(r)
     {
         if (this._restrictionMode !== r)

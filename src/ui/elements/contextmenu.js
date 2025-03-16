@@ -3,8 +3,16 @@ import { ele } from "cables-shared-client";
 /**
  * @typedef ContextMenuItem
  * @property {String} title
- * @property {String} iconClass
+ * @property {String} [icon]
  * @property {Function} func
+ */
+
+/**
+ * @typedef ContextMenuParams
+ * @property {Array<ContextMenuItem>} items
+ * @property {String} [title]
+ * @property {String} [iconClass]
+ // * @property {Function} func
 */
 
 export default class ContextMenu
@@ -31,7 +39,7 @@ export default class ContextMenu
     }
 
     /**
-     * @param {Array<ContextMenuItem>} obj
+     * @param {ContextMenuParams} obj
      * @param {HTMLElement} parent
      */
     show(obj, parent)
@@ -117,7 +125,7 @@ export default class ContextMenu
 }
 
 /**
- * @type {Platform}
+ * @type {ContextMenu}
  */
 let contextMenu = new ContextMenu();
 export { contextMenu };

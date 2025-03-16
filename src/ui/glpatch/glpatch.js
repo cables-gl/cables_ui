@@ -31,6 +31,10 @@ import { portType } from "../core_constants.js";
  */
 export default class GlPatch extends Events
 {
+
+    /**
+     * @param {CglContext} cgl
+     */
     constructor(cgl)
     {
         super();
@@ -84,7 +88,7 @@ export default class GlPatch extends Events
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
-        this._selectionArea = new GlSelectionArea(this._overLayRects, this);
+        this._selectionArea = new GlSelectionArea(this._overLayRects);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
 
@@ -305,13 +309,13 @@ export default class GlPatch extends Events
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
-        gui.keys.key("y", "Cut Cables", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        gui.keys.key("y", "Cut Cables", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
             if (!this.cutLineActive) this._cutLine = [];
             this.cutLineActive = true;
         });
 
-        gui.keys.key("y", "Cut Cables", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        gui.keys.key("y", "Cut Cables", "up", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
             this.cutLineActive = false;
             this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
@@ -1472,11 +1476,17 @@ export default class GlPatch extends Events
         perf.finish();
     }
 
+    /**
+     * @param {Types.Op} op
+     */
     getGlOp(op)
     {
         return this._glOpz[op.id];
     }
 
+    /**
+     * @param {String} id
+     */
     setSelectedOpById(id)
     {
         this.unselectAll();
@@ -1501,6 +1511,9 @@ export default class GlPatch extends Events
         else return false;
     }
 
+    /**
+     * @param {String} id
+     */
     selectOpId(id)
     {
         if (this._glOpz[id] && !this._selectedGlOps[id])
@@ -1515,6 +1528,9 @@ export default class GlPatch extends Events
         if (gui.patchView.getSelectedOps().length > 1)gui.patchView.showSelectedOpsPanel();
     }
 
+    /**
+     * @param {String} id
+     */
     unSelectOpId(id)
     {
         if (this._glOpz[id])
@@ -1538,11 +1554,11 @@ export default class GlPatch extends Events
 
     subPatchOpAnimStart(bounds, next)
     {
-        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
 
         /*
          * this._subpatchAnimFade.clear();
