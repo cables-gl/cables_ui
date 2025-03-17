@@ -444,7 +444,6 @@ export default class FileManager
                     if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
-                        if (detailItem.isReference) delete r.converters;
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
 

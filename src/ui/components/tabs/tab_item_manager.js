@@ -79,7 +79,7 @@ export default class ItemManager extends Events
         const options = { "items": this._items };
         for (const i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
 
-        if (this._display == "icons") html = getHandleBarHtml("tab_itemmanager", options);
+        if (this._display === "icons") html = getHandleBarHtml("tab_itemmanager", options);
         else html = getHandleBarHtml("tab_itemmanager_list", options);
 
         this._tab.html("<div id=\"item_manager\" class=\"item_manager\">" + html + "</div>");
