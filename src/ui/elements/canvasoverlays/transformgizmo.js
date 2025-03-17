@@ -1,3 +1,4 @@
+import { vec3, mat4 } from "gl-matrix";
 import { gui } from "../../gui.js";
 import undo from "../../utils/undo.js";
 

@@ -1,4 +1,3 @@
-import { Types } from "cables-shared-types";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { GlTimeline } from "./gltimeline.js";
 import { gui } from "../gui.js";
@@ -14,7 +13,7 @@ export class glTimelineCanvas extends GlCanvas
 {
 
     /**
-     * @param {Types.Patch} _patch
+     * @param {Patch} _patch
      * @param {HTMLElement} parentEle
      */
     constructor(_patch, parentEle)

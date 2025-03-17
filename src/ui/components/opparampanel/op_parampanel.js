@@ -1,5 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Types } from "cables-shared-types";
+
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
@@ -150,7 +150,7 @@ class OpParampanel extends Events
     }
 
     /**
-     * @param {Types.Op|String} op
+     * @param {Op|String} op
      */
     show(op)
     {

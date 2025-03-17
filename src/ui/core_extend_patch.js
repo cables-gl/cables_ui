@@ -2,12 +2,17 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import { Patch } from "cables";
 import { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
+import { UiOp } from "./core_extend_op.js";
 
-export default function extendCorePatch()
+/**
+ * @extends Patch<UiPatch,UiOp>
+ */
+class UiPatch extends Patch
 {
-    CABLES.Patch.prototype._opIdsToOps = function (opids)
+    _opIdsToOps(opids)
     {
         let ops = [];
         for (let i = 0; i < opids.length; i++)
@@ -15,9 +20,9 @@ export default function extendCorePatch()
             ops.push(this.getOpById(opids[i]));
         }
         return ops;
-    };
+    }
 
-    CABLES.Patch.prototype.hasOp = function (op)
+    hasOp(op)
     {
         for (const i in this.ops)
         {
@@ -25,17 +30,17 @@ export default function extendCorePatch()
             if (this.ops[i].objName === op.objName) return true;
         }
         return false;
-    };
+    }
 
-    CABLES.Patch.prototype.getOpByRefId = function (refId, subPatchId)
+    getOpByRefId(refId, subPatchId)
     {
         const ops = this.getSubPatchOps(subPatchId);
         if (ops)
             for (let i = 0; i < ops.length; i++)
                 if (ops[i].storage && ops[i].storage.ref == refId) return ops[i];
-    };
+    }
 
-    CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
+    clearSubPatchCache(patchId)
     {
         if (patchId === undefined)
         {
@@ -44,18 +49,18 @@ export default function extendCorePatch()
         }
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
-    };
+    }
 
-    CABLES.Patch.prototype._subPatchCacheAdd = function (subPatchId, op)
+    _subPatchCacheAdd(subPatchId, op)
     {
         if (this._subpatchOpCache[subPatchId])
         {
             this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
             this._subpatchOpCache[subPatchId].ops[op.id] = op;
         }
-    };
+    }
 
-    CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
+    getSubPatchOps(subPatchId, recursive = false)
     {
         if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
         if (this.ops.length == 0) return [];
@@ -126,23 +131,23 @@ export default function extendCorePatch()
 
         perf.finish();
         return ops;
-    };
+    }
 
-    CABLES.Patch.prototype.getSubPatch2InnerInputOp = function (subPatchId)
+    getSubPatch2InnerInputOp(subPatchId)
     {
         const ops = gui.corePatch().getSubPatchOps(subPatchId);
         for (let i = 0; i < ops.length; i++)
             if (ops[i].innerInput) return ops[i];
-    };
+    }
 
-    CABLES.Patch.prototype.getSubPatch2InnerOutputOp = function (subPatchId)
+    getSubPatch2InnerOutputOp(subPatchId)
     {
         const ops = gui.corePatch().getSubPatchOps(subPatchId);
         for (let i = 0; i < ops.length; i++)
             if (ops[i].innerOutput) return ops[i];
-    };
+    }
 
-    CABLES.Patch.prototype.buildSubPatchCache = () =>
+    buildSubPatchCache()
     {
         const perf = gui.uiProfiler.start("[corePatch ext] buildSubPatchCache");
 
@@ -156,9 +161,9 @@ export default function extendCorePatch()
         }
 
         perf.finish();
-    };
+    }
 
-    CABLES.Patch.prototype.getNewSubpatchId = function (oldSubPatchId)
+    getNewSubpatchId(oldSubPatchId)
     {
         for (let i in this._subpatchOpCache)
         {
@@ -171,9 +176,15 @@ export default function extendCorePatch()
                 }
             }
         }
-    };
+    }
 
-    CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId, ignoreNotFound)
+    /**
+     * Description
+     * @param {string|number} subPatchId
+     * @param {boolean} [ignoreNotFound]
+     * @returns {UiOp}
+     */
+    getSubPatchOuterOp(subPatchId, ignoreNotFound = false)
     {
         if (subPatchId == 0) return null;
         // oldSubPatchIds
@@ -208,9 +219,9 @@ export default function extendCorePatch()
 
         // console.log("not found+?!?!?!");
         return null;
-    };
+    }
 
-    CABLES.Patch.prototype.getOpsInRect = function (xa, ya, xb, yb)
+    getOpsInRect(xa, ya, xb, yb)
     {
         const perf = gui.uiProfiler.start("[extPatch] ops in rect");
         const x = Math.min(xa, xb);
@@ -243,9 +254,9 @@ export default function extendCorePatch()
         perf.finish();
 
         return ops;
-    };
+    }
 
-    CABLES.Patch.prototype.getAllAnimPorts = function ()
+    getAllAnimPorts()
     {
         const ports = [];
         const ops = gui.corePatch().ops;
@@ -259,9 +270,9 @@ export default function extendCorePatch()
         }
 
         return ports;
-    };
+    }
 
-    CABLES.Patch.prototype.reloadOp = function (objName, cb, refOldOp)
+    reloadOp(objName, cb, refOldOp)
     {
         let count = 0;
         const ops = [];
@@ -355,9 +366,9 @@ export default function extendCorePatch()
         gui.patchView.unselectAllOps();
 
         cb(count, ops, refNewOp);
-    };
+    }
 
-    CABLES.Patch.prototype.checkExtensionOpPatchAssets = function ()
+    checkExtensionOpPatchAssets()
     {
         const perf = gui.uiProfiler.start("checkExtOpsPatchAssets");
         const allops = this.ops;
@@ -389,5 +400,12 @@ export default function extendCorePatch()
                 }
         }
         perf.finish();
-    };
+    }
 }
+
+CABLES.Patch = UiPatch;
+
+export { UiPatch };
+
+export default function extendCorePatch()
+{}

@@ -1,5 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
-import { Types } from "cables-shared-types";
+
 import { GlTimeline } from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
@@ -19,7 +19,7 @@ export class glTlKeys extends Events
     #minVal = 999999;
     #maxVal = -999999;
 
-    /** @type {Types.Anim} */
+    /** @type {Anim} */
     #anim = null;
 
     /** @type {GlTimeline} */
@@ -34,7 +34,7 @@ export class glTlKeys extends Events
     /** @type {GlRect} */
     #parentRect = null;
 
-    /** @type {Types.Port} */
+    /** @type {Port} */
     #port;
 
     /** @type {GlSpline} */
@@ -57,9 +57,9 @@ export class glTlKeys extends Events
     /**
      * @param {GlTimeline} glTl
      * @param {glTlAnimLine} animLine
-     * @param {Types.Anim} anim
+     * @param {Anim} anim
      * @param {GlRect} parentRect
-     * @param {Types.Port} port
+     * @param {Port} port
      * @param {Object} options
      */
     constructor(glTl, animLine, anim, parentRect, port, options)

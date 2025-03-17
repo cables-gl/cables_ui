@@ -1,5 +1,4 @@
-import { Types } from "cables-shared-types";
-
+import { CglContext, Texture } from "cables";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
@@ -18,7 +17,7 @@ export default class GlTextWriter
 {
 
     /**
-     * @param {Types.CGState} cgl
+     * @param {CglContext} cgl
      * @param {GlTextWriterOptions} options
      */
     constructor(cgl, options)
@@ -45,10 +44,10 @@ export default class GlTextWriter
     {
         if (!this._fontTex)
         {
-            this._fontTex = CGL.Texture.load(this._cgl, "img/worksans-regular.png", () =>
+            this._fontTex = Texture.load(this._cgl, "img/worksans-regular.png", () =>
             {
                 this._rectDrawer.setAllTexture(this._fontTex, true);
-            }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
+            }, { "flip": false, "filter": Texture.FILTER_LINEAR });
         }
 
         this._rectDrawer.render(resX, resY, scrollX, scrollY, zoom);

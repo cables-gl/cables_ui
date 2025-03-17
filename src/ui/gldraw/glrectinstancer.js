@@ -1,4 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
+import { CglContext, Geometry, Mesh, Shader, Texture, Uniform } from "cables";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
@@ -45,7 +46,7 @@ export default class GlRectInstancer extends Events
     /** @type {GlRect} */
     #draggingRect = null;
 
-    /** @type {CgShader} */
+    /** @type {Shader} */
     #shader = null;
 
     /** @type {Geometry} */
@@ -71,7 +72,7 @@ export default class GlRectInstancer extends Events
 
     /**
      * Description
-     * @param {CABLES.CGState} cgl
+     * @param {CglContext} cgl
      * @param {GlRectInstancerOptions} options
      */
     constructor(cgl, options)
@@ -94,26 +95,26 @@ export default class GlRectInstancer extends Events
 
         this._setupAttribBuffers();
 
-        this.#shader = new CGL.Shader(cgl, "rectinstancer " + this.#name);
+        this.#shader = new Shader(cgl, "rectinstancer " + this.#name);
         this.#shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
         this.#shader.ignoreMissingUniforms = true;
 
-        this._uniTime = new CGL.Uniform(this.#shader, "f", "time", 0);
-        this._uniZoom = new CGL.Uniform(this.#shader, "f", "zoom", 0);
-        this._uniResX = new CGL.Uniform(this.#shader, "f", "resX", 0);
-        this._uniResY = new CGL.Uniform(this.#shader, "f", "resY", 0);
-        this._uniscrollX = new CGL.Uniform(this.#shader, "f", "scrollX", 0);
-        this._uniscrollY = new CGL.Uniform(this.#shader, "f", "scrollY", 0);
-        this._unimsdfUnit = new CGL.Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
-        this._uniTexture = new CGL.Uniform(this.#shader, "t", "tex", 0);
+        this._uniTime = new Uniform(this.#shader, "f", "time", 0);
+        this._uniZoom = new Uniform(this.#shader, "f", "zoom", 0);
+        this._uniResX = new Uniform(this.#shader, "f", "resX", 0);
+        this._uniResY = new Uniform(this.#shader, "f", "resY", 0);
+        this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
+        this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
+        this._unimsdfUnit = new Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
+        this._uniTexture = new Uniform(this.#shader, "t", "tex", 0);
 
-        this.#geom = new CGL.Geometry("rectinstancer " + this.#name);
+        this.#geom = new Geometry("rectinstancer " + this.#name);
         this.#geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
         this.#geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
         this.#geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
 
         if (this.#cgl.glVersion == 1) this.#shader.enableExtension("GL_OES_standard_derivatives");
-        this.#mesh = new CGL.Mesh(cgl, this.#geom);
+        this.#mesh = new Mesh(cgl, this.#geom);
         this.#mesh.numInstances = this.#num;
 
         this.clear();

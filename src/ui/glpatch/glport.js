@@ -1,4 +1,3 @@
-import { Types } from "cables-shared-types";
 import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
@@ -24,7 +23,7 @@ export default class GlPort
      * @param {GlPatch} glpatch
      * @param {GlOp} glop
      * @param {GlRectInstancer} rectInstancer
-     * @param {Types.Port} p
+     * @param {Port} p
      * @param {number} posCount
      * @param {GlRect} oprect
      */
@@ -32,7 +31,7 @@ export default class GlPort
     {
         this._log = new Logger("glPort");
 
-        /** @type {Types.Port} */
+        /** @type {Port} */
         this._port = p;
 
         /**

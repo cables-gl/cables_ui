@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
-import { Types } from "cables-shared-types";
+
+import { Op, Port } from "cables";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -27,7 +28,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {Types.Op} op
+     * @param {Op} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -67,7 +68,7 @@ export default class GlOp extends Events
 
         /**
          * @private
-         * @type {Types.Op}
+         * @type {Op}
          */
         this._op = op;
 
@@ -157,7 +158,7 @@ export default class GlOp extends Events
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
 
-        /** @type {Types.Port} */
+        /** @type {Port} */
         this._titleExtPort = null;
         this._titleExtPortListener = null;
 

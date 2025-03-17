@@ -1,3 +1,4 @@
+import { mat4, vec3 } from "gl-matrix";
 import overlayShaderVert from "./overlaymeshes.vert";
 import overlayShaderFrag from "./overlaymeshes.frag";
 import { gui } from "../../gui.js";

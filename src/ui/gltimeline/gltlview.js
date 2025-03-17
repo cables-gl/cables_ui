@@ -1,4 +1,3 @@
-import { Types } from "cables-shared-types";
 import { GlTimeline } from "./gltimeline.js";
 
 export class GlTlView
@@ -7,10 +6,10 @@ export class GlTlView
     /** @type {GlTimeline} */
     #tl;
 
-    /** @type {Types.Anim} */
+    /** @type {Anim} */
     #animZoom;
 
-    /** @type {Types.Anim} */
+    /** @type {Anim} */
     #animScroll;
 
     #zoom = 20;

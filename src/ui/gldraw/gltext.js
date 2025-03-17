@@ -103,9 +103,12 @@ export default class GlText
         return x * 0.11 * this._scale;
     }
 
+    /**
+     * @param {GlRect} r
+     */
     setParentRect(r)
     {
-        if (this._parentRectListener && this._parentRect) this._parentRectListener = this._parentRect.removeEventListener(this._parentRectListener);
+        if (this._parentRectListener && this._parentRect) this._parentRectListener = this._parentRect.off(this._parentRectListener);
 
         this._parentRect = r;
         if (this._parentRect) this._parentRectListener = this._parentRect.on(GlRect.EVENT_POSITIONCHANGED, this.rebuild.bind(this));
