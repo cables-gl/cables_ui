@@ -65,18 +65,9 @@ export default class GlAlwaysCheckError
             if (typeof gl[i] == "function" && i != "getError")
             {
                 this._originals[i] = gl[i];
-                const orig = this._originals[i];
                 gl[i] = this._profile(gl[i], "" + i);
             }
         }
     }
 
-    // end()
-    // {
-    //     const gl = this._cgl.gl;
-    //     cgl.debugOneFrame = false;
-    //     for (const i in gl)
-    //         if (this._originals[i] && typeof gl[i] == "function")
-    //             gl[i] = this._originals[i];
-    // }
 }

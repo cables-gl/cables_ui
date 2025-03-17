@@ -271,14 +271,14 @@ export default class GlPort
         this.updateSize();
     }
 
-    _onMouseDown(e, rect)
+    _onMouseDown(e, _rect)
     {
         if (e.buttons == MouseState.BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
 
         this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
     }
 
-    _onMouseUp(e, rect)
+    _onMouseUp(e, _rect)
     {
         if (this._mouseButtonRightTimeDown)
         {
@@ -292,7 +292,7 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port, e);
     }
 
-    _onHover(rect)
+    _onHover(_rect)
     {
         if (!this._glPatch.hasFocus) return;
 
@@ -312,7 +312,7 @@ export default class GlPort
         this._updateColor();
     }
 
-    _onUnhover(rect)
+    _onUnhover(_rect)
     {
         this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
@@ -339,7 +339,7 @@ export default class GlPort
 
     get rect() { return this._rect; }
 
-    setFlowModeActivity(a)
+    setFlowModeActivity(_a)
     {
         if (this._activity != this._port.apf)
         {
@@ -420,7 +420,7 @@ GlPort.getColorBorder = (type, hovering, selected) =>
     return col;
 };
 
-GlPort.getColor = (type, hovering, selected, activity) =>
+GlPort.getColor = (type, hovering, _selected, activity) =>
 {
     const perf = gui.uiProfiler.start("[glport] getcolor");
 

@@ -66,7 +66,7 @@ export default class GlViewBox
 
         // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
-        userSettings.on("change", (which, v) =>
+        userSettings.on("change", (which, _v) =>
         {
             this.wheelMode = userSettings.get("patch_wheelmode");
         });
@@ -119,12 +119,12 @@ export default class GlViewBox
         this.setMousePos(e.offsetX, e.offsetY);
     }
 
-    _onCanvasSpaceUp(e)
+    _onCanvasSpaceUp(_e)
     {
         this._spaceDown = false;
     }
 
-    _onCanvasSpaceDown(e)
+    _onCanvasSpaceDown(_e)
     {
         if (this._spaceDown) return;
         this._spaceDown = true;
@@ -171,7 +171,7 @@ export default class GlViewBox
         }
     }
 
-    _onCanvasMouseUp(e)
+    _onCanvasMouseUp(_e)
     {
         this._oldScrollX = this._scrollX;
         this._oldScrollY = this._scrollY;
@@ -362,7 +362,7 @@ export default class GlViewBox
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
-    scrollTo(x, y, userInteraction)
+    scrollTo(x, y, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         // if (userInteraction)p = 0;
@@ -443,7 +443,7 @@ export default class GlViewBox
         let x = _x;
         let y = _y;
 
-        const asp = this._viewResY / this._viewResX;
+        // const asp = this._viewResY / this._viewResX;
         const zx = 1 / ((this._viewResX / 2) / this.zoom);
         let zy = zx;
 
@@ -533,7 +533,7 @@ export default class GlViewBox
         }
     }
 
-    animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next)
+    animSwitchSubPatch(dur, sub, _timeGrey, _timeVisibleAgain, next)
     {
         this.storeCurrentSubPatch();
 

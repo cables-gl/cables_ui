@@ -102,7 +102,7 @@ export default class GlDragLine
             this._glPatch.showOpCursor(false);
         });
 
-        glpatch.on("mouseDragLink", (glport, opid, portName, e) =>
+        glpatch.on("mouseDragLink", (glport, _opid, _portName, _e) =>
         {
             this.setPort(glport);
         });

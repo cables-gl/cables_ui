@@ -90,7 +90,7 @@ export default class GlCursor extends Events
         }
     }
 
-    setColor(r, g, b, a) { this._cursorRect.setColor(1, 1, 1, 1); }
+    setColor(_r, _g, _b, _a) { this._cursorRect.setColor(1, 1, 1, 1); }
 
     get visible() { return this._cursorRect.visible; }
 
