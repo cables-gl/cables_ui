@@ -1,5 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 
+import { Anim, AnimKey, CglContext } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -88,7 +89,7 @@ export class GlTimeline extends Events
     static LAYOUT_GRAPHS = 1;
     #layout = GlTimeline.LAYOUT_LINES;
 
-    /** @type {Array<Types.AnimKey>} */
+    /** @type {Array<AnimKey>} */
     #selectedKeys = [];
 
     hoverKeyRect = null;
@@ -96,7 +97,7 @@ export class GlTimeline extends Events
     #canvasMouseDown = false;
     #paused = false;
 
-    /** @type {Cgl} */
+    /** @type {CglContext} */
     #cgl = null;
     #isAnimated = false;
     buttonForScrolling = 2;
@@ -408,6 +409,10 @@ export class GlTimeline extends Events
         this.#selectedKeyAnims = [];
     }
 
+    /**
+     * @param {AnimKey} k
+     * @returns {boolean}
+     */
     isKeySelected(k)
     {
         return this.#selectedKeys.indexOf(k) != -1;

@@ -38,7 +38,7 @@ export default class GlSpline
     setParentRect(r)
     {
         if (this.checkDisposed()) return;
-        if (this.#parentRect) this.#parentRect.removeEventListener(this.rebuild.bind(this));
+        if (this.#parentRect) this.#parentRect.off(this.rebuild.bind(this));
 
         this.#parentRect = r;
         if (this.#parentRect) this.#parentRect.on(GlRect.EVENT_POSITIONCHANGED, this.rebuild.bind(this));

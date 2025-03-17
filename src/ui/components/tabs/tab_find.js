@@ -6,6 +6,7 @@ import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { gui } from "../../gui.js";
+import { UiOp } from "../../core_extend_op.js";
 
 /**
  * tab panel for searching through the patch
@@ -55,21 +56,21 @@ export default class FindTab
 
         this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
-        const listenerChanged = gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
+        const listenerChanged = gui.opHistory.on("changed", this.updateHistory.bind(this));
         this._listenerids.push(listenerChanged);
 
-        this._listenerids.push(gui.corePatch().addEventListener("warningErrorIconChange", this._updateCb));
-        this._listenerids.push(gui.corePatch().addEventListener("onOpDelete", this._updateCb));
-        this._listenerids.push(gui.corePatch().addEventListener("onOpAdd", this._updateCb));
-        this._listenerids.push(gui.corePatch().addEventListener("commentChanged", this._updateCb));
+        this._listenerids.push(gui.corePatch().on("warningErrorIconChange", this._updateCb));
+        this._listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
+        this._listenerids.push(gui.corePatch().on("onOpAdd", this._updateCb));
+        this._listenerids.push(gui.corePatch().on("commentChanged", this._updateCb));
 
-        this._tab.addEventListener("close", () =>
+        this._tab.on("close", () =>
         {
-            gui.opHistory.removeEventListener(listenerChanged);
+            gui.opHistory.off(listenerChanged);
 
             for (let i = 0; i < this._listenerids.length; i++)
             {
-                gui.corePatch().removeEventListener(this._listenerids[i]);
+                gui.corePatch().off(this._listenerids[i]);
             }
 
             this._closed = true;
@@ -98,7 +99,7 @@ export default class FindTab
                 for (let j = 0; j < toggles.length; j++)
                     srchStr += (toggles[j].dataset.togglestr || "") + " ";
 
-                const toggleInput = ele.byId(this._inputId + "_toggles");
+                const toggleInput = /** @type {HTMLInputElement} */ ele.byId(this._inputId + "_toggles");
                 toggleInput.value = srchStr;
 
                 document.getElementById(this._inputId).dispatchEvent(new Event("input"));
@@ -285,6 +286,12 @@ export default class FindTab
         return foundVars;
     }
 
+    /**
+     * @param {String} str
+     * @param {boolean} userInvoked
+     * @param {Array<UiOp>} ops
+     * @param {Array} results
+     */
     _doSearch(str, userInvoked, ops, results)
     {
         this._lastSearch = str;

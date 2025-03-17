@@ -1,4 +1,6 @@
+import { Anim } from "cables";
 import { GlTimeline } from "./gltimeline.js";
+import { gui } from "../gui.js";
 
 export class GlTlView
 {

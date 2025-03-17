@@ -914,7 +914,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Array<Types.Op>}
+     * @returns {Array<Op>}
      */
     getSelectedOps()
     {
@@ -1935,6 +1935,9 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {Array<UiOp>} selectedOps
+     */
     saveUndoSelectedOpsPositions(selectedOps)
     {
         const opPositions = [];

@@ -37,10 +37,10 @@ class OpParampanel extends Events
         this._eventPrefix = CABLES.shortId();
         this._isPortLineDragDown = false;
 
-        /** @type {Array<Types.Port>} */
+        /** @type {Array<Port>} */
         this._portsIn = [];
 
-        /** @type {Array<Types.Port>} */
+        /** @type {Array<Port>} */
         this._portsOut = [];
 
         this._paramsListener = new ParamsListener(this.panelId);

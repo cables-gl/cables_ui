@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
 
+import { Anim, Op, Port } from "cables";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
@@ -16,10 +17,10 @@ import GlText from "../gldraw/gltext.js";
 export class glTlAnimLine extends Events
 {
 
-    /** @type {Array<Types.Anim>} */
+    /** @type {Array<Anim>} */
     #anims = [];
 
-    /** @type {Array<Types.Op>} */
+    /** @type {Array<Op>} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -40,7 +41,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<glTlKeys>} */
     #keys = [];
 
-    /** @type {Array<Types.Port>} */
+    /** @type {Array<Port>} */
     #ports = [];
 
     width = 222;
@@ -60,7 +61,7 @@ export class glTlAnimLine extends Events
 
     /**
      * @param {GlTimeline} glTl
-     * @param {Array<Types.Port>} ports
+     * @param {Array<Port>} ports
      * @param {Object} options
     */
     constructor(glTl, ports, options = {})

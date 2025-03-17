@@ -1,3 +1,4 @@
+import { vec4 } from "gl-matrix";
 import font from "../glpatch/sdf_font.json";
 import GlRect from "./glrect.js";
 import GlTextWriter from "./gltextwriter.js";

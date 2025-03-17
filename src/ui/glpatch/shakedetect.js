@@ -21,7 +21,12 @@ export default class ShakeDetector extends Events
         this.lastShakeDir = false;
     }
 
-    down(__x, __y, e)
+    /**
+     * Description
+     * @param {Number} __x
+     * @param {Number} __y
+     */
+    down(__x, __y)
     {
         this.shakeCountP = 0;
         this.shakeCountN = 0;

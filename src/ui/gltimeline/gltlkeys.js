@@ -1,5 +1,6 @@
 import { Events, Logger } from "cables-shared-client";
 
+import { Anim, Port } from "cables";
 import { GlTimeline } from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";

@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { Anim } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -17,8 +18,8 @@ export default class GlCursor extends Events
         super();
 
         this.isAnimated = clientId !== undefined;
-        this._animX = new CABLES.Anim();
-        this._animY = new CABLES.Anim();
+        this._animX = new Anim();
+        this._animY = new Anim();
 
         this._animX.defaultEasing = this._animY.defaultEasing = CABLES.Anim.EASING_CUBIC_OUT;
 

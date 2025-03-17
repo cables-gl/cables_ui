@@ -14,6 +14,7 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import { userSettings } from "../components/usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -28,7 +29,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {Op} op
+     * @param {UiOp} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -68,7 +69,7 @@ export default class GlOp extends Events
 
         /**
          * @private
-         * @type {Op}
+         * @type {UiOp}
          */
         this._op = op;
 
@@ -1010,10 +1011,11 @@ export default class GlOp extends Events
 
         ports = this._setPortIndexAttribs(ports);
 
-        ports = ports.sort((a, b) =>
-        {
-            return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
-        });
+        ports = ports.sort(
+            (a, b) =>
+            {
+                return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
+            });
 
         for (let i = 0; i < ports.length; i++)
         {

@@ -1,4 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
+import { vec4 } from "gl-matrix";
+import { Texture } from "cables";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
@@ -272,7 +274,7 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {CGL.Texture} t
+     * @param {Texture} t
      */
     setTexture(t)
     {

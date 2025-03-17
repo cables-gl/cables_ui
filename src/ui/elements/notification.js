@@ -1,8 +1,5 @@
 import { gui } from "../gui.js";
 
-/** @global */
-const iziToast = null;
-
 let lastNotify = "";
 let lastText = "";
 

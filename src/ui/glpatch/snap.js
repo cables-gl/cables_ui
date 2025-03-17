@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { CglContext, Port } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
@@ -17,6 +18,12 @@ import { PortDir } from "../core_constants.js";
  */
 export default class Snap extends Events
 {
+
+    /**
+     * @param {CglContext} cgl
+     * @param {GlPatch} glPatch
+     * @param {GlRectInstancer} instancer
+     */
     constructor(cgl, glPatch, instancer)
     {
         super();
@@ -73,12 +80,18 @@ export default class Snap extends Events
         }, 50);
     }
 
+    /**
+     * @param {Boolean} mouseDown
+     */
     render(mouseDown)
     {
         if (!this.enabled) return;
         if (!mouseDown) if (this.rect) this.rect.visible = false;
     }
 
+    /**
+     * @param {Number} _x
+     */
     snapX(_x)
     {
         let x = _x;
@@ -88,6 +101,11 @@ export default class Snap extends Events
         return x;
     }
 
+    /**
+     * @param {Number} y
+     * @param {boolean} force
+     * @returns {Number}
+     */
     snapY(y, force)
     {
         if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);

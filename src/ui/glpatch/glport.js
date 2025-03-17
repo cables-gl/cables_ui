@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { Port } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
