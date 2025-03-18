@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
-import { Types } from "cables-shared-types";
+
+import { Op, Port } from "cables";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -13,6 +14,7 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import { userSettings } from "../components/usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -27,7 +29,7 @@ export default class GlOp extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {Types.Op} op
+     * @param {UiOp} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -67,7 +69,7 @@ export default class GlOp extends Events
 
         /**
          * @private
-         * @type {Types.Op}
+         * @type {UiOp}
          */
         this._op = op;
 
@@ -157,7 +159,7 @@ export default class GlOp extends Events
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
 
-        /** @type {Types.Port} */
+        /** @type {Port} */
         this._titleExtPort = null;
         this._titleExtPortListener = null;
 
@@ -1009,10 +1011,11 @@ export default class GlOp extends Events
 
         ports = this._setPortIndexAttribs(ports);
 
-        ports = ports.sort((a, b) =>
-        {
-            return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
-        });
+        ports = ports.sort(
+            (a, b) =>
+            {
+                return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
+            });
 
         for (let i = 0; i < ports.length; i++)
         {

@@ -59,6 +59,10 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
                     "use": "raw-loader",
                 },
                 {
+                    "test": /\.wgsl/,
+                    "use": "raw-loader",
+                },
+                {
                     "test": /\.txt/,
                     "use": "raw-loader",
                 },

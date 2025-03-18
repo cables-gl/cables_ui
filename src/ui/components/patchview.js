@@ -1,5 +1,4 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Types } from "cables-shared-types";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -23,6 +22,8 @@ import { platform } from "../platform.js";
 import { userSettings } from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
+import { UiOp } from "../core_extend_op.js";
+import { UiPatch } from "../core_extend_patch.js";
 
 /**
  * manage patch view and helper functions
@@ -132,7 +133,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Types.Op} op
+     * @param {Op} op
      */
     _onDeleteOpUndo(op)
     {
@@ -302,7 +303,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Types.Op} op
+     * @param {UiOp} op
      */
     testCollision(op)
     {
@@ -913,7 +914,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Array<Types.Op>}
+     * @returns {Array<Op>}
      */
     getSelectedOps()
     {
@@ -1372,6 +1373,7 @@ export default class PatchView extends Events
 
     /**
      * @param {String|Number} subPatchId
+     * @returns {UiOp}
      */
     getSubPatchOuterOp(subPatchId)
     {
@@ -1933,6 +1935,9 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {Array<UiOp>} selectedOps
+     */
     saveUndoSelectedOpsPositions(selectedOps)
     {
         const opPositions = [];
@@ -2121,6 +2126,7 @@ export default class PatchView extends Events
         this._patchRenderer.resumeInteraction();
     }
 
+    /** @returns {String} */
     getCurrentSubPatch()
     {
         return this._patchRenderer.getCurrentSubPatch();

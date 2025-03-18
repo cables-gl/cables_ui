@@ -1,5 +1,4 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import { Types } from "cables-shared-types";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -52,6 +51,7 @@ import UserSettings, { userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
+import { UiPatch } from "./core_extend_patch.js";
 
 /**
  * @type {Gui}
@@ -146,7 +146,7 @@ export default class Gui extends Events
         };
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
 
-        /** @type {Types.Patch} */
+        /** @type {UiPatch} */
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
@@ -277,7 +277,7 @@ export default class Gui extends Events
     }
 
     /**
-     * @returns {Types.Patch}
+     * @returns {UiPatch}
      */
     corePatch()
     {
@@ -1994,6 +1994,9 @@ export default class Gui extends Events
         if (this.shouldDrawOverlay) this.transformOverlay.add(this.corePatch().cgl, id, x, y, z);
     }
 
+    /**
+     * @param {HTMLElement} el
+     */
     setElementBgPattern(el)
     {
         if (!el) return;

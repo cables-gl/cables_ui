@@ -1,3 +1,4 @@
+import { vec2 } from "gl-matrix";
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";

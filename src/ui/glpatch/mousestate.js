@@ -45,13 +45,13 @@ export default class MouseState extends Events
 
         userSettings.on("change", this._initUserPrefs.bind(this));
 
-        canvas.addEventListener("pointerenter", (e) =>
+        canvas.addEventListener("pointerenter", (/** @type {PointerEvent} */e) =>
         {
             if (e.pointerType == "touch") this._mouseOverCanvas = true;
             else this._mouseOverCanvas = true;
         });
 
-        canvas.addEventListener("pointerleave", (e) =>
+        canvas.addEventListener("pointerleave", (/** @type {PointerEvent} */e) =>
         {
             if (e.pointerType == "touch") this._mouseOverCanvas = true;
             else this._mouseOverCanvas = false;

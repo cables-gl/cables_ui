@@ -19,11 +19,8 @@ $border-radius-popups:12px;
     display:inline;
 }
 
-
-
 .cablesCssUi
 {
-
     .findToggle
     {
         user-select: none;
@@ -49,10 +46,10 @@ $border-radius-popups:12px;
 
 @keyframes flash {
     from {
-      background: rgba(0,255,255,0.8);;
+          background: rgba(0,255,255,0.8);;
     }
     to {
-      background: rgba(0,255,255,0.0);
+          background: rgba(0,255,255,0.0);
     }
   }
 
@@ -103,9 +100,6 @@ body
         color:var(--text-color);
     }
 
-
-
-
     h3,h2
     {
         font-weight: normal;
@@ -128,11 +122,11 @@ body
         font-size: 2em !important;
     }
 
-
     .hljs
     {
         margin: 0 !important;
     }
+
     p
     {
         font-style: normal;
@@ -151,7 +145,6 @@ body
         -webkit-user-select: none;
         user-select: none;
     }
-
 
     .noselect
     {
@@ -182,6 +175,7 @@ body
     {
         text-decoration: underline !important;
     }
+
     a.link:hover
     {
         color:var(--color-special);
@@ -246,7 +240,6 @@ body
     .valuetext.inspectable {
         min-width: 60%;
     }
-
 
     // all text input color, border and focus border / sizes can be individual for each and are defined wherever...
     input.medium,.opsearchInput,input[type=text], input[type=search],#commentTextarea
@@ -318,9 +311,6 @@ body
     input[type=search].big-search {
         font-size: 20px;
     }
-
-
-
 
     .list
     {

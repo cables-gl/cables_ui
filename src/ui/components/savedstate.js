@@ -26,7 +26,7 @@ export default class SavedState extends Events
         {
             if (this.isSaved)
             {
-                document.body.style.opacity = 0;
+                document.body.style.opacity = "0";
                 return false;
             }
 
@@ -56,12 +56,12 @@ export default class SavedState extends Events
     getBlueprint()
     {
         const sub = gui.patchView.getCurrentSubPatch() || 0;
-        let subOuter = 0;
+
         let bp = 0;
 
         if (sub)
         {
-            subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+            const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
             if (subOuter) bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
         }
         return bp;

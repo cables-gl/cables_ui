@@ -18,7 +18,7 @@ import FileUploader from "./dialogs/upload.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import extendCoreOp from "./core_extend_op.js";
+import extendCoreOp, { UiOp } from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
@@ -90,7 +90,9 @@ CABLES.UI.ModalSourceCode = ModalSourceCode;
 CABLES.UI.showShaderError = showShaderError;
 
 setHtmlDefaultListeners();
+
 extendCoreOp();
+
 extendCorePatch();
 extendCoreAnim();
 
