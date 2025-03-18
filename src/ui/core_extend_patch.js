@@ -8,7 +8,7 @@ import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
 
 /**
- * @extends Patch<UiPatch,UiOp>
+ * @extends Patch<UiOp>
  */
 class UiPatch extends CABLES.Patch
 {
