@@ -2896,7 +2896,7 @@ export default class PatchView extends Events
         let maxName = "unknown";
         let ser = "";
         let maxValue = "";
-        // let maxId = "";
+        let maxId = "";
 
         try
         {
