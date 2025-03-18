@@ -2,6 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import { Patch } from "cables";
 import { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";

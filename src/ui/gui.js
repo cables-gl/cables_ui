@@ -2098,6 +2098,7 @@ export default class Gui extends Events
                 tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
                 {
                     tab.classList.remove("readonly");
+                    // @ts-ignore
                     tab.inert = false;
                 });
             }

@@ -20,7 +20,6 @@ export { platform };
  */
 export class Platform extends Events
 {
-    #bufVerticesIndizes = null;
 
     constructor(cfg)
     {

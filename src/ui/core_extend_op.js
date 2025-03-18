@@ -2,6 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import { Op } from "cables";
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
@@ -16,6 +17,12 @@ CABLES.OpUnLinkTempReLinkP2 = null;
  */
 class UiOp extends CABLES.Op
 {
+    constructor(a, b, c)
+    {
+        super(a, b, c);
+        this.initUi();
+    }
+
     isAnimated()
     {
         for (let j = 0; j < this.portsIn.length; j++)
