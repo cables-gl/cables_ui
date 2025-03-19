@@ -1108,6 +1108,7 @@ export default class Gui extends Events
         {
             ele.byId("patchname").innerHTML = name;
             ele.byId("patchname").dataset.patchname = name;
+            console.log("setProjectName", name);
             gui.corePatch().name = name;
             if (this._currentProject) this._currentProject.name = name;
         }
