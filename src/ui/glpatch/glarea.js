@@ -68,7 +68,7 @@ export default class GlArea
             this._update();
         });
 
-        this._rectResize.on("drag", (e) =>
+        this._rectResize.on("drag", (_e) =>
         {
             this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
             this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
@@ -93,6 +93,9 @@ export default class GlArea
         this._update();
     }
 
+    /**
+     * @param {boolean} v
+     */
     set visible(v)
     {
         this._visible = v;

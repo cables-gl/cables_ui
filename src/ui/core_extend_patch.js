@@ -8,9 +8,9 @@ import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
 
 /**
- * @extends Patch<UiPatch,UiOp>
+ * @extends Patch<UiOp>
  */
-class UiPatch extends Patch
+class UiPatch extends CABLES.Patch
 {
     _opIdsToOps(opids)
     {
@@ -404,8 +404,6 @@ class UiPatch extends Patch
 }
 
 CABLES.Patch = UiPatch;
-
 export { UiPatch };
 
-export default function extendCorePatch()
-{}
+export default function extendCorePatch() {}

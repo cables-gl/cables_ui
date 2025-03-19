@@ -995,7 +995,7 @@ export default class PatchView extends Events
 
     createAreaFromSelection()
     {
-        const selectedOps = this.getSelectedOps();
+        // const selectedOus = this.getSelectedOps();
         const bounds = this.getSelectionBounds();
         const padding = 80;
         const trans = {
@@ -1009,7 +1009,7 @@ export default class PatchView extends Events
                 "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
                 "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2 * padding)) } });
 
-        const undofunc = (function (opid)
+        (function (opid)
         {
             undo.add({
                 "title": "paste op",
@@ -1253,7 +1253,7 @@ export default class PatchView extends Events
 
         for (let subid in countSubs)
         {
-            for (let asub in foundSubPatchOps)
+            for (let _asub in foundSubPatchOps)
             {
                 if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
                 {
@@ -1451,7 +1451,7 @@ export default class PatchView extends Events
         this.deleteSelectedOps();
     }
 
-    serializeOps(selectedOps, options = { })
+    serializeOps(selectedOps, _options = { })
     {
         function arrayContains(arr, obj)
         {
@@ -1618,7 +1618,7 @@ export default class PatchView extends Events
         {
             // change ids
             project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
-            const outerOp = this.getSubPatchOuterOp(currentSubPatch);
+            // const outerOp = this.getSubPatchOuterOp(currentSubPatch);
             for (const i in project.ops)
             {
                 project.ops[i].uiAttribs.pasted = true;
@@ -1653,7 +1653,7 @@ export default class PatchView extends Events
                         project.ops[i].uiAttribs.translate.y = y;
                     }
 
-                    const undofunc = (function (opid)
+                    (function (opid)
                     {
                         undo.add({
                             "title": "paste op",
@@ -1776,7 +1776,7 @@ export default class PatchView extends Events
 
     cleanOps(ops)
     {
-        const c = new opCleaner(ops, this.patchRenderer);
+        new opCleaner(ops, this.patchRenderer);
         // c.clean();
         //     if (ops.length == 0) return
         //     const entranceOps = [];
@@ -2826,7 +2826,7 @@ export default class PatchView extends Events
         exposeOp.emitEvent("glportOrderChanged");
     }
 
-    getSubPatchExposedPorts(subid, dir)
+    getSubPatchExposedPorts(_subid, _dir)
     {
         let foundPorts = [];
         // const ops = this.getAllSubPatchOps(subid);
@@ -2883,7 +2883,7 @@ export default class PatchView extends Events
                 const opz = gui.corePatch().getOpsByObjName(gui.project().summary.exampleForOps[j]);
                 for (let k = 0; k < opz.length; k++)
                 {
-                    const opname = opz[k];
+                    // const opname = opz[k];
                     opz[k].setUiAttribs({ "color": "#5dc0fd" });
                 }
             }

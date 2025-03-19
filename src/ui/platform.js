@@ -20,7 +20,6 @@ export { platform };
  */
 export class Platform extends Events
 {
-    #bufVerticesIndizes = null;
 
     constructor(cfg)
     {
@@ -307,14 +306,14 @@ export class Platform extends Events
     {
         gui.setUser(this._cfg.user);
 
-        this.talkerAPI.addEventListener("notify", (options, next) =>
+        this.talkerAPI.addEventListener("notify", (options, _next) =>
         {
             notify(options.msg, options.text, options.options);
         });
 
         this.talkerAPI.addEventListener(
             "notifyError",
-            (options, next) =>
+            (options, _next) =>
             {
                 notifyError(options.msg, options.text, options.options);
             },
@@ -322,14 +321,14 @@ export class Platform extends Events
 
         this.talkerAPI.addEventListener(
             "refreshFileManager",
-            (options, next) =>
+            (_options, _next) =>
             {
                 gui.closeModal();
                 gui.refreshFileManager();
             },
         );
 
-        this.talkerAPI.addEventListener("executeOp", (options, next) =>
+        this.talkerAPI.addEventListener("executeOp", (options, _next) =>
         {
             if (options && options.name)
             {
@@ -354,7 +353,7 @@ export class Platform extends Events
 
         this.talkerAPI.addEventListener(
             "fileUpdated",
-            (options, next) =>
+            (options, _next) =>
             {
                 if (options && options.filename)
                 {
@@ -389,7 +388,7 @@ export class Platform extends Events
 
         this.talkerAPI.addEventListener(
             "fileDeleted",
-            (options, next) =>
+            (options, _next) =>
             {
                 if (options && options.fileName && options.fileName.endsWith(".js"))
                 {
@@ -427,19 +426,19 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.addEventListener("jobStart", (options, next) =>
+        this.talkerAPI.addEventListener("jobStart", (options, _next) =>
         {
             gui.jobs().start({ "id": options.id, "title": options.title });
         });
 
-        this.talkerAPI.addEventListener("jobFinish", (options, next) =>
+        this.talkerAPI.addEventListener("jobFinish", (options, _next) =>
         {
             gui.jobs().finish(options.id);
         });
 
         this.talkerAPI.addEventListener(
             "jobProgress",
-            (options, next) =>
+            (options, _next) =>
             {
                 gui.jobs().setProgress(options.id, options.progress);
             },
@@ -447,16 +446,16 @@ export class Platform extends Events
 
         this.talkerAPI.addEventListener(
             "updatePatchName",
-            (opts, next) =>
+            (opts, _next) =>
             {
                 gui.setProjectName(opts.name);
-                this.talkerAPI.send("updatePatchName", opts, (err, r) => { });
+                this.talkerAPI.send("updatePatchName", opts, (_err, _r) => { });
             },
         );
 
         this.talkerAPI.addEventListener(
             "updatePatchSummary",
-            (opts, next) =>
+            (opts, _next) =>
             {
                 const project = gui.project();
                 if (project) gui.project().summary = opts;
@@ -464,7 +463,7 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.send("getPatch", {}, (err, r) =>
+        this.talkerAPI.send("getPatch", {}, (_err, r) =>
         {
             this._cfg.patch = r;
             incrementStartup();

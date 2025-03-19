@@ -406,18 +406,13 @@ export default class GlOp extends Events
             oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
 
-        /*
-         * if (this._preDragPosZ != this._glRectBg.z)
-         * this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
-         */
-
         if (changed)
         {
             const undoGroup = undo.startGroup();
 
             for (const i in glOps) glOps[i].endPassiveDrag();
 
-            const undoAdd = (function (scope, _oldUiAttribs)
+            (function (scope, _oldUiAttribs)
             {
                 if (!scope._op) return;
 
@@ -979,7 +974,7 @@ export default class GlOp extends Events
                         this._glColorIndicator?.setColor([colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get()]);
                     };
 
-                    colorPorts[0].on("onUiAttrChange", (attrs, port) =>
+                    colorPorts[0].on("onUiAttrChange", (attrs, _port) =>
                     {
                         if (attrs.hasOwnProperty("greyout"))
                         {
@@ -1367,7 +1362,7 @@ export default class GlOp extends Events
 
             doUpdateSize = true;
 
-            this._rectResize.on("drag", (e) =>
+            this._rectResize.on("drag", (_e) =>
             {
                 if (this._rectResize)
                 {
@@ -1653,7 +1648,7 @@ export default class GlOp extends Events
         if (this._passiveDragStartX !== null && this._passiveDragStartY !== null)
             if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
             {
-                const undmove = (function (scope, newX, newY, oldX, oldY)
+                (function (scope, newX, newY, oldX, oldY)
                 {
                     undo.add({
                         "title": "Move op",
@@ -1753,7 +1748,7 @@ export default class GlOp extends Events
         if (this._glLoadingIndicator) this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
     }
 
-    updateVizFlowMode(m)
+    updateVizFlowMode(_m)
     {
         for (let i in this._glPorts)
         {

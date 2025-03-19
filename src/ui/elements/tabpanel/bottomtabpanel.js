@@ -32,7 +32,7 @@ export default class BottomTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this._tabs.on("onTabRemoved", (tab) =>
+        this._tabs.on("onTabRemoved", (_tab) =>
         {
             if (this._tabs.getNumTabs() == 0)
             {

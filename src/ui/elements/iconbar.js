@@ -16,7 +16,7 @@ export default class IconBar
 
         if (this._id === "sidebar_bottom" && gui)
         {
-            gui.on("canvasModeChange", (mode) =>
+            gui.on("canvasModeChange", (_mode) =>
             {
                 this.refresh();
             });

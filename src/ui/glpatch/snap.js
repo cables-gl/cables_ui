@@ -24,7 +24,7 @@ export default class Snap extends Events
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
      */
-    constructor(cgl, glPatch, instancer)
+    constructor(_cgl, glPatch, instancer)
     {
         super();
 
@@ -118,7 +118,7 @@ export default class Snap extends Events
      * @param {number} index
      * @param {number} dist
      */
-    _snapPortX(_x, port, index, dist)
+    _snapPortX(_x, port, _index, dist)
     {
         if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
@@ -206,11 +206,17 @@ export default class Snap extends Events
     }
 }
 
+/**
+ * @param {Number} posX
+ */
 Snap.snapOpPosX = function (posX)
 {
     return (Math.round(posX / uiconfig.snapX) * uiconfig.snapX) || 1;
 };
 
+/**
+ * @param {Number} posY
+ */
 Snap.snapOpPosY = function (posY)
 {
     return Math.round(posY / uiconfig.snapY) * uiconfig.snapY;

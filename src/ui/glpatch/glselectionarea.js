@@ -56,9 +56,8 @@ export default class GlSelectionArea
     }
 
     /** @deprecated */
-    setMousePos(x, y)
+    setMousePos(_x, _y)
     {
-
     }
 
     hideArea()

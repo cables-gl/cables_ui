@@ -284,10 +284,10 @@ export default class GlLink
 
             if (subpatchop && subpatchop.uiAttribs && subpatchop.uiAttribs.subPatchOp)
             {
-                const opIn = gui.corePatch().getOpById(this._opIdInput);
-                const pIn = opIn.getPortById(this._portIdInput);
-                const opOut = gui.corePatch().getOpById(this._opIdOutput);
-                const pOut = opOut.getPortById(this._portIdOutput);
+                // const opIn = gui.corePatch().getOpById(this._opIdInput);
+                // const pIn = opIn.getPortById(this._portIdInput);
+                // const opOut = gui.corePatch().getOpById(this._opIdOutput);
+                // const pOut = opOut.getPortById(this._portIdOutput);
 
                 // if (opOut.uiAttribs.subPatch != this._subPatch)
                 // {
@@ -322,7 +322,7 @@ export default class GlLink
 
     updateVisible()
     {
-        const sub = this._glPatch.getCurrentSubPatch();
+        // const sub = this._glPatch.getCurrentSubPatch();
 
         if (!this._glOpIn || !this._glOpOut)
         {
@@ -357,7 +357,10 @@ export default class GlLink
         this._updatePosition();
     }
 
-    set visible(v)
+    /**
+     * @param {boolean} _v
+     */
+    set visible(_v)
     {
         // debugger;
         this.updateVisible();

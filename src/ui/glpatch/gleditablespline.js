@@ -22,28 +22,30 @@ export default class glEditableSpline
     updatePoints()
     {
         this._splineDrawer.setSpline(this._splineIdx, []); // TODO wtf is this needed
-
-        // const lastPointIdx = this._rects.length * 3;
-        // this._points3d.length = this._rects.length * 3;
-        // this._points3d[lastPointIdx - 2] = this._points3d[lastPointIdx - 5];
-        // this._points3d[lastPointIdx - 1] = this._points3d[lastPointIdx - 4];
-        // this._points3d[lastPointIdx - 0] = this._points3d[lastPointIdx - 3];
-
         this._splineDrawer.setSpline(this._splineIdx, this._points3d);
     }
 
+    /**
+     * @param {Number} x
+     */
     snapX(x)
     {
         if (this.snapToGrid) return Snap.snapOpPosX(x);
         else return x;
     }
 
+    /**
+     * @param {Number} y
+     */
     snapY(y)
     {
         if (this.snapToGrid) return Snap.snapOpPosY(y);
         else return y;
     }
 
+    /**
+     * @param {Array<Number>} arr2d
+     */
     setPoints(arr2d)
     {
         if (this.snapToGrid)

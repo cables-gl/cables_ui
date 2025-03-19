@@ -18,7 +18,7 @@ export function showToolTip(e, txt, nopadding)
 
     if (!inited)
     {
-        eleTooltip.addEventListener("mouseover", function (evt)
+        eleTooltip.addEventListener("mouseover", function (_evt)
         {
             hideToolTip();
         }, true);
@@ -67,7 +67,7 @@ function eleTtOver(e)
         }, 300);
 }
 
-function eleTtOut(e)
+function eleTtOut(_e)
 {
     if (document.activeElement.classList.contains("tt")) return;
     clearTimeout(tooltipTimeout);
@@ -92,7 +92,7 @@ function eleInfoOver(e)
     gui.bottomInfoArea.hoverInfoEle(e);
 }
 
-function eleInfoOut(e)
+function eleInfoOut(_e)
 {
     clearTimeout(tooltipTimeout);
     hideInfo();

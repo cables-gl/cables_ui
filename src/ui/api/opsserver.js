@@ -329,7 +329,7 @@ export default class ServerOps
         {
             gui.corePatch().reloadOp(name, (num, newOps) =>
             {
-                for (let i = 0; i < newOps.length; i++) newOps[i].checkLinkTimeWarnings();
+                for (let i = 0; i < newOps.length; i++) if (newOps[i].checkLinkTimeWarnings)newOps[i].checkLinkTimeWarnings();
 
                 if (newOps.length > 0)
                 {

@@ -1,5 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
 
+import { Port } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
@@ -433,7 +434,7 @@ class OpParampanel extends Events
         else
         if (document.getElementsByClassName("warning-error") != this._currentOp.uiAttribs.uierrors.length)
         {
-            if (el)el.innerHTML = "";
+            if (el) el.innerHTML = "";
         }
 
         if (!el)

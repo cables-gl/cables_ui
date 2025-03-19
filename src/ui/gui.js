@@ -1275,7 +1275,7 @@ export default class Gui extends Events
      * @param {String} fileId
      * @param {String} converterId
      */
-    converterStart(projectId, fileId, converterId)
+    converterStart(_projectId, fileId, converterId)
     {
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
@@ -1329,8 +1329,9 @@ export default class Gui extends Events
         navCablesLogo.addEventListener("pointerenter", () =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-            platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+            platform.talkerAPI.send("getRecentPatches", {}, (_err, r) =>
             {
+
                 lastTimeRecent = performance.now();
 
                 let str = "";
@@ -1924,7 +1925,7 @@ export default class Gui extends Events
         if (!gui.isRemoteClient && platform.showStartupChangelog) platform.showStartupChangelog();
     }
 
-    getOpDoc(opname, html, cb)
+    getOpDoc(opname, _html, cb)
     {
         cb(this.opDocs.getHtml(opname));
     }
@@ -2097,6 +2098,7 @@ export default class Gui extends Events
                 tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
                 {
                     tab.classList.remove("readonly");
+                    // @ts-ignore
                     tab.inert = false;
                 });
             }
@@ -2169,12 +2171,12 @@ export default class Gui extends Events
     initCoreListeners()
     {
 
-        this._corePatch.on("portAnimToggle", (options) =>
+        this._corePatch.on("portAnimToggle", (_options) =>
         {
             this.hasAnims = true;
         });
 
-        this._corePatch.on("portAnimUpdated", (options) =>
+        this._corePatch.on("portAnimUpdated", (_options) =>
         {
             if (!this.hasAnims)
             {

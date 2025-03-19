@@ -97,7 +97,7 @@ export default class GlCable
         this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
         this._tension = 0.1;
         this._curvedSimple = false;
-        const oldLineType = this._linetype;
+        // const oldLineType = this._linetype;
         this._linetype = this.LINETYPE_CURVED;
 
         if (userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
@@ -167,6 +167,9 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {boolean} v
+     */
     set visible(v)
     {
         // is this even needed ? all cables are drawn because the splinedrawer is bound to a specific subpatch anyway....
@@ -455,7 +458,7 @@ export default class GlCable
         this._buttonRect.setColor(col[0], col[1], col[2], col[3]);
     }
 
-    setColor(r, g, b, a)
+    setColor(_r, _g, _b, _a)
     {
         this.updateColor();
     }
@@ -657,11 +660,8 @@ export default class GlCable
         if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1)
         {
             // optionally, draw a circle where the lines meet
-            let intersectionX = x1 + (uA * (x2 - x1));
-            let intersectionY = y1 + (uA * (y2 - y1));
-            //   fill(255,0,0);
-            //   noStroke();
-            //   ellipse(intersectionX,intersectionY, 20,20);
+            // let intersectionX = x1 + (uA * (x2 - x1));
+            // let intersectionY = y1 + (uA * (y2 - y1));
 
             return true;
         }

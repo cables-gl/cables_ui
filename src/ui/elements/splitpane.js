@@ -35,17 +35,17 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    ele.byId("splitterPatch").addEventListener("pointerup", function (e)
+    ele.byId("splitterPatch").addEventListener("pointerup", function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
 
-    ele.byId("splitterMaintabs").addEventListener("pointerup", function (e)
+    ele.byId("splitterMaintabs").addEventListener("pointerup", function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
 
-    function resizeTabs(ev)
+    function resizeTabs(_ev)
     {
         gui.pauseProfiling();
         splitpane.bound = true;
@@ -141,7 +141,7 @@ function initSplitPanes()
 
     ele.byId("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
 
-    function stopSplit(e)
+    function stopSplit(_e)
     {
         if (splitpane.listeners.length > 0)
         {

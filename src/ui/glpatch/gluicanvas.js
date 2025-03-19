@@ -46,17 +46,17 @@ export default class GlUiCanvas extends GlCanvas
             this.cgl.setSize(this.width, this.height);
             this.patch.resume();
         });
-        this.canvas.addEventListener("pointermove", (e) =>
+        this.canvas.addEventListener("pointermove", (_e) =>
         {
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerdown", (e) =>
+        this.canvas.addEventListener("pointerdown", (_e) =>
         {
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerup", (e) =>
+        this.canvas.addEventListener("pointerup", (_e) =>
         {
             this.glPatch.needsRedraw = true;
         }, { "passive": true });
@@ -64,14 +64,14 @@ export default class GlUiCanvas extends GlCanvas
         // this is for disabling touchpad "pinch with two fingers" on macs, which would zoom in html
         this.canvas.addEventListener("wheel", (event) => { if (event.ctrlKey) event.preventDefault(); }, { "passive": false });
 
-        this.canvas.addEventListener("wheel", (event) =>
+        this.canvas.addEventListener("wheel", (_event) =>
         {
             this.activityHigh();
         }, { "passive": true });
 
         this.parentResized();
         this.activityHigh();
-        this.patch.addEventListener("onRenderFrame", this.render.bind(this));
+        this.patch.on("onRenderFrame", this.render.bind(this));
     }
 
     parentResized()
