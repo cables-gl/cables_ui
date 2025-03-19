@@ -175,7 +175,6 @@ export default class PatchView extends Events
 
     setProject(proj, cb)
     {
-        const logStartup = window.logStartup;
 
         if (!this._patchRenderer)
         {
@@ -185,7 +184,7 @@ export default class PatchView extends Events
         }
 
         const perf = gui.uiProfiler.start("[patchview] setproject");
-        if (logStartup) logStartup("gui set project");
+        this._p.logStartup("gui set project");
 
         if (proj && proj.ui)
         {
@@ -222,11 +221,11 @@ export default class PatchView extends Events
 
         perf.finish();
 
-        if (logStartup) logStartup("loadProjectDependencies...");
+        this._p.logStartup("loadProjectDependencies...");
         gui.serverOps.loadProjectDependencies(proj, (project) =>
         {
-            if (logStartup) logStartup("loadProjectDependencies done");
-            if (logStartup) logStartup("deserialize...");
+            this._p.logStartup("loadProjectDependencies done");
+            this._p.logStartup("deserialize...");
 
             const perf3 = gui.uiProfiler.start("[core] deserialize");
             gui.corePatch().deSerialize(project);
@@ -234,7 +233,7 @@ export default class PatchView extends Events
 
             const perf2 = gui.uiProfiler.start("[patchview] setproject2");
 
-            if (logStartup) logStartup("deserialize done");
+            this._p.logStartup("deserialize done");
 
             undo.clear();
 

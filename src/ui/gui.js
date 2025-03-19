@@ -152,13 +152,13 @@ export default class Gui extends Events
             () =>
             {
                 this._corePatch.off(this._patchLoadEndiD);
-                if (window.logStartup) logStartup("patch loaded 2");
+                this.corePatch().logStartup("patch loaded 2");
 
                 this.bookmarks.updateDynamicCommands();
                 this.patchView.highlightExamplePatchOps();
                 this.savedState.setSaved("patch load end", 0);
 
-                if (window.logStartup) logStartup("Patch loaded");
+                this.corePatch().logStartup("Patch loaded");
             });
 
         // this._corePatch.on("opcrash", (portTriggered) =>

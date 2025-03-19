@@ -129,7 +129,8 @@ export default class ServerOps
             const usedOps = res.filter((op) => { return op && op.usedInProject; });
             this.loadOpsLibs(usedOps, () =>
             {
-                if (window.logStartup) logStartup("Ops loaded");
+
+                gui.corePatch().logStartup("Ops loaded");
                 if (cb) cb(this._ops);
                 this.loaded = true;
                 incrementStartup();
