@@ -21,6 +21,8 @@ export default class NoPatchEditor extends Events
 
     dispose() {}
 
+    focus() {}
+
     setCurrentSubPatch() {}
 
     getCurrentSubPatch() { return 0; }
