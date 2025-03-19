@@ -889,7 +889,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        this.patchView.patchRenderer.focus();
+        if (this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
 
         perf.finish();
     }
