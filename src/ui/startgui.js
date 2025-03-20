@@ -126,7 +126,7 @@ export default function startUi(cfg)
 
                 gui.maintabPanel.init();
 
-                if (window.logStartup) logStartup("finished loading cables");
+                gui.corePatch().logStartup("finished loading cables");
 
                 setTimeout(() =>
                 {
@@ -185,5 +185,5 @@ export default function startUi(cfg)
         });
     });
 
-    if (window.logStartup) logStartup("Init UI done");
+    gui.corePatch().logStartup("Init UI done");
 }

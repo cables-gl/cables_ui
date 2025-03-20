@@ -12,6 +12,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
+import { copyFileToPatch } from "../../commands/cmd_files.js";
 
 /**
  * op parameter panel
@@ -321,13 +322,22 @@ class OpParampanel extends Events
                     if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
                     {
                         const parts = fn.split("/");
-                        if (parts && parts.length > 1) src = "<a target=\"_blank\" class=\"link\" href=\"" + platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
+                        if (parts && parts.length > 1)
+                        {
+                            src = "<a target=\"_blank\" class=\"link\" href=\"" + platform.getCablesUrl() + "/edit/" + parts[2] + "\">other patch</a>";
+                            src += " <a target=\"_blank\" class=\"button-small\" id=\"copyToPatch" + i + "\">copy</a>";
+                        }
                     }
                     if (fn.startsWith("/assets/library/")) src = "lib";
 
                     if (src != "") src = "[ " + src + " ]";
 
                     srcEle.innerHTML = src;
+
+                    ele.clickable(ele.byId("copyToPatch" + i), () =>
+                    {
+                        copyFileToPatch(fn);
+                    });
                 }
             }
 
