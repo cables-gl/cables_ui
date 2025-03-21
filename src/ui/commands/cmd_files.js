@@ -17,16 +17,11 @@ export function copyFileToPatch(url, options = null)
             }
             else
             {
-                // let html = "";
-
-                // if (res && res.info) html = res.info;
-                // else html = "Finished!";
-
-                // ele.byId("modalClose").classList.remove("hidden");
-                // ele.byId("converteroutput").innerHTML = html;
-
-                // FileManager.updatedFiles.push(fileId);
                 console.log(res);
+                if (res && res.converterResult && res.converterResult.sourceUrl && res.converterResult.targetUrl)
+                {
+                    CABLES.CMD.PATCH.replaceFilePath(res.converterResult.sourceUrl, res.converterResult.targetUrl);
+                }
             }
             gui.refreshFileManager();
         });
