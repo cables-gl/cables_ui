@@ -7,7 +7,7 @@ import namespace from "../../namespaceutils.js";
 import { platform } from "../../platform.js";
 
 /**
- *simple tab to just show html
+ * tab to manage op dependencies like libs or npm-modules
  *
  * @export
  * @class OpDependencyTab

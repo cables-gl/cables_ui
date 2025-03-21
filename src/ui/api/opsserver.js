@@ -771,7 +771,6 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                     this.showApiError(err);
                 }
 
@@ -782,7 +781,6 @@ export default class ServerOps
                 {
                     if (err2)
                     {
-                        // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         this.showApiError(err);
                         return;
                     }

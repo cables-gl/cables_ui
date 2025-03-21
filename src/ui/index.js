@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import Api from "./api/api.js";
+import { Platform } from "./platform.js";
 import CMD from "./commands/commands.js";
 import OverlayMeshes from "./components/overlay/overlaymeshes.js";
 import Collapsable from "./components/collapsable.js";
@@ -18,12 +18,12 @@ import FileUploader from "./dialogs/upload.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import extendCoreOp, { UiOp } from "./core_extend_op.js";
+import extendCoreOp from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
-import LogFilter, { logFilter } from "./utils/logfilter.js";
+import { logFilter } from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import extendCorePatch from "./core_extend_patch.js";
@@ -39,9 +39,10 @@ CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
 CABLES.GLGUI.CURSOR_POINTER = 2;
 
-// used in footer.html
-CABLES.PlatformCommunity = PlatformCommunity;
+// create "mock" to load dependencies, specific class is set in footer.html
 CABLES.PlatformElectron = PlatformElectron;
+CABLES.PlatformCommunity = PlatformCommunity;
+CABLES.platform = new Platform();
 
 // expose global classes
 CABLES.GLUI.glUiConfig = gluiconfig; // todo: could be removed, needs workaround in gltf ops
@@ -59,7 +60,6 @@ CABLES.UI.DEFAULTOPNAMES = defaultOps.defaultOpNames;
 
 CABLES.UI.DEFAULTOPS = defaultOps;
 // expose global objects
-CABLES.api = new Api();
 CABLES.contextMenu = contextMenu; // TODO: delete when old timeline is replaced
 CABLES.fileUploader = new FileUploader();
 CABLES.UI.Collapsable = Collapsable;

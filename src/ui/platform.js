@@ -21,7 +21,7 @@ export { platform };
 export class Platform extends Events
 {
 
-    constructor(cfg)
+    constructor(cfg = null)
     {
         super();
         platform = this;
@@ -34,49 +34,53 @@ export class Platform extends Events
         this.paths = {};
         this.frontendOptions = {};
 
-        if (CABLESUILOADER && this.talkerAPI)
+        if (this._cfg)
         {
-            this.talkerAPI.addEventListener("logError", (errorData) =>
+            if (CABLESUILOADER && this.talkerAPI)
             {
-                if (errorData)
+                this.talkerAPI.addEventListener("logError", (errorData) =>
                 {
-                    const errorMessage = errorData.message || "unknown error";
-                    if (errorData.type && errorData.type === "network")
+                    if (errorData)
                     {
-                        this.setOffline();
+                        const errorMessage = errorData.message || "unknown error";
+                        if (errorData.type && errorData.type === "network")
+                        {
+                            this.setOffline();
+                        }
+                        switch (errorData.level)
+                        {
+                        case "error":
+                            this._log.error(errorMessage);
+                            break;
+                        case "warn":
+                            this._log.warn(errorMessage);
+                            break;
+                        case "verbose":
+                            this._log.verbose(errorMessage);
+                            break;
+                        case "info":
+                            this._log.info(errorMessage);
+                            break;
+                        default:
+                            this._log.log(errorMessage);
+                            break;
+                        }
                     }
-                    switch (errorData.level)
+                    else
                     {
-                    case "error":
-                        this._log.error(errorMessage);
-                        break;
-                    case "warn":
-                        this._log.warn(errorMessage);
-                        break;
-                    case "verbose":
-                        this._log.verbose(errorMessage);
-                        break;
-                    case "info":
-                        this._log.info(errorMessage);
-                        break;
-                    default:
-                        this._log.log(errorMessage);
-                        break;
+                        this._log.warn("unknown error");
                     }
-                }
-                else
-                {
-                    this._log.warn("unknown error");
-                }
-            });
+                });
+            }
+
+            if (this._cfg.usersettings && this._cfg.usersettings.settings) userSettings.load(this._cfg.usersettings.settings);
+            else userSettings.load({});
+
+            window.addEventListener("online", this.updateOnlineIndicator.bind(this));
+            window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
+            this.updateOnlineIndicator();
         }
 
-        if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
-        else userSettings.load({});
-
-        window.addEventListener("online", this.updateOnlineIndicator.bind(this));
-        window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
-        this.updateOnlineIndicator();
     }
 
     get config()

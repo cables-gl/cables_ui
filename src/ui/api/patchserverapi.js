@@ -32,6 +32,7 @@ export default class PatchSaveServer extends Events
         this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
+        this._lastErrorReport = null;
 
         this.isSaving = false;
 
@@ -845,5 +846,61 @@ export default class PatchSaveServer extends Events
                 });
 
         }, 200);
+    }
+
+    sendErrorReport(report, manualSend = true)
+    {
+        const doneCallback = (res) =>
+        {
+            if (manualSend)
+            {
+                const modalOptions = {
+                    "title": "Thank you",
+                    "showOkButton": true,
+                    "text": "We will look into it"
+                };
+                new ModalDialog(modalOptions);
+            }
+
+            if (res && res.data && res.data.url)
+                this._log.log("sent error report: ", res.data.url);
+
+            CABLES.lastError = null;
+        };
+
+        let sendReport = true;
+        if (!manualSend)
+        {
+            if (this._lastErrorReport) sendReport = (performance.now() - this._lastErrorReport) > 2000;
+        }
+
+        if (!sendReport)
+        {
+            doneCallback();
+        }
+        else
+        {
+            this._lastErrorReport = performance.now();
+            report.browserInfo = platformLib;
+            try
+            {
+                const stringReport = JSON.stringify(report);
+                if (stringReport.length > 10 * 1024 * 1024)
+                {
+                    this._log.warn("did not send error report - too big! " + Math.round(stringReport.length / 1024 / 1024) + " mb");
+                    doneCallback();
+                }
+                else
+                {
+                    platform.talkerAPI.send("errorReport", report, doneCallback);
+                }
+            }
+            catch (e)
+            {
+                this._log.warn("did not send error report - failed to stringify", e.message);
+                doneCallback();
+            }
+
+        }
     }
 }
