@@ -60,14 +60,6 @@ export default function startUi(cfg)
             incrementStartup();
             platform.initRouting(() =>
             {
-                document.addEventListener("visibilitychange", function ()
-                {
-                    if (!document.hidden)
-                    {
-                        gui.setLayout();
-                        gui.patchView.store.checkUpdated();
-                    }
-                }, false);
 
                 incrementStartup();
                 gui.opSelect().prepare();

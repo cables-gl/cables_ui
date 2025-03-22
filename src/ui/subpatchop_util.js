@@ -699,7 +699,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
             if (err)
             {
                 gui.serverOps.showApiError(err);
-                // new ModalError({ "title": "Error/Invalid response from server 1", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                 notifyError("Could not save " + newOp.objName, "", { "force": true });
             }
             else
@@ -769,11 +768,9 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
         {
             if (err)
             {
-                // new ModalError({ "title": "Error/Invalid response from server 2", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                 this.showApiError(err);
                 return;
             }
-            // loadingModal.setTask("update bp2 attachment");
 
             if (oldSubpatchOp && newOp)
                 newOp.setUiAttrib(

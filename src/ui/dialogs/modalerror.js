@@ -127,7 +127,6 @@ export default class ModalError
             "triggerStack": this._options.triggerStack };
 
         if (this._options.op) CABLES.lastError.opName = this.opName;
-        // if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
 
         const modalOptions = {
             "title": this._options.title || "cablefail :/",
@@ -135,6 +134,10 @@ export default class ModalError
         };
 
         this._dialog = new ModalDialog(modalOptions);
+        ele.clickable(ele.byId("sendErrorReport"), () =>
+        {
+            gui.patchView.store.sendErrorReport(CABLES.lastError, true);
+        });
     }
 
     _getFileSnippet(url, line, cb)
@@ -266,12 +269,12 @@ export default class ModalError
             if (CABLES && platform && platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
 
-                CABLES.api.sendErrorReport(CABLES.lastError, false);
+                gui.patchView.store.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
             }
             else if (showSendButton)
             {
-                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+                str += "<a class=\"button\" id=\"sendErrorReport\">Send Error Report</a>&nbsp;&nbsp;";
             }
         }
 

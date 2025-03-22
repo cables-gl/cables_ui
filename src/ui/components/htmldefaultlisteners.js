@@ -117,4 +117,23 @@ export default function setHtmlDefaultListeners()
             window.location.hash = event.data.data;
         }
     }, false);
+
+    document.addEventListener("visibilitychange", function ()
+    {
+        console.log("vischange");
+        if (gui && !document.hidden)
+        {
+            gui.setLayout();
+            gui.patchView.store.checkUpdated();
+        }
+    }, false);
+
+    window.addEventListener("focus", (event) =>
+    {
+        if (gui && !document.hidden)
+        {
+            gui.setLayout();
+            gui.patchView.store.checkUpdated();
+        }
+    });
 }
