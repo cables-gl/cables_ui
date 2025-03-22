@@ -158,7 +158,7 @@ export default class LogTab extends Events
             this.hasErrorButton = true;
             this._tab.addButton("Send Error Report", () =>
             {
-                CABLES.api.sendErrorReport(this.createReport(), true);
+                gui.patchView.store.sendErrorReport(this.createReport(), true);
             });
         }
 
@@ -363,7 +363,7 @@ export default class LogTab extends Events
                             this.sentAutoReport = true;
                             setTimeout(() =>
                             {
-                                CABLES.api.sendErrorReport(this.createReport(), false);
+                                gui.patchView.store.sendErrorReport(this.createReport(), false);
                             }, 500);
                         }
                     }

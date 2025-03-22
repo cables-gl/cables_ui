@@ -1103,20 +1103,20 @@ CABLES_CMD_PATCH.pause = function ()
     gui.corePatch().pause();
 };
 
-CABLES_CMD_PATCH.replaceFilePath = function ()
+CABLES_CMD_PATCH.replaceFilePath = function (from = null, to = null)
 {
     new ModalDialog({
         "prompt": true,
         "title": "Replace String Values",
         "text": "Search for...",
-        "promptValue": "/assets/",
+        "promptValue": from || "/assets/",
         "promptOk": (srch) =>
         {
             new ModalDialog({
                 "prompt": true,
                 "title": "Replace String Values",
                 "text": "...replace with",
-                "promptValue": "/assets/" + gui.project()._id,
+                "promptValue": to || "/assets/" + gui.project()._id,
                 "promptOk": (rplc) =>
                 {
                     const ops = gui.corePatch().ops;
