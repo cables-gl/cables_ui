@@ -308,6 +308,11 @@ export class GlTimeline extends Events
         this.init();
     }
 
+    setanim()
+    {
+
+    }
+
     getColorSpecial()
     {
         return [0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1];
