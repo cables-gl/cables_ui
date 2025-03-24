@@ -428,6 +428,21 @@ class OpParampanel extends Events
             }, { "passive": false });
         });
 
+        if (gui.serverOps.opIdsChangedOnServer[op.opId])
+        {
+
+            ele.clickable(ele.byId("parampanel_loadchangedop_" + op.opId), () =>
+            {
+                gui.serverOps.execute(op.opId, () =>
+                {
+                    delete gui.serverOps.opIdsChangedOnServer[op.opId];
+                    this.refresh();
+
+                });
+
+            });
+        }
+
         perf.finish();
     }
 

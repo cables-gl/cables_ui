@@ -24,6 +24,11 @@ export default class GuiRestrictions
 
     }
 
+    hide()
+    {
+        this._restrictionDialog.classList.add("hidden");
+    }
+
     get visible()
     {
         return Object.keys(this._messages).length > 0;

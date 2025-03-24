@@ -52,6 +52,20 @@ CABLES_CMD_OP.upGradeOps = function ()
     }
 };
 
+CABLES_CMD_OP.reloadChangedOps = function ()
+{
+    for (let i in gui.serverOps.opIdsChangedOnServer)
+    {
+        gui.serverOps.execute(i, () =>
+        {
+            delete gui.serverOps.opIdsChangedOnServer[i];
+            gui.opParams.refresh();
+        });
+    }
+    gui.restriction.hide();
+
+};
+
 CABLES_CMD_OP.cloneSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -256,6 +270,12 @@ CMD_OP_COMMANDS.push(
         "func": CABLES_CMD_OP.copyNameClipboard,
         "category": "op",
         "icon": "op"
-    }
+    },
+    {
+        "cmd": "Reload changed ops",
+        "func": CABLES_CMD_OP.reloadChangedOps,
+        "category": "op",
+        "icon": "op"
+    },
 
 );

@@ -6,6 +6,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { glTlAnimLine } from "./gltlanimline.js";
+import { gui } from "../gui.js";
 
 /**
  * gltl key rendering
@@ -47,6 +48,8 @@ export class glTlKeys extends Events
     #disposed = false;
 
     sizeKey = 12;
+
+    /** @type {Array<number>} */
     #points = [];
     #options = {};
 
@@ -319,11 +322,12 @@ export class glTlKeys extends Events
             kr.setColor(1, 1, 1, 1);
             kr.setParent(this.#parentRect);
             const key = this.#anim.keys[i];
-            kr.key = key;
+            kr.data.key = key;
 
             let startDragTime = -1111;
             let startDragValue = -1111;
 
+            /** @type {Object} */
             let oldValues = {};
 
             kr.draggableMove = true;
@@ -356,7 +360,7 @@ export class glTlKeys extends Events
                 });
             });
 
-            kr.on(GlRect.EVENT_DRAGSTART, (rect, x, y, button, e) =>
+            kr.on(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
             {
 
                 this.#dragStartX = x.offsetX;

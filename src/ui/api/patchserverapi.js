@@ -128,7 +128,7 @@ export default class PatchSaveServer extends Events
                     });
 
                 }
-                else gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
+                else if (!gui.restriction.visible)gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
 
                 gui.jobs().finish("checkupdated");
             }
