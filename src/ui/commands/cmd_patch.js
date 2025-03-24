@@ -1103,47 +1103,6 @@ CABLES_CMD_PATCH.pause = function ()
     gui.corePatch().pause();
 };
 
-CABLES_CMD_PATCH.replaceFilePath = function (from = null, to = null)
-{
-    new ModalDialog({
-        "prompt": true,
-        "title": "Replace String Values",
-        "text": "Search for...",
-        "promptValue": from || "/assets/",
-        "promptOk": (srch) =>
-        {
-            new ModalDialog({
-                "prompt": true,
-                "title": "Replace String Values",
-                "text": "...replace with",
-                "promptValue": to || "/assets/" + gui.project()._id,
-                "promptOk": (rplc) =>
-                {
-                    const ops = gui.corePatch().ops;
-                    for (let i = 0; i < ops.length; i++)
-                    {
-                        for (let j = 0; j < ops[i].portsIn.length; j++)
-                        {
-                            if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
-                            {
-                                log.log("filename:", ops[i].portsIn[j].get());
-                                let v = ops[i].portsIn[j].get();
-
-                                if (v) log.log("srch index", v.indexOf(srch));
-                                if (v && v.indexOf(srch) == 0)
-                                {
-                                    log.log("found str!");
-                                    v = rplc + v.substring(srch.length);
-                                    ops[i].portsIn[j].set(v);
-                                    log.log("result filename:", v);
-                                }
-                            }
-                        }
-                    }
-                } });
-        } });
-};
-
 CABLES_CMD_PATCH.replaceOp = function ()
 {
     new ModalDialog({

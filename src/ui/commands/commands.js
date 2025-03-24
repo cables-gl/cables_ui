@@ -4,6 +4,7 @@ import patchCommands from "./cmd_patch.js";
 import rendererCommands from "./cmd_renderer.js";
 import timelineCommands from "./cmd_timeline.js";
 import uiCommands from "./cmd_ui.js";
+import fileCommands from "./cmd_files.js";
 
 const CMD = {};
 let commands = [];
@@ -14,6 +15,7 @@ commands = commands.concat(rendererCommands.commands);
 commands = commands.concat(timelineCommands.commands);
 commands = commands.concat(uiCommands.commands);
 commands = commands.concat(opCommands.commands);
+commands = commands.concat(fileCommands.commands);
 
 CMD.DEBUG = debugCommands.functions;
 CMD.PATCH = patchCommands.functions;
@@ -21,6 +23,7 @@ CMD.OP = opCommands.functions;
 CMD.RENDERER = rendererCommands.functions;
 CMD.TIMELINE = timelineCommands.functions;
 CMD.UI = uiCommands.functions;
+CMD.FILES = fileCommands.functions;
 
 CMD.commands = commands;
 
