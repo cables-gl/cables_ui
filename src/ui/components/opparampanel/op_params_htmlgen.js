@@ -53,6 +53,10 @@ class PortHtmlGenerator
             newestVersion = doc.newestVersion;
         }
 
+        let opChanged = false;
+        if (gui.serverOps.opIdsChangedOnServer[op.opId])
+            opChanged = true;
+
         const o = {
             "op": op,
             "panelid": this._panelId,
@@ -63,6 +67,7 @@ class PortHtmlGenerator
             "user": gui.user,
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
+            "opChanged": opChanged,
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,

@@ -300,6 +300,11 @@ export default class ServerOps
         return true; // has changed
     }
 
+    /**
+     * @param {string} opIdentifier
+     * @param {function} next
+     * @param {object} options
+     */
     execute(opIdentifier, next, options)
     {
         options = options || {};

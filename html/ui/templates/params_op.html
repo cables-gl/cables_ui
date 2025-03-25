@@ -47,6 +47,9 @@
             <a class="button-small button-icon tt info" data-info="[e] - edit op" data-tt="[e] - edit op " id="parampanel_edit_op"><span class="icon icon-edit"></span></a>
         {{/if}}
 
+
+
+
         {{#if op.crashed }}
             OP CRASHED
         {{/if}}
@@ -60,6 +63,13 @@
                 {{/if}}
             </div>
             <br/><br/>
+        {{/if}}
+
+        {{#if opChanged}}
+            <div>
+                op was changed on server
+                <a class="button-small button-icon tt" data-tt="manage op" id="parampanel_loadchangedop_{{op.opId}}"><span class="icon icon-refresh"></span> Reload</a>
+            </div>
         {{/if}}
 
         {{#if op.uiAttribs.error }}

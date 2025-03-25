@@ -853,6 +853,62 @@ export default class FileManager
         );
         // });
     }
+
+    replaceAssetPorts(search, replace, cb = null)
+    {
+        const ops = gui.corePatch().ops;
+        let numPorts = 0;
+        for (let i = 0; i < ops.length; i++)
+        {
+            for (let j = 0; j < ops[i].portsIn.length; j++)
+            {
+                if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
+                {
+                    this._log.log("filename:", ops[i].portsIn[j].get());
+                    let v = ops[i].portsIn[j].get();
+
+                    if (v) this._log.log("srch index", v.indexOf(search));
+                    if (v && v.indexOf(search) == 0)
+                    {
+                        numPorts++;
+                        this._log.log("found str!");
+                        v = replace + v.substring(search.length);
+                        ops[i].portsIn[j].set(v);
+                        this._log.log("result filename:", v);
+                    }
+                }
+            }
+        }
+        if (cb) cb(numPorts);
+    }
+
+    copyFileToPatch(url, options = null)
+    {
+        platform.talkerAPI.send("fileConvert", {
+            "url": url,
+            "converterId": "copytopatch",
+            "options": options
+        }, (err, res) =>
+        {
+            if (err)
+            {
+                notifyError("Over storage quota!");
+            }
+            else
+            {
+                if (res && res.converterResult && res.converterResult.sourceUrl && res.converterResult.targetUrl)
+                {
+                    this.replacePorts(res.converterResult.sourceUrl, res.converterResult.targetUrl, (numPorts) =>
+                    {
+                        notify("Copied file, updated " + numPorts + " ports");
+                    });
+                }
+            }
+            gui.opParams.refresh();
+            gui.refreshFileManager();
+        });
+    }
+
 }
 
 FileManager.updatedFiles = [];

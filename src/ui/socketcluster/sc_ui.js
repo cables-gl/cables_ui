@@ -39,6 +39,15 @@ export default class ScUi
         if (!payload.isOwn)
         {
             gui.serverOps.addOpIdChangedOnServer(data.opId, data);
+
+            let opNames = "";
+            for (let i in gui.serverOps.opIdsChangedOnServer)
+            {
+                opNames += gui.serverOps.opIdsChangedOnServer[i].opName + " ";
+            }
+
+            gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"button\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
+
         }
     }
 
