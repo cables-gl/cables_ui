@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { CgContext } from "cables/src/core/cg/cg_state.js";
 import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -48,7 +49,7 @@ export default class CanvasManager
     }
 
     /**
-     * @returns {CABLES.CgContext}
+     * @returns {CgContext}
      */
     currentContext()
     {
@@ -61,6 +62,9 @@ export default class CanvasManager
         return this._contexts[this._curContextIdx].canvas;
     }
 
+    /**
+     * @param {CgContext} c
+     */
     addContext(c)
     {
         for (let i = 0; i < this._contexts.length; i++) if (this._contexts[i] == c) return;
@@ -68,6 +72,8 @@ export default class CanvasManager
         if (!c.canvasUi) c.canvasUi = new CanvasUi(c);
 
         this._contexts.push(c);
+        this._curContextIdx = this._contexts.length - 1;
+
         const ctx = c;
         gui.cmdPallet.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
         {

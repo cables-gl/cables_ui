@@ -104,7 +104,7 @@ export default class BottomTabPanel extends Events
         clearTimeout(this._toBottomPanel);
         this._toBottomPanel = setTimeout(() =>
         {
-            userSettings.set("bottomPanelHeight", this.height);
+            userSettings.set("bottomPanelHeight", Math.max(150, this.height));
         }, 100);
         gui.setLayout();
 
