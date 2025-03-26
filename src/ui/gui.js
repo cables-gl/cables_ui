@@ -1294,7 +1294,15 @@ export default class Gui extends Events
 
                 if (err)
                 {
-                    ele.byId("converteroutput").innerHTML = "Error: something went wrong while converting..." + (err.msg || "");
+                    const converterOutput = ele.byId("converteroutput");
+                    if (err.msg === "OVER_QUOTA")
+                    {
+                        converterOutput.innerHTML = "You are over quota for this action. Increase your <a href=\"" + platform.getCablesUrl() + "/support\" target='_blank'>support level</a> to get more space!";
+                    }
+                    else
+                    {
+                        converterOutput.innerText = "Error: something went wrong while converting..." + (err.msg || "");
+                    }
                 }
                 else
                 {
