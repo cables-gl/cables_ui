@@ -583,9 +583,10 @@ export default class PatchSaveServer extends Events
                     },
                     (err, r) =>
                     {
+                        platform.setSaving(false);
+
                         if (err)
                         {
-                            platform.setSaving(false);
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
 
@@ -686,7 +687,6 @@ export default class PatchSaveServer extends Events
                         if (doSaveScreenshot && !platform.manualScreenshot()) this.saveScreenshot();
                         else this.finishAnimations();
                     }
-
                 );
             }
             catch (e)
