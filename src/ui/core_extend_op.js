@@ -132,10 +132,6 @@ class UiOp extends CABLES.Op
                 this.getFirstPortOut() &&
                 this.getFirstPortIn().isLinked() &&
                 this.getFirstPortOut().isLinked()
-                // this.portsIn.length > 0 &&
-                // this.portsIn[0].isLinked() &&
-                // this.portsOut.length > 0 &&
-                // this.portsOut[0].isLinked()
             )
             {
                 if (this.getFirstPortIn().getType() == this.getFirstPortOut().getType() && this.getFirstPortIn().links[0])

@@ -121,7 +121,8 @@ const defaultOpNames =
     "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
     "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
     "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath",
-    "HttpRequest": "Ops.Json.HttpRequest_v3"
+    "HttpRequest": "Ops.Json.HttpRequest_v3",
+    "glMainloop": "Ops.Gl.MainLoop"
 
 };
 

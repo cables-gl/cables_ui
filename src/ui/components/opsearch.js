@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { CgContext } from "cables/src/core/cg/cg_state.js";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
@@ -111,11 +112,30 @@ export default class OpSearch extends Events
 
             if (list[i].lowercasename.indexOf(query) > -1)
             {
-                if (list[i].name === "Ops.Gl.MainLoop")
+                if (list[i].name === defaultOps.glMainloop)
                 {
                     found = true;
                     scoreDebug += "+2 vip op<br/>";
                     points += 2;
+                }
+            }
+
+            if (this.prefereGApi == CgContext.API_WEBGL)
+            {
+                if (list[i].name.startsWith(defaultOps.prefixes.webgl))
+                {
+                    found = true;
+                    scoreDebug += "+5 current graphics api<br/>";
+                    points += 5;
+                }
+            }
+            else if (this.prefereGApi == CgContext.API_WEBGPU)
+            {
+                if (list[i].name.startsWith(defaultOps.prefixes.webgpu))
+                {
+                    found = true;
+                    scoreDebug += "+5 current graphics api<br/>";
+                    points += 5;
                 }
             }
 
@@ -363,6 +383,8 @@ export default class OpSearch extends Events
 
     search(query, originalSearch)
     {
+
+        this.prefereGApi = gui.canvasManager.currentContext().gApi;
 
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
