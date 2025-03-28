@@ -1701,6 +1701,9 @@ export default class Gui extends Events
 
     }
 
+    /**
+     * @param {KeyboardEvent} e
+     */
     pressedEscape(e)
     {
         if (this.canvasManager.getCanvasUiBar())
@@ -1749,7 +1752,7 @@ export default class Gui extends Events
             }
         }
         else if (this._opselect.isOpen()) this._opselect.close();
-        else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
+        else if (this.maintabPanel.isVisible() && gui.userSettings.get("escape_closetabs")) this.maintabPanel.hide();
         else
         {
             if (e)
