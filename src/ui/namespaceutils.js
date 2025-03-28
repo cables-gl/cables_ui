@@ -1,173 +1,188 @@
 import defaultOps from "./defaultops.js";
 import { gui } from "./gui.js";
 
-export default class namespace {}
-
-/**
- * @param {String} opname
- * @returns {String}
- */
-namespace.getNamespace = (opname) =>
+class namespace
 {
-    if (!opname) return "";
-    const parts = opname.split(".");
-    parts.length -= 1;
-    return parts.join(".") + ".";
-};
 
-/**
- * @param {String} opName
- * @returns {Boolean}
- */
-namespace.isOpNameValid = (opName) =>
-{
-    if (!opName) return false;
-    if (opName.length < 6) return false;
-    if (opName.indexOf("..") !== -1) return false;
-    let matchString = "[^abcdefghijklmnopqrstuvwxyz._ABCDEFGHIJKLMNOPQRSTUVWXYZ0-9";
-    // patchops can have - because they contain the patch shortid
-    if (namespace.isPatchOp(opName) || namespace.isTeamOp(opName)) matchString += "\\-";
-    matchString += "]";
-    if (opName.match(matchString)) return false;
-
-    const parts = opName.split(".");
-    if (parts.length < 3) return false;
-
-    for (let i = 0; i < parts.length; i++) // do not start
+    /**
+     * @param {String} opname
+     * @returns {String}
+     */
+    getNamespace(opname)
     {
-        const firstChar = parts[i].charAt(0);
-        const isnum = !isNaN(firstChar);
-        if (isnum) return false;
-        if (firstChar === "-") return false;
+        if (!opname) return "";
+        const parts = opname.split(".");
+        parts.length -= 1;
+        return parts.join(".") + ".";
     }
 
-    if (opName.endsWith(".json")) return false;
+    /**
+     * @param {String} namespaceName
+     * @returns {Boolean}
+     */
+    isNamespaceNameValid(namespaceName)
+    {
+        return this.isOpNameValid(namespaceName, 4, 1);
+    }
 
-    return opName.startsWith(defaultOps.prefixes.op);
-};
+    /**
+     * @param {String} opName
+     * @param {Number} minLength
+     * @param {Number} minParts
+     * @returns {Boolean}
+     */
+    isOpNameValid(opName, minLength = 6, minParts = 3)
+    {
+        if (!opName) return false;
+        if (opName.length < minLength) return false;
+        if (opName.indexOf("..") !== -1) return false;
+        let matchString = "[^abcdefghijklmnopqrstuvwxyz._ABCDEFGHIJKLMNOPQRSTUVWXYZ0-9";
+        // patchops can have - because they contain the patch shortid
+        if (this.isPatchOp(opName) || this.isTeamOp(opName)) matchString += "\\-";
+        matchString += "]";
+        if (opName.match(matchString)) return false;
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isDevOp = (opname) =>
-{
-    return opname && opname.includes(".Dev.");
-};
+        const parts = opName.split(".");
+        if (parts.length < minParts) return false;
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isUserOp = (opname) =>
-{
-    return opname && opname.startsWith(defaultOps.prefixes.userOp);
-};
+        for (let i = 0; i < parts.length; i++) // do not start
+        {
+            const firstChar = parts[i].charAt(0);
+            const isnum = firstChar && !isNaN(firstChar);
+            if (isnum) return false;
+            if (firstChar === "-") return false;
+        }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isCurrentUserOp = (opname) =>
-{
-    return namespace.isUserOpOfUser(opname, gui.user.usernameLowercase);
-};
+        if (opName.endsWith(".json")) return false;
 
-/**
- * @param {String} opname
- * @param {String} userNameLowercase
- * @returns {Boolean}
- */
-namespace.isUserOpOfUser = (opname, userNameLowercase) =>
-{
-    return opname && opname.startsWith(defaultOps.prefixes.userOp + userNameLowercase);
-};
+        return opName.startsWith(defaultOps.prefixes.op);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isDeprecatedOp = (opname) =>
-{
-    return opname && opname.includes(".Deprecated.");
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isDevOp(opname)
+    {
+        return opname && opname.includes(".Dev.");
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isExtensionOp = (opname) =>
-{
-    return opname && opname.startsWith(defaultOps.prefixes.extensionOp);
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isUserOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.userOp);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isCoreOp = (opname) =>
-{
-    return !(namespace.isUserOp(opname) || namespace.isExtensionOp(opname) || namespace.isTeamOp(opname) || namespace.isPatchOp(opname));
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isCurrentUserOp(opname)
+    {
+        return this.isUserOpOfUser(opname, gui.user.usernameLowercase);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isPrivateOp = (opname) =>
-{
-    return namespace.isTeamOp(opname) || namespace.isPatchOp(opname) || namespace.isUserOp(opname);
-};
+    /**
+     * @param {String} opname
+     * @param {String} userNameLowercase
+     * @returns {Boolean}
+     */
+    isUserOpOfUser(opname, userNameLowercase)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.userOp + userNameLowercase);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isPatchOp = (opname) =>
-{
-    return opname && opname.indexOf(defaultOps.prefixes.patchOp) === 0;
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isDeprecatedOp(opname)
+    {
+        return opname && opname.includes(".Deprecated.");
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isExtension = (opname) =>
-{
-    if (!opname) return false;
-    if (!opname.startsWith(defaultOps.prefixes.extensionOp)) return false;
-    if (!opname.endsWith(".")) opname += ".";
-    const parts = opname.split(".");
-    return parts.length < 5;
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isExtensionOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.extensionOp);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isCollection = (opname) =>
-{
-    return opname && (namespace.isExtension(opname) || namespace.isTeamNamespace(opname));
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isCoreOp(opname)
+    {
+        return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname));
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isTeamOp = (opname) =>
-{
-    return opname && opname.startsWith(defaultOps.prefixes.teamOp);
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isPrivateOp(opname)
+    {
+        return this.isTeamOp(opname) || this.isPatchOp(opname) || this.isUserOp(opname);
+    }
 
-/**
- * @param {String} opname
- * @returns {Boolean}
- */
-namespace.isTeamNamespace = (opname) =>
-{
-    if (!opname) return false;
-    if (!opname.startsWith(defaultOps.prefixes.teamOp)) return false;
-    if (!opname.endsWith(".")) opname += ".";
-    const parts = opname.split(".");
-    return parts.length < 5;
-};
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isPatchOp(opname)
+    {
+        return opname && opname.indexOf(defaultOps.prefixes.patchOp) === 0;
+    }
+
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isExtension(opname)
+    {
+        if (!opname) return false;
+        if (!opname.startsWith(defaultOps.prefixes.extensionOp)) return false;
+        if (!opname.endsWith(".")) opname += ".";
+        const parts = opname.split(".");
+        return parts.length < 5;
+    }
+
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isCollection(opname)
+    {
+        return opname && (this.isExtension(opname) || this.isTeamNamespace(opname));
+    }
+
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isTeamOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.teamOp);
+    }
+
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
+    isTeamNamespace(opname)
+    {
+        if (!opname) return false;
+        if (!opname.startsWith(defaultOps.prefixes.teamOp)) return false;
+        if (!opname.endsWith(".")) opname += ".";
+        const parts = opname.split(".");
+        return parts.length < 5;
+    }
+}
+
+export default new namespace();

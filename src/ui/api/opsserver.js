@@ -811,11 +811,6 @@ export default class ServerOps
      */
     opNameDialog(options, cb)
     {
-        const suggestedNamespace = options.suggestedNamespace || "";
-        const shortName = options.shortName || "";
-
-        let newName = suggestedNamespace + shortName;
-
         let opTargetDir = null;
         const _checkOpName = () =>
         {
@@ -831,7 +826,7 @@ export default class ServerOps
 
             const checkNameRequest = {
                 "namespace": options.suggestedNamespace,
-                "v": newName,
+                "v": options.sourceOpName,
                 "sourceName": options.sourceOpName,
                 "rename": options.rename
             };
@@ -893,9 +888,14 @@ export default class ServerOps
                     });
                 }
 
-                _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
-
                 const opNameInput = ele.byId("opNameDialogInput");
+                const checkedName = initialRes.checkedName || options.sourceOpName;
+                if (opNameInput.value !== checkedName)
+                {
+                    opNameInput.value = checkedName;
+                }
+                _updateFormFromApi(initialRes, checkedName);
+
                 if (opNameInput.value)
                 {
                     const parts = opNameInput.value.split(".");
@@ -908,8 +908,7 @@ export default class ServerOps
                 }
 
                 opNameInput.addEventListener("input", _nameChangeListener);
-                ele.byId("opNameDialogNamespace")
-                    .addEventListener("input", _namespaceChangeListener);
+                ele.byId("opNameDialogNamespace").addEventListener("input", _namespaceChangeListener);
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle)
                 {
@@ -954,7 +953,7 @@ export default class ServerOps
         if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
-        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
+        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
         html += "&nbsp;";
         html += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
         html += "</div><br/><br/>";
@@ -1003,7 +1002,7 @@ export default class ServerOps
             const opNameInput = ele.byId("opNameDialogInput");
             const selectEle = ele.byId("opNameDialogNamespace");
 
-            if (selectEle.value)
+            if (selectEle.value && namespace.isNamespaceNameValid(selectEle.value))
             {
                 const opName = opNameInput.value;
                 const opBasename = opName.substring(opName.lastIndexOf(".") + 1);
@@ -1063,20 +1062,19 @@ export default class ServerOps
 
                     if (res.checkedName && res.checkedName === fullName)
                     {
-                        ele.show(ele.byId("opNameDialogSubmit"));
-                        if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
-
                         _updateFormFromApi(res, fullName, newNamespace);
                     }
-                    gui.jobs().finish("checkOpName" + res.checkedName);
+                    gui.jobs().finish("checkOpName" + fullName);
                 });
             }
         };
 
-        const _updateFormFromApi = (res, newOpName, newNamespace) =>
+        const _updateFormFromApi = (res, newOpName, newNamespace = null) =>
         {
             let hintsHtml = "";
             const eleHints = ele.byId("opNameDialogHints");
+            const inputField = ele.byId("opNameDialogInput");
+
             if (eleHints) ele.hide(eleHints);
             if (res.hints && res.hints.length > 0)
             {
@@ -1134,7 +1132,7 @@ export default class ServerOps
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.nextName);
+                                inputField.value = capitalize(suggest.dataset.nextName);
                                 _nameChangeListener();
                             });
                         }
