@@ -122,20 +122,20 @@ export default class OpSearch extends Events
 
             if (this.prefereGApi == CgContext.API_WEBGL)
             {
-                if (list[i].name.startsWith(defaultOps.prefixes.webgl))
+                if (list[i].name.startsWith(defaultOps.prefixes.webgpu))
                 {
                     found = true;
-                    scoreDebug += "+5 current graphics api<br/>";
-                    points += 5;
+                    scoreDebug += "-5 different graphics api<br/>";
+                    points -= 5;
                 }
             }
             else if (this.prefereGApi == CgContext.API_WEBGPU)
             {
-                if (list[i].name.startsWith(defaultOps.prefixes.webgpu))
+                if (list[i].name.startsWith(defaultOps.prefixes.webgl))
                 {
                     found = true;
-                    scoreDebug += "+5 current graphics api<br/>";
-                    points += 5;
+                    scoreDebug += "-5 different graphics api<br/>";
+                    points -= 5;
                 }
             }
 
