@@ -72,6 +72,9 @@ export default class EditorTab extends Events
         if (options.hasOwnProperty("content")) this.setContent(options.content);
     }
 
+    /**
+     * @param {string} content
+     */
     setContent(content, silent = false)
     {
         content = content || "";
@@ -88,6 +91,38 @@ export default class EditorTab extends Events
 
                 editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
                 editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
+
+                if (gui.userSettings.get("ace_keymode"))
+                {
+                    editor.setKeyboardHandler(gui.userSettings.get("ace_keymode"));
+
+                    ace.config.loadModule("ace/keyboard/vim", (module) =>
+                    {
+                        let VimApi = module.CodeMirror.Vim;
+                        VimApi.defineEx("write", "w", (cm, input) =>
+                        {
+                            this.save();
+                        });
+                    });
+
+                    // editor.commands.addCommand({
+                    //     "name": ":write",
+                    //     "exec": (env, args, request) =>
+                    //     {
+                    //         this.save();
+                    //     }
+                    // });
+
+                    console.log(editor);
+                    // editor.config.loadModule("ace/keyboard/vim", function (module)
+                    // {
+                    //     let VimApi = module.CodeMirror.Vim;
+                    //     VimApi.defineEx("write", "w", function (cm, input)
+                    //     {
+                    //         this.save()
+                    //     });
+                    // });
+                }
 
                 if (this._options.allowEdit)
                 {

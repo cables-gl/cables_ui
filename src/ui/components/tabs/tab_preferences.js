@@ -111,6 +111,8 @@ export default class Preferences
         this.setInputValue("authorName", userSettings.get("authorName") || "");
         this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
 
+        this.setSwitchValue("ace_keymode", userSettings.get("ace_keymode") || "");
+
         if (platform.frontendOptions.selectableDownloadPath)
         {
             const currentValue = userSettings.get("downloadPath") || "";
