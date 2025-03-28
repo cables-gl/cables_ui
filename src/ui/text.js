@@ -248,8 +248,8 @@ const text =
         "subtitle_wheelmode": "How scrolling events are interpreted:<br/>- Zoom: mousewheel<br/>- pan: for tablets and touchpads",
         "subtitle_panspeed": "Pan speed",
         "subtitle_keybind_escape": "Hotkey for opening op select",
-        "subtitle_escape_closetabs": "Escape closes main tab panel"
-
+        "subtitle_escape_closetabs": "Escape closes main tab panel",
+        "subtitle_ace_keymode": "keyboard mode"
     },
     "tips":
     [

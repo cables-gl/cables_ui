@@ -104,24 +104,6 @@ export default class EditorTab extends Events
                             this.save();
                         });
                     });
-
-                    // editor.commands.addCommand({
-                    //     "name": ":write",
-                    //     "exec": (env, args, request) =>
-                    //     {
-                    //         this.save();
-                    //     }
-                    // });
-
-                    console.log(editor);
-                    // editor.config.loadModule("ace/keyboard/vim", function (module)
-                    // {
-                    //     let VimApi = module.CodeMirror.Vim;
-                    //     VimApi.defineEx("write", "w", function (cm, input)
-                    //     {
-                    //         this.save()
-                    //     });
-                    // });
                 }
 
                 if (this._options.allowEdit)
@@ -130,6 +112,7 @@ export default class EditorTab extends Events
                     {
                         this.save();
                     });
+
                     let hideFormatButton = !!this._options.hideFormatButton;
                     if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
                     else hideFormatButton = true;
