@@ -218,6 +218,9 @@ export default class ModalDialog extends Events
         }
     }
 
+    /**
+     * @param {string} h
+     */
     updateHtml(h)
     {
         this._options.html = h;
@@ -231,7 +234,6 @@ export default class ModalDialog extends Events
 
     show()
     {
-        // this._eleBg.style.display = "block";
         this._bg.show();
 
         this._ele = document.createElement("div");

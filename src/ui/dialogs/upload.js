@@ -40,6 +40,9 @@ export default class FileUploader
         document.body.removeEventListener("dragleave", this._uploadDragLeaveListener);
     }
 
+    /**
+     * @param {DragEvent} event
+     */
     uploadDragOver(event)
     {
         if (gui.isRemoteClient) return;
@@ -77,6 +80,9 @@ export default class FileUploader
         event.stopPropagation();
     }
 
+    /**
+     * @param {File} file
+     */
     uploadFile(file, filename = null, opId = null, next = null)
     {
         if (gui.isRemoteClient) return;

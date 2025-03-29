@@ -72,6 +72,9 @@ export default class EditorTab extends Events
         if (options.hasOwnProperty("content")) this.setContent(options.content);
     }
 
+    /**
+     * @param {string} content
+     */
     setContent(content, silent = false)
     {
         content = content || "";
@@ -89,12 +92,27 @@ export default class EditorTab extends Events
                 editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
                 editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
 
+                if (gui.userSettings.get("ace_keymode"))
+                {
+                    editor.setKeyboardHandler(gui.userSettings.get("ace_keymode"));
+
+                    ace.config.loadModule("ace/keyboard/vim", (module) =>
+                    {
+                        let VimApi = module.CodeMirror.Vim;
+                        VimApi.defineEx("write", "w", (cm, input) =>
+                        {
+                            this.save();
+                        });
+                    });
+                }
+
                 if (this._options.allowEdit)
                 {
                     if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(text.editorSaveButton, () =>
                     {
                         this.save();
                     });
+
                     let hideFormatButton = !!this._options.hideFormatButton;
                     if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
                     else hideFormatButton = true;

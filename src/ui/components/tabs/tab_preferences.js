@@ -5,6 +5,7 @@ import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /**
  * show user editor preferences, stored in {@link UserSettings}
@@ -14,6 +15,10 @@ import { userSettings } from "../usersettings.js";
  */
 export default class Preferences
 {
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
         this._tab = new Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
@@ -104,6 +109,9 @@ export default class Preferences
 
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
         this.setInputValue("authorName", userSettings.get("authorName") || "");
+        this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
+
+        this.setSwitchValue("ace_keymode", userSettings.get("ace_keymode") || "");
 
         if (platform.frontendOptions.selectableDownloadPath)
         {
