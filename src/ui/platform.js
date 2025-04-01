@@ -489,12 +489,19 @@ export class Platform extends Events
             const importUrl = platform.getCablesUrl() + "/mydata#import";
             const quotaOverviewUrl = platform.getCablesUrl() + "/mydata";
 
-            if (gui.user.supporterFeatures.includes("full_project_backup"))
+            if (gui.user.supporterFeatures.includes("full_project_backup") || gui.user.supporterFeatures.includes("overquota_full_project_backup"))
             {
+                let modalText = "Enter a name for the backup";
+                if (gui.user.supporterFeatures.includes("overquota_full_project_backup"))
+                {
+                    modalText = "You are currently using all of your <a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage space</a>. Upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
+                    modalText += "To free space your oldest backup will automatically be deleted, automatic backups are currently disabled!<br/><br/>";
+                    modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
+                }
                 const backupModalOptions = {
                     "prompt": true,
                     "title": "Patch Backup",
-                    "text": "Enter a name for the backup",
+                    "text": modalText,
                     "notices": modalNotices,
                     "promptValue": "Manual Backup",
                     "promptOk": (title) =>
@@ -527,16 +534,6 @@ export class Platform extends Events
                     new ModalDialog(backupModalOptions);
                 }
 
-            }
-            else if (gui.user.supporterFeatures.includes("overquota_full_project_backup"))
-            {
-                let modalText = "You are currently using all of your<a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage space</a>, upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
-                modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
-                new ModalDialog({
-                    "title": "Patch Backup",
-                    "text": modalText,
-                    "showOkButton": true
-                });
             }
             else
             {
