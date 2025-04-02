@@ -130,6 +130,7 @@ const defaultOpNames =
  * default ops structure for assets, ports, math operations etc.
  */
 const defaultOps = {
+    "newOpNameSuggestion": "MyAwesomeOpName",
     "defaultOpNames": defaultOpNames,
     "prefixes": {
         "op": "Ops.",
