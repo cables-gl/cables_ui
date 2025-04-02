@@ -811,6 +811,7 @@ export default class ServerOps
      */
     opNameDialog(options, cb)
     {
+        const newName = options.sourceOpName || options.shortName;
         let opTargetDir = null;
         const _checkOpName = () =>
         {
@@ -826,7 +827,7 @@ export default class ServerOps
 
             const checkNameRequest = {
                 "namespace": options.suggestedNamespace,
-                "v": options.sourceOpName,
+                "v": newName,
                 "sourceName": options.sourceOpName,
                 "rename": options.rename
             };
