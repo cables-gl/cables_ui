@@ -1,3 +1,5 @@
+import { CgContext } from "cables/src/core/cg/cg_state.js";
+import { CglContext } from "cables";
 import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 
@@ -65,7 +67,7 @@ export default class TransformsOverlay
 
     /**
      * Description
-     * @param {CABLES.CGState} cgl
+     * @param {CgContext|CglContext} cgl
      * @param {string} id
      * @param {number} x
      * @param {number} y

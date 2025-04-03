@@ -148,6 +148,7 @@ export default class Gui extends Events
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
 
         /** @type {UiPatch} */
+        // @ts-ignore
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
@@ -230,6 +231,7 @@ export default class Gui extends Events
         this._currentProject = null;
 
         this.currentModal = null;
+        // @ts-ignore
         gui = window.gui = this;
     }
 

@@ -1,3 +1,4 @@
+import { Port } from "cables";
 import { portType } from "../../core_constants.js";
 import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
@@ -80,6 +81,10 @@ class PortHtmlGenerator
         return this._templateHead(o, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
+    /**
+     * @param {string} dir
+     * @param {string} title
+     */
     getHtmlHeaderPorts(dir, title)
     {
         return this._templatePortsHead({
@@ -89,6 +94,9 @@ class PortHtmlGenerator
         }, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
+    /**
+     * @param {Array<Port>} ports
+     */
     getHtmlInputPorts(ports)
     {
         let html = "";
