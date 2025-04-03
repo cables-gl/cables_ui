@@ -96,6 +96,7 @@ class PortHtmlGenerator
 
     /**
      * @param {Array<Port>} ports
+     * @returns {string}
      */
     getHtmlInputPorts(ports)
     {
@@ -144,6 +145,10 @@ class PortHtmlGenerator
         return html;
     }
 
+    /**
+     * @param {Array<Port>} ports
+     * @returns {string}
+     */
     getHtmlOutputPorts(ports)
     {
         let lastGroup = null;
