@@ -673,4 +673,9 @@ export class Platform extends Events
     {
         return gui.patchView.store.isSaving;
     }
+
+    getDefaultOpName()
+    {
+        return defaultOps.newOpNameSuggestion;
+    }
 }

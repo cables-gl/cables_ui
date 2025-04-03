@@ -197,4 +197,9 @@ export default class PlatformElectron extends Platform
     {
         return false;
     }
+
+    getDefaultOpName()
+    {
+        return this.getPatchOpsNamespace() + super.getDefaultOpName();
+    }
 }

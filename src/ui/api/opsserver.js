@@ -954,7 +954,7 @@ export default class ServerOps
         if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
         html += "New op name:<br/><br/>";
-        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
+        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"" + platform.getDefaultOpName() + "\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
         html += "&nbsp;";
         html += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
         html += "</div><br/><br/>";
@@ -1181,7 +1181,7 @@ export default class ServerOps
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": name || "MyAwesomeOpName",
+            "shortName": name || platform.getDefaultOpName(),
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
