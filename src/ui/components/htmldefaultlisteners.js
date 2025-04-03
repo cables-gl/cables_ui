@@ -124,7 +124,7 @@ export default function setHtmlDefaultListeners()
         if (gui && !document.hidden)
         {
             gui.setLayout();
-            gui.patchView.store.checkUpdated();
+            gui.patchView.store.checkUpdated(null, false, true);
         }
     }, false);
 
@@ -133,7 +133,7 @@ export default function setHtmlDefaultListeners()
         if (gui && !document.hidden)
         {
             gui.setLayout();
-            gui.patchView.store.checkUpdated();
+            gui.patchView.store.checkUpdated(null, false, true);
         }
     });
 }
