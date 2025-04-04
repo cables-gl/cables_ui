@@ -24,6 +24,10 @@ export function handleBarPrecompiled(name)
     return p;
 }
 
+/**
+ * @param {string} name
+ * @param {object} obj
+ */
 export function getHandleBarHtml(name, obj)
 {
     let perf;

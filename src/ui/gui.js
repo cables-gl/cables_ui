@@ -1,4 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
+import { CgShader } from "cables/src/core/cg/cg_shader.js";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -147,6 +148,7 @@ export default class Gui extends Events
         if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
 
         /** @type {UiPatch} */
+        // @ts-ignore
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>
@@ -160,12 +162,6 @@ export default class Gui extends Events
 
                 this.corePatch().logStartup("Patch loaded");
             });
-
-        // this._corePatch.on("opcrash", (portTriggered) =>
-        // {
-        //     this.showOpCrash(portTriggered.op);
-        // });
-
         this.on("libLoadError",
 
             (/** @type {String} */ libName) =>
@@ -176,7 +172,7 @@ export default class Gui extends Events
         this.on("ShaderError",
 
             /**
-             * @param {CABLES.CgShader} shader
+             * @param {CgShader} shader
              */
             (shader) =>
             {
@@ -235,6 +231,7 @@ export default class Gui extends Events
         this._currentProject = null;
 
         this.currentModal = null;
+        // @ts-ignore
         gui = window.gui = this;
     }
 
@@ -1271,7 +1268,7 @@ export default class Gui extends Events
     }
 
     /**
-     * @param {String} projectId
+     * @param {String} _projectId
      * @param {String} fileId
      * @param {String} converterId
      */
@@ -1377,6 +1374,7 @@ export default class Gui extends Events
                 ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/issues", "_blank"); });
                 ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
+                if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
             });
         });
 
@@ -2173,10 +2171,12 @@ export default class Gui extends Events
         document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
     }
 
+    /**
+     * @param {object} u
+     */
     setUser(u)
     {
         this.user = u;
-        if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
     }
 
     initCoreListeners()

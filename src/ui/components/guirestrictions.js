@@ -38,7 +38,7 @@ export default class GuiRestrictions
      * @param {String} id
      * @param {String} msg
      */
-    setMessage(id, msg)
+    setMessage(id, msg = null)
     {
         if (!msg)
         {
