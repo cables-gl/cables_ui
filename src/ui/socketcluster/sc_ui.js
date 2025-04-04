@@ -67,9 +67,11 @@ export default class ScUi
                 };
                 new ModalDialog(modalOptions);
             }
-            else
+            else if (data.updated)
             {
-                gui.patchView.store.setServerDate(data.updated);
+                const serverDate = moment(data.updated);
+                const localDate = moment(gui.patchView.store.getServerDate());
+                if (serverDate.isAfter(localDate)) gui.patchView.store.setServerDate(data.updated);
             }
         }
         else

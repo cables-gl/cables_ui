@@ -49,6 +49,11 @@ export default class PatchSaveServer extends Events
         this._serverDate = d;
     }
 
+    getServerDate()
+    {
+        return this._serverDate;
+    }
+
     checkUpdatedSaveForce(updated)
     {
         this.setServerDate(updated);
