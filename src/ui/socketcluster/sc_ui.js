@@ -13,6 +13,22 @@ export default class ScUi
 
     _registerEventListeners()
     {
+        if (!this._connection) return;
+
+        if (gui.isRemoteClient)
+        {
+            this._connection.on("createdSubPatchOp", (_msg) =>
+            {
+                platform.talkerAPI.send("reload");
+            });
+        }
+        else
+        {
+            gui.on("createdSubPatchOp", (newOp, subPatchId) =>
+            {
+                this._connection.sendControl("createdSubPatchOp", { "opId": newOp.opId, "opName": newOp.objName, "subPatchId": subPatchId });
+            });
+        }
         this._connection.on("onInfoMessage", (payload) =>
         {
             const data = payload.data;
@@ -46,8 +62,7 @@ export default class ScUi
                 opNames += gui.serverOps.opIdsChangedOnServer[i].opName + " ";
             }
 
-            gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"button\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
-
+            if (!gui.isRemoteClient) gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"button\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
         }
     }
 

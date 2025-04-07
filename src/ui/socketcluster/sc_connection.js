@@ -792,6 +792,10 @@ export default class ScConnection extends Events
             if (msg.clientId === this._socket.clientId) return;
             this.emitEvent("reloadOp", msg);
         }
+        if (msg.name === "createdSubPatchOp")
+        {
+            this.emitEvent("createdSubPatchOp", msg);
+        }
     }
 
     _handleUiChannelMsg(msg)
