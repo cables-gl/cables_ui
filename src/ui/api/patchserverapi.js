@@ -601,6 +601,10 @@ export default class PatchSaveServer extends Events
                         {
                             this._log.warn("[save patch error] ", err.msg || err);
                         }
+                        else if (r && r.updated)
+                        {
+                            this.setServerDate(r.updated);
+                        }
 
                         gui.savedState.setSaved("patchServerApi", 0);
                         if (this._savedPatchCallback) this._savedPatchCallback();
