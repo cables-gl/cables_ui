@@ -118,7 +118,6 @@ export default class PatchSaveServer extends Events
             }
             else if (data.updated && (this._serverDate !== data.updated))
             {
-
                 const serverDate = moment(data.updated);
                 const localDate = moment(gui.patchView.store.getServerDate());
                 if (serverDate.isAfter(localDate))
@@ -141,7 +140,7 @@ export default class PatchSaveServer extends Events
                         gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                     }
                 }
-
+                if (cb)cb(null);
                 gui.jobs().finish("checkupdated");
             }
             else
@@ -600,6 +599,10 @@ export default class PatchSaveServer extends Events
                         if (err)
                         {
                             this._log.warn("[save patch error] ", err.msg || err);
+                        }
+                        else if (r && r.updated)
+                        {
+                            this.setServerDate(r.updated);
                         }
 
                         gui.savedState.setSaved("patchServerApi", 0);
