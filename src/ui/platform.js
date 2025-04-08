@@ -153,7 +153,7 @@ export class Platform extends Events
         {
             this._checkOfflineInterval = setInterval(() =>
             {
-                gui.patchView.store.checkUpdated(() => {}, false, true);
+                gui.patchView.store.checkUpdated(null, false, true);
             }, this._checkOfflineIntervalSeconds);
         }
     }
