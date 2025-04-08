@@ -461,9 +461,10 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                              */
                                                         } });
                                                 }
-
                                                 gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                 gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                                gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
+
                                             });
                                         });
                                 }, { "doNotExecute": true });
