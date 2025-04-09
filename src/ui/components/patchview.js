@@ -24,6 +24,7 @@ import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 import { UiPatch } from "../core_extend_patch.js";
+import namespaceutils from "../namespaceutils.js";
 
 /**
  * manage patch view and helper functions
@@ -1564,6 +1565,10 @@ export default class PatchView extends Events
 
         const ser = this.serializeOps(selectedOps);
         const ops = ser.ops;
+        ops.forEach((op) =>
+        {
+            op.objName = gui.serverOps.getOpNameByIdentifier(op.opId);
+        });
 
         const objStr = JSON.stringify({
             "ops": ops
@@ -1612,16 +1617,35 @@ export default class PatchView extends Events
 
         if (!pastedJson || !pastedJson.ops) return;
 
+        if (currentSubPatch)
+        {
+            const subOuter = gui.patchView.getSubPatchOuterOp(currentSubPatch);
+            if (subOuter && subOuter.objName)
+            {
+                for (let i = 0; i < pastedJson.ops.length; i++)
+                {
+                    const pastedOp = pastedJson.ops[i];
+                    if (pastedOp.objName)
+                    {
+                        const pasteProblem = namespaceutils.getNamespaceHierarchyProblem(subOuter.objName, pastedOp.objName);
+                        if (pasteProblem)
+                        {
+                            notifyError("Paste failed", pasteProblem, { "force": true });
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         let focusSubpatchop = null;
         gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
         {
             // change ids
             project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
-            // const outerOp = this.getSubPatchOuterOp(currentSubPatch);
             for (const i in project.ops)
             {
                 project.ops[i].uiAttribs.pasted = true;
-                // this.addBlueprintInfo(project.ops[i], outerOp);
             }
 
             { // change position of ops to paste
