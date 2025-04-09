@@ -10,7 +10,7 @@ import { UiOp } from "./core_extend_op.js";
 /**
  * @extends Patch<UiOp>
  */
-class UiPatch extends CABLES.Patch
+class UiPatch extends Patch
 {
     _opIdsToOps(opids)
     {

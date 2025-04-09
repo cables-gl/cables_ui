@@ -10,33 +10,25 @@ import { userSettings } from "../components/usersettings.js";
  */
 export function showShaderErrorCgp(shader, nfo, src)
 {
-    if (!shader.error)
-    {
-        console.log("shader has no erorr ?!");
-        return;
-    }
     const badLines = {};
     let infoLog = "";
+
     for (const msg of nfo.messages)
     {
         infoLog += msg.type + " at line " + msg.lineNum + ":" + msg.linePos + " :" + msg.message + "<br/>";
-        if (msg.type == "error")
-            badLines[msg.lineNum] = msg.lineNum;
+        if (msg.type == "error") badLines[msg.lineNum] = msg.lineNum;
     }
 
     const lines = src.split("\n");
-
     let htmlWarning = "<pre style=\"margin-bottom:0px;\"><code class=\"shaderErrorCode language-glsl\" style=\"padding-bottom:0px;max-height: initial;max-width: initial;\">";
 
-    console.log(lines);
     for (const i in lines)
     {
         const j = parseInt(i, 10) + 1;
         const line = j + ": " + lines[i];
 
         let isBadLine = false;
-        for (const bj in badLines)
-            if (badLines[bj] == j) isBadLine = true;
+        for (const bj in badLines) if (badLines[bj] == j) isBadLine = true;
 
         if (isBadLine)
         {
