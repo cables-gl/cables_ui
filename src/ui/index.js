@@ -62,7 +62,6 @@ CABLES.UI.DEFAULTOPNAMES = defaultOps.defaultOpNames;
 CABLES.UI.DEFAULTOPS = defaultOps;
 // expose global objects
 CABLES.contextMenu = contextMenu; // TODO: delete when old timeline is replaced
-CABLES.fileUploader = new FileUploader();
 CABLES.UI.Collapsable = Collapsable;
 
 CABLES.UI.TEXTS = text;

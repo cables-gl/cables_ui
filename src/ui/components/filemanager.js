@@ -845,13 +845,9 @@ export default class FileManager
                 gui.savedState.setSaved("editorOnChangeFile");
                 gui.jobs().finish("uploadfile" + filename);
                 gui.refreshFileManager();
-
                 if (cb)cb(err3, res3);
-
-                // setStatus("saved");
             }
         );
-        // });
     }
 
     replaceAssetPorts(search, replace, cb = null)
