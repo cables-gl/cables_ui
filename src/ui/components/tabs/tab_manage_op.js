@@ -205,6 +205,7 @@ export default class ManageOp
                         "readOnly": !canEditOp,
                         "user": gui.user,
                         "warns": res.warns,
+                        "visibilityString": res.visibilityString,
                         "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
                     });
 

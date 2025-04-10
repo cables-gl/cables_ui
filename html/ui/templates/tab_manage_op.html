@@ -12,6 +12,10 @@
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
         {{opname}}
+        {{#if visibilityString}}
+            <br/>{{{visibilityString}}}
+        {{/if}}
+
         {{#if opDoc.opDirFull}}
             <br/>
             <a class="link" onclick="CABLES.CMD.ELECTRON.openOpDir('{{opDoc.id}}', '{{opname}}')">{{opDoc.opDirFull}}</a>
