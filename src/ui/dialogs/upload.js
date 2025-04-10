@@ -162,8 +162,6 @@ export default class FileUploader
 
         if (files.length > 0)
         {
-            console.log("upload as", files[0].name, CABLES.reuploadName);
-
             const partsNew = files[0].name.split(".");
             const partsOld = CABLES.reuploadName.split(".");
 
@@ -188,7 +186,9 @@ export default class FileUploader
         gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
 
         for (let i = 0; i < files.length; i++)
+        {
             this.uploadFile(files[i], files[i].name, opName);
+        }
 
         gui.jobs().finish("prepareuploadfiles");
     }
@@ -222,5 +222,6 @@ export default class FileUploader
 /**
  * @type {FileUploader}
  */
-let fileUploader = new FileUploader();
+const fileUploader = new FileUploader();
+CABLES.fileUploader = fileUploader;
 export { fileUploader };

@@ -280,38 +280,6 @@ export default class PatchSaveServer extends Events
                 modalNotices.push(patchOpsText);
             }
 
-            if (gui.user && gui.user.supporterFeatures)
-            {
-                if (gui.user.supporterFeatures.includes("copy_assets_on_clone"))
-                {
-                    const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
-                    checkboxGroup.checkboxes.push({
-                        "name": "copy-assets-on-clone",
-                        "value": true,
-                        "title": "Copy used files to new patch"
-                    });
-                    checkboxGroup.checkboxes.push({
-                        "name": "copy-all-assets-on-clone",
-                        "value": true,
-                        "title": "Copy all files to new patch"
-                    });
-                    checkboxGroups.push(checkboxGroup);
-                    let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
-                    modalNotices.push(patchOpsText);
-                }
-                else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
-                {
-                    let patchOpsText = "You are out of storage space, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
-                    modalNotices.push(patchOpsText);
-                }
-                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
-                {
-                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
-                    modalNotices.push(patchOpsText);
-                }
-
-            }
-
             if (project.userId !== gui.user.id)
             {
                 let licenceText = "The author of the patch reserves all copyright on this work. Please respect this decision.";
@@ -334,7 +302,7 @@ export default class PatchSaveServer extends Events
             let patchName = gui.project().name;
             if (gui.corePatch() && gui.corePatch().name && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
 
-            new ModalDialog({
+            const saveAsModal = new ModalDialog({
                 "prompt": true,
                 "title": "Save As...",
                 "text": prompt,
@@ -398,7 +366,58 @@ export default class PatchSaveServer extends Events
                             }
                         });
                 }
-            });
+            }, false);
+
+            if (gui.user && gui.user.supporterFeatures)
+            {
+                if (gui.user.supporterFeatures.includes("copy_assets_on_clone"))
+                {
+                    platform.talkerAPI.send("getFilelist", { "source": "patch" }, (err, remoteFiles) =>
+                    {
+                        let numFiles = 0;
+                        if (!err && remoteFiles) numFiles = remoteFiles.filter((remoteFile) => { return !remoteFile.isLibraryFile; }).length;
+
+                        if (numFiles)
+                        {
+                            const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
+                            checkboxGroup.checkboxes.push({
+                                "name": "copy-assets-on-clone",
+                                "value": true,
+                                "title": "Copy used files to new patch"
+                            });
+                            checkboxGroup.checkboxes.push({
+                                "name": "copy-all-assets-on-clone",
+                                "value": true,
+                                "title": "Copy all files to new patch"
+                            });
+                            checkboxGroups.push(checkboxGroup);
+                            let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
+                            modalNotices.push(patchOpsText);
+                        }
+                        saveAsModal.show();
+                    });
+                }
+                else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "You are out of storage space, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
+                    modalNotices.push(patchOpsText);
+                    saveAsModal.show();
+                }
+                else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
+                {
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
+                    modalNotices.push(patchOpsText);
+                    saveAsModal.show();
+                }
+                else
+                {
+                    saveAsModal.show();
+                }
+            }
+            else
+            {
+                saveAsModal.show();
+            }
         });
     }
 

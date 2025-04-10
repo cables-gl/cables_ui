@@ -1490,7 +1490,7 @@ export default class Gui extends Events
             ele.byId("nav_uploadfile").classList.add("nav-greyout");
 
             ele.byId("nav_createBackup").classList.add("nav-greyout");
-            ele.byId("nav_patch_settings").classList.add("nav-greyout");
+            // ele.byId("nav_patch_settings").classList.add("nav-greyout");
             ele.byId("nav_viewBackups").classList.add("nav-greyout");
             ele.byId("nav_patch_save").classList.add("nav-greyout");
         }

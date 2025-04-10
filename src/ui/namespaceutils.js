@@ -183,6 +183,44 @@ class namespace
         const parts = opname.split(".");
         return parts.length < 5;
     }
+
+    getNamespaceHierarchyProblem(outerName, innerName)
+    {
+        if (!outerName || !innerName) return "Unknown op";
+        if (this.getNamespace(innerName).startsWith(this.getNamespace(outerName)) || this.getNamespace(outerName).startsWith(this.getNamespace(innerName))) return false;
+
+        if (this.isCoreOp(outerName))
+        {
+            if (this.isExtensionOp(innerName)) return "(SubpatchOp) Core ops cannot contain extension ops.";
+            if (this.isTeamOp(innerName)) return "(SubpatchOp) Core ops cannot contain team ops.";
+            if (this.isUserOp(innerName)) return "(SubpatchOp) Core ops cannot contain user ops.";
+            if (this.isPatchOp(innerName)) return "(SubpatchOp) Core ops cannot contain patch ops.";
+        }
+        else if (this.isExtensionOp(outerName))
+        {
+            if (this.isTeamOp(innerName)) return "(SubpatchOp) Extension ops cannot contain team ops.";
+            if (this.isUserOp(innerName)) return "(SubpatchOp) Extension ops cannot contain user ops.";
+            if (this.isPatchOp(innerName)) return "(SubpatchOp) Extension ops cannot contain patch ops.";
+        }
+        else if (this.isTeamOp(outerName))
+        {
+            if (this.isTeamOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) Team ops cannot contain ops of other teams.";
+            if (this.isUserOp(innerName)) return "(SubpatchOp) Team ops cannot contain user ops.";
+            if (this.isPatchOp(innerName)) return "(SubpatchOp) Team ops cannot contain patch ops.";
+        }
+        else if (this.isUserOp(outerName))
+        {
+            if (this.isUserOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) User ops cannot contain ops of other users.";
+            if (this.isPatchOp(innerName)) return "(SubpatchOp) User ops cannot contain patch ops.";
+        }
+        else if (this.isPatchOp(outerName))
+        {
+            // valid in editor, since they will be renamed
+            // if (this.isPatchOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) Patch ops cannot contain ops of other patches.";
+        }
+
+        return false;
+    }
 }
 
 export default new namespace();

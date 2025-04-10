@@ -483,7 +483,7 @@ export class Platform extends Events
         const backupOptions = { "title": name || "" };
 
         const modalNotices = [];
-        if (gui && gui.user && gui.user.supporterFeatures && !this.patchIsBackup())
+        if (gui && gui.user && platform.isTrustedPatch() && gui.user.supporterFeatures && !this.patchIsBackup())
         {
             const exportUrl = platform.getCablesUrl() + "/export/" + gui.patchId + "#patch";
             const importUrl = platform.getCablesUrl() + "/mydata#import";

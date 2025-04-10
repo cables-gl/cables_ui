@@ -120,7 +120,6 @@ export default function setHtmlDefaultListeners()
 
     document.addEventListener("visibilitychange", function ()
     {
-        console.log("vischange");
         if (gui && !document.hidden)
         {
             gui.setLayout();
