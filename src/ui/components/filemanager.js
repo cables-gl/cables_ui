@@ -461,7 +461,7 @@ export default class FileManager
                             "source": this._fileSource,
                             "isEditable": editable,
                             "assetPath": assetPath,
-                            "isPlatformCommunity": platform.hasCommunity,
+                            "isPlatformCommunity": platform.frontendOptions.hasCommunity,
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
@@ -894,7 +894,7 @@ export default class FileManager
             {
                 if (res && res.converterResult && res.converterResult.sourceUrl && res.converterResult.targetUrl)
                 {
-                    this.replacePorts(res.converterResult.sourceUrl, res.converterResult.targetUrl, (numPorts) =>
+                    this.replaceAssetPorts(res.converterResult.sourceUrl, res.converterResult.targetUrl, (numPorts) =>
                     {
                         notify("Copied file, updated " + numPorts + " ports");
                     });
