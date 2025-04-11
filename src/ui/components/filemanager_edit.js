@@ -30,6 +30,7 @@ export default class FileManagerEditor
             url = platform.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
         }
 
+        if (!syntax) syntax = "text";
         if (syntax == "javascript")syntax = "js";
         if (syntax == "shader")syntax = "glsl";
 
@@ -46,7 +47,7 @@ export default class FileManagerEditor
                         "title": name,
                         "content": _data,
                         "editorObj": editorObj,
-                        "syntax": syntax,
+                        "syntax": syntax.toLowerCase(),
                         "onClose": function (which)
                         {
                             if (editorSession) editorSession.remove(editorObj.type, editorObj.name);
