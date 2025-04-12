@@ -119,6 +119,7 @@ const text =
     "filemanager_file_create": "Create a file",
     "filemanager_reupload": "Replace contents of this file",
     "filemanager_copy_file_url": "Copy file URL",
+    "filemanager_edit_file": "Edit file",
 
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",

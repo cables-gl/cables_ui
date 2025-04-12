@@ -1,7 +1,7 @@
 
 <script id="tab_manage_op" type="text/x-handlebars-template">
 
-    <div class="tabContentScrollContainer">
+    <div class="tabContentScrollContainer tabManageOp">
 
         <br>
         {{#if opLayoutSvg}}
@@ -11,10 +11,7 @@
         {{/if}}
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
-        {{opname}}
-        {{#if visibilityString}}
-            <br/>{{{visibilityString}}}
-        {{/if}}
+        {{opname}}{{#if visibilityString}}<span class="visibilityString"> - {{{visibilityString}}}</span>{{/if}}
 
         {{#if opDoc.opDirFull}}
             <br/>
