@@ -191,29 +191,40 @@ export class GlTimeline extends Events
         gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
-        gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.view.centerCursor();
+        });
+        gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
+        {
             if (this.getNumSelectedKeys() > 1)
-                this.centerSelection();
+            {
+                this.zoomToFitSelection();
+            }
+            else
+            {
+                this.selectAllKeys();
+                this.zoomToFitSelection();
+                this.unSelectAllKeys();
+            }
         });
 
-        gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, () =>
         {
             this.jumpKey(-1);
         });
-        gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, () =>
         {
             this.jumpKey(1);
         });
 
-        gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
             this.needsUpdateAll = true;
         });
 
-        gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
             this.needsUpdateAll = true;
@@ -226,7 +237,6 @@ export class GlTimeline extends Events
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
         {
-
             let selops = gui.patchView.getSelectedOps();
 
             if (selops.length == 0) return;
@@ -299,7 +309,6 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
-        // this.updateAllElements();
         this.needsUpdateAll = true;
     }
 
@@ -369,11 +378,6 @@ export class GlTimeline extends Events
 
         if (event.buttons == 1)
         {
-
-            // if (this.getNumSelectedKeys() > 0 && !this.selectRect)
-            // {
-            //     return;
-            // }
             if (this.hoverKeyRect && !this.selectRect)
             {
                 console.log("hoverKeyRect");
@@ -386,7 +390,6 @@ export class GlTimeline extends Events
                     {
                         console.log("rsrrrrrrrrrrrrrrrrrr");
                         this.unSelectAllKeys();
-
                     }
 
                     this.selectRect = {
@@ -404,16 +407,14 @@ export class GlTimeline extends Events
 
             this.updateAllElements();
 
-            // console.log(this.getNumSelectedKeys() + "keys selected");
-            if (this.getNumSelectedKeys() > 0)
-            {
-                this.showKeyParams();
-            }
+            if (this.getNumSelectedKeys() > 0) this.showKeyParams();
+
         }
         else
         if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 2, 0);
+            this.view.scroll(-this.view.pixelToTime(event.movementX) * 12);
+            this.view.scrollY(event.movementY);
             this.updateAllElements();
         }
         else
@@ -421,12 +422,6 @@ export class GlTimeline extends Events
             this.#lastXnoButton = x;
             this.#lastYnoButton = y;
         }
-    }
-
-    unSelectAllKeys()
-    {
-        this.#selectedKeys = [];
-        this.#selectedKeyAnims = [];
     }
 
     /**
@@ -536,20 +531,20 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
+    unSelectAllKeys()
+    {
+        this.#selectedKeys = [];
+        this.#selectedKeyAnims = [];
+    }
+
     selectAllKeys()
     {
-        console.log("rsneisrneisr");
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
-            console.log("rsneisrneisr", this.#tlAnims.length);
-
             for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
             {
-                console.log("nununu", this.#tlAnims[i].anims.length);
                 for (let k = 0; k < this.#tlAnims[i].anims[j].keys.length; k++)
                 {
-                    console.log("tntntn", this.#tlAnims[i].anims[j].keys.length);
-
                     this.selectKey(this.#tlAnims[i].anims[j].keys[k], this.#tlAnims[i].anims[j]);
                 }
             }
@@ -567,7 +562,6 @@ export class GlTimeline extends Events
             undo()
             {
                 gltl.deserializeKeys(oldKeys);
-
             },
             redo()
             {
@@ -594,7 +588,6 @@ export class GlTimeline extends Events
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
         }
-
     }
 
     /**
@@ -868,11 +861,12 @@ export class GlTimeline extends Events
         }
     }
 
-    centerSelection()
+    zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
+        this.view.scrollToY(0);
     }
 
     showKeyParams()
@@ -894,7 +888,7 @@ export class GlTimeline extends Events
         });
         ele.clickable(ele.byId("keysfit"), () =>
         {
-            this.centerSelection();
+            this.zoomToFitSelection();
         });
 
         ele.clickable(ele.byId("keysdelete"), () =>

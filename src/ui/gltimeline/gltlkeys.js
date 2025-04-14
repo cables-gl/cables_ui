@@ -54,6 +54,8 @@ export class glTlKeys extends Events
     #options = {};
 
     #dragStarted = false;
+
+    /** @type {glTlAnimLine} */
     #animLine = null;
     #dragStartX = 0;
     #dragStartY = 0;
@@ -297,7 +299,7 @@ export class glTlKeys extends Events
 
         }
 
-        const y = this.valueToPixel(0) + this.#parentRect.absY;
+        const y = this.valueToPixel(0) + this.#parentRect.absY - this.#glTl.view.offsetY;
 
         if (this.#zeroSpline)
             this.#zeroSpline.setPoints([0, y, -0.1,
@@ -459,7 +461,7 @@ export class glTlKeys extends Events
      */
     valueToPixel(v)
     {
-        return this.#parentRect.h - CABLES.map(v, this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2);
+        return this.#parentRect.h - CABLES.map(v, this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2) - this.#glTl.view.offsetY;
     }
 
     reset()

@@ -110,7 +110,7 @@ export class glTlAnimLine extends Events
         this.#glRectTitle.setColor(0, 0, 0);
         this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
         {
-            gui.patchView.focusOp(this.#ops[0].id);
+            if (this.#ops.length > 0)gui.patchView.focusOp(this.#ops[0].id);
         });
         this.#disposeRects.push(this.#glRectTitle);
 
