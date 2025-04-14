@@ -170,7 +170,7 @@ export class glTlAnimLine extends Events
 
         if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
-            this.#glTitle.setColor(this.#glTl.getColorSpecial());
+            this.#glTitle.setColorArray(this.#glTl.getColorSpecial());
             this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
         }
     }

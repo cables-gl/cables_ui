@@ -58,7 +58,7 @@ export default class GlArea
         this._rectResize = this._instancer.createRect({ "draggable": true });
         this._rectResize.setShape(2);
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
-        this._rectResize.setColor([0, 0, 0, 0.2]);
+        this._rectResize.setColor(0, 0, 0, 0.2);
         this._rectResize.setPosition(200 - this.resizeCornerSize, 200 - this.resizeCornerSize);
         this._rectResize.draggable = true;
         this._rectResize.draggableMove = true;
@@ -141,7 +141,7 @@ export default class GlArea
             cols[3] = 0.1;
             this._rectBg.setColor(cols);
         }
-        else this._rectBg.setColor([0, 0, 0, 0.08]);
+        else this._rectBg.setColor(0, 0, 0, 0.08);
     }
 
     dispose()

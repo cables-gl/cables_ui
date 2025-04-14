@@ -28,7 +28,7 @@ export default class GlSelectionArea
 
     updateTheme()
     {
-        this._selectRect.setColor(gui.theme.colors_patch.patchSelectionArea);
+        this._selectRect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
     }
 
     get w() { return this._w; }
@@ -45,9 +45,13 @@ export default class GlSelectionArea
         this._w = this._h = 0;
     }
 
+    /**
+     * @param {number[]} rgba
+     */
     setColor(rgba)
+
     {
-        this._selectRect.setColor(rgba);
+        this._selectRect.setColorArray(rgba);
     }
 
     isVisible()

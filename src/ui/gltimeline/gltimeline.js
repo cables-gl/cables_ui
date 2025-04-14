@@ -20,6 +20,7 @@ import undo from "../utils/undo.js";
 /**
  * @typedef TlConfig
  * @property {Number} fps
+ * @property {Number} duration
  * @property {Number} bpm
  * @property {Boolean} fadeInFrames
  * @property {Boolean} showBeats
@@ -264,7 +265,7 @@ export class GlTimeline extends Events
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
-        this.#rectSelect.setColor(gui.theme.colors_patch.patchSelectionArea);
+        this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
 
         this._initUserPrefs();
     }
@@ -347,7 +348,7 @@ export class GlTimeline extends Events
     setColorRectSpecial(rect)
     {
         if (rect)
-            rect.setColor(this.getColorSpecial());
+            rect.setColorArray(this.getColorSpecial());
     }
 
     /**
@@ -386,11 +387,7 @@ export class GlTimeline extends Events
             {
                 if (y > this.getFirstLinePosy())
                 {
-                    if (!event.shiftKey)
-                    {
-                        console.log("rsrrrrrrrrrrrrrrrrrr");
-                        this.unSelectAllKeys();
-                    }
+                    if (!event.shiftKey) this.unSelectAllKeys();
 
                     this.selectRect = {
                         "x": Math.min(this.#lastXnoButton, x),
@@ -622,6 +619,9 @@ export class GlTimeline extends Events
         this.#rectSelect.setSize(0, 0);
     }
 
+    /**
+     * @param {WheelEvent} event
+     */
     _onCanvasWheel(event)
     {
 

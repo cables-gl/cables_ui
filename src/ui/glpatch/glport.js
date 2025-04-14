@@ -200,7 +200,7 @@ export default class GlPort
         if (this._glPatch.vizFlowMode == 0)act = 10;
 
         const col = GlPort.getColor(this._type, hover, false, act);
-        this._rect.setColor(col);
+        this._rect.setColorArray(col);
 
         if (this._port.uiAttribs.addPort) this._rect.setOpacity(0.7);
         else this._rect.setOpacity(1);

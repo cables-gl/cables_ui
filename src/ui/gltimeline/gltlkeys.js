@@ -180,7 +180,7 @@ export class glTlKeys extends Events
                 col = [1, 1, 0, 1];
             }
 
-            kr.setColor(col);
+            kr.setColorArray(col);
 
             if (this.#options.keyYpos)
             {

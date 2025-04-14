@@ -221,7 +221,7 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {number|Array} r
+     * @param {number} r
      * @param {number} g
      * @param {number} b
      * @param {number} a=1
@@ -229,8 +229,24 @@ export default class GlRect extends Events
     setColor(r, g = 1, b = 1, a = 1)
     {
         if (r === undefined)r = g = b = a = 1.0;
-        if (r.length) vec4.set(this.color, r[0], r[1], r[2], r[3]);
-        else vec4.set(this.color, r, g, b, a);
+        if (r.length)
+        {
+
+            CABLES.logStack();
+            vec4.set(this.color, r[0], r[1], r[2], r[3]);
+        }
+        else
+            vec4.set(this.color, r, g, b, a);
+        this.#rectInstancer.setColor(this.#attrIndex, this.color);
+    }
+
+    /**
+     * @param {number[]} arr
+     */
+    setColorArray(arr)
+    {
+        if (arr.length == 3)arr[3] = 1;
+        vec4.set(this.color, arr[0], arr[1], arr[2], arr[3]);
         this.#rectInstancer.setColor(this.#attrIndex, this.color);
     }
 
