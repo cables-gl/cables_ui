@@ -1,6 +1,7 @@
 import { Events, Logger } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 import { GlTimeline } from "./gltimeline.js";
+import GlRect from "../gldraw/glrect.js";
 
 /**
  * gltl ruler display
@@ -28,8 +29,15 @@ export class glTlRuler extends Events
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this._glRectBg.setPosition(0, this.y);
 
-        this._glRectBg.on("drag", (r, ox, oy, button, event) =>
+        this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {
+            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
+        });
+
+        this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
+        {
+            console.log("mousdown");
+            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
 
         });
 

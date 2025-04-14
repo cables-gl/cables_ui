@@ -194,6 +194,8 @@ export class GlTimeline extends Events
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, (e) =>
         {
             this.view.centerCursor();
+            if (this.getNumSelectedKeys() > 1)
+                this.centerSelection();
         });
 
         gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, (e) =>
@@ -381,7 +383,11 @@ export class GlTimeline extends Events
                 if (y > this.getFirstLinePosy())
                 {
                     if (!event.shiftKey)
+                    {
+                        console.log("rsrrrrrrrrrrrrrrrrrr");
                         this.unSelectAllKeys();
+
+                    }
 
                     this.selectRect = {
                         "x": Math.min(this.#lastXnoButton, x),
@@ -394,10 +400,6 @@ export class GlTimeline extends Events
 
                 }
 
-                if (y < this.getFirstLinePosy())
-                {
-                    gui.corePatch().timer.setTime(this.snapTime(this.view.pixelToTime(event.offsetX - this.titleSpace) + this.view.offset));
-                }
             }
 
             this.updateAllElements();
@@ -531,7 +533,7 @@ export class GlTimeline extends Events
             min = Math.min(min, this.#selectedKeys[i].time);
             max = Math.max(max, this.#selectedKeys[i].time);
         }
-        return { "min": min, "max": max };
+        return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
     selectAllKeys()
@@ -604,7 +606,8 @@ export class GlTimeline extends Events
 
         if (!this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
-                this.unSelectAllKeys();
+                if (e.offsetY > this.getFirstLinePosy())
+                    this.unSelectAllKeys();
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
@@ -865,12 +868,20 @@ export class GlTimeline extends Events
         }
     }
 
+    centerSelection()
+    {
+        const bounds = this.getSelectedKeysBoundsTime();
+        this.view.setZoomLength(bounds.length + 1);
+        this.view.scrollTo(bounds.min - 0.5);
+    }
+
     showKeyParams()
     {
 
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
+                "timeBounds": this.getSelectedKeysBoundsTime()
             });
 
         gui.opParams.clear();
@@ -880,6 +891,10 @@ export class GlTimeline extends Events
         ele.clickable(ele.byId("keyscopy"), () =>
         {
             this.copy(new ClipboardEvent("copy"));
+        });
+        ele.clickable(ele.byId("keysfit"), () =>
+        {
+            this.centerSelection();
         });
 
         ele.clickable(ele.byId("keysdelete"), () =>

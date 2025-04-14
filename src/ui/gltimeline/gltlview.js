@@ -80,6 +80,10 @@ export class GlTlView
         return this.pixelToTime(this.#tl.width - this.#tl.titleSpace) + this.offset;
     }
 
+    /**
+     * @param {number} delta
+     * @param {number} dur
+     */
     setZoomOffset(delta, dur = 0.3)
     {
         let zoom = this.#zoom * delta;
@@ -147,6 +151,18 @@ export class GlTlView
     pixelScreenToTime(x)
     {
         return this.pixelToTime(x - this.#tl.titleSpace);
+    }
+
+    /**
+     * @param {number} len
+     */
+    setZoomLength(len)
+    {
+        let zoom = this.#tl.duration / len;
+        let zoomtitle = this.pixelToTime(this.#tl.titleSpace) / this.#tl.duration;
+        let dur = 0.3;
+        this.#animZoom.clear(this.#timer.getTime());
+        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom - zoomtitle);
     }
 
     updateAnims()
