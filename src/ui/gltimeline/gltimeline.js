@@ -20,7 +20,7 @@ import undo from "../utils/undo.js";
 /**
  * @typedef TlConfig
  * @property {Number} fps
- * @property {Number} duration
+ * @property {Number} [duration]
  * @property {Number} bpm
  * @property {Boolean} fadeInFrames
  * @property {Boolean} showBeats

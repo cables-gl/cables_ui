@@ -163,9 +163,7 @@ export default class GlOp extends Events
         this._titleExtPort = null;
         this._titleExtPortListener = null;
 
-        /**
-         * @type GlText
-         */
+        /** @type GlText */
         this._titleExt = null;
         this._glRectNames.push("_titleExt");
 
@@ -448,9 +446,11 @@ export default class GlOp extends Events
         }
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onMouseDown(e)
     {
-        CABLES.mouseButtonWheelDown = false;
         if (gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (!this._op)
