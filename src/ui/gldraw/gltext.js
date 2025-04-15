@@ -133,10 +133,25 @@ export default class GlText
     setColor(r, g = 1, b = 1, a = 1)
     {
         if (r === undefined)r = g = b = 1.0;
-        if (r.length) vec4.set(this._color, r[0], r[1], r[2], a);
+        if (r.length)
+        {
+            CABLES.logStack();
+            vec4.set(this._color, r[0], r[1], r[2], a);
+        }
         else vec4.set(this._color, r, g, b, a);
 
-        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColor(this._color);
+        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColorArray(this._color);
+    }
+
+    /**
+     * @param {number[]} r
+     */
+    setColorArray(r)
+    {
+        vec4.set(this._color, r[0], r[1], r[2], 1);
+
+        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColorArray(this._color);
+
     }
 
     rebuild()
@@ -186,7 +201,7 @@ export default class GlText
 
             rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0, posZ); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
-            rect.setColor(this._color);
+            rect.setColorArray(this._color);
 
             rect.setTexRect(
                 ch.x / 1024, ch.y / 1024, ch.width / 1024, ch.height / 1024);

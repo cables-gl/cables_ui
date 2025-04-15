@@ -79,7 +79,7 @@ export class glTlAnimLine extends Events
             this.#glTextSideValue.setParentRect(this.#glRectTitle);
             this.#disposeRects.push(this.#glTextSideValue);
 
-            this.#glRectKeysBg.on("pointerMove", (x, y) =>
+            this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
             {
                 this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#minVal, this.#maxVal) * 1000) / 1000);
                 this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y, -0.5);
@@ -108,9 +108,9 @@ export class glTlAnimLine extends Events
         }
         this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectTitle.setColor(0, 0, 0);
-        this.#glRectTitle.on("mousedown", () =>
+        this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
         {
-            gui.patchView.focusOp(this.#ops[0].id);
+            if (this.#ops.length > 0)gui.patchView.focusOp(this.#ops[0].id);
         });
         this.#disposeRects.push(this.#glRectTitle);
 
@@ -170,7 +170,7 @@ export class glTlAnimLine extends Events
 
         if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
-            this.#glTitle.setColor(this.#glTl.getColorSpecial());
+            this.#glTitle.setColorArray(this.#glTl.getColorSpecial());
             this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
         }
     }

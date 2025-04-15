@@ -5,3 +5,4 @@ declare const platformLib:any
 declare const loadjs:any
 declare const Handlebars:any
 declare const gui:any
+declare const chroma:any

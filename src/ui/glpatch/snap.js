@@ -106,7 +106,7 @@ export default class Snap extends Events
      * @param {boolean} force
      * @returns {Number}
      */
-    snapY(y, force)
+    snapY(y, force = false)
     {
         if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
         else return y;

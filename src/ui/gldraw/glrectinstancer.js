@@ -9,7 +9,7 @@ import { gui } from "../gui.js";
  * @typedef {Object} GlRectInstancerOptions
  * @property {String} [name]
  * @property {Number} [initNum]
- * @property {Number} [allowDragging]
+ * @property {boolean} [allowDragging]
  */
 
 /**

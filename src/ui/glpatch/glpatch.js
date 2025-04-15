@@ -1,4 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
+import { Anim } from "cables";
 import GlLinedrawer from "../gldraw/gllinedrawer.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -163,7 +164,8 @@ export default class GlPatch extends Events
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_LINEAR });
+        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_LINEAR });
+
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
@@ -786,12 +788,6 @@ export default class GlPatch extends Events
         this.emitEvent("mouseup", e);
 
         if (this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting) this._canvasMouseDownSelecting = false;
-
-        if (CABLES.mouseButtonWheelDown)
-        {
-            CABLES.mouseButtonWheelDown = false;
-            if (this._hoverOps.length == 0 && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
-        }
 
         if (this._dropInCircleLink)
         {

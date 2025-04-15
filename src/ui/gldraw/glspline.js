@@ -88,6 +88,15 @@ export default class GlSpline
         this.#splineDrawer.setSplineColor(this.#splineIdx, [r, g, b, a]);
     }
 
+    /**
+     * @param {number[]} arr
+     */
+    setColorArray(arr)
+    {
+        if (this.checkDisposed()) return;
+        this.#splineDrawer.setSplineColor(this.#splineIdx, arr);
+    }
+
     checkDisposed()
     {
         if (this.#disposed)console.log("disposed object...", this);

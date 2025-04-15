@@ -14,9 +14,13 @@ export class GlTlView
     /** @type {Anim} */
     #animScroll;
 
+    /** @type {Anim} */
+    #animScrollY;
+
     #zoom = 20;
 
     #offset = -0.1;
+    #offsetY = 0.0;
 
     #timer = new CABLES.Timer();
 
@@ -35,6 +39,9 @@ export class GlTlView
         this.#animScroll = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animScroll.setValue(0, this.#offset);
 
+        this.#animScrollY = new CABLES.Anim({ "defaultEasing": defaultEasing });
+        this.#animScrollY.setValue(0, this.#offsetY);
+
         this.#timer.play();
     }
 
@@ -52,6 +59,12 @@ export class GlTlView
     get offset()
     {
         return this.#offset;
+    }
+
+    /** @returns {number} */
+    get offsetY()
+    {
+        return this.#offsetY;
     }
 
     /** @returns {number} */
@@ -80,6 +93,10 @@ export class GlTlView
         return this.pixelToTime(this.#tl.width - this.#tl.titleSpace) + this.offset;
     }
 
+    /**
+     * @param {number} delta
+     * @param {number} dur
+     */
     setZoomOffset(delta, dur = 0.3)
     {
         let zoom = this.#zoom * delta;
@@ -118,11 +135,33 @@ export class GlTlView
     }
 
     /**
+     * @param {number} scrolly
+     * @param {number} duration=0.2
+     */
+    scrollToY(scrolly, duration = 0.2)
+    {
+        this.#animScrollY.clear(this.#timer.getTime());
+        this.#animScrollY.setValue(this.#timer.getTime() + duration, scrolly);
+    }
+
+    /**
      * @param {number} t
      */
     timeToPixelScreen(t)
     {
         return this.timeToPixel(t) + this.#tl.titleSpace - this.timeToPixel(this.#offset);
+    }
+
+    /**
+     * @param {number} delta
+     * @param {number} duration
+     */
+    scrollY(delta, duration = 0.2)
+    {
+        let finalTime = this.#offsetY - delta * 14;
+
+        this.#animScrollY.clear(this.#timer.getTime());
+        this.#animScrollY.setValue(this.#timer.getTime() + duration, finalTime);
     }
 
     /**
@@ -149,11 +188,24 @@ export class GlTlView
         return this.pixelToTime(x - this.#tl.titleSpace);
     }
 
+    /**
+     * @param {number} len
+     */
+    setZoomLength(len)
+    {
+        let zoom = this.#tl.duration / len;
+        let zoomtitle = this.pixelToTime(this.#tl.titleSpace) / this.#tl.duration;
+        let dur = 0.3;
+        this.#animZoom.clear(this.#timer.getTime());
+        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom - zoomtitle);
+    }
+
     updateAnims()
     {
         this.#timer.update();
         this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
         this.#offset = this.#animScroll.getValue(this.#timer.getTime());
+        this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
     }
 
 }
