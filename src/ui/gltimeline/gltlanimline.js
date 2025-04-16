@@ -6,6 +6,7 @@ import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
+import { GlTlView } from "./gltlview.js";
 
 /**
  * gltimeline anim
@@ -56,6 +57,7 @@ export class glTlAnimLine extends Events
 
     #disposed = false;
 
+    /** @type {GlTlView} */
     #view = null;
 
     /**
@@ -138,7 +140,6 @@ export class glTlAnimLine extends Events
 
     fitValues()
     {
-
         for (let j = 0; j < this.#keys.length; j++)
         {
             const anim = this.#keys[j].anim;

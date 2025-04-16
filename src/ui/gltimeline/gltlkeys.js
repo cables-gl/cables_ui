@@ -91,7 +91,7 @@ export class glTlKeys extends Events
 
             this.#zeroSpline = new GlSpline(this.#glTl.splines, "zero");
             this.#zeroSpline.setPoints([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            this.#zeroSpline.setColor(0.3, 0.3, 0.3, 1);
+            this.#zeroSpline.setColor(0.1, 0.1, 0.1, 1);
         }
 
         this.points = [];
@@ -295,7 +295,7 @@ export class glTlKeys extends Events
 
         }
 
-        const y = this.valueToPixel(0) + this.#parentRect.absY - this.#glTl.view.offsetY;
+        const y = this.valueToPixel(0) + this.#parentRect.absY;
 
         if (this.#zeroSpline)
             this.#zeroSpline.setPoints([0, y, -0.1,
@@ -441,7 +441,7 @@ export class glTlKeys extends Events
 
     get height()
     {
-        return this.#parentRect.h;
+        return this.#parentRect.h - this.#parentRect.y;
     }
 
     /**
