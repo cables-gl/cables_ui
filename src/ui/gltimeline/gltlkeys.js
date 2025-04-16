@@ -118,7 +118,6 @@ export class glTlKeys extends Events
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
         return isCurrentOp;
-
     }
 
     /**
@@ -292,7 +291,6 @@ export class glTlKeys extends Events
             {
                 this.#glTl.selectKey(animKey, this.#anim);
             }
-
         }
 
         const y = this.valueToPixel(0) + this.#parentRect.absY;
