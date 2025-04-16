@@ -22,6 +22,18 @@ export class GlTlView
     #offset = -0.1;
     #offsetY = 0.0;
 
+    #minVal = -1;
+    #maxVal = 1;
+
+    #finalMinVal = -1;
+    #finalMaxVal = 1;
+
+    /** @type {Anim} */
+    #animMinVal;
+
+    /** @type {Anim} */
+    #animMaxVal;
+
     #timer = new CABLES.Timer();
 
     /**
@@ -42,7 +54,15 @@ export class GlTlView
         this.#animScrollY = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animScrollY.setValue(0, this.#offsetY);
 
+        this.#animMinVal = new CABLES.Anim({ "defaultEasing": defaultEasing });
+        this.#animMinVal.setValue(0, 0);
+        this.#animMaxVal = new CABLES.Anim({ "defaultEasing": defaultEasing });
+        this.#animMaxVal.setValue(0, 0);
+        this.minVal = -1;
+        this.maxVal = 1;
+
         this.#timer.play();
+        this.updateAnims();
     }
 
     get animsFinished()
@@ -53,6 +73,55 @@ export class GlTlView
     get zoom()
     {
         return this.#animZoom.getValue(this.#timer.getTime());
+    }
+
+    get finalMinVal()
+    {
+        return this.#finalMinVal;
+    }
+
+    get finalMaxVal()
+    {
+        return this.#finalMaxVal;
+    }
+
+    get minVal()
+    {
+        return this.#minVal;
+    }
+
+    get maxVal()
+    {
+        return this.#maxVal;
+    }
+
+    /**
+     * @param {number} v
+     */
+    set minVal(v)
+    {
+        if (this.#finalMinVal == v) return;
+        this.#finalMinVal = v;
+
+        if (this.#finalMinVal == this.#finalMaxVal) this.#finalMinVal = this.#maxVal - 0.1;
+        let dur = 0.3;
+        this.#animMinVal.clear(this.#timer.getTime());
+        this.#animMinVal.setValue(this.#timer.getTime() + dur, this.#finalMinVal);
+        // this.#minVal = v;
+    }
+
+    /**
+     * @param {number} v
+     */
+    set maxVal(v)
+    {
+        if (this.#finalMaxVal == v) return;
+        this.#finalMaxVal = v;
+        if (this.#finalMinVal == this.#finalMaxVal) this.#finalMaxVal = this.#minVal + 0.1;
+        let dur = 0.3;
+        this.#animMaxVal.clear(this.#timer.getTime());
+        this.#animMaxVal.setValue(this.#timer.getTime() + dur, this.#finalMaxVal);
+        // this.#maxVal = v;
     }
 
     /** @returns {number} */
@@ -206,6 +275,9 @@ export class GlTlView
         this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
         this.#offset = this.#animScroll.getValue(this.#timer.getTime());
         this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
+        this.#minVal = this.#animMinVal.getValue(this.#timer.getTime());
+        this.#maxVal = this.#animMaxVal.getValue(this.#timer.getTime());
+        console.log(this.#minVal, this.#maxVal);
     }
 
 }

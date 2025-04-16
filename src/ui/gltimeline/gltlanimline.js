@@ -56,8 +56,7 @@ export class glTlAnimLine extends Events
 
     #disposed = false;
 
-    #minVal = -1;
-    #maxVal = 1;
+    #view = null;
 
     /**
      * @param {GlTimeline} glTl
@@ -70,6 +69,7 @@ export class glTlAnimLine extends Events
 
         this.#options = options;
         this.#glTl = glTl;
+        this.#view = glTl.view;
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
 
@@ -81,7 +81,7 @@ export class glTlAnimLine extends Events
 
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
             {
-                this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#minVal, this.#maxVal) * 1000) / 1000);
+                this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#view.minVal, this.#view.maxVal) * 1000) / 1000);
                 this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y, -0.5);
             });
         }
@@ -127,7 +127,7 @@ export class glTlAnimLine extends Events
         this.#glTitle.setParentRect(this.#glRectTitle);
 
         this.#disposeRects.push(this.#glTitle);
-
+        this.fitValues();
         this.updateColor();
     }
 
@@ -136,13 +136,8 @@ export class glTlAnimLine extends Events
         return this.#anims;
     }
 
-    update()
+    fitValues()
     {
-        if (this.checkDisposed()) return;
-        this.updateColor();
-
-        this.#minVal = -1;
-        this.#maxVal = 1;
 
         for (let j = 0; j < this.#keys.length; j++)
         {
@@ -150,16 +145,19 @@ export class glTlAnimLine extends Events
 
             for (let i = 0; i < anim.keys.length; i++)
             {
-                this.#minVal = Math.min(this.#minVal, anim.keys[i].value);
-                this.#maxVal = Math.max(this.#maxVal, anim.keys[i].value);
+                this.#view.minVal = Math.min(this.#view.finalMinVal, anim.keys[i].value);
+                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value);
             }
         }
+    }
 
-        this.#minVal -= Math.abs(this.#minVal * 0.5);
-        this.#maxVal += Math.abs(this.#maxVal * 0.5);
+    update()
+    {
+        if (this.checkDisposed()) return;
+        this.updateColor();
 
         for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].update(this.#minVal, this.#maxVal);
+            this.#keys[i].update();
     }
 
     updateColor()
