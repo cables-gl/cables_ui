@@ -277,7 +277,6 @@ export class GlTlView
         this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
         this.#minVal = this.#animMinVal.getValue(this.#timer.getTime());
         this.#maxVal = this.#animMaxVal.getValue(this.#timer.getTime());
-        console.log(this.#minVal, this.#maxVal);
     }
 
 }
