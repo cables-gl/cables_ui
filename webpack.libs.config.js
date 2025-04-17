@@ -7,7 +7,7 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import RemoveSourceMapUrlWebpackPlugin from "@rbarilani/remove-source-map-url-webpack-plugin";
 import ModuleScopePlugin from "@k88/module-scope-plugin";
 
-export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
+export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceMap = false) =>
 {
     const outputFile = "libs.ui.js";
     let __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,7 +35,7 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
         "entry": [
             path.join(__dirname, "libs", "ui", "index.js"),
         ],
-        "devtool": minify ? "source-map" : false,
+        "devtool": minify ? "source-map" : sourceMap,
         "output": {
             "path": path.join(__dirname, "dist", "js"),
             "filename": outputFile,
