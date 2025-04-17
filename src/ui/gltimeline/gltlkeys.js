@@ -18,9 +18,6 @@ import { gui } from "../gui.js";
 export class glTlKeys extends Events
 {
 
-    #minVal = 999999;
-    #maxVal = -999999;
-
     /** @type {Anim} */
     #anim = null;
 
@@ -60,6 +57,8 @@ export class glTlKeys extends Events
     #dragStartX = 0;
     #dragStartY = 0;
 
+    #view;
+
     /**
      * @param {GlTimeline} glTl
      * @param {glTlAnimLine} animLine
@@ -77,6 +76,7 @@ export class glTlKeys extends Events
         if (!port) this._log.error("no port");
         this.#anim = anim;
         this.#glTl = glTl;
+        this.#view = glTl.view;
         this.#parentRect = parentRect;
         this.#options = options || {};
         this.#port = port;
@@ -91,7 +91,7 @@ export class glTlKeys extends Events
 
             this.#zeroSpline = new GlSpline(this.#glTl.splines, "zero");
             this.#zeroSpline.setPoints([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            this.#zeroSpline.setColor(0.3, 0.3, 0.3, 1);
+            this.#zeroSpline.setColor(0.1, 0.1, 0.1, 1);
         }
 
         this.points = [];
@@ -118,17 +118,12 @@ export class glTlKeys extends Events
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
         return isCurrentOp;
-
     }
 
     /**
-     * @param {number} minVal
-     * @param {number} maxVal
      */
-    update(minVal = this.#minVal, maxVal = this.#maxVal)
+    update()
     {
-        this.#minVal = minVal;
-        this.#maxVal = maxVal;
 
         if (this.#disposed)
         {
@@ -296,10 +291,9 @@ export class glTlKeys extends Events
             {
                 this.#glTl.selectKey(animKey, this.#anim);
             }
-
         }
 
-        const y = this.valueToPixel(0) + this.#parentRect.absY - this.#glTl.view.offsetY;
+        const y = this.valueToPixel(0) + this.#parentRect.absY;
 
         if (this.#zeroSpline)
             this.#zeroSpline.setPoints([0, y, -0.1,
@@ -445,7 +439,7 @@ export class glTlKeys extends Events
 
     get height()
     {
-        return this.#parentRect.h;
+        return this.#parentRect.h - this.#parentRect.y;
     }
 
     /**
@@ -453,7 +447,7 @@ export class glTlKeys extends Events
      */
     pixelToValue(posy)
     {
-        return CABLES.map(posy, 0, this.height, this.#minVal, this.#maxVal);
+        return CABLES.map(posy, 0, this.height, this.#view.minVal, this.#view.maxVal);
     }
 
     /**
@@ -461,7 +455,7 @@ export class glTlKeys extends Events
      */
     valueToPixel(v)
     {
-        return this.#parentRect.h - CABLES.map(v, this.#minVal, this.#maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2) - this.#glTl.view.offsetY;
+        return this.#parentRect.h - CABLES.map(v, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.sizeKey2) - this.#glTl.view.offsetY;
     }
 
     reset()

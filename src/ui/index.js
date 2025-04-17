@@ -14,7 +14,6 @@ import GradientEditor from "./dialogs/gradienteditor.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ModalError from "./dialogs/modalerror.js";
 import oldModalWrap from "./dialogs/modal_old_wrap.js";
-import FileUploader from "./dialogs/upload.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";

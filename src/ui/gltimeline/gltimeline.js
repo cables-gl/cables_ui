@@ -397,9 +397,7 @@ export class GlTimeline extends Events
 
                     this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                     this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
-
                 }
-
             }
 
             this.updateAllElements();
@@ -407,8 +405,7 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys() > 0) this.showKeyParams();
 
         }
-        else
-        if (event.buttons == this.buttonForScrolling)
+        else if (event.buttons == this.buttonForScrolling)
         {
             this.view.scroll(-this.view.pixelToTime(event.movementX) * 12);
             this.view.scrollY(event.movementY);
@@ -466,7 +463,6 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "e": easing });
 
-        // this.updateAllElements();
         this.needsUpdateAll = true;
     }
 
@@ -480,7 +476,6 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "time": time });
 
-        // this.updateAllElements();
         this.needsUpdateAll = true;
     }
 
@@ -512,7 +507,6 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
         }
 
-        // this.updateAllElements();
         this.needsUpdateAll = true;
     }
 
@@ -565,10 +559,7 @@ export class GlTimeline extends Events
             } });
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
-        {
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
-
-        }
 
         this.unSelectAllKeys();
     }
@@ -867,6 +858,8 @@ export class GlTimeline extends Events
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
         this.view.scrollToY(0);
+        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+            this.#tlAnims[anii].fitValues();
     }
 
     showKeyParams()
@@ -886,6 +879,7 @@ export class GlTimeline extends Events
         {
             this.copy(new ClipboardEvent("copy"));
         });
+
         ele.clickable(ele.byId("keysfit"), () =>
         {
             this.zoomToFitSelection();

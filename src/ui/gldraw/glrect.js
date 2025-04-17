@@ -245,6 +245,7 @@ export default class GlRect extends Events
      */
     setColorArray(arr)
     {
+        arr = arr || [1, 1, 1, 1];
         if (arr.length == 3)arr[3] = 1;
         vec4.set(this.color, arr[0], arr[1], arr[2], arr[3]);
         this.#rectInstancer.setColor(this.#attrIndex, this.color);
