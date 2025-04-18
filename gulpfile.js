@@ -36,7 +36,7 @@ function _scripts_libs_ui(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackLibsConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
+        webpack(webpackLibsConfig(isLiveBuild, buildInfo, minify, analyze, config.sourceMap), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -55,7 +55,7 @@ function _scripts_talkerapi(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackTalkerApiConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
+        webpack(webpackTalkerApiConfig(isLiveBuild, buildInfo, minify, analyze, config.sourceMap), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -82,7 +82,7 @@ function _scripts_ui_webpack(done)
 {
     getBuildInfo((buildInfo) =>
     {
-        webpack(webpackConfig(isLiveBuild, buildInfo, minify, analyze), (err, stats) =>
+        webpack(webpackConfig(isLiveBuild, buildInfo, minify, analyze, config.sourceMap), (err, stats) =>
         {
             if (err) done(err);
             if (stats.hasErrors())
@@ -187,7 +187,7 @@ function _svgcss(done)
 function _watch(done)
 {
     const watchOptions = { "usePolling": true, "ignored": (fileName) => { return fileName.includes("node_modules"); } };
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../cables/src/core/**/*.js", "../shared/client/**/*.js"], watchOptions, gulp.series(_scripts_ui_webpack));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../cables/src/core/**/*.js", "../shared/shared_constants.json", "../shared/client/**/*.js"], watchOptions, gulp.series(_scripts_ui_webpack));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], watchOptions, gulp.series(_sass));
     gulp.watch(["html/**/*.html", "html/*.html"], watchOptions, gulp.series(_html_ui));
     gulp.watch("../shared/client/src/talkerapi.js", watchOptions, gulp.series(_scripts_talkerapi));

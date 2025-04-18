@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import ModuleScopePlugin from "@k88/module-scope-plugin";
 
-export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
+export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceMap = false) =>
 {
     let __dirname = dirname(fileURLToPath(import.meta.url));
     const plugins = [
@@ -24,7 +24,7 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false) =>
         "entry": [
             path.join(__dirname, "src-talkerapi", "talkerapi.js"),
         ],
-        "devtool": minify ? "source-map" : false,
+        "devtool": minify ? "source-map" : sourceMap,
         "output": {
             "path": path.join(__dirname, "dist/js"),
             "filename": "talkerapi.js"
