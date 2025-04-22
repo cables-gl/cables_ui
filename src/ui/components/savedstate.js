@@ -24,7 +24,6 @@ export default class SavedState extends Events
 
         window.addEventListener("beforeunload", (event) =>
         {
-            console.log(performance.now());
             const message = "unsaved content!";
             if (typeof event == "undefined")
             {
@@ -62,15 +61,21 @@ export default class SavedState extends Events
         return bp;
     }
 
+    /**
+     * @param {string} initiator
+     * @param {string} section
+     * @param {boolean} savedState
+     */
     log(initiator, section, savedState)
     {
         this._statesInitiator[section] = this._statesInitiator[section] || [];
         this._statesInitiator[section].push({ "initiator": initiator, "section": section, "savedState": savedState });
 
-        let savedStateStr = "saved";
-        if (!savedState) savedStateStr = "unsaved!";
     }
 
+    /**
+     * @param {string} initiator
+     */
     setSavedAll(initiator)
     {
         let changed = false;
@@ -87,6 +92,10 @@ export default class SavedState extends Events
         this.updateUi();
     }
 
+    /**
+     * @param {string} initiator
+     * @param {string | number} subpatch
+     */
     setSaved(initiator, subpatch)
     {
         if (subpatch === undefined) subpatch = 0;
@@ -101,6 +110,10 @@ export default class SavedState extends Events
         this.updateUi();
     }
 
+    /**
+     * @param {string} initiator
+     * @param {string | number | boolean} subpatch
+     */
     setUnSaved(initiator, subpatch)
     {
         if (this._paused) return;
@@ -116,11 +129,8 @@ export default class SavedState extends Events
         }
         else
         {
-            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch, true);
-            if (!subOuter || !subOuter.isBlueprint2())
-            {
-                subpatch = 0;
-            }
+            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
+            if (!subOuter || !subOuter.isBlueprint2()) subpatch = 0;
         }
         if (subpatch === true)subpatch = 0;
         subpatch = subpatch || 0;
@@ -149,12 +159,14 @@ export default class SavedState extends Events
         }
     }
 
+    /**
+     * @param {string} bp
+     */
     getStateBlueprint(bp)
     {
         if (!this._statesSaved.hasOwnProperty(bp))
-        {
             this._log.log("does not have state for ", bp);
-        }
+
         return this._statesSaved[bp];
     }
 
@@ -168,9 +180,7 @@ export default class SavedState extends Events
                 const op = gui.patchView.getSubPatchOuterOp(i);
 
                 if (op && op.objName.indexOf("Ops.Patch.") > -1)
-                {
                     opIds.push({ "objName": op.objName, "op": op, "opId": op.id, "subId": i });
-                }
             }
         }
         return opIds;
@@ -240,6 +250,9 @@ export default class SavedState extends Events
         this.updateRestrictionDisplay();
     }
 
+    /**
+     * @param {string} subOpName
+     */
     isSavedSubOp(subOpName)
     {
         for (const idx in this._statesSaved)
@@ -250,6 +263,9 @@ export default class SavedState extends Events
         return true;
     }
 
+    /**
+     * @param {string} subPatchId
+     */
     isSavedSubPatch(subPatchId)
     {
         return this._statesSaved[subPatchId] !== false;

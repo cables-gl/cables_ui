@@ -15,7 +15,6 @@ export default rendererCommands;
 
 CABLES_CMD_RENDERER.screenshot = function ()
 {
-
     gui.canvasManager.currentContext().saveScreenshot();
     gui.corePatch().resume();
 };
@@ -60,11 +59,11 @@ CABLES_CMD_RENDERER.scrollingPage = function ()
     }
 };
 
-CABLES_CMD_RENDERER.aspect = function (a)
+CABLES_CMD_RENDERER.aspect = function (a = 0)
 {
     if (!a)
     {
-        const p = new ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Change Aspect Ratio of Renderer",
             "text": "Enter an aspect ratio, e.g.: 16:9 or 0.22",

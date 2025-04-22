@@ -1376,7 +1376,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {String|Number} subPatchId
+     * @param {string|number} subPatchId
      * @returns {UiOp}
      */
     getSubPatchOuterOp(subPatchId)

@@ -1,4 +1,4 @@
-import { Logger, ModalBackground } from "cables-shared-client";
+import { Logger, ModalBackground, ele } from "cables-shared-client";
 import Gui, { gui } from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";
 
@@ -15,11 +15,15 @@ export default function setHtmlDefaultListeners()
         // handle people use back and then forward and browser caches whole site state...
 
         if (gui)gui.unload = true;
-        gui._corePatch.pause();
-        document.body.innerHTML = "";
+
+        ele.byId("maincomponents").style.opacity =
+        ele.byId("mainContainer").style.opacity =
+        ele.byId("cablescanvas").style.opacity = "0.0000000001";
+        document.body.style["pointer-events"] = "none";
+
         setTimeout(() =>
         {
-            document.body.innerHTML = "this session has expired... please reload page";
+            document.body.prepend("this session has expired... please reload page..........");
         }, 2000);
 
     });
