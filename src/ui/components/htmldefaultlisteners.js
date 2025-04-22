@@ -14,6 +14,8 @@ export default function setHtmlDefaultListeners()
     {
         // handle people use back and then forward and browser caches whole site state...
 
+        if (gui)gui.unload = true;
+        gui._corePatch.pause();
         document.body.innerHTML = "";
         setTimeout(() =>
         {

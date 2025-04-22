@@ -60,6 +60,7 @@ export default class BottomTabPanel extends Events
      */
     show(userInteraction = false)
     {
+        if (gui.unload) return;
         userSettings.set("bottomTabsOpened", true);
 
         if (this._tabs.getNumTabs() == 0)

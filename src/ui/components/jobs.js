@@ -120,7 +120,10 @@ export default class Jobs extends Events
 
     _updateVisibility()
     {
+        if (gui.unload) return;
         const elContainer = ele.byId("uploadprogresscontainer");
+
+        if (elContainer) return;
 
         if (this._visibleProgressBar)
         {

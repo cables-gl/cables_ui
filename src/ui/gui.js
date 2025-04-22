@@ -20,7 +20,6 @@ import TexturePreviewer from "./components/texturepreviewer.js";
 import OpDocs from "./components/opdocs.js";
 import IconBar from "./elements/iconbar.js";
 import ModalError from "./dialogs/modalerror.js";
-import PatchView from "./components/patchview.js";
 import MetaOpParams from "./components/tabs/meta_opparams.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import WatchArrayTab from "./components/tabs/tab_watcharray.js";
@@ -53,6 +52,7 @@ import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
 import { UiPatch } from "./core_extend_patch.js";
+import PatchView from "./components/patchview.js";
 
 /**
  * @type {Gui}
@@ -78,6 +78,7 @@ export default class Gui extends Events
     static RESTRICT_MODE_FULL = 40;
 
     hasAnims = false;
+    unload = false;
 
     /** @type {GlTimeline} */
     glTimeline = null;
@@ -515,6 +516,7 @@ export default class Gui extends Events
 
     setLayout()
     {
+        if (this.unload) return;
         this.pauseProfiling();
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;
@@ -973,6 +975,7 @@ export default class Gui extends Events
      */
     showLoadingProgress(show)
     {
+        if (this.unload) return;
         if (show)
         {
             ele.byId("nav-logo_idle").classList.add("logoFadeout");
