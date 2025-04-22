@@ -24,12 +24,7 @@ export default class SavedState extends Events
 
         window.addEventListener("beforeunload", (event) =>
         {
-            if (this.isSaved)
-            {
-                document.body.style.opacity = "0";
-                return false;
-            }
-
+            console.log(performance.now());
             const message = "unsaved content!";
             if (typeof event == "undefined")
             {

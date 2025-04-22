@@ -1,4 +1,4 @@
-import { Logger } from "cables-shared-client";
+import { Logger, ModalBackground } from "cables-shared-client";
 import Gui, { gui } from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";
 
@@ -10,6 +10,17 @@ import { fileUploader } from "../dialogs/upload.js";
 export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");
+    window.addEventListener("beforeunload", (event) =>
+    {
+        // handle people use back and then forward and browser caches whole site state...
+
+        document.body.innerHTML = "";
+        setTimeout(() =>
+        {
+            document.body.innerHTML = "this session has expired... please reload page";
+        }, 2000);
+
+    });
 
     document.addEventListener("paste", (e) =>
     {
