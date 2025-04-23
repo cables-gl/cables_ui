@@ -1,4 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
+import { Op } from "cables";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -291,7 +292,8 @@ export default class PatchView extends Events
 
     updateBoundingRect()
     {
-        this.boundingRect = PatchView.getElement().getBoundingClientRect();
+        const el = PatchView.getElement();
+        if (el) this.boundingRect = el.getBoundingClientRect();
     }
 
     /**
@@ -677,6 +679,7 @@ export default class PatchView extends Events
 
     checkPatchErrors()
     {
+        if (gui.unload) return;
         const perf = gui.uiProfiler.start("checkpatcherrors");
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
@@ -711,6 +714,7 @@ export default class PatchView extends Events
         clearTimeout(this._checkErrorTimeout);
 
         const elError = ele.byId("nav-item-error");
+
         const wasHidden = elError.classList.contains("hidden");
         if (showAttentionIcon) ele.show(elError);
         else ele.hide(elError);
@@ -1372,7 +1376,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {String|Number} subPatchId
+     * @param {string|number} subPatchId
      * @returns {UiOp}
      */
     getSubPatchOuterOp(subPatchId)

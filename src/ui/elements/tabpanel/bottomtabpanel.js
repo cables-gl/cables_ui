@@ -40,6 +40,7 @@ export default class BottomTabPanel extends Events
                 gui.setLayout();
             }
         });
+        this.fixHeight();
     }
 
     init()
@@ -59,6 +60,7 @@ export default class BottomTabPanel extends Events
      */
     show(userInteraction = false)
     {
+        if (gui.unload) return;
         userSettings.set("bottomTabsOpened", true);
 
         if (this._tabs.getNumTabs() == 0)
@@ -94,6 +96,12 @@ export default class BottomTabPanel extends Events
         return this.height;
     }
 
+    fixHeight()
+    {
+        this.height = Math.min(this.height, window.innerHeight * 0.7);
+        this.height = Math.max(150, this.height);
+    }
+
     /**
      * @param {number} h
      */
@@ -104,7 +112,8 @@ export default class BottomTabPanel extends Events
         clearTimeout(this._toBottomPanel);
         this._toBottomPanel = setTimeout(() =>
         {
-            userSettings.set("bottomPanelHeight", Math.max(150, this.height));
+            this.fixHeight();
+            userSettings.set("bottomPanelHeight", this.height);
         }, 100);
         gui.setLayout();
 

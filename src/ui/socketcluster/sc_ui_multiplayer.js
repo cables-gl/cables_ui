@@ -28,6 +28,7 @@ export default class ScUiMultiplayer extends Events
 
     updateMultiplayerBar()
     {
+        if (gui.unload) return;
         if (!this._connection.isConnected())
         {
             ele.byId("multiplayerbar").style.display = "none";
@@ -36,7 +37,8 @@ export default class ScUiMultiplayer extends Events
 
         if (this._connection.multiplayerCapable)
         {
-            document.querySelector(".nav_remote_viewer").classList.remove("hidden");
+            const el = document.querySelector(".nav_remote_viewer");
+            if (el)el.classList.remove("hidden");
         }
 
         let shownClients = Object.values(this._connection.clients).filter((c) => { return c.multiplayerCapable; });
