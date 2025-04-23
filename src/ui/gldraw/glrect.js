@@ -228,11 +228,13 @@ export default class GlRect extends Events
      */
     setColor(r, g = 1, b = 1, a = 1)
     {
-        if (r === undefined)r = g = b = a = 1.0;
+        if (r === undefined) r = g = b = a = 1.0;
+        if (r === null) r = 1.0;
+        if (g === null) g = 1.0;
+        if (b === null) b = 1.0;
+        if (a === null) a = 1.0;
         if (r.length)
         {
-
-            CABLES.logStack();
             vec4.set(this.color, r[0], r[1], r[2], r[3]);
         }
         else
