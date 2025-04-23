@@ -697,14 +697,14 @@ export class GlTimeline extends Events
                     }
                     count++;
                 }
-                else console.log("has no anim,,,");
+                // else console.log("has no anim,,,");
             }
         }
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(this.#cgl.canvasHeight);
+            multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -804,7 +804,7 @@ export class GlTimeline extends Events
         this.udpateCursor();
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS && this.#tlAnims[0])
-            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
+            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
 
         perf.finish();
     }
