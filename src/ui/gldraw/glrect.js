@@ -408,6 +408,8 @@ export default class GlRect extends Events
 
     /**
      * @param {MouseEvent} e
+     * @param {number} x
+     * @param {number} y
      */
     mouseDown(e, x, y)
     {
@@ -451,6 +453,7 @@ export default class GlRect extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} button
+     * @param {MouseEvent} e
      */
     mouseMove(x, y, button, e)
     {

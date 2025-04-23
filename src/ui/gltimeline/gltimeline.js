@@ -121,6 +121,7 @@ export class GlTimeline extends Events
     selectRect = null;
     #selectedKeyAnims = [];
     #firstInit = true;
+    #focusRuler = false;
 
     /**
      * @param {CglContext} cgl
@@ -376,6 +377,42 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {PointerEvent} e
+     */
+    _onCanvasMouseDown(e)
+    {
+        if (!e.pointerType) return;
+        console.log("mnousedown");
+        this.#focusRuler = false;
+        if (this.ruler._glRectBg.isHovering())
+        {
+            this.#focusRuler = true;
+            console.log("ottttttttt", e);
+        }
+
+        if (this.#focusRuler)
+        {
+            console.log("focussssssssss");
+            this.ruler.setTimeFromPixel(e.offsetX);
+        }
+        else
+        {
+
+            if (!this.selectRect && e.buttons == 1)
+                if (this.hoverKeyRect == null && !e.shiftKey)
+                    if (e.offsetY > this.getFirstLinePosy())
+                        this.unSelectAllKeys();
+
+            try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
+            catch (er) { this._log.log(er); }
+
+            this.#rects.mouseDown(e, e.offsetX, e.offsetY);
+        }
+
+        this.mouseDown = true;
+    }
+
+    /**
      * @param {MouseEvent} event
      */
     _onCanvasMouseMove(event)
@@ -384,35 +421,40 @@ export class GlTimeline extends Events
 
         let x = event.offsetX;
         let y = event.offsetY;
-
         this.#rects.mouseMove(x, y, event.buttons, event);
+
+        console.log("nooo");
 
         if (event.buttons == 1)
         {
-            if (this.hoverKeyRect && !this.selectRect)
+            if (!this.#focusRuler)
             {
-                console.log("hoverKeyRect");
-            }
-            else
-            {
-                if (y > this.getFirstLinePosy())
+
+                if (this.hoverKeyRect && !this.selectRect)
                 {
-                    if (!event.shiftKey) this.unSelectAllKeys();
-
-                    this.selectRect = {
-                        "x": Math.min(this.#lastXnoButton, x),
-                        "y": Math.min(this.#lastYnoButton, y),
-                        "x2": Math.max(this.#lastXnoButton, x),
-                        "y2": Math.max(this.#lastYnoButton, y) };
-
-                    this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
-                    this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                    console.log("hoverKeyRect");
                 }
+                else
+                {
+                    if (y > this.getFirstLinePosy())
+                    {
+                        if (!event.shiftKey) this.unSelectAllKeys();
+
+                        this.selectRect = {
+                            "x": Math.min(this.#lastXnoButton, x),
+                            "y": Math.min(this.#lastYnoButton, y),
+                            "x2": Math.max(this.#lastXnoButton, x),
+                            "y2": Math.max(this.#lastYnoButton, y) };
+
+                        this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
+                        this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                    }
+                }
+
+                this.updateAllElements();
+
+                if (this.getNumSelectedKeys() > 0) this.showKeyParams();
             }
-
-            this.updateAllElements();
-
-            if (this.getNumSelectedKeys() > 0) this.showKeyParams();
 
         }
         else if (event.buttons == this.buttonForScrolling)
@@ -426,6 +468,7 @@ export class GlTimeline extends Events
             this.#lastXnoButton = x;
             this.#lastYnoButton = y;
         }
+
     }
 
     /**
@@ -588,26 +631,6 @@ export class GlTimeline extends Events
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
         }
-    }
-
-    /**
-     * @param {PointerEvent} e
-     */
-    _onCanvasMouseDown(e)
-    {
-        if (!e.pointerType) return;
-
-        if (!this.selectRect && e.buttons == 1)
-            if (this.hoverKeyRect == null && !e.shiftKey)
-                if (e.offsetY > this.getFirstLinePosy())
-                    this.unSelectAllKeys();
-
-        try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
-        catch (er) { this._log.log(er); }
-
-        this.emitEvent("mousedown", e);
-        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
-        this.mouseDown = true;
     }
 
     /**
@@ -980,13 +1003,6 @@ export class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-                    // let minTime = 999999;
-                    // for (let i = 0; i < json.keys.length; i++)
-                    //     minTime = Math.min(json.keys[i].t, minTime);
-
-                    // for (let i = 0; i < json.keys.length; i++)
-                    //     json.keys[i].t = json.keys[i].t + minTime + this.cursorTime;
-
                     const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
                     const notfoundallAnims = deser.notfoundallAnims;
 
@@ -1009,17 +1025,9 @@ export class GlTimeline extends Events
                     console.log(json.keys);
                     this.needsUpdateAll = true;
 
-                    // anim.sortKeys();
-
-                    // for (let i in anim.keys)
-                    // {
-                    //     anim.keys[i].updateCircle(true);
-                    // }
-
                     return;
                 }
             }
-            // CABLES.UI.setStatusText("paste failed / not cables data format...");
             CABLES.UI.notify("Paste failed");
         }
     }

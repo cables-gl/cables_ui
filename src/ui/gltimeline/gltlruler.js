@@ -27,16 +27,26 @@ export class glTlRuler extends Events
         this._glRectBg = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
+        // this._glRectBg.setColorHover(0.2, 0.2, 0.2, 1);
         this._glRectBg.setPosition(0, this.y);
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {
+            console.log("dragggggggggggg", event.offsetX);
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
+        });
+        this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            console.log("hover");
+        });
+        this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+        {
+            console.log("un hover");
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
-            console.log("mousdown");
+            console.log("iiiiiiiiimousdown", event.offsetX);
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
 
         });
@@ -44,7 +54,7 @@ export class glTlRuler extends Events
         this.markf = [];
         for (let i = 0; i < 300; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "draggable": false });
+            const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setColor(0.0, 0.0, 0.0, 1);
             mr.setParent(this._glRectBg);
             this.markf.push(mr);
@@ -53,7 +63,7 @@ export class glTlRuler extends Events
         this.markBeats = [];
         for (let i = 0; i < 400; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "draggable": false });
+            const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setColor(0.2, 0.2, 0.2, 1);
             mr.setParent(this._glRectBg);
             mr.setSize(0, 0);
@@ -63,7 +73,7 @@ export class glTlRuler extends Events
         this.marks = [];
         for (let i = 0; i < 300; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "draggable": false });
+            const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setParent(this._glRectBg);
             this.marks.push(mr);
         }
@@ -77,6 +87,12 @@ export class glTlRuler extends Events
         }
 
         this.update();
+    }
+
+    setTimeFromPixel(x)
+    {
+        gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x - this.#glTl.titleSpace) + this.#glTl.view.offset));
+
     }
 
     /**
