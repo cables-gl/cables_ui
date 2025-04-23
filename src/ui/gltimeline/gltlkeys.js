@@ -315,7 +315,8 @@ export class glTlKeys extends Events
             const kr = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
             kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
-            kr.setColor(1, 1, 1, 1);
+            kr.setColor(0.28, 0.28, 0.28, 0.28);
+            kr.setColorHover(1, 1, 1, 1);
             kr.setParent(this.#parentRect);
             const key = this.#anim.keys[i];
             kr.data.key = key;
@@ -356,6 +357,13 @@ export class glTlKeys extends Events
                 });
             });
 
+            kr.on(GlRect.EVENT_POINTER_UP, (_rect, x, _y, button, e) =>
+            {
+                if (this.#glTl.selectRect) return;
+                this.#glTl.selectKey(key, this.#anim);
+                console.log("khey up!!");
+
+            });
             kr.on(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
             {
 

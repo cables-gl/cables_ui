@@ -12,7 +12,7 @@ let pageshowcount = 0;
 export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");
-    window.addEventListener("pageshow", (event) =>
+    window.addEventListener("pageshow", (_event) =>
     {
         pageshowcount++;
 
@@ -26,13 +26,12 @@ export default function setHtmlDefaultListeners()
             ele.byId("mainContainer").style.opacity =
             ele.byId("cablescanvas").style.opacity = "0.0000000001";
             document.body.style["pointer-events"] = "none";
-
             document.body.prepend("this session has expired... please reload page..........");
         }
 
     });
 
-    window.addEventListener("beforeunload", (event) =>
+    window.addEventListener("beforeunload", (_event) =>
     {
 
     });
