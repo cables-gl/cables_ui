@@ -927,11 +927,6 @@ export class GlTimeline extends Events
         for (let i in keys)
         {
             minTime = Math.min(minTime, keys[i].t);
-
-            if (useId)
-            {
-
-            }
         }
 
         let notfoundallAnims = false;
@@ -985,14 +980,14 @@ export class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-                    let minTime = 999999;
-                    for (let i = 0; i < json.keys.length; i++)
-                        minTime = Math.min(json.keys[i].t, minTime);
+                    // let minTime = 999999;
+                    // for (let i = 0; i < json.keys.length; i++)
+                    //     minTime = Math.min(json.keys[i].t, minTime);
 
-                    for (let i = 0; i < json.keys.length; i++)
-                        json.keys[i].t = json.keys[i].t + minTime + this.cursorTime;
+                    // for (let i = 0; i < json.keys.length; i++)
+                    //     json.keys[i].t = json.keys[i].t + minTime + this.cursorTime;
 
-                    const deser = this.deserializeKeys(json.keys, true);
+                    const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
                     const notfoundallAnims = deser.notfoundallAnims;
 
                     if (notfoundallAnims)
