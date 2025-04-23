@@ -960,7 +960,9 @@ export class GlTimeline extends Events
 
                 if (an)
                 {
+
                     const l = new CABLES.AnimKey(keys[i], an);
+
                     newKeys.push(l);
                     an.addKey(l);
                     found = true;
@@ -992,7 +994,16 @@ export class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-                    const notfoundallAnims = this.deserializeKeys(json.keys, true).notfoundallAnims;
+                    let minTime = 999999;
+                    for (let i = 0; i < json.keys.length; i++)
+                        minTime = Math.min(json.keys[i].t, minTime);
+
+                    for (let i = 0; i < json.keys.length; i++)
+                        json.keys[i].t = json.keys[i].t + minTime + this.cursorTime;
+
+                    const deser = this.deserializeKeys(json.keys, true);
+                    const notfoundallAnims = deser.notfoundallAnims;
+
                     if (notfoundallAnims)
                     {
                         notifyWarn("could not find all anims for pasted keys");
@@ -1005,10 +1016,11 @@ export class GlTimeline extends Events
                     const animPorts = gui.corePatch().getAllAnimPorts();
                     for (let i = 0; i < animPorts.length; i++)
                     {
-
                         if (animPorts[i].anim)
                             animPorts[i].anim.removeDuplicates();
                     }
+
+                    console.log(json.keys);
                     // anim.sortKeys();
 
                     // for (let i in anim.keys)

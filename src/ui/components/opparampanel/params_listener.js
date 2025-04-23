@@ -166,10 +166,10 @@ class ParamsListener extends Events
                 {
                     if (_thePort.isAnimated())
                     {
-                        gui.timeLine().setAnim(_thePort.anim, {
-                            "opid": _thePort.op.id,
-                            "name": _thePort.op.getTitle() + ": " + _thePort.name,
-                        });
+                        // gui.timeLine().setAnim(_thePort.anim, {
+                        //     "opid": _thePort.op.id,
+                        //     "name": _thePort.op.getTitle() + ": " + _thePort.name,
+                        // });
                     }
                 });
             }(thePort, this.panelId));

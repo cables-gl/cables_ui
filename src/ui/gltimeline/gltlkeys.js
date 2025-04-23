@@ -343,6 +343,8 @@ export class glTlKeys extends Events
             {
                 console.log("drag end");
                 this.#anim.sortKeys();
+                this.#anim.removeDuplicates();
+                this.#glTl.needsUpdateAll = true;
                 this.#dragStarted = false;
 
                 undo.add({
@@ -358,7 +360,7 @@ export class glTlKeys extends Events
                 });
             });
 
-            kr.on(GlRect.EVENT_POINTER_UP, () =>
+            kr.on(GlRect.EVENT_POINTER_UP, (e) =>
             {
                 if (this.click)
                 {
@@ -380,7 +382,7 @@ export class glTlKeys extends Events
 
             kr.on(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
             {
-                this.click = false;
+                // this.click = false;
 
                 this.#dragStartX = x.offsetX;
                 this.#dragStartY = e.offsetY;

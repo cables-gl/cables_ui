@@ -2363,6 +2363,7 @@ export default class Gui extends Events
         if (gui)gui.unload = true;
         this._corePatch.pause();
 
+        ele.byId("gluiPreviewLayer").style.opacity =
         ele.byId("maincomponents").style.opacity =
             ele.byId("mainContainer").style.opacity =
             ele.byId("cablescanvas").style.opacity = "0.0000000001";
