@@ -1,5 +1,11 @@
+import GlSplineDrawer from "../gldraw/glsplinedrawer";
+
 export default class GlGraph
 {
+
+    /**
+     * @param {GlSplineDrawer} splineRenderer
+     */
     constructor(splineRenderer)
     {
         this.numValues = 22;
@@ -21,8 +27,9 @@ export default class GlGraph
         this._splineRenderer.setSpline(this._idx, this._points);
         this._splineRenderer.setSplineColor(this._idx, [1, 1, 1, 1]);
 
+        const z = 0.1;
         const zeroLine = this._splineRenderer.getSplineIndex();
-        this._splineRenderer.setSpline(zeroLine, [0, 0, 0, this._width * this._scaleX, 0, 0]);
+        this._splineRenderer.setSpline(zeroLine, [0, 0, z, this._width * this._scaleX, 0, z]);
         this._splineRenderer.setSplineColor(zeroLine, [0.5, 0.5, 0.5, 1]);
 
         const upperLimitLine = this._splineRenderer.getSplineIndex();

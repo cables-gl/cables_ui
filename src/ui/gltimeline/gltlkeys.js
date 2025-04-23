@@ -57,6 +57,8 @@ export class glTlKeys extends Events
     #dragStartX = 0;
     #dragStartY = 0;
 
+    #zerosSplineZ = 1.1;
+
     #view;
 
     /**
@@ -90,7 +92,8 @@ export class glTlKeys extends Events
             this.#spline.setPoints([0, 0, 0, 100, 10, 0, 10, 10, 0]);
 
             this.#zeroSpline = new GlSpline(this.#glTl.splines, "zero");
-            this.#zeroSpline.setPoints([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            this.#zeroSpline.setPoints([0, 0, this.#zerosSplineZ, 0, 0, this.#zerosSplineZ, 0, 0, this.#zerosSplineZ]);
+
             this.#zeroSpline.setColor(0.1, 0.1, 0.1, 1);
         }
 
@@ -336,9 +339,9 @@ export class glTlKeys extends Events
         const y = this.valueToPixel(0) + this.#parentRect.absY;
 
         if (this.#zeroSpline)
-            this.#zeroSpline.setPoints([0, y, -0.1,
-                100, y, -0.1,
-                111111111, y, -0.1]);
+            this.#zeroSpline.setPoints([0, y, this.#zerosSplineZ,
+                100, y, this.#zerosSplineZ,
+                111111111, y, this.#zerosSplineZ]);
 
     }
 

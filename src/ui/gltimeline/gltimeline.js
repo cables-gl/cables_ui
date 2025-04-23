@@ -382,17 +382,14 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
-        console.log("mnousedown");
         this.#focusRuler = false;
         if (this.ruler._glRectBg.isHovering())
         {
             this.#focusRuler = true;
-            console.log("ottttttttt", e);
         }
 
         if (this.#focusRuler)
         {
-            console.log("focussssssssss");
             this.ruler.setTimeFromPixel(e.offsetX);
         }
         else
@@ -423,8 +420,6 @@ export class GlTimeline extends Events
         let y = event.offsetY;
         this.#rects.mouseMove(x, y, event.buttons, event);
 
-        console.log("nooo");
-
         if (event.buttons == 1)
         {
             if (!this.#focusRuler)
@@ -453,7 +448,7 @@ export class GlTimeline extends Events
 
                 this.updateAllElements();
 
-                if (this.getNumSelectedKeys() > 0) this.showKeyParams();
+                this.showKeyParams();
             }
 
         }
@@ -563,6 +558,19 @@ export class GlTimeline extends Events
         }
 
         this.needsUpdateAll = true;
+    }
+
+    getSelectedKeysBoundsValue()
+    {
+        let min = 999999;
+        let max = -999999;
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            min = Math.min(min, this.#selectedKeys[i].value);
+            max = Math.max(max, this.#selectedKeys[i].value);
+        }
+        return { "min": min, "max": max };
+
     }
 
     getSelectedKeysBoundsTime()
@@ -902,7 +910,8 @@ export class GlTimeline extends Events
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
-                "timeBounds": this.getSelectedKeysBoundsTime()
+                "timeBounds": this.getSelectedKeysBoundsTime(),
+                "valueBounds": this.getSelectedKeysBoundsValue()
             });
 
         gui.opParams.clear();

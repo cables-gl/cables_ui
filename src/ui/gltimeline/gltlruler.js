@@ -32,21 +32,18 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {
-            console.log("dragggggggggggg", event.offsetX);
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
         });
         this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
-            console.log("hover");
         });
         this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
-            console.log("un hover");
+
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
-            console.log("iiiiiiiiimousdown", event.offsetX);
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
 
         });
