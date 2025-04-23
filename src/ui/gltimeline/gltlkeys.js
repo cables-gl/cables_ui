@@ -341,6 +341,7 @@ export class glTlKeys extends Events
 
             kr.on(GlRect.EVENT_DRAGEND, () =>
             {
+                console.log("drag end");
                 this.#anim.sortKeys();
                 this.#dragStarted = false;
 
@@ -357,36 +358,47 @@ export class glTlKeys extends Events
                 });
             });
 
-            kr.on(GlRect.EVENT_POINTER_UP, (_rect, x, _y, button, e) =>
+            kr.on(GlRect.EVENT_POINTER_UP, () =>
             {
-                if (this.#glTl.selectRect) return;
-                this.#glTl.selectKey(key, this.#anim);
-                console.log("khey up!!");
+                if (this.click)
+                {
+                    if (this.#glTl.selectRect) return;
+                    if (this.#dragStarted) return;
+
+                    if (!e.shiftKey) this.#glTl.unSelectAllKeys();
+                    this.#glTl.selectKey(key, this.#anim);
+                    console.log("key up!!", e);
+                }
+                this.click = false;
 
             });
+
+            kr.on(GlRect.EVENT_POINTER_DOWN, () =>
+            {
+                this.click = true;
+            });
+
             kr.on(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
             {
+                this.click = false;
 
                 this.#dragStartX = x.offsetX;
                 this.#dragStartY = e.offsetY;
                 if (button == 1 && !this.#dragStarted)
                 {
-
                     oldValues = this.#glTl.serializeSelectedKeys();
                     this.#dragStarted = true;
                     startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                     startDragValue = this.pixelToValue(e.offsetY);
 
-                    if (e.shiftKey)
-                    {
-                        this.#glTl.duplicateSelectedKeys();
-                    }
+                    if (e.shiftKey) this.#glTl.duplicateSelectedKeys();
 
                 }
             });
 
             kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
+                this.click = false;
                 if (this.#glTl.selectRect) return;
 
                 if (button == 2)
@@ -416,30 +428,6 @@ export class glTlKeys extends Events
             });
 
             this.#keyRects.push(kr);
-
-            // if (!this.#options.multiAnims)
-            // {
-            //     if (this.#port.uiAttribs.display == "bool" || this.#port.uiAttribs.increment == "integer")
-            //     {
-            //         const krDop = this.#glTl.rects.createRect({ "draggable": true });
-            //         krDop.setSize(this.sizeKey, this.sizeKey);
-
-            //         if (this.#port.uiAttribs.display == "bool")
-            //         {
-            //             if (animKey.value) krDop.setColor(0.6, 0.6, 0.6, 1);
-            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
-            //         }
-            //         if (this.#port.uiAttribs.increment == "integer")
-            //         {
-            //             if (i % 2 == 0) krDop.setColor(0.6, 0.6, 0.6, 1);
-            //             else krDop.setColor(0.4, 0.4, 0.4, 1);
-            //         }
-
-            //         krDop.setParent(this.#parentRect);
-            //         this.#dopeRects.push(krDop);
-            //     }
-
-            // }
 
         }
         this.update();
