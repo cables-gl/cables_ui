@@ -2,7 +2,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { glTimelineCanvas } from "../../gltimeline/gltimelinecanvas.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
 export default class GlTimelineTab
@@ -27,6 +27,18 @@ export default class GlTimelineTab
 
         a.parentResized();
         userSettings.set("glTimelineOpened", true);
+
+        gui.on(Gui.EVENT_RESIZE, () =>
+        {
+            a.glTimeline.resize();
+            a.parentResized();
+        });
+
+        gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
+        {
+            a.glTimeline.resize();
+            a.parentResized();
+        });
 
         this.#tab.on("resize", () =>
         {
