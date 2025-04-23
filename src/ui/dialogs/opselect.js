@@ -526,9 +526,7 @@ export default class OpSelect
         if (!this._opSearch.list)
         {
             const perf = gui.uiProfiler.start("opselect.prepare.list");
-
             this._opSearch._buildList();
-
             perf.finish();
         }
 
@@ -706,7 +704,7 @@ export default class OpSelect
 
             if (itemType === "extension" || itemType === "team")
             {
-                gui.opSelect().loadCollection(opname, itemType);
+                gui.opSelect().loadCollection(opname);
             }
             else if (itemType === "patchop")
             {
@@ -732,9 +730,9 @@ export default class OpSelect
         }
     }
 
-    loadCollection(name, type)
+    loadCollection(name)
     {
-        gui.serverOps.loadCollectionOps(name, type, () =>
+        gui.serverOps.loadCollectionOps(name, () =>
         {
             const q = this._getQuery();
             this.close();
