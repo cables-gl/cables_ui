@@ -2168,8 +2168,17 @@ export default class ServerOps
                         let newOps = res.newOps;
                         if (!err && res && res.opDocs)
                         {
+                            let collectionsToLoad = [];
                             res.opDocs.forEach((opDoc) =>
                             {
+                                const opName = opDoc.name;
+                                if (opName)
+                                {
+                                    if (namespace.isCollectionOp(opName))
+                                    {
+                                        collectionsToLoad.push(namespace.getCollectionName(opName));
+                                    }
+                                }
                                 this._ops.push(opDoc);
                             });
                             if (forceReload && oldName)
@@ -2181,6 +2190,14 @@ export default class ServerOps
                             {
                                 gui.opDocs.addOpDocs(res.opDocs);
                             }
+                            collectionsToLoad = CABLES.uniqueArray(collectionsToLoad);
+                            collectionsToLoad.forEach((collectionNamespace) =>
+                            {
+                                this.loadCollectionOps(collectionNamespace, () =>
+                                {
+                                    gui.opSelect().reload();
+                                });
+                            });
                         }
                         gui.jobs().finish("missingops");
                         cb(newOps);
@@ -2196,46 +2213,41 @@ export default class ServerOps
         }
     }
 
-    loadCollectionOps(name, type, cb)
+    loadCollectionOps(name, cb = null)
     {
-        let valid = false;
-        let apiUrl = "";
-        let collectionName = "";
-        if (name && type === "extension")
+        if (!name)
         {
-            collectionName = name.split(".", 3).join(".");
-            valid = name && namespace.isExtensionOp(name);
-            apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/ops/code/extension/" + collectionName);
-            if (platform.config.previewMode) apiUrl += "?preview=true";
+            if (cb) cb();
+            return;
         }
-        if (name && type === "team")
+        let endpoint = "";
+        let collectionName = namespace.getCollectionName(name);
+        if (namespace.isExtension(collectionName))
         {
-            collectionName = name.split(".", 3).join(".");
-            valid = name && namespace.isTeamOp(name);
-            apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/ops/code/team/" + collectionName);
-            if (platform.config.previewMode) apiUrl += "?preview=true";
+            endpoint = "/api/ops/code/extension/";
+        }
+        else if (namespace.isTeamNamespace(collectionName))
+        {
+            endpoint = "/api/ops/code/team/";
         }
 
-        if (valid)
+        if (endpoint)
         {
             const collectionOpUrl = [];
+            let apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + endpoint + collectionName);
+            if (platform.config.previewMode) apiUrl += "?preview=true";
             collectionOpUrl.push(apiUrl);
-            const lid = type + "ops" + collectionName + CABLES.uuid();
-            gui.jobs()
-                .start({ "id": "getCollectionOpDocs" });
+            const lid = "collection ops" + collectionName + CABLES.uuid();
+            gui.jobs().start({ "id": "getCollectionOpDocs" });
             platform.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
             {
-                gui.jobs()
-                    .finish("getCollectionOpDocs");
+                gui.jobs().finish("getCollectionOpDocs");
                 if (!err && res && res.opDocs)
                 {
-                    gui.jobs()
-                        .start({ "id": "loadjsopdocs" });
+                    gui.jobs().start({ "id": "loadjsopdocs" });
                     loadjs.ready(lid, () =>
                     {
-                        gui.jobs()
-                            .finish("loadjsopdocs");
-
+                        gui.jobs().finish("loadjsopdocs");
                         res.opDocs.forEach((newOp) =>
                         {
                             this._ops.push(newOp);
@@ -2245,13 +2257,13 @@ export default class ServerOps
                             gui.opDocs.addOpDocs(res.opDocs);
                         }
                         incrementStartup();
-                        cb();
+                        if (cb) cb();
                     });
                 }
                 else
                 {
                     incrementStartup();
-                    cb();
+                    if (cb) cb();
                 }
             });
             loadjs(collectionOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
@@ -2259,7 +2271,7 @@ export default class ServerOps
         else
         {
             incrementStartup();
-            cb();
+            if (cb) cb();
         }
     }
 
