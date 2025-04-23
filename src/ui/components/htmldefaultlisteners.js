@@ -2,6 +2,8 @@ import { Logger, ModalBackground, ele } from "cables-shared-client";
 import Gui, { gui } from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";
 
+let pageshowcount = 0;
+
 /**
  * handle global html events like uncaught exceptions, contextmenu, resize etc
  *
@@ -10,21 +12,28 @@ import { fileUploader } from "../dialogs/upload.js";
 export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");
+    window.addEventListener("pageshow", (event) =>
+    {
+        pageshowcount++;
+
+        // handle people use back and then forward and browser caches whole site state...
+        if (pageshowcount > 1)
+        {
+
+            if (gui)gui.unload = true;
+
+            ele.byId("maincomponents").style.opacity =
+            ele.byId("mainContainer").style.opacity =
+            ele.byId("cablescanvas").style.opacity = "0.0000000001";
+            document.body.style["pointer-events"] = "none";
+
+            document.body.prepend("this session has expired... please reload page..........");
+        }
+
+    });
+
     window.addEventListener("beforeunload", (event) =>
     {
-        // handle people use back and then forward and browser caches whole site state...
-
-        if (gui)gui.unload = true;
-
-        ele.byId("maincomponents").style.opacity =
-        ele.byId("mainContainer").style.opacity =
-        ele.byId("cablescanvas").style.opacity = "0.0000000001";
-        document.body.style["pointer-events"] = "none";
-
-        setTimeout(() =>
-        {
-            document.body.prepend("this session has expired... please reload page..........");
-        }, 2000);
 
     });
 
