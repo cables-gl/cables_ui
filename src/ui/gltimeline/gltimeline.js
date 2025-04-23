@@ -198,6 +198,11 @@ export class GlTimeline extends Events
         });
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
+            if (this.getNumSelectedKeys() == 0)
+            {
+
+            }
+            else
             if (this.getNumSelectedKeys() > 1)
             {
                 this.zoomToFitSelection();
@@ -540,7 +545,7 @@ export class GlTimeline extends Events
                 }
             }
         }
-        this.showKeyParams();
+        if (this.getNumSelectedKeys() > 0) this.showKeyParams();
         this.needsUpdateAll = true;
     }
 

@@ -19,13 +19,7 @@ export default function setHtmlDefaultListeners()
         // handle people use back and then forward and browser caches whole site state...
         if (pageshowcount > 1)
         {
-
-            if (gui)gui.unload = true;
-
-            ele.byId("maincomponents").style.opacity =
-            ele.byId("mainContainer").style.opacity =
-            ele.byId("cablescanvas").style.opacity = "0.0000000001";
-            document.body.style["pointer-events"] = "none";
+            gui.hide();
             document.body.prepend("this session has expired... please reload page..........");
         }
 
@@ -152,7 +146,7 @@ export default function setHtmlDefaultListeners()
         }
     }, false);
 
-    window.addEventListener("focus", (event) =>
+    window.addEventListener("focus", () =>
     {
         if (gui && !document.hidden)
         {

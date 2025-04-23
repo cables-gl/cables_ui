@@ -24,15 +24,14 @@ export default class SavedState extends Events
 
         window.addEventListener("beforeunload", (event) =>
         {
+            if (this.isSaved)
+            {
+                gui.hide();
+                return;
+            }
             const message = "unsaved content!";
-            if (typeof event == "undefined")
-            {
-                event = window.event;
-            }
-            if (event)
-            {
-                event.returnValue = message;
-            }
+            if (typeof event == "undefined") event = window.event;
+            if (event) event.returnValue = message;
             return message;
         });
     }
