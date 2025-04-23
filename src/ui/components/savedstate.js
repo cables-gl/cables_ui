@@ -159,7 +159,7 @@ export default class SavedState extends Events
     }
 
     /**
-     * @param {string} bp
+     * @param {string|number} bp
      */
     getStateBlueprint(bp)
     {

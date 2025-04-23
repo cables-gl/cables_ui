@@ -2364,7 +2364,7 @@ export default class Gui extends Events
         this._corePatch.pause();
 
         ele.byId("gluiPreviewLayer").style.opacity =
-        ele.byId("maincomponents").style.opacity =
+            ele.byId("maincomponents").style.opacity =
             ele.byId("mainContainer").style.opacity =
             ele.byId("cablescanvas").style.opacity = "0.0000000001";
         document.body.style["pointer-events"] = "none";

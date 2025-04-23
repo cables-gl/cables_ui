@@ -293,6 +293,11 @@ export class GlTimeline extends Events
         return this.cfg.fps;
     }
 
+    get layout()
+    {
+        return this.#layout;
+    }
+
     get rects()
     {
         return this.#rects;
@@ -507,6 +512,8 @@ export class GlTimeline extends Events
      */
     moveSelectedKeysDelta(deltaTime, deltaValue = 0)
     {
+        if (deltaTime == 0 && deltaValue == 0) return;
+        console.log("move keysss", deltaTime, deltaValue);
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
@@ -682,7 +689,6 @@ export class GlTimeline extends Events
                 if (op.portsIn[j].anim)
                 {
                     ports.push(op.portsIn[j]);
-                    console.log("2", this.#layout);
 
                     if (this.#layout === GlTimeline.LAYOUT_LINES)
                     {
@@ -880,21 +886,6 @@ export class GlTimeline extends Events
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
-        ele.clickable(ele.byId("keyscopy"), () =>
-        {
-            this.copy(new ClipboardEvent("copy"));
-        });
-
-        ele.clickable(ele.byId("keysfit"), () =>
-        {
-            this.zoomToFitSelection();
-        });
-
-        ele.clickable(ele.byId("keysdelete"), () =>
-        {
-            this.deleteSelectedKeys();
-        });
-
     }
 
     /**
@@ -1021,6 +1012,8 @@ export class GlTimeline extends Events
                     }
 
                     console.log(json.keys);
+                    this.needsUpdateAll = true;
+
                     // anim.sortKeys();
 
                     // for (let i in anim.keys)
