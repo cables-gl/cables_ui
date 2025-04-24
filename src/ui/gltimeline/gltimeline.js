@@ -315,6 +315,11 @@ export class GlTimeline extends Events
         return gui.corePatch().timer.getTime();
     }
 
+    parentElement()
+    {
+        return this.#cgl.canvas.parentElement;
+    }
+
     resize()
     {
         this.scroll.setWidth(this.#cgl.canvasWidth - this.titleSpace);
@@ -387,7 +392,6 @@ export class GlTimeline extends Events
         this.#focusScroll = false;
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
-        console.log("focus scroll", this.#focusScroll);
 
         if (this.#focusRuler)
         {
