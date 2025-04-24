@@ -30,6 +30,9 @@ export class TlTitle extends Events
             this.emitEvent("titleClicked", this);
         });
         this.#el.appendChild(this.#elTitle);
+        this.addButton("...", () => {});
+        // this.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => {});
+        this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
 
     }
 
