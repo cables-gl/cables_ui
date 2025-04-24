@@ -121,6 +121,7 @@ export class GlTimeline extends Events
     selectRect = null;
     #selectedKeyAnims = [];
     #firstInit = true;
+    #focusRuler = false;
 
     /**
      * @param {CglContext} cgl
@@ -198,6 +199,11 @@ export class GlTimeline extends Events
         });
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
+            if (this.getNumSelectedKeys() == 0)
+            {
+
+            }
+            else
             if (this.getNumSelectedKeys() > 1)
             {
                 this.zoomToFitSelection();
@@ -288,6 +294,11 @@ export class GlTimeline extends Events
         return this.cfg.fps;
     }
 
+    get layout()
+    {
+        return this.#layout;
+    }
+
     get rects()
     {
         return this.#rects;
@@ -366,6 +377,39 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {PointerEvent} e
+     */
+    _onCanvasMouseDown(e)
+    {
+        if (!e.pointerType) return;
+        this.#focusRuler = false;
+        if (this.ruler._glRectBg.isHovering())
+        {
+            this.#focusRuler = true;
+        }
+
+        if (this.#focusRuler)
+        {
+            this.ruler.setTimeFromPixel(e.offsetX);
+        }
+        else
+        {
+
+            if (!this.selectRect && e.buttons == 1)
+                if (this.hoverKeyRect == null && !e.shiftKey)
+                    if (e.offsetY > this.getFirstLinePosy())
+                        this.unSelectAllKeys();
+
+            try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
+            catch (er) { this._log.log(er); }
+
+            this.#rects.mouseDown(e, e.offsetX, e.offsetY);
+        }
+
+        this.mouseDown = true;
+    }
+
+    /**
      * @param {MouseEvent} event
      */
     _onCanvasMouseMove(event)
@@ -374,35 +418,38 @@ export class GlTimeline extends Events
 
         let x = event.offsetX;
         let y = event.offsetY;
-
         this.#rects.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
         {
-            if (this.hoverKeyRect && !this.selectRect)
+            if (!this.#focusRuler)
             {
-                console.log("hoverKeyRect");
-            }
-            else
-            {
-                if (y > this.getFirstLinePosy())
+
+                if (this.hoverKeyRect && !this.selectRect)
                 {
-                    if (!event.shiftKey) this.unSelectAllKeys();
-
-                    this.selectRect = {
-                        "x": Math.min(this.#lastXnoButton, x),
-                        "y": Math.min(this.#lastYnoButton, y),
-                        "x2": Math.max(this.#lastXnoButton, x),
-                        "y2": Math.max(this.#lastYnoButton, y) };
-
-                    this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
-                    this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                    console.log("hoverKeyRect");
                 }
+                else
+                {
+                    if (y > this.getFirstLinePosy())
+                    {
+                        if (!event.shiftKey) this.unSelectAllKeys();
+
+                        this.selectRect = {
+                            "x": Math.min(this.#lastXnoButton, x),
+                            "y": Math.min(this.#lastYnoButton, y),
+                            "x2": Math.max(this.#lastXnoButton, x),
+                            "y2": Math.max(this.#lastYnoButton, y) };
+
+                        this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
+                        this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+                    }
+                }
+
+                this.updateAllElements();
+
+                this.showKeyParams();
             }
-
-            this.updateAllElements();
-
-            if (this.getNumSelectedKeys() > 0) this.showKeyParams();
 
         }
         else if (event.buttons == this.buttonForScrolling)
@@ -416,6 +463,7 @@ export class GlTimeline extends Events
             this.#lastXnoButton = x;
             this.#lastYnoButton = y;
         }
+
     }
 
     /**
@@ -502,12 +550,27 @@ export class GlTimeline extends Events
      */
     moveSelectedKeysDelta(deltaTime, deltaValue = 0)
     {
+        if (deltaTime == 0 && deltaValue == 0) return;
+        console.log("move keysss", deltaTime, deltaValue);
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
         }
 
         this.needsUpdateAll = true;
+    }
+
+    getSelectedKeysBoundsValue()
+    {
+        let min = 999999;
+        let max = -999999;
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            min = Math.min(min, this.#selectedKeys[i].value);
+            max = Math.max(max, this.#selectedKeys[i].value);
+        }
+        return { "min": min, "max": max };
+
     }
 
     getSelectedKeysBoundsTime()
@@ -540,7 +603,7 @@ export class GlTimeline extends Events
                 }
             }
         }
-        this.showKeyParams();
+        if (this.getNumSelectedKeys() > 0) this.showKeyParams();
         this.needsUpdateAll = true;
     }
 
@@ -576,26 +639,6 @@ export class GlTimeline extends Events
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
         }
-    }
-
-    /**
-     * @param {PointerEvent} e
-     */
-    _onCanvasMouseDown(e)
-    {
-        if (!e.pointerType) return;
-
-        if (!this.selectRect && e.buttons == 1)
-            if (this.hoverKeyRect == null && !e.shiftKey)
-                if (e.offsetY > this.getFirstLinePosy())
-                    this.unSelectAllKeys();
-
-        try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
-        catch (er) { this._log.log(er); }
-
-        this.emitEvent("mousedown", e);
-        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
-        this.mouseDown = true;
     }
 
     /**
@@ -677,7 +720,6 @@ export class GlTimeline extends Events
                 if (op.portsIn[j].anim)
                 {
                     ports.push(op.portsIn[j]);
-                    console.log("2", this.#layout);
 
                     if (this.#layout === GlTimeline.LAYOUT_LINES)
                     {
@@ -686,14 +728,14 @@ export class GlTimeline extends Events
                     }
                     count++;
                 }
-                else console.log("has no anim,,,");
+                // else console.log("has no anim,,,");
             }
         }
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(this.#cgl.canvasHeight);
+            multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -793,7 +835,7 @@ export class GlTimeline extends Events
         this.udpateCursor();
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS && this.#tlAnims[0])
-            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight);
+            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
 
         perf.finish();
     }
@@ -868,27 +910,13 @@ export class GlTimeline extends Events
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
-                "timeBounds": this.getSelectedKeysBoundsTime()
+                "timeBounds": this.getSelectedKeysBoundsTime(),
+                "valueBounds": this.getSelectedKeysBoundsValue()
             });
 
         gui.opParams.clear();
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
-
-        ele.clickable(ele.byId("keyscopy"), () =>
-        {
-            this.copy(new ClipboardEvent("copy"));
-        });
-
-        ele.clickable(ele.byId("keysfit"), () =>
-        {
-            this.zoomToFitSelection();
-        });
-
-        ele.clickable(ele.byId("keysdelete"), () =>
-        {
-            this.deleteSelectedKeys();
-        });
 
     }
 
@@ -931,11 +959,6 @@ export class GlTimeline extends Events
         for (let i in keys)
         {
             minTime = Math.min(minTime, keys[i].t);
-
-            if (useId)
-            {
-
-            }
         }
 
         let notfoundallAnims = false;
@@ -955,7 +978,9 @@ export class GlTimeline extends Events
 
                 if (an)
                 {
+
                     const l = new CABLES.AnimKey(keys[i], an);
+
                     newKeys.push(l);
                     an.addKey(l);
                     found = true;
@@ -987,7 +1012,9 @@ export class GlTimeline extends Events
             {
                 if (json.keys)
                 {
-                    const notfoundallAnims = this.deserializeKeys(json.keys, true).notfoundallAnims;
+                    const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
+                    const notfoundallAnims = deser.notfoundallAnims;
+
                     if (notfoundallAnims)
                     {
                         notifyWarn("could not find all anims for pasted keys");
@@ -1000,21 +1027,16 @@ export class GlTimeline extends Events
                     const animPorts = gui.corePatch().getAllAnimPorts();
                     for (let i = 0; i < animPorts.length; i++)
                     {
-
                         if (animPorts[i].anim)
                             animPorts[i].anim.removeDuplicates();
                     }
-                    // anim.sortKeys();
 
-                    // for (let i in anim.keys)
-                    // {
-                    //     anim.keys[i].updateCircle(true);
-                    // }
+                    console.log(json.keys);
+                    this.needsUpdateAll = true;
 
                     return;
                 }
             }
-            // CABLES.UI.setStatusText("paste failed / not cables data format...");
             CABLES.UI.notify("Paste failed");
         }
     }

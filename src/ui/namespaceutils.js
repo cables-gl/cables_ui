@@ -17,6 +17,15 @@ class namespace
     }
 
     /**
+     * @param {String} opname
+     * @returns {String}
+     */
+    getCollectionName(opname)
+    {
+        return opname ? opname.split(".", 3).join(".") : null;
+    }
+
+    /**
      * @param {String} namespaceName
      * @returns {Boolean}
      */
@@ -117,6 +126,20 @@ class namespace
      * @param {String} opname
      * @returns {Boolean}
      */
+    isTeamOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.teamOp);
+    }
+
+    isCollectionOp(opname)
+    {
+        return opname && (this.isExtensionOp(opname) || this.isTeamOp(opname));
+    }
+
+    /**
+     * @param {String} opname
+     * @returns {Boolean}
+     */
     isCoreOp(opname)
     {
         return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname));
@@ -160,15 +183,6 @@ class namespace
     isCollection(opname)
     {
         return opname && (this.isExtension(opname) || this.isTeamNamespace(opname));
-    }
-
-    /**
-     * @param {String} opname
-     * @returns {Boolean}
-     */
-    isTeamOp(opname)
-    {
-        return opname && opname.startsWith(defaultOps.prefixes.teamOp);
     }
 
     /**
