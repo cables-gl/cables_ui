@@ -2,23 +2,12 @@
 
     <div class="panel">
 
-        <h3>{{numKeys}} keys selected</h3>
+        <a class="button-small icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
+        <a class="button-small icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
 
-        Length: {{twoDigits timeBounds.length}}s / Value: {{twoDigits valueBounds.min}}-{{twoDigits valueBounds.max}}
+        {{numKeys}} keys
 
-        <hr/>
-
-
-
-
-        <h3>Change Easings</h3>
-
-        <div>
-            <a class="button-small icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
-            <a class="button-small icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
-            <br/>
-            <br/>
-        </div>
+        <br/><br/>
 
         <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_IN);"><span class="icon icon-ease-cub-in"></span></a>
         <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_IN);"><span class="icon icon-ease-cub-in"></span></a>
@@ -47,10 +36,6 @@
         <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BACK_OUT);"><span class="icon icon-ease-cub-out"></span></a>
         <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ELASTIC_OUT);"><span class="icon icon-ease-exp-out"></span></a>
         <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
-
-
-
-
 
     </div>
 

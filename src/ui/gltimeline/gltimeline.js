@@ -123,6 +123,7 @@ export class GlTimeline extends Events
     #firstInit = true;
     #focusRuler = false;
     #focusScroll = false;
+    #keyOverEl;
 
     /**
      * @param {CglContext} cgl
@@ -173,6 +174,7 @@ export class GlTimeline extends Events
         this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
+
         gui.corePatch().timer.on("playPause", () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
@@ -190,6 +192,11 @@ export class GlTimeline extends Events
         gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { this.init(); });
         gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
+
+        this.#keyOverEl = document.createElement("div");
+        this.#keyOverEl.classList.add("keyOverlay");
+        this.#keyOverEl.classList.add("hidden");
+        cgl.canvas.parentElement.appendChild(this.#keyOverEl);
 
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
@@ -918,17 +925,29 @@ export class GlTimeline extends Events
 
     showKeyParams()
     {
+        const timebounds = this.getSelectedKeysBoundsTime();
+        const valbounds = this.getSelectedKeysBoundsValue();
+        let timestr = " (" + Math.round(timebounds.length * 100) / 100 + "s)";
+        let valstr = " (" + Math.round(valbounds.min * 100) / 100 + " - " + Math.round(valbounds.max * 100) / 100 + ")";
+
+        if (this.#selectedKeys.length == 0)
+        {
+            this.#keyOverEl.classList.add("hidden");
+            ele.byId("tlselectinfo").innerHTML = "";
+        }
+        else
+        {
+            this.#keyOverEl.classList.remove("hidden");
+            ele.byId("tlselectinfo").innerHTML = "" + this.#selectedKeys.length + " keys selected " + timestr + " " + valstr;
+        }
 
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
-                "timeBounds": this.getSelectedKeysBoundsTime(),
-                "valueBounds": this.getSelectedKeysBoundsValue()
+                "timeBounds": timebounds,
+                "valueBounds": valbounds
             });
-
-        gui.opParams.clear();
-
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+        this.#keyOverEl.innerHTML = html;
 
     }
 

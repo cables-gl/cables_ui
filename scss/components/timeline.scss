@@ -1,32 +1,40 @@
-
-.cablesCssUi
-{
-    .tlTitle
-    {
+.cablesCssUi {
+    .tlTitle {
         position: absolute;
         background-color: black;
         white-space: nowrap;
         padding-right: 5px;
         padding-left: 5px;
 
-        span
-        {
-            cursor:pointer;
+        span {
+            cursor: pointer;
             padding-right: 10px;
         }
 
-        .button-small
-        {
-            padding:3px !important;
+        .button-small {
+            padding: 3px !important;
             padding-top: 0px !important;
             padding-bottom: 0px !important;
-            margin:1px !important;
+            margin: 1px !important;
 
-            .icon
-            {
-                width: calc(3px ) !important;
+            .icon {
+                width: calc(3px) !important;
             }
         }
     }
 
+    .keyOverlay {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: var(--color-02);
+        width: 300px;
+        height: 165px;
+        z-index: 99;
+
+        .iconbutton
+        {
+        margin-right: 1px;
+        }
+    }
 }
