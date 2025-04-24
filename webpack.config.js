@@ -22,6 +22,9 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
     }
 
     return {
+        "stats": analyze,
+        "target": "web",
+        "cache": { "type": "filesystem" },
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
             path.join(__dirname, "src", "ui", "index.js"),
