@@ -16,6 +16,9 @@ export class glTlRuler extends Events
     /** @type {GlTimeline} */
     #glTl;
 
+    /**
+     * @param {GlTimeline} glTl
+     */
     constructor(glTl)
     {
         super();
@@ -28,7 +31,7 @@ export class glTlRuler extends Events
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         // this._glRectBg.setColorHover(0.2, 0.2, 0.2, 1);
-        this._glRectBg.setPosition(0, this.y);
+        this._glRectBg.setPosition(0, this.y, 1);
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {
@@ -86,6 +89,9 @@ export class glTlRuler extends Events
         this.update();
     }
 
+    /**
+     * @param {number} x
+     */
     setTimeFromPixel(x)
     {
         gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x - this.#glTl.titleSpace) + this.#glTl.view.offset));
@@ -106,7 +112,7 @@ export class glTlRuler extends Events
         let pixelScale = this.#glTl.view.timeToPixel(1);
         let titleCounter = 0;
         let offset = Math.floor(this.#glTl.view.offset);
-        let offsetPixel = this.#glTl.view.timeToPixelScreen(this.#glTl.view.offset % 1);
+        // let offsetPixel = this.#glTl.view.timeToPixelScreen(this.#glTl.view.offset % 1);
 
         for (let i = 0; i < this.titles.length; i++)
         {
@@ -148,7 +154,8 @@ export class glTlRuler extends Events
         {
             const bps = this.#glTl.bpm / 60;
             const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
-            const spb = 1 / bps;
+            // const spb = 0 / bps;
+
             for (let i = 0; i < this.markBeats.length; i++)
             {
                 const mr = this.markBeats[i];
@@ -274,10 +281,18 @@ export class glTlRuler extends Events
         }
     }
 
+    /**
+     * @param {number} w
+     */
     setWidth(w)
     {
         this.width = w;
         this._glRectBg.setSize(this.width, this.height);
 
+    }
+
+    isHovering()
+    {
+        return this._glRectBg.isHovering();
     }
 }

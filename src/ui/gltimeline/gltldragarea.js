@@ -28,11 +28,11 @@ export class glTlDragArea extends Events
     constructor(glTl, parent, interactive)
     {
         super();
-        this._log = new Logger("glTlRuler");
+        this._log = new Logger("tl dragarea");
         this.#glTl = glTl;
         this.height = 24;
 
-        this.#rectBar = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
+        this.#rectBar = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#rectBar.setSize(222, this.height);
         this.#rectBar.setColor(0.5, 0.5, 0.5, 1);
         this.#rectBar.setParent(parent);

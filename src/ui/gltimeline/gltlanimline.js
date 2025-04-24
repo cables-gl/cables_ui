@@ -83,8 +83,8 @@ export class glTlAnimLine extends Events
 
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
             {
-                this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#view.minVal, this.#view.maxVal) * 1000) / 1000);
-                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y, -0.5);
+                this.#glTextSideValue.text = String(this.#keys[0].pixelToValue(this.height - y));
+                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
             });
         }
 
@@ -101,7 +101,7 @@ export class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.on("onChange", () =>
+            const lid = anim.on(Anim.EVENT_CHANGE, () =>
             {
                 if (!keys.isDragging()) keys.init();
             });
@@ -121,14 +121,13 @@ export class glTlAnimLine extends Events
         if (ports.length > 1)title = ports.length + " anims";
 
         const padding = 10;
+
         this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
-
         this.#glTl.setMaxTitleSpace(this.#glTitle.width + (padding * 2));
-
         this.#glTitle.setPosition(padding, 0);
         this.#glTitle.setParentRect(this.#glRectTitle);
-
         this.#disposeRects.push(this.#glTitle);
+
         this.fitValues();
         this.updateColor();
     }
@@ -147,7 +146,7 @@ export class glTlAnimLine extends Events
             for (let i = 0; i < anim.keys.length; i++)
             {
                 this.#view.minVal = Math.min(this.#view.finalMinVal, anim.keys[i].value);
-                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value);
+                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value + 0.1);
             }
         }
     }
@@ -182,7 +181,7 @@ export class glTlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
         this.#glRectTitle.setPosition(x, y, -0.5);
-        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
+        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y);
     }
 
     /**

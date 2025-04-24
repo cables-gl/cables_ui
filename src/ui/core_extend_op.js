@@ -224,6 +224,9 @@ class UiOp extends CABLES.Op
         return false;
     }
 
+    /**
+     * @param {UiOp | Op} op2
+     */
     isConnectedTo(op2)
     {
         for (let i = 0; i < this.portsIn.length; i++)
@@ -257,11 +260,18 @@ class UiOp extends CABLES.Op
         return !this.isTeamOp() && !this.isPatchOp() && !this.isUserOp();
     }
 
+    /**
+     * @param {string} id
+     */
     getUiError(id)
     {
         return this.uiErrors[id];
     }
 
+    /**
+     * @param {string} id
+     * @param {string} txt
+     */
     setUiError(id, txt, level = 2, options = {})
     {
         if (!txt && !this.hasUiErrors) return;
@@ -310,6 +320,9 @@ class UiOp extends CABLES.Op
             }
         }
 
+        /**
+         * @param {Op} op
+         */
         function hasTriggerInput(op)
         {
             if (op.portsIn.length > 0 && op.portsIn[0].type == portType.trigger) return true;

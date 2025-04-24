@@ -122,6 +122,7 @@ export class GlTimeline extends Events
     #selectedKeyAnims = [];
     #firstInit = true;
     #focusRuler = false;
+    #focusScroll = false;
 
     /**
      * @param {CglContext} cgl
@@ -168,16 +169,13 @@ export class GlTimeline extends Events
         this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
         this.setColorRectSpecial(this.#textTimeB);
 
+        this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.#rectSelect.setSize(0, 0);
+        this.#rectSelect.setPosition(0, 0, -0.9);
+        this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
         gui.corePatch().timer.on("playPause", () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
-        });
-        this.init();
-
-        gui.on("opSelectChange", () =>
-        {
-            for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
-            this.needsUpdateAll = true;
         });
 
         cgl.canvas.classList.add("cblgltimelineEle");
@@ -197,6 +195,7 @@ export class GlTimeline extends Events
         {
             this.view.centerCursor();
         });
+
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
             if (this.getNumSelectedKeys() == 0)
@@ -242,21 +241,27 @@ export class GlTimeline extends Events
             this.selectAllKeys();
         });
 
+        /// ///////////////////
+
+        gui.on("opSelectChange", () =>
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+            this.needsUpdateAll = true;
+
+        });
+
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
         {
             let selops = gui.patchView.getSelectedOps();
 
             if (selops.length == 0) return;
-
             let isAnimated = false;
             for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
-
-            console.log(selops.length, "are animated", isAnimated);
 
             if (!isAnimated) return;
 
             let selOpsStr = "";
-            for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].opId;
+            for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].id;
 
             // this.updateAllElements();
             this.needsUpdateAll = true;
@@ -268,11 +273,7 @@ export class GlTimeline extends Events
         });
         gui.glTimeline = this;
 
-        this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
-        this.#rectSelect.setSize(0, 0);
-        this.#rectSelect.setPosition(0, 0, -0.9);
-        this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
-
+        this.init();
         this._initUserPrefs();
     }
 
@@ -383,18 +384,22 @@ export class GlTimeline extends Events
     {
         if (!e.pointerType) return;
         this.#focusRuler = false;
-        if (this.ruler._glRectBg.isHovering())
-        {
-            this.#focusRuler = true;
-        }
+        this.#focusScroll = false;
+        if (this.ruler.isHovering()) this.#focusRuler = true;
+        if (this.scroll.isHovering()) this.#focusScroll = true;
+        console.log("focus scroll", this.#focusScroll);
 
         if (this.#focusRuler)
         {
             this.ruler.setTimeFromPixel(e.offsetX);
         }
         else
+        if (this.#focusScroll)
         {
 
+        }
+        else
+        {
             if (!this.selectRect && e.buttons == 1)
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
@@ -422,7 +427,7 @@ export class GlTimeline extends Events
 
         if (event.buttons == 1)
         {
-            if (!this.#focusRuler)
+            if (!this.#focusRuler && !this.#focusScroll)
             {
 
                 if (this.hoverKeyRect && !this.selectRect)
@@ -527,6 +532,9 @@ export class GlTimeline extends Events
         this.needsUpdateAll = true;
     }
 
+    /**
+     * @param {boolean} [newId]
+     */
     serializeSelectedKeys(newId)
     {
         const keys = [];
