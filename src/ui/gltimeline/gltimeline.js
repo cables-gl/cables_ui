@@ -699,7 +699,6 @@ export class GlTimeline extends Events
             this.view.setZoomOffset(delta);
         }
 
-        // this.updateAllElements();
         this.needsUpdateAll = true;
     }
 

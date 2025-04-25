@@ -119,13 +119,12 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-arrow-up\"></span>", () =>
         {
-            a.glTimeline.view.maxVal -= 1;
-            a.glTimeline.view.minVal += 1;
+            a.glTimeline.view.scale(-0.3);
         });
+
         this.#tab.addButton("<span class=\"nomargin icon icon-arrow-down\"></span>", () =>
         {
-            a.glTimeline.view.maxVal += 1;
-            a.glTimeline.view.minVal -= 1;
+            a.glTimeline.view.scale(0.3);
         });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>

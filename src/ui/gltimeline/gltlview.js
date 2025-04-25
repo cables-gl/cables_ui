@@ -185,8 +185,10 @@ export class GlTlView
     scale(delta)
     {
         delta = 1 + delta;
-        this.minVal *= delta;
-        this.maxVal *= delta;
+        const nmin = this.minVal *= delta;
+        const nmax = this.maxVal *= delta;
+        this.minVal = Math.min(nmin, nmax);
+        this.maxVal = Math.max(nmin, nmax);
     }
 
     /**
