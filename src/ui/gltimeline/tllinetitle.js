@@ -1,4 +1,7 @@
 import { Events, ele } from "cables-shared-client";
+import { Op } from "cables";
+import { contextMenu } from "../elements/contextmenu.js";
+import { glTlKeys } from "./gltlkeys.js";
 
 export class TlTitle extends Events
 {
@@ -12,6 +15,14 @@ export class TlTitle extends Events
 
     /** @type {Object} */
     #buttons = [];
+    #isCurrent;
+    #hasSelectedKeys;
+
+    /** @type {Op} */
+    op;
+
+    /** @type {glTlKeys} */
+    tlKeys;
 
     /**
      * @param {HTMLElement} parentEl
@@ -30,9 +41,23 @@ export class TlTitle extends Events
             this.emitEvent("titleClicked", this);
         });
         this.#el.appendChild(this.#elTitle);
-        this.addButton("...", () => {});
-        // this.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => {});
-        this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
+        this.addButton("...",
+            (e) =>
+            {
+
+                contextMenu.show(
+                    {
+                        "items":
+                        [
+                            {
+                                "title": "Select all keys",
+                                "func": () => { this.tlKeys.selectAll(); }
+                            },
+                        ]
+                    }, e.target);
+            }
+        );
+        // this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
 
     }
 
@@ -42,6 +67,28 @@ export class TlTitle extends Events
     setTitle(t)
     {
         this.#elTitle.innerHTML = t;
+    }
+
+    /**
+     * @param {boolean} c
+     */
+    setIsCurrent(c)
+    {
+        this.#isCurrent = c;
+
+        if (c) this.#elTitle.classList.add("current");
+        else this.#elTitle.classList.remove("current");
+    }
+
+    /**
+     * @param {boolean} c
+     */
+    setHasSelectedKeys(c)
+    {
+        this.#hasSelectedKeys = c;
+
+        if (c) this.#el.classList.add("hasSelectedKeys");
+        else this.#el.classList.remove("hasSelectedKeys");
     }
 
     /**
@@ -70,6 +117,12 @@ export class TlTitle extends Events
     {
         this.#el.style.left = (x) + "px";
         this.#el.style.top = (y + 35) + "px";
+    }
+
+    updateColor()
+    {
+        if (this.op)
+            this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
     }
 
     dispose()

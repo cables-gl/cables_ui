@@ -103,6 +103,7 @@ export class GlTimeline extends Events
     #cgl = null;
     #isAnimated = false;
     buttonForScrolling = 2;
+    toParamKeys = null;
 
     /** @type {TlConfig} */
     cfg = {
@@ -654,6 +655,11 @@ export class GlTimeline extends Events
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
         }
+        clearTimeout(this.toParamKeys);
+        this.toParamKeys = setTimeout(() =>
+        {
+            this.showKeyParams();
+        }, 100);
     }
 
     /**

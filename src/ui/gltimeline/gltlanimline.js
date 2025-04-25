@@ -80,6 +80,7 @@ export class glTlAnimLine extends Events
         this.#view = glTl.view;
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
+        this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
         if (ports.length > 1)
         {
@@ -151,6 +152,8 @@ export class glTlAnimLine extends Events
         {
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
             this.#titles[i].index = i;
+            this.#titles[i].tlKeys = this.#keys[i];
+            this.#titles[i].op = this.#ops[i];
         }
     }
 
@@ -184,21 +187,19 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].update();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
     }
 
     updateColor()
     {
         if (this.checkDisposed()) return;
-        // this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
-        this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
-        if (gui.patchView.isCurrentOp(this.#ops[0]))
+        for (let i = 0; i < this.#titles.length; i++)
         {
-            // this.#glTitle.setColorArray(this.#glTl.getColorSpecial());
-            this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
+            this.#titles[i].updateColor();
+            this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
+
     }
 
     /**
