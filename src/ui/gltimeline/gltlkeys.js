@@ -54,6 +54,7 @@ export class glTlKeys extends Events
     #dragStartX = 0;
     #dragStartY = 0;
 
+    /** @type {GlRect} */
     #zeroRect = null;
 
     #view;
@@ -84,6 +85,7 @@ export class glTlKeys extends Events
         this.#zeroRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": false });
         this.#zeroRect.setSize(99999, 1);
         this.#zeroRect.setColor(0, 0, 0, 1);
+        this.#zeroRect.setParent(parentRect);
 
         if (this.#options.keyYpos)
         {
@@ -215,7 +217,6 @@ export class glTlKeys extends Events
             {
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-
                 const y = this.valueToPixel(this.#anim.getValue(t));
 
                 pointsSort.push([x, y, z]);
@@ -238,20 +239,23 @@ export class glTlKeys extends Events
             this.#spline.setPoints(this.#points);
         }
 
+        this.#zeroRect.setPosition(0, this.valueToPixel(0.000001));
+        // this.#zeroRect.setPosition(0, this.valueToPixel(0));
+
     }
 
     setKeyPositions()
     {
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-            let col = [0.7, 0.7, 0.7, 1];
+            // let col = [0.7, 0.7, 0.7, 1];
 
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
 
             if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
-            else
-            if (this.isCurrentOp()) col = [1, 1, 1];
+            // else
+            // if (this.isCurrentOp()) col = [1, 1, 1];
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
@@ -274,8 +278,6 @@ export class glTlKeys extends Events
             }
         }
 
-        const y = this.valueToPixel(0);
-        this.#zeroRect.setPosition(0, y);
     }
 
     selectAll()
@@ -457,8 +459,6 @@ export class glTlKeys extends Events
     {
         for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
         this.#keyRects = [];
-        // for (let i = 0; i < this.#dopeRects.length; i++) this.#dopeRects[i].dispose();
-        // this.#dopeRects = [];
     }
 
     dispose()
@@ -466,6 +466,8 @@ export class glTlKeys extends Events
         this.reset();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
+        if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
+
         this.#disposed = true;
     }
 

@@ -465,7 +465,7 @@ export class GlTimeline extends Events
 
                 this.updateAllElements();
 
-                this.showKeyParams();
+                this.showKeyParamsSoon();
             }
 
         }
@@ -601,10 +601,20 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
+    showKeyParamsSoon()
+    {
+        clearTimeout(this.toParamKeys);
+        this.toParamKeys = setTimeout(() =>
+        {
+            this.showKeyParams();
+        }, 100);
+    }
+
     unSelectAllKeys()
     {
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
+        this.showKeyParamsSoon();
     }
 
     selectAllKeys()
@@ -619,7 +629,6 @@ export class GlTimeline extends Events
                 }
             }
         }
-        if (this.getNumSelectedKeys() > 0) this.showKeyParams();
         this.needsUpdateAll = true;
     }
 
@@ -655,11 +664,7 @@ export class GlTimeline extends Events
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
         }
-        clearTimeout(this.toParamKeys);
-        this.toParamKeys = setTimeout(() =>
-        {
-            this.showKeyParams();
-        }, 100);
+        this.showKeyParamsSoon();
     }
 
     /**
