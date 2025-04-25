@@ -82,7 +82,7 @@ export class glTlAnimLine extends Events
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
-        if (ports.length > 1)
+        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
             this.#disposeRects.push(this.#glTextSideValue);
@@ -244,6 +244,7 @@ export class glTlAnimLine extends Events
 
     dispose()
     {
+        if (this.#disposed) return;
         this.#disposed = true;
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
@@ -257,6 +258,7 @@ export class glTlAnimLine extends Events
         this.#keys = [];
 
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
+
         this.#disposeRects = [];
     }
 
@@ -286,4 +288,15 @@ export class glTlAnimLine extends Events
         return null;
     }
 
+    getDebug()
+    {
+        const o = {
+            "numanims": this.anims.length,
+            "anims": [],
+            "keys": []
+        };
+        for (let i = 0; i < this.#anims.length; i++)o.anims.push(this.anims[i].name);
+        for (let i = 0; i < this.#keys.length; i++)o.keys.push(this.#keys[i].getDebug());
+        return o;
+    }
 }

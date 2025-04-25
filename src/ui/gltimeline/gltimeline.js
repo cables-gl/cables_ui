@@ -271,7 +271,6 @@ export class GlTimeline extends Events
             let selOpsStr = "";
             for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].id;
 
-            // this.updateAllElements();
             this.needsUpdateAll = true;
             if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selOpsStr != this.#selOpsStr)
             {
@@ -444,7 +443,6 @@ export class GlTimeline extends Events
 
                 if (this.hoverKeyRect && !this.selectRect)
                 {
-                    console.log("hoverKeyRect");
                 }
                 else
                 {
@@ -1101,6 +1099,21 @@ export class GlTimeline extends Events
             redo()
             {
             } });
+    }
+
+    getDebug()
+    {
+        const o = {
+            "layout": this.#layout,
+            "tlAnims": [],
+            "view": this.view.getDebug()
+        };
+
+        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+            o.tlAnims.push(this.#tlAnims[anii].getDebug());
+
+        return o;
+
     }
 
 }

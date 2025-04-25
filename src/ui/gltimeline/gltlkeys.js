@@ -217,7 +217,7 @@ export class glTlKeys extends Events
             {
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-                const y = this.valueToPixel(this.#anim.getValue(t));
+                let y = this.valueToPixel(this.#anim.getValue(t));
 
                 pointsSort.push([x, y, z]);
             }
@@ -450,8 +450,10 @@ export class glTlKeys extends Events
      */
     valueToPixel(v)
     {
-        const y = CABLES.map(v, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.keyHeight / 2, 0, false);
+        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.keyHeight / 2, 0, false);
 
+        if (y == -Infinity)y = 0;
+        if (y == Infinity)y = 0;
         return this.#parentRect.h - y - this.#glTl.view.offsetY;
     }
 
@@ -471,4 +473,11 @@ export class glTlKeys extends Events
         this.#disposed = true;
     }
 
+    getDebug()
+    {
+        const o = {};
+        o.points = this.#points;
+
+        return o;
+    }
 }

@@ -289,4 +289,17 @@ export class GlTlView
         this.#maxVal = this.#animMaxVal.getValue(this.#timer.getTime());
     }
 
+    getDebug()
+    {
+        const o = {
+            "minval": this.minVal,
+            "maxval": this.maxVal,
+            "offset": this.offset,
+            "offsetY": this.offsetY,
+            "zoom": this.zoom,
+        };
+        return o;
+
+    }
+
 }
