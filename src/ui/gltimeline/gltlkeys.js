@@ -44,7 +44,7 @@ export class glTlKeys extends Events
 
     #disposed = false;
 
-    sizeKey = 12;
+    sizeKey = 9;
 
     /** @type {Array<number>} */
     #points = [];
@@ -128,7 +128,6 @@ export class glTlKeys extends Events
 
         if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS) return this.sizeKey / 2;
         else return 0;
-
     }
 
     /**
@@ -147,7 +146,6 @@ export class glTlKeys extends Events
         {
             kr.setShape(0);
             kr.setSize(w, this.sizeKey);
-
         }
     }
 
@@ -171,8 +169,8 @@ export class glTlKeys extends Events
         }
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
 
-        if (this.#options.multiAnims && !this.isCurrentOp()) this.sizeKey = 12;
-        else this.sizeKey = 14;
+        // if (this.#options.multiAnims && !this.isCurrentOp()) this.sizeKey = 12;
+        // else this.sizeKey = 14;
 
         this.#points = [];
         const pointsSort = [];
@@ -384,7 +382,6 @@ export class glTlKeys extends Events
 
             kr.on(GlRect.EVENT_DRAGEND, () =>
             {
-                console.log("drag end");
                 this.#anim.sortKeys();
                 this.#anim.removeDuplicates();
                 this.#glTl.needsUpdateAll = true;
@@ -412,7 +409,6 @@ export class glTlKeys extends Events
 
                     if (!e.shiftKey) this.#glTl.unSelectAllKeys();
                     this.#glTl.selectKey(key, this.#anim);
-                    console.log("key up!!", e);
                 }
                 this.click = false;
 

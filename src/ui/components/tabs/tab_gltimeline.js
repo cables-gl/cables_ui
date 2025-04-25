@@ -40,6 +40,9 @@ export default class GlTimelineTab
             a.parentResized();
         });
 
+        this.selectInfoEl = document.createElement("span");
+        this.selectInfoEl.innerHTML = "";
+        this.selectInfoEl.id = "tlselectinfo";
         this.#tab.on("resize", () =>
         {
             a.glTimeline.resize();
@@ -163,7 +166,7 @@ export default class GlTimelineTab
         });
 
         this.#tab.addButtonSpacer();
-
+        this.#tab.addButtonBarElement(this.selectInfoEl);
     }
 
     close()

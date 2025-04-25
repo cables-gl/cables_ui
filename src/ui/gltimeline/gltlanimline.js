@@ -7,6 +7,7 @@ import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
+import { TlTitle } from "./tllinetitle.js";
 
 /**
  * gltimeline anim
@@ -28,10 +29,10 @@ export class glTlAnimLine extends Events
     #glRectKeysBg = null;
 
     /** @type {GlRect} */
-    #glRectTitle = null;
+    // #glRectTitle = null;
 
     /** @type {GlText} */
-    #glTitle = null;
+    // #glTitle = null;
 
     /** @type {GlText} */
     #glTextSideValue = null;
@@ -45,13 +46,18 @@ export class glTlAnimLine extends Events
     /** @type {Array<Port>} */
     #ports = [];
 
+    static DEFAULT_HEIGHT = 25;
+
     width = 222;
-    height = 25;
+    height = glTlAnimLine.DEFAULT_HEIGHT;
 
     /** @type {Array<Object >} */
     #disposeRects = [];
 
     #options = {};
+
+    /** @type {TlTitle[]} */
+    #titles = [];
 
     #animChangeListeners = [];
 
@@ -78,13 +84,13 @@ export class glTlAnimLine extends Events
         if (ports.length > 1)
         {
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
-            this.#glTextSideValue.setParentRect(this.#glRectTitle);
+            // this.#glTextSideValue.setParentRect(this.#glRectTitle);
             this.#disposeRects.push(this.#glTextSideValue);
 
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
             {
-                this.#glTextSideValue.text = String(Math.round(CABLES.map(y / this.height, 0, 1, this.#view.minVal, this.#view.maxVal) * 1000) / 1000);
-                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y, -0.5);
+                this.#glTextSideValue.text = String(this.#keys[0].pixelToValue(this.height - y));
+                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
             });
         }
 
@@ -101,34 +107,35 @@ export class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.on("onChange", () =>
+            const lid = anim.on(Anim.EVENT_CHANGE, () =>
             {
                 if (!keys.isDragging()) keys.init();
             });
 
             this.#animChangeListeners.push({ "id": lid, "anim": anim });
         }
-        this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
-        this.#glRectTitle.setColor(0, 0, 0);
-        this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
+        // this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
+        // this.#glRectTitle.setColor(0, 0, 0);
+        // this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
+        // {
+        //     if (this.#ops.length > 0)gui.patchView.focusOp(this.#ops[0].id);
+        // });
+        // this.#disposeRects.push(this.#glRectTitle);
+
+        for (let i = 0; i < ports.length; i++)
         {
-            if (this.#ops.length > 0)gui.patchView.focusOp(this.#ops[0].id);
-        });
-        this.#disposeRects.push(this.#glRectTitle);
+            let title = ports[i].op.name + " - " + ports[i].name;
+            this.setTitle(i, title);
+        }
 
-        let title = "???";
-        if (ports[0]) title = ports[0].op.name + " - " + ports[0].name;
-        if (ports.length > 1)title = ports.length + " anims";
+        // const padding = 10;
 
-        const padding = 10;
-        this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
+        // this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
+        // this.#glTl.setMaxTitleSpace(this.#glTitle.width + (padding * 2));
+        // this.#glTitle.setPosition(padding, 0);
+        // this.#glTitle.setParentRect(this.#glRectTitle);
+        // this.#disposeRects.push(this.#glTitle);
 
-        this.#glTl.setMaxTitleSpace(this.#glTitle.width + (padding * 2));
-
-        this.#glTitle.setPosition(padding, 0);
-        this.#glTitle.setParentRect(this.#glRectTitle);
-
-        this.#disposeRects.push(this.#glTitle);
         this.fitValues();
         this.updateColor();
     }
@@ -136,6 +143,49 @@ export class glTlAnimLine extends Events
     get anims()
     {
         return this.#anims;
+    }
+
+    /**
+     * @param {any} t
+     */
+    addTitle(t)
+    {
+        const title = new TlTitle(this.#glTl.parentElement());
+        title.setTitle(t);
+        title.on("titleClicked", (title) =>
+        {
+            gui.patchView.focusOp(this.#ops[title.index].id);
+        });
+
+        // this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
+        // {
+        // });
+        this.#titles.push(title);
+        this.setTitlePos();
+    }
+
+    setTitlePos()
+    {
+        for (let i = 0; i < this.#titles.length; i++)
+        {
+            console.log(i, glTlAnimLine.DEFAULT_HEIGHT, this.#glTl.getFirstLinePosy());
+
+            this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
+            this.#titles[i].index = i;
+        }
+
+    }
+
+    /**
+     * @param {number} idx
+     * @param {string} t
+     */
+    setTitle(idx, t)
+    {
+        while (this.#titles.length <= idx) this.addTitle("title...");
+        console.log("titles", this.#titles.length, idx);
+        this.#titles[idx].setTitle(t);
+        this.setTitlePos();
     }
 
     fitValues()
@@ -147,7 +197,7 @@ export class glTlAnimLine extends Events
             for (let i = 0; i < anim.keys.length; i++)
             {
                 this.#view.minVal = Math.min(this.#view.finalMinVal, anim.keys[i].value);
-                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value);
+                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value + 0.1);
             }
         }
     }
@@ -164,12 +214,12 @@ export class glTlAnimLine extends Events
     updateColor()
     {
         if (this.checkDisposed()) return;
-        this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
+        // this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
         if (gui.patchView.isCurrentOp(this.#ops[0]))
         {
-            this.#glTitle.setColorArray(this.#glTl.getColorSpecial());
+            // this.#glTitle.setColorArray(this.#glTl.getColorSpecial());
             this.#glRectKeysBg.setColor(0.35, 0.35, 0.35);
         }
     }
@@ -181,8 +231,9 @@ export class glTlAnimLine extends Events
     setPosition(x, y)
     {
         if (this.checkDisposed()) return;
-        this.#glRectTitle.setPosition(x, y, -0.5);
-        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y + 1);
+        // this.#glRectTitle.setPosition(x, y, -0.5);
+        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y);
+        this.setTitlePos();
     }
 
     /**
@@ -203,7 +254,7 @@ export class glTlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
         this.width = w;
-        this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
+        // this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
     }
 
@@ -216,6 +267,8 @@ export class glTlAnimLine extends Events
     dispose()
     {
         this.#disposed = true;
+
+        for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
 
         for (let i = 0; i < this.#animChangeListeners.length; i++)
             this.#animChangeListeners[i].anim.removeEventListener(this.#animChangeListeners[i].id);

@@ -10,6 +10,7 @@ export class glTlScroll extends Events
     /** @type {GlRect} */
     #mainRect = null;
 
+    /** @type {glTlDragArea} */
     #dragBar = null;
 
     /** @type {GlRect} */
@@ -103,5 +104,10 @@ export class glTlScroll extends Events
         let cx = gui.corePatch().timer.getTime() * this._glTl.view.pixelPerSecond;
         this.#glRectCursor.setPosition(cx, 0);
 
+    }
+
+    isHovering()
+    {
+        return this.#mainRect.isHovering();
     }
 }

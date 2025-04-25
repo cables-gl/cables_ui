@@ -22,12 +22,19 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
     }
 
     return {
+        "stats": analyze,
+        "target": "web",
+        "experiments": {
+            "cacheUnaffected": true
+        },
+        "cache": { "type": "filesystem" },
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
             path.join(__dirname, "src", "ui", "index.js"),
         ],
         "devtool": minify ? "source-map" : sourceMap,
         "output": {
+            "hashFunction": "xxhash64",
             "path": path.join(__dirname, "dist", "js"),
             "filename": "cablesui.js",
         },
@@ -38,7 +45,7 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
                 "terserOptions": { "output": { "comments": false } }
             })],
             "minimize": minify,
-            "usedExports": true
+            "usedExports": false
         },
         "externals": ["CABLES", /(\/libs\/ui\/)/i],
         "resolve": {
