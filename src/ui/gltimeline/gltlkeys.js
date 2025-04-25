@@ -219,22 +219,22 @@ export class glTlKeys extends Events
 
             kr.setColorArray(col);
 
-            if (this.#options.keyYpos)
-            {
-                const lx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
-                const ly = this.valueToPixel(this.#anim.getValue(animKey.time));
-                pointsSort.push([lx, ly, z]);
+            // if (this.#options.keyYpos)
+            // {
+            //     const lx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
+            //     const ly = this.valueToPixel(this.#anim.getValue(animKey.time));
+            //     pointsSort.push([lx, ly, z]);
 
-                const onepixelTime = this.#glTl.view.pixelToTime(1);
-                pointsSort.push([
-                    this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset - onepixelTime),
-                    this.valueToPixel(this.#anim.getValue(animKey.time)),
-                    z]);
-                pointsSort.push([
-                    this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset + onepixelTime),
-                    this.valueToPixel(this.#anim.getValue(animKey.time)),
-                    z]);
-            }
+            //     const onepixelTime = this.#glTl.view.pixelToTime(1);
+            //     pointsSort.push([
+            //         this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset - onepixelTime),
+            //         this.valueToPixel(this.#anim.getValue(animKey.time)),
+            //         z]);
+            //     pointsSort.push([
+            //         this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset + onepixelTime),
+            //         this.valueToPixel(this.#anim.getValue(animKey.time)),
+            //         z]);
+            // }
 
         }
 
@@ -242,7 +242,7 @@ export class glTlKeys extends Events
 
         if (this.#options.keyYpos)
         {
-            const steps = (this.#glTl.width - this.#glTl.titleSpace) / 5;
+            const steps = (this.#glTl.width - this.#glTl.titleSpace) / 1;
 
             for (let i = 0; i < steps; i++)
             {

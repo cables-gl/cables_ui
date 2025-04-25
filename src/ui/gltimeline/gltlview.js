@@ -107,7 +107,6 @@ export class GlTlView
         let dur = 0.3;
         this.#animMinVal.clear(this.#timer.getTime());
         this.#animMinVal.setValue(this.#timer.getTime() + dur, this.#finalMinVal);
-        // this.#minVal = v;
     }
 
     /**
@@ -121,7 +120,6 @@ export class GlTlView
         let dur = 0.3;
         this.#animMaxVal.clear(this.#timer.getTime());
         this.#animMaxVal.setValue(this.#timer.getTime() + dur, this.#finalMaxVal);
-        // this.#maxVal = v;
     }
 
     /** @returns {number} */
@@ -179,6 +177,15 @@ export class GlTlView
     centerCursor()
     {
         this.scroll(this.cursorTime - this.#offset - (this.visibleTime / 2));
+    }
+
+    /**
+     * @param {number} delta
+     */
+    scale(delta)
+    {
+        this.minVal -= delta;
+        this.maxVal += delta;
     }
 
     /**
