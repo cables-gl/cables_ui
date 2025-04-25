@@ -496,7 +496,9 @@ export class glTlKeys extends Events
      */
     valueToPixel(v)
     {
-        return this.#parentRect.h - CABLES.map(v, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.keyHeight / 2) - this.#glTl.view.offsetY;
+        const y = CABLES.map(v, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.keyHeight / 2, 0, false);
+
+        return this.#parentRect.h - y - this.#glTl.view.offsetY;
     }
 
     reset()
