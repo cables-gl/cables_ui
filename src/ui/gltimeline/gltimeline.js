@@ -512,11 +512,11 @@ export class GlTimeline extends Events
     /**
      * @param {Number} time
      */
-    moveSelectedKeys(time)
+    moveSelectedKeys(time = this.cursorTime)
     {
-        if (time === undefined)time = this.cursorTime;
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
         this.moveSelectedKeysDelta(minTime);
+        this.needsUpdateAll = true;
     }
 
     /**
@@ -533,10 +533,8 @@ export class GlTimeline extends Events
     /**
      * @param {Number} time
      */
-    setSelectedKeysTime(time)
+    setSelectedKeysTime(time = this.cursorTime)
     {
-        if (time === undefined)time = this.cursorTime;
-
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "time": time });
 
@@ -570,7 +568,6 @@ export class GlTimeline extends Events
     moveSelectedKeysDelta(deltaTime, deltaValue = 0)
     {
         if (deltaTime == 0 && deltaValue == 0) return;
-        console.log("move keysss", deltaTime, deltaValue);
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
@@ -589,7 +586,6 @@ export class GlTimeline extends Events
             max = Math.max(max, this.#selectedKeys[i].value);
         }
         return { "min": min, "max": max };
-
     }
 
     getSelectedKeysBoundsTime()
@@ -677,7 +673,6 @@ export class GlTimeline extends Events
      */
     _onCanvasWheel(event)
     {
-
         this.pixelPerSecond = this.view.timeToPixel(1);
 
         if (event.metaKey)
@@ -718,7 +713,6 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
-        const p = gui.corePatch();
         let ops = [];
         let count = 0;
         const ports = [];
@@ -729,8 +723,6 @@ export class GlTimeline extends Events
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = ops = gui.corePatch().ops;
         this.#firstInit = false;
-
-        console.log("init selops", selops.length);
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -748,7 +740,6 @@ export class GlTimeline extends Events
                     }
                     count++;
                 }
-                // else console.log("has no anim,,,");
             }
         }
 
@@ -759,8 +750,6 @@ export class GlTimeline extends Events
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
-
-        console.log("init finished this.#tlAnims", this.#tlAnims.length);
 
         this.updateAllElements();
         this.setPositions();

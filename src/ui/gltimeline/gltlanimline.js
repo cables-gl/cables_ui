@@ -84,7 +84,6 @@ export class glTlAnimLine extends Events
         if (ports.length > 1)
         {
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
-            // this.#glTextSideValue.setParentRect(this.#glRectTitle);
             this.#disposeRects.push(this.#glTextSideValue);
 
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
@@ -114,27 +113,12 @@ export class glTlAnimLine extends Events
 
             this.#animChangeListeners.push({ "id": lid, "anim": anim });
         }
-        // this.#glRectTitle = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
-        // this.#glRectTitle.setColor(0, 0, 0);
-        // this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
-        // {
-        //     if (this.#ops.length > 0)gui.patchView.focusOp(this.#ops[0].id);
-        // });
-        // this.#disposeRects.push(this.#glRectTitle);
 
         for (let i = 0; i < ports.length; i++)
         {
             let title = ports[i].op.name + " - " + ports[i].name;
             this.setTitle(i, title);
         }
-
-        // const padding = 10;
-
-        // this.#glTitle = new GlText(this.#glTl.texts, title || "unknown anim");
-        // this.#glTl.setMaxTitleSpace(this.#glTitle.width + (padding * 2));
-        // this.#glTitle.setPosition(padding, 0);
-        // this.#glTitle.setParentRect(this.#glRectTitle);
-        // this.#disposeRects.push(this.#glTitle);
 
         this.fitValues();
         this.updateColor();
@@ -157,9 +141,6 @@ export class glTlAnimLine extends Events
             gui.patchView.focusOp(this.#ops[title.index].id);
         });
 
-        // this.#glRectTitle.on(GlRect.EVENT_POINTER_DOWN, () =>
-        // {
-        // });
         this.#titles.push(title);
         this.setTitlePos();
     }
@@ -168,12 +149,9 @@ export class glTlAnimLine extends Events
     {
         for (let i = 0; i < this.#titles.length; i++)
         {
-            console.log(i, glTlAnimLine.DEFAULT_HEIGHT, this.#glTl.getFirstLinePosy());
-
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
             this.#titles[i].index = i;
         }
-
     }
 
     /**
@@ -183,7 +161,6 @@ export class glTlAnimLine extends Events
     setTitle(idx, t)
     {
         while (this.#titles.length <= idx) this.addTitle("title...");
-        console.log("titles", this.#titles.length, idx);
         this.#titles[idx].setTitle(t);
         this.setTitlePos();
     }

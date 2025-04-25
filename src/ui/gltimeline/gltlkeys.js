@@ -39,9 +39,6 @@ export class glTlKeys extends Events
     /** @type {GlSpline} */
     #spline;
 
-    /** @type {GlSpline} */
-    #zeroSpline;
-
     #disposed = false;
 
     sizeKey = 9;
@@ -57,7 +54,7 @@ export class glTlKeys extends Events
     #dragStartX = 0;
     #dragStartY = 0;
 
-    #zerosSplineZ = 1.1;
+    #zeroRect = null;
 
     #view;
 
@@ -84,17 +81,16 @@ export class glTlKeys extends Events
         this.#port = port;
         this.#animLine = animLine;
 
+        this.#zeroRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": false });
+        this.#zeroRect.setSize(99999, 1);
+        this.#zeroRect.setColor(0, 0, 0, 1);
+
         if (this.#options.keyYpos)
         {
             this.#spline = new GlSpline(this.#glTl.splines, port.name);
 
             this.#spline.setParentRect(parentRect);
             this.#spline.setPoints([0, 0, 0, 100, 10, 0, 10, 10, 0]);
-
-            this.#zeroSpline = new GlSpline(this.#glTl.splines, "zero");
-            this.#zeroSpline.setPoints([0, 0, this.#zerosSplineZ, 0, 0, this.#zerosSplineZ, 0, 0, this.#zerosSplineZ]);
-
-            this.#zeroSpline.setColor(0.1, 0.1, 0.1, 1);
         }
 
         this.points = [];
@@ -168,9 +164,6 @@ export class glTlKeys extends Events
             return;
         }
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
-
-        // if (this.#options.multiAnims && !this.isCurrentOp()) this.sizeKey = 12;
-        // else this.sizeKey = 14;
 
         this.#points = [];
         const pointsSort = [];
@@ -334,13 +327,8 @@ export class glTlKeys extends Events
             }
         }
 
-        const y = this.valueToPixel(0) + this.#parentRect.absY;
-
-        if (this.#zeroSpline)
-            this.#zeroSpline.setPoints([0, y, this.#zerosSplineZ,
-                100, y, this.#zerosSplineZ,
-                111111111, y, this.#zerosSplineZ]);
-
+        const y = this.valueToPixel(0);
+        this.#zeroRect.setPosition(0, y);
     }
 
     updateKeyRects()
