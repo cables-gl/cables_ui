@@ -107,7 +107,6 @@ export class GlTlView
         let dur = 0.3;
         this.#animMinVal.clear(this.#timer.getTime());
         this.#animMinVal.setValue(this.#timer.getTime() + dur, this.#finalMinVal);
-        // this.#minVal = v;
     }
 
     /**
@@ -121,7 +120,6 @@ export class GlTlView
         let dur = 0.3;
         this.#animMaxVal.clear(this.#timer.getTime());
         this.#animMaxVal.setValue(this.#timer.getTime() + dur, this.#finalMaxVal);
-        // this.#maxVal = v;
     }
 
     /** @returns {number} */
@@ -179,6 +177,18 @@ export class GlTlView
     centerCursor()
     {
         this.scroll(this.cursorTime - this.#offset - (this.visibleTime / 2));
+    }
+
+    /**
+     * @param {number} delta
+     */
+    scale(delta)
+    {
+        delta = 1 + delta;
+        const nmin = this.minVal *= delta;
+        const nmax = this.maxVal *= delta;
+        this.minVal = Math.min(nmin, nmax);
+        this.maxVal = Math.max(nmin, nmax);
     }
 
     /**
@@ -277,6 +287,19 @@ export class GlTlView
         this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
         this.#minVal = this.#animMinVal.getValue(this.#timer.getTime());
         this.#maxVal = this.#animMaxVal.getValue(this.#timer.getTime());
+    }
+
+    getDebug()
+    {
+        const o = {
+            "minval": this.minVal,
+            "maxval": this.maxVal,
+            "offset": this.offset,
+            "offsetY": this.offsetY,
+            "zoom": this.zoom,
+        };
+        return o;
+
     }
 
 }

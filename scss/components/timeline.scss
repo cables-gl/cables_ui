@@ -5,10 +5,22 @@
         white-space: nowrap;
         padding-right: 5px;
         padding-left: 5px;
+        border-left:3px solid transparent;
+
+        &.hasSelectedKeys
+        {
+            border-left:3px solid yellow;
+        }
 
         span {
             cursor: pointer;
             padding-right: 10px;
+            padding-left: 5px;
+
+            &.current
+            {
+                color:var(--color-special)
+            }
         }
 
         .button-small {
