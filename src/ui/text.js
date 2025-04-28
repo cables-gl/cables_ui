@@ -240,6 +240,9 @@ const text =
         "title_openlastproject": "Open the last saved patch on start",
         "subtitle_openlastproject": "",
 
+        "title_openrendererfullscreen": "Open renderer in fullscreen on start",
+        "subtitle_openrendererfullscreen": "",
+
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",
 
