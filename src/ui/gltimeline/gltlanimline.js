@@ -89,6 +89,7 @@ export class glTlAnimLine extends Events
 
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
             {
+                if (this.#keys.length < 1) return;
                 this.#glTextSideValue.text = String(this.#keys[0].pixelToValue(this.height - y));
                 this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
             });

@@ -95,6 +95,19 @@ export class GlTlView
         return this.#maxVal;
     }
 
+    checkMinMaxVals()
+    {
+
+        if (this.#finalMinVal == this.#finalMaxVal)
+            this.#finalMaxVal = this.#finalMinVal + 0.1;
+        if (this.maxVal == this.minVal)
+        {
+            this.maxVal = this.minVal + 1;
+            console.log("whyyyyyyyyyyyyy", this.maxVal, this.minVal);
+
+        }
+    }
+
     /**
      * @param {number} v
      */
@@ -103,7 +116,6 @@ export class GlTlView
         if (this.#finalMinVal == v) return;
         this.#finalMinVal = v;
 
-        if (this.#finalMinVal == this.#finalMaxVal) this.#finalMinVal = this.#maxVal - 0.1;
         let dur = 0.3;
         this.#animMinVal.clear(this.#timer.getTime());
         this.#animMinVal.setValue(this.#timer.getTime() + dur, this.#finalMinVal);
@@ -116,7 +128,6 @@ export class GlTlView
     {
         if (this.#finalMaxVal == v) return;
         this.#finalMaxVal = v;
-        if (this.#finalMinVal == this.#finalMaxVal) this.#finalMaxVal = this.#minVal + 0.1;
         let dur = 0.3;
         this.#animMaxVal.clear(this.#timer.getTime());
         this.#animMaxVal.setValue(this.#timer.getTime() + dur, this.#finalMaxVal);
@@ -287,6 +298,7 @@ export class GlTlView
         this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
         this.#minVal = this.#animMinVal.getValue(this.#timer.getTime());
         this.#maxVal = this.#animMaxVal.getValue(this.#timer.getTime());
+        this.checkMinMaxVals();
     }
 
     getDebug()
