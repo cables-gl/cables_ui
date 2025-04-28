@@ -307,7 +307,7 @@ export default class GlRect extends Events
      * @param {number} _y
      * @param {number} _z
      */
-    setPosition(_x, _y, _z = 0)
+    setPosition(_x, _y, _z = this.#z)
     {
         this.#x = _x;
         this.#y = _y;

@@ -16,6 +16,7 @@ export class glTlScroll extends Events
     /** @type {GlRect} */
     #glRectCursor;
 
+    height = 24;
     #width = 222;
     #dragStart = 0;
 
@@ -27,7 +28,6 @@ export class glTlScroll extends Events
         super();
         this._log = new Logger("glTlRuler");
         this._glTl = glTl;
-        this.height = 24;
 
         this.#mainRect = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
         this.#mainRect.setColor(0.2, 0.2, 0.2, 1);

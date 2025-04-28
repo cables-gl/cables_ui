@@ -149,9 +149,9 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
-        this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
+        this.#glRectCursor = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setPosition(0, 0);
+        this.#glRectCursor.setPosition(0, 0, -1.0);
         this.setColorRectSpecial(this.#glRectCursor);
 
         this.#timeBg = this.#rects.createRect({ });
@@ -829,7 +829,7 @@ export class GlTimeline extends Events
 
     udpateCursor()
     {
-        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0, -0.3);
+        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0);
 
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
