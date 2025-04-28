@@ -95,7 +95,7 @@ export class GlTlView
 
     checkMinMaxVals()
     {
-        console.log("", this.#finalMinVal, this.#finalMaxVal);
+        // console.log("", this.#finalMinVal, this.#finalMaxVal);
 
         // if (this.#finalMinVal == this.#finalMaxVal) this.#finalMaxVal = this.#finalMinVal + 1;
         // if (this.maxVal == this.minVal)

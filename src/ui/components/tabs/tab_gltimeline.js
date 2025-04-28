@@ -75,7 +75,7 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineForward();
+            CABLES.CMD.TIMELINE.TimelineRewind();
         });
 
         const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play\"></span>", () =>
