@@ -1,3 +1,4 @@
+import { Patch } from "cables";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { GlTimeline } from "./gltimeline.js";
 import { gui } from "../gui.js";
@@ -21,21 +22,15 @@ export class glTimelineCanvas extends GlCanvas
         super(_patch, parentEle);
 
         this.setSize(100, 100);
-        this.parentResized();
         this.activityHigh();
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
 
-        this.patch.cgl.on("resize", () =>
-        {
-            this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
-        });
+        // this.patch.cgl.on("resize", () =>
+        // {
+        //     this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
+        // });
 
         this.glTimeline = new GlTimeline(this.cgl);
-    }
-
-    parentResized()
-    {
-        this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
     render()

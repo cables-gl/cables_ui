@@ -10,6 +10,15 @@ export default class GlTimelineTab
 
     /** @type {Tab} */
     #tab;
+    #splitter;
+
+    /** @type {glTimelineCanvas} */
+    tlCanvas = null;
+
+    /** @type {number} */
+    #splitterPos = 100;
+
+    resizing = false;
 
     /**
      * @param {TabPanel} tabs
@@ -17,55 +26,60 @@ export default class GlTimelineTab
     constructor(tabs)
     {
         this.#tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline" });
-        tabs.addTab(this.#tab, true);
         gui.bottomTabPanel.show(true);
 
-        // gui.maintabPanel.show(true);
-        this.#tab.contentEle.innerHTML = "";
-        const a = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle);
+        tabs.addTab(this.#tab, true);
         this.#tab.activate();
+        this.#tab.contentEle.innerHTML = "";
+        this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle);
 
-        a.parentResized();
         userSettings.set("glTimelineOpened", true);
 
         gui.on(Gui.EVENT_RESIZE, () =>
         {
-            a.glTimeline.resize();
-            a.parentResized();
+            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
+            this.updateSize();
         });
 
         gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
         {
-            a.glTimeline.resize();
-            a.parentResized();
+            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
+            this.updateSize();
         });
 
         this.selectInfoEl = document.createElement("span");
         this.selectInfoEl.innerHTML = "";
         this.selectInfoEl.id = "tlselectinfo";
 
+        this.#splitter = document.createElement("div");
+        this.#splitter.classList.add("splitter");
+        this.#splitter.classList.add("splitterTimeline");
+        this.#splitter.style.left = "100px";
+        this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
+        this.#tab.contentEle.appendChild(this.#splitter);
+
         this.#tab.on("resize", () =>
         {
-            a.glTimeline.resize();
+            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
         });
 
         this.#tab.on("onDeactivate", () =>
         {
-            a.pause();
+            if (this.tlCanvas) this.tlCanvas.pause();
         });
         this.#tab.on("close", () =>
         {
-            a.dispose();
+            if (this.tlCanvas) this.tlCanvas.dispose();
         });
 
         this.#tab.on("onActivate", () =>
         {
-            a.resume();
-            a.parentResized();
+            if (this.tlCanvas) this.tlCanvas.resume();
+            this.updateSize();
         });
 
-        this.#tab.addButton("+", () => { a.glTimeline.view.setZoomOffset(1.4, 0.5); });
-        this.#tab.addButton("-", () => { a.glTimeline.view.setZoomOffset(0.6, 0.5); });
+        this.#tab.addButton("+", () => { this.tlCanvas.glTimeline.view.setZoomOffset(1.4, 0.5); });
+        this.#tab.addButton("-", () => { this.tlCanvas.glTimeline.view.setZoomOffset(0.6, 0.5); });
 
         this.#tab.addButtonSpacer();
 
@@ -94,7 +108,7 @@ export default class GlTimelineTab
 
         this.#tab.on("resize", () =>
         {
-            a.parentResized();
+            this.updateSize();
         });
 
         this.#tab.on("close", () =>
@@ -104,28 +118,28 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () => { a.glTimeline.view.scroll(-1); });
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { a.glTimeline.view.scroll(1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(-1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(1); });
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous\"></span>", () => { a.glTimeline.jumpKey(-1); });
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next\"></span>", () => { a.glTimeline.jumpKey(1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); });
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { a.glTimeline.toggleGraphLayout(); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); });
 
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span class=\"nomargin icon icon-list-plus\"></span>", () =>
         {
-            a.glTimeline.view.scale(-0.3);
+            this.tlCanvas.glTimeline.view.scale(-0.3);
         });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-list-minus\"></span>", () =>
         {
-            a.glTimeline.view.scale(0.3);
+            this.tlCanvas.glTimeline.view.scale(0.3);
         });
 
         this.#tab.addButtonSpacer();
@@ -137,20 +151,20 @@ export default class GlTimelineTab
                         [
                             {
                                 "title": "Delete Selected Keys",
-                                "func": () => { a.glTimeline.deleteSelectedKeys(); }
+                                "func": () => { this.tlCanvas.glTimeline.deleteSelectedKeys(); }
                             },
                             {
                                 "title": "Move Selected Keys to cursor",
                                 "func": () =>
                                 {
-                                    a.glTimeline.moveSelectedKeys();
+                                    this.tlCanvas.glTimeline.moveSelectedKeys();
                                 }
                             },
                             {
                                 "title": "Set same time for selected keys",
                                 "func": () =>
                                 {
-                                    a.glTimeline.setSelectedKeysTime();
+                                    this.tlCanvas.glTimeline.setSelectedKeysTime();
 
                                 }
                             },
@@ -159,7 +173,7 @@ export default class GlTimelineTab
                                 "title": "fit into view",
                                 "func": () =>
                                 {
-                                    a.glTimeline.zoomToFitSelection();
+                                    this.tlCanvas.glTimeline.zoomToFitSelection();
                                 }
                             },
                         ]
@@ -168,11 +182,59 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
         this.#tab.addButtonBarElement(this.selectInfoEl);
+        this.updateSize();
+
     }
 
     close()
     {
         this.#tab.remove();
         console.log(gui.bottomTabPanel);
+    }
+
+    updateSize()
+    {
+        if (this.resizing) return;
+        if (!this.tlCanvas)
+        {
+            console.log("no blcanvas,,,", this);
+            return;
+        }
+
+        this.resizing = true;
+        const parentEle = this.#tab.contentEle;
+        if (parentEle.clientWidth == 0)setTimeout(this.updateSize.bind(this), 100);
+        this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
+        this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);
+        this.resizing = false;
+    }
+
+    resizeRenderer(ev)
+    {
+        console.log("rezizerenderer");
+
+        ev.preventDefault();
+        window.splitpane.bound = true;
+        const mm = (e) =>
+        {
+            gui.pauseInteractionSplitpanes();
+            let x = e.clientX;
+            let y = e.clientY;
+
+            if (x === undefined && e.touches && e.touches.length > 0)
+            {
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
+            }
+
+            this.#splitter.style.left = x + "px";
+            this.#splitterPos = Math.round(x);
+            this.updateSize();
+            e.preventDefault();
+        };
+        const f = mm.bind(this);
+
+        document.addEventListener("pointermove", f);
+        window.splitpane.listeners.push(f);
     }
 }

@@ -3,6 +3,7 @@ import { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 
 const splitpane = {};
+window.splitpane = splitpane;
 splitpane.listeners = [];
 
 export default initSplitPanes;

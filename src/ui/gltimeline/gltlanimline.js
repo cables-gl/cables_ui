@@ -193,7 +193,7 @@ export class glTlAnimLine extends Events
         this.updateColor();
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
-        this.#valueRuler.update();
+        if (this.#valueRuler) this.#valueRuler.update();
     }
 
     updateColor()

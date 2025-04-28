@@ -67,12 +67,12 @@ export class GlTimeline extends Events
     displayUnits = "Seconds";
 
     /** @type {GlRect} */
-    #timeBg;
+    // #timeBg;
 
     /** @type {GlRect} */
     #rectSelect;
 
-    titleSpace = 150;
+    titleSpace = 0;
 
     /** @type {GlTlView} */
     view = null;
@@ -146,10 +146,10 @@ export class GlTimeline extends Events
         this.#glRectCursor.setPosition(0, 0, -1.0);
         this.setColorRectSpecial(this.#glRectCursor);
 
-        this.#timeBg = this.#rects.createRect({ });
-        this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
-        this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
-        this.#timeBg.setPosition(0, 0, -0.5);
+        // this.#timeBg = this.#rects.createRect({ });
+        // this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
+        // this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
+        // this.#timeBg.setPosition(0, 0, -0.5);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -367,7 +367,7 @@ export class GlTimeline extends Events
         if (w > this.titleSpace)
         {
             this.titleSpace = w;
-            this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
+            // this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
             // this.updateAllElements();
             this.needsUpdateAll = true;
         }
