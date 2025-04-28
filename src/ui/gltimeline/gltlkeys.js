@@ -7,6 +7,7 @@ import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { gui } from "../gui.js";
+import { GlTlView } from "./gltlview.js";
 
 /**
  * gltl key rendering
@@ -54,9 +55,7 @@ export class glTlKeys extends Events
     #dragStartX = 0;
     #dragStartY = 0;
 
-    /** @type {GlRect} */
-    #zeroRect = null;
-
+    /** @type {GlTlView} */
     #view;
 
     /**
@@ -81,11 +80,6 @@ export class glTlKeys extends Events
         this.#options = options || {};
         this.#port = port;
         this.#animLine = animLine;
-
-        this.#zeroRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": false });
-        this.#zeroRect.setSize(99999, 1);
-        this.#zeroRect.setColor(0, 0, 0, 1);
-        this.#zeroRect.setParent(parentRect);
 
         if (this.#options.keyYpos)
         {
@@ -217,7 +211,7 @@ export class glTlKeys extends Events
             {
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-                let y = this.valueToPixel(this.#anim.getValue(t));
+                let y = this.#animLine.valueToPixel(this.#anim.getValue(t));
 
                 pointsSort.push([x, y, z]);
             }
@@ -239,8 +233,8 @@ export class glTlKeys extends Events
             this.#spline.setPoints(this.#points);
         }
 
-        this.#zeroRect.setPosition(0, this.valueToPixel(0.000001));
-        // this.#zeroRect.setPosition(0, this.valueToPixel(0));
+        // this.#zeroRect.setPosition(0, this.#animLine.valueToPixel(0.000001));
+        // this.#zeroRect.setPosition(0, this.#animLine.valueToPixel(0));
 
     }
 
@@ -259,7 +253,7 @@ export class glTlKeys extends Events
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos)
-                y = this.valueToPixel(animKey.value);
+                y = this.#animLine.valueToPixel(animKey.value);
 
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.keyHeight / 2;
@@ -381,7 +375,7 @@ export class glTlKeys extends Events
                     oldValues = this.#glTl.serializeSelectedKeys();
                     this.#dragStarted = true;
                     startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
-                    startDragValue = this.pixelToValue(e.offsetY);
+                    startDragValue = this.#animLine.pixelToValue(e.offsetY);
 
                     if (e.shiftKey) this.#glTl.duplicateSelectedKeys();
 
@@ -408,8 +402,8 @@ export class glTlKeys extends Events
                     const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDragTime;
                     startDragTime = this.#glTl.snapTime(this.#glTl.view.pixelToTime(e.offsetX));
 
-                    const offVal = startDragValue - this.pixelToValue(e.offsetY);
-                    startDragValue = this.pixelToValue(e.offsetY);
+                    const offVal = startDragValue - this.#animLine.pixelToValue(e.offsetY);
+                    startDragValue = this.#animLine.pixelToValue(e.offsetY);
 
                     if (this.#glTl.getNumSelectedKeys() > 0)
                     {
@@ -434,26 +428,6 @@ export class glTlKeys extends Events
         return this.#parentRect.h - this.#parentRect.y;
     }
 
-    /**
-     * @param {Number} posy
-     */
-    pixelToValue(posy)
-    {
-        return CABLES.map(posy, 0, this.height, this.#view.minVal, this.#view.maxVal);
-    }
-
-    /**
-     * @param {Number} v
-     */
-    valueToPixel(v)
-    {
-        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.sizeKey2, this.#parentRect.h - this.keyHeight / 2, 0, false);
-
-        // if (y == -Infinity) y = 0;
-        // if (y == Infinity)y = 0;
-        return this.#parentRect.h - y - this.#glTl.view.offsetY;
-    }
-
     reset()
     {
         for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
@@ -465,7 +439,7 @@ export class glTlKeys extends Events
         this.reset();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
-        if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
+        // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
 
         this.#disposed = true;
     }

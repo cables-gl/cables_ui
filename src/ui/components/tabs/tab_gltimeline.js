@@ -43,6 +43,7 @@ export default class GlTimelineTab
         this.selectInfoEl = document.createElement("span");
         this.selectInfoEl.innerHTML = "";
         this.selectInfoEl.id = "tlselectinfo";
+
         this.#tab.on("resize", () =>
         {
             a.glTimeline.resize();
@@ -117,16 +118,17 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-up\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-list-plus\"></span>", () =>
         {
             a.glTimeline.view.scale(-0.3);
         });
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-down\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-list-minus\"></span>", () =>
         {
             a.glTimeline.view.scale(0.3);
         });
 
+        this.#tab.addButtonSpacer();
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
         {
             contextMenu.show(

@@ -66,15 +66,6 @@ export class GlTimeline extends Events
 
     displayUnits = "Seconds";
 
-    /** @type {GlText} */
-    #textTimeS;
-
-    /** @type {GlText} */
-    #textTimeF;
-
-    /** @type {GlText} */
-    #textTimeB;
-
     /** @type {GlRect} */
     #timeBg;
 
@@ -125,6 +116,7 @@ export class GlTimeline extends Events
     #focusRuler = false;
     #focusScroll = false;
     #keyOverEl;
+    #tlTimeDisplay;
 
     /**
      * @param {CglContext} cgl
@@ -159,18 +151,6 @@ export class GlTimeline extends Events
         this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
         this.#timeBg.setPosition(0, 0, -0.5);
 
-        this.#textTimeS = new GlText(this.texts, "time");
-        this.#textTimeS.setPosition(10, this.ruler.y, -0.5);
-        this.setColorRectSpecial(this.#textTimeS);
-
-        this.#textTimeF = new GlText(this.texts, "frames");
-        this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
-        this.setColorRectSpecial(this.#textTimeF);
-
-        this.#textTimeB = new GlText(this.texts, "");
-        this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
-        this.setColorRectSpecial(this.#textTimeB);
-
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
@@ -198,6 +178,10 @@ export class GlTimeline extends Events
         this.#keyOverEl.classList.add("keyOverlay");
         this.#keyOverEl.classList.add("hidden");
         cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+
+        this.#tlTimeDisplay = document.createElement("div");
+        this.#tlTimeDisplay.classList.add("tltimedisplay");
+        cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
@@ -835,11 +819,14 @@ export class GlTimeline extends Events
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3)parts[1] += "0";
-        this.#textTimeS.text = "second " + parts[0] + "." + parts[1];
-        this.#textTimeF.text = "frame " + Math.floor(this.cursorTime * this.fps);
+
+        let html = "";
+        html += "second " + parts[0] + "." + parts[1] + "<br>";
+        html += "frame " + Math.floor(this.cursorTime * this.fps) + "<br>";
 
         if (this.cfg.showBeats)
-            this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
+            html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
+        this.#tlTimeDisplay.innerHTML = html;
     }
 
     updateAllElements()

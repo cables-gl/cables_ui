@@ -35,6 +35,15 @@
         }
     }
 
+    .tltimedisplay
+    {
+        position: absolute;
+        top: 40px;
+        left: 10px;
+        z-index: 99;
+        background-color: var(--color-02);
+    }
+
     .keyOverlay {
         position: absolute;
         bottom: 10px;
@@ -46,7 +55,7 @@
 
         .iconbutton
         {
-        margin-right: 1px;
+            margin-right: 1px;
         }
     }
 }
