@@ -195,11 +195,7 @@ export default class GlTimelineTab
     updateSize()
     {
         if (this.resizing) return;
-        if (!this.tlCanvas)
-        {
-            console.log("no blcanvas,,,", this);
-            return;
-        }
+        if (!this.tlCanvas) return;
 
         this.resizing = true;
         const parentEle = this.#tab.contentEle;
@@ -211,8 +207,6 @@ export default class GlTimelineTab
 
     resizeRenderer(ev)
     {
-        console.log("rezizerenderer");
-
         ev.preventDefault();
         window.splitpane.bound = true;
         const mm = (e) =>

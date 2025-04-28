@@ -216,7 +216,7 @@ export class glTlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
         // this.#glRectTitle.setPosition(x, y, -0.5);
-        this.#glRectKeysBg.setPosition(this.#glTl.titleSpace, y);
+        this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
     }
 

@@ -40,7 +40,6 @@ export class TlTitle extends Events
         {
             this.emitEvent("titleClicked", this);
         });
-        this.#el.appendChild(this.#elTitle);
         this.addButton("...",
             (e) =>
             {
@@ -58,6 +57,7 @@ export class TlTitle extends Events
             }
         );
         // this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
+        this.#el.appendChild(this.#elTitle);
 
     }
 

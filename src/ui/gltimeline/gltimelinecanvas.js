@@ -30,7 +30,7 @@ export class glTimelineCanvas extends GlCanvas
         //     this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         // });
 
-        this.glTimeline = new GlTimeline(this.cgl);
+        this.glTimeline = new GlTimeline(this.cgl, parentEle);
     }
 
     render()

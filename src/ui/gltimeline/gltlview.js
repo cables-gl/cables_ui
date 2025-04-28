@@ -149,12 +149,12 @@ export class GlTlView
 
     get pixelPerSecond()
     {
-        return (this.#tl.width - this.#tl.titleSpace) / this.#tl.duration;
+        return (this.#tl.width) / this.#tl.duration;
     }
 
     get visibleTime()
     {
-        return this.pixelToTime(this.#tl.width - this.#tl.titleSpace);
+        return this.pixelToTime(this.#tl.width);
     }
 
     get timeLeft()
@@ -164,7 +164,7 @@ export class GlTlView
 
     get timeRight()
     {
-        return this.pixelToTime(this.#tl.width - this.#tl.titleSpace) + this.offset;
+        return this.pixelToTime(this.#tl.width) + this.offset;
     }
 
     /**
@@ -235,7 +235,7 @@ export class GlTlView
      */
     timeToPixelScreen(t)
     {
-        return this.timeToPixel(t) + this.#tl.titleSpace - this.timeToPixel(this.#offset);
+        return this.timeToPixel(t) - this.timeToPixel(this.#offset);
     }
 
     /**
@@ -271,7 +271,7 @@ export class GlTlView
      */
     pixelScreenToTime(x)
     {
-        return this.pixelToTime(x - this.#tl.titleSpace);
+        return this.pixelToTime(x);
     }
 
     /**
@@ -280,10 +280,9 @@ export class GlTlView
     setZoomLength(len)
     {
         let zoom = this.#tl.duration / len;
-        let zoomtitle = this.pixelToTime(this.#tl.titleSpace) / this.#tl.duration;
         let dur = 0.3;
         this.#animZoom.clear(this.#timer.getTime());
-        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom - zoomtitle);
+        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
     }
 
     updateAnims()

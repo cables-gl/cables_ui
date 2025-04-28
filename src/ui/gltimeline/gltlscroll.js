@@ -47,7 +47,7 @@ export class glTlScroll extends Events
         this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
             console.log(e, x);
-            const perc = (x - this._glTl.titleSpace) / this.#width;
+            const perc = (x) / this.#width;
 
             this._glTl.view.scrollTo((perc * this._glTl.duration));
 
@@ -62,7 +62,7 @@ export class glTlScroll extends Events
 
         this.#mainRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
         {
-            const perc = (this.#dragStart + offX - this._glTl.titleSpace) / this.#width;
+            const perc = (this.#dragStart + offX) / this.#width;
 
             this._glTl.view.scrollTo((perc * this._glTl.duration));
 

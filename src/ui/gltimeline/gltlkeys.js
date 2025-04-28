@@ -205,7 +205,7 @@ export class glTlKeys extends Events
 
         if (this.#options.keyYpos)
         {
-            const steps = (this.#glTl.width - this.#glTl.titleSpace) / 1;
+            const steps = (this.#glTl.width) / 1;
 
             for (let i = 0; i < steps; i++)
             {

@@ -72,8 +72,6 @@ export class GlTimeline extends Events
     /** @type {GlRect} */
     #rectSelect;
 
-    titleSpace = 0;
-
     /** @type {GlTlView} */
     view = null;
     needsUpdateAll = true;
@@ -87,6 +85,7 @@ export class GlTimeline extends Events
 
     hoverKeyRect = null;
 
+    #oldhtml = "";
     #canvasMouseDown = false;
     #paused = false;
 
@@ -311,10 +310,15 @@ export class GlTimeline extends Events
         return this.#cgl.canvas.parentElement;
     }
 
+    titleElement()
+    {
+        this.titleContainer;
+    }
+
     resize()
     {
-        this.scroll.setWidth(this.#cgl.canvasWidth - this.titleSpace);
-        this.ruler.setWidth(this.#cgl.canvasWidth - this.titleSpace);
+        this.scroll.setWidth(this.#cgl.canvasWidth);
+        this.ruler.setWidth(this.#cgl.canvasWidth);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
@@ -357,20 +361,6 @@ export class GlTimeline extends Events
     {
         if (rect)
             rect.setColorArray(this.getColorSpecial());
-    }
-
-    /**
-     * @param {number} w
-     */
-    setMaxTitleSpace(w)
-    {
-        if (w > this.titleSpace)
-        {
-            this.titleSpace = w;
-            // this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
-            // this.updateAllElements();
-            this.needsUpdateAll = true;
-        }
     }
 
     /**
@@ -756,10 +746,10 @@ export class GlTimeline extends Events
     {
         let posy = 0;
 
-        this.scroll.setPosition(this.titleSpace, posy);
+        this.scroll.setPosition(0, posy);
         posy += this.scroll.height;
 
-        this.ruler.setPosition(this.titleSpace, posy);
+        this.ruler.setPosition(0, posy);
         posy += this.ruler.height;
         return posy;
     }
@@ -826,7 +816,9 @@ export class GlTimeline extends Events
 
         if (this.cfg.showBeats)
             html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
-        this.#tlTimeDisplay.innerHTML = html;
+
+        if (this.#oldhtml != html)
+            this.#tlTimeDisplay.innerHTML = html;
     }
 
     updateAllElements()
