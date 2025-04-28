@@ -264,10 +264,7 @@ export class glTlKeys extends Events
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.keyHeight / 2;
 
-            let zpos = -0.2;
-            if (this.#glTl.isKeySelected(animKey)) zpos = -0.3;
-
-            kr.setPosition(rx, ry, zpos);
+            kr.setPosition(rx, ry, -0.8);
             this.setKeyShapeSize(kr);
 
             if (this.#glTl.selectRect &&
