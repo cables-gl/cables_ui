@@ -179,6 +179,8 @@ export default class GlTimelineTab
     {
         this.#tab.remove();
         if (this.tlCanvas) this.tlCanvas.dispose();
+        this.tlCanvas = null;
+        gui.glTimeline.dispose();
         gui.glTimeline = null;
         console.log(gui.bottomTabPanel);
     }

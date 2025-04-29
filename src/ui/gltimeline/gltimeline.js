@@ -776,7 +776,7 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         this.disposed = true;
 
-        this.#rects.dispose();
+        if (this.#rects) this.#rects = this.#rects.dispose();
     }
 
     updateSize()

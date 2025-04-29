@@ -126,8 +126,12 @@ export default class GlRectInstancer extends Events
 
     dispose()
     {
+        if (this.disposed) return;
+        this.disposed = true;
+
         this.#shader.dispose();
         this.#mesh.dispose();
+        return null;
     }
 
     get bounds()
