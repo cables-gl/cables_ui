@@ -66,22 +66,11 @@ export class GlTimeline extends Events
 
     displayUnits = "Seconds";
 
-    /** @type {GlText} */
-    #textTimeS;
-
-    /** @type {GlText} */
-    #textTimeF;
-
-    /** @type {GlText} */
-    #textTimeB;
-
     /** @type {GlRect} */
-    #timeBg;
+    // #timeBg;
 
     /** @type {GlRect} */
     #rectSelect;
-
-    titleSpace = 150;
 
     /** @type {GlTlView} */
     view = null;
@@ -96,6 +85,7 @@ export class GlTimeline extends Events
 
     hoverKeyRect = null;
 
+    #oldhtml = "";
     #canvasMouseDown = false;
     #paused = false;
 
@@ -125,6 +115,7 @@ export class GlTimeline extends Events
     #focusRuler = false;
     #focusScroll = false;
     #keyOverEl;
+    #tlTimeDisplay;
 
     /**
      * @param {CglContext} cgl
@@ -149,27 +140,15 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
-        this.#glRectCursor = this.#rects.createRect({ "draggable": true, "interactive": true });
+        this.#glRectCursor = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setPosition(0, 0);
+        this.#glRectCursor.setPosition(0, 0, -1.0);
         this.setColorRectSpecial(this.#glRectCursor);
 
-        this.#timeBg = this.#rects.createRect({ });
-        this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
-        this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
-        this.#timeBg.setPosition(0, 0, -0.5);
-
-        this.#textTimeS = new GlText(this.texts, "time");
-        this.#textTimeS.setPosition(10, this.ruler.y, -0.5);
-        this.setColorRectSpecial(this.#textTimeS);
-
-        this.#textTimeF = new GlText(this.texts, "frames");
-        this.#textTimeF.setPosition(10, this.ruler.y + 17, -0.5);
-        this.setColorRectSpecial(this.#textTimeF);
-
-        this.#textTimeB = new GlText(this.texts, "");
-        this.#textTimeB.setPosition(10, this.ruler.y - 17, -0.5);
-        this.setColorRectSpecial(this.#textTimeB);
+        // this.#timeBg = this.#rects.createRect({ });
+        // this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
+        // this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
+        // this.#timeBg.setPosition(0, 0, -0.5);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -198,6 +177,10 @@ export class GlTimeline extends Events
         this.#keyOverEl.classList.add("keyOverlay");
         this.#keyOverEl.classList.add("hidden");
         cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+
+        this.#tlTimeDisplay = document.createElement("div");
+        this.#tlTimeDisplay.classList.add("tltimedisplay");
+        cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
@@ -327,10 +310,15 @@ export class GlTimeline extends Events
         return this.#cgl.canvas.parentElement;
     }
 
+    titleElement()
+    {
+        this.titleContainer;
+    }
+
     resize()
     {
-        this.scroll.setWidth(this.#cgl.canvasWidth - this.titleSpace);
-        this.ruler.setWidth(this.#cgl.canvasWidth - this.titleSpace);
+        this.scroll.setWidth(this.#cgl.canvasWidth);
+        this.ruler.setWidth(this.#cgl.canvasWidth);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
@@ -373,20 +361,6 @@ export class GlTimeline extends Events
     {
         if (rect)
             rect.setColorArray(this.getColorSpecial());
-    }
-
-    /**
-     * @param {number} w
-     */
-    setMaxTitleSpace(w)
-    {
-        if (w > this.titleSpace)
-        {
-            this.titleSpace = w;
-            this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
-            // this.updateAllElements();
-            this.needsUpdateAll = true;
-        }
     }
 
     /**
@@ -772,10 +746,10 @@ export class GlTimeline extends Events
     {
         let posy = 0;
 
-        this.scroll.setPosition(this.titleSpace, posy);
+        this.scroll.setPosition(0, posy);
         posy += this.scroll.height;
 
-        this.ruler.setPosition(this.titleSpace, posy);
+        this.ruler.setPosition(0, posy);
         posy += this.ruler.height;
         return posy;
     }
@@ -829,17 +803,22 @@ export class GlTimeline extends Events
 
     udpateCursor()
     {
-        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0, -0.3);
+        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0);
 
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3)parts[1] += "0";
-        this.#textTimeS.text = "second " + parts[0] + "." + parts[1];
-        this.#textTimeF.text = "frame " + Math.floor(this.cursorTime * this.fps);
+
+        let html = "";
+        html += "second " + parts[0] + "." + parts[1] + "<br>";
+        html += "frame " + Math.floor(this.cursorTime * this.fps) + "<br>";
 
         if (this.cfg.showBeats)
-            this.#textTimeB.text = "beat " + Math.floor(this.cursorTime * (this.bpm / 60));
+            html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
+
+        if (this.#oldhtml != html)
+            this.#tlTimeDisplay.innerHTML = html;
     }
 
     updateAllElements()

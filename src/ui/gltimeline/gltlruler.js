@@ -31,15 +31,17 @@ export class glTlRuler extends Events
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         // this._glRectBg.setColorHover(0.2, 0.2, 0.2, 1);
-        this._glRectBg.setPosition(0, this.y, 1);
+        this._glRectBg.setPosition(0, this.y, -0.9);
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {
-            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
+            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
         });
+
         this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
         });
+
         this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
 
@@ -47,7 +49,7 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
-            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX - this.#glTl.titleSpace) + this.#glTl.view.offset));
+            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
 
         });
 
@@ -94,7 +96,7 @@ export class glTlRuler extends Events
      */
     setTimeFromPixel(x)
     {
-        gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x - this.#glTl.titleSpace) + this.#glTl.view.offset));
+        gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x) + this.#glTl.view.offset));
 
     }
 
@@ -264,7 +266,7 @@ export class glTlRuler extends Events
             if (time < 0 || time > this.#glTl.duration)mr.setColor(0, 0, 0, a);
             else mr.setColor(1, 1, 1, a);
             mr.setSize(1, h);
-            mr.setPosition(x, this.height - h, -0.35);
+            mr.setPosition(x, this.height - h);
 
             if (title && x < this.#glTl.width)
             {
@@ -274,7 +276,7 @@ export class glTlRuler extends Events
                 this.titles[titleCounter].text = title;
                 this.titles[titleCounter].setParentRect(this._glRectBg);
                 // this.titles[titleCounter].setPosition(0, 50);
-                this.titles[titleCounter].setPosition(x, this.height - h - 30, -0.35);
+                this.titles[titleCounter].setPosition(x, this.height - h - 30);
 
                 titleCounter++;
             }

@@ -108,6 +108,9 @@ export default class Preferences
         this.setSwitchValue("notlocalizeNumberformat", userSettings.get("notlocalizeNumberformat") || false);
 
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
+        this.setSwitchValue("openfullscreen", userSettings.get("openfullscreen") || false);
+        this.setSwitchValue("maximizerenderer", userSettings.get("maximizerenderer") || false);
+
         this.setInputValue("authorName", userSettings.get("authorName") || "");
         this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
 
