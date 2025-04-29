@@ -342,7 +342,18 @@ export class GlTimeline extends Events
 
         userSettings.set("gltl_layout", this.#layout);
 
+        this.updateIcons();
         this.init();
+    }
+
+    updateIcons()
+    {
+        ele.byId("togglegraph1").parentElement.classList.remove("button-active");
+        ele.byId("togglegraph2").parentElement.classList.remove("button-active");
+
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS)ele.byId("togglegraph1").parentElement.classList.add("button-active");
+        else ele.byId("togglegraph2").parentElement.classList.add("button-active");
+
     }
 
     setanim()
@@ -741,6 +752,7 @@ export class GlTimeline extends Events
         this.updateAllElements();
         this.setPositions();
         this.resize();
+        this.updateIcons();
 
         perf.finish();
 

@@ -25,7 +25,6 @@
         }
     }
 
-
     .button-small
     {
         background-size: 50%;
@@ -92,4 +91,22 @@
         border:1px solid var(--color-09);
     }
 
+    .button-left
+    {
+    margin-right: 1px;
+    border-top-right-radius:0px ;
+    border-bottom-right-radius:0px ;
+    }
+    .button-right
+    {
+    border-top-left-radius:0px ;
+    border-bottom-left-radius:0px ;
+    }
+    .button-active
+    {
+
+
+
+            background-color:var(--color-button-bg-active) !important;
+    }
 }

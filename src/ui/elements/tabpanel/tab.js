@@ -91,7 +91,7 @@ export default class Tab extends Events
      * @param {string} title
      * @param {Function} cb
      */
-    addButton(title, cb)
+    addButton(title, cb, classes)
     {
         const button = document.createElement("a");
         button.classList.add("button-small");
@@ -102,6 +102,7 @@ export default class Tab extends Events
         ele.clickable(button, cb);
         this.toolbarEle.appendChild(button);
         this.buttons.push({ "ele": button, cb, title });
+        if (classes) for (let i = 0; i < classes.length; i++)button.classList.add(classes[i]);
         return button;
     }
 
