@@ -82,7 +82,7 @@ export class glTlAnimLine extends Events
         this.#options = options;
         this.#glTl = glTl;
         this.#view = glTl.view;
-        this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false });
+        this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
 
@@ -133,6 +133,11 @@ export class glTlAnimLine extends Events
     get anims()
     {
         return this.#anims;
+    }
+
+    isHovering()
+    {
+        return this.#glRectKeysBg.isHovering();
     }
 
     /**

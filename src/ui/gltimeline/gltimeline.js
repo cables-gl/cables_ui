@@ -271,7 +271,7 @@ export class GlTimeline extends Events
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
-        this.buttonForScrolling = userSettingScrollButton;
+        this.buttonForScrolling = userSettingScrollButton || 2;
     }
 
     /** @returns {number} */
@@ -424,6 +424,18 @@ export class GlTimeline extends Events
 
         if (event.buttons == 1)
         {
+            if (event.ctrlKey || event.metaKey)
+            {
+                for (let i = 0; i < this.#tlAnims.length; i++)
+                {
+                    if (this.#tlAnims[i].isHovering())
+                    {
+                        const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
+                        this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+                    }
+                }
+            }
+
             if (!this.#focusRuler && !this.#focusScroll)
             {
 
@@ -509,6 +521,7 @@ export class GlTimeline extends Events
      */
     setSelectedKeysEasing(easing)
     {
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "e": easing });
 
