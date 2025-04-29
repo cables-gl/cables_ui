@@ -117,6 +117,7 @@ export default class GlCanvas
 
     dispose()
     {
+        this.disposed = true;
         this.patch.pause();
         this.patch.dispose();
         this.canvas.remove();

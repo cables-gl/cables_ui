@@ -68,7 +68,7 @@ export default class GlTimelineTab
         });
         this.#tab.on("close", () =>
         {
-            if (this.tlCanvas) this.tlCanvas.dispose();
+            userSettings.set("glTimelineOpened", false);
         });
 
         this.#tab.on("onActivate", () =>
@@ -103,11 +103,6 @@ export default class GlTimelineTab
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineForward();
-        });
-
-        this.#tab.on("close", () =>
-        {
-            userSettings.set("glTimelineOpened", false);
         });
 
         this.#tab.addButtonSpacer();
@@ -183,6 +178,8 @@ export default class GlTimelineTab
     close()
     {
         this.#tab.remove();
+        if (this.tlCanvas) this.tlCanvas.dispose();
+        gui.glTimeline = null;
         console.log(gui.bottomTabPanel);
     }
 
@@ -195,7 +192,7 @@ export default class GlTimelineTab
         const parentEle = this.#tab.contentEle;
         if (parentEle.clientWidth == 0)
         {
-
+            if (this.tlCanvas.disposed) return;
             console.log("delay resize");
             setTimeout(this.updateSize.bind(this), 100);
         }

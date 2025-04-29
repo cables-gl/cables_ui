@@ -84,6 +84,7 @@ export class GlTimeline extends Events
     #selectedKeys = [];
 
     hoverKeyRect = null;
+    disposed = false;
 
     #oldhtml = "";
     #canvasMouseDown = false;
@@ -591,6 +592,7 @@ export class GlTimeline extends Events
 
     selectAllKeys()
     {
+        if (this.disposed) return;
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
             for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
@@ -606,6 +608,7 @@ export class GlTimeline extends Events
 
     deleteSelectedKeys()
     {
+        if (this.disposed) return;
         const oldKeys = this.serializeSelectedKeys();
         const gltl = this;
         undo.add({
@@ -687,6 +690,7 @@ export class GlTimeline extends Events
 
     init()
     {
+        if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
@@ -756,6 +760,7 @@ export class GlTimeline extends Events
 
     setPositions()
     {
+        if (this.disposed) return;
         let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
@@ -768,10 +773,15 @@ export class GlTimeline extends Events
 
     dispose()
     {
+        if (this.disposed) return;
+        this.disposed = true;
+
+        this.#rects.dispose();
     }
 
     updateSize()
     {
+        if (this.disposed) return;
         this.setPositions();
         // this.updateAllElements();
         this.needsUpdateAll = true;
@@ -783,6 +793,7 @@ export class GlTimeline extends Events
      */
     render(resX, resY)
     {
+        if (this.disposed) return;
         this.view.updateAnims();
 
         if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
