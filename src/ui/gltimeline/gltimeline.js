@@ -189,7 +189,7 @@ export class GlTimeline extends Events
 
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
-            if (this.getNumSelectedKeys() == 0)
+            if (this.getNumSelectedKeys() == 1)
             {
 
             }
@@ -894,6 +894,7 @@ export class GlTimeline extends Events
     zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
+        console.log(bounds);
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
         this.view.scrollToY(0);

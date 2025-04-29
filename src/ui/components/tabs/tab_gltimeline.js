@@ -31,19 +31,17 @@ export default class GlTimelineTab
         tabs.addTab(this.#tab, true);
         this.#tab.activate();
         this.#tab.contentEle.innerHTML = "";
-        this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle);
+        this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle, this);
 
         userSettings.set("glTimelineOpened", true);
 
         gui.on(Gui.EVENT_RESIZE, () =>
         {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
             this.updateSize();
         });
 
         gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
         {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
             this.updateSize();
         });
 
@@ -60,7 +58,8 @@ export default class GlTimelineTab
 
         this.#tab.on("resize", () =>
         {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
+            this.updateSize();
+
         });
 
         this.#tab.on("onDeactivate", () =>
@@ -104,11 +103,6 @@ export default class GlTimelineTab
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineForward();
-        });
-
-        this.#tab.on("resize", () =>
-        {
-            this.updateSize();
         });
 
         this.#tab.on("close", () =>
@@ -199,7 +193,14 @@ export default class GlTimelineTab
 
         this.resizing = true;
         const parentEle = this.#tab.contentEle;
-        if (parentEle.clientWidth == 0)setTimeout(this.updateSize.bind(this), 100);
+        if (parentEle.clientWidth == 0)
+        {
+
+            console.log("delay resize");
+            setTimeout(this.updateSize.bind(this), 100);
+        }
+        console.log("sp", this.#splitterPos);
+        this.tlCanvas.glTimeline.resize();
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);
         this.resizing = false;
@@ -213,13 +214,7 @@ export default class GlTimelineTab
         {
             gui.pauseInteractionSplitpanes();
             let x = e.clientX;
-            let y = e.clientY;
-
-            if (x === undefined && e.touches && e.touches.length > 0)
-            {
-                x = e.touches[0].clientX;
-                y = e.touches[0].clientY;
-            }
+            if (x === undefined && e.touches && e.touches.length > 0) x = e.touches[0].clientX;
 
             this.#splitter.style.left = x + "px";
             this.#splitterPos = Math.round(x);
