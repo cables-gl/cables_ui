@@ -35,13 +35,13 @@ export default class GlTimelineTab
         this.#tab.on("resize", () =>
         {
             this.updateSize();
-
         });
 
         this.#tab.on("onDeactivate", () =>
         {
             if (this.tlCanvas) this.tlCanvas.pause();
         });
+
         this.#tab.on("close", () =>
         {
             userSettings.set("glTimelineOpened", false);
@@ -102,7 +102,12 @@ export default class GlTimelineTab
         // this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(1); });
 
         // this.#tab.addButtonSpacer();
+        this.#tab.addButtonSpacer();
 
+        this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
+        {
+            CABLES.CMD.TIMELINE.TimelineCreateKey();
+        });
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span id=\"togglegraph1\" class=\"nomargin icon info icon-chart-spline\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-left", "button-active"]);

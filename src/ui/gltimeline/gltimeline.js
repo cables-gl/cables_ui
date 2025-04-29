@@ -1132,4 +1132,12 @@ export class GlTimeline extends Events
 
     }
 
+    createKeyAtCursor()
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+        {
+            const t = this.cursorTime;
+            this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+        }
+    }
 }
