@@ -31,45 +31,20 @@ export default class GlTimelineTab
         tabs.addTab(this.#tab, true);
         this.#tab.activate();
         this.#tab.contentEle.innerHTML = "";
-        this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle);
-
-        userSettings.set("glTimelineOpened", true);
-
-        gui.on(Gui.EVENT_RESIZE, () =>
-        {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
-            this.updateSize();
-        });
-
-        gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
-        {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
-            this.updateSize();
-        });
-
-        this.selectInfoEl = document.createElement("span");
-        this.selectInfoEl.innerHTML = "";
-        this.selectInfoEl.id = "tlselectinfo";
-
-        this.#splitter = document.createElement("div");
-        this.#splitter.classList.add("splitter");
-        this.#splitter.classList.add("splitterTimeline");
-        this.#splitter.style.left = "100px";
-        this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
-        this.#tab.contentEle.appendChild(this.#splitter);
 
         this.#tab.on("resize", () =>
         {
-            if (this.tlCanvas) this.tlCanvas.glTimeline.resize();
+            this.updateSize();
         });
 
         this.#tab.on("onDeactivate", () =>
         {
             if (this.tlCanvas) this.tlCanvas.pause();
         });
+
         this.#tab.on("close", () =>
         {
-            if (this.tlCanvas) this.tlCanvas.dispose();
+            userSettings.set("glTimelineOpened", false);
         });
 
         this.#tab.on("onActivate", () =>
@@ -77,9 +52,22 @@ export default class GlTimelineTab
             if (this.tlCanvas) this.tlCanvas.resume();
             this.updateSize();
         });
+        this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("+", () => { this.tlCanvas.glTimeline.view.setZoomOffset(1.4, 0.5); });
-        this.#tab.addButton("-", () => { this.tlCanvas.glTimeline.view.setZoomOffset(0.6, 0.5); });
+        this.#tab.addButton("<span class=\"nomargin icon icon-plus info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(1.4, 0.5); }, ["button-left"]);
+        this.#tab.addButton("<span class=\"nomargin icon icon-minus info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(0.6, 0.5); }, ["button-right"]);
+
+        this.#tab.addButtonSpacer();
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-list-plus info\" data-info=\"tlzoomgraph\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.view.scale(-0.3);
+        }, ["button-left"]);
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-list-minus info\" data-info=\"tlzoomgraph\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.view.scale(0.3);
+        }, ["button-right"]);
 
         this.#tab.addButtonSpacer();
 
@@ -93,54 +81,37 @@ export default class GlTimelineTab
             CABLES.CMD.TIMELINE.TimelineRewind();
         });
 
-        const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous info\" data-info=\"tlnextkey\">\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); });
+        const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
 
             if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "<span class=\"nomargin icon icon-pause\"></span>";
             else buttonPlay.innerHTML = "<span class=\"nomargin icon icon-play\"></span>";
         });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next info\" data-info=\"tlnextkey\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineForward();
         });
 
-        this.#tab.on("resize", () =>
-        {
-            this.updateSize();
-        });
-
-        this.#tab.on("close", () =>
-        {
-            userSettings.set("glTimelineOpened", false);
-        });
-
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(-1); });
-        this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(1); });
+        // this.#tab.addButton("<span class=\"nomargin icon icon-arrow-left\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(-1); });
+        // this.#tab.addButton("<span class=\"nomargin icon icon-arrow-right\"></span>", () => { this.tlCanvas.glTimeline.view.scroll(1); });
 
+        // this.#tab.addButtonSpacer();
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); });
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); });
-
-        this.#tab.addButtonSpacer();
-
-        this.#tab.addButton("<span class=\"nomargin icon icon-chart-spline\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); });
-
-        this.#tab.addButtonSpacer();
-
-        this.#tab.addButton("<span class=\"nomargin icon icon-list-plus\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
         {
-            this.tlCanvas.glTimeline.view.scale(-0.3);
+            CABLES.CMD.TIMELINE.TimelineCreateKey();
         });
+        this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-list-minus\"></span>", () =>
-        {
-            this.tlCanvas.glTimeline.view.scale(0.3);
-        });
+        this.#tab.addButton("<span id=\"togglegraph1\" class=\"nomargin icon info icon-chart-spline\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-left", "button-active"]);
+        this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-list\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
 
         this.#tab.addButtonSpacer();
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
@@ -181,7 +152,34 @@ export default class GlTimelineTab
         });
 
         this.#tab.addButtonSpacer();
+
+        this.selectInfoEl = document.createElement("span");
+        this.selectInfoEl.innerHTML = "";
+        this.selectInfoEl.id = "tlselectinfo";
         this.#tab.addButtonBarElement(this.selectInfoEl);
+
+        /// //////
+
+        this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle, this);
+
+        userSettings.set("glTimelineOpened", true);
+
+        gui.on(Gui.EVENT_RESIZE, () =>
+        {
+            this.updateSize();
+        });
+
+        gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
+        {
+            this.updateSize();
+        });
+
+        this.#splitter = document.createElement("div");
+        this.#splitter.classList.add("splitter");
+        this.#splitter.classList.add("splitterTimeline");
+        this.#splitter.style.left = "100px";
+        this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
+        this.#tab.contentEle.appendChild(this.#splitter);
         this.updateSize();
 
     }
@@ -189,6 +187,10 @@ export default class GlTimelineTab
     close()
     {
         this.#tab.remove();
+        if (this.tlCanvas) this.tlCanvas.dispose();
+        this.tlCanvas = null;
+        gui.glTimeline.dispose();
+        gui.glTimeline = null;
         console.log(gui.bottomTabPanel);
     }
 
@@ -199,7 +201,14 @@ export default class GlTimelineTab
 
         this.resizing = true;
         const parentEle = this.#tab.contentEle;
-        if (parentEle.clientWidth == 0)setTimeout(this.updateSize.bind(this), 100);
+        if (parentEle.clientWidth == 0)
+        {
+            if (this.tlCanvas.disposed) return;
+            console.log("delay resize");
+            setTimeout(this.updateSize.bind(this), 100);
+        }
+        console.log("sp", this.#splitterPos);
+        this.tlCanvas.glTimeline.resize();
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);
         this.resizing = false;
@@ -213,13 +222,7 @@ export default class GlTimelineTab
         {
             gui.pauseInteractionSplitpanes();
             let x = e.clientX;
-            let y = e.clientY;
-
-            if (x === undefined && e.touches && e.touches.length > 0)
-            {
-                x = e.touches[0].clientX;
-                y = e.touches[0].clientY;
-            }
+            if (x === undefined && e.touches && e.touches.length > 0) x = e.touches[0].clientX;
 
             this.#splitter.style.left = x + "px";
             this.#splitterPos = Math.round(x);

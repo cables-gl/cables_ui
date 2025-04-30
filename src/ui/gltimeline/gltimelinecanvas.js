@@ -17,24 +17,21 @@ export class glTimelineCanvas extends GlCanvas
      * @param {Patch} _patch
      * @param {HTMLElement} parentEle
      */
-    constructor(_patch, parentEle)
+    constructor(_patch, parentEle, tab)
     {
         super(_patch, parentEle);
 
+        this.tab = tab;
         this.setSize(100, 100);
         this.activityHigh();
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
-
-        // this.patch.cgl.on("resize", () =>
-        // {
-        //     this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
-        // });
 
         this.glTimeline = new GlTimeline(this.cgl, parentEle);
     }
 
     render()
     {
+        if (this.tab.resizing) return;
         if (gui && gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
 
         if (this._targetFps != 0 && performance.now() - this._lastTime < 1000 / this._targetFps) return;

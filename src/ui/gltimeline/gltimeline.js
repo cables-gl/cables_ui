@@ -84,6 +84,7 @@ export class GlTimeline extends Events
     #selectedKeys = [];
 
     hoverKeyRect = null;
+    disposed = false;
 
     #oldhtml = "";
     #canvasMouseDown = false;
@@ -189,7 +190,7 @@ export class GlTimeline extends Events
 
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
-            if (this.getNumSelectedKeys() == 0)
+            if (this.getNumSelectedKeys() == 1)
             {
 
             }
@@ -270,7 +271,7 @@ export class GlTimeline extends Events
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
-        this.buttonForScrolling = userSettingScrollButton;
+        this.buttonForScrolling = userSettingScrollButton || 2;
     }
 
     /** @returns {number} */
@@ -341,7 +342,18 @@ export class GlTimeline extends Events
 
         userSettings.set("gltl_layout", this.#layout);
 
+        this.updateIcons();
         this.init();
+    }
+
+    updateIcons()
+    {
+        ele.byId("togglegraph1").parentElement.classList.remove("button-active");
+        ele.byId("togglegraph2").parentElement.classList.remove("button-active");
+
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS)ele.byId("togglegraph1").parentElement.classList.add("button-active");
+        else ele.byId("togglegraph2").parentElement.classList.add("button-active");
+
     }
 
     setanim()
@@ -412,6 +424,18 @@ export class GlTimeline extends Events
 
         if (event.buttons == 1)
         {
+            if (event.ctrlKey || event.metaKey)
+            {
+                for (let i = 0; i < this.#tlAnims.length; i++)
+                {
+                    if (this.#tlAnims[i].isHovering())
+                    {
+                        const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
+                        this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+                    }
+                }
+            }
+
             if (!this.#focusRuler && !this.#focusScroll)
             {
 
@@ -497,6 +521,7 @@ export class GlTimeline extends Events
      */
     setSelectedKeysEasing(easing)
     {
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "e": easing });
 
@@ -591,6 +616,7 @@ export class GlTimeline extends Events
 
     selectAllKeys()
     {
+        if (this.disposed) return;
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
             for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
@@ -606,6 +632,7 @@ export class GlTimeline extends Events
 
     deleteSelectedKeys()
     {
+        if (this.disposed) return;
         const oldKeys = this.serializeSelectedKeys();
         const gltl = this;
         undo.add({
@@ -687,6 +714,7 @@ export class GlTimeline extends Events
 
     init()
     {
+        if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
@@ -737,6 +765,7 @@ export class GlTimeline extends Events
         this.updateAllElements();
         this.setPositions();
         this.resize();
+        this.updateIcons();
 
         perf.finish();
 
@@ -756,6 +785,7 @@ export class GlTimeline extends Events
 
     setPositions()
     {
+        if (this.disposed) return;
         let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
@@ -768,10 +798,15 @@ export class GlTimeline extends Events
 
     dispose()
     {
+        if (this.disposed) return;
+        this.disposed = true;
+
+        if (this.#rects) this.#rects = this.#rects.dispose();
     }
 
     updateSize()
     {
+        if (this.disposed) return;
         this.setPositions();
         // this.updateAllElements();
         this.needsUpdateAll = true;
@@ -783,6 +818,7 @@ export class GlTimeline extends Events
      */
     render(resX, resY)
     {
+        if (this.disposed) return;
         this.view.updateAnims();
 
         if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
@@ -894,6 +930,7 @@ export class GlTimeline extends Events
     zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
+        console.log(bounds);
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
         this.view.scrollToY(0);
@@ -1095,4 +1132,12 @@ export class GlTimeline extends Events
 
     }
 
+    createKeyAtCursor()
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+        {
+            const t = this.cursorTime;
+            this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+        }
+    }
 }

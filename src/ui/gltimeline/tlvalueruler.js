@@ -36,7 +36,6 @@ export class TlValueRuler
         this.#view = glTl.view;
         this.#animLine = animline;
         this.init();
-
     }
 
     init()
@@ -62,7 +61,7 @@ export class TlValueRuler
     {
         for (let i = 0; i < this.#marker.length; i++)
         {
-            this.#marker[i].setPosition(this.#parentRect.w - 220, this.#animLine.valueToPixel(i - this.#numMarker / 2));
+            this.#marker[i].setPosition(this.#parentRect.w - 20, this.#animLine.valueToPixel(i - this.#numMarker / 2));
         }
 
         this.#zeroRect.setPosition(0, this.#animLine.valueToPixel(0));

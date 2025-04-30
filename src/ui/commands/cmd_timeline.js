@@ -13,6 +13,12 @@ const timelineCommands =
 
 export default timelineCommands;
 
+CABLES_CMD_TIMELINE.TimelineCreateKey = function ()
+{
+
+    gui.glTimeline.createKeyAtCursor();
+};
+
 CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
 {
     const panelid = CABLES.uuid();

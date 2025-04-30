@@ -32,7 +32,7 @@
         <td></td>
     {{else}}
         <td class="portType_{{ port.type }} disp_{{port.uiAttribs.display}}">
-            {{#if port.uiAttribs.isAnimated}}<span>&nbsp;&nbsp;A</span>{{/if}}
+            {{#if port.uiAttribs.isAnimated}}&nbsp;&nbsp;&nbsp;<span class="icon icon-diamond icon-0_75x"></span>{{/if}}
             {{#if port.uiAttribs.expose}}<span>&nbsp;&nbsp;E{{port.uiAttribs.order}}</span>{{/if}}
             {{#if port.uiAttribs.boundToVar}}<span>&nbsp;&nbsp;V</span>{{/if}}
         </td>
