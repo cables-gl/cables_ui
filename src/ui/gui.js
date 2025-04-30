@@ -704,8 +704,6 @@ export default class Gui extends Events
         this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
         this._elLibrary.style.bottom = 0;
 
-        const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
-
         this._elIconbarTimeline = this._elIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
         if (this._elIconbarTimeline)
         {
@@ -805,7 +803,7 @@ export default class Gui extends Events
             this._elSplitterBottom.style.bottom = (infoAreaHeight + this.bottomTabPanel.getHeight()) + "px";
 
             this._eleBottomTabs = ele.byId("bottomtabs");
-            this._eleBottomTabs.style.width = timelineWidth + "px";
+            this._eleBottomTabs.style.width = patchWidth + "px";
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
             this._eleBottomTabs.style.height = this.bottomTabPanel.getHeight() + "px";
             this._eleBottomTabs.style.left = iconBarWidth + "px";
@@ -1032,12 +1030,8 @@ export default class Gui extends Events
 
     toggleTimeline()
     {
-        if (this.timeLineTab)
-        {
-
-            this.timeLineTab.close();
-            this.timeLineTab = null;
-        }
+        console.log(" gui toggle timeline");
+        if (this.glTimeline) this.glTimeline.toggle();
         else
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
     }
@@ -1671,6 +1665,11 @@ export default class Gui extends Events
                     CABLES.CMD.PATCH.save();
                 }
             }
+        });
+
+        this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
+        {
+            gui.toggleTimeline();
         });
 
         this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, () =>

@@ -62,6 +62,7 @@ export default class BottomTabPanel extends Events
     {
         if (gui.unload) return;
         userSettings.set("bottomTabsOpened", true);
+        this._tabs.emitEvent("resize");
 
         if (this._tabs.getNumTabs() == 0)
         {
@@ -128,6 +129,7 @@ export default class BottomTabPanel extends Events
         ele.byId("splitterBottomTabs").style.display = "none";
 
         userSettings.set("bottomTabsOpened", false);
+        this._tabs.emitEvent("resize");
 
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
@@ -143,11 +145,14 @@ export default class BottomTabPanel extends Events
     toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
+        console.log("toggle", this._visible);
         if (this._visible)
         {
             this.hide();
             gui.patchView.focus();
+            this._visible = false;
         }
         else this.show(userInteraction);
+
     }
 }

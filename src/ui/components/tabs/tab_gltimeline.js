@@ -25,12 +25,17 @@ export default class GlTimelineTab
      */
     constructor(tabs)
     {
-        this.#tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline" });
+        this.#tab = new Tab("gl timeline", { "icon": "timeline", "infotext": "gl timeline", "closable": false });
         gui.bottomTabPanel.show(true);
 
         tabs.addTab(this.#tab, true);
         this.#tab.activate();
         this.#tab.contentEle.innerHTML = "";
+
+        tabs.on("resize", () =>
+        {
+            this.updateSize();
+        });
 
         this.#tab.on("resize", () =>
         {
@@ -158,6 +163,11 @@ export default class GlTimelineTab
         this.selectInfoEl.id = "tlselectinfo";
         this.#tab.addButtonBarElement(this.selectInfoEl);
 
+        this.#tab.addButton("<span class=\"nomargin icon icon-chevron-down info\" data-info=\"tltoggle\"></span>", () =>
+        {
+            gui.bottomTabPanel.toggle();
+        }, ["timelineminimize"]);
+
         /// //////
 
         this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle, this);
@@ -187,27 +197,25 @@ export default class GlTimelineTab
     close()
     {
         this.#tab.remove();
-        if (this.tlCanvas) this.tlCanvas.dispose();
-        this.tlCanvas = null;
         gui.glTimeline.dispose();
         gui.glTimeline = null;
-        console.log(gui.bottomTabPanel);
+        if (this.tlCanvas) this.tlCanvas.dispose();
+        this.tlCanvas = null;
     }
 
     updateSize()
     {
-        if (this.resizing) return;
-        if (!this.tlCanvas) return;
+        if (this.resizing) { console.log("rezising..."); return; }
+        if (!this.tlCanvas) { console.log("no tlcanv"); return; }
 
-        this.resizing = true;
         const parentEle = this.#tab.contentEle;
         if (parentEle.clientWidth == 0)
         {
             if (this.tlCanvas.disposed) return;
-            console.log("delay resize");
             setTimeout(this.updateSize.bind(this), 100);
+            return;
         }
-        console.log("sp", this.#splitterPos);
+        this.resizing = true;
         this.tlCanvas.glTimeline.resize();
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);

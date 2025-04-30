@@ -1,6 +1,7 @@
 import { Events, Logger, ele } from "cables-shared-client";
 
 import { Anim, AnimKey, CglContext } from "cables";
+import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -117,6 +118,8 @@ export class GlTimeline extends Events
     #focusScroll = false;
     #keyOverEl;
     #tlTimeDisplay;
+
+    #perfFps = new FpsCounter();
 
     /**
      * @param {CglContext} cgl
@@ -472,7 +475,7 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 12);
+            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4);
             this.view.scrollY(event.movementY);
             this.updateAllElements();
         }
@@ -823,6 +826,9 @@ export class GlTimeline extends Events
      */
     render(resX, resY)
     {
+
+        this.#perfFps.startFrame();
+
         if (this.disposed) return;
         this.view.updateAnims();
 
@@ -840,6 +846,7 @@ export class GlTimeline extends Events
         this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
         this.#cgl.popDepthTest();
+        this.#perfFps.endFrame();
     }
 
     udpateCursor()
@@ -1127,7 +1134,8 @@ export class GlTimeline extends Events
         const o = {
             "layout": this.#layout,
             "tlAnims": [],
-            "view": this.view.getDebug()
+            "view": this.view.getDebug(),
+            "perf": this.#perfFps.stats
         };
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
@@ -1144,5 +1152,10 @@ export class GlTimeline extends Events
             const t = this.cursorTime;
             this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
         }
+    }
+
+    toggle()
+    {
+        gui.bottomTabPanel.toggle(true);
     }
 }
