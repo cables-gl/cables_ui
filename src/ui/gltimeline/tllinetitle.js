@@ -15,7 +15,7 @@ export class TlTitle extends Events
 
     /** @type {Object} */
     #buttons = [];
-    #isCurrent;
+    #active;
     #hasSelectedKeys;
 
     /** @type {Op} */
@@ -39,6 +39,7 @@ export class TlTitle extends Events
         ele.clickable(this.#elTitle, () =>
         {
             this.emitEvent("titleClicked", this);
+            this.toggleActive();
         });
         this.addButton("...",
             (e) =>
@@ -72,12 +73,17 @@ export class TlTitle extends Events
     /**
      * @param {boolean} c
      */
-    setIsCurrent(c)
+    setActive(c)
     {
-        this.#isCurrent = c;
+        this.#active = c;
 
         if (c) this.#elTitle.classList.add("current");
         else this.#elTitle.classList.remove("current");
+    }
+
+    toggleActive()
+    {
+        this.setActive(!this.#active);
     }
 
     /**
@@ -121,8 +127,8 @@ export class TlTitle extends Events
 
     updateColor()
     {
-        if (this.op)
-            this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
+        // if (this.op)
+        //     this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
     }
 
     dispose()

@@ -187,6 +187,7 @@ export class GlTimeline extends Events
 
         this.#filterInputEl = document.createElement("input");
         this.#filterInputEl.classList.add("filterInput");
+        this.#filterInputEl.setAttribute("placeholder", "filter...");
         cgl.canvas.parentElement.appendChild(this.#filterInputEl);
 
         this.#filterInputEl.addEventListener("input", () =>
@@ -803,6 +804,7 @@ export class GlTimeline extends Events
     filter(port)
     {
         if (port.op.shortName.toLowerCase().includes(this.#filterString) ||
+            (port.op.uiAttribs.comment || "").toLowerCase().includes(this.#filterString) ||
             port.name.toLowerCase().includes(this.#filterString)) return true;
 
         return false;
