@@ -143,7 +143,7 @@ export class glTlAnimLine extends Events
      */
     addTitle(t, anim)
     {
-        const title = new TlTitle(this.#glTl.parentElement(), anim);
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim);
         title.setTitle(t);
         title.on("titleClicked", (title) =>
         {
@@ -152,6 +152,14 @@ export class glTlAnimLine extends Events
 
         this.#titles.push(title);
         this.setTitlePos();
+    }
+
+    updateTitles()
+    {
+
+        for (let i = 0; i < this.#titles.length; i++)
+            this.#titles[i].updateIcons();
+
     }
 
     setTitlePos()

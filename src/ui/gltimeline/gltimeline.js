@@ -38,6 +38,10 @@ import undo from "../utils/undo.js";
  */
 export class GlTimeline extends Events
 {
+    activateAllAnims()
+    {
+        throw new Error("Method not implemented.");
+    }
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -1195,5 +1199,18 @@ export class GlTimeline extends Events
     toggle()
     {
         gui.bottomTabPanel.toggle(true);
+    }
+
+    deactivateAllAnims(v = false)
+    {
+        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+        {
+            for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
+            {
+                const anim = this.#tlAnims[anii].anims[ans];
+                anim.tlActive = v;
+            }
+            this.#tlAnims[anii].updateTitles();
+        }
     }
 }
