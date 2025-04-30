@@ -57,6 +57,7 @@ export class glTlKeys extends Events
 
     /** @type {GlTlView} */
     #view;
+    #updateCount = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -152,13 +153,12 @@ export class glTlKeys extends Events
      */
     update()
     {
-
         if (this.#disposed)
         {
             this._log.warn("disposed", this);
-            this._log.stack("ss");
             return;
         }
+
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
 
         this.#points = [];
@@ -222,7 +222,6 @@ export class glTlKeys extends Events
             });
 
             this.#points = pointsSort.flat();
-
         }
 
         if (this.#options.keyYpos)
@@ -232,10 +231,7 @@ export class glTlKeys extends Events
 
             this.#spline.setPoints(this.#points);
         }
-
-        // this.#zeroRect.setPosition(0, this.#animLine.valueToPixel(0.000001));
-        // this.#zeroRect.setPosition(0, this.#animLine.valueToPixel(0));
-
+        this.#updateCount++;
     }
 
     setKeyPositions()
@@ -448,6 +444,7 @@ export class glTlKeys extends Events
     {
         const o = {};
         o.points = this.#points;
+        o.updateCount = this.#updateCount;
 
         return o;
     }

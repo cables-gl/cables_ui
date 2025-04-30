@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 
-import { Anim, AnimKey, CglContext } from "cables";
+import { Anim, AnimKey, CglContext, Port } from "cables";
 import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
@@ -120,11 +120,14 @@ export class GlTimeline extends Events
     #tlTimeDisplay;
 
     #perfFps = new FpsCounter();
+    #filterInputEl;
+    #filterString = "";
 
     /**
      * @param {CglContext} cgl
     */
     constructor(cgl)
+
     {
         super();
 
@@ -181,6 +184,16 @@ export class GlTimeline extends Events
         this.#keyOverEl.classList.add("keyOverlay");
         this.#keyOverEl.classList.add("hidden");
         cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+
+        this.#filterInputEl = document.createElement("input");
+        this.#filterInputEl.classList.add("filterInput");
+        cgl.canvas.parentElement.appendChild(this.#filterInputEl);
+
+        this.#filterInputEl.addEventListener("input", () =>
+        {
+            this.#filterString = this.#filterInputEl.value;
+            this.init();
+        });
 
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
@@ -739,8 +752,10 @@ export class GlTimeline extends Events
         let selops = gui.patchView.getSelectedOps();
         if (this.#layout == GlTimeline.LAYOUT_LINES)ops = gui.corePatch().ops;
 
-        if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
-        if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = ops = gui.corePatch().ops;
+        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
+        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
+        ops = gui.corePatch().ops;
+
         this.#firstInit = false;
 
         for (let i = 0; i < ops.length; i++)
@@ -750,14 +765,17 @@ export class GlTimeline extends Events
             {
                 if (op.portsIn[j].anim)
                 {
-                    ports.push(op.portsIn[j]);
-
-                    if (this.#layout === GlTimeline.LAYOUT_LINES)
+                    if (this.filter(op.portsIn[j]))
                     {
-                        const a = new glTlAnimLine(this, [op.portsIn[j]]);
-                        this.#tlAnims.push(a);
+                        ports.push(op.portsIn[j]);
+
+                        if (this.#layout === GlTimeline.LAYOUT_LINES)
+                        {
+                            const a = new glTlAnimLine(this, [op.portsIn[j]]);
+                            this.#tlAnims.push(a);
+                        }
+                        count++;
                     }
-                    count++;
                 }
             }
         }
@@ -777,6 +795,17 @@ export class GlTimeline extends Events
 
         perf.finish();
 
+    }
+
+    /**
+     * @param {Port} port
+     */
+    filter(port)
+    {
+        if (port.op.shortName.toLowerCase().includes(this.#filterString) ||
+            port.name.toLowerCase().includes(this.#filterString)) return true;
+
+        return false;
     }
 
     getFirstLinePosy()
@@ -863,8 +892,8 @@ export class GlTimeline extends Events
         while (parts[1].length < 3)parts[1] += "0";
 
         let html = "";
+        html += "frame " + Math.floor(this.cursorTime * this.fps) + " ";
         html += "second " + parts[0] + "." + parts[1] + "<br>";
-        html += "frame " + Math.floor(this.cursorTime * this.fps) + "<br>";
 
         if (this.cfg.showBeats)
             html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";

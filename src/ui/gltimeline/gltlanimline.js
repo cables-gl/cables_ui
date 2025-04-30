@@ -33,9 +33,6 @@ export class glTlAnimLine extends Events
     // #glRectTitle = null;
 
     /** @type {GlText} */
-    // #glTitle = null;
-
-    /** @type {GlText} */
     #glTextSideValue = null;
 
     /** @type {GlTimeline} */
