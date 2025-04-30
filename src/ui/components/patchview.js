@@ -684,7 +684,9 @@ export default class PatchView extends Events
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
-        const isExamplePatch = gui.project().summary.isBasicExample || (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0);
+        let isExamplePatch = false;
+        if (gui.project().summary)
+            isExamplePatch = gui.project().summary.isBasicExample || (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0);
 
         if (!this._checkErrorTimeout)
         {

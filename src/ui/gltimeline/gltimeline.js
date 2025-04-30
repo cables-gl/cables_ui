@@ -345,9 +345,19 @@ export class GlTimeline extends Events
     {
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
+        ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
+        ele.byId("zoomgraph2").parentElement.classList.remove("button-inactive");
 
-        if (this.#layout == GlTimeline.LAYOUT_GRAPHS)ele.byId("togglegraph1").parentElement.classList.add("button-active");
-        else ele.byId("togglegraph2").parentElement.classList.add("button-active");
+        if (this.#layout == GlTimeline.LAYOUT_GRAPHS)
+        {
+            ele.byId("togglegraph1").parentElement.classList.add("button-active");
+        }
+        else
+        {
+            ele.byId("togglegraph2").parentElement.classList.add("button-active");
+            ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
+            ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
+        }
 
     }
 
