@@ -829,23 +829,27 @@ export class GlTimeline extends Events
 
         this.#perfFps.startFrame();
 
-        if (this.disposed) return;
-        this.view.updateAnims();
+        if (!gui.bottomTabPanel.isMinimized())
+        {
 
-        if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
+            if (this.disposed) return;
+            this.view.updateAnims();
 
-        this.udpateCursor();
-        this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
-        this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
+            if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
 
-        this.#cgl.pushDepthTest(true);
+            this.udpateCursor();
+            this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
+            this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
-        this.#rects.render(resX, resY, -1, 1, resX / 2);
-        this.texts.render(resX, resY, -1, 1, resX / 2);
-        this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
-        this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
+            this.#cgl.pushDepthTest(true);
 
-        this.#cgl.popDepthTest();
+            this.#rects.render(resX, resY, -1, 1, resX / 2);
+            this.texts.render(resX, resY, -1, 1, resX / 2);
+            this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+            this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
+
+            this.#cgl.popDepthTest();
+        }
         this.#perfFps.endFrame();
     }
 

@@ -155,4 +155,9 @@ export default class BottomTabPanel extends Events
         else this.show(userInteraction);
 
     }
+
+    isMinimized()
+    {
+        return !this._visible;
+    }
 }
