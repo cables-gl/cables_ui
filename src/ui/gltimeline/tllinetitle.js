@@ -1,5 +1,5 @@
 import { Events, ele } from "cables-shared-client";
-import { Op } from "cables";
+import { Anim, Op } from "cables";
 import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
 
@@ -24,12 +24,17 @@ export class TlTitle extends Events
     /** @type {glTlKeys} */
     tlKeys;
 
+    /** @type {Anim} */
+    #anim;
+
     /**
      * @param {HTMLElement} parentEl
+     * @param {Anim} anim
      */
-    constructor(parentEl)
+    constructor(parentEl, anim)
     {
         super();
+        this.#anim = anim;
         this.#el = document.createElement("div");
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
@@ -60,6 +65,7 @@ export class TlTitle extends Events
         // this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
         this.#el.appendChild(this.#elTitle);
 
+        this.setActive(anim.tlActive);
     }
 
     /**
@@ -76,6 +82,7 @@ export class TlTitle extends Events
     setActive(c)
     {
         this.#active = c;
+        this.#anim.tlActive = c;
 
         if (c) this.#elTitle.classList.add("current");
         else this.#elTitle.classList.remove("current");

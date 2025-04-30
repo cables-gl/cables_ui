@@ -168,20 +168,22 @@ export class glTlKeys extends Events
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-            let col = [0.7, 0.7, 0.7, 1];
+            let col = [0.4, 0.4, 0.4, 1];
 
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
 
-            if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
-            else
-            if (this.isCurrentOp()) col = [1, 1, 1];
-            if (!kr.isHovering())
-            {
-                col[0] *= 0.8;
-                col[1] *= 0.8;
-                col[2] *= 0.8;
-            }
+            if (animKey.anim.tlActive) col = [0.8, 0.8, 0.8, 1];
+
+            //     if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
+            //     else
+            //     if (this.isCurrentOp()) col = [1, 1, 1];
+            // if (!kr.isHovering())
+            // {
+            //     col[0] *= 0.8;
+            //     col[1] *= 0.8;
+            //     col[2] *= 0.8;
+            // }
 
             this.setKeyShapeSize(kr);
 
@@ -226,8 +228,8 @@ export class glTlKeys extends Events
 
         if (this.#options.keyYpos)
         {
-            if (this.isCurrentOp()) this.#glTl.setColorRectSpecial(this.#spline);
-            else this.#spline.setColor(0.5, 0.5, 0.5, 1);
+            if (this.#anim.tlActive) this.#spline.setColor(0.9, 0.9, 0.9, 1);
+            else this.#spline.setColor(0.4, 0.4, 0.4, 1);
 
             this.#spline.setPoints(this.#points);
         }
@@ -257,7 +259,8 @@ export class glTlKeys extends Events
             kr.setPosition(rx, ry, -0.8);
             this.setKeyShapeSize(kr);
 
-            if (this.#glTl.selectRect &&
+            if (
+                this.#glTl.selectRect &&
                 this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
                 this.#glTl.selectRect.y < (kr.absY + this.keyHeight) && this.#glTl.selectRect.y2 > kr.absY)
             {
@@ -269,8 +272,9 @@ export class glTlKeys extends Events
 
     selectAll()
     {
-        for (let i = 0; i < this.#anim.keys.length; i++)
-            this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
+        if (this.#anim.tlActive)
+            for (let i = 0; i < this.#anim.keys.length; i++)
+                this.#glTl.selectKey(this.#anim.keys[i], this.#anim);
     }
 
     hasSelectedKeys()

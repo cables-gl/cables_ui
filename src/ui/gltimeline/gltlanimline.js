@@ -107,7 +107,7 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < ports.length; i++)
         {
             let title = ports[i].op.name + " - " + ports[i].name;
-            this.setTitle(i, title);
+            this.setTitle(i, title, ports[i].anim);
         }
         if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
@@ -138,11 +138,12 @@ export class glTlAnimLine extends Events
     }
 
     /**
-     * @param {any} t
+     * @param {string} t
+     * @param {Anim} anim
      */
-    addTitle(t)
+    addTitle(t, anim)
     {
-        const title = new TlTitle(this.#glTl.parentElement());
+        const title = new TlTitle(this.#glTl.parentElement(), anim);
         title.setTitle(t);
         title.on("titleClicked", (title) =>
         {
@@ -167,11 +168,12 @@ export class glTlAnimLine extends Events
     /**
      * @param {number} idx
      * @param {string} t
+     * @param {Anim} [anim]
      */
-    setTitle(idx, t)
+    setTitle(idx, t, anim)
     {
-        while (this.#titles.length <= idx) this.addTitle("title...");
-        this.#titles[idx].setTitle(t);
+        while (this.#titles.length <= idx) this.addTitle("title...", anim);
+        this.#titles[idx].setTitle(t, anim);
         this.setTitlePos();
     }
 

@@ -680,7 +680,7 @@ export class GlTimeline extends Events
      */
     selectKey(k, a)
     {
-        if (!this.isKeySelected(k))
+        if (a.tlActive && !this.isKeySelected(k))
         {
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
