@@ -870,7 +870,10 @@ export class GlTimeline extends Events
             html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
 
         if (this.#oldhtml != html)
+        {
             this.#tlTimeDisplay.innerHTML = html;
+            this.#oldhtml = html;
+        }
     }
 
     updateAllElements()
