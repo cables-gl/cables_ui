@@ -311,11 +311,6 @@ export class GlTimeline extends Events
         return this.#cgl.canvas.parentElement;
     }
 
-    titleElement()
-    {
-        this.titleContainer;
-    }
-
     resize()
     {
         this.scroll.setWidth(this.#cgl.canvasWidth);

@@ -54,17 +54,17 @@ export default class GlTimelineTab
         });
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-plus info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(1.4, 0.5); }, ["button-left"]);
-        this.#tab.addButton("<span class=\"nomargin icon icon-minus info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(0.6, 0.5); }, ["button-right"]);
+        this.#tab.addButton("<span class=\"nomargin icon icon-chevrons-left-right info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(1.4, 0.5); }, ["button-left"]);
+        this.#tab.addButton("<span class=\"nomargin icon icon-chevrons-right-left left-right info\" data-info=\"tlzoomtime\"></span>", () => { this.tlCanvas.glTimeline.view.setZoomOffset(0.6, 0.5); }, ["button-right"]);
 
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-list-plus info\" data-info=\"tlzoomgraph\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-chevrons-up-down info\" data-info=\"tlzoomgraph\"></span>", () =>
         {
             this.tlCanvas.glTimeline.view.scale(-0.3);
         }, ["button-left"]);
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-list-minus info\" data-info=\"tlzoomgraph\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-chevrons-down-up info\" data-info=\"tlzoomgraph\"></span>", () =>
         {
             this.tlCanvas.glTimeline.view.scale(0.3);
         }, ["button-right"]);
@@ -111,7 +111,7 @@ export default class GlTimelineTab
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span id=\"togglegraph1\" class=\"nomargin icon info icon-chart-spline\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-left", "button-active"]);
-        this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-list\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
+        this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-chart-gantt\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
 
         this.#tab.addButtonSpacer();
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
