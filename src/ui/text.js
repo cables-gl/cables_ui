@@ -25,11 +25,13 @@ const text =
 
     "timeLineToggle": "Toggle timeline / keyframing panel",
     "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
-    "tlplay": "`space` play/pause",
-    "tlzoomgraph": "zoom graph",
-    "tlzoomtime": "zoom time",
-    "tlnextkey": "`j` next keyframe || `k` previous keyframe",
-    "tltogglegraph": "toggle graph view/dopesheet",
+    "tlplay": "`space` Play/Pause",
+    "tlzoomgraph": "Zoom graph",
+    "tlzoomtime": "Zoom time",
+    "tlnextkey": "`j` Next keyframe || `k` Previous keyframe",
+    "tltogglegraph": "Toggle graph view/dopesheet",
+    "tltoggle": "`ctrl space` Toggle timeline",
+    "tlactive": "[LMB] toggle editable || [RMB] deactivate all others || `dblclick` activate all",
 
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",

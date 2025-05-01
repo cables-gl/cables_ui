@@ -1,25 +1,30 @@
-.cablesCssUi {
-    .tlTitle {
+.cablesCssUi
+{
+    .tlTitle
+    {
         position: absolute;
         background-color: black;
         white-space: nowrap;
         padding-right: 5px;
         padding-left: 5px;
         border-left:3px solid transparent;
+        width:100%;
 
         &.hasSelectedKeys
         {
             border-left:3px solid yellow;
         }
 
-        span {
+        span
+        {
             cursor: pointer;
             padding-right: 10px;
             padding-left: 5px;
+            color:var(--color-07);
 
             &.current
             {
-                color:var(--color-special)
+                color:var(--color-12);
             }
         }
 
@@ -33,6 +38,19 @@
                 width: calc(3px) !important;
             }
         }
+    }
+
+    .filterInput
+    {
+        top: 81px;
+        left: 31px;
+        position: absolute;
+    }
+
+    .timelineminimize
+    {
+        position:absolute;
+        right: 1px;
     }
 
     .cblgltimelineEle

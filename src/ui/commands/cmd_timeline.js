@@ -13,7 +13,7 @@ const timelineCommands =
 
 export default timelineCommands;
 
-CABLES_CMD_TIMELINE.TimelineCreateKey = function ()
+CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
 {
 
     gui.glTimeline.createKeyAtCursor();
@@ -167,6 +167,11 @@ timelineCommands.commands.push(
         "cmd": "show all animated ports",
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.ListAnimatedPorts
+    },
+    {
+        "cmd": "add new keyframe at cursor",
+        "category": "timeline",
+        "func": CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor
     }
 
 );

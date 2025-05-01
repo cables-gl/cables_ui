@@ -93,20 +93,22 @@
 
     .button-left
     {
-    margin-right: 1px;
-    border-top-right-radius:0px ;
-    border-bottom-right-radius:0px ;
+        margin-right: 1px;
+        border-top-right-radius:0px ;
+        border-bottom-right-radius:0px ;
     }
     .button-right
     {
-    border-top-left-radius:0px ;
-    border-bottom-left-radius:0px ;
+        border-top-left-radius:0px ;
+        border-bottom-left-radius:0px ;
     }
     .button-active
     {
-
-
-
-            background-color:var(--color-button-bg-active) !important;
+        background-color:var(--color-button-bg-active) !important;
+    }
+    .button-inactive
+    {
+        opacity: 0.5;
+        pointer-events: none;
     }
 }

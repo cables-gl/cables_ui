@@ -1,7 +1,9 @@
 import { Events, ele } from "cables-shared-client";
-import { Op } from "cables";
+import { Anim, Op } from "cables";
 import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
+import { glTlAnimLine } from "./gltlanimline.js";
+import { GlTimeline } from "./gltimeline.js";
 
 export class TlTitle extends Events
 {
@@ -15,7 +17,6 @@ export class TlTitle extends Events
 
     /** @type {Object} */
     #buttons = [];
-    #isCurrent;
     #hasSelectedKeys;
 
     /** @type {Op} */
@@ -24,12 +25,20 @@ export class TlTitle extends Events
     /** @type {glTlKeys} */
     tlKeys;
 
+    /** @type {Anim} */
+    #anim;
+    #gltl;
+
     /**
      * @param {HTMLElement} parentEl
+     * @param {Anim} anim
+     * @param {GlTimeline} gltl
      */
-    constructor(parentEl)
+    constructor(gltl, parentEl, anim)
     {
         super();
+        this.#gltl = gltl;
+        this.#anim = anim;
         this.#el = document.createElement("div");
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
@@ -43,7 +52,6 @@ export class TlTitle extends Events
         this.addButton("...",
             (e) =>
             {
-
                 contextMenu.show(
                     {
                         "items":
@@ -56,9 +64,18 @@ export class TlTitle extends Events
                     }, e.target);
             }
         );
-        // this.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", () => {});
+        if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
+            this.activeButton = this.addButton("<span class=\"icon icon-check icon-0_75x nomargin info\" data-info=\"tlactive\"></span>",
+                (e) =>
+                {
+                    if (e.buttons == 2) this.#gltl.deactivateAllAnims();
+                    this.toggleActive();
+                }
+            );
         this.#el.appendChild(this.#elTitle);
 
+        if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(anim.tlActive);
+        else this.setActive(true);
     }
 
     /**
@@ -72,12 +89,30 @@ export class TlTitle extends Events
     /**
      * @param {boolean} c
      */
-    setIsCurrent(c)
+    setActive(c)
     {
-        this.#isCurrent = c;
+        this.#anim.tlActive = c;
+
+        this.updateIcons();
+    }
+
+    updateIcons()
+    {
+        const c = this.#anim.tlActive;
 
         if (c) this.#elTitle.classList.add("current");
         else this.#elTitle.classList.remove("current");
+
+        if (this.activeButton)
+            if (!c) this.activeButton.style.opacity = "0.4";
+            else
+                this.activeButton.style.opacity = "1";
+
+    }
+
+    toggleActive()
+    {
+        this.setActive(!this.#anim.tlActive);
     }
 
     /**
@@ -104,6 +139,8 @@ export class TlTitle extends Events
         html += title;
         button.innerHTML = html;
         ele.clickable(button, cb);
+        button.addEventListener("contextmenu", (e) => { cb(e); });
+        button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
         this.#el.appendChild(button);
         this.#buttons.push({ "ele": button, cb, title });
         return button;
@@ -121,8 +158,8 @@ export class TlTitle extends Events
 
     updateColor()
     {
-        if (this.op)
-            this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
+        // if (this.op)
+        //     this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
     }
 
     dispose()

@@ -99,7 +99,9 @@ function _scripts_ui_webpack(done)
             if (err) done(err);
             if (stats.hasErrors())
             {
-                done(new Error(getWebpackErrorMessage(stats)));
+                const err = new Error(getWebpackErrorMessage(stats));
+                delete err.stack;
+                done(err);
             }
             else
             {
@@ -145,7 +147,7 @@ function getWebpackErrorMessage(stats)
                 const parts = m.moduleIdentifier.split("|");
                 const filename = parts.length > 0 ? parts[1] : m.moduleIdentifier;
                 const em = m.message.split("\n");
-                errorMessage = filename + ":" + m.loc + " - " + em[0] || m.message;
+                errorMessage = "\n" + filename + ":" + m.loc + " - " + (em[0] || m.message) + "\n";
             });
         }
     }
