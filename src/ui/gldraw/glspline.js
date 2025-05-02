@@ -45,6 +45,11 @@ export default class GlSpline
         this.rebuild();
     }
 
+    getDrawer()
+    {
+        return this.#splineDrawer;
+    }
+
     /**
      * @param {Array<number>} p
      */
@@ -73,6 +78,7 @@ export default class GlSpline
             finalPoints[i + 1] = this.#points[i + 1] + y;
             finalPoints[i + 2] = this.#points[i + 2] + z;
         }
+
         this.#splineDrawer.setSpline(this.#splineIdx, finalPoints);
     }
 

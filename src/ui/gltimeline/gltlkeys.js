@@ -58,6 +58,7 @@ export class glTlKeys extends Events
     /** @type {GlTlView} */
     #view;
     #updateCount = 0;
+    #initCount = 0;
     #needsUpdate = false;
     #listeners = [];
     #resDiv = 1;
@@ -243,23 +244,23 @@ export class glTlKeys extends Events
                 if (skipped)
                 {
                     let y = this.#animLine.valueToPixel(lv);
-                    pointsSort.push([x, y, z]);
+                    pointsSort.push(x, y, z);
                 }
 
                 lv = v;
                 let y = this.#animLine.valueToPixel(v);
-                pointsSort.push([x, y, z]);
+                pointsSort.push(x, y, z);
                 skipped = false;
 
             }
 
-            pointsSort.sort((a, b) =>
-            {
-                return a[0] - b[0];
-            });
+            // pointsSort.sort((a, b) =>
+            // {
+            //     return a[0] - b[0];
+            // });
 
-            this.#points = pointsSort.flat();
-            // this.#points = pointsSort;
+            // this.#points = pointsSort.flat();
+            this.#points = pointsSort;
         }
 
         if (this.#options.keyYpos)
@@ -267,6 +268,7 @@ export class glTlKeys extends Events
             if (this.#anim.tlActive) this.#spline.setColor(0.9, 0.9, 0.9, 1);
             else this.#spline.setColor(0.4, 0.4, 0.4, 1);
 
+            this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(this.#points);
         }
 
@@ -335,6 +337,7 @@ export class glTlKeys extends Events
     init()
     {
         this.reset();
+        this.#initCount++;
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
             const kr = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
@@ -489,6 +492,7 @@ export class glTlKeys extends Events
         o.points = this.#points;
         o.updateCount = this.#updateCount;
 
+        o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
         o.resDiv = this.#resDiv;

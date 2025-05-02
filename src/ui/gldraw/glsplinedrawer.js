@@ -220,6 +220,10 @@ export default class GlSplineDrawer
         }
     }
 
+    /**
+     * @param {number} idx
+     * @param {number[]} rgba
+     */
     setSplineColor(idx, rgba)
     {
         if (
@@ -233,6 +237,9 @@ export default class GlSplineDrawer
         }
     }
 
+    /**
+     * @param {number} idx
+     */
     deleteSpline(idx)
     {
         const sp = this._splines[idx];
@@ -251,11 +258,17 @@ export default class GlSplineDrawer
         this.setSpline(idx, sp.origPoints);
     }
 
+    /**
+     * @param {number} idx
+     */
     showSpline(idx)
     {
         this._splines[idx].hidden = false;
     }
 
+    /**
+     * @param {string | number} idx
+     */
     hideSpline(idx)
     {
         this._splines[idx].hidden = true;
@@ -263,6 +276,10 @@ export default class GlSplineDrawer
         this._updateAttribsCoordinates(idx);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number[]} points
+     */
     setSpline(idx, points)
     {
         if (idx === undefined || idx === null)
@@ -677,6 +694,11 @@ export default class GlSplineDrawer
         }
         // console.log(this._splines);
         // console.log("avg spline points", l / this._splines.length);
+    }
+
+    rebuildLater()
+    {
+        this._rebuildLater = true;
     }
 
     ip(a, b, p)
