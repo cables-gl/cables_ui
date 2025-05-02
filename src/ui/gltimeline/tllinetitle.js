@@ -104,9 +104,21 @@ export class TlTitle extends Events
         else this.#elTitle.classList.remove("current");
 
         if (this.activeButton)
-            if (!c) this.activeButton.style.opacity = "0.4";
+        {
+            if (!c)
+            {
+                this.#elTitle.style.opacity = "0.4";
+                this.activeButton.children[0].classList.remove("icon-check");
+                this.activeButton.children[0].classList.add("icon-empty");
+            }
             else
-                this.activeButton.style.opacity = "1";
+            {
+                this.#elTitle.style.opacity = "1";
+                this.activeButton.children[0].classList.add("icon-check");
+                this.activeButton.children[0].classList.remove("icon-empty");
+            }
+
+        }
     }
 
     /**
