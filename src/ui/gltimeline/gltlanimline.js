@@ -229,7 +229,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            this.#titles[i].updateColor();
+            // this.#titles[i].updateColor();
             this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
 
@@ -373,6 +373,7 @@ export class glTlAnimLine extends Events
                 }
             }
             this.#titles[j].setSelected(found);
+            this.#titles[j].updateIcons();
         }
     }
 }

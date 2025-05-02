@@ -164,14 +164,15 @@ export class TlTitle extends Events
         this.#el.style.top = (y + 35) + "px";
     }
 
-    updateColor()
-    {
-        // if (this.op)
-        //     this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
-    }
-
     dispose()
     {
         this.#el.remove();
+
+    }
+
+    /* @deprecated */
+    updateColor()
+    {
+
     }
 }

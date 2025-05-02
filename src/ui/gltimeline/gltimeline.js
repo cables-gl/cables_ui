@@ -39,7 +39,7 @@ import undo from "../utils/undo.js";
 export class GlTimeline extends Events
 {
     #selectModeEl;
-    graphSelectMode = false;
+    graphSelectMode = true;
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -199,7 +199,7 @@ export class GlTimeline extends Events
         this.#selectModeEl = document.createElement("div");
         this.#selectModeEl.classList.add("selectMode");
         this.#selectModeEl.classList.add("button-small");
-        this.#selectModeEl.innerHTML = "select";
+        this.#selectModeEl.innerHTML = "selected";
         cgl.canvas.parentElement.appendChild(this.#selectModeEl);
         ele.clickable(this.#selectModeEl, () =>
         {
@@ -227,7 +227,6 @@ export class GlTimeline extends Events
         {
             if (this.getNumSelectedKeys() == 1)
             {
-
             }
             else
             if (this.getNumSelectedKeys() > 1)
@@ -239,7 +238,6 @@ export class GlTimeline extends Events
                 this.selectAllKeys();
                 this.zoomToFitSelection();
                 this.unSelectAllKeys();
-
             }
         });
 
@@ -296,9 +294,9 @@ export class GlTimeline extends Events
             let isAnimated = false;
             for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
 
-            if (!isAnimated) return;
+            // if (!isAnimated) return;
 
-            if (this.layout == GlTimeline.LAYOUT_GRAPHS)
+            if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
                 const ops = gui.patchView.getSelectedOps();
                 this.#tlAnims[0].activateSelectedOps(ops);
@@ -404,9 +402,11 @@ export class GlTimeline extends Events
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS)
         {
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
+            this.#selectModeEl.classList.remove("hidden");
         }
         else
         {
+            this.#selectModeEl.classList.add("hidden");
             ele.byId("togglegraph2").parentElement.classList.add("button-active");
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
