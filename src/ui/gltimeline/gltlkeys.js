@@ -60,6 +60,7 @@ export class glTlKeys extends Events
     #updateCount = 0;
     #needsUpdate = false;
     #listeners = [];
+    #resDiv = 1;
 
     /**
      * @param {GlTimeline} glTl
@@ -156,6 +157,11 @@ export class glTlKeys extends Events
         return kwidth;
     }
 
+    updateSoon()
+    {
+        setTimeout(this.update.bind(this), 60);
+    }
+
     /**
      */
     update()
@@ -198,25 +204,53 @@ export class glTlKeys extends Events
         }
 
         this.setKeyPositions();
-        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate)
+        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1)
         {
             return;
         }
 
+        this.#needsUpdate = false;
         this.#points = [];
         const pointsSort = [];
 
+        this.#resDiv -= 3;
+        if (this.#resDiv < 1) this.#resDiv = 1;
+
         if (this.#options.keyYpos)
         {
-            const steps = (this.#glTl.width) / 1;
+            if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
+
+            const steps = (this.#glTl.width) / this.#resDiv;
+            let lx = 8888888;
+            let ly = 8888888;
+            let lv = 9999999;
+            let skipped = false;
 
             for (let i = 0; i < steps; i++)
             {
+
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-                let y = this.#animLine.valueToPixel(this.#anim.getValue(t));
 
+                let v = this.#anim.getValue(t);
+
+                if (v == lv && i < steps - 3)
+                {
+                    skipped = true;
+                    continue;
+                }
+
+                if (skipped)
+                {
+                    let y = this.#animLine.valueToPixel(lv);
+                    pointsSort.push([x, y, z]);
+                }
+
+                lv = v;
+                let y = this.#animLine.valueToPixel(v);
                 pointsSort.push([x, y, z]);
+                skipped = false;
+
             }
 
             pointsSort.sort((a, b) =>
@@ -225,6 +259,7 @@ export class glTlKeys extends Events
             });
 
             this.#points = pointsSort.flat();
+            // this.#points = pointsSort;
         }
 
         if (this.#options.keyYpos)
@@ -234,7 +269,10 @@ export class glTlKeys extends Events
 
             this.#spline.setPoints(this.#points);
         }
+
         this.#updateCount++;
+
+        if (this.#resDiv != 1) this.updateSoon();
     }
 
     setKeyPositions()
@@ -318,12 +356,12 @@ export class glTlKeys extends Events
             kr.on(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = kr;
-                this.update();
+                this.updateSoon();
             });
             kr.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
-                this.update();
+                this.updateSoon();
             });
 
             kr.on(GlRect.EVENT_DRAGEND, () =>
@@ -379,7 +417,6 @@ export class glTlKeys extends Events
                     startDragValue = this.#animLine.pixelToValue(e.offsetY);
 
                     if (e.shiftKey) this.#glTl.duplicateSelectedKeys();
-
                 }
             });
 
@@ -413,7 +450,7 @@ export class glTlKeys extends Events
                     }
 
                     this.#animLine.update();
-                    this.update();
+                    this.updateSoon();
 
                 }
             });
@@ -421,7 +458,7 @@ export class glTlKeys extends Events
             this.#keyRects.push(kr);
 
         }
-        this.update();
+        this.updateSoon();
     }
 
     get height()
@@ -452,6 +489,9 @@ export class glTlKeys extends Events
         o.points = this.#points;
         o.updateCount = this.#updateCount;
 
+        o.animated = this.#glTl.view.isAnimated();
+        o.needsupdate = this.#needsUpdate;
+        o.resDiv = this.#resDiv;
         return o;
     }
 }
