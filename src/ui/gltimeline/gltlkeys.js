@@ -64,6 +64,7 @@ export class glTlKeys extends Events
     #listeners = [];
     #resDiv = 1;
     #hasSelectedKeys = false;
+    #disposedWarning = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -171,7 +172,9 @@ export class glTlKeys extends Events
     {
         if (this.#disposed)
         {
-            this._log.warn("disposed", this);
+            this.#disposedWarning++;
+            // if (this.#disposedWarning > 3)
+            // this._log.warn("disposed", this.#disposedWarning);
             return;
         }
 
@@ -200,7 +203,11 @@ export class glTlKeys extends Events
 
             if (this.#glTl.isKeySelected(animKey))
             {
-                if (!this.#hasSelectedKeys) this.#hasSelectedKeys = true;
+                if (!this.#hasSelectedKeys)
+                {
+                    this.#hasSelectedKeys = true;
+                    this.#needsUpdate = true;
+                }
                 col = [1, 1, 0, 1];
             }
 
@@ -210,6 +217,9 @@ export class glTlKeys extends Events
         if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
         this.setKeyPositions();
+
+        /// /////////
+
         if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1) return;
 
         this.#needsUpdate = false;
@@ -217,7 +227,7 @@ export class glTlKeys extends Events
         const pointsSort = [];
 
         let z = -0.4;
-        if (this.#hasSelectedKeys)z = -0.3;
+        if (this.#anim.tlActive)z = -0.8;
         this.#resDiv -= 3;
         if (this.#resDiv < 1) this.#resDiv = 1;
 
@@ -282,7 +292,7 @@ export class glTlKeys extends Events
 
         if (this.#anim.tlActive)
         {
-            if (this.#port.op == this.#glTl.selectedOp) this.#spline.setColor(0, 1, 1, 1);
+            if (this.#port.op.isCurrentUiOp()) this.#spline.setColor(0, 1, 1, 1);
             else if (this.#hasSelectedKeys) { this.#spline.setColor(1, 1, 1, 1); }
             else this.#spline.setColor(0.6, 0.6, 0.6, 1);
         }
@@ -363,18 +373,18 @@ export class glTlKeys extends Events
             let oldValues = {};
 
             kr.draggableMove = true;
-            kr.on(GlRect.EVENT_POINTER_HOVER, () =>
+            kr.listen(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = kr;
                 this.updateSoon();
             });
-            kr.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+            kr.listen(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
                 this.updateSoon();
             });
 
-            kr.on(GlRect.EVENT_DRAGEND, () =>
+            kr.listen(GlRect.EVENT_DRAGEND, () =>
             {
                 this.#anim.sortKeys();
                 this.#anim.removeDuplicates();
@@ -394,7 +404,7 @@ export class glTlKeys extends Events
                 });
             });
 
-            kr.on(GlRect.EVENT_POINTER_UP, (e) =>
+            kr.listen(GlRect.EVENT_POINTER_UP, (e) =>
             {
                 if (this.click)
                 {
@@ -408,12 +418,12 @@ export class glTlKeys extends Events
 
             });
 
-            kr.on(GlRect.EVENT_POINTER_DOWN, () =>
+            kr.listen(GlRect.EVENT_POINTER_DOWN, () =>
             {
                 this.click = true;
             });
 
-            kr.on(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
+            kr.listen(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
             {
                 // this.click = false;
 
@@ -430,7 +440,7 @@ export class glTlKeys extends Events
                 }
             });
 
-            kr.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+            kr.listen(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 this.click = false;
                 if (this.#glTl.selectRect) return;
@@ -478,7 +488,10 @@ export class glTlKeys extends Events
 
     reset()
     {
-        for (let i = 0; i < this.#keyRects.length; i++) this.#keyRects[i].dispose();
+        for (let i = 0; i < this.#keyRects.length; i++)
+        {
+            this.#keyRects[i].dispose();
+        }
         this.#keyRects = [];
     }
 

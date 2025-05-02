@@ -100,7 +100,7 @@ void main()
     finalPosition.x+=scrollX;
     finalPosition.y+=scrollY;
     finalPosition.z=spline.z;
-
+zz=spline.z;
 
     gl_Position = finalPosition;
 }
