@@ -131,7 +131,6 @@ export class GlTimeline extends Events
      * @param {CglContext} cgl
     */
     constructor(cgl)
-
     {
         super();
 
@@ -1184,7 +1183,6 @@ export class GlTimeline extends Events
             o.tlAnims.push(this.#tlAnims[anii].getDebug());
 
         return o;
-
     }
 
     createKeyAtCursor()

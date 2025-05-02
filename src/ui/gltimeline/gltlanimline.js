@@ -9,6 +9,7 @@ import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
+import opNames from "../opnameutils.js";
 
 /**
  * gltimeline anim
@@ -106,9 +107,17 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            let title = ports[i].op.name + " - " + ports[i].name;
+            let title = "";
+
+            title += "<span class=\"" + opNames.getNamespaceClassName(ports[i].op.objName) + "\">";
+            title += ports[i].op.name;
+            title += "</span>";
+
+            title += " <span class=\"portname\">" + ports[i].name + "</span>";
+            if (ports[i].op.uiAttribs.comment) title += "<span class=\"comment\"> // " + ports[i].op.uiAttribs.comment + "</span>";
             this.setTitle(i, title, ports[i].anim);
         }
+
         if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
             this.#valueRuler = new TlValueRuler(glTl, this, this.#glRectKeysBg);
@@ -159,7 +168,6 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
             this.#titles[i].updateIcons();
-
     }
 
     setTitlePos()

@@ -58,6 +58,8 @@ export class glTlKeys extends Events
     /** @type {GlTlView} */
     #view;
     #updateCount = 0;
+    #needsUpdate = false;
+    #listeners = [];
 
     /**
      * @param {GlTimeline} glTl
@@ -75,17 +77,22 @@ export class glTlKeys extends Events
         if (!parentRect) this._log.error("no parentRect");
         if (!port) this._log.error("no port");
         this.#anim = anim;
+
         this.#glTl = glTl;
         this.#view = glTl.view;
         this.#parentRect = parentRect;
         this.#options = options || {};
         this.#port = port;
         this.#animLine = animLine;
+        this.#listeners.push(
+            anim.listen(Anim.EVENT_CHANGE, () =>
+            {
+                this.#needsUpdate = true;
+            }));
 
         if (this.#options.keyYpos)
         {
             this.#spline = new GlSpline(this.#glTl.splines, port.name);
-
             this.#spline.setParentRect(parentRect);
             this.#spline.setPoints([0, 0, 0, 100, 10, 0, 10, 10, 0]);
         }
@@ -161,9 +168,6 @@ export class glTlKeys extends Events
 
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
 
-        this.#points = [];
-        const pointsSort = [];
-
         let z = -0.4;
 
         for (let i = 0; i < this.#keyRects.length; i++)
@@ -174,16 +178,6 @@ export class glTlKeys extends Events
             const kr = this.#keyRects[i];
 
             if (animKey.anim.tlActive) col = [0.8, 0.8, 0.8, 1];
-
-            //     if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
-            //     else
-            //     if (this.isCurrentOp()) col = [1, 1, 1];
-            // if (!kr.isHovering())
-            // {
-            //     col[0] *= 0.8;
-            //     col[1] *= 0.8;
-            //     col[2] *= 0.8;
-            // }
 
             this.setKeyShapeSize(kr);
 
@@ -204,6 +198,13 @@ export class glTlKeys extends Events
         }
 
         this.setKeyPositions();
+        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate)
+        {
+            return;
+        }
+
+        this.#points = [];
+        const pointsSort = [];
 
         if (this.#options.keyYpos)
         {
@@ -437,6 +438,7 @@ export class glTlKeys extends Events
     dispose()
     {
         this.reset();
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].stop();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
         // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
