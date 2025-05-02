@@ -255,9 +255,18 @@ export class GlTimeline extends Events
 
         /// ///////////////////
 
-        gui.on("opSelectChange", () =>
+        gui.on("opSelectChange", (op) =>
         {
+            this.selectedOp = op;
+
+            const ops = gui.patchView.getSelectedOps();
+            if (this.layout == GlTimeline.LAYOUT_GRAPHS)
+            {
+                this.#tlAnims[0].activateSelectedOps(ops);
+            }
+
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+
             this.needsUpdateAll = true;
 
         });

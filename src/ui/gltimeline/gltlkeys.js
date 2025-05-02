@@ -18,6 +18,7 @@ import { GlTlView } from "./gltlview.js";
  */
 export class glTlKeys extends Events
 {
+    static COLOR_INACTIVE = [0.26, 0.26, 0.26, 1];
 
     /** @type {Anim} */
     #anim = null;
@@ -62,6 +63,7 @@ export class glTlKeys extends Events
     #needsUpdate = false;
     #listeners = [];
     #resDiv = 1;
+    #hasSelectedKeys = false;
 
     /**
      * @param {GlTimeline} glTl
@@ -175,11 +177,12 @@ export class glTlKeys extends Events
 
         if (this.#keyRects.length != this.#anim.keys.length) return this.init();
 
-        let z = -0.4;
+        const wasSelected = this.#hasSelectedKeys;
+        this.#hasSelectedKeys = false;
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-            let col = [0.4, 0.4, 0.4, 1];
+            let col = glTlKeys.COLOR_INACTIVE;
 
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
@@ -197,23 +200,24 @@ export class glTlKeys extends Events
 
             if (this.#glTl.isKeySelected(animKey))
             {
+                if (!this.#hasSelectedKeys) this.#hasSelectedKeys = true;
                 col = [1, 1, 0, 1];
             }
 
             kr.setColorArray(col);
 
         }
+        if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
         this.setKeyPositions();
-        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1)
-        {
-            return;
-        }
+        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1) return;
 
         this.#needsUpdate = false;
         this.#points = [];
         const pointsSort = [];
 
+        let z = -0.4;
+        if (this.#hasSelectedKeys)z = -0.3;
         this.#resDiv -= 3;
         if (this.#resDiv < 1) this.#resDiv = 1;
 
@@ -222,8 +226,6 @@ export class glTlKeys extends Events
             if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
 
             const steps = (this.#glTl.width) / this.#resDiv;
-            let lx = 8888888;
-            let ly = 8888888;
             let lv = 9999999;
             let skipped = false;
 
@@ -265,16 +267,26 @@ export class glTlKeys extends Events
 
         if (this.#options.keyYpos)
         {
-            if (this.#anim.tlActive) this.#spline.setColor(0.9, 0.9, 0.9, 1);
-            else this.#spline.setColor(0.4, 0.4, 0.4, 1);
-
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(this.#points);
+            this.updateColors();
         }
 
         this.#updateCount++;
 
         if (this.#resDiv != 1) this.updateSoon();
+    }
+
+    updateColors()
+    {
+
+        if (this.#anim.tlActive)
+        {
+            if (this.#port.op == this.#glTl.selectedOp) this.#spline.setColor(0, 1, 1, 1);
+            else if (this.#hasSelectedKeys) { this.#spline.setColor(1, 1, 1, 1); }
+            else this.#spline.setColor(0.6, 0.6, 0.6, 1);
+        }
+        else this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
     }
 
     setKeyPositions()
@@ -320,13 +332,14 @@ export class glTlKeys extends Events
 
     hasSelectedKeys()
     {
-        for (let i = 0; i < this.#anim.keys.length; i++)
-        {
-            const animKey = this.#anim.keys[i];
-            if (this.#glTl.isKeySelected(animKey))
-                return true;
-        }
-        return false;
+        // for (let i = 0; i < this.#anim.keys.length; i++)
+        // {
+        //     const animKey = this.#anim.keys[i];
+        //     if (this.#glTl.isKeySelected(animKey))
+        //         return true;
+        // }
+        // return false;
+        return this.#hasSelectedKeys;
     }
 
     updateKeyRects()

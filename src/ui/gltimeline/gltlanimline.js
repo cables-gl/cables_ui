@@ -163,9 +163,16 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    activateSelectedOps(ops)
+    {
+        for (let i = 0; i < this.#ports.length; i++)
+        {
+            this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
+        }
+    }
+
     updateTitles()
     {
-
         for (let i = 0; i < this.#titles.length; i++)
             this.#titles[i].updateIcons();
     }
@@ -189,7 +196,7 @@ export class glTlAnimLine extends Events
     setTitle(idx, t, anim)
     {
         while (this.#titles.length <= idx) this.addTitle("title...", anim);
-        this.#titles[idx].setTitle(t, anim);
+        this.#titles[idx].setTitle(t,);
         this.setTitlePos();
     }
 
