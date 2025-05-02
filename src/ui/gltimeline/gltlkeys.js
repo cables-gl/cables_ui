@@ -483,6 +483,8 @@ export class glTlKeys extends Events
         if (this.#spline) this.#spline = this.#spline.dispose();
         // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
 
+        this.removeAllEventListeners();
+
         this.#disposed = true;
     }
 

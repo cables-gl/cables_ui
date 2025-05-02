@@ -212,7 +212,7 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].updateSoon();
         if (this.#valueRuler) this.#valueRuler.update();
     }
 
@@ -287,6 +287,7 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
 
         this.#disposeRects = [];
+        this.removeAllEventListeners();
     }
 
     /**
