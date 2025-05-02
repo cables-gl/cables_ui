@@ -27,9 +27,14 @@
                 color:var(--color-12);
             }
         }
+
         .portname
         {
             color:var(--textedit-comment);
+        }
+        &.selectedOp
+        {
+        background-color: #444;
         }
 
         .button-small {
@@ -49,6 +54,13 @@
         top: 81px;
         left: 31px;
         position: absolute;
+    }
+
+    .selectMode
+    {
+        left: 194px;
+        position: absolute;
+        top: 79px;
     }
 
     .timelineminimize

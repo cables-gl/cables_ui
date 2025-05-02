@@ -1,5 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Anim } from "cables";
+import { Anim, CglContext } from "cables";
 import GlLinedrawer from "../gldraw/gllinedrawer.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";

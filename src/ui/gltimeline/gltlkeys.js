@@ -293,18 +293,13 @@ export class glTlKeys extends Events
     {
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-            // let col = [0.7, 0.7, 0.7, 1];
-
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
 
             if (animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
-            // else
-            // if (this.isCurrentOp()) col = [1, 1, 1];
 
             let y = (this.#parentRect.h / 2);
-            if (this.#options.keyYpos)
-                y = this.#animLine.valueToPixel(animKey.value);
+            if (this.#options.keyYpos) y = this.#animLine.valueToPixel(animKey.value);
 
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.keyHeight / 2;
@@ -320,7 +315,6 @@ export class glTlKeys extends Events
                 this.#glTl.selectKey(animKey, this.#anim);
             }
         }
-
     }
 
     selectAll()

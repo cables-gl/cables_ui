@@ -107,7 +107,15 @@ export class TlTitle extends Events
             if (!c) this.activeButton.style.opacity = "0.4";
             else
                 this.activeButton.style.opacity = "1";
+    }
 
+    /**
+     * @param {boolean} selected
+     */
+    setSelected(selected)
+    {
+        if (selected) this.#el.classList.add("selectedOp");
+        else this.#el.classList.remove("selectedOp");
     }
 
     toggleActive()

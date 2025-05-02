@@ -355,4 +355,24 @@ export class glTlAnimLine extends Events
         // if (y == Infinity)y = 0;
         return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
     }
+
+    /**
+     * @param {Op[]} selops
+     */
+    updateSelectedOpColor(selops)
+    {
+        for (let j = 0; j < this.#ports.length; j++)
+        {
+            let found = false;
+            for (let i = 0; i < selops.length; i++)
+            {
+                if (this.#ports[j].op == selops[i])
+                {
+                    found = true;
+                    break;
+                }
+            }
+            this.#titles[j].setSelected(found);
+        }
+    }
 }
