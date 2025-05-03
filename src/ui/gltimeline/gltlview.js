@@ -285,6 +285,17 @@ export class GlTlView
         this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
     }
 
+    isAnimated()
+    {
+        return (
+            !this.#animZoom.isFinished(this.#timer.getTime()) ||
+            !this.#animScroll.isFinished(this.#timer.getTime()) ||
+            !this.#animScrollY.isFinished(this.#timer.getTime()) ||
+            !this.#animMinVal.isFinished(this.#timer.getTime()) ||
+            !this.#animMaxVal.isFinished(this.#timer.getTime()));
+
+    }
+
     updateAnims()
     {
         this.#timer.update();

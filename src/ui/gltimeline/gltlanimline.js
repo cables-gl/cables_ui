@@ -9,6 +9,7 @@ import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
+import opNames from "../opnameutils.js";
 
 /**
  * gltimeline anim
@@ -106,9 +107,17 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            let title = ports[i].op.name + " - " + ports[i].name;
+            let title = "";
+
+            title += "<span class=\"" + opNames.getNamespaceClassName(ports[i].op.objName) + "\">";
+            title += ports[i].op.name;
+            title += "</span>";
+
+            title += " <span class=\"portname\">" + ports[i].name + "</span>";
+            if (ports[i].op.uiAttribs.comment) title += "<span class=\"comment\"> // " + ports[i].op.uiAttribs.comment + "</span>";
             this.setTitle(i, title, ports[i].anim);
         }
+
         if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
             this.#valueRuler = new TlValueRuler(glTl, this, this.#glRectKeysBg);
@@ -154,12 +163,18 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    activateSelectedOps(ops)
+    {
+        for (let i = 0; i < this.#ports.length; i++)
+        {
+            this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
+        }
+    }
+
     updateTitles()
     {
-
         for (let i = 0; i < this.#titles.length; i++)
             this.#titles[i].updateIcons();
-
     }
 
     setTitlePos()
@@ -181,7 +196,7 @@ export class glTlAnimLine extends Events
     setTitle(idx, t, anim)
     {
         while (this.#titles.length <= idx) this.addTitle("title...", anim);
-        this.#titles[idx].setTitle(t, anim);
+        this.#titles[idx].setTitle(t,);
         this.setTitlePos();
     }
 
@@ -204,7 +219,7 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].updateSoon();
         if (this.#valueRuler) this.#valueRuler.update();
     }
 
@@ -214,7 +229,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            this.#titles[i].updateColor();
+            // this.#titles[i].updateColor();
             this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
 
@@ -279,6 +294,7 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < this.#disposeRects.length; i++) this.#disposeRects[i].dispose();
 
         this.#disposeRects = [];
+        this.removeAllEventListeners();
     }
 
     /**
@@ -338,5 +354,26 @@ export class glTlAnimLine extends Events
         // if (y == -Infinity) y = 0;
         // if (y == Infinity)y = 0;
         return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
+    }
+
+    /**
+     * @param {Op[]} selops
+     */
+    updateSelectedOpColor(selops)
+    {
+        for (let j = 0; j < this.#ports.length; j++)
+        {
+            let found = false;
+            for (let i = 0; i < selops.length; i++)
+            {
+                if (this.#ports[j].op == selops[i])
+                {
+                    found = true;
+                    break;
+                }
+            }
+            this.#titles[j].setSelected(found);
+            this.#titles[j].updateIcons();
+        }
     }
 }

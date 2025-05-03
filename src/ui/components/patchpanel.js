@@ -23,16 +23,25 @@ export default class PatchPanel extends Events
         this._outline = new PatchOutline();
     }
 
+    /**
+     * @param {object} obj
+     */
     deserialize(obj)
     {
         this._outline.deserialize(obj);
     }
 
+    /**
+     * @param {object} obj
+     */
     serialize(obj)
     {
         this._outline.serialize(obj);
     }
 
+    /**
+     * @param {boolean} [force]
+     */
     show(force)
     {
         if (!gui.finishedLoading()) return;
@@ -44,6 +53,7 @@ export default class PatchPanel extends Events
         }
 
         gui.opParams.emitEvent("opSelected", null);
+        gui.opParams.emitEvent("opSelectChange", null);
 
         if (!force && ele.byClass("patchParamPanel")) return;
 

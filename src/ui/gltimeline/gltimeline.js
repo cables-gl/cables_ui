@@ -38,10 +38,8 @@ import undo from "../utils/undo.js";
  */
 export class GlTimeline extends Events
 {
-    activateAllAnims()
-    {
-        throw new Error("Method not implemented.");
-    }
+    #selectModeEl;
+    graphSelectMode = true;
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -131,7 +129,6 @@ export class GlTimeline extends Events
      * @param {CglContext} cgl
     */
     constructor(cgl)
-
     {
         super();
 
@@ -193,13 +190,30 @@ export class GlTimeline extends Events
         this.#filterInputEl.classList.add("filterInput");
         this.#filterInputEl.setAttribute("placeholder", "filter...");
         cgl.canvas.parentElement.appendChild(this.#filterInputEl);
-
         this.#filterInputEl.addEventListener("input", () =>
         {
             this.#filterString = this.#filterInputEl.value;
             this.init();
         });
 
+        this.#selectModeEl = document.createElement("div");
+        this.#selectModeEl.classList.add("selectMode");
+        this.#selectModeEl.classList.add("button-small");
+        this.#selectModeEl.innerHTML = "selected";
+        cgl.canvas.parentElement.appendChild(this.#selectModeEl);
+        ele.clickable(this.#selectModeEl, () =>
+        {
+            this.graphSelectMode = !this.graphSelectMode;
+            if (this.graphSelectMode)
+                this.#selectModeEl.innerHTML = "selected";
+            else
+                this.#selectModeEl.innerHTML = "manual";
+
+            this.deactivateAllAnims(true);
+            gui.emitEvent("opSelectChange");
+            this.updateAllElements();
+
+        });
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
@@ -213,7 +227,6 @@ export class GlTimeline extends Events
         {
             if (this.getNumSelectedKeys() == 1)
             {
-
             }
             else
             if (this.getNumSelectedKeys() > 1)
@@ -256,11 +269,21 @@ export class GlTimeline extends Events
 
         /// ///////////////////
 
-        gui.on("opSelectChange", () =>
+        gui.on("opSelectChange", (op) =>
         {
+            this.selectedOp = op;
+
+            const selops = gui.patchView.getSelectedOps();
+            if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
+            {
+                this.#tlAnims[0].activateSelectedOps(selops);
+            }
+
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+
             this.needsUpdateAll = true;
 
+            for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
 
         gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
@@ -271,7 +294,13 @@ export class GlTimeline extends Events
             let isAnimated = false;
             for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
 
-            if (!isAnimated) return;
+            // if (!isAnimated) return;
+
+            if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
+            {
+                const ops = gui.patchView.getSelectedOps();
+                this.#tlAnims[0].activateSelectedOps(ops);
+            }
 
             let selOpsStr = "";
             for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].id;
@@ -282,6 +311,7 @@ export class GlTimeline extends Events
                 this.init();
                 this.#selOpsStr = selOpsStr;
             }
+            for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
         gui.glTimeline = this;
 
@@ -372,9 +402,11 @@ export class GlTimeline extends Events
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS)
         {
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
+            this.#selectModeEl.classList.remove("hidden");
         }
         else
         {
+            this.#selectModeEl.classList.add("hidden");
             ele.byId("togglegraph2").parentElement.classList.add("button-active");
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
@@ -1184,7 +1216,6 @@ export class GlTimeline extends Events
             o.tlAnims.push(this.#tlAnims[anii].getDebug());
 
         return o;
-
     }
 
     createKeyAtCursor()
@@ -1213,4 +1244,5 @@ export class GlTimeline extends Events
             this.#tlAnims[anii].updateTitles();
         }
     }
+
 }

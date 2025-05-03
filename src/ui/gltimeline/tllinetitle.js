@@ -104,10 +104,30 @@ export class TlTitle extends Events
         else this.#elTitle.classList.remove("current");
 
         if (this.activeButton)
-            if (!c) this.activeButton.style.opacity = "0.4";
+        {
+            if (!c)
+            {
+                this.#elTitle.style.opacity = "0.4";
+                this.activeButton.children[0].classList.remove("icon-check");
+                this.activeButton.children[0].classList.add("icon-empty");
+            }
             else
-                this.activeButton.style.opacity = "1";
+            {
+                this.#elTitle.style.opacity = "1";
+                this.activeButton.children[0].classList.add("icon-check");
+                this.activeButton.children[0].classList.remove("icon-empty");
+            }
 
+        }
+    }
+
+    /**
+     * @param {boolean} selected
+     */
+    setSelected(selected)
+    {
+        if (selected) this.#el.classList.add("selectedOp");
+        else this.#el.classList.remove("selectedOp");
     }
 
     toggleActive()
@@ -156,14 +176,15 @@ export class TlTitle extends Events
         this.#el.style.top = (y + 35) + "px";
     }
 
-    updateColor()
-    {
-        // if (this.op)
-        //     this.setIsCurrent(gui.patchView.isCurrentOp(this.op));
-    }
-
     dispose()
     {
         this.#el.remove();
+
+    }
+
+    /* @deprecated */
+    updateColor()
+    {
+
     }
 }

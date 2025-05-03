@@ -28,6 +28,15 @@
             }
         }
 
+        .portname
+        {
+            color:var(--textedit-comment);
+        }
+        &.selectedOp
+        {
+        background-color: #444;
+        }
+
         .button-small {
             padding: 3px !important;
             padding-top: 0px !important;
@@ -45,6 +54,13 @@
         top: 81px;
         left: 31px;
         position: absolute;
+    }
+
+    .selectMode
+    {
+        left: 194px;
+        position: absolute;
+        top: 79px;
     }
 
     .timelineminimize
