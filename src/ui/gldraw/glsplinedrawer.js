@@ -1,3 +1,8 @@
+import { Geometry } from "cables/src/core/cg/cg_geom.js";
+import { Shader } from "cables/src/core/cgl/cgl_shader.js";
+import { Uniform } from "cables/src/core/cgl/cgl_shader_uniform.js";
+import { CglContext } from "cables/src/core/cgl/cgl_state.js";
+import { Mesh } from "cables/src/core/cgl/cgl_mesh.js";
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
@@ -13,7 +18,7 @@ export default class GlSplineDrawer
 {
 
     /**
-     * @param {CGState} cgl
+     * @param {CglContext} cgl
      * @param {String} name
      */
     constructor(cgl, name)
@@ -28,7 +33,7 @@ export default class GlSplineDrawer
         this._mesh = null;
         this._verts = new Float32Array();
 
-        this._geom = new CGL.Geometry("GlSplineDrawer_" + name);
+        this._geom = new Geometry("GlSplineDrawer_" + name);
         this._pointsProgress = new Float32Array();
         this._pointsSplineLength = new Float32Array();
         this._points = new Float32Array();
@@ -45,22 +50,22 @@ export default class GlSplineDrawer
         this._splineColors = [];
         this._splines = [];
 
-        this._shader = new CGL.Shader(cgl, "glSplineDrawer " + name);
+        this._shader = new Shader(cgl, "glSplineDrawer " + name);
         this._shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
 
-        this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
-        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
-        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
-        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
-        this._uniZpos = new CGL.Uniform(this._shader, "f", "zpos", 0.96);
-        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
-        this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
-        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
-        this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
+        this._uniTime = new Uniform(this._shader, "f", "time", 0);
+        this._uniZoom = new Uniform(this._shader, "f", "zoom", 0);
+        this._uniResX = new Uniform(this._shader, "f", "resX", 0);
+        this._uniResY = new Uniform(this._shader, "f", "resY", 0);
+        this._uniZpos = new Uniform(this._shader, "f", "zpos", 0.96);
+        this._uniscrollX = new Uniform(this._shader, "f", "scrollX", 0);
+        this._uniscrollY = new Uniform(this._shader, "f", "scrollY", 0);
+        this._uniWidth = new Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
+        this._uniWidthSelected = new Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
 
-        this._uniFadeoutOptions = new CGL.Uniform(this._shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
+        this._uniFadeoutOptions = new Uniform(this._shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
 
-        this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
+        this._uniMousePos = new Uniform(this._shader, "2f", "mousePos");
 
         this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
         this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
@@ -174,17 +179,28 @@ export default class GlSplineDrawer
         return this._count;
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     _float32Diff(a, b)
     {
         return Math.abs(a - b) > 0.0001;
     }
 
+    /**
+     * @param {number} i
+     */
     setDebugRenderer(i)
     {
         this._shader.toggleDefine("DEBUG_1", i == 1);
         this._shader.toggleDefine("DEBUG_2", i == 2);
     }
 
+    /**
+     * @param {number} idx
+     * @param {any} speed
+     */
     setSplineSpeed(idx, speed)
     {
         if (this._splines[idx].speed != speed)
@@ -267,7 +283,7 @@ export default class GlSplineDrawer
     }
 
     /**
-     * @param {string | number} idx
+     * @param {number} idx
      */
     hideSpline(idx)
     {
@@ -323,8 +339,6 @@ export default class GlSplineDrawer
                     isDifferent = true;
                     isDifferentLength = true;
                     this._splines[idx].pointsNeedProgressUpdate = true;
-
-                    // console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
                     this._rebuildReason = "length of spline changed " + points.length + " vs " + this._splines[idx].origPoints.length;
                 }
@@ -362,6 +376,9 @@ export default class GlSplineDrawer
         }
     }
 
+    /**
+     * @param {number} w
+     */
     setWidth(w)
     {
         this._uniWidth.set(w);
@@ -393,16 +410,17 @@ export default class GlSplineDrawer
         }
         this._geom.vertices = this._verts;
 
-        if (!this._mesh) this._mesh = new CGL.Mesh(this._cgl, this._geom);
+        if (!this._mesh) this._mesh = new Mesh(this._cgl, this._geom);
 
         this._mesh.addVertexNumbers = false;
         this._mesh.updateVertices(this._geom);
 
         perf.finish();
-
-        // console.log("verlen2", this._verts.length / 6, this._thePoints.length);
     }
 
+    /**
+     * @param {number} idx
+     */
     _updateAttribsSpeed(idx)
     {
         if (!this._mesh)
@@ -430,6 +448,12 @@ export default class GlSplineDrawer
         this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
     }
 
+    /**
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     */
     _dist(x1, y1, x2, y2)
     {
         const xd = x2 - x1;
@@ -437,6 +461,10 @@ export default class GlSplineDrawer
         return Math.sqrt(xd * xd + yd * yd);
     }
 
+    /**
+     * @param {number} idx
+     * @param {{ colorsInactive?: any; colorsBorder?: any; colors?: any; speed?: any; }} [updateWhat]
+     */
     _updateAttribsCoordinates(idx, updateWhat)
     {
         if (!gui.patchView._patchRenderer) return;
@@ -503,7 +531,6 @@ export default class GlSplineDrawer
                     count += 6 * 3;
                 }
 
-                // if (this._pointsSplineLength.length != this._pointsProgress.length)console.log("wrong length?!");
                 for (let i = 0; i < this._pointsProgress.length; i++)
                     this._pointsSplineLength[i] = totalDistance;
 
@@ -692,8 +719,6 @@ export default class GlSplineDrawer
             if (this._splines[i].points)
                 l += this._splines[i].points.length / 3;
         }
-        // console.log(this._splines);
-        // console.log("avg spline points", l / this._splines.length);
     }
 
     rebuildLater()
@@ -701,11 +726,19 @@ export default class GlSplineDrawer
         this._rebuildLater = true;
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     * @param {number} p
+     */
     ip(a, b, p)
     {
         return a + p * (b - a);
     }
 
+    /**
+     * @param {string | any[]} oldArr
+     */
     tessEdges(oldArr)
     {
         if (!oldArr) return;
