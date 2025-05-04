@@ -2,6 +2,7 @@ import { Events, Logger, ele } from "cables-shared-client";
 
 import { Anim, AnimKey, CglContext, Port } from "cables";
 import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
+import { Timer } from "cables/src/core/timer.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -163,7 +164,7 @@ export class GlTimeline extends Events
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
 
-        gui.corePatch().timer.on("playPause", () =>
+        gui.corePatch().timer.on(Timer.EVENT_PLAY_PAUSE, () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
         });
@@ -592,7 +593,7 @@ export class GlTimeline extends Events
     setSelectedKeysTime(time = this.cursorTime)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
-            this.#selectedKeys[i].set({ "time": time });
+            this.#selectedKeys[i].set({ "t": time });
 
         this.needsUpdateAll = true;
     }

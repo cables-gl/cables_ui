@@ -357,7 +357,7 @@ const PatchConnectionSender = function (patch)
 
     patch.addEventListener("portAnimUpdated", (op, port, anim) =>
     {
-        if (op && port)
+        if (op && port && anim)
         {
             const vars = {
                 "opId": op.id,

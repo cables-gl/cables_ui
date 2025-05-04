@@ -289,14 +289,14 @@ export class glTlKeys extends Events
 
     updateColors()
     {
-
-        if (this.#anim.tlActive)
-        {
-            if (this.#port.op.isCurrentUiOp()) this.#spline.setColor(0, 1, 1, 1);
-            else if (this.#hasSelectedKeys) { this.#spline.setColor(1, 1, 1, 1); }
-            else this.#spline.setColor(0.6, 0.6, 0.6, 1);
-        }
-        else this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
+        if (this.#spline)
+            if (this.#anim.tlActive)
+            {
+                if (this.#port.op.isCurrentUiOp()) this.#spline.setColor(0, 1, 1, 1);
+                else if (this.#hasSelectedKeys) { this.#spline.setColor(1, 1, 1, 1); }
+                else this.#spline.setColor(0.6, 0.6, 0.6, 1);
+            }
+            else this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
     }
 
     setKeyPositions()
