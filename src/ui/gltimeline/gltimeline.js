@@ -544,7 +544,8 @@ export class GlTimeline extends Events
         else if (event.buttons == this.buttonForScrolling)
         {
             this.view.scroll(-this.view.pixelToTime(event.movementX) * 4);
-            this.view.scrollY(event.movementY);
+            if (!event.shiftKey)
+                this.view.scrollY(event.movementY);
             this.updateAllElements();
         }
         else
@@ -580,6 +581,30 @@ export class GlTimeline extends Events
     getNumSelectedKeys()
     {
         return this.#selectedKeys.length;
+    }
+
+    /**
+     * @param {number} deltaTime
+     * @param {number} deltaValue
+     */
+    dragSelectedKeys(deltaTime, deltaValue)
+    {
+        if (deltaTime == 0 && deltaValue == 0) return;
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].temp.preDragTime + deltaTime, "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
+        }
+
+        this.needsUpdateAll = true;
+    }
+
+    predragSelectedKeys()
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].temp.preDragTime = this.#selectedKeys[i].time;
+            this.#selectedKeys[i].temp.preDragValue = this.#selectedKeys[i].value;
+        }
     }
 
     /**
