@@ -33,23 +33,13 @@ export class glTlScroll extends Events
         this.#mainRect.setColor(0.2, 0.2, 0.2, 1);
         this.#mainRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#mainRect);
-        // this.#dragBar.on("drag", (off) =>
-        // {
-        //     const pixelVisible = this._glTl.view.visibleTime * this._glTl.view.pixelPerSecond;
-        //     console.log(this._glTl.view.pixelPerSecond, off / this.#width);
-
-        //     this._glTl.view.scrollTo(((off / this.#width) * this._glTl.view.visibleTime), 0);
-        //     this.update();
-        // });
+        this.#dragBar = new glTlDragArea(glTl, this.#mainRect, false);
 
         this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
-            console.log(e, x);
-            const perc = (x) / this.#width;
-
+            console.log("${}POINTER DOWN");
+            const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
             this._glTl.view.scrollTo((perc * this._glTl.duration));
-
         });
 
         this.#mainRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
@@ -57,17 +47,14 @@ export class glTlScroll extends Events
             this.#dragStart = x;
         });
 
-        // this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
-
         this.#mainRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
         {
-            const perc = (this.#dragStart + offX) / this.#width;
-
+            const perc = (this.#dragStart + offX - this.#dragBar.getWidth() / 2) / this.#width;
             this._glTl.view.scrollTo((perc * this._glTl.duration));
 
         });
 
-        this.#glRectCursor = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#glRectCursor = this._glTl.rects.createRect({ "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
         this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0);
@@ -85,6 +72,9 @@ export class glTlScroll extends Events
         this.#mainRect.setPosition(x, y, -0.9);
     }
 
+    /**
+     * @param {number} w
+     */
     setWidth(w)
     {
         this.#width = w;

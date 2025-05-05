@@ -32,18 +32,18 @@ export class glTlDragArea extends Events
         this.#glTl = glTl;
         this.height = 24;
 
-        this.#rectBar = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
+        this.#rectBar = this.#glTl.rects.createRect({ "draggable": false, "interactive": interactive });
         this.#rectBar.setSize(222, this.height);
         this.#rectBar.setColor(0.5, 0.5, 0.5, 1);
         this.#rectBar.setParent(parent);
         this.#rectBar.setColorHover(0.65, 0.65, 0.65, 1);
 
-        this.#rectSizeLeft = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#rectSizeLeft = this.#glTl.rects.createRect({ "draggable": true, "interactive": interactive });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
         this.#rectSizeLeft.setColor(0.4, 0.4, 0.4, 1);
         this.#rectSizeLeft.setParent(parent);
 
-        this.#rectSizeRight = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#rectSizeRight = this.#glTl.rects.createRect({ "draggable": true, "interactive": interactive });
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeRight.setColor(0.4, 0.4, 0.4, 1);
         this.#rectSizeRight.setParent(parent);
@@ -67,4 +67,8 @@ export class glTlDragArea extends Events
         this.#rectSizeLeft.setPosition(x + this.#width, y, -0.1);
     }
 
+    getWidth()
+    {
+        return this.#width;
+    }
 }

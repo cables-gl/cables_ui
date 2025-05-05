@@ -228,7 +228,7 @@ export class glTlKeys extends Events
         const pointsSort = [];
 
         let z = -0.4;
-        if (this.#anim.tlActive)z = -0.8;
+        if (this.#anim.tlActive)z = -0.4;
         this.#resDiv -= 3;
         if (this.#resDiv < 1) this.#resDiv = 1;
 
