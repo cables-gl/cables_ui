@@ -124,11 +124,6 @@ CABLES_CMD_UI.showSearch = function (str)
     gui.find(str || "");
 };
 
-CABLES_CMD_UI.toggleMaxRenderer = function ()
-{
-    gui.cycleFullscreen();
-};
-
 CABLES_CMD_UI.togglePatchBgPatchField = function ()
 {
     if (gui && (gui.canvasManager.mode === gui.canvasManager.CANVASMODE_PATCHBG))
@@ -340,13 +335,6 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.showSearch,
         "icon": "search",
         "hotkey": "CMD + f"
-    },
-    {
-        "cmd": "Maximize renderer",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleMaxRenderer,
-        "icon": "canvas_max",
-        "hotkey": "CMD + ENTER"
     },
     {
         "cmd": "Patch background renderer",
