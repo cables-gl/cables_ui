@@ -228,14 +228,14 @@ export class GlTimeline extends Events
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
-            this.view.centerCursor();
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1 / this.fps);
         });
-        gui.keys.key(",", "forward one frame", "down", cgl.canvas.id, {}, () =>
+
+        gui.keys.key(",", "rewind one frame", "down", cgl.canvas.id, {}, () =>
         {
-            this.view.centerCursor();
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1 / this.fps);
         });
+
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.view.centerCursor();

@@ -1,3 +1,4 @@
+import defaultOps from "../../defaultops.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
@@ -111,16 +112,39 @@ export default class GlTimelineTab
         // this.#tab.addButtonSpacer();
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
-        {
-            CABLES.CMD.TIMELINE.TimelineCreateKey();
-        });
-        this.#tab.addButtonSpacer();
-
         this.#tab.addButton("<span id=\"togglegraph1\" class=\"nomargin icon info icon-chart-spline\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-left", "button-active"]);
         this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-chart-gantt\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
 
         this.#tab.addButtonSpacer();
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
+        {
+            CABLES.CMD.TIMELINE.TimelineCreateKey();
+        });
+
+        this.#tab.addButton("<span class=\"nomargin icon icon-settings\"></span>", () =>
+        {
+            let ops = gui.corePatch().getOpsByObjName(defaultOps.defaultOpNames.TimelineConfig);
+            if (ops.length == 0)
+            {
+                gui.patchView.addOp(defaultOps.defaultOpNames.TimelineConfig, { "onopadd": (op) =>
+                {
+
+                    gui.patchView.focusOpAnim(op.id);
+                    gui.patchView.centerSelectOp(op.id);
+                    gui.opParams.show(op);
+                } });
+            }
+            else
+            {
+
+                gui.patchView.focusOpAnim(ops[0].id);
+                gui.patchView.centerSelectOp(ops[0].id);
+                gui.opParams.show(ops[0]);
+            }
+
+        });
+
         this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
         {
             contextMenu.show(

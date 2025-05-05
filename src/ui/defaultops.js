@@ -35,6 +35,8 @@ const defaultOpNames =
     "VarGetTrigger": "Ops.Trigger.TriggerReceive",
     "defaultFont": "Ops.Html.FontFile_v2",
 
+    "TimelineConfig": "Ops.TimeLine.TimelineConfig",
+
     "incrementor": "Ops.Math.Incrementor",
 
     "performance": "Ops.Gl.Performance",
