@@ -61,6 +61,7 @@ export class glTlKeys extends Events
     #updateCount = 0;
     #initCount = 0;
     #needsUpdate = false;
+
     #listeners = [];
     #resDiv = 1;
     #hasSelectedKeys = false;
@@ -498,7 +499,7 @@ export class glTlKeys extends Events
     dispose()
     {
         this.reset();
-        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].stop();
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
         // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
