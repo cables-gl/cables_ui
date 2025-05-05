@@ -64,7 +64,7 @@ export class GlTimeline extends Events
     #tlAnims = [];
 
     /** @type {GlRect} */
-    #glRectCursor;
+    cursorVertLineRect;
 
     duration = 120;
 
@@ -125,6 +125,9 @@ export class GlTimeline extends Events
     #perfFps = new FpsCounter();
     #filterInputEl;
     #filterString = "";
+    #cursorText;
+    #cursorTextBgRect;
+    #cursorY = 30;
 
     /**
      * @param {CglContext} cgl
@@ -149,15 +152,19 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
-        this.#glRectCursor = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
-        this.#glRectCursor.setSize(1, cgl.canvasHeight);
-        this.#glRectCursor.setPosition(0, 0, -1.0);
-        this.setColorRectSpecial(this.#glRectCursor);
+        this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
+        this.cursorVertLineRect.setPosition(0, 0, -1.0);
+        this.setColorRectSpecial(this.cursorVertLineRect);
 
-        // this.#timeBg = this.#rects.createRect({ });
-        // this.#timeBg.setSize(this.titleSpace, this.ruler.height + this.scroll.height);
-        // this.#timeBg.setColor(0.15, 0.15, 0.15, 1);
-        // this.#timeBg.setPosition(0, 0, -0.5);
+        this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
+        this.#cursorTextBgRect.setSize(40, 20);
+        this.#cursorTextBgRect.setParent(this.cursorVertLineRect);
+        this.#cursorTextBgRect.setColor(0.2, 0.2, 0.2, 1);
+
+        this.#cursorText = new GlText(this.texts, "???");
+        this.#cursorText.setParentRect(this.cursorVertLineRect);
+        this.setColorRectSpecial(this.#cursorText);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -219,6 +226,16 @@ export class GlTimeline extends Events
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
+        gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
+        {
+            this.view.centerCursor();
+            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1 / this.fps);
+        });
+        gui.keys.key(",", "forward one frame", "down", cgl.canvas.id, {}, () =>
+        {
+            this.view.centerCursor();
+            gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1 / this.fps);
+        });
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.view.centerCursor();
@@ -905,7 +922,7 @@ export class GlTimeline extends Events
 
             if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
 
-            this.udpateCursor();
+            this.updateCursor();
             this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
             this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
@@ -921,18 +938,28 @@ export class GlTimeline extends Events
         this.#perfFps.endFrame();
     }
 
-    udpateCursor()
+    updateCursor()
     {
-        this.#glRectCursor.setPosition(this.view.timeToPixelScreen(this.cursorTime), 0);
+        this.cursorVertLineRect.setPosition(this.view.timeToPixelScreen(this.cursorTime), this.#cursorY, -0.9);
 
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3)parts[1] += "0";
 
+        const frame = String(Math.floor(this.cursorTime * this.fps));
         let html = "";
-        html += "frame " + Math.floor(this.cursorTime * this.fps) + " ";
+        html += "frame " + frame + " ";
         html += "second " + parts[0] + "." + parts[1] + "<br>";
+
+        this.#cursorText.text = (frame);
+
+        const padd = 14;
+        const w = this.#cursorText.width + padd;
+        this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
+
+        this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
+        this.#cursorTextBgRect.setSize(w, 20);
 
         if (this.cfg.showBeats)
             html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
@@ -951,8 +978,8 @@ export class GlTimeline extends Events
         this.ruler.update();
         this.scroll.update();
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
-        this.#glRectCursor.setSize(1, this.#cgl.canvasHeight);
-        this.udpateCursor();
+        this.cursorVertLineRect.setSize(1, this.#cgl.canvasHeight);
+        this.updateCursor();
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS && this.#tlAnims[0])
             this.#tlAnims[0].setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
