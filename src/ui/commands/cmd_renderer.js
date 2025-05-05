@@ -6,10 +6,10 @@ import Gui, { gui } from "../gui.js";
 const CABLES_CMD_RENDERER = {};
 
 const rendererCommands =
-{
-    "commands": [],
-    "functions": CABLES_CMD_RENDERER
-};
+    {
+        "commands": [],
+        "functions": CABLES_CMD_RENDERER
+    };
 
 export default rendererCommands;
 
@@ -21,7 +21,7 @@ CABLES_CMD_RENDERER.screenshot = function ()
 
 CABLES_CMD_RENDERER.maximizeCanvas = function ()
 {
-    gui.cycleFullscreen();
+    gui.toggleMaximizeCanvas();
 };
 
 CABLES_CMD_RENDERER.resetSize = function ()
@@ -53,7 +53,10 @@ CABLES_CMD_RENDERER.scrollingPage = function ()
     }
     else
     {
-        document.body.scrollTo({ "top": 0, "behaviour": "smooth" });
+        document.body.scrollTo({
+            "top": 0,
+            "behaviour": "smooth"
+        });
         document.body.classList.remove("scrollPage");
         ele.byId("testcontent").innerHTML = "";
     }
@@ -151,51 +154,67 @@ CABLES_CMD_RENDERER.popoutCanvas = function ()
     gui.canvasManager.popOut();
 };
 
-rendererCommands.commands.push({
-    "cmd": "save screenshot",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.screenshot,
-    "icon": "image"
-}, {
-    "cmd": "maximize canvas",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.maximizeCanvas,
-    "icon": "canvas_max",
-    "infotext": "renderer_maximize"
-}, {
-    "cmd": "change canvas size",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.changeSize,
-    "icon": "resize_canvas"
-}, {
-    "cmd": "reset canvas size",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.resetSize,
-    "icon": "reset_render_size"
-}, {
-    "cmd": "set canvas aspect ratio",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.aspect,
-    "icon": "canvas_max"
-}, {
-    "cmd": "scale canvas",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.scaleCanvas,
-    "icon": "scale_canvas"
-}, {
-    "cmd": "canvas magnifier",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.canvasMagnifier,
-    "icon": "picker"
-}, {
-    "cmd": "canvas window",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.popoutCanvas,
-    "icon": "external"
-}, {
-    "cmd": "Simulate Scrolling Page",
-    "category": "canvas",
-    "func": CABLES_CMD_RENDERER.scrollingPage
+rendererCommands.commands.push(
+    {
+        "cmd": "save screenshot",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.screenshot,
+        "icon": "image"
+    },
+    {
+        "cmd": "maximize canvas",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.maximizeCanvas,
+        "icon": "canvas_max",
+        "infotext": "renderer_maximize"
+    },
+    {
+        "cmd": "change canvas size",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.changeSize,
+        "icon": "resize_canvas"
+    },
+    {
+        "cmd": "reset canvas size",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.resetSize,
+        "icon": "reset_render_size"
+    },
+    {
+        "cmd": "set canvas aspect ratio",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.aspect,
+        "icon": "canvas_max"
+    },
+    {
+        "cmd": "scale canvas",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.scaleCanvas,
+        "icon": "scale_canvas"
+    },
+    {
+        "cmd": "canvas magnifier",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.canvasMagnifier,
+        "icon": "picker"
+    },
+    {
+        "cmd": "canvas window",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.popoutCanvas,
+        "icon": "external"
+    },
+    {
+        "cmd": "Simulate Scrolling Page",
+        "category": "canvas",
+        "func": CABLES_CMD_RENDERER.scrollingPage
 
-}
+    },
+    {
+        "cmd": "Maximize renderer",
+        "category": "ui",
+        "func": CABLES_CMD_RENDERER.maximizeCanvas,
+        "icon": "canvas_max",
+        "hotkey": "CMD + ENTER"
+    }
 );

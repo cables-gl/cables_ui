@@ -913,7 +913,7 @@ export default class Gui extends Events
 
     cyclePatchBg()
     {
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN) this.toggleMaximizeCanvas();
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
@@ -931,7 +931,7 @@ export default class Gui extends Events
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
     }
 
-    cycleFullscreen()
+    toggleMaximizeCanvas()
     {
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
@@ -1183,7 +1183,7 @@ export default class Gui extends Events
                         },
                         {
                             "title": "Maximize Canvas",
-                            "func": CABLES.CMD.UI.toggleMaxRenderer,
+                            "func": CABLES.CMD.RENDERER.maximizeCanvas,
                             "icon": "icon-picker"
                         },
                         {
@@ -1604,7 +1604,7 @@ export default class Gui extends Events
         this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPallet.show(); });
-        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.cycleFullscreen(); });
+        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.toggleMaximizeCanvas(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, () => { this.cyclePatchBg(); });
         this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, () =>
         {
@@ -1720,7 +1720,7 @@ export default class Gui extends Events
         {
             if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
             {
-                this.cycleFullscreen();
+                this.toggleMaximizeCanvas();
             }
             else
             {
