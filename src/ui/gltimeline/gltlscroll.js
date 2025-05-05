@@ -32,7 +32,6 @@ export class glTlScroll extends Events
         this.#mainRect = this._glTl.rects.createRect({ "draggable": true, "interactive": true });
         this.#mainRect.setColor(0.2, 0.2, 0.2, 1);
         this.#mainRect.setSize(this.#width, this.height);
-        this.#mainRect.setPosition(0, 0, -0.5);
 
         this.#dragBar = new glTlDragArea(glTl, this.#mainRect);
         // this.#dragBar.on("drag", (off) =>
@@ -83,7 +82,7 @@ export class glTlScroll extends Events
      */
     setPosition(x, y)
     {
-        this.#mainRect.setPosition(x, y, -0.5);
+        this.#mainRect.setPosition(x, y, -0.9);
     }
 
     setWidth(w)

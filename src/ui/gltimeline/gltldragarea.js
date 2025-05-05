@@ -62,9 +62,9 @@ export class glTlDragArea extends Events
         this.#rectBar.setSize(width, height);
         this.#rectSizeRight.setSize(this.#handleWidth, height);
         this.#rectSizeLeft.setSize(this.#handleWidth, height);
-        this.#rectBar.setPosition(x, y, 0);
-        this.#rectSizeRight.setPosition(x - this.#handleWidth, y, 0);
-        this.#rectSizeLeft.setPosition(x + this.#width, y, 0);
+        this.#rectBar.setPosition(x, y, -0.1);
+        this.#rectSizeRight.setPosition(x - this.#handleWidth, y, -0.1);
+        this.#rectSizeLeft.setPosition(x + this.#width, y, -0.1);
     }
 
 }
