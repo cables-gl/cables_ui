@@ -33,6 +33,7 @@ export default class MouseState extends Events
         this._buttonStates[MouseState.BUTTON_5] = { "down": false };
         this._numFingers = 0;
 
+        this.shiftKey = false;
         this._isDragging = false;
         this._mouseDownX = 0;
         this._mouseDownY = 0;
@@ -219,6 +220,7 @@ export default class MouseState extends Events
             this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
             this.draggingDistance = Math.sqrt((e.offsetX - this._mouseDownX) ** 2 + (e.offsetY - this._mouseDownY) ** 2);
         }
+        this.shiftKey = e.shiftKey;
 
         if (e.buttons)
         {

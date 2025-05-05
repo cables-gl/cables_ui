@@ -129,7 +129,6 @@ export default class GlTimelineTab
             {
                 gui.patchView.addOp(defaultOps.defaultOpNames.TimelineConfig, { "onopadd": (op) =>
                 {
-
                     gui.patchView.focusOpAnim(op.id);
                     gui.patchView.centerSelectOp(op.id);
                     gui.opParams.show(op);
@@ -137,7 +136,6 @@ export default class GlTimelineTab
             }
             else
             {
-
                 gui.patchView.focusOpAnim(ops[0].id);
                 gui.patchView.centerSelectOp(ops[0].id);
                 gui.opParams.show(ops[0]);

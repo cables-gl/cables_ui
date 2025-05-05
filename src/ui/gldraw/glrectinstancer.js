@@ -619,9 +619,8 @@ export default class GlRectInstancer extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} button
-     * @param {MouseEvent} event
      */
-    mouseMove(x, y, button, event)
+    mouseMove(x, y, button)
     {
         const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this.#interactive) return;

@@ -353,7 +353,7 @@ export default class GlOp extends Events
 
     get op() { return this._op; }
 
-    _onBgRectDrag(e)
+    _onBgRectDrag(rect, offx, offy, button, e)
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
@@ -369,8 +369,12 @@ export default class GlOp extends Events
             for (const i in glOps)
                 glOps[i].startPassiveDrag();
 
-        const offX = this._glRectBg.dragOffsetX;
-        const offY = this._glRectBg.dragOffsetY;
+        let offX = this._glRectBg.dragOffsetX;
+        let offY = this._glRectBg.dragOffsetY;
+
+        if (this.glPatch.mouseState.shiftKey)
+            if (Math.abs(offX) > Math.abs(offY)) offY = 0;
+            else offX = 0;
 
         for (const i in glOps)
             glOps[i].setPassiveDragOffset(offX, offY);
