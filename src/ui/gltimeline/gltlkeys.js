@@ -63,7 +63,6 @@ export class glTlKeys extends Events
     #needsUpdate = false;
 
     #listeners = [];
-    #resDiv = 1;
     #hasSelectedKeys = false;
     #disposedWarning = 0;
 
@@ -221,7 +220,7 @@ export class glTlKeys extends Events
 
         /// /////////
 
-        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1) return;
+        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate) return;
 
         this.#needsUpdate = false;
         this.#points = [];
@@ -229,20 +228,19 @@ export class glTlKeys extends Events
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.4;
-        this.#resDiv -= 3;
-        if (this.#resDiv < 1) this.#resDiv = 1;
+        // this.#resDiv -= 3;
+        // if (this.#resDiv < 1) this.#resDiv = 1;
 
         if (this.#options.keyYpos)
         {
-            if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
+            // if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
 
-            const steps = (this.#glTl.width) / this.#resDiv;
+            const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
             let skipped = false;
 
             for (let i = 0; i < steps; i++)
             {
-
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
@@ -285,7 +283,7 @@ export class glTlKeys extends Events
 
         this.#updateCount++;
 
-        if (this.#resDiv != 1) this.updateSoon();
+        // if (this.#resDiv != 1) this.updateSoon();
     }
 
     updateColors()
@@ -459,20 +457,14 @@ export class glTlKeys extends Events
                 }
                 if (button == 1)
                 {
-                    console.log("${}offsetx", e.shiftKey);
                     let offX = e.offsetX;
                     let offY = e.offsetY;
 
                     let offTime = this.#glTl.view.pixelToTime(offX) - startDragTime;
-                    // startDragTime = this.#glTl.snapTime(this.#glTl.view.pixelToTime(offX));
-
                     let offVal = startDragValue - this.#animLine.pixelToValue(offY);
-                    // startDragValue = this.#animLine.pixelToValue(offY);
 
                     if (e.shiftKey)
                     {
-
-                        console.log(this.#dragStartX, offX, Math.abs(this.#dragStartX - offX), Math.abs(this.#dragStartY - offY));
                         if (Math.abs(this.#dragStartX - offX) > Math.abs(this.#dragStartY - offY)) offVal = 0;
                         else offTime = 0;
                     }
@@ -530,7 +522,7 @@ export class glTlKeys extends Events
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
-        o.resDiv = this.#resDiv;
+        // o.resDiv = this.#resDiv;
         return o;
     }
 }
