@@ -48,9 +48,9 @@ export class TlTitle extends Events
 
         ele.clickable(this.#elTitle, (e) =>
         {
-            console.log("${}", e);
             this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
         });
+
         this.addButton("...",
             (e) =>
             {

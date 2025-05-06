@@ -1653,8 +1653,6 @@ export default class GlOp extends Events
         if (this._glColorIndicatorSpacing)
         {
             let col = this._glRectBg.color;
-            // if (this._glRectArea)col = this._resizableArea.color;
-            console.log("${}", col);
             this._glColorIndicatorSpacing.setColor(col);
         }
     }
@@ -1668,11 +1666,6 @@ export default class GlOp extends Events
         {
             if (s != this.opUiAttribs.selected)
             {
-
-                /*
-                 * if (!s) delete this.opUiAttribs.selected;
-                 * this.opUiAttribs.selected = s;
-                 */
                 this._op.setUiAttribs({ "selected": s });
 
                 for (const i in this._links) this._links[i].updateColor();
