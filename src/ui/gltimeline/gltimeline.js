@@ -220,8 +220,8 @@ export class GlTimeline extends Events
             this.deactivateAllAnims(true);
             gui.emitEvent("opSelectChange");
             this.updateAllElements();
-
         });
+
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
@@ -263,6 +263,7 @@ export class GlTimeline extends Events
         {
             this.jumpKey(-1);
         });
+
         gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, () =>
         {
             this.jumpKey(1);
@@ -280,7 +281,7 @@ export class GlTimeline extends Events
             this.needsUpdateAll = true;
         });
 
-        gui.keys.key("a", "Select all keys", "down", cgl.canvas.id, { "cmdCtrl": true }, (_e) =>
+        gui.keys.key("a", "Select all keys", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.selectAllKeys();
         });
@@ -311,8 +312,6 @@ export class GlTimeline extends Events
             if (selops.length == 0) return;
             let isAnimated = false;
             for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
-
-            // if (!isAnimated) return;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {

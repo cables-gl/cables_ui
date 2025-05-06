@@ -739,7 +739,6 @@ export default class GlOp extends Events
         if (portsWidthIn != 0) portsWidthIn -= gluiconfig.portPadding;
         if (portsWidthOut != 0) portsWidthOut -= gluiconfig.portPadding;
 
-        // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = this._getTitleWidth();
         this.minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);

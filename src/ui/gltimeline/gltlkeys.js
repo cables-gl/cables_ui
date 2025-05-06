@@ -228,13 +228,9 @@ export class glTlKeys extends Events
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.4;
-        // this.#resDiv -= 3;
-        // if (this.#resDiv < 1) this.#resDiv = 1;
 
         if (this.#options.keyYpos)
         {
-            // if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
-
             const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
             let skipped = false;

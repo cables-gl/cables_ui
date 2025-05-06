@@ -219,7 +219,7 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].updateSoon();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
     }
 
