@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 
 import { Anim, Op, Port } from "cables";
+import { glMatrix } from "gl-matrix";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
@@ -154,9 +155,13 @@ export class glTlAnimLine extends Events
     {
         const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim);
         title.setTitle(t);
-        title.on("titleClicked", (title) =>
+        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             gui.patchView.focusOp(this.#ops[title.index].id);
+            if (!e.shiftKey)
+                gui.patchView.unselectAllOps();
+            gui.patchView.selectOpId(this.#ops[title.index].id);
+
         });
 
         this.#titles.push(title);

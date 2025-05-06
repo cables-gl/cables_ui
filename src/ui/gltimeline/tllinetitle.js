@@ -7,6 +7,7 @@ import { GlTimeline } from "./gltimeline.js";
 
 export class TlTitle extends Events
 {
+    static EVENT_TITLECLICKED = "titleClicked";
     index = 0;
 
     /** @type {HTMLElement} */
@@ -45,9 +46,10 @@ export class TlTitle extends Events
 
         this.#elTitle = document.createElement("span");
 
-        ele.clickable(this.#elTitle, () =>
+        ele.clickable(this.#elTitle, (e) =>
         {
-            this.emitEvent("titleClicked", this);
+            console.log("${}", e);
+            this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
         });
         this.addButton("...",
             (e) =>
