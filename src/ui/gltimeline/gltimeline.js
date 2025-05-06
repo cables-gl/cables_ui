@@ -1297,4 +1297,9 @@ export class GlTimeline extends Events
         }
     }
 
+    get height()
+    {
+
+        return this.#cgl.canvasHeight;
+    }
 }
