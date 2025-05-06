@@ -117,7 +117,6 @@ export class TlTitle extends Events
                 this.activeButton.children[0].classList.add("icon-check");
                 this.activeButton.children[0].classList.remove("icon-empty");
             }
-
         }
     }
 

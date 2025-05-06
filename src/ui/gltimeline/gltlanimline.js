@@ -378,4 +378,28 @@ export class glTlAnimLine extends Events
             this.#titles[j].updateIcons();
         }
     }
+
+    /**
+     * @param {number} t
+     */
+    createKeyAtCursor(t)
+    {
+        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        {
+            for (let j = 0; j < this.#ports.length; j++)
+            {
+                if (this.#anims[j].tlActive)
+                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+            }
+        }
+        else
+        {
+            for (let j = 0; j < this.#ports.length; j++)
+            {
+                if (this.#ports[j].op.uiAttribs.selected)
+
+                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+            }
+        }
+    }
 }

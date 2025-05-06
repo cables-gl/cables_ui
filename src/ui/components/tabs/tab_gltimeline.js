@@ -119,7 +119,7 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineCreateKey();
+            CABLES.CMD.TIMELINE.TimelineCreateKeyAtCursor();
         });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-settings\"></span>", () =>

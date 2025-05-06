@@ -161,11 +161,6 @@ export class glTlKeys extends Events
         return kwidth;
     }
 
-    updateSoon()
-    {
-        setTimeout(this.update.bind(this), 60);
-    }
-
     /**
      */
     update()
@@ -371,12 +366,10 @@ export class glTlKeys extends Events
             kr.listen(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = kr;
-                this.updateSoon();
             });
             kr.listen(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
-                this.updateSoon();
             });
 
             kr.listen(GlRect.EVENT_DRAGEND, () =>
@@ -472,7 +465,6 @@ export class glTlKeys extends Events
                     this.setKeyPositions();
 
                     this.#animLine.update();
-                    this.updateSoon();
 
                 }
             });
@@ -480,7 +472,6 @@ export class glTlKeys extends Events
             this.#keyRects.push(kr);
 
         }
-        this.updateSoon();
     }
 
     get height()

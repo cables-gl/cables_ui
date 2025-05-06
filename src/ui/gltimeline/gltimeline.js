@@ -495,7 +495,7 @@ export class GlTimeline extends Events
 
         let x = event.offsetX;
         let y = event.offsetY;
-        this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y, event.buttons);
 
         if (event.buttons == 1)
         {
@@ -668,7 +668,7 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
+            this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
         this.needsUpdateAll = true;
@@ -1275,7 +1275,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
             const t = this.cursorTime;
-            this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+            this.#tlAnims[i].createKeyAtCursor(t);
         }
     }
 
