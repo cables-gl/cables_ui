@@ -678,7 +678,7 @@ export default class GlOp extends Events
         {
             let x = this.w + gluiconfig.portWidth;
             if (this._rectResize)x += this._rectResize.w;
-
+            if (this._glColorSwatch)x += this._height / 2;
             if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
             else this._glComment.setPosition(12, this._height, 0); // comment op (weird hardcoded values because of title scaling)
         }
@@ -776,15 +776,23 @@ export default class GlOp extends Events
             this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, h);
         }
 
+        if (this._glColorIndicator && !this.opUiAttribs.color)
+        {
+            this._glColorIndicator.dispose();
+            this._glColorIndicator = null;
+            this._glColorIndicatorSpacing.dispose();
+            this._glColorIndicatorSpacing = null;
+        }
+
         let ext = 0;
         const indicSize = 0.4;
         if (this._rectResize)ext += this._rectResize.w;
-        if (this._glColorSwatch)ext += this._height * (indicSize + indicSize / 2);
+        if (this._glColorSwatch)ext += this._height * (indicSize + indicSize);
         this._glRectBg.setSize(this._width + ext, this._height);
 
         if (this._glColorSwatch)
         {
-            this._glColorSwatch.setPosition(this._width + (this._height * indicSize / 4), this._height * ((1.0 - indicSize) / 2));
+            this._glColorSwatch.setPosition(this._width + (this._height * indicSize * 0.5), this._height * ((1.0 - indicSize) / 2));
             this._glColorSwatch.setSize(this._height * indicSize, this._height * indicSize);
             this._width += this._height * indicSize;
         }
