@@ -372,7 +372,9 @@ export class glTlAnimLine extends Events
                     break;
                 }
             }
-            this.#titles[j].setSelected(found);
+
+            this.#titles[j].setBorderColor(found, this.#ports[j].op.uiAttribs.color || "transparent");
+
             this.#titles[j].updateIcons();
         }
     }
