@@ -144,7 +144,7 @@ export class glTlKeys extends Events
 
         if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
-            kr.setShape(6);
+            kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
         }
         else
