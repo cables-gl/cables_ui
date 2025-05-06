@@ -26,6 +26,9 @@ import { UiOp } from "../core_extend_op.js";
 export default class GlOp extends Events
 {
 
+    static COLORINDICATOR_SPACING = 5;
+    static COLORINDICATOR_WIDTH = 6;
+
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
@@ -142,6 +145,7 @@ export default class GlOp extends Events
 
         /** @type {GlRect} */
         this._glColorIndicator = null;
+        this._glColorIndicatorSpacing = null;
 
         /**
          * @type {GlRect}
@@ -763,20 +767,24 @@ export default class GlOp extends Events
 
         if (this._glColorIndicator)
         {
-            const indicWidth = 12;
-            this._glColorIndicator.setPosition(-indicWidth, 0);
-            this._glColorIndicator.setSize(indicWidth,	 this._height);
+            let h = this._height;
+            if (this._glRectArea)h = this._glRectArea.h;
+            if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
+
+            this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0);
+            this._glColorIndicator.setSize(GlOp.COLORINDICATOR_WIDTH,	 h);
+            this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, h);
         }
 
         let ext = 0;
         const indicSize = 0.4;
         if (this._rectResize)ext += this._rectResize.w;
-        if (this._glColorSwatch)ext += this._height * 0.5;
+        if (this._glColorSwatch)ext += this._height * (indicSize + indicSize / 2);
         this._glRectBg.setSize(this._width + ext, this._height);
 
         if (this._glColorSwatch)
         {
-            this._glColorSwatch.setPosition(this._width, this._height * ((1.0 - indicSize) / 2));
+            this._glColorSwatch.setPosition(this._width + (this._height * indicSize / 4), this._height * ((1.0 - indicSize) / 2));
             this._glColorSwatch.setSize(this._height * indicSize, this._height * indicSize);
             this._width += this._height * indicSize;
         }
@@ -850,6 +858,7 @@ export default class GlOp extends Events
         if (this._rectResize) this._rectResize = this._rectResize.dispose();
         if (this._glColorSwatch) this._glColorSwatch = this._glColorSwatch.dispose();
         if (this._glColorIndicator) this._glColorIndicator = this._glColorIndicator.dispose();
+        if (this._glColorIndicatorSpacing) this._glColorIndicatorSpacing = this._glColorIndicatorSpacing.dispose();
 
         this._disposeDots();
 
@@ -1521,7 +1530,7 @@ export default class GlOp extends Events
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
 
-                this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                this._glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
                 this.updateSize();
             }
             else // this._glTitle.setColor(1, 1, 1);
@@ -1552,28 +1561,33 @@ export default class GlOp extends Events
             }
             else
             {
+                // console.log("${}", this.glPatch.viewBox.zoom);
+                this._glRectBg.setColorArray(gui.theme.colors_patch.opBgRect);
                 if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
                 {
-                    // this._glRectBg.setColorArray(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
+                    // if (this.glPatch.viewBox.zoom > 1000)
+                    // {
 
-                    
+                    //     this._glRectBg.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
+                    // }
+                    // else
+                    //     // this._glRectBg.setColorArray(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
 
-                    /*
-                     * if (!this._glRectRightHandle && this.displayType != this.DISPLAY_UI_AREA)
-                     * {
-                     *     this._glRectRightHandle = this._instancer.createRect();
-                     *     this._glRectRightHandle.setParent(this._glRectBg);
-                     *     this._updateSizeRightHandle();
-                     * }
-                     */
+                    //     /*
+                    //      * if (!this._glRectRightHandle && this.displayType != this.DISPLAY_UI_AREA)
+                    //      * {
+                    //      *     this._glRectRightHandle = this._instancer.createRect();
+                    //      *     this._glRectRightHandle.setParent(this._glRectBg);
+                    //      *     this._updateSizeRightHandle();
+                    //      * }
+                    //      */
 
-                    // if (this._glRectRightHandle) this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                //     // if (this._glRectRightHandle) this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
                 }
                 else
                 {
-                    this._glRectBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
-                    /*
+                /*
                      * if (this._glRectRightHandle && this.opUiAttribs.color == null)
                      * {
                      *     this._glRectRightHandle.dispose();
@@ -1591,6 +1605,11 @@ export default class GlOp extends Events
 
                 this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
                 this._glColorIndicator.setParent(this._glRectBg);
+
+                this._glColorIndicatorSpacing = this._instancer.createRect({ "parent": this._glRectBg });
+                this._glColorIndicatorSpacing.setParent(this._glRectBg);
+                this._glColorIndicatorSpacing.setPosition(-GlOp.COLORINDICATOR_SPACING, 0);
+                this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, this._height);
             }
             this._glColorIndicator.setColor(chroma.hex(this.opUiAttribs.color).gl());
         }
@@ -1622,7 +1641,15 @@ export default class GlOp extends Events
         }
 
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
-        if (this._resizableArea) this._resizableArea._updateColor();
+        // if (this._resizableArea) this._resizableArea._updateColor();
+
+        if (this._glColorIndicatorSpacing)
+        {
+            let col = this._glRectBg.color;
+            // if (this._glRectArea)col = this._resizableArea.color;
+            console.log("${}", col);
+            this._glColorIndicatorSpacing.setColor(col);
+        }
     }
 
     get selected() { return this.opUiAttribs.selected; }
