@@ -672,6 +672,9 @@ export default class OpSelect
         }, searchDelay);
     }
 
+    /**
+     * @param {string} opname
+     */
     addOp(opname, reopenModal = false, itemType = "op")
     {
         this._newOpOptions.onOpAdd = null;

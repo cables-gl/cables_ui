@@ -97,7 +97,6 @@ export class glTlRuler extends Events
     setTimeFromPixel(x)
     {
         gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x) + this.#glTl.view.offset));
-
     }
 
     /**
@@ -128,15 +127,16 @@ export class glTlRuler extends Events
             const oneframePixel = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
             if (oneframePixel >= 5)
             {
+                const mheight = this.height * 0.6;
                 for (let i = 0; i < this.markf.length; i++)
                 {
                     const mr = this.markf[i];
                     const t = offset + i * (1 / this.#glTl.fps);
                     const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-                    const a = CABLES.map(oneframePixel, 5, 15, 0.04, 1.0);
+                    const a = CABLES.map(oneframePixel, 5, 10, 0.04, 0.3);
 
-                    mr.setSize(oneframePixel - 2, this.height / 2);
-                    mr.setPosition(x + 1, this.height / 2);
+                    mr.setSize(oneframePixel - 2, this.height - mheight);
+                    mr.setPosition(x + 1 - oneframePixel / 2, mheight);
                     mr.setColor(0.13, 0.13, 0.13, a);
 
                     if (t < 0)

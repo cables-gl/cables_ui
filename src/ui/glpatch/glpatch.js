@@ -1228,6 +1228,10 @@ export default class GlPatch extends Events
         this._cgl.profileData.clearGlQuery();
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     mouseMove(x, y)
     {
         if (this.cutLineActive)

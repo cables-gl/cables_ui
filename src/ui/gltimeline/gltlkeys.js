@@ -61,8 +61,8 @@ export class glTlKeys extends Events
     #updateCount = 0;
     #initCount = 0;
     #needsUpdate = false;
+
     #listeners = [];
-    #resDiv = 1;
     #hasSelectedKeys = false;
     #disposedWarning = 0;
 
@@ -220,28 +220,27 @@ export class glTlKeys extends Events
 
         /// /////////
 
-        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate && this.#resDiv == 1) return;
+        if (!this.#glTl.view.isAnimated() && !this.#needsUpdate) return;
 
         this.#needsUpdate = false;
         this.#points = [];
         const pointsSort = [];
 
         let z = -0.4;
-        if (this.#anim.tlActive)z = -0.8;
-        this.#resDiv -= 3;
-        if (this.#resDiv < 1) this.#resDiv = 1;
+        if (this.#anim.tlActive)z = -0.4;
+        // this.#resDiv -= 3;
+        // if (this.#resDiv < 1) this.#resDiv = 1;
 
         if (this.#options.keyYpos)
         {
-            if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
+            // if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
 
-            const steps = (this.#glTl.width) / this.#resDiv;
+            const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
             let skipped = false;
 
             for (let i = 0; i < steps; i++)
             {
-
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
@@ -284,7 +283,7 @@ export class glTlKeys extends Events
 
         this.#updateCount++;
 
-        if (this.#resDiv != 1) this.updateSoon();
+        // if (this.#resDiv != 1) this.updateSoon();
     }
 
     updateColors()
@@ -423,12 +422,13 @@ export class glTlKeys extends Events
                 this.click = true;
             });
 
-            kr.listen(GlRect.EVENT_DRAGSTART, (_rect, x, _y, button, e) =>
+            kr.listen(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
                 // this.click = false;
 
-                this.#dragStartX = x.offsetX;
+                this.#dragStartX = e.offsetX;
                 this.#dragStartY = e.offsetY;
+                this.#glTl.predragSelectedKeys();
                 if (button == 1 && !this.#dragStarted)
                 {
                     oldValues = this.#glTl.serializeSelectedKeys();
@@ -457,15 +457,20 @@ export class glTlKeys extends Events
                 }
                 if (button == 1)
                 {
-                    const offTime = this.#glTl.view.pixelToTime(e.offsetX) - startDragTime;
-                    startDragTime = this.#glTl.snapTime(this.#glTl.view.pixelToTime(e.offsetX));
+                    let offX = e.offsetX;
+                    let offY = e.offsetY;
 
-                    const offVal = startDragValue - this.#animLine.pixelToValue(e.offsetY);
-                    startDragValue = this.#animLine.pixelToValue(e.offsetY);
+                    let offTime = this.#glTl.view.pixelToTime(offX) - startDragTime;
+                    let offVal = startDragValue - this.#animLine.pixelToValue(offY);
 
+                    if (e.shiftKey)
+                    {
+                        if (Math.abs(this.#dragStartX - offX) > Math.abs(this.#dragStartY - offY)) offVal = 0;
+                        else offTime = 0;
+                    }
                     if (this.#glTl.getNumSelectedKeys() > 0)
                     {
-                        this.#glTl.moveSelectedKeysDelta(this.#glTl.snapTime(offTime), offVal);
+                        this.#glTl.dragSelectedKeys(this.#glTl.snapTime(offTime), offVal);
                         this.#anim.sortKeys();
                     }
 
@@ -498,7 +503,7 @@ export class glTlKeys extends Events
     dispose()
     {
         this.reset();
-        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].stop();
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
         // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
@@ -517,7 +522,7 @@ export class glTlKeys extends Events
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
-        o.resDiv = this.#resDiv;
+        // o.resDiv = this.#resDiv;
         return o;
     }
 }
