@@ -157,10 +157,11 @@ export class glTlAnimLine extends Events
         title.setTitle(t);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
-            gui.patchView.focusOp(this.#ops[title.index].id);
             if (!e.shiftKey)
                 gui.patchView.unselectAllOps();
             gui.patchView.selectOpId(this.#ops[title.index].id);
+            gui.patchView.focusOp(this.#ops[title.index].id);
+            this.updateTitles();
 
         });
 
