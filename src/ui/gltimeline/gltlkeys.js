@@ -312,8 +312,8 @@ export class glTlKeys extends Events
 
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.keyHeight / 2;
-
-            kr.setPosition(rx, ry, -0.8);
+            if (rx != rx || ry != ry)console.log("${}", rx, ry);
+            kr.setPosition(rx, ry, -0.84);
             this.setKeyShapeSize(kr);
 
             if (
@@ -473,6 +473,7 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(this.#glTl.snapTime(offTime), offVal);
                         this.#anim.sortKeys();
                     }
+                    this.setKeyPositions();
 
                     this.#animLine.update();
                     this.updateSoon();
