@@ -161,6 +161,7 @@ export class glTlAnimLine extends Events
                 gui.patchView.unselectAllOps();
             gui.patchView.selectOpId(this.#ops[title.index].id);
             gui.patchView.focusOp(this.#ops[title.index].id);
+            gui.patchView.centerSelectOp(this.#ops[title.index].id);
             this.updateTitles();
 
         });
