@@ -82,6 +82,9 @@ export default class FileUploader
 
     /**
      * @param {File} file
+     * @param {String} [filename]
+     * @param {String} [opId]
+     * @param {function} [next]
      */
     uploadFile(file, filename = null, opId = null, next = null)
     {
