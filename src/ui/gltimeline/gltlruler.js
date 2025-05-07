@@ -15,7 +15,7 @@ export class glTlRuler extends Events
 {
 
     static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
-    static COLOR_BEAT4 = [0.7, 0.7, 0.7, 1];
+    static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
 
     /** @type {GlTimeline} */
     #glTl;
@@ -171,7 +171,6 @@ export class glTlRuler extends Events
                 mr.setPosition(x, 1);
 
                 const absBeat = Math.round(t * bps);
-                console.log("${}", this.#glTl.cfg.bpmHlXth);
                 if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
                 else mr.setColorArray(glTlRuler.COLOR_BEATS);
 

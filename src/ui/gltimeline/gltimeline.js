@@ -79,7 +79,7 @@ export class GlTimeline extends Events
 
     /** @type {GlTlView} */
     view = null;
-    needsUpdateAll = true;
+    needsUpdateAll = "";
 
     static LAYOUT_LINES = 0;
     static LAYOUT_GRAPHS = 1;
@@ -123,6 +123,7 @@ export class GlTimeline extends Events
     #keyOverEl;
     #tlTimeDisplay;
 
+    #oldSize = -1;
     #perfFps = new FpsCounter();
     #filterInputEl;
     #filterString = "";
@@ -182,7 +183,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
-        cgl.addEventListener("resize", this.resize.bind(this));
+        cgl.addEventListener("resize", () => { this.resize(true); });
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
@@ -273,13 +274,13 @@ export class GlTimeline extends Events
         gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
-            this.needsUpdateAll = true;
+            this.needsUpdateAll = "deletekey";
         });
 
         gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
-            this.needsUpdateAll = true;
+            this.needsUpdateAll = "deletekey";
         });
 
         gui.keys.key("a", "Select all keys", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
@@ -301,7 +302,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
-            this.needsUpdateAll = true;
+            this.needsUpdateAll = "op select channge";
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
@@ -323,7 +324,7 @@ export class GlTimeline extends Events
             let selOpsStr = "";
             for (let i = 0; i < selops.length; i++) selOpsStr += selops[i].id;
 
-            this.needsUpdateAll = true;
+            this.needsUpdateAll = "selected ops changed";
             if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selOpsStr != this.#selOpsStr)
             {
                 this.init();
@@ -380,14 +381,20 @@ export class GlTimeline extends Events
         return this.#cgl.canvas.parentElement;
     }
 
-    resize()
+    /**
+     * @param {boolean} [force]
+     */
+    resize(force)
     {
+        if (!force && this.#oldSize == this.#cgl.canvasWidth) return;
+        console.log("${}", this.#cgl.canvasWidth);
+        this.#oldSize = this.#cgl.canvasWidth;
         this.scroll.setWidth(this.#cgl.canvasWidth);
         this.ruler.setWidth(this.#cgl.canvasWidth);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "resize";
     }
 
     snapSelectedKeyTimes()
@@ -404,7 +411,6 @@ export class GlTimeline extends Events
     snapTime(time)
     {
         if (this.cfg.restrictToFrames) time = Math.floor(time * this.fps) / this.fps;
-        this.needsUpdateAll = true;
         return time;
     }
 
@@ -613,7 +619,7 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "dragselect";
     }
 
     predragSelectedKeys()
@@ -632,7 +638,7 @@ export class GlTimeline extends Events
     {
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
         this.moveSelectedKeysDelta(minTime);
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "moveselected";
     }
 
     /**
@@ -644,7 +650,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "e": easing });
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "selselected";
     }
 
     /**
@@ -655,7 +661,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "t": time });
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "seltselectedtime";
     }
 
     /**
@@ -690,7 +696,7 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "moveselectdelta";
     }
 
     getSelectedKeysBoundsValue()
@@ -746,7 +752,7 @@ export class GlTimeline extends Events
                 }
             }
         }
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "selectall";
     }
 
     deleteSelectedKeys()
@@ -823,7 +829,7 @@ export class GlTimeline extends Events
             this.view.setZoomOffset(delta);
         }
 
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "wheel";
     }
 
     get width()
@@ -945,7 +951,7 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         this.setPositions();
         // this.updateAllElements();
-        this.needsUpdateAll = true;
+        this.needsUpdateAll = "updatesize";
     }
 
     /**
@@ -962,12 +968,17 @@ export class GlTimeline extends Events
 
             if (this.disposed) return;
             this.view.updateAnims();
-
+            if (this.needsUpdateAll)console.log("needs update", this.needsUpdateAll);
             if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
             this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
             this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
+
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                this.#tlAnims[i].render();
+            }
 
             this.#cgl.pushDepthTest(true);
 
@@ -1017,6 +1028,8 @@ export class GlTimeline extends Events
     updateAllElements()
     {
         const perf = gui.uiProfiler.start("[gltimeline] udpateAllElements");
+
+        this.needsUpdateAll = "";
 
         this.ruler.update();
         this.scroll.update();
@@ -1235,7 +1248,7 @@ export class GlTimeline extends Events
                     }
 
                     console.log(json.keys);
-                    this.needsUpdateAll = true;
+                    this.needsUpdateAll = "";
 
                     return;
                 }

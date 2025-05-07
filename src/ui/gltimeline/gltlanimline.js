@@ -81,6 +81,7 @@ export class glTlAnimLine extends Events
         this.#options = options;
         this.#glTl = glTl;
         this.#view = glTl.view;
+        this.width = glTl.width;
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
@@ -162,7 +163,6 @@ export class glTlAnimLine extends Events
             gui.patchView.focusOp(this.#ops[title.index].id);
             gui.patchView.centerSelectOp(this.#ops[title.index].id);
             this.updateTitles();
-
         });
 
         this.#titles.push(title);
@@ -256,6 +256,7 @@ export class glTlAnimLine extends Events
      */
     setHeight(h)
     {
+        if (this.height == h) return;
         if (this.checkDisposed()) return;
         this.height = h;
         this.setWidth(this.width);
@@ -349,10 +350,11 @@ export class glTlAnimLine extends Events
 
     /**
      * @param {Number} v
+     * @returns {Number}
      */
     valueToPixel(v)
     {
-        if (this.#keys.length == 0) return;
+        if (this.#keys.length == 0) return 1;
         let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].sizeKey2, this.#glRectKeysBg.h - this.#keys[0].keyHeight / 2, 0, false);
 
         // if (y == -Infinity) y = 0;
@@ -404,6 +406,14 @@ export class glTlAnimLine extends Events
 
                     this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
+        }
+    }
+
+    render()
+    {
+        for (let j = 0; j < this.#keys.length; j++)
+        {
+            this.#keys[j].render();
         }
     }
 }

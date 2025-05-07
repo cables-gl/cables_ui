@@ -240,7 +240,7 @@ export default class GlTimelineTab
             return;
         }
         this.resizing = true;
-        this.tlCanvas.glTimeline.resize();
+        this.tlCanvas.glTimeline.resize(true);
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);
         this.resizing = false;
