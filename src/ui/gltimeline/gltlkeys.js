@@ -144,7 +144,7 @@ export class glTlKeys extends Events
 
         if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
-            kr.setShape(6);
+            kr.setShape(13);
             kr.setSize(this.sizeKey, this.sizeKey);
         }
         else
@@ -159,11 +159,6 @@ export class glTlKeys extends Events
         const kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
 
         return kwidth;
-    }
-
-    updateSoon()
-    {
-        setTimeout(this.update.bind(this), 60);
     }
 
     /**
@@ -228,13 +223,9 @@ export class glTlKeys extends Events
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.4;
-        // this.#resDiv -= 3;
-        // if (this.#resDiv < 1) this.#resDiv = 1;
 
         if (this.#options.keyYpos)
         {
-            // if (this.#glTl.view.isAnimated()) this.#resDiv = 5;
-
             const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
             let skipped = false;
@@ -312,8 +303,8 @@ export class glTlKeys extends Events
 
             const rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset) - this.sizeKey2;
             const ry = y - this.keyHeight / 2;
-
-            kr.setPosition(rx, ry, -0.8);
+            if (rx != rx || ry != ry)console.log("${}", rx, ry);
+            kr.setPosition(rx, ry, -0.84);
             this.setKeyShapeSize(kr);
 
             if (
@@ -375,12 +366,10 @@ export class glTlKeys extends Events
             kr.listen(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = kr;
-                this.updateSoon();
             });
             kr.listen(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
-                this.updateSoon();
             });
 
             kr.listen(GlRect.EVENT_DRAGEND, () =>
@@ -473,9 +462,9 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(this.#glTl.snapTime(offTime), offVal);
                         this.#anim.sortKeys();
                     }
+                    this.setKeyPositions();
 
                     this.#animLine.update();
-                    this.updateSoon();
 
                 }
             });
@@ -483,7 +472,6 @@ export class glTlKeys extends Events
             this.#keyRects.push(kr);
 
         }
-        this.updateSoon();
     }
 
     get height()

@@ -220,8 +220,8 @@ export class GlTimeline extends Events
             this.deactivateAllAnims(true);
             gui.emitEvent("opSelectChange");
             this.updateAllElements();
-
         });
+
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
@@ -263,6 +263,7 @@ export class GlTimeline extends Events
         {
             this.jumpKey(-1);
         });
+
         gui.keys.key("k", "Go to next keyframe", "down", cgl.canvas.id, {}, () =>
         {
             this.jumpKey(1);
@@ -280,7 +281,7 @@ export class GlTimeline extends Events
             this.needsUpdateAll = true;
         });
 
-        gui.keys.key("a", "Select all keys", "down", cgl.canvas.id, { "cmdCtrl": true }, (_e) =>
+        gui.keys.key("a", "Select all keys", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.selectAllKeys();
         });
@@ -311,8 +312,6 @@ export class GlTimeline extends Events
             if (selops.length == 0) return;
             let isAnimated = false;
             for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
-
-            // if (!isAnimated) return;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
@@ -496,7 +495,7 @@ export class GlTimeline extends Events
 
         let x = event.offsetX;
         let y = event.offsetY;
-        this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y, event.buttons);
 
         if (event.buttons == 1)
         {
@@ -669,7 +668,7 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-            this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + deltaTime, "value": this.#selectedKeys[i].value + deltaValue });
+            this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
         this.needsUpdateAll = true;
@@ -1276,7 +1275,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
             const t = this.cursorTime;
-            this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+            this.#tlAnims[i].createKeyAtCursor(t);
         }
     }
 
@@ -1298,4 +1297,9 @@ export class GlTimeline extends Events
         }
     }
 
+    get height()
+    {
+
+        return this.#cgl.canvasHeight;
+    }
 }

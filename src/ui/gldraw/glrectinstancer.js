@@ -514,6 +514,13 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrTexRect, this._attrBuffTexRect, idx * 4, idx * 4 + 4);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number |number[]} r
+     * @param {number} [g]
+     * @param {number} [b]
+     * @param {number} [a]
+     */
     setColor(idx, r, g, b, a)
     {
         if (r.length)

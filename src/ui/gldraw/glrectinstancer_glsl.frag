@@ -25,7 +25,7 @@ float screenPxRange()
     float pxRange=4.0;
 
     #ifdef WEBGL1
-    vec2 unitRange = vec2(pxRange)/vec2(1024.0);
+        vec2 unitRange = vec2(pxRange)/vec2(1024.0);
     #endif
     #ifdef WEBGL2
         vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));

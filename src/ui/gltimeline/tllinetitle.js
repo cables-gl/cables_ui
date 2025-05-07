@@ -7,6 +7,7 @@ import { GlTimeline } from "./gltimeline.js";
 
 export class TlTitle extends Events
 {
+    static EVENT_TITLECLICKED = "titleClicked";
     index = 0;
 
     /** @type {HTMLElement} */
@@ -45,10 +46,11 @@ export class TlTitle extends Events
 
         this.#elTitle = document.createElement("span");
 
-        ele.clickable(this.#elTitle, () =>
+        ele.clickable(this.#elTitle, (e) =>
         {
-            this.emitEvent("titleClicked", this);
+            this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
         });
+
         this.addButton("...",
             (e) =>
             {
@@ -117,17 +119,18 @@ export class TlTitle extends Events
                 this.activeButton.children[0].classList.add("icon-check");
                 this.activeButton.children[0].classList.remove("icon-empty");
             }
-
         }
     }
 
     /**
-     * @param {boolean} selected
+     * @param {string} color
      */
-    setSelected(selected)
+    setBorderColor(selected, color)
     {
         if (selected) this.#el.classList.add("selectedOp");
         else this.#el.classList.remove("selectedOp");
+
+        this.#el.style.borderLeft = "3px solid " + color;
     }
 
     toggleActive()

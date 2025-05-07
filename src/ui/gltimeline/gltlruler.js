@@ -259,13 +259,23 @@ export class glTlRuler extends Events
             {
                 time = (offset + i);
                 x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                h = 20;
-                title = i * this.#glTl.fps + "f";
+                h = 15;
+                title = Math.floor((i + offset) * this.#glTl.fps) + "f";
+                a = 1;
             }
 
-            if (time < 0 || time > this.#glTl.duration)mr.setColor(0, 0, 0, a);
-            else mr.setColor(1, 1, 1, a);
-            mr.setSize(1, h);
+            if (time < 0 || time > this.#glTl.duration)
+            {
+                mr.setColor(0, 0, 0, a);
+            }
+            else
+            {
+
+                mr.setColor(1, 1, 1, a * 0.25);
+                mr.setSize(1, h);
+                if (a == 1)
+                    mr.setSize(1, h + this.#glTl.height);
+            }
             mr.setPosition(x, this.height - h);
 
             if (title && x < this.#glTl.width)

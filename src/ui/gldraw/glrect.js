@@ -25,6 +25,8 @@ export default class GlRect extends Events
     #parent = null;
     #visible = true;
     #hovering = false;
+
+    /** @type {GlRectInstancer} */
     #rectInstancer = null;
     #attrIndex = null;
     #texture = null;

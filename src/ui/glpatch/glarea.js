@@ -135,13 +135,14 @@ export default class GlArea
      */
     _updateColor()
     {
-        if (this._glop.opUiAttribs.color)
-        {
-            const cols = chroma.hex(this._glop.opUiAttribs.color).gl();
-            cols[3] = 0.1;
-            this._rectBg.setColor(cols);
-        }
-        else this._rectBg.setColor(0, 0, 0, 0.08);
+        // if (this._glop.opUiAttribs.color)
+        // {
+        //     const cols = chroma.hex(this._glop.opUiAttribs.color).gl();
+        //     cols[3] = 0.1;
+        //     this._rectBg.setColorArray(cols);
+        // }
+        // else
+        this._rectBg.setColor(0, 0, 0, 0.08);
     }
 
     dispose()

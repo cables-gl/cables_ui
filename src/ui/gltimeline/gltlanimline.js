@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 
 import { Anim, Op, Port } from "cables";
+import { glMatrix } from "gl-matrix";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
@@ -154,9 +155,14 @@ export class glTlAnimLine extends Events
     {
         const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim);
         title.setTitle(t);
-        title.on("titleClicked", (title) =>
+        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
+            if (!e.shiftKey)
+                gui.patchView.unselectAllOps();
+            gui.patchView.selectOpId(this.#ops[title.index].id);
             gui.patchView.focusOp(this.#ops[title.index].id);
+            this.updateTitles();
+
         });
 
         this.#titles.push(title);
@@ -219,7 +225,7 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].updateSoon();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
     }
 
@@ -372,8 +378,34 @@ export class glTlAnimLine extends Events
                     break;
                 }
             }
-            this.#titles[j].setSelected(found);
+
+            this.#titles[j].setBorderColor(found, this.#ports[j].op.uiAttribs.color || "transparent");
+
             this.#titles[j].updateIcons();
+        }
+    }
+
+    /**
+     * @param {number} t
+     */
+    createKeyAtCursor(t)
+    {
+        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        {
+            for (let j = 0; j < this.#ports.length; j++)
+            {
+                if (this.#anims[j].tlActive)
+                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+            }
+        }
+        else
+        {
+            for (let j = 0; j < this.#ports.length; j++)
+            {
+                if (this.#ports[j].op.uiAttribs.selected)
+
+                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+            }
         }
     }
 }
