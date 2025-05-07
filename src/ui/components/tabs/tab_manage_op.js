@@ -218,7 +218,10 @@ export default class ManageOp
 
                     const items = [];
 
-                    if (depType !== "corelib" && depType !== "lib")
+                    let downloadable = depType !== "corelib";
+                    if (depType === "lib") downloadable = depSrc.startsWith("/assets/");
+
+                    if (downloadable)
                     {
                         items.push({
                             "title": "download",
@@ -226,7 +229,7 @@ export default class ManageOp
                             "func": () =>
                             {
                                 let scriptSrc = "";
-                                if (depSrc.startsWith("http"))
+                                if (depSrc.startsWith("http") || depSrc.startsWith("/assets/"))
                                 {
                                     scriptSrc = depSrc;
                                 }
@@ -234,7 +237,16 @@ export default class ManageOp
                                 {
                                     scriptSrc = platform.getSandboxUrl() + "/api/oplib/" + opName + depSrc.replace(".", "");
                                 }
-                                if (scriptSrc) window.open(scriptSrc);
+                                if (scriptSrc)
+                                {
+                                    let element = document.createElement("a");
+                                    element.setAttribute("href", scriptSrc);
+                                    element.setAttribute("download", "");
+                                    element.style.display = "none";
+                                    document.body.appendChild(element);
+                                    element.click();
+                                    document.body.removeChild(element);
+                                }
                             }
                         });
                     }
