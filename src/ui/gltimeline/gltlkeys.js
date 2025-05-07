@@ -470,7 +470,7 @@ export class glTlKeys extends Events
                     }
                     if (this.#glTl.getNumSelectedKeys() > 0)
                     {
-                        this.#glTl.dragSelectedKeys(this.#glTl.snapTime(offTime), offVal);
+                        this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
                     this.setKeyPositions();

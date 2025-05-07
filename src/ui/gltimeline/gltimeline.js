@@ -28,6 +28,7 @@ import undo from "../utils/undo.js";
  * @property {Boolean} showBeats
  * @property {String} displayUnits
  * @property {Boolean} restrictToFrames
+ * @property {Number} bpmHlXth
  */
 
 /**
@@ -609,7 +610,7 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-            this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].temp.preDragTime + deltaTime, "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
+            this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = true;

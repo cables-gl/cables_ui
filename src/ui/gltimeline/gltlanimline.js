@@ -157,8 +157,7 @@ export class glTlAnimLine extends Events
         title.setTitle(t);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
-            if (!e.shiftKey)
-                gui.patchView.unselectAllOps();
+            if (!e.shiftKey) gui.patchView.unselectAllOps();
             gui.patchView.selectOpId(this.#ops[title.index].id);
             gui.patchView.focusOp(this.#ops[title.index].id);
             gui.patchView.centerSelectOp(this.#ops[title.index].id);
@@ -173,9 +172,7 @@ export class glTlAnimLine extends Events
     activateSelectedOps(ops)
     {
         for (let i = 0; i < this.#ports.length; i++)
-        {
             this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
-        }
     }
 
     updateTitles()

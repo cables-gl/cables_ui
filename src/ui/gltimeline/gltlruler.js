@@ -2,6 +2,7 @@ import { Events, Logger } from "cables-shared-client";
 import GlText from "../gldraw/gltext.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
+import { gui } from "../gui.js";
 
 /**
  * gltl ruler display
@@ -12,6 +13,9 @@ import GlRect from "../gldraw/glrect.js";
  */
 export class glTlRuler extends Events
 {
+
+    static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
+    static COLOR_BEAT4 = [0.7, 0.7, 0.7, 1];
 
     /** @type {GlTimeline} */
     #glTl;
@@ -30,7 +34,6 @@ export class glTlRuler extends Events
         this._glRectBg = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
-        // this._glRectBg.setColorHover(0.2, 0.2, 0.2, 1);
         this._glRectBg.setPosition(0, this.y, -0.9);
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
@@ -44,13 +47,11 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
-
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
-
         });
 
         this.markf = [];
@@ -159,7 +160,7 @@ export class glTlRuler extends Events
         {
             const bps = this.#glTl.bpm / 60;
             const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
-            // const spb = 0 / bps;
+            const spb = 1 / bps;
 
             for (let i = 0; i < this.markBeats.length; i++)
             {
@@ -169,11 +170,10 @@ export class glTlRuler extends Events
                 mr.setSize(onebeatPixel - 2, 5);
                 mr.setPosition(x, 1);
 
-                // const absBeat = Math.floor(t / (spb));
-                let shade = 0.5;
-                // if (absBeat % 4 == 0)shade = 0.8;
-
-                mr.setColor(shade, shade, shade, 1);
+                const absBeat = Math.round(t * bps);
+                console.log("${}", this.#glTl.cfg.bpmHlXth);
+                if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
+                else mr.setColorArray(glTlRuler.COLOR_BEATS);
 
                 if (t < 0) mr.setSize(0, 0);
             }
