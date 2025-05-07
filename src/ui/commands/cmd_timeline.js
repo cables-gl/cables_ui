@@ -13,6 +13,11 @@ const timelineCommands =
 
 export default timelineCommands;
 
+CABLES_CMD_TIMELINE.TimelineSnapTimes = function ()
+{
+    gui.glTimeline.snapSelectedKeyTimes();
+};
+
 CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
 {
 
@@ -172,6 +177,11 @@ timelineCommands.commands.push(
         "cmd": "add new keyframe at cursor",
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor
+    },
+    {
+        "cmd": "snap selected keys times to fps",
+        "category": "timeline",
+        "func": CABLES_CMD_TIMELINE.TimelineSnapTimes
     }
 
 );

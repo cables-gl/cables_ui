@@ -389,13 +389,31 @@ export class GlTimeline extends Events
         this.needsUpdateAll = true;
     }
 
+    snapSelectedKeyTimes()
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].time) });
+        }
+    }
+
     /**
      * @param {number} time
      */
     snapTime(time)
     {
         if (this.cfg.restrictToFrames) time = Math.floor(time * this.fps) / this.fps;
+        this.needsUpdateAll = true;
         return time;
+    }
+
+    /**
+     * @param {number} t
+     */
+    isSnappedTime(t)
+    {
+        // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
+        return t == this.snapTime(t);
     }
 
     toggleGraphLayout()

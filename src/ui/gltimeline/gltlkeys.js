@@ -207,6 +207,7 @@ export class glTlKeys extends Events
                 col = [1, 1, 0, 1];
             }
 
+            if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
             keyRect.setColorArray(col);
 
         }
