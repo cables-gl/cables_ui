@@ -58,6 +58,7 @@ export class glTlRuler extends Events
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setColor(0.0, 0.0, 0.0, 1);
+            mr.setPosition(-8888, 0);
             mr.setParent(this._glRectBg);
             this.markf.push(mr);
         }
@@ -67,6 +68,7 @@ export class glTlRuler extends Events
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setColor(0.2, 0.2, 0.2, 1);
+            mr.setPosition(-8888, 0);
             mr.setParent(this._glRectBg);
             mr.setSize(0, 0);
             this.markBeats.push(mr);
@@ -77,6 +79,7 @@ export class glTlRuler extends Events
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
             mr.setParent(this._glRectBg);
+            mr.setPosition(-8888, 0);
             this.marks.push(mr);
         }
 
@@ -183,13 +186,12 @@ export class glTlRuler extends Events
         for (let i = 0; i < this.marks.length; i++)
         {
             const mr = this.marks[i];
-            let h = 10;
             let x = 0;
-            let a = 0.4;
             let title = null;
             titleCounter %= this.titles.length;
 
             let time = 0;
+            let size = -1;
 
             if (this.#glTl.displayUnits == "Seconds")
             {
@@ -200,12 +202,11 @@ export class glTlRuler extends Events
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 1 == 0.5)
                     {
-                        h = 25;
+                        size = 1;
                     }
                     if (time % 1 == 0) // full seconds
                     {
-                        h = 15;
-                        a = 1;
+                        size = 2;
                         title = (time) + "s";
                     }
                 }
@@ -216,9 +217,8 @@ export class glTlRuler extends Events
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 30 == 0)
                     {
-                        h = 20;
                         title = (time) + "s";
-                        a = 1;
+                        size = 2;
                     }
                 }
                 else
@@ -228,9 +228,8 @@ export class glTlRuler extends Events
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 10 == 0)
                     {
-                        h = 20;
+                        size = 2;
                         title = (time) + "s";
-                        a = 1;
                     }
                 }
                 else
@@ -240,18 +239,17 @@ export class glTlRuler extends Events
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 1 == 0)
                     {
-                        h = 10;
+                        size = 0;
                     }
                     if (time % 10 == 0)
                     {
-                        h = 20;
+                        size = 2;
                         title = (time) + "s";
                     }
                     else if (time % 5 == 0)
                     {
-                        h = 15;
                         title = (time) + "s";
-                        a = 1;
+                        size = 1;
                     }
                 }
             }
@@ -259,23 +257,43 @@ export class glTlRuler extends Events
             {
                 time = (offset + i);
                 x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                h = 15;
                 title = Math.floor((i + offset) * this.#glTl.fps) + "f";
-                a = 1;
+                size = 2;
             }
 
-            if (time < 0 || time > this.#glTl.duration)
+            let a = 0.4;
+            let h = 10;
+            if (size == -1)
             {
-                mr.setColor(0, 0, 0, a);
+                x = -19999;
             }
-            else
+            else if (size == 0)
             {
+                h = 14;
+                a = 0.3;
+            }
+            else if (size == 1)
+            {
+                h = 15;
+                a = 0.34;
+            }
+            else if (size == 2)
+            {
+                h = 25;
+                a = 0.5;
+            }
 
-                mr.setColor(1, 1, 1, a * 0.25);
-                mr.setSize(1, h);
-                if (a == 1)
-                    mr.setSize(1, h + this.#glTl.height);
-            }
+            if (size > -1)
+                if (time < 0 || time > this.#glTl.duration)
+                {
+                    mr.setColor(0, 0, 0, a);
+                }
+                else
+                {
+                    mr.setColor(1, 1, 1, a);
+                    mr.setSize(1, h);
+                    if (size == 2) mr.setSize(1, h + this.#glTl.height);
+                }
             mr.setPosition(x, this.height - h);
 
             if (title && x < this.#glTl.width)
@@ -285,8 +303,7 @@ export class glTlRuler extends Events
 
                 this.titles[titleCounter].text = title;
                 this.titles[titleCounter].setParentRect(this._glRectBg);
-                // this.titles[titleCounter].setPosition(0, 50);
-                this.titles[titleCounter].setPosition(x, this.height - h - 30);
+                this.titles[titleCounter].setPosition(x, this.height - h - 23);
 
                 titleCounter++;
             }
