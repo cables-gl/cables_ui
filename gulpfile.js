@@ -11,15 +11,15 @@ import svgcss from "gulp-svg-css";
 import rename from "gulp-rename";
 import concat from "gulp-concat";
 import sassCompiler from "sass";
-
+import path from "path";
 import webpackConfig from "./webpack.config.js";
 import webpackTalkerApiConfig from "./webpack.talkerapi.config.js";
 import webpackLibsConfig from "./webpack.libs.config.js";
 
 sass.compiler = sassCompiler;
 
-let configLocation = "../cables_api/cables.json";
-if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
+let configLocation = path.join("..", "gen", "cables.json");
+if (process.env.npm_config_apiconfig) configLocation = path.join("..", "/cables_env_" + process.env.npm_config_apiconfig + ".json");
 
 let analyze = false;
 let isLiveBuild = false;
