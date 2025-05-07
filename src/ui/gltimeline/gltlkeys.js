@@ -197,6 +197,7 @@ export class glTlKeys extends Events
                 this.#glTl.selectKey(animKey, this.#anim);
             }
 
+            if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
             if (this.#glTl.isKeySelected(animKey))
             {
                 if (!this.#hasSelectedKeys)
@@ -207,7 +208,6 @@ export class glTlKeys extends Events
                 col = [1, 1, 0, 1];
             }
 
-            if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
             keyRect.setColorArray(col);
 
         }
