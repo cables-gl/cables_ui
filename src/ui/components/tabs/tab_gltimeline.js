@@ -118,7 +118,8 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon info icon-redo-2\" data-info=\"tlloopstart\"></span>", () =>
         {
-            this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.cursorTime;
+            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
+            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
         }, ["button-left"]);
         this.#tab.addButton("<span class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", () =>
         {
@@ -126,7 +127,8 @@ export default class GlTimelineTab
         }, ["button-middle"]);
         this.#tab.addButton("<span class=\"nomargin icon info icon-undo-2\" data-info=\"tlloopend\"></span>", () =>
         {
-            this.tlCanvas.glTimeline.loopAreaEnd = this.tlCanvas.glTimeline.cursorTime;
+            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
+            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
         }, ["button-right"]);
         this.#tab.addButtonSpacer();
 

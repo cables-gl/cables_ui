@@ -973,7 +973,9 @@ export class GlTimeline extends Events
         this.#perfFps.startFrame();
 
         if (
+
             this.loopAreaEnd != 0 &&
+                gui.corePatch().timer.isPlaying() &&
                 (
                     gui.corePatch().timer.getTime() > this.loopAreaEnd ||
                     gui.corePatch().timer.getTime() < this.loopAreaStart
