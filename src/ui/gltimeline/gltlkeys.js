@@ -21,7 +21,7 @@ export class glTlKeys extends Events
     static COLOR_INIT = [0.9, 0.0, 0.9, 1];
     static COLOR_INACTIVE = [0.4, 0.4, 0.4, 1];
     static COLOR_NORMAL = [0.7, 0.7, 0.7, 1];
-    static COLOR_SELECTED = [1, 1, 0, 1];
+    static COLOR_SELECTED = [1, 1, 0.7, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
     static COLOR_HIGHLIGHT = [0, 1, 1, 1];
 
@@ -48,7 +48,7 @@ export class glTlKeys extends Events
 
     #disposed = false;
 
-    sizeKey = 9;
+    sizeKey = 12;
 
     /** @type {Array<number>} */
     #points = [];
@@ -359,7 +359,7 @@ export class glTlKeys extends Events
 
             this.setKeyShapeSize(keyRect);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
-            keyRect.setColorHover(1, 1, 1, 1);
+            // keyRect.setColorHover(1, 1, 1, 1);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);
             const key = this.#anim.keys[i];
@@ -412,11 +412,24 @@ export class glTlKeys extends Events
                     this.#glTl.selectKey(key, this.#anim);
                 }
                 this.click = false;
+                this.#glTl.hoverKeyRect = keyRect;
+                this.update();
 
             });
 
-            keyRect.listen(GlRect.EVENT_POINTER_DOWN, () =>
+            keyRect.listen(GlRect.EVENT_POINTER_DOWN, (e) =>
             {
+
+                if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
+                {
+
+                    if (this.#glTl.selectRect) return;
+                    if (this.#dragStarted) return;
+
+                    if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys();
+                    this.#glTl.selectKey(key, this.#anim);
+                    this.update();
+                }
                 this.click = true;
             });
 
