@@ -101,6 +101,9 @@ export class GlTimeline extends Events
     buttonForScrolling = 2;
     toParamKeys = null;
 
+    loopAreaStart = 1;
+    loopAreaEnd = 3;
+
     /** @type {TlConfig} */
     cfg = {
         "fps": 30,
@@ -130,6 +133,7 @@ export class GlTimeline extends Events
     #cursorText;
     #cursorTextBgRect;
     #cursorY = 30;
+    #rectLoopArea;
 
     /**
      * @param {CglContext} cgl
@@ -167,6 +171,11 @@ export class GlTimeline extends Events
         this.#cursorText = new GlText(this.texts, "???");
         this.#cursorText.setParentRect(this.cursorVertLineRect);
         this.setColorRectSpecial(this.#cursorText);
+
+        this.#rectLoopArea = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
+        this.#rectLoopArea.setSize(40, 20);
+        this.#rectLoopArea.setPosition(40, 20, 0.15);
+        this.#rectLoopArea.setColor(0.9, 0.2, 0.2, 0.1);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -963,6 +972,17 @@ export class GlTimeline extends Events
 
         this.#perfFps.startFrame();
 
+        if (
+            this.loopAreaEnd != 0 &&
+                (
+                    gui.corePatch().timer.getTime() > this.loopAreaEnd ||
+                    gui.corePatch().timer.getTime() < this.loopAreaStart
+                )
+        )
+        {
+            gui.corePatch().timer.setTime(this.loopAreaStart);
+        }
+
         if (!gui.bottomTabPanel.isMinimized())
         {
 
@@ -986,6 +1006,9 @@ export class GlTimeline extends Events
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
+
+            this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), 0, -1);
+            this.#rectLoopArea.setSize(this.view.timeToPixelScreen(this.loopAreaEnd) - this.view.timeToPixelScreen(this.loopAreaStart), 2222);
 
             this.#cgl.popDepthTest();
         }
