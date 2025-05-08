@@ -110,15 +110,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            let title = "";
-
-            title += "<span class=\"" + opNames.getNamespaceClassName(ports[i].op.objName) + "\">";
-            title += ports[i].op.name;
-            title += "</span>";
-
-            title += " <span class=\"portname\">" + ports[i].name + "</span>";
-            if (ports[i].op.uiAttribs.comment) title += "<span class=\"comment\"> // " + ports[i].op.uiAttribs.comment + "</span>";
-            this.setTitle(i, title, ports[i].anim);
+            this.setTitle(i, ports[i], ports[i].anim);
         }
 
         if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
@@ -201,19 +193,19 @@ export class glTlAnimLine extends Events
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
-            this.#titles[i].op = this.#ops[i];
+            // this.#titles[i].#op = this.#ops[i];
         }
     }
 
     /**
      * @param {number} idx
-     * @param {string} t
+     * @param {Port} p
      * @param {Anim} [anim]
      */
-    setTitle(idx, t, anim)
+    setTitle(idx, p, anim)
     {
         while (this.#titles.length <= idx) this.addTitle("title...", anim);
-        this.#titles[idx].setTitle(t,);
+        this.#titles[idx].setPort(p);
         this.setTitlePos();
     }
 

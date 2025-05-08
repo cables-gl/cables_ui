@@ -1,9 +1,10 @@
 import { Events, ele } from "cables-shared-client";
-import { Anim, Op } from "cables";
+import { Anim, Op, Port } from "cables";
 import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
+import opNames from "../opnameutils.js";
 
 export class TlTitle extends Events
 {
@@ -21,14 +22,16 @@ export class TlTitle extends Events
     #hasSelectedKeys;
 
     /** @type {Op} */
-    op;
+    #op;
 
     /** @type {glTlKeys} */
     tlKeys;
 
     /** @type {Anim} */
     #anim;
+    #listeners = [];
     #gltl;
+    #port;
 
     /**
      * @param {HTMLElement} parentEl
@@ -66,6 +69,7 @@ export class TlTitle extends Events
                     }, e.target);
             }
         );
+
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
             this.activeButton = this.addButton("<span class=\"icon icon-check icon-0_75x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
@@ -86,6 +90,41 @@ export class TlTitle extends Events
     setTitle(t)
     {
         this.#elTitle.innerHTML = t;
+    }
+
+    /**
+     * @param {Port} port
+     */
+    setPort(port)
+    {
+        if (this.#port) return;
+        this.#listeners.push(
+            port.op.on(Op.EVENT_UIATTR_CHANGE, () =>
+            {
+                this.updateFromOp();
+            })
+        );
+        this.#op = port.op;
+        this.#port = port;
+        this.updateFromOp();
+    }
+
+    updateFromOp()
+    {
+        let title = "";
+        if (this.#op)
+        {
+            title += "<span class=\"" + opNames.getNamespaceClassName(this.#op.objName) + "\">";
+            title += this.#op.name;
+            title += "</span>";
+
+            title += " <span class=\"portname\">" + this.#port.name + "</span>";
+            if (this.#op.uiAttribs.comment) title += "<span class=\"comment\"> // " + this.#op.uiAttribs.comment + "</span>";
+
+            this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
+        }
+
+        this.setTitle(title);
     }
 
     /**
@@ -181,6 +220,7 @@ export class TlTitle extends Events
 
     dispose()
     {
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
         this.#el.remove();
 
     }
