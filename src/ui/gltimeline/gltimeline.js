@@ -826,9 +826,7 @@ export class GlTimeline extends Events
         else if (event.shiftKey && this.isGraphLayout)
         {
             this.view.scale(event.deltaX * 0.003);
-
         }
-
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;

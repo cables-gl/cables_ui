@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 
 import { Anim, Op, Port } from "cables";
 import { glMatrix } from "gl-matrix";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
@@ -59,7 +60,8 @@ export class glTlAnimLine extends Events
     /** @type {TlTitle[]} */
     #titles = [];
 
-    #animChangeListeners = [];
+    /** @type {EventListener[]} */
+    #listeners = [];
 
     #disposed = false;
 
@@ -99,12 +101,11 @@ export class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.on(Anim.EVENT_CHANGE, () =>
-            {
-                if (!keys.isDragging()) keys.init();
-            });
-
-            this.#animChangeListeners.push({ "id": lid, "anim": anim });
+            this.#listeners.push(
+                anim.on(Anim.EVENT_CHANGE, () =>
+                {
+                    if (!keys.isDragging()) keys.init();
+                }));
         }
 
         for (let i = 0; i < ports.length; i++)
@@ -246,7 +247,6 @@ export class glTlAnimLine extends Events
     setPosition(x, y)
     {
         if (this.checkDisposed()) return;
-        // this.#glRectTitle.setPosition(x, y, -0.5);
         this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
     }
@@ -288,10 +288,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
 
-        for (let i = 0; i < this.#animChangeListeners.length; i++)
-            this.#animChangeListeners[i].anim.removeEventListener(this.#animChangeListeners[i].id);
+        for (let i = 0; i < this.#listeners.length; i++)
+            this.#listeners[i].remove();
 
-        this.#animChangeListeners = [];
+        this.#listeners = [];
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
         this.#keys = [];
@@ -380,7 +380,6 @@ export class glTlAnimLine extends Events
             }
 
             this.#titles[j].setBorderColor(found, this.#ports[j].op.uiAttribs.color || "transparent");
-
             this.#titles[j].updateIcons();
         }
     }
@@ -403,7 +402,6 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#ports[j].op.uiAttribs.selected)
-
                     this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }

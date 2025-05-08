@@ -4,10 +4,10 @@ import { Anim, Port } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
-import { glTlAnimLine } from "./gltlanimline.js";
 import { gui } from "../gui.js";
 import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
+import { glTlAnimLine } from "./gltlanimline.js";
 
 /**
  * gltl key rendering
@@ -95,7 +95,7 @@ export class glTlKeys extends Events
         this.#port = port;
         this.#animLine = animLine;
         this.#listeners.push(
-            anim.listen(Anim.EVENT_CHANGE, () =>
+            anim.on(Anim.EVENT_CHANGE, () =>
             {
                 this.#needsUpdate = true;
             }));
@@ -271,7 +271,7 @@ export class glTlKeys extends Events
             this.#points = pointsSort;
         }
 
-        if (this.#options.keyYpos)
+        if (this.isLayoutGraph())
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(this.#points);
@@ -280,7 +280,11 @@ export class glTlKeys extends Events
 
         this.#updateCount++;
 
-        // if (this.#resDiv != 1) this.updateSoon();
+    }
+
+    isLayoutGraph()
+    {
+        return this.#options.keyYpos;
     }
 
     updateColors()
@@ -372,16 +376,16 @@ export class glTlKeys extends Events
             let oldValues = {};
 
             keyRect.draggableMove = true;
-            keyRect.listen(GlRect.EVENT_POINTER_HOVER, () =>
+            keyRect.on(GlRect.EVENT_POINTER_HOVER, () =>
             {
                 this.#glTl.hoverKeyRect = keyRect;
             });
-            keyRect.listen(GlRect.EVENT_POINTER_UNHOVER, () =>
+            keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
             });
 
-            keyRect.listen(GlRect.EVENT_DRAGEND, () =>
+            keyRect.on(GlRect.EVENT_DRAGEND, () =>
             {
                 this.#anim.sortKeys();
                 this.#anim.removeDuplicates();
@@ -401,7 +405,7 @@ export class glTlKeys extends Events
                 });
             });
 
-            keyRect.listen(GlRect.EVENT_POINTER_UP,
+            keyRect.on(GlRect.EVENT_POINTER_UP,
 
                 /**
                  * @param {MouseEvent} e
@@ -422,7 +426,7 @@ export class glTlKeys extends Events
 
                 });
 
-            keyRect.listen(GlRect.EVENT_POINTER_DOWN, (e) =>
+            keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
             {
 
                 if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
@@ -438,7 +442,7 @@ export class glTlKeys extends Events
                 this.click = true;
             });
 
-            keyRect.listen(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+            keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
                 this.#dragStartX = e.offsetX;
                 this.#dragStartY = e.offsetY;
@@ -454,7 +458,7 @@ export class glTlKeys extends Events
                 }
             });
 
-            keyRect.listen(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+            keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 this.click = false;
                 if (this.#glTl.selectRect) return;
