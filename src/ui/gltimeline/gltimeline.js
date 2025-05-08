@@ -823,10 +823,10 @@ export class GlTimeline extends Events
         {
             this.view.scroll(this.view.visibleTime * event.deltaY * 0.0005);
         }
-
-        else if (event.shiftKey)
+        else if (event.shiftKey && this.isGraphLayout)
         {
             this.view.scale(event.deltaX * 0.003);
+
         }
 
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
@@ -839,6 +839,11 @@ export class GlTimeline extends Events
         }
 
         this.needsUpdateAll = "wheel";
+    }
+
+    isGraphLayout()
+    {
+        return this.layout == GlTimeline.LAYOUT_GRAPHS;
     }
 
     get width()

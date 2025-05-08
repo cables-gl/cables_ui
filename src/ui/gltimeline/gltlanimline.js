@@ -2,7 +2,6 @@ import { Events } from "cables-shared-client";
 
 import { Anim, Op, Port } from "cables";
 import { glMatrix } from "gl-matrix";
-import { GlTimeline } from "./gltimeline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
@@ -11,6 +10,7 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import opNames from "../opnameutils.js";
+import { GlTimeline } from "./gltimeline.js";
 
 /**
  * gltimeline anim

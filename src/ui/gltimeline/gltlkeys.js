@@ -401,21 +401,26 @@ export class glTlKeys extends Events
                 });
             });
 
-            keyRect.listen(GlRect.EVENT_POINTER_UP, (e) =>
-            {
-                if (this.click)
+            keyRect.listen(GlRect.EVENT_POINTER_UP,
+
+                /**
+                 * @param {MouseEvent} e
+                 */
+                (e) =>
                 {
-                    if (this.#glTl.selectRect) return;
-                    if (this.#dragStarted) return;
+                    if (this.click)
+                    {
+                        if (this.#glTl.selectRect) return;
+                        if (this.#dragStarted) return;
 
-                    if (!e.shiftKey) this.#glTl.unSelectAllKeys();
-                    this.#glTl.selectKey(key, this.#anim);
-                }
-                this.click = false;
-                this.#glTl.hoverKeyRect = keyRect;
-                this.update();
+                        if (!e.shiftKey) this.#glTl.unSelectAllKeys();
+                        this.#glTl.selectKey(key, this.#anim);
+                    }
+                    this.click = false;
+                    this.#glTl.hoverKeyRect = keyRect;
+                    this.update();
 
-            });
+                });
 
             keyRect.listen(GlRect.EVENT_POINTER_DOWN, (e) =>
             {
@@ -477,15 +482,15 @@ export class glTlKeys extends Events
                         if (Math.abs(this.#dragStartX - offX) > Math.abs(this.#dragStartY - offY)) offVal = 0;
                         else offTime = 0;
                     }
+
                     if (this.#glTl.getNumSelectedKeys() > 0)
                     {
                         this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
+
                     this.setKeyPositions();
-
                     this.#animLine.update();
-
                 }
             });
 
