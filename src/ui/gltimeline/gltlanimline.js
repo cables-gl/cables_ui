@@ -394,7 +394,8 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#anims[j].tlActive)
-                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
+                // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }
         else
@@ -402,7 +403,8 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#ports[j].op.uiAttribs.selected)
-                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
+                    // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }
     }

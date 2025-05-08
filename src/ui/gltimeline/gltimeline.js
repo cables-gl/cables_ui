@@ -426,7 +426,7 @@ export class GlTimeline extends Events
     isSnappedTime(t)
     {
         // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
-        return Math.abs(t - this.snapTime(t)) < 0.0001;
+        return Math.abs(t - this.snapTime(t)) < 0.03;
     }
 
     toggleGraphLayout()
@@ -537,7 +537,8 @@ export class GlTimeline extends Events
                     if (this.#tlAnims[i].isHovering())
                     {
                         const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
-                        this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+                        this.createKey(
+                            this.#tlAnims[i].anims[0], this.#tlAnims[i].anims[0].getValue(t), t);
                     }
                 }
             }
@@ -1330,6 +1331,25 @@ export class GlTimeline extends Events
         return o;
     }
 
+    /**
+     * @param {Anim} anim
+     * @param {number} time
+     * @param {number} value
+     */
+    createKey(anim, time, value)
+    {
+        const prevKey = anim.getKey(time);
+
+        const found = anim.setValue(time, value);
+        console.log("createkey   ", found, prevKey);
+        if (found)
+        {
+
+            found.setEasing(prevKey.getEasing());
+        }
+
+    }
+
     createKeyAtCursor()
     {
         for (let i = 0; i < this.#tlAnims.length; i++)
@@ -1368,19 +1388,24 @@ export class GlTimeline extends Events
         const data = { "colNames": ["time", "value", "easing"], "cells": [] };
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
+            const t = this.#selectedKeys[i].time;
             data.cells.push(
                 [
                     this.#selectedKeys[i].time,
                     this.#selectedKeys[i].value,
+
+                    // Math.abs(t - this.snapTime(t))
+                    // this.snapTime(this.#selectedKeys[i].time)
                     this.#selectedKeys[i].getEasing()
                 ]
             );
         }
 
         new SpreadSheetTab(gui.mainTabs, null, data, {
-            "title": "keys",
+            "title": "keyframes",
             "onchange": (content) =>
             {
+                console.log("${}", content);
             }
         });
     }

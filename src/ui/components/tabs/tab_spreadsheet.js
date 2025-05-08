@@ -1,5 +1,14 @@
 import { ele, Events, Logger } from "cables-shared-client";
 
+/**
+ * @typedef SpreadSheetOptions
+ * @property {string} [title]
+ * @property {number} [numColumns]
+ * @property {function} [onchange]
+ * @property {string[]} [colNames]
+ * @property {[string[]]} [cells]
+ */
+
 export default class SpreadSheetTab extends Events
 {
 
@@ -7,7 +16,7 @@ export default class SpreadSheetTab extends Events
      * @param {import("../../elements/tabpanel/tabpanel").default} tabs
      * @param {import("cables").Port} port
      * @param {any} data
-     * @param {{ title?: any; onchange?: ((content: any) => void) | ((content: any) => void); numColumns?: any; }} options
+     * @param {SpreadSheetOptions} options
      */
     constructor(tabs, port, data, options)
     {
@@ -17,6 +26,7 @@ export default class SpreadSheetTab extends Events
 
         options = options || {};
 
+        if (options.colNames && !options.numColumns)options.numColumns = options.colNames.length;
         this._numCols = options.numColumns || 3;
         this._rows = 25;
 
@@ -26,7 +36,7 @@ export default class SpreadSheetTab extends Events
         this._options = options;
         this.colNames = [];
 
-        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": false });
         this._tabs.addTab(this._tab, true);
 
         if (port)port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
@@ -117,6 +127,7 @@ export default class SpreadSheetTab extends Events
                 tr.appendChild(td);
 
                 const input = ele.create("input");
+                // input.setAttribute("readonly");
                 input.dataset.x = x;
                 input.dataset.y = y;
                 this._inputs[x + y * this._numCols] = input;
