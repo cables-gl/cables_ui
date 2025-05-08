@@ -41,6 +41,7 @@ export default class ScConnection extends Events
         this.patchChannelName = this._scConfig.patchChannel;
         this.userChannelName = this._scConfig.userChannel;
         this.userPatchChannelName = this._scConfig.userPatchChannel;
+        this.broadcastChannelName = this._scConfig.broadcastChannel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
         if (cfg)
         {
@@ -540,6 +541,38 @@ export default class ScConnection extends Events
                 {
                     this._handleInfoChannelMsg(msg);
                     this.emitEvent("netActivityIn");
+                }
+            })();
+        }
+
+        if (this.broadcastChannelName)
+        {
+            (async () =>
+            {
+                const userChannel = this._socket.subscribe(this.broadcastChannelName);
+                for await (const msg of userChannel)
+                {
+                    if (msg && msg.data && msg.data.build)
+                    {
+                        let text = "";
+                        switch (msg.data.build)
+                        {
+                        case "started":
+                            text = "Waiting while building";
+                            if (msg.data.module) text += " " + msg.data.module;
+                            text += "...";
+                            gui.restriction.setMessage("cablesbuild", text);
+                            break;
+                        case "ended":
+                            text = "done building";
+                            if (msg.data.module) text += " " + msg.data.module;
+                            text += "...";
+                            gui.restriction.setMessage("cablesbuild", null);
+                            gui.patchView.store.checkUpdated(null, false, true);
+                            break;
+                        }
+
+                    }
                 }
             })();
         }
