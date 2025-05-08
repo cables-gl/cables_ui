@@ -592,30 +592,33 @@ export default class ServerOps
 
             if (err)
             {
+                let html = "";
                 if (err.msg === "NO_OP_RIGHTS")
                 {
-                    let html = "";
                     html += "You are not allowed to add dependencies to this op.<br/><br/>";
                     html += "to modify this op, try cloning it";
-                    new ModalDialog({
-                        "title": "Error adding op-dependency",
-                        "showOkButton": true,
-                        "html": html
-                    });
                 }
                 else if (err.msg === "NPM_ERROR" && err.data)
                 {
                     const opText = err.data.opName || opName ? " for " + err.data.opName || opName : "";
-                    this._log.error("failed dependency " + opText + ": " + err.data.stderr);
+                    html += "Failed dependency " + opText + ": " + err.data.stderr;
                 }
                 else if (err.msg === "FAILED_TO_ADD_DEPENDENCY" && depType === "op")
                 {
-                    this._log.error("failed op dependency for " + opName + ": " + depSrc);
+                    html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
+                    html += "Try removing any older version of this dependency first.";
                 }
                 else
                 {
+                    html += err.msg;
                     this._log.error(err.msg, err);
                 }
+                new ModalDialog({
+                    "title": "Error adding op-dependency",
+                    "showOkButton": true,
+                    "html": html
+                });
+                if (next) next(err);
             }
             gui.serverOps.loadOpDependencies(opName, (op) =>
             {

@@ -5,6 +5,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
 import namespace from "../../namespaceutils.js";
 import { platform } from "../../platform.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
 
 /**
  * tab to manage op dependencies like libs or npm-modules
@@ -119,6 +120,20 @@ export default class OpDependencyTab extends Tab
                             {
                                 submitEle.innerText = "Add";
                                 submitEle.disabled = false;
+                            });
+                        }
+                        else
+                        {
+                            submitEle.innerText = "Add";
+                            submitEle.disabled = false;
+
+                            let html = "";
+                            html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
+                            html += "Try removing any older version of this dependency first.";
+                            new ModalDialog({
+                                "title": "Error adding op-dependency",
+                                "showOkButton": true,
+                                "html": html
                             });
                         }
                     });

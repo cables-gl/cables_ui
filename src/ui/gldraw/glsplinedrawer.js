@@ -3,6 +3,7 @@ import { Shader } from "cables/src/core/cgl/cgl_shader.js";
 import { Uniform } from "cables/src/core/cgl/cgl_shader_uniform.js";
 import { CglContext } from "cables/src/core/cgl/cgl_state.js";
 import { Mesh } from "cables/src/core/cgl/cgl_mesh.js";
+import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
@@ -388,7 +389,6 @@ export default class GlSplineDrawer
     {
         const perf = gui.uiProfiler.start("[glspline] buildMesh");
         const num = this._thePoints.length / 3;
-
         if (this._verts.length != num * 18)
         {
             this._verts = new Float32Array(num * 18);
@@ -476,6 +476,10 @@ export default class GlSplineDrawer
             this._rebuildLater = true;
             return;
         }
+        // if (!this.aps) this.aps = new FpsCounter();
+        // this.aps.logFps = true;
+        // this.aps.startFrame();
+        // this.aps.endFrame();
 
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;

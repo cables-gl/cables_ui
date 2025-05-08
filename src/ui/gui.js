@@ -181,6 +181,7 @@ export default class Gui extends Events
                     CABLES.UI.showShaderError(shader);
             });
 
+        /** @type {PatchView} */
         this.patchView = new PatchView(this._corePatch);
 
         this._corePatch.gui = true;

@@ -183,7 +183,9 @@ export class GlTlView
 
     centerCursor()
     {
-        this.scroll(this.cursorTime - this.#offset - (this.visibleTime / 2));
+        let center = (this.visibleTime / 2);
+        if (this.cursorTime == 0)center = this.visibleTime / 10;
+        this.scroll(this.cursorTime - this.#offset - center);
     }
 
     /**

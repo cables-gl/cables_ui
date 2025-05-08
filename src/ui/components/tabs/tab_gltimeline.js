@@ -114,7 +114,22 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span id=\"togglegraph1\" class=\"nomargin icon info icon-chart-spline\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-left", "button-active"]);
         this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-chart-gantt\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
+        this.#tab.addButtonSpacer();
 
+        this.#tab.addButton("<span class=\"nomargin icon info icon-redo-2\" data-info=\"tlloopstart\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
+            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
+        }, ["button-left"]);
+        this.#tab.addButton("<span class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
+        }, ["button-middle"]);
+        this.#tab.addButton("<span class=\"nomargin icon info icon-undo-2\" data-info=\"tlloopend\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
+            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
+        }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
@@ -240,7 +255,7 @@ export default class GlTimelineTab
             return;
         }
         this.resizing = true;
-        this.tlCanvas.glTimeline.resize();
+        this.tlCanvas.glTimeline.resize(true);
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos, parentEle.clientHeight);
         this.resizing = false;
