@@ -40,6 +40,10 @@ import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 
 export class GlTimeline extends Events
 {
+    static DISPLAYUNIT_SECONDS = 0;
+    static DISPLAYUNIT_FRAMES = 1;
+    static DISPLAYUNIT_BEATS = 2;
+
     #selectModeEl;
     graphSelectMode = true;
 
@@ -68,7 +72,7 @@ export class GlTimeline extends Events
     cursorVertLineRect;
 
     duration = 120;
-    displayUnits = "Seconds";
+    displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
     /** @type {GlRect} */
     #rectSelect;
@@ -106,7 +110,6 @@ export class GlTimeline extends Events
         "bpm": 180,
         "fadeInFrames": true,
         "showBeats": true,
-        "displayUnits": "Seconds",
         "restrictToFrames": true
     };
 
@@ -232,6 +235,8 @@ export class GlTimeline extends Events
 
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
+        this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
+
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
@@ -429,12 +434,21 @@ export class GlTimeline extends Events
         return Math.abs(t - this.snapTime(t)) < 0.03;
     }
 
+    saveUserSettings()
+    {
+        setTimeout(() =>
+        {
+            userSettings.set("gltl_layout", this.#layout);
+
+        }, 500);
+    }
+
     toggleGraphLayout()
     {
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
         else this.#layout = GlTimeline.LAYOUT_GRAPHS;
 
-        userSettings.set("gltl_layout", this.#layout);
+        this.saveUserSettings();
 
         this.updateIcons();
         this.init();
@@ -452,7 +466,6 @@ export class GlTimeline extends Events
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
             this.#selectModeEl.classList.remove("hidden");
         }
-
         else
         {
             this.#selectModeEl.classList.add("hidden");
@@ -460,7 +473,6 @@ export class GlTimeline extends Events
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
-
     }
 
     setanim()
@@ -1041,23 +1053,45 @@ export class GlTimeline extends Events
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3) parts[1] += "0";
-
+        const secondss = parts[0] + "." + parts[1];
         const frame = String(Math.floor(this.cursorTime * this.fps));
-        let html = "";
-        html += "frame " + frame + " ";
-        html += "second " + parts[0] + "." + parts[1] + "<br>";
-
-        this.#cursorText.text = (frame);
+        const beat = String(Math.floor(this.cursorTime * (this.bpm / 60) + 1));
 
         const padd = 14;
+
         const w = this.#cursorText.width + padd;
         this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
 
         this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
         this.#cursorTextBgRect.setSize(w, 20);
 
-        if (this.cfg.showBeats)
-            html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
+        let html = "";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
+        {
+            this.#cursorText.text = secondss;
+
+            html += "<h3>Second " + secondss + "</h3>";
+            html += "" + frame + "f ";
+
+            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        }
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+        {
+            this.#cursorText.text = frame;
+            html += "<h3>Frame " + frame + "</h3>";
+            html += "" + secondss + "s ";
+
+            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        }
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
+        {
+            this.#cursorText.text = beat;
+            html += "<h3>Beat " + beat + "</h3>";
+            html += "" + secondss + "s ";
+            html += "" + frame + "f ";
+
+            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        }
 
         if (this.#oldhtml != html)
         {
@@ -1089,8 +1123,17 @@ export class GlTimeline extends Events
     {
         this.cfg = cfg;
         this.duration = cfg.duration;
-        this.displayUnits = cfg.displayUnits;
         this.updateAllElements();
+    }
+
+    cycleDisplayUnits()
+    {
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
+        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
+        else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+
+        this.updateAllElements();
+
     }
 
     /**
@@ -1423,4 +1466,5 @@ export class GlTimeline extends Events
             }
         });
     }
+
 }

@@ -195,7 +195,7 @@ export class glTlRuler extends Events
             let time = 0;
             let size = -1;
 
-            if (this.#glTl.displayUnits == "Seconds")
+            if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
             {
 
                 if (pixelScale > 50)
@@ -255,7 +255,7 @@ export class glTlRuler extends Events
                     }
                 }
             }
-            if (this.#glTl.displayUnits == "Frames")
+            if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
             {
                 time = (offset + i);
                 x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
