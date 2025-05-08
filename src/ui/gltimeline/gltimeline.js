@@ -222,15 +222,7 @@ export class GlTimeline extends Events
         ele.clickable(this.#selectModeEl, () =>
         {
             this.graphSelectMode = !this.graphSelectMode;
-            if (this.graphSelectMode)
-                this.#selectModeEl.innerHTML = "selected";
-
-            else
-                this.#selectModeEl.innerHTML = "manual";
-
-            this.deactivateAllAnims(true);
-            gui.emitEvent("opSelectChange");
-            this.updateAllElements();
+            this.updateGraphSelectMode();
         });
 
         this.#tlTimeDisplay = document.createElement("div");
@@ -349,10 +341,35 @@ export class GlTimeline extends Events
         this._initUserPrefs();
     }
 
+    updateGraphSelectMode()
+    {
+        if (this.graphSelectMode) this.#selectModeEl.innerHTML = "selected";
+        else this.#selectModeEl.innerHTML = "manual";
+
+        this.deactivateAllAnims(true);
+        gui.emitEvent("opSelectChange");
+        this.updateAllElements();
+        this.saveUserSettings();
+    }
+
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
         this.buttonForScrolling = userSettingScrollButton || 2;
+        this.displayUnits = userSettings.get("gltl_units") || GlTimeline.DISPLAYUNIT_SECONDS;
+        this.graphSelectMode = !!userSettings.get("gltl_graphSelectMode");
+        this.updateGraphSelectMode();
+    }
+
+    saveUserSettings()
+    {
+        setTimeout(() =>
+        {
+            userSettings.set("gltl_layout", this.#layout);
+            userSettings.set("gltl_units", this.displayUnits);
+            userSettings.set("gltl_graphSelectMode", !!this.graphSelectMode);
+
+        }, 500);
     }
 
     /** @returns {number} */
@@ -432,15 +449,6 @@ export class GlTimeline extends Events
     {
         // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
         return Math.abs(t - this.snapTime(t)) < 0.03;
-    }
-
-    saveUserSettings()
-    {
-        setTimeout(() =>
-        {
-            userSettings.set("gltl_layout", this.#layout);
-
-        }, 500);
     }
 
     toggleGraphLayout()
@@ -1056,10 +1064,9 @@ export class GlTimeline extends Events
         const secondss = parts[0] + "." + parts[1];
         const frame = String(Math.floor(this.cursorTime * this.fps));
         const beat = String(Math.floor(this.cursorTime * (this.bpm / 60) + 1));
-
         const padd = 14;
-
         const w = this.#cursorText.width + padd;
+
         this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
 
         this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
@@ -1071,24 +1078,24 @@ export class GlTimeline extends Events
             this.#cursorText.text = secondss;
 
             html += "<h3>Second " + secondss + "</h3>";
-            html += "" + frame + "f ";
+            html += frame + "f ";
 
-            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+            if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
             html += "<h3>Frame " + frame + "</h3>";
-            html += "" + secondss + "s ";
+            html += secondss + "s ";
 
-            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+            if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
         {
             this.#cursorText.text = beat;
             html += "<h3>Beat " + beat + "</h3>";
-            html += "" + secondss + "s ";
-            html += "" + frame + "f ";
+            html += secondss + "s ";
+            html += frame + "f ";
 
             if (this.cfg.showBeats) html += "" + beat + "b<br>";
         }
@@ -1133,6 +1140,7 @@ export class GlTimeline extends Events
         else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
         this.updateAllElements();
+        this.saveUserSettings();
 
     }
 
