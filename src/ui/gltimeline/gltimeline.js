@@ -17,6 +17,7 @@ import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
+import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 
 /**
  * @typedef TlConfig
@@ -425,7 +426,7 @@ export class GlTimeline extends Events
     isSnappedTime(t)
     {
         // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
-        return t == this.snapTime(t);
+        return Math.abs(t - this.snapTime(t)) < 0.0001;
     }
 
     toggleGraphLayout()
@@ -574,7 +575,7 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4);
+            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4, 0);
             if (!event.shiftKey)
                 this.view.scrollY(event.movementY);
             this.updateAllElements();
@@ -1360,5 +1361,27 @@ export class GlTimeline extends Events
     {
 
         return this.#cgl.canvasHeight;
+    }
+
+    showSpreadSheet()
+    {
+        const data = { "colNames": ["time", "value", "easing"], "cells": [] };
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            data.cells.push(
+                [
+                    this.#selectedKeys[i].time,
+                    this.#selectedKeys[i].value,
+                    this.#selectedKeys[i].getEasing()
+                ]
+            );
+        }
+
+        new SpreadSheetTab(gui.mainTabs, null, data, {
+            "title": "keys",
+            "onchange": (content) =>
+            {
+            }
+        });
     }
 }

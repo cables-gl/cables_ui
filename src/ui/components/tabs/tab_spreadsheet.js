@@ -2,6 +2,13 @@ import { ele, Events, Logger } from "cables-shared-client";
 
 export default class SpreadSheetTab extends Events
 {
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel").default} tabs
+     * @param {import("cables").Port} port
+     * @param {any} data
+     * @param {{ title?: any; onchange?: ((content: any) => void) | ((content: any) => void); numColumns?: any; }} options
+     */
     constructor(tabs, port, data, options)
     {
         super();
@@ -22,7 +29,7 @@ export default class SpreadSheetTab extends Events
         this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
         this._tabs.addTab(this._tab, true);
 
-        port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
+        if (port)port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
 
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
@@ -38,7 +45,8 @@ export default class SpreadSheetTab extends Events
 
     _updateUiAttribs()
     {
-        this._numCols = this._port.uiAttribs.spread_numColumns || 1;
+        this._numCols = this.colNames.length;
+        if (this._port) this._numCols = this._port.uiAttribs.spread_numColumns || 1;
         this.rebuildHtml();
     }
 

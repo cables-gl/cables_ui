@@ -17,6 +17,12 @@ export class glTlRuler extends Events
     static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
     static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
 
+    static COLOR_MARK_OUTRANGE = [0, 0, 1, 1];
+    static COLOR_MARK_SIZE0 = [1, 1, 1, 0.2];
+    static COLOR_MARK_SIZE1 = [1, 1, 1, 0.3];
+    static COLOR_MARK_SIZE2 = [1, 1, 1, 0.4];
+    static COLOR_MARK_SIZES = [this.COLOR_MARK_SIZE0, this.COLOR_MARK_SIZE1, this.COLOR_MARK_SIZE2];
+
     /** @type {GlTimeline} */
     #glTl;
 
@@ -68,7 +74,6 @@ export class glTlRuler extends Events
         for (let i = 0; i < 400; i++)
         {
             const mr = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
-            mr.setColor(0.2, 0.2, 0.2, 1);
             mr.setPosition(-8888, 0);
             mr.setParent(this._glRectBg);
             mr.setSize(0, 0);
@@ -117,7 +122,6 @@ export class glTlRuler extends Events
         let pixelScale = this.#glTl.view.timeToPixel(1);
         let titleCounter = 0;
         let offset = Math.floor(this.#glTl.view.offset);
-        // let offsetPixel = this.#glTl.view.timeToPixelScreen(this.#glTl.view.offset % 1);
 
         for (let i = 0; i < this.titles.length; i++)
         {
@@ -143,8 +147,7 @@ export class glTlRuler extends Events
                     mr.setPosition(x + 1 - oneframePixel / 2, mheight);
                     mr.setColor(0.13, 0.13, 0.13, a);
 
-                    if (t < 0)
-                        this.markf[i].setSize(0, 0);
+                    if (t < 0) this.markf[i].setSize(0, 0);
                 }
             }
             else
@@ -260,36 +263,21 @@ export class glTlRuler extends Events
                 size = 2;
             }
 
-            let a = 0.4;
             let h = 10;
-            if (size == -1)
-            {
-                x = -19999;
-            }
-            else if (size == 0)
-            {
-                h = 14;
-                a = 0.3;
-            }
-            else if (size == 1)
-            {
-                h = 15;
-                a = 0.34;
-            }
-            else if (size == 2)
-            {
-                h = 25;
-                a = 0.5;
-            }
+            if (size == -1) x = -19999;
+            else if (size == 0) h = 14;
+            else if (size == 1) h = 15;
+            else if (size == 2) h = 25;
 
             if (size > -1)
                 if (time < 0 || time > this.#glTl.duration)
                 {
-                    mr.setColor(0, 0, 0, a);
+                    mr.setColorArray(glTlRuler.COLOR_MARK_OUTRANGE);
+                    mr.setSize(1, h);
                 }
                 else
                 {
-                    mr.setColor(1, 1, 1, a);
+                    mr.setColorArray(glTlRuler.COLOR_MARK_SIZES[size]);
                     mr.setSize(1, h);
                     if (size == 2) mr.setSize(1, h + this.#glTl.height);
                 }
@@ -316,7 +304,6 @@ export class glTlRuler extends Events
     {
         this.width = w;
         this._glRectBg.setSize(this.width, this.height);
-
     }
 
     isHovering()

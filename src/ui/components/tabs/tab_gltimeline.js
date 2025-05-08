@@ -132,6 +132,10 @@ export default class GlTimelineTab
         {
             CABLES.CMD.TIMELINE.TimelineCreateKeyAtCursor();
         });
+        this.#tab.addButton("<span class=\"nomargin icon icon-spreadsheet\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.showSpreadSheet();
+        });
 
         this.#tab.addButton("<span class=\"nomargin icon icon-settings\"></span>", () =>
         {
