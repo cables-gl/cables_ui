@@ -532,13 +532,27 @@ export class GlTimeline extends Events
         {
             if (event.ctrlKey || event.metaKey)
             {
-                for (let i = 0; i < this.#tlAnims.length; i++)
+                if (this.isGraphLayout())
                 {
-                    if (this.#tlAnims[i].isHovering())
+                    const anims = this.#tlAnims[0].getActiveAnims();
+                    for (let i = 0; i < anims.length; i++)
                     {
                         const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
-                        this.createKey(
-                            this.#tlAnims[i].anims[0], this.#tlAnims[i].anims[0].getValue(t), t);
+                        this.createKey(anims[i], t, anims[i].getValue(t));
+
+                    }
+                }
+                else
+                {
+
+                    for (let i = 0; i < this.#tlAnims.length; i++)
+                    {
+                        if (this.#tlAnims[i].isHovering())
+                        {
+                            const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
+                            this.createKey(
+                                this.#tlAnims[i].anims[0], t, this.#tlAnims[i].anims[0].getValue(t));
+                        }
                     }
                 }
             }

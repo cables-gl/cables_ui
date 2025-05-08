@@ -190,4 +190,9 @@ export class TlTitle extends Events
     {
 
     }
+
+    getAnim()
+    {
+        return this.#anim;
+    }
 }

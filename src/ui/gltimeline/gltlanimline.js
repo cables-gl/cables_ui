@@ -144,6 +144,18 @@ export class glTlAnimLine extends Events
         return this.#anims;
     }
 
+    getActiveAnims()
+    {
+        const arr = [];
+        for (let i = 0; i < this.#titles.length; i++)
+        {
+            const a = this.#titles[i].getAnim();
+            if (a.tlActive)arr.push(a);
+        }
+
+        return arr;
+    }
+
     isHovering()
     {
         return this.#glRectKeysBg.isHovering();
