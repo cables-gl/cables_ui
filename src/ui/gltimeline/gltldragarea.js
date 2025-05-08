@@ -20,10 +20,10 @@ export class glTlDragArea extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
-    #dragStart = 0;
-
     /**
      * @param {GlTimeline} glTl
+     * @param {GlRect} parent
+     * @param {boolean} interactive
      */
     constructor(glTl, parent, interactive)
     {

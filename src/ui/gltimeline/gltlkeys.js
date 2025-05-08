@@ -1,13 +1,13 @@
 import { Events, Logger } from "cables-shared-client";
 
 import { Anim, Port } from "cables";
-import { GlTimeline } from "./gltimeline.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { gui } from "../gui.js";
 import { GlTlView } from "./gltlview.js";
+import { GlTimeline } from "./gltimeline.js";
 
 /**
  * gltl key rendering
@@ -435,8 +435,6 @@ export class glTlKeys extends Events
 
             keyRect.listen(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
-                // this.click = false;
-
                 this.#dragStartX = e.offsetX;
                 this.#dragStartY = e.offsetY;
                 this.#glTl.predragSelectedKeys();

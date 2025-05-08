@@ -1,8 +1,7 @@
 import { Events, Logger, ele } from "cables-shared-client";
-
-import { Anim, AnimKey, CglContext, Port } from "cables";
 import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
 import { Timer } from "cables/src/core/timer.js";
+import { Anim, AnimKey, CglContext, Port } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -11,26 +10,25 @@ import { GlTlView } from "./gltlview.js";
 import { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
-import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import GlSpline from "../gldraw/glspline.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlText from "../gldraw/gltext.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";
+import GlRect from "../gldraw/glrect.js";
+import GlSpline from "../gldraw/glspline.js";
 
 /**
  * @typedef TlConfig
  * @property {Number} fps
  * @property {Number} [duration]
- * @property {Number} bpm
- * @property {Boolean} fadeInFrames
- * @property {Boolean} showBeats
- * @property {String} displayUnits
- * @property {Boolean} restrictToFrames
- * @property {Number} bpmHlXth
+ * @property {Number} [bpm]
+ * @property {Boolean} [fadeInFrames]
+ * @property {Boolean} [showBeats]
+ * @property {String} [displayUnits]
+ * @property {Boolean} [restrictToFrames]
+ * @property {Number} [bpmHlXth]
  */
-
 /**
  * gl timeline
  *
@@ -38,6 +36,7 @@ import undo from "../utils/undo.js";
  * @class GlTimeline
  * @extends {Events}
  */
+
 export class GlTimeline extends Events
 {
     #selectModeEl;
@@ -68,11 +67,7 @@ export class GlTimeline extends Events
     cursorVertLineRect;
 
     duration = 120;
-
     displayUnits = "Seconds";
-
-    /** @type {GlRect} */
-    // #timeBg;
 
     /** @type {GlRect} */
     #rectSelect;
@@ -101,8 +96,8 @@ export class GlTimeline extends Events
     buttonForScrolling = 2;
     toParamKeys = null;
 
-    loopAreaStart = 1;
-    loopAreaEnd = 3;
+    loopAreaStart = 0;
+    loopAreaEnd = 0;
 
     /** @type {TlConfig} */
     cfg = {
@@ -160,7 +155,7 @@ export class GlTimeline extends Events
 
         this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
-        this.cursorVertLineRect.setPosition(0, 0, -1.0);
+        this.cursorVertLineRect.setPosition(0, 0, -1);
         this.setColorRectSpecial(this.cursorVertLineRect);
 
         this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
@@ -225,6 +220,7 @@ export class GlTimeline extends Events
             this.graphSelectMode = !this.graphSelectMode;
             if (this.graphSelectMode)
                 this.#selectModeEl.innerHTML = "selected";
+
             else
                 this.#selectModeEl.innerHTML = "manual";
 
@@ -257,11 +253,12 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys() == 1)
             {
             }
-            else
-            if (this.getNumSelectedKeys() > 1)
+
+            else if (this.getNumSelectedKeys() > 1)
             {
                 this.zoomToFitSelection();
             }
+
             else
             {
                 this.selectAllKeys();
@@ -298,7 +295,6 @@ export class GlTimeline extends Events
         });
 
         /// ///////////////////
-
         gui.on("opSelectChange", (op) =>
         {
             this.selectedOp = op;
@@ -322,7 +318,7 @@ export class GlTimeline extends Events
 
             if (selops.length == 0) return;
             let isAnimated = false;
-            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
+            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
@@ -455,6 +451,7 @@ export class GlTimeline extends Events
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
             this.#selectModeEl.classList.remove("hidden");
         }
+
         else
         {
             this.#selectModeEl.classList.add("hidden");
@@ -467,7 +464,6 @@ export class GlTimeline extends Events
 
     setanim()
     {
-
     }
 
     getColorSpecial()
@@ -499,11 +495,11 @@ export class GlTimeline extends Events
         {
             this.ruler.setTimeFromPixel(e.offsetX);
         }
-        else
-        if (this.#focusScroll)
-        {
 
+        else if (this.#focusScroll)
+        {
         }
+
         else
         {
             if (!this.selectRect && e.buttons == 1)
@@ -551,6 +547,7 @@ export class GlTimeline extends Events
                 if (this.hoverKeyRect && !this.selectRect)
                 {
                 }
+
                 else
                 {
                     if (y > this.getFirstLinePosy())
@@ -561,7 +558,8 @@ export class GlTimeline extends Events
                             "x": Math.min(this.#lastXnoButton, x),
                             "y": Math.min(this.#lastYnoButton, y),
                             "x2": Math.max(this.#lastXnoButton, x),
-                            "y2": Math.max(this.#lastYnoButton, y) };
+                            "y2": Math.max(this.#lastYnoButton, y)
+                        };
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
@@ -581,6 +579,7 @@ export class GlTimeline extends Events
                 this.view.scrollY(event.movementY);
             this.updateAllElements();
         }
+
         else
         {
             this.#lastXnoButton = x;
@@ -686,7 +685,7 @@ export class GlTimeline extends Events
             o.animName = this.#selectedKeyAnims[i].name;
             o.animId = this.#selectedKeyAnims[i].id;
 
-            if (newId)o.id = CABLES.shortId();
+            if (newId) o.id = CABLES.shortId();
             keys.push(o);
         }
 
@@ -777,7 +776,8 @@ export class GlTimeline extends Events
             },
             redo()
             {
-            } });
+            }
+        });
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
@@ -823,16 +823,16 @@ export class GlTimeline extends Events
         {
             this.view.scroll(this.view.visibleTime * event.deltaY * 0.0005);
         }
-        else
-        if (event.shiftKey)
+
+        else if (event.shiftKey)
         {
             this.view.scale(event.deltaX * 0.003);
         }
-        else
-        if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
+
+        else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY < 0)delta = 1.1;
+            if (event.deltaY < 0) delta = 1.1;
             else delta = 0.9;
 
             this.view.setZoomOffset(delta);
@@ -863,7 +863,7 @@ export class GlTimeline extends Events
         const ports = [];
 
         let selops = gui.patchView.getSelectedOps();
-        if (this.#layout == GlTimeline.LAYOUT_LINES)ops = gui.corePatch().ops;
+        if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
 
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
@@ -972,15 +972,12 @@ export class GlTimeline extends Events
 
         this.#perfFps.startFrame();
 
-        if (
-
-            this.loopAreaEnd != 0 &&
-                gui.corePatch().timer.isPlaying() &&
-                (
-                    gui.corePatch().timer.getTime() > this.loopAreaEnd ||
-                    gui.corePatch().timer.getTime() < this.loopAreaStart
-                )
-        )
+        if (this.loopAreaEnd != 0 &&
+            gui.corePatch().timer.isPlaying() &&
+            (
+                gui.corePatch().timer.getTime() > this.loopAreaEnd ||
+                gui.corePatch().timer.getTime() < this.loopAreaStart
+            ))
         {
             gui.corePatch().timer.setTime(this.loopAreaStart);
         }
@@ -990,7 +987,7 @@ export class GlTimeline extends Events
 
             if (this.disposed) return;
             this.view.updateAnims();
-            if (this.needsUpdateAll)console.log("needs update", this.needsUpdateAll);
+            if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
             if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
@@ -1024,7 +1021,7 @@ export class GlTimeline extends Events
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
-        while (parts[1].length < 3)parts[1] += "0";
+        while (parts[1].length < 3) parts[1] += "0";
 
         const frame = String(Math.floor(this.cursorTime * this.fps));
         let html = "";
@@ -1101,13 +1098,13 @@ export class GlTimeline extends Events
 
                         if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
                         {
-                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (!theKey) theKey = anim.keys[newIndex];
                             if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
                         }
 
                         if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
                         {
-                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (!theKey) theKey = anim.keys[newIndex];
                             if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
                         }
                     }
@@ -1145,6 +1142,7 @@ export class GlTimeline extends Events
             this.#keyOverEl.classList.add("hidden");
             ele.byId("tlselectinfo").innerHTML = "";
         }
+
         else
         {
             this.#keyOverEl.classList.remove("hidden");
@@ -1215,7 +1213,7 @@ export class GlTimeline extends Events
             for (let j = 0; j < this.#tlAnims.length; j++)
             {
                 let an = null;
-                if (k.animId)an = this.#tlAnims[j].getAnimById(k.animId);
+                if (k.animId) an = this.#tlAnims[j].getAnimById(k.animId);
 
                 if (an)
                 {
@@ -1260,6 +1258,7 @@ export class GlTimeline extends Events
                     {
                         notifyWarn("could not find all anims for pasted keys");
                     }
+
                     else
                     {
                         notify(json.keys.length + " keys pasted");
@@ -1305,11 +1304,11 @@ export class GlTimeline extends Events
                     newKeys[i].delete();
                 }
                 // key.set(oldValues);
-
             },
             redo()
             {
-            } });
+            }
+        });
     }
 
     getDebug()
