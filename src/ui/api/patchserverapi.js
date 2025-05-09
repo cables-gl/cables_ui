@@ -156,7 +156,7 @@ export default class PatchSaveServer extends Events
                         if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
                     }
 
-                    if (!gui.restriction.visible && (newCore || newUi))
+                    if ((!gui.restriction.visible || gui.restriction.showing("cablesbuild")) && (newCore || newUi))
                     {
                         gui.restriction.setMessage("cablesupdate", "cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                         gui.jobs().finish("checkupdated");

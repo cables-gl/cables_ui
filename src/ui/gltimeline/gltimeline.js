@@ -1,8 +1,7 @@
 import { Events, Logger, ele } from "cables-shared-client";
-
-import { Anim, AnimKey, CglContext, Port } from "cables";
 import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
 import { Timer } from "cables/src/core/timer.js";
+import { Anim, AnimKey, CglContext, Port } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -11,26 +10,26 @@ import { GlTlView } from "./gltlview.js";
 import { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
-import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import GlSpline from "../gldraw/glspline.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlText from "../gldraw/gltext.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";
+import GlRect from "../gldraw/glrect.js";
+import GlSpline from "../gldraw/glspline.js";
+import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 
 /**
  * @typedef TlConfig
  * @property {Number} fps
  * @property {Number} [duration]
- * @property {Number} bpm
- * @property {Boolean} fadeInFrames
- * @property {Boolean} showBeats
- * @property {String} displayUnits
- * @property {Boolean} restrictToFrames
- * @property {Number} bpmHlXth
+ * @property {Number} [bpm]
+ * @property {Boolean} [fadeInFrames]
+ * @property {Boolean} [showBeats]
+ * @property {String} [displayUnits]
+ * @property {Boolean} [restrictToFrames]
+ * @property {Number} [bpmHlXth]
  */
-
 /**
  * gl timeline
  *
@@ -38,8 +37,13 @@ import undo from "../utils/undo.js";
  * @class GlTimeline
  * @extends {Events}
  */
+
 export class GlTimeline extends Events
 {
+    static DISPLAYUNIT_SECONDS = 0;
+    static DISPLAYUNIT_FRAMES = 1;
+    static DISPLAYUNIT_BEATS = 2;
+
     #selectModeEl;
     graphSelectMode = true;
 
@@ -68,11 +72,7 @@ export class GlTimeline extends Events
     cursorVertLineRect;
 
     duration = 120;
-
-    displayUnits = "Seconds";
-
-    /** @type {GlRect} */
-    // #timeBg;
+    displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
     /** @type {GlRect} */
     #rectSelect;
@@ -101,8 +101,8 @@ export class GlTimeline extends Events
     buttonForScrolling = 2;
     toParamKeys = null;
 
-    loopAreaStart = 1;
-    loopAreaEnd = 3;
+    loopAreaStart = 0;
+    loopAreaEnd = 0;
 
     /** @type {TlConfig} */
     cfg = {
@@ -110,7 +110,6 @@ export class GlTimeline extends Events
         "bpm": 180,
         "fadeInFrames": true,
         "showBeats": true,
-        "displayUnits": "Seconds",
         "restrictToFrames": true
     };
 
@@ -160,7 +159,7 @@ export class GlTimeline extends Events
 
         this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
-        this.cursorVertLineRect.setPosition(0, 0, -1.0);
+        this.cursorVertLineRect.setPosition(0, 0, -1);
         this.setColorRectSpecial(this.cursorVertLineRect);
 
         this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
@@ -223,18 +222,13 @@ export class GlTimeline extends Events
         ele.clickable(this.#selectModeEl, () =>
         {
             this.graphSelectMode = !this.graphSelectMode;
-            if (this.graphSelectMode)
-                this.#selectModeEl.innerHTML = "selected";
-            else
-                this.#selectModeEl.innerHTML = "manual";
-
-            this.deactivateAllAnims(true);
-            gui.emitEvent("opSelectChange");
-            this.updateAllElements();
+            this.updateGraphSelectMode();
         });
 
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
+        this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
+
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
@@ -257,11 +251,12 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys() == 1)
             {
             }
-            else
-            if (this.getNumSelectedKeys() > 1)
+
+            else if (this.getNumSelectedKeys() > 1)
             {
                 this.zoomToFitSelection();
             }
+
             else
             {
                 this.selectAllKeys();
@@ -298,7 +293,6 @@ export class GlTimeline extends Events
         });
 
         /// ///////////////////
-
         gui.on("opSelectChange", (op) =>
         {
             this.selectedOp = op;
@@ -322,7 +316,7 @@ export class GlTimeline extends Events
 
             if (selops.length == 0) return;
             let isAnimated = false;
-            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated())isAnimated = true;
+            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
@@ -347,10 +341,35 @@ export class GlTimeline extends Events
         this._initUserPrefs();
     }
 
+    updateGraphSelectMode()
+    {
+        if (this.graphSelectMode) this.#selectModeEl.innerHTML = "selected";
+        else this.#selectModeEl.innerHTML = "manual";
+
+        this.deactivateAllAnims(true);
+        gui.emitEvent("opSelectChange");
+        this.updateAllElements();
+        this.saveUserSettings();
+    }
+
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
         this.buttonForScrolling = userSettingScrollButton || 2;
+        this.displayUnits = userSettings.get("gltl_units") || GlTimeline.DISPLAYUNIT_SECONDS;
+        this.graphSelectMode = !!userSettings.get("gltl_graphSelectMode");
+        this.updateGraphSelectMode();
+    }
+
+    saveUserSettings()
+    {
+        setTimeout(() =>
+        {
+            userSettings.set("gltl_layout", this.#layout);
+            userSettings.set("gltl_units", this.displayUnits);
+            userSettings.set("gltl_graphSelectMode", !!this.graphSelectMode);
+
+        }, 500);
     }
 
     /** @returns {number} */
@@ -429,7 +448,7 @@ export class GlTimeline extends Events
     isSnappedTime(t)
     {
         // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
-        return t == this.snapTime(t);
+        return Math.abs(t - this.snapTime(t)) < 0.03;
     }
 
     toggleGraphLayout()
@@ -437,7 +456,7 @@ export class GlTimeline extends Events
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
         else this.#layout = GlTimeline.LAYOUT_GRAPHS;
 
-        userSettings.set("gltl_layout", this.#layout);
+        this.saveUserSettings();
 
         this.updateIcons();
         this.init();
@@ -462,12 +481,10 @@ export class GlTimeline extends Events
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
-
     }
 
     setanim()
     {
-
     }
 
     getColorSpecial()
@@ -499,11 +516,11 @@ export class GlTimeline extends Events
         {
             this.ruler.setTimeFromPixel(e.offsetX);
         }
-        else
-        if (this.#focusScroll)
-        {
 
+        else if (this.#focusScroll)
+        {
         }
+
         else
         {
             if (!this.selectRect && e.buttons == 1)
@@ -535,12 +552,27 @@ export class GlTimeline extends Events
         {
             if (event.ctrlKey || event.metaKey)
             {
-                for (let i = 0; i < this.#tlAnims.length; i++)
+                if (this.isGraphLayout())
                 {
-                    if (this.#tlAnims[i].isHovering())
+                    const anims = this.#tlAnims[0].getActiveAnims();
+                    for (let i = 0; i < anims.length; i++)
                     {
                         const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
-                        this.#tlAnims[i].anims[0].setValue(t, this.#tlAnims[i].anims[0].getValue(t));
+                        this.createKey(anims[i], t, anims[i].getValue(t));
+
+                    }
+                }
+                else
+                {
+
+                    for (let i = 0; i < this.#tlAnims.length; i++)
+                    {
+                        if (this.#tlAnims[i].isHovering())
+                        {
+                            const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
+                            this.createKey(
+                                this.#tlAnims[i].anims[0], t, this.#tlAnims[i].anims[0].getValue(t));
+                        }
                     }
                 }
             }
@@ -551,6 +583,7 @@ export class GlTimeline extends Events
                 if (this.hoverKeyRect && !this.selectRect)
                 {
                 }
+
                 else
                 {
                     if (y > this.getFirstLinePosy())
@@ -561,7 +594,8 @@ export class GlTimeline extends Events
                             "x": Math.min(this.#lastXnoButton, x),
                             "y": Math.min(this.#lastYnoButton, y),
                             "x2": Math.max(this.#lastXnoButton, x),
-                            "y2": Math.max(this.#lastYnoButton, y) };
+                            "y2": Math.max(this.#lastYnoButton, y)
+                        };
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
@@ -576,11 +610,12 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4);
+            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4, 0);
             if (!event.shiftKey)
                 this.view.scrollY(event.movementY);
             this.updateAllElements();
         }
+
         else
         {
             this.#lastXnoButton = x;
@@ -686,7 +721,7 @@ export class GlTimeline extends Events
             o.animName = this.#selectedKeyAnims[i].name;
             o.animId = this.#selectedKeyAnims[i].id;
 
-            if (newId)o.id = CABLES.shortId();
+            if (newId) o.id = CABLES.shortId();
             keys.push(o);
         }
 
@@ -777,7 +812,8 @@ export class GlTimeline extends Events
             },
             redo()
             {
-            } });
+            }
+        });
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
@@ -823,22 +859,25 @@ export class GlTimeline extends Events
         {
             this.view.scroll(this.view.visibleTime * event.deltaY * 0.0005);
         }
-        else
-        if (event.shiftKey)
+        else if (event.shiftKey && this.isGraphLayout)
         {
             this.view.scale(event.deltaX * 0.003);
         }
-        else
-        if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
+        else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY < 0)delta = 1.1;
+            if (event.deltaY < 0) delta = 1.1;
             else delta = 0.9;
 
             this.view.setZoomOffset(delta);
         }
 
         this.needsUpdateAll = "wheel";
+    }
+
+    isGraphLayout()
+    {
+        return this.layout == GlTimeline.LAYOUT_GRAPHS;
     }
 
     get width()
@@ -863,7 +902,7 @@ export class GlTimeline extends Events
         const ports = [];
 
         let selops = gui.patchView.getSelectedOps();
-        if (this.#layout == GlTimeline.LAYOUT_LINES)ops = gui.corePatch().ops;
+        if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
 
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
@@ -972,15 +1011,12 @@ export class GlTimeline extends Events
 
         this.#perfFps.startFrame();
 
-        if (
-
-            this.loopAreaEnd != 0 &&
-                gui.corePatch().timer.isPlaying() &&
-                (
-                    gui.corePatch().timer.getTime() > this.loopAreaEnd ||
-                    gui.corePatch().timer.getTime() < this.loopAreaStart
-                )
-        )
+        if (this.loopAreaEnd != 0 &&
+            gui.corePatch().timer.isPlaying() &&
+            (
+                gui.corePatch().timer.getTime() > this.loopAreaEnd ||
+                gui.corePatch().timer.getTime() < this.loopAreaStart
+            ))
         {
             gui.corePatch().timer.setTime(this.loopAreaStart);
         }
@@ -990,7 +1026,7 @@ export class GlTimeline extends Events
 
             if (this.disposed) return;
             this.view.updateAnims();
-            if (this.needsUpdateAll)console.log("needs update", this.needsUpdateAll);
+            if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
             if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
@@ -1024,24 +1060,45 @@ export class GlTimeline extends Events
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
         parts[1] = parts[1] || "000";
-        while (parts[1].length < 3)parts[1] += "0";
-
+        while (parts[1].length < 3) parts[1] += "0";
+        const secondss = parts[0] + "." + parts[1];
         const frame = String(Math.floor(this.cursorTime * this.fps));
-        let html = "";
-        html += "frame " + frame + " ";
-        html += "second " + parts[0] + "." + parts[1] + "<br>";
-
-        this.#cursorText.text = (frame);
-
+        const beat = String(Math.floor(this.cursorTime * (this.bpm / 60) + 1));
         const padd = 14;
         const w = this.#cursorText.width + padd;
+
         this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
 
         this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
         this.#cursorTextBgRect.setSize(w, 20);
 
-        if (this.cfg.showBeats)
-            html += "beat " + Math.floor(this.cursorTime * (this.bpm / 60)) + "<br>";
+        let html = "";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
+        {
+            this.#cursorText.text = secondss;
+
+            html += "<h3>Second " + secondss + "</h3>";
+            html += frame + "f ";
+
+            if (this.cfg.showBeats) html += beat + "b<br>";
+        }
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+        {
+            this.#cursorText.text = frame;
+            html += "<h3>Frame " + frame + "</h3>";
+            html += secondss + "s ";
+
+            if (this.cfg.showBeats) html += beat + "b<br>";
+        }
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
+        {
+            this.#cursorText.text = beat;
+            html += "<h3>Beat " + beat + "</h3>";
+            html += secondss + "s ";
+            html += frame + "f ";
+
+            if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        }
 
         if (this.#oldhtml != html)
         {
@@ -1073,8 +1130,18 @@ export class GlTimeline extends Events
     {
         this.cfg = cfg;
         this.duration = cfg.duration;
-        this.displayUnits = cfg.displayUnits;
         this.updateAllElements();
+    }
+
+    cycleDisplayUnits()
+    {
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
+        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
+        else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+
+        this.updateAllElements();
+        this.saveUserSettings();
+
     }
 
     /**
@@ -1101,13 +1168,13 @@ export class GlTimeline extends Events
 
                         if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
                         {
-                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (!theKey) theKey = anim.keys[newIndex];
                             if (anim.keys[newIndex].time < theKey.time) theKey = anim.keys[newIndex];
                         }
 
                         if (dir == -1 && anim.keys[newIndex].time < this.view.cursorTime)
                         {
-                            if (!theKey)theKey = anim.keys[newIndex];
+                            if (!theKey) theKey = anim.keys[newIndex];
                             if (anim.keys[newIndex].time > theKey.time) theKey = anim.keys[newIndex];
                         }
                     }
@@ -1145,6 +1212,7 @@ export class GlTimeline extends Events
             this.#keyOverEl.classList.add("hidden");
             ele.byId("tlselectinfo").innerHTML = "";
         }
+
         else
         {
             this.#keyOverEl.classList.remove("hidden");
@@ -1215,7 +1283,7 @@ export class GlTimeline extends Events
             for (let j = 0; j < this.#tlAnims.length; j++)
             {
                 let an = null;
-                if (k.animId)an = this.#tlAnims[j].getAnimById(k.animId);
+                if (k.animId) an = this.#tlAnims[j].getAnimById(k.animId);
 
                 if (an)
                 {
@@ -1260,6 +1328,7 @@ export class GlTimeline extends Events
                     {
                         notifyWarn("could not find all anims for pasted keys");
                     }
+
                     else
                     {
                         notify(json.keys.length + " keys pasted");
@@ -1305,11 +1374,11 @@ export class GlTimeline extends Events
                     newKeys[i].delete();
                 }
                 // key.set(oldValues);
-
             },
             redo()
             {
-            } });
+            }
+        });
     }
 
     getDebug()
@@ -1325,6 +1394,25 @@ export class GlTimeline extends Events
             o.tlAnims.push(this.#tlAnims[anii].getDebug());
 
         return o;
+    }
+
+    /**
+     * @param {Anim} anim
+     * @param {number} time
+     * @param {number} value
+     */
+    createKey(anim, time, value)
+    {
+        const prevKey = anim.getKey(time);
+
+        const found = anim.setValue(time, value);
+        console.log("createkey   ", found, prevKey);
+        if (found)
+        {
+
+            found.setEasing(prevKey.getEasing());
+        }
+
     }
 
     createKeyAtCursor()
@@ -1359,4 +1447,32 @@ export class GlTimeline extends Events
 
         return this.#cgl.canvasHeight;
     }
+
+    showSpreadSheet()
+    {
+        const data = { "colNames": ["time", "value", "easing"], "cells": [] };
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const t = this.#selectedKeys[i].time;
+            data.cells.push(
+                [
+                    this.#selectedKeys[i].time,
+                    this.#selectedKeys[i].value,
+
+                    // Math.abs(t - this.snapTime(t))
+                    // this.snapTime(this.#selectedKeys[i].time)
+                    this.#selectedKeys[i].getEasing()
+                ]
+            );
+        }
+
+        new SpreadSheetTab(gui.mainTabs, null, data, {
+            "title": "keyframes",
+            "onchange": (content) =>
+            {
+                console.log("${}", content);
+            }
+        });
+    }
+
 }

@@ -10,9 +10,8 @@ export default class GuiRestrictions
 {
     constructor()
     {
-        this._restrictionMultiplayer = 0;
-        this._restrictionBlueprint = 0;
         this._messages = {};
+        this._currentlyShowing = null;
 
         this._restrictionDialog = ele.byId("restriction_container");
         this._messageBox = ele.byId("restriction_message");
@@ -26,6 +25,7 @@ export default class GuiRestrictions
 
     hide()
     {
+        this._currentlyShowing = null;
         this._restrictionDialog.classList.add("hidden");
     }
 
@@ -54,8 +54,21 @@ export default class GuiRestrictions
 
         this._messageBox.innerHTML = msg;
 
-        if (msg) this._restrictionDialog.classList.remove("hidden");
-        else this._restrictionDialog.classList.add("hidden");
+        if (msg)
+        {
+            this._currentlyShowing = id;
+            this._restrictionDialog.classList.remove("hidden");
+        }
+        else
+        {
+            this._currentlyShowing = null;
+            this._restrictionDialog.classList.add("hidden");
+        }
 
+    }
+
+    showing(id)
+    {
+        return this.visible && this._currentlyShowing === id;
     }
 }

@@ -2,7 +2,7 @@ import { Events } from "cables-shared-client";
 
 import { Anim, Op, Port } from "cables";
 import { glMatrix } from "gl-matrix";
-import { GlTimeline } from "./gltimeline.js";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
@@ -11,6 +11,7 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import opNames from "../opnameutils.js";
+import { GlTimeline } from "./gltimeline.js";
 
 /**
  * gltimeline anim
@@ -59,7 +60,8 @@ export class glTlAnimLine extends Events
     /** @type {TlTitle[]} */
     #titles = [];
 
-    #animChangeListeners = [];
+    /** @type {EventListener[]} */
+    #listeners = [];
 
     #disposed = false;
 
@@ -99,25 +101,16 @@ export class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
 
-            const lid = anim.on(Anim.EVENT_CHANGE, () =>
-            {
-                if (!keys.isDragging()) keys.init();
-            });
-
-            this.#animChangeListeners.push({ "id": lid, "anim": anim });
+            this.#listeners.push(
+                anim.on(Anim.EVENT_CHANGE, () =>
+                {
+                    if (!keys.isDragging()) keys.init();
+                }));
         }
 
         for (let i = 0; i < ports.length; i++)
         {
-            let title = "";
-
-            title += "<span class=\"" + opNames.getNamespaceClassName(ports[i].op.objName) + "\">";
-            title += ports[i].op.name;
-            title += "</span>";
-
-            title += " <span class=\"portname\">" + ports[i].name + "</span>";
-            if (ports[i].op.uiAttribs.comment) title += "<span class=\"comment\"> // " + ports[i].op.uiAttribs.comment + "</span>";
-            this.setTitle(i, title, ports[i].anim);
+            this.setTitle(i, ports[i], ports[i].anim);
         }
 
         if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
@@ -141,6 +134,18 @@ export class glTlAnimLine extends Events
     get anims()
     {
         return this.#anims;
+    }
+
+    getActiveAnims()
+    {
+        const arr = [];
+        for (let i = 0; i < this.#titles.length; i++)
+        {
+            const a = this.#titles[i].getAnim();
+            if (a.tlActive)arr.push(a);
+        }
+
+        return arr;
     }
 
     isHovering()
@@ -188,19 +193,19 @@ export class glTlAnimLine extends Events
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
-            this.#titles[i].op = this.#ops[i];
+            // this.#titles[i].#op = this.#ops[i];
         }
     }
 
     /**
      * @param {number} idx
-     * @param {string} t
+     * @param {Port} p
      * @param {Anim} [anim]
      */
-    setTitle(idx, t, anim)
+    setTitle(idx, p, anim)
     {
         while (this.#titles.length <= idx) this.addTitle("title...", anim);
-        this.#titles[idx].setTitle(t,);
+        this.#titles[idx].setPort(p);
         this.setTitlePos();
     }
 
@@ -246,7 +251,6 @@ export class glTlAnimLine extends Events
     setPosition(x, y)
     {
         if (this.checkDisposed()) return;
-        // this.#glRectTitle.setPosition(x, y, -0.5);
         this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
     }
@@ -288,10 +292,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
 
-        for (let i = 0; i < this.#animChangeListeners.length; i++)
-            this.#animChangeListeners[i].anim.removeEventListener(this.#animChangeListeners[i].id);
+        for (let i = 0; i < this.#listeners.length; i++)
+            this.#listeners[i].remove();
 
-        this.#animChangeListeners = [];
+        this.#listeners = [];
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].dispose();
         this.#keys = [];
@@ -380,7 +384,6 @@ export class glTlAnimLine extends Events
             }
 
             this.#titles[j].setBorderColor(found, this.#ports[j].op.uiAttribs.color || "transparent");
-
             this.#titles[j].updateIcons();
         }
     }
@@ -395,7 +398,8 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#anims[j].tlActive)
-                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
+                // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }
         else
@@ -403,8 +407,8 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#ports[j].op.uiAttribs.selected)
-
-                    this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
+                    // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }
     }

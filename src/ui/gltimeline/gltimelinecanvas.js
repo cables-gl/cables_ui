@@ -1,7 +1,9 @@
 import { Patch } from "cables";
+import { CGL } from "cables/src/core/cgl/index.js";
 import GlCanvas from "../gldraw/glcanvas.js";
-import { GlTimeline } from "./gltimeline.js";
 import { gui } from "../gui.js";
+import { GlTimeline } from "./gltimeline.js";
+import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 
 /**
  * canvas for the timeline {@link GlTimeline}
@@ -16,6 +18,7 @@ export class glTimelineCanvas extends GlCanvas
     /**
      * @param {Patch} _patch
      * @param {HTMLElement} parentEle
+     * @param {GlTimelineTab} tab
      */
     constructor(_patch, parentEle, tab)
     {
@@ -26,7 +29,7 @@ export class glTimelineCanvas extends GlCanvas
         this.activityHigh();
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
 
-        this.glTimeline = new GlTimeline(this.cgl, parentEle);
+        this.glTimeline = new GlTimeline(this.cgl);
     }
 
     render()

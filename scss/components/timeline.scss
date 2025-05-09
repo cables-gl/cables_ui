@@ -77,6 +77,14 @@
         left: 10px;
         z-index: 99;
         background-color: var(--color-02);
+        color: var(--color-08);
+        cursor: pointer;
+        h3
+        {
+            padding:0px;
+            margin:0px;
+            color:white;
+            }
     }
 
     .keyOverlay {

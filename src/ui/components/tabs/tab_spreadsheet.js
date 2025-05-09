@@ -1,7 +1,23 @@
 import { ele, Events, Logger } from "cables-shared-client";
 
+/**
+ * @typedef SpreadSheetOptions
+ * @property {string} [title]
+ * @property {number} [numColumns]
+ * @property {function} [onchange]
+ * @property {string[]} [colNames]
+ * @property {[string[]]} [cells]
+ */
+
 export default class SpreadSheetTab extends Events
 {
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel").default} tabs
+     * @param {import("cables").Port} port
+     * @param {any} data
+     * @param {SpreadSheetOptions} options
+     */
     constructor(tabs, port, data, options)
     {
         super();
@@ -10,6 +26,7 @@ export default class SpreadSheetTab extends Events
 
         options = options || {};
 
+        if (options.colNames && !options.numColumns)options.numColumns = options.colNames.length;
         this._numCols = options.numColumns || 3;
         this._rows = 25;
 
@@ -19,10 +36,10 @@ export default class SpreadSheetTab extends Events
         this._options = options;
         this.colNames = [];
 
-        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": false });
         this._tabs.addTab(this._tab, true);
 
-        port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
+        if (port)port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
 
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
@@ -38,7 +55,8 @@ export default class SpreadSheetTab extends Events
 
     _updateUiAttribs()
     {
-        this._numCols = this._port.uiAttribs.spread_numColumns || 1;
+        this._numCols = this.colNames.length;
+        if (this._port) this._numCols = this._port.uiAttribs.spread_numColumns || 1;
         this.rebuildHtml();
     }
 
@@ -109,6 +127,7 @@ export default class SpreadSheetTab extends Events
                 tr.appendChild(td);
 
                 const input = ele.create("input");
+                // input.setAttribute("readonly");
                 input.dataset.x = x;
                 input.dataset.y = y;
                 this._inputs[x + y * this._numCols] = input;
