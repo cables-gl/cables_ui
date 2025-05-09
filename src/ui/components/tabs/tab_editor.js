@@ -103,6 +103,16 @@ export default class EditorTab extends Events
                         {
                             this.save();
                         });
+                        VimApi.defineEx("quit", "q", (cm, input) =>
+                        {
+                            this._tab.remove();
+                        });
+                        VimApi.defineEx("wq", null, (cm, input) =>
+                        {
+                            this.save();
+                            // this._tab.remove();
+                            gui.mainTabs.closeTab(this._tab.id);
+                        });
                     });
                 }
 

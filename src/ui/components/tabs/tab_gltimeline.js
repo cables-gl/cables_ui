@@ -137,6 +137,10 @@ export default class GlTimelineTab
         {
             this.tlCanvas.glTimeline.showSpreadSheet();
         });
+        this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-keyframe-auto\" data-info=\"tlautokeyframe\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.toggleAutoKeyframe();
+        }, ["button-active"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-settings\"></span>", () =>
         {

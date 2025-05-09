@@ -46,6 +46,7 @@ export class GlTimeline extends Events
 
     #selectModeEl;
     graphSelectMode = true;
+    keyframeAutoCreate = true;
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -346,6 +347,12 @@ export class GlTimeline extends Events
         this._initUserPrefs();
     }
 
+    toggleAutoKeyframe()
+    {
+        this.keyframeAutoCreate = !this.keyframeAutoCreate;
+        this.updateIcons();
+    }
+
     updateGraphSelectMode()
     {
         if (this.graphSelectMode) this.#selectModeEl.innerHTML = "selected";
@@ -471,6 +478,10 @@ export class GlTimeline extends Events
 
     updateIcons()
     {
+
+        if (this.keyframeAutoCreate)ele.byId("autokeyframe").parentElement.classList.add("button-active");
+        else ele.byId("autokeyframe").parentElement.classList.remove("button-active");
+
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
         ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
