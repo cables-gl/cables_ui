@@ -157,6 +157,11 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
+        this.bgRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
+        this.bgRect.setPosition(0, 0, 1);
+        this.bgRect.setColorArray(gui.theme.colors_patch.background);
+
         this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
         this.cursorVertLineRect.setPosition(0, 0, -1);
@@ -419,6 +424,8 @@ export class GlTimeline extends Events
         this.#oldSize = this.#cgl.canvasWidth;
         this.scroll.setWidth(this.#cgl.canvasWidth);
         this.ruler.setWidth(this.#cgl.canvasWidth);
+
+        this.bgRect.setSize(this.#cgl.canvasWidth, this.#cgl.canvasHeight);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 

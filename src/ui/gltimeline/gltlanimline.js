@@ -86,7 +86,7 @@ export class glTlAnimLine extends Events
         this.width = glTl.width;
         this.#glRectKeysBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true });
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
-        this.#glRectKeysBg.setColor(0.3, 0.3, 0.3);
+        this.#glRectKeysBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
         this.#disposeRects.push(this.#glRectKeysBg);
 
