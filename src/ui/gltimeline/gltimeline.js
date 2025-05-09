@@ -315,8 +315,8 @@ export class GlTimeline extends Events
             let selops = gui.patchView.getSelectedOps();
 
             if (selops.length == 0) return;
-            let isAnimated = false;
-            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
+            // let isAnimated = false;
+            // for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
@@ -1236,6 +1236,7 @@ export class GlTimeline extends Events
     {
         const obj = { "keys": this.serializeSelectedKeys(true) };
 
+        notify("copied " + obj.keys.length + " keys", null, { "force": true });
         if (event)
         {
             const objStr = JSON.stringify(obj);
@@ -1354,8 +1355,8 @@ export class GlTimeline extends Events
     /** @returns {boolean} */
     isFocused()
     {
-        // todo
-        return true;
+        console.log(this.#cgl.hasFocus());
+        return this.#cgl.hasFocus();
     }
 
     duplicateSelectedKeys()

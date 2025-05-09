@@ -17,7 +17,7 @@ export class glTlRuler extends Events
     static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
     static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
 
-    static COLOR_MARK_OUTRANGE = [1, 1, 1, 1];
+    static COLOR_MARK_OUTRANGE = [0, 0, 0, 1];
     static COLOR_MARK_SIZE0 = [1, 1, 1, 0.2];
     static COLOR_MARK_SIZE1 = [1, 1, 1, 0.3];
     static COLOR_MARK_SIZE2 = [1, 1, 1, 0.4];
