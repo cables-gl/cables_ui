@@ -466,8 +466,6 @@ export default class PatchView extends Events
 
             if (!op) return;
 
-            // this.addBlueprintInfo(op, this.getSubPatchOuterOp(uiAttribs.subPatch));
-
             if (this._showingNavHelperEmpty)
             {
                 document.getElementById("patchnavhelperEmpty").style.display = "none";
@@ -1224,7 +1222,6 @@ export default class PatchView extends Events
                 if (ops[i].patchId.get() == subId)
                 {
                     let type = "subpatch";
-                    // if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
                     if (ops[i].isSubPatchOp()) type = "blueprint_subpatch2";
 
                     const patchInfo = {
@@ -1300,7 +1297,7 @@ export default class PatchView extends Events
 
             if (ops[i].uiAttribs)
             {
-                if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
+                if (ops[i].uiAttribs.subPatch)
                 {
                     // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
@@ -1391,7 +1388,6 @@ export default class PatchView extends Events
      */
     updateSubPatchBreadCrumb(currentSubPatch)
     {
-        // this._patchRenderer.greyOutBlue =
         this._patchRenderer.greyOut = false;
 
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
@@ -1412,15 +1408,9 @@ export default class PatchView extends Events
 
         if (names.length > 0)
         {
-            if (names[0].type == "blueprint_subpatch2")
-            {
-                // const outerOp = this.getSubPatchOuterOp(currentSubPatch);
-                // str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageCurrentSubpatchOp()\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
-            }
-            else if (names[0].type == "blueprint_subpatch")
+            if (names[0].type == "blueprint_subpatch")
             {
                 this._patchRenderer.greyOut = true;
-                // this._patchRenderer.greyOutBlue = true;
                 let blueprintPatchId = names[0].blueprintPatchId;
                 if (!blueprintPatchId)
                 {
@@ -1469,10 +1459,6 @@ export default class PatchView extends Events
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].uiAttribs.blueprintSubpatch2)
-            {
-                // continue;
-            }
             if (selectedOps[i].storage && selectedOps[i].storage.blueprint)
             {
                 delete selectedOps[i].storage.blueprint;
@@ -1557,18 +1543,6 @@ export default class PatchView extends Events
     clipboardCopyOps(e)
     {
         let selectedOps = this.getSelectedOps();
-
-        // for (const i in selectedOps)
-        // {
-        //     if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
-        //     {
-        //         this._log.log("yes....");
-        //         this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
-        //     }
-        // }
-
-        selectedOps = this.getSelectedOps();
-
         const ser = this.serializeOps(selectedOps);
         const ops = ser.ops;
         ops.forEach((op) =>
@@ -2794,14 +2768,6 @@ export default class PatchView extends Events
         gui.opParams.show(op);
     }
 
-    // getSubPatchIdFromBlueprintOpId(opid)
-    // {
-    //     const ops = gui.corePatch().ops;
-    //     for (let i = 0; i < ops.length; i++)
-    //         if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
-    //             return ops[i].uiAttribs.blueprintSubpatch;
-    // }
-
     getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
     {
         const ops = gui.corePatch().ops;
@@ -2975,43 +2941,6 @@ export default class PatchView extends Events
         }
     }
 
-    localizeBlueprints()
-    {
-        const patch = gui.corePatch();
-        const ops = patch.ops;
-        const relevantOps = ops.filter((op) =>
-        {
-            if (!op.isSubPatchOp()) return false;
-            const port = op.getPortByName("externalPatchId");
-            if (port)
-            {
-                const portValue = port.get();
-                if (portValue !== gui.patchId && portValue !== gui.project().shortId) return true;
-            }
-            return false;
-        });
-
-        const localizable = [];
-        relevantOps.forEach((op) =>
-        {
-            const port = op.getPortByName("subPatchId");
-            if (port && port.get())
-            {
-                const subpatchExists = ops.some((subpatchOp) =>
-                {
-                    if (!subpatchOp.isSubPatchOp()) return false;
-                    const subpatchPort = subpatchOp.getPortByName("patchId");
-                    return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
-                });
-                if (subpatchExists)
-                {
-                    localizable.push(op);
-                }
-            }
-        });
-        gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
-    }
-
     updateBlueprints(blueprintOps = [])
     {
         blueprintOps.forEach((blueprintOp) =>
@@ -3023,40 +2952,6 @@ export default class PatchView extends Events
     focusOpAnim(opid)
     {
         this._patchRenderer.focusOpAnim(opid);
-    }
-
-    getBlueprintOpsForSubPatches(subpatchIds, localOnly = false)
-    {
-        const patch = gui.corePatch();
-        const ops = patch.ops;
-        return ops.filter((op) =>
-        {
-            if (!op.isSubPatchOp()) return false;
-            let isLocal = false;
-            if (localOnly)
-            {
-                const patchIdPort = op.getPortByName("externalPatchId");
-                if (patchIdPort)
-                {
-                    const patchId = patchIdPort.get();
-                    isLocal = (patchId && ((patchId === gui.project().shortId) || (patchId === gui.project()._id)));
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            if (!localOnly || (localOnly && isLocal))
-            {
-                const port = op.getPortByName("subPatchId");
-                if (port)
-                {
-                    const portValue = port.get();
-                    return (portValue && subpatchIds.includes(portValue));
-                }
-            }
-            return false;
-        });
     }
 
     getPatchOpsUsedInPatch()
@@ -3079,24 +2974,4 @@ export default class PatchView extends Events
         });
     }
 
-    // addBlueprintInfo(op, outerOp)
-    // {
-    //     if (!op || !outerOp) return;
-    //     if (outerOp)
-    //     {
-    //         if (outerOp.uiAttribs && outerOp.uiAttribs.blueprintOpId)
-    //         {
-    //             op.uiAttribs.blueprintOpId = outerOp.uiAttribs.blueprintOpId;
-    //         }
-    //         if (outerOp.storage && outerOp.storage.blueprint)
-    //         {
-    //             op.setStorage({ "blueprint": { "patchId": outerOp.storage.blueprint.patchId } });
-    //             // op.storage = op.storage || {};
-    //             // op.storage.blueprint = {
-    //             //     "patchId": outerOp.storage.blueprint.patchId
-    //             // };
-    //         }
-    //     }
-    //     return op;
-    // }
 }
