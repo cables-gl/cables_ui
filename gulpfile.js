@@ -12,6 +12,7 @@ import rename from "gulp-rename";
 import concat from "gulp-concat";
 import sassCompiler from "sass";
 import path from "path";
+import { BuildWatcher } from "cables-shared-client";
 import webpackConfig from "./webpack.config.js";
 import webpackTalkerApiConfig from "./webpack.talkerapi.config.js";
 import webpackLibsConfig from "./webpack.libs.config.js";
@@ -34,13 +35,14 @@ if (fs.existsSync(configLocation))
 
 function _watch(done)
 {
+    const buildWatcher = new BuildWatcher(gulp, config, "ui");
     const watchOptions = { "ignored": "./**/node_modules/" };
-    gulp.watch(["src/ui/**/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/**/*.js", "../cables/src/core/**/*.js", "../shared/shared_constants.json"], watchOptions, gulp.series(_scripts_ui_webpack));
-    gulp.watch(["scss/**/*.scss"], watchOptions, gulp.series(_sass));
-    gulp.watch(["html/**/*.html"], watchOptions, gulp.series(_html_ui));
-    gulp.watch("../shared/client/src/talkerapi.js", watchOptions, gulp.series(_scripts_talkerapi));
-    gulp.watch("libs/**/*", watchOptions, gulp.series(_scripts_libs_ui));
-    gulp.watch("icons/**/*.svg", watchOptions, gulp.series(_svgcss));
+    buildWatcher.watch(["src/ui/**/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/**/*.js", "../cables/src/core/**/*.js", "../shared/shared_constants.json"], watchOptions, gulp.series(_scripts_ui_webpack));
+    buildWatcher.watch(["scss/**/*.scss"], watchOptions, gulp.series(_sass));
+    buildWatcher.watch(["html/**/*.html"], watchOptions, gulp.series(_html_ui));
+    buildWatcher.watch("../shared/client/src/talkerapi.js", watchOptions, gulp.series(_scripts_talkerapi));
+    buildWatcher.watch("libs/**/*", watchOptions, gulp.series(_scripts_libs_ui));
+    buildWatcher.watch("icons/**/*.svg", watchOptions, gulp.series(_svgcss));
     done();
 }
 

@@ -1,4 +1,6 @@
+import { Port } from "cables";
 import { ele, Events, Logger } from "cables-shared-client";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /**
  * @typedef SpreadSheetOptions
@@ -13,8 +15,8 @@ export default class SpreadSheetTab extends Events
 {
 
     /**
-     * @param {import("../../elements/tabpanel/tabpanel").default} tabs
-     * @param {import("cables").Port} port
+     * @param {TabPanel} tabs
+     * @param {Port} port
      * @param {any} data
      * @param {SpreadSheetOptions} options
      */

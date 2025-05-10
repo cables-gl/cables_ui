@@ -46,6 +46,7 @@ export class GlTimeline extends Events
 
     #selectModeEl;
     graphSelectMode = true;
+    keyframeAutoCreate = true;
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -156,6 +157,11 @@ export class GlTimeline extends Events
         this.ruler = new glTlRuler(this);
 
         this.scroll = new glTlScroll(this);
+
+        this.bgRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
+        this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
+        this.bgRect.setPosition(0, 0, 1);
+        this.bgRect.setColorArray(gui.theme.colors_patch.background);
 
         this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
@@ -315,8 +321,8 @@ export class GlTimeline extends Events
             let selops = gui.patchView.getSelectedOps();
 
             if (selops.length == 0) return;
-            let isAnimated = false;
-            for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
+            // let isAnimated = false;
+            // for (let i = 0; i < selops.length; i++) if (selops[i].isAnimated()) isAnimated = true;
 
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
@@ -339,6 +345,12 @@ export class GlTimeline extends Events
 
         this.init();
         this._initUserPrefs();
+    }
+
+    toggleAutoKeyframe()
+    {
+        this.keyframeAutoCreate = !this.keyframeAutoCreate;
+        this.updateIcons();
     }
 
     updateGraphSelectMode()
@@ -420,6 +432,8 @@ export class GlTimeline extends Events
         this.scroll.setWidth(this.#cgl.canvasWidth);
         this.ruler.setWidth(this.#cgl.canvasWidth);
 
+        this.bgRect.setSize(this.#cgl.canvasWidth, this.#cgl.canvasHeight);
+
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
         this.needsUpdateAll = "resize";
@@ -464,6 +478,10 @@ export class GlTimeline extends Events
 
     updateIcons()
     {
+
+        if (this.keyframeAutoCreate)ele.byId("autokeyframe").parentElement.classList.add("button-active");
+        else ele.byId("autokeyframe").parentElement.classList.remove("button-active");
+
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
         ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
@@ -1236,6 +1254,7 @@ export class GlTimeline extends Events
     {
         const obj = { "keys": this.serializeSelectedKeys(true) };
 
+        notify("copied " + obj.keys.length + " keys", null, { "force": true });
         if (event)
         {
             const objStr = JSON.stringify(obj);
@@ -1354,8 +1373,8 @@ export class GlTimeline extends Events
     /** @returns {boolean} */
     isFocused()
     {
-        // todo
-        return true;
+        console.log(this.#cgl.hasFocus());
+        return this.#cgl.hasFocus();
     }
 
     duplicateSelectedKeys()

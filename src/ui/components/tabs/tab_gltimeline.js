@@ -83,27 +83,27 @@ export default class GlTimelineTab
         {
             CABLES.CMD.TIMELINE.TimelineRewindStart();
         });
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous info\" data-info=\"tlnextkey\">\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); }, ["button-middle"]);
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\" style=\"transform:rotate(180deg)\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-step-back\" ></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineRewind();
-        });
+        }, ["button-middle"]);
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous info\" data-info=\"tlnextkey\">\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); });
         const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
 
             if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "<span class=\"nomargin icon icon-pause\"></span>";
             else buttonPlay.innerHTML = "<span class=\"nomargin icon icon-play\"></span>";
-        });
-        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next info\" data-info=\"tlnextkey\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); });
+        }, ["button-middle"]);
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-fast-forward\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon icon-step-forward\"></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineForward();
-        });
+        }, ["button-middle"]);
 
+        this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next info\" data-info=\"tlnextkey\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
         this.#tab.addButtonSpacer();
@@ -112,7 +112,7 @@ export default class GlTimelineTab
         this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-chart-gantt\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon info icon-redo-2\" data-info=\"tlloopstart\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon info icon-log-in-rot\" data-info=\"tlloopstart\"></span>", () =>
         {
             this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
             this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
@@ -121,14 +121,15 @@ export default class GlTimelineTab
         {
             this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
         }, ["button-middle"]);
-        this.#tab.addButton("<span class=\"nomargin icon info icon-undo-2\" data-info=\"tlloopend\"></span>", () =>
+
+        this.#tab.addButton("<span class=\"nomargin icon info icon-log-in\" data-info=\"tlloopend\"></span>", () =>
         {
             this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
             this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
         }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-diamond-plus\"></span>", () =>
+        this.#tab.addButton("<span class=\"nomargin icon info icon-diamond-plus\" data-info=\"tladdkey\"></span>", () =>
         {
             CABLES.CMD.TIMELINE.TimelineCreateKeyAtCursor();
         });
@@ -136,6 +137,10 @@ export default class GlTimelineTab
         {
             this.tlCanvas.glTimeline.showSpreadSheet();
         });
+        this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-keyframe-auto\" data-info=\"tlautokeyframe\"></span>", () =>
+        {
+            this.tlCanvas.glTimeline.toggleAutoKeyframe();
+        }, ["button-active"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-settings\"></span>", () =>
         {
