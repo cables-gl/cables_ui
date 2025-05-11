@@ -499,6 +499,8 @@ export class GlTimeline extends Events
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
+
+        CABLES.UI.keyframeAutoCreate = this.keyframeAutoCreate;
     }
 
     setanim()
