@@ -352,6 +352,7 @@ export class GlTimeline extends Events
     {
         this.keyframeAutoCreate = !this.keyframeAutoCreate;
         this.updateIcons();
+        this.saveUserSettings();
     }
 
     updateGraphSelectMode()
@@ -1429,7 +1430,6 @@ export class GlTimeline extends Events
      */
     createKey(anim, time, value)
     {
-        // this.addUndoStart(anim);
         time = this.snapTime(time);
         const prevKey = anim.getKey(time);
         let existedBefore = false;
@@ -1439,10 +1439,7 @@ export class GlTimeline extends Events
         const found = anim.setValue(time, value);
         console.log("createkey   ", found, prevKey);
 
-        if (found && prevKey)
-        {
-            found.setEasing(prevKey.getEasing());
-        }
+        if (found && prevKey) found.setEasing(prevKey.getEasing());
 
         undo.add({
             "title": "createKey",
