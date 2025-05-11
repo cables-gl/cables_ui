@@ -370,7 +370,10 @@ export class GlTimeline extends Events
         this.buttonForScrolling = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get("gltl_units") || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get("gltl_graphSelectMode");
+        this.keyframeAutoCreate = !userSettings.get("gltl_keyframeAutoCreate");
+
         this.updateGraphSelectMode();
+        this.updateIcons();
     }
 
     saveUserSettings()
@@ -379,6 +382,7 @@ export class GlTimeline extends Events
         {
             userSettings.set("gltl_layout", this.#layout);
             userSettings.set("gltl_units", this.displayUnits);
+            userSettings.set("gltl_keyframeAutoCreate", this.keyframeAutoCreate);
             userSettings.set("gltl_graphSelectMode", !!this.graphSelectMode);
 
         }, 500);
