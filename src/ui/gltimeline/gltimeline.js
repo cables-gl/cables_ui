@@ -1433,13 +1433,13 @@ export class GlTimeline extends Events
         time = this.snapTime(time);
         const prevKey = anim.getKey(time);
         let existedBefore = false;
-        if (prevKey.time == time) existedBefore = true;
+        if (prevKey && prevKey.time == time) existedBefore = true;
 
         if (existedBefore && prevKey.value == value) return;
         const found = anim.setValue(time, value);
         console.log("createkey   ", found, prevKey);
 
-        if (found)
+        if (found && prevKey)
         {
             found.setEasing(prevKey.getEasing());
         }
