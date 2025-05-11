@@ -345,6 +345,7 @@ export class GlTimeline extends Events
 
         this.init();
         this._initUserPrefs();
+        this.updateParamKeyframes();
     }
 
     toggleAutoKeyframe()
@@ -370,7 +371,7 @@ export class GlTimeline extends Events
         this.buttonForScrolling = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get("gltl_units") || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get("gltl_graphSelectMode");
-        this.keyframeAutoCreate = !userSettings.get("gltl_keyframeAutoCreate");
+        this.keyframeAutoCreate = !!userSettings.get("gltl_keyframeAutoCreate");
 
         this.updateGraphSelectMode();
         this.updateIcons();
@@ -1500,4 +1501,39 @@ export class GlTimeline extends Events
         });
     }
 
+    updateParamKeyframes()
+    {
+        if (!gui.corePatch().timer.isPlaying())
+        {
+            const perf = gui.uiProfiler.start("tl.updateparamkf");
+            const op = gui.opParams.getCurrentOp();
+
+            if (op)
+            {
+                for (let i = 0; i < op.portsIn.length; i++)
+                {
+                    if (op.portsIn[i].isAnimated())
+                    {
+                        const elkf = ele.byId("paramportkeyframe_" + op.portsIn[i].id);
+
+                        const t = this.cursorTime;
+                        if (op.portsIn[i].anim.getKey(t).time == t)
+                        {
+                            if (elkf)
+                                elkf.classList.add("onkey");
+                        }
+                        else
+                        {
+                            if (elkf)
+                                elkf.classList.remove("onkey");
+                        }
+
+                    }
+                }
+            }
+
+            perf.finish();
+        }
+        setTimeout(this.updateParamKeyframes.bind(this), 111);
+    }
 }

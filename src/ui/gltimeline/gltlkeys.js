@@ -1,4 +1,4 @@
-import { Events, Logger } from "cables-shared-client";
+import { Events, Logger, ele } from "cables-shared-client";
 
 import { Anim, Port } from "cables";
 import GlRect from "../gldraw/glrect.js";
@@ -199,21 +199,6 @@ export class glTlKeys extends Events
                 this.#glTl.selectKey(animKey, this.#anim);
             }
 
-            let col = glTlKeys.COLOR_INACTIVE;
-            if (animKey.anim.tlActive) col = [0.8, 0.8, 0.8, 1];
-            if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
-            if (this.#glTl.isKeySelected(animKey))
-            {
-                if (!this.#hasSelectedKeys)
-                {
-                    this.#hasSelectedKeys = true;
-                    this.#needsUpdate = true;
-                }
-                col = [1, 1, 0, 1];
-            }
-
-            keyRect.setColorArray(col);
-
         }
         if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
@@ -300,6 +285,33 @@ export class glTlKeys extends Events
             {
                 this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
             }
+
+        for (let i = 0; i < this.#keyRects.length; i++)
+        {
+
+            const animKey = this.#anim.keys[i];
+            const keyRect = this.#keyRects[i];
+
+            let col = glTlKeys.COLOR_INACTIVE;
+            if (animKey.anim.tlActive) col = [0.8, 0.8, 0.8, 1];
+            if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
+            if (this.#glTl.isKeySelected(animKey))
+            {
+                if (!this.#hasSelectedKeys)
+                {
+                    this.#hasSelectedKeys = true;
+                    this.#needsUpdate = true;
+                }
+                col = glTlKeys.COLOR_SELECTED;
+            }
+            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime)
+            {
+
+                col = glTlKeys.COLOR_HIGHLIGHT;
+            }
+            keyRect.setColorArray(col);
+
+        }
     }
 
     setKeyPositions()
@@ -309,8 +321,6 @@ export class glTlKeys extends Events
         {
             const animKey = this.#anim.keys[i];
             const kr = this.#keyRects[i];
-
-            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) this.#glTl.setColorRectSpecial(kr);
 
             let y = (this.#parentRect.h / 2);
             if (this.#options.keyYpos) y = this.#animLine.valueToPixel(animKey.value);
@@ -332,6 +342,7 @@ export class glTlKeys extends Events
                 this.#glTl.selectKey(animKey, this.#anim);
             }
         }
+        this.updateColors();
     }
 
     selectAll()

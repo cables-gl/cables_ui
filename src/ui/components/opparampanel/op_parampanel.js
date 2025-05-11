@@ -760,6 +760,11 @@ class OpParampanel extends Events
 
         contextMenu.show({ items }, el);
     }
+
+    getCurrentOp()
+    {
+        return this._currentOp;
+    }
 }
 
 export default OpParampanel;

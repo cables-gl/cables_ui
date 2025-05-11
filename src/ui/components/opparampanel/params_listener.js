@@ -1038,7 +1038,7 @@ class ParamsListener extends Events
             }
         });
 
-        const elkf = ele.byId("paramportkeyframe_" + panelid + "_" + ports[index].id);
+        const elkf = ele.byId("paramportkeyframe_" + ports[index].id);
         ele.clickable(elkf, () =>
         {
             ports[index].anim.setValue(ports[index].op.patch.timer.getTime(), ports[index].get());
