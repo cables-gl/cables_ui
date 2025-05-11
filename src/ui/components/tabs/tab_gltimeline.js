@@ -90,12 +90,10 @@ export default class GlTimelineTab
             CABLES.CMD.TIMELINE.TimelineRewind();
         }, ["button-middle"]);
 
-        const buttonPlay = this.#tab.addButton("<span class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
+        this.#tab.addButton("<span id=\"timelineplay\" class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
-
-            if (gui.corePatch().timer.isPlaying())buttonPlay.innerHTML = "<span class=\"nomargin icon icon-pause\"></span>";
-            else buttonPlay.innerHTML = "<span class=\"nomargin icon icon-play\"></span>";
+            this.tlCanvas.glTimeline.updateIcons();
         }, ["button-middle"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-step-forward\"></span>", () =>
@@ -234,6 +232,7 @@ export default class GlTimelineTab
         this.#splitter.style.left = this.#splitterPos + "px";
         this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
         this.#tab.contentEle.appendChild(this.#splitter);
+        this.tlCanvas.glTimeline.updateIcons();
         this.updateSize();
 
     }

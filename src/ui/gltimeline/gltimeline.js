@@ -433,7 +433,6 @@ export class GlTimeline extends Events
     resize(force)
     {
         if (!force && this.#oldSize == this.#cgl.canvasWidth) return;
-        console.log("${}", this.#cgl.canvasWidth);
         this.#oldSize = this.#cgl.canvasWidth;
         this.scroll.setWidth(this.#cgl.canvasWidth);
         this.ruler.setWidth(this.#cgl.canvasWidth);
@@ -467,7 +466,6 @@ export class GlTimeline extends Events
      */
     isSnappedTime(t)
     {
-        // if (t != this.snapTime(t))console.log("${}", t, this.snapTime(t));
         return Math.abs(t - this.snapTime(t)) < 0.03;
     }
 
@@ -485,8 +483,16 @@ export class GlTimeline extends Events
     updateIcons()
     {
 
-        if (this.keyframeAutoCreate)ele.byId("autokeyframe").parentElement.classList.add("button-active");
-        else ele.byId("autokeyframe").parentElement.classList.remove("button-active");
+        if (this.keyframeAutoCreate)
+        {
+            ele.byId("autokeyframe").parentElement.classList.add("button-active");
+            // ele.byId("autokeyframe").parentElement.classList.remove("icon-keyframe-auto");
+        }
+        else
+        {
+            ele.byId("autokeyframe").parentElement.classList.remove("button-active");
+            // ele.byId("autokeyframe").parentElement.classList.add("icon-keyframe-auto");
+        }
 
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
@@ -505,6 +511,19 @@ export class GlTimeline extends Events
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
+
+        const buttonPlay = ele.byId("timelineplay");
+        if (buttonPlay)
+            if (gui.corePatch().timer.isPlaying())
+            {
+                buttonPlay.classList.add("icon-pause");
+                buttonPlay.classList.remove("icon-play");
+            }
+            else
+            {
+                buttonPlay.classList.remove("icon-pause");
+                buttonPlay.classList.add("icon-play");
+            }
 
         CABLES.UI.keyframeAutoCreate = this.keyframeAutoCreate;
     }
@@ -1218,7 +1237,6 @@ export class GlTimeline extends Events
     zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
-        console.log(bounds);
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
         this.view.scrollToY(0);
@@ -1368,7 +1386,6 @@ export class GlTimeline extends Events
                             animPorts[i].anim.removeDuplicates();
                     }
 
-                    console.log(json.keys);
                     this.needsUpdateAll = "";
 
                     return;
@@ -1381,7 +1398,6 @@ export class GlTimeline extends Events
     /** @returns {boolean} */
     isFocused()
     {
-        console.log(this.#cgl.hasFocus());
         return this.#cgl.hasFocus();
     }
 
@@ -1397,7 +1413,6 @@ export class GlTimeline extends Events
             {
                 for (let i = 0; i < newKeys.length; i++)
                 {
-                    console.log("delete...dupes");
                     newKeys[i].delete();
                 }
                 // key.set(oldValues);
@@ -1437,7 +1452,6 @@ export class GlTimeline extends Events
 
         if (existedBefore && prevKey.value == value) return;
         const found = anim.setValue(time, value);
-        console.log("createkey   ", found, prevKey);
 
         if (found && prevKey) found.setEasing(prevKey.getEasing());
 

@@ -44,6 +44,7 @@ export default class Tab extends Events
         this.toolbarContainerEle = document.createElement("div");
         this.contentEle = document.createElement("div");
         this.toolbarEle = document.createElement("div");
+        this.toolbarEle.classList.add("buttonbar");
         this.buttons = [];
     }
 
