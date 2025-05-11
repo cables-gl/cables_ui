@@ -1435,6 +1435,7 @@ export class GlTimeline extends Events
         let existedBefore = false;
         if (prevKey.time == time) existedBefore = true;
 
+        if (existedBefore && prevKey.value == value) return;
         const found = anim.setValue(time, value);
         console.log("createkey   ", found, prevKey);
 
@@ -1450,12 +1451,9 @@ export class GlTimeline extends Events
                 if (existedBefore)
                 {
                     anim.setValue(time, prevKey.value);
-                    console.log(" key setval");
                 }
                 else
                 {
-                    // const k = anim.getKey(time);
-                    console.log("remove key");
                     anim.remove(found);
                 }
             },
@@ -1464,7 +1462,6 @@ export class GlTimeline extends Events
                 anim.setValue(time, value);
             }
         });
-        // this.addUndoFinish(anim, "create key");
     }
 
     createKeyAtCursor()
