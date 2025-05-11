@@ -13,6 +13,7 @@ import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
+import { GlTimeline } from "../../gltimeline/gltimeline.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -964,7 +965,6 @@ class ParamsListener extends Events
 
                                     p.set(oldv);
                                     gui.emitEvent("portValueEdited", op, p, oldv);
-
                                     gui.opParams.show(uop);
                                     gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
@@ -1041,7 +1041,9 @@ class ParamsListener extends Events
         const elkf = ele.byId("paramportkeyframe_" + ports[index].id);
         ele.clickable(elkf, () =>
         {
-            ports[index].anim.setValue(ports[index].op.patch.timer.getTime(), ports[index].get());
+            // ports[index].anim.setValue(ports[index].op.patch.timer.getTime(), ports[index].get());
+            if (gui.glTimeline)
+                gui.glTimeline.createKey(ports[index].anim, ports[index].op.patch.timer.getTime(), ports[index].get());
         });
 
     }

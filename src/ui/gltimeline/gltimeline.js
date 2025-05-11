@@ -1429,16 +1429,42 @@ export class GlTimeline extends Events
      */
     createKey(anim, time, value)
     {
+        // this.addUndoStart(anim);
+        time = this.snapTime(time);
         const prevKey = anim.getKey(time);
+        let existedBefore = false;
+        if (prevKey.time == time) existedBefore = true;
 
         const found = anim.setValue(time, value);
         console.log("createkey   ", found, prevKey);
+
         if (found)
         {
-
             found.setEasing(prevKey.getEasing());
         }
 
+        undo.add({
+            "title": "createKey",
+            undo()
+            {
+                if (existedBefore)
+                {
+                    anim.setValue(time, prevKey.value);
+                    console.log(" key setval");
+                }
+                else
+                {
+                    // const k = anim.getKey(time);
+                    console.log("remove key");
+                    anim.remove(found);
+                }
+            },
+            redo()
+            {
+                anim.setValue(time, value);
+            }
+        });
+        // this.addUndoFinish(anim, "create key");
     }
 
     createKeyAtCursor()
@@ -1500,6 +1526,40 @@ export class GlTimeline extends Events
             }
         });
     }
+
+    // /**
+    //  * @param {Anim} anim
+    //  */
+    // addUndoStart(anim)
+    // {
+    //     const s = anim.getSerialized();
+    //     this.undoStart = s;
+    // }
+
+    // /**
+    //  * @param {Anim} anim
+    //  * @param {any} title
+    //  */
+    // addUndoFinish(anim, title)
+    // {
+    //     const undoStart = this.undoStart;
+    //     const undoEnd = anim.getSerialized();
+
+    //     undo.add({
+    //         "title": title,
+    //         undo()
+    //         {
+    //             anim.clear();
+    //             anim.deserialize(undoStart);
+    //         },
+    //         redo()
+    //         {
+    //             anim.clear();
+    //             anim.deserialize(undoEnd);
+
+    //         }
+    //     });
+    // }
 
     updateParamKeyframes()
     {
