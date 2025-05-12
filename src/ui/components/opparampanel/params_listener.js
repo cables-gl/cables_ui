@@ -579,7 +579,7 @@ class ParamsListener extends Events
                         "title": "Extend title: \"" + port.getTitle() + ": x\"",
                         "func": () =>
                         {
-                            port.op.setUiAttrib({ "extendTitlePort": port.name });
+                            port.op.setUiAttrib({ "extendTitlePort": port.name, "widthOnlyGrow": port.name, });
                         }
                     });
             }
