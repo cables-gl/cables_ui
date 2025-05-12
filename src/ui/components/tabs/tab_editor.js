@@ -113,6 +113,15 @@ export default class EditorTab extends Events
                             // this._tab.remove();
                             gui.mainTabs.closeTab(this._tab.id);
                         });
+                        VimApi.map("Y", "y$"); // in normal mode
+                        VimApi.map("W", "hardWrap"); // in normal mode
+                        console.log("${}", VimApi);
+                        // defaultKeymap.push({ "keys": "gq", "type": "operator", "operator": "hardWrap" });
+                        VimApi.defineOperator("hardWrap", function (cm, operatorArgs, ranges, oldAnchor, newHead)
+                        {
+                            console.log("_yiooooo");
+                            // make changes and return new cursor position
+                        });
                     });
                 }
 

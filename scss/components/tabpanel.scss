@@ -19,6 +19,11 @@
 
 .toolbar {
     background-color: var(--color-01);
+    .buttonbar
+    {
+        overflow: hidden;
+        white-space: nowrap;
+    }
 }
 
 .tabpanel {

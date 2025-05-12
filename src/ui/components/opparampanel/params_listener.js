@@ -13,6 +13,7 @@ import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
+import { GlTimeline } from "../../gltimeline/gltimeline.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -857,6 +858,7 @@ class ParamsListener extends Events
             if (str.indexOf("\u2028") > -1 || str.indexOf("\u2029") > -1 || str.indexOf("\u00A0") > -1) ports[index].op.setUiError("utf8illegal" + ports[index].name, "Port " + ports[index].name + ": String contains unusual UTF8 characters", 1);
             else ports[index].op.setUiError("utf8illegal" + ports[index].name, null);
         }
+
         const el = ele.byId(eleId);
         if (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number" || ports[index].uiAttribs.type == "int")
         {
@@ -887,157 +889,163 @@ class ParamsListener extends Events
                 });
         }
 
-        if (el) el.addEventListener("input",
+        if (el) el.addEventListener("input", (e) =>
+        {
+            let v = "" + el.value;
 
-            (e) =>
-            {
-                let v = "" + el.value;
+            gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
 
-                gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
-
-                if (
-                    ports[index].uiAttribs.display != "bool" &&
+            if (
+                ports[index].uiAttribs.display != "bool" &&
                 (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
+            {
+                if (v.length >= 3 && (isNaN(v) || v === ""))
                 {
-                    if (v.length >= 3 && (isNaN(v) || v === ""))
+                    let mathParsed = v;
+                    try
                     {
-                        let mathParsed = v;
-                        try
-                        {
-                            mathParsed = CABLES.UI.mathparser.parse(v);
-                        }
-                        catch (ex)
-                        {
+                        mathParsed = CABLES.UI.mathparser.parse(v);
+                    }
+                    catch (ex)
+                    {
                         // failed to parse math, use unparsed value
-                            mathParsed = v;
-                        }
-                        if (!isNaN(mathParsed))
-                        {
-                            showToolTip(e.target, " = " + mathParsed);
-                            el.classList.remove("invalid");
-                        }
-                        else
-                        {
-                            el.classList.add("invalid");
-                        // this._log.log("invalid number", ports[index], mathParsed);
-                        }
-                        return;
+                        mathParsed = v;
+                    }
+                    if (!isNaN(mathParsed))
+                    {
+                        showToolTip(e.target, " = " + mathParsed);
+                        el.classList.remove("invalid");
                     }
                     else
-                    {
-                        el.classList.remove("invalid");
-                        v = parseFloat(v) || 0;
-                    }
-                }
-
-                if (ports[index].uiAttribs.type == "int")
-                {
-                    if (isNaN(v) || v === "")
                     {
                         el.classList.add("invalid");
-                        return;
+                        // this._log.log("invalid number", ports[index], mathParsed);
                     }
-                    else
-                    {
-                        el.classList.remove("invalid");
-                        v = parseInt(v, 10) || 0;
-                    // this._log.log("invalid int");
-                    }
-                }
-
-                if (!CABLES.mouseDraggingValue)
-                {
-                    const undoAdd = (function (oldv, newv, opid, portname)
-                    {
-                        if (oldv != newv)
-                            undo.add({
-                                "title": "Value change " + oldv + " to " + newv,
-                                "context": {
-                                    portname
-                                },
-                                undo()
-                                {
-                                    try
-                                    {
-                                        const uop = gui.corePatch().getOpById(opid);
-                                        const p = uop.getPort(portname);
-                                        gui.patchView.showDefaultPanel();
-
-                                        p.set(oldv);
-                                        gui.emitEvent("portValueEdited", op, p, oldv);
-
-                                        gui.opParams.show(uop);
-                                        gui.patchView.focusOp(null);
-                                        gui.patchView.focusOp(opid);
-                                        gui.patchView.centerSelectOp(opid);
-                                    }
-                                    catch (ex) { this._log.warn("undo failed"); }
-                                },
-                                redo()
-                                {
-                                    try
-                                    {
-                                        const rop = gui.corePatch().getOpById(opid);
-                                        const p = rop.getPort(portname);
-                                        gui.patchView.showDefaultPanel();
-
-                                        p.set(newv);
-                                        gui.emitEvent("portValueEdited", op, p, newv);
-                                        gui.opParams.show(rop);
-                                        gui.patchView.focusOp(null);
-                                        gui.patchView.focusOp(opid);
-                                        gui.patchView.centerSelectOp(opid);
-                                    }
-                                    catch (ex) { this._log.warn("undo failed"); }
-                                }
-                            });
-                    }(ports[index].get(), v, ports[index].op.id, ports[index].name));
-                }
-
-                if (ports[index].uiAttribs.type == "string")
-                {
-                    if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
-                    if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
-                    {
-                        ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
-                    }
-                    else ports[index].op.setUiError("uiminlength", null);
-
-                    ports[index].set(v || "");
-                }
-                else if (ports[index].uiAttribs.display == "bool")
-                {
-                    if (!v || v == "false" || v == "0" || v == 0) v = false;
-                    else v = true;
-
-                    ports[index].set(v ? 1 : 0);
+                    return;
                 }
                 else
                 {
-                    ports[index].set(v || 0);
+                    el.classList.remove("invalid");
+                    v = parseFloat(v) || 0;
                 }
+            }
 
-                const op = ports[index].op;
-                // update history on change
-                if (op && !op.uiAttribs) op.uiAttribs = {};
-                if (op && !op.uiAttribs.history) op.uiAttribs.history = {};
-
-                if (op)
+            if (ports[index].uiAttribs.type == "int")
+            {
+                if (isNaN(v) || v === "")
                 {
-                    op.uiAttribs.history.lastInteractionAt = Date.now();
-                    op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
+                    el.classList.add("invalid");
+                    return;
                 }
-
-                paramsHelper.checkDefaultValue(ports[index], index, panelid);
-                // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
-
-                ports[index].emitEvent("onValueChangeUi");
-
-                if (!e.detail || !e.detail.ignorePaco)
+                else
                 {
-                    gui.emitEvent("portValueEdited", op, ports[index], v);
+                    el.classList.remove("invalid");
+                    v = parseInt(v, 10) || 0;
+                    // this._log.log("invalid int");
                 }
-            });
+            }
+
+            if (!CABLES.mouseDraggingValue)
+            {
+                const undoAdd = (function (oldv, newv, opid, portname)
+                {
+                    if (oldv != newv)
+                        undo.add({
+                            "title": "Value change " + oldv + " to " + newv,
+                            "context": {
+                                portname
+                            },
+                            undo()
+                            {
+                                try
+                                {
+                                    const uop = gui.corePatch().getOpById(opid);
+                                    const p = uop.getPort(portname);
+                                    gui.patchView.showDefaultPanel();
+
+                                    p.set(oldv);
+                                    gui.emitEvent("portValueEdited", op, p, oldv);
+                                    gui.opParams.show(uop);
+                                    gui.patchView.focusOp(null);
+                                    gui.patchView.focusOp(opid);
+                                    gui.patchView.centerSelectOp(opid);
+                                }
+                                catch (ex) { this._log.warn("undo failed"); }
+                            },
+                            redo()
+                            {
+                                try
+                                {
+                                    const rop = gui.corePatch().getOpById(opid);
+                                    const p = rop.getPort(portname);
+                                    gui.patchView.showDefaultPanel();
+
+                                    p.set(newv);
+                                    gui.emitEvent("portValueEdited", op, p, newv);
+                                    gui.opParams.show(rop);
+                                    gui.patchView.focusOp(null);
+                                    gui.patchView.focusOp(opid);
+                                    gui.patchView.centerSelectOp(opid);
+                                }
+                                catch (ex) { this._log.warn("undo failed"); }
+                            }
+                        });
+                }(ports[index].get(), v, ports[index].op.id, ports[index].name));
+            }
+
+            if (ports[index].uiAttribs.type == "string")
+            {
+                if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
+                if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
+                {
+                    ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
+                }
+                else ports[index].op.setUiError("uiminlength", null);
+
+                ports[index].set(v || "");
+            }
+            else if (ports[index].uiAttribs.display == "bool")
+            {
+                if (!v || v == "false" || v == "0" || v == 0) v = false;
+                else v = true;
+
+                ports[index].set(v ? 1 : 0);
+            }
+            else
+            {
+                ports[index].set(v || 0);
+            }
+
+            const op = ports[index].op;
+            // update history on change
+            if (op && !op.uiAttribs) op.uiAttribs = {};
+            if (op && !op.uiAttribs.history) op.uiAttribs.history = {};
+
+            if (op)
+            {
+                op.uiAttribs.history.lastInteractionAt = Date.now();
+                op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
+            }
+
+            paramsHelper.checkDefaultValue(ports[index], index, panelid);
+            // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+
+            ports[index].emitEvent("onValueChangeUi");
+
+            if (!e.detail || !e.detail.ignorePaco)
+            {
+                gui.emitEvent("portValueEdited", op, ports[index], v);
+            }
+        });
+
+        const elkf = ele.byId("paramportkeyframe_" + ports[index].id);
+        ele.clickable(elkf, () =>
+        {
+            // ports[index].anim.setValue(ports[index].op.patch.timer.getTime(), ports[index].get());
+            if (gui.glTimeline)
+                gui.glTimeline.createKey(ports[index].anim, ports[index].op.patch.timer.getTime(), ports[index].get());
+        });
+
     }
 
     _updateWatchPorts()
