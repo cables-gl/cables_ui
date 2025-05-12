@@ -113,16 +113,26 @@ const defaultOpNames =
     "rerouteObject": "Ops.Ui.Routing.RouteObject",
     "rerouteTrigger": "Ops.Ui.Routing.RouteTrigger",
 
-    "ArrayGetArray": "Ops.Data.JsonPath.ArrayGetArrayByPath",
-    "ArrayGetArrayValues": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
-    "ArrayGetNumber": "Ops.Data.JsonPath.ArrayGetNumberByPath",
-    "ArrayGetObject": "Ops.Data.JsonPath.ArrayGetObjectByPath",
-    "ArrayGetString": "Ops.Data.JsonPath.ArrayGetStringByPath",
-    "ObjectGetArray": "Ops.Data.JsonPath.ObjectGetArrayByPath",
-    "ObjectGetArrayValues": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
-    "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
-    "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
-    "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath",
+    "ArrayGetArray": "Ops.Array.ArrayGetArray",
+    "ArrayGetNumber": "Ops.Array.ArrayGetNumber",
+    "ArrayGetObject": "Ops.Array.ArrayGetObject",
+    "ArrayGetString": "Ops.Array.ArrayGetString",
+    "ObjectGetArray": "Ops.Json.ObjectGetArray_v2",
+    "ObjectGetNumber": "Ops.Json.ObjectGetNumber_v2",
+    "ObjectGetObject": "Ops.Json.ObjectGetObject_v2",
+    "ObjectGetString": "Ops.Json.ObjectGetString",
+
+    "ArrayGetArrayByPath": "Ops.Data.JsonPath.ArrayGetArrayByPath",
+    "ArrayGetArrayValuesByPath": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
+    "ArrayGetNumberByPath": "Ops.Data.JsonPath.ArrayGetNumberByPath",
+    "ArrayGetObjectByPath": "Ops.Data.JsonPath.ArrayGetObjectByPath",
+    "ArrayGetStringByPath": "Ops.Data.JsonPath.ArrayGetStringByPath",
+    "ObjectGetArrayByPath": "Ops.Data.JsonPath.ObjectGetArrayByPath",
+    "ObjectGetArrayValuesByPath": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
+    "ObjectGetNumberByPath": "Ops.Data.JsonPath.ObjectGetNumberByPath",
+    "ObjectGetObjectByPath": "Ops.Data.JsonPath.ObjectGetObjectByPath",
+    "ObjectGetStringByPath": "Ops.Data.JsonPath.ObjectGetStringByPath",
+
     "HttpRequest": "Ops.Json.HttpRequest_v3",
     "glMainloop": "Ops.Gl.MainLoop_v2"
 
@@ -255,16 +265,28 @@ const defaultOps = {
 
     ],
     "jsonPathOps": {
-        "ArrayGetArray": defaultOpNames.ArrayGetArray,
-        "ArrayGetArrayValues": defaultOpNames.ArrayGetArrayValues,
-        "ArrayGetNumber": defaultOpNames.ArrayGetNumber,
-        "ArrayGetObject": defaultOpNames.ArrayGetObject,
-        "ArrayGetString": defaultOpNames.ArrayGetString,
-        "ObjectGetArray": defaultOpNames.ObjectGetArray,
-        "ObjectGetArrayValues": defaultOpNames.ObjectGetArrayValues,
-        "ObjectGetNumber": defaultOpNames.ObjectGetNumber,
-        "ObjectGetObject": defaultOpNames.ObjectGetObject,
-        "ObjectGetString": defaultOpNames.ObjectGetString
+        "ArrayGetArray": { "opName": defaultOpNames.ArrayGetArray, "dataPort": "Array of Arrays", "keyPort": "Index" },
+        "ArrayGetArrayValues": { "opName": defaultOpNames.ArrayGetArrayValuesByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ArrayGetNumber": { "opName": defaultOpNames.ArrayGetNumber, "dataPort": "array", "keyPort": "index" },
+        "ArrayGetObject": { "opName": defaultOpNames.ArrayGetObject, "dataPort": "array", "keyPort": "index" },
+        "ArrayGetString": { "opName": defaultOpNames.ArrayGetString, "dataPort": "array", "keyPort": "index" },
+
+        "ObjectGetArray": { "opName": defaultOpNames.ObjectGetArray, "dataPort": "data", "keyPort": "key" },
+        "ObjectGetArrayValues": { "opName": defaultOpNames.ObjectGetArrayValuesByPath, "dataPort": "Object", "keyPort": "Path" },
+        "ObjectGetNumber": { "opName": defaultOpNames.ObjectGetNumber, "dataPort": "Data", "keyPort": "Key" },
+        "ObjectGetObject": { "opName": defaultOpNames.ObjectGetObject, "dataPort": "Object", "keyPort": "Key" },
+        "ObjectGetString": { "opName": defaultOpNames.ObjectGetString, "dataPort": "data", "keyPort": "Key" },
+
+        "ArrayGetArrayByPath": { "opName": defaultOpNames.ArrayGetArrayByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ArrayGetArrayValuesByPath": { "opName": defaultOpNames.ArrayGetArrayValuesByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ArrayGetNumberByPath": { "opName": defaultOpNames.ArrayGetNumberByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ArrayGetObjectByPath": { "opName": defaultOpNames.ArrayGetObjectByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ArrayGetStringByPath": { "opName": defaultOpNames.ArrayGetStringByPath, "dataPort": "Array", "keyPort": "Path" },
+        "ObjectGetArrayByPath": { "opName": defaultOpNames.ObjectGetArrayByPath, "dataPort": "Object", "keyPort": "Path" },
+        "ObjectGetArrayValuesByPath": { "opName": defaultOpNames.ObjectGetArrayValuesByPath, "dataPort": "Object", "keyPort": "Path" },
+        "ObjectGetNumberByPath": { "opName": defaultOpNames.ObjectGetNumberByPath, "dataPort": "Object", "keyPort": "Path" },
+        "ObjectGetObjectByPath": { "opName": defaultOpNames.ObjectGetObjectByPath, "dataPort": "Object", "keyPort": "Path" },
+        "ObjectGetStringByPath": { "opName": defaultOpNames.ObjectGetStringByPath, "dataPort": "Object", "keyPort": "Path" }
     },
     "hideInOpSelect":
     [
