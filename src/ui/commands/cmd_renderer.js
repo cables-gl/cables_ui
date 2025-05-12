@@ -140,8 +140,19 @@ CABLES_CMD_RENDERER.changeSize = function ()
             const matches = r.match(/\d+/g);
             if (matches.length > 0)
             {
-                gui.rendererWidth = matches[0];
-                gui.rendererHeight = matches[1];
+
+                gui.canvasManager.setSize(matches[0], matches[1]);
+                if (gui.canvasManager.mode != gui.canvasManager.CANVASMODE_POPOUT)
+                {
+
+                    gui.rendererWidth = matches[0];
+                    gui.rendererHeight = matches[1];
+
+                }
+                else
+                {
+                    gui.canvasManager.subWindow.resizeTo(matches[0], matches[1]);
+                }
                 gui.setLayout();
             }
         }
