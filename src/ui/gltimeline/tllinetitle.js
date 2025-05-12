@@ -31,6 +31,8 @@ export class TlTitle extends Events
     #anim;
     #listeners = [];
     #gltl;
+
+    /** @type {Port} */
     #port;
 
     /**
@@ -102,6 +104,10 @@ export class TlTitle extends Events
             port.op.on(Op.EVENT_UIATTR_CHANGE, () =>
             {
                 this.updateFromOp();
+            }),
+            port.on(Port.EVENT_UIATTRCHANGE, () =>
+            {
+                this.updateFromOp();
             })
         );
         this.#op = port.op;
@@ -118,7 +124,7 @@ export class TlTitle extends Events
             title += this.#op.name;
             title += "</span>";
 
-            title += " <span class=\"portname\">" + this.#port.name + "</span>";
+            title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
             if (this.#op.uiAttribs.comment) title += "<span class=\"comment\"> // " + this.#op.uiAttribs.comment + "</span>";
 
             this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
