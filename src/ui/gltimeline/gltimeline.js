@@ -370,9 +370,11 @@ export class GlTimeline extends Events
 
     loadPatchData(cfg)
     {
+        if (!cfg) return;
         console.log("${}", cfg);
         this.loopAreaStart = cfg.loopAreaStart || 0;
         this.loopAreaEnd = cfg.loopAreaEnd || 0;
+        this.view.loadState(cfg.view);
     }
 
     savePatchData()
@@ -380,6 +382,8 @@ export class GlTimeline extends Events
         return {
             "loopAreaStart": this.loopAreaStart,
             "loopAreaEnd": this.loopAreaEnd,
+            "view": this.view.saveState()
+
         };
     }
 

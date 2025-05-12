@@ -325,4 +325,27 @@ export class GlTlView
 
     }
 
+    saveState()
+    {
+        return {
+            "zoom": this.#zoom,
+            "offset": this.#offset,
+            "offsetY": this.offsetY };
+    }
+
+    loadState(cfg)
+    {
+        if (!cfg) return;
+
+        this.#zoom = cfg.zoom;
+        this.#offset = cfg.offset;
+        this.#offsetY = cfg.offsetY;
+
+        this.#animZoom.clear(0);
+        this.#animZoom.setValue(0, this.#zoom);
+        this.#animScroll.clear(0);
+        this.#animScroll.setValue(0, this.#offset);
+        this.#animScrollY.clear(0);
+        this.#animScrollY.setValue(0, this.#offsetY);
+    }
 }
