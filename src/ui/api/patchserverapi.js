@@ -40,7 +40,8 @@ export default class PatchSaveServer extends Events
 
     getUiSettings()
     {
-        return this._currentProject.ui;
+        if (this._currentProject)
+            return this._currentProject.ui;
     }
 
     setProject(proj)

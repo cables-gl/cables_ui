@@ -158,7 +158,8 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
-        this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
+        if (gui.patchView.store.getUiSettings())
+            this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
         this.bgRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
@@ -259,14 +260,14 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys() == 1)
             {
             }
-
             else if (this.getNumSelectedKeys() > 1)
             {
+                console.log("zoomtoselection");
                 this.zoomToFitSelection();
             }
-
             else
             {
+                console.log("zoomto all keys");
                 this.selectAllKeys();
                 this.zoomToFitSelection();
                 this.unSelectAllKeys();
@@ -1258,11 +1259,13 @@ export class GlTimeline extends Events
     zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
+        const boundsy = this.getSelectedKeysBoundsValue();
+        this.view.minVal = boundsy.min;
+        this.view.maxVal = boundsy.max;
+
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
-        this.view.scrollToY(0);
-        for (let anii = 0; anii < this.#tlAnims.length; anii++)
-            this.#tlAnims[anii].fitValues();
+        this.view.scrollToY(boundsy.min);
     }
 
     showKeyParams()
