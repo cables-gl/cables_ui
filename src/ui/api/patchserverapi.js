@@ -38,6 +38,11 @@ export default class PatchSaveServer extends Events
 
     }
 
+    getUiSettings()
+    {
+        return this._currentProject.ui;
+    }
+
     setProject(proj)
     {
         gui.setProjectName(proj.name);
@@ -551,7 +556,8 @@ export default class PatchSaveServer extends Events
 
         data.ui = {
             "viewBox": {},
-            "timeLineLength": gui.getTimeLineLength()
+            "renderer": {},
+            "timeline": {},
         };
 
         data.ui.texPreview = gui.metaTexturePreviewer.serialize();
@@ -560,10 +566,12 @@ export default class PatchSaveServer extends Events
         gui.patchView.serialize(data.ui);
         gui.patchParamPanel.serialize(data.ui);
 
-        data.ui.renderer = {};
         data.ui.renderer.w = Math.max(0, gui.rendererWidth);
         data.ui.renderer.h = Math.max(0, gui.rendererHeight);
         data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
+
+        if (gui.glTimeline)data.ui.timeline = gui.glTimeline.savePatchData();
+        console.log("saving patch,.,,", data.ui.timeline);
 
         CABLES.patch.namespace = currentProject.namespace;
 

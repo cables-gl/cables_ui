@@ -158,6 +158,8 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
+        this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
+
         this.bgRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
         this.bgRect.setPosition(0, 0, 1);
@@ -364,6 +366,21 @@ export class GlTimeline extends Events
         gui.emitEvent("opSelectChange");
         this.updateAllElements();
         this.saveUserSettings();
+    }
+
+    loadPatchData(cfg)
+    {
+        console.log("${}", cfg);
+        this.loopAreaStart = cfg.loopAreaStart || 0;
+        this.loopAreaEnd = cfg.loopAreaEnd || 0;
+    }
+
+    savePatchData()
+    {
+        return {
+            "loopAreaStart": this.loopAreaStart,
+            "loopAreaEnd": this.loopAreaEnd,
+        };
     }
 
     _initUserPrefs()

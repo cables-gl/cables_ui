@@ -207,7 +207,7 @@ export default class PatchView extends Events
                 gui.setLayout();
             }
 
-            gui.setTimeLineLength(proj.ui.timeLineLength);
+            // gui.setTimeLineLength(proj.ui.timeLineLength);
         }
 
         gui.setProject(proj);

@@ -2344,19 +2344,6 @@ export default class Gui extends Events
         return JSON.parse(JSON.stringify(defaultTheme));
     }
 
-    getTimeLineLength()
-    {
-        return 1;
-    }
-
-    /**
-     * @param {Number} dur
-     */
-    setTimeLineLength(dur)
-    {
-        console.log("timeline length", dur);
-    }
-
     hide()
     {
 
