@@ -269,8 +269,15 @@ export class GlTimeline extends Events
             {
                 console.log("zoomto all keys");
                 this.selectAllKeys();
-                this.zoomToFitSelection();
-                this.unSelectAllKeys();
+                if (this.getNumSelectedKeys())
+                {
+                    this.zoomToFitSelection();
+                    this.unSelectAllKeys();
+                }
+                else
+                {
+                    notifyWarn("no keys to fit");
+                }
             }
         });
 
@@ -1224,6 +1231,7 @@ export class GlTimeline extends Events
             for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
             {
                 const anim = this.#tlAnims[anii].anims[ans];
+                if (!anim.tlActive) continue;
                 const index = 0;
 
                 for (let ik = 0; ik < anim.keys.length; ik++)
