@@ -81,7 +81,7 @@ export class TlTitle extends Events
         );
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
-            this.activeButton = this.addButton("<span class=\"icon icon-check icon-0_75x nomargin info\" data-info=\"tlactive\"></span>",
+            this.activeButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
                 {
                     if (e.buttons == 2) this.#gltl.deactivateAllAnims();
@@ -163,14 +163,14 @@ export class TlTitle extends Events
             if (!c)
             {
                 this.#elTitle.style.opacity = "0.4";
-                this.activeButton.children[0].classList.remove("icon-check");
-                this.activeButton.children[0].classList.add("icon-empty");
+                this.activeButton.children[0].classList.remove("icon-eye");
+                this.activeButton.children[0].classList.add("icon-eye-off");
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
-                this.activeButton.children[0].classList.add("icon-check");
-                this.activeButton.children[0].classList.remove("icon-empty");
+                this.activeButton.children[0].classList.add("icon-eye");
+                this.activeButton.children[0].classList.remove("icon-eye-off");
             }
         }
     }

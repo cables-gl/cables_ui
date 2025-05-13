@@ -111,11 +111,17 @@
         width: calc(12px + 0.75 * var(--font-size-off));
         height: calc(12px + 0.75 * var(--font-size-off));
     }
-
     .button-small .icon
     {
-        width: calc(15px + 0.75 * var(--font-size-off)) !important;
-        height: calc(15px + 0.75 * var(--font-size-off)) !important;
+        width: calc(15px + 0.75 * var(--font-size-off)) ;
+        height: calc(15px + 0.75 * var(--font-size-off)) ;
+    }
+
+    .icon-0_5x
+    {
+    padding-right: 0px !important;
+        width: 10px !important ;
+        height: 16px !important ;
     }
 
     @keyframes rotating {
