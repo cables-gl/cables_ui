@@ -1613,12 +1613,20 @@ export class GlTimeline extends Events
                         if (op.portsIn[i].anim.getKey(t).time == t)
                         {
                             if (elkf)
+                            {
                                 elkf.classList.add("onkey");
+                                elkf.classList.add("icon-diamond-fill");
+                                elkf.classList.remove("icon-diamond");
+                            }
                         }
                         else
                         {
                             if (elkf)
+                            {
                                 elkf.classList.remove("onkey");
+                                elkf.classList.remove("icon-diamond-fill");
+                                elkf.classList.add("icon-diamond");
+                            }
                         }
 
                     }
