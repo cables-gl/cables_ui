@@ -1,3 +1,4 @@
+import { Patch } from "cables";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPatchAPI from "../glpatch/patchapi.js";
 import { gui } from "../gui.js";
@@ -6,7 +7,7 @@ export default class GlCanvas
 {
 
     /**
-     * @param {Patch}} _patch
+     * @param {Patch} _patch
      * @param {HTMLElement} parentEle
      */
     constructor(_patch, parentEle)
@@ -30,7 +31,7 @@ export default class GlCanvas
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
 
-        this.canvas.setAttribute("tabindex", 0);
+        this.canvas.setAttribute("tabindex", "0");
         this._parentEle = parentEle;
 
         if (parentEle)parentEle.appendChild(this.canvas);

@@ -197,10 +197,11 @@ export class GlTimeline extends Events
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
         });
 
+        cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         cgl.addEventListener("resize", () => { this.resize(true); });
 
@@ -694,13 +695,12 @@ export class GlTimeline extends Events
 
                 if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
 
-                if (!event.shiftKey) this.view.scrollY(movementY);
+                if (!event.shiftKey) this.view.scrollY(movementY, 0);
             }
             this.#lastDragX = event.offsetX;
             this.#lastDragY = event.offsetY;
             this.updateAllElements();
         }
-
         else
         {
             this.#lastXnoButton = x;
