@@ -108,7 +108,7 @@ export class GlTimeline extends Events
     loopAreaEnd = 0;
 
     /** @type {TlConfig} */
-    cfg = {
+    cfg = CABLES.timelineConfig || {
         "fps": 30,
         "bpm": 180,
         "fadeInFrames": true,
