@@ -158,6 +158,9 @@ export class GlTimeline extends Events
 
         this.scroll = new glTlScroll(this);
 
+        if (gui.patchView.store.getUiSettings())
+            this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
+
         this.bgRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
         this.bgRect.setPosition(0, 0, 1);
@@ -257,14 +260,14 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys() == 1)
             {
             }
-
             else if (this.getNumSelectedKeys() > 1)
             {
+                console.log("zoomtoselection");
                 this.zoomToFitSelection();
             }
-
             else
             {
+                console.log("zoomto all keys");
                 this.selectAllKeys();
                 this.zoomToFitSelection();
                 this.unSelectAllKeys();
@@ -364,6 +367,25 @@ export class GlTimeline extends Events
         gui.emitEvent("opSelectChange");
         this.updateAllElements();
         this.saveUserSettings();
+    }
+
+    loadPatchData(cfg)
+    {
+        if (!cfg) return;
+        console.log("${}", cfg);
+        this.loopAreaStart = cfg.loopAreaStart || 0;
+        this.loopAreaEnd = cfg.loopAreaEnd || 0;
+        this.view.loadState(cfg.view);
+    }
+
+    savePatchData()
+    {
+        return {
+            "loopAreaStart": this.loopAreaStart,
+            "loopAreaEnd": this.loopAreaEnd,
+            "view": this.view.saveState()
+
+        };
     }
 
     _initUserPrefs()
@@ -1237,11 +1259,13 @@ export class GlTimeline extends Events
     zoomToFitSelection()
     {
         const bounds = this.getSelectedKeysBoundsTime();
+        const boundsy = this.getSelectedKeysBoundsValue();
+        this.view.minVal = boundsy.min;
+        this.view.maxVal = boundsy.max;
+
         this.view.setZoomLength(bounds.length + 1);
         this.view.scrollTo(bounds.min - 0.5);
-        this.view.scrollToY(0);
-        for (let anii = 0; anii < this.#tlAnims.length; anii++)
-            this.#tlAnims[anii].fitValues();
+        this.view.scrollToY(boundsy.min);
     }
 
     showKeyParams()

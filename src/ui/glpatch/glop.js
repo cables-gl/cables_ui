@@ -1440,7 +1440,9 @@ export default class GlOp extends Events
                 const thePort = this._op.getPort(this.opUiAttribs.extendTitlePort);
                 if (thePort)
                 {
-                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + thePort.get());
+                    let portVar = thePort.get();
+                    if (thePort.type == Port.TYPE_NUMBER)portVar = portVar.toPrecision(5);
+                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
 
                     if (str != this._titleExt.text)
                     {

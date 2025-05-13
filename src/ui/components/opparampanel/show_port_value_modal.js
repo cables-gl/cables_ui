@@ -114,7 +114,6 @@ export default class ModalPortValue
                     break;
                 }
             }
-            const hideclass = "";
             html += "<a onclick=\"gui.opPortModal.structureHelper_exposeArray('" + op.id + "', '" + portName + "', '" + path + "', '" + inputDataType + "')\" class=\"treebutton\">Array</a>";
             html += "&nbsp;";
             html += "<a onclick=\"gui.opPortModal.structureHelper_exposeNode('" + op.id + "', '" + portName + "', '" + path + "', '" + dataType + "', '" + inputDataType + "')\" class=\"treebutton " + dataType.toLowerCase() + "\">" + dataType + "</a>";
@@ -178,14 +177,12 @@ export default class ModalPortValue
             {
                 if (Array.isArray(json))
                 {
-                    const path = i;
-                    html = printNode(op, portName, html, i, json[i], path, 1, inputDataType);
+                    html = printNode(op, portName, html, i, json[i], i, 1, inputDataType);
                 }
                 else if (typeof json === "object")
                 {
                     const key = elements[i];
-                    const path = key;
-                    html = printNode(op, portName, html, key, json[key], path, 1, inputDataType);
+                    html = printNode(op, portName, html, key, json[key], key, 1, inputDataType);
                 }
             }
             html += "</table>";
@@ -230,11 +227,6 @@ export default class ModalPortValue
         }
     }
 
-    updatePortValuePreview(title)
-    {
-        this._showPortValue(title);
-    }
-
     updatePortStructurePreview(title)
     {
         this._showPortStructure(title, gui.currentModal, this._port);
@@ -242,38 +234,44 @@ export default class ModalPortValue
 
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
     {
-        const jsonDataOpName = defaultOps.jsonPathOps[inputDataType + "Get" + dataType];
-        if (!jsonDataOpName) return;
-        const op = gui.corePatch().getOpById(opId);
-        gui.patchView.addOp(
-            jsonDataOpName,
-            {
-                "subPatch": gui.patchView.getCurrentSubPatch(),
-                "onOpAdd": (newop) =>
-                {
-                    newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
+        let byPath = "";
+        if (path && path.includes(".")) byPath = "ByPath";
+        const jsonDataOp = defaultOps.jsonPathOps[inputDataType + "Get" + dataType + byPath];
+        if (!jsonDataOp) return;
 
-                    newop.getPort("Path").set(path);
-                    op.patch.link(op, portName, newop, inputDataType);
-                    gui.patchView.centerSelectOp(newop.id);
-                    gui.closeModal();
-                }
-            });
+        const op = gui.corePatch().getOpById(opId);
+        this._createOp(op, jsonDataOp, path, portName);
     }
 
     structureHelper_exposeArray(opId, portName, path, inputDataType = "Object")
     {
-        const jsonDataOpName = defaultOps.jsonPathOps[inputDataType + "GetArrayValues"];
-        if (!jsonDataOpName) return;
+        const jsonDataOp = defaultOps.jsonPathOps[inputDataType + "GetArrayValues"];
+        if (!jsonDataOp) return;
 
         const op = gui.corePatch().getOpById(opId);
-        const newop = gui.corePatch().addOp(jsonDataOpName);
+        this._createOp(op, jsonDataOp, path, portName);
+    }
 
-        newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
+    _createOp(op, jsonDataOp, path, portName)
+    {
+        gui.patchView.addOp(
+            jsonDataOp.opName,
+            {
+                "subPatch": gui.patchView.getCurrentSubPatch(),
+                "onOpAdd": (newop) =>
+                {
+                    newop.setUiAttrib({
+                        "translate": {
+                            "x": op.uiAttribs.translate.x,
+                            "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY
+                        }
+                    });
 
-        newop.getPort("Path").set(path);
-        op.patch.link(op, portName, newop, inputDataType);
-        gui.patchView.centerSelectOp(newop.id);
-        gui.closeModal();
+                    newop.getPort(jsonDataOp.keyPort).set(path);
+                    op.patch.link(op, portName, newop, jsonDataOp.dataPort);
+                    gui.patchView.centerSelectOp(newop.id);
+                    gui.closeModal();
+                }
+            });
     }
 }

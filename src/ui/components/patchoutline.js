@@ -6,6 +6,7 @@ import { escapeHTML } from "../utils/helper.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
+import namespaceutils from "../namespaceutils.js";
 
 export default class PatchOutline extends Events
 {
@@ -15,12 +16,13 @@ export default class PatchOutline extends Events
 
         this._log = new Logger("PatchOutline");
         this.includeAreas =
-        this.includeSubpatches =
         this.includeComments =
+        this.includeCustomOps =
         this.includeCommented =
         this.includeBookmarks =
         this.includeAnimated =
         this.includeColored = true;
+        this.includeSubpatches = false;
 
         this._listeningSubs = false;
         this._subTree = new TreeView();
@@ -75,6 +77,7 @@ export default class PatchOutline extends Events
         this.includeCommented = outlineCfg.includeCommented;
         this.includeComments = outlineCfg.includeComments;
         this.includeAreas = outlineCfg.includeAreas;
+        this.includeCustomOps = outlineCfg.includeCustomOps;
         this.includeColored = outlineCfg.includeColored;
 
         this.updateFilterUi();
@@ -90,7 +93,7 @@ export default class PatchOutline extends Events
         outlineCfg.includeComments = this.includeComments;
         outlineCfg.includeAreas = this.includeAreas;
         outlineCfg.includeColored = this.includeColored;
-
+        outlineCfg.includeCustomOps = this.includeCustomOps;
         obj.outline = outlineCfg;
     }
 
@@ -115,6 +118,9 @@ export default class PatchOutline extends Events
 
         if (this.includeColored)ele.byId("subtreeFilterColored").classList.add("findToggleActive");
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
+
+        if (this.includeCustomOps)ele.byId("subtreeFilterCustomOps").classList.add("findToggleActive");
+        else ele.byId("subtreeFilterCustomOps").classList.remove("findToggleActive");
     }
 
     isCurrentlyVisible()
@@ -143,11 +149,12 @@ export default class PatchOutline extends Events
         let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
         html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_bookmarks\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
-        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
+        html += "<a id=\"subtreeFilterCustomOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_customops\" data-tt=\"customops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-op\"></span></a>";
         html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_commented\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
         html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_comments\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
         html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_areas\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
         html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_colored\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
+        html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
         html += "</div>";
 
         const su = this._getSubPatchesHierarchy();
@@ -168,36 +175,49 @@ export default class PatchOutline extends Events
             this.includeBookmarks = !this.includeBookmarks;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterSubPatchOps").addEventListener("click", () =>
         {
             this.includeSubpatches = !this.includeSubpatches;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterCommented").addEventListener("click", () =>
         {
             this.includeCommented = !this.includeCommented;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterComments").addEventListener("click", () =>
         {
             this.includeComments = !this.includeComments;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterAreas").addEventListener("click", () =>
         {
             this.includeAreas = !this.includeAreas;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterColored").addEventListener("click", () =>
         {
             this.includeColored = !this.includeColored;
             this.updateFilterUi();
             this.insert();
+            gui.setStateUnsaved();
+        });
+        ele.byId("subtreeFilterCustomOps").addEventListener("click", () =>
+        {
+            this.includeCustomOps = !this.includeCustomOps;
+            this.updateFilterUi();
+            this.insert();
+            gui.setStateUnsaved();
         });
 
         this.updateFilterUi();
@@ -290,6 +310,7 @@ export default class PatchOutline extends Events
             if (this.includeBookmarks && ops[i].uiAttribs.bookmarked) included = true;
             if (this.includeComments && ops[i].uiAttribs.comment_title) included = true;
             if (this.includeCommented && ops[i].uiAttribs.comment) included = true;
+            if (this.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName)) included = true;
 
             if (included)
             {
@@ -302,6 +323,7 @@ export default class PatchOutline extends Events
                     let icon = "bookmark";
                     if (this.includeCommented && ops[i].uiAttribs.comment) icon = "message";
                     if (this.includeColored && ops[i].uiAttribs.color) icon = "op";
+                    // todo no hard codrd op names
                     if (this.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
                     if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 

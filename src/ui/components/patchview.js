@@ -121,6 +121,7 @@ export default class PatchView extends Events
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
         console.log("lala", outerOp.opId);
+
         gui.patchView.centerSelectOp(outerOp.opId);
     }
 
@@ -206,7 +207,7 @@ export default class PatchView extends Events
                 gui.setLayout();
             }
 
-            gui.setTimeLineLength(proj.ui.timeLineLength);
+            // gui.setTimeLineLength(proj.ui.timeLineLength);
         }
 
         gui.setProject(proj);

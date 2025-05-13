@@ -138,6 +138,10 @@ export default class CanvasManager
 
             this._contexts[i].setSize(w, h);
         }
+        if (this._canvasMode === this.CANVASMODE_POPOUT)
+        {
+
+        }
     }
 
     screenShot(cb, mimeType = "image/png", quality = 1)
@@ -199,7 +203,7 @@ export default class CanvasManager
             this.subWindow = null;
         }
         let id = CABLES.uuid();
-        this.subWindow = window.open("", "view#" + id, "width=" + 500 + ",height=" + 500 + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
+        this.subWindow = window.open("", "view#" + id, "width=" + gui.rendererWidth + ",height=" + gui.rendererHeight + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
         let nDocument = this.subWindow.document;
         nDocument.title = "cables";

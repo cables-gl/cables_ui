@@ -1522,6 +1522,7 @@ export default class GlPatch extends Events
             if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
+            gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
         }
 
         if (gui.patchView.getSelectedOps().length > 1)gui.patchView.showSelectedOpsPanel();
