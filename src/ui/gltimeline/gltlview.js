@@ -236,9 +236,10 @@ export class GlTlView
         let zoom = this.#zoom * delta;
         zoom = CABLES.clamp(zoom, 0.1, 10000000);
 
-        this.#animZoom.clear(this.#timer.getTime());
-        this.#animZoom.setValue(this.#timer.getTime(), this.#zoom);
-        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
+        const t = this.#timer.getTime();
+        this.#animZoom.clear(t);
+        // this.#animZoom.setValue(t, this.#zoom);
+        this.#animZoom.setValue(t + dur, zoom);
     }
 
     centerCursor()

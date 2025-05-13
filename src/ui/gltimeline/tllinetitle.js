@@ -67,6 +67,14 @@ export class TlTitle extends Events
                                 "title": "Select all keys",
                                 "func": () => { this.tlKeys.selectAll(); }
                             },
+                            {
+                                "title": "toggle loop",
+                                "func": () =>
+                                {
+                                    this.tlKeys.anim.setLoop(!this.tlKeys.anim.loop);
+                                    this.#gltl.needsUpdateAll = "loopchange";
+                                }
+                            },
                         ]
                     }, e.target);
             }
