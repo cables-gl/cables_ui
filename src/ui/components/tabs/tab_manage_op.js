@@ -8,6 +8,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import namespace from "../../namespaceutils.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -187,6 +188,9 @@ export default class ManageOp
                     });
                 });
 
+                let canDeleteOp = canEditOp && namespace.isPatchOp(opName);
+                if (platform.frontendOptions.opDeleteInEditor) canDeleteOp = canEditOp;
+
                 const html = getHandleBarHtml("tab_manage_op",
                     {
                         "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
@@ -201,7 +205,7 @@ export default class ManageOp
                         "portJson": portJson,
                         "summary": summary,
                         "canEditOp": canEditOp,
-                        "canDeleteOp": platform.frontendOptions.opDeleteInEditor ? canEditOp : false,
+                        "canDeleteOp": canDeleteOp,
                         "readOnly": !canEditOp,
                         "user": gui.user,
                         "warns": res.warns,
