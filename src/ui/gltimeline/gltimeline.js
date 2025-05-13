@@ -44,6 +44,8 @@ export class GlTimeline extends Events
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
 
+    #lastDragX = Number.MAX_SAFE_INTEGER;
+    #lastDragY = Number.MAX_SAFE_INTEGER;
     #selectModeEl;
     graphSelectMode = true;
     keyframeAutoCreate = true;
@@ -684,11 +686,18 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            if (event.movementX != 0)
-                this.view.scroll(-this.view.pixelToTime(event.movementX), 0);
 
-            if (!event.shiftKey) this.view.scrollY(event.movementY);
+            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
+            {
+                const movementX = event.offsetX - this.#lastDragX;
+                const movementY = event.offsetY - this.#lastDragY;
 
+                if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+
+                if (!event.shiftKey) this.view.scrollY(movementY);
+            }
+            this.#lastDragX = event.offsetX;
+            this.#lastDragY = event.offsetY;
             this.updateAllElements();
         }
 
@@ -922,6 +931,8 @@ export class GlTimeline extends Events
         this.hoverKeyRect = null;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
+        this.#lastDragX = Number.MAX_SAFE_INTEGER;
+        this.#lastDragY = Number.MAX_SAFE_INTEGER;
     }
 
     /**
