@@ -1,5 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Op } from "cables";
+import { Op, Port } from "cables";
+import { CGL } from "cables/src/core/cgl/index.js";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -407,7 +408,7 @@ export default class PatchView extends Events
 
     addAssetOpAuto(filename, event)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const ops = opNames.getOpsForFilename(filename);
 
@@ -428,7 +429,7 @@ export default class PatchView extends Events
         }
 
         const coord = { "x": coordArr[0], "y": coordArr[1] };
-        coord.x = Snap.snapOpPosX(coord.x, true);
+        coord.x = Snap.snapOpPosX(coord.x);
         coord.y = Snap.snapOpPosY(coord.y);
         uiAttr.translate = { "x": coord.x, "y": coord.y };
 
@@ -935,7 +936,7 @@ export default class PatchView extends Events
         return ops;
     }
 
-    /** @param {boolean} firstOnly */
+    /** @param {boolean} [firstOnly] */
     unlinkSelectedOps(firstOnly)
     {
         const undoGroup = undo.startGroup();
@@ -986,7 +987,7 @@ export default class PatchView extends Events
 
     deleteSelectedOps()
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const undoGroup = undo.startGroup();
         const ids = [];
@@ -1880,35 +1881,42 @@ export default class PatchView extends Events
 
         if (ops.length > 0)
         {
-            let j = 0;
             let sum = 0;
-            for (j in ops) sum += ops[j].uiAttribs.translate.x;
+            for (const j in ops) sum += ops[j].uiAttribs.translate.x;
 
             let avg = sum / ops.length;
 
             if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
 
-            for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
+            for (const j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
         return ops;
     }
 
+    /**
+     * @param {Op[]} ops
+     */
     alignSelectedOpsHor(ops)
     {
         if (ops.length > 0)
         {
-            let j = 0, sum = 0;
-            for (j in ops) sum += ops[j].uiAttribs.translate.y;
+            let sum = 0;
+            for (const j in ops) sum += ops[j].uiAttribs.translate.y;
 
             let avg = sum / ops.length;
 
             if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
 
-            for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
+            for (const j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
         return ops;
     }
 
+    /**
+     * @param {UiOp | Op} op
+     * @param {number} x
+     * @param {number} y
+     */
     setOpPos(op, x, y)
     {
         if (op && op.uiAttribs && op.uiAttribs.translate)
@@ -2174,6 +2182,9 @@ export default class PatchView extends Events
         gui.corePatch().emitEvent("subpatchesChanged");
     }
 
+    /**
+     * @param {string} opid
+     */
     focusOp(opid)
     {
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
@@ -2294,16 +2305,26 @@ export default class PatchView extends Events
         }
     }
 
+    /**
+     * @param {Port} p1
+     * @param {Port} p2
+     */
     refreshCurrentOpParamsByPort(p1, p2)
     {
         if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op)) gui.opParams.refresh();
     }
 
+    /**
+     * @param {Op<any>} op
+     */
     isCurrentOp(op)
     {
         return gui.opParams.isCurrentOp(op);
     }
 
+    /**
+     * @param {string} opid
+     */
     isCurrentOpId(opid)
     {
         return gui.opParams.isCurrentOpId(opid);
@@ -2729,6 +2750,10 @@ export default class PatchView extends Events
             selectedOps[i].setUiAttrib({ "color": col });
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} [portname]
+     */
     resetOpValues(opid, portname)
     {
         const op = this._p.getOpById(opid);
@@ -2769,6 +2794,9 @@ export default class PatchView extends Events
         gui.opParams.show(op);
     }
 
+    /**
+     * @param {string} bpSubpatchId
+     */
     getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
     {
         const ops = gui.corePatch().ops;
@@ -2777,6 +2805,9 @@ export default class PatchView extends Events
                 return ops[i];
     }
 
+    /**
+     * @param {string} subid
+     */
     getAllOpsInBlueprint(subid)
     {
         const foundOps = [];
@@ -2788,6 +2819,9 @@ export default class PatchView extends Events
         return foundOps;
     }
 
+    /**
+     * @param {string | number} subid
+     */
     getAllSubPatchOps(subid)
     {
         const foundOps = [];
@@ -2799,6 +2833,10 @@ export default class PatchView extends Events
         return foundOps;
     }
 
+    /**
+     * @param {Port} port
+     * @param {number} dir
+     */
     setExposedPortOrder(port, dir)
     {
         const ports = this.getSubPatchExposedPorts(port.op.uiAttribs.subPatch);
@@ -2950,6 +2988,9 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {string} opid
+     */
     focusOpAnim(opid)
     {
         this._patchRenderer.focusOpAnim(opid);

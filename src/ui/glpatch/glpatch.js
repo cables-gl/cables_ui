@@ -1,5 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Anim, CglContext } from "cables";
+import { Anim, CglContext, Op } from "cables";
 import GlLinedrawer from "../gldraw/gllinedrawer.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -190,12 +190,6 @@ export default class GlPatch extends Events
 
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
-
-        /*
-         * cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
-         * cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
-         * cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
-         */
 
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
@@ -920,8 +914,8 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {boolean} x
-     * @param {boolean} y
+     * @param {boolean} _x
+     * @param {boolean} _y
      */
     cursorNavOps(_x, _y)
     {
@@ -1356,7 +1350,7 @@ export default class GlPatch extends Events
 
             this._rectInstancer.interactive = false;
 
-            this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
+            this._selectionArea.setPos(this._lastMouseX, this._lastMouseY);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
 
@@ -1368,6 +1362,7 @@ export default class GlPatch extends Events
                     this.selectOpId(this._selectionArea.previousOps[i].id);
                 }
             }
+
             if (this._pressedCtrlKey)
             {
                 let unselIds = [];

@@ -2265,6 +2265,7 @@ export default class Gui extends Events
         return [];// this._savedStateChangesBlueprintSubPatches; // old blueprints
     }
 
+    /** @param {CablesTheme} theme */
     setTheme(theme = {})
     {
         if (!theme) return;
