@@ -217,8 +217,8 @@ export class glTlAnimLine extends Events
 
             for (let i = 0; i < anim.keys.length; i++)
             {
-                this.#view.minVal = Math.min(this.#view.finalMinVal, anim.keys[i].value);
-                this.#view.maxVal = Math.max(this.#view.finalMaxVal, anim.keys[i].value + 0.01);
+                this.#view.setMinVal(Math.min(this.#view.finalMinVal, anim.keys[i].value));
+                this.#view.setMaxVal(Math.max(this.#view.finalMaxVal, anim.keys[i].value + 0.01));
             }
         }
     }

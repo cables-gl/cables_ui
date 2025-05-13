@@ -43,7 +43,7 @@ export class GlTlView
     {
         this.#tl = tl;
 
-        const defaultEasing = CABLES.Anim.EASING_SMOOTHERSTEP;
+        const defaultEasing = CABLES.Anim.EASING_QUINT_OUT;
 
         this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animZoom.setValue(0, this.#zoom);
@@ -56,8 +56,8 @@ export class GlTlView
 
         this.#animMinVal = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animMaxVal = new CABLES.Anim({ "defaultEasing": defaultEasing });
-        this.minVal = -1;
-        this.maxVal = 1;
+        this.setMinVal(-1);
+        this.setMaxVal(1);
 
         this.#timer.play();
         this.updateAnims();
@@ -90,6 +90,16 @@ export class GlTlView
         return this.#finalMaxVal;
     }
 
+    set minVal(v)
+    {
+        this.setMinVal(v);
+    }
+
+    set maxVal(v)
+    {
+        this.setMaxVal(v);
+    }
+
     get minVal()
     {
         return this.#frameMinVal;
@@ -114,12 +124,10 @@ export class GlTlView
     /**
      * @param {number} v
      */
-    set minVal(v)
+    setMinVal(v, dur = 0.3)
     {
         if (this.#finalMinVal == v) return;
         this.#finalMinVal = v;
-
-        let dur = 0.3;
         this.#animMinVal.clear(this.#timer.getTime());
         this.#animMinVal.setValue(this.#timer.getTime() + dur, this.#finalMinVal);
     }
@@ -127,11 +135,10 @@ export class GlTlView
     /**
      * @param {number} v
      */
-    set maxVal(v)
+    setMaxVal(v, dur = 0.3)
     {
         if (this.#finalMaxVal == v) return;
         this.#finalMaxVal = v;
-        let dur = 0.3;
         this.#animMaxVal.clear(this.#timer.getTime());
         this.#animMaxVal.setValue(this.#timer.getTime() + dur, this.#finalMaxVal);
     }
@@ -285,25 +292,32 @@ export class GlTlView
     }
 
     /**
-     * @param {number} delta
-     * @param {number} duration
+     * @param {number} pixel
+     * @param {number} [duration]
      */
-    scrollY(delta, duration = 0.2)
+    scrollY(pixel, duration = 0.2)
     {
-        let finalTime = this.#offsetY - delta * 14;
+        if (pixel == 0) return;
+        const h = this.#tl.height - this.#tl.getFirstLinePosy();
+        const range = (Math.abs(this.minVal) + Math.abs(this.maxVal));
+        const y = (pixel / h) * range;
+        const t = this.#timer.getTime();
 
-        this.#animScrollY.clear(this.#timer.getTime());
-        this.#animScrollY.setValue(this.#timer.getTime() + duration, finalTime);
+        this.#animMinVal.clear(t);
+        this.#animMaxVal.clear(t);
+        this.#animMinVal.setValue(t, this.minVal + y);
+        this.#animMaxVal.setValue(t, this.maxVal + y);
     }
 
     updateAnims()
     {
         this.#timer.update();
-        this.#zoom = this.#animZoom.getValue(this.#timer.getTime());
-        this.#offset = this.#animScroll.getValue(this.#timer.getTime());
-        this.#offsetY = this.#animScrollY.getValue(this.#timer.getTime());
-        this.#frameMinVal = this.#animMinVal.getValue(this.#timer.getTime());
-        this.#frameMaxVal = this.#animMaxVal.getValue(this.#timer.getTime());
+        const t = this.#timer.getTime();
+        this.#zoom = this.#animZoom.getValue(t);
+        this.#offset = this.#animScroll.getValue(t);
+        this.#offsetY = this.#animScrollY.getValue(t);
+        this.#frameMinVal = this.#animMinVal.getValue(t);
+        this.#frameMaxVal = this.#animMaxVal.getValue(t);
         this.checkMinMaxVals();
     }
 
