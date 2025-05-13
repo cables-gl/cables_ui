@@ -261,28 +261,7 @@ export class GlTimeline extends Events
 
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
-            if (this.getNumSelectedKeys() == 1)
-            {
-            }
-            else if (this.getNumSelectedKeys() > 1)
-            {
-                console.log("zoomtoselection");
-                this.zoomToFitSelection();
-            }
-            else
-            {
-                console.log("zoomto all keys");
-                this.selectAllKeys();
-                if (this.getNumSelectedKeys())
-                {
-                    this.zoomToFitSelection();
-                    this.unSelectAllKeys();
-                }
-                else
-                {
-                    notifyWarn("no keys to fit");
-                }
-            }
+            this.fit();
         });
 
         gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, () =>
@@ -1220,6 +1199,35 @@ export class GlTimeline extends Events
         this.needsUpdateAll = "on config";
     }
 
+    fit()
+    {
+
+        if (this.getNumSelectedKeys() == 1)
+        {
+            gui.corePatch().timer.setTime(this.#selectedKeys[0].time);
+            this.view.centerCursor();
+        }
+        else if (this.getNumSelectedKeys() > 1)
+        {
+            console.log("zoomtoselection");
+            this.zoomToFitSelection();
+        }
+        else
+        {
+            console.log("zoomto all keys");
+            this.selectAllKeys();
+            if (this.getNumSelectedKeys())
+            {
+                this.zoomToFitSelection();
+                this.unSelectAllKeys();
+            }
+            else
+            {
+                notifyWarn("no keys to fit");
+            }
+        }
+    }
+
     cycleDisplayUnits()
     {
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
@@ -1279,6 +1287,7 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
+
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         this.view.setMinVal(boundsy.min - (range * 0.1));

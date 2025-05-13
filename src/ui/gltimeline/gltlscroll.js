@@ -39,7 +39,6 @@ export class glTlScroll extends Events
 
         this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
-            console.log("${}POINTER DOWN");
             const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
             this.#glTl.view.scrollTo((perc * this.#glTl.duration));
         });

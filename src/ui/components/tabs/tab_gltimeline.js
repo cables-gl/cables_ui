@@ -191,7 +191,7 @@ export default class GlTimelineTab
                                 "title": "fit into view",
                                 "func": () =>
                                 {
-                                    this.tlCanvas.glTimeline.zoomToFitSelection();
+                                    this.tlCanvas.glTimeline.fit();
                                 }
                             },
                         ]
