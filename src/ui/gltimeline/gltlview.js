@@ -124,7 +124,7 @@ export class GlTlView
     /**
      * @param {number} v
      */
-    setMinVal(v, dur = 0.3)
+    setMinVal(v, dur = 0.0)
     {
         if (this.#finalMinVal == v) return;
         this.#finalMinVal = v;
@@ -267,8 +267,9 @@ export class GlTlView
     {
         let finalTime = this.#offset + delta;
 
-        this.#animScroll.clear(this.#timer.getTime());
-        this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
+        const t = this.#timer.getTime();
+        this.#animScroll.clear(t);
+        this.#animScroll.setValue(t + duration, finalTime);
     }
 
     /**
@@ -277,8 +278,9 @@ export class GlTlView
      */
     scrollTo(finalTime, duration = 0.2)
     {
-        this.#animScroll.clear(this.#timer.getTime());
-        this.#animScroll.setValue(this.#timer.getTime() + duration, finalTime);
+        const t = this.#timer.getTime();
+        this.#animScroll.clear(t);
+        this.#animScroll.setValue(t + duration, finalTime);
     }
 
     /**
@@ -287,8 +289,10 @@ export class GlTlView
      */
     scrollToY(scrolly, duration = 0.2)
     {
-        this.#animScrollY.clear(this.#timer.getTime());
-        this.#animScrollY.setValue(this.#timer.getTime() + duration, scrolly);
+
+        const t = this.#timer.getTime();
+        this.#animScrollY.clear(t);
+        this.#animScrollY.setValue(t + duration, scrolly);
     }
 
     /**
@@ -299,14 +303,16 @@ export class GlTlView
     {
         if (pixel == 0) return;
         const h = this.#tl.height - this.#tl.getFirstLinePosy();
-        const range = (Math.abs(this.minVal) + Math.abs(this.maxVal));
+        const range = (Math.abs(this.finalMinVal) + Math.abs(this.finalMaxVal));
         const y = (pixel / h) * range;
         const t = this.#timer.getTime();
 
+        this.#finalMinVal += y;
+        this.#finalMaxVal += y;
         this.#animMinVal.clear(t);
         this.#animMaxVal.clear(t);
-        this.#animMinVal.setValue(t, this.minVal + y);
-        this.#animMaxVal.setValue(t, this.maxVal + y);
+        this.#animMinVal.setValue(t, this.finalMinVal);
+        this.#animMaxVal.setValue(t, this.finalMaxVal);
     }
 
     updateAnims()
