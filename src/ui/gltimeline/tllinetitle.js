@@ -168,6 +168,7 @@ export class TlTitle extends Events
     }
 
     /**
+     * @param {boolean} selected
      * @param {string} color
      */
     setBorderColor(selected, color)
@@ -175,7 +176,8 @@ export class TlTitle extends Events
         if (selected) this.#el.classList.add("selectedOp");
         else this.#el.classList.remove("selectedOp");
 
-        this.#el.style.borderLeft = "3px solid " + color;
+        this.#elTitle.style.borderLeft = "3px solid " + color;
+
     }
 
     toggleActive()

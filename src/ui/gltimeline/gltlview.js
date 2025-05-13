@@ -17,7 +17,7 @@ export class GlTlView
     /** @type {Anim} */
     #animScrollY;
 
-    #zoom = 20;
+    #zoom = 2;
 
     #offset = -0.1;
     #offsetY = 0.0;
@@ -43,7 +43,7 @@ export class GlTlView
     {
         this.#tl = tl;
 
-        const defaultEasing = CABLES.Anim.EASING_CUBIC_OUT;
+        const defaultEasing = CABLES.Anim.EASING_SMOOTHERSTEP;
 
         this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animZoom.setValue(0, this.#zoom);
@@ -63,9 +63,16 @@ export class GlTlView
         this.updateAnims();
     }
 
-    get animsFinished()
+    isAnimated()
     {
-        return this.#animZoom.isFinished(this.#timer.getTime()) && this.#animScroll.isFinished(this.#timer.getTime());
+        const t = this.#timer.getTime() - 0.1;
+        return (
+            !this.#animZoom.isFinished(t) ||
+            !this.#animScroll.isFinished(t) ||
+            !this.#animScrollY.isFinished(t) ||
+            !this.#animMinVal.isFinished(t) ||
+            !this.#animMaxVal.isFinished(t));
+
     }
 
     get zoom()
@@ -154,7 +161,7 @@ export class GlTlView
 
     get visibleTime()
     {
-        return this.pixelToTime(this.#tl.width);
+        return Math.abs(this.timeRight) + Math.abs(this.timeLeft);
     }
 
     get timeLeft()
@@ -165,6 +172,51 @@ export class GlTlView
     get timeRight()
     {
         return this.pixelToTime(this.#tl.width) + this.offset;
+    }
+
+    /**
+     * @param {number} t
+     */
+    timeToPixel(t)
+    {
+        return t * (this.#tl.width / this.#zoom);
+    }
+
+    /**
+     * @param {number} t
+     */
+    timeToPixelScreen(t)
+    {
+        return this.timeToPixel(t) - this.timeToPixel(this.#offset);
+    }
+
+    /**
+     * @param {number} x
+     */
+    pixelToTime(x)
+    {
+        return x / this.timeToPixel(1);
+    }
+
+    /**
+     * @param {number} x
+     */
+    pixelScreenToTime(x)
+    {
+        return this.pixelToTime(x);
+    }
+
+    /**
+     * @param {number} len
+     */
+    setZoomLength(len)
+    {
+        if (len < 0.1)len = 0.1;
+        console.log("set zoom length", len);
+        let zoom = len;
+        let dur = 0.3;
+        this.#animZoom.clear(this.#timer.getTime());
+        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
     }
 
     /**
@@ -233,14 +285,6 @@ export class GlTlView
     }
 
     /**
-     * @param {number} t
-     */
-    timeToPixelScreen(t)
-    {
-        return this.timeToPixel(t) - this.timeToPixel(this.#offset);
-    }
-
-    /**
      * @param {number} delta
      * @param {number} duration
      */
@@ -250,52 +294,6 @@ export class GlTlView
 
         this.#animScrollY.clear(this.#timer.getTime());
         this.#animScrollY.setValue(this.#timer.getTime() + duration, finalTime);
-    }
-
-    /**
-     * @param {number} t
-     */
-    timeToPixel(t)
-    {
-        return t * this.#zoom * 12;
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelToTime(x)
-    {
-        return x / this.timeToPixel(1);
-    }
-
-    /**
-     * @param {number} x
-     */
-    pixelScreenToTime(x)
-    {
-        return this.pixelToTime(x);
-    }
-
-    /**
-     * @param {number} len
-     */
-    setZoomLength(len)
-    {
-        let zoom = this.#tl.duration / len;
-        let dur = 0.3;
-        this.#animZoom.clear(this.#timer.getTime());
-        this.#animZoom.setValue(this.#timer.getTime() + dur, zoom);
-    }
-
-    isAnimated()
-    {
-        return (
-            !this.#animZoom.isFinished(this.#timer.getTime()) ||
-            !this.#animScroll.isFinished(this.#timer.getTime()) ||
-            !this.#animScrollY.isFinished(this.#timer.getTime()) ||
-            !this.#animMinVal.isFinished(this.#timer.getTime()) ||
-            !this.#animMaxVal.isFinished(this.#timer.getTime()));
-
     }
 
     updateAnims()
@@ -320,6 +318,7 @@ export class GlTlView
             "offset": this.offset,
             "offsetY": this.offsetY,
             "zoom": this.zoom,
+            "visibleTime": this.visibleTime
         };
         return o;
 

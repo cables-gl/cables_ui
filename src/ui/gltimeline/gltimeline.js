@@ -436,7 +436,7 @@ export class GlTimeline extends Events
 
     get isAnimated()
     {
-        return !this.view.animsFinished;
+        return this.view.isAnimated();
     }
 
     get cursorTime()
@@ -677,9 +677,11 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4, 0);
-            if (!event.shiftKey)
-                this.view.scrollY(event.movementY);
+            if (event.movementX != 0)
+                this.view.scroll(-this.view.pixelToTime(event.movementX), 0);
+
+            if (!event.shiftKey) this.view.scrollY(event.movementY);
+
             this.updateAllElements();
         }
 
@@ -933,7 +935,7 @@ export class GlTimeline extends Events
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY < 0) delta = 1.1;
+            if (event.deltaY > 0) delta = 1.1;
             else delta = 0.9;
 
             this.view.setZoomOffset(delta);
@@ -1075,7 +1077,6 @@ export class GlTimeline extends Events
      */
     render(resX, resY)
     {
-
         this.#perfFps.startFrame();
 
         if (this.loopAreaEnd != 0 &&
@@ -1263,9 +1264,9 @@ export class GlTimeline extends Events
         this.view.minVal = boundsy.min;
         this.view.maxVal = boundsy.max;
 
-        this.view.setZoomLength(bounds.length + 1);
-        this.view.scrollTo(bounds.min - 0.5);
-        this.view.scrollToY(boundsy.min);
+        this.view.setZoomLength(bounds.length + bounds.length * 0.2);
+        this.view.scrollTo(bounds.min - bounds.length * 0.1);
+        this.view.scrollToY(0);
     }
 
     showKeyParams()
