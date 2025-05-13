@@ -67,11 +67,12 @@ export class GlTlView
     {
         const t = this.#timer.getTime() - 0.1;
         return (
-            !this.#animZoom.isFinished(t) ||
-            !this.#animScroll.isFinished(t) ||
-            !this.#animScrollY.isFinished(t) ||
-            !this.#animMinVal.isFinished(t) ||
-            !this.#animMaxVal.isFinished(t));
+            (!this.#animZoom.isFinished(t)) ||
+            (!this.#animScroll.isFinished(t)) ||
+            (!this.#animScrollY.isFinished(t)) ||
+            (!this.#animMinVal.isFinished(t)) ||
+            (!this.#animMaxVal.isFinished(t))
+        );
 
     }
 

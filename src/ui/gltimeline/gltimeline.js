@@ -1114,7 +1114,7 @@ export class GlTimeline extends Events
             if (this.disposed) return;
             this.view.updateAnims();
             if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
-            if (!this.view.isAnimated() || this.needsUpdateAll) this.updateAllElements();
+            if (this.view.isAnimated() || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
             this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
