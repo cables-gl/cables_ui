@@ -30,7 +30,7 @@
         }
         &.selectedOp
         {
-        background-color: #444;
+            background-color: #444;
         }
 
         .button-small {
@@ -40,15 +40,19 @@
             margin: 1px !important;
 
             .icon {
-                width: calc(3px) !important;
             }
         }
     }
 
-.onkey
-{
-background-color: #00FFFF !important;
-}
+    .hasSelectedKeys
+    {
+        border-left:3px solid #ffff00;
+    }
+
+    .onkey
+    {
+        background-color: #00FFFF !important;
+    }
 
     .filterInput
     {

@@ -111,7 +111,7 @@ export default class SavedState extends Events
 
     /**
      * @param {string} initiator
-     * @param {string | number | boolean} subpatch
+     * @param {string | number | boolean} [subpatch]
      */
     setUnSaved(initiator, subpatch)
     {

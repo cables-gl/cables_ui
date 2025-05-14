@@ -24,6 +24,14 @@
 
 /**
  * @typedef CablesTheme
- * @property {cbltheme_colors_patch} colors_patch
- * @property {cbltheme_colors_vizlayer} colors_patch
+ * @property {cbltheme_colors_patch} [colors_patch]
+ * @property {cbltheme_colors_vizlayer} [colors_patch]
+ * @property {object} [colors]
+ * @property {object} [colors_patch]
+ * @property {object} [colors_textedit]
+ * @property {object} [colors_html]
+ * @property {object} [colors_vizlayer]
+ * @property {object} [colors_types]
+ * @property {object} [colors_namespaces]
+ * @property {object} [patch]
  */

@@ -11,7 +11,7 @@ export default class GlCursor extends Events
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {number} clientId
+     * @param {number} [clientId]
      */
     constructor(glPatch, instancer, clientId)
     {

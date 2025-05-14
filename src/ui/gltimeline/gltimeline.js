@@ -7,7 +7,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
 import { glTlScroll } from "./gltlscroll.js";
 import { GlTlView } from "./gltlview.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -44,6 +44,8 @@ export class GlTimeline extends Events
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
 
+    #lastDragX = Number.MAX_SAFE_INTEGER;
+    #lastDragY = Number.MAX_SAFE_INTEGER;
     #selectModeEl;
     graphSelectMode = true;
     keyframeAutoCreate = true;
@@ -106,7 +108,7 @@ export class GlTimeline extends Events
     loopAreaEnd = 0;
 
     /** @type {TlConfig} */
-    cfg = {
+    cfg = CABLES.timelineConfig || {
         "fps": 30,
         "bpm": 180,
         "fadeInFrames": true,
@@ -195,12 +197,14 @@ export class GlTimeline extends Events
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
         });
 
+        cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
-        cgl.addEventListener("resize", () => { this.resize(true); });
+        cgl.on("resize", () => { this.resize(true); });
+        gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
@@ -257,21 +261,7 @@ export class GlTimeline extends Events
 
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
-            if (this.getNumSelectedKeys() == 1)
-            {
-            }
-            else if (this.getNumSelectedKeys() > 1)
-            {
-                console.log("zoomtoselection");
-                this.zoomToFitSelection();
-            }
-            else
-            {
-                console.log("zoomto all keys");
-                this.selectAllKeys();
-                this.zoomToFitSelection();
-                this.unSelectAllKeys();
-            }
+            this.fit();
         });
 
         gui.keys.key("j", "Go to previous keyframe", "down", cgl.canvas.id, {}, () =>
@@ -365,7 +355,7 @@ export class GlTimeline extends Events
 
         this.deactivateAllAnims(true);
         gui.emitEvent("opSelectChange");
-        this.updateAllElements();
+        this.needsUpdateAll = "updategrathselect";
         this.saveUserSettings();
     }
 
@@ -436,7 +426,7 @@ export class GlTimeline extends Events
 
     get isAnimated()
     {
-        return !this.view.animsFinished;
+        return this.view.isAnimated() || this.needsUpdateAll;
     }
 
     get cursorTime()
@@ -669,7 +659,7 @@ export class GlTimeline extends Events
                     }
                 }
 
-                this.updateAllElements();
+                this.needsUpdateAll = "mouse m";
 
                 this.showKeyParamsSoon();
             }
@@ -677,12 +667,20 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-            this.view.scroll(-this.view.pixelToTime(event.movementX) * 4, 0);
-            if (!event.shiftKey)
-                this.view.scrollY(event.movementY);
-            this.updateAllElements();
-        }
 
+            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
+            {
+                const movementX = event.offsetX - this.#lastDragX;
+                const movementY = event.offsetY - this.#lastDragY;
+
+                if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+
+                if (!event.shiftKey) this.view.scrollY(movementY, 0);
+            }
+            this.#lastDragX = event.offsetX;
+            this.#lastDragY = event.offsetY;
+            this.needsUpdateAll = "mouse drag pan";
+        }
         else
         {
             this.#lastXnoButton = x;
@@ -913,6 +911,8 @@ export class GlTimeline extends Events
         this.hoverKeyRect = null;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
+        this.#lastDragX = Number.MAX_SAFE_INTEGER;
+        this.#lastDragY = Number.MAX_SAFE_INTEGER;
     }
 
     /**
@@ -933,7 +933,7 @@ export class GlTimeline extends Events
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY < 0) delta = 1.1;
+            if (event.deltaY > 0) delta = 1.1;
             else delta = 0.9;
 
             this.view.setZoomOffset(delta);
@@ -1075,7 +1075,6 @@ export class GlTimeline extends Events
      */
     render(resX, resY)
     {
-
         this.#perfFps.startFrame();
 
         if (this.loopAreaEnd != 0 &&
@@ -1094,7 +1093,7 @@ export class GlTimeline extends Events
             if (this.disposed) return;
             this.view.updateAnims();
             if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
-            if (!this.view.animsFinished || this.needsUpdateAll) this.updateAllElements();
+            if (this.view.isAnimated() || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
             this.#cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
@@ -1197,7 +1196,36 @@ export class GlTimeline extends Events
     {
         this.cfg = cfg;
         this.duration = cfg.duration;
-        this.updateAllElements();
+        this.needsUpdateAll = "on config";
+    }
+
+    fit()
+    {
+
+        if (this.getNumSelectedKeys() == 1)
+        {
+            gui.corePatch().timer.setTime(this.#selectedKeys[0].time);
+            this.view.centerCursor();
+        }
+        else if (this.getNumSelectedKeys() > 1)
+        {
+            console.log("zoomtoselection");
+            this.zoomToFitSelection();
+        }
+        else
+        {
+            console.log("zoomto all keys");
+            this.selectAllKeys();
+            if (this.getNumSelectedKeys())
+            {
+                this.zoomToFitSelection();
+                this.unSelectAllKeys();
+            }
+            else
+            {
+                notifyWarn("no keys to fit");
+            }
+        }
     }
 
     cycleDisplayUnits()
@@ -1206,7 +1234,7 @@ export class GlTimeline extends Events
         else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
         else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
-        this.updateAllElements();
+        this.needsUpdateAll = "displayunit changed";
         this.saveUserSettings();
 
     }
@@ -1223,6 +1251,7 @@ export class GlTimeline extends Events
             for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
             {
                 const anim = this.#tlAnims[anii].anims[ans];
+                if (!anim.tlActive) continue;
                 const index = 0;
 
                 for (let ik = 0; ik < anim.keys.length; ik++)
@@ -1258,14 +1287,16 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
-        const bounds = this.getSelectedKeysBoundsTime();
-        const boundsy = this.getSelectedKeysBoundsValue();
-        this.view.minVal = boundsy.min;
-        this.view.maxVal = boundsy.max;
 
-        this.view.setZoomLength(bounds.length + 1);
-        this.view.scrollTo(bounds.min - 0.5);
-        this.view.scrollToY(boundsy.min);
+        const boundsy = this.getSelectedKeysBoundsValue();
+        const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
+        this.view.setMinVal(boundsy.min - (range * 0.1));
+        this.view.setMaxVal(boundsy.max + (range * 0.1));
+
+        const bounds = this.getSelectedKeysBoundsTime();
+        this.view.setZoomLength(bounds.length + bounds.length * 0.2);
+        this.view.scrollTo(bounds.min - bounds.length * 0.1);
+        this.view.scrollToY(0);
     }
 
     showKeyParams()
@@ -1612,12 +1643,20 @@ export class GlTimeline extends Events
                         if (op.portsIn[i].anim.getKey(t).time == t)
                         {
                             if (elkf)
+                            {
                                 elkf.classList.add("onkey");
+                                elkf.classList.add("icon-diamond-fill");
+                                elkf.classList.remove("icon-diamond");
+                            }
                         }
                         else
                         {
                             if (elkf)
+                            {
                                 elkf.classList.remove("onkey");
+                                elkf.classList.remove("icon-diamond-fill");
+                                elkf.classList.add("icon-diamond");
+                            }
                         }
 
                     }

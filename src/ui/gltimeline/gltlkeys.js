@@ -560,6 +560,8 @@ export class glTlKeys extends Events
     {
         // console.log("${}", this.#keyRects);
         // if (this.#keyRects.length == 0)
+        if
+        (this.#glTl.isAnimated) this.update();
         this.setKeyPositions();
     }
 }

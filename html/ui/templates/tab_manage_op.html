@@ -34,7 +34,11 @@
         {{/if}}
 
         {{#if canDeleteOp}}
-            <a class="button-small button-delete" target="_blank" onclick="CABLES.CMD.PATCH.deleteOp('{{opname}}')">Delete Op</a>
+            {{#if frontendOptions.opDeleteInEditor}}
+                <a class="button-small button-delete" target="_blank" onclick="CABLES.CMD.PATCH.deleteOp('{{opname}}')">Delete Op</a>
+            {{else}}
+                <a class="button-small button-delete" target="_blank" href="{{cablesUrl}}/op/delete/{{opname}}">Delete Op</a>
+            {{/if}}
         {{/if}}
 
         {{#if frontendOptions.showLocalOpDirButton}}
