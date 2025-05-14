@@ -71,7 +71,7 @@ export class TlTitle extends Events
                                 "title": "loop off",
                                 "func": () =>
                                 {
-                                    this.tlKeys.anim.setLoop(0);
+                                    this.tlKeys.anim.setLoop(Anim.LOOP_OFF);
                                     this.#gltl.needsUpdateAll = "loopchange";
                                 }
                             },
@@ -79,7 +79,7 @@ export class TlTitle extends Events
                                 "title": "loop repeat",
                                 "func": () =>
                                 {
-                                    this.tlKeys.anim.setLoop(1);
+                                    this.tlKeys.anim.setLoop(Anim.LOOP_REPEAT);
                                     this.#gltl.needsUpdateAll = "loopchange";
                                 }
                             },
@@ -87,7 +87,15 @@ export class TlTitle extends Events
                                 "title": "loop mirror",
                                 "func": () =>
                                 {
-                                    this.tlKeys.anim.setLoop(2);
+                                    this.tlKeys.anim.setLoop(Anim.LOOP_MIRROR);
+                                    this.#gltl.needsUpdateAll = "loopchange";
+                                }
+                            },
+                            {
+                                "title": "loop offset",
+                                "func": () =>
+                                {
+                                    this.tlKeys.anim.setLoop(Anim.LOOP_OFFSET);
                                     this.#gltl.needsUpdateAll = "loopchange";
                                 }
                             },
