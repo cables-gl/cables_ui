@@ -1,4 +1,4 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, CablesConstants } from "cables-shared-client";
 import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -447,10 +447,8 @@ export default class FileManager
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
 
-                        let editable = false;
-                        if (r.fileDb && r.fileDb.fileName) editable = r.fileDb.fileName.endsWith(".md") || r.fileDb.fileName.endsWith(".scss");
-                        editable = editable || (r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader");
-
+                        const editableFiles = CablesConstants.EDITABLE_FILETYPES || [];
+                        const editable = !platform.isElectron() && editableFiles.includes(r.type);
                         let assetPath = "";
                         if (r && r.fileDb) assetPath = "/assets/" + r.fileDb.projectId + "/" + r.fileDb.fileName;
                         if (platform.frontendOptions.isElectron) assetPath = r.path;

@@ -12,7 +12,6 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
-import { copyFileToPatch } from "../../commands/cmd_files.js";
 
 /**
  * op parameter panel
