@@ -68,10 +68,26 @@ export class TlTitle extends Events
                                 "func": () => { this.tlKeys.selectAll(); }
                             },
                             {
-                                "title": "toggle loop",
+                                "title": "loop off",
                                 "func": () =>
                                 {
-                                    this.tlKeys.anim.setLoop(!this.tlKeys.anim.loop);
+                                    this.tlKeys.anim.setLoop(0);
+                                    this.#gltl.needsUpdateAll = "loopchange";
+                                }
+                            },
+                            {
+                                "title": "loop repeat",
+                                "func": () =>
+                                {
+                                    this.tlKeys.anim.setLoop(1);
+                                    this.#gltl.needsUpdateAll = "loopchange";
+                                }
+                            },
+                            {
+                                "title": "loop mirror",
+                                "func": () =>
+                                {
+                                    this.tlKeys.anim.setLoop(2);
                                     this.#gltl.needsUpdateAll = "loopchange";
                                 }
                             },

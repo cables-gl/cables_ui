@@ -246,7 +246,7 @@ export class GlTlView
     {
         let center = (this.visibleTime / 2);
         if (this.cursorTime == 0)center = this.visibleTime / 10;
-        this.scroll(this.cursorTime - this.#offset - center);
+        this.scrollTo(this.cursorTime - center);
     }
 
     /**

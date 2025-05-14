@@ -21,6 +21,7 @@ export class glTlScroll extends Events
     #width = 222;
     #dragStart = 0;
     #glTl;
+    #lastdown = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -28,7 +29,7 @@ export class glTlScroll extends Events
     constructor(glTl)
     {
         super();
-        this._log = new Logger("glTlRuler");
+        this._log = new Logger("gltlscroll");
         this.#glTl = glTl;
 
         this.#mainRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
@@ -39,6 +40,12 @@ export class glTlScroll extends Events
 
         this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
+            if (this.#lastdown != 0 && performance.now() - this.#lastdown < 250) this.showAll();
+
+            console.log("text", performance.now() - this.#lastdown);
+            this.#lastdown = performance.now();
+
+            console.log("${}POINTER DOWN");
             const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
             this.#glTl.view.scrollTo((perc * this.#glTl.duration));
         });
@@ -62,6 +69,13 @@ export class glTlScroll extends Events
         this.#glRectCursor.setParent(this.#mainRect);
 
         this.update();
+    }
+
+    showAll()
+    {
+        console.log("showall!!!!!!");
+        this.#glTl.view.scrollTo(0);
+        this.#glTl.view.setZoomLength(this.#glTl.duration);
     }
 
     /**
