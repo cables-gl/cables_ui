@@ -1575,8 +1575,8 @@ export default class PatchView extends Events
         this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
-            this._log.error("clipboard not type text");
-            notifyError("Paste failed");
+            // this._log.error("clipboard not type text");
+            // notifyError("Paste failed");
             return;
         }
         let str = e.clipboardData.getData("text/plain");
