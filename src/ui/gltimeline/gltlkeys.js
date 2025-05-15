@@ -8,6 +8,7 @@ import { gui } from "../gui.js";
 import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
+import { showToolTip } from "../elements/tooltips.js";
 
 /**
  * gltl key rendering
@@ -21,7 +22,7 @@ export class glTlKeys extends Events
     static COLOR_INIT = [0.9, 0.0, 0.9, 1];
     static COLOR_INACTIVE = [0.4, 0.4, 0.4, 1];
     static COLOR_NORMAL = [0.7, 0.7, 0.7, 1];
-    static COLOR_SELECTED = [1, 1, 0.7, 1];
+    static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
     static COLOR_HIGHLIGHT = [0, 1, 1, 1];
 
@@ -150,7 +151,7 @@ export class glTlKeys extends Events
         if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
         {
             kr.setShape(13);
-            kr.setSize(this.sizeKey, this.sizeKey);
+            kr.setSize(w, w);
         }
         else
         {
@@ -161,7 +162,13 @@ export class glTlKeys extends Events
 
     getKeyWidth()
     {
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS) return this.sizeKey;
+        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        {
+            let s = this.sizeKey * 0.6;
+            if (this.#anim.tlActive)s = this.sizeKey * 0.8;
+            if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
+            return s;
+        }
         const kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
 
         return kwidth;
@@ -213,7 +220,8 @@ export class glTlKeys extends Events
         const pointsSort = [];
 
         let z = -0.4;
-        if (this.#anim.tlActive)z = -0.4;
+        if (this.#anim.tlActive)z = -0.5;
+        if (this.#port.op.isCurrentUiOp())z = -0.6;
 
         if (this.#options.keyYpos)
         {
@@ -278,7 +286,7 @@ export class glTlKeys extends Events
             if (this.#anim.tlActive)
             {
                 if (this.#port.op.isCurrentUiOp()) this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
-                else if (this.#hasSelectedKeys) { this.#spline.setColorArray(glTlKeys.COLOR_SELECTED); }
+                // else if (this.#hasSelectedKeys) { this.#spline.setColorArray(glTlKeys.COLOR_SELECTED); }
                 else this.#spline.setColorArray(glTlKeys.COLOR_NORMAL);
             }
             else
@@ -328,10 +336,16 @@ export class glTlKeys extends Events
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
             rx -= this.getKeyWidth() / 2;
-            const ry = y - this.keyHeight / 2;
+            let ry = y - this.keyHeight / 2;
+            if (this.isLayoutGraph()) ry = y - this.getKeyWidth() / 2;
+
             if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.keyHeight, y, animKey.value, this.#animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
-            kr.setPosition(rx, ry, -0.84);
+            let z = -0.6;
+            if (this.#anim.tlActive)z = -0.7;
+            if (this.#port.op.isCurrentUiOp())z = -0.8;
+
+            kr.setPosition(rx, ry, z);
             this.setKeyShapeSize(kr);
 
             if (
@@ -354,13 +368,6 @@ export class glTlKeys extends Events
 
     hasSelectedKeys()
     {
-        // for (let i = 0; i < this.#anim.keys.length; i++)
-        // {
-        //     const animKey = this.#anim.keys[i];
-        //     if (this.#glTl.isKeySelected(animKey))
-        //         return true;
-        // }
-        // return false;
         return this.#hasSelectedKeys;
     }
 
@@ -371,14 +378,18 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
             const keyRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+            const key = this.#anim.keys[i];
 
             this.setKeyShapeSize(keyRect);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
             // keyRect.setColorHover(1, 1, 1, 1);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);
-            const key = this.#anim.keys[i];
             keyRect.data.key = key;
+            keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
+            {
+                showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
+            });
 
             let startDragTime = -1111;
             let startDragValue = -1111;
@@ -391,6 +402,7 @@ export class glTlKeys extends Events
             {
                 this.#glTl.hoverKeyRect = keyRect;
             });
+
             keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 this.#glTl.hoverKeyRect = null;
@@ -407,10 +419,7 @@ export class glTlKeys extends Events
                     "title": "timeline move keys",
                     "undo": () =>
                     {
-
                         this.#glTl.deserializeKeys(oldValues);
-
-                        // key.set(oldValues);
                     },
                     redo() {}
                 });
@@ -427,8 +436,8 @@ export class glTlKeys extends Events
                     {
                         if (this.#glTl.selectRect) return;
                         if (this.#dragStarted) return;
-
                         if (!e.shiftKey) this.#glTl.unSelectAllKeys();
+
                         this.#glTl.selectKey(key, this.#anim);
                     }
                     this.click = false;
@@ -442,11 +451,10 @@ export class glTlKeys extends Events
 
                 if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
                 {
-
                     if (this.#glTl.selectRect) return;
                     if (this.#dragStarted) return;
-
                     if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys();
+
                     this.#glTl.selectKey(key, this.#anim);
                     this.update();
                 }

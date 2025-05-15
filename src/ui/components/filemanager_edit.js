@@ -48,6 +48,7 @@ export default class FileManagerEditor
                         "content": _data,
                         "editorObj": editorObj,
                         "syntax": syntax.toLowerCase(),
+                        "singleton": true,
                         "onClose": function (which)
                         {
                             if (editorSession) editorSession.remove(editorObj.type, editorObj.name);

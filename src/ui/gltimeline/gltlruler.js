@@ -20,7 +20,7 @@ export class glTlRuler extends Events
     static COLOR_MARK_OUTRANGE = [0, 0, 0, 1];
     static COLOR_MARK_SIZE0 = [1, 1, 1, 0.2];
     static COLOR_MARK_SIZE1 = [1, 1, 1, 0.3];
-    static COLOR_MARK_SIZE2 = [1, 1, 1, 0.4];
+    static COLOR_MARK_SIZE2 = [1, 1, 1, 0.2];
     static COLOR_MARK_SIZES = [this.COLOR_MARK_SIZE0, this.COLOR_MARK_SIZE1, this.COLOR_MARK_SIZE2];
 
     /** @type {GlTimeline} */
@@ -40,7 +40,7 @@ export class glTlRuler extends Events
         this._glRectBg = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
-        this._glRectBg.setPosition(0, this.y, -0.9);
+        this._glRectBg.setPosition(0, this.y, -0.3);
 
         this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
         {

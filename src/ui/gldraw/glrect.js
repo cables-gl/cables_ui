@@ -468,8 +468,8 @@ export default class GlRect extends Events
         const hoverChanged = this.#hovering != hovering;
         this.#hovering = hovering;
 
-        if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this);
-        else if (!hovering && isHovered) this.emitEvent(GlRect.EVENT_POINTER_UNHOVER, this);
+        if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this, e);
+        else if (!hovering && isHovered) this.emitEvent(GlRect.EVENT_POINTER_UNHOVER, this, e);
 
         if (hoverChanged)
         {

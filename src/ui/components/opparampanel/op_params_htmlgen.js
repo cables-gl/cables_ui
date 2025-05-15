@@ -1,4 +1,5 @@
 import { Port } from "cables";
+import { CablesConstants } from "cables-shared-client";
 import { portType } from "../../core_constants.js";
 import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
@@ -137,6 +138,32 @@ class PortHtmlGenerator
                 "texts": text,
                 "vars": ports[i].op.patch.getVars(ports[i].type)
             };
+
+            if (ports[i].uiAttribs.display === "file")
+            {
+                const url = ports[i].value || "";
+                const patchAsset = url.startsWith("/assets/" + gui.project()._id);
+                let fileType = "";
+                if (patchAsset)
+                {
+                    const fileName = CABLES.filename(url);
+                    const suffix = "." + fileName.split(".").pop();
+                    for (let key in CablesConstants.FILETYPES)
+                    {
+                        const typeSuffixes = CablesConstants.FILETYPES[key];
+                        if (typeSuffixes.includes(suffix))
+                        {
+                            fileType = key;
+                            break;
+                        }
+                    }
+                    const editableFiles = CablesConstants.EDITABLE_FILETYPES || [];
+                    tmplData.fileEditable = !platform.isElectron() && editableFiles.includes(fileType);
+                    tmplData.fileType = fileType;
+                    tmplData.fileName = fileName;
+                }
+
+            }
 
             html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
             html += this._templatePortInput(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });

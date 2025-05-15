@@ -1204,8 +1204,13 @@ export class GlTimeline extends Events
 
         if (this.getNumSelectedKeys() == 1)
         {
-            gui.corePatch().timer.setTime(this.#selectedKeys[0].time);
-            this.view.centerCursor();
+
+            const t = this.#selectedKeys[0].time;
+            if (gui.corePatch().timer.getTime() != t)
+            {
+                gui.corePatch().timer.setTime(t);
+                this.view.centerCursor();
+            }
         }
         else if (this.getNumSelectedKeys() > 1)
         {
@@ -1290,13 +1295,23 @@ export class GlTimeline extends Events
 
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
-        this.view.setMinVal(boundsy.min - (range * 0.1));
-        this.view.setMaxVal(boundsy.max + (range * 0.1));
+        if (range > 0)
+        {
+            this.view.setMinVal(boundsy.min - (range * 0.1));
+            this.view.setMaxVal(boundsy.max + (range * 0.1));
+            this.view.scrollToY(0);
+        }
 
         const bounds = this.getSelectedKeysBoundsTime();
-        this.view.setZoomLength(bounds.length + bounds.length * 0.2);
-        this.view.scrollTo(bounds.min - bounds.length * 0.1);
-        this.view.scrollToY(0);
+        if (bounds.length == 0)
+        {
+            this.view.scrollTo(bounds.min - this.view.visibleTime / 2);
+        }
+        else
+        {
+            this.view.setZoomLength(bounds.length + bounds.length * 0.2);
+            this.view.scrollTo(bounds.min - bounds.length * 0.1);
+        }
     }
 
     showKeyParams()
