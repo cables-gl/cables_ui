@@ -148,28 +148,35 @@ export class glTlKeys extends Events
     {
         const w = this.getKeyWidth();
 
-        if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (this.isLayoutGraph())
         {
             kr.setShape(13);
             kr.setSize(w, w);
         }
         else
+        if (w > 5 && !this.isLayoutGraph())
+        {
+            kr.setShape(13);
+            kr.setSize(11, 11);
+        }
+        else
         {
             kr.setShape(0);
-            kr.setSize(w, this.sizeKey);
+            kr.setSize(w * 2, this.sizeKey);
         }
     }
 
     getKeyWidth()
     {
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (this.isLayoutGraph())
         {
             let s = this.sizeKey * 0.6;
             if (this.#anim.tlActive)s = this.sizeKey * 0.8;
             if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
-        const kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        if (kwidth < 2)kwidth = 19;
 
         return kwidth;
     }
@@ -231,7 +238,7 @@ export class glTlKeys extends Events
 
             for (let i = 0; i < steps; i++)
             {
-                // add exact keys
+                // todo:add exact keys
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
@@ -269,9 +276,9 @@ export class glTlKeys extends Events
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(this.#points);
-            this.updateColors();
         }
 
+        this.updateColors();
         this.#updateCount++;
 
     }
@@ -325,7 +332,6 @@ export class glTlKeys extends Events
 
     setKeyPositions()
     {
-        const isActive = this.#port.op.isCurrentUiOp();
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const animKey = this.#anim.keys[i];
