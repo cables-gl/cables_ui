@@ -215,8 +215,7 @@ export class GlTimeline extends Events
         this.#keyOverEl = document.createElement("div");
         this.#keyOverEl.classList.add("keyOverlay");
         this.#keyOverEl.setAttribute("id", "keyOverlay");
-        this.#keyOverEl.classList.add("hidden");
-        ele.byId("mainContainer").appendChild(this.#keyOverEl);
+        cgl.canvas.parentElement.appendChild(this.#keyOverEl);
 
         this.#filterInputEl = document.createElement("input");
         this.#filterInputEl.classList.add("filterInput");
@@ -454,6 +453,14 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
         this.needsUpdateAll = "resize";
+
+        const wlines = userSettings.get("timeline_titles_width");
+        const wparams = userSettings.get("timeline_params_width");
+        this.#keyOverEl.style.width = wparams + "px";
+        this.#keyOverEl.style.right = 0 + "px";
+        this.#keyOverEl.style.bottom = 0 + "px";
+        this.#keyOverEl.style.top = "35px";
+
     }
 
     snapSelectedKeyTimes()
@@ -1654,22 +1661,12 @@ export class GlTimeline extends Events
         setTimeout(this.updateParamKeyframes.bind(this), 111);
     }
 
-    hideOverlayPanels()
-    {
-        console.log("hideeeeeeeeeeee");
-        this.#keyOverEl.classList.add("hidden");
-    }
-
     showParams()
     {
-        this.#keyOverEl.classList.remove("hidden");
-        this.#keyOverEl.style.right = gui.rendererWidth + "px";
-        this.#keyOverEl.style.bottom = this.height + "px";
     }
 
     hideParams()
     {
-        this.#keyOverEl.classList.add("hidden");
     }
 
     showKeyParams()

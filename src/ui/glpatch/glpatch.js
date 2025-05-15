@@ -828,10 +828,10 @@ export default class GlPatch extends Events
     isFocused()
     {
         const isf = document.activeElement == this._cgl.canvas;
-        if (!this.wasFocussed && isf)
-        {
-            if (gui.glTimeline)gui.glTimeline.hideOverlayPanels();
-        }
+        // if (!this.wasFocussed && isf)
+        // {
+        //     if (gui.glTimeline)gui.glTimeline.hideOverlayPanels();
+        // }
         this.wasFocussed = isf;
         return isf;
 
