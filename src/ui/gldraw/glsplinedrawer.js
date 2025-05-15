@@ -211,6 +211,10 @@ export default class GlSplineDrawer
         }
     }
 
+    /**
+     * @param {number} idx
+     * @param {number[]} rgba
+     */
     setSplineColorInactive(idx, rgba)
     {
         if (
@@ -224,6 +228,10 @@ export default class GlSplineDrawer
         }
     }
 
+    /**
+     * @param {number} idx
+     * @param {number[]} rgba
+     */
     setSplineColorBorder(idx, rgba)
     {
         if (

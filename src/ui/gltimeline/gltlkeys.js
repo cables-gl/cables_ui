@@ -545,7 +545,6 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
-        // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
 
         this.removeAllEventListeners();
 
@@ -557,7 +556,6 @@ export class glTlKeys extends Events
         const o = {};
         o.points = this.#points;
         o.updateCount = this.#updateCount;
-
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
@@ -566,10 +564,7 @@ export class glTlKeys extends Events
 
     render()
     {
-        // console.log("${}", this.#keyRects);
-        // if (this.#keyRects.length == 0)
-        if
-        (this.#glTl.isAnimated) this.update();
+        if (this.#glTl.isAnimated) this.update();
         this.setKeyPositions();
     }
 }

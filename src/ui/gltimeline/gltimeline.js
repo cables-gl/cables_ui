@@ -214,8 +214,9 @@ export class GlTimeline extends Events
 
         this.#keyOverEl = document.createElement("div");
         this.#keyOverEl.classList.add("keyOverlay");
+        this.#keyOverEl.setAttribute("id", "keyOverlay");
         this.#keyOverEl.classList.add("hidden");
-        cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+        ele.byId("mainContainer").appendChild(this.#keyOverEl);
 
         this.#filterInputEl = document.createElement("input");
         this.#filterInputEl.classList.add("filterInput");
@@ -1330,6 +1331,9 @@ export class GlTimeline extends Events
         else
         {
             this.#keyOverEl.classList.remove("hidden");
+
+            this.#keyOverEl.style.right = gui.rendererWidth + "px";
+            this.#keyOverEl.style.bottom = this.height + "px";
             ele.byId("tlselectinfo").innerHTML = "" + this.#selectedKeys.length + " keys selected " + timestr + " " + valstr;
         }
 
@@ -1673,7 +1677,6 @@ export class GlTimeline extends Events
                                 elkf.classList.add("icon-diamond");
                             }
                         }
-
                     }
                 }
             }
@@ -1681,5 +1684,11 @@ export class GlTimeline extends Events
             perf.finish();
         }
         setTimeout(this.updateParamKeyframes.bind(this), 111);
+    }
+
+    hideOverlayPanels()
+    {
+        console.log("hideeeeeeeeeeee");
+        this.#keyOverEl.classList.add("hidden");
     }
 }

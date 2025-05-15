@@ -56,16 +56,17 @@
 
     .filterInput
     {
+        width: 60px;
         top: 81px;
-        left: 31px;
+        left: 21px;
         position: absolute;
     }
 
     .selectMode
     {
-        left: 194px;
+        left: 94px;
         position: absolute;
-        top: 79px;
+        top: 74px;
     }
 
     .timelineminimize
@@ -85,7 +86,6 @@
         top: 40px;
         left: 10px;
         z-index: 99;
-        background-color: var(--color-02);
         color: var(--color-08);
         cursor: pointer;
         h3
@@ -103,7 +103,7 @@
         background-color: var(--color-02);
         width: 300px;
         height: 165px;
-        z-index: 99;
+        z-index: 9899;
 
         .iconbutton
         {
