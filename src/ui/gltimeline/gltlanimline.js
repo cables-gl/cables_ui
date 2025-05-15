@@ -413,6 +413,19 @@ export class glTlAnimLine extends Events
         }
     }
 
+    /**
+     * @param {Anim} anim
+     */
+    getGlKeysForAnim(anim)
+    {
+        for (let j = 0; j < this.#anims.length; j++)
+        {
+            if (anim == this.#anims[j])
+                return this.#keys[j];
+        }
+
+    }
+
     render()
     {
         for (let j = 0; j < this.#keys.length; j++)

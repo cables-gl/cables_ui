@@ -231,6 +231,7 @@ export class glTlKeys extends Events
 
             for (let i = 0; i < steps; i++)
             {
+                // add exact keys
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 

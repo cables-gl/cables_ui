@@ -278,7 +278,6 @@ export class GlTimeline extends Events
         gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
-            this.needsUpdateAll = "deletekey";
         });
 
         gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
@@ -885,6 +884,7 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
 
         this.unSelectAllKeys();
+        this.needsUpdateAll = "deletekey";
     }
 
     /**
@@ -1315,38 +1315,6 @@ export class GlTimeline extends Events
         }
     }
 
-    showKeyParams()
-    {
-        const timebounds = this.getSelectedKeysBoundsTime();
-        const valbounds = this.getSelectedKeysBoundsValue();
-        let timestr = " (" + Math.round(timebounds.length * 100) / 100 + "s)";
-        let valstr = " (" + Math.round(valbounds.min * 100) / 100 + " - " + Math.round(valbounds.max * 100) / 100 + ")";
-
-        if (this.#selectedKeys.length == 0)
-        {
-            this.#keyOverEl.classList.add("hidden");
-            ele.byId("tlselectinfo").innerHTML = "";
-        }
-
-        else
-        {
-            this.#keyOverEl.classList.remove("hidden");
-
-            this.#keyOverEl.style.right = gui.rendererWidth + "px";
-            this.#keyOverEl.style.bottom = this.height + "px";
-            ele.byId("tlselectinfo").innerHTML = "" + this.#selectedKeys.length + " keys selected " + timestr + " " + valstr;
-        }
-
-        const html = getHandleBarHtml(
-            "params_keys", {
-                "numKeys": this.#selectedKeys.length,
-                "timeBounds": timebounds,
-                "valueBounds": valbounds
-            });
-        this.#keyOverEl.innerHTML = html;
-
-    }
-
     /**
      * @param {ClipboardEvent} event
      */
@@ -1690,5 +1658,84 @@ export class GlTimeline extends Events
     {
         console.log("hideeeeeeeeeeee");
         this.#keyOverEl.classList.add("hidden");
+    }
+
+    showParams()
+    {
+        this.#keyOverEl.classList.remove("hidden");
+        this.#keyOverEl.style.right = gui.rendererWidth + "px";
+        this.#keyOverEl.style.bottom = this.height + "px";
+    }
+
+    hideParams()
+    {
+        this.#keyOverEl.classList.add("hidden");
+    }
+
+    showKeyParams()
+    {
+        const timebounds = this.getSelectedKeysBoundsTime();
+        const valbounds = this.getSelectedKeysBoundsValue();
+        let timestr = " " + Math.round(timebounds.length * 100) / 100 + "s";
+        let valstr = " " + Math.round(valbounds.min * 100) / 100 + " to " + Math.round(valbounds.max * 100) / 100;
+
+        if (this.#selectedKeys.length == 0) this.hideParams();
+        else this.showParams();
+
+        const html = getHandleBarHtml(
+            "params_keys", {
+                "numKeys": this.#selectedKeys.length,
+                "timeBounds": timestr,
+                "valueBounds": valstr
+            });
+        this.#keyOverEl.innerHTML = html;
+
+        ele.clickable(ele.byId("kp_delete"), () =>
+        {
+            this.deleteSelectedKeys();
+        });
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    showParamAnim(anim)
+    {
+        this.showParams();
+        const html = getHandleBarHtml(
+            "params_anim", {
+                "anim": anim,
+                "length": Math.round(anim.getLengthLoop() * 1000) / 1000
+            });
+        this.#keyOverEl.innerHTML = html;
+
+        ele.clickable(ele.byId("ap_select"), () =>
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                const keys = this.#tlAnims[i].getGlKeysForAnim(anim);
+                if (keys)keys.selectAll();
+            }
+        });
+        ele.clickable(ele.byId("ap_loop_off"), () =>
+        {
+            anim.setLoop(Anim.LOOP_OFF);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_mirror"), () =>
+        {
+            anim.setLoop(Anim.LOOP_MIRROR);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_repeat"), () =>
+        {
+            anim.setLoop(Anim.LOOP_REPEAT);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_offset"), () =>
+        {
+            anim.setLoop(Anim.LOOP_OFFSET);
+            this.needsUpdateAll = "loopchange";
+        });
     }
 }

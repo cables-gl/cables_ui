@@ -200,11 +200,6 @@ export default class GlTimelineTab
 
         this.#tab.addButtonSpacer();
 
-        this.selectInfoEl = document.createElement("span");
-        this.selectInfoEl.innerHTML = "";
-        this.selectInfoEl.id = "tlselectinfo";
-        this.#tab.addButtonBarElement(this.selectInfoEl);
-
         this.#tab.addButton("<span class=\"nomargin icon icon-chevron-down info\" data-info=\"tltoggle\"></span>", () =>
         {
             gui.bottomTabPanel.toggle();

@@ -54,55 +54,8 @@ export class TlTitle extends Events
         ele.clickable(this.#elTitle, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
+            this.#gltl.showParamAnim(this.#anim);
         });
-
-        this.addButton("...",
-            (e) =>
-            {
-                contextMenu.show(
-                    {
-                        "items":
-                        [
-                            {
-                                "title": "Select all keys",
-                                "func": () => { this.tlKeys.selectAll(); }
-                            },
-                            {
-                                "title": "loop off",
-                                "func": () =>
-                                {
-                                    this.tlKeys.anim.setLoop(Anim.LOOP_OFF);
-                                    this.#gltl.needsUpdateAll = "loopchange";
-                                }
-                            },
-                            {
-                                "title": "loop repeat",
-                                "func": () =>
-                                {
-                                    this.tlKeys.anim.setLoop(Anim.LOOP_REPEAT);
-                                    this.#gltl.needsUpdateAll = "loopchange";
-                                }
-                            },
-                            {
-                                "title": "loop mirror",
-                                "func": () =>
-                                {
-                                    this.tlKeys.anim.setLoop(Anim.LOOP_MIRROR);
-                                    this.#gltl.needsUpdateAll = "loopchange";
-                                }
-                            },
-                            {
-                                "title": "loop offset",
-                                "func": () =>
-                                {
-                                    this.tlKeys.anim.setLoop(Anim.LOOP_OFFSET);
-                                    this.#gltl.needsUpdateAll = "loopchange";
-                                }
-                            },
-                        ]
-                    }, e.target);
-            }
-        );
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
             this.activeButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
