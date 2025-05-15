@@ -148,16 +148,10 @@ export class glTlKeys extends Events
     {
         const w = this.getKeyWidth();
 
-        if (this.isLayoutGraph())
+        if (w > 5 || this.isLayoutGraph())
         {
             kr.setShape(13);
             kr.setSize(w, w);
-        }
-        else
-        if (w > 5 && !this.isLayoutGraph())
-        {
-            kr.setShape(13);
-            kr.setSize(11, 11);
         }
         else
         {
@@ -177,6 +171,7 @@ export class glTlKeys extends Events
         }
         let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
         if (kwidth < 2)kwidth = 19;
+        if (kwidth > 5 && !this.isLayoutGraph()) return 11;
 
         return kwidth;
     }
@@ -200,7 +195,6 @@ export class glTlKeys extends Events
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-
             const animKey = this.#anim.keys[i];
             const keyRect = this.#keyRects[i];
 
@@ -280,7 +274,6 @@ export class glTlKeys extends Events
 
         this.updateColors();
         this.#updateCount++;
-
     }
 
     isLayoutGraph()

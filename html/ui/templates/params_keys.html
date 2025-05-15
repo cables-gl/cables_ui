@@ -1,12 +1,26 @@
 <script id="params_keys" type="text/x-handlebars-template">
         <div class="panel_head">
-            <h2 class="nomargin">{{numKeys}} keys selected</h2>
+            <h2 class="nomargin">{{numKeys}} keys selected
+                <a id="kp_delete" class="button-small"><span class="icon icon-trash"></span></a>
+            </h2>
             length {{timeBounds}} <br/>
             value range {{valueBounds}}
 
         </div>
         <div class="content">
-            <a id="kp_delete" class="button-small"><span class="icon icon-trash"></span></a>
+
+            move <input style="width:50px" id="kp_input_time" value="1">&nbsp;
+            <a id="kp_time_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-left"></span></a>
+            <a id="kp_time_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-right"></span></a>
+             {{displayunit}} <br/>
+
+            value <input style="width:50px" id="kp_input_value" value="0.25">&nbsp;
+            <a id="kp_value_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-up"></span></a>
+            <a id="kp_value_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-down"></span></a>
+
+            <br/>
+            <hr/>
+
 
             <a class="button-small icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
             <a class="button-small icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>

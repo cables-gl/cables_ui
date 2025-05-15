@@ -1671,25 +1671,74 @@ export class GlTimeline extends Events
 
     showKeyParams()
     {
+        if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
         const timebounds = this.getSelectedKeysBoundsTime();
         const valbounds = this.getSelectedKeysBoundsValue();
-        let timestr = " " + Math.round(timebounds.length * 100) / 100 + "s";
+        let timestr = " " + Math.round(timebounds.length * 100) / 100 + " seconds ";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+        {
+            timestr = "" + Math.round(timebounds.length * 100 * this.fps) / 100 + " frames: ";
+            timestr += Math.round(timebounds.min * 100 * this.fps) / 100;
+            timestr += " to ";
+            timestr += Math.round(timebounds.max * 100 * this.fps) / 100;
+        }
+
         let valstr = " " + Math.round(valbounds.min * 100) / 100 + " to " + Math.round(valbounds.max * 100) / 100;
 
         if (this.#selectedKeys.length == 0) this.hideParams();
         else this.showParams();
 
+        let unit = "seconds";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
+
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
                 "timeBounds": timestr,
-                "valueBounds": valstr
+                "valueBounds": valstr,
+                "displayunit": unit
             });
         this.#keyOverEl.innerHTML = html;
 
         ele.clickable(ele.byId("kp_delete"), () =>
         {
             this.deleteSelectedKeys();
+        });
+
+        ele.clickable(ele.byId("kp_time_movef"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_time").value);
+            if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
+            }
+        });
+        ele.clickable(ele.byId("kp_time_moveb"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_time").value);
+            if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
+            }
+        });
+        ele.clickable(ele.byId("kp_value_movef"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+            this.showKeyParams();
+        });
+        ele.clickable(ele.byId("kp_value_moveb"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
+            this.showKeyParams();
         });
     }
 
