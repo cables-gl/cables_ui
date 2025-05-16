@@ -38,6 +38,14 @@ import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 
 export class GlTimeline extends Events
 {
+    static USERSETTING_LAYOUT = "tl_layout";
+    static USERSETTING_TL_OPENED = "tl_opened";
+    static USERSETTING_SPLITTER_LEFT = "tl_split_left";
+    static USERSETTING_SPLITTER_RIGHT = "tl_split_right";
+    static USERSETTING_UNITS = "tl_units";
+    static USERSETTING_GRAPH_SELECTMODE = "tl_graphSelectMode";
+    static USERSETTING_AUTO_KEYFRAMES = "tl_keyframeAutoCreate";
+
     static DISPLAYUNIT_SECONDS = 0;
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
@@ -147,7 +155,7 @@ export class GlTimeline extends Events
         this.#cgl = cgl;
         this.view = new GlTlView(this);
 
-        this.#layout = userSettings.get("gltl_layout") || GlTimeline.LAYOUT_LINES;
+        this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
 
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
@@ -379,9 +387,9 @@ export class GlTimeline extends Events
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
         this.buttonForScrolling = userSettingScrollButton || 2;
-        this.displayUnits = userSettings.get("gltl_units") || GlTimeline.DISPLAYUNIT_SECONDS;
-        this.graphSelectMode = !!userSettings.get("gltl_graphSelectMode");
-        this.keyframeAutoCreate = !!userSettings.get("gltl_keyframeAutoCreate");
+        this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
+        this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);
+        this.keyframeAutoCreate = !!userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES);
 
         this.updateGraphSelectMode();
         this.updateIcons();
@@ -391,10 +399,10 @@ export class GlTimeline extends Events
     {
         setTimeout(() =>
         {
-            userSettings.set("gltl_layout", this.#layout);
-            userSettings.set("gltl_units", this.displayUnits);
-            userSettings.set("gltl_keyframeAutoCreate", this.keyframeAutoCreate);
-            userSettings.set("gltl_graphSelectMode", !!this.graphSelectMode);
+            userSettings.set(GlTimeline.USERSETTING_LAYOUT, this.#layout);
+            userSettings.set(GlTimeline.USERSETTING_UNITS, this.displayUnits);
+            userSettings.set(GlTimeline.USERSETTING_AUTO_KEYFRAMES, this.keyframeAutoCreate);
+            userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
 
         }, 500);
     }
@@ -452,8 +460,7 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "resize";
 
-        const wlines = userSettings.get("timeline_titles_width");
-        const wparams = userSettings.get("timeline_params_width");
+        const wparams = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT);
         this.#keyOverEl.style.width = wparams + "px";
         this.#keyOverEl.style.right = 0 + "px";
         this.#keyOverEl.style.bottom = 0 + "px";

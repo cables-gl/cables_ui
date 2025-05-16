@@ -6,6 +6,10 @@ import TabPanel from "./tabpanel.js";
 
 export default class BottomTabPanel extends Events
 {
+    static USERSETTINGS_VISIBLE = "bottomTabsVisible";
+
+    _visible = false;
+    _toBottomPanel = null;
 
     /**
      * @param {TabPanel} tabs
@@ -13,13 +17,12 @@ export default class BottomTabPanel extends Events
     constructor(tabs)
     {
         super();
+
         this._tabs = tabs;
         this._tabs.showTabListButton = false;
-        this._visible = false;
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
         this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
-        this._toBottomPanel = null;
 
         this._tabs.on("onTabAdded", (tab, existedBefore) =>
         {
@@ -45,7 +48,7 @@ export default class BottomTabPanel extends Events
 
     init()
     {
-        const showtabs = userSettings.get("bottomTabsVisible");
+        const showtabs = userSettings.get(BottomTabPanel.USERSETTINGS_VISIBLE);
         if (showtabs) this.show();
         else this.hide(true);
     }
@@ -61,7 +64,6 @@ export default class BottomTabPanel extends Events
     show(userInteraction = false)
     {
         if (gui.unload) return;
-        userSettings.set("bottomTabsOpened", true);
         this._tabs.emitEvent("resize");
 
         if (this._tabs.getNumTabs() == 0)
@@ -72,7 +74,7 @@ export default class BottomTabPanel extends Events
 
         if (!userInteraction)
         {
-            if (!userSettings.get("bottomTabsVisible"))
+            if (!userSettings.get(BottomTabPanel.USERSETTINGS_VISIBLE))
             {
                 return;
             }
@@ -85,7 +87,7 @@ export default class BottomTabPanel extends Events
 
         document.getElementById("editorminimized").style.display = "none";
 
-        if (gui.finishedLoading() && userInteraction) userSettings.set("bottomTabsVisible", true);
+        if (gui.finishedLoading() && userInteraction) userSettings.set(BottomTabPanel.USERSETTINGS_VISIBLE, true);
 
         gui.setLayout();
 
@@ -128,15 +130,14 @@ export default class BottomTabPanel extends Events
     {
         ele.byId("splitterBottomTabs").style.display = "none";
 
-        userSettings.set("bottomTabsOpened", false);
         this._tabs.emitEvent("resize");
 
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
-        if (window.gui)gui.setLayout();
+        gui.setLayout();
 
-        if (!donotsave && gui.finishedLoading()) userSettings.set("bottomTabsVisible", false);
+        if (!donotsave && gui.finishedLoading()) userSettings.set(BottomTabPanel.USERSETTINGS_VISIBLE, false);
     }
 
     /**

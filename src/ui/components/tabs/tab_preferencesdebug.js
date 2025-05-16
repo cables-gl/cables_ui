@@ -21,7 +21,7 @@ export default class tab_PreferencesDebug
      */
     constructor(tabs)
     {
-        this._tab = new Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
+        this._tab = new Tab("Prefsdebug", { "icon": "settings", "infotext": "tab_prefsdebug", "singleton": true });
         tabs.addTab(this._tab, true);
         this._id = "hljs" + CABLES.uuid();
 
@@ -32,11 +32,20 @@ export default class tab_PreferencesDebug
         this.show();
     }
 
+    _sortObject(obj)
+    {
+        return Object.keys(obj).sort().reduce(function (result, key)
+        {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
+
     show()
     {
 
         let html = "<div class=\"tabContentScrollContainer\">";
-        html += "<code ><pre id=\"" + this._id + "\"  class=\"hljs language-json\">" + JSON.stringify(userSettings.getAll(), false, 4) + "</code></pre>";
+        html += "<code ><pre id=\"" + this._id + "\"  class=\"hljs language-json\">" + JSON.stringify(this._sortObject(userSettings.getAll()), false, 4) + "</code></pre>";
 
         html += "</div>";
         this._tab.html(html);
