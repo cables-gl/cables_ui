@@ -1,7 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
-import { Timer } from "cables/src/core/timer.js";
-import { Anim, AnimKey, CglContext, Port } from "cables";
+import { Anim, AnimKey, CglContext, Port, Timer } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";

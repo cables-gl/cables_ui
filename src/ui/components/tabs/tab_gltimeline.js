@@ -254,7 +254,7 @@ export default class GlTimelineTab
 
     updateSize()
     {
-        if (this.resizing) { console.log("rezising..."); return; }
+        if (this.resizing) { console.log("resizing..."); return; }
         if (!this.tlCanvas) { console.log("no tlcanv"); return; }
 
         const parentEle = this.#tab.contentEle;
@@ -269,7 +269,6 @@ export default class GlTimelineTab
         this.resizing = true;
         this.tlCanvas.glTimeline.resize(true);
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
-        console.log("", this.#splitterPosRight);
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos - this.#splitterPosRight, parentEle.clientHeight);
         this.resizing = false;
 

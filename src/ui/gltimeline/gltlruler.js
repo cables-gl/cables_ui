@@ -262,16 +262,8 @@ export class glTlRuler extends Events
 
                 if (pixelScale > 40)
                 {
-                    if (time % 1 == 0.5)
-                    {
-                        size = 1;
-                    }
-                    else
-                    if (time % 1 == 0)
-                    {
-                        title = Math.floor((time) * this.#glTl.fps) + "f";
-                        size = 2;
-                    }
+                    if (time % 1 == 0.5) size = 1;
+                    else if (time % 1 == 0) size = 2;
                 }
                 else
                 {
