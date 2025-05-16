@@ -257,10 +257,45 @@ export class glTlRuler extends Events
             }
             if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
             {
-                time = (offset + i);
+                time = offset + i * 0.5;
                 x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                title = Math.floor((i + offset) * this.#glTl.fps) + "f";
-                size = 2;
+
+                if (pixelScale > 40)
+                {
+                    if (time % 1 == 0.5)
+                    {
+                        size = 1;
+                    }
+                    else
+                    if (time % 1 == 0)
+                    {
+                        title = Math.floor((time) * this.#glTl.fps) + "f";
+                        size = 2;
+                    }
+                }
+                else
+                {
+                    if (time % 1 == 0) size = 1;
+
+                    if (pixelScale < 15)
+                    {
+                        if (time % 20 == 0) size = 2;
+                    }
+                    else if (pixelScale < 25)
+                    {
+                        if (time % 5 == 0) size = 2;
+                    }
+                    else if (pixelScale < 40)
+                    {
+                        if (time % 2 == 0) size = 2;
+                    }
+                    else
+                    {
+                        size = 0;
+                    }
+                }
+                if (size == 2)
+                    title = Math.floor((time) * this.#glTl.fps) + "f";
             }
 
             let h = 10;
