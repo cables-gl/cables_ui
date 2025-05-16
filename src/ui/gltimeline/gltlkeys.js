@@ -148,7 +148,7 @@ export class glTlKeys extends Events
     {
         const w = this.getKeyWidth();
 
-        if (w <= 2 || this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (w > 5 || this.isLayoutGraph())
         {
             kr.setShape(13);
             kr.setSize(w, w);
@@ -156,20 +156,22 @@ export class glTlKeys extends Events
         else
         {
             kr.setShape(0);
-            kr.setSize(w, this.sizeKey);
+            kr.setSize(w * 2, this.sizeKey);
         }
     }
 
     getKeyWidth()
     {
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (this.isLayoutGraph())
         {
             let s = this.sizeKey * 0.6;
             if (this.#anim.tlActive)s = this.sizeKey * 0.8;
             if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
-        const kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        if (kwidth < 2)kwidth = 19;
+        if (kwidth > 5 && !this.isLayoutGraph()) return 11;
 
         return kwidth;
     }
@@ -193,7 +195,6 @@ export class glTlKeys extends Events
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
-
             const animKey = this.#anim.keys[i];
             const keyRect = this.#keyRects[i];
 
@@ -231,6 +232,7 @@ export class glTlKeys extends Events
 
             for (let i = 0; i < steps; i++)
             {
+                // todo:add exact keys
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
@@ -268,11 +270,10 @@ export class glTlKeys extends Events
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(this.#points);
-            this.updateColors();
         }
 
+        this.updateColors();
         this.#updateCount++;
-
     }
 
     isLayoutGraph()
@@ -324,7 +325,6 @@ export class glTlKeys extends Events
 
     setKeyPositions()
     {
-        const isActive = this.#port.op.isCurrentUiOp();
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             const animKey = this.#anim.keys[i];
@@ -545,7 +545,6 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
-        // if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
 
         this.removeAllEventListeners();
 
@@ -557,7 +556,6 @@ export class glTlKeys extends Events
         const o = {};
         o.points = this.#points;
         o.updateCount = this.#updateCount;
-
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
@@ -566,10 +564,7 @@ export class glTlKeys extends Events
 
     render()
     {
-        // console.log("${}", this.#keyRects);
-        // if (this.#keyRects.length == 0)
-        if
-        (this.#glTl.isAnimated) this.update();
+        if (this.#glTl.isAnimated) this.update();
         this.setKeyPositions();
     }
 }

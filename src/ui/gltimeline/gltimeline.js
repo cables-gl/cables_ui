@@ -214,7 +214,7 @@ export class GlTimeline extends Events
 
         this.#keyOverEl = document.createElement("div");
         this.#keyOverEl.classList.add("keyOverlay");
-        this.#keyOverEl.classList.add("hidden");
+        this.#keyOverEl.setAttribute("id", "keyOverlay");
         cgl.canvas.parentElement.appendChild(this.#keyOverEl);
 
         this.#filterInputEl = document.createElement("input");
@@ -277,7 +277,6 @@ export class GlTimeline extends Events
         gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
-            this.needsUpdateAll = "deletekey";
         });
 
         gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
@@ -454,6 +453,14 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
         this.needsUpdateAll = "resize";
+
+        const wlines = userSettings.get("timeline_titles_width");
+        const wparams = userSettings.get("timeline_params_width");
+        this.#keyOverEl.style.width = wparams + "px";
+        this.#keyOverEl.style.right = 0 + "px";
+        this.#keyOverEl.style.bottom = 0 + "px";
+        this.#keyOverEl.style.top = "35px";
+
     }
 
     snapSelectedKeyTimes()
@@ -884,6 +891,7 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
 
         this.unSelectAllKeys();
+        this.needsUpdateAll = "deletekey";
     }
 
     /**
@@ -1314,35 +1322,6 @@ export class GlTimeline extends Events
         }
     }
 
-    showKeyParams()
-    {
-        const timebounds = this.getSelectedKeysBoundsTime();
-        const valbounds = this.getSelectedKeysBoundsValue();
-        let timestr = " (" + Math.round(timebounds.length * 100) / 100 + "s)";
-        let valstr = " (" + Math.round(valbounds.min * 100) / 100 + " - " + Math.round(valbounds.max * 100) / 100 + ")";
-
-        if (this.#selectedKeys.length == 0)
-        {
-            this.#keyOverEl.classList.add("hidden");
-            ele.byId("tlselectinfo").innerHTML = "";
-        }
-
-        else
-        {
-            this.#keyOverEl.classList.remove("hidden");
-            ele.byId("tlselectinfo").innerHTML = "" + this.#selectedKeys.length + " keys selected " + timestr + " " + valstr;
-        }
-
-        const html = getHandleBarHtml(
-            "params_keys", {
-                "numKeys": this.#selectedKeys.length,
-                "timeBounds": timebounds,
-                "valueBounds": valbounds
-            });
-        this.#keyOverEl.innerHTML = html;
-
-    }
-
     /**
      * @param {ClipboardEvent} event
      */
@@ -1673,7 +1652,6 @@ export class GlTimeline extends Events
                                 elkf.classList.add("icon-diamond");
                             }
                         }
-
                     }
                 }
             }
@@ -1681,5 +1659,129 @@ export class GlTimeline extends Events
             perf.finish();
         }
         setTimeout(this.updateParamKeyframes.bind(this), 111);
+    }
+
+    showParams()
+    {
+    }
+
+    hideParams()
+    {
+    }
+
+    showKeyParams()
+    {
+        if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
+        const timebounds = this.getSelectedKeysBoundsTime();
+        const valbounds = this.getSelectedKeysBoundsValue();
+        let timestr = " " + Math.round(timebounds.length * 100) / 100 + " seconds ";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+        {
+            timestr = "" + Math.round(timebounds.length * 100 * this.fps) / 100 + " frames: ";
+            timestr += Math.round(timebounds.min * 100 * this.fps) / 100;
+            timestr += " to ";
+            timestr += Math.round(timebounds.max * 100 * this.fps) / 100;
+        }
+
+        let valstr = " " + Math.round(valbounds.min * 100) / 100 + " to " + Math.round(valbounds.max * 100) / 100;
+
+        if (this.#selectedKeys.length == 0) this.hideParams();
+        else this.showParams();
+
+        let unit = "seconds";
+        if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
+
+        const html = getHandleBarHtml(
+            "params_keys", {
+                "numKeys": this.#selectedKeys.length,
+                "timeBounds": timestr,
+                "valueBounds": valstr,
+                "displayunit": unit
+            });
+        this.#keyOverEl.innerHTML = html;
+
+        ele.clickable(ele.byId("kp_delete"), () =>
+        {
+            this.deleteSelectedKeys();
+        });
+
+        ele.clickable(ele.byId("kp_time_movef"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_time").value);
+            if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
+            }
+        });
+        ele.clickable(ele.byId("kp_time_moveb"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_time").value);
+            if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
+            }
+        });
+        ele.clickable(ele.byId("kp_value_movef"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+            this.showKeyParams();
+        });
+        ele.clickable(ele.byId("kp_value_moveb"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
+            this.showKeyParams();
+        });
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    showParamAnim(anim)
+    {
+        this.showParams();
+        const html = getHandleBarHtml(
+            "params_anim", {
+                "anim": anim,
+                "length": Math.round(anim.getLengthLoop() * 1000) / 1000
+            });
+        this.#keyOverEl.innerHTML = html;
+
+        ele.clickable(ele.byId("ap_select"), () =>
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                const keys = this.#tlAnims[i].getGlKeysForAnim(anim);
+                if (keys)keys.selectAll();
+            }
+        });
+        ele.clickable(ele.byId("ap_loop_off"), () =>
+        {
+            anim.setLoop(Anim.LOOP_OFF);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_mirror"), () =>
+        {
+            anim.setLoop(Anim.LOOP_MIRROR);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_repeat"), () =>
+        {
+            anim.setLoop(Anim.LOOP_REPEAT);
+            this.needsUpdateAll = "loopchange";
+        });
+        ele.clickable(ele.byId("ap_loop_offset"), () =>
+        {
+            anim.setLoop(Anim.LOOP_OFFSET);
+            this.needsUpdateAll = "loopchange";
+        });
     }
 }

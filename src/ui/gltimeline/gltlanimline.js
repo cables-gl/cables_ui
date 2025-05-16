@@ -276,6 +276,8 @@ export class glTlAnimLine extends Events
         this.width = w;
         // this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
+
     }
 
     checkDisposed()
@@ -411,6 +413,19 @@ export class glTlAnimLine extends Events
                     // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
             }
         }
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    getGlKeysForAnim(anim)
+    {
+        for (let j = 0; j < this.#anims.length; j++)
+        {
+            if (anim == this.#anims[j])
+                return this.#keys[j];
+        }
+
     }
 
     render()

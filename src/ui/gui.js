@@ -574,8 +574,7 @@ export default class Gui extends Events
             const lis = ele.byQueryAll("#menubar li");
 
             lis[0].setAttribute("onclick", "");
-            for (let i = 1; i < lis.length; i++)
-                lis[i].classList.add("hidden");
+            for (let i = 1; i < lis.length; i++) lis[i].classList.add("hidden");
         }
 
         if (this.rendererWidth === undefined || this.rendererHeight === undefined)
@@ -887,7 +886,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        if (this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
+        // if (this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
 
         perf.finish();
     }

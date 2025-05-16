@@ -198,6 +198,8 @@ export default class GlPatch extends Events
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": false });
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": false });
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("focus", this.isFocused.bind(this));
+        cgl.canvas.addEventListener("blur", this.isFocused.bind(this));
 
         gui.on("themeChanged", this.updateTheme.bind(this));
 
@@ -825,7 +827,14 @@ export default class GlPatch extends Events
 
     isFocused()
     {
-        return document.activeElement == this._cgl.canvas;
+        const isf = document.activeElement == this._cgl.canvas;
+        // if (!this.wasFocussed && isf)
+        // {
+        //     if (gui.glTimeline)gui.glTimeline.hideOverlayPanels();
+        // }
+        this.wasFocussed = isf;
+        return isf;
+
     }
 
     isMouseOverOp()
@@ -1072,7 +1081,6 @@ export default class GlPatch extends Events
                 }
             }
         }
-
         this.hasFocus = ele.hasFocus(this._cgl.canvas);
         this.debugData.splineUpdate = 0;
 
