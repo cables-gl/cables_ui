@@ -1031,6 +1031,7 @@ export default class Gui extends Events
     toggleTimeline()
     {
         console.log(" gui toggle timeline");
+        CABLES.logStack();
         if (this.glTimeline) this.glTimeline.toggle();
         else
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);

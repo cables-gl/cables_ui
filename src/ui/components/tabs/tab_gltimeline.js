@@ -2,6 +2,7 @@ import defaultOps from "../../defaultops.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { glTimelineCanvas } from "../../gltimeline/gltimelinecanvas.js";
 import Gui, { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
@@ -35,8 +36,8 @@ export default class GlTimelineTab
         this.#tab.activate();
         this.#tab.contentEle.innerHTML = "";
 
-        this.#splitterPos = userSettings.get("timeline_titles_width") || 200;
-        this.#splitterPosRight = userSettings.get("timeline_params_width") || 200;
+        this.#splitterPos = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
+        this.#splitterPosRight = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
 
         tabs.on("resize", () =>
         {
@@ -212,7 +213,7 @@ export default class GlTimelineTab
 
         this.tlCanvas = new glTimelineCanvas(gui.corePatch(), this.#tab.contentEle, this);
 
-        userSettings.set("glTimelineOpened", true);
+        userSettings.set(GlTimeline.USERSETTING_TL_OPENED, true);
 
         gui.on(Gui.EVENT_RESIZE, () =>
         {
@@ -254,7 +255,7 @@ export default class GlTimelineTab
 
     updateSize()
     {
-        if (this.resizing) { console.log("rezising..."); return; }
+        if (this.resizing) { console.log("resizing..."); return; }
         if (!this.tlCanvas) { console.log("no tlcanv"); return; }
 
         const parentEle = this.#tab.contentEle;
@@ -264,12 +265,11 @@ export default class GlTimelineTab
             setTimeout(this.updateSize.bind(this), 100);
             return;
         }
-        userSettings.set("timeline_titles_width", this.#splitterPos);
-        userSettings.set("timeline_params_width", this.#splitterPosRight);
+        userSettings.set(GlTimeline.USERSETTING_SPLITTER_LEFT, this.#splitterPos);
+        userSettings.set(GlTimeline.USERSETTING_SPLITTER_RIGHT, this.#splitterPosRight);
         this.resizing = true;
         this.tlCanvas.glTimeline.resize(true);
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
-        console.log("", this.#splitterPosRight);
         this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos - this.#splitterPosRight, parentEle.clientHeight);
         this.resizing = false;
 

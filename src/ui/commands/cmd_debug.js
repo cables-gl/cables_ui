@@ -11,6 +11,7 @@ import CMD from "./commands.js";
 import Gui, { gui } from "../gui.js";
 import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
+import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -24,6 +25,13 @@ const debugCommands =
 };
 
 export default debugCommands;
+
+CABLES_CMD_DEBUG.showUserPrefs = function ()
+{
+    const t = new tab_PreferencesDebug(gui.mainTabs);
+    gui.maintabPanel.show();
+
+};
 
 CABLES_CMD_DEBUG.testCommands = function ()
 {
@@ -389,6 +397,11 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "Test all commands",
         "func": CABLES_CMD_DEBUG.testCommands,
+        "category": "debug",
+    },
+    {
+        "cmd": "Show User Preferences Data",
+        "func": CABLES_CMD_DEBUG.showUserPrefs,
         "category": "debug",
     },
 
