@@ -47,7 +47,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<Port>} */
     #ports = [];
 
-    static DEFAULT_HEIGHT = 25;
+    static DEFAULT_HEIGHT = 30;
 
     width = 222;
     height = glTlAnimLine.DEFAULT_HEIGHT;
@@ -154,12 +154,24 @@ export class glTlAnimLine extends Events
     }
 
     /**
+     * @param {number} idx
+     * @param {Port} p
+     * @param {Anim} [anim]
+     */
+    setTitle(idx, p, anim)
+    {
+        while (this.#titles.length <= idx) this.addTitle("title...", anim, p);
+        this.setTitlePos();
+    }
+
+    /**
      * @param {string} t
      * @param {Anim} anim
+     * @param {Port} [p]
      */
-    addTitle(t, anim)
+    addTitle(t, anim, p)
     {
-        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim);
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p });
         title.setTitle(t);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -195,18 +207,6 @@ export class glTlAnimLine extends Events
             this.#titles[i].tlKeys = this.#keys[i];
             // this.#titles[i].#op = this.#ops[i];
         }
-    }
-
-    /**
-     * @param {number} idx
-     * @param {Port} p
-     * @param {Anim} [anim]
-     */
-    setTitle(idx, p, anim)
-    {
-        while (this.#titles.length <= idx) this.addTitle("title...", anim);
-        this.#titles[idx].setPort(p);
-        this.setTitlePos();
     }
 
     fitValues()

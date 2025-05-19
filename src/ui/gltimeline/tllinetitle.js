@@ -40,7 +40,7 @@ export class TlTitle extends Events
      * @param {Anim} anim
      * @param {GlTimeline} gltl
      */
-    constructor(gltl, parentEl, anim)
+    constructor(gltl, parentEl, anim, cfg)
     {
         super();
         this.#gltl = gltl;
@@ -65,10 +65,15 @@ export class TlTitle extends Events
                     this.toggleActive();
                 }
             );
+
         this.#el.appendChild(this.#elTitle);
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(anim.tlActive);
         else this.setActive(true);
+
+        if (cfg.port) this.setPort(cfg.port);
+
+        this.updateIcons();
     }
 
     /**
@@ -148,6 +153,31 @@ export class TlTitle extends Events
                 this.#elTitle.style.opacity = "1";
                 this.activeButton.children[0].classList.add("icon-eye");
                 this.activeButton.children[0].classList.remove("icon-eye-off");
+            }
+        }
+
+        if (this.#port && !this.muteButton)
+            this.muteButton = this.addButton("<span class=\"icon icon-sun icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+                (e) =>
+                {
+
+                    this.#port.animMuted = !this.#port.animMuted;
+                    this.updateIcons();
+                }
+            );
+        if (this.muteButton)
+        {
+            if (this.#port.animMuted)
+            {
+                this.#elTitle.style.opacity = "0.4";
+                this.muteButton.children[0].classList.remove("icon-sun");
+                this.muteButton.children[0].classList.add("icon-ban");
+            }
+            else
+            {
+                this.#elTitle.style.opacity = "1";
+                this.muteButton.children[0].classList.add("icon-sun");
+                this.muteButton.children[0].classList.remove("icon-ban");
             }
         }
     }

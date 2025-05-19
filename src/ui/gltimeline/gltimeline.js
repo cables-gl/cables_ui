@@ -388,7 +388,7 @@ export class GlTimeline extends Events
         this.buttonForScrolling = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);
-        this.keyframeAutoCreate = !userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES);
+        this.keyframeAutoCreate = userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES, true);
 
         this.updateGraphSelectMode();
         this.updateIcons();
@@ -503,15 +503,9 @@ export class GlTimeline extends Events
     {
 
         if (this.keyframeAutoCreate)
-        {
             ele.byId("autokeyframe").parentElement.classList.add("button-active");
-            // ele.byId("autokeyframe").parentElement.classList.remove("icon-keyframe-auto");
-        }
         else
-        {
             ele.byId("autokeyframe").parentElement.classList.remove("button-active");
-            // ele.byId("autokeyframe").parentElement.classList.add("icon-keyframe-auto");
-        }
 
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
