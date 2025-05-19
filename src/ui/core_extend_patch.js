@@ -405,5 +405,3 @@ class UiPatch extends Patch
 
 CABLES.Patch = UiPatch;
 export { UiPatch };
-
-export default function extendCorePatch() {}
