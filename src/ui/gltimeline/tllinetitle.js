@@ -1,5 +1,6 @@
 import { Events, ele } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlAnimLine } from "./gltlanimline.js";
@@ -13,6 +14,9 @@ export class TlTitle extends Events
 
     /** @type {HTMLElement} */
     #el = null;
+
+    /** @type {HTMLElement} */
+    #elButtons = null;
 
     /** @type {HTMLElement} */
     #elTitle = null;
@@ -29,6 +33,8 @@ export class TlTitle extends Events
 
     /** @type {Anim} */
     #anim;
+
+    /** @type {EventListener[]} */
     #listeners = [];
     #gltl;
 
@@ -48,6 +54,10 @@ export class TlTitle extends Events
         this.#el = document.createElement("div");
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
+
+        this.#elButtons = document.createElement("span");
+        this.#elButtons.classList.add("tlButtons");
+        this.#el.appendChild(this.#elButtons);
 
         this.#elTitle = document.createElement("span");
 
@@ -226,7 +236,7 @@ export class TlTitle extends Events
         ele.clickable(button, cb);
         button.addEventListener("contextmenu", (e) => { cb(e); });
         button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
-        this.#el.appendChild(button);
+        this.#elButtons.appendChild(button);
         this.#buttons.push({ "ele": button, cb, title });
         return button;
     }

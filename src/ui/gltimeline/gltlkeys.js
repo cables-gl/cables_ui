@@ -166,6 +166,7 @@ export class glTlKeys extends Events
         {
             let s = this.sizeKey * 0.6;
             if (this.#anim.tlActive)s = this.sizeKey * 0.8;
+            if (this.#port.animMuted)s = this.sizeKey * 0;
             if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
@@ -284,17 +285,17 @@ export class glTlKeys extends Events
     updateColors()
     {
         if (this.#spline)
-            if (this.#anim.tlActive)
+        {
+            if (this.#anim.tlActive && !this.#port.animMuted)
             {
                 if (this.#port.op.isCurrentUiOp()) this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
-                // else if (this.#hasSelectedKeys) { this.#spline.setColorArray(glTlKeys.COLOR_SELECTED); }
                 else this.#spline.setColorArray(glTlKeys.COLOR_NORMAL);
             }
             else
             {
                 this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
             }
-
+        }
         for (let i = 0; i < this.#keyRects.length; i++)
         {
 
@@ -315,7 +316,6 @@ export class glTlKeys extends Events
             }
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime)
             {
-
                 col = glTlKeys.COLOR_HIGHLIGHT;
             }
             keyRect.setColorArray(col);
