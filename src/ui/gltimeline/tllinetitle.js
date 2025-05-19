@@ -58,7 +58,7 @@ export class TlTitle extends Events
         });
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
-            this.activeButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
+            this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
                 {
                     if (e.buttons == 2) this.#gltl.deactivateAllAnims();
@@ -145,19 +145,19 @@ export class TlTitle extends Events
             if (!c)
             {
                 this.#elTitle.style.opacity = "0.4";
-                this.activeButton.children[0].classList.remove("icon-eye");
-                this.activeButton.children[0].classList.add("icon-eye-off");
+                this.activeButton.children[0].classList.remove("icon-pencil");
+                this.activeButton.children[0].classList.add("icon-pencil-off");
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
-                this.activeButton.children[0].classList.add("icon-eye");
-                this.activeButton.children[0].classList.remove("icon-eye-off");
+                this.activeButton.children[0].classList.add("icon-pencil");
+                this.activeButton.children[0].classList.remove("icon-pencil-off");
             }
         }
 
         if (this.#port && !this.muteButton)
-            this.muteButton = this.addButton("<span class=\"icon icon-sun icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+            this.muteButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
                 (e) =>
                 {
 
@@ -170,14 +170,14 @@ export class TlTitle extends Events
             if (this.#port.animMuted)
             {
                 this.#elTitle.style.opacity = "0.4";
-                this.muteButton.children[0].classList.remove("icon-sun");
-                this.muteButton.children[0].classList.add("icon-ban");
+                this.muteButton.children[0].classList.remove("icon-eye");
+                this.muteButton.children[0].classList.add("icon-eye-off");
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
-                this.muteButton.children[0].classList.add("icon-sun");
-                this.muteButton.children[0].classList.remove("icon-ban");
+                this.muteButton.children[0].classList.add("icon-eye");
+                this.muteButton.children[0].classList.remove("icon-eye-off");
             }
         }
     }
