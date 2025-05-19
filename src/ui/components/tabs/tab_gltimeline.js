@@ -135,10 +135,6 @@ export default class GlTimelineTab
         {
             CABLES.CMD.TIMELINE.TimelineCreateKeyAtCursor();
         });
-        this.#tab.addButton("<span class=\"nomargin icon icon-spreadsheet\"></span>", () =>
-        {
-            this.tlCanvas.glTimeline.showSpreadSheet();
-        });
         this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-keyframe-auto\" data-info=\"tlautokeyframe\"></span>", () =>
         {
             this.tlCanvas.glTimeline.toggleAutoKeyframe();

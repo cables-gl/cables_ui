@@ -6,7 +6,7 @@ import { glTlRuler } from "./gltlruler.js";
 import { glTlScroll } from "./gltlscroll.js";
 import { GlTlView } from "./gltlview.js";
 import Gui, { gui } from "../gui.js";
-import { notify, notifyWarn } from "../elements/notification.js";
+import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -1551,29 +1551,73 @@ export class GlTimeline extends Events
         return this.#cgl.canvasHeight;
     }
 
-    showSpreadSheet()
+    /**
+     * @param {Anim} anim
+     */
+    showSpreadSheet(anim)
     {
-        const data = { "colNames": ["time", "value", "easing"], "cells": [] };
-        for (let i = 0; i < this.#selectedKeys.length; i++)
+        const getData = () =>
         {
-            const t = this.#selectedKeys[i].time;
-            data.cells.push(
-                [
-                    this.#selectedKeys[i].time,
-                    this.#selectedKeys[i].value,
 
-                    // Math.abs(t - this.snapTime(t))
-                    // this.snapTime(this.#selectedKeys[i].time)
-                    this.#selectedKeys[i].getEasing()
-                ]
-            );
-        }
+            const data = { "colNames": ["time", "value", "easing"], "cells": [] };
+            for (let i = 0; i < anim.keys.length; i++)
+            {
+                data.cells.push(
+                    [
+                        anim.keys[i].time,
+                        anim.keys[i].value,
+                        anim.keys[i].getEasing()
+                    ]
+                );
+            }
+            return data;
+        };
 
-        new SpreadSheetTab(gui.mainTabs, null, data, {
+        let paused = false;
+        const data = getData();
+
+        anim.on(Anim.EVENT_CHANGE, () =>
+        {
+            if (paused) return;
+            paused = true;
+            console.log("setting data", getData(), anim);
+            tab.setData(getData());
+            paused = false;
+        });
+
+        // todo close tab
+        const tab = new SpreadSheetTab(gui.mainTabs, null, data, {
             "title": "keyframes",
             "onchange": (content) =>
             {
+                if (paused) return;
                 console.log("${}", content);
+
+                if (!content)
+                {
+                    notifyError("error parsing spreadsheet...");
+                    return;
+                }
+
+                paused = true;
+                anim.clear();
+
+                for (let i = 0; i < content.cells.length; i++)
+                {
+                    if (!content.cells[i])
+                    {
+                        console.log("abbruch");
+                        continue;
+                    }
+                    const o = {
+                        "t": parseFloat(content.cells[i][0]),
+                        "v": parseFloat(content.cells[i][1]),
+                    };
+                    anim.setValue(o.t, o.v);
+
+                    console.log("anim", o, anim.keys);
+                }
+                paused = false;
             }
         });
     }
@@ -1629,7 +1673,6 @@ export class GlTimeline extends Events
 
                         const t = this.cursorTime;
                         const key = op.portsIn[i].anim.getKey(t);
-
                         if (key && key.time == t)
                         {
                             if (elkf)
@@ -1759,11 +1802,17 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+        ele.clickable(ele.byId("ap_spreadsheet"), () =>
+        {
+            this.showSpreadSheet(anim);
+        });
+
         ele.clickable(ele.byId("ap_loop_off"), () =>
         {
             anim.setLoop(Anim.LOOP_OFF);
             this.needsUpdateAll = "loopchange";
         });
+
         ele.clickable(ele.byId("ap_loop_mirror"), () =>
         {
             anim.setLoop(Anim.LOOP_MIRROR);
