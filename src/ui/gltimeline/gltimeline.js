@@ -344,7 +344,6 @@ export class GlTimeline extends Events
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
-        console.log("gltimeleinenneneinenenene");
     }
 
     toggleAutoKeyframe()
@@ -1629,7 +1628,9 @@ export class GlTimeline extends Events
                         const elkf = ele.byId("paramportkeyframe_" + op.portsIn[i].id);
 
                         const t = this.cursorTime;
-                        if (op.portsIn[i].anim.getKey(t).time == t)
+                        const key = op.portsIn[i].anim.getKey(t);
+
+                        if (key && key.time == t)
                         {
                             if (elkf)
                             {
