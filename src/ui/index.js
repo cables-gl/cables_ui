@@ -91,6 +91,8 @@ CABLES.UI.showShaderErrorCgp = showShaderErrorCgp;
 
 setHtmlDefaultListeners();
 
+extendCoreOp();
+extendCorePatch();
 extendCoreAnim();
 
 CABLES.UI.startUi = startUi;
