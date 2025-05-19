@@ -1031,7 +1031,6 @@ export default class Gui extends Events
     toggleTimeline()
     {
         console.log(" gui toggle timeline");
-        CABLES.logStack();
         if (this.glTimeline) this.glTimeline.toggle();
         else
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
@@ -1813,6 +1812,8 @@ export default class Gui extends Events
 
         if (this.userSettings.get("showUIPerf") == true) gui.uiProfiler.show();
 
+        if (this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED)) CABLES.CMD.TIMELINE.openGlTimeline();
+
         this._elGlCanvasDom.addEventListener("pointerenter", () =>
         {
             gui.showInfo(text.canvas);
@@ -1831,7 +1832,6 @@ export default class Gui extends Events
             return;
         }
 
-        if (this.userSettings.get("glTimelineOpened") == true) CABLES.CMD.TIMELINE.openGlTimeline();
         if (this.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (this.userSettings.get("openLogTab") == true) this.showLogging();
 

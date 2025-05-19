@@ -172,6 +172,7 @@ export class glTlAnimLine extends Events
     addTitle(anim, p)
     {
         const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p });
+        // title.setTitle(t);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();

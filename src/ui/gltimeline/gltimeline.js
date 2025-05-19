@@ -344,6 +344,7 @@ export class GlTimeline extends Events
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
+        console.log("gltimeleinenneneinenenene");
     }
 
     toggleAutoKeyframe()
