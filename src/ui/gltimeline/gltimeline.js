@@ -367,7 +367,6 @@ export class GlTimeline extends Events
     loadPatchData(cfg)
     {
         if (!cfg) return;
-        console.log("${}", cfg);
         this.loopAreaStart = cfg.loopAreaStart || 0;
         this.loopAreaEnd = cfg.loopAreaEnd || 0;
         this.view.loadState(cfg.view);
@@ -389,7 +388,7 @@ export class GlTimeline extends Events
         this.buttonForScrolling = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);
-        this.keyframeAutoCreate = !!userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES);
+        this.keyframeAutoCreate = !userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES);
 
         this.updateGraphSelectMode();
         this.updateIcons();
@@ -397,14 +396,10 @@ export class GlTimeline extends Events
 
     saveUserSettings()
     {
-        setTimeout(() =>
-        {
-            userSettings.set(GlTimeline.USERSETTING_LAYOUT, this.#layout);
-            userSettings.set(GlTimeline.USERSETTING_UNITS, this.displayUnits);
-            userSettings.set(GlTimeline.USERSETTING_AUTO_KEYFRAMES, this.keyframeAutoCreate);
-            userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
-
-        }, 500);
+        userSettings.set(GlTimeline.USERSETTING_LAYOUT, this.#layout);
+        userSettings.set(GlTimeline.USERSETTING_UNITS, this.displayUnits);
+        userSettings.set(GlTimeline.USERSETTING_AUTO_KEYFRAMES, this.keyframeAutoCreate);
+        userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
     }
 
     /** @returns {number} */
