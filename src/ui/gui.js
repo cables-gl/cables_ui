@@ -87,7 +87,6 @@ export default class Gui extends Events
     glTimeLineTab = null;
 
     splitpanePatchPos = 0;
-    autoReloadOnUpdate = false;
 
     constructor(cfg)
     {
@@ -520,6 +519,13 @@ export default class Gui extends Events
     {
         if (this.unload) return;
         this.pauseProfiling();
+
+        if (document.body.scrollTop > 0)
+        {
+            console.log("page is scrolled wtf...");
+            document.body.scrollTo(0, 0);
+        }
+
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;
         // this._elAceEditor = ele.byId("ace_editors");

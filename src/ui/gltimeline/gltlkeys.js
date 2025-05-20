@@ -349,7 +349,7 @@ export class glTlKeys extends Events
             this.setKeyShapeSize(kr);
 
             if (
-                this.#glTl.selectRect &&
+                this.#glTl.isSelecting() &&
                 this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
                 this.#glTl.selectRect.y < (kr.absY + this.keyHeight) && this.#glTl.selectRect.y2 > kr.absY)
             {
@@ -395,6 +395,7 @@ export class glTlKeys extends Events
             keyRect.draggableMove = true;
             keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
             {
+                if (this.#glTl.isSelecting()) return;
                 this.#glTl.setHoverKeyRect(keyRect);
                 showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
                 this.updateColors();
@@ -403,7 +404,6 @@ export class glTlKeys extends Events
             keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
                 if (this.#glTl.hoverKeyRect == keyRect) this.#glTl.setHoverKeyRect(null);
-                this.#glTl.hoverKeyRect = null;
                 hideToolTip();
             });
 
@@ -431,11 +431,18 @@ export class glTlKeys extends Events
                  */
                 (e) =>
                 {
+                    if (this.#glTl.isSelecting())
+                    {
+                        this.#dragStarted = false;
+                        this.click = false;
+                        return;
+
+                    }
                     if (this.click)
                     {
-                        if (this.#glTl.selectRect) return;
+                        if (this.#glTl.isSelecting()) return;
                         if (this.#dragStarted) return;
-                        if (!e.shiftKey) this.#glTl.unSelectAllKeys();
+                        if (!e.shiftKey) this.#glTl.unSelectAllKeys("key up");
 
                         console.log("click,.,.,.", e.shiftKey);
                         this.#glTl.selectKey(key, this.#anim);
@@ -449,12 +456,12 @@ export class glTlKeys extends Events
             keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
             {
 
+                if (this.#glTl.isSelecting()) return;
                 if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
                 {
-                    if (this.#glTl.selectRect) return;
+                    if (this.#glTl.isSelecting()) return;
                     if (this.#dragStarted) return;
-                    // if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys();
-                    if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys();
+                    if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys("keys down");
 
                     console.log("click1111,.,.,.", e.shiftKey);
                     this.#glTl.selectKey(key, this.#anim);
@@ -465,6 +472,7 @@ export class glTlKeys extends Events
 
             keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
+                if (this.#glTl.isSelecting()) return;
                 this.#dragStartX = e.offsetX;
                 this.#dragStartY = e.offsetY;
                 this.#glTl.predragSelectedKeys();
@@ -482,10 +490,11 @@ export class glTlKeys extends Events
             keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 this.click = false;
-                if (this.#glTl.selectRect) return;
+                if (this.#glTl.isSelecting()) return;
                 if (startDragTime == -1111)
                 {
-                    console.log("cant drag,,,,");
+                    console.log("cant drag,,,,", this.#dragStarted, this.#glTl.isSelecting());
+
                     return;
                 }
 
@@ -513,9 +522,11 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
-
+                    console.log("text");
                     this.setKeyPositions();
+                    this.#glTl.setHoverKeyRect(keyRect);
                     this.#animLine.update();
+                    hideToolTip();
                 }
             });
 
