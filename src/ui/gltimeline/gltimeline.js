@@ -142,6 +142,7 @@ export class GlTimeline extends Events
     #cursorTextBgRect;
     #cursorY = 30;
     #rectLoopArea;
+    #rectHoverKey;
 
     /**
      * @param {CglContext} cgl
@@ -192,6 +193,12 @@ export class GlTimeline extends Events
         this.#rectLoopArea.setSize(40, 20);
         this.#rectLoopArea.setPosition(40, 20, 0.15);
         this.#rectLoopArea.setColor(0.9, 0.2, 0.2, 0.1);
+
+        this.#rectHoverKey = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
+        this.#rectHoverKey.setSize(20, 20);
+        this.#rectHoverKey.setShape(13);
+        this.#rectHoverKey.setPosition(40, 20, -0.2);
+        this.#rectHoverKey.setColor(0, 1, 1, 1);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -584,7 +591,11 @@ export class GlTimeline extends Events
             if (!this.selectRect && e.buttons == 1)
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
+                    {
                         this.unSelectAllKeys();
+                        console.log("heri");
+
+                    }
 
             try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
             catch (er) { this._log.log(er); }
@@ -637,11 +648,9 @@ export class GlTimeline extends Events
 
             if (!this.#focusRuler && !this.#focusScroll)
             {
-
                 if (this.hoverKeyRect && !this.selectRect)
                 {
                 }
-
                 else
                 {
                     if (y > this.getFirstLinePosy())
@@ -1828,5 +1837,17 @@ export class GlTimeline extends Events
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
         });
+    }
+
+    /**
+     * @param {GlRect} kr
+     */
+    setHoverKeyRect(kr)
+    {
+        this.hoverKeyRect = kr;
+        this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
+
+        this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+
     }
 }
