@@ -950,6 +950,7 @@ export class GlTimeline extends Events
             this.view.setZoomOffset(delta);
         }
 
+        this.setHoverKeyRect(null);
         this.needsUpdateAll = "wheel";
     }
 
@@ -1845,9 +1846,16 @@ export class GlTimeline extends Events
     setHoverKeyRect(kr)
     {
         this.hoverKeyRect = kr;
-        this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
+        if (kr)
+        {
+            this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
+            this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+        }
+        else
+        {
+            this.#rectHoverKey.setPosition(-9999, -9999);
 
-        this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+        }
 
     }
 }

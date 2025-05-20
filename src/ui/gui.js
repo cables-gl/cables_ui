@@ -87,6 +87,7 @@ export default class Gui extends Events
     glTimeLineTab = null;
 
     splitpanePatchPos = 0;
+    autoReloadOnUpdate = false;
 
     constructor(cfg)
     {
