@@ -8,7 +8,7 @@ import { gui } from "../gui.js";
 import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
-import { showToolTip } from "../elements/tooltips.js";
+import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 
 /**
  * gltl key rendering
@@ -402,7 +402,9 @@ export class glTlKeys extends Events
 
             keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
+                if (this.#glTl.hoverKeyRect == keyRect) this.#glTl.setHoverKeyRect(null);
                 this.#glTl.hoverKeyRect = null;
+                hideToolTip();
             });
 
             keyRect.on(GlRect.EVENT_DRAGEND, () =>
