@@ -99,55 +99,47 @@
         logStartup("loaded minimum libs / starting up...");
 
         incrementStartup();
-        loadjs([CABLESUILOADER.builtVersionUrl("core", "js/cables.js")], "cables_core");
+        loadjs([CABLESUILOADER.builtVersionUrl("ui", "js/cablesui.js")], "cablesuinew");
 
-        loadjs.ready("cables_core", function ()
+        loadjs.ready("cablesuinew", function ()
         {
-            logStartup("loaded cables core");
-            incrementStartup();
-
-            loadjs([CABLESUILOADER.builtVersionUrl("ui", "js/cablesui.js")], "cablesuinew");
-
-            loadjs.ready("cablesuinew", function ()
-            {
-                let platformClass = "PlatformCommunity";
-                if(cfg && cfg.platformClass) {
-                    if(CABLES.hasOwnProperty(cfg.platformClass)) {
-                        platformClass = cfg.platformClass;
-                        console.info("using sandbox from", platformClass);
-                    }else{
-                        console.error("could not find class for sandbox", cfg.platformClass, "using", platformClass);
-                    }
-
+            let platformClass = "PlatformCommunity";
+            if(cfg && cfg.platformClass) {
+                if(CABLES.hasOwnProperty(cfg.platformClass)) {
+                    platformClass = cfg.platformClass;
+                    console.info("using sandbox from", platformClass);
+                }else{
+                    console.error("could not find class for sandbox", cfg.platformClass, "using", platformClass);
                 }
-                CABLES.platform = new CABLES[platformClass](cfg);
 
+            }
+            CABLES.platform = new CABLES[platformClass](cfg);
+
+            incrementStartup();
+            logStartup("loaded ui");
+
+            CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
+            {
+                if (err)
+                {
+                    console.error("preloading error", err);
+                }
+                else
+                {
+                    CABLESUILOADER.preload.opDocsAll = _data;
+                }
+            }, (response) =>
+            {
+                console.error("preloading error", response);
+            });
+
+            loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops', { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
+            loadjs.ready('all_ops', () =>
+            {
                 incrementStartup();
-                logStartup("loaded ui");
+                logStartup('loaded cables ops');
 
-                CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
-                {
-                    if (err)
-                    {
-                        console.error("preloading error", err);
-                    }
-                    else
-                    {
-                        CABLESUILOADER.preload.opDocsAll = _data;
-                    }
-                }, (response) =>
-                {
-                    console.error("preloading error", response);
-                });
-
-                loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops', { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
-                loadjs.ready('all_ops', () =>
-                {
-                    incrementStartup();
-                    logStartup('loaded cables ops');
-
-                    waitForAce();
-                });
+                waitForAce();
             });
         });
     };

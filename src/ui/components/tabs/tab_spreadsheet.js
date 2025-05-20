@@ -78,6 +78,9 @@ export default class SpreadSheetTab extends Events
         this._html();
     }
 
+    /**
+     * @param {string | number} _c
+     */
     getColName(_c)
     {
         _c = parseFloat(_c);
@@ -109,6 +112,8 @@ export default class SpreadSheetTab extends Events
 
         this._inputs.length = 0;
         const table = this._eleTable;
+        table.innerHTML = "";
+        console.log("table html");
 
         for (let y = -1; y < this._rows; y++)
         {
@@ -153,6 +158,10 @@ export default class SpreadSheetTab extends Events
         }
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     _focusCell(x, y)
     {
         const inp = this._inputs[(y * this._numCols) + x];
@@ -168,6 +177,9 @@ export default class SpreadSheetTab extends Events
         }
     }
 
+    /**
+     * @param {KeyboardEvent}; keyCode: number; }} e
+     */
     _onKey(e)
     {
         const x = parseFloat(e.target.dataset.x);
@@ -249,6 +261,12 @@ export default class SpreadSheetTab extends Events
          */
     }
 
+    setData(data)
+    {
+        this.initData(data);
+        this.rebuildHtml();
+    }
+
     initData(data)
     {
         this.cells = data.cells || [];
@@ -264,6 +282,11 @@ export default class SpreadSheetTab extends Events
         return this.cells[y][x];
     }
 
+    /**
+     * @param {string | number} x
+     * @param {number} y
+     * @param {any} v
+     */
     set(x, y, v)
     {
         if (y == -1)
@@ -284,7 +307,7 @@ export default class SpreadSheetTab extends Events
         this.data.cells = this.cells;
         this.data.colNames = this.colNames;
         this.data.colNames.length = this._numCols;
-        this._options.onchange(null);
+        // this._options.onchange(null);
         if (this._options.onchange) this._options.onchange(this.data);
     }
 

@@ -1,5 +1,6 @@
 import { Events, ele } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlAnimLine } from "./gltlanimline.js";
@@ -13,6 +14,9 @@ export class TlTitle extends Events
 
     /** @type {HTMLElement} */
     #el = null;
+
+    /** @type {HTMLElement} */
+    #elButtons = null;
 
     /** @type {HTMLElement} */
     #elTitle = null;
@@ -29,6 +33,8 @@ export class TlTitle extends Events
 
     /** @type {Anim} */
     #anim;
+
+    /** @type {EventListener[]} */
     #listeners = [];
     #gltl;
 
@@ -40,7 +46,7 @@ export class TlTitle extends Events
      * @param {Anim} anim
      * @param {GlTimeline} gltl
      */
-    constructor(gltl, parentEl, anim)
+    constructor(gltl, parentEl, anim, cfg)
     {
         super();
         this.#gltl = gltl;
@@ -48,6 +54,10 @@ export class TlTitle extends Events
         this.#el = document.createElement("div");
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
+
+        this.#elButtons = document.createElement("span");
+        this.#elButtons.classList.add("tlButtons");
+        this.#el.appendChild(this.#elButtons);
 
         this.#elTitle = document.createElement("span");
 
@@ -58,17 +68,22 @@ export class TlTitle extends Events
         });
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
-            this.activeButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
+            this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
                 {
                     if (e.buttons == 2) this.#gltl.deactivateAllAnims();
                     this.toggleActive();
                 }
             );
+
         this.#el.appendChild(this.#elTitle);
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(anim.tlActive);
         else this.setActive(true);
+
+        if (cfg.port) this.setPort(cfg.port);
+
+        this.updateIcons();
     }
 
     /**
@@ -140,14 +155,39 @@ export class TlTitle extends Events
             if (!c)
             {
                 this.#elTitle.style.opacity = "0.4";
-                this.activeButton.children[0].classList.remove("icon-eye");
-                this.activeButton.children[0].classList.add("icon-eye-off");
+                this.activeButton.children[0].classList.remove("icon-pencil");
+                this.activeButton.children[0].classList.add("icon-pencil-off");
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
-                this.activeButton.children[0].classList.add("icon-eye");
-                this.activeButton.children[0].classList.remove("icon-eye-off");
+                this.activeButton.children[0].classList.add("icon-pencil");
+                this.activeButton.children[0].classList.remove("icon-pencil-off");
+            }
+        }
+
+        if (this.#port && !this.muteButton)
+            this.muteButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+                (e) =>
+                {
+
+                    this.#port.animMuted = !this.#port.animMuted;
+                    this.updateIcons();
+                }
+            );
+        if (this.muteButton)
+        {
+            if (this.#port.animMuted)
+            {
+                this.#elTitle.style.opacity = "0.4";
+                this.muteButton.children[0].classList.remove("icon-eye");
+                this.muteButton.children[0].classList.add("icon-eye-off");
+            }
+            else
+            {
+                this.#elTitle.style.opacity = "1";
+                this.muteButton.children[0].classList.add("icon-eye");
+                this.muteButton.children[0].classList.remove("icon-eye-off");
             }
         }
     }
@@ -196,7 +236,7 @@ export class TlTitle extends Events
         ele.clickable(button, cb);
         button.addEventListener("contextmenu", (e) => { cb(e); });
         button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
-        this.#el.appendChild(button);
+        this.#elButtons.appendChild(button);
         this.#buttons.push({ "ele": button, cb, title });
         return button;
     }

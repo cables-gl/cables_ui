@@ -555,10 +555,11 @@ class ParamsListener extends Events
                     "iconClass": icon,
                     "func": () =>
                     {
-                        // gui.setStateUnsaved();
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
+                        CABLES.CMD.TIMELINE.openGlTimeline();
+
                     }
                 });
             }

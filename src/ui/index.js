@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import CABLES from "cables";
 import { Platform } from "./platform.js";
 import CMD from "./commands/commands.js";
 import OverlayMeshes from "./components/overlay/overlaymeshes.js";
@@ -31,7 +32,6 @@ import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
 
-CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
@@ -92,7 +92,6 @@ CABLES.UI.showShaderErrorCgp = showShaderErrorCgp;
 setHtmlDefaultListeners();
 
 extendCoreOp();
-
 extendCorePatch();
 extendCoreAnim();
 
