@@ -569,7 +569,8 @@ export default class ScConnection extends Events
                             text += "...";
                             gui.restriction.setMessage("cablesbuild", null);
                             gui.patchView.store.checkUpdated(null, false, true);
-                            window.location.reload();
+
+                            if (!document.hidden) window.location.reload();
                             break;
                         }
 
