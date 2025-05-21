@@ -235,6 +235,20 @@ class namespace
 
         return false;
     }
+
+    capitalizeNamespaceParts(opName)
+    {
+        if (!opName) return;
+        const opUsername = gui.user ? gui.user.usernameLowercase : "";
+        const nameParts = opName.split(".");
+        const capitalizedParts = nameParts.map((part) =>
+        {
+            if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
+            return (part[0].toUpperCase() + part.slice(1));
+        });
+        return capitalizedParts.join(".");
+    }
+
 }
 
 export default new namespace();
