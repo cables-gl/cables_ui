@@ -1466,7 +1466,6 @@ export class GlTimeline extends Events
                     {
                         notifyWarn("could not find all anims for pasted keys");
                     }
-
                     else
                     {
                         notify(json.keys.length + " keys pasted");
@@ -1474,10 +1473,8 @@ export class GlTimeline extends Events
 
                     const animPorts = gui.corePatch().getAllAnimPorts();
                     for (let i = 0; i < animPorts.length; i++)
-                    {
                         if (animPorts[i].anim)
                             animPorts[i].anim.removeDuplicates();
-                    }
 
                     this.needsUpdateAll = "";
 
