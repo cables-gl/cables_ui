@@ -329,8 +329,9 @@ export class glTlKeys extends Events
     setKeyPositions()
     {
 
-        if (this.#glTl.isSelecting())
-            this.testSelected();
+        if (this.#glTl.isSelecting()) this.testSelected();
+
+        if (this.#keyRects.length != this.#anim.keys.length) this.init();
 
         for (let i = 0; i < this.#keyRects.length; i++)
         {
@@ -497,7 +498,7 @@ export class glTlKeys extends Events
                     glTlKeys.#startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                     glTlKeys.#startDragValue = this.#animLine.pixelToValue(e.offsetY);
 
-                    // if (e.shiftKey) this.#glTl.duplicateSelectedKeys();
+                    if (e.altKey) this.#glTl.duplicateSelectedKeys();
                 }
             });
 
@@ -517,7 +518,7 @@ export class glTlKeys extends Events
                     glTlKeys.#dragStartX = e.offsetX;
                     glTlKeys.#dragStartY = e.offsetY;
                 }
-                if (button == 1)
+                if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
                 {
                     let offX = e.offsetX;
                     let offY = e.offsetY;

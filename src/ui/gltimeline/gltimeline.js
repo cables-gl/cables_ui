@@ -784,6 +784,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "t": time });
 
+        this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "seltselectedtime";
     }
 
@@ -819,7 +820,35 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
+        this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "moveselectdelta";
+
+    }
+
+    fixAnimsFromKeys(keys)
+    {
+        const anims = [];
+
+        for (let i = 0; i < keys.length; i++)
+        {
+            if (anims.indexOf(keys[i].anim) == -1)anims.push(keys[i].anim);
+        }
+
+        for (let i = 0; i < anims.length; i++)
+        {
+            this.fixAnim(anims[i]);
+        }
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    fixAnim(anim)
+    {
+        console.log("ani", anim);
+        if (!anim) return;
+        anim.sortKeys();
+        anim.removeDuplicates();
     }
 
     getSelectedKeysBoundsValue()
@@ -1793,6 +1822,7 @@ export class GlTimeline extends Events
             {
                 this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
             }
+            this.fixAnimsFromKeys(this.#selectedKeys);
         });
         ele.clickable(ele.byId("kp_time_moveb"), () =>
         {
@@ -1803,6 +1833,7 @@ export class GlTimeline extends Events
             {
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
             }
+            this.fixAnimsFromKeys(this.#selectedKeys);
         });
         ele.clickable(ele.byId("kp_value_movef"), () =>
         {
@@ -1810,6 +1841,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+            this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
         });
         ele.clickable(ele.byId("kp_value_moveb"), () =>
@@ -1818,6 +1850,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
+            this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
         });
     }
