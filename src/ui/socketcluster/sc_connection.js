@@ -8,6 +8,7 @@ import { PatchConnectionSender } from "./patchconnection.js";
 import Chat from "../components/tabs/tab_chat.js";
 import { platform } from "../platform.js";
 import ScUi from "./sc_ui.js";
+import { notify } from "../elements/notification.js";
 
 export default class ScConnection extends Events
 {
@@ -557,6 +558,21 @@ export default class ScConnection extends Events
                         let text = "";
                         switch (msg.data.build)
                         {
+                        case "opchange":
+                            const opName = msg.data.opName;
+                            if (opName)
+                            {
+                                const usedOps = gui.corePatch().getOpsByObjName(opName);
+                                if (usedOps && usedOps.length > 0)
+                                {
+                                    const usedOp = usedOps[0];
+                                    gui.serverOps.execute(usedOp.opId, () =>
+                                    {
+                                        notify("reloaded op " + usedOp.objName);
+                                    });
+                                }
+                            }
+                            break;
                         case "started":
                             text = "Waiting while building";
                             if (msg.data.module) text += " " + msg.data.module;

@@ -302,10 +302,10 @@ export default class ServerOps
 
     /**
      * @param {string} opIdentifier
-     * @param {function} next
-     * @param {object} options
+     * @param {function} [next]
+     * @param {object} [options]
      */
-    execute(opIdentifier, next, options)
+    execute(opIdentifier, next = null, options = {})
     {
         options = options || {};
         gui.savedState.pause();
@@ -330,7 +330,6 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
-        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId); //d.......
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(name, (num, newOps) =>
@@ -342,7 +341,6 @@ export default class ServerOps
                     this.saveOpLayout(newOps[0]);
                 }
                 gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
-                // gui.emitEvent("opReloaded", name, newOps[0]);
                 gui.jobs().finish("executeop");
 
                 gui.savedState.resume();
