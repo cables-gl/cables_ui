@@ -24,6 +24,7 @@
 
         <a class="button-small icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
         <a class="button-small icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
+        <a class="button-small icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Bezier</a>
 
 
         <br/><br/>
@@ -56,6 +57,10 @@
         <a class="iconbutton nomargin button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ELASTIC_OUT);"><span class="icon icon-ease-exp-out"></span></a>
         <a class="iconbutton nomargin button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
 
+<hr/>
 
+        {{#each errors}}
+        - {{.}}<br/>
+        {{/each}}
     </div>
 </script>

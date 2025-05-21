@@ -851,7 +851,7 @@ export class GlTimeline extends Events
         clearTimeout(this.toParamKeys);
         this.toParamKeys = setTimeout(() =>
         {
-            this.showKeyParams();
+            this.showParamKeys();
         }, 100);
     }
 
@@ -1730,7 +1730,25 @@ export class GlTimeline extends Events
     {
     }
 
-    showKeyParams()
+    testAnim(keys)
+    {
+        const errors = [];
+
+        if (keys.length > 0)
+            for (let i = 1; i < keys.length; i++)
+                if (keys[i].anim == keys[i - 1].anim) if (keys[i].time < keys[i - 1].time)errors.push("keys wrong order " + i);
+
+        for (let i = 0; i < keys.length; i++)
+            if (keys[i].time != this.snapTime(keys[i].time))errors.push("time not snapped " + i);
+
+        for (let i = 1; i < keys.length; i++)
+            for (let j = 1; j < keys.length; j++)
+                if (keys[i].anim == keys[j].anim) if (keys[i].time == keys[i].time)errors.push("duplicate keys " + i);
+
+        return errors;
+    }
+
+    showParamKeys()
     {
         if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
         const timebounds = this.getSelectedKeysBoundsTime();
@@ -1757,7 +1775,8 @@ export class GlTimeline extends Events
                 "numKeys": this.#selectedKeys.length,
                 "timeBounds": timestr,
                 "valueBounds": valstr,
-                "displayunit": unit
+                "displayunit": unit,
+                "errors": this.testAnim(this.#selectedKeys),
             });
         this.#keyOverEl.innerHTML = html;
 
@@ -1791,7 +1810,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
-            this.showKeyParams();
+            this.showParamKeys();
         });
         ele.clickable(ele.byId("kp_value_moveb"), () =>
         {
@@ -1799,7 +1818,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
-            this.showKeyParams();
+            this.showParamKeys();
         });
     }
 
@@ -1812,6 +1831,7 @@ export class GlTimeline extends Events
         const html = getHandleBarHtml(
             "params_anim", {
                 "anim": anim,
+                "errors": this.testAnim(anim.keys),
                 "length": Math.round(anim.getLengthLoop() * 1000) / 1000
             });
         this.#keyOverEl.innerHTML = html;
