@@ -681,16 +681,15 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-
             if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
             {
                 const movementX = event.offsetX - this.#lastDragX;
                 const movementY = event.offsetY - this.#lastDragY;
 
                 if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-
                 if (!event.shiftKey) this.view.scrollY(movementY, 0);
             }
+
             this.#lastDragX = event.offsetX;
             this.#lastDragY = event.offsetY;
             this.needsUpdateAll = "mouse drag pan";
@@ -1223,6 +1222,7 @@ export class GlTimeline extends Events
             this.#tlTimeDisplay.innerHTML = html;
             this.#oldhtml = html;
         }
+        this.scroll.update();
     }
 
     updateAllElements()

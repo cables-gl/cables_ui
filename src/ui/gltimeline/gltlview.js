@@ -187,7 +187,8 @@ export class GlTlView
      */
     timeToPixel(t)
     {
-        return t * (this.#tl.width / this.#zoom);
+        const r = t * (this.#tl.width / this.#zoom);
+        return r;
     }
 
     /**
