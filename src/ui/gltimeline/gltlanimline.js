@@ -435,4 +435,11 @@ export class glTlAnimLine extends Events
             this.#keys[j].render();
         }
     }
+
+    testSelected()
+    {
+        if (glTlKeys.dragStarted()) return;
+        if (!this.#glTl.isSelecting()) return;
+        for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
+    }
 }

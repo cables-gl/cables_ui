@@ -2138,7 +2138,7 @@ export default class PatchView extends Events
         this._patchRenderer.resumeInteraction();
     }
 
-    /** @returns {String} */
+    /** @returns {String|number} */
     getCurrentSubPatch()
     {
         return this._patchRenderer.getCurrentSubPatch();

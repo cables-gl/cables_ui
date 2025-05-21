@@ -16,6 +16,7 @@ import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
+import { glTlKeys } from "./gltlkeys.js";
 
 /**
  * @typedef TlConfig
@@ -157,7 +158,6 @@ export class GlTimeline extends Events
         this.view = new GlTlView(this);
 
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
-
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
@@ -648,6 +648,7 @@ export class GlTimeline extends Events
                 if (this.hoverKeyRect)
                 {
 
+                    console.log("hoveringkeyrect");
                 }
                 else
                 {
@@ -664,6 +665,11 @@ export class GlTimeline extends Events
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+
+                        for (let i = 0; i < this.#tlAnims.length; i++)
+                        {
+                            this.#tlAnims[i].testSelected();
+                        }
                     }
                 }
 
@@ -897,6 +903,7 @@ export class GlTimeline extends Events
 
         this.unSelectAllKeys("delete keys");
         this.needsUpdateAll = "deletekey";
+        this.setHoverKeyRect(null);
     }
 
     /**
@@ -906,6 +913,7 @@ export class GlTimeline extends Events
      */
     selectKey(k, a)
     {
+        if (glTlKeys.dragStarted()) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
             this.#selectedKeys.push(k);
@@ -1485,7 +1493,8 @@ export class GlTimeline extends Events
             "layout": this.#layout,
             "tlAnims": [],
             "view": this.view.getDebug(),
-            "perf": this.#perfFps.stats
+            "perf": this.#perfFps.stats,
+            "dragstarted": glTlKeys.dragStarted()
         };
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
@@ -1848,6 +1857,11 @@ export class GlTimeline extends Events
      */
     setHoverKeyRect(kr)
     {
+        if (glTlKeys.dragStarted())
+        {
+            this.#rectHoverKey.setPosition(-9999, -9999);
+        }
+
         this.hoverKeyRect = kr;
         if (kr)
         {
