@@ -569,6 +569,7 @@ export default class ScConnection extends Events
                             text += "...";
                             gui.restriction.setMessage("cablesbuild", null);
                             gui.patchView.store.checkUpdated(null, false, true);
+                            window.location.reload();
                             break;
                         }
 
@@ -577,23 +578,23 @@ export default class ScConnection extends Events
             })();
         }
 
-        window.addEventListener("beforeunload", () =>
+        window.addEventListener("beforeunload", (e) =>
         {
             if (!this.client) return;
 
             this.client.isDisconnected = true;
             if (this.inMultiplayerSession)
             {
-                this.leaveMultiplayerSession(true);
+                this.leaveMultiplayerSession();
             }
             else
             {
                 this._sendPing();
             }
-            if (this._socket && this._socket.destroy)
-            {
-                this._socket.destroy();
-            }
+            // if (this._socket && this._socket.destroy)
+            // {
+            //     this._socket.destroy();
+            // }
         });
 
         doneCallback(true);

@@ -28,12 +28,16 @@ export default class ModalPortValue
         }
 
         this._port = port;
-        const modal = new ModalDialog({});
+        const modal = new ModalDialog({
+            "title": "Structure of " + port.op.name + "/" + port.name
+        });
         this._showPortStructure(port.name, modal, port);
     }
 
     _showPortStructure(title, modal, port)
     {
+        const elementsLimit = 5;
+
         function asyncInnerHTML(HTML, callback)
         {
             const container = document.createElement("div");
@@ -121,12 +125,18 @@ export default class ModalPortValue
 
             html += "</tr>";
 
+            let numNodes = 0;
             if (node)
             {
                 if (Array.isArray(node))
                 {
                     for (i = 0; i < node.length; i++)
                     {
+                        if (i > elementsLimit)
+                        {
+                            numNodes = node.length;
+                            break;
+                        }
                         const newPath = path + "." + i;
                         html = printNode(op, portName, html, i, node[i], newPath, level + 1, inputDataType);
                     }
@@ -143,6 +153,21 @@ export default class ModalPortValue
                 }
             }
 
+            if (numNodes > elementsLimit)
+            {
+                html += "<tr>";
+                for (i = 0; i < level; i++)
+                {
+                    let identClass = "identBg";
+                    if (i == 0)identClass = "identBgLevel0";
+                    ident += "<td class=\"ident  " + identClass + "\" ><div style=\"\"></div></td>";
+                }
+                html += ident;
+                html += "<td colspan=\"" + (20 - level) + "\">";
+                html += "and " + (numNodes - elementsLimit) + " <a onclick=\"new CABLES.UI.TabPortObjectInspect('" + op.id + "','" + portName + "');\">more...</a>";
+                html += "</td>";
+                html += "</tr>";
+            }
             return html;
         }
 
@@ -150,21 +175,37 @@ export default class ModalPortValue
         {
             if (!json) return;
 
-            const sizes = {};
-
             let html = "<div style=\"overflow:scroll;width:100%;height:100%\">";
 
             let elements = [];
+            let typeTitle = "";
+            let moreHtml = "";
+            let limitText = "";
+
             if (Array.isArray(json))
             {
+                typeTitle = "Array ";
                 elements = json;
             }
             else if (typeof json === "object")
             {
+                typeTitle = "Object ";
                 elements = Object.keys(json);
             }
 
-            html += "<h3>Nodes (" + elements.length + ")</h3>";
+            if (Array.isArray(json) && elements.length > elementsLimit)
+            {
+                limitText = " showing first " + elementsLimit;
+                moreHtml = "<tr>";
+                moreHtml += " <td colspan=\"20\">";
+                moreHtml += "and " + (elements.length - elementsLimit) + " <a onclick=\"new CABLES.UI.TabPortObjectInspect('" + op.id + "','" + portName + "');\">more...</a>";
+                moreHtml += "</td>";
+                moreHtml += " <td></td>";
+                moreHtml += " <td></td>";
+                moreHtml += "</tr>";
+            }
+
+            html += "<h3 style='margin-top: 0;'>" + typeTitle + "Nodes (" + elements.length + limitText + ")</h3>";
             html += "<table class=\"table treetable\">";
 
             html += "<tr>";
@@ -177,6 +218,7 @@ export default class ModalPortValue
             {
                 if (Array.isArray(json))
                 {
+                    if (i > elementsLimit) break;
                     html = printNode(op, portName, html, i, json[i], i, 1, inputDataType);
                 }
                 else if (typeof json === "object")
@@ -185,6 +227,7 @@ export default class ModalPortValue
                     html = printNode(op, portName, html, key, json[key], key, 1, inputDataType);
                 }
             }
+            html += moreHtml;
             html += "</table>";
             html += "</div>";
 
@@ -202,11 +245,8 @@ export default class ModalPortValue
             const jsonInfo = printJsonInfo(thing, port.op, port.name, inputDataType);
 
             let fullHTML = "";
-            fullHTML += "<h2 class=\"splitter\"><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
-            fullHTML += "<br/><br/>";
+            fullHTML += "<br/>";
             fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-            fullHTML += "<br/><br/>";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";
 
@@ -218,11 +258,7 @@ export default class ModalPortValue
         catch (ex)
         {
             let fullHTML = "";
-            fullHTML += "<h2><span class=\"splitter icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
-            fullHTML += "<br/><br/>";
             fullHTML += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
-
             modal.updateHtml(fullHTML);
         }
     }

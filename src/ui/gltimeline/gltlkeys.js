@@ -8,7 +8,7 @@ import { gui } from "../gui.js";
 import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
-import { showToolTip } from "../elements/tooltips.js";
+import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 
 /**
  * gltl key rendering
@@ -49,7 +49,7 @@ export class glTlKeys extends Events
 
     #disposed = false;
 
-    sizeKey = 12;
+    sizeKey = 14;
 
     /** @type {Array<number>} */
     #points = [];
@@ -342,14 +342,14 @@ export class glTlKeys extends Events
             if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.keyHeight, y, animKey.value, this.#animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
             let z = -0.6;
-            if (this.#anim.tlActive)z = -0.7;
-            if (this.#port.op.isCurrentUiOp())z = -0.8;
+            if (this.#anim.tlActive)z = -0.9;
+            if (this.#port.op.isCurrentUiOp())z = -0.94;
 
             kr.setPosition(rx, ry, z);
             this.setKeyShapeSize(kr);
 
             if (
-                this.#glTl.selectRect &&
+                this.#glTl.isSelecting() &&
                 this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
                 this.#glTl.selectRect.y < (kr.absY + this.keyHeight) && this.#glTl.selectRect.y2 > kr.absY)
             {
@@ -382,14 +382,9 @@ export class glTlKeys extends Events
 
             this.setKeyShapeSize(keyRect);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
-            // keyRect.setColorHover(1, 1, 1, 1);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);
             keyRect.data.key = key;
-            keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
-            {
-                showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
-            });
 
             let startDragTime = -1111;
             let startDragValue = -1111;
@@ -398,14 +393,18 @@ export class glTlKeys extends Events
             let oldValues = {};
 
             keyRect.draggableMove = true;
-            keyRect.on(GlRect.EVENT_POINTER_HOVER, () =>
+            keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
             {
-                this.#glTl.hoverKeyRect = keyRect;
+                if (this.#glTl.isSelecting()) return;
+                this.#glTl.setHoverKeyRect(keyRect);
+                showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
+                this.updateColors();
             });
 
             keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
             {
-                this.#glTl.hoverKeyRect = null;
+                if (this.#glTl.hoverKeyRect == keyRect) this.#glTl.setHoverKeyRect(null);
+                hideToolTip();
             });
 
             keyRect.on(GlRect.EVENT_DRAGEND, () =>
@@ -432,12 +431,20 @@ export class glTlKeys extends Events
                  */
                 (e) =>
                 {
+                    if (this.#glTl.isSelecting())
+                    {
+                        this.#dragStarted = false;
+                        this.click = false;
+                        return;
+
+                    }
                     if (this.click)
                     {
-                        if (this.#glTl.selectRect) return;
+                        if (this.#glTl.isSelecting()) return;
                         if (this.#dragStarted) return;
-                        if (!e.shiftKey) this.#glTl.unSelectAllKeys();
+                        if (!e.shiftKey) this.#glTl.unSelectAllKeys("key up");
 
+                        console.log("click,.,.,.", e.shiftKey);
                         this.#glTl.selectKey(key, this.#anim);
                     }
                     this.click = false;
@@ -449,12 +456,14 @@ export class glTlKeys extends Events
             keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
             {
 
+                if (this.#glTl.isSelecting()) return;
                 if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
                 {
-                    if (this.#glTl.selectRect) return;
+                    if (this.#glTl.isSelecting()) return;
                     if (this.#dragStarted) return;
-                    if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys();
+                    if (!e.shiftKey || this.#glTl.getNumSelectedKeys() != 0) this.#glTl.unSelectAllKeys("keys down");
 
+                    console.log("click1111,.,.,.", e.shiftKey);
                     this.#glTl.selectKey(key, this.#anim);
                     this.update();
                 }
@@ -463,6 +472,7 @@ export class glTlKeys extends Events
 
             keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
+                if (this.#glTl.isSelecting()) return;
                 this.#dragStartX = e.offsetX;
                 this.#dragStartY = e.offsetY;
                 this.#glTl.predragSelectedKeys();
@@ -480,10 +490,11 @@ export class glTlKeys extends Events
             keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
                 this.click = false;
-                if (this.#glTl.selectRect) return;
+                if (this.#glTl.isSelecting()) return;
                 if (startDragTime == -1111)
                 {
-                    console.log("cant drag,,,,");
+                    console.log("cant drag,,,,", this.#dragStarted, this.#glTl.isSelecting());
+
                     return;
                 }
 
@@ -511,9 +522,11 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
-
+                    console.log("text");
                     this.setKeyPositions();
+                    this.#glTl.setHoverKeyRect(keyRect);
                     this.#animLine.update();
+                    hideToolTip();
                 }
             });
 

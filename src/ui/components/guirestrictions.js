@@ -71,4 +71,9 @@ export default class GuiRestrictions
     {
         return this.visible && this._currentlyShowing === id;
     }
+
+    el()
+    {
+        return this._messageBox;
+    }
 }

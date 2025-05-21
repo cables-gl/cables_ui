@@ -142,6 +142,7 @@ export class GlTimeline extends Events
     #cursorTextBgRect;
     #cursorY = 30;
     #rectLoopArea;
+    #rectHoverKey;
 
     /**
      * @param {CglContext} cgl
@@ -192,6 +193,12 @@ export class GlTimeline extends Events
         this.#rectLoopArea.setSize(40, 20);
         this.#rectLoopArea.setPosition(40, 20, 0.15);
         this.#rectLoopArea.setColor(0.9, 0.2, 0.2, 0.1);
+
+        this.#rectHoverKey = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
+        this.#rectHoverKey.setSize(20, 20);
+        this.#rectHoverKey.setShape(13);
+        this.#rectHoverKey.setPosition(40, 20, -0.2);
+        this.#rectHoverKey.setColor(0, 1, 1, 1);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -578,13 +585,14 @@ export class GlTimeline extends Events
         else if (this.#focusScroll)
         {
         }
-
         else
         {
             if (!this.selectRect && e.buttons == 1)
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
-                        this.unSelectAllKeys();
+                    {
+                        this.unSelectAllKeys("canvas down ");
+                    }
 
             try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
             catch (er) { this._log.log(er); }
@@ -635,18 +643,17 @@ export class GlTimeline extends Events
                 }
             }
 
-            if (!this.#focusRuler && !this.#focusScroll)
+            if (!this.#focusRuler && !this.#focusScroll && !this.hoverKeyRect)
             {
-
-                if (this.hoverKeyRect && !this.selectRect)
+                if (this.hoverKeyRect)
                 {
-                }
 
+                }
                 else
                 {
                     if (y > this.getFirstLinePosy())
                     {
-                        if (!event.shiftKey) this.unSelectAllKeys();
+                        if (!event.shiftKey) this.unSelectAllKeys("move " + event.buttons);
 
                         this.selectRect = {
                             "x": Math.min(this.#lastXnoButton, x),
@@ -842,8 +849,12 @@ export class GlTimeline extends Events
         }, 100);
     }
 
-    unSelectAllKeys()
+    /**
+     * @param {string} [reason]
+     */
+    unSelectAllKeys(reason)
     {
+        console.log("unselectall because ", reason);
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
         this.showKeyParamsSoon();
@@ -884,7 +895,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
 
-        this.unSelectAllKeys();
+        this.unSelectAllKeys("delete keys");
         this.needsUpdateAll = "deletekey";
     }
 
@@ -908,6 +919,7 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseUp(e)
     {
+        console.log("mouse up");
         this.#rects.mouseUp(e);
         this.mouseDown = false;
         this.hoverKeyRect = null;
@@ -941,6 +953,7 @@ export class GlTimeline extends Events
             this.view.setZoomOffset(delta);
         }
 
+        this.setHoverKeyRect(null);
         this.needsUpdateAll = "wheel";
     }
 
@@ -1094,7 +1107,7 @@ export class GlTimeline extends Events
 
             if (this.disposed) return;
             this.view.updateAnims();
-            if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
+            // if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
             if (this.view.isAnimated() || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
@@ -1226,7 +1239,7 @@ export class GlTimeline extends Events
             if (this.getNumSelectedKeys())
             {
                 this.zoomToFitSelection();
-                this.unSelectAllKeys();
+                this.unSelectAllKeys("zoom out");
             }
             else
             {
@@ -1828,5 +1841,29 @@ export class GlTimeline extends Events
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
         });
+    }
+
+    /**
+     * @param {GlRect} kr
+     */
+    setHoverKeyRect(kr)
+    {
+        this.hoverKeyRect = kr;
+        if (kr)
+        {
+            this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
+            this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+        }
+        else
+        {
+            this.#rectHoverKey.setPosition(-9999, -9999);
+
+        }
+
+    }
+
+    isSelecting()
+    {
+        return !!this.selectRect;
     }
 }
