@@ -16,6 +16,7 @@ import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
+import { glTlKeys } from "./gltlkeys.js";
 
 /**
  * @typedef TlConfig
@@ -157,7 +158,6 @@ export class GlTimeline extends Events
         this.view = new GlTlView(this);
 
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
-
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
@@ -648,6 +648,7 @@ export class GlTimeline extends Events
                 if (this.hoverKeyRect)
                 {
 
+                    console.log("hoveringkeyrect");
                 }
                 else
                 {
@@ -664,6 +665,11 @@ export class GlTimeline extends Events
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
+
+                        for (let i = 0; i < this.#tlAnims.length; i++)
+                        {
+                            this.#tlAnims[i].testSelected();
+                        }
                     }
                 }
 
@@ -675,16 +681,15 @@ export class GlTimeline extends Events
         }
         else if (event.buttons == this.buttonForScrolling)
         {
-
             if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
             {
                 const movementX = event.offsetX - this.#lastDragX;
                 const movementY = event.offsetY - this.#lastDragY;
 
                 if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-
                 if (!event.shiftKey) this.view.scrollY(movementY, 0);
             }
+
             this.#lastDragX = event.offsetX;
             this.#lastDragY = event.offsetY;
             this.needsUpdateAll = "mouse drag pan";
@@ -778,6 +783,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#selectedKeys.length; i++)
             this.#selectedKeys[i].set({ "t": time });
 
+        this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "seltselectedtime";
     }
 
@@ -813,7 +819,35 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
+        this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "moveselectdelta";
+
+    }
+
+    fixAnimsFromKeys(keys)
+    {
+        const anims = [];
+
+        for (let i = 0; i < keys.length; i++)
+        {
+            if (anims.indexOf(keys[i].anim) == -1)anims.push(keys[i].anim);
+        }
+
+        for (let i = 0; i < anims.length; i++)
+        {
+            this.fixAnim(anims[i]);
+        }
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    fixAnim(anim)
+    {
+        console.log("ani", anim);
+        if (!anim) return;
+        anim.sortKeys();
+        anim.removeDuplicates();
     }
 
     getSelectedKeysBoundsValue()
@@ -845,7 +879,7 @@ export class GlTimeline extends Events
         clearTimeout(this.toParamKeys);
         this.toParamKeys = setTimeout(() =>
         {
-            this.showKeyParams();
+            this.showParamKeys();
         }, 100);
     }
 
@@ -897,6 +931,7 @@ export class GlTimeline extends Events
 
         this.unSelectAllKeys("delete keys");
         this.needsUpdateAll = "deletekey";
+        this.setHoverKeyRect(null);
     }
 
     /**
@@ -906,6 +941,7 @@ export class GlTimeline extends Events
      */
     selectKey(k, a)
     {
+        if (glTlKeys.dragStarted()) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
             this.#selectedKeys.push(k);
@@ -1186,6 +1222,7 @@ export class GlTimeline extends Events
             this.#tlTimeDisplay.innerHTML = html;
             this.#oldhtml = html;
         }
+        this.scroll.update();
     }
 
     updateAllElements()
@@ -1429,7 +1466,6 @@ export class GlTimeline extends Events
                     {
                         notifyWarn("could not find all anims for pasted keys");
                     }
-
                     else
                     {
                         notify(json.keys.length + " keys pasted");
@@ -1437,10 +1473,8 @@ export class GlTimeline extends Events
 
                     const animPorts = gui.corePatch().getAllAnimPorts();
                     for (let i = 0; i < animPorts.length; i++)
-                    {
                         if (animPorts[i].anim)
                             animPorts[i].anim.removeDuplicates();
-                    }
 
                     this.needsUpdateAll = "";
 
@@ -1485,7 +1519,8 @@ export class GlTimeline extends Events
             "layout": this.#layout,
             "tlAnims": [],
             "view": this.view.getDebug(),
-            "perf": this.#perfFps.stats
+            "perf": this.#perfFps.stats,
+            "dragstarted": glTlKeys.dragStarted()
         };
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
@@ -1721,7 +1756,25 @@ export class GlTimeline extends Events
     {
     }
 
-    showKeyParams()
+    testAnim(keys)
+    {
+        const errors = [];
+
+        if (keys.length > 0)
+            for (let i = 1; i < keys.length; i++)
+                if (keys[i].anim == keys[i - 1].anim) if (keys[i].time < keys[i - 1].time)errors.push("keys wrong order " + i);
+
+        for (let i = 0; i < keys.length; i++)
+            if (keys[i].time != this.snapTime(keys[i].time))errors.push("time not snapped " + i);
+
+        for (let i = 1; i < keys.length; i++)
+            for (let j = 1; j < keys.length; j++)
+                if (keys[i].anim == keys[j].anim) if (keys[i].time == keys[i].time)errors.push("duplicate keys " + i);
+
+        return errors;
+    }
+
+    showParamKeys()
     {
         if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
         const timebounds = this.getSelectedKeysBoundsTime();
@@ -1748,7 +1801,8 @@ export class GlTimeline extends Events
                 "numKeys": this.#selectedKeys.length,
                 "timeBounds": timestr,
                 "valueBounds": valstr,
-                "displayunit": unit
+                "displayunit": unit,
+                "errors": this.testAnim(this.#selectedKeys),
             });
         this.#keyOverEl.innerHTML = html;
 
@@ -1765,6 +1819,7 @@ export class GlTimeline extends Events
             {
                 this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
             }
+            this.fixAnimsFromKeys(this.#selectedKeys);
         });
         ele.clickable(ele.byId("kp_time_moveb"), () =>
         {
@@ -1775,6 +1830,7 @@ export class GlTimeline extends Events
             {
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
             }
+            this.fixAnimsFromKeys(this.#selectedKeys);
         });
         ele.clickable(ele.byId("kp_value_movef"), () =>
         {
@@ -1782,7 +1838,8 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
-            this.showKeyParams();
+            this.fixAnimsFromKeys(this.#selectedKeys);
+            this.showParamKeys();
         });
         ele.clickable(ele.byId("kp_value_moveb"), () =>
         {
@@ -1790,7 +1847,8 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
-            this.showKeyParams();
+            this.fixAnimsFromKeys(this.#selectedKeys);
+            this.showParamKeys();
         });
     }
 
@@ -1803,6 +1861,7 @@ export class GlTimeline extends Events
         const html = getHandleBarHtml(
             "params_anim", {
                 "anim": anim,
+                "errors": this.testAnim(anim.keys),
                 "length": Math.round(anim.getLengthLoop() * 1000) / 1000
             });
         this.#keyOverEl.innerHTML = html;
@@ -1848,6 +1907,11 @@ export class GlTimeline extends Events
      */
     setHoverKeyRect(kr)
     {
+        if (glTlKeys.dragStarted())
+        {
+            this.#rectHoverKey.setPosition(-9999, -9999);
+        }
+
         this.hoverKeyRect = kr;
         if (kr)
         {

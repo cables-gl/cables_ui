@@ -204,6 +204,7 @@ export default class GlRect extends Events
      */
     setSize(w, h)
     {
+        if (isNaN(w) || isNaN(h)) return console.error("setsize nan");
         if (this.#w == w && this.#h == h) return;
         this.#w = w;
         this.#h = h;

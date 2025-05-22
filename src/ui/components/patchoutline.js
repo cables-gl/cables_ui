@@ -261,6 +261,7 @@ export default class PatchOutline extends Events
             "subPatchId": "0",
             "childs": [],
             "icon": "folder"
+
         };
 
         if (gui.patchView.getCurrentSubPatch() == 0)sub.rowClass = "active";
@@ -271,6 +272,8 @@ export default class PatchOutline extends Events
         {
             const subOp = gui.patchView.getSubPatchOuterOp(patchId);
             if (!subOp) return;
+
+            sub.iconBgColor = subOp.uiAttribs.color,
             sub.title = subOp.getTitle();
             sub.id = subOp.id;
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";

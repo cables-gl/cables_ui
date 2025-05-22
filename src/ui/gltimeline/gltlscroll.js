@@ -9,7 +9,7 @@ export class glTlScroll extends Events
 {
 
     /** @type {GlRect} */
-    #mainRect = null;
+    #bgRect = null;
 
     /** @type {glTlDragArea} */
     #dragBar = null;
@@ -32,13 +32,13 @@ export class glTlScroll extends Events
         this._log = new Logger("gltlscroll");
         this.#glTl = glTl;
 
-        this.#mainRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
-        this.#mainRect.setColor(0.2, 0.2, 0.2, 1);
-        this.#mainRect.setSize(this.#width, this.height);
+        this.#bgRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
+        this.#bgRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#mainRect, false);
+        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, false);
 
-        this.#mainRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
+        this.#bgRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
             if (this.#lastdown != 0 && performance.now() - this.#lastdown < 250) this.showAll();
 
@@ -50,12 +50,12 @@ export class glTlScroll extends Events
             this.#glTl.view.scrollTo((perc * this.#glTl.duration));
         });
 
-        this.#mainRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
+        this.#bgRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
         {
             this.#dragStart = x;
         });
 
-        this.#mainRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
+        this.#bgRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
         {
             const perc = (this.#dragStart + offX - this.#dragBar.getWidth() / 2) / this.#width;
             this.#glTl.view.scrollTo((perc * this.#glTl.duration));
@@ -65,8 +65,8 @@ export class glTlScroll extends Events
         this.#glRectCursor = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
         this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
-        this.#glRectCursor.setPosition(0, 0);
-        this.#glRectCursor.setParent(this.#mainRect);
+        this.#glRectCursor.setPosition(0, 0, -0.1);
+        this.#glRectCursor.setParent(this.#bgRect);
 
         this.update();
     }
@@ -84,7 +84,7 @@ export class glTlScroll extends Events
      */
     setPosition(x, y)
     {
-        this.#mainRect.setPosition(x, y, -0.9);
+        this.#bgRect.setPosition(x, y, -0.9);
     }
 
     /**
@@ -93,26 +93,21 @@ export class glTlScroll extends Events
     setWidth(w)
     {
         this.#width = w;
-        this.#mainRect.setSize(this.#width, this.height);
+        this.#bgRect.setSize(this.#width, this.height);
     }
 
     update()
     {
-
         const pixelVisible = this.#glTl.view.visibleTime * this.#glTl.view.pixelPerSecond;
-
         let x = this.#glTl.view.offset * this.#glTl.view.pixelPerSecond;
-
-        this.#dragBar.set(x, 0, pixelVisible);
-
         let cx = gui.corePatch().timer.getTime() * this.#glTl.view.pixelPerSecond;
 
+        this.#dragBar.set(x, 0, pixelVisible);
         this.#glRectCursor.setPosition(cx, 0);
-
     }
 
     isHovering()
     {
-        return this.#mainRect.isHovering();
+        return this.#bgRect.isHovering();
     }
 }

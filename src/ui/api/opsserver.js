@@ -302,10 +302,10 @@ export default class ServerOps
 
     /**
      * @param {string} opIdentifier
-     * @param {function} next
-     * @param {object} options
+     * @param {function} [next]
+     * @param {object} [options]
      */
-    execute(opIdentifier, next, options)
+    execute(opIdentifier, next = null, options = {})
     {
         options = options || {};
         gui.savedState.pause();
@@ -330,7 +330,6 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
-        // const oldLayout = gui.opDocs.getOpDocById(oldOps[0].opId); //d.......
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(name, (num, newOps) =>
@@ -342,7 +341,6 @@ export default class ServerOps
                     this.saveOpLayout(newOps[0]);
                 }
                 gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
-                // gui.emitEvent("opReloaded", name, newOps[0]);
                 gui.jobs().finish("executeop");
 
                 gui.savedState.resume();
@@ -937,7 +935,7 @@ export default class ServerOps
                 ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                    cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
+                    cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
                 });
 
                 if (options.showReplace)
@@ -946,7 +944,7 @@ export default class ServerOps
                     {
                         cbOptions.replace = true;
                         if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                        cb(ele.byId("opNameDialogNamespace").value, capitalize(opNameInput.value), cbOptions);
+                        cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
                     });
                 }
             });
@@ -1024,15 +1022,7 @@ export default class ServerOps
         {
             const newNamespace = ele.byId("opNameDialogNamespace").value;
             let nameInput = ele.byId("opNameDialogInput").value;
-
-            const opUsername = gui.user ? gui.user.usernameLowercase : "";
-            const nameParts = nameInput.split(".");
-            const capitalizedParts = nameParts.map((part) =>
-            {
-                if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
-                return capitalize(part);
-            });
-            const fullName = capitalizedParts.join(".");
+            const fullName = namespace.capitalizeNamespaceParts(nameInput);
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
@@ -1136,7 +1126,7 @@ export default class ServerOps
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                inputField.value = capitalize(suggest.dataset.nextName);
+                                inputField.value = namespace.capitalizeNamespaceParts(suggest.dataset.nextName);
                                 _nameChangeListener();
                             });
                         }
