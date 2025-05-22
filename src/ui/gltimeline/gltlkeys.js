@@ -9,6 +9,8 @@ import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
+import GlText from "../gldraw/gltext.js";
+import GlTextWriter from "../gldraw/gltextwriter.js";
 
 /**
  * gltl key rendering
@@ -545,6 +547,15 @@ export class glTlKeys extends Events
                 }
             });
 
+            if (key.uiAttribs.text)
+            {
+                const t = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                t.setPosition(20, 50, 0);
+                t.setParentRect(keyRect);
+                keyRect.data.text = t;
+
+            }
+
             this.#keyRects.push(keyRect);
         }
 
@@ -562,6 +573,7 @@ export class glTlKeys extends Events
     {
         for (let i = 0; i < this.#keyRects.length; i++)
         {
+            if (this.#keyRects[i].data.text) this.#keyRects[i].data.text.dispose();
             this.#keyRects[i].dispose();
         }
         this.#keyRects = [];

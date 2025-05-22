@@ -1821,6 +1821,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
         });
+
         ele.clickable(ele.byId("kp_time_moveb"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_time").value);
@@ -1832,6 +1833,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
         });
+
         ele.clickable(ele.byId("kp_value_movef"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_value").value);
@@ -1841,6 +1843,7 @@ export class GlTimeline extends Events
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
         });
+
         ele.clickable(ele.byId("kp_value_moveb"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_value").value);
@@ -1849,6 +1852,16 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+        });
+
+        ele.byId("kp_comment").addEventListener("input", () =>
+        {
+            console.log("comment input");
+            let txt = ele.byId("kp_comment").value;
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].setUiAttribs({ "text": txt });
+            // this.showParamKeys();
         });
     }
 
