@@ -357,8 +357,29 @@ export class glTlKeys extends Events
 
             kr.setPosition(rx, ry, z);
             this.setKeyShapeSize(kr);
-
         }
+
+        for (let i = 0; i < this.#keyRects.length - 1; i++)
+        {
+            const animKey = this.#anim.keys[i];
+            if (animKey.uiAttribs.color)
+            {
+                const kr = this.#keyRects[i];
+                const kr2 = this.#keyRects[i + 1];
+                if (!kr.data.rect) continue;
+                if (this.#glTl.isGraphLayout())
+                {
+                    kr.data.rect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
+                    kr.data.rect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
+                }
+                else
+                {
+                    kr.data.rect.setSize(kr2.x - kr.x, this.#animLine.height);
+                    kr.data.rect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyWidth() / 2, 0.4);
+                }
+            }
+        }
+
         this.updateColors();
     }
 
@@ -539,7 +560,6 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
-                    console.log("text");
                     this.setKeyPositions();
                     this.#glTl.setHoverKeyRect(keyRect);
                     this.#animLine.update();
@@ -550,9 +570,22 @@ export class glTlKeys extends Events
             if (key.uiAttribs.text)
             {
                 const t = new GlText(this.#glTl.texts, key.uiAttribs.text);
-                t.setPosition(20, 50, 0);
+                if (this.#glTl.isGraphLayout())
+                    t.setPosition(20, 50, 0);
+                else
+                    t.setPosition(20, 65, 0);
+
                 t.setParentRect(keyRect);
                 keyRect.data.text = t;
+            }
+            if (key.uiAttribs.color)
+            {
+                const t = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
+                t.setParent(keyRect);
+                t.setColor(1, 1, 0, 0.3);
+                t.setPosition(1, 1, 0);
+                t.setSize(33, 33);
+                keyRect.data.rect = t;
             }
 
             this.#keyRects.push(keyRect);
