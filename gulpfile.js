@@ -36,7 +36,7 @@ if (fs.existsSync(configLocation))
 function _watch(done)
 {
     const buildWatcher = new BuildWatcher(gulp, config, "ui");
-    const watchOptions = { "ignored": "./**/node_modules/" };
+    const watchOptions = { "ignored": (file) => { return file.includes("/node_modules/"); } };
     buildWatcher.watch(["src/ui/**/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/**/*.js", "../cables/src/core/**/*.js", "../shared/shared_constants.json"], watchOptions, gulp.series(_scripts_ui_webpack));
     buildWatcher.watch(["scss/**/*.scss"], watchOptions, gulp.series(_sass));
     buildWatcher.watch(["html/**/*.html"], watchOptions, gulp.series(_html_ui));

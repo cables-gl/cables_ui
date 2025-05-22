@@ -17,9 +17,9 @@ CABLES.OpUnLinkTempReLinkP2 = null;
  */
 class UiOp extends CABLES.Op
 {
-    constructor(a, b, c)
+    constructor(patch, objName, id = null)
     {
-        super(a, b, c);
+        super(patch, objName, id);
         this.initUi();
     }
 
