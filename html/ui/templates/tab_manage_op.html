@@ -225,7 +225,7 @@
             {{/if}}
 
             {{#if canEditOp}}
-                <div class="groupSpacer"><h3>Dependencies</h3></div>
+                {{#unless hasDependencies}}<div class="groupSpacer"><h3>Dependencies</h3></div>{{/unless}}
                 Add javascript libraries/modules to your op<br/><br/>
                 <a class="button" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependencies</a>
                 <div id="{{viewId}}_dependencytabs" class="dependencytabs hidden"></div>
