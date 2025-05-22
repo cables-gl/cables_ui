@@ -553,7 +553,6 @@ export class glTlKeys extends Events
                 t.setPosition(20, 50, 0);
                 t.setParentRect(keyRect);
                 keyRect.data.text = t;
-
             }
 
             this.#keyRects.push(keyRect);
