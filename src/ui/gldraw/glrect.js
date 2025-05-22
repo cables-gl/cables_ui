@@ -269,6 +269,21 @@ export default class GlRect extends Events
     }
 
     /**
+     * @param {string} hex
+     */
+    setColorHex(hex)
+    {
+
+        let str = (hex.charAt(0) == "#") ? hex.substring(1, 7) : hex;
+        let r = (parseInt(str.substring(0, 2), 16) || 0) / 255;
+        let g = (parseInt(str.substring(2, 4), 16) || 0) / 255;
+        let b = (parseInt(str.substring(4, 6), 16) || 0) / 255;
+
+        this.setColor(r, g, b);
+
+    }
+
+    /**
      * @param {number} x
      * @param {number} y
      * @param {number} w

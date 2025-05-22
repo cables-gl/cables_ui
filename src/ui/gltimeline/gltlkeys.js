@@ -585,6 +585,8 @@ export class glTlKeys extends Events
                 t.setColor(1, 1, 0, 0.3);
                 t.setPosition(1, 1, 0);
                 t.setSize(33, 33);
+                t.setColorHex(key.uiAttribs.color);
+                t.setOpacity(0.5);
                 keyRect.data.rect = t;
             }
 
