@@ -54,7 +54,7 @@ export class glTlKeys extends Events
     sizeKey = 14;
 
     /** @type {Array<number>} */
-    #points = [];
+    // #points = [];
     #options = {};
 
     static #dragStarted = false;
@@ -113,7 +113,7 @@ export class glTlKeys extends Events
             // this.#spline.setPoints([0, 0, 0, 100, 10, 0, 10, 10, 0]);
         }
 
-        this.points = [];
+        // this.points = [];
         this.init();
     }
 
@@ -141,6 +141,7 @@ export class glTlKeys extends Events
 
     showKeysAsFrames()
     {
+        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS) return false;
         let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
         return kwidth > 5;
     }
@@ -228,19 +229,18 @@ export class glTlKeys extends Events
         if (!this.#glTl.view.isAnimated() && !this.#needsUpdate) return;
 
         this.#needsUpdate = false;
-        this.#points = [];
+
         const pointsSort = [];
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.5;
         if (this.#port.op.isCurrentUiOp())z = -0.6;
 
-        if (this.#options.keyYpos)
+        if (this.isLayoutGraph())
         {
             const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
             let skipped = false;
-
             for (let i = 0; i < steps; i++)
             {
                 // todo:add exact keys
@@ -249,6 +249,7 @@ export class glTlKeys extends Events
 
                 let v = this.#anim.getValue(t);
 
+                console.log("ttt", t, v, x);
                 if (v == lv && i < steps - 3)
                 {
                     skipped = true;
@@ -274,13 +275,15 @@ export class glTlKeys extends Events
             // });
 
             // this.#points = pointsSort.flat();
-            this.#points = pointsSort;
+            // this.#points = pointsSort;
         }
 
         if (this.isLayoutGraph())
         {
             this.#spline.getDrawer().rebuildLater();
-            this.#spline.setPoints(this.#points);
+
+            this.#spline.setPoints(pointsSort);
+            console.log("text", pointsSort);
         }
 
         this.updateColors();
@@ -289,7 +292,9 @@ export class glTlKeys extends Events
 
     isLayoutGraph()
     {
-        return this.#options.keyYpos;
+        return this.#glTl.isGraphLayout();
+        // console.log("text", this.#options);
+        // return this.#options.keyYpos;
     }
 
     updateColors()
@@ -345,7 +350,7 @@ export class glTlKeys extends Events
             const kr = this.#keyRects[i];
 
             let y = (this.#parentRect.h / 2);
-            if (this.#options.keyYpos) y = this.#animLine.valueToPixel(animKey.value);
+            if (this.isLayoutGraph()) y = this.#animLine.valueToPixel(animKey.value);
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
@@ -647,7 +652,7 @@ export class glTlKeys extends Events
     getDebug()
     {
         const o = {};
-        o.points = this.#points;
+        // o.points = this.#point.s;
         o.updateCount = this.#updateCount;
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
