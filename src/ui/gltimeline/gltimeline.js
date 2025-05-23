@@ -1970,7 +1970,6 @@ export class GlTimeline extends Events
 
     isMultiLine()
     {
-        console.log("text", this.#tlAnims.length);
         return this.#tlAnims.length > 1;
     }
 }

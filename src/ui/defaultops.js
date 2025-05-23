@@ -163,6 +163,13 @@ const defaultOps = {
             "portOut": "Result",
         },
         {
+            "typeFrom": portType.string,
+            "typeTo": portType.object,
+            "op": defaultOpNames.parseObject,
+            "portIn": "JSON String",
+            "portOut": "Result",
+        },
+        {
             "typeFrom": portType.number,
             "typeTo": portType.string,
             "op": defaultOpNames.BoolToString,
