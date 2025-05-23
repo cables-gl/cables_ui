@@ -121,7 +121,7 @@ export class glTlAnimLine extends Events
             this.setTitle(i, ports[i], ports[i].anim);
         }
 
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (this.isGraphLayout())
         {
             this.#valueRuler = new TlValueRuler(glTl, this, this.#glRectKeysBg);
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
@@ -213,11 +213,16 @@ export class glTlAnimLine extends Events
     {
         for (let i = 0; i < this.#titles.length; i++)
         {
-            this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.#glRectKeysBg.y);
+            this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
             // this.#titles[i].#op = this.#ops[i];
         }
+    }
+
+    posY()
+    {
+        return this.#glRectKeysBg.y;
     }
 
     fitValues()
@@ -261,6 +266,7 @@ export class glTlAnimLine extends Events
      */
     setPosition(x, y)
     {
+        console.log("xy", y);
         if (this.checkDisposed()) return;
         this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
@@ -407,7 +413,7 @@ export class glTlAnimLine extends Events
      */
     createKeyAtCursor(t)
     {
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS)
+        if (this.isGraphLayout)
         {
             for (let j = 0; j < this.#ports.length; j++)
             {
@@ -453,5 +459,10 @@ export class glTlAnimLine extends Events
         if (glTlKeys.dragStarted()) return;
         if (!this.#glTl.isSelecting()) return;
         for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
+    }
+
+    isGraphLayout()
+    {
+        return this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS;
     }
 }

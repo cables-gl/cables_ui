@@ -1967,4 +1967,10 @@ export class GlTimeline extends Events
     {
         return !!this.selectRect;
     }
+
+    isMultiLine()
+    {
+        console.log("text", this.#tlAnims.length);
+        return this.#tlAnims.length > 1;
+    }
 }

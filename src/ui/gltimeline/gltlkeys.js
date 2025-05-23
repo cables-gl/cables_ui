@@ -106,7 +106,7 @@ export class glTlKeys extends Events
                 this.#needsUpdate = true;
             }));
 
-        if (this.#options.keyYpos)
+        if (this.isLayoutGraph())
         {
             this.#spline = new GlSpline(this.#glTl.splines, port.name);
             this.#spline.setParentRect(parentRect);
@@ -141,7 +141,7 @@ export class glTlKeys extends Events
 
     showKeysAsFrames()
     {
-        if (this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS) return false;
+        if (this.isLayoutGraph()) return false;
         let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
         return kwidth > 5;
     }
@@ -278,7 +278,7 @@ export class glTlKeys extends Events
             // this.#points = pointsSort;
         }
 
-        if (this.isLayoutGraph())
+        if (this.isLayoutGraph() && this.#spline)
         {
             this.#spline.getDrawer().rebuildLater();
 
@@ -292,6 +292,7 @@ export class glTlKeys extends Events
 
     isLayoutGraph()
     {
+        return this.#animLine.height > 50 || this.#animLine.isGraphLayout();
         return this.#glTl.isGraphLayout();
         // console.log("text", this.#options);
         // return this.#options.keyYpos;
@@ -392,7 +393,7 @@ export class glTlKeys extends Events
                 const kr = this.#keyRects[i];
                 const kr2 = this.#keyRects[i + 1];
                 if (!kr.data.rect) continue;
-                if (this.#glTl.isGraphLayout())
+                if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
                 {
                     kr.data.rect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
                     kr.data.rect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
