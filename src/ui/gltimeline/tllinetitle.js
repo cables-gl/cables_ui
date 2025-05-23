@@ -40,6 +40,7 @@ export class TlTitle extends Events
 
     /** @type {Port} */
     #port;
+    #height;
 
     /**
      * @param {HTMLElement} parentEl
@@ -92,6 +93,15 @@ export class TlTitle extends Events
     setTitle(t)
     {
         this.#elTitle.innerHTML = t;
+    }
+
+    /**
+     * @param {number} h
+     */
+    setHeight(h)
+    {
+        this.#height = h;
+        this.#el.style.height = h - 6 + "px";
     }
 
     /**

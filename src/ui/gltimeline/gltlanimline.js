@@ -172,7 +172,7 @@ export class glTlAnimLine extends Events
     addTitle(anim, p)
     {
         const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p });
-        // title.setTitle(t);
+        title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
@@ -186,6 +186,9 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    /**
+     * @param {Op[]} ops
+     */
     activateSelectedOps(ops)
     {
         for (let i = 0; i < this.#ports.length; i++)
@@ -361,7 +364,7 @@ export class glTlAnimLine extends Events
     valueToPixel(v)
     {
         if (this.#keys.length == 0) return 1;
-        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].sizeKey2, this.#glRectKeysBg.h - this.#keys[0].keyHeight / 2, 0, false);
+        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].keyHeight, this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
 
         // if (y == -Infinity) y = 0;
         // if (y == Infinity)y = 0;
@@ -380,6 +383,7 @@ export class glTlAnimLine extends Events
             {
                 if (this.#ports[j].op == selops[i])
                 {
+
                     found = true;
                     break;
                 }
