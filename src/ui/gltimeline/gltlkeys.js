@@ -398,7 +398,7 @@ export class glTlKeys extends Events
                     if (this.showKeysAsFrames())
                         kr.data.rect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyHeight(), 0.4);
                     else
-                        kr.data.rect.setPosition(this.getKeyWidth() / 2, -this.getKeyHeight() + 1, 0.4);
+                        kr.data.rect.setPosition(this.getKeyWidth() / 2, -this.#animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
                 }
             }
         }

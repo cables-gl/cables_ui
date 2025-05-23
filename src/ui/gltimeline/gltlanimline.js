@@ -88,6 +88,7 @@ export class glTlAnimLine extends Events
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#glRectKeysBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
+        // this.height = Math.random() * 80 + 22;
         this.#disposeRects.push(this.#glRectKeysBg);
 
         for (let i = 0; i < ports.length; i++)
@@ -106,6 +107,13 @@ export class glTlAnimLine extends Events
                 {
                     if (!keys.isDragging()) keys.init();
                 }));
+
+            if (ports.length == 1)
+                this.#listeners.push(
+                    anim.on(Anim.EVENT_UIATTRIB_CHANGE, () =>
+                    {
+                        this.height = Math.random() * 80 + 22;
+                    }));
         }
 
         for (let i = 0; i < ports.length; i++)
@@ -364,7 +372,7 @@ export class glTlAnimLine extends Events
     valueToPixel(v)
     {
         if (this.#keys.length == 0) return 1;
-        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].keyHeight, this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
+        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
 
         // if (y == -Infinity) y = 0;
         // if (y == Infinity)y = 0;
