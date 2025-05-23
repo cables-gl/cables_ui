@@ -442,6 +442,7 @@ class UiOp extends CABLES.Op
         {
             // this._log.log("ERRRRR");
             // this.setUiAttrib({ working, notWorkingMsg });
+            notWorkingMsg = "<span style=\"background-color:red;\" class=\"icon icon-x\"></span>&nbsp;" + notWorkingMsg;
             this.setUiError("notworking", notWorkingMsg, 3);
         }
         else if (hadError)
