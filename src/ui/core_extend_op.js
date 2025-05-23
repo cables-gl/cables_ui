@@ -440,14 +440,11 @@ class UiOp extends CABLES.Op
 
         if (!working)
         {
-            // this._log.log("ERRRRR");
-            // this.setUiAttrib({ working, notWorkingMsg });
             notWorkingMsg = "<span style=\"background-color:red;\" class=\"icon icon-x\"></span>&nbsp;" + notWorkingMsg;
             this.setUiError("notworking", notWorkingMsg, 3);
         }
         else if (hadError)
         {
-            // this.setUiAttrib({ "working": true, "notWorkingMsg": null });
             this.setUiError("notworking", null);
         }
 
@@ -551,11 +548,6 @@ class UiOp extends CABLES.Op
 
         return lowestOp;
 
-        // for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
-        // {
-        //     const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-        //     return otherport.op;
-        // }
     }
 
     isBlueprint2()
@@ -581,13 +573,14 @@ class UiOp extends CABLES.Op
 
     isInLinkedToOpOutside(ops)
     {
-        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
-        {
-            for (let j = 0; j < this.portsIn[i].links.length; j++)
+        for (let i = 0; i < this.portsIn.length; i++)
+            if (this.portsIn[i].isLinked())
             {
-                if (ops.indexOf(this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).op) == -1) return true;
+                for (let j = 0; j < this.portsIn[i].links.length; j++)
+                {
+                    if (ops.indexOf(this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).op) == -1) return true;
+                }
             }
-        }
     }
 
     getTempPosX()
@@ -602,6 +595,10 @@ class UiOp extends CABLES.Op
         if (this.uiAttribs.translate) return this.uiAttribs.translate.y;
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     setPos(x, y)
     {
         this.setUiAttribs({ "translate": { "x": x, "y": y } });
@@ -636,33 +633,6 @@ class UiOp extends CABLES.Op
     {
         this.setTempOpPos(x, this.getTempPosY());
     }
-
-    // getChildsBoundings(glpatch, s, untilOp, count)
-    // {
-    //     if (count > 100) return s;
-    //     s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
-
-    //     if (!this.uiAttribs || !this.uiAttribs.translate) return s;
-
-    //     s.maxx = Math.max(s.maxx || -99999999999, this.getTempPosX() + this.getWidth(glpatch));
-    //     s.maxy = Math.max(s.maxy || -99999999999, this.getTempPosY() + this.getHeight(glpatch));
-
-    //     s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
-    //     s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
-
-    //     if (untilOp && this == untilOp) return s;
-
-    //     for (let i = 0; i < this.portsOut.length; i++)
-    //     {
-    //         for (let j = 0; j < this.portsOut[i].links.length; j++)
-    //         {
-    //             const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
-
-    //             s = p.op.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
-    //         }
-    //     }
-    //     return s;
-    // };
 
     testTempCollision(ops, glpatch)
     {
