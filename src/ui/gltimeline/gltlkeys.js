@@ -249,7 +249,7 @@ export class glTlKeys extends Events
 
                 let v = this.#anim.getValue(t);
 
-                console.log("ttt", t, v, x);
+                // console.log("ttt", t, v, x);
                 if (v == lv && i < steps - 3)
                 {
                     skipped = true;
@@ -283,7 +283,7 @@ export class glTlKeys extends Events
             this.#spline.getDrawer().rebuildLater();
 
             this.#spline.setPoints(pointsSort);
-            console.log("text", pointsSort);
+            // console.log("text", pointsSort);
         }
 
         this.updateColors();
