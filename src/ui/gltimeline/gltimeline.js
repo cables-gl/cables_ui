@@ -1793,6 +1793,16 @@ export class GlTimeline extends Events
         if (this.#selectedKeys.length == 0) this.hideParams();
         else this.showParams();
 
+        let comment = "";
+        let showcomment = false;
+        if (this.#selectedKeys.length == 1)
+        {
+            showcomment = true;
+            const k = this.#selectedKeys[0];
+            if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
+
+        }
+
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
@@ -1803,6 +1813,7 @@ export class GlTimeline extends Events
                 "valueBounds": valstr,
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
+                "comment": comment
             });
         this.#keyOverEl.innerHTML = html;
 
@@ -1821,6 +1832,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
         });
+
         ele.clickable(ele.byId("kp_time_moveb"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_time").value);
@@ -1832,6 +1844,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
         });
+
         ele.clickable(ele.byId("kp_value_movef"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_value").value);
@@ -1841,6 +1854,7 @@ export class GlTimeline extends Events
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
         });
+
         ele.clickable(ele.byId("kp_value_moveb"), () =>
         {
             let off = parseFloat(ele.byId("kp_input_value").value);
@@ -1850,6 +1864,29 @@ export class GlTimeline extends Events
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
         });
+
+        ele.byId("kp_comment").addEventListener("input", () =>
+        {
+            console.log("comment input");
+            let txt = ele.byId("kp_comment").value;
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].setUiAttribs({ "text": txt });
+            // this.showParamKeys();
+        });
+
+        const buttons = ele.byClassAll("kp_colorbutton");
+        console.log("text", buttons);
+        for (let i = 0; i < buttons.length; i++)
+        {
+            const button = buttons[i];
+            button.addEventListener("click", () =>
+            {
+                console.log("text", button.dataset.col);
+                for (let i = 0; i < this.#selectedKeys.length; i++)
+                    this.#selectedKeys[i].setUiAttribs({ "color": button.dataset.col });
+            });
+        }
     }
 
     /**

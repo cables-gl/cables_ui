@@ -77,4 +77,5 @@ export class glTlDragArea extends Events
     {
         return this.#width;
     }
+
 }

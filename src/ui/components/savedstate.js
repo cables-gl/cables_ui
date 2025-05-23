@@ -69,7 +69,6 @@ export default class SavedState extends Events
     {
         this._statesInitiator[section] = this._statesInitiator[section] || [];
         this._statesInitiator[section].push({ "initiator": initiator, "section": section, "savedState": savedState });
-
     }
 
     /**

@@ -9,6 +9,8 @@ import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
+import GlText from "../gldraw/gltext.js";
+import GlTextWriter from "../gldraw/gltextwriter.js";
 
 /**
  * gltl key rendering
@@ -355,8 +357,29 @@ export class glTlKeys extends Events
 
             kr.setPosition(rx, ry, z);
             this.setKeyShapeSize(kr);
-
         }
+
+        for (let i = 0; i < this.#keyRects.length - 1; i++)
+        {
+            const animKey = this.#anim.keys[i];
+            if (animKey.uiAttribs.color)
+            {
+                const kr = this.#keyRects[i];
+                const kr2 = this.#keyRects[i + 1];
+                if (!kr.data.rect) continue;
+                if (this.#glTl.isGraphLayout())
+                {
+                    kr.data.rect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
+                    kr.data.rect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
+                }
+                else
+                {
+                    kr.data.rect.setSize(kr2.x - kr.x, this.#animLine.height);
+                    kr.data.rect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyWidth() / 2, 0.4);
+                }
+            }
+        }
+
         this.updateColors();
     }
 
@@ -537,13 +560,35 @@ export class glTlKeys extends Events
                         this.#glTl.dragSelectedKeys(offTime, offVal);
                         this.#anim.sortKeys();
                     }
-                    console.log("text");
                     this.setKeyPositions();
                     this.#glTl.setHoverKeyRect(keyRect);
                     this.#animLine.update();
                     hideToolTip();
                 }
             });
+
+            if (key.uiAttribs.text)
+            {
+                const t = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                if (this.#glTl.isGraphLayout())
+                    t.setPosition(20, 50, 0);
+                else
+                    t.setPosition(20, 65, 0);
+
+                t.setParentRect(keyRect);
+                keyRect.data.text = t;
+            }
+            if (key.uiAttribs.color)
+            {
+                const t = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
+                t.setParent(keyRect);
+                t.setColor(1, 1, 0, 0.3);
+                t.setPosition(1, 1, 0);
+                t.setSize(33, 33);
+                t.setColorHex(key.uiAttribs.color);
+                t.setOpacity(0.5);
+                keyRect.data.rect = t;
+            }
 
             this.#keyRects.push(keyRect);
         }
@@ -562,6 +607,7 @@ export class glTlKeys extends Events
     {
         for (let i = 0; i < this.#keyRects.length; i++)
         {
+            if (this.#keyRects[i].data.text) this.#keyRects[i].data.text.dispose();
             this.#keyRects[i].dispose();
         }
         this.#keyRects = [];
