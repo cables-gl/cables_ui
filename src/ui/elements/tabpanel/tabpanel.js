@@ -439,14 +439,19 @@ export default class TabPanel extends Events
         const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\" allow=\"clipboard-write\" style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
         iframeTab.contentEle.innerHTML = html;
         iframeTab.contentEle.style.padding = "0px";
-        if (options.gotoUrl)
+        let buttons = "";
+        let uri = url;
+        if (options.gotoUrl)uri = options.gotoUrl;
+
+        buttons += "<a class=\"button-small \" href=\"" + uri + "\" target=\"_blank\"><span class=\"icon nomargin icon-external\"></span></a>&nbsp;";
+        buttons += "<a class=\"button-small \" id=\"refresh" + id + "\"><span class=\"icon nomargin icon-refresh\"></span></a>";
+
+        iframeTab.toolbarEle.innerHTML = buttons;
+        ele.clickable(ele.byId("refresh" + id), () =>
         {
-            iframeTab.toolbarEle.innerHTML = "<a class=\"button-small\" href=\"" + options.gotoUrl + "\" target=\"_blank\">Open in new tab</a>";
-        }
-        else
-        {
-            iframeTab.toolbarEle.innerHTML = "<a class=\"button-small\" href=\"" + url + "\" target=\"_blank\">Open in new tab</a>";
-        }
+            ele.byId("iframe" + id).src += "";
+
+        });
 
         const frame = document.getElementById("iframe" + id);
 
