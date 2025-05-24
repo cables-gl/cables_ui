@@ -178,8 +178,9 @@ export default class GlPort
                 let dotPosY = this._rect.h / 4 - dotSize / 2;
                 if (this.direction == PortDir.in) dotPosY += this._rect.h / 2;
 
-                if (this._port.uiAttribs.addPort) this._dot.setShape(12);
-                else this._dot.setShape(6);
+                if (this._port.uiAttribs.addPort) this._dot.setShape(GlRectInstancer.SHAPE_PLUS);
+                else if (this._port.uiAttribs.notWorking) this._dot.setShape(GlRectInstancer.SHAPE_CROSS);
+                else this._dot.setShape(GlRectInstancer.SHAPE_FILLED_CIRCLE);
 
                 this._dot.setSize(dotSize, dotSize);
                 this._dot.setPosition(gluiconfig.portWidth / 2 - dotSize / 2, dotPosY);

@@ -173,9 +173,9 @@ export default class GlText
 
         if (this._parentRect)
         {
-            posX += this._parentRect.x;
-            posY += this._parentRect.y;
-            posZ += this._parentRect.z;
+            posX += this._parentRect.absX;
+            posY += this._parentRect.absY;
+            posZ += this._parentRect.absZ;
         }
 
         if (this._align == 1) posX -= this._width / 2;

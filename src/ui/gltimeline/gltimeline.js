@@ -1,5 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Anim, AnimKey, CglContext, FpsCounter, Port, Timer } from "cables";
+import { Anim, AnimKey, CglContext, FpsCounter, Patch, Port, Timer } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -221,8 +221,8 @@ export class GlTimeline extends Events
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-        gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { this.init(); });
-        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { this.init(); });
+        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.init(); });
+        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
         this.#keyOverEl = document.createElement("div");
@@ -1426,7 +1426,7 @@ export class GlTimeline extends Events
                 if (an)
                 {
 
-                    const l = new CABLES.AnimKey(keys[i], an);
+                    const l = new AnimKey(keys[i], an);
 
                     newKeys.push(l);
                     an.addKey(l);
@@ -1966,5 +1966,10 @@ export class GlTimeline extends Events
     isSelecting()
     {
         return !!this.selectRect;
+    }
+
+    isMultiLine()
+    {
+        return this.#tlAnims.length > 1;
     }
 }
