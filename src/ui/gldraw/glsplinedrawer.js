@@ -1,9 +1,6 @@
-import { Geometry } from "cables/src/core/cg/cg_geom.js";
-import { Shader } from "cables/src/core/cgl/cgl_shader.js";
-import { Uniform } from "cables/src/core/cgl/cgl_shader_uniform.js";
-import { CglContext } from "cables/src/core/cgl/cgl_state.js";
-import { Mesh } from "cables/src/core/cgl/cgl_mesh.js";
-import { FpsCounter } from "cables/src/core/cg/cg_fpscounter.js";
+import { CGL, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+
+import { utils } from "cables";
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
@@ -142,7 +139,7 @@ export default class GlSplineDrawer
             this._uniTime.set(performance.now() / 1000);
 
             const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
-            if (zoom > 1400)fadeOutOpts[3] = CABLES.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
+            if (zoom > 1400)fadeOutOpts[3] = utils.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
 
             this._uniFadeoutOptions.set(fadeOutOpts);
 

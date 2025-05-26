@@ -1,3 +1,4 @@
+import { utils } from "cables";
 import { gui } from "../gui.js";
 
 let lastNotify = "";
@@ -54,7 +55,7 @@ export function notifyError(title, text, options = {})
     lastNotifyErr = title;
     lastTextErr = text;
 
-    const toastId = CABLES.uuid();
+    const toastId = utils.uuid();
 
     iziToast.error(
         {
@@ -94,7 +95,7 @@ export function notifyWarn(title, text = "", options = {})
     lastNotifyWarn = title;
     lastTextWarn = text;
 
-    const toastId = CABLES.uuid();
+    const toastId = utils.uuid();
 
     iziToast.warning(
         {
@@ -150,7 +151,7 @@ export function notify(title, text = "", options = {})
     lastNotify = title;
     lastText = text;
 
-    const toastId = CABLES.uuid();
+    const toastId = utils.uuid();
 
     iziToast.show(
         {

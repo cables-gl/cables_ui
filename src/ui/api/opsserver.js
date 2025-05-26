@@ -1,4 +1,5 @@
 import { Logger, TalkerAPI, ele, helper } from "cables-shared-client";
+import { Patch, utils } from "cables";
 import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
@@ -397,7 +398,7 @@ export default class ServerOps
             {
                 const sub = JSON.parse(res.attachments[subPatchOpUtil.blueprintSubpatchAttachmentFilename]);
 
-                CABLES.Patch.replaceOpIds(sub, {
+                Patch.replaceOpIds(sub, {
                     "oldIdAsRef": true
                 });
 
@@ -749,10 +750,10 @@ export default class ServerOps
 
     testServer()
     {
-        let opname = platform.getPatchOpsNamespace() + "test_" + CABLES.shortId();
+        let opname = platform.getPatchOpsNamespace() + "test_" + utils.shortId();
         let attachmentName = "att_test.js";
 
-        const cont = "// " + CABLES.uuid();
+        const cont = "// " + utils.uuid();
 
         const atts = {};
         atts[attachmentName] = cont;
@@ -1742,7 +1743,7 @@ export default class ServerOps
                                 {
                                     if (res.updated) gui.patchView.store.setServerDate(res.updated);
                                     if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
-                                    if (!CABLES.Patch.getOpClass(opname)) gui.opSelect().reload();
+                                    if (!Patch.getOpClass(opname)) gui.opSelect().reload();
 
                                     gui.serverOps.execute(opid, () =>
                                     {
@@ -2142,7 +2143,7 @@ export default class ServerOps
                         });
                     }
 
-                    let lid = "missingops_" + CABLES.uuid();
+                    let lid = "missingops_" + utils.uuid();
                     const missingOpUrl = [];
                     allIdentifiers.forEach((identifier) =>
                     {
@@ -2183,7 +2184,7 @@ export default class ServerOps
                             {
                                 gui.opDocs.addOpDocs(res.opDocs);
                             }
-                            collectionsToLoad = CABLES.uniqueArray(collectionsToLoad);
+                            collectionsToLoad = utils.uniqueArray(collectionsToLoad);
                             collectionsToLoad.forEach((collectionNamespace) =>
                             {
                                 this.loadCollectionOps(collectionNamespace, () =>
@@ -2230,7 +2231,7 @@ export default class ServerOps
             let apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + endpoint + collectionName);
             if (platform.config.previewMode) apiUrl += "?preview=true";
             collectionOpUrl.push(apiUrl);
-            const lid = "collection ops" + collectionName + CABLES.uuid();
+            const lid = "collection ops" + collectionName + utils.uuid();
             gui.jobs().start({ "id": "getCollectionOpDocs" });
             platform.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
             {

@@ -1,3 +1,4 @@
+import { utils } from "cables";
 import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
 
@@ -87,7 +88,7 @@ export default class ModalSourceCode
 
     _getFileSnippet(url, cb)
     {
-        CABLES.ajax(
+        utils.ajax(
             url,
             (err, _data) =>
             {

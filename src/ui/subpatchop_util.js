@@ -1,4 +1,5 @@
 import { Logger, ele } from "cables-shared-client";
+import { Patch, utils } from "cables";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -359,7 +360,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 subPatchOpUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
 {
     const o = {
-        "id": CABLES.shortId(),
+        "id": utils.shortId(),
         "title": port.getTitle(),
         "dir": port.direction,
         "type": port.type,
@@ -400,7 +401,7 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
             gui.patchView.getCurrentSubPatch() != 0
         )
         {
-            const newSubId = CABLES.shortId();
+            const newSubId = utils.shortId();
             const o = subPatchOpUtil._getSubPatchSerialized(gui.patchView.getCurrentSubPatch(), newSubId);
 
             atts[subPatchOpUtil.blueprintSubpatchAttachmentFilename] = JSON.stringify(o, null, "  ");
@@ -531,7 +532,7 @@ subPatchOpUtil.getAutoName = (short) =>
 
 subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 {
-    if (!portId)portId = CABLES.shortId();
+    if (!portId)portId = utils.shortId();
     const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData });
 
     new ModalDialog({ "html": html });
@@ -640,7 +641,7 @@ subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
         o.ops.push(ser);
     });
 
-    CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": newSubId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
+    Patch.replaceOpIds(o, { "parentSubPatchId": newSubId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
 
     return o;
 };
@@ -674,7 +675,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         return;
     }
 
-    const subId = CABLES.shortId();
+    const subId = utils.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 

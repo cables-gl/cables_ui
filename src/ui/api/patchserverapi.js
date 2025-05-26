@@ -1,4 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
+import { CgContext } from "cables-corelibs";
+import { utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
@@ -504,7 +506,7 @@ export default class PatchSaveServer extends Events
                 }
             }
 
-            if (op.uiAttribs.title === CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
+            if (op.uiAttribs.title === utils.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
@@ -864,7 +866,7 @@ export default class PatchSaveServer extends Events
             // thePatch.renderOneFrame();
             gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-            if (cgl.gApi == CABLES.CGState.API_WEBGL) thePatch.resume();
+            if (cgl.gApi == CgContext.API_WEBGL) thePatch.resume();
 
             const url = gui.canvasManager.currentCanvas().toDataURL();
 

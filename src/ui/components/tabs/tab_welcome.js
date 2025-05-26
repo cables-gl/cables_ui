@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
@@ -23,7 +24,7 @@ export default class WelcomeTab
             const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": platform.getCablesStaticUrl(), "version": platform.getCablesVersion() });
             this._tab.html(html);
 
-            CABLES.ajax("https://dev.cables.gl/api/events/", (err2, res, xhr) =>
+            utils.ajax("https://dev.cables.gl/api/events/", (err2, res, xhr) =>
             {
                 if (!(err2 || (xhr && xhr.status === 0)))
                 {
@@ -37,7 +38,7 @@ export default class WelcomeTab
             });
 
             if (platform.frontendOptions.isElectron)
-                CABLES.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res, xhr) =>
+                utils.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res, xhr) =>
                 {
                     if (!(err2 || (xhr && xhr.status === 0)))
                     {

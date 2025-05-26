@@ -1,3 +1,4 @@
+import { utils } from "cables";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -34,7 +35,7 @@ export default class FileManagerEditor
         if (syntax == "javascript")syntax = "js";
         if (syntax == "shader")syntax = "glsl";
 
-        CABLES.ajax(
+        utils.ajax(
             url,
             (err2, _data, xhr2) =>
             {

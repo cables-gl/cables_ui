@@ -1,4 +1,5 @@
 import { Events, ele } from "cables-shared-client";
+import { utils } from "cables";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import TabPanel from "./tabpanel.js";
@@ -27,7 +28,7 @@ export default class Tab extends Events
     constructor(title, options)
     {
         super();
-        this.id = CABLES.uuid();
+        this.id = utils.uuid();
 
         /** @type {TabOptions} */
         this.options = options || {};

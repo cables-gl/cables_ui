@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
@@ -52,7 +53,7 @@ export default class OpDocs
             const port = ports[i];
             if (port && typeof port.type !== "undefined")
             {
-                port.typeString = CABLES.Port.portTypeNumberToString(port.type);
+                port.typeString = Port.portTypeNumberToString(port.type);
             }
         }
     }

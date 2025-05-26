@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { utils } from "cables";
 import { notify } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
 
@@ -12,7 +13,7 @@ export default class TabPortObjectInspect extends Events
         const tt = this.tabs.addTab(this.tab, true);
 
         if (tt != this.tab) return;
-        this._id = CABLES.uuid();
+        this._id = utils.uuid();
 
         this.tab.on("onActivate", () =>
         {

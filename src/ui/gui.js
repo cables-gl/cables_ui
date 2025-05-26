@@ -1,5 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import { CgShader } from "cables/src/core/cg/cg_shader.js";
+import { now } from "cables";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -224,7 +224,7 @@ export default class Gui extends Events
 
         this.user = null;
         this.onSaveProject = null;
-        this.lastNotIdle = CABLES.now();
+        this.lastNotIdle = now();
 
         this._oldCanvasWidth = 0;
         this._oldCanvasHeight = 0;
@@ -2033,12 +2033,12 @@ export default class Gui extends Events
 
     notIdling()
     {
-        this.lastNotIdle = CABLES.now();
+        this.lastNotIdle = now();
     }
 
     checkIdle()
     {
-        const idling = (CABLES.now() - this.lastNotIdle) / 1000;
+        const idling = (now() - this.lastNotIdle) / 1000;
         if (idling > 30 * 60)
         {
         }

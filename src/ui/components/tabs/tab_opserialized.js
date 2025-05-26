@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { utils } from "cables";
 import { gui } from "../../gui.js";
 
 /**
@@ -17,7 +18,7 @@ export default class OpSerialized extends Events
         this._tab = new CABLES.UI.Tab("Serialized Op", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-        this._id = "hljs" + CABLES.uuid();
+        this._id = "hljs" + utils.uuid();
 
         this._op = null;
         this.rebuildHtml();

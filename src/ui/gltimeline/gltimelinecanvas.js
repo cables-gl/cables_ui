@@ -1,9 +1,8 @@
 import { Patch } from "cables";
-import { CGL } from "cables/src/core/cgl/index.js";
+import { CGL, Texture } from "cables-corelibs";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
-import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 
 /**
  * canvas for the timeline {@link GlTimeline}
@@ -49,7 +48,7 @@ export class glTimelineCanvas extends GlCanvas
 
         if (!this._inited)
         {
-            for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.cgl).tex);
+            for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, Texture.getEmptyTexture(this.cgl).tex);
             this._inited = true;
         }
 

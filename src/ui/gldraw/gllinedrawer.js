@@ -1,3 +1,5 @@
+import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+
 /**
  * draw lines on the patchfield
  *
@@ -23,7 +25,7 @@ export default class GlLinedrawer
         this._dists = new Float32Array(2 * this._num);
         this._speeds = new Float32Array(2 * this._num);
 
-        this._shader = new CGL.Shader(cgl, "SplineDrawer");
+        this._shader = new Shader(cgl, "SplineDrawer");
         this._shader.ignoreMissingUniforms = true;
         this._shader.glPrimitive = cgl.gl.LINES;
         this._shader.setSource(""
@@ -110,17 +112,17 @@ export default class GlLinedrawer
 
         // floor((sin( distance(vec4(0.,0.,0.,1.0),gl_FragCoord
 
-        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
-        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
-        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
-        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
-        this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
-        this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
+        this._uniZoom = new Uniform(this._shader, "f", "zoom", 0);
+        this._uniResX = new Uniform(this._shader, "f", "resX", 0);
+        this._uniResY = new Uniform(this._shader, "f", "resY", 0);
+        this._uniscrollX = new Uniform(this._shader, "f", "scrollX", 0);
+        this._uniscrollY = new Uniform(this._shader, "f", "scrollY", 0);
+        this._uniTime = new Uniform(this._shader, "f", "time", 0);
 
-        this._geom = new CGL.Geometry("glpatchLineDrawer");
+        this._geom = new Geometry("glpatchLineDrawer");
         this._geom.vertices = new Float32Array([10, 10, 0, 60, 60, 0, 10, 0, 0, 0, 0, 0]);
 
-        this._mesh = new CGL.Mesh(cgl, this._geom);
+        this._mesh = new Mesh(cgl, this._geom);
 
         let i = 0;
         this.clear();

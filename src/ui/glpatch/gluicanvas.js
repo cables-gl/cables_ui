@@ -1,3 +1,4 @@
+import { Texture } from "cables-corelibs";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
@@ -97,7 +98,7 @@ export default class GlUiCanvas extends GlCanvas
 
         if (!this._inited)
         {
-            for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.cgl).tex);
+            for (let i = 0; i <= 8; i++) this.cgl.setTexture(i, Texture.getEmptyTexture(this.cgl).tex);
             this._inited = true;
         }
 

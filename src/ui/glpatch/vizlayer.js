@@ -1,4 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
+import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
@@ -54,7 +55,7 @@ export default class VizLayer extends Events
             this.renderVizLayer(true);
         });
 
-        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, (a) =>
+        gui.corePatch().on(Patch.EVENT_OP_ADDED, (a) =>
         {
             if (a.renderVizLayer || a.renderVizLayerGl || a.renderVizLayerGpu)
             {

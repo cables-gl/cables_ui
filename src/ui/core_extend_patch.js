@@ -12,6 +12,11 @@ import { UiOp } from "./core_extend_op.js";
  */
 class UiPatch extends Patch
 {
+    constructor(cfg)
+    {
+        super(cfg);
+    }
+
     _opIdsToOps(opids)
     {
         let ops = [];
@@ -403,7 +408,4 @@ class UiPatch extends Patch
     }
 }
 
-CABLES.Patch = UiPatch;
 export { UiPatch };
-
-export default function extendCorePatch() {}// do not delete, needs to be here for import/overwrite
