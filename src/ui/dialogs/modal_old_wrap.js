@@ -4,6 +4,9 @@ import ModalDialog from "./modaldialog.js";
 const oldModalWrap =
 {
 
+    /**
+     * @deprecated
+     */
     "show": function (content, options)
     {
         let logger = new Logger("modal");
@@ -14,6 +17,9 @@ const oldModalWrap =
         new ModalDialog(options);
     },
 
+    /**
+     * @deprecated
+     */
     "showError": function (title, content)
     {
         let logger = new Logger("modal");
@@ -25,6 +31,9 @@ const oldModalWrap =
         });
     },
 
+    /**
+     * @deprecated
+     */
     "prompt": function (title, text, value, callback)
     {
         let logger = new Logger("modal");
