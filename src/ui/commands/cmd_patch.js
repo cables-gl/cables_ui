@@ -24,10 +24,12 @@ const log = new Logger("CMD_PATCH");
 const patchCommands =
 {
     "commands": CMD_PATCH_COMMANDS,
-    "functions": CABLES_CMD_PATCH
+    "functions": CABLES_CMD_PATCH,
 };
 
 export default patchCommands;
+
+export { CABLES_CMD_PATCH as CmdPatch };
 
 CABLES_CMD_PATCH.setPatchTitle = () =>
 {
@@ -127,15 +129,27 @@ CABLES_CMD_PATCH.save = function (force, cb)
         return;
     }
 
-    gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
-
-    const ops = gui.savedState.getUnsavedPatchSubPatchOps();
-
-    for (let i = 0; i < ops.length; i++)
+    const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+    if (subOuter)
     {
-        const name = ops[i].op.shortName;
-        subPatchOpUtil.updateSubPatchOpAttachment(ops[i].op, { "oldSubId": ops[i].subId });
+        const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
+        if (bp)
+        {
+            gui.showLoadingProgress(true);
+
+            subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(bp),
+                {
+                    "oldSubId": bp,
+                    "next": () =>
+                    {
+                        if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+                    }
+                });
+        }
+        else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
     }
+    else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+
 };
 
 CABLES_CMD_PATCH.saveAs = function ()

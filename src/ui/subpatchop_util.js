@@ -16,6 +16,17 @@ subPatchOpUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 
 const _log = new Logger("subPatchOpUtil");
 
+subPatchOpUtil.saveUnsavedPatchSubpatchOps = () =>
+{
+
+    const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        subPatchOpUtil.updateSubPatchOpAttachment(ops[i].op, { "oldSubId": ops[i].subId });
+    }
+};
+
 subPatchOpUtil.executeBlueprintIfMultiple = (opname, next) =>
 {
     const ops = gui.corePatch().getOpsByObjName(opname);

@@ -6,6 +6,7 @@ import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -461,6 +462,7 @@ export default class PatchSaveServer extends Events
             }, true);
         }
         gui.patchView.removeLostSubpatches();
+        subPatchOpUtil.saveUnsavedPatchSubpatchOps();
     }
 
     finishAnimations()
@@ -948,4 +950,5 @@ export default class PatchSaveServer extends Events
 
         }
     }
+
 }

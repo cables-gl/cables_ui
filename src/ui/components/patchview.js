@@ -1402,7 +1402,7 @@ export default class PatchView extends Events
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             if (i == 0)
-                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "!</a>";
+                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "</a>";
             else
                 str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
         }

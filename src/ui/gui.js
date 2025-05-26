@@ -53,6 +53,7 @@ import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
 import { UiPatch } from "./core_extend_patch.js";
 import PatchView from "./components/patchview.js";
+import patchCommands, { CmdPatch, commands } from "./commands/cmd_patch.js";
 
 /**
  * @type {Gui}
@@ -1644,33 +1645,7 @@ export default class Gui extends Events
             }
             else
             {
-                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-                if (subOuter)
-                {
-                    const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
-                    if (bp)
-                    {
-                        gui.showLoadingProgress(true);
-
-                        subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(bp),
-                            {
-                                "oldSubId": bp,
-                                "next": () =>
-                                {
-                                    if (!gui.savedState.getStateBlueprint(0))
-                                        CABLES.CMD.PATCH.save();
-                                }
-                            });
-                    }
-                    else
-                    {
-                        CABLES.CMD.PATCH.save();
-                    }
-                }
-                else
-                {
-                    CABLES.CMD.PATCH.save();
-                }
+                CmdPatch.save();
             }
         });
 
