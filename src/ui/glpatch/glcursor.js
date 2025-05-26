@@ -21,7 +21,7 @@ export default class GlCursor extends Events
         this._animX = new Anim();
         this._animY = new Anim();
 
-        this._animX.defaultEasing = this._animY.defaultEasing = CABLES.Anim.EASING_CUBIC_OUT;
+        this._animX.defaultEasing = this._animY.defaultEasing = Anim.EASING_CUBIC_OUT;
 
         this._glPatch = glPatch;
         this._instancer = instancer;

@@ -1,4 +1,5 @@
 import { vec4 } from "gl-matrix";
+import { utils } from "cables";
 import font from "../glpatch/sdf_font.json";
 import GlRect from "./glrect.js";
 import GlTextWriter from "./gltextwriter.js";
@@ -135,7 +136,7 @@ export default class GlText
         if (r === undefined)r = g = b = 1.0;
         if (r.length)
         {
-            CABLES.logStack();
+            utils.logStack();
             vec4.set(this._color, r[0], r[1], r[2], a);
         }
         else vec4.set(this._color, r, g, b, a);

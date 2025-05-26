@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { utils } from "cables";
 import { gui } from "../../gui.js";
 
 export default class OpDocsJson extends Events
@@ -10,7 +11,7 @@ export default class OpDocsJson extends Events
         this._tab = new CABLES.UI.Tab("Op Docs Json", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-        this._id = "hljs" + CABLES.uuid();
+        this._id = "hljs" + utils.uuid();
 
         this._op = null;
         this.rebuildHtml();

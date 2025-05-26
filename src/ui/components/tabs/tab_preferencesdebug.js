@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import text from "../../text.js";
@@ -23,7 +24,7 @@ export default class tab_PreferencesDebug
     {
         this._tab = new Tab("Prefsdebug", { "icon": "settings", "infotext": "tab_prefsdebug", "singleton": true });
         tabs.addTab(this._tab, true);
-        this._id = "hljs" + CABLES.uuid();
+        this._id = "hljs" + utils.uuid();
 
         userSettings.on("change", () =>
         {

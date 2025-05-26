@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
-import { CgContext } from "cables/src/core/cg/cg_state.js";
+import { CG, CgContext } from "cables-corelibs";
+import { Patch, Port, utils } from "cables";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
@@ -55,7 +56,7 @@ export default class OpSearch extends Events
         const ns = platform.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(ns).map((ext) => { return ext.name; });
 
-        this.numPatchops = CABLES.uniqueArray(patchOpNames || []).length;
+        this.numPatchops = utils.uniqueArray(patchOpNames || []).length;
         items = items.concat(this._createListItemsByNames(patchOpNames, items));
 
         const newList = {};
@@ -92,7 +93,6 @@ export default class OpSearch extends Events
             if (namespace.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
         }
         this._rebuildWordList();
-
         CABLES.UI.OPSELECT.maxPop = maxPop;
     }
 
@@ -276,7 +276,7 @@ export default class OpSearch extends Events
                         if (this._newOpOptions.linkNewOpToPort)
                         {
                             let foundPortType = false;
-                            if (this._newOpOptions.linkNewOpToPort.direction === CABLES.Port.DIR_OUT)
+                            if (this._newOpOptions.linkNewOpToPort.direction === Port.DIR_OUT)
                             {
                                 if (docs.layout.portsIn[0].type == this._newOpOptions.linkNewOpToPort.type)
                                 {
@@ -477,7 +477,7 @@ export default class OpSearch extends Events
                 if (val.hasOwnProperty(propertyName))
                 {
                     const opName = ns + "." + parentname + propertyName;
-                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opnames.push(opName);
+                    if (typeof (Patch.getOpClass(opName)) === "function") opnames.push(opName);
                     opnames = this._getOpsNamesFromCode(opnames, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
@@ -545,7 +545,7 @@ export default class OpSearch extends Events
                 }
 
                 const op = {
-                    "opId": opId || CABLES.simpleId(),
+                    "opId": opId || utils.simpleId(),
                     "name": opName,
                     "summary": summary,
                     "collectionOpNames": collectionOpNames,

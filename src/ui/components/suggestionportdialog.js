@@ -1,3 +1,4 @@
+import { Link } from "cables";
 import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
@@ -13,8 +14,8 @@ export default class SuggestPortDialog
 
     /**
      * Description
-     * @param {CABLES.Op} op
-     * @param {CABLES.Port} port
+     * @param {Op} op
+     * @param {Port} port
      * @param {MouseEvent} mouseEvent
      * @param {Function} cb
      * @param {Function} cbCancel
@@ -31,7 +32,7 @@ export default class SuggestPortDialog
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
 
-                CABLES.Link.canLink(theport, port))
+                Link.canLink(theport, port))
             {
                 this._addPort(theport);
             }
@@ -43,7 +44,7 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-                CABLES.Link.canLink(theport, port)) this._addPort(theport);
+                Link.canLink(theport, port)) this._addPort(theport);
         }
 
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)

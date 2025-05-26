@@ -1,4 +1,5 @@
 import { ele, ModalBackground } from "cables-shared-client";
+import { Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
@@ -248,7 +249,7 @@ export default class OpSelect
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
-            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === CABLES.Port.DIR_IN);
+            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === Port.DIR_IN);
             const eleTitle = ele.byId("createLinkTriggerExists");
             if (eleTitle)
             {

@@ -1,3 +1,4 @@
+import { Patch } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
@@ -15,7 +16,7 @@ export default class Tracking
 
     _initListeners()
     {
-        this.gui._corePatch.on(CABLES.Patch.EVENT_OP_ADDED, (op, fromDeserialize) =>
+        this.gui._corePatch.on(Patch.EVENT_OP_ADDED, (op, fromDeserialize) =>
         {
             if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")))
             {

@@ -1,4 +1,4 @@
-import { Port } from "cables";
+import { Patch, Port, utils } from "cables";
 import { CablesConstants } from "cables-shared-client";
 import { portType } from "../../core_constants.js";
 import { gui } from "../../gui.js";
@@ -37,7 +37,7 @@ class PortHtmlGenerator
         {
             op.isDeprecated = true;
             const notDeprecatedName = op.objName.replace("Deprecated.", "");
-            const alt = CABLES.Patch.getOpClass(notDeprecatedName);
+            const alt = Patch.getOpClass(notDeprecatedName);
             if (alt) op.isDeprecatedAlternative = notDeprecatedName;
         }
         if (namespace.isDevOp(op.objName)) op.isExperimental = true;
@@ -146,7 +146,7 @@ class PortHtmlGenerator
                 let fileType = "";
                 if (patchAsset)
                 {
-                    const fileName = CABLES.filename(url);
+                    const fileName = utils.filename(url);
                     const suffix = "." + fileName.split(".").pop();
                     for (let key in CablesConstants.FILETYPES)
                     {

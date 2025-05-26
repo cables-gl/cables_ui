@@ -1,6 +1,6 @@
 import { mat4, vec3 } from "gl-matrix";
+import { Framebuffer2, Geometry, Mesh, Shader } from "cables-corelibs";
 import overlayShaderVert from "./overlaymeshes.vert";
-import overlayShaderFrag from "./overlaymeshes.frag";
 import { gui } from "../../gui.js";
 
 const helperMeshes = {};
@@ -14,24 +14,13 @@ helperMeshes.startFramebuffer = function (cgl)
     {
         helperMeshes.FB = {};
 
-        if (cgl.glVersion == 1)
-        {
-            helperMeshes.FB.fb = new CGL.Framebuffer(cgl, 8, 8, {
-                "isFloatingPointTexture": false,
-                "depth": true,
-                "clear": false,
-            });
-        }
-        else
-        {
-            helperMeshes.FB.fb = new CGL.Framebuffer2(cgl, 8, 8, {
-                "isFloatingPointTexture": false,
-                "depth": true,
-                "clear": false,
-                "multisampling": true,
-                "multisamplingSamples": 4,
-            });
-        }
+        helperMeshes.FB.fb = new Framebuffer2(cgl, 8, 8, {
+            "isFloatingPointTexture": false,
+            "depth": true,
+            "clear": false,
+            "multisampling": true,
+            "multisamplingSamples": 4,
+        });
     }
 
     if (helperMeshes.FB.oldWidth != cgl.getViewPort()[2] || helperMeshes.FB.oldHeight != cgl.getViewPort()[3])
@@ -64,8 +53,8 @@ helperMeshes.getDefaultShader = function (cgl, options = {})
 
     if (!helperMeshes[name])
     {
-        helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
-        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
+        helperMeshes[name] = new Shader(cgl, "marker shader");
+        helperMeshes[name].setSource(overlayShaderVert, Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
         if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
@@ -79,8 +68,8 @@ helperMeshes.getSelectedShader = function (cgl, options = {})
 
     if (!helperMeshes[name])
     {
-        helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
-        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0, 1, 1));
+        helperMeshes[name] = new Shader(cgl, "marker shader");
+        helperMeshes[name].setSource(overlayShaderVert, CG.Shader.getDefaultFragmentShader(0, 1, 1));
         if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
@@ -114,11 +103,11 @@ helperMeshes.drawCircle = function (op, size)
                 tc.push(0, 0);
             }
 
-            let geom = new CGL.Geometry("sphere marker");
+            let geom = new Geometry("sphere marker");
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            helperMeshes.CIRCLE.mesh = new CGL.Mesh(cgl, geom);
+            helperMeshes.CIRCLE.mesh = new Mesh(cgl, geom);
         }
 
         bufferData();
@@ -169,7 +158,7 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            const geom = new CGL.Geometry("sphere marker");
+            const geom = new Geometry("sphere marker");
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
@@ -187,7 +176,7 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            const geom2 = new CGL.Geometry("sphere marker");
+            const geom2 = new Geometry("sphere marker");
             geom2.setPointVertices(verts);
             geom2.setTexCoords(tc);
             geom2.vertexNormals = verts.slice();
@@ -205,14 +194,14 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            const geom3 = new CGL.Geometry("sphere marker");
+            const geom3 = new Geometry("sphere marker");
             geom3.setPointVertices(verts);
             geom3.setTexCoords(tc);
             geom3.vertexNormals = verts.slice();
 
             geom.merge(geom2);
             geom.merge(geom3);
-            helperMeshes.SPHERE.mesh = new CGL.Mesh(cgl, geom);
+            helperMeshes.SPHERE.mesh = new Mesh(cgl, geom);
         }
 
         bufferData();
@@ -245,7 +234,7 @@ helperMeshes.drawAxisMarker = function (op, size)
     {
         helperMeshes.MARKER = {};
 
-        const geom = new CGL.Geometry("marker");
+        const geom = new Geometry("marker");
         geom.setPointVertices([
             0.00001, 0, 0, 1, 0, 0,
             0, 0.00001, 0, 0, 1, 0,
@@ -253,7 +242,7 @@ helperMeshes.drawAxisMarker = function (op, size)
         ]);
         // geom.resetTextureCoords();
 
-        helperMeshes.MARKER.mesh = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
+        helperMeshes.MARKER.mesh = new Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
         helperMeshes.MARKER.mesh.setGeom(geom);
 
         const frag = "".endl() + "IN vec3 axisColor;".endl() + "void main()".endl() + "{".endl() + "    vec4 col=vec4(axisColor,1.0);".endl() + "    outColor = col;".endl() + "}";
@@ -272,7 +261,7 @@ helperMeshes.drawAxisMarker = function (op, size)
             + "   gl_Position = projMatrix * mvMatrix * pos;".endl()
             + "}";
 
-        helperMeshes.MARKER.shader = new CGL.Shader(cgl, "markermaterial");
+        helperMeshes.MARKER.shader = new Shader(cgl, "markermaterial");
         helperMeshes.MARKER.shader.setSource(vert, frag);
 
         helperMeshes.MARKER.vScale = vec3.create();
@@ -312,12 +301,12 @@ helperMeshes.drawLineSourceDest = function (op, sourceX, sourceY, sourceZ, destX
         verts.push(destX, destY, destZ);
 
         const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        const geom = new CGL.Geometry("helpermesh");
+        const geom = new Geometry("helpermesh");
         geom.vertices = verts;
         geom.setTexCoords(tc);
         geom.vertexNormals = verts.slice();
         helperMeshes.ARROW_SRC_DST.geom = geom;
-        helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
+        helperMeshes.ARROW_SRC_DST.cube = new Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
     }
     else
     {
@@ -364,12 +353,12 @@ helperMeshes.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-            const geom = new CGL.Geometry("helpermesh");
+            const geom = new Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            helperMeshes.ARROW.cube = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
+            helperMeshes.ARROW.cube = new Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
         }
 
         bufferData();
@@ -421,12 +410,12 @@ helperMeshes.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-            const geom = new CGL.Geometry("helpermesh");
+            const geom = new Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            helperMeshes.XPLANE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
+            helperMeshes.XPLANE.mesh = new Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
 
         bufferData();
@@ -493,12 +482,12 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
             const tc = new Float32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-            const geom = new CGL.Geometry("helpermesh");
+            const geom = new Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            helperMeshes.CUBE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
+            helperMeshes.CUBE.mesh = new Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
 
         bufferData();
@@ -539,7 +528,7 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
 
     if (!helperMeshes.fullscreenRectMesh || helperMeshes.FSWIDTH != w || helperMeshes.FSHEIGHT != h)
     {
-        const fsGeom = new CGL.Geometry("fullscreen rectangle");
+        const fsGeom = new Geometry("fullscreen rectangle");
 
         helperMeshes.FSWIDTH = w;
         helperMeshes.FSHEIGHT = h;
@@ -572,14 +561,14 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
         ]);
 
         // helperMeshes.fsGeom=fsGeom;
-        if (!helperMeshes.fullscreenRectMesh) helperMeshes.fullscreenRectMesh = new CGL.Mesh(cgl, fsGeom);
+        if (!helperMeshes.fullscreenRectMesh) helperMeshes.fullscreenRectMesh = new Mesh(cgl, fsGeom);
         else helperMeshes.fullscreenRectMesh.setGeom(fsGeom);
 
         // ------------
 
         if (!helperMeshes.fullscreenRectShader)
         {
-            const shader = new CGL.Shader(cgl, "marker overlay");
+            const shader = new Shader(cgl, "marker overlay");
 
             const shader_frag = "".endl()
                 + "UNI sampler2D tex;".endl()
@@ -613,7 +602,7 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
                 + "}";
 
             shader.setSource(shader_vert, shader_frag);
-            shader.texUniform = new CGL.Uniform(shader, "t", "tex", 0);
+            shader.texUniform = new Uniform(shader, "t", "tex", 0);
 
             helperMeshes.fullscreenRectShader = shader;
 

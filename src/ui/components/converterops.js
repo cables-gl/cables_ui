@@ -1,3 +1,4 @@
+import { Port } from "cables";
 import defaultOps from "../defaultops.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import { gui } from "../gui.js";
@@ -8,13 +9,13 @@ export function convertPorts(p1, p2, converter)
     let pFrom = null;
     let pTo = null;
 
-    if (p1.type == converter.typeFrom && p2.type == converter.typeTo && p1.direction == CABLES.Port.DIR_OUT)
+    if (p1.type == converter.typeFrom && p2.type == converter.typeTo && p1.direction == Port.DIR_OUT)
     {
         pFrom = p1;
         pTo = p2;
         found = true;
     }
-    if (p2.type == converter.typeFrom && p1.type == converter.typeTo && p1.direction == CABLES.Port.DIR_IN)
+    if (p2.type == converter.typeFrom && p1.type == converter.typeTo && p1.direction == Port.DIR_IN)
     {
         pFrom = p2;
         pTo = p1;
@@ -41,11 +42,11 @@ export function getConverters(p1, p2)
         let found = false;
         if (!p1) return converters;
 
-        if (p1.type == defaultOps.converterOps[i].typeFrom && p2.type == defaultOps.converterOps[i].typeTo && p1.direction == CABLES.Port.DIR_OUT)
+        if (p1.type == defaultOps.converterOps[i].typeFrom && p2.type == defaultOps.converterOps[i].typeTo && p1.direction == Port.DIR_OUT)
         {
             found = true;
         }
-        if (p2.type == defaultOps.converterOps[i].typeFrom && p1.type == defaultOps.converterOps[i].typeTo && p1.direction == CABLES.Port.DIR_IN)
+        if (p2.type == defaultOps.converterOps[i].typeFrom && p1.type == defaultOps.converterOps[i].typeTo && p1.direction == Port.DIR_IN)
         {
             found = true;
         }

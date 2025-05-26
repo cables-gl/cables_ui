@@ -1,3 +1,4 @@
+import { utils } from "cables";
 import { userSettings } from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -20,7 +21,7 @@ export default class GlArea
          * @type {GlOp}
          */
         this._glop = glop;
-        this._id = CABLES.shortId();
+        this._id = utils.shortId();
 
         /**
          * @private

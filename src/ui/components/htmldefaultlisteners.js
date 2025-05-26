@@ -1,4 +1,5 @@
 import { Logger, ModalBackground, ele } from "cables-shared-client";
+import { utils } from "cables";
 import Gui, { gui } from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";
 
@@ -41,7 +42,7 @@ export default function setHtmlDefaultListeners()
             if (item.kind === "file")
             {
                 let blob = item.getAsFile();
-                fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
+                fileUploader.uploadFile(blob, "paste_" + utils.shortId() + "_" + blob.name);
                 return;
             }
         }

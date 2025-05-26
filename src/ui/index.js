@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import CABLES from "cables";
+import { CG, CGL, CGP } from "cables-corelibs";
 import { Platform } from "./platform.js";
 import CMD from "./commands/commands.js";
 import OverlayMeshes from "./components/overlay/overlaymeshes.js";
@@ -9,7 +10,6 @@ import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
 import { userSettings } from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
-import extendCoreAnim from "./components/timelinesvg/core_anim_extend.js";
 import defaultOps from "./defaultops.js";
 import GradientEditor from "./dialogs/gradienteditor.js";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -18,7 +18,7 @@ import oldModalWrap from "./dialogs/modal_old_wrap.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import Tab from "./elements/tabpanel/tab.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
-import extendCoreOp from "./core_extend_op.js";
+import { UiOp } from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
@@ -26,11 +26,16 @@ import text from "./text.js";
 import { logFilter } from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
-import extendCorePatch from "./core_extend_patch.js";
+import { UiPatch } from "./core_extend_patch.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
+
+window.CABLES = CABLES || {};
+CABLES.CG = CG;
+CABLES.CGL = CGL;
+CABLES.CGP = CGP;
 
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
@@ -91,9 +96,8 @@ CABLES.UI.showShaderErrorCgp = showShaderErrorCgp;
 
 setHtmlDefaultListeners();
 
-extendCoreOp();
-extendCorePatch();
-extendCoreAnim();
+CABLES.Op = UiOp;
+CABLES.Patch = UiPatch;
 
 CABLES.UI.startUi = startUi;
 

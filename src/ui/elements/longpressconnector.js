@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { Link } from "cables";
 import SuggestionDialog from "../components/suggestiondialog.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import { notify } from "./notification.js";
@@ -190,7 +191,7 @@ export default class LongPressConnector extends Events
 
             for (let i = 0; i < op2.portsIn.length; i++)
             {
-                if (CABLES.Link.canLink(op2.portsIn[i], p))
+                if (Link.canLink(op2.portsIn[i], p))
                 {
                     sugIn.push({
                         "p": op2.portsIn[i],

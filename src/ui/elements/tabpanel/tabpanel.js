@@ -1,4 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
+import { utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
 import { gui } from "../../gui.js";
@@ -38,7 +39,7 @@ export default class TabPanel extends Events
         this._log = new Logger("TabPanel " + eleId);
 
         this.#options = options;
-        this.id = CABLES.uuid();
+        this.id = utils.uuid();
         this._eleId = eleId;
         this._tabs = [];
         this._eleContentContainer = null;
@@ -434,7 +435,7 @@ export default class TabPanel extends Events
     addIframeTab(title, url, options, userInteraction)
     {
         const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
-        const id = CABLES.uuid();
+        const id = utils.uuid();
 
         const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\" allow=\"clipboard-write\" style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
         iframeTab.contentEle.innerHTML = html;

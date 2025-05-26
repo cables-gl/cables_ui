@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
@@ -29,7 +30,7 @@ export default class FindTab
         this._lastClicked = -1;
         this._lastSelected = -1;
         this._maxIdx = -1;
-        this._inputId = "tabFindInput" + CABLES.uuid();
+        this._inputId = "tabFindInput" + utils.uuid();
         this._closed = false;
         this._eleInput = null;
         this._listenerids = [];
@@ -48,7 +49,7 @@ export default class FindTab
             if (op.uiAttribs.warning) warnOps.push(op);
             if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
         }
-        colors = CABLES.uniqueArray(colors);
+        colors = utils.uniqueArray(colors);
 
         const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId, "toggles": this._toggles });
 

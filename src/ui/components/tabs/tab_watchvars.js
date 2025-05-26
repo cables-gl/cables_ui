@@ -1,4 +1,5 @@
 import { ele, Events } from "cables-shared-client";
+import { utils } from "cables";
 import { gui } from "../../gui.js";
 
 export default class WatchVarTab extends Events
@@ -33,7 +34,7 @@ export default class WatchVarTab extends Events
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
-        this._id = "spread" + CABLES.uuid();
+        this._id = "spread" + utils.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
         this._ele = document.getElementById(this._id);
         this._ele.classList.add("editor_spreadsheet");

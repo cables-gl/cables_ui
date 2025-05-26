@@ -1,6 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Op, Port } from "cables";
-import { CGL } from "cables/src/core/cgl/index.js";
+import { Link, Op, Patch, Port, utils } from "cables";
+import { BoundingBox, Geometry, Shader } from "cables-corelibs";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -26,7 +26,6 @@ import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 import { UiPatch } from "../core_extend_patch.js";
-import namespaceutils from "../namespaceutils.js";
 
 /**
  * manage patch view and helper functions
@@ -65,10 +64,10 @@ export default class PatchView extends Events
         corepatch.on("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
 
         // corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
-        corepatch.on(CABLES.Patch.EVENT_OP_DELETED, this._onDeleteOpUndo.bind(this));
+        corepatch.on(Patch.EVENT_OP_DELETED, this._onDeleteOpUndo.bind(this));
 
-        corepatch.on(CABLES.Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
-        corepatch.on(CABLES.Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
+        corepatch.on(Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
+        corepatch.on(Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
         corepatch.on("onLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
         corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
     }
@@ -771,7 +770,7 @@ export default class PatchView extends Events
     {
         if (options.minWidth == undefined) options.minWidth = 100;
 
-        const bb = new CABLES.CG.BoundingBox();
+        const bb = new BoundingBox();
 
         for (let j = 0; j < ops.length; j++)
         {
@@ -1311,7 +1310,7 @@ export default class PatchView extends Events
             }
         }
 
-        foundPatchIds = CABLES.uniqueArray(foundPatchIds);
+        foundPatchIds = utils.uniqueArray(foundPatchIds);
 
         for (let i = 0; i < foundPatchIds.length; i++)
         {
@@ -1609,7 +1608,7 @@ export default class PatchView extends Events
                     const pastedOp = pastedJson.ops[i];
                     if (pastedOp.objName)
                     {
-                        const pasteProblem = namespaceutils.getNamespaceHierarchyProblem(subOuter.objName, pastedOp.objName);
+                        const pasteProblem = namespace.getNamespaceHierarchyProblem(subOuter.objName, pastedOp.objName);
                         if (pasteProblem)
                         {
                             notifyError("Paste failed", pasteProblem, { "force": true });
@@ -1624,7 +1623,7 @@ export default class PatchView extends Events
         gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
         {
             // change ids
-            project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
+            project = Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
             for (const i in project.ops)
             {
                 project.ops[i].uiAttribs.pasted = true;
@@ -2296,8 +2295,8 @@ export default class PatchView extends Events
         if (inp.uiAttribs.objType && outp.get())
         {
             if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof CGL.Geometry)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof CGL.Shader)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof Geometry)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof Shader)) inp.op.setUiError(id, errorMsg);
             if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.op.setUiError(id, errorMsg);
             // * audio
             if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.op.setUiError(id, errorMsg);
@@ -2600,7 +2599,7 @@ export default class PatchView extends Events
 
         if (portIn && portOut && newPortOut) // && !newPortIn.isLinked()
         {
-            if (CABLES.Link.canLink(newPortIn, portOut)) //! portOut.isLinked() &&
+            if (Link.canLink(newPortIn, portOut)) //! portOut.isLinked() &&
             {
                 gui.corePatch().link(
                     op,
@@ -2705,7 +2704,7 @@ export default class PatchView extends Events
 
             for (let i = 0; i < op2.portsIn.length; i++)
             {
-                if (CABLES.Link.canLink(op2.portsIn[i], p))
+                if (Link.canLink(op2.portsIn[i], p))
                 {
                     sugIn.push({
                         "p": op2.portsIn[i],
@@ -2872,7 +2871,7 @@ export default class PatchView extends Events
         //             for (let j = 0; j < ops[i].portsIn.length; j++)
         //                 if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
 
-        //     if (dir == undefined || dir === CABLES.Port.DIR_OUT)
+        //     if (dir == undefined || dir === Port.DIR_OUT)
         //         for (let j = 0; j < ops[i].portsOut.length; j++)
         //             if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         // }

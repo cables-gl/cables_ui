@@ -1,4 +1,6 @@
 import { vec2 } from "gl-matrix";
+import { BoundingBox, CG } from "cables-corelibs";
+import { Anim } from "cables";
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
@@ -42,12 +44,12 @@ export default class GlViewBox
         this._spaceDown = false;
         this._outOfBounds = false;
 
-        this._defaultEasing = CABLES.Anim.EASING_EXPO_OUT;
-        console.log("CABLES.Anim.EASING_EXPO_OUT", CABLES.Anim.EASING_EXPO_OUT);
+        this._defaultEasing = Anim.EASING_EXPO_OUT;
+        console.log("Anim.EASING_EXPO_OUT", Anim.EASING_EXPO_OUT);
 
-        this._animScrollX = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
-        this._animScrollY = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
-        this._animZoom = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
+        this._animScrollX = new Anim({ "defaultEasing": this._defaultEasing });
+        this._animScrollY = new Anim({ "defaultEasing": this._defaultEasing });
+        this._animZoom = new Anim({ "defaultEasing": this._defaultEasing });
 
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": true });
@@ -390,7 +392,7 @@ export default class GlViewBox
             return;
         }
 
-        const bb = new CABLES.CG.BoundingBox();
+        const bb = new BoundingBox();
         const subp = this.glPatch.getCurrentSubPatch();
 
         for (let i = 0; i < ops.length; i++)

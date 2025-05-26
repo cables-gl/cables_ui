@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { CgpShader } from "cables/src/core/cgp/cgp_shader.js";
+import { CGP } from "cables-corelibs";
 import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
 import { userSettings } from "../components/usersettings.js";

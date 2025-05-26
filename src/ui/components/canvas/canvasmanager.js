@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { CgContext } from "cables/src/core/cg/cg_state.js";
+import { utils } from "cables";
 import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -202,7 +202,7 @@ export default class CanvasManager
             catch (e) {}
             this.subWindow = null;
         }
-        let id = CABLES.uuid();
+        let id = utils.uuid();
         this.subWindow = window.open("", "view#" + id, "width=" + gui.rendererWidth + ",height=" + gui.rendererHeight + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
         let nDocument = this.subWindow.document;

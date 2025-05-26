@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { utils } from "cables";
 import { platform } from "../platform.js";
 
 /**
@@ -79,7 +80,7 @@ export default class UserSettings extends Events
         if (value === "true") value = true;
         else if (value === "false") value = false;
 
-        if (typeof value == "string" && CABLES.isNumeric(value)) value = parseFloat(value);
+        if (typeof value == "string" && utils.isNumeric(value)) value = parseFloat(value);
 
         const wasChanged = this._settings[key] != value;
 
