@@ -1794,7 +1794,6 @@ export class GlTimeline extends Events
         else this.showParams();
 
         let comment = "";
-        let showcomment = false;
         if (this.#selectedKeys.length == 1)
         {
             showcomment = true;
@@ -1883,8 +1882,8 @@ export class GlTimeline extends Events
             button.addEventListener("click", () =>
             {
                 console.log("text", button.dataset.col);
-                for (let i = 0; i < this.#selectedKeys.length; i++)
-                    this.#selectedKeys[i].setUiAttribs({ "color": button.dataset.col });
+                for (let j = 0; j < this.#selectedKeys.length; j++)
+                    this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
         }
     }

@@ -1375,7 +1375,7 @@ export default class Gui extends Events
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
-                ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/issues", "_blank"); });
+                ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables/issues", "_blank"); });
                 ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
                 if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
