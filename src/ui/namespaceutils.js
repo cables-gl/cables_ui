@@ -244,7 +244,7 @@ class namespace
         const capitalizedParts = nameParts.map((part) =>
         {
             if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
-            return (part[0].toUpperCase() + part.slice(1));
+            return part[0] ? (part[0].toUpperCase() + part.slice(1)) : "";
         });
         return capitalizedParts.join(".");
     }
