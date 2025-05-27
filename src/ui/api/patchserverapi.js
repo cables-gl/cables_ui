@@ -7,6 +7,7 @@ import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import subPatchOpUtil from "../subpatchop_util.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -67,7 +68,7 @@ export default class PatchSaveServer extends Events
     {
         this.setServerDate(updated);
         gui.closeModal();
-        CABLES.CMD.PATCH.save(true, () =>
+        CmdPatch.save(true, () =>
         {
             if (platform.getPatchVersion())
             {
@@ -148,6 +149,10 @@ export default class PatchSaveServer extends Events
                     {
                         gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                     }
+                }
+                else
+                {
+                    if (cb)cb(null);
                 }
                 gui.jobs().finish("checkupdated");
             }
@@ -575,7 +580,6 @@ export default class PatchSaveServer extends Events
         data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
 
         if (gui.glTimeline)data.ui.timeline = gui.glTimeline.savePatchData();
-        console.log("saving patch,.,,", data.ui.timeline);
 
         CABLES.patch.namespace = currentProject.namespace;
 

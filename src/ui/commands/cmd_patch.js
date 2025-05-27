@@ -3,7 +3,7 @@ import { Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { notify, notifyError } from "../elements/notification.js";
+import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
 import Profiler from "../components/tabs/tab_profiler.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
@@ -124,9 +124,11 @@ CABLES_CMD_PATCH.save = function (force, cb)
     }
     if (platform.isSaving())
     {
-        log.log("already saving...");
+        notifyWarn("already saving...");
+        console.log("already saving...");
         return;
     }
+    console.log("tttttt");
 
     const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
     if (subOuter)
