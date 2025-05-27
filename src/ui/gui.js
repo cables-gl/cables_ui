@@ -53,7 +53,9 @@ import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
 import { UiPatch } from "./core_extend_patch.js";
 import PatchView from "./components/patchview.js";
-import patchCommands, { CmdPatch, commands } from "./commands/cmd_patch.js";
+import patchCommands, { CmdPatch } from "./commands/cmd_patch.js";
+import { CmdRenderer } from "./commands/cmd_renderer.js";
+import { CmdUi } from "./commands/cmd_ui.js";
 
 /**
  * @type {Gui}
@@ -1161,7 +1163,7 @@ export default class Gui extends Events
 
     helperContextMenu()
     {
-        CABLES.CMD.UI.toggleOverlays();
+        CmdUi.toggleOverlays();
     }
 
     /**
@@ -1175,28 +1177,28 @@ export default class Gui extends Events
                     [
                         {
                             "title": "Reset canvas size",
-                            "func": CABLES.CMD.RENDERER.resetSize
+                            "func": CmdRenderer.resetSize
                         },
                         {
                             "title": "Set canvas size",
-                            "func": CABLES.CMD.RENDERER.changeSize
+                            "func": CmdRenderer.changeSize
                         },
                         {
                             "title": "Set canvas scale",
-                            "func": CABLES.CMD.RENDERER.scaleCanvas
+                            "func": CmdRenderer.scaleCanvas
                         },
                         {
                             "title": "Canvas Magnifier",
-                            "func": CABLES.CMD.RENDERER.canvasMagnifier
+                            "func": CmdRenderer.canvasMagnifier
                         },
                         {
                             "title": "Maximize Canvas",
-                            "func": CABLES.CMD.RENDERER.maximizeCanvas,
+                            "func": CmdRenderer.maximizeCanvas,
                             "icon": "icon-picker"
                         },
                         {
                             "title": "Canvas As Patch Background",
-                            "func": CABLES.CMD.UI.togglePatchBgRenderer
+                            "func": CmdUi.togglePatchBgRenderer
                         }
 
                     ]
@@ -1214,39 +1216,39 @@ export default class Gui extends Events
                     [
                         {
                             "title": "32:9",
-                            func() { CABLES.CMD.RENDERER.aspect(32 / 9); }
+                            func() { CmdRenderer.aspect(32 / 9); }
                         },
                         {
                             "title": "21:9",
-                            func() { CABLES.CMD.RENDERER.aspect(21 / 9); }
+                            func() { CmdRenderer.aspect(21 / 9); }
                         },
                         {
                             "title": "16:9",
-                            func() { CABLES.CMD.RENDERER.aspect(16 / 9); }
+                            func() { CmdRenderer.aspect(16 / 9); }
                         },
                         {
                             "title": "16:10",
-                            func() { CABLES.CMD.RENDERER.aspect(16 / 10); }
+                            func() { CmdRenderer.aspect(16 / 10); }
                         },
                         {
                             "title": "4:3",
-                            func() { CABLES.CMD.RENDERER.aspect(4 / 3); }
+                            func() { CmdRenderer.aspect(4 / 3); }
                         },
                         {
                             "title": "5:4",
-                            func() { CABLES.CMD.RENDERER.aspect(5 / 4); }
+                            func() { CmdRenderer.aspect(5 / 4); }
                         },
                         {
                             "title": "1:1",
-                            func() { CABLES.CMD.RENDERER.aspect(1); }
+                            func() { CmdRenderer.aspect(1); }
                         },
                         {
                             "title": "1:2",
-                            func() { CABLES.CMD.RENDERER.aspect(1 / 2); }
+                            func() { CmdRenderer.aspect(1 / 2); }
                         },
                         {
                             "title": "9:16",
-                            func() { CABLES.CMD.RENDERER.aspect(9 / 16); }
+                            func() { CmdRenderer.aspect(9 / 16); }
                         }
                     ]
             }, el);
@@ -1375,7 +1377,7 @@ export default class Gui extends Events
                 str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
-                ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
+                ele.byId("nav_patch_new").addEventListener("click", () => { CmdPatch.newPatch(); });
                 ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables/issues", "_blank"); });
                 ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
@@ -1386,10 +1388,10 @@ export default class Gui extends Events
         ele.byId("nav_cmdplt").addEventListener("click", () => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", () => { gui.find(""); });
 
-        ele.byId("nav_createBackup").addEventListener("click", () => { CABLES.CMD.PATCH.createBackup(); });
-        ele.byId("nav_viewBackups").addEventListener("click", () => { CABLES.CMD.PATCH.showBackups(); });
+        ele.byId("nav_createBackup").addEventListener("click", () => { CmdPatch.createBackup(); });
+        ele.byId("nav_viewBackups").addEventListener("click", () => { CmdPatch.showBackups(); });
 
-        ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
+        ele.byId("nav_preferences").addEventListener("click", () => { CmdUi.showPreferences(); });
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {
             e.preventDefault();
@@ -1401,12 +1403,12 @@ export default class Gui extends Events
                 win.focus();
             }
         });
-        ele.byId("nav_remoteViewerLink").addEventListener("click", () => { CABLES.CMD.UI.openRemoteViewer(); });
+        ele.byId("nav_remoteViewerLink").addEventListener("click", () => { CmdUi.openRemoteViewer(); });
 
-        ele.byId("nav_patch_save").addEventListener("click", () => { CABLES.CMD.PATCH.save(); });
-        ele.byId("nav_patch_saveas").addEventListener("click", () => { CABLES.CMD.PATCH.saveAs(); });
-        ele.byId("nav_patch_export").addEventListener("click", () => { CABLES.CMD.PATCH.export(); });
-        ele.byId("nav_patch_export_patch").addEventListener("click", () => { CABLES.CMD.PATCH.export("patch"); });
+        ele.byId("nav_patch_save").addEventListener("click", () => { CmdPatch.save(); });
+        ele.byId("nav_patch_saveas").addEventListener("click", () => { CmdPatch.saveAs(); });
+        ele.byId("nav_patch_export").addEventListener("click", () => { CmdPatch.export(); });
+        ele.byId("nav_patch_export_patch").addEventListener("click", () => { CmdPatch.export("patch"); });
 
         if (platform.frontendOptions.hasOpDirectories)
         {
@@ -1421,7 +1423,7 @@ export default class Gui extends Events
         const uploadEle = ele.byId("nav_uploadfile");
         if (uploadEle)
         {
-            uploadEle.addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+            uploadEle.addEventListener("click", CmdPatch.uploadFileDialog);
             if (!platform.frontendOptions.showAssetUpload) uploadEle.innerText = "Add file";
         }
 
@@ -1454,16 +1456,16 @@ export default class Gui extends Events
         if (platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/changelog", "_blank"); });
         else ele.hide(ele.byId("nav_changelog"));
 
-        if (platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
+        if (platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CmdUi.showBuildInfo(); });
         else ele.hide(ele.byId("nav_buildinfo"));
 
         // --- Help menu
         // Documentation
 
-        ele.byId("nav_help_keys").addEventListener("click", () => { CABLES.CMD.UI.showKeys(); });
+        ele.byId("nav_help_keys").addEventListener("click", () => { CmdUi.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/docs", "_blank"); });
 
-        ele.byId("nav_help_tips").addEventListener("click", () => { CABLES.CMD.UI.showTips(); });
+        ele.byId("nav_help_tips").addEventListener("click", () => { CmdUi.showTips(); });
 
         // Introduction
         ele.byId("nav_help_introduction").addEventListener("click", () => { gui.introduction.showIntroduction(); });
@@ -1473,7 +1475,7 @@ export default class Gui extends Events
         ele.byId("nav_op_patchOp").addEventListener("click", () =>
         {
             gui.patchView.unselectAllOps();
-            CABLES.CMD.PATCH.createSubPatchOp();
+            CmdPatch.createSubPatchOp();
         });
         ele.byId("nav_filemanager").addEventListener("click", () => { gui.showFileManager(null, true); });
 
@@ -1482,11 +1484,11 @@ export default class Gui extends Events
             CABLES.CMD.TIMELINE.toggleTimeline();
         });
 
-        ele.byId("nav_gpuprofiler").addEventListener("click", () => { CABLES.CMD.UI.profileGPU(); });
+        ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
         ele.byId("nav_log").addEventListener("click", () => { CABLES.CMD.DEBUG.logConsole(); });
 
-        ele.byId("nav_profiler").addEventListener("click", () => { CABLES.CMD.PATCH.patchProfiler(); });
-        ele.byId("nav_patchanalysis").addEventListener("click", () => { CABLES.CMD.PATCH.analyze(); });
+        ele.byId("nav_profiler").addEventListener("click", () => { CmdPatch.patchProfiler(); });
+        ele.byId("nav_patchanalysis").addEventListener("click", () => { CmdPatch.analyze(); });
 
         if (!platform.isTrustedPatch())
         {
@@ -1506,10 +1508,10 @@ export default class Gui extends Events
 
         ele.byId("nav-item-activity").addEventListener("click", () =>
         {
-            CABLES.CMD.UI.activityFeed();
+            CmdUi.activityFeed();
         });
 
-        ele.byId("nav-item-bpReload").addEventListener("click", () => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
+        ele.byId("nav-item-bpReload").addEventListener("click", () => { CmdPatch.updateLocalChangedBlueprints(); });
 
         this.htmlEleOverlay = new HtmlElementOverlay();
         this.canvasManager.updateCanvasUi();
@@ -1616,23 +1618,23 @@ export default class Gui extends Events
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, () => { this.cyclePatchBg(); });
         this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, () =>
         {
-            CABLES.CMD.UI.togglePatchBgPatchField();
+            CmdUi.togglePatchBgPatchField();
         });
 
         this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { undo.undo(); });
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, () => { undo.redo(); });
-        this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { CABLES.CMD.UI.settings(); });
+        this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { CmdUi.settings(); });
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (/** @type {HtmlElementOverlay} */ e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
-            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CABLES.CMD.UI.showSearch();
+            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CmdUi.showSearch();
             else e.dontPreventDefault = true;
         });
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, () =>
         {
-            CABLES.CMD.PATCH.saveAs();
+            CmdPatch.saveAs();
         });
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, () =>
@@ -1673,7 +1675,7 @@ export default class Gui extends Events
 
         this.keys.key("o", "Toggle Overlays", "down", null, { "ignoreInput": true }, () =>
         {
-            CABLES.CMD.UI.toggleOverlays();
+            CmdUi.toggleOverlays();
         });
     }
 
@@ -1806,7 +1808,7 @@ export default class Gui extends Events
             hideInfo();
         });
 
-        if (this.userSettings.get("presentationmode")) CABLES.CMD.UI.startPresentationMode();
+        if (this.userSettings.get("presentationmode")) CmdUi.startPresentationMode();
 
         if (this._corePatch.cgl.aborted)
         {
@@ -1825,9 +1827,9 @@ export default class Gui extends Events
 
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
             this.userSettings.get("showTipps") &&
-            this.userSettings.get("introCompleted")) CABLES.CMD.UI.showTips();
+            this.userSettings.get("introCompleted")) CmdUi.showTips();
 
-        if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab(true);
+        if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CmdUi.welcomeTab(true);
 
         let ver = "";
         ver += platform.getCablesVersion();

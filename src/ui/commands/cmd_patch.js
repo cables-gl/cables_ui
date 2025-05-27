@@ -28,7 +28,6 @@ const patchCommands =
 };
 
 export default patchCommands;
-
 export { CABLES_CMD_PATCH as CmdPatch };
 
 CABLES_CMD_PATCH.setPatchTitle = () =>
@@ -528,14 +527,13 @@ CABLES_CMD_PATCH.createFile = function ()
 
 CABLES_CMD_PATCH.uploadFile = function ()
 {
-    if (!window.gui) return;
     const fileElem = document.getElementById("hiddenfileElem");
     if (fileElem) fileElem.click();
 };
 
 CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
 {
-    if (!window.gui || !fileName) return;
+    if (!fileName) return;
     CABLES.reuploadName = fileName;
     const fileEle = ele.byId("fileReUpload" + id);
     if (fileEle && fileEle.dataset.filePath) CABLES.reuploadName = fileEle.dataset.filePath;

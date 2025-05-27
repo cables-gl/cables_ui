@@ -12,6 +12,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
+import { CmdOp } from "../../commands/cmd_op.js";
 
 /**
  * op parameter panel
@@ -745,7 +746,7 @@ class OpParampanel extends Events
             "title": "Manage Op Code",
             func()
             {
-                CABLES.CMD.OP.manageOp();
+                CmdOp.manageOp();
             },
         });
 
@@ -753,7 +754,7 @@ class OpParampanel extends Events
             "title": "Clone Op",
             func()
             {
-                CABLES.CMD.OP.cloneSelectedOp();
+                CmdOp.cloneSelectedOp();
             },
         });
 

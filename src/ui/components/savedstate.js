@@ -2,6 +2,7 @@ import { Events, Logger, ele } from "cables-shared-client";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
 
 /**
  * saved state of patch and subpatches, set orange icon if unsaved
@@ -239,7 +240,7 @@ export default class SavedState extends Events
                 if (el)
                     el.addEventListener("click", () =>
                     {
-                        if (idx == 0) CABLES.CMD.PATCH.save();
+                        if (idx == 0) CmdPatch.save();
                         else subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(idx), { "oldSubId": idx });
                     });
 

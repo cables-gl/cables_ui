@@ -12,6 +12,7 @@ import Gui, { gui } from "../gui.js";
 import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
 import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
+import { CmdPatch } from "./cmd_patch.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -273,7 +274,7 @@ CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
 CABLES_CMD_DEBUG.saveWithOutObjnames = () =>
 {
     gui.corePatch().storeObjNames = false;
-    CABLES.CMD.PATCH.save();
+    CmdPatch.save();
 };
 
 CABLES_CMD_DEBUG.undoHistory = () =>

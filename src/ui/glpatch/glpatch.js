@@ -21,6 +21,8 @@ import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
+import { CmdOp } from "../commands/cmd_op.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
 
 /**
  * rendering the patchfield
@@ -256,7 +258,7 @@ export default class GlPatch extends Events
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
         gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
-        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CABLES.CMD.OP.editOp(true); });
+        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdOp.editOp(true); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
         {
             this.viewBox.centerSelectedOps();
@@ -267,7 +269,7 @@ export default class GlPatch extends Events
 
         gui.keys.key("x", "Unlink selected ops first ports only", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(true); });
 
-        gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CABLES.CMD.PATCH.gotoParentSubpatch(); });
+        gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdPatch.gotoParentSubpatch(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (_e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
@@ -304,7 +306,7 @@ export default class GlPatch extends Events
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.zoomStep(1); });
 
-        gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CABLES.CMD.PATCH.setOpTitle(); });
+        gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdPatch.setOpTitle(); });
 
         gui.keys.key("y", "Cut Cables", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
@@ -628,7 +630,7 @@ export default class GlPatch extends Events
         }
         else if (this.dblClickAction == "addOp")
         {
-            CABLES.CMD.PATCH.addOp();
+            CmdPatch.addOp();
         }
         else if (this.dblClickAction == "centerPatch")
         {
