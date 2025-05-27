@@ -636,6 +636,7 @@ export class glTlKeys extends Events
             this.#keyRects[i].dispose();
         }
         this.#keyRects = [];
+        this.#needsUpdate = true;
     }
 
     dispose()

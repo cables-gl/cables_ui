@@ -293,7 +293,7 @@ export class glTlAnimLine extends Events
         this.width = w;
         // this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].reset();
 
     }
 
