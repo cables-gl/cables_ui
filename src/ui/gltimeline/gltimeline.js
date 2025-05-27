@@ -691,8 +691,26 @@ export class GlTimeline extends Events
                 const movementX = event.offsetX - this.#lastDragX;
                 const movementY = event.offsetY - this.#lastDragY;
 
-                if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                if (event.metaKey || event.ctrlKey)
+                {
+                    if (Math.abs(movementY) > Math.abs(movementX))
+                    {
+                        this.view.scale(movementY * 0.01);
+                    }
+                    else
+                    {
+                        let zf = (1 / (this.view.zoom)) * 0.3;
+                        let d = 1 + zf;
+                        if (movementX > 0)d = 1 - zf;
+                        this.view.setZoomOffset(d, 0);
+                    }
+
+                }
+                else
+                {
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                    if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                }
             }
 
             this.#lastDragX = event.offsetX;

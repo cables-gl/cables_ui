@@ -235,7 +235,7 @@ export class GlTlView
     setZoomOffset(delta, dur = 0.3)
     {
         let zoom = this.#zoom * delta;
-        zoom = CABLES.clamp(zoom, 0.1, 10000000);
+        zoom = CABLES.clamp(zoom, 0.1, 100);
 
         const t = this.#timer.getTime();
         this.#animZoom.clear(t);
