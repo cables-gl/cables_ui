@@ -169,7 +169,9 @@ export class GlTlView
 
     get visibleTime()
     {
-        return Math.abs(this.timeRight) - Math.abs(this.timeLeft);
+        let r = Math.abs(this.timeRight) - Math.abs(this.timeLeft);
+        if (isNaN(r)) return 0.0000001;
+        return r;
     }
 
     get timeLeft()
