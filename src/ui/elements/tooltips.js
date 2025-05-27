@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { Link, utils } from "cables";
 import text from "../text.js";
 import { gui } from "../gui.js";
 import { PortDir, portType } from "../core_constants.js";
@@ -176,7 +177,7 @@ export function updateHoverToolTip(event, port, overlink)
         if (port.type == portType.number)
         {
             val = port.getValueForDisplay();
-            if (CABLES.isNumeric(val))val = Math.round(val * 1000) / 1000;
+            if (utils.isNumeric(val))val = Math.round(val * 1000) / 1000;
 
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
@@ -204,7 +205,7 @@ export function updateHoverToolTip(event, port, overlink)
                 {
                     if (i != 0)txt += ", ";
 
-                    if (CABLES.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
+                    if (utils.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
                     else if (typeof val[i] == "string")txt += "\"" + val[i] + "\"";
                     else if (typeof val[i] == "object")
                     {
@@ -237,8 +238,8 @@ export function updateHoverToolTip(event, port, overlink)
             if (gui.patchView.patchRenderer.dragLine._startGlPorts[0])
                 oport = gui.patchView.patchRenderer.dragLine._startGlPorts[0].port;
 
-            if (!CABLES.Link.canLink(port, oport))
-                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + CABLES.Link.canLinkText(port, oport);
+            if (!Link.canLink(port, oport))
+                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + Link.canLinkText(port, oport);
         }
     }
     txt += "&nbsp;";

@@ -1,4 +1,4 @@
-import { Patch } from "cables";
+import { Op, Patch, utils } from "cables";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPatchAPI from "../glpatch/patchapi.js";
 import { gui } from "../gui.js";
@@ -26,7 +26,7 @@ export default class GlCanvas
         document.body.style["touch-action"] = "none";
 
         this.canvas = document.createElement("canvas");
-        this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
+        this.canvas.id = "glGuiCanvas-" + utils.uuid();
         this.canvas.style.border = "0px solid white";
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
@@ -37,13 +37,12 @@ export default class GlCanvas
         if (parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
 
-        this.patch = new CABLES.Patch(
-            {
-                "glCanvasId": this.canvas.id,
-                "glCanvasResizeToParent": false,
-                "glCanvasResizeToWindow": false,
-                "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
-            });
+        this.patch = new Patch({
+            "glCanvasId": this.canvas.id,
+            "glCanvasResizeToParent": false,
+            "glCanvasResizeToWindow": false,
+            "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
+        });
 
         this.cgl = this.patch.cgl;
         this.cgl.pixelDensity = window.devicePixelRatio || 1;

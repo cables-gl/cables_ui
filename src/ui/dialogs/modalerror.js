@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
@@ -142,7 +143,7 @@ export default class ModalError
 
     _getFileSnippet(url, line, cb)
     {
-        CABLES.ajax(
+        utils.ajax(
             url,
             (err, _data, xhr) =>
             {

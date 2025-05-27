@@ -1,5 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import ErrorStackParser from "error-stack-parser";
+import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import undo from "../../utils/undo.js";
 import { gui } from "../../gui.js";
@@ -325,7 +326,7 @@ export default class LogTab extends Events
         // export const ajax = function (url, cb, method, post, contenttype, jsonP, headers = {}, options = {})
 
         const logger = this._log;
-        CABLES.ajax(
+        utils.ajax(
             url,
             (err, _data, xhr) =>
             {
@@ -344,7 +345,7 @@ export default class LogTab extends Events
                     const maxLength = 150;
                     if (lStr.length > maxLength) lStr = lStr.substring(0, maxLength) + "...";
 
-                    const str = "file: \"" + CABLES.basename(url) + "\" line " + line + ": `" + lStr + "`";
+                    const str = "file: \"" + utils.basename(url) + "\" line " + line + ": `" + lStr + "`";
                     logger.errorGui(str);
 
                     if ( // do not send error report

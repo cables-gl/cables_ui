@@ -1,9 +1,12 @@
 import { Logger, Events } from "cables-shared-client";
+import { CgContext } from "cables-corelibs";
+import { utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -146,7 +149,6 @@ export default class PatchSaveServer extends Events
                         gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                     }
                 }
-                if (cb)cb(null);
                 gui.jobs().finish("checkupdated");
             }
             else
@@ -459,6 +461,7 @@ export default class PatchSaveServer extends Events
             }, true);
         }
         gui.patchView.removeLostSubpatches();
+        subPatchOpUtil.saveUnsavedPatchSubpatchOps();
     }
 
     finishAnimations()
@@ -504,7 +507,7 @@ export default class PatchSaveServer extends Events
                 }
             }
 
-            if (op.uiAttribs.title === CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
+            if (op.uiAttribs.title === utils.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
@@ -864,7 +867,7 @@ export default class PatchSaveServer extends Events
             // thePatch.renderOneFrame();
             gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-            if (cgl.gApi == CABLES.CGState.API_WEBGL) thePatch.resume();
+            if (cgl.gApi == CgContext.API_WEBGL) thePatch.resume();
 
             const url = gui.canvasManager.currentCanvas().toDataURL();
 
@@ -946,4 +949,5 @@ export default class PatchSaveServer extends Events
 
         }
     }
+
 }

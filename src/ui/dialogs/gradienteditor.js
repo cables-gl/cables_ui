@@ -1,4 +1,5 @@
 import { ModalBackground, Logger, ele } from "cables-shared-client";
+import { Anim, utils } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 
@@ -38,9 +39,8 @@ export default class GradientEditor
         this._port = this._op.getPort(this._portName);
         this.type = this._port.uiAttribs.gradientType || "gradient";
 
-        this._anim = new CABLES.Anim();
-
-        this._anim.defaultEasing = CABLES.Anim.EASING_SMOOTHSTEP;
+        this._anim = new Anim();
+        this._anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
 
         this._elContainer = null;
         this._bg = new ModalBackground();
@@ -164,9 +164,9 @@ export default class GradientEditor
                 for (let x = keyA.pos * this._width; x < keyB.pos * this._width; x++)
                 {
                     x = Math.round(x);
-                    let p = CABLES.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
+                    let p = utils.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
 
-                    if (this._options.smoothStep) p = CABLES.smoothStep(p);
+                    if (this._options.smoothStep) p = utils.smoothStep(p);
                     if (this._options.step) p = Math.round(p);
 
                     if (this._options.oklab)
@@ -567,9 +567,9 @@ export default class GradientEditor
         let rgb_r = l * +4.0767416621 + m * -3.3077115913 + s * +0.2309699292;
         let rgb_g = l * -1.2684380046 + m * +2.6097574011 + s * -0.3413193965;
         let rgb_b = l * -0.0041960863 + m * -0.7034186147 + s * +1.7076147010;
-        rgb_r = CABLES.clamp(rgb_r, 0, 1);
-        rgb_g = CABLES.clamp(rgb_g, 0, 1);
-        rgb_b = CABLES.clamp(rgb_b, 0, 1);
+        rgb_r = utils.clamp(rgb_r, 0, 1);
+        rgb_g = utils.clamp(rgb_g, 0, 1);
+        rgb_b = utils.clamp(rgb_b, 0, 1);
         return [rgb_r, rgb_g, rgb_b];
     }
 }

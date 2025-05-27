@@ -41,7 +41,11 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
             "filename": outputFile,
         },
         "optimization": {
-            "minimizer": [new TerserPlugin({ "extractComments": false, "terserOptions": { "output": { "comments": false } } })],
+            "concatenateModules": true,
+            "minimizer": [new TerserPlugin({
+                "extractComments": false,
+                "terserOptions": { "output": { "comments": false } }
+            })],
             "minimize": minify,
             "usedExports": true
         },

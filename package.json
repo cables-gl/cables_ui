@@ -10,6 +10,7 @@
     "dependencies": {
         "cables": "file:../cables/",
         "cables-shared-client": "file:../shared/client/",
+        "cables-corelibs": "file:../cables/src/libs/",
         "chroma-js": "2.1.0",
         "davidshimjs-qrcodejs": "0.0.2",
         "error-stack-parser": "2.1.4",

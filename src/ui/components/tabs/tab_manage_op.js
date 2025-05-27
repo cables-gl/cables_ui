@@ -1,4 +1,5 @@
 import { Logger, ele } from "cables-shared-client";
+import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
@@ -42,7 +43,7 @@ export default class ManageOp
         this._initialized = false;
         this._currentName = opObjName;
         this._currentId = opId;
-        this._id = CABLES.shortId();
+        this._id = utils.shortId();
         this._refreshListener = [];
         this._refreshCoreListener = [];
 
@@ -100,7 +101,7 @@ export default class ManageOp
             "opid": this._currentId
         }, true);
 
-        this._id = CABLES.shortId();
+        this._id = utils.shortId();
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
         const opDoc = gui.opDocs.getOpDocById(this._currentId);
 
@@ -183,7 +184,7 @@ export default class ManageOp
                 {
                     libs.push({
                         "url": lib,
-                        "name": CABLES.basename(lib),
+                        "name": utils.basename(lib),
                         "isAssetLib": lib.startsWith("/assets/")
                     });
                 });

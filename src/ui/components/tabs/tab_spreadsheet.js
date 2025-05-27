@@ -1,4 +1,4 @@
-import { Port } from "cables";
+import { Port, utils } from "cables";
 import { ele, Events, Logger } from "cables-shared-client";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
@@ -51,7 +51,7 @@ export default class SpreadSheetTab extends Events
             for (let i = 0; i < this._numCols; i++) this.getColName(i);
         }
 
-        this._id = "spread" + CABLES.uuid();
+        this._id = "spread" + utils.uuid();
         this._updateUiAttribs();
     }
 

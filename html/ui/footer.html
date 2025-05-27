@@ -7,6 +7,7 @@
 <script>
     "use strict";
     var CABLESUILOADER = CABLESUILOADER || {};
+    var CABLES = CABLES || {};
 
     CABLESUILOADER.GlobalVarTester = (function ()
     {
@@ -153,7 +154,6 @@
         else
         {
             CABLESUILOADER.uiLoadFiles = performance.now() - CABLESUILOADER.uiLoadStart;
-
             CABLES.UI.startUi(CABLESUILOADER.cfg);
         }
     }

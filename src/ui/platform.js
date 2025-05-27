@@ -130,7 +130,7 @@ export class Platform extends Events
 
     getIssueTrackerUrl()
     {
-        return "https://github.com/cables-gl/cables_docs/issues";
+        return "https://github.com/cables-gl/cables/issues";
     }
 
     isOffline()

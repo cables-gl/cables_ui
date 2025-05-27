@@ -1,5 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Anim, AnimKey, CglContext, FpsCounter, Patch, Port, Timer } from "cables";
+import { Anim, AnimKey, Port, Timer, Patch } from "cables";
+import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -1794,10 +1795,8 @@ export class GlTimeline extends Events
         else this.showParams();
 
         let comment = "";
-        let showcomment = false;
         if (this.#selectedKeys.length == 1)
         {
-            showcomment = true;
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
 
@@ -1883,8 +1882,8 @@ export class GlTimeline extends Events
             button.addEventListener("click", () =>
             {
                 console.log("text", button.dataset.col);
-                for (let i = 0; i < this.#selectedKeys.length; i++)
-                    this.#selectedKeys[i].setUiAttribs({ "color": button.dataset.col });
+                for (let j = 0; j < this.#selectedKeys.length; j++)
+                    this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
         }
     }

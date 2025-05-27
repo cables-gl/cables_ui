@@ -2,7 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-import { Op } from "cables";
+import { Link, Op, Port } from "cables";
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
@@ -15,7 +15,7 @@ CABLES.OpUnLinkTempReLinkP2 = null;
 /**
  * @extends Op<UiPatch>
  */
-class UiOp extends CABLES.Op
+class UiOp extends Op
 {
     constructor(patch, objName, id = null)
     {
@@ -72,9 +72,9 @@ class UiOp extends CABLES.Op
     countFittingPorts(otherPort)
     {
         let count = 0;
-        for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) count++;
+        for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) count++;
 
-        for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) count++;
+        for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) count++;
 
         return count;
     }
@@ -83,13 +83,13 @@ class UiOp extends CABLES.Op
     {
         if (inPortsFirst)
         {
-            for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
-            for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
         }
         else
         {
-            for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
-            for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
         }
     }
 
@@ -762,7 +762,7 @@ class UiOp extends CABLES.Op
 
         if (this.isSubPatchOp() == 2 && this.patchId)
         {
-            const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.Port.DIR_IN);
+            const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), Port.DIR_IN);
 
             index = 0;
             for (let i = 0; i < portsIn.length; i++)
@@ -773,7 +773,7 @@ class UiOp extends CABLES.Op
                 index++;
             }
 
-            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.Port.DIR_OUT);
+            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), Port.DIR_OUT);
             index = 0;
 
             for (let i = 0; i < portsOut.length; i++)
@@ -834,7 +834,4 @@ class UiOp extends CABLES.Op
     }
 }
 
-CABLES.Op = UiOp;
 export { UiOp };
-
-export default function extendCoreOp() {}

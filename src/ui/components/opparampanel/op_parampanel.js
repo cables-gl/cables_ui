@@ -1,6 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
 
-import { Port } from "cables";
+import { Port, utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import text from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
@@ -29,13 +29,13 @@ class OpParampanel extends Events
     {
         super();
 
-        this.panelId = CABLES.simpleId();
+        this.panelId = utils.simpleId();
         this._eleId = eleid;
         this._log = new Logger("OpParampanel");
         this._htmlGen = new PortHtmlGenerator(this.panelId);
 
         this._currentOp = null;
-        this._eventPrefix = CABLES.shortId();
+        this._eventPrefix = utils.shortId();
         this._isPortLineDragDown = false;
 
         /** @type {Array<Port>} */
@@ -193,8 +193,8 @@ class OpParampanel extends Events
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
             {
-                if (ports[i].direction === CABLES.Port.DIR_IN && this._portsIn.indexOf(ports[i]) == -1) this._portsIn.push(ports[i]);
-                if (ports[i].direction === CABLES.Port.DIR_OUT && this._portsOut.indexOf(ports[i]) == -1) this._portsOut.push(ports[i]);
+                if (ports[i].direction === Port.DIR_IN && this._portsIn.indexOf(ports[i]) == -1) this._portsIn.push(ports[i]);
+                if (ports[i].direction === Port.DIR_OUT && this._portsOut.indexOf(ports[i]) == -1) this._portsOut.push(ports[i]);
             }
         }
 
@@ -490,7 +490,7 @@ class OpParampanel extends Events
                     div = document.createElement("div");
                     div.id = "uierror_" + err.id;
                     div.classList.add("warning-error");
-                    if (CABLES.isNumeric(err.level))
+                    if (utils.isNumeric(err.level))
                         div.classList.add("warning-error-level" + err.level);
                     else
                     {

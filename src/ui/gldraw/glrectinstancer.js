@@ -1,5 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
-import { CglContext, Geometry, Mesh, Shader, Texture, Uniform } from "cables";
+import { CGL, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";

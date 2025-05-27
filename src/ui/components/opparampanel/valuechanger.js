@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import text from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
@@ -204,7 +205,7 @@ function valueChanger(eleId, focus, portName, opid)
         let inc = 0;
 
         if (thePort.uiAttribs.min != undefined)
-            v = CABLES.map(v, thePort.uiAttribs.min, thePort.uiAttribs.max, 0, 1);
+            v = utils.map(v, thePort.uiAttribs.min, thePort.uiAttribs.max, 0, 1);
 
         if (Math.abs(e.movementX) > 5) mouseDownTime = 0;
 
@@ -236,7 +237,7 @@ function valueChanger(eleId, focus, portName, opid)
         }
 
         if (thePort.uiAttribs.min != undefined)
-            v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
+            v = utils.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
         eleInput.value = v;
         eleNumInputDisplay.innerHTML = v;

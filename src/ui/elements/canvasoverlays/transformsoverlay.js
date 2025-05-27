@@ -1,5 +1,4 @@
-import { CgContext } from "cables/src/core/cg/cg_state.js";
-import { CglContext } from "cables";
+import { CG, CGL } from "cables-corelibs";
 import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 

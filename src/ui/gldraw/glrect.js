@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { vec4 } from "gl-matrix";
 import { Texture } from "cables";
+import { logStack } from "cables/src/core/utils.js";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
@@ -204,7 +205,11 @@ export default class GlRect extends Events
      */
     setSize(w, h)
     {
-        if (isNaN(w) || isNaN(h)) return console.error("setsize nan");
+        if (isNaN(w) || isNaN(h))
+        {
+            logStack();
+            return console.error("setsize nan");
+        }
         if (this.#w == w && this.#h == h) return;
         this.#w = w;
         this.#h = h;

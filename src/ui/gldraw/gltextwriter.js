@@ -1,4 +1,4 @@
-import { CglContext, Texture } from "cables";
+import { CGL, Texture } from "cables-corelibs";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**

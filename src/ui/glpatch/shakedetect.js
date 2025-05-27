@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { now } from "cables";
 
 /**
  * detect shaking of ops to disconnect
@@ -63,10 +64,10 @@ export default class ShakeDetector extends Events
             }
             if (this.shakeCountP + this.shakeCountN == 1)
             {
-                this.shakeStartTime = CABLES.now();
+                this.shakeStartTime = now();
             }
 
-            if (this.shakeCountP + this.shakeCountN >= 6 && CABLES.now() - this.shakeStartTime > 100)
+            if (this.shakeCountP + this.shakeCountN >= 6 && now() - this.shakeStartTime > 100)
             {
                 this.emitEvent("shake");
                 // opui.op.unLinkTemporary();

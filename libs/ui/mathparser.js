@@ -67,7 +67,7 @@ MathParser.prototype.parse = function (e)
     }
     let r = o.eval(e);
 
-    if (!CABLES.isNumeric(r))
+    if (isNaN(parseFloat(n)) || isFinite(n))
     {
         console.warn("non numeric math eval result");
         r = 0;

@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
@@ -267,7 +268,7 @@ export default class CommandPallete
             "func": func,
             "icon": icon || "cables",
             "dyn": true,
-            "id": CABLES.uuid()
+            "id": utils.uuid()
         };
 
         this.dynamicCmds.push(cmd);

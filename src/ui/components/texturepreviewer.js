@@ -1,5 +1,7 @@
 import { Logger, ele } from "cables-shared-client";
 
+import { now, Port, Timer } from "cables";
+import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import { hideToolTip } from "../elements/tooltips.js";
@@ -32,7 +34,7 @@ export default class TexturePreviewer
         this._hoveringTexPort = false;
         this._listeningFrame = false;
         this._emptyCubemap = null;
-        this._timer = new CABLES.Timer();
+        this._timer = new Timer();
         this._timer.play();
         this._currentHeight = -1;
         this._currentWidth = -1;
@@ -149,12 +151,12 @@ export default class TexturePreviewer
             const perf = gui.uiProfiler.start("texpreview");
             const cgl = port.op.patch.cgl;
 
-            if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
+            if (!this._emptyCubemap) this._emptyCubemap = Texture.getEmptyCubemapTexture(cgl);
             port.op.patch.cgl.profileData.profileTexPreviews++;
 
             if (!this._mesh)
             {
-                const geom = new CGL.Geometry("tex preview rect");
+                const geom = new Geometry("tex preview rect");
                 geom.vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
                 geom.texCoords = [
                     1.0, 1.0,
@@ -162,20 +164,20 @@ export default class TexturePreviewer
                     1.0, 0.0,
                     0.0, 0.0];
                 geom.verticesIndices = [0, 1, 2, 3, 1, 2];
-                this._mesh = new CGL.Mesh(cgl, geom);
+                this._mesh = new Mesh(cgl, geom);
             }
             if (!this._shader)
             {
-                this._shader = new CGL.Shader(cgl, "texPreviewShader");
+                this._shader = new Shader(cgl, "texPreviewShader");
                 this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
                 this._shader.setSource(srcShaderVertex, srcShaderFragment);
-                this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
-                this._shaderTexCubemapUniform = new CGL.Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
+                this._shaderTexUniform = new Uniform(this._shader, "t", "tex", texSlot);
+                this._shaderTexCubemapUniform = new Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
 
-                this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
-                this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
-                this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
-                this._shaderTimeUniform = new CGL.Uniform(this._shader, "f", "time", 0);
+                this._shaderTexUniformW = new Uniform(this._shader, "f", "width", port.get().width);
+                this._shaderTexUniformH = new Uniform(this._shader, "f", "height", port.get().height);
+                this._shaderTypeUniform = new Uniform(this._shader, "f", "type", 0);
+                this._shaderTimeUniform = new Uniform(this._shader, "f", "time", 0);
             }
 
             cgl.pushPMatrix();
@@ -188,7 +190,7 @@ export default class TexturePreviewer
             let texType = 0;
             if (!port.get()) return;
             if (port.get().cubemap) texType = 1;
-            if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
+            if (port.get().textureType == Texture.TYPE_DEPTH) texType = 2;
 
             this._showInfo(port.get());
 
@@ -471,7 +473,7 @@ export default class TexturePreviewer
     hover(p)
     {
         let thePort = p;
-        if (p.direction == CABLES.Port.DIR_IN && p.isLinked())
+        if (p.direction == Port.DIR_IN && p.isLinked())
             thePort = p.links[0].getOtherPort(p);
 
         if (this._lastClickedP != thePort)
@@ -543,7 +545,7 @@ export default class TexturePreviewer
         const p = port;
         let idx = -1;
 
-        if (p && p.get() && p.get().tex && port.direction == CABLES.Port.DIR_OUT)
+        if (p && p.get() && p.get().tex && port.direction == Port.DIR_OUT)
         {
             const id = port.op.id + port.name;
 
@@ -566,7 +568,7 @@ export default class TexturePreviewer
                 idx = this._texturePorts.length - 1;
             }
 
-            this._texturePorts[idx].updated = CABLES.now();
+            this._texturePorts[idx].updated = now();
             this._texturePorts[idx].activity++;
 
             // if (this._mode == CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow = true;
@@ -581,7 +583,7 @@ export default class TexturePreviewer
         if (tex)
         {
             str = tex.width + " x " + tex.height;
-            if (tex.textureType === CGL.Texture.TYPE_FLOAT) str += " 32bit";
+            if (tex.textureType === Texture.TYPE_FLOAT) str += " 32bit";
         }
 
         if (this._infoStr == str) return;

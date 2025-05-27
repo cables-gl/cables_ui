@@ -1,4 +1,5 @@
 import { Logger, ele, CablesConstants } from "cables-shared-client";
+import { utils } from "cables";
 import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -163,7 +164,7 @@ export default class FileManager
         const item = {
             "title": file.n,
             "shortTitle": file.n.replaceAll(".", "<wbr>."),
-            "id": file._id || "lib" + CABLES.uuid(),
+            "id": file._id || "lib" + utils.uuid(),
             "p": file.p,
             "dir": file.d,
             "updated": file.updated,
@@ -738,7 +739,7 @@ export default class FileManager
                                     countRes.data.assets.forEach((asset) =>
                                     {
                                         const link = platform.getCablesUrl() + "/asset/patches/?filename=" + asset;
-                                        content += "<li>Check usages of <a href='" + link + "' target='_blank'>" + CABLES.filename(asset) + "</a></li>";
+                                        content += "<li>Check usages of <a href='" + link + "' target='_blank'>" + utils.filename(asset) + "</a></li>";
                                     });
                                     content += "</ul>";
                                 }

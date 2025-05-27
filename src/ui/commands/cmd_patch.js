@@ -1,4 +1,5 @@
 import { Logger, ele } from "cables-shared-client";
+import { Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -23,10 +24,12 @@ const log = new Logger("CMD_PATCH");
 const patchCommands =
 {
     "commands": CMD_PATCH_COMMANDS,
-    "functions": CABLES_CMD_PATCH
+    "functions": CABLES_CMD_PATCH,
 };
 
 export default patchCommands;
+
+export { CABLES_CMD_PATCH as CmdPatch };
 
 CABLES_CMD_PATCH.setPatchTitle = () =>
 {
@@ -39,7 +42,7 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     if (!ops.length) return;
 
     const op = gui.patchView.getSelectedOps()[0];
-    const id = "params" + CABLES.uuid();
+    const id = "params" + utils.uuid();
 
     const tab = new CABLES.UI.Tab(op.name, { "icon": "op", "infotext": "tab_timeline", "padding": true, "singleton": false });
     gui.mainTabs.addTab(tab, true);
@@ -126,15 +129,27 @@ CABLES_CMD_PATCH.save = function (force, cb)
         return;
     }
 
-    gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
-
-    const ops = gui.savedState.getUnsavedPatchSubPatchOps();
-
-    for (let i = 0; i < ops.length; i++)
+    const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+    if (subOuter)
     {
-        const name = ops[i].op.shortName;
-        subPatchOpUtil.updateSubPatchOpAttachment(ops[i].op, { "oldSubId": ops[i].subId });
+        const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
+        if (bp)
+        {
+            gui.showLoadingProgress(true);
+
+            subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(bp),
+                {
+                    "oldSubId": bp,
+                    "next": () =>
+                    {
+                        if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+                    }
+                });
+        }
+        else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
     }
+    else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+
 };
 
 CABLES_CMD_PATCH.saveAs = function ()
@@ -706,7 +721,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             if (p.type != portType.trigger)
                 opSetter.getPortByName(portName).set(value);
 
-            if (p.direction == CABLES.Port.DIR_IN)
+            if (p.direction == Port.DIR_IN)
             {
                 p.op.patch.link(opGetter, portName, p.op, p.name);
                 if (p2) p2.op.patch.link(opSetter, portNameOut, p2.op, p2.name);
@@ -768,7 +783,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let getset = getsetOp.setter;
-    if (p.direction == CABLES.Port.DIR_IN)getset = getsetOp.getter;
+    if (p.direction == Port.DIR_IN)getset = getsetOp.getter;
 
     gui.patchView.addOp(
         getset,
@@ -776,7 +791,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
         {
             let off = -40;
 
-            if (p.direction == CABLES.Port.DIR_IN)
+            if (p.direction == Port.DIR_IN)
             {
                 p.op.patch.link(op, getsetOp.portNameOut, p.op, p.name);
             }
@@ -871,7 +886,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
     let opFunction = getsetOp.getter;
     let newOpX = p.op.uiAttribs.translate.x + 20;
     let newOpY = p.op.uiAttribs.translate.y - 40;
-    if (p.direction === CABLES.Port.DIR_OUT)
+    if (p.direction === Port.DIR_OUT)
     {
         if (createTrigger)
         {
@@ -916,7 +931,7 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
             const p2 = link.portOut;
             CABLES.UI.OPSELECT.linkNewLink = null;
 
-            if (p1.direction == CABLES.Port.DIR_IN)p1.removeLinks();
+            if (p1.direction == Port.DIR_IN)p1.removeLinks();
             else p2.removeLinks();
 
             link.remove();
@@ -952,7 +967,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () =>
             const p2 = link.portOut;
             CABLES.UI.OPSELECT.linkNewLink = null;
 
-            if (p1.direction == CABLES.Port.DIR_IN)p1.removeLinks();
+            if (p1.direction == Port.DIR_IN)p1.removeLinks();
             else p2.removeLinks();
 
             link.remove();

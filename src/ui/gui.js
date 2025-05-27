@@ -1,5 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import { CgShader } from "cables/src/core/cg/cg_shader.js";
+import { now } from "cables";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -53,6 +53,7 @@ import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
 import { UiPatch } from "./core_extend_patch.js";
 import PatchView from "./components/patchview.js";
+import patchCommands, { CmdPatch, commands } from "./commands/cmd_patch.js";
 
 /**
  * @type {Gui}
@@ -224,7 +225,7 @@ export default class Gui extends Events
 
         this.user = null;
         this.onSaveProject = null;
-        this.lastNotIdle = CABLES.now();
+        this.lastNotIdle = now();
 
         this._oldCanvasWidth = 0;
         this._oldCanvasHeight = 0;
@@ -1375,7 +1376,7 @@ export default class Gui extends Events
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CABLES.CMD.PATCH.newPatch(); });
-                ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables_docs/issues", "_blank"); });
+                ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables/issues", "_blank"); });
                 ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
 
                 if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
@@ -1644,33 +1645,7 @@ export default class Gui extends Events
             }
             else
             {
-                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-                if (subOuter)
-                {
-                    const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
-                    if (bp)
-                    {
-                        gui.showLoadingProgress(true);
-
-                        subPatchOpUtil.updateSubPatchOpAttachment(gui.patchView.getSubPatchOuterOp(bp),
-                            {
-                                "oldSubId": bp,
-                                "next": () =>
-                                {
-                                    if (!gui.savedState.getStateBlueprint(0))
-                                        CABLES.CMD.PATCH.save();
-                                }
-                            });
-                    }
-                    else
-                    {
-                        CABLES.CMD.PATCH.save();
-                    }
-                }
-                else
-                {
-                    CABLES.CMD.PATCH.save();
-                }
+                CmdPatch.save();
             }
         });
 
@@ -2033,12 +2008,12 @@ export default class Gui extends Events
 
     notIdling()
     {
-        this.lastNotIdle = CABLES.now();
+        this.lastNotIdle = now();
     }
 
     checkIdle()
     {
-        const idling = (CABLES.now() - this.lastNotIdle) / 1000;
+        const idling = (now() - this.lastNotIdle) / 1000;
         if (idling > 30 * 60)
         {
         }

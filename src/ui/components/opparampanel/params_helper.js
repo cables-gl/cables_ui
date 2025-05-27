@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { utils } from "cables";
 import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";
@@ -9,7 +10,7 @@ const paramsHelper =
     "valueChangerSetSliderCSS": (v, eleInput) =>
     {
         if (eleInput.dataset.min || eleInput.dataset.max)
-            v = CABLES.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
+            v = utils.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
 
         v = Math.max(0, v);
         v = Math.min(1, v);
@@ -276,7 +277,7 @@ const paramsHelper =
                     }
                 });
 
-            gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, (deletedOp) =>
+            gui.corePatch().on(Patch.EVENT_OP_DELETED, (deletedOp) =>
             {
                 if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
             });

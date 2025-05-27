@@ -1,4 +1,6 @@
 import { ele, Events, Logger } from "cables-shared-client";
+import { utils } from "cables";
+import { Texture } from "cables-corelibs";
 import { portType } from "../../core_constants.js";
 
 /**
@@ -43,7 +45,7 @@ export default class WatchArrayTab extends Events
 
         this._tabs.addTab(this._tab, true);
 
-        this._id = "spread" + CABLES.uuid();
+        this._id = "spread" + utils.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
 
         this._ele = document.getElementById(this._id);
@@ -152,7 +154,7 @@ export default class WatchArrayTab extends Events
                     gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, realTexture.tex, 0
                 );
 
-                let isFloatingPoint = realTexture.textureType == CGL.Texture.TYPE_FLOAT;
+                let isFloatingPoint = realTexture.textureType == Texture.TYPE_FLOAT;
                 if (isFloatingPoint) channelType = gl.FLOAT;
 
                 if (

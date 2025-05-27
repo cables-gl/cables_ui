@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+dist/js/*.html
 dist/js/*.js
 dist/buildInfo.json
 dist/js/buildInfo.json

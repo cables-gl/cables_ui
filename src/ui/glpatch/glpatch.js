@@ -127,13 +127,13 @@ export default class GlPatch extends Events
         this.cacheOIRops = null;
 
         this._subpatchoprect = null;
-        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimFade = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
 
-        this._focusRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._focusRectAnim = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
         this._focusRect.setShape(4);
@@ -164,7 +164,7 @@ export default class GlPatch extends Events
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_LINEAR });
+        this._fadeOutRectAnim = new Anim({ "defaultEasing": Anim.EASING_LINEAR });
 
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
@@ -1557,11 +1557,11 @@ export default class GlPatch extends Events
 
     subPatchOpAnimStart(bounds, next)
     {
-        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
-        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimFade = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
 
         /*
          * this._subpatchAnimFade.clear();
