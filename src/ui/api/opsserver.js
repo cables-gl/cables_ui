@@ -1226,7 +1226,7 @@ export default class ServerOps
             return;
         }
 
-        const iframeSrc = platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName;
+        const iframeSrc = platform.getCablesUrl() + "/op/rename?iframe=true&op=" + opName + "&new=" + opName + "&p=" + gui.patchId;
         const modal = new ModalIframe({
             "title": "Rename Op",
             "src": iframeSrc

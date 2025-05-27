@@ -1797,7 +1797,6 @@ export class GlTimeline extends Events
         let comment = "";
         if (this.#selectedKeys.length == 1)
         {
-            showcomment = true;
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
 
