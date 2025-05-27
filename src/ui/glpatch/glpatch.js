@@ -1040,7 +1040,7 @@ export default class GlPatch extends Events
 
         for (const i in this._glCursors)
         {
-            this._glCursors[i].setSize(z, z);
+            if (this._glCursors[i].visible) this._glCursors[i].setSize(z, z);
         }
     }
 
