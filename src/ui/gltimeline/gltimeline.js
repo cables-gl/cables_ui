@@ -1850,7 +1850,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
-            this.#paramLastInputValue = off;
+            this.#paramLastInputMove = off;
         });
 
         ele.clickable(ele.byId("kp_value_movef"), () =>
@@ -1861,6 +1861,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.clickable(ele.byId("kp_value_moveb"), () =>
@@ -1871,6 +1872,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.byId("kp_comment").addEventListener("input", () =>
