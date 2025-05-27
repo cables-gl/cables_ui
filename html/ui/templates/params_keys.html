@@ -59,13 +59,11 @@
         <br/>
         <input style="width:250px" id="kp_comment" placeholder="comment" value="{{comment}}">&nbsp;
         <br/>
-        <a id="colbut1" data-col="#07F78C" style="background-color:#07F78C;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut2" data-col="#F0D165" style="background-color:#F0D165;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut3" data-col="#f59259" style="background-color:#f59259;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut4" data-col="#dc5751" style="background-color:#dc5751;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut5" data-col="#db88ff" style="background-color:#db88ff;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut6" data-col="#5dc0fd" style="background-color:#5dc0fd;" class="kp_colorbutton colorbutton"></a>
-        <a id="colbut7" onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
+        {{#each commentColors}}
+            <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
+        {{/each}}
+        <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="kp_colorbutton colorbutton"></a>
+        <br/>
         <br/>
 
         {{#each errors}}

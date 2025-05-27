@@ -18,6 +18,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import { glTlKeys } from "./gltlkeys.js";
+import uiconfig from "../uiconfig.js";
 
 /**
  * @typedef TlConfig
@@ -1812,6 +1813,7 @@ export class GlTimeline extends Events
                 "valueBounds": valstr,
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
+                "commentColors": uiconfig.commentColors,
                 "comment": comment
             });
         this.#keyOverEl.innerHTML = html;
@@ -1875,7 +1877,6 @@ export class GlTimeline extends Events
         });
 
         const buttons = ele.byClassAll("kp_colorbutton");
-        console.log("text", buttons);
         for (let i = 0; i < buttons.length; i++)
         {
             const button = buttons[i];
