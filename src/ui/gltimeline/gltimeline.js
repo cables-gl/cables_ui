@@ -59,6 +59,9 @@ export class GlTimeline extends Events
     graphSelectMode = true;
     keyframeAutoCreate = true;
 
+    #paramLastInputValue = 0.25;
+    #paramLastInputMove = 1;
+
     /** @type {GlTextWriter} */
     texts = null;
 
@@ -1811,6 +1814,8 @@ export class GlTimeline extends Events
                 "numKeys": this.#selectedKeys.length,
                 "timeBounds": timestr,
                 "valueBounds": valstr,
+                "lastInputValue": this.#paramLastInputValue,
+                "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
                 "commentColors": uiconfig.commentColors,
@@ -1832,6 +1837,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
+            this.#paramLastInputMove = off;
         });
 
         ele.clickable(ele.byId("kp_time_moveb"), () =>
@@ -1844,6 +1850,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
+            this.#paramLastInputValue = off;
         });
 
         ele.clickable(ele.byId("kp_value_movef"), () =>
