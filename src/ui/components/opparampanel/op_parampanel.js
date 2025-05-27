@@ -13,6 +13,7 @@ import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdOp } from "../../commands/cmd_op.js";
+import uiconfig from "../../uiconfig.js";
 
 /**
  * op parameter panel
@@ -260,7 +261,7 @@ class OpParampanel extends Events
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", { "op": op, "showDevInfos": userSettings.get("devinfos") });
+        html += getHandleBarHtml("params_op_foot", { "commentColors": uiconfig.commentColors, "op": op, "showDevInfos": userSettings.get("devinfos") });
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 

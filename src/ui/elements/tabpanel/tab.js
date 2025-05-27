@@ -20,6 +20,9 @@ import TabPanel from "./tabpanel.js";
 
 export default class Tab extends Events
 {
+    static EVENT_CLOSE = "close";
+    static EVENT_DEACTIVATE = "onDeactivate";
+    static EVENT_ACTIVATE = "onActivate";
 
     /**
      * @param {String} title
@@ -115,7 +118,7 @@ export default class Tab extends Events
 
     remove()
     {
-        this.emitEvent("close", this);
+        this.emitEvent(Tab.EVENT_CLOSE, this);
         this.contentEle.remove();
         this.toolbarContainerEle.remove();
         if (this.tabPanel) this.tabPanel.closeTab(this.id);
@@ -148,7 +151,7 @@ export default class Tab extends Events
         this.contentEle.style.display = "block";
         this.toolbarContainerEle.style.display = "block";
         this.updateSize();
-        this.emitEvent("onActivate");
+        this.emitEvent(Tab.EVENT_ACTIVATE);
     }
 
     deactivate()
@@ -156,6 +159,6 @@ export default class Tab extends Events
         this.active = false;
         this.contentEle.style.display = "none";
         this.toolbarContainerEle.style.display = "none";
-        this.emitEvent("onDeactivate");
+        this.emitEvent(Tab.EVENT_DEACTIVATE);
     }
 }

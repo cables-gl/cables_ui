@@ -53,7 +53,7 @@ import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
 import { UiPatch } from "./core_extend_patch.js";
 import PatchView from "./components/patchview.js";
-import patchCommands, { CmdPatch } from "./commands/cmd_patch.js";
+import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 
@@ -424,8 +424,6 @@ export default class Gui extends Events
 
     canSaveInMultiplayer()
     {
-        // if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
-        // else return true;
         return true;
     }
 

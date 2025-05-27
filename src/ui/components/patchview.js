@@ -603,7 +603,8 @@ export default class PatchView extends Events
                     "showDevInfos": userSettings.get("devinfos"),
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
-                    "mulSubs": mulSubs
+                    "mulSubs": mulSubs,
+                    "commentColors": uiconfig.commentColors
                 });
 
             gui.opParams.clear();

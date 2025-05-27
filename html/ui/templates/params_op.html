@@ -140,12 +140,9 @@
         <textarea id="commentTextarea" style="height:60px;width:100%;" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
 
         <br/>
-        <a onclick="gui.patchView.setOpColor('#07F78C')" style="background-color:#07F78C;" class="colorbutton"></a>
-        <a onclick="gui.patchView.setOpColor('#F0D165')" style="background-color:#F0D165;" class="colorbutton"></a>
-        <a onclick="gui.patchView.setOpColor('#f59259')" style="background-color:#f59259;" class="colorbutton"></a>
-        <a onclick="gui.patchView.setOpColor('#dc5751')" style="background-color:#dc5751;" class="colorbutton"></a>
-        <a onclick="gui.patchView.setOpColor('#db88ff')" style="background-color:#db88ff;" class="colorbutton"></a>
-        <a onclick="gui.patchView.setOpColor('#5dc0fd')" style="background-color:#5dc0fd;" class="colorbutton"></a>
+        {{#each commentColors}}
+            <a onclick="gui.patchView.setOpColor('{{.}}')" style="background-color:{{.}};" class="colorbutton"></a>
+        {{/each}}
         <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
 
     </div>
