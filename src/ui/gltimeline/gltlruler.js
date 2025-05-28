@@ -163,21 +163,23 @@ export class glTlRuler extends Events
         {
             const bps = this.#glTl.bpm / 60;
             const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
-            const spb = 1 / bps;
 
+            console.log("text", offset);
             for (let i = 0; i < this.markBeats.length; i++)
             {
                 const mr = this.markBeats[i];
-                const t = offset + i * (1 / bps);
-                const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
+                const t = offset + (i * (1 / bps));
+                const x = this.#glTl.view.timeToPixel(t - (this.#glTl.view.offset));
+
                 mr.setSize(onebeatPixel - 2, 5);
                 mr.setPosition(x, 1);
 
-                const absBeat = Math.round(t * bps);
-                if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
-                else mr.setColorArray(glTlRuler.COLOR_BEATS);
+                // const absBeat = Math.floor((t) * bps);
+                // if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
+                // else
+                mr.setColorArray(glTlRuler.COLOR_BEATS);
 
-                if (t < 0) mr.setSize(0, 0);
+                if (t < 0) mr.setOpacity(0.3);
             }
         }
         else
