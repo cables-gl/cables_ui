@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Framebuffer2, Geometry, Mesh, Shader } from "cables-corelibs";
+import { Framebuffer2, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import overlayShaderVert from "./overlaymeshes.vert";
 import { gui } from "../../gui.js";
 
