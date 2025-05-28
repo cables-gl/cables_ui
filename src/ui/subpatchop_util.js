@@ -8,6 +8,7 @@ import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { platform } from "./platform.js";
 import { portType } from "./core_constants.js";
+import { CmdPatch } from "./commands/cmd_patch.js";
 
 const subPatchOpUtil = {};
 
@@ -693,7 +694,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
     const origOpsBounds = gui.patchView.getSubPatchBounds(gui.patchView.getCurrentSubPatch());
     if (origOpsBounds.maxAxis > 10000000)
     {
-        CABLES.CMD.PATCH.centerOpsInSubpatch();
+        CmdPatch.centerOpsInSubpatch();
         gui.patchView._patchRenderer.viewBox.centerSelectedOps();
 
         this._log.log("subpatch huge... center subpatch...");

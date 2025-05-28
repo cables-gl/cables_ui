@@ -18,6 +18,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import { glTlKeys } from "./gltlkeys.js";
+import uiconfig from "../uiconfig.js";
 
 /**
  * @typedef TlConfig
@@ -57,6 +58,9 @@ export class GlTimeline extends Events
     #selectModeEl;
     graphSelectMode = true;
     keyframeAutoCreate = true;
+
+    #paramLastInputValue = 0.25;
+    #paramLastInputMove = 1;
 
     /** @type {GlTextWriter} */
     texts = null;
@@ -687,8 +691,26 @@ export class GlTimeline extends Events
                 const movementX = event.offsetX - this.#lastDragX;
                 const movementY = event.offsetY - this.#lastDragY;
 
-                if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                if (event.metaKey || event.ctrlKey)
+                {
+                    if (Math.abs(movementY) > Math.abs(movementX))
+                    {
+                        this.view.scale(movementY * 0.01);
+                    }
+                    else
+                    {
+                        let zf = (1 / (this.view.zoom)) * 0.3;
+                        let d = 1 + zf;
+                        if (movementX > 0)d = 1 - zf;
+                        this.view.setZoomOffset(d, 0);
+                    }
+
+                }
+                else
+                {
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                    if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                }
             }
 
             this.#lastDragX = event.offsetX;
@@ -1810,8 +1832,11 @@ export class GlTimeline extends Events
                 "numKeys": this.#selectedKeys.length,
                 "timeBounds": timestr,
                 "valueBounds": valstr,
+                "lastInputValue": this.#paramLastInputValue,
+                "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
+                "commentColors": uiconfig.commentColors,
                 "comment": comment
             });
         this.#keyOverEl.innerHTML = html;
@@ -1830,6 +1855,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "time": this.#selectedKeys[i].time + off });
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
+            this.#paramLastInputMove = off;
         });
 
         ele.clickable(ele.byId("kp_time_moveb"), () =>
@@ -1842,6 +1868,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
+            this.#paramLastInputMove = off;
         });
 
         ele.clickable(ele.byId("kp_value_movef"), () =>
@@ -1852,6 +1879,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.clickable(ele.byId("kp_value_moveb"), () =>
@@ -1862,6 +1890,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.byId("kp_comment").addEventListener("input", () =>
@@ -1875,7 +1904,6 @@ export class GlTimeline extends Events
         });
 
         const buttons = ele.byClassAll("kp_colorbutton");
-        console.log("text", buttons);
         for (let i = 0; i < buttons.length; i++)
         {
             const button = buttons[i];

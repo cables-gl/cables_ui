@@ -13,6 +13,7 @@ const timelineCommands =
 };
 
 export default timelineCommands;
+export { CABLES_CMD_TIMELINE as CmdTimeline };
 
 CABLES_CMD_TIMELINE.TimelineSnapTimes = function ()
 {
@@ -25,44 +26,10 @@ CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
     gui.glTimeline.createKeyAtCursor();
 };
 
-CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
-{
-    const panelid = utils.uuid();
-    const ops = gui.corePatch().ops;
-    const ports = [];
-
-    for (let i = 0; i < ops.length; i++)
-    {
-        const inputs = ops[i].portsIn;
-        for (let j = 0; j < inputs.length; j++)
-            if (inputs[j].isAnimated())
-                ports.push(inputs[j]);
-    }
-
-    const htmlgen = new PortHtmlGenerator(panelid);
-
-    let html = "<div class=\"panel params\" ><table>";
-
-    html += htmlgen.getHtmlInputPorts(ports);
-    html += "</table></div>";
-    const tab = new CABLES.UI.Tab("Animated Ports", { "icon": "clock", "infotext": "tab_timeline", "padding": true, "singleton": true });
-    gui.mainTabs.addTab(tab, true);
-    tab.html(html);
-    gui.maintabPanel.show(true);
-
-    const paramsListener = new ParamsListener(panelid);
-    paramsListener.init({ "portsIn": ports });
-};
-
 CABLES_CMD_TIMELINE.TimelinePlay = function ()
 {
     gui.corePatch().timer.play();
     gui.emitEvent("timelineControl", "setPlay", true, gui.corePatch().timer.getTime());
-};
-
-CABLES_CMD_TIMELINE.setLength = function ()
-{
-    // gui.timeLine().setProjectLength();
 };
 
 CABLES_CMD_TIMELINE.TimelineForward = function ()
@@ -163,16 +130,6 @@ timelineCommands.commands.push(
         "category": "ui",
         "func": CABLES_CMD_TIMELINE.TimelineRewindStart,
         "icon": "skip-back"
-    },
-    {
-        "cmd": "set timeline length",
-        "category": "timeline",
-        "func": CABLES_CMD_TIMELINE.setLength
-    },
-    {
-        "cmd": "show all animated ports",
-        "category": "timeline",
-        "func": CABLES_CMD_TIMELINE.ListAnimatedPorts
     },
     {
         "cmd": "add new keyframe at cursor",

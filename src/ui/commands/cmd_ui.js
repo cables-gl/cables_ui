@@ -22,6 +22,7 @@ const uiCommands =
 };
 
 export default uiCommands;
+export { CABLES_CMD_UI as CmdUi };
 
 CABLES_CMD_UI.settings = function ()
 {

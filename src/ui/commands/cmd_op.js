@@ -13,6 +13,7 @@ const opCommands =
 };
 
 export default opCommands;
+export { CABLES_CMD_OP as CmdOp };
 
 CABLES_CMD_OP.codeNewOp = () =>
 {

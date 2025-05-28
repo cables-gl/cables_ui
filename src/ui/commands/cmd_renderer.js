@@ -12,6 +12,7 @@ const rendererCommands =
     };
 
 export default rendererCommands;
+export { CABLES_CMD_RENDERER as CmdRenderer };
 
 CABLES_CMD_RENDERER.screenshot = function ()
 {

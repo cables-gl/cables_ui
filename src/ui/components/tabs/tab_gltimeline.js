@@ -1,3 +1,4 @@
+import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import defaultOps from "../../defaultops.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
@@ -49,17 +50,17 @@ export default class GlTimelineTab
             this.updateSize();
         });
 
-        this.#tab.on("onDeactivate", () =>
+        this.#tab.on(Tab.EVENT_DEACTIVATE, () =>
         {
             if (this.tlCanvas) this.tlCanvas.pause();
         });
 
-        this.#tab.on("close", () =>
+        this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
             userSettings.set("glTimelineOpened", false);
         });
 
-        this.#tab.on("onActivate", () =>
+        this.#tab.on(Tab.EVENT_ACTIVATE, () =>
         {
             if (this.tlCanvas) this.tlCanvas.resume();
             this.updateSize();
@@ -85,13 +86,13 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-skip-back\"></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineRewindStart();
+            CmdTimeline.TimelineRewindStart();
         });
         this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_previous info\" data-info=\"tlnextkey\">\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(-1); }, ["button-middle"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-step-back\" ></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineRewind();
+            CmdTimeline.TimelineRewind();
         }, ["button-middle"]);
 
         this.#tab.addButton("<span id=\"timelineplay\" class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
@@ -102,7 +103,7 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon icon-step-forward\"></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineForward();
+            CmdTimeline.TimelineForward();
         }, ["button-middle"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-keyframe_next info\" data-info=\"tlnextkey\"></span>", () => { this.tlCanvas.glTimeline.jumpKey(1); }, ["button-right"]);
@@ -133,7 +134,7 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span class=\"nomargin icon info icon-diamond-plus\" data-info=\"tladdkey\"></span>", () =>
         {
-            CABLES.CMD.TIMELINE.TimelineCreateKeyAtCursor();
+            CmdTimeline.TimelineCreateKeyAtCursor();
         });
         this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-keyframe-auto\" data-info=\"tlautokeyframe\"></span>", () =>
         {
@@ -183,7 +184,6 @@ export default class GlTimelineTab
                                 "func": () =>
                                 {
                                     this.tlCanvas.glTimeline.setSelectedKeysTime();
-
                                 }
                             },
 
