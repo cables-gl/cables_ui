@@ -4,15 +4,16 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 
 /** @typedef SuggestionItem
- * @property {String} name
+ * @property {String} [name]
  * @property {String} [class]
  * @property {Number} [id]
  * @property {Number} [rot] - internal: do not set manually
  * @property {Number} [top] - internal: do not set manually
  * @property {Number} [left] - internal: do not set manually
  * @property {String} [shortName] - internal: do not set manually
- * @property {String} [classname]
- * @property {Port} [p]
+ * @property {String} [classname] - class
+ * @property {Port} [p] - port
+ * @property {Function} [cb] - callback
 */
 
 /**
