@@ -520,6 +520,7 @@ export default class Gui extends Events
     {
         if (this.unload) return;
         this.pauseProfiling();
+        const wasFocussed = this.patchView.patchRenderer.isFocused;
 
         if (document.body.scrollTop > 0)
         {
@@ -894,7 +895,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        // if (this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
+        if (wasFocussed && this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
 
         perf.finish();
     }
