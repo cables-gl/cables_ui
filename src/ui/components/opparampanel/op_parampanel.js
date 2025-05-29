@@ -337,7 +337,7 @@ class OpParampanel extends Events
 
                     ele.clickable(ele.byId("copyToPatch" + i), () =>
                     {
-                        gui.fileManager.copyFileToPatch(fn);
+                        gui.getFileManager(null, true).copyFileToPatch(fn);
                     });
                 }
             }

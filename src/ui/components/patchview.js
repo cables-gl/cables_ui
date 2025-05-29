@@ -2646,11 +2646,18 @@ export default class PatchView extends Events
         if (this._patchRenderer) this._patchRenderer.setSize(x, y, w, h);
     }
 
+    /**
+     * @param {number} step
+     */
     zoomStep(step)
     {
         this._patchRenderer.zoomStep(step);
     }
 
+    /**
+     * @param {UiOp} op1
+     * @param {UiOp} op2
+     */
     suggestionBetweenTwoOps(op1, op2)
     {
         const mouseEvent = { "clientX": 400, "clientY": 400 };

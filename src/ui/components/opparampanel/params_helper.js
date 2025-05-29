@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { utils } from "cables";
+import { Patch, utils } from "cables";
 import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";

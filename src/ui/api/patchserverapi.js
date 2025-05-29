@@ -392,7 +392,7 @@ export default class PatchSaveServer extends Events
 
                         if (numFiles)
                         {
-                            const checkboxGroup = { "title": "Supporter Features:", "checkboxes": [] };
+                            const checkboxGroup = { "title": "Patch assets:", "checkboxes": [] };
                             checkboxGroup.checkboxes.push({
                                 "name": "copy-assets-on-clone",
                                 "value": true,

@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Framebuffer2, Geometry, Mesh, Shader } from "cables-corelibs";
+import { Framebuffer2, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import overlayShaderVert from "./overlaymeshes.vert";
 import { gui } from "../../gui.js";
 
@@ -69,7 +69,7 @@ helperMeshes.getSelectedShader = function (cgl, options = {})
     if (!helperMeshes[name])
     {
         helperMeshes[name] = new Shader(cgl, "marker shader");
-        helperMeshes[name].setSource(overlayShaderVert, CG.Shader.getDefaultFragmentShader(0, 1, 1));
+        helperMeshes[name].setSource(overlayShaderVert, Shader.getDefaultFragmentShader(0, 1, 1));
         if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
