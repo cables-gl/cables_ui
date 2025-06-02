@@ -887,7 +887,16 @@ export default class FileManager
         {
             if (err)
             {
-                notifyError("Over storage quota!");
+                if (err.msg === "OVER_QUOTA")
+                {
+                    notifyError("Over storage quota!");
+                }
+                else
+                {
+                    notifyError("Failed to copy file", err.msg);
+                }
+                gui.opParams.refresh();
+                gui.refreshFileManager();
             }
             else
             {
@@ -896,11 +905,12 @@ export default class FileManager
                     this.replaceAssetPorts(res.converterResult.sourceUrl, res.converterResult.targetUrl, (numPorts) =>
                     {
                         notify("Copied file, updated " + numPorts + " ports");
+                        gui.opParams.refresh();
+                        gui.refreshFileManager();
                     });
                 }
             }
-            gui.opParams.refresh();
-            gui.refreshFileManager();
+
         });
     }
 

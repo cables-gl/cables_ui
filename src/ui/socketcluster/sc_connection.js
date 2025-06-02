@@ -9,6 +9,7 @@ import Chat from "../components/tabs/tab_chat.js";
 import { platform } from "../platform.js";
 import ScUi from "./sc_ui.js";
 import { notify } from "../elements/notification.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export default class ScConnection extends Events
 {
@@ -555,11 +556,11 @@ export default class ScConnection extends Events
                 {
                     if (msg && msg.data && msg.data.build)
                     {
+                        const opName = msg.data.opName;
                         let text = "";
                         switch (msg.data.build)
                         {
                         case "opchange":
-                            const opName = msg.data.opName;
                             if (opName)
                             {
                                 const usedOps = gui.corePatch().getOpsByObjName(opName);
@@ -570,6 +571,24 @@ export default class ScConnection extends Events
                                     {
                                         notify("reloaded op " + usedOp.objName);
                                     });
+                                }
+                            }
+                            break;
+                        case "attachmentchange":
+                            const attachmentName = msg.data.attachmentName;
+                            if (attachmentName !== subPatchOpUtil.blueprintSubpatchAttachmentFilename)
+                            {
+                                if (opName)
+                                {
+                                    const usedOps = gui.corePatch().getOpsByObjName(opName);
+                                    if (usedOps && usedOps.length > 0)
+                                    {
+                                        const usedOp = usedOps[0];
+                                        gui.serverOps.execute(usedOp.opId, () =>
+                                        {
+                                            notify("reloaded op " + usedOp.objName);
+                                        });
+                                    }
                                 }
                             }
                             break;
