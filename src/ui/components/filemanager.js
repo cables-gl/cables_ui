@@ -904,6 +904,7 @@ export default class FileManager
                 {
                     this.replaceAssetPorts(res.converterResult.sourceUrl, res.converterResult.targetUrl, (numPorts) =>
                     {
+                        gui.setStateUnsaved();
                         notify("Copied file, updated " + numPorts + " ports");
                         gui.opParams.refresh();
                         gui.refreshFileManager();
