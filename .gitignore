@@ -7,6 +7,7 @@ dist/js/buildInfo.json
 dist/buildinfo.json
 dist/js/buildinfo.json
 dist/js/libs/*.js
+dist/js/corelibs/*.js
 dist/js/*.map
 dist/lazyload
 *.min.js

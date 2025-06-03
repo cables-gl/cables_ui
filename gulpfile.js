@@ -88,7 +88,7 @@ function _scripts_talkerapi(done)
 function _scripts_core()
 {
     return gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/libs/*", "!../cables/build/*.html"])
+        .src(["../cables/build/**/*.*", "!../cables/build/corelibs/*", "!../cables/build/*.html"])
         .pipe(gulp.dest("dist/js/"));
 }
 
@@ -101,9 +101,9 @@ function _scripts_ui_webpack(done)
             if (err) done(err);
             if (stats.hasErrors())
             {
-                const err = new Error(getWebpackErrorMessage(stats));
-                delete err.stack;
-                done(err);
+                const error = new Error(getWebpackErrorMessage(stats));
+                delete error.stack;
+                done(error);
             }
             else
             {
