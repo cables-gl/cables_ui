@@ -61,9 +61,10 @@ opNames.getOpsForFilename = (filename) =>
     if (!filename) return ops;
 
     filename = filename.toLowerCase();
+    console.log("filemn", filename);
 
     if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".jxl") || filename.endsWith(".webp")) ops.push(defaultOps.defaultOpNames.defaultOpImage);
-    else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(defaultOps.defaultOpNames.defaultOpAudio);
+    else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac") || filename.endsWith(".flac")) ops.push(defaultOps.defaultOpNames.defaultOpAudio);
     else if (filename.endsWith(".mp4") || filename.endsWith(".m4a") || filename.endsWith(".mpg") || filename.endsWith(".webm") || filename.endsWith(".mkv") || filename.endsWith(".mov")) ops.push(defaultOps.defaultOpNames.defaultOpVideo);
     else if (filename.endsWith(".glb")) ops.push(defaultOps.defaultOpNames.defaultOpGltf);
     else if (filename.endsWith(".json")) ops.push(defaultOps.defaultOpNames.defaultOpJson);

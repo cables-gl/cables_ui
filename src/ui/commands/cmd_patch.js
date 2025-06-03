@@ -128,8 +128,6 @@ CABLES_CMD_PATCH.save = function (force, cb)
         console.log("already saving...");
         return;
     }
-    console.log("tttttt");
-
     const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
     if (subOuter)
     {

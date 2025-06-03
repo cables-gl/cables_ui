@@ -452,7 +452,7 @@ export default class Gizmo
                 ));
             }
 
-            if (CABLES.UI) gui.savedState.setUnSaved("transformUp", this._params.posX.op.getSubPatch());
+            if (CABLES.UI && this._params) gui.savedState.setUnSaved("transformUp", this._params.posX.op.getSubPatch());
 
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
@@ -467,12 +467,12 @@ export default class Gizmo
 
             document.removeEventListener("pointermove", move, false);
 
-            if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
+            if (CABLES.UI && self._draggingPort) gui.opParams.show(self._draggingPort.op);
         };
 
         const move = (e) =>
         {
-            if (CABLES.UI) gui.savedState.setUnSaved("transformMove", this._params.posX.op.getSubPatch());
+            if (CABLES.UI && this._params) gui.savedState.setUnSaved("transformMove", this._params.posX.op.getSubPatch());
 
             if (self._draggingPortY)
             {
