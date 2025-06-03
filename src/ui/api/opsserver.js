@@ -2069,13 +2069,16 @@ export default class ServerOps
             const oldName = this.getOpNameByIdentifier(opIdentifier);
             gui.jobs().start({
                 "id": "getopdocs",
-                "title": "load opdocs for " + oldName
+                "title": "load opdocs for " + oldName || opIdentifier
             });
             platform.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
                 if (err)
                 {
+                    const errorReport = gui.patchView.store.createErrorReport("Failed to load op: " + opIdentifier + " (name: " + oldName + ")");
+                    gui.patchView.store.sendErrorReport(errorReport, false);
+
                     let title = "Failed to load op";
                     let footer = "";
                     let otherEnvName = "dev.cables.gl";
@@ -2088,7 +2091,10 @@ export default class ServerOps
                     {
                         if (err.data.text) errMsg = err.data.text;
                         if (err.data.footer) footer = err.data.footer;
-                        if (err.data.otherEnvName) otherEnvName = err.data.otherEnvName;
+                        if (err.data.otherEnvName)
+                        {
+                            otherEnvButton = "Try " + err.data.otherEnvName;
+                        }
                         if (err.data.reasons) opLinks = err.data.reasons;
                         if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
                         if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;

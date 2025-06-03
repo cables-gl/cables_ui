@@ -8,6 +8,8 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
+import { logFilter } from "../utils/logfilter.js";
+import undo from "../utils/undo.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -896,6 +898,117 @@ export default class PatchSaveServer extends Events
                 });
 
         }, 200);
+    }
+
+    createErrorReport(title)
+    {
+        const report = {};
+        report.title = title;
+        report.patchTitle = gui.project().name;
+
+        const log = [];
+        for (let i = logFilter.logs.length - 1; i >= 0; i--)
+        {
+            const l = logFilter.logs[i];
+            let newLine = {
+                "initiator": l.initiator,
+                "errorStack": l.errorStack,
+                "args": [],
+                "level": l.level,
+            };
+
+            log.push(newLine);
+
+            for (let j = 0; j < l.args.length; j++)
+            {
+                const arg = l.args[j];
+                let neewArg = "";
+
+                try
+                {
+                    neewArg = JSON.parse(JSON.stringify(arg));
+                }
+                catch (e)
+                {
+                    if (arg)
+                    {
+                        if (arg.constructor.name == "Op")
+                        {
+                            neewArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
+                        }
+                        else if (arg.getSerialized)
+                        {
+                            neewArg = arg.getSerialized();
+                        }
+                        else if (arg.serialize)
+                        {
+                            neewArg = arg.serialize();
+                        }
+                        else
+                        {
+                            neewArg = " unknown, could not serialize:" + arg.constructor.name;
+                        }
+                    }
+                    else
+                    {
+                        this._log.log("no arg", e);
+                    }
+                }
+                newLine.args.push(neewArg);
+
+                if (arg)
+                {
+                    if (arg.message)newLine.args.push("message: " + arg.message);
+                    if (arg.error)
+                    {
+                        if (arg.error.message)
+                            newLine.args.push("error message: " + arg.error.message);
+                        else
+                            newLine.args.push("error message str: " + JSON.stringify(arg.error));
+                    }
+                    if (arg.reason) newLine.args.push("reason: " + arg.reason.message);
+                }
+            }
+        }
+
+        report.log = log;
+
+        let history = [];
+        if (undo) history = undo.getCommands();
+        history = history.slice(-10);
+
+        report.time = Date.now();
+        report.history = history;
+
+        report.url = document.location.href;
+        report.infoLanguage = navigator.language;
+
+        report.cablesUrl = platform.getCablesUrl();
+        report.platformVersion = platform.getCablesVersion();
+        if (window.gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
+        report.browserDescription = platform.description;
+
+        if (window.gui)
+        {
+            if (gui.project()) report.projectId = gui.project()._id;
+            if (gui.user)
+            {
+                report.username = gui.user.username;
+                report.userId = gui.user.id;
+            }
+
+            try
+            {
+                const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
+                report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+            }
+            catch (e)
+            {
+                this._log.log(e);
+            }
+        }
+        this._log.log("REPORT", report);
+        return report;
     }
 
     sendErrorReport(report, manualSend = true)
