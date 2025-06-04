@@ -363,6 +363,7 @@ export default class PatchSaveServer extends Events
                         },
                         (err, d) =>
                         {
+                            gui.savedState.setSaved("saveas", 0);
                             if (!err)
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
@@ -370,12 +371,44 @@ export default class PatchSaveServer extends Events
                             }
                             else
                             {
-                                new ModalDialog({
+                                const modalOptions = {
                                     "warning": true,
                                     "title": "Could not clone patch",
                                     "text": err.msg,
                                     "showOkButton": true
-                                });
+                                };
+                                if (err.msg === "ILLEGAL_OPS")
+                                {
+                                    const docsUrl = platform.getCablesDocsUrl();
+                                    modalOptions.text = "You lack permissions to the following ops:";
+                                    modalOptions.footer = "Invite the owners of the ops to this patch, join the teams the ops belong to, or convert them to patch ops.";
+                                    modalOptions.choice = true;
+                                    modalOptions.notices = [];
+                                    err.data.forEach((opName) =>
+                                    {
+                                        modalOptions.notices.push("<a href=\"" + docsUrl + "/op/" + opName + "\">" + opName + "</a>");
+                                    });
+
+                                    modalOptions.showOkButton = false;
+                                    modalOptions.cancelButton = {
+                                        "text": "Convert",
+                                        "callback": () =>
+                                        {
+                                            gui.patchView.unselectAllOps();
+                                            err.data.forEach((opName) =>
+                                            {
+                                                const opsInPatch = gui.corePatch().getOpsByObjName(opName);
+                                                opsInPatch.forEach((op) =>
+                                                {
+                                                    gui.patchView.selectOpId(op.id);
+                                                });
+                                            });
+
+                                            CABLES.CMD.OP.cloneSelectedOps();
+                                        }
+                                    };
+                                }
+                                new ModalDialog(modalOptions);
                             }
                         });
                 }
