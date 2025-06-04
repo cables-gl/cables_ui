@@ -1,4 +1,4 @@
-import { Logger, TalkerAPI, ele, helper } from "cables-shared-client";
+import { Logger, TalkerAPI, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
 import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -370,11 +370,8 @@ export default class ServerOps
             if (err)
             {
                 this._log.log("err res", res);
-                // gui.endModalLoading();
                 gui.savingTitleAnimEnd();
-
-                CABLES.UI.MODAL.showError("Could not clone op", "");
-
+                CABLES.UI.MODAL.showError("Could not clone op", err.msg);
                 return;
             }
 
@@ -1926,7 +1923,7 @@ export default class ServerOps
                 if (_next)
                 {
                     proj.ops = proj.ops ? proj.ops.filter((op) => { return this.isLoaded(op); }) : [];
-                    _next(proj);
+                    _next(proj, newOps);
                 }
             });
         });
@@ -2146,6 +2143,24 @@ export default class ServerOps
                         res.newOps.forEach((newOp) =>
                         {
                             if (newOp.opId) allIdentifiers.push(newOp.opId);
+                            if (navigator.clipboard)
+                            {
+                                navigator.clipboard.readText().then((clipboardContent) =>
+                                {
+                                    if (clipboardContent)
+                                    {
+                                        try
+                                        {
+                                            const clipboardJson = JSON.parse(clipboardContent);
+                                            if (clipboardJson.ops)
+                                            {
+                                                gui.patchView.newPatchOpPaste = clipboardContent;
+                                            }
+                                        }
+                                        catch (e) { /* ignore non-json clipboard data */ }
+                                    }
+                                }).catch(() => { /* ignore no access */ });
+                            }
                         });
                     }
 

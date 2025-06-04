@@ -482,6 +482,7 @@ export default class ScState extends Events
 
         this._connection.on("netCursorPos", (msg) =>
         {
+            if (!this._connection.multiplayerCapable) return false;
             delete msg.zoom;
             gui.emitEvent("netCursorPos", msg);
         });
