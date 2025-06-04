@@ -348,9 +348,14 @@ export default class PatchSaveServer extends Events
                             }
                         });
                     }
+                    const patch = this.makePatchSavable();
+                    const patchstr = JSON.stringify(patch);
+                    let uint8data = pako.deflate(patchstr);
+                    let b64 = bytesArrToBase64(uint8data);
                     platform.talkerAPI.send("saveProjectAs",
                         {
                             "name": name,
+                            "dataB64": b64,
                             "copyCollaborators": copyCollaborators,
                             "collabUsers": collabUsers,
                             "collabTeams": collabTeams,
@@ -361,34 +366,7 @@ export default class PatchSaveServer extends Events
                             if (!err)
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
-                                gui.corePatch().settings = gui.corePatch().settings || {};
-                                gui.corePatch().settings.secret = "";
-                                gui.project().name = d.name;
-                                if (d.copiedAssets)
-                                {
-                                    // need to replace asset ports here if we got some from the api
-                                    // to not overwrite it in the next save
-                                    const fileManager = gui.getFileManager(null, false);
-                                    Object.keys(d.copiedAssets).forEach((search) =>
-                                    {
-                                        const replace = d.copiedAssets[search];
-                                        fileManager.replaceAssetPorts(search, replace, (numPorts) =>
-                                        {
-                                            console.log("replaceAssetPorts", search, replace, numPorts);
-                                        });
-                                    });
-                                }
-                                if (copyAssets)
-                                {
-                                    platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
-                                }
-                                else
-                                {
-                                    this.saveCurrentProject(() =>
-                                    {
-                                        platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
-                                    }, true, true);
-                                }
+                                platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
                             }
                             else
                             {
@@ -433,27 +411,20 @@ export default class PatchSaveServer extends Events
 
                         if (numFiles)
                         {
-                            if (gui.getSavedState())
-                            {
-                                const checkboxGroup = { "title": "Patch assets:", "checkboxes": [] };
-                                checkboxGroup.checkboxes.push({
-                                    "name": "copy-assets-on-clone",
-                                    "value": true,
-                                    "title": "Copy used files to new patch"
-                                });
-                                checkboxGroup.checkboxes.push({
-                                    "name": "copy-all-assets-on-clone",
-                                    "value": true,
-                                    "title": "Copy all files to new patch"
-                                });
-                                checkboxGroups.push(checkboxGroup);
-                                let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
-                                modalNotices.push(patchOpsText);
-                            }
-                            else
-                            {
-                                modalNotices.push("Save the patch to be able to copy assets over to your new patch!");
-                            }
+                            const checkboxGroup = { "title": "Patch assets:", "checkboxes": [] };
+                            checkboxGroup.checkboxes.push({
+                                "name": "copy-assets-on-clone",
+                                "value": true,
+                                "title": "Copy used files to new patch"
+                            });
+                            checkboxGroup.checkboxes.push({
+                                "name": "copy-all-assets-on-clone",
+                                "value": true,
+                                "title": "Copy all files to new patch"
+                            });
+                            checkboxGroups.push(checkboxGroup);
+                            let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
+                            modalNotices.push(patchOpsText);
                         }
                         saveAsModal.show();
                     });
@@ -483,14 +454,14 @@ export default class PatchSaveServer extends Events
         });
     }
 
-    saveCurrentProject(cb, force = false, saveAs = false)
+    saveCurrentProject(cb, force = false)
     {
         if (gui.showGuestWarning()) return;
         if (!force && gui.showSaveWarning()) return;
 
         if (force)
         {
-            this._saveCurrentProject(cb, saveAs);
+            this._saveCurrentProject(cb);
         }
         else
         {
@@ -498,7 +469,7 @@ export default class PatchSaveServer extends Events
             {
                 if (!err)
                 {
-                    this._saveCurrentProject(cb, saveAs);
+                    this._saveCurrentProject(cb);
                 }
                 else
                 {
@@ -529,7 +500,7 @@ export default class PatchSaveServer extends Events
         }, 320);
     }
 
-    _saveCurrentProject(cb, saveAs = false)
+    _saveCurrentProject(cb)
     {
         if (platform.isSaving())
         {
@@ -542,123 +513,29 @@ export default class PatchSaveServer extends Events
         gui.corePatch().emitEvent("uiSavePatch");
         platform.setSaving(true);
 
-        const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
 
-        const blueprintIds = [];
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = ops[i];
-            if (!op || !op.uiAttribs) continue;
-
-            if (op.isSubPatchOp() && op.uiAttribs.blueprintSubpatch)
-            {
-                blueprintIds.push(op.uiAttribs.blueprintSubpatch);
-
-                if (op.patchId && op.isInBlueprint2())
-                {
-                    blueprintIds.push(op.patchId.get());
-                }
-            }
-
-            if (op.uiAttribs.title === utils.getShortOpName(op.objName)) delete op.uiAttribs.title;
-        }
-
-        gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
-
         const currentProject = gui.project();
-
-        let name = currentProject.name;
-        let data = gui.corePatch().serialize({ "asObject": true });
-
-        data.ops = data.ops || [];
-
-        for (let i = 0; i < data.ops.length; i++)
-        {
-            if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
-            if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
-            if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
-            if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
-            if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
-            if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
-            if (data.ops[i].uiAttribs.history) delete data.ops[i].uiAttribs.history;
-
-            if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
-            if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
-
-            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork")) delete data.ops[i].uiAttribs.fromNetwork;
-        }
-
-        // delete subpatch 2 ops
-        let isu = data.ops.length;
-        while (isu--)
-            if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("bp2sub_") == 0))
-                data.ops.splice(isu, 1);
-
-        if (blueprintIds.length > 0)
-        {
-            let i = data.ops.length;
-            // iterate backwards so we can splice
-            while (i--)
-            {
-                const op = data.ops[i];
-                if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
-                {
-                    data.ops.splice(i, 1);
-                }
-            }
-        }
-
-        data.ui = {
-            "viewBox": {},
-            "renderer": {},
-            "timeline": {},
-        };
-
-        data.ui.texPreview = gui.metaTexturePreviewer.serialize();
-        data.ui.bookmarks = gui.bookmarks.getBookmarks();
-
-        gui.patchView.serialize(data.ui);
-        gui.patchParamPanel.serialize(data.ui);
-
-        data.ui.renderer.w = Math.max(0, gui.rendererWidth);
-        data.ui.renderer.h = Math.max(0, gui.rendererHeight);
-        data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
-
-        if (gui.glTimeline)data.ui.timeline = gui.glTimeline.savePatchData();
-
         CABLES.patch.namespace = currentProject.namespace;
+        gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
 
         setTimeout(() =>
         {
             try
             {
+                const data = this.makePatchSavable();
                 const datastr = JSON.stringify(data);
                 gui.patchView.warnLargestPort();
 
                 const origSize = Math.round(datastr.length / 1024);
 
                 let uint8data = pako.deflate(datastr);
-
-                if (origSize > 1000)
-                    this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
-
-                /*
-                 * let b64 = Buffer.from(uint8data).toString("base64");
-                 * bytesArrToBase
-                 */
+                if (origSize > 1000) this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
                 let b64 = bytesArrToBase64(uint8data);
 
-                if (datastr.length > 12 * 1024 * 1024)
-                    notifyError("Patch is huge, try to reduce amount of data stored in patch/ports");
+                if (datastr.length > 12 * 1024 * 1024) notifyError("Patch is huge, try to reduce amount of data stored in patch/ports");
 
                 gui.savingTitleAnimStart("Saving Patch...");
-
-                /*
-                 * document.getElementById("patchname").innerHTML = "Saving Patch";
-                 * document.getElementById("patchname").classList.add("blinking");
-                 */
-
                 const startTime = performance.now();
 
                 platform.savePatch(
@@ -667,7 +544,6 @@ export default class PatchSaveServer extends Events
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
                         "fromBackup": platform.getPatchVersion() || false,
-                        "saveAs": saveAs,
                         "buildInfo":
                         {
                             "core": CABLES.build,
@@ -1112,4 +988,86 @@ export default class PatchSaveServer extends Events
         }
     }
 
+    makePatchSavable()
+    {
+        const ops = gui.corePatch().ops;
+        const blueprintIds = [];
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
+            if (!op || !op.uiAttribs) continue;
+
+            if (op.isSubPatchOp() && op.uiAttribs.blueprintSubpatch)
+            {
+                blueprintIds.push(op.uiAttribs.blueprintSubpatch);
+
+                if (op.patchId && op.isInBlueprint2())
+                {
+                    blueprintIds.push(op.patchId.get());
+                }
+            }
+
+            if (op.uiAttribs.title === utils.getShortOpName(op.objName)) delete op.uiAttribs.title;
+        }
+
+        let data = gui.corePatch().serialize({ "asObject": true });
+
+        data.ops = data.ops || [];
+
+        for (let i = 0; i < data.ops.length; i++)
+        {
+            if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
+            if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
+            if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
+            if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
+            if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
+            if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
+            if (data.ops[i].uiAttribs.history) delete data.ops[i].uiAttribs.history;
+
+            if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
+            if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
+
+            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork")) delete data.ops[i].uiAttribs.fromNetwork;
+        }
+
+        // delete subpatch 2 ops
+        let isu = data.ops.length;
+        while (isu--)
+            if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("bp2sub_") == 0))
+                data.ops.splice(isu, 1);
+
+        if (blueprintIds.length > 0)
+        {
+            let i = data.ops.length;
+            // iterate backwards so we can splice
+            while (i--)
+            {
+                const op = data.ops[i];
+                if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
+                {
+                    data.ops.splice(i, 1);
+                }
+            }
+        }
+
+        data.ui = {
+            "viewBox": {},
+            "renderer": {},
+            "timeline": {},
+        };
+
+        data.ui.texPreview = gui.metaTexturePreviewer.serialize();
+        data.ui.bookmarks = gui.bookmarks.getBookmarks();
+
+        gui.patchView.serialize(data.ui);
+        gui.patchParamPanel.serialize(data.ui);
+
+        data.ui.renderer.w = Math.max(0, gui.rendererWidth);
+        data.ui.renderer.h = Math.max(0, gui.rendererHeight);
+        data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
+
+        if (gui.glTimeline)data.ui.timeline = gui.glTimeline.savePatchData();
+        return data;
+    }
 }
