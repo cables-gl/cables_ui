@@ -10,6 +10,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 import { logFilter } from "../utils/logfilter.js";
 import undo from "../utils/undo.js";
+import defaultOps from "../defaultops.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -195,10 +196,12 @@ export default class PatchSaveServer extends Events
     {
         if (gui.showGuestWarning()) return;
 
+        gui.jobs().start({ "id": "saveAs", "title": "saving project" });
         platform.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
             if (_err)
             {
+                gui.jobs().finish("saveAs");
                 let msg = _err || "no response";
                 if (_err && _err.msg) msg = _err.msg;
                 this._log.warn("[save patch error] ", msg);
@@ -214,7 +217,7 @@ export default class PatchSaveServer extends Events
             let hasPrivateUserOps = false;
             if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
             {
-                hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
+                hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith(defaultOps.prefixes.userOp) && !op.objName.startsWith(defaultOps.prefixes.userOp + gui.user.usernameLowercase + "."); });
             }
 
             const copyCollaborators = project.visibility !== "public"; // don't do this for public patches
@@ -360,14 +363,31 @@ export default class PatchSaveServer extends Events
                                 const newProjectId = d.shortId ? d.shortId : d._id;
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.secret = "";
-
+                                gui.project().name = d.name;
+                                if (d.copiedAssets)
+                                {
+                                    // need to replace asset ports here if we got some from the api
+                                    // to not overwrite it in the next save
+                                    const fileManager = gui.getFileManager(null, false);
+                                    Object.keys(d.copiedAssets).forEach((search) =>
+                                    {
+                                        const replace = d.copiedAssets[search];
+                                        fileManager.replaceAssetPorts(search, replace, (numPorts) =>
+                                        {
+                                            console.log("replaceAssetPorts", search, replace, numPorts);
+                                        });
+                                    });
+                                }
                                 if (copyAssets)
                                 {
                                     platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
                                 }
                                 else
                                 {
-                                    this.saveCurrentProject(() => { platform.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
+                                    this.saveCurrentProject(() =>
+                                    {
+                                        platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
+                                    }, true, true);
                                 }
                             }
                             else
@@ -382,35 +402,62 @@ export default class PatchSaveServer extends Events
                         });
                 }
             }, false);
+            saveAsModal.on("onClose", () => { gui.jobs().finish("saveAs"); });
 
+            // needs to be down here and show the modal once the async requests are done...
             if (gui.user && gui.user.supporterFeatures)
             {
                 if (gui.user.supporterFeatures.includes("copy_assets_on_clone"))
                 {
+
                     platform.talkerAPI.send("getFilelist", { "source": "patch" }, (err, remoteFiles) =>
                     {
                         let numFiles = 0;
                         if (!err && remoteFiles) numFiles = remoteFiles.filter((remoteFile) => { return !remoteFile.isLibraryFile; }).length;
 
+                        const ops = gui.corePatch().ops;
+                        ops.forEach((op) =>
+                        {
+                            op.portsIn.forEach((portIn) =>
+                            {
+                                if (portIn.uiAttribs.display === "file")
+                                {
+                                    const value = portIn.get();
+                                    if (value && value.startsWith("/assets/") && !value.startsWith("/assets/" + gui.patchId))
+                                    {
+                                        numFiles++;
+                                    }
+                                }
+                            });
+                        });
+
                         if (numFiles)
                         {
-                            const checkboxGroup = { "title": "Patch assets:", "checkboxes": [] };
-                            checkboxGroup.checkboxes.push({
-                                "name": "copy-assets-on-clone",
-                                "value": true,
-                                "title": "Copy used files to new patch"
-                            });
-                            checkboxGroup.checkboxes.push({
-                                "name": "copy-all-assets-on-clone",
-                                "value": true,
-                                "title": "Copy all files to new patch"
-                            });
-                            checkboxGroups.push(checkboxGroup);
-                            let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
-                            modalNotices.push(patchOpsText);
+                            if (gui.getSavedState())
+                            {
+                                const checkboxGroup = { "title": "Patch assets:", "checkboxes": [] };
+                                checkboxGroup.checkboxes.push({
+                                    "name": "copy-assets-on-clone",
+                                    "value": true,
+                                    "title": "Copy used files to new patch"
+                                });
+                                checkboxGroup.checkboxes.push({
+                                    "name": "copy-all-assets-on-clone",
+                                    "value": true,
+                                    "title": "Copy all files to new patch"
+                                });
+                                checkboxGroups.push(checkboxGroup);
+                                let patchOpsText = "Make sure you have all the rights to any asset you copy over to your new patch!";
+                                modalNotices.push(patchOpsText);
+                            }
+                            else
+                            {
+                                modalNotices.push("Save the patch to be able to copy assets over to your new patch!");
+                            }
                         }
                         saveAsModal.show();
                     });
+
                 }
                 else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
                 {
@@ -436,14 +483,14 @@ export default class PatchSaveServer extends Events
         });
     }
 
-    saveCurrentProject(cb, _id, _name, _force)
+    saveCurrentProject(cb, force = false, saveAs = false)
     {
         if (gui.showGuestWarning()) return;
-        if (!_force && gui.showSaveWarning()) return;
+        if (!force && gui.showSaveWarning()) return;
 
-        if (_force)
+        if (force)
         {
-            this._saveCurrentProject(cb, _id, _name);
+            this._saveCurrentProject(cb, saveAs);
         }
         else
         {
@@ -451,7 +498,7 @@ export default class PatchSaveServer extends Events
             {
                 if (!err)
                 {
-                    this._saveCurrentProject(cb, _id, _name);
+                    this._saveCurrentProject(cb, saveAs);
                 }
                 else
                 {
@@ -482,7 +529,7 @@ export default class PatchSaveServer extends Events
         }, 320);
     }
 
-    _saveCurrentProject(cb, _id, _name)
+    _saveCurrentProject(cb, saveAs = false)
     {
         if (platform.isSaving())
         {
@@ -521,10 +568,7 @@ export default class PatchSaveServer extends Events
 
         const currentProject = gui.project();
 
-        let id = currentProject._id;
         let name = currentProject.name;
-        if (_id) id = _id;
-        if (_name) name = _name;
         let data = gui.corePatch().serialize({ "asObject": true });
 
         data.ops = data.ops || [];
@@ -623,6 +667,7 @@ export default class PatchSaveServer extends Events
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
                         "fromBackup": platform.getPatchVersion() || false,
+                        "saveAs": saveAs,
                         "buildInfo":
                         {
                             "core": CABLES.build,

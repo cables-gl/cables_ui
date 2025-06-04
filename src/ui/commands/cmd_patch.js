@@ -141,13 +141,13 @@ CABLES_CMD_PATCH.save = function (force, cb)
                     "oldSubId": bp,
                     "next": () =>
                     {
-                        if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+                        if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, force);
                     }
                 });
         }
-        else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+        else gui.patchView.store.saveCurrentProject(cb, force);
     }
-    else gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+    else gui.patchView.store.saveCurrentProject(cb, force);
 
 };
 
