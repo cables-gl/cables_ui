@@ -196,12 +196,10 @@ export default class PatchSaveServer extends Events
     {
         if (gui.showGuestWarning()) return;
 
-        gui.jobs().start({ "id": "saveAs", "title": "saving project" });
         platform.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
             if (_err)
             {
-                gui.jobs().finish("saveAs");
                 let msg = _err || "no response";
                 if (_err && _err.msg) msg = _err.msg;
                 this._log.warn("[save patch error] ", msg);
@@ -348,6 +346,8 @@ export default class PatchSaveServer extends Events
                             }
                         });
                     }
+
+                    gui.jobs().start({ "id": "saveProjectAs", "title": "cloning project" });
                     const patch = this.makePatchSavable();
                     const patchstr = JSON.stringify(patch);
                     let uint8data = pako.deflate(patchstr);
@@ -363,7 +363,8 @@ export default class PatchSaveServer extends Events
                         },
                         (err, d) =>
                         {
-                            gui.savedState.setSaved("saveas", 0);
+                            gui.jobs().finish("saveProjectAs");
+                            gui.savedState.setSaved("saveAs", 0);
                             if (!err)
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
