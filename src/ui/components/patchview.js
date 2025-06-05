@@ -4,7 +4,7 @@ import { BoundingBox, Geometry, Shader } from "cables-corelibs";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import { notify, notifyError } from "../elements/notification.js";
+import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import text from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -49,6 +49,7 @@ export default class PatchView extends Events
         this._patchRenderer = null;
         // this._cachedSubpatchNames = {};
         this.isPasting = false;
+        this.newPatchOpPaste = null;
         this._showingNavHelperEmpty = false;
         this._lastTempOP = null;
 
@@ -1595,6 +1596,12 @@ export default class PatchView extends Events
             this._log.warn("pasting failed...");
         }
 
+        if (this.newPatchOpPaste && this.newPatchOpPaste == str)
+        {
+            return;
+        }
+        this.newPatchOpPaste = null;
+
         const undoGroup = undo.startGroup();
 
         if (!pastedJson || !pastedJson.ops) return;
@@ -1621,7 +1628,7 @@ export default class PatchView extends Events
         }
 
         let focusSubpatchop = null;
-        gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
+        gui.serverOps.loadProjectDependencies(pastedJson, (project, newOps) =>
         {
             // change ids
             project = Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
@@ -1675,6 +1682,12 @@ export default class PatchView extends Events
                 }
             }
             notify("Pasted " + project.ops.length + " ops");
+            if (newOps && newOps.length > 0)
+            {
+                let notifyText = "Created " + newOps.length + " patch op";
+                if (newOps.length > 1) notifyText += "s";
+                notifyWarn(notifyText, "clipboard cleared");
+            }
             gui.corePatch().deSerialize(project);
             this.isPasting = false;
 
