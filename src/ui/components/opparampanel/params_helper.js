@@ -64,7 +64,10 @@ const paramsHelper =
     {
         if (e.target.type == "search") return v;
 
-        gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
+        if (gui.opParams && gui.opParams.op)
+        {
+            gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
+        }
 
         if (v == "true") return "false";
         if (v == "false") return "true";
