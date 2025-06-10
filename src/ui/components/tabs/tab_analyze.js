@@ -138,7 +138,31 @@ export default class AnalyzePatchTab extends Events
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";
 
         report += "<hr/>";
-        report += "<h2>Most used Ops</h2>";
+        report += "<h2>Animations</h2>";
+
+        let numKeys = 0;
+        let numAnims = 0;
+        let numAnimOps = {};
+        for (let i = 0; i < patch.ops.length; i++)
+        {
+            const op = patch.ops[i];
+            for (let j = 0; j < op.portsIn.length; j++)
+            {
+                if (op.portsIn[j].isAnimated())
+                {
+                    numAnimOps[i] = true;
+                    numAnims++;
+                    numKeys += op.portsIn[j].anim.keys.length;
+                }
+            }
+
+        }
+        report += Object.keys(numAnimOps).length + " animated ops<br/>";
+        report += numAnims + " animated ports <br/>";
+        report += numKeys + " animation keys<br/>";
+
+        report += "<hr/>";
+        report += "<h2>Most use Ops</h2>";
 
         let opscountSorted = [];
 

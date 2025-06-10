@@ -266,7 +266,6 @@ export class glTlAnimLine extends Events
      */
     setPosition(x, y)
     {
-        console.log("xy", y);
         if (this.checkDisposed()) return;
         this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
@@ -397,7 +396,6 @@ export class glTlAnimLine extends Events
             {
                 if (this.#ports[j].op == selops[i])
                 {
-
                     found = true;
                     break;
                 }

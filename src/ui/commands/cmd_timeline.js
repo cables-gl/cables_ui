@@ -35,19 +35,16 @@ CABLES_CMD_TIMELINE.TimelinePlay = function ()
 CABLES_CMD_TIMELINE.TimelineForward = function ()
 {
     gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 2);
-    gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelineRewind = function ()
 {
     gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 2);
-    gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelineRewindStart = function ()
 {
     gui.corePatch().timer.setTime(0);
-    gui.timeLine().view.centerCursor();
 };
 
 CABLES_CMD_TIMELINE.TimelinePause = function ()

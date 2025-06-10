@@ -714,7 +714,7 @@ export default class GlSplineDrawer
 
         const perfAttribs2 = gui.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
 
-        for (const i in this._splines)
+        for (let i = 0; i < this._splines.length; i++)
             this._updateAttribsCoordinates(this._splines[i].index);
 
         perfAttribs2.finish();

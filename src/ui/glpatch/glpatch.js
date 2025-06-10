@@ -23,6 +23,7 @@ import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { CmdOp } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
+import GlLink from "./gllink.js";
 
 /**
  * rendering the patchfield
@@ -1885,11 +1886,17 @@ export default class GlPatch extends Events
     {
     }
 
+    /**
+     * @param {number} s
+     */
     zoomStep(s)
     {
         this.viewBox.zoomStep(s);
     }
 
+    /**
+     * @param {boolean} show
+     */
     showOpCursor(show)
     {
         if (this._showingOpCursor != show)
@@ -1912,6 +1919,9 @@ export default class GlPatch extends Events
         this.vizLayer.resumeInteraction();
     }
 
+    /**
+     * @param {string|number} subpatchId
+     */
     getSplineDrawer(subpatchId)
     {
         if (this._splineDrawers.hasOwnProperty(subpatchId)) return this._splineDrawers[subpatchId];
@@ -1922,6 +1932,10 @@ export default class GlPatch extends Events
         }
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {GlLink} link
+     */
     setHoverLink(e, link)
     {
         this._hoverLink = link;
