@@ -1939,8 +1939,10 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+        console.log("text", ele.byId("ap_spreadsheet"));
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
+            console.log("tttttttttttttq");
             this.showSpreadSheet(anim);
         });
 
