@@ -97,8 +97,12 @@ export default class OpTreeList
     {
         const ns = { "Ops": {} };
 
+        console.log("text", CABLES.OPS);
         for (let i in CABLES.OPS)
         {
+            if (!CABLES.OPS[i]) continue;
+            if (!CABLES.OPS[i].objName) continue;
+
             const parts = CABLES.OPS[i].objName.split(".");
 
             parts.length -= 1;
