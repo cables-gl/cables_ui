@@ -561,10 +561,8 @@ class ParamsListener extends Events
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                         timelineCommands.functions.TimelinePause();
                         timelineCommands.functions.TimelineRewindStart();
-
                         timelineCommands.functions.openGlTimeline();
                         timelineCommands.functions.showTimeline();
-
                     }
                 });
             }

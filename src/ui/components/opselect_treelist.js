@@ -97,7 +97,6 @@ export default class OpTreeList
     {
         const ns = { "Ops": {} };
 
-        console.log("text", CABLES.OPS);
         for (let i in CABLES.OPS)
         {
             if (!CABLES.OPS[i]) continue;
