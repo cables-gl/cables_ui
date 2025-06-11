@@ -2063,7 +2063,7 @@ export default class ServerOps
         if (op)
         {
             const opIdentifier = this.getOpIdentifier(op);
-            const oldName = this.getOpNameByIdentifier(opIdentifier);
+            let oldName = this.getOpNameByIdentifier(opIdentifier);
             gui.jobs().start({
                 "id": "getopdocs",
                 "title": "load opdocs for " + oldName || opIdentifier
@@ -2073,6 +2073,16 @@ export default class ServerOps
                 gui.jobs().finish("getopdocs");
                 if (err)
                 {
+                    if (opIdentifier && !oldName)
+                    {
+                        // try to get opname from last paste, as a last resort
+                        const pasteData = gui.patchView.currentOpPaste;
+                        if (pasteData && pasteData.ops)
+                        {
+                            const pastedOp = pasteData.ops.find((clipboardOp) => { return clipboardOp.opId === opIdentifier || clipboardOp.objName === opIdentifier; });
+                            if (pastedOp && pastedOp.objName) oldName = pastedOp.objName;
+                        }
+                    }
                     const errorReport = gui.patchView.store.createErrorReport("Failed to load op: " + opIdentifier + " (name: " + oldName + ")");
                     gui.patchView.store.sendErrorReport(errorReport, false);
 
@@ -2092,7 +2102,17 @@ export default class ServerOps
                         {
                             otherEnvButton = "Try " + err.data.otherEnvName;
                         }
-                        if (err.data.reasons) opLinks = err.data.reasons;
+                        if (err.data.reasons)
+                        {
+                            opLinks = err.data.reasons;
+                            if (oldName)
+                            {
+                                for (let i = 0; i < opLinks.length; i++)
+                                {
+                                    if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
+                                }
+                            }
+                        }
                         if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
                         if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
                         if (err.data.editorLink) editorLink = err.data.editorLink;
@@ -2132,8 +2152,8 @@ export default class ServerOps
                     if (!hideEnvButton)
                     {
                         modal.on("onSubmit", tryOtherEnvCallback);
-                        modal.on("onClose", continueLoadingCallback);
                     }
+                    modal.on("onClose", continueLoadingCallback);
                 }
                 else
                 {
