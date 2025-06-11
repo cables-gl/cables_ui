@@ -43,12 +43,11 @@ export default class PatchOutline extends Events
         this._subTree.on("title_click",
             (item, el, event) =>
             {
+                console.log("texsrswt");
                 if (item.id)
                 {
                     if (event.shiftKey)
-                    {
                         return gui.opParams.show(item.id);
-                    }
 
                     if (gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
                         gui.opParams.show(item.id);
@@ -77,6 +76,7 @@ export default class PatchOutline extends Events
         this.includeCommented = outlineCfg.includeCommented;
         this.includeComments = outlineCfg.includeComments;
         this.includeAreas = outlineCfg.includeAreas;
+        this.includeAnimated = outlineCfg.includeAnimated;
         this.includeCustomOps = outlineCfg.includeCustomOps;
         this.includeColored = outlineCfg.includeColored;
 
@@ -94,6 +94,7 @@ export default class PatchOutline extends Events
         outlineCfg.includeAreas = this.includeAreas;
         outlineCfg.includeColored = this.includeColored;
         outlineCfg.includeCustomOps = this.includeCustomOps;
+        outlineCfg.includeAnimated = this.includeAnimated;
         obj.outline = outlineCfg;
     }
 
@@ -118,6 +119,9 @@ export default class PatchOutline extends Events
 
         if (this.includeColored)ele.byId("subtreeFilterColored").classList.add("findToggleActive");
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
+
+        if (this.includeAnimated)ele.byId("subtreeFilterAnimated").classList.add("findToggleActive");
+        else ele.byId("subtreeFilterAnimated").classList.remove("findToggleActive");
 
         if (this.includeCustomOps)ele.byId("subtreeFilterCustomOps").classList.add("findToggleActive");
         else ele.byId("subtreeFilterCustomOps").classList.remove("findToggleActive");
@@ -154,6 +158,7 @@ export default class PatchOutline extends Events
         html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_comments\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
         html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_areas\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
         html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_colored\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
+        html += "<a id=\"subtreeFilterAnimated\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_animated\" data-tt=\"animated ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-clock\"></span></a>";
         html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
         html += "</div>";
 
@@ -208,6 +213,13 @@ export default class PatchOutline extends Events
         ele.byId("subtreeFilterColored").addEventListener("click", () =>
         {
             this.includeColored = !this.includeColored;
+            this.updateFilterUi();
+            this.insert();
+            gui.setStateUnsaved();
+        });
+        ele.byId("subtreeFilterAnimated").addEventListener("click", () =>
+        {
+            this.includeAnimated = !this.includeAnimated;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
@@ -314,6 +326,7 @@ export default class PatchOutline extends Events
             if (this.includeComments && ops[i].uiAttribs.comment_title) included = true;
             if (this.includeCommented && ops[i].uiAttribs.comment) included = true;
             if (this.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName)) included = true;
+            if (this.includeAnimated && ops[i].hasAnimPort) included = true;
 
             if (included)
             {
@@ -329,6 +342,7 @@ export default class PatchOutline extends Events
                     // todo no hard codrd op names
                     if (this.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
                     if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
+                    if (this.includeAnimated && ops[i].hasAnimPort) icon = "clock";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
