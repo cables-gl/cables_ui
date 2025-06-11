@@ -1812,10 +1812,9 @@ export default class GlOp extends Events
 
     updateVizFlowMode(_m)
     {
-        for (let i in this._glPorts)
-        {
+        for (let i = 0; i < this._glPorts.length; i++)
             this._glPorts[i]._updateColor();
-        }
+
         for (let i in this._links)
             this._links[i].setFlowModeActivity(0, 0);
     }

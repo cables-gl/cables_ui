@@ -164,7 +164,6 @@ export class glTlRuler extends Events
             const bps = this.#glTl.bpm / 60;
             const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
 
-            console.log("text", offset);
             for (let i = 0; i < this.markBeats.length; i++)
             {
                 const mr = this.markBeats[i];

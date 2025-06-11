@@ -1,3 +1,4 @@
+import { logStack } from "cables/src/core/utils.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import defaultOps from "../../defaultops.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -39,6 +40,7 @@ export default class GlTimelineTab
 
         this.#splitterPos = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
         this.#splitterPosRight = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
+        logStack("vimelines");
 
         tabs.on("resize", () =>
         {

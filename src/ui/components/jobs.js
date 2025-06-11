@@ -42,7 +42,6 @@ export default class Jobs extends Events
 
         if (this._jobs.length === 0)
         {
-            str += "All server jobs finished...";
             this._visibleJobAnim = false;
             gui.showLoadingProgress(false);
         }

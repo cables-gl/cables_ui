@@ -120,7 +120,7 @@ class UiPatch extends Patch
 
         if (recursive)
         {
-            for (const i in ops)
+            for (let i = 0; i < ops.length; i++)
             {
                 if (ops[i].storage && ops[i].storage.subPatchVer)
                 {
@@ -406,6 +406,21 @@ class UiPatch extends Patch
         }
         perf.finish();
     }
+
+    hasAnimatedPorts()
+    {
+        const allops = this.ops;
+        for (let i = 0; i < allops.length; i++)
+        {
+            const sop = allops[i];
+            for (let j = 0; j < sop.portsIn.length; j++)
+                if (sop.portsIn[j].isAnimated())
+                    return true;
+
+        }
+        return false;
+    }
+
 }
 
 export { UiPatch };

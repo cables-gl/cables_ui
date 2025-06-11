@@ -86,9 +86,10 @@ export default class TreeView extends Events
 
     bindListeners()
     {
-        for (const i in this._clickListenerIds)
+        // for (const i in this._clickListenerIds)
+        for (let i = 0; i < this._clickListenerIds.length; i++)
         {
-            const el = ele.byId(i);
+            const el = ele.byId(this._clickListenerIds[i]);
             if (el)
             {
                 el.addEventListener("click",

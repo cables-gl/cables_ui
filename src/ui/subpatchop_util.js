@@ -700,6 +700,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         this._log.log("subpatch huge... center subpatch...");
     }
 
+    gui.jobs().start({ "id": "updateSubPatchOpAttachment" });
     platform.talkerAPI.send(
         "opAttachmentSave",
         {
@@ -709,6 +710,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         },
         (err, res) =>
         {
+            gui.jobs().finish("updateSubPatchOpAttachment");
             if (err)
             {
                 gui.serverOps.showApiError(err);
@@ -720,9 +722,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
             }
 
             if (res && res.data && res.data.updated) gui.patchView.store.setServerDate(res.data.updated);
-
-            gui.showLoadingProgress(false);
-
             if (newOp.patchId) gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
             if (options.execute !== false)

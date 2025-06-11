@@ -14,6 +14,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
+import timelineCommands, { CmdTimeline } from "../../commands/cmd_timeline.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -558,8 +559,10 @@ class ParamsListener extends Events
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
-                        CABLES.CMD.TIMELINE.openGlTimeline();
-
+                        timelineCommands.functions.TimelinePause();
+                        timelineCommands.functions.TimelineRewindStart();
+                        timelineCommands.functions.openGlTimeline();
+                        timelineCommands.functions.showTimeline();
                     }
                 });
             }
