@@ -416,8 +416,12 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#anims[j].tlActive)
-                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
-                // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                {
+                    let val = this.#anims[j].getValue(t);
+                    if (!this.#glTl.keyframeAutoCreate) val = this.#ports[j].get();
+
+                    this.#glTl.createKey(this.#anims[j], t, val);
+                }
             }
         }
         else
@@ -425,8 +429,12 @@ export class glTlAnimLine extends Events
             for (let j = 0; j < this.#ports.length; j++)
             {
                 if (this.#ports[j].op.uiAttribs.selected)
-                    this.#glTl.createKey(this.#anims[j], t, this.#anims[j].getValue(t));
-                    // this.#anims[j].setValue(t, this.#anims[j].getValue(t));
+                {
+                    let val = this.#anims[j].getValue(t);
+                    if (!this.#glTl.keyframeAutoCreate) val = this.#ports[j].get();
+
+                    this.#glTl.createKey(this.#anims[j], t, val);
+                }
             }
         }
     }
