@@ -806,6 +806,7 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "e": easing });
 
         this.needsUpdateAll = "selselected";
+        this.showKeyParamsSoon();
     }
 
     /**
@@ -1842,12 +1843,20 @@ export class GlTimeline extends Events
         else this.showParams();
 
         let comment = "";
+        let ease = this.#selectedKeys[0].getEasing();
         if (this.#selectedKeys.length == 1)
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
 
         }
+
+        else
+        {
+            for (let i = 1; i < this.#selectedKeys.length; i++)
+                if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
+        }
+        console.log("ease", ease);
 
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
@@ -1862,6 +1871,7 @@ export class GlTimeline extends Events
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
                 "commentColors": uiconfig.commentColors,
+                "easing": ease,
                 "comment": comment
             });
         this.#keyOverEl.innerHTML = html;
