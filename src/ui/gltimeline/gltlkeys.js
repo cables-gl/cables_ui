@@ -76,7 +76,8 @@ export class glTlKeys extends Events
     #listeners = [];
     #hasSelectedKeys = false;
     #disposedWarning = 0;
-    #cpZ = -0.1;
+    #bezCpZ = -0.1;
+    #bezCpSize = 1;
 
     /**
      * @param {GlTimeline} glTl
@@ -371,31 +372,23 @@ export class glTlKeys extends Events
             if (kr.data.text)
             {
                 const t = kr.data.text;
-                if (this.#glTl.isGraphLayout())
-                    t.setPosition(20, 50, 0);
+                if (this.#glTl.isGraphLayout()) t.setPosition(20, 50, 0);
                 else
                 {
-                    if (this.showKeysAsFrames())
-                        t.setPosition(20, 0, 0);
-                    else
-                        t.setPosition(20, -10, 0);
-
+                    if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);
+                    else t.setPosition(20, -10, 0);
                 }
             }
             if (kr.data.cp1r)
             {
-                const s = this.getKeyWidth() / 2;
+                const s = this.#bezCpSize / 2;
                 const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1X), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1Y)];
-                kr.data.cp1s.setPoints([rx + s, ry + s, this.#cpZ, pos[0] + s, pos[1] + s, this.#cpZ]);
+                kr.data.cp1s.setPoints([rx + s, ry + s, this.#bezCpZ, pos[0] + s, pos[1] + s, this.#bezCpZ]);
                 kr.data.cp1r.setPosition(pos[0], pos[1]);
 
-                // if (i < this.#keyRects.length - 1)
-                // {
-                //     const animKeyNext = this.#anim.keys[i + 1];
-                //     const pos2 = [this.#glTl.view.timeToPixel(animKeyNext.bezCp2X), this.#animLine.valueToPixel(animKeyNext.bezCp2Y)];
-                //     kr.data.cp2r.setPosition(pos2[0], pos2[1]);
-                //     kr.data.cp2s.setPoints([s, this.#glTl.getFirstLinePosy() + s, this.#cpZ, pos2[0] + s, pos2[1] + s + this.#glTl.getFirstLinePosy(), this.#cpZ]);
-                // }
+                const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2X), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2Y)];
+                kr.data.cp2s.setPoints([rx + s, ry + s, this.#bezCpZ, pos2[0] + s, pos2[1] + s, this.#bezCpZ]);
+                kr.data.cp2r.setPosition(pos2[0], pos2[1]);
             }
         }
 
@@ -637,9 +630,10 @@ export class glTlKeys extends Events
             if (key.getEasing() == Anim.EASING_CUBICSPLINE)
             {
                 const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
-                const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
 
-                this.setKeyShapeSize(bezRect);
+                this.#bezCpSize = this.getKeyWidth() * 0.75;
+                bezRect.setShape(1);
+                bezRect.setSize(this.#bezCpSize, this.#bezCpSize);
                 bezRect.setParent(this.#parentRect);
                 bezRect.data.key = key;
                 keyRect.data.cp1r = bezRect;
@@ -648,14 +642,16 @@ export class glTlKeys extends Events
                 keyRect.data.cp1s.setParentRect(this.#parentRect);
                 keyRect.data.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
-                // this.setKeyShapeSize(bezRect2);
-                // bezRect2.setParent(keyRect);
-                // bezRect2.data.key = key;
-                // keyRect.data.cp2r = bezRect2;
+                const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+                bezRect2.setShape(1);
+                bezRect2.setSize(this.#bezCpSize, this.#bezCpSize);
+                bezRect2.setParent(this.#parentRect);
+                bezRect2.data.key = key;
+                keyRect.data.cp2r = bezRect2;
 
-                // keyRect.data.cp2s = new GlSpline(this.#glTl.splines, "cp2");
-                // keyRect.data.cp2s.setParentRect(keyRect);
-                // keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
+                keyRect.data.cp2s = new GlSpline(this.#glTl.splines, "cp2");
+                keyRect.data.cp2s.setParentRect(this.#parentRect);
+                keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
             }
         }
