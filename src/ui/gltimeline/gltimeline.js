@@ -86,6 +86,9 @@ export class GlTimeline extends Events
     /** @type {GlRect} */
     cursorVertLineRect;
 
+    /** @type {GlRect} */
+    cursorNewKeyVis;
+
     duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
@@ -184,6 +187,12 @@ export class GlTimeline extends Events
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
         this.cursorVertLineRect.setPosition(0, 0, -1);
         this.setColorRectSpecial(this.cursorVertLineRect);
+
+        this.cursorNewKeyVis = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
+        this.cursorNewKeyVis.setSize(5214, 1);
+        this.cursorNewKeyVis.setPosition(0, 0, -1);
+        this.cursorNewKeyVis.setColor(0, 0, 0);
+        this.setColorRectSpecial(this.cursorNewKeyVis);
 
         this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false });
         this.#cursorTextBgRect.setSize(40, 20);
@@ -797,6 +806,7 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "e": easing });
 
         this.needsUpdateAll = "selselected";
+        this.showKeyParamsSoon();
     }
 
     /**
@@ -1032,6 +1042,7 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
+        CABLES.UI.PREVISKEYVAL = null;
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
         this.splines.setFadeout(false);
@@ -1197,6 +1208,20 @@ export class GlTimeline extends Events
     updateCursor()
     {
         this.cursorVertLineRect.setPosition(this.view.timeToPixelScreen(this.cursorTime), this.#cursorY, -0.9);
+
+        if (CABLES.UI.PREVISKEYVAL != undefined && CABLES.UI.PREVISKEYVAL != null)
+        {
+            if (this.isGraphLayout() && !this.keyframeAutoCreate)
+            {
+                const y = this.#tlAnims[0].valueToPixel(CABLES.UI.PREVISKEYVAL) + this.getFirstLinePosy();
+                this.cursorNewKeyVis.setPosition(this.view.timeToPixelScreen(this.cursorTime) - this.cursorNewKeyVis.w / 2, y, -0.5);
+            }
+        }
+        else
+        {
+
+            this.cursorNewKeyVis.setPosition(-777777, -888888);
+        }
 
         let s = "" + Math.round(this.cursorTime * 1000) / 1000;
         const parts = s.split(".");
@@ -1818,12 +1843,20 @@ export class GlTimeline extends Events
         else this.showParams();
 
         let comment = "";
+        let ease = this.#selectedKeys[0].getEasing();
         if (this.#selectedKeys.length == 1)
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
 
         }
+
+        else
+        {
+            for (let i = 1; i < this.#selectedKeys.length; i++)
+                if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
+        }
+        console.log("ease", ease);
 
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
@@ -1838,6 +1871,7 @@ export class GlTimeline extends Events
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
                 "commentColors": uiconfig.commentColors,
+                "easing": ease,
                 "comment": comment
             });
         this.#keyOverEl.innerHTML = html;
@@ -1942,7 +1976,6 @@ export class GlTimeline extends Events
         console.log("text", ele.byId("ap_spreadsheet"));
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
-            console.log("tttttttttttttq");
             this.showSpreadSheet(anim);
         });
 
@@ -2001,5 +2034,11 @@ export class GlTimeline extends Events
     isMultiLine()
     {
         return this.#tlAnims.length > 1;
+    }
+
+    removeKeyPreViz()
+    {
+
+        CABLES.UI.PREVISKEYVAL = null;
     }
 }

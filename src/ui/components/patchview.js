@@ -50,6 +50,7 @@ export default class PatchView extends Events
         // this._cachedSubpatchNames = {};
         this.isPasting = false;
         this.newPatchOpPaste = null;
+        this.currentOpPaste = null;
         this._showingNavHelperEmpty = false;
         this._lastTempOP = null;
 
@@ -1590,6 +1591,7 @@ export default class PatchView extends Events
         try
         {
             pastedJson = JSON.parse(str);
+            this.currentOpPaste = pastedJson;
         }
         catch (exp)
         {
@@ -1692,6 +1694,7 @@ export default class PatchView extends Events
             this.isPasting = false;
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
+            this.currentOpPaste = null;
             next(project.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");

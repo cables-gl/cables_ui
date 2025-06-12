@@ -263,7 +263,7 @@ export default class SavedState extends Events
     }
 
     /**
-     * @param {string} subPatchId
+     * @param {string|number} subPatchId
      */
     isSavedSubPatch(subPatchId)
     {
