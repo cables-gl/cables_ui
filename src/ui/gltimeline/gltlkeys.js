@@ -381,11 +381,11 @@ export class glTlKeys extends Events
             if (kr.data.cp1r)
             {
                 const s = this.#bezCpSize / 2;
-                const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1X), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1Y)];
+                const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
                 kr.data.cp1s.setPoints([rx + s, ry + s, this.#bezCpZ, pos[0] + s, pos[1] + s, this.#bezCpZ]);
                 kr.data.cp1r.setPosition(pos[0], pos[1]);
 
-                const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2X), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2Y)];
+                const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
                 kr.data.cp2s.setPoints([rx + s, ry + s, this.#bezCpZ, pos2[0] + s, pos2[1] + s, this.#bezCpZ]);
                 kr.data.cp2r.setPosition(pos2[0], pos2[1]);
             }
@@ -652,6 +652,42 @@ export class glTlKeys extends Events
                 keyRect.data.cp2s.setParentRect(this.#parentRect);
                 keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
+                // bezRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+                // {
+                //     if (this.#glTl.isSelecting()) return;
+                //     glTlKeys.#dragStartX = e.offsetX;
+                //     glTlKeys.#dragStartY = e.offsetY;
+                // });
+
+                // bezRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+                // {
+                //     this.click = false;
+                //     if (this.#glTl.isSelecting()) return;
+                //     if (glTlKeys.#startDragTime == -1111)
+                //     {
+                //         console.log("cant drag,,,,", glTlKeys.#dragStarted, this.#glTl.isSelecting());
+
+                //         return;
+                //     }
+
+                //     if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
+                //     {
+                //         let offX = e.offsetX;
+                //         let offY = e.offsetY;
+
+                //         let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.#startDragTime;
+                //         let offVal = glTlKeys.#startDragValue - this.#animLine.pixelToValue(offY);
+
+                //         if (e.shiftKey)
+                //         {
+                //             if (Math.abs(glTlKeys.#dragStartX - offX) > Math.abs(glTlKeys.#dragStartY - offY)) offVal = 0;
+                //             else offTime = 0;
+                //         }
+                //         this.setKeyPositions();
+                //         this.#animLine.update();
+                //         hideToolTip();
+                //     }
+                // });
             }
         }
 
