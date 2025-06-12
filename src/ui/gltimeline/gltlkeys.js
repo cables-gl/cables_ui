@@ -76,7 +76,7 @@ export class glTlKeys extends Events
     #listeners = [];
     #hasSelectedKeys = false;
     #disposedWarning = 0;
-    #cpZ = 0.5;
+    #cpZ = -0.1;
 
     /**
      * @param {GlTimeline} glTl
@@ -327,11 +327,8 @@ export class glTlKeys extends Events
                 col = glTlKeys.COLOR_SELECTED;
                 colBez = [0.8, 0.8, 0.8, 1];
             }
-            if (keyRect.data.cp1r)
-            {
-                keyRect.data.cp1r.setColorArray(colBez);
-                keyRect.data.cp2r.setColorArray(colBez);
-            }
+            if (keyRect.data.cp1r) keyRect.data.cp1r.setColorArray(colBez);
+            if (keyRect.data.cp2r) keyRect.data.cp2r.setColorArray(colBez);
 
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime)
             {
@@ -387,19 +384,18 @@ export class glTlKeys extends Events
             }
             if (kr.data.cp1r)
             {
-                const s = kr.data.cp1r.w / 2;
-                const pos = [this.#glTl.view.timeToPixel(animKey.bezCp1X), this.#animLine.valueToPixel(animKey.bezCp1Y)];
-                kr.data.cp1s.setPoints([s, this.#glTl.getFirstLinePosy() + s, this.#cpZ, pos[0] + s, pos[1] + this.#glTl.getFirstLinePosy() + s, this.#cpZ]);
+                const s = this.getKeyWidth() / 2;
+                const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1X), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1Y)];
+                kr.data.cp1s.setPoints([rx + s, ry + s, this.#cpZ, pos[0] + s, pos[1] + s, this.#cpZ]);
                 kr.data.cp1r.setPosition(pos[0], pos[1]);
 
-                if (i < this.#keyRects.length - 1)
-                {
-                    const animKeyNext = this.#anim.keys[i + 1];
-
-                    const pos2 = [this.#glTl.view.timeToPixel(animKeyNext.bezCp2X), this.#animLine.valueToPixel(animKeyNext.bezCp2Y)];
-                    kr.data.cp2r.setPosition(pos2[0], pos2[1]);
-                    kr.data.cp2s.setPoints([s, this.#glTl.getFirstLinePosy() + s, this.#cpZ, pos2[0] + s, pos2[1] + s + this.#glTl.getFirstLinePosy(), this.#cpZ]);
-                }
+                // if (i < this.#keyRects.length - 1)
+                // {
+                //     const animKeyNext = this.#anim.keys[i + 1];
+                //     const pos2 = [this.#glTl.view.timeToPixel(animKeyNext.bezCp2X), this.#animLine.valueToPixel(animKeyNext.bezCp2Y)];
+                //     kr.data.cp2r.setPosition(pos2[0], pos2[1]);
+                //     kr.data.cp2s.setPoints([s, this.#glTl.getFirstLinePosy() + s, this.#cpZ, pos2[0] + s, pos2[1] + s + this.#glTl.getFirstLinePosy(), this.#cpZ]);
+                // }
             }
         }
 
@@ -644,22 +640,22 @@ export class glTlKeys extends Events
                 const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
 
                 this.setKeyShapeSize(bezRect);
-                bezRect.setParent(keyRect);
+                bezRect.setParent(this.#parentRect);
                 bezRect.data.key = key;
                 keyRect.data.cp1r = bezRect;
 
                 keyRect.data.cp1s = new GlSpline(this.#glTl.splines, "cp1");
-                keyRect.data.cp1s.setParentRect(keyRect);
+                keyRect.data.cp1s.setParentRect(this.#parentRect);
                 keyRect.data.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
-                this.setKeyShapeSize(bezRect2);
-                bezRect2.setParent(keyRect);
-                bezRect2.data.key = key;
-                keyRect.data.cp2r = bezRect2;
+                // this.setKeyShapeSize(bezRect2);
+                // bezRect2.setParent(keyRect);
+                // bezRect2.data.key = key;
+                // keyRect.data.cp2r = bezRect2;
 
-                keyRect.data.cp2s = new GlSpline(this.#glTl.splines, "cp2");
-                keyRect.data.cp2s.setParentRect(keyRect);
-                keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
+                // keyRect.data.cp2s = new GlSpline(this.#glTl.splines, "cp2");
+                // keyRect.data.cp2s.setParentRect(keyRect);
+                // keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
             }
         }
