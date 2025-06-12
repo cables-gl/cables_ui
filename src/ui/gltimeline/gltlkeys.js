@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 
-import { Anim, Port } from "cables";
+import { Anim, AnimKey, Port } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
@@ -36,6 +36,9 @@ export class glTlKeys extends Events
 
     /** @type {Array<GlRect>} */
     #keyRects = [];
+
+    /** @type {Array<GlRect>} */
+    #bezRects = [];
 
     /** @type {Array<GlRect>} */
     // #dopeRects = [];
@@ -136,7 +139,6 @@ export class glTlKeys extends Events
     getKeyWidth2()
     {
         this.getKeyWidth() / 2;
-
     }
 
     showKeysAsFrames()
@@ -382,6 +384,15 @@ export class glTlKeys extends Events
 
                 }
             }
+            if (kr.data.cp1r)
+            {
+                kr.data.cp1r.setPosition(this.#glTl.view.timeToPixel(animKey.bezCp1X), this.#animLine.valueToPixel(animKey.bezCp1Y));
+                if (i < this.#keyRects.length - 1)
+                {
+                    const animKeyNext = this.#anim.keys[i + 1];
+                    kr.data.cp2r.setPosition(this.#glTl.view.timeToPixel(animKeyNext.bezCp2X), this.#animLine.valueToPixel(animKeyNext.bezCp2Y));
+                }
+            }
         }
 
         // color areas
@@ -616,6 +627,31 @@ export class glTlKeys extends Events
             }
 
             this.#keyRects.push(keyRect);
+
+            /// ////
+
+            if (key.getEasing() == Anim.EASING_CUBICSPLINE)
+            {
+
+                const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+
+                this.setKeyShapeSize(bezRect);
+                bezRect.setColorArray(glTlKeys.COLOR_INIT);
+                bezRect.setParent(keyRect);
+                bezRect.data.key = key;
+                keyRect.data.cp1r = bezRect;
+
+                this.#bezRects.push(bezRect);
+                const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+
+                this.setKeyShapeSize(bezRect2);
+                bezRect2.setColorArray(glTlKeys.COLOR_INIT);
+                bezRect2.setParent(keyRect);
+                bezRect2.data.key = key;
+                keyRect.data.cp2r = bezRect2;
+
+                this.#bezRects.push(bezRect2);
+            }
         }
 
         this.setKeyPositions();
@@ -636,6 +672,14 @@ export class glTlKeys extends Events
             this.#keyRects[i].dispose();
         }
         this.#keyRects = [];
+
+        for (let i = 0; i < this.#bezRects.length; i++)
+        {
+            if (this.#bezRects[i].data.text) this.#bezRects[i].data.text.dispose();
+            this.#bezRects[i].dispose();
+        }
+        this.#bezRects = [];
+
         this.#needsUpdate = true;
     }
 

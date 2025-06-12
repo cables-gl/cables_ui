@@ -40,7 +40,6 @@ export default class GlTimelineTab
 
         this.#splitterPos = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
         this.#splitterPosRight = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
-        logStack("vimelines");
 
         tabs.on("resize", () =>
         {
