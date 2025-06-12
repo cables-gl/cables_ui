@@ -315,7 +315,7 @@ export class glTlKeys extends Events
             const keyRect = this.#keyRects[i];
 
             let col = glTlKeys.COLOR_INACTIVE;
-            let colBez = glTlKeys.COLOR_INACTIVE;
+            let colBez = [0, 0, 0, 1];
             if (animKey.anim.tlActive)col = [0.8, 0.8, 0.8, 1];
 
             if (this.#glTl.isKeySelected(animKey))
@@ -326,15 +326,14 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 col = glTlKeys.COLOR_SELECTED;
-                colBez = [0.8, 0.8, 0.8, 1];
+                colBez = [0.4, 0.4, 0.4, 1];
             }
             if (keyRect.data.cp1r) keyRect.data.cp1r.setColorArray(colBez);
             if (keyRect.data.cp2r) keyRect.data.cp2r.setColorArray(colBez);
+            if (keyRect.data.cp1s) keyRect.data.cp1s.setColorArray(colBez);
+            if (keyRect.data.cp2s) keyRect.data.cp2s.setColorArray(colBez);
 
-            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime)
-            {
-                col = glTlKeys.COLOR_HIGHLIGHT;
-            }
+            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             keyRect.setColorArray(col);
 
         }
@@ -632,7 +631,7 @@ export class glTlKeys extends Events
                 const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
 
                 this.#bezCpSize = this.getKeyWidth() * 0.75;
-                bezRect.setShape(1);
+                bezRect.setShape(6);
                 bezRect.setSize(this.#bezCpSize, this.#bezCpSize);
                 bezRect.setParent(this.#parentRect);
                 bezRect.data.key = key;
@@ -643,7 +642,7 @@ export class glTlKeys extends Events
                 keyRect.data.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
                 const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
-                bezRect2.setShape(1);
+                bezRect2.setShape(6);
                 bezRect2.setSize(this.#bezCpSize, this.#bezCpSize);
                 bezRect2.setParent(this.#parentRect);
                 bezRect2.data.key = key;
