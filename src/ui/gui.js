@@ -430,7 +430,7 @@ export default class Gui extends Events
 
     isGuestEditor()
     {
-        return this.user.username == "guest";
+        return this.user && this.user.username == "guest";
     }
 
     getParamPanelEleId()
