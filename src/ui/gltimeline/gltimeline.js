@@ -17,8 +17,8 @@ import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
-import { glTlKeys } from "./gltlkeys.js";
 import uiconfig from "../uiconfig.js";
+import { glTlKeys } from "./gltlkeys.js";
 
 /**
  * @typedef TlConfig
@@ -212,7 +212,7 @@ export class GlTimeline extends Events
         this.#rectHoverKey.setSize(20, 20);
         this.#rectHoverKey.setShape(13);
         this.#rectHoverKey.setPosition(40, 20, -0.2);
-        this.#rectHoverKey.setColor(0, 1, 1, 1);
+        this.#rectHoverKey.setColor(1, 1, 0, 1);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -2011,17 +2011,19 @@ export class GlTimeline extends Events
         {
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
+        const size = 6;
 
         this.hoverKeyRect = kr;
         if (kr)
         {
-            this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
-            this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+            console.log("zzz", kr.absZ);
+            this.#rectHoverKey.setShape(kr.shape);
+            this.#rectHoverKey.setSize(kr.w + size, kr.h + size);
+            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2, kr.absZ + 0.023);
         }
         else
         {
             this.#rectHoverKey.setPosition(-9999, -9999);
-
         }
 
     }

@@ -98,6 +98,9 @@ export default class GlRect extends Events
     get w() { return this.#w; }
     get h() { return this.#h; }
 
+    get shape() { return this.#shape; }
+    set shape(s) { this.setShape(s); }
+
     get absX() { return this.#absX; }
     get absY() { return this.#absY; }
     get absZ() { return this.#absZ; }
