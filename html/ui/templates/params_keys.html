@@ -24,6 +24,12 @@
         <a class="button-small icon-absolut button-middle {{#compare easing '==' '1' }}button-active{{/compare}}" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
         <a class="button-small icon-absolut button-right {{#compare easing '==' '4' }}button-active{{/compare}}" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);">&nbsp;Bezier</a>
 
+        {{#compare easing '==' '4' }}
+            <a id="kp_bezfree" class="button-small eleAsButton" tabindex="0">
+                <span class="icon icon-tangent"></span>
+            </a>
+        {{/compare}}
+
         <br/><br/>
 
         <a class="iconbutton nomargin {{#compare easing '==' '11' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_IN);"><span class="icon icon-ease-cub-in"></span></a>

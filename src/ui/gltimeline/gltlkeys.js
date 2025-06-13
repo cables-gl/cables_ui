@@ -362,11 +362,12 @@ export class glTlKeys extends Events
 
             if (kr.data.cp1r)
             {
-                const s = this.#bezCpSize / 2;
+                let s = kr.data.cp1r.w / 2;
                 const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
                 kr.data.cp1s.setPoints([rx + s, ry + s, this.#bezCpZ, pos[0] + s, pos[1] + s, this.#bezCpZ]);
                 kr.data.cp1r.setPosition(pos[0], pos[1], this.#bezCpZ);
 
+                s = kr.data.cp2r.w / 2;
                 const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
                 kr.data.cp2s.setPoints([rx + s, ry + s, this.#bezCpZ, pos2[0] + s, pos2[1] + s, this.#bezCpZ]);
                 kr.data.cp2r.setPosition(pos2[0], pos2[1], this.#bezCpZ);
@@ -605,7 +606,7 @@ export class glTlKeys extends Events
 
             /// ////
 
-            if (key.getEasing() == Anim.EASING_CUBICSPLINE)
+            if (this.#glTl.isGraphLayout() && key.getEasing() == Anim.EASING_CUBICSPLINE)
             {
                 const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
 
@@ -626,7 +627,6 @@ export class glTlKeys extends Events
 
                 this.bindBezCp(bezRect, key.bezCp1, key, 0);
                 this.bindBezCp(bezRect2, key.bezCp2, key, 1);
-
             }
         }
 
@@ -706,9 +706,10 @@ export class glTlKeys extends Events
 
         /** @type {Object} */
         let oldValues = {};
+
         bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
         {
-            console.log("beznover q", key.bezCp1, key.bezCp2);
+            if (bezRect.color[3] == 0) return;
             this.#glTl.setHoverKeyRect(bezRect);
             this.updateColors();
         });
@@ -717,8 +718,10 @@ export class glTlKeys extends Events
         {
             if (this.#glTl.hoverKeyRect == bezRect) this.#glTl.setHoverKeyRect(null);
         });
+
         bezRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
+            if (bezRect.color[3] == 0) return;
             if (this.#glTl.isSelecting()) return;
             glTlKeys.#dragStartX = e.offsetX;
             glTlKeys.#dragStartY = e.offsetY;
@@ -753,8 +756,18 @@ export class glTlKeys extends Events
                 let nt = offTime + glTlKeys.#dragBezCp[0];
                 let nv = offVal + glTlKeys.#dragBezCp[1];
 
-                if (dir == 0) { nt = Math.min(nt, 0); key.setBezCp1(nt, nv); }
-                if (dir == 1) { nt = Math.max(nt, 0); key.setBezCp2(nt, nv); }
+                if (dir == 0)
+                {
+                    nt = Math.min(nt, 0);
+                    key.setBezCp1(nt, nv);
+                    if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
+                }
+                if (dir == 1)
+                {
+                    nt = Math.max(nt, 0);
+                    key.setBezCp2(nt, nv);
+                    if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
+                }
 
                 this.setKeyPositions();
                 this.#animLine.update();
