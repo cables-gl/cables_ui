@@ -926,6 +926,7 @@ export class GlTimeline extends Events
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
         this.showKeyParamsSoon();
+        this.setHoverKeyRect(null);
     }
 
     selectAllKeys()
@@ -2016,7 +2017,6 @@ export class GlTimeline extends Events
         this.hoverKeyRect = kr;
         if (kr)
         {
-            console.log("zzz", kr.absZ);
             this.#rectHoverKey.setShape(kr.shape);
             this.#rectHoverKey.setSize(kr.w + size, kr.h + size);
             this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2, kr.absZ + 0.023);
