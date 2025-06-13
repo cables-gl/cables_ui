@@ -700,7 +700,7 @@ export class glTlKeys extends Events
     {
         this.#bezCpSize = this.getKeyWidth() * 0.75;
         bezRect.setShape(6);
-        bezRect.setSize(this.#bezCpSize, this.#bezCpSize);
+        bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);
         bezRect.setParent(this.#parentRect);
         bezRect.draggableMove = true;
 
@@ -708,7 +708,7 @@ export class glTlKeys extends Events
         let oldValues = {};
         bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
         {
-            console.log("beznover q");
+            console.log("beznover q", key.bezCp1, key.bezCp2);
             this.#glTl.setHoverKeyRect(bezRect);
             this.updateColors();
         });
