@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 
-import { Anim, Port } from "cables";
+import { Anim, AnimKey, Port } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
@@ -76,6 +76,8 @@ export class glTlKeys extends Events
     #listeners = [];
     #hasSelectedKeys = false;
     #disposedWarning = 0;
+    #bezCpZ = -0.1;
+    #bezCpSize = 1;
 
     /**
      * @param {GlTimeline} glTl
@@ -131,12 +133,6 @@ export class glTlKeys extends Events
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
         return isCurrentOp;
-    }
-
-    getKeyWidth2()
-    {
-        this.getKeyWidth() / 2;
-
     }
 
     showKeysAsFrames()
@@ -319,8 +315,9 @@ export class glTlKeys extends Events
             const keyRect = this.#keyRects[i];
 
             let col = glTlKeys.COLOR_INACTIVE;
-            if (animKey.anim.tlActive) col = [0.8, 0.8, 0.8, 1];
-            // if (!this.#glTl.isSnappedTime(animKey.time))col = [1, 0, 0, 1];
+            let colBez = [0, 0, 0, 1];
+            if (animKey.anim.tlActive)col = [0.8, 0.8, 0.8, 1];
+
             if (this.#glTl.isKeySelected(animKey))
             {
                 if (!this.#hasSelectedKeys)
@@ -329,11 +326,14 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 col = glTlKeys.COLOR_SELECTED;
+                colBez = [0.4, 0.4, 0.4, 1];
             }
-            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime)
-            {
-                col = glTlKeys.COLOR_HIGHLIGHT;
-            }
+            if (keyRect.data.cp1r) keyRect.data.cp1r.setColorArray(colBez);
+            if (keyRect.data.cp2r) keyRect.data.cp2r.setColorArray(colBez);
+            if (keyRect.data.cp1s) keyRect.data.cp1s.setColorArray(colBez);
+            if (keyRect.data.cp2s) keyRect.data.cp2s.setColorArray(colBez);
+
+            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             keyRect.setColorArray(col);
 
         }
@@ -371,16 +371,23 @@ export class glTlKeys extends Events
             if (kr.data.text)
             {
                 const t = kr.data.text;
-                if (this.#glTl.isGraphLayout())
-                    t.setPosition(20, 50, 0);
+                if (this.#glTl.isGraphLayout()) t.setPosition(20, 50, 0);
                 else
                 {
-                    if (this.showKeysAsFrames())
-                        t.setPosition(20, 0, 0);
-                    else
-                        t.setPosition(20, -10, 0);
-
+                    if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);
+                    else t.setPosition(20, -10, 0);
                 }
+            }
+            if (kr.data.cp1r)
+            {
+                const s = this.#bezCpSize / 2;
+                const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
+                kr.data.cp1s.setPoints([rx + s, ry + s, this.#bezCpZ, pos[0] + s, pos[1] + s, this.#bezCpZ]);
+                kr.data.cp1r.setPosition(pos[0], pos[1]);
+
+                const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
+                kr.data.cp2s.setPoints([rx + s, ry + s, this.#bezCpZ, pos2[0] + s, pos2[1] + s, this.#bezCpZ]);
+                kr.data.cp2r.setPosition(pos2[0], pos2[1]);
             }
         }
 
@@ -616,6 +623,72 @@ export class glTlKeys extends Events
             }
 
             this.#keyRects.push(keyRect);
+
+            /// ////
+
+            if (key.getEasing() == Anim.EASING_CUBICSPLINE)
+            {
+                const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+
+                this.#bezCpSize = this.getKeyWidth() * 0.75;
+                bezRect.setShape(6);
+                bezRect.setSize(this.#bezCpSize, this.#bezCpSize);
+                bezRect.setParent(this.#parentRect);
+                bezRect.data.key = key;
+                keyRect.data.cp1r = bezRect;
+
+                keyRect.data.cp1s = new GlSpline(this.#glTl.splines, "cp1");
+                keyRect.data.cp1s.setParentRect(this.#parentRect);
+                keyRect.data.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
+
+                const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+                bezRect2.setShape(6);
+                bezRect2.setSize(this.#bezCpSize, this.#bezCpSize);
+                bezRect2.setParent(this.#parentRect);
+                bezRect2.data.key = key;
+                keyRect.data.cp2r = bezRect2;
+
+                keyRect.data.cp2s = new GlSpline(this.#glTl.splines, "cp2");
+                keyRect.data.cp2s.setParentRect(this.#parentRect);
+                keyRect.data.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
+
+                // bezRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+                // {
+                //     if (this.#glTl.isSelecting()) return;
+                //     glTlKeys.#dragStartX = e.offsetX;
+                //     glTlKeys.#dragStartY = e.offsetY;
+                // });
+
+                // bezRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+                // {
+                //     this.click = false;
+                //     if (this.#glTl.isSelecting()) return;
+                //     if (glTlKeys.#startDragTime == -1111)
+                //     {
+                //         console.log("cant drag,,,,", glTlKeys.#dragStarted, this.#glTl.isSelecting());
+
+                //         return;
+                //     }
+
+                //     if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
+                //     {
+                //         let offX = e.offsetX;
+                //         let offY = e.offsetY;
+
+                //         let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.#startDragTime;
+                //         let offVal = glTlKeys.#startDragValue - this.#animLine.pixelToValue(offY);
+
+                //         if (e.shiftKey)
+                //         {
+                //             if (Math.abs(glTlKeys.#dragStartX - offX) > Math.abs(glTlKeys.#dragStartY - offY)) offVal = 0;
+                //             else offTime = 0;
+                //         }
+                //         this.setKeyPositions();
+                //         this.#animLine.update();
+                //         hideToolTip();
+                //     }
+                // });
+            }
         }
 
         this.setKeyPositions();
@@ -633,6 +706,10 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#keyRects.length; i++)
         {
             if (this.#keyRects[i].data.text) this.#keyRects[i].data.text.dispose();
+            if (this.#keyRects[i].data.cp1r) this.#keyRects[i].data.cp1r.dispose();
+            if (this.#keyRects[i].data.cp2r) this.#keyRects[i].data.cp2r.dispose();
+            if (this.#keyRects[i].data.cp1s) this.#keyRects[i].data.cp1s.dispose();
+            if (this.#keyRects[i].data.cp2s) this.#keyRects[i].data.cp2s.dispose();
             this.#keyRects[i].dispose();
         }
         this.#keyRects = [];

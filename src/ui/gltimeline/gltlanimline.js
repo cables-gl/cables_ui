@@ -384,6 +384,14 @@ export class glTlAnimLine extends Events
         return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
     }
 
+    valueToPixelRel(v)
+    {
+        if (this.#keys.length == 0) return 1;
+        let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
+        return y;
+        // return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
+    }
+
     /**
      * @param {Op[]} selops
      */
