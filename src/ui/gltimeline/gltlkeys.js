@@ -62,6 +62,7 @@ export class glTlKeys extends Events
     #animLine = null;
     static #dragStartX = 0;
     static #dragStartY = 0;
+    static #dragBezCp = [0, 0];
 
     static #startDragTime = -1111;
     static #startDragValue = -1111;
@@ -358,6 +359,7 @@ export class glTlKeys extends Events
                     else t.setPosition(20, -10, 0);
                 }
             }
+
             if (kr.data.cp1r)
             {
                 const s = this.#bezCpSize / 2;
@@ -464,23 +466,6 @@ export class glTlKeys extends Events
                 hideToolTip();
             });
 
-            keyRect.on(GlRect.EVENT_DRAGEND, () =>
-            {
-                this.#anim.sortKeys();
-                this.#anim.removeDuplicates();
-                this.#glTl.needsUpdateAll = "dragged";
-                glTlKeys.#dragStarted = false;
-
-                undo.add({
-                    "title": "timeline move keys",
-                    "undo": () =>
-                    {
-                        this.#glTl.deserializeKeys(oldValues);
-                    },
-                    redo() {}
-                });
-            });
-
             keyRect.on(GlRect.EVENT_POINTER_UP,
                 (e) =>
                 {
@@ -546,8 +531,7 @@ export class glTlKeys extends Events
                 if (this.#glTl.isSelecting()) return;
                 if (glTlKeys.#startDragTime == -1111)
                 {
-                    console.log("cant drag,,,,", glTlKeys.#dragStarted, this.#glTl.isSelecting());
-
+                    console.log("cant drag....", glTlKeys.#dragStarted, this.#glTl.isSelecting());
                     return;
                 }
 
@@ -580,6 +564,23 @@ export class glTlKeys extends Events
                     this.#animLine.update();
                     hideToolTip();
                 }
+            });
+
+            keyRect.on(GlRect.EVENT_DRAGEND, () =>
+            {
+                this.#anim.sortKeys();
+                this.#anim.removeDuplicates();
+                this.#glTl.needsUpdateAll = "dragged";
+                glTlKeys.#dragStarted = false;
+
+                undo.add({
+                    "title": "timeline move keys",
+                    "undo": () =>
+                    {
+                        this.#glTl.deserializeKeys(oldValues);
+                    },
+                    redo() {}
+                });
             });
 
             if (key.uiAttribs.text)
@@ -649,6 +650,13 @@ export class glTlKeys extends Events
                     if (this.#glTl.isSelecting()) return;
                     glTlKeys.#dragStartX = e.offsetX;
                     glTlKeys.#dragStartY = e.offsetY;
+                    if (button == 1 && !glTlKeys.#dragStarted)
+                    {
+                        glTlKeys.#dragBezCp = [key.bezCp1[0], key.bezCp1[1]];
+                        glTlKeys.#dragStarted = true;
+                        glTlKeys.#startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
+                        glTlKeys.#startDragValue = this.#animLine.pixelToValue(e.offsetY);
+                    }
                 });
 
                 bezRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
@@ -658,7 +666,6 @@ export class glTlKeys extends Events
                     if (glTlKeys.#startDragTime == -1111)
                     {
                         console.log("cant drag,,,,", glTlKeys.#dragStarted, this.#glTl.isSelecting());
-
                         return;
                     }
 
@@ -670,14 +677,12 @@ export class glTlKeys extends Events
                         let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.#startDragTime;
                         let offVal = glTlKeys.#startDragValue - this.#animLine.pixelToValue(offY);
 
-                        // if (e.shiftKey)
-                        // {
-                        //     if (Math.abs(glTlKeys.#dragStartX - offX) > Math.abs(glTlKeys.#dragStartY - offY)) offVal = 0;
-                        //     else offTime = 0;
-                        // }
+                        key.setBezCp1(glTlKeys.#dragBezCp[0] + offTime, glTlKeys.#dragBezCp[1] + offVal);
+
                         console.log("dragggggg");
                         this.setKeyPositions();
                         this.#animLine.update();
+                        this.#glTl.setHoverKeyRect(bezRect);
                         hideToolTip();
                     }
                 });
