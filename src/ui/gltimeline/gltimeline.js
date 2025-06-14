@@ -17,8 +17,8 @@ import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
-import { glTlKeys } from "./gltlkeys.js";
 import uiconfig from "../uiconfig.js";
+import { glTlKeys } from "./gltlkeys.js";
 
 /**
  * @typedef TlConfig
@@ -212,7 +212,7 @@ export class GlTimeline extends Events
         this.#rectHoverKey.setSize(20, 20);
         this.#rectHoverKey.setShape(13);
         this.#rectHoverKey.setPosition(40, 20, -0.2);
-        this.#rectHoverKey.setColor(0, 1, 1, 1);
+        this.#rectHoverKey.setColor(1, 1, 0, 1);
 
         this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true });
         this.#rectSelect.setSize(0, 0);
@@ -365,7 +365,6 @@ export class GlTimeline extends Events
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
-        console.log("timeline...");
     }
 
     toggleAutoKeyframe()
@@ -663,7 +662,6 @@ export class GlTimeline extends Events
                 if (this.hoverKeyRect)
                 {
 
-                    console.log("hoveringkeyrect");
                 }
                 else
                 {
@@ -878,7 +876,6 @@ export class GlTimeline extends Events
      */
     fixAnim(anim)
     {
-        console.log("ani", anim);
         if (!anim) return;
         anim.sortKeys();
         anim.removeDuplicates();
@@ -926,6 +923,7 @@ export class GlTimeline extends Events
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
         this.showKeyParamsSoon();
+        this.setHoverKeyRect(null);
     }
 
     selectAllKeys()
@@ -989,7 +987,6 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseUp(e)
     {
-        console.log("mouse up");
         this.#rects.mouseUp(e);
         this.mouseDown = false;
         this.hoverKeyRect = null;
@@ -1021,6 +1018,11 @@ export class GlTimeline extends Events
             else delta = 0.9;
 
             this.view.setZoomOffset(delta);
+
+            if (event.deltaY > 0) delta = 1;
+            else delta = -1;
+
+            this.view.scale(delta * 0.07);
         }
 
         this.setHoverKeyRect(null);
@@ -1677,7 +1679,6 @@ export class GlTimeline extends Events
         {
             if (paused) return;
             paused = true;
-            console.log("setting data", getData(), anim);
             tab.setData(getData());
             paused = false;
         });
@@ -1688,7 +1689,6 @@ export class GlTimeline extends Events
             "onchange": (content) =>
             {
                 if (paused) return;
-                console.log("${}", content);
 
                 if (!content)
                 {
@@ -1712,7 +1712,6 @@ export class GlTimeline extends Events
                     };
                     anim.setValue(o.t, o.v);
 
-                    console.log("anim", o, anim.keys);
                 }
                 paused = false;
             }
@@ -1848,15 +1847,12 @@ export class GlTimeline extends Events
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
-
         }
-
         else
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
         }
-        console.log("ease", ease);
 
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
@@ -1879,6 +1875,16 @@ export class GlTimeline extends Events
         ele.clickable(ele.byId("kp_delete"), () =>
         {
             this.deleteSelectedKeys();
+        });
+
+        ele.clickable(ele.byId("kp_bezfree"), () =>
+        {
+            console.log("toggle blezq");
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].setUiAttribs({ "bezFree": !this.#selectedKeys[i].uiAttribs.bezFree });
+
+            }
         });
 
         ele.clickable(ele.byId("kp_time_movef"), () =>
@@ -1930,7 +1936,6 @@ export class GlTimeline extends Events
 
         ele.byId("kp_comment").addEventListener("input", () =>
         {
-            console.log("comment input");
             let txt = ele.byId("kp_comment").value;
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -1944,7 +1949,6 @@ export class GlTimeline extends Events
             const button = buttons[i];
             button.addEventListener("click", () =>
             {
-                console.log("text", button.dataset.col);
                 for (let j = 0; j < this.#selectedKeys.length; j++)
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
@@ -1973,7 +1977,6 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
-        console.log("text", ele.byId("ap_spreadsheet"));
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
             this.showSpreadSheet(anim);
@@ -2011,17 +2014,18 @@ export class GlTimeline extends Events
         {
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
+        const size = 6;
 
         this.hoverKeyRect = kr;
         if (kr)
         {
-            this.#rectHoverKey.setSize(kr.w + 6, kr.h + 6);
-            this.#rectHoverKey.setPosition(kr.absX - 3, kr.absY - 3);
+            this.#rectHoverKey.setShape(kr.shape);
+            this.#rectHoverKey.setSize(kr.w + size, kr.h + size);
+            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2, kr.absZ + 0.023);
         }
         else
         {
             this.#rectHoverKey.setPosition(-9999, -9999);
-
         }
 
     }
