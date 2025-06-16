@@ -362,15 +362,16 @@ export class glTlKeys extends Events
 
             if (kr.data.cp1r)
             {
+                let ks = kr.w / 2;
                 let s = kr.data.cp1r.w / 2;
-                const pos = [rx + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
-                kr.data.cp1s.setPoints([rx + s, ry + s, this.#bezCpZ, pos[0] + s, pos[1] + s, this.#bezCpZ]);
-                kr.data.cp1r.setPosition(pos[0], pos[1], this.#bezCpZ);
+                const pos = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1]) + ks];
+                kr.data.cp1s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos[0], pos[1], this.#bezCpZ]);
+                kr.data.cp1r.setPosition(pos[0] - s, pos[1] - s, this.#bezCpZ);
 
                 s = kr.data.cp2r.w / 2;
-                const pos2 = [rx + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
-                kr.data.cp2s.setPoints([rx + s, ry + s, this.#bezCpZ, pos2[0] + s, pos2[1] + s, this.#bezCpZ]);
-                kr.data.cp2r.setPosition(pos2[0], pos2[1], this.#bezCpZ);
+                const pos2 = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1]) + ks];
+                kr.data.cp2s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos2[0], pos2[1], this.#bezCpZ]);
+                kr.data.cp2r.setPosition(pos2[0] - s, pos2[1] - s, this.#bezCpZ);
             }
         }
 
