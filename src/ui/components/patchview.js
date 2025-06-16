@@ -49,8 +49,13 @@ export default class PatchView extends Events
         this._patchRenderer = null;
         // this._cachedSubpatchNames = {};
         this.isPasting = false;
-        this.newPatchOpPaste = null;
+
+        /** @type {Object} */
         this.currentOpPaste = null;
+
+        /** @type {String} */
+        this.newPatchOpPaste = null;
+
         this._showingNavHelperEmpty = false;
         this._lastTempOP = null;
 

@@ -2163,23 +2163,17 @@ export default class ServerOps
                         res.newOps.forEach((newOp) =>
                         {
                             if (newOp.opId) allIdentifiers.push(newOp.opId);
-                            if (navigator.clipboard)
+                            const clipboardJson = gui.patchView.currentOpPaste;
+                            if (clipboardJson)
                             {
-                                navigator.clipboard.readText().then((clipboardContent) =>
+                                try
                                 {
-                                    if (clipboardContent)
+                                    if (clipboardJson.ops)
                                     {
-                                        try
-                                        {
-                                            const clipboardJson = JSON.parse(clipboardContent);
-                                            if (clipboardJson.ops)
-                                            {
-                                                gui.patchView.newPatchOpPaste = clipboardContent;
-                                            }
-                                        }
-                                        catch (e) { /* ignore non-json clipboard data */ }
+                                        gui.patchView.newPatchOpPaste = JSON.stringify(clipboardJson);
                                     }
-                                }).catch(() => { /* ignore no access */ });
+                                }
+                                catch (e) { /* ignore non-json clipboard data */ }
                             }
                         });
                     }
