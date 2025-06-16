@@ -351,6 +351,8 @@ export default class VizLayer extends Events
             {
                 lines[i] = lines[i].replaceAll(" ", "·");
                 lines[i] = lines[i].replaceAll("\t", "⇿");
+                lines[i] = lines[i].replaceAll("\n", "⏎\n");
+
             }
 
             if (options.showLineNum)
