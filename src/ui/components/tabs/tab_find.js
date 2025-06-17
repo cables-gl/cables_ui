@@ -316,6 +316,7 @@ export default class FindTab
                         {
                             if (namespace.isDeprecatedOp(results[i].op.objName)) results[i].error = "example patch: Op is deprecated, should not be used anymore ";
                             else results[i].error = "example patch: Newer version of op available!";
+
                         }
                     }
                 }
