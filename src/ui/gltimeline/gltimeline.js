@@ -475,6 +475,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
 
         this.needsUpdateAll = "resize";
+        this.setHoverKeyRect(null);
 
         const wparams = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT);
         this.#keyOverEl.style.width = wparams + "px";
@@ -919,7 +920,6 @@ export class GlTimeline extends Events
      */
     unSelectAllKeys(reason)
     {
-        console.log("unselectall because ", reason);
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
         this.showKeyParamsSoon();
