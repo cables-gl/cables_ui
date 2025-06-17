@@ -52,7 +52,7 @@ export default class FileManagerEditor
                         "singleton": true,
                         "onClose": function (which)
                         {
-                            if (editorSession) editorSession.remove(editorObj.type, editorObj.name);
+                            if (editorSession && which) editorSession.remove(which.type, which.name);
                         },
                         "onSave": function (setStatus, content)
                         {
