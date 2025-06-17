@@ -673,7 +673,7 @@ export default class PatchView extends Events
             {
                 this.hasOldOps = true;
                 perf.finish();
-                if (setUiError) this._p.ops[i].setUiError("outdated", "outdated");
+                if (setUiError) this._p.ops[i].setUiError("outdated", "outdated", 1);
                 else return;
             }
         }
