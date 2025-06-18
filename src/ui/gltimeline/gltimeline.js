@@ -1817,13 +1817,15 @@ export class GlTimeline extends Events
 
         for (let i = 1; i < keys.length; i++)
             for (let j = 1; j < keys.length; j++)
-                if (keys[i].anim == keys[j].anim) if (keys[i].time == keys[i].time)errors.push("duplicate keys " + i);
+                if (keys[i].anim == keys[j].anim) if (keys[i].time == keys[j].time)errors.push("duplicate keys " + i);
 
         return errors;
     }
 
     showParamKeys()
     {
+
+        let showCurves = false;
         if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
         const timebounds = this.getSelectedKeysBoundsTime();
         const valbounds = this.getSelectedKeysBoundsValue();
@@ -1851,7 +1853,10 @@ export class GlTimeline extends Events
         else
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
+            {
+                showCurves = showCurves || ease > 4;
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
+            }
         }
 
         let unit = "seconds";
@@ -1868,6 +1873,7 @@ export class GlTimeline extends Events
                 "errors": this.testAnim(this.#selectedKeys),
                 "commentColors": uiconfig.commentColors,
                 "easing": ease,
+                "showCurves": showCurves,
                 "comment": comment
             });
         this.#keyOverEl.innerHTML = html;

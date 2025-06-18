@@ -9,28 +9,23 @@
     </div>
     <div class="content panel">
 
-        move <input style="width:50px" id="kp_input_time" value="{{lastInputMove}}">&nbsp;
-        <a id="kp_time_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-left"></span></a>
-        <a id="kp_time_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-right"></span></a>
-         {{displayunit}} <br/>
 
-        value <input style="width:50px" id="kp_input_value" value="{{lastInputValue}}">&nbsp;
-        <a id="kp_value_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-up"></span></a>
-        <a id="kp_value_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-down"></span></a>
+        <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
+        <a data-info="tlIpAbs" class="info iconbutton nomargin {{#compare easing '==' '1' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);"><span class="icon icon-ease-absolute"></span></a>
+        <a data-info="tlIpCurves" class="info iconbutton nomargin {{#if showCurves  }}button-active{{/if}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
+        <a data-info="tlIpBez" class="info iconbutton nomargin {{#compare easing '==' '4' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);"><span class="icon icon-tangent"></span></a>
 
-        <hr/>
 
-        <a class="button-small icon-linear  button-left {{#compare easing '==' '0' }}button-active{{/compare}}" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
-        <a class="button-small icon-absolut button-middle {{#compare easing '==' '1' }}button-active{{/compare}}" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
-        <a class="button-small icon-absolut button-right {{#compare easing '==' '4' }}button-active{{/compare}}" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);">&nbsp;Bezier</a>
+        <br/><br/>
 
         {{#compare easing '==' '4' }}
             <a id="kp_bezfree" class="button-small eleAsButton" tabindex="0">
-                <span class="icon icon-tangent"></span>
+            toggle free tangents
             </a>
+            <br/>
         {{/compare}}
 
-        <br/><br/>
+        {{#if showCurves}}
 
         <a class="iconbutton nomargin {{#compare easing '==' '11' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_IN);"><span class="icon icon-ease-cub-in"></span></a>
         <a class="iconbutton nomargin {{#compare easing '==' '5' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_IN);"><span class="icon icon-ease-cub-in"></span></a>
@@ -59,6 +54,17 @@
         <a class="iconbutton nomargin {{#compare easing '==' '15' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BACK_OUT);"><span class="icon icon-ease-cub-out"></span></a>
         <a class="iconbutton nomargin {{#compare easing '==' '18' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ELASTIC_OUT);"><span class="icon icon-ease-exp-out"></span></a>
         <a class="iconbutton nomargin {{#compare easing '==' '21' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
+<br/><br/>
+        {{/if}}
+
+        move <input style="width:50px" id="kp_input_time" value="{{lastInputMove}}">&nbsp;
+        <a id="kp_time_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-left"></span></a>
+        <a id="kp_time_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-right"></span></a>
+         {{displayunit}} <br/>
+
+        value <input style="width:50px" id="kp_input_value" value="{{lastInputValue}}">&nbsp;
+        <a id="kp_value_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-up"></span></a>
+        <a id="kp_value_movef" class="button-right button-small"><span class="nomargin icon icon-chevron-down"></span></a>
 
 <hr/>
         <br/>

@@ -33,6 +33,11 @@ const text =
     "tltoggle": "`ctrl space` Toggle timeline",
     "tlactive": "[LMB] toggle editable || [RMB] deactivate all others || `dblclick` activate all",
 
+    "tlIpLin": "set keys to linear easing",
+    "tlIpBez": "set keys to bezier easing",
+    "tlIpAbs": "set keys to absolute easing",
+    "tlIpCurves": "set keys to predefined easing functions",
+
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
     "portUnlink": "Click to unlink port",
