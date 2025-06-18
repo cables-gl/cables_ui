@@ -1817,7 +1817,7 @@ export class GlTimeline extends Events
 
         for (let i = 1; i < keys.length; i++)
             for (let j = 1; j < keys.length; j++)
-                if (keys[i].anim == keys[j].anim) if (keys[i].time == keys[j].time)errors.push("duplicate keys " + i);
+                if (i != j && keys[i].anim == keys[j].anim) if (keys[i].time == keys[j].time)errors.push("duplicate keys " + i);
 
         return errors;
     }
