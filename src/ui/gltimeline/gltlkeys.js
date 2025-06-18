@@ -352,7 +352,7 @@ export class glTlKeys extends Events
             if (kr.data.text)
             {
                 const t = kr.data.text;
-                if (this.#glTl.isGraphLayout()) t.setPosition(20, 50, 0);
+                if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
                 else
                 {
                     if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);

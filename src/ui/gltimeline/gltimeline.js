@@ -1827,19 +1827,28 @@ export class GlTimeline extends Events
 
         let showCurves = false;
         if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
+
         const timebounds = this.getSelectedKeysBoundsTime();
         const valbounds = this.getSelectedKeysBoundsValue();
-        let timestr = " " + Math.round(timebounds.length * 100) / 100 + " seconds ";
+
+        let timeBoundsStr = "";
+        let timestr = "";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
-            timestr = "" + Math.round(timebounds.length * 100 * this.fps) / 100 + " frames: ";
-            timestr += Math.round(timebounds.min * 100 * this.fps) / 100;
-            timestr += " to ";
-            timestr += Math.round(timebounds.max * 100 * this.fps) / 100;
+            timestr = "" + Math.round(timebounds.length * 100 * this.fps) / 100 + " frames ";
+            timeBoundsStr += Math.round(timebounds.min * 100 * this.fps) / 100;
+            timeBoundsStr += " to ";
+            timeBoundsStr += Math.round(timebounds.max * 100 * this.fps) / 100;
+        }
+        else
+        {
+            timestr = "" + Math.round(timebounds.length * 100) / 100 + " seconds ";
+            timeBoundsStr += Math.round(timebounds.min * 100) / 100;
+            timeBoundsStr += " to ";
+            timeBoundsStr += Math.round(timebounds.max * 100) / 100;
         }
 
         let valstr = " " + Math.round(valbounds.min * 100) / 100 + " to " + Math.round(valbounds.max * 100) / 100;
-
         if (this.#selectedKeys.length == 0) this.hideParams();
         else this.showParams();
 
@@ -1865,7 +1874,8 @@ export class GlTimeline extends Events
         const html = getHandleBarHtml(
             "params_keys", {
                 "numKeys": this.#selectedKeys.length,
-                "timeBounds": timestr,
+                "timeLength": timestr,
+                "timeBounds": timeBoundsStr,
                 "valueBounds": valstr,
                 "lastInputValue": this.#paramLastInputValue,
                 "lastInputMove": this.#paramLastInputMove,
