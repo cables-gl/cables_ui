@@ -40,6 +40,7 @@ export default class PatchView extends Events
     {
         super();
 
+        /** @type {Patch} */
         this._p = corepatch;
         this._log = new Logger("patchview");
         this._element = null;
@@ -655,7 +656,10 @@ export default class PatchView extends Events
         this.showSelectedOpsPanel();
     }
 
-    checkPatchOutdated()
+    /**
+     * @param {boolean} [setUiError]
+     */
+    checkPatchOutdated(setUiError)
     {
         const perf = gui.uiProfiler.start("checkpatcherrors");
         this.hasOldOps = false;
@@ -663,12 +667,14 @@ export default class PatchView extends Events
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
+            if (setUiError) this._p.ops[i].setUiError("outdated", null);
 
             if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
                 perf.finish();
-                return;
+                if (setUiError) this._p.ops[i].setUiError("outdated", "outdated");
+                else return;
             }
         }
         perf.finish();
@@ -697,7 +703,7 @@ export default class PatchView extends Events
 
         if (!this._checkErrorTimeout)
         {
-            gui.patchView.checkPatchOutdated(); // first time also check outdated ops..
+            gui.patchView.checkPatchOutdated(isExamplePatch); // first time also check outdated ops..
             if (isExamplePatch) CABLES.CMD.PATCH.clearOpTitles(); // examples should not have edited op titles...
         }
 
@@ -716,9 +722,7 @@ export default class PatchView extends Events
 
         let showAttentionIcon = this.hasUiErrors;
 
-        if (
-            this.hasOldOps &&
-            (gui.project().summary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
+        if (this.hasOldOps && (gui.project().summary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
 
         clearTimeout(this._checkErrorTimeout);
 
