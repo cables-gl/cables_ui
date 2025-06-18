@@ -1893,14 +1893,22 @@ export class GlTimeline extends Events
             this.deleteSelectedKeys();
         });
 
+        ele.clickable(ele.byId("kp_bezreset"), () =>
+        {
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].bezReset();
+
+            }
+        });
         ele.clickable(ele.byId("kp_bezfree"), () =>
         {
-            console.log("toggle blezq");
             for (let i = 0; i < this.#selectedKeys.length; i++)
             {
                 this.#selectedKeys[i].setUiAttribs({ "bezFree": !this.#selectedKeys[i].uiAttribs.bezFree });
-
+                if (!this.#selectedKeys[i].uiAttribs.bezFree) this.#selectedKeys[i].bezReset();
             }
+
         });
 
         ele.clickable(ele.byId("kp_time_movef"), () =>
