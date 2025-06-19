@@ -1,6 +1,7 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
+import { logStack } from "cables/src/core/utils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -602,12 +603,16 @@ export class GlTimeline extends Events
         }
         else
         {
-            if (!this.selectRect && e.buttons == 1)
+            if (!this.selectRect && e.buttons == 1 && !this.hoverKeyRect)
+            {
+
+                console.log("noselrect", this.hoverKeyRect);
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
                     {
                         this.unSelectAllKeys("canvas down ");
                     }
+            }
 
             try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
             catch (er) { this._log.log(er); }
@@ -989,7 +994,7 @@ export class GlTimeline extends Events
     {
         this.#rects.mouseUp(e);
         this.mouseDown = false;
-        this.hoverKeyRect = null;
+        // this.hoverKeyRect = null;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
         this.#lastDragX = Number.MAX_SAFE_INTEGER;
@@ -2039,12 +2044,12 @@ export class GlTimeline extends Events
     setHoverKeyRect(kr)
     {
         if (glTlKeys.dragStarted())
-        {
             this.#rectHoverKey.setPosition(-9999, -9999);
-        }
+
         const size = 6;
 
         this.hoverKeyRect = kr;
+
         if (kr)
         {
             this.#rectHoverKey.setShape(kr.shape);
@@ -2053,6 +2058,7 @@ export class GlTimeline extends Events
         }
         else
         {
+            // logStack();
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
 
@@ -2060,6 +2066,7 @@ export class GlTimeline extends Events
 
     isSelecting()
     {
+        if (this.selectRect)console.log("text", this.selectRect);
         return !!this.selectRect;
     }
 
