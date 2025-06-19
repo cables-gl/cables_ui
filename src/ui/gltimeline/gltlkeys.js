@@ -535,7 +535,6 @@ export class glTlKeys extends Events
 
             keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
             {
-                console.log("ev drag", this.#glTl.isSelecting());
                 this.click = false;
                 if (this.#glTl.isSelecting()) return;
                 if (glTlKeys.#startDragTime == -1111)
@@ -549,6 +548,7 @@ export class glTlKeys extends Events
                     glTlKeys.#dragStartX = e.offsetX;
                     glTlKeys.#dragStartY = e.offsetY;
                 }
+
                 if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
                 {
                     let offX = e.offsetX;

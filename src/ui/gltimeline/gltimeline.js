@@ -20,6 +20,7 @@ import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import uiconfig from "../uiconfig.js";
 import { glTlKeys } from "./gltlkeys.js";
+import { glTlDragArea } from "./gltldragarea.js";
 
 /**
  * @typedef TlConfig
@@ -53,6 +54,8 @@ export class GlTimeline extends Events
     static DISPLAYUNIT_SECONDS = 0;
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
+
+    static EVENT_KEYSELECTIONCHANGE = "keySelectionChange";
 
     #lastDragX = Number.MAX_SAFE_INTEGER;
     #lastDragY = Number.MAX_SAFE_INTEGER;
@@ -153,6 +156,8 @@ export class GlTimeline extends Events
     #cursorY = 30;
     #rectLoopArea;
     #rectHoverKey;
+
+    #selectedKeysArea = null;
 
     /**
      * @param {CglContext} cgl
@@ -271,6 +276,10 @@ export class GlTimeline extends Events
         this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
 
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+
+        this.#selectedKeysArea = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.#selectedKeysArea.setColor(1, 1, 0, 0.3);
+        this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysArea(); });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
@@ -588,15 +597,13 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
+
         this.#focusRuler = false;
         this.#focusScroll = false;
+
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
-
-        if (this.#focusRuler)
-        {
-            this.ruler.setTimeFromPixel(e.offsetX);
-        }
+        if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
 
         else if (this.#focusScroll)
         {
@@ -604,15 +611,9 @@ export class GlTimeline extends Events
         else
         {
             if (!this.selectRect && e.buttons == 1 && !this.hoverKeyRect)
-            {
-
-                console.log("noselrect", this.hoverKeyRect);
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
-                    {
                         this.unSelectAllKeys("canvas down ");
-                    }
-            }
 
             try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
             catch (er) { this._log.log(er); }
@@ -685,10 +686,7 @@ export class GlTimeline extends Events
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
 
-                        for (let i = 0; i < this.#tlAnims.length; i++)
-                        {
-                            this.#tlAnims[i].testSelected();
-                        }
+                        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].testSelected();
                     }
                 }
 
@@ -911,6 +909,19 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
+    updateSelectedKeysArea()
+    {
+        const timeBounds = this.getSelectedKeysBoundsTime();
+
+        if (timeBounds.length == 0) this.#selectedKeysArea.set(0, 0, 0, 0);
+        else
+            this.#selectedKeysArea.set(
+                this.view.timeToPixelScreen(timeBounds.min),
+                this.getFirstLinePosy(),
+                this.view.timeToPixel(timeBounds.max - timeBounds.min),
+                10);
+    }
+
     showKeyParamsSoon()
     {
         clearTimeout(this.toParamKeys);
@@ -925,10 +936,12 @@ export class GlTimeline extends Events
      */
     unSelectAllKeys(reason)
     {
+        const old = this.#selectedKeys.length;
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
         this.showKeyParamsSoon();
         this.setHoverKeyRect(null);
+        if (old != 0) this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
     selectAllKeys()
@@ -945,6 +958,7 @@ export class GlTimeline extends Events
             }
         }
         this.needsUpdateAll = "selectall";
+        this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
     deleteSelectedKeys()
@@ -985,6 +999,7 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims.push(a);
         }
         this.showKeyParamsSoon();
+        this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
     /**
@@ -1182,7 +1197,6 @@ export class GlTimeline extends Events
 
         if (!gui.bottomTabPanel.isMinimized())
         {
-
             if (this.disposed) return;
             this.view.updateAnims();
             // if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
@@ -1279,6 +1293,7 @@ export class GlTimeline extends Events
             this.#oldhtml = html;
         }
         this.scroll.update();
+        this.updateSelectedKeysArea();
     }
 
     updateAllElements()
@@ -2061,12 +2076,10 @@ export class GlTimeline extends Events
             // logStack();
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
-
     }
 
     isSelecting()
     {
-        if (this.selectRect)console.log("text", this.selectRect);
         return !!this.selectRect;
     }
 
@@ -2077,7 +2090,6 @@ export class GlTimeline extends Events
 
     removeKeyPreViz()
     {
-
         CABLES.UI.PREVISKEYVAL = null;
     }
 }
