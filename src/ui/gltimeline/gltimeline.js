@@ -157,7 +157,8 @@ export class GlTimeline extends Events
     #rectLoopArea;
     #rectHoverKey;
 
-    #selectedKeysArea = null;
+    /** @type {glTlDragArea} */
+    selectedKeysDragArea = null;
 
     /**
      * @param {CglContext} cgl
@@ -277,9 +278,9 @@ export class GlTimeline extends Events
 
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
-        this.#selectedKeysArea = new glTlDragArea(this, null, true, this.#rectsOver);
-        this.#selectedKeysArea.setColor(1, 1, 0, 0.3);
-        this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysArea(); });
+        this.selectedKeysDragArea = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
+        this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
@@ -610,7 +611,7 @@ export class GlTimeline extends Events
         }
         else
         {
-            if (!this.selectRect && e.buttons == 1 && !this.hoverKeyRect)
+            if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1 && !this.hoverKeyRect)
                 if (this.hoverKeyRect == null && !e.shiftKey)
                     if (e.offsetY > this.getFirstLinePosy())
                         this.unSelectAllKeys("canvas down ");
@@ -633,6 +634,8 @@ export class GlTimeline extends Events
 
         let x = event.offsetX;
         let y = event.offsetY;
+
+        this.#rectsOver.mouseMove(x, y, event.buttons);
         this.#rects.mouseMove(x, y, event.buttons);
 
         if (event.buttons == 1)
@@ -646,12 +649,10 @@ export class GlTimeline extends Events
                     {
                         const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
                         this.createKey(anims[i], t, anims[i].getValue(t));
-
                     }
                 }
                 else
                 {
-
                     for (let i = 0; i < this.#tlAnims.length; i++)
                     {
                         if (this.#tlAnims[i].isHovering())
@@ -664,11 +665,10 @@ export class GlTimeline extends Events
                 }
             }
 
-            if (!this.#focusRuler && !this.#focusScroll && !this.hoverKeyRect)
+            if (!this.#focusRuler && !this.#focusScroll && !this.hoverKeyRect && !this.selectedKeysDragArea.isHovering)
             {
                 if (this.hoverKeyRect)
                 {
-
                 }
                 else
                 {
@@ -909,17 +909,27 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
-    updateSelectedKeysArea()
+    updateSelectedKeysDragArea()
     {
         const timeBounds = this.getSelectedKeysBoundsTime();
+        let changed = true;
 
-        if (timeBounds.length == 0) this.#selectedKeysArea.set(0, 0, 0, 0);
-        else
-            this.#selectedKeysArea.set(
-                this.view.timeToPixelScreen(timeBounds.min),
-                this.getFirstLinePosy(),
-                this.view.timeToPixel(timeBounds.max - timeBounds.min),
-                10);
+        if (this.timeBounds)
+            changed =
+                timeBounds.min != this.timeBounds.min ||
+                timeBounds.max != this.timeBounds.max;
+
+        this.timeBounds = timeBounds;
+        const newX = this.view.timeToPixelScreen(timeBounds.min);
+
+        if (changed || newX != this.selectedKeysDragArea.x)
+            if (timeBounds.length == 0) this.selectedKeysDragArea.set(0, 0, 0, 0);
+            else
+                this.selectedKeysDragArea.set(
+                    newX,
+                    this.getFirstLinePosy(),
+                    this.view.timeToPixel(timeBounds.max - timeBounds.min),
+                    10);
     }
 
     showKeyParamsSoon()
@@ -936,6 +946,8 @@ export class GlTimeline extends Events
      */
     unSelectAllKeys(reason)
     {
+        if (this.selectedKeysDragArea.isHovering) return;
+        console.log("unselectAll", reason);
         const old = this.#selectedKeys.length;
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
@@ -1293,7 +1305,7 @@ export class GlTimeline extends Events
             this.#oldhtml = html;
         }
         this.scroll.update();
-        this.updateSelectedKeysArea();
+        this.updateSelectedKeysDragArea();
     }
 
     updateAllElements()

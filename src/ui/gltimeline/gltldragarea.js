@@ -16,12 +16,13 @@ export class glTlDragArea extends Events
     #rectSizeRight = null;
 
     #width = 222;
-    #handleWidth = 4;
+    #handleWidth = 8;
 
     /** @type {GlTimeline} */
     #glTl = null;
 
     height = 24;
+    isDragging = false;
 
     /**
      * @param {GlTimeline} glTl
@@ -50,6 +51,43 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeRight.setColor(0.4, 0.4, 0.4, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
+
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGSTART, () =>
+        {
+            console.log("dragstart");
+
+            this.isDragging = true;
+        });
+
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>
+        {
+            console.log("dragend");
+
+            this.isDragging = false;
+        });
+
+        this.#rectSizeRight.on(GlRect.EVENT_DRAG, () =>
+        {
+            console.log("drag");
+            this.isDragging = true;
+
+        });
+
+        this.#rectBar.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            console.log("yhover", this.isHovering);
+
+        });
+        this.#rectSizeLeft.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            console.log("yhover", this.isHovering);
+
+        });
+        this.#rectSizeRight.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            console.log("yhover", this.isHovering);
+
+        });
     }
 
     /**
@@ -71,8 +109,8 @@ export class glTlDragArea extends Events
         this.#rectBar.setSize(this.#width, this.height);
         this.#rectBar.setPosition(x, y, -0.9);
 
-        this.#rectSizeLeft.setPosition(x - this.#handleWidth, y, -0.1);
-        this.#rectSizeRight.setPosition(x + this.#width, y, -0.0);
+        this.#rectSizeLeft.setPosition(x - this.#handleWidth, y, -0.9);
+        this.#rectSizeRight.setPosition(x + this.#width, y, -0.9);
     }
 
     /**
@@ -83,13 +121,26 @@ export class glTlDragArea extends Events
     setColor(r, g, b, a = 1)
     {
         this.#rectBar.setColor(r, g, b, a);
-        this.#rectSizeLeft.setColor(r, g, b, a * 0.4);
-        this.#rectSizeRight.setColor(r, g, b, a * 0.4);
+        this.#rectSizeLeft.setColor(r, g, b, a * 0.7);
+        this.#rectSizeRight.setColor(r, g, b, a * 0.7);
     }
 
     getWidth()
     {
         return this.#width;
+    }
+
+    get isHovering()
+    {
+        const h = this.#rectBar.isHovering() || this.#rectSizeLeft.isHovering() || this.#rectSizeRight.isHovering();
+        return h;
+    }
+
+    get x()
+    {
+
+        return this.#rectBar.x;
+
     }
 
 }
