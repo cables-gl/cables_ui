@@ -22,7 +22,7 @@ import { gui } from "../gui.js";
 export default class GlRectInstancer extends Events
 {
 
-    static SHAPE_CIRCL = 1.0;
+    static SHAPE_CIRCLE = 1.0;
     static SHAPE_TRIANGLEBOTTOM = 2.0;
     static SHAPE_FRAME = 4.0;
     static SHAPE_CURSOR = 5.0;

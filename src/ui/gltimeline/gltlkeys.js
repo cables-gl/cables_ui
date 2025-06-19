@@ -12,6 +12,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import GlText from "../gldraw/gltext.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * gltl key rendering
@@ -307,13 +308,18 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 col = glTlKeys.COLOR_SELECTED;
-                colBez = [0.4, 0.4, 0.4, 1];
+                colBez = [0.6, 0.6, 0.6, 1];
             }
 
             if (keyRect.data.cp1r) keyRect.data.cp1r.setColorArray(colBez);
             if (keyRect.data.cp2r) keyRect.data.cp2r.setColorArray(colBez);
             if (keyRect.data.cp1s) keyRect.data.cp1s.setColorArray(colBez);
             if (keyRect.data.cp2s) keyRect.data.cp2s.setColorArray(colBez);
+            let shape = GlRectInstancer.SHAPE_FILLED_CIRCLE;
+            if (animKey.uiAttribs.bezFree) shape = GlRectInstancer.SHAPE_CIRCLE;
+
+            if (keyRect.data.cp1r) keyRect.data.cp1r.setShape(shape);
+            if (keyRect.data.cp2r) keyRect.data.cp2r.setShape(shape);
 
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             keyRect.setColorArray(col);
@@ -352,7 +358,7 @@ export class glTlKeys extends Events
             if (kr.data.text)
             {
                 const t = kr.data.text;
-                if (this.#glTl.isGraphLayout()) t.setPosition(20, 50, 0);
+                if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
                 else
                 {
                     if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);
@@ -364,12 +370,12 @@ export class glTlKeys extends Events
             {
                 let ks = kr.w / 2;
                 let s = kr.data.cp1r.w / 2;
-                const pos = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1]) + ks];
+                const pos = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
                 kr.data.cp1s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos[0], pos[1], this.#bezCpZ]);
                 kr.data.cp1r.setPosition(pos[0] - s, pos[1] - s, this.#bezCpZ);
 
                 s = kr.data.cp2r.w / 2;
-                const pos2 = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1]) + ks];
+                const pos2 = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.#animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
                 kr.data.cp2s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos2[0], pos2[1], this.#bezCpZ]);
                 kr.data.cp2r.setPosition(pos2[0] - s, pos2[1] - s, this.#bezCpZ);
             }
@@ -654,6 +660,7 @@ export class glTlKeys extends Events
         }
         this.#keyRects = [];
         this.#needsUpdate = true;
+        this.#glTl.setHoverKeyRect(null);
     }
 
     dispose()
@@ -664,6 +671,7 @@ export class glTlKeys extends Events
         if (this.#spline) this.#spline = this.#spline.dispose();
 
         this.removeAllEventListeners();
+        this.#glTl.setHoverKeyRect(null);
 
         this.#disposed = true;
     }
