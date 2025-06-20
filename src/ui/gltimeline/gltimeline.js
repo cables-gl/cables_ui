@@ -2,6 +2,7 @@ import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { logStack } from "cables/src/core/utils.js";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -946,6 +947,7 @@ export class GlTimeline extends Events
      */
     unSelectAllKeys(reason)
     {
+        console.log("ishovering", this.selectedKeysDragArea.isHovering);
         if (this.selectedKeysDragArea.isHovering) return;
         console.log("unselectAll", reason);
         const old = this.#selectedKeys.length;

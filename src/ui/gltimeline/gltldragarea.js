@@ -35,6 +35,7 @@ export class glTlDragArea extends Events
         super();
         this._log = new Logger("tl dragarea");
         this.#glTl = glTl;
+        console.log("new dragarea,", interactive);
 
         rectInst = rectInst || this.#glTl.rects;
         this.#rectBar = rectInst.createRect({ "draggable": false, "interactive": interactive });
@@ -120,6 +121,10 @@ export class glTlDragArea extends Events
      */
     setColor(r, g, b, a = 1)
     {
+        this.#rectBar.setColorHover(1, 1, 1, 1);
+        this.#rectSizeLeft.setColorHover(1, 1, 1, 1);
+        this.#rectSizeRight.setColorHover(1, 1, 1, 1);
+
         this.#rectBar.setColor(r, g, b, a);
         this.#rectSizeLeft.setColor(r, g, b, a * 0.7);
         this.#rectSizeRight.setColor(r, g, b, a * 0.7);
