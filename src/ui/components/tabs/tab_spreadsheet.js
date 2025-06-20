@@ -146,7 +146,8 @@ export default class SpreadSheetTab extends Events
                 }
                 else
                 {
-                    input.value = this.get(x, y) || "";
+                    const val = this.get(x, y);
+                    input.value = val;
                 }
 
                 td.appendChild(input);

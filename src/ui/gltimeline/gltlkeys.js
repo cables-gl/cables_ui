@@ -482,9 +482,8 @@ export class glTlKeys extends Events
                     {
                         this.click = false;
                         return;
-
                     }
-                    if (this.click)
+                    if (this.click && !this.#glTl.isKeySelected(key))
                     {
                         if (this.#glTl.isSelecting()) return;
                         if (glTlKeys.#dragStarted) return;
@@ -503,13 +502,14 @@ export class glTlKeys extends Events
             {
 
                 if (this.#glTl.isSelecting()) return;
-                if (this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
+
+                if (!this.#glTl.isKeySelected(key) && this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
                 {
-                    if (this.#glTl.isSelecting()) return;
                     if (glTlKeys.#dragStarted) return;
                     if (!e.shiftKey) this.#glTl.unSelectAllKeys("keys down");
 
                     this.#glTl.selectKey(key, this.#anim);
+                    this.#glTl.hoverKeyRect = keyRect;
                     this.update();
                 }
                 this.click = true;
@@ -517,6 +517,7 @@ export class glTlKeys extends Events
 
             keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
             {
+                console.log("key startdrag");
                 if (this.#glTl.isSelecting()) return;
                 glTlKeys.#dragStartX = e.offsetX;
                 glTlKeys.#dragStartY = e.offsetY;
@@ -547,6 +548,7 @@ export class glTlKeys extends Events
                     glTlKeys.#dragStartX = e.offsetX;
                     glTlKeys.#dragStartY = e.offsetY;
                 }
+
                 if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
                 {
                     let offX = e.offsetX;
