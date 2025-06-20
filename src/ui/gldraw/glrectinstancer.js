@@ -319,7 +319,6 @@ export default class GlRectInstancer extends Events
      */
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        // console.log(zoom);
         if (zoom > 500 && zoom < 800)
         {
         }
@@ -654,7 +653,7 @@ export default class GlRectInstancer extends Events
         if (this.allowDragging && this.#draggingRect)
         {
             this.#draggingRect.mouseDrag(x, y, button, event);
-            return;
+            // return;
         }
 
         perf.finish();
