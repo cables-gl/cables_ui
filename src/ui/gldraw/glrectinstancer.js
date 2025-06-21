@@ -319,7 +319,6 @@ export default class GlRectInstancer extends Events
      */
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        // console.log(zoom);
         if (zoom > 500 && zoom < 800)
         {
         }
@@ -640,20 +639,22 @@ export default class GlRectInstancer extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} button
+     * @param {MouseEvent} event
      */
-    mouseMove(x, y, button)
+    mouseMove(x, y, button, event)
     {
         const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this.#interactive) return;
-        if (this.allowDragging && this.#draggingRect)
-        {
-            this.#draggingRect.mouseDrag(x, y, button, event);
-            return;
-        }
 
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
                 this.#rects[i].mouseMove(x, y, button, event);
+
+        if (this.allowDragging && this.#draggingRect)
+        {
+            this.#draggingRect.mouseDrag(x, y, button, event);
+            // return;
+        }
 
         perf.finish();
     }
@@ -671,6 +672,7 @@ export default class GlRectInstancer extends Events
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
                 this.#rects[i].mouseDown(e, x, y);
+
         perf.finish();
     }
 

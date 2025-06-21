@@ -447,7 +447,7 @@ export default class GlRect extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} button
-     * * @param {MouseEvent} event
+     * @param {MouseEvent} event
      */
     mouseDrag(x, y, button, event)
     {
@@ -464,7 +464,7 @@ export default class GlRect extends Events
             this.#dragStartX = this.x;
             this.#dragStartY = this.y;
         }
-
+        console.log("ddddd ii", button);
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 

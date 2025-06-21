@@ -2,6 +2,7 @@ import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { logStack } from "cables/src/core/utils.js";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { glTlRuler } from "./gltlruler.js";
@@ -176,7 +177,7 @@ export class GlTimeline extends Events
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
 
-        this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+        this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
         this.ruler = new glTlRuler(this);
 
@@ -635,8 +636,8 @@ export class GlTimeline extends Events
         let x = event.offsetX;
         let y = event.offsetY;
 
-        this.#rectsOver.mouseMove(x, y, event.buttons);
-        this.#rects.mouseMove(x, y, event.buttons);
+        this.#rectsOver.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
         {
@@ -946,8 +947,9 @@ export class GlTimeline extends Events
      */
     unSelectAllKeys(reason)
     {
+        // console.log("ishovering", this.selectedKeysDragArea.isHovering);
         if (this.selectedKeysDragArea.isHovering) return;
-        console.log("unselectAll", reason);
+        // console.log("unselectAll", reason);
         const old = this.#selectedKeys.length;
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
