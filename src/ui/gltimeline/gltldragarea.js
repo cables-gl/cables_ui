@@ -48,10 +48,11 @@ export class glTlDragArea extends Events
         this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
         if (parent) this.#rectSizeLeft.setParent(parent);
+        this.#rectSizeLeft.setColor(0.3, 0.3, 0.3, 1);
 
         this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive });
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
-        this.#rectSizeRight.setColor(0.4, 0.4, 0.4, 1);
+        this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
 
         // this.#rectSizeRight.on(GlRect.EVENT_DRAG, () =>
@@ -90,12 +91,10 @@ export class glTlDragArea extends Events
 
         this.#rectMiddle.on(GlRect.EVENT_DRAGEND, () =>
         {
-            console.log("dragENDDD");
 
             this.isDragging = false;
         });
 
-        /// ///////
     }
 
     /**
@@ -151,9 +150,7 @@ export class glTlDragArea extends Events
 
     get x()
     {
-
         return this.#rectMiddle.x;
-
     }
 
 }

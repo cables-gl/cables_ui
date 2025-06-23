@@ -384,7 +384,12 @@ export default class GlRect extends Events
         if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_UP, e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseUp(e);
 
-        if (this.#isDragging) this.mouseDragEnd();
+        if (this.#isDragging)
+        {
+            this.mouseDragEnd();
+            console.log("dragennnnnnnddd", this.name, this.#isDragging);
+        }
+
     }
 
     /**
@@ -469,13 +474,13 @@ export default class GlRect extends Events
             this.#dragStartX = this.x;
             this.#dragStartY = this.y;
         }
+        console.log("drag", this.#isDragging, this.name);
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
     mouseDragEnd()
     {
-        if (!this.interactive) return;
-        this.emitEvent(GlRect.EVENT_DRAGEND, this);
+        if (this.interactive) this.emitEvent(GlRect.EVENT_DRAGEND, this);
         this.#isDragging = false;
     }
 
@@ -522,6 +527,7 @@ export default class GlRect extends Events
             {
                 if (!this.#isDragging)
                 {
+                    console.log("dragstart", this.name, button);
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
@@ -545,6 +551,8 @@ export default class GlRect extends Events
     {
         this.visible = false;
         if (this.#parent) this.#parent.removeChild(this);
+        this.disposed = true;
+        this.#rectInstancer.removeRect(this.idx);
         this.setShape(0);
         this.setSize(0, 0);
         this.removeAllEventListeners();

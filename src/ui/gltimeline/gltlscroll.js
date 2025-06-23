@@ -4,6 +4,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
 import GlText from "../gldraw/gltext.js";
 import { GlTimeline } from "./gltimeline.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 export class glTlScroll extends Events
 {
@@ -23,6 +24,9 @@ export class glTlScroll extends Events
     #glTl;
     #lastdown = 0;
 
+    /** @type {GlRect[]} */
+    #indicatorRects = [];
+
     /**
      * @param {GlTimeline} glTl
      */
@@ -32,11 +36,11 @@ export class glTlScroll extends Events
         this._log = new Logger("gltlscroll");
         this.#glTl = glTl;
 
-        this.#bgRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+        this.#bgRect = this.#glTl.rects.createRect({ "name": "scroll bg", "draggable": true, "interactive": true });
         this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, false);
+        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, false, this.#glTl.rects);
 
         this.#bgRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
         {
@@ -73,9 +77,47 @@ export class glTlScroll extends Events
 
     showAll()
     {
-        console.log("showall!!!!!!");
         this.#glTl.view.scrollTo(0);
         this.#glTl.view.setZoomLength(this.#glTl.duration);
+        this.updateIndicators();
+    }
+
+    updateIndicators()
+    {
+        const steps = Math.floor(this.#width / 10);
+        const stepSeconds = this.#glTl.duration / steps;
+        this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
+
+        const ports = gui.corePatch().getAllAnimPorts();
+
+        for (let i = 0; i < this.#indicatorRects.length; i++)
+        {
+            let found = false;
+            for (let j = 0; j < ports.length; j++)
+                if (ports[j].anim.hasKeyframesBetween(stepSeconds * i, stepSeconds * (i + 1)))
+                {
+                    found = true;
+                    break;
+                }
+
+            if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rects.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" });
+
+            if (found)
+            {
+                const x = stepSeconds * i * this.#glTl.view.pixelPerSecond;
+                this.#indicatorRects[i].setPosition(x, this.height / 2 - 5, -0.1);
+                this.#indicatorRects[i].setShape(GlRectInstancer.SHAPE_RHOMB);
+                this.#indicatorRects[i].setSize(10, 10);
+                this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
+                this.#indicatorRects[i].setParent(this.#bgRect);
+            }
+            else
+            {
+                this.#indicatorRects[i].setSize(0, 0);
+            }
+
+        }
+
     }
 
     /**
@@ -104,6 +146,7 @@ export class glTlScroll extends Events
 
         this.#dragBar.set(x, 0, -0.1, pixelVisible);
         this.#glRectCursor.setPosition(cx, 0);
+        this.updateIndicators();
     }
 
     isHovering()

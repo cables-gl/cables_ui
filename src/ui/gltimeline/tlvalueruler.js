@@ -42,14 +42,14 @@ export class TlValueRuler
     {
         this.dispose();
 
-        this.#zeroRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": false });
+        this.#zeroRect = this.#glTl.rects.createRect({ "name": "zero rect", "draggable": true, "interactive": false });
         this.#zeroRect.setSize(99999, 1);
         this.#zeroRect.setColor(0, 0, 0, 1);
         this.#zeroRect.setParent(this.#parentRect);
 
         for (let i = 0; i < this.#numMarker; i++)
         {
-            const r = this.#glTl.rects.createRect({ "draggable": true, "interactive": false });
+            const r = this.#glTl.rects.createRect({ "name": "nummarker", "draggable": true, "interactive": false });
             r.setPosition(0, i);
             r.setSize(20, 1);
             r.setParent(this.#parentRect);

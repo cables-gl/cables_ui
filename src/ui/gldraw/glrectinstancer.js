@@ -160,6 +160,7 @@ export default class GlRectInstancer extends Events
             this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
             for (let i = 0; i < this.#rects.length; i++)
             {
+                if (!this.#rects[i]) return;
                 if (!this.#rects[i].visible) continue;
                 if (this.#rects[i].x == this.#bounds.minX && this.#rects[i].y == this.#bounds.minY && this.#rects[i].w == this.#bounds.maxX - this.#bounds.minX && this.#rects[i].h == this.#bounds.maxY - this.#bounds.minY) continue;
 
@@ -747,6 +748,7 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
+        console.log("rects", this.#rects);
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
@@ -754,5 +756,19 @@ export default class GlRectInstancer extends Events
 
         // if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
         // this.#draggingRect = null;
+    }
+
+    /**
+     * @param {string} idx
+     */
+    removeRect(idx)
+    {
+
+        for (let i = 0; i < this.#rects.length; i++)
+            if (this.#rects[i] && this.#rects[i].idx == idx)
+            {
+                this.#rects.splice(i, 1);
+            }
+
     }
 }

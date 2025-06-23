@@ -788,6 +788,7 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
+        console.log("selectedkeys", this.#selectedKeys.length);
     }
 
     predragSelectedKeys()
@@ -1940,13 +1941,16 @@ export class GlTimeline extends Events
         {
             this.deleteSelectedKeys();
         });
+        ele.clickable(ele.byId("kp_movecursor"), () =>
+        {
+            this.moveSelectedKeys();
+        });
 
         ele.clickable(ele.byId("kp_bezreset"), () =>
         {
             for (let i = 0; i < this.#selectedKeys.length; i++)
             {
                 this.#selectedKeys[i].bezReset();
-
             }
         });
         ele.clickable(ele.byId("kp_bezfree"), () =>

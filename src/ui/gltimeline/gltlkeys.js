@@ -602,7 +602,7 @@ export class glTlKeys extends Events
             }
             if (key.uiAttribs.color)
             {
-                const t = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
+                const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
                 t.setParent(keyRect);
                 t.setColor(1, 1, 0, 0.3);
                 t.setPosition(1, 1, 0);
@@ -618,7 +618,7 @@ export class glTlKeys extends Events
 
             if (this.#glTl.isGraphLayout() && key.getEasing() == Anim.EASING_CUBICSPLINE)
             {
-                const bezRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+                const bezRect = this.#glTl.rects.createRect({ "name": "bezrect", "draggable": true, "interactive": true });
 
                 bezRect.data.key = key;
                 keyRect.data.cp1r = bezRect;
@@ -627,7 +627,7 @@ export class glTlKeys extends Events
                 keyRect.data.cp1s.setParentRect(this.#parentRect);
                 keyRect.data.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
 
-                const bezRect2 = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+                const bezRect2 = this.#glTl.rects.createRect({ "name": "bezrect2", "draggable": true, "interactive": true });
                 bezRect2.data.key = key;
                 keyRect.data.cp2r = bezRect2;
 
