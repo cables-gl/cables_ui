@@ -79,6 +79,7 @@ export default class LogTab extends Events
         logFilter.off(this._showlogListener);
         this.emitEvent("close");
         gui.hideBottomTabs();
+        gui.logTab = null;
     }
 
     _html()
