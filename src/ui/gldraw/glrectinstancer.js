@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
-import { CGL, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+import { CGL, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
@@ -54,11 +55,11 @@ export default class GlRectInstancer extends Events
     /** @type {Array<GlRect>} */
     #rects = [];
 
-    /** @type {Array<Texture>} */
+    /** @type {Array<Object>} */
     #textures = [];
 
-    /** @type {GlRect} */
-    #draggingRect = null;
+    /** @type {GlRect[]} */
+    #draggingRects = [];
 
     /** @type {Shader} */
     #shader = null;
@@ -239,7 +240,7 @@ export default class GlRectInstancer extends Events
 
     isDragging()
     {
-        return this.#draggingRect != null;
+        return this.#draggingRects.length > 0;
     }
 
     _setupTextures()
@@ -319,6 +320,7 @@ export default class GlRectInstancer extends Events
      */
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        // console.log(zoom);
         if (zoom > 500 && zoom < 800)
         {
         }
@@ -432,6 +434,10 @@ export default class GlRectInstancer extends Events
         return this.#counter;
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     _float32Diff(a, b)
     {
         return Math.abs(a - b) > 0.0001;
@@ -489,6 +495,11 @@ export default class GlRectInstancer extends Events
         this._needsBoundsRecalc = true;
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} x
+     * @param {number} y
+     */
     setSize(idx, x, y)
     {
         if (this._float32Diff(this._attrBuffSizes[idx * 2 + 0], x) || this._float32Diff(this._attrBuffSizes[idx * 2 + 1], y))
@@ -505,6 +516,13 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} x
+     * @param {number} y
+     * @param {number} w
+     * @param {number} h
+     */
     setTexRect(idx, x, y, w, h)
     {
         if (
@@ -564,6 +582,10 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrCol, this._attrBuffCol, idx * 4, idx * 4 + 4);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} o
+     */
     setShape(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 0] = o;
@@ -571,6 +593,10 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} o
+     */
     setBorder(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 1] = o;
@@ -578,6 +604,10 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
+    /**
+     * @param {number} idx
+     * @param {number} o
+     */
     setSelected(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 2] = o;
@@ -586,12 +616,19 @@ export default class GlRectInstancer extends Events
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
     }
 
+    /**
+     * @param {number} i
+     */
     setDebugRenderer(i)
     {
         this.#shader.toggleDefine("DEBUG_1", i == 1);
         this.#shader.toggleDefine("DEBUG_2", i == 2);
     }
 
+    /**
+     * @param {Texture} tex
+     * @param {boolean} sdf
+     */
     setAllTexture(tex, sdf)
     {
         this.#shader.toggleDefine("SDF_TEXTURE", sdf);
@@ -600,6 +637,9 @@ export default class GlRectInstancer extends Events
             this.#rects[i].setTexture(tex);
     }
 
+    /**
+     * @param {string} attr
+     */
     _resetAttrRange(attr)
     {
         this.#updateRangesMin[attr] = GlRectInstancer.DEFAULT_BIGNUM;
@@ -617,6 +657,9 @@ export default class GlRectInstancer extends Events
         this.#updateRangesMax[attr] = Math.max(end, this.#updateRangesMax[attr]);
     }
 
+    /**
+     * @param {Object} [options]
+     */
     createRect(options)
     {
         options = options || {};
@@ -626,8 +669,15 @@ export default class GlRectInstancer extends Events
         if (options.draggable)
         {
             this.allowDragging = options.draggable;
-            r.on(GlRect.EVENT_DRAGSTART, (rect) => { if (this.allowDragging) this.#draggingRect = rect; });
-            r.on(GlRect.EVENT_DRAGEND, () => { this.#draggingRect = null; });
+            r.on(GlRect.EVENT_DRAGSTART, (rect) =>
+            {
+                if (this.allowDragging && !this.#draggingRects.includes(rect))
+                {
+                    this.#draggingRects.push(rect);
+                }
+            });
+
+            r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
         r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
@@ -645,16 +695,29 @@ export default class GlRectInstancer extends Events
     {
         const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this.#interactive) return;
+        if (this.allowDragging && this.#draggingRects.length > 0 && button)
+        {
+            let z = 99;
+            let r = null;
+            for (let i = 0; i < this.#draggingRects.length; i++)
+            {
+                // console.log("drag", this.#draggingRects[i].name);
+
+                if (this.#draggingRects[i].absZ < z)
+                {
+                    r = this.#draggingRects[i];
+                    z = r.absZ;
+                }
+
+            }
+            r.mouseDrag(x, y, button, event);
+
+            return;
+        }
 
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
                 this.#rects[i].mouseMove(x, y, button, event);
-
-        if (this.allowDragging && this.#draggingRect)
-        {
-            this.#draggingRect.mouseDrag(x, y, button, event);
-            // return;
-        }
 
         perf.finish();
     }
@@ -687,6 +750,9 @@ export default class GlRectInstancer extends Events
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
-        if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
+        this.#draggingRects = [];
+
+        // if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
+        // this.#draggingRect = null;
     }
 }

@@ -39,7 +39,7 @@ export class glTlDragArea extends Events
         console.log("new dragarea,", interactive);
 
         rectInst = rectInst || this.#glTl.rects;
-        this.#rectMiddle = rectInst.createRect({ "draggable": true, "interactive": interactive });
+        this.#rectMiddle = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
         this.#rectMiddle.setSize(this.#width, this.height);
         if (parent) this.#rectMiddle.setParent(parent);
         this.#rectMiddle.setColorHover(0.65, 0.55, 0.65, 1);
@@ -72,34 +72,40 @@ export class glTlDragArea extends Events
         this.#rectMiddle.on(GlRect.EVENT_DRAGSTART, (_rect, x) =>
         {
             this.#dragStartX = x;
-            console.log("dragstart");
-
+            console.log("dragstart area");
+            this.#glTl.predragSelectedKeys();
             this.isDragging = true;
         });
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAG, () =>
+        this.#rectMiddle.on(GlRect.EVENT_DRAG, (_rect, x) =>
         {
-            console.log("drag");
+            let offpixel = this.#dragStartX - x;
+            let offTime = -this.#glTl.view.pixelToTime(offpixel);
+
+            // console.log("drag", offTime);
             this.isDragging = true;
+            this.#glTl.dragSelectedKeys(offTime, 0, true);
 
         });
 
         this.#rectMiddle.on(GlRect.EVENT_DRAGEND, () =>
         {
-            console.log("dragend");
+            console.log("dragENDDD");
 
             this.isDragging = false;
         });
+
         /// ///////
     }
 
     /**
      * @param {number} x
      * @param {number} y
+     * @param {number} z
      * @param {number} _width
      * @param {number} _height
      */
-    set(x, y, _width, _height = this.height)
+    set(x, y, z, _width, _height = this.height)
     {
         this.#width = _width;
         this.height = _height;
@@ -110,10 +116,10 @@ export class glTlDragArea extends Events
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
 
         this.#rectMiddle.setSize(this.#width, this.height);
-        this.#rectMiddle.setPosition(x, y, -0.9);
+        this.#rectMiddle.setPosition(x, y, z);
 
-        this.#rectSizeLeft.setPosition(x - this.#handleWidth, y, -0.9);
-        this.#rectSizeRight.setPosition(x + this.#width, y, -0.9);
+        this.#rectSizeLeft.setPosition(x - this.#handleWidth, y, z);
+        this.#rectSizeRight.setPosition(x + this.#width, y, z);
     }
 
     /**

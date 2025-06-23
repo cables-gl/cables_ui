@@ -102,7 +102,7 @@ export class glTlScroll extends Events
         let x = this.#glTl.view.offset * this.#glTl.view.pixelPerSecond;
         let cx = gui.corePatch().timer.getTime() * this.#glTl.view.pixelPerSecond;
 
-        this.#dragBar.set(x, 0, pixelVisible);
+        this.#dragBar.set(x, 0, -0.1, pixelVisible);
         this.#glRectCursor.setPosition(cx, 0);
     }
 

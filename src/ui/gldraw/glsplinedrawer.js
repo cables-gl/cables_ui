@@ -611,7 +611,7 @@ export default class GlSplineDrawer
 
         this._thePoints = []; // todo calc length beforehand
 
-        const perf = gui.uiProfiler.start("[glspline] rebuild");
+        const perf = gui.uiProfiler.start("[glspline] rebuild " + this.name);
 
         for (let i = 0; i < this._splines.length; i++)
         {

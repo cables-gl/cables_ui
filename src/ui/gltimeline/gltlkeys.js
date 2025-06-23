@@ -295,6 +295,7 @@ export class glTlKeys extends Events
         {
             const animKey = this.#anim.keys[i];
             const keyRect = this.#keyRects[i];
+            if (!animKey) return;
 
             let col = glTlKeys.COLOR_INACTIVE;
             let colBez = [0, 0, 0, 0];
@@ -445,7 +446,7 @@ export class glTlKeys extends Events
         this.#initCount++;
         for (let i = 0; i < this.#anim.keys.length; i++)
         {
-            const keyRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true });
+            const keyRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true, "name": "key" });
             const key = this.#anim.keys[i];
 
             this.setKeyShapeSize(keyRect);

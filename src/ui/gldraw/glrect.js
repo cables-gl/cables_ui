@@ -7,6 +7,7 @@ import GlRectInstancer from "./glrectinstancer.js";
 /**
  * @typedef {Object} GlRectOptions
  * @property {Boolean} [interactive]
+ * @property {String} [name]
  * @property {GlRect} [parent]
  */
 /**
@@ -71,6 +72,9 @@ export default class GlRect extends Events
 
     static OPTION_INTERACTIVE = "interactive";
     static OPTION_PARENT = "parent";
+    static OPTION_NAME = "name";
+
+    name = "unknown";
 
     /**
      * @param {GlRectInstancer} instancer
@@ -89,6 +93,7 @@ export default class GlRect extends Events
 
         if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options.interactive;
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
+        if (options.hasOwnProperty(GlRect.OPTION_NAME)) this.name = options.name;
     }
 
     get x() { return this.#x; }
@@ -464,7 +469,6 @@ export default class GlRect extends Events
             this.#dragStartX = this.x;
             this.#dragStartY = this.y;
         }
-        console.log("ddddd ii", button);
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
