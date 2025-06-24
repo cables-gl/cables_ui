@@ -1519,7 +1519,6 @@ export class GlTimeline extends Events
 
                 if (an)
                 {
-
                     const l = new AnimKey(keys[i], an);
 
                     newKeys.push(l);

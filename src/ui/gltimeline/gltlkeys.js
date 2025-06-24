@@ -112,6 +112,10 @@ export class glTlKeys extends Events
             anim.on(Anim.EVENT_CHANGE, () =>
             {
                 this.#needsUpdate = true;
+                for (let i = 0; i < this.#keys.length; i++)
+                {
+                    this.#keys[i].update();
+                }
             }));
 
         if (this.isLayoutGraph())
@@ -206,6 +210,7 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#keys.length; i++)
         {
             const tlKey = this.#keys[i];
+            tlKey.update();
 
             this.setKeyShapeSize(tlKey.rect);
 
@@ -373,7 +378,7 @@ export class glTlKeys extends Events
                 }
             }
 
-            if (k.cp1r)
+            if (k.cp1r && k.cp1r.visible)
             {
                 let ks = kr.w / 2;
                 let s = k.cp1r.w / 2;

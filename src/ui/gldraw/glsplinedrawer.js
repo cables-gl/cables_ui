@@ -25,7 +25,7 @@ export default class GlSplineDrawer
         this._cgl = cgl;
         this._count = -1;
 
-        this._rebuildLater = true;
+        this._rebuildLater = performance.now();
         this.doTessEdges = true;
         this.doCalcProgress = true;
         this._mesh = null;
@@ -111,6 +111,7 @@ export default class GlSplineDrawer
 
         if (this._rebuildLater)
         {
+            if (performance.now() - this._rebuildLater > 30) this.rebuild();
             // if (gui.finishedLoading)
             // {
             //     this.rebuild();
@@ -122,8 +123,8 @@ export default class GlSplineDrawer
                     () =>
                     {
                         this.rebuild();
-                    }, 100);
-                this._rebuildLater = false;
+                        this._rebuildLater = 0;
+                    }, 30);
             }
         }
 
@@ -171,8 +172,9 @@ export default class GlSplineDrawer
             "deleted": false
         };
 
-        this._rebuildLater = true;
-        this._rebuildReason = "new spline...";
+        this.rebuildLater("new spline");
+        // this._rebuildLater = true;
+        // this._rebuildReason = "new spline...";
 
         return this._count;
     }
@@ -345,8 +347,9 @@ export default class GlSplineDrawer
                     isDifferent = true;
                     isDifferentLength = true;
                     this._splines[idx].pointsNeedProgressUpdate = true;
-                    this._rebuildLater = true;
-                    this._rebuildReason = "length of spline changed " + points.length + " vs " + this._splines[idx].origPoints.length;
+                    this.rebuildLater("length of spline changed " + points.length + " vs " + this._splines[idx].origPoints.length);
+                    // this._rebuildLater = true;
+                    // this._rebuildReason = ;
                 }
                 else
                 {
@@ -430,8 +433,9 @@ export default class GlSplineDrawer
     {
         if (!this._mesh)
         {
-            this._rebuildLater = true;
-            this._rebuildReason = "update speed";
+            this.rebuildLater("update speed");
+            // this._rebuildLater = true;
+            // this._rebuildReason = "update speed";
 
             return;
         }
@@ -477,8 +481,9 @@ export default class GlSplineDrawer
 
         if (!this._mesh || !this._colors)
         {
-            this._rebuildReason = "no mesh/colors";
-            this._rebuildLater = true;
+            this.rebuildLater("no mesh/colors");
+            // this._rebuildReason = "no mesh/colors";
+            // this._rebuildLater = true;
             return;
         }
         // if (!this.aps) this.aps = new FpsCounter();
@@ -722,7 +727,7 @@ export default class GlSplineDrawer
 
         perfAttribs2.finish("num" + this._splines.length);
 
-        this._rebuildLater = false;
+        this._rebuildLater = 0;
         perf.finish();
 
         let l = 0;
@@ -733,9 +738,16 @@ export default class GlSplineDrawer
         }
     }
 
-    rebuildLater()
+    /**
+     * @param {string} [str]
+     */
+    rebuildLater(str)
     {
-        this._rebuildLater = true;
+        if (!this._rebuildLater)
+        {
+            this._rebuildLater = performance.now();
+            this._rebuildReason = "new spline...";
+        }
     }
 
     /**

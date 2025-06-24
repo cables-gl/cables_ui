@@ -117,6 +117,18 @@ export class TlKey extends Events
             this.bindBezCp(bezRect, key.bezCp1, key, 0);
             this.bindBezCp(bezRect2, key.bezCp2, key, 1);
         }
+        if (this.#glTl.isGraphLayout() && this.cp1r && this.cp1r.visible && key.getEasing() != Anim.EASING_CUBICSPLINE)
+        {
+            this.cp1r.visible = false;
+            this.cp2r.visible = false;
+            this.cp1s.setPoints([0, 0, 0, 0, 0, 0]);
+            this.cp2s.setPoints([0, 0, 0, 0, 0, 0]);
+        }
+        if (this.#glTl.isGraphLayout() && this.cp1r && !this.cp1r.visible && key.getEasing() == Anim.EASING_CUBICSPLINE)
+        {
+            this.cp1r.visible = true;
+            this.cp2r.visible = true;
+        }
     }
 
     /**
@@ -202,7 +214,7 @@ export class TlKey extends Events
                 // this.setKeyPositions();
                 // this.#animLine.update();
                 this.#glTl.setHoverKeyRect(bezRect);
-                hideToolTip();
+                // hideToolTip();
             }
         });
 
