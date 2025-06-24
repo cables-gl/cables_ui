@@ -41,7 +41,7 @@ export default class FileManagerEditor
             {
                 const name = filename;
 
-                const editorObj = editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
+                let editorObj = editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
 
                 new EditorTab(
                     {
@@ -50,9 +50,13 @@ export default class FileManagerEditor
                         "editorObj": editorObj,
                         "syntax": syntax.toLowerCase(),
                         "singleton": true,
-                        "onClose": function (which)
+                        "onClose": (which) =>
                         {
-                            if (editorSession && which) editorSession.remove(which.type, which.name);
+                            if (editorSession)
+                            {
+                                if (which && which.editorObj) editorObj = which.editorObj;
+                                editorSession.remove(editorObj.type, editorObj.name);
+                            }
                         },
                         "onSave": function (setStatus, content)
                         {
