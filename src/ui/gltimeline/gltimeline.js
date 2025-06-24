@@ -1016,7 +1016,7 @@ export class GlTimeline extends Events
      */
     selectKey(k, a)
     {
-        if (glTlKeys.dragStarted()) return;
+        if (glTlKeys.dragStarted) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
             this.#selectedKeys.push(k);
@@ -1614,7 +1614,7 @@ export class GlTimeline extends Events
             "tlAnims": [],
             "view": this.view.getDebug(),
             "perf": this.#perfFps.stats,
-            "dragstarted": glTlKeys.dragStarted()
+            "dragstarted": glTlKeys.dragStarted
         };
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
@@ -2086,7 +2086,7 @@ export class GlTimeline extends Events
      */
     setHoverKeyRect(kr)
     {
-        if (glTlKeys.dragStarted())
+        if (glTlKeys.dragStarted)
             this.#rectHoverKey.setPosition(-9999, -9999);
 
         const size = 6;
