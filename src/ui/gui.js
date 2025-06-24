@@ -501,7 +501,7 @@ export default class Gui extends Events
     {
 
         if (!this.logTab) this.logTab = new LogTab(this.bottomTabs);
-        this.logTab.show();
+        // this.logTab.show();
 
         if (!this.bottomTabPanel.isVisible())
         {
@@ -509,6 +509,7 @@ export default class Gui extends Events
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
+
     }
 
     hideBottomTabs()
