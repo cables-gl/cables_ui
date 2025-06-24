@@ -83,6 +83,8 @@ export default class ModalError
             }
             catch (e)
             {
+                console.log("modalerror error", e);
+                return;
                 // browser not supported, we don't care at this point
             }
 

@@ -413,6 +413,14 @@ class UiOp extends Op
         this.setUiError("webglgpu", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
+            // int inputs
+            if (this.portsIn[i].uiAttribs.increment == "integer")
+            {
+                this.setUiError("intfloat", null);
+                if (this.portsIn[i].get() - Math.floor(this.portsIn[i].get()) != 0)
+                    this.setUiError("intfloat", "input is a floating point number, it should be a integer number,use floor,ceil or round op ", 1);
+            }
+
             if (this.portsIn[i].links.length && this.portsIn[i].links[0])
             {
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);

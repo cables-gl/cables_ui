@@ -521,6 +521,7 @@ export default class PatchSaveServer extends Events
         }
         gui.patchView.removeLostSubpatches();
         subPatchOpUtil.saveUnsavedPatchSubpatchOps();
+        gui.corePatch().checkLinkTimeWarnings();
     }
 
     finishAnimations()

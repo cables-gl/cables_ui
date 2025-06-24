@@ -373,6 +373,18 @@ class UiPatch extends Patch
         cb(count, ops, refNewOp);
     }
 
+    checkLinkTimeWarnings()
+    {
+
+        const perf = gui.uiProfiler.start("[corePatchExt] checkLinkTimeWarnings");
+        const ops = gui.corePatch().ops;
+
+        for (let i = 0; i < ops.length; i++)
+            ops[i].checkLinkTimeWarnings();
+
+        perf.finish();
+    }
+
     checkExtensionOpPatchAssets()
     {
         const perf = gui.uiProfiler.start("checkExtOpsPatchAssets");

@@ -10,11 +10,11 @@ import GlPatch from "./glpatch.js";
 import defaultOps from "../defaultops.js";
 import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import { userSettings } from "../components/usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
 import { UiOp } from "../core_extend_op.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -328,7 +328,7 @@ export default class GlOp extends Events
 
     _initGl()
     {
-        this._glRectBg = this._instancer.createRect({ "draggable": true });
+        this._glRectBg = this._instancer.createRect({ "draggable": true, "name": "opBg" });
         this._glRectBg.setSize(gluiconfig.opWidth, gluiconfig.opHeight);
         this._glRectBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
