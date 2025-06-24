@@ -109,7 +109,7 @@ export default class GlSplineDrawer
 
         if (this._splines.length == 0) return;
 
-        if (this._rebuildLater)
+        if (this._rebuildLater > 0)
         {
             if (performance.now() - this._rebuildLater > 30) this.rebuild();
             // if (gui.finishedLoading)

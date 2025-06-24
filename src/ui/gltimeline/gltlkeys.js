@@ -207,6 +207,7 @@ export class glTlKeys extends Events
         const wasSelected = this.#hasSelectedKeys;
         this.#hasSelectedKeys = false;
 
+        const perf = gui.uiProfiler.start("[gltl] update");
         for (let i = 0; i < this.#keys.length; i++)
         {
             const tlKey = this.#keys[i];
@@ -222,6 +223,8 @@ export class glTlKeys extends Events
             }
 
         }
+        perf.finish();
+
         if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
         this.setKeyPositions();
@@ -288,6 +291,7 @@ export class glTlKeys extends Events
 
     updateColors()
     {
+        const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
         if (this.#spline)
         {
             if (this.#anim.tlActive && !this.#port.animMuted)
@@ -335,6 +339,8 @@ export class glTlKeys extends Events
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             keyRect.setColorArray(col);
         }
+
+        perf.finish();
     }
 
     setKeyPositions()
@@ -343,6 +349,7 @@ export class glTlKeys extends Events
 
         if (this.#keys.length != this.#anim.keys.length) this.init();
 
+        const perf = gui.uiProfiler.start("[gltl] setkeypositions");
         for (let i = 0; i < this.#keys.length; i++)
         {
             const animKey = this.#anim.keys[i];
@@ -417,6 +424,7 @@ export class glTlKeys extends Events
                         k.rect.setPosition(this.getKeyWidth() / 2, -this.animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
                 }
             }
+            perf.finish();
         }
 
         this.updateColors();
@@ -467,7 +475,7 @@ export class glTlKeys extends Events
             }
 
             const tlKey = new TlKey(this.#glTl, this, key);
-            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions(); });
+            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions(); this.update(); });
             tlKey.on(TlKey.EVENT_HOVERCHANGE, () => { this.updateColors(); });
             this.#keys.push(tlKey);
             this.#keyLookup[key.id] = tlKey;
