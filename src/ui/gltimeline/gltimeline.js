@@ -194,7 +194,7 @@ export class GlTimeline extends Events
         this.bgRect.setPosition(0, 20, 1);
         this.bgRect.setColorArray(gui.theme.colors_patch.background);
 
-        this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": true, "interactive": true, "name": "cursorVert" });
+        this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorVert" });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
         this.cursorVertLineRect.setPosition(0, 0, -1);
         this.setColorRectSpecial(this.cursorVertLineRect);
@@ -225,7 +225,7 @@ export class GlTimeline extends Events
         this.#rectHoverKey.setPosition(40, 20, -0.2);
         this.#rectHoverKey.setColor(1, 1, 0, 1);
 
-        this.#rectSelect = this.#rectsOver.createRect({ "draggable": true, "interactive": true, "name": "rectSelect" });
+        this.#rectSelect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "rectSelect" });
         this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);

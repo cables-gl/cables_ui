@@ -111,11 +111,11 @@ export default class GlSplineDrawer
 
         if (this._rebuildLater)
         {
-            if (gui.finishedLoading)
-            {
-                this.rebuild();
-            }
-            else
+            // if (gui.finishedLoading)
+            // {
+            //     this.rebuild();
+            // }
+            // else
             {
                 clearTimeout(this._laterTimeout);
                 this._laterTimeout = setTimeout(
@@ -710,14 +710,17 @@ export default class GlSplineDrawer
         this._mesh.setAttribute("splineProgress", this._pointsProgress, 1);
         this._mesh.setAttribute("splineLength", this._pointsSplineLength, 1);
 
-        perfAttribs.finish();
+        perfAttribs.finish(this._splines.length + "splines, length " + newLength);
 
         const perfAttribs2 = gui.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
 
         for (let i = 0; i < this._splines.length; i++)
-            this._updateAttribsCoordinates(this._splines[i].index);
+        {
 
-        perfAttribs2.finish();
+            this._updateAttribsCoordinates(this._splines[i].index);
+        }
+
+        perfAttribs2.finish("num" + this._splines.length);
 
         this._rebuildLater = false;
         perf.finish();

@@ -84,7 +84,8 @@ export class glTlScroll extends Events
 
     updateIndicators()
     {
-        const steps = Math.floor(this.#width / 10);
+
+        const steps = Math.floor((this.#width || 10) / 10);
         const stepSeconds = this.#glTl.duration / steps;
         this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
 

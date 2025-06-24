@@ -7,6 +7,8 @@
             <th>count</th>
             <th>last</th>
             <th>avg</th>
+            <th>max</th>
+            <th>info</th>
         </tr>
 
         {{#each measures}}
@@ -15,6 +17,8 @@
                 <td class="{{color}}">{{count}}</td>
                 <td class="{{color}}">{{last}}</td>
                 <td class="{{color}}">{{avg}}</td>
+                <td class="{{color}}">{{max}}</td>
+                <td class="{{color}}">{{text}}</td>
             </tr>
         {{/each}}
     </table>

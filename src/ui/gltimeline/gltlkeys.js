@@ -36,6 +36,8 @@ export class glTlKeys extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
+    #keys = [];
+
     /** @type {Array<GlRect>} */
     #keyRects = [];
 
