@@ -1798,7 +1798,7 @@ export default class Gui extends Events
 
         ele.byId("menubar").classList.remove("hidden");
 
-        if (this.userSettings.get("showUIPerf") == true) gui.uiProfiler.show();
+        if (this.userSettings.get("showUIPerf") == true) CmdUi.profileUI();
 
         if (this._corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))timelineCommands.functions.openGlTimeline();
 
