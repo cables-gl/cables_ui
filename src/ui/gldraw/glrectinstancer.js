@@ -659,7 +659,7 @@ export default class GlRectInstancer extends Events
     }
 
     /**
-     * @param {Object} [options]
+     * @param {import("./glrect.js").GlRectOptions} [options]
      */
     createRect(options)
     {
@@ -667,9 +667,9 @@ export default class GlRectInstancer extends Events
         const r = new GlRect(this, options);
         this.#rects.push(r);
 
-        if (options.draggable)
+        if (options[GlRect.OPTION_DRAGGABLE])
         {
-            this.allowDragging = options.draggable;
+            this.allowDragging = options[GlRect.OPTION_DRAGGABLE];
             r.on(GlRect.EVENT_DRAGSTART, (rect) =>
             {
                 if (this.allowDragging && !this.#draggingRects.includes(rect))

@@ -3,10 +3,12 @@ import { vec4 } from "gl-matrix";
 import { Texture } from "cables";
 import { logStack } from "cables/src/core/utils.js";
 import GlRectInstancer from "./glrectinstancer.js";
+import { glTimelineCanvas } from "../gltimeline/gltimelinecanvas.js";
 
 /**
  * @typedef {Object} GlRectOptions
  * @property {Boolean} [interactive]
+ * @property {Boolean} [draggable]
  * @property {String} [name]
  * @property {GlRect} [parent]
  */
@@ -19,6 +21,24 @@ import GlRectInstancer from "./glrectinstancer.js";
  */
 export default class GlRect extends Events
 {
+    static EVENT_POINTER_HOVER = "hover";
+    static EVENT_POINTER_UNHOVER = "unhover";
+    static EVENT_POINTER_MOVE = "pointerMove";
+    static EVENT_POINTER_UP = "mouseup";
+    static EVENT_POINTER_DOWN = "mousedown";
+
+    static EVENT_DRAG = "drag";
+    static EVENT_DRAGSTART = "dragStart";
+    static EVENT_DRAGEND = "dragEnd";
+
+    static EVENT_POSITIONCHANGED = "positionChanged";
+    static EVENT_TEXTURECHANGED = "textureChanged";
+
+    static OPTION_INTERACTIVE = "interactive";
+    static OPTION_DRAGGABLE = "draggable";
+    static OPTION_PARENT = "parent";
+    static OPTION_NAME = "name";
+
     color = vec4.create();
     colorHover = null;
     interactive = true;
@@ -57,23 +77,6 @@ export default class GlRect extends Events
 
     #log = new Logger("GlRect");
 
-    static EVENT_POINTER_HOVER = "hover";
-    static EVENT_POINTER_UNHOVER = "unhover";
-    static EVENT_POINTER_MOVE = "pointerMove";
-    static EVENT_POINTER_UP = "mouseup";
-    static EVENT_POINTER_DOWN = "mousedown";
-
-    static EVENT_DRAG = "drag";
-    static EVENT_DRAGSTART = "dragStart";
-    static EVENT_DRAGEND = "dragEnd";
-
-    static EVENT_POSITIONCHANGED = "positionChanged";
-    static EVENT_TEXTURECHANGED = "textureChanged";
-
-    static OPTION_INTERACTIVE = "interactive";
-    static OPTION_PARENT = "parent";
-    static OPTION_NAME = "name";
-
     name = "unknown";
 
     /**
@@ -91,7 +94,8 @@ export default class GlRect extends Events
         this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
         options = options || {};
 
-        if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options.interactive;
+        if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options[GlRect.OPTION_INTERACTIVE];
+        if (options.hasOwnProperty(GlRect.OPTION_DRAGGABLE)) this.#draggable = options[GlRect.OPTION_DRAGGABLE];
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
         if (options.hasOwnProperty(GlRect.OPTION_NAME)) this.name = options.name;
     }
