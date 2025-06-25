@@ -1036,6 +1036,7 @@ export class GlTimeline extends Events
     _onCanvasMouseUp(e)
     {
         this.#rects.mouseUp(e);
+        this.#rectsOver.mouseUp(e);
         this.mouseDown = false;
         this.selectRect = null;
         this.#rectSelect.setSize(0, 0);

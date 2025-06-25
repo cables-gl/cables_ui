@@ -317,8 +317,11 @@ export default class GlRect extends Events
     setParent(p)
     {
         this.#parent = p;
-        p.addChild(this);
-        this.#visible = p.visible;
+        if (p)
+        {
+            p.addChild(this);
+            this.#visible = p.visible;
+        }
         this.updateParentPosition();
     }
 
@@ -388,11 +391,11 @@ export default class GlRect extends Events
         if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_UP, e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseUp(e);
 
-        if (this.#isDragging)
-        {
-            this.mouseDragEnd();
-            // console.log("dragennnnnnnddd", this.name, this.#isDragging);
-        }
+        // if (this.#isDragging)
+        // {
+        //     this.mouseDragEnd();
+        //     // console.log("dragennnnnnnddd", this.name, this.#isDragging);
+        // }
 
     }
 
@@ -482,7 +485,7 @@ export default class GlRect extends Events
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
-    mouseDragEnd()
+    mouseDragEnd(e)
     {
         if (this.interactive) this.emitEvent(GlRect.EVENT_DRAGEND, this);
         this.#isDragging = false;
@@ -535,6 +538,7 @@ export default class GlRect extends Events
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
+                    console.log("drag start", this.name);
                     this.emitEvent(GlRect.EVENT_DRAGSTART, this, x, y, button, e);
                 }
                 this.#dragOffsetX = x;
@@ -544,15 +548,19 @@ export default class GlRect extends Events
         }
     }
 
+    /**
+     * @param {GlRect} child
+     */
     removeChild(child)
     {
         const idx = this.childs.indexOf(child);
-        child._parent = null;
+        child.setParent(null);
         if (idx >= 0) this.childs.splice(idx, 1);
     }
 
     dispose()
     {
+        if (this.#isDragging) this.emitEvent(GlRect.EVENT_DRAGEND);
         this.visible = false;
         if (this.#parent) this.#parent.removeChild(this);
         this.disposed = true;

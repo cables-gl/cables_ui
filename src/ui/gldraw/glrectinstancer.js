@@ -678,7 +678,7 @@ export default class GlRectInstancer extends Events
                 }
             });
 
-            r.on(GlRect.EVENT_DRAGEND, () => {});
+            // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
         r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
@@ -701,6 +701,7 @@ export default class GlRectInstancer extends Events
             for (let i = 0; i < this.#draggingRects.length; i++)
             {
                 this.#draggingRects[i].mouseDrag(x, y, button, event);
+                console.log("draggingrects", this.#draggingRects[i].name);
             }
 
             return;
@@ -738,14 +739,18 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
-        // console.log("rects", this.#rects);
+        console.log("mousupppppp", this.#name, this.#draggingRects.length);
+
+        for (let i = 0; i < this.#draggingRects.length; i++)
+        {
+            this.#draggingRects[i].mouseDragEnd(e);
+            console.log("dragenddddddd", this.#draggingRects[i].name);
+        }
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
         this.#draggingRects = [];
 
-        // if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
-        // this.#draggingRect = null;
     }
 
     /**
