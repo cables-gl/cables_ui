@@ -27,6 +27,7 @@ export class UiProfilerTab extends Events
         this._tab.on("close", () =>
         {
             userSettings.set("showUIPerf", false);
+            clearTimeout(this._timeout);
         });
 
         ele.byId("uiPerfFilter").value = this.#filter;
@@ -40,20 +41,24 @@ export class UiProfilerTab extends Events
         this.update();
     }
 
+    /**
+     * @param {any} name
+     */
     highlight(name)
     {
         for (const i in gui.uiProfiler._measures) gui.uiProfiler._measures[i].highlight = false;
         this._currentHighlight = name;
         userSettings.set("uiPerfLastHighlight", name);
-        // if (userSettings.get("showUIPerf")) this.show();
     }
 
+    /**
+     * @param {string} str
+     */
     filter(str)
     {
         this.#filter = str;
         this.update();
         userSettings.set("showUIPerfFilter", this.#filter);
-
     }
 
     update()
@@ -71,7 +76,6 @@ export class UiProfilerTab extends Events
             {
                 avg += gui.uiProfiler._measures[i].times[j];
                 max = Math.max(gui.uiProfiler._measures[i].times[j]);
-
             }
 
             avg /= gui.uiProfiler._measures[i].times.length;

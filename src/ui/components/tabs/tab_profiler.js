@@ -172,7 +172,7 @@ export default class Profiler
 
                 html += "<tr><td><span>";
                 if (sortedItems.length > 0)
-                    for (i = 0; i < 2 - (item.percent + "").length; i++)
+                    for (let j = 0; j < 2 - (item.percent + "").length; j++)
                         pad += "&nbsp;";
 
                 html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td>";
@@ -239,7 +239,7 @@ export default class Profiler
                 item = sortedItems[i];
                 pad = "";
 
-                if (sortedItems.length > 0) for (i = 0; i < 2 - (item.peak + "").length; i++)pad += "&nbsp;";
+                if (sortedItems.length > 0) for (let j = 0; j < 2 - (item.peak + "").length; j++)pad += "&nbsp;";
                 html += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
             }
         }

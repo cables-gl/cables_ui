@@ -644,12 +644,10 @@ body
         /* bottom:0px; */
         /* display:none; */
         font-family: monospace;
-
     }
 
     #uiperf
     {
-
         td
         {
             color:#fff;
@@ -668,10 +666,12 @@ body
         {
             color:#777;
         }
+
         .col_recent
         {
             color:#bbb;
         }
+
         .col_active
         {
             color:#fff;
@@ -683,7 +683,6 @@ body
         position:absolute;
     }
 
-
     #bgpreviewButtons
     {
         display:block;
@@ -693,7 +692,6 @@ body
     {
         margin-right:10px;
         margin-top:10px;
-        // display:none;
     }
 
     #bgpreview

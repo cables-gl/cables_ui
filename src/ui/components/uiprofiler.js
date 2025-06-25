@@ -1,7 +1,3 @@
-import { ele } from "cables-shared-client/index.js";
-import { getHandleBarHtml } from "../utils/handlebars.js";
-import { userSettings } from "./usersettings.js";
-
 export default class UiProfiler
 {
 
@@ -11,13 +7,6 @@ export default class UiProfiler
         this.ignore = undefined;
 
     }
-
-    // hide()
-    // {
-    //     this._eleContainer.style.display = "none";
-    //     clearTimeout(this._timeout);
-    //     userSettings.set("showUIPerf", false);
-    // }
 
     print()
     {
@@ -54,6 +43,10 @@ export default class UiProfiler
         const r =
         {
             "start": performance.now(),
+
+            /**
+             * @param {string} [text]
+             */
             finish(text)
             {
                 if (ignorethis || !perf._measures) return;
@@ -63,7 +56,6 @@ export default class UiProfiler
                 perf._measures[name].count = perf._measures[name].count || 0;
                 perf._measures[name].count++;
                 perf._measures[name].text = text;
-
                 perf._measures[name].times = perf._measures[name].times || [];
 
                 try
