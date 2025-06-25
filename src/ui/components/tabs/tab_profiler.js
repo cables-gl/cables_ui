@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { Patch } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { gui } from "../../gui.js";
@@ -23,8 +24,8 @@ export default class Profiler
         this._subTab = 0;
 
         gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
-        gui.corePatch().on(CABLES.Patch.EVENT_OP_ADDED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
-        gui.corePatch().on(CABLES.Patch.EVENT_OP_DELETED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
         gui.corePatch().on("onUnLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     }
 

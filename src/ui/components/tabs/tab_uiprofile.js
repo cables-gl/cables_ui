@@ -23,6 +23,12 @@ export class UiProfilerTab extends Events
         this._currentHighlight = userSettings.get("uiPerfLastHighlight");
         this.#filter = userSettings.get("showUIPerfFilter") || "";
         this._ignore = false;
+
+        this._tab.on("close", () =>
+        {
+            userSettings.set("showUIPerf", false);
+        });
+
         ele.byId("uiPerfFilter").value = this.#filter;
         ele.byId("uiPerfFilter").addEventListener("input", () =>
         {
