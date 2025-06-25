@@ -387,7 +387,7 @@ export default class GlRect extends Events
         if (this.#isDragging)
         {
             this.mouseDragEnd();
-            console.log("dragennnnnnnddd", this.name, this.#isDragging);
+            // console.log("dragennnnnnnddd", this.name, this.#isDragging);
         }
 
     }
@@ -474,7 +474,7 @@ export default class GlRect extends Events
             this.#dragStartX = this.x;
             this.#dragStartY = this.y;
         }
-        console.log("drag", this.#isDragging, this.name);
+        // console.log("drag", this.#isDragging, this.name);
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
@@ -527,7 +527,7 @@ export default class GlRect extends Events
             {
                 if (!this.#isDragging)
                 {
-                    console.log("dragstart", this.name, button);
+                    // console.log("dragstart", this.name, button);
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;

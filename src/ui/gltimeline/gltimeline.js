@@ -788,7 +788,7 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
-        console.log("selectedkeys", this.#selectedKeys.length);
+        // console.log("selectedkeys", this.#selectedKeys.length);
     }
 
     predragSelectedKeys()
