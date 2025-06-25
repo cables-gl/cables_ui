@@ -60,11 +60,17 @@ export default class UiProfiler
         {
             const lastTime = Math.round(this._measures[i].times[this._measures[i].times.length - 1] * 1000) / 1000;
             let avg = 0;
+            let max = -88888;
             for (let j = 0; j < this._measures[i].times.length; j++)
+            {
                 avg += this._measures[i].times[j];
+                max = Math.max(this._measures[i].times[j]);
+
+            }
 
             avg /= this._measures[i].times.length;
             avg = Math.round(avg * 1000) / 1000;
+            max = Math.round(max * 1000) / 1000;
 
             if (this._currentHighlight && this._currentHighlight == i)
             {
@@ -83,7 +89,9 @@ export default class UiProfiler
                         "color": color,
                         "name": i,
                         "count": this._measures[i].count,
+                        "text": this._measures[i].text,
                         "last": lastTime,
+                        "max": max,
                         "avg": avg
                     });
         }
@@ -139,7 +147,7 @@ export default class UiProfiler
         const r =
         {
             "start": performance.now(),
-            finish()
+            finish(text)
             {
                 if (ignorethis || !perf._measures) return;
                 const time = performance.now() - this.start;
@@ -147,6 +155,7 @@ export default class UiProfiler
                 perf._measures[name] = perf._measures[name] || {};
                 perf._measures[name].count = perf._measures[name].count || 0;
                 perf._measures[name].count++;
+                perf._measures[name].text = text;
 
                 perf._measures[name].times = perf._measures[name].times || [];
 

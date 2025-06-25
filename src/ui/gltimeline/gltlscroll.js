@@ -84,7 +84,8 @@ export class glTlScroll extends Events
 
     updateIndicators()
     {
-        const steps = Math.floor(this.#width / 10);
+
+        const steps = Math.floor((this.#width || 10) / 10);
         const stepSeconds = this.#glTl.duration / steps;
         this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
 
@@ -105,9 +106,10 @@ export class glTlScroll extends Events
             if (found)
             {
                 const x = stepSeconds * i * this.#glTl.view.pixelPerSecond;
-                this.#indicatorRects[i].setPosition(x, this.height / 2 - 5, -0.1);
-                this.#indicatorRects[i].setShape(GlRectInstancer.SHAPE_RHOMB);
-                this.#indicatorRects[i].setSize(10, 10);
+                this.#indicatorRects[i].setPosition(x, this.height / 3, -0.1);
+                // this.#indicatorRects[i].setShape(GlRectInstancer.SHAPE_RHOMB);
+                this.#indicatorRects[i].setSize(stepSeconds * this.#glTl.view.pixelPerSecond / 3, this.height / 3);
+
                 this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
                 this.#indicatorRects[i].setParent(this.#bgRect);
             }
