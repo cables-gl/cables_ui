@@ -36,35 +36,52 @@ export class glTlScroll extends Events
         this._log = new Logger("gltlscroll");
         this.#glTl = glTl;
 
-        this.#bgRect = this.#glTl.rects.createRect({ "name": "scroll bg", "draggable": true, "interactive": true });
+        this.#bgRect = this.#glTl.rects.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
         this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, false, this.#glTl.rects);
+        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, true, this.#glTl.rects);
 
-        this.#bgRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
+        this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
-            if (this.#lastdown != 0 && performance.now() - this.#lastdown < 250) this.showAll();
-
-            console.log("text", performance.now() - this.#lastdown);
-            this.#lastdown = performance.now();
-
-            console.log("${}POINTER DOWN");
-            const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
-            this.#glTl.view.scrollTo((perc * this.#glTl.duration));
-        });
-
-        this.#bgRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
-        {
-            this.#dragStart = x;
-        });
-
-        this.#bgRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
-        {
-            const perc = (this.#dragStart + offX - this.#dragBar.getWidth() / 2) / this.#width;
-            this.#glTl.view.scrollTo((perc * this.#glTl.duration));
+            console.log("text", e);
+            // const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
+            const f = (e.posX - e.delta) / this.#width * this.#glTl.duration;
+            //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
+            this.#glTl.view.scrollTo(f);
 
         });
+        this.#dragBar.on(glTlDragArea.EVENT_SCALE, (e) =>
+        {
+
+            console.log("scale.........", this.#dragBar.getWidth());
+            this.#glTl.view.setZoomLength(e.origWidth * e.factor / this.#width * this.#glTl.duration);
+            this.update();
+
+        });
+
+        // this.#bgRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
+        // {
+        //     if (this.#lastdown != 0 && performance.now() - this.#lastdown < 250) this.showAll();
+
+        //     console.log("text", performance.now() - this.#lastdown);
+        //     this.#lastdown = performance.now();
+
+        //     console.log("${}POINTER DOWN");
+        //     const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
+        //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
+        // });
+
+        // this.#bgRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
+        // {
+        //     this.#dragStart = x;
+        // });
+
+        // this.#bgRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
+        // {
+        //     const perc = (this.#dragStart + offX - this.#dragBar.getWidth() / 2) / this.#width;
+        //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
+        // });
 
         this.#glRectCursor = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
@@ -84,7 +101,6 @@ export class glTlScroll extends Events
 
     updateIndicators()
     {
-
         const steps = Math.floor((this.#width || 10) / 10);
         const stepSeconds = this.#glTl.duration / steps;
         this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);

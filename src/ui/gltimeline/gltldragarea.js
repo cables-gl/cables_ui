@@ -5,6 +5,8 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 export class glTlDragArea extends Events
 {
+    static EVENT_MOVE = "move";
+    static EVENT_SCALE = "scale";
 
     /** @type {GlRect} */
     rectMove = null;
@@ -25,6 +27,7 @@ export class glTlDragArea extends Events
     isDragging = false;
     #dragStartX = 0;
     #dragStartWidth;
+    #delta;
 
     /**
      * @param {GlTimeline} glTl
@@ -56,25 +59,13 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
 
-        // this.#rectSizeRight.on(GlRect.EVENT_DRAG, () =>
-        // {
-        //     console.log("drag");
-        //     this.isDragging = true;
-
-        // });
-        // this.#rectSizeLeft.on(GlRect.EVENT_DRAG, () =>
-        // {
-        //     console.log("drag");
-        //     this.isDragging = true;
-
-        // });
-
         /// ////
 
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
             this.#dragStartX = e.offsetX;
             this.#glTl.predragSelectedKeys();
+            this.#delta = e.offsetX - this.rectMove.x;
             this.isDragging = true;
         });
 
@@ -82,7 +73,7 @@ export class glTlDragArea extends Events
         {
             let offpixel = this.#dragStartX - e.offsetX;
 
-            this.emitEvent("move", offpixel);
+            this.emitEvent(glTlDragArea.EVENT_MOVE, { "offpixel": offpixel, "posX": e.offsetX, "delta": this.#delta });
 
             this.isDragging = true;
 
@@ -109,7 +100,7 @@ export class glTlDragArea extends Events
             const factor = Math.max(0.000001, (e.offsetX - this.rectMove.x) / this.#dragStartWidth);
 
             const newPos = this.#dragStartX + off;
-            this.emitEvent("scale", factor);
+            this.emitEvent(glTlDragArea.EVENT_SCALE, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
             this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
 
             this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);

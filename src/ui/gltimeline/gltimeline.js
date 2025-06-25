@@ -283,14 +283,14 @@ export class GlTimeline extends Events
 
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
-        this.selectedKeysDragArea.on("move", (offpixel) =>
+        this.selectedKeysDragArea.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
-            let offTime = -this.view.pixelToTime(offpixel);
+            let offTime = -this.view.pixelToTime(e.offpixel);
 
             this.dragSelectedKeys(offTime, 0, true);
         });
 
-        this.selectedKeysDragArea.on("scale", (factor) =>
+        this.selectedKeysDragArea.on(glTlDragArea.EVENT_SCALE, (e) =>
         {
             let mintime = 9999999;
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -300,7 +300,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
             {
-                this.#selectedKeys[i].set({ "time": mintime + ((this.#selectedKeys[i].temp.preDragTime - mintime) * factor) });
+                this.#selectedKeys[i].set({ "time": mintime + ((this.#selectedKeys[i].temp.preDragTime - mintime) * e.factor) });
                 this.#selectedKeys[i].anim.sortSoon();
             }
 
@@ -1795,42 +1795,6 @@ export class GlTimeline extends Events
         });
     }
 
-    // /**
-    //  * @param {Anim} anim
-    //  */
-    // addUndoStart(anim)
-    // {
-    //     const s = anim.getSerialized();
-    //     this.undoStart = s;
-    // }
-
-    // /**
-    //  * @param {Anim} anim
-    //  * @param {any} title
-    //  */
-    // addUndoFinish(anim, title)
-    // {
-    //     const undoStart = this.undoStart;
-    //     const undoEnd = anim.getSerialized();
-
-    //     undo.add({
-    //         "title": title,
-    //         undo()
-    //         {
-    //             anim.clear();
-    //             anim.deserialize(undoStart);
-    //         },
-    //         redo()
-    //         {
-    //             anim.clear();
-    //             anim.deserialize(undoEnd);
-
-    //         }
-    //     });
-    // }
-    //
-    //
-
     updateParamKeyframes()
     {
         // todo: further optimize: check if keys or selection has changed....
@@ -1856,9 +1820,9 @@ export class GlTimeline extends Events
                     if (op.portsIn[i].isAnimated())
                     {
                         const elkf = ele.byId("paramportkeyframe_" + op.portsIn[i].id);
-
                         const t = this.cursorTime;
                         const key = op.portsIn[i].anim.getKey(t);
+
                         if (key && key.time == t)
                         {
                             if (elkf)
