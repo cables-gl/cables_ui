@@ -591,6 +591,17 @@ export class GlTimeline extends Events
         else
             ele.byId("autokeyframe").parentElement.classList.remove("button-active");
 
+        if (this.loopAreaEnd == 0)
+        {
+            ele.byId("tlloop").classList.remove("icon-x");
+            ele.byId("tlloop").classList.add("icon-refresh");
+        }
+        else
+        {
+            ele.byId("tlloop").classList.remove("icon-refresh");
+            ele.byId("tlloop").classList.add("icon-x");
+        }
+
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
         ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
@@ -1304,7 +1315,8 @@ export class GlTimeline extends Events
             this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
             this.#rectLoopArea.setSize(this.view.timeToPixelScreen(this.loopAreaEnd) - this.view.timeToPixelScreen(this.loopAreaStart), 2222);
 
-            this.loopAreaDrag.set(
+            if (this.loopAreaEnd == 0) this.loopAreaDrag.set(0, 0, 0, 0);
+            else this.loopAreaDrag.set(
                 this.view.timeToPixelScreen(this.loopAreaStart),
                 this.getFirstLinePosy() - 15,
                 -0.9,
