@@ -287,8 +287,25 @@ export class GlTimeline extends Events
         {
             let offTime = -this.view.pixelToTime(offpixel);
 
-            console.log("drag", offTime);
             this.dragSelectedKeys(offTime, 0, true);
+        });
+
+        this.selectedKeysDragArea.on("scale", (factor) =>
+        {
+            let mintime = 9999999;
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                mintime = Math.min(this.#selectedKeys[i].temp.preDragTime, mintime);
+            }
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                this.#selectedKeys[i].set({ "time": mintime + ((this.#selectedKeys[i].temp.preDragTime - mintime) * factor) });
+                this.#selectedKeys[i].anim.sortSoon();
+            }
+
+            this.updateAllElements();
+
         });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>

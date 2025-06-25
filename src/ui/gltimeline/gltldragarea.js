@@ -24,6 +24,7 @@ export class glTlDragArea extends Events
     height = 24;
     isDragging = false;
     #dragStartX = 0;
+    #dragStartWidth;
 
     /**
      * @param {GlTimeline} glTl
@@ -73,7 +74,6 @@ export class glTlDragArea extends Events
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
             this.#dragStartX = e.offsetX;
-            console.log("dragstart area");
             this.#glTl.predragSelectedKeys();
             this.isDragging = true;
         });
@@ -90,30 +90,33 @@ export class glTlDragArea extends Events
 
         this.rectMove.on(GlRect.EVENT_DRAGEND, () =>
         {
-            console.log("dragEND area");
             this.isDragging = false;
         });
         /// ////
 
-        this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
             this.#dragStartX = e.offsetX;
-            console.log("dragstart area");
+            this.#dragStartWidth = this.rectMove.w;
             this.#glTl.predragSelectedKeys();
             this.isDragging = true;
         });
 
-        this.rectMove.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+        this.#rectSizeRight.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
         {
-            let offpixel = this.#dragStartX - e.offsetX;
-
-            this.emitEvent("move", offpixel);
-
             this.isDragging = true;
+            const off = e.offsetX - this.#dragStartX;
+            const factor = (e.offsetX - this.rectMove.x) / this.#dragStartWidth;
+
+            const newPos = this.#dragStartX + off;
+            this.emitEvent("scale", factor);
+            this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
+
+            this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
 
         });
 
-        this.rectMove.on(GlRect.EVENT_DRAGEND, () =>
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>
         {
             console.log("dragEND area");
             this.isDragging = false;
