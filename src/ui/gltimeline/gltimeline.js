@@ -1828,8 +1828,21 @@ export class GlTimeline extends Events
     //         }
     //     });
     // }
+    //
+    //
 
     updateParamKeyframes()
+    {
+        // todo: further optimize: check if keys or selection has changed....
+        if (!this.keyparamsTimeout)
+            this.keyparamsTimeout = setTimeout(() =>
+            {
+                this.#updateParamKeyframes();
+                this.keyparamsTimeout = null;
+            }, 50);
+    }
+
+    #updateParamKeyframes()
     {
         if (!gui.corePatch().timer.isPlaying())
         {

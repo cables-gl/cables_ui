@@ -106,14 +106,13 @@ export class glTlDragArea extends Events
         {
             this.isDragging = true;
             const off = e.offsetX - this.#dragStartX;
-            const factor = (e.offsetX - this.rectMove.x) / this.#dragStartWidth;
+            const factor = Math.max(0.000001, (e.offsetX - this.rectMove.x) / this.#dragStartWidth);
 
             const newPos = this.#dragStartX + off;
             this.emitEvent("scale", factor);
             this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
 
             this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
-
         });
 
         this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>
@@ -121,6 +120,7 @@ export class glTlDragArea extends Events
             console.log("dragEND area");
             this.isDragging = false;
         });
+
     }
 
     /**
