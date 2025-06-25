@@ -46,7 +46,7 @@ export class glTlScroll extends Events
         {
             console.log("text", e);
             // const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
-            const f = (e.posX - e.delta) / this.#width * this.#glTl.duration;
+            const f = (e.x - e.delta) / this.#width * this.#glTl.duration;
             //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
             this.#glTl.view.scrollTo(f);
 

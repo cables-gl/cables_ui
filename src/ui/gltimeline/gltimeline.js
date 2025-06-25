@@ -161,6 +161,9 @@ export class GlTimeline extends Events
     /** @type {glTlDragArea} */
     selectedKeysDragArea = null;
 
+    /** @type {glTlDragArea} */
+    loopAreaDrag = null;
+
     /**
      * @param {CglContext} cgl
     */
@@ -188,6 +191,9 @@ export class GlTimeline extends Events
 
         this.selectedKeysDragArea = new glTlDragArea(this, null, true, this.#rectsOver);
         this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
+
+        this.loopAreaDrag = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
 
         this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
         this.bgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": true, "name": "bgrect" });
@@ -217,7 +223,7 @@ export class GlTimeline extends Events
 
         this.#rectLoopArea = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "loopArea" });
         this.#rectLoopArea.setSize(40, 20);
-        this.#rectLoopArea.setPosition(40, 20, 0.15);
+        this.#rectLoopArea.setPosition(40, this.getFirstLinePosy(), 0.15);
         this.#rectLoopArea.setColor(0.9, 0.2, 0.2, 0.1);
 
         this.#rectHoverKey = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "keyHover" });
@@ -283,6 +289,28 @@ export class GlTimeline extends Events
 
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
 
+        this.loopAreaDrag.on(glTlDragArea.EVENT_MOVE, (e) =>
+        {
+            const t = this.view.pixelToTime(e.x - e.delta) + this.view.offset;
+            const l = this.loopAreaEnd - this.loopAreaStart;
+
+            this.loopAreaStart = t;
+            this.loopAreaEnd = t + l;
+        });
+        this.loopAreaDrag.on(glTlDragArea.EVENT_RIGHT, (e) =>
+        {
+            const t = this.view.pixelToTime(e.x) + this.view.offset;
+            this.loopAreaEnd = t;
+        });
+
+        this.loopAreaDrag.on(glTlDragArea.EVENT_LEFT, (e) =>
+        {
+            const t = this.view.pixelToTime(e.x) + this.view.offset;
+
+            this.loopAreaStart = t;
+        });
+        /// ////////
+
         this.selectedKeysDragArea.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
             let offTime = -this.view.pixelToTime(e.offpixel);
@@ -290,7 +318,7 @@ export class GlTimeline extends Events
             this.dragSelectedKeys(offTime, 0, true);
         });
 
-        this.selectedKeysDragArea.on(glTlDragArea.EVENT_SCALE, (e) =>
+        this.selectedKeysDragArea.on(glTlDragArea.EVENT_RIGHT, (e) =>
         {
             let mintime = 9999999;
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -972,7 +1000,7 @@ export class GlTimeline extends Events
                     this.getFirstLinePosy(),
                     -0.9,
                     this.view.timeToPixel(timeBounds.max - timeBounds.min),
-                    10);
+                    15);
     }
 
     showKeyParamsSoon()
@@ -1273,8 +1301,15 @@ export class GlTimeline extends Events
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
-            this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), 0, -1);
+            this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
             this.#rectLoopArea.setSize(this.view.timeToPixelScreen(this.loopAreaEnd) - this.view.timeToPixelScreen(this.loopAreaStart), 2222);
+
+            this.loopAreaDrag.set(
+                this.view.timeToPixelScreen(this.loopAreaStart),
+                this.getFirstLinePosy() - 15,
+                -0.9,
+                (this.view.timeToPixelScreen(this.loopAreaEnd) - this.view.timeToPixelScreen(this.loopAreaStart)),
+                15);
 
             this.#cgl.popDepthTest();
         }
