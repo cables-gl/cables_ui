@@ -188,6 +188,7 @@ export class GlTimeline extends Events
 
         this.selectedKeysDragArea = new glTlDragArea(this, null, true, this.#rectsOver);
         this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
+
         this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
         this.bgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": true, "name": "bgrect" });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
@@ -281,6 +282,14 @@ export class GlTimeline extends Events
         this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
 
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+
+        this.selectedKeysDragArea.on("move", (offpixel) =>
+        {
+            let offTime = -this.view.pixelToTime(offpixel);
+
+            console.log("drag", offTime);
+            this.dragSelectedKeys(offTime, 0, true);
+        });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
@@ -607,7 +616,6 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
         if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
-
         else if (this.#focusScroll)
         {
         }
@@ -622,6 +630,7 @@ export class GlTimeline extends Events
             catch (er) { this._log.log(er); }
 
             this.#rects.mouseDown(e, e.offsetX, e.offsetY);
+            this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
         }
 
         this.mouseDown = true;
