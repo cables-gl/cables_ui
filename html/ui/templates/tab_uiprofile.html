@@ -13,3 +13,32 @@
     </div>
 
 </script>
+<script id="uiperformance" type="text/x-handlebars-template">
+
+
+    <table class="table">
+        <tr>
+            <th>name</th>
+            <th>count</th>
+            <th>ps</th>
+            <th>last</th>
+            <th>avg</th>
+            <th>max</th>
+            <th>info</th>
+        </tr>
+
+        {{#each measures}}
+            <tr onclick="gui.uiProfiler.highlight('{{name}}')" class="{{#if highlight}}highlighted{{/if}}" >
+                <td class="{{color}}">{{name}}</td>
+                <td class="{{color}}">{{count}}</td>
+                <td class="{{color}}">{{aps}}</td>
+                <td class="{{color}}">{{last}}ms</td>
+                <td class="{{color}}">{{avg}}ms</td>
+                <td class="{{color}}">{{max}}ms</td>
+                <td class="{{color}}">{{text}}</td>
+            </tr>
+        {{/each}}
+    </table>
+
+
+</script>

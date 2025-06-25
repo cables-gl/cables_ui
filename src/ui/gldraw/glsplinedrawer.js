@@ -1,4 +1,4 @@
-import { CGL, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 
 import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
@@ -83,6 +83,9 @@ export default class GlSplineDrawer
         });
     }
 
+    /**
+     * @param {number} v
+     */
     set zPos(v)
     {
         this._uniZpos.setValue(v);
@@ -102,31 +105,23 @@ export default class GlSplineDrawer
      * @param {number} scrollX
      * @param {number} scrollY
      * @param {number} zoom
-     * @param {number} mouseX
-     * @param {number} mouseY
+     * @param {number} _mouseX
+     * @param {number} _mouseY
      */
-    render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
+    render(resX, resY, scrollX, scrollY, zoom, _mouseX, _mouseY)
     {
-
         if (this._splines.length == 0) return;
 
         if (this._rebuildLater > 0)
         {
             if (performance.now() - this._rebuildLater > 30) this.rebuild();
-            // if (gui.finishedLoading)
-            // {
-            //     this.rebuild();
-            // }
-            // else
-            {
-                clearTimeout(this._laterTimeout);
-                this._laterTimeout = setTimeout(
-                    () =>
-                    {
-                        this.rebuild();
-                        this._rebuildLater = 0;
-                    }, 30);
-            }
+            clearTimeout(this._laterTimeout);
+            this._laterTimeout = setTimeout(
+                () =>
+                {
+                    this.rebuild();
+                    this._rebuildLater = 0;
+                }, 30);
         }
 
         if (this._mesh)

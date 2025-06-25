@@ -55,6 +55,13 @@ export default class UiProfiler
                 perf._measures[name] = perf._measures[name] || {};
                 perf._measures[name].count = perf._measures[name].count || 0;
                 perf._measures[name].count++;
+                perf._measures[name].apsCount++;
+                if (!perf._measures[name].lastFps || performance.now() - perf._measures[name].lastFps)
+                {
+                    perf._measures[name].lastFps = performance.now();
+                    perf._measures[name].aps = perf._measures[name].apsCount;
+                    perf._measures[name].apsCount = 0;
+                }
                 perf._measures[name].text = text;
                 perf._measures[name].times = perf._measures[name].times || [];
 

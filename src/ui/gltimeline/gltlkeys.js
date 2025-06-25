@@ -227,7 +227,7 @@ export class glTlKeys extends Events
 
         if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
-        this.setKeyPositions();
+        this.setKeyPositions("update");
 
         /// /////////
 
@@ -343,10 +343,13 @@ export class glTlKeys extends Events
         perf.finish();
     }
 
-    setKeyPositions()
+    /**
+     * @param {string} [reason]
+     */
+    setKeyPositions(reason)
     {
+        // console.log("reason", reason);
         if (this.#glTl.isSelecting()) this.testSelected();
-
         if (this.#keys.length != this.#anim.keys.length) this.init();
 
         const perf = gui.uiProfiler.start("[gltl] setkeypositions");
@@ -475,7 +478,7 @@ export class glTlKeys extends Events
             }
 
             const tlKey = new TlKey(this.#glTl, this, key);
-            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions(); this.update(); });
+            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions("poschange"); this.update(); });
             tlKey.on(TlKey.EVENT_HOVERCHANGE, () => { this.updateColors(); });
             this.#keys.push(tlKey);
             this.#keyLookup[key.id] = tlKey;
@@ -685,7 +688,7 @@ export class glTlKeys extends Events
     render()
     {
         if (this.#glTl.isAnimated) this.update();
-        this.setKeyPositions();
+        // this.setKeyPositions();
     }
 
 }

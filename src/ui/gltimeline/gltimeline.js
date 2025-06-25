@@ -782,7 +782,11 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-            if (this.#selectedKeys[i].temp.preDragTime == undefined) return console.log("predrag undefined!");
+            if (this.#selectedKeys[i].temp.preDragTime === undefined)
+            {
+                this.predragSelectedKeys();
+                console.log("predrag undefined!");
+            }
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 

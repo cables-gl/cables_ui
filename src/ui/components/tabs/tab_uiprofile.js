@@ -100,6 +100,7 @@ export class UiProfilerTab extends Events
                         "name": i,
                         "count": gui.uiProfiler._measures[i].count,
                         "text": gui.uiProfiler._measures[i].text,
+                        "aps": gui.uiProfiler._measures[i].aps || 0,
                         "last": lastTime,
                         "max": max,
                         "avg": avg

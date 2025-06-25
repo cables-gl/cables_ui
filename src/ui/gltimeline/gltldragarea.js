@@ -23,7 +23,7 @@ export class glTlDragArea extends Events
 
     height = 24;
     isDragging = false;
-    #dragStartX;
+    #dragStartX = 0;
 
     /**
      * @param {GlTimeline} glTl
@@ -70,20 +70,20 @@ export class glTlDragArea extends Events
 
         /// ////
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAGSTART, (_rect, x) =>
+        this.#rectMiddle.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
-            this.#dragStartX = x;
+            this.#dragStartX = e.offsetX;
             console.log("dragstart area");
             this.#glTl.predragSelectedKeys();
             this.isDragging = true;
         });
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAG, (_rect, x) =>
+        this.#rectMiddle.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
         {
-            let offpixel = this.#dragStartX - x;
+            let offpixel = this.#dragStartX - e.offsetX;
             let offTime = -this.#glTl.view.pixelToTime(offpixel);
 
-            // console.log("drag", offTime);
+            console.log("drag", offTime);
             this.isDragging = true;
             this.#glTl.dragSelectedKeys(offTime, 0, true);
 
@@ -92,6 +92,7 @@ export class glTlDragArea extends Events
         this.#rectMiddle.on(GlRect.EVENT_DRAGEND, () =>
         {
 
+            console.log("dragEND area");
             this.isDragging = false;
         });
 
