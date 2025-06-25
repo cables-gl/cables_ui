@@ -1091,6 +1091,7 @@ export class GlTimeline extends Events
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
         this.splines.setFadeout(false);
+        this.splines.doTessEdges = false;
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];

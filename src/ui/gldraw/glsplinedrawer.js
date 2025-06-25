@@ -1,6 +1,7 @@
 import { CGL, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 
 import { utils } from "cables";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";

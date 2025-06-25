@@ -748,7 +748,7 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
-        console.log("rects", this.#rects);
+        // console.log("rects", this.#rects);
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
