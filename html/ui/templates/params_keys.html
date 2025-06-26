@@ -1,7 +1,7 @@
 <script id="params_keys" type="text/x-handlebars-template">
     <div class="panel_head">
         <h2 class="nomargin">{{numKeys}} keys selected
-            <a id="kp_delete" class="button-small"><span class="icon icon-trash"></span></a>
+            <a id="kp_more" class="button-small"><span class="icon icon-three-dots"></span></a>
         </h2>
         length: {{timeLength}} <br/>
         time range: {{timeBounds}}<br/>
@@ -56,6 +56,8 @@
         {{/if}}
 
         <a id="kp_movecursor" class="button-small">Move to cursor</a>
+        <br/>
+        <a id="kp_fit" class="button-small">Fit view</a>
         <br/>
 
         move <input style="width:50px" id="kp_input_time" value="{{lastInputMove}}">&nbsp;

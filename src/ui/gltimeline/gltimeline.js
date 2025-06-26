@@ -22,6 +22,7 @@ import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import uiconfig from "../uiconfig.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
+import { contextMenu } from "../elements/contextmenu.js";
 
 /**
  * @typedef TlConfig
@@ -297,6 +298,7 @@ export class GlTimeline extends Events
             this.loopAreaStart = t;
             this.loopAreaEnd = t + l;
         });
+
         this.loopAreaDrag.on(glTlDragArea.EVENT_RIGHT, (e) =>
         {
             const t = this.view.pixelToTime(e.x) + this.view.offset;
@@ -1992,13 +1994,37 @@ export class GlTimeline extends Events
             });
         this.#keyOverEl.innerHTML = html;
 
-        ele.clickable(ele.byId("kp_delete"), () =>
+        ele.clickable(ele.byId("kp_more"), (e) =>
         {
-            this.deleteSelectedKeys();
+            contextMenu.show(
+                {
+                    "items":
+                        [
+                            {
+                                "title": "Set same time for selected keys",
+                                "func": () =>
+                                {
+                                    this.setSelectedKeysTime();
+                                }
+                            },
+                            {
+                                "title": "Delete selected keys",
+                                "func": () =>
+                                {
+                                    this.deleteSelectedKeys();
+                                }
+                            },
+
+                        ]
+                }, e.target);
         });
         ele.clickable(ele.byId("kp_movecursor"), () =>
         {
             this.moveSelectedKeys();
+        });
+        ele.clickable(ele.byId("kp_fit"), () =>
+        {
+            this.fit();
         });
 
         ele.clickable(ele.byId("kp_bezreset"), () =>

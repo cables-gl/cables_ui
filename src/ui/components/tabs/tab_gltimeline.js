@@ -168,40 +168,9 @@ export default class GlTimelineTab
 
         });
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
+        this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-minimize2\" data-info=\"tlfit\"></span>", () =>
         {
-            contextMenu.show(
-                {
-                    "items":
-                        [
-                            {
-                                "title": "Delete Selected Keys",
-                                "func": () => { this.tlCanvas.glTimeline.deleteSelectedKeys(); }
-                            },
-                            {
-                                "title": "Move Selected Keys to cursor",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.moveSelectedKeys();
-                                }
-                            },
-                            {
-                                "title": "Set same time for selected keys",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.setSelectedKeysTime();
-                                }
-                            },
-
-                            {
-                                "title": "fit into view",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.fit();
-                                }
-                            },
-                        ]
-                }, e.target);
+            this.tlCanvas.glTimeline.fit();
         });
 
         this.#tab.addButtonSpacer();
