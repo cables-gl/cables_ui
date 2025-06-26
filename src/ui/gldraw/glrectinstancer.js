@@ -659,7 +659,7 @@ export default class GlRectInstancer extends Events
     }
 
     /**
-     * @param {Object} [options]
+     * @param {import("./glrect.js").GlRectOptions} [options]
      */
     createRect(options)
     {
@@ -667,9 +667,9 @@ export default class GlRectInstancer extends Events
         const r = new GlRect(this, options);
         this.#rects.push(r);
 
-        if (options.draggable)
+        if (options[GlRect.OPTION_DRAGGABLE])
         {
-            this.allowDragging = options.draggable;
+            this.allowDragging = options[GlRect.OPTION_DRAGGABLE];
             r.on(GlRect.EVENT_DRAGSTART, (rect) =>
             {
                 if (this.allowDragging && !this.#draggingRects.includes(rect))
@@ -678,7 +678,7 @@ export default class GlRectInstancer extends Events
                 }
             });
 
-            r.on(GlRect.EVENT_DRAGEND, () => {});
+            // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
         r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
@@ -698,20 +698,11 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         if (this.allowDragging && this.#draggingRects.length > 0 && button)
         {
-            let z = 99;
-            let r = null;
             for (let i = 0; i < this.#draggingRects.length; i++)
             {
-                // console.log("drag", this.#draggingRects[i].name);
-
-                if (this.#draggingRects[i].absZ < z)
-                {
-                    r = this.#draggingRects[i];
-                    z = r.absZ;
-                }
-
+                this.#draggingRects[i].mouseDrag(x, y, button, event);
+                console.log("draggingrects", this.#draggingRects[i].name);
             }
-            r.mouseDrag(x, y, button, event);
 
             return;
         }
@@ -748,14 +739,18 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
-        console.log("rects", this.#rects);
+        console.log("mousupppppp", this.#name, this.#draggingRects.length);
+
+        for (let i = 0; i < this.#draggingRects.length; i++)
+        {
+            this.#draggingRects[i].mouseDragEnd(e);
+            console.log("dragenddddddd", this.#draggingRects[i].name);
+        }
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
         this.#draggingRects = [];
 
-        // if (this.#draggingRect) this.#draggingRect.mouseDragEnd();
-        // this.#draggingRect = null;
     }
 
     /**

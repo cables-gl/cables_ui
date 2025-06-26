@@ -1441,13 +1441,16 @@ export default class GlOp extends Events
                 if (thePort)
                 {
                     let portVar = thePort.get();
-                    if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
-                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
-
-                    if (str != this._titleExt.text)
+                    if (portVar)
                     {
-                        this._titleExt.text = str;
-                        doUpdateSize = true;
+                        if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
+                        const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
+
+                        if (str != this._titleExt.text)
+                        {
+                            this._titleExt.text = str;
+                            doUpdateSize = true;
+                        }
                     }
                 }
             }

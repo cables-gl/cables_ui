@@ -5,9 +5,12 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 export class glTlDragArea extends Events
 {
+    static EVENT_MOVE = "move";
+    static EVENT_RIGHT = "scale";
+    static EVENT_LEFT = "left";
 
     /** @type {GlRect} */
-    #rectMiddle = null;
+    rectMove = null;
 
     /** @type {GlRect} */
     #rectSizeLeft = null;
@@ -23,7 +26,9 @@ export class glTlDragArea extends Events
 
     height = 24;
     isDragging = false;
-    #dragStartX;
+    #dragStartX = 0;
+    #dragStartWidth;
+    #delta;
 
     /**
      * @param {GlTimeline} glTl
@@ -39,11 +44,11 @@ export class glTlDragArea extends Events
         console.log("new dragarea,", interactive);
 
         rectInst = rectInst || this.#glTl.rects;
-        this.#rectMiddle = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
-        this.#rectMiddle.setSize(this.#width, this.height);
-        if (parent) this.#rectMiddle.setParent(parent);
-        this.#rectMiddle.setColorHover(0.65, 0.55, 0.65, 1);
-        this.#rectMiddle.setColor(0.4, 0.4, 0.4, 1);
+        this.rectMove = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
+        this.rectMove.setSize(this.#width, this.height);
+        if (parent) this.rectMove.setParent(parent);
+        this.rectMove.setColorHover(0.65, 0.55, 0.65, 1);
+        this.rectMove.setColor(0.4, 0.4, 0.4, 1);
 
         this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
@@ -55,43 +60,81 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
 
-        // this.#rectSizeRight.on(GlRect.EVENT_DRAG, () =>
-        // {
-        //     console.log("drag");
-        //     this.isDragging = true;
-
-        // });
-        // this.#rectSizeLeft.on(GlRect.EVENT_DRAG, () =>
-        // {
-        //     console.log("drag");
-        //     this.isDragging = true;
-
-        // });
-
         /// ////
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAGSTART, (_rect, x) =>
+        this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
-            this.#dragStartX = x;
-            console.log("dragstart area");
+            this.#dragStartX = e.offsetX;
+            this.#glTl.predragSelectedKeys();
+            this.#delta = e.offsetX - this.rectMove.x;
+            this.isDragging = true;
+        });
+
+        this.rectMove.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+        {
+            let offpixel = this.#dragStartX - e.offsetX;
+
+            this.emitEvent(glTlDragArea.EVENT_MOVE, { "offpixel": offpixel, "x": e.offsetX, "delta": this.#delta });
+
+            this.isDragging = true;
+
+        });
+
+        this.rectMove.on(GlRect.EVENT_DRAGEND, () =>
+        {
+            this.isDragging = false;
+        });
+        /// ////
+
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+        {
+            this.#dragStartX = e.offsetX;
+            this.#dragStartWidth = this.rectMove.w;
             this.#glTl.predragSelectedKeys();
             this.isDragging = true;
         });
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAG, (_rect, x) =>
+        this.#rectSizeRight.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
         {
-            let offpixel = this.#dragStartX - x;
-            let offTime = -this.#glTl.view.pixelToTime(offpixel);
-
-            // console.log("drag", offTime);
             this.isDragging = true;
-            this.#glTl.dragSelectedKeys(offTime, 0, true);
+            const off = e.offsetX - this.#dragStartX;
+            const factor = Math.max(0.000001, (e.offsetX - this.rectMove.x) / this.#dragStartWidth);
 
+            const newPos = this.#dragStartX + off;
+            this.emitEvent(glTlDragArea.EVENT_RIGHT, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
+            this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
+
+            this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
         });
 
-        this.#rectMiddle.on(GlRect.EVENT_DRAGEND, () =>
+        this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>
         {
+            console.log("dragEND area");
+            this.isDragging = false;
+        });
+        /// ////
 
+        this.#rectSizeLeft.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
+        {
+            this.#dragStartX = e.offsetX;
+            this.#dragStartWidth = this.rectMove.w;
+            this.#glTl.predragSelectedKeys();
+            this.isDragging = true;
+        });
+
+        this.#rectSizeLeft.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+        {
+            this.isDragging = true;
+
+            this.emitEvent(glTlDragArea.EVENT_LEFT, { "x": e.offsetX, "origWidth": this.#dragStartWidth });
+            // this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
+
+            // this.#rectSizeLeft.setPosition(newPos, this.#rectSizeLeft.y);
+        });
+
+        this.#rectSizeLeft.on(GlRect.EVENT_DRAGEND, () =>
+        {
+            console.log("dragEND area");
             this.isDragging = false;
         });
 
@@ -114,8 +157,8 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
 
-        this.#rectMiddle.setSize(this.#width, this.height);
-        this.#rectMiddle.setPosition(x, y, z);
+        this.rectMove.setSize(this.#width, this.height);
+        this.rectMove.setPosition(x, y, z);
 
         this.#rectSizeLeft.setPosition(x - this.#handleWidth, y, z);
         this.#rectSizeRight.setPosition(x + this.#width, y, z);
@@ -128,11 +171,11 @@ export class glTlDragArea extends Events
      */
     setColor(r, g, b, a = 1)
     {
-        this.#rectMiddle.setColorHover(1, 1, 1, 1);
-        this.#rectSizeLeft.setColorHover(1, 1, 1, 1);
-        this.#rectSizeRight.setColorHover(1, 1, 1, 1);
+        this.rectMove.setColorHover(r, g, b, 1);
+        this.#rectSizeLeft.setColorHover(r, g, b, 1);
+        this.#rectSizeRight.setColorHover(r, g, b, 1);
 
-        this.#rectMiddle.setColor(r, g, b, a);
+        this.rectMove.setColor(r, g, b, a);
         this.#rectSizeLeft.setColor(r, g, b, a * 0.7);
         this.#rectSizeRight.setColor(r, g, b, a * 0.7);
     }
@@ -144,13 +187,13 @@ export class glTlDragArea extends Events
 
     get isHovering()
     {
-        const h = this.#rectMiddle.isHovering() || this.#rectSizeLeft.isHovering() || this.#rectSizeRight.isHovering();
+        const h = this.rectMove.isHovering() || this.#rectSizeLeft.isHovering() || this.#rectSizeRight.isHovering();
         return h;
     }
 
     get x()
     {
-        return this.#rectMiddle.x;
+        return this.rectMove.x;
     }
 
 }

@@ -116,21 +116,26 @@ export default class GlTimelineTab
         this.#tab.addButton("<span id=\"togglegraph2\"  class=\"nomargin icon info icon-chart-gantt\" data-info=\"tltogglegraph\"></span>", () => { this.tlCanvas.glTimeline.toggleGraphLayout(); }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
-        this.#tab.addButton("<span class=\"nomargin icon info icon-log-in-rot\" data-info=\"tlloopstart\"></span>", () =>
+        // this.#tab.addButton("<span class=\"nomargin icon info icon-log-in-rot\" data-info=\"tlloopstart\"></span>", () =>
+        // {
+        // }, ["button-left"]);
+        this.#tab.addButton("<span id=\"tlloop\" class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", (e) =>
         {
-            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
-            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaEnd);
-        }, ["button-left"]);
-        this.#tab.addButton("<span class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", () =>
-        {
-            this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
-        }, ["button-middle"]);
+            if (this.tlCanvas.glTimeline.loopAreaEnd == 0)
+            {
+                this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.view.timeLeft + this.tlCanvas.glTimeline.view.visibleTime / 2;
+                this.tlCanvas.glTimeline.loopAreaEnd = this.tlCanvas.glTimeline.loopAreaStart + 2;
+            }
+            else this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
 
-        this.#tab.addButton("<span class=\"nomargin icon info icon-log-in\" data-info=\"tlloopend\"></span>", () =>
-        {
-            this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
-            this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
-        }, ["button-right"]);
+            this.tlCanvas.glTimeline.updateIcons();
+        });
+
+        // this.#tab.addButton("<span class=\"nomargin icon info icon-log-in\" data-info=\"tlloopend\"></span>", () =>
+        // {
+        //     this.tlCanvas.glTimeline.loopAreaStart = Math.min(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
+        //     this.tlCanvas.glTimeline.loopAreaEnd = Math.max(this.tlCanvas.glTimeline.cursorTime, this.tlCanvas.glTimeline.loopAreaStart);
+        // }, ["button-right"]);
         this.#tab.addButtonSpacer();
 
         this.#tab.addButton("<span class=\"nomargin icon info icon-diamond-plus\" data-info=\"tladdkey\"></span>", () =>

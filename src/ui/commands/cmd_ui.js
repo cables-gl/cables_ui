@@ -11,6 +11,7 @@ import Tips from "../dialogs/tips.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
+import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -277,7 +278,9 @@ CABLES_CMD_UI.profileGPU = function ()
 
 CABLES_CMD_UI.profileUI = function ()
 {
-    gui.uiProfiler.show();
+    // gui.uiProfiler.show();
+    new UiProfilerTab(gui.mainTabs);
+    gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_UI.zoomOut = function ()
