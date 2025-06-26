@@ -45,9 +45,9 @@ export class TlKey extends Events
 
     /**
      * @param {GlTimeline} gltl
+     * @param {glTlKeys} tlkeys
      * @param {AnimKey} key
      * @param {GlRect} [rect]
-     * @param {glTlKeys} tlkeys
      */
     constructor(gltl, tlkeys, key, rect)
     {
@@ -55,17 +55,13 @@ export class TlKey extends Events
         this.tlkeys = tlkeys;
         this.key = key;
         this.#glTl = gltl;
-        this.rect = rect;
+        this.rect = rect || this.#glTl.rects.createRect({ "draggable": true, "interactive": true, "name": "key" });
 
         key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
         {
             if (k == this.key) this.dispose();
         });
 
-        key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
-        {
-            if (k == this.key) this.dispose();
-        });
     }
 
     update()
@@ -240,6 +236,7 @@ export class TlKey extends Events
 
     dispose()
     {
+
         if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
         if (this.cp2r) this.cp2r = this.cp2r.dispose();

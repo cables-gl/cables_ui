@@ -481,9 +481,7 @@ export class glTlKeys extends Events
             tlKey.on(TlKey.EVENT_HOVERCHANGE, () => { this.updateColors(); });
             this.#keys.push(tlKey);
             this.#keyLookup[key.id] = tlKey;
-
-            const keyRect = this.#glTl.rects.createRect({ "draggable": true, "interactive": true, "name": "key" });
-            tlKey.rect = keyRect;
+            const keyRect = tlKey.rect;
 
             this.setKeyShapeSize(keyRect);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
