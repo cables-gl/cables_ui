@@ -254,7 +254,6 @@ export class glTlKeys extends Events
 
                 let v = this.#anim.getValue(t);
 
-                // console.log("ttt", t, v, x);
                 if (v == lv && i < steps - 3)
                 {
                     skipped = true;
@@ -412,19 +411,19 @@ export class glTlKeys extends Events
                 const k = this.#keys[i];
                 const kr = this.#keys[i].rect;
                 const kr2 = this.#keys[i + 1].rect;
-                if (!k.rect) continue;
+                if (!k.areaRect) continue;
                 if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
                 {
-                    k.rect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
-                    k.rect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
+                    k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
+                    k.areaRect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
                 }
                 else
                 {
-                    k.rect.setSize(kr2.x - kr.x, this.animLine.height - 1);
+                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - 1);
                     if (this.showKeysAsFrames())
-                        k.rect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyHeight(), 0.4);
+                        k.areaRect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyHeight(), 0.4);
                     else
-                        k.rect.setPosition(this.getKeyWidth() / 2, -this.animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
+                        k.areaRect.setPosition(this.getKeyWidth() / 2, -this.animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
                 }
             }
             perf.finish();
@@ -646,16 +645,6 @@ export class glTlKeys extends Events
 
     reset()
     {
-        // for (let i = 0; i < this.#keyRects.length; i++)
-        // {
-        //     if (this.#keyRects[i].data.text) this.#keyRects[i].data.text.dispose();
-        //     if (this.#keyRects[i].data.cp1r) this.#keyRects[i].data.cp1r.dispose();
-        //     if (this.#keyRects[i].data.cp2r) this.#keyRects[i].data.cp2r.dispose();
-        //     if (this.#keyRects[i].data.cp1s) this.#keyRects[i].data.cp1s.dispose();
-        //     if (this.#keyRects[i].data.cp2s) this.#keyRects[i].data.cp2s.dispose();
-        //     this.#keyRects[i].dispose();
-        // }
-        // this.#keyRects = [];
         this.#keys = [];
         this.#needsUpdate = true;
         this.#glTl.setHoverKeyRect(null);

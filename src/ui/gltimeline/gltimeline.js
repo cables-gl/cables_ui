@@ -1,7 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
-import { logStack } from "cables/src/core/utils.js";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
@@ -351,6 +350,11 @@ export class GlTimeline extends Events
         gui.keys.key("c", "Center cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.view.centerCursor();
+        });
+
+        gui.keys.key("a", "move keys to cursor", "down", cgl.canvas.id, {}, () =>
+        {
+            this.moveSelectedKeys();
         });
 
         gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
@@ -1444,6 +1448,11 @@ export class GlTimeline extends Events
             console.log("zoomtoselection");
             this.zoomToFitSelection();
         }
+        else if (this.loopAreaEnd != 0)
+        {
+            console.log("zoomtoloop");
+            this.zoomToFitLoop();
+        }
         else
         {
             console.log("zoomto all keys");
@@ -1515,6 +1524,35 @@ export class GlTimeline extends Events
             gui.corePatch().timer.setTime(theKey.time);
             if (theKey.time > this.view.timeRight || theKey.time < this.view.timeLeft) this.view.centerCursor();
         }
+    }
+
+    toggleLoopArea()
+    {
+        if (this.loopAreaEnd == 0)
+        {
+            if (this.getNumSelectedKeys() > 0)
+            {
+                const b = this.getSelectedKeysBoundsTime();
+                this.loopAreaStart = b.min;
+                this.loopAreaEnd = b.max;
+            }
+            else
+            {
+                this.loopAreaStart = this.view.timeLeft + this.view.visibleTime / 2;
+                this.loopAreaEnd = this.loopAreaStart + 2;
+            }
+        }
+        else this.loopAreaStart = this.loopAreaEnd = 0;
+
+        this.updateIcons();
+    }
+
+    zoomToFitLoop()
+    {
+        const l = (this.loopAreaEnd - this.loopAreaStart);
+        const padd = l * 0.1;
+        this.view.setZoomLength(l + padd + padd);
+        this.view.scrollTo(this.loopAreaStart - padd);
     }
 
     zoomToFitSelection()

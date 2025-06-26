@@ -121,14 +121,8 @@ export default class GlTimelineTab
         // }, ["button-left"]);
         this.#tab.addButton("<span id=\"tlloop\" class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", (e) =>
         {
-            if (this.tlCanvas.glTimeline.loopAreaEnd == 0)
-            {
-                this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.view.timeLeft + this.tlCanvas.glTimeline.view.visibleTime / 2;
-                this.tlCanvas.glTimeline.loopAreaEnd = this.tlCanvas.glTimeline.loopAreaStart + 2;
-            }
-            else this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
+            this.tlCanvas.glTimeline.toggleLoopArea();
 
-            this.tlCanvas.glTimeline.updateIcons();
         });
 
         // this.#tab.addButton("<span class=\"nomargin icon info icon-log-in\" data-info=\"tlloopend\"></span>", () =>

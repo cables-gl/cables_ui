@@ -72,11 +72,14 @@ export class TlKey extends Events
     {
         const keyRect = this.rect;
         const key = this.key;
-
-        if (!this.text && key.uiAttribs.text)
+        if (key.uiAttribs.text)
         {
-            this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
-            this.text.setParentRect(keyRect);
+            if (!this.text)
+            {
+                this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                this.text.setParentRect(keyRect);
+            }
+            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
         }
 
         if (!this.areaRect && key.uiAttribs.color)
@@ -84,7 +87,7 @@ export class TlKey extends Events
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             t.setParent(keyRect);
             t.setColor(1, 1, 0, 0.3);
-            t.setPosition(1, 1, 0);
+            t.setPosition(1, 1, -0.8);
             t.setSize(33, 33);
             t.setColorHex(key.uiAttribs.color);
             t.setOpacity(0.5);
@@ -239,8 +242,9 @@ export class TlKey extends Events
     {
         if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
-        if (this.cp2r) this.cp2s = this.cp2s.dispose();
+        if (this.cp2r) this.cp2r = this.cp2r.dispose();
         if (this.cp1s) this.cp1s = this.cp1s.dispose();
+        if (this.cp2s) this.cp2s = this.cp2s.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
 

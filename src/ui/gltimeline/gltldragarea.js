@@ -179,9 +179,9 @@ export class glTlDragArea extends Events
      */
     setColor(r, g, b, a = 1)
     {
-        this.rectMove.setColorHover(r, g, b, 1);
-        this.#rectSizeLeft.setColorHover(r, g, b, 1);
-        this.#rectSizeRight.setColorHover(r, g, b, 1);
+        this.rectMove.setColorHover(r, g, b, 0.7);
+        this.#rectSizeLeft.setColorHover(r, g, b, 0.7);
+        this.#rectSizeRight.setColorHover(r, g, b, 0.7);
 
         this.rectMove.setColor(r, g, b, a);
         this.#rectSizeLeft.setColor(r, g, b, a * 0.7);

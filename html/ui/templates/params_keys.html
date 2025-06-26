@@ -73,11 +73,11 @@
         <br/>
         <input style="width:250px" id="kp_comment" placeholder="comment" value="{{comment}}">&nbsp;
         <br/>
-        {{#each commentColors}}
-            <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
-        {{/each}}
-        <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="kp_colorbutton colorbutton"></a>
-        <br/>
+            {{#each commentColors}}
+                <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
+            {{/each}}
+            <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
+        <div style="clear:both"> </div>
         <br/>
 
         {{#each errors}}
