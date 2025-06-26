@@ -963,7 +963,6 @@ export default class PatchSaveServer extends Events
                 this._log.log(e);
             }
         }
-        this._log.log("REPORT", report);
         return report;
     }
 
