@@ -22,6 +22,7 @@ import uiconfig from "../uiconfig.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
+import defaultOps from "../defaultops.js";
 
 /**
  * @typedef TlConfig
@@ -896,6 +897,26 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "selselected";
         this.showKeyParamsSoon();
+    }
+
+    createAnimOpFromSelection()
+    {
+
+        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": (o) =>
+        {
+            console.log("op added", o);
+            console.log(o.portsIn[0].anim);
+
+            const anim = o.portsIn[0].anim;
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+            {
+                const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
+                anim.addKey(nk);
+            }
+
+        } });
+
     }
 
     /**
@@ -2050,6 +2071,13 @@ export class GlTimeline extends Events
                                 "func": () =>
                                 {
                                     this.deleteSelectedKeys();
+                                }
+                            },
+                            {
+                                "title": "Create Anim Op",
+                                "func": () =>
+                                {
+                                    this.createAnimOpFromSelection();
                                 }
                             },
 
