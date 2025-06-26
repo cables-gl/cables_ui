@@ -654,7 +654,12 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
+        for (let i in this.#keyLookup)
+        {
+            this.#keyLookup[i].dispose();
+        }
 
+        this.#keyLookup = {};
         this.removeAllEventListeners();
         this.#glTl.setHoverKeyRect(null);
 

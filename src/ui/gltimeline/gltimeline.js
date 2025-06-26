@@ -332,6 +332,7 @@ export class GlTimeline extends Events
             {
                 this.#selectedKeys[i].set({ "time": mintime + ((this.#selectedKeys[i].temp.preDragTime - mintime) * e.factor) });
                 this.#selectedKeys[i].anim.sortSoon();
+                this.snapSelectedKeyTimes();
             }
 
             this.updateAllElements();

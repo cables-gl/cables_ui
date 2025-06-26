@@ -23,7 +23,7 @@ export default class GlText
         {
             throw new Error("glgui text constructor without textwriter");
         }
-
+        this.disposed = false;
         this._visible = true;
         this._textWriter = textWriter;
         this._string = string || "";
@@ -55,7 +55,12 @@ export default class GlText
 
     set z(z) { this._z = z; this.rebuild(); }
 
-    set text(t) { this._string = t; this.rebuild(); }
+    set text(t)
+    {
+        if (this.disposed) return;
+        this._string = t;
+        this.rebuild();
+    }
 
     get text() { return this._string; }
 
@@ -133,6 +138,7 @@ export default class GlText
      */
     setColor(r, g = 1, b = 1, a = 1)
     {
+        if (this.disposed) return;
         if (r === undefined)r = g = b = 1.0;
         if (r.length)
         {
@@ -149,6 +155,7 @@ export default class GlText
      */
     setColorArray(r)
     {
+        if (this.disposed) return;
         vec4.set(this._color, r[0], r[1], r[2], 1);
 
         for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColorArray(this._color);
@@ -157,6 +164,7 @@ export default class GlText
 
     rebuild()
     {
+        if (this.disposed) return;
         let w = 0;
         for (let i = 0; i < this._string.length; i++)
         {
@@ -225,9 +233,13 @@ export default class GlText
 
     dispose()
     {
+        this.setColor(1, 0, 0, 1);
+        this.disposed = true;
         for (let i = 0; i < this._rects.length; i++)
             if (this._rects[i])
+            {
                 this._rects[i].dispose();
+            }
 
         this._rects.length = 0;
         this._string = "";
