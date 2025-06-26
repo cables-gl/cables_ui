@@ -293,7 +293,7 @@ export class glTlKeys extends Events
         const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
         if (this.#spline)
         {
-            if (this.#anim.tlActive && !this.#port.animMuted)
+            if (!this.#anim.uiAttribs.readOnly && this.#anim.tlActive && !this.#port.animMuted)
             {
                 if (this.#port.op.isCurrentUiOp()) this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
                 else this.#spline.setColorArray(glTlKeys.COLOR_NORMAL);
@@ -312,9 +312,9 @@ export class glTlKeys extends Events
 
             let col = glTlKeys.COLOR_INACTIVE;
             let colBez = [0, 0, 0, 0];
-            if (animKey.anim.tlActive)col = [0.8, 0.8, 0.8, 1];
+            if (!animKey.anim.uiAttribs.readOnly && animKey.anim.tlActive)col = [0.8, 0.8, 0.8, 1];
 
-            if (this.#glTl.isKeySelected(animKey))
+            if (!animKey.anim.uiAttribs.readOnly && this.#glTl.isKeySelected(animKey))
             {
                 if (!this.#hasSelectedKeys)
                 {
@@ -491,142 +491,145 @@ export class glTlKeys extends Events
 
             /** @type {Object} */
             let oldValues = {};
-
-            keyRect.draggableMove = true;
-            keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
-            {
-                if (glTlKeys.dragStarted) return;
-                if (this.#glTl.isSelecting()) return;
-
-                this.#glTl.setHoverKeyRect(keyRect);
-                showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
-                this.updateColors();
-            });
-
-            keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
-            {
-                if (this.#glTl.hoverKeyRect == keyRect) this.#glTl.setHoverKeyRect(null);
-                hideToolTip();
-            });
-
-            keyRect.on(GlRect.EVENT_POINTER_UP,
-                (e) =>
-                {
-                    glTlKeys.dragStarted = false;
-                    if (this.#glTl.isSelecting())
-                    {
-                        this.click = false;
-                        return;
-                    }
-                    if (this.click && !this.#glTl.isKeySelected(key))
-                    {
-                        if (this.#glTl.isSelecting()) return;
-                        if (glTlKeys.dragStarted) return;
-                        if (!e.shiftKey) this.#glTl.unSelectAllKeys("key up");
-
-                        console.log("click,.,.,.", e.shiftKey);
-                        this.#glTl.selectKey(key, this.#anim);
-                    }
-                    this.click = false;
-                    this.#glTl.hoverKeyRect = keyRect;
-                    this.update();
-
-                });
-
-            keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
+            if (!key.anim.uiAttribs.readOnly)
             {
 
-                if (this.#glTl.isSelecting()) return;
-
-                if (!this.#glTl.isKeySelected(key) && this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
+                keyRect.draggableMove = true;
+                keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
                 {
                     if (glTlKeys.dragStarted) return;
-                    if (!e.shiftKey) this.#glTl.unSelectAllKeys("keys down");
+                    if (this.#glTl.isSelecting()) return;
 
-                    this.#glTl.selectKey(key, this.#anim);
-                    this.#glTl.hoverKeyRect = keyRect;
-                    this.update();
-                }
-                this.click = true;
-            });
+                    this.#glTl.setHoverKeyRect(keyRect);
+                    showToolTip(e, "value: " + Math.round(key.value * 100) / 100);
+                    this.updateColors();
+                });
 
-            keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
-            {
-                console.log("key startdrag");
-                if (this.#glTl.isSelecting()) return;
-                glTlKeys.dragStartX = e.offsetX;
-                glTlKeys.dragStartY = e.offsetY;
-                this.#glTl.predragSelectedKeys();
-                if (button == 1 && !glTlKeys.dragStarted)
+                keyRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
                 {
-                    oldValues = this.#glTl.serializeSelectedKeys();
-                    glTlKeys.dragStarted = true;
-                    glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
-                    glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY);
+                    if (this.#glTl.hoverKeyRect == keyRect) this.#glTl.setHoverKeyRect(null);
+                    hideToolTip();
+                });
 
-                    if (e.altKey) this.#glTl.duplicateSelectedKeys();
-                }
-            });
+                keyRect.on(GlRect.EVENT_POINTER_UP,
+                    (e) =>
+                    {
+                        glTlKeys.dragStarted = false;
+                        if (this.#glTl.isSelecting())
+                        {
+                            this.click = false;
+                            return;
+                        }
+                        if (this.click && !this.#glTl.isKeySelected(key))
+                        {
+                            if (this.#glTl.isSelecting()) return;
+                            if (glTlKeys.dragStarted) return;
+                            if (!e.shiftKey) this.#glTl.unSelectAllKeys("key up");
 
-            keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
-            {
-                this.click = false;
-                if (this.#glTl.isSelecting()) return;
-                if (glTlKeys.startDragTime == -1111)
+                            console.log("click,.,.,.", e.shiftKey);
+                            this.#glTl.selectKey(key, this.#anim);
+                        }
+                        this.click = false;
+                        this.#glTl.hoverKeyRect = keyRect;
+                        this.update();
+
+                    });
+
+                keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
                 {
-                    console.log("cant drag....", glTlKeys.dragStarted, this.#glTl.isSelecting());
-                    return;
-                }
 
-                if (button == 2)
+                    if (this.#glTl.isSelecting()) return;
+
+                    if (!this.#glTl.isKeySelected(key) && this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
+                    {
+                        if (glTlKeys.dragStarted) return;
+                        if (!e.shiftKey) this.#glTl.unSelectAllKeys("keys down");
+
+                        this.#glTl.selectKey(key, this.#anim);
+                        this.#glTl.hoverKeyRect = keyRect;
+                        this.update();
+                    }
+                    this.click = true;
+                });
+
+                keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
                 {
+                    console.log("key startdrag");
+                    if (this.#glTl.isSelecting()) return;
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
-                }
-
-                if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
-                {
-                    let offX = e.offsetX;
-                    let offY = e.offsetY;
-
-                    let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.startDragTime;
-                    let offVal = glTlKeys.startDragValue - this.animLine.pixelToValue(offY);
-
-                    if (e.shiftKey)
+                    this.#glTl.predragSelectedKeys();
+                    if (button == 1 && !glTlKeys.dragStarted)
                     {
-                        if (Math.abs(glTlKeys.dragStartX - offX) > Math.abs(glTlKeys.dragStartY - offY)) offVal = 0;
-                        else offTime = 0;
+                        oldValues = this.#glTl.serializeSelectedKeys();
+                        glTlKeys.dragStarted = true;
+                        glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
+                        glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY);
+
+                        if (e.altKey) this.#glTl.duplicateSelectedKeys();
                     }
-
-                    if (this.#glTl.getNumSelectedKeys() > 0)
-                    {
-                        this.#glTl.dragSelectedKeys(offTime, offVal);
-                        this.#anim.sortKeys();
-                    }
-                    this.setKeyPositions();
-                    this.#glTl.setHoverKeyRect(keyRect);
-                    this.animLine.update();
-                    hideToolTip();
-                }
-            });
-
-            keyRect.on(GlRect.EVENT_DRAGEND, () =>
-            {
-                this.#anim.sortKeys();
-                this.#anim.removeDuplicates();
-                this.#glTl.needsUpdateAll = "dragged";
-                glTlKeys.dragStarted = false;
-
-                undo.add({
-                    "title": "timeline move keys",
-                    "undo": () =>
-                    {
-                        this.#glTl.deserializeKeys(oldValues);
-                    },
-                    redo() {}
                 });
-            });
 
+                keyRect.on(GlRect.EVENT_DRAG, (rect, offx, offy, button, e) =>
+                {
+                    this.click = false;
+                    if (this.#glTl.isSelecting()) return;
+                    if (glTlKeys.startDragTime == -1111)
+                    {
+                        console.log("cant drag....", glTlKeys.dragStarted, this.#glTl.isSelecting());
+                        return;
+                    }
+
+                    if (button == 2)
+                    {
+                        glTlKeys.dragStartX = e.offsetX;
+                        glTlKeys.dragStartY = e.offsetY;
+                    }
+
+                    if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
+                    {
+                        let offX = e.offsetX;
+                        let offY = e.offsetY;
+
+                        let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.startDragTime;
+                        let offVal = glTlKeys.startDragValue - this.animLine.pixelToValue(offY);
+
+                        if (e.shiftKey)
+                        {
+                            if (Math.abs(glTlKeys.dragStartX - offX) > Math.abs(glTlKeys.dragStartY - offY)) offVal = 0;
+                            else offTime = 0;
+                        }
+
+                        if (this.#glTl.getNumSelectedKeys() > 0)
+                        {
+                            this.#glTl.dragSelectedKeys(offTime, offVal);
+                            this.#anim.sortKeys();
+                        }
+                        this.setKeyPositions();
+                        this.#glTl.setHoverKeyRect(keyRect);
+                        this.animLine.update();
+                        hideToolTip();
+                    }
+                });
+
+                keyRect.on(GlRect.EVENT_DRAGEND, () =>
+                {
+                    this.#anim.sortKeys();
+                    this.#anim.removeDuplicates();
+                    this.#glTl.needsUpdateAll = "dragged";
+                    glTlKeys.dragStarted = false;
+
+                    undo.add({
+                        "title": "timeline move keys",
+                        "undo": () =>
+                        {
+                            this.#glTl.deserializeKeys(oldValues);
+                        },
+                        redo() {}
+                    });
+                });
+
+            }
             tlKey.update();
 
         }

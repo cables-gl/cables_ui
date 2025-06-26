@@ -325,11 +325,13 @@ export class GlTimeline extends Events
             let mintime = 9999999;
             for (let i = 0; i < this.#selectedKeys.length; i++)
             {
+                if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
                 mintime = Math.min(this.#selectedKeys[i].temp.preDragTime, mintime);
             }
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
             {
+                if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
                 this.#selectedKeys[i].set({ "time": mintime + ((this.#selectedKeys[i].temp.preDragTime - mintime) * e.factor) });
                 this.#selectedKeys[i].anim.sortSoon();
                 this.snapSelectedKeyTimes();
@@ -855,6 +857,8 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
+            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
+
             if (this.#selectedKeys[i].temp.preDragTime === undefined)
             {
                 this.predragSelectedKeys();
@@ -894,8 +898,10 @@ export class GlTimeline extends Events
     {
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeys[i].set({ "e": easing });
-
+        }
         this.needsUpdateAll = "selselected";
         this.showKeyParamsSoon();
     }
@@ -926,8 +932,10 @@ export class GlTimeline extends Events
     setSelectedKeysTime(time = this.cursorTime)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeys[i].set({ "t": time });
-
+        }
         this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "seltselectedtime";
     }
@@ -961,6 +969,7 @@ export class GlTimeline extends Events
         if (deltaTime == 0 && deltaValue == 0) return;
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
+            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeys[i].set({ "t": this.#selectedKeys[i].time + deltaTime, "v": this.#selectedKeys[i].value + deltaValue });
         }
 
@@ -969,6 +978,9 @@ export class GlTimeline extends Events
 
     }
 
+    /**
+     * @param {AnimKey[]} keys
+     */
     fixAnimsFromKeys(keys)
     {
         const anims = [];
@@ -1099,7 +1111,10 @@ export class GlTimeline extends Events
         });
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+        }
 
         this.unSelectAllKeys("delete keys");
         this.needsUpdateAll = "deletekey";
@@ -2019,6 +2034,7 @@ export class GlTimeline extends Events
         else this.showParams();
 
         let comment = "";
+        let hasReadOnly = false;
         let ease = this.#selectedKeys[0].getEasing();
         if (this.#selectedKeys.length == 1)
         {
@@ -2029,6 +2045,7 @@ export class GlTimeline extends Events
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
             {
+                hasReadOnly = hasReadOnly || this.#selectedKeys[i].anim.uiAttribs.readOnly || false;
                 showCurves = showCurves || ease > 4;
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
             }
@@ -2039,6 +2056,7 @@ export class GlTimeline extends Events
 
         const html = getHandleBarHtml(
             "params_keys", {
+                "writable": !hasReadOnly,
                 "numKeys": this.#selectedKeys.length,
                 "timeLength": timestr,
                 "timeBounds": timeBoundsStr,
@@ -2158,14 +2176,14 @@ export class GlTimeline extends Events
             this.#paramLastInputValue = off;
         });
 
-        ele.byId("kp_comment").addEventListener("input", () =>
-        {
-            let txt = ele.byId("kp_comment").value;
+        if (ele.byId("kp_comment"))
+            ele.byId("kp_comment").addEventListener("input", () =>
+            {
+                let txt = ele.byId("kp_comment").value;
 
-            for (let i = 0; i < this.#selectedKeys.length; i++)
-                this.#selectedKeys[i].setUiAttribs({ "text": txt });
-            // this.showParamKeys();
-        });
+                for (let i = 0; i < this.#selectedKeys.length; i++)
+                    this.#selectedKeys[i].setUiAttribs({ "text": txt });
+            });
 
         const buttons = ele.byClassAll("kp_colorbutton");
         for (let i = 0; i < buttons.length; i++)

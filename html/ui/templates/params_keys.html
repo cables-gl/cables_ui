@@ -8,6 +8,7 @@
         value range: {{valueBounds}}
 
     </div>
+    {{#if writable}}
     <div class="content panel">
 
         <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
@@ -84,4 +85,7 @@
         - {{.}}<br/>
         {{/each}}
     </div>
+            {{else}}
+            readonly!
+    {{/if}}
 </script>

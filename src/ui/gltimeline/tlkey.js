@@ -138,7 +138,6 @@ export class TlKey extends Events
      */
     bindBezCp(bezRect, cp, key, dir)
     {
-        // this.#bezCpSize = this.getKeyWidth() * 0.75;
         bezRect.setShape(6);
         bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);
         bezRect.setParent(this.rect.parent);
@@ -152,7 +151,6 @@ export class TlKey extends Events
             if (bezRect.color[3] == 0) return;
             this.#glTl.setHoverKeyRect(bezRect);
             this.emitEvent(TlKey.EVENT_HOVERCHANGE);
-            // this.updateColors();
         });
 
         bezRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
