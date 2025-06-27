@@ -253,13 +253,14 @@ export default class GlRect extends Events
         if (g === null) g = 1.0;
         if (b === null) b = 1.0;
         if (a === null) a = 1.0;
-        if (r.length)
+        if (r.length)// todo remove after jul25
         {
-            vec4.set(this.color, r[0], r[1], r[2], r[3]);
+            console.warn("seltcolor with array ILLEGAL@");
+            return;
         }
         else
             vec4.set(this.color, r, g, b, a);
-        this.#rectInstancer.setColor(this.#attrIndex, this.color);
+        this.#rectInstancer.setColorArray(this.#attrIndex, this.color);
     }
 
     /**
@@ -270,7 +271,7 @@ export default class GlRect extends Events
         arr = arr || [1, 1, 1, 1];
         if (arr.length == 3)arr[3] = 1;
         vec4.set(this.color, arr[0], arr[1], arr[2], arr[3]);
-        this.#rectInstancer.setColor(this.#attrIndex, this.color);
+        this.#rectInstancer.setColorArray(this.#attrIndex, this.color);
     }
 
     /**

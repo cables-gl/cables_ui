@@ -133,6 +133,7 @@ export default class GlRectInstancer extends Events
         this.#mesh.numInstances = this.#num;
 
         this.clear();
+        this.closestHoverElement = undefined;
     }
 
     set interactive(i) { this.#interactive = i; }
@@ -548,19 +549,26 @@ export default class GlRectInstancer extends Events
 
     /**
      * @param {number} idx
-     * @param {number |number[]} r
+     * @param {number[]} r
+     */
+    setColorArray(idx, r)
+    {
+        this.setColor(idx, r[0], r[1], r[2], r[3]);
+    }
+
+    /**
+     * @param {number} idx
+     * @param {number} r
      * @param {number} [g]
      * @param {number} [b]
      * @param {number} [a]
      */
     setColor(idx, r, g, b, a)
     {
-        if (r.length)
+        if (r.length)// todo remove after jul25
         {
-            a = r[3];
-            b = r[2];
-            g = r[1];
-            r = r[0];
+            console.warn("selcolor array illegal!");
+            return;
         }
         if (
             this._float32Diff(this._attrBuffCol[idx * 4 + 0], r) ||
@@ -672,6 +680,7 @@ export default class GlRectInstancer extends Events
             this.allowDragging = options[GlRect.OPTION_DRAGGABLE];
             r.on(GlRect.EVENT_DRAGSTART, (rect) =>
             {
+                // if (r == this.closestHoverElement)
                 if (this.allowDragging && !this.#draggingRects.includes(rect))
                 {
                     this.#draggingRects.push(rect);
@@ -694,23 +703,37 @@ export default class GlRectInstancer extends Events
      */
     mouseMove(x, y, button, event)
     {
-        const perf = gui.uiProfiler.start("[glrectinstancer] mousemove");
-        if (!this.#interactive) return;
-        if (this.allowDragging && this.#draggingRects.length > 0 && button)
+        const perf = gui.uiProfiler.start("[glrectinstancer " + this.#name + "] mousemove");
+
+        let closestR = null;
+        for (let i = 0; i < this.#rects.length; i++)
+        {
+
+            if (!this.#rects[i].parent)
+                this.#rects[i].mouseMove(x, y, button, event);
+
+            if (this.#rects[i].isHovering)
+                if (this.#rects[i].interactive)
+                {
+                    if (!closestR || this.#rects[i].absZ < closestR.absZ)closestR = this.#rects[i];
+                }
+        }
+
+        this.closestHoverElement = closestR;
+        if (this.closestHoverElement && !this.closestHoverElement.isHovering) this.closestHoverElement = null;
+
+        if (button && this.allowDragging && this.#draggingRects.length > 0)
         {
             for (let i = 0; i < this.#draggingRects.length; i++)
             {
                 this.#draggingRects[i].mouseDrag(x, y, button, event);
             }
 
-            return;
         }
 
-        for (let i = 0; i < this.#rects.length; i++)
-            if (!this.#rects[i].parent)
-                this.#rects[i].mouseMove(x, y, button, event);
-
-        perf.finish();
+        let str = "";
+        if (this.closestHoverElement)str = this.closestHoverElement.name;
+        perf.finish(str);
     }
 
     /**
