@@ -59,12 +59,12 @@ export class glTlDragArea extends Events
         this.rectMove.setColorHover(0.65, 0.65, 0.65, 1);
         this.rectMove.setColor(0.4, 0.4, 0.4, 1);
 
-        this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive });
+        this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea left" });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
         if (parent) this.#rectSizeLeft.setParent(parent);
         this.#rectSizeLeft.setColor(0.3, 0.3, 0.3, 1);
 
-        this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive });
+        this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea right" });
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
