@@ -45,9 +45,9 @@ export class TlKey extends Events
 
     /**
      * @param {GlTimeline} gltl
+     * @param {glTlKeys} tlkeys
      * @param {AnimKey} key
      * @param {GlRect} [rect]
-     * @param {glTlKeys} tlkeys
      */
     constructor(gltl, tlkeys, key, rect)
     {
@@ -55,28 +55,27 @@ export class TlKey extends Events
         this.tlkeys = tlkeys;
         this.key = key;
         this.#glTl = gltl;
-        this.rect = rect;
+        this.rect = rect || this.#glTl.rects.createRect({ "draggable": true, "interactive": true, "name": "key" });
 
         key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
         {
             if (k == this.key) this.dispose();
         });
 
-        key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
-        {
-            if (k == this.key) this.dispose();
-        });
     }
 
     update()
     {
         const keyRect = this.rect;
         const key = this.key;
-
-        if (!this.text && key.uiAttribs.text)
+        if (key.uiAttribs.text)
         {
-            this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
-            this.text.setParentRect(keyRect);
+            if (!this.text)
+            {
+                this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                this.text.setParentRect(keyRect);
+            }
+            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
         }
 
         if (!this.areaRect && key.uiAttribs.color)
@@ -84,7 +83,7 @@ export class TlKey extends Events
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             t.setParent(keyRect);
             t.setColor(1, 1, 0, 0.3);
-            t.setPosition(1, 1, 0);
+            t.setPosition(1, 1, -0.8);
             t.setSize(33, 33);
             t.setColorHex(key.uiAttribs.color);
             t.setOpacity(0.5);
@@ -139,7 +138,6 @@ export class TlKey extends Events
      */
     bindBezCp(bezRect, cp, key, dir)
     {
-        // this.#bezCpSize = this.getKeyWidth() * 0.75;
         bezRect.setShape(6);
         bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);
         bezRect.setParent(this.rect.parent);
@@ -153,7 +151,6 @@ export class TlKey extends Events
             if (bezRect.color[3] == 0) return;
             this.#glTl.setHoverKeyRect(bezRect);
             this.emitEvent(TlKey.EVENT_HOVERCHANGE);
-            // this.updateColors();
         });
 
         bezRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
@@ -237,10 +234,12 @@ export class TlKey extends Events
 
     dispose()
     {
+
         if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
-        if (this.cp2r) this.cp2s = this.cp2s.dispose();
+        if (this.cp2r) this.cp2r = this.cp2r.dispose();
         if (this.cp1s) this.cp1s = this.cp1s.dispose();
+        if (this.cp2s) this.cp2s = this.cp2s.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
 

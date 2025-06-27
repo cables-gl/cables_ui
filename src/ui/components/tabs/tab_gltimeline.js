@@ -121,14 +121,8 @@ export default class GlTimelineTab
         // }, ["button-left"]);
         this.#tab.addButton("<span id=\"tlloop\" class=\"nomargin icon info icon-x\" data-info=\"tlloopdelete\"></span>", (e) =>
         {
-            if (this.tlCanvas.glTimeline.loopAreaEnd == 0)
-            {
-                this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.view.timeLeft + this.tlCanvas.glTimeline.view.visibleTime / 2;
-                this.tlCanvas.glTimeline.loopAreaEnd = this.tlCanvas.glTimeline.loopAreaStart + 2;
-            }
-            else this.tlCanvas.glTimeline.loopAreaStart = this.tlCanvas.glTimeline.loopAreaEnd = 0;
+            this.tlCanvas.glTimeline.toggleLoopArea();
 
-            this.tlCanvas.glTimeline.updateIcons();
         });
 
         // this.#tab.addButton("<span class=\"nomargin icon info icon-log-in\" data-info=\"tlloopend\"></span>", () =>
@@ -168,40 +162,9 @@ export default class GlTimelineTab
 
         });
 
-        this.#tab.addButton("<span class=\"nomargin icon icon-three-dots\"></span>", (e) =>
+        this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-minimize2\" data-info=\"tlfit\"></span>", () =>
         {
-            contextMenu.show(
-                {
-                    "items":
-                        [
-                            {
-                                "title": "Delete Selected Keys",
-                                "func": () => { this.tlCanvas.glTimeline.deleteSelectedKeys(); }
-                            },
-                            {
-                                "title": "Move Selected Keys to cursor",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.moveSelectedKeys();
-                                }
-                            },
-                            {
-                                "title": "Set same time for selected keys",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.setSelectedKeysTime();
-                                }
-                            },
-
-                            {
-                                "title": "fit into view",
-                                "func": () =>
-                                {
-                                    this.tlCanvas.glTimeline.fit();
-                                }
-                            },
-                        ]
-                }, e.target);
+            this.tlCanvas.glTimeline.fit();
         });
 
         this.#tab.addButtonSpacer();

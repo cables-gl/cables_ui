@@ -24,10 +24,19 @@ export class glTlDragArea extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
+    /** @type {number} */
     height = 24;
+
+    /** @type {boolean} */
     isDragging = false;
+
+    /** @type {number} */
     #dragStartX = 0;
+
+    /** @type {number} */
     #dragStartWidth;
+
+    /** @type {number} */
     #delta;
 
     /**
@@ -47,7 +56,7 @@ export class glTlDragArea extends Events
         this.rectMove = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
         this.rectMove.setSize(this.#width, this.height);
         if (parent) this.rectMove.setParent(parent);
-        this.rectMove.setColorHover(0.65, 0.55, 0.65, 1);
+        this.rectMove.setColorHover(0.65, 0.65, 0.65, 1);
         this.rectMove.setColor(0.4, 0.4, 0.4, 1);
 
         this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive });
@@ -84,6 +93,7 @@ export class glTlDragArea extends Events
         {
             this.isDragging = false;
         });
+
         /// ////
 
         this.#rectSizeRight.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
@@ -112,6 +122,7 @@ export class glTlDragArea extends Events
             console.log("dragEND area");
             this.isDragging = false;
         });
+
         /// ////
 
         this.#rectSizeLeft.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
@@ -127,9 +138,6 @@ export class glTlDragArea extends Events
             this.isDragging = true;
 
             this.emitEvent(glTlDragArea.EVENT_LEFT, { "x": e.offsetX, "origWidth": this.#dragStartWidth });
-            // this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
-
-            // this.#rectSizeLeft.setPosition(newPos, this.#rectSizeLeft.y);
         });
 
         this.#rectSizeLeft.on(GlRect.EVENT_DRAGEND, () =>
@@ -171,9 +179,9 @@ export class glTlDragArea extends Events
      */
     setColor(r, g, b, a = 1)
     {
-        this.rectMove.setColorHover(r, g, b, 1);
-        this.#rectSizeLeft.setColorHover(r, g, b, 1);
-        this.#rectSizeRight.setColorHover(r, g, b, 1);
+        this.rectMove.setColorHover(r, g, b, 0.7);
+        this.#rectSizeLeft.setColorHover(r, g, b, 0.7);
+        this.#rectSizeRight.setColorHover(r, g, b, 0.7);
 
         this.rectMove.setColor(r, g, b, a);
         this.#rectSizeLeft.setColor(r, g, b, a * 0.7);

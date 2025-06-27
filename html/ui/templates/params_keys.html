@@ -1,13 +1,14 @@
 <script id="params_keys" type="text/x-handlebars-template">
     <div class="panel_head">
         <h2 class="nomargin">{{numKeys}} keys selected
-            <a id="kp_delete" class="button-small"><span class="icon icon-trash"></span></a>
+            <a id="kp_more" class="button-small"><span class="icon icon-three-dots"></span></a>
         </h2>
         length: {{timeLength}} <br/>
         time range: {{timeBounds}}<br/>
         value range: {{valueBounds}}
 
     </div>
+    {{#if writable}}
     <div class="content panel">
 
         <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
@@ -57,6 +58,8 @@
 
         <a id="kp_movecursor" class="button-small">Move to cursor</a>
         <br/>
+        <a id="kp_fit" class="button-small">Fit view</a>
+        <br/>
 
         move <input style="width:50px" id="kp_input_time" value="{{lastInputMove}}">&nbsp;
         <a id="kp_time_moveb" class="button-left button-small"><span class="nomargin icon icon-chevron-left"></span></a>
@@ -71,15 +74,18 @@
         <br/>
         <input style="width:250px" id="kp_comment" placeholder="comment" value="{{comment}}">&nbsp;
         <br/>
-        {{#each commentColors}}
-            <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
-        {{/each}}
-        <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="kp_colorbutton colorbutton"></a>
-        <br/>
+            {{#each commentColors}}
+                <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
+            {{/each}}
+            <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
+        <div style="clear:both"> </div>
         <br/>
 
         {{#each errors}}
         - {{.}}<br/>
         {{/each}}
     </div>
+            {{else}}
+            readonly!
+    {{/if}}
 </script>

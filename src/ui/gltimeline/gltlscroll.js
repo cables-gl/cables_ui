@@ -44,44 +44,15 @@ export class glTlScroll extends Events
 
         this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
-            console.log("text", e);
-            // const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
             const f = (e.x - e.delta) / this.#width * this.#glTl.duration;
-            //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
             this.#glTl.view.scrollTo(f);
-
         });
-        this.#dragBar.on(glTlDragArea.EVENT_SCALE, (e) =>
-        {
 
-            console.log("scale.........", this.#dragBar.getWidth());
+        this.#dragBar.on(glTlDragArea.EVENT_RIGHT, (e) =>
+        {
             this.#glTl.view.setZoomLength(e.origWidth * e.factor / this.#width * this.#glTl.duration);
             this.update();
-
         });
-
-        // this.#bgRect.on(GlRect.EVENT_POINTER_DOWN, (e, r, x, y) =>
-        // {
-        //     if (this.#lastdown != 0 && performance.now() - this.#lastdown < 250) this.showAll();
-
-        //     console.log("text", performance.now() - this.#lastdown);
-        //     this.#lastdown = performance.now();
-
-        //     console.log("${}POINTER DOWN");
-        //     const perc = (x + this.#dragBar.getWidth() / 2) / this.#width;
-        //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
-        // });
-
-        // this.#bgRect.on(GlRect.EVENT_DRAGSTART, (a, x, y) =>
-        // {
-        //     this.#dragStart = x;
-        // });
-
-        // this.#bgRect.on(GlRect.EVENT_DRAG, (a, offX, c, button, event, x, y) =>
-        // {
-        //     const perc = (this.#dragStart + offX - this.#dragBar.getWidth() / 2) / this.#width;
-        //     this.#glTl.view.scrollTo((perc * this.#glTl.duration));
-        // });
 
         this.#glRectCursor = this.#glTl.rects.createRect({ "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
@@ -123,7 +94,6 @@ export class glTlScroll extends Events
             {
                 const x = stepSeconds * i * this.#glTl.view.pixelPerSecond;
                 this.#indicatorRects[i].setPosition(x, this.height / 3, -0.1);
-                // this.#indicatorRects[i].setShape(GlRectInstancer.SHAPE_RHOMB);
                 this.#indicatorRects[i].setSize(stepSeconds * this.#glTl.view.pixelPerSecond / 3, this.height / 3);
 
                 this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);

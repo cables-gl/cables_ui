@@ -10,6 +10,7 @@ const defaultOpNames =
     "number": "Ops.Number.Number",
     "string": "Ops.String.String_v2",
     "array": "Ops.Array.Array_v3",
+    "anim": "Ops.TimeLine.Anim",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",

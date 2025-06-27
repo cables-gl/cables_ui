@@ -37,6 +37,8 @@ const text =
     "tlIpBez": "set keys to bezier easing",
     "tlIpAbs": "set keys to absolute easing",
     "tlIpCurves": "set keys to predefined easing functions",
+    "tlloopdelete": "toggle loop area",
+    "tlfit": "zoon to fit selected or all keys",
 
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
