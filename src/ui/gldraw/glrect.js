@@ -7,9 +7,9 @@ import { glTimelineCanvas } from "../gltimeline/gltimelinecanvas.js";
 
 /**
  * @typedef {Object} GlRectOptions
+ * @property {String} name
  * @property {Boolean} [interactive]
  * @property {Boolean} [draggable]
- * @property {String} [name]
  * @property {GlRect} [parent]
  */
 /**
@@ -31,6 +31,7 @@ export default class GlRect extends Events
     static EVENT_DRAGSTART = "dragStart";
     static EVENT_DRAGEND = "dragEnd";
 
+    static EVENT_RESIZE = "resize";
     static EVENT_POSITIONCHANGED = "positionChanged";
     static EVENT_TEXTURECHANGED = "textureChanged";
 
@@ -39,9 +40,13 @@ export default class GlRect extends Events
     static OPTION_PARENT = "parent";
     static OPTION_NAME = "name";
 
+    #log = new Logger("GlRect");
+    name = "unknown";
+
     color = vec4.create();
     colorHover = null;
-    interactive = true;
+
+    /** @type {GlRect[]} */
     childs = [];
 
     #parent = null;
@@ -65,8 +70,9 @@ export default class GlRect extends Events
     #absY = 0;
     #absZ = 0;
 
-    #isDragging = false;
+    interactive = false;
     #draggable = false;
+
     #dragStartX = 0;
     #dragStartY = 0;
     #dragOffsetX = 0;
@@ -75,9 +81,8 @@ export default class GlRect extends Events
     draggableY = true;
     draggableMove = false;
 
-    #log = new Logger("GlRect");
-
-    name = "unknown";
+    /** @type {GlRect} */
+    #debugRect = null;
 
     /**
      * @param {GlRectInstancer} instancer
@@ -98,6 +103,45 @@ export default class GlRect extends Events
         if (options.hasOwnProperty(GlRect.OPTION_DRAGGABLE)) this.#draggable = options[GlRect.OPTION_DRAGGABLE];
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
         if (options.hasOwnProperty(GlRect.OPTION_NAME)) this.name = options.name;
+
+        if (!options.hasOwnProperty(GlRect.OPTION_INTERACTIVE) && this.#draggable) this.interactive = true;
+
+        if (this.name != "gldrawdebug")
+        {
+            this.#debugRect = this.#rectInstancer.createRect({ "name": "gldrawdebug", "parent": this });
+            this.#debugRect.setShape(GlRectInstancer.SHAPE_FRAME);
+            this.on(GlRect.EVENT_POINTER_MOVE, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_POINTER_HOVER, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_POINTER_UNHOVER, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_DRAG, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_DRAGEND, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_DRAGSTART, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_RESIZE, () => { this.updateDebugColor(); });
+            this.on(GlRect.EVENT_POSITIONCHANGED, () => { this.updateDebugColor(); });
+            this.updateDebugColor();
+        }
+
+    }
+
+    updateDebugColor()
+    {
+        if (!this.#debugRect)
+        {
+            console.log("no debugrect");
+            return;
+        }
+        this.#debugRect.setSize(this.#w + 2, this.#h + 2);
+        this.#debugRect.setPosition(-1, -1, -0.3);
+
+        if (this.isHovering) this.#debugRect.setColor(1, 1, 1, 1);
+        else if (this.isDragging) this.#debugRect.setColor(0, 1, 1, 1);
+        else
+        {
+            if (this.interactive) this.#debugRect.setColor(0, 1, 0, 1);
+            else if (this.#draggable) this.#debugRect.setColor(0, 1, 0.3, 1);
+            else this.#debugRect.setColor(0, 0, 0, 1);
+        }
+
     }
 
     get x() { return this.#x; }
@@ -122,7 +166,8 @@ export default class GlRect extends Events
 
     set draggable(b) { this.#draggable = b; }
     get draggable() { return this.#draggable; }
-    get isDragging() { return this.#isDragging; }
+    get isDragging() { return this.#rectInstancer.draggingRect == this; }
+    get isHovering() { return this.#hovering; }
 
     get idx() { return this.#attrIndex; }
 
@@ -203,10 +248,13 @@ export default class GlRect extends Events
             if (!this.visible) this.#hovering = false;
             for (let i = 0; i < this.childs.length; i++) this.childs[i].visible = v;
         }
+        if (this.#debugRect) this.updateDebugColor();
     }
 
     _updateSize()
     {
+        this.emitEvent(GlRect.EVENT_RESIZE);
+
         if (!this.#visible) this.#rectInstancer.setSize(this.#attrIndex, 0, 0);
         else this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
     }
@@ -291,14 +339,12 @@ export default class GlRect extends Events
      */
     setColorHex(hex)
     {
-
         let str = (hex.charAt(0) == "#") ? hex.substring(1, 7) : hex;
         let r = (parseInt(str.substring(0, 2), 16) || 0) / 255;
         let g = (parseInt(str.substring(2, 4), 16) || 0) / 255;
         let b = (parseInt(str.substring(4, 6), 16) || 0) / 255;
 
         this.setColor(r, g, b);
-
     }
 
     /**
@@ -324,6 +370,7 @@ export default class GlRect extends Events
             this.#visible = p.visible;
         }
         this.updateParentPosition();
+        if (this.#debugRect) this.updateDebugColor();
     }
 
     get texture()
@@ -401,14 +448,6 @@ export default class GlRect extends Events
     }
 
     /**
-     * @returns {boolean}
-     */
-    isHovering()
-    {
-        return this.#hovering;
-    }
-
-    /**
      * @returns {number}
      */
     getParentX()
@@ -457,7 +496,8 @@ export default class GlRect extends Events
      */
     mouseDown(e, x, y)
     {
-        if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this, x, y);
+        const hovering = this.isPointInside(x, y);
+        if (hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this, x, y);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e, x, y);
     }
 
@@ -486,27 +526,23 @@ export default class GlRect extends Events
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
-    mouseDragEnd(e)
+    /**
+     * @param {MouseEvent} _e
+     */
+    mouseDragEnd(_e)
     {
         if (this.interactive) this.emitEvent(GlRect.EVENT_DRAGEND, this);
-        this.#isDragging = false;
     }
 
     /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} button
+     * @param {boolean} hovering
      * @param {MouseEvent} e
      */
-    mouseMove(x, y, button, e)
+    setHover(hovering, e)
     {
-        if (!this.interactive) return;
-        if (!this.#visible) return;
-
-        const hovering = this.isPointInside(x, y);
         const isHovered = this.#hovering;
-
         const hoverChanged = this.#hovering != hovering;
+
         this.#hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this, e);
@@ -523,20 +559,37 @@ export default class GlRect extends Events
 
         }
 
-        for (let i = 0; i < this.childs.length; i++)
-        {
-            this.childs[i].mouseMove(x, y, button, e);
-            if (this.childs[i].isHovering()) this.#hovering = false;
-        }
+        // for (let i = 0; i < this.childs.length; i++)
+        // {
+        //     if (this.childs[i].isHovering()) this.#hovering = false;
+        // }
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} button
+     * @param {MouseEvent} e
+     */
+    mouseMove(x, y, button, e)
+    {
+        if (!this.interactive) return;
+        if (!this.#visible) return;
+
+        const hovering = this.isPointInside(x, y);
+        this.setHover(hovering, e);
+
+        for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseMove(x, y, button, e);
 
         if (this.#hovering)
         {
-            if (button == 1 && this.#rectInstancer.allowDragging)
+            // console.log("ishoveging", button == 1, this.#rectInstancer.draggingRect == this, this.#rectInstancer.allowDragging);
+            if (button == 1 && this.#rectInstancer.draggingRect == this && this.#rectInstancer.allowDragging)
             {
-                if (!this.#isDragging)
+                if (!this.isDragging)
                 {
                     // console.log("dragstart", this.name, button);
-                    this.#isDragging = true;
+                    // this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
                     console.log("drag start", this.name);
@@ -545,7 +598,7 @@ export default class GlRect extends Events
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }
-            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y);
+            this.emitEvent(GlRect.EVENT_POINTER_MOVE, e, x, y);
         }
     }
 
@@ -561,7 +614,7 @@ export default class GlRect extends Events
 
     dispose()
     {
-        if (this.#isDragging) this.emitEvent(GlRect.EVENT_DRAGEND);
+        if (this.isDragging) this.emitEvent(GlRect.EVENT_DRAGEND);
         this.visible = false;
         if (this.#parent) this.#parent.removeChild(this);
         this.disposed = true;
@@ -569,6 +622,7 @@ export default class GlRect extends Events
         this.setShape(0);
         this.setSize(0, 0);
         this.removeAllEventListeners();
+        if (this.#debugRect) this.#debugRect = this.#debugRect.dispose();
         return null;
     }
 }

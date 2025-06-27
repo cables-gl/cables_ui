@@ -1,5 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
-import { CGL, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
+import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
@@ -46,7 +46,6 @@ export default class GlRectInstancer extends Events
     #needsTextureUpdate = false;
     #reUploadAttribs = true;
     allowDragging = false;
-    #debugRenderStyle = 0;
     doBulkUploads = true;
     #updateRangesMin = {};
     #updateRangesMax = {};
@@ -58,8 +57,8 @@ export default class GlRectInstancer extends Events
     /** @type {Array<Object>} */
     #textures = [];
 
-    /** @type {GlRect[]} */
-    #draggingRects = [];
+    /** @type {GlRect} */
+    draggingRect = null;
 
     /** @type {Shader} */
     #shader = null;
@@ -133,7 +132,16 @@ export default class GlRectInstancer extends Events
         this.#mesh.numInstances = this.#num;
 
         this.clear();
-        this.closestHoverElement = undefined;
+        this.closestHoverElement = null;
+
+        cgl.canvas.addEventListener("pointerleave", (e) =>
+        {
+            for (let i = 0; i < this.#rects.length; i++)
+            {
+                this.#rects[i].setHover(false, e);
+            }
+            console.log("leaveeeeeeeee");
+        });
     }
 
     set interactive(i) { this.#interactive = i; }
@@ -242,7 +250,7 @@ export default class GlRectInstancer extends Events
 
     isDragging()
     {
-        return this.#draggingRects.length > 0;
+        return !!this.draggingRect;
     }
 
     _setupTextures()
@@ -453,6 +461,7 @@ export default class GlRectInstancer extends Events
      */
     setPosition(idx, x, y, z)
     {
+        z /= 1000;
         const buffIdx = idx * 3;
         if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._float32Diff(this._attrBuffPos[buffIdx + 2], z))
         {
@@ -671,21 +680,23 @@ export default class GlRectInstancer extends Events
      */
     createRect(options)
     {
-        options = options || {};
+        options = options || { "name": "unknown" };
         const r = new GlRect(this, options);
         this.#rects.push(r);
 
         if (options[GlRect.OPTION_DRAGGABLE])
         {
             this.allowDragging = options[GlRect.OPTION_DRAGGABLE];
-            r.on(GlRect.EVENT_DRAGSTART, (rect) =>
-            {
-                // if (r == this.closestHoverElement)
-                if (this.allowDragging && !this.#draggingRects.includes(rect))
-                {
-                    this.#draggingRects.push(rect);
-                }
-            });
+            // r.on(GlRect.EVENT_DRAGSTART, (rect) =>
+            // {
+            //     if (this.#draggingRects.length == 0)
+            //     // if (r == this.closestHoverElement)
+            //         if (this.allowDragging && !this.#draggingRects.includes(rect))
+            //         {
+            //             console.log("start dragggggggggg", this.#name);
+            //             this.#draggingRects.push(rect);
+            //         }
+            // });
 
             // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
@@ -709,26 +720,21 @@ export default class GlRectInstancer extends Events
         for (let i = 0; i < this.#rects.length; i++)
         {
 
-            if (!this.#rects[i].parent)
-                this.#rects[i].mouseMove(x, y, button, event);
+            if (!this.#rects[i].parent) this.#rects[i].mouseMove(x, y, button, event);
 
-            if (this.#rects[i].isHovering)
-                if (this.#rects[i].interactive)
-                {
-                    if (!closestR || this.#rects[i].absZ < closestR.absZ)closestR = this.#rects[i];
-                }
+            if (this.#rects[i].isHovering && this.#rects[i].interactive)
+            {
+                if (!closestR || this.#rects[i].absZ < closestR.absZ)closestR = this.#rects[i];
+            }
         }
 
         this.closestHoverElement = closestR;
-        if (this.closestHoverElement && !this.closestHoverElement.isHovering) this.closestHoverElement = null;
+        // if (this.closestHoverElement && !this.closestHoverElement.isHovering()) this.closestHoverElement = null;
 
-        if (button && this.allowDragging && this.#draggingRects.length > 0)
+        if (button && this.allowDragging && this.draggingRect)
         {
-            for (let i = 0; i < this.#draggingRects.length; i++)
-            {
-                this.#draggingRects[i].mouseDrag(x, y, button, event);
-            }
-
+            // for (let i = 0; i < this.draggingRect.length; i++)
+            this.draggingRect.mouseDrag(x, y, button, event);
         }
 
         let str = "";
@@ -748,8 +754,13 @@ export default class GlRectInstancer extends Events
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this.#rects.length; i++)
             if (!this.#rects[i].parent)
+            {
                 this.#rects[i].mouseDown(e, x, y);
+            }
 
+        for (let i = 0; i < this.#rects.length; i++)
+            if (this.#rects[i].isHovering && this.#rects[i].draggable)
+                this.draggingRect = this.#rects[i];
         perf.finish();
     }
 
@@ -761,11 +772,11 @@ export default class GlRectInstancer extends Events
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
-        for (let i = 0; i < this.#draggingRects.length; i++) this.#draggingRects[i].mouseDragEnd(e);
+        if (this.draggingRect) this.draggingRect.mouseDragEnd(e);
         for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
         perf.finish();
 
-        this.#draggingRects = [];
+        this.draggingRect = null;
     }
 
     /**

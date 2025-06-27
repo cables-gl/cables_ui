@@ -64,7 +64,7 @@ export default class GlPort
         /**
          * @type {GlRect}
          */
-        this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
+        this._rect = new GlRect(this._rectInstancer, { "name": "portRect", "parent": this._parent, "interactive": true });
 
         /**
          * @type {GlRect}
@@ -115,6 +115,9 @@ export default class GlPort
         return this._posX;
     }
 
+    /**
+     * @param {import("cables/src/core/core_port.js").PortUiAttribs} attribs
+     */
     _onUiAttrChange(attribs)
     {
         if (this.disposed) return;
@@ -130,10 +133,10 @@ export default class GlPort
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
         {
             if (!this._rect) return;
-            if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
+            if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "name": "longport" });
 
             const col = GlPort.getColor(this._type, false, false, false);
-            this._longPortRect.setColor([col[0], col[1], col[2], 0.5]);
+            this._longPortRect.setColorArray([col[0], col[1], col[2], 0.5]);
 
             this.updateSize();
         }
@@ -163,7 +166,7 @@ export default class GlPort
 
         if (!this._dot && showDot)
         {
-            this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
+            this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "name": "portDot" });
             this._dot.setSize(0, 0);
             this._rect.addChild(this._dot);
         }
@@ -272,6 +275,10 @@ export default class GlPort
         this.updateSize();
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {any} _rect
+     */
     _onMouseDown(e, _rect)
     {
         if (e.buttons == MouseState.BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
@@ -279,6 +286,10 @@ export default class GlPort
         this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {GlRect} _rect
+     */
     _onMouseUp(e, _rect)
     {
         if (this._mouseButtonRightTimeDown)
@@ -293,6 +304,9 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port, e);
     }
 
+    /**
+     * @param {GlRect} _rect
+     */
     _onHover(_rect)
     {
         if (!this._glPatch.hasFocus) return;
@@ -313,6 +327,9 @@ export default class GlPort
         this._updateColor();
     }
 
+    /**
+     * @param {GlRect} _rect
+     */
     _onUnhover(_rect)
     {
         this._hover = false;
@@ -320,8 +337,7 @@ export default class GlPort
         CABLES.UI.hoverInterval = -1;
         hideToolTip();
 
-        for (const i in this._glop._links)
-            this._glop._links[i].highlight(false);
+        for (const i in this._glop._links) this._glop._links[i].highlight(false);
 
         this._updateColor();
     }
@@ -340,6 +356,9 @@ export default class GlPort
 
     get rect() { return this._rect; }
 
+    /**
+     * @param {number} _a
+     */
     setFlowModeActivity(_a)
     {
         if (this._activity != this._port.apf)

@@ -37,20 +37,18 @@ export class glTlRuler extends Events
         this.y = 30;
         this.height = 50;
 
-        this._glRectBg = this.#glTl.rects.createRect({ "name": "ruler bgrect", "draggable": true, "interactive": true });
+        this._glRectBg = this.#glTl.rects.createRect({ "name": "ruler bgrect", "interactive": true });
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this._glRectBg.setPosition(0, this.y, -0.9);
 
-        this._glRectBg.on(GlRect.EVENT_DRAG, (_r, _ox, _oy, _button, event) =>
+        this._glRectBg.on(GlRect.EVENT_POINTER_MOVE, (e, x, _y) =>
         {
-
-            this.#glTl.removeKeyPreViz();
-            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
-        });
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
-        {
+            if (e.buttons == 1)
+            {
+                this.#glTl.removeKeyPreViz();
+                gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x) + this.#glTl.view.offset));
+            }
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
@@ -338,6 +336,6 @@ export class glTlRuler extends Events
 
     isHovering()
     {
-        return this._glRectBg.isHovering();
+        return this._glRectBg.isHovering;
     }
 }

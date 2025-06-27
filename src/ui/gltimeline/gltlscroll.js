@@ -40,7 +40,7 @@ export class glTlScroll extends Events
         this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, true, this.#glTl.rects);
+        this.#dragBar = new glTlDragArea(glTl, "scrollbar", this.#bgRect, true, this.#glTl.rects);
 
         this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
@@ -139,6 +139,6 @@ export class glTlScroll extends Events
 
     isHovering()
     {
-        return this.#bgRect.isHovering();
+        return this.#bgRect.isHovering;
     }
 }

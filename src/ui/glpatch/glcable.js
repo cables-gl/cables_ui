@@ -433,7 +433,7 @@ export default class GlCable
 
     get hovering()
     {
-        return this._buttonRect.isHovering() || (this._link._glOpIn && this._link._glOpIn.hovering) || (this._link._glOpOut && this._link._glOpOut.hovering);
+        return this._buttonRect.isHovering || (this._link._glOpIn && this._link._glOpIn.hovering) || (this._link._glOpOut && this._link._glOpOut.hovering);
     }
 
     updateColor()

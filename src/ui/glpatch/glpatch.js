@@ -507,7 +507,7 @@ export default class GlPatch extends Events
         else
         {
             if (this.viewBox.cursor)cur = this.viewBox.cursor;
-            else if (this._hoverOps.length > 0 || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) cur = "pointer";
+            else if (this._hoverOps.length > 0 || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering)) cur = "pointer";
             else if (this._spacePressed) cur = "grabbing";
         }
 
@@ -1336,7 +1336,7 @@ export default class GlPatch extends Events
             this._hoverDragOp = null;
         }
 
-        if (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering()) allowSelectionArea = false;
+        if (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering) allowSelectionArea = false;
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
@@ -1576,7 +1576,7 @@ export default class GlPatch extends Events
         this._subpatchoprect = this._overLayRects.createRect();
 
         let col = gui.theme.colors_patch.opBgRect;
-        this._subpatchoprect.setColor(col);
+        this._subpatchoprect.setColorArray(col);
 
         let dur = 0.4;
 

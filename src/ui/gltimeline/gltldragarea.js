@@ -41,30 +41,30 @@ export class glTlDragArea extends Events
 
     /**
      * @param {GlTimeline} glTl
+     * @param {string} name
      * @param {GlRect} parent
      * @param {boolean} interactive
      * @param {GlRectInstancer} rectInst
      */
-    constructor(glTl, parent, interactive, rectInst)
+    constructor(glTl, name, parent, interactive, rectInst)
     {
         super();
         this._log = new Logger("tl dragarea");
         this.#glTl = glTl;
-        console.log("new dragarea,", interactive);
 
         rectInst = rectInst || this.#glTl.rects;
-        this.rectMove = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
+        this.rectMove = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea " + name + " middle" });
         this.rectMove.setSize(this.#width, this.height);
         if (parent) this.rectMove.setParent(parent);
         this.rectMove.setColorHover(0.65, 0.65, 0.65, 1);
         this.rectMove.setColor(0.4, 0.4, 0.4, 1);
 
-        this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea left" });
+        this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea " + name + " left" });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
         if (parent) this.#rectSizeLeft.setParent(parent);
         this.#rectSizeLeft.setColor(0.3, 0.3, 0.3, 1);
 
-        this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea right" });
+        this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea " + name + " right" });
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
@@ -195,7 +195,7 @@ export class glTlDragArea extends Events
 
     get isHovering()
     {
-        const h = this.rectMove.isHovering() || this.#rectSizeLeft.isHovering() || this.#rectSizeRight.isHovering();
+        const h = this.rectMove.isHovering || this.#rectSizeLeft.isHovering || this.#rectSizeRight.isHovering;
         return h;
     }
 

@@ -190,30 +190,30 @@ export class GlTimeline extends Events
         if (gui.patchView.store.getUiSettings())
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
-        this.selectedKeysDragArea = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.selectedKeysDragArea = new glTlDragArea(this, "selectedkeys", null, true, this.#rectsOver);
         this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
 
-        this.loopAreaDrag = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.loopAreaDrag = new glTlDragArea(this, "looparea", null, true, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
 
         this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
-        this.bgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": true, "name": "bgrect" });
+        this.bgRect = this.#rectsOver.createRect({ "interactive": true, "name": "bgrect" });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
         this.bgRect.setPosition(0, 20, 1);
         this.bgRect.setColorArray(gui.theme.colors_patch.background);
 
-        this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorVert" });
+        this.cursorVertLineRect = this.#rectsOver.createRect({ "name": "cursorVert" });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
         this.cursorVertLineRect.setPosition(0, 0, -1);
         this.setColorRectSpecial(this.cursorVertLineRect);
 
-        this.cursorNewKeyVis = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "curcorKeyViz" });
+        this.cursorNewKeyVis = this.#rectsOver.createRect({ "name": "cursorKeyViz" });
         this.cursorNewKeyVis.setSize(5214, 1);
         this.cursorNewKeyVis.setPosition(0, 0, -1);
         this.cursorNewKeyVis.setColor(0, 0, 0);
         this.setColorRectSpecial(this.cursorNewKeyVis);
 
-        this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorTextBg" });
+        this.#cursorTextBgRect = this.#rectsOver.createRect({ "name": "cursorTextBg" });
         this.#cursorTextBgRect.setSize(40, 20);
         this.#cursorTextBgRect.setParent(this.cursorVertLineRect);
         this.#cursorTextBgRect.setColor(0.2, 0.2, 0.2, 1);
@@ -222,18 +222,18 @@ export class GlTimeline extends Events
         this.#cursorText.setParentRect(this.cursorVertLineRect);
         this.setColorRectSpecial(this.#cursorText);
 
-        this.#rectLoopArea = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "loopArea" });
+        this.#rectLoopArea = this.#rectsOver.createRect({ "name": "loopArea" });
         this.#rectLoopArea.setSize(40, 20);
         this.#rectLoopArea.setPosition(40, this.getFirstLinePosy(), 0.15);
         this.#rectLoopArea.setColor(0.9, 0.2, 0.2, 0.1);
 
-        this.#rectHoverKey = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "keyHover" });
+        this.#rectHoverKey = this.#rectsOver.createRect({ "name": "keyHover" });
         this.#rectHoverKey.setSize(20, 20);
         this.#rectHoverKey.setShape(13);
         this.#rectHoverKey.setPosition(40, 20, -0.2);
         this.#rectHoverKey.setColor(1, 1, 0, 1);
 
-        this.#rectSelect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "rectSelect" });
+        this.#rectSelect = this.#rectsOver.createRect({ "name": "rectSelect" });
         this.#rectSelect.setSize(0, 0);
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
@@ -732,7 +732,7 @@ export class GlTimeline extends Events
                 {
                     for (let i = 0; i < this.#tlAnims.length; i++)
                     {
-                        if (this.#tlAnims[i].isHovering())
+                        if (this.#tlAnims[i].isHovering)
                         {
                             const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
                             this.createKey(

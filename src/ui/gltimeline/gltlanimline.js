@@ -127,7 +127,7 @@ export class glTlAnimLine extends Events
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
             this.#disposeRects.push(this.#glTextSideValue);
 
-            this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
+            this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (e, _x, y) =>
             {
                 if (this.#keys.length < 1) return;
                 this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#glRectKeysBg.y) * 1000) / 1000);
@@ -156,9 +156,9 @@ export class glTlAnimLine extends Events
         return arr;
     }
 
-    isHovering()
+    get isHovering()
     {
-        return this.#glRectKeysBg.isHovering();
+        return this.#glRectKeysBg.isHovering;
     }
 
     /**
