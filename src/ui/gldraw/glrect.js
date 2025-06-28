@@ -7,9 +7,9 @@ import { glTimelineCanvas } from "../gltimeline/gltimelinecanvas.js";
 
 /**
  * @typedef {Object} GlRectOptions
- * @property {Boolean} [interactive]
+ * @property {String} name
+ * @property {Boolean} interactive
  * @property {Boolean} [draggable]
- * @property {String} [name]
  * @property {GlRect} [parent]
  */
 /**
@@ -101,6 +101,8 @@ export default class GlRect extends Events
         options = options || {};
 
         if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options[GlRect.OPTION_INTERACTIVE];
+        else console.warn("glrect interactevi not specified! ", this.name);
+
         if (options.hasOwnProperty(GlRect.OPTION_DRAGGABLE)) this.#draggable = options[GlRect.OPTION_DRAGGABLE];
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
         if (options.hasOwnProperty(GlRect.OPTION_NAME)) this.name = options.name;

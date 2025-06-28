@@ -4,6 +4,14 @@ import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
 
 /**
+ * @typedef KeyOptions
+ * @property {number} [minRestriction]
+ * @property {string} [displayGroup]
+ * @property {boolean} [cmdCtrl]
+ * @property {boolean} [shiftKey]
+*/
+
+/**
  * manage keybindings for hotkeys/shortcuts
  *
  * @export
@@ -136,10 +144,16 @@ export default class KeyBindingsManager extends Events
         }
     }
 
+    /**
+     * @param {KeyboardEvent} e
+     */
     _onKeyPress(e)
     {
     }
 
+    /**
+     * @param {KeyboardEvent} e
+     */
     _onKeyDown(e)
     {
         this.shiftKey = e.shiftKey || e.keyCode == 16;
@@ -176,6 +190,14 @@ export default class KeyBindingsManager extends Events
         }
     }
 
+    /**
+     * @param {string} key
+     * @param {string} title
+     * @param {string} event
+     * @param {null} target
+     * @param {KeyOptions} options
+     * @param {Function} cb
+     */
     _addKey(key, title, event, target, options, cb)
     {
         const k =
@@ -191,6 +213,19 @@ export default class KeyBindingsManager extends Events
         this._keys.push(k);
     }
 
+    /**
+    * @callback keyCallback
+    * @param {KeyboardEvent} e
+    */
+
+    /**
+     * @param {string | any[]} key
+     * @param {string} title
+     * @param {string} event
+     * @param {null} target
+     * @param {KeyOptions} options
+     * @param {keyCallback} cb
+     */
     key(key, title, event, target, options, cb)
     {
         options = options || {};

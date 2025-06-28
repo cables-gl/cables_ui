@@ -49,10 +49,19 @@ export default class GlText
         this.rebuild();
     }
 
+    /**
+     * @param {number} x
+     */
     set x(x) { this._x = x; this.rebuild(); }
 
+    /**
+     * @param {number} y
+     */
     set y(y) { this._y = y; this.rebuild(); }
 
+    /**
+     * @param {number} z
+     */
     set z(z) { this._z = z; this.rebuild(); }
 
     set text(t)
@@ -204,7 +213,7 @@ export default class GlText
                 continue;
             }
             rectCount++;
-            const rect = this._rects[rectCount] || this._textWriter.rectDrawer.createRect();
+            const rect = this._rects[rectCount] || this._textWriter.rectDrawer.createRect({ "name": "textrect", "interactive": false });
             rect.visible = this._visible;
             this._rects[rectCount] = rect;
 

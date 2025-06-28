@@ -132,19 +132,11 @@ export default class GlPatch extends Events
         this._subpatchAnimOutH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
 
         this._focusRectAnim = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
-        this._focusRect = this._overLayRects.createRect();
+        this._focusRect = this._overLayRects.createRect({ "name": "focusrect", "interactive": false });
         this._focusRect.setSize(1, 1);
         this._focusRect.setShape(4);
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
-
-        /*
-         * this._testAreaRect = this._overLayRects.createRect();
-         * this._testAreaRect.setSize(0, 0);
-         * this._testAreaRect.setShape(4);
-         * this._testAreaRect.setColor(0, 0, 0, 0.2);
-         * this._testAreaRect.visible = true;
-         */
 
         this._glCursors = {};
         this._localGlCursor = new GlCursor(this, this._overLayRects);
@@ -158,13 +150,13 @@ export default class GlPatch extends Events
 
         this.snap = new Snap(cgl, this, this._rectInstancer);
 
-        this._redrawFlash = this._overLayRects.createRect();
+        this._redrawFlash = this._overLayRects.createRect({ "name": "redrawflash", "interactive": false });
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
         this._fadeOutRectAnim = new Anim({ "defaultEasing": Anim.EASING_LINEAR });
 
-        this._fadeOutRect = this._overLayRects.createRect();
+        this._fadeOutRect = this._overLayRects.createRect({ "name": "fadeoutrect", "interactive": false });
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
         this._fadeOutRect.setColor(0, 0, 0, 0.0);
@@ -181,7 +173,7 @@ export default class GlPatch extends Events
         this._dropInCircleLink = null;
         this._dropInCircleRect = null;
 
-        this._dropInOpBorder = this._overLayRects.createRect();
+        this._dropInOpBorder = this._overLayRects.createRect({ "interactive": false, "name": "dropinborder" });
         this._dropInOpBorder.setSize(100, 100);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
@@ -263,7 +255,7 @@ export default class GlPatch extends Events
         });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.patchView.unlinkSelectedOps(); });
 
-        gui.keys.key("x", "Unlink selected ops first ports only", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(true); });
+        gui.keys.key("x", "Unlink selected ops first ports only", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.patchView.unlinkSelectedOps(true); });
 
         gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdPatch.gotoParentSubpatch(); });
 
@@ -515,8 +507,6 @@ export default class GlPatch extends Events
     setCursor(c)
     {
         this._cursor = c;
-
-        // this.mouseState.setCursor(this._cgl.canvas, c);
     }
 
     _removeDropInRect()
@@ -524,6 +514,9 @@ export default class GlPatch extends Events
         this._dropInOpBorder.visible = false;
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseMove(e)
     {
         if (this.startLinkButtonDrag)
@@ -541,8 +534,6 @@ export default class GlPatch extends Events
 
         if (this._dropInCircleRect)
         {
-            // console.log("_dropInCircleRect", gui.patchView.getSelectedOps().length);
-
             let visible = false;
             if (gui.patchView.getSelectedOps().length == 1)
             {
@@ -554,13 +545,7 @@ export default class GlPatch extends Events
 
                         const border = 5;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
-
-                        // console.log("dragen2222!!!!!!", this._op.uiAttribs.translate.x, this._glPatch.snap.snapOpX(this._op.uiAttribs.translate.x, this._op));
-
-                        // this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": this._glPatch.snap.snapOpX(this._op.uiAttribs.translate.x, this._op), "y": this._glPatch.snap.snapY(this._op.uiAttribs.translate.y) });
-
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
-
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
                         this._dropInOpBorder.setOpacity(0.35);
                     }
@@ -577,8 +562,6 @@ export default class GlPatch extends Events
 
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
-
-        // if (!gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
     }
 
     _cycleDebug()
@@ -602,6 +585,9 @@ export default class GlPatch extends Events
          */
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasDblClick(e)
     {
         let isOverSubPatchOp = false;
@@ -689,7 +675,7 @@ export default class GlPatch extends Events
     {
         if (this.greyOut && !this._greyOutRect)
         {
-            this._greyOutRect = this._overLayRects.createRect();
+            this._greyOutRect = this._overLayRects.createRect({ "interactive": false, "name": "greyoutrect" });
             this._greyOutRect.setColor(
                 gui.theme.colors_patch.background[0],
                 gui.theme.colors_patch.background[1],
@@ -738,6 +724,9 @@ export default class GlPatch extends Events
         this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseUp(e)
     {
         this.linkStartedDragging = false;
@@ -816,6 +805,9 @@ export default class GlPatch extends Events
         this._selectionArea.mouseUp();
     }
 
+    /**
+     * @param {KeyboardEvent} e
+     */
     _onKeyDelete(e)
     {
         gui.patchView.deleteSelectedOps();
@@ -1539,7 +1531,7 @@ export default class GlPatch extends Events
          */
 
         if (this._subpatchoprect) this._subpatchoprect.dispose();
-        this._subpatchoprect = this._overLayRects.createRect();
+        this._subpatchoprect = this._overLayRects.createRect({ "name": "subpatchoprect", "interactive": false });
 
         let col = gui.theme.colors_patch.opBgRect;
         this._subpatchoprect.setColorArray(col);
@@ -1789,6 +1781,10 @@ export default class GlPatch extends Events
         return this._currentSubpatch;
     }
 
+    /**
+     * @param {number|string} sub
+     * @param {function} [next]
+     */
     setCurrentSubPatch(sub, next)
     {
         if (this._currentSubpatch == sub)
@@ -1838,6 +1834,10 @@ export default class GlPatch extends Events
         this.snap.update();
     }
 
+    /**
+     * @param {string | number} sub
+     * @param {Function} next
+     */
     restoreSubPatchViewBox(sub, next)
     {
         const dur = 0.3;
