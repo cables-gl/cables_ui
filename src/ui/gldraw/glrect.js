@@ -100,7 +100,7 @@ export default class GlRect extends Events
         this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
 
         if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options[GlRect.OPTION_INTERACTIVE];
-        else console.warn("glrect interactevi not specified! ", this.name);
+        else console.warn("glrect interactivity not specified! ", this.name);
 
         if (options.hasOwnProperty(GlRect.OPTION_DRAGGABLE)) this.#draggable = options[GlRect.OPTION_DRAGGABLE];
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
