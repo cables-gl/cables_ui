@@ -470,7 +470,7 @@ export default class GlRectInstancer extends Events
 
         this._attrBuffPos[buffIdx + 0] = x;
         this._attrBuffPos[buffIdx + 1] = y;
-        this._attrBuffPos[buffIdx + 2] = z;
+        this._attrBuffPos[buffIdx + 2] = z / 10000;
 
         if (
             this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||

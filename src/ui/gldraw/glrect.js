@@ -98,7 +98,6 @@ export default class GlRect extends Events
         this.#rectInstancer = instancer;
         this.#attrIndex = instancer.getIndex();
         this.#rectInstancer.setSize(this.#attrIndex, this.#w, this.#h);
-        options = options || {};
 
         if (options.hasOwnProperty(GlRect.OPTION_INTERACTIVE)) this.interactive = options[GlRect.OPTION_INTERACTIVE];
         else console.warn("glrect interactevi not specified! ", this.name);
@@ -106,8 +105,6 @@ export default class GlRect extends Events
         if (options.hasOwnProperty(GlRect.OPTION_DRAGGABLE)) this.#draggable = options[GlRect.OPTION_DRAGGABLE];
         if (options.hasOwnProperty(GlRect.OPTION_PARENT)) this.setParent(options.parent);
         if (options.hasOwnProperty(GlRect.OPTION_NAME)) this.name = options.name;
-
-        if (!options.hasOwnProperty(GlRect.OPTION_INTERACTIVE) && this.#draggable) this.interactive = true;
 
         if (this.#rectInstancer.debugColors && this.name != "gldrawdebug")
         {
@@ -392,7 +389,10 @@ export default class GlRect extends Events
 
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].updateParentPosition();
+        for (let i = 0; i < this.childs.length; i++)
+        {
+            this.childs[i].updateParentPosition();
+        }
         this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
 
@@ -600,7 +600,7 @@ export default class GlRect extends Events
         this.#debugRect.setSize(this.#w + 2, this.#h + 2);
         this.#debugRect.setPosition(-1, -1, -0.3); if (this.isHovering) this.#debugRect.setColor(1, 1, 1, 1);
 
-        this.#debugRect.setColor(0, 0, 0, 1);
+        this.#debugRect.setColor(0, 0, 0.5, 1);
         if (this.interactive) this.#debugRect.setColor(0, 1, 0, 1);
         if (this.#draggable) this.#debugRect.setColor(0, 1, 0.3, 1);
         if (this.isDragging) this.#debugRect.setColor(0, 1, 1, 1);
