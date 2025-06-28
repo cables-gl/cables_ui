@@ -13,6 +13,7 @@ import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
 import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
 import { CmdPatch } from "./cmd_patch.js";
+import { userSettings } from "../components/usersettings.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -107,6 +108,11 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
      *    );
      *}
      */
+};
+CABLES_CMD_DEBUG.debugGlUiColors = function ()
+{
+    userSettings.set("gluidebugcolors", !userSettings.get("gluidebugcolors"));
+
 };
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
@@ -287,6 +293,12 @@ CMD_DEBUG_COMMANDS.push(
         "cmd": "Glui debug",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.debugGlUi,
+        "icon": "command"
+    },
+    {
+        "cmd": "Glui debug colors",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.debugGlUiColors,
         "icon": "command"
     },
     {
