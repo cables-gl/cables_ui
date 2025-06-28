@@ -90,6 +90,8 @@ export default class GlPatch extends Events
 
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
+
+        /** @type {number|string} */
         this._currentSubpatch = 0;
         this._selectionArea = new GlSelectionArea(this._overLayRects);
         this._lastMouseX = this._lastMouseY = -1;
@@ -107,17 +109,10 @@ export default class GlPatch extends Events
             this._overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
         }
 
-        // this._glTestSpline = new glEditableSpline(this._overlaySplines, this._rectInstancer, this);
-
         this.cablesHoverText = new GlText(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 0);
 
-        /*
-         * this._hoverCable = new GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
-         * this._hoverCable.setPosition(0, 0, 100, 100);
-         * this._hoverCable.setColor(1, 1, 1, 0.5);
-         */
         this._showingOpCursor = false;
         this._eleDropOp = ele.byId("drop-op-cursor");
 
@@ -473,6 +468,7 @@ export default class GlPatch extends Events
         }
 
         this.snap.update();
+        this._cablesHoverButtonRect = undefined;
     }
 
     get name() { return "glpatch"; }
@@ -1237,7 +1233,7 @@ export default class GlPatch extends Events
      * @param {number} x
      * @param {number} y
      */
-    mouseMove(x, y)
+    mouseMove(x, y, e)
     {
         if (this.cutLineActive)
         {
@@ -1279,7 +1275,7 @@ export default class GlPatch extends Events
         let allowSelectionArea = !this._portDragLine.isActive;
         if (this._selectionArea.active)allowSelectionArea = true;
 
-        this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
+        this._rectInstancer.mouseMove(x, y, this.mouseState.getButton(), e);
 
         if (this._rectInstancer.isDragging()) return;
 
@@ -1298,38 +1294,6 @@ export default class GlPatch extends Events
 
         if (this.mouseState.isButtonDown())
         {
-
-            /*
-             * remmeber start coordinates when start dragging hovered op
-             * if(hoverops.length>0 && !this._hoverDragOp)
-             * {
-             *     this._log.log("START drag coords!!!");
-             *     this._dragOpStartX=x;
-             *     this._dragOpStartY=y;
-             *     this._dragOpOffsetX=x-hoverops[0].x;
-             *     this._dragOpOffsetY=y-hoverops[0].y;
-             * }
-             */
-
-            /*
-             * if(hoverops.length>0) this._hoverDragOp=hoverops[0];
-             * else this._hoverDragOp=null;
-             */
-
-            /*
-             * drag hoverered op
-             * if(this._hoverDragOp)
-             * {
-             *     this._log.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
-             *     if(this._dragOpStartX)
-             *         this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
-             *             "translate",
-             *             {
-             *                 "x":x-this._dragOpOffsetX,
-             *                 "y":y-this._dragOpOffsetY
-             *             });
-             * }
-             */
         }
         else
         {
@@ -1340,16 +1304,8 @@ export default class GlPatch extends Events
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
-        /*
-         *     if (this._hoverOps.length > 0
-         * || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
-         *     else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
-         */
-
         if (gui.longPressConnector.isActive())
         {
-            // const ops = this._getGlOpsInRect(xa, ya, xb, yb);
-
             const ops = this._getGlOpsInRect(x, y, x + 1, y + 1);
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
@@ -1424,6 +1380,12 @@ export default class GlPatch extends Events
         }, 20);
     }
 
+    /**
+     * @param {number} xa
+     * @param {number} ya
+     * @param {number} xb
+     * @param {number} yb
+     */
     _getGlOpsInRect(xa, ya, xb, yb)
     {
         if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
@@ -1558,6 +1520,10 @@ export default class GlPatch extends Events
         }
     }
 
+    /**
+     * @param {import("cables-corelibs").BoundingBox} bounds
+     * @param {Function} next
+     */
     subPatchOpAnimStart(bounds, next)
     {
         this._subpatchAnimFade = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
@@ -1576,7 +1542,7 @@ export default class GlPatch extends Events
         this._subpatchoprect = this._overLayRects.createRect();
 
         let col = gui.theme.colors_patch.opBgRect;
-        this._subpatchoprect.setColor(col);
+        this._subpatchoprect.setColorArray(col);
 
         let dur = 0.4;
 
@@ -1598,6 +1564,9 @@ export default class GlPatch extends Events
         this.updateSubPatchOpAnim();
     }
 
+    /**
+     * @param {string | number} opid
+     */
     subPatchOpAnimEnd(opid)
     {
         // clearTimeout(this.pauseTimeOut);
@@ -1631,6 +1600,12 @@ export default class GlPatch extends Events
         });
     }
 
+    /**
+     * @param {number} xa
+     * @param {number} ya
+     * @param {number} xb
+     * @param {number} yb
+     */
     _selectOpsInRect(xa, ya, xb, yb)
     {
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
@@ -1666,6 +1641,9 @@ export default class GlPatch extends Events
         return 1200;
     }
 
+    /**
+     * @param {Op[]} ops
+     */
     getOpBounds(ops)
     {
         return gui.patchView.getOpBounds(ops);
@@ -1695,12 +1673,20 @@ export default class GlPatch extends Events
     {
     }
 
+    /**
+     * @param {string} opid
+     */
     getOp(opid)
     {
         return this._glOpz[opid];
     }
 
     // make static util thing...
+    /**
+     * @param {import("./glcable.js").default} e
+     * @param {number} t
+     * @param {number} [diff]
+     */
     setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
@@ -1739,6 +1725,10 @@ export default class GlPatch extends Events
         this._rectInstancer.allowDragging = b;
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} portname
+     */
     getConnectedGlPorts(opid, portname)
     {
         const op = this.getOp(opid);
@@ -1750,11 +1740,17 @@ export default class GlPatch extends Events
         this._cgl.canvas.focus();
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     */
     cut(e)
     {
         gui.patchView.clipboardCutOps(e);
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     */
     copy(e)
     {
 
@@ -1765,6 +1761,9 @@ export default class GlPatch extends Events
         gui.patchView.clipboardCopyOps(e);
     }
 
+    /**
+     * @param {ClipboardEvent} e
+     */
     paste(e)
     {
         gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY, (ops, _focusSubpatchop) =>
@@ -1882,6 +1881,12 @@ export default class GlPatch extends Events
         this.emitEvent("resumed");
     }
 
+    /**
+     * @param {number} _x
+     * @param {number} _y
+     * @param {number} _w
+     * @param {number} _h
+     */
     setSize(_x, _y, _w, _h)
     {
     }

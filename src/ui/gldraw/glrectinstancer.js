@@ -1,5 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
-import { CGL, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
+import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
@@ -47,7 +47,6 @@ export default class GlRectInstancer extends Events
     #needsTextureUpdate = false;
     #reUploadAttribs = true;
     allowDragging = false;
-    #debugRenderStyle = 0;
     doBulkUploads = true;
     #updateRangesMin = {};
     #updateRangesMax = {};

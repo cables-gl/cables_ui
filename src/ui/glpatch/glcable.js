@@ -415,6 +415,12 @@ export default class GlCable
             gluiconfig.zPosCableButtonRect);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} x2
+     * @param {number} y2
+     */
     setPosition(x, y, x2, y2)
     {
         if (!(this._x != x || this._y != y || this._x2 != x2 || this._y2 != y2)) return;
@@ -458,6 +464,12 @@ export default class GlCable
         this._buttonRect.setColor(col[0], col[1], col[2], col[3]);
     }
 
+    /**
+     * @param {number} _r
+     * @param {number} _g
+     * @param {number} _b
+     * @param {number} _a
+     */
     setColor(_r, _g, _b, _a)
     {
         this.updateColor();
@@ -469,12 +481,21 @@ export default class GlCable
         return this.collideMouse(null, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 7);
     }
 
+    /**
+     * @param {number} speed
+     */
     setSpeed(speed)
     {
         if (this._glPatch.vizFlowMode != 0)
             this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
     }
 
+    /**
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     */
     collideLine(x1, y1, x2, y2)
     {
         if (!this._visible) return;
@@ -487,6 +508,16 @@ export default class GlCable
         return false;
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     * @param {number} cx
+     * @param {number} cy
+     * @param {number} r
+     */
     collideMouse(e, x1, y1, x2, y2, cx, cy, r)
     {
         // if (this._glPatch.isDraggingPort()) return;
@@ -591,6 +622,9 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {string} t
+     */
     setText(t)
     {
         if (this._buttonRect.isHovering && this._glPatch.cablesHoverText)
@@ -599,6 +633,12 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} x2
+     * @param {number} y2
+     */
     _dist(x, y, x2, y2)
     {
         const distX = x - x2;
@@ -607,6 +647,13 @@ export default class GlCable
     }
 
     // POINT/CIRCLE
+    /**
+     * @param {number} px
+     * @param {number} py
+     * @param {number} cx
+     * @param {number} cy
+     * @param {number} r
+     */
     _collidePointCircle(px, py, cx, cy, r)
     {
         // get distance between the point and circle's center
@@ -626,6 +673,14 @@ export default class GlCable
     }
 
     // LINE/POINT
+    /**
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     * @param {number} px
+     * @param {number} py
+     */
     _collideLinePoint(x1, y1, x2, y2, px, py)
     {
         // get distance from the point to the two ends of the line
@@ -650,6 +705,16 @@ export default class GlCable
         return false;
     }
 
+    /**
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     * @param {number} x3
+     * @param {number} y3
+     * @param {number} x4
+     * @param {number} y4
+     */
     collideLineLine(x1, y1, x2, y2, x3, y3, x4, y4)
     {
         // calculate the distance to intersection point

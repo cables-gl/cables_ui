@@ -43,6 +43,8 @@ export default class GlRect extends Events
     color = vec4.create();
     colorHover = null;
     interactive = true;
+
+    /** @type {GlRect[]} */
     childs = [];
 
     #parent = null;
@@ -277,7 +279,7 @@ export default class GlRect extends Events
         if (b === null) b = 1.0;
         if (a === null) a = 1.0;
         if (r.length)
-        {
+        { // todo remove after jul2025
             console.warn("setcolor cant use array, lse coloarray");
             vec4.set(this.color, r[0], r[1], r[2], r[3]);
         }
@@ -509,7 +511,11 @@ export default class GlRect extends Events
         this.emitEvent(GlRect.EVENT_DRAG, this, this.#dragOffsetX, this.#dragOffsetY, button, event, x, y);
     }
 
-    mouseDragEnd(e)
+    /**
+     * @param {MouseEvent} _e
+     */
+    mouseDragEnd(_e)
+
     {
         if (this.interactive) this.emitEvent(GlRect.EVENT_DRAGEND, this);
         this.#isDragging = false;
