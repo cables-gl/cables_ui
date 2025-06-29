@@ -127,7 +127,7 @@ export default class MouseState extends Events
         return MouseState.BUTTON_NONE;
     }
 
-    /** @param {Number} button */
+    /** @param {Number} [button] */
     isButtonDown(button)
     {
         if (button === undefined) return this.buttonAny;

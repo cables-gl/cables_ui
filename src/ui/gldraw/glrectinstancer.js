@@ -1,10 +1,11 @@
 import { Logger, Events } from "cables-shared-client";
-import { CGL, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
+import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
+import { userSettings } from "../components/usersettings.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
@@ -46,7 +47,6 @@ export default class GlRectInstancer extends Events
     #needsTextureUpdate = false;
     #reUploadAttribs = true;
     allowDragging = false;
-    #debugRenderStyle = 0;
     doBulkUploads = true;
     #updateRangesMin = {};
     #updateRangesMax = {};
@@ -133,6 +133,7 @@ export default class GlRectInstancer extends Events
         this.#mesh.numInstances = this.#num;
 
         this.clear();
+        this.debugColors = userSettings.get("gluidebugcolors");
     }
 
     set interactive(i) { this.#interactive = i; }
@@ -469,7 +470,7 @@ export default class GlRectInstancer extends Events
 
         this._attrBuffPos[buffIdx + 0] = x;
         this._attrBuffPos[buffIdx + 1] = y;
-        this._attrBuffPos[buffIdx + 2] = z;
+        this._attrBuffPos[buffIdx + 2] = z / 10000;
 
         if (
             this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
@@ -547,16 +548,26 @@ export default class GlRectInstancer extends Events
     }
 
     /**
+     * @param {any} idx
+     * @param {number[]} r
+     */
+    setColorArray(idx, r)
+    {
+        this.setColor(idx, r[0], r[1], r[2], r[3]);
+    }
+
+    /**
      * @param {number} idx
-     * @param {number |number[]} r
+     * @param {number} r
      * @param {number} [g]
      * @param {number} [b]
      * @param {number} [a]
      */
     setColor(idx, r, g, b, a)
     {
-        if (r.length)
+        if (r.length)// todo remove after~jul25
         {
+            console.warn("setcolor array");
             a = r[3];
             b = r[2];
             g = r[1];

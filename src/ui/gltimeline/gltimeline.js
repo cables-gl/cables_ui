@@ -190,10 +190,10 @@ export class GlTimeline extends Events
         if (gui.patchView.store.getUiSettings())
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
-        this.selectedKeysDragArea = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.selectedKeysDragArea = new glTlDragArea(this, null, this.#rectsOver);
         this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
 
-        this.loopAreaDrag = new glTlDragArea(this, null, true, this.#rectsOver);
+        this.loopAreaDrag = new glTlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
 
         this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });

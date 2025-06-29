@@ -4,10 +4,10 @@ import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
-import GlPatch from "./glpatch.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { userSettings } from "../components/usersettings.js";
 import { PortDir } from "../core_constants.js";
+import GlPatch from "./glpatch.js";
 
 /**
  * snapping of ops/ports etc to an invisible grid
@@ -20,7 +20,7 @@ export default class Snap extends Events
 {
 
     /**
-     * @param {CglContext} cgl
+     * @param {CglContext} _cgl
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
      */
@@ -44,7 +44,7 @@ export default class Snap extends Events
 
         if (this.enabled)
         {
-            this.rect = new GlRect(this._instancer, { "interactive": false });
+            this.rect = new GlRect(this._instancer, { "name": "snaprect", "interactive": false });
             this.rect.setColor(0, 0, 0, 0.3);
             this.rect.setPosition(0, -300000);
             this.rect.setSize(this._rectWidth * 2, 1000000);
@@ -115,7 +115,7 @@ export default class Snap extends Events
     /**
      * @param {number} _x
      * @param {Port} port
-     * @param {number} index
+     * @param {number} _index
      * @param {number} dist
      */
     _snapPortX(_x, port, _index, dist)
@@ -153,6 +153,11 @@ export default class Snap extends Events
         return -1;
     }
 
+    /**
+     * @param {number} _x
+     * @param {import("../core_extend_op.js").UiOp} op
+     * @param {number} [dist]
+     */
     snapOpX(_x, op, dist)
     {
         if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);

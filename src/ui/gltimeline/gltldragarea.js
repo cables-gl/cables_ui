@@ -42,29 +42,27 @@ export class glTlDragArea extends Events
     /**
      * @param {GlTimeline} glTl
      * @param {GlRect} parent
-     * @param {boolean} interactive
      * @param {GlRectInstancer} rectInst
      */
-    constructor(glTl, parent, interactive, rectInst)
+    constructor(glTl, parent, rectInst)
     {
         super();
         this._log = new Logger("tl dragarea");
         this.#glTl = glTl;
-        console.log("new dragarea,", interactive);
 
         rectInst = rectInst || this.#glTl.rects;
-        this.rectMove = rectInst.createRect({ "draggable": true, "interactive": interactive, "name": "dragarea middle" });
+        this.rectMove = rectInst.createRect({ "name": "dragarea middle", "draggable": true, "interactive": true });
         this.rectMove.setSize(this.#width, this.height);
-        if (parent) this.rectMove.setParent(parent);
         this.rectMove.setColorHover(0.65, 0.65, 0.65, 1);
         this.rectMove.setColor(0.4, 0.4, 0.4, 1);
+        if (parent) this.rectMove.setParent(parent);
 
-        this.#rectSizeLeft = rectInst.createRect({ "draggable": true, "interactive": interactive });
+        this.#rectSizeLeft = rectInst.createRect({ "name": "dragarea left", "draggable": true, "interactive": true });
         this.#rectSizeLeft.setSize(this.#handleWidth, this.height);
-        if (parent) this.#rectSizeLeft.setParent(parent);
         this.#rectSizeLeft.setColor(0.3, 0.3, 0.3, 1);
+        if (parent) this.#rectSizeLeft.setParent(parent);
 
-        this.#rectSizeRight = rectInst.createRect({ "draggable": true, "interactive": interactive });
+        this.#rectSizeRight = rectInst.createRect({ "name": "dragarea right", "draggable": true, "interactive": true });
         this.#rectSizeRight.setSize(this.#handleWidth, this.height);
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
