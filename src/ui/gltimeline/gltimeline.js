@@ -45,6 +45,8 @@ import defaultOps from "../defaultops.js";
 
 export class GlTimeline extends Events
 {
+    static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
+
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
     static USERSETTING_SPLITTER_LEFT = "tl_split_left";
@@ -172,6 +174,7 @@ export class GlTimeline extends Events
     {
         super();
 
+        GlTimeline.COLOR_BEZ_HANDLE = gui.theme.colors_types.num;
         this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;

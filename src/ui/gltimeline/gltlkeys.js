@@ -322,7 +322,7 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 col = glTlKeys.COLOR_SELECTED;
-                colBez = [0.6, 0.6, 0.6, 1];
+                colBez = GlTimeline.COLOR_BEZ_HANDLE;
             }
 
             if (k.cp1r) k.cp1r.setColorArray(colBez);

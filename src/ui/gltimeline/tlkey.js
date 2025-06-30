@@ -103,7 +103,7 @@ export class TlKey extends Events
 
             this.cp1s = new GlSpline(this.#glTl.splines, "cp1");
             this.cp1s.setParentRect(this.rect.parent);
-            this.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
+            this.cp1s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
 
             const bezRect2 = this.#glTl.rects.createRect({ "name": "bezrect2", "draggable": true, "interactive": true });
             bezRect2.data.key = key;
@@ -111,7 +111,7 @@ export class TlKey extends Events
 
             this.cp2s = new GlSpline(this.#glTl.splines, "cp2");
             this.cp2s.setParentRect(this.rect.parent);
-            this.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
+            this.cp2s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
 
             this.bindBezCp(bezRect, key.bezCp1, key, 0);
             this.bindBezCp(bezRect2, key.bezCp2, key, 1);

@@ -31,7 +31,13 @@
  * @property {object} [colors_textedit]
  * @property {object} [colors_html]
  * @property {object} [colors_vizlayer]
- * @property {object} [colors_types]
+ * @property {colors_types} [colors_types]
  * @property {object} [colors_namespaces]
  * @property {object} [patch]
+ */
+/**
+ * @typedef colors_types
+ * @property {array} [num]
+ * @property {array} [string]
+ * @property {array} [arraay]
  */
