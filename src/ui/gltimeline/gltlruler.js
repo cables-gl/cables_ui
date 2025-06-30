@@ -48,7 +48,10 @@ export class glTlRuler extends Events
             if (!this.pointerDown) return;
             if (this.#glTl.loopAreaDrag.isDragging) return;
             this.#glTl.removeKeyPreViz();
+
+            gui.corePatch().timer.pause();
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
+
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>

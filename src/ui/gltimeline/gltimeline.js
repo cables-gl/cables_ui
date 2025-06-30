@@ -2112,7 +2112,7 @@ export class GlTimeline extends Events
                                 }
                             },
                             {
-                                "title": "Create Anim Op",
+                                "title": "Create anim op from keyframes",
                                 "func": () =>
                                 {
                                     this.createAnimOpFromSelection();
@@ -2122,10 +2122,12 @@ export class GlTimeline extends Events
                         ]
                 }, e.target);
         });
+
         ele.clickable(ele.byId("kp_movecursor"), () =>
         {
             this.moveSelectedKeys();
         });
+
         ele.clickable(ele.byId("kp_fit"), () =>
         {
             this.fit();
@@ -2177,7 +2179,8 @@ export class GlTimeline extends Events
         {
             let off = parseFloat(ele.byId("kp_input_value").value);
 
-            for (let i = 0; i < this.#selectedKeys.length; i++) this.#selectedKeys[i].set({ "value": off });
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
             this.#paramLastInputValue = off;

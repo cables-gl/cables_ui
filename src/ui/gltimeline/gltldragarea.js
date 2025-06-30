@@ -108,7 +108,10 @@ export class glTlDragArea extends Events
             const off = e.offsetX - this.#dragStartX;
             const factor = Math.max(0.000001, (e.offsetX - this.rectMove.x) / this.#dragStartWidth);
 
-            const newPos = this.#dragStartX + off;
+            let newPos = this.#dragStartX + off;
+            const newPosTime = this.#glTl.snapTime(this.#glTl.view.pixelScreenToTime(newPos));
+            newPos = this.#glTl.view.timeToPixelScreen(newPosTime);
+
             this.emitEvent(glTlDragArea.EVENT_RIGHT, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
             this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
 
