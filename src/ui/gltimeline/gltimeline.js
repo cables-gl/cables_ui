@@ -1852,15 +1852,18 @@ export class GlTimeline extends Events
             const data = { "colNames": ["time", "value", "easing", "cp1x", "cp1y", "cp2x", "cp2y"], "cells": [] };
             for (let i = 0; i < anim.keys.length; i++)
             {
+                let bezCp1 = anim.keys[i].bezCp1 || [0, 0];
+                let bezCp2 = anim.keys[i].bezCp2 || [0, 0];
+
                 data.cells.push(
                     [
                         anim.keys[i].time,
                         anim.keys[i].value,
                         anim.keys[i].getEasing(),
-                        anim.keys[i].bezCp1[0],
-                        anim.keys[i].bezCp1[1],
-                        anim.keys[i].bezCp2[0],
-                        anim.keys[i].bezCp2[1],
+                        bezCp1[0],
+                        bezCp1[1],
+                        bezCp2[0],
+                        bezCp2[1],
                     ]
                 );
             }

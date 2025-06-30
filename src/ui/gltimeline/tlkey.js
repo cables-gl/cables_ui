@@ -38,7 +38,7 @@ export class TlKey extends Events
 
     /** @type {GlText} */
     text = null;
-    #bezCpSize = 5;
+    #bezCpSize = 10;
 
     /** @type {glTlKeys} */
     tlkeys = null;
