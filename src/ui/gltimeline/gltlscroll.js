@@ -2,9 +2,7 @@ import { Events, Logger } from "cables-shared-client/index.js";
 import GlRect from "../gldraw/glrect.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
-import GlText from "../gldraw/gltext.js";
 import { GlTimeline } from "./gltimeline.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 export class glTlScroll extends Events
 {
@@ -20,9 +18,7 @@ export class glTlScroll extends Events
 
     height = 24;
     #width = 222;
-    #dragStart = 0;
     #glTl;
-    #lastdown = 0;
 
     /** @type {GlRect[]} */
     #indicatorRects = [];

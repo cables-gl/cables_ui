@@ -10,6 +10,8 @@ import { platform } from "../platform.js";
  */
 export default class UserSettings extends Events
 {
+    static SETTING_GLUI_DEBUG_COLORS = "gluidebugcolors";
+
     constructor()
     {
         super();

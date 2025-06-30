@@ -82,6 +82,13 @@ export default class GlGraph
         // this._splineRenderer.setSplineColor(this._idx, [0.5, 0.5, 0.5, 1]);
     }
 
+    /**
+     * @param {number} resX
+     * @param {number} resY
+     * @param {number} scrollX
+     * @param {number} scrollY
+     * @param {number} zoom
+     */
     render(resX, resY, scrollX, scrollY, zoom)
     {
         this._splineRenderer.render(resX, resY, scrollX, scrollY, zoom);

@@ -5,7 +5,7 @@ import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
@@ -133,7 +133,7 @@ export default class GlRectInstancer extends Events
         this.#mesh.numInstances = this.#num;
 
         this.clear();
-        this.debugColors = userSettings.get("gluidebugcolors");
+        this.debugColors = userSettings.get(UserSettings.SETTING_GLUI_DEBUG_COLORS);
     }
 
     set interactive(i) { this.#interactive = i; }

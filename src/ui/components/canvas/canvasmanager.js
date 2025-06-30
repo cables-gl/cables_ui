@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
+import { CgContext } from "cables-corelibs";
 import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -75,7 +76,7 @@ export default class CanvasManager
         this._curContextIdx = this._contexts.length - 1;
 
         const ctx = c;
-        gui.cmdPallet.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
+        gui.cmdPalette.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
         {
             ctx.canvas.focus();
         }, "cables");
