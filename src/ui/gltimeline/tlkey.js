@@ -167,7 +167,9 @@ export class TlKey extends Events
             if (button == 1 && !glTlKeys.dragStarted)
             {
                 oldValues = this.#glTl.serializeSelectedKeys();
-                glTlKeys.dragBezCp = [cp[0], cp[1]];
+                glTlKeys.dragBezCp = key.bezCp1;// [cp[0], cp[1]];
+                if (dir == 1) glTlKeys.dragBezCp = key.bezCp2;
+
                 glTlKeys.dragStarted = true;
                 glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                 glTlKeys.startDragValue = this.tlkeys.animLine.pixelToValue(e.offsetY);
