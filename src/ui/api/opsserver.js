@@ -67,7 +67,6 @@ export default class ServerOps
                 this.editAttachment(data.opname, data.name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    console.log("act tab", lastTab);
                     userSettings.set("editortab", lastTab);
                     editorSession.finishLoadingTab();
                 }, true);
@@ -2163,8 +2162,8 @@ export default class ServerOps
                     if (!hideEnvButton)
                     {
                         modal.on("onSubmit", tryOtherEnvCallback);
+                        modal.on("onClose", continueLoadingCallback);
                     }
-                    modal.on("onClose", continueLoadingCallback);
                 }
                 else
                 {
