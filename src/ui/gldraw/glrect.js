@@ -537,7 +537,7 @@ export default class GlRect extends Events
         const isHovered = this.#hovering;
         let hoverChanged = false;
 
-        if (button == 0)
+        if (this.#rectInstancer.hoverWhenButton || button == 0)
         {
             const hovering = this.isPointInside(x, y);
 
@@ -570,14 +570,13 @@ export default class GlRect extends Events
             {
                 if (!this.#isDragging)
                 {
-                    // console.log("dragstart", this.name, button);
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
                     console.log("drag start", this.name);
                     this.emitEvent(GlRect.EVENT_DRAGSTART, this, x, y, button, e);
-
                 }
+
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }

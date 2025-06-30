@@ -67,7 +67,7 @@ export default class GlPatch extends Events
         this._ignoreNonExistError = [];
         this._hoverOpLongStartTime = 0;
         this._patchAPI = null;
-        this._showRedrawFlash = 0;
+        // this._showRedrawFlash = 0;
         this.debugData = {};
 
         this.greyOut = false;
@@ -84,9 +84,11 @@ export default class GlPatch extends Events
 
         this.viewBox = new GlViewBox(cgl, this);
 
-        this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
+        this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
+        this._rectInstancer.hoverWhenButton;
+        this._overLayRects.hoverWhenButton = false;
 
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
@@ -150,10 +152,9 @@ export default class GlPatch extends Events
 
         this.snap = new Snap(cgl, this, this._rectInstancer);
 
-        this._redrawFlash = this._overLayRects.createRect({ "name": "redrawflash", "interactive": false });
-        this._redrawFlash.setSize(50, 5);
-        this._redrawFlash.setColor(0, 1, 0, 1);
-
+        // this._redrawFlash = this._overLayRects.createRect({ "name": "redrawflash", "interactive": false });
+        // this._redrawFlash.setSize(50, 5);
+        // this._redrawFlash.setColor(0, 1, 0, 1);
         this._fadeOutRectAnim = new Anim({ "defaultEasing": Anim.EASING_LINEAR });
 
         this._fadeOutRect = this._overLayRects.createRect({ "name": "fadeoutrect", "interactive": false });
@@ -1130,8 +1131,8 @@ export default class GlPatch extends Events
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
 
-        this._showRedrawFlash++;
-        this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
+        // this._showRedrawFlash++;
+        // this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
         this._patchAPI.updateFlowModeActivity(this.vizFlowMode);

@@ -12,6 +12,7 @@ import UserSettings, { userSettings } from "../components/usersettings.js";
  * @property {String} [name]
  * @property {Number} [initNum]
  * @property {boolean} [allowDragging]
+ * @property {boolean} [hoverWhenButton]
  */
 
 /**
@@ -85,6 +86,9 @@ export default class GlRectInstancer extends Events
     static ATTR_SIZE = "instSize";
     static ATTR_DECO = "instDeco";
 
+    mouseDownCount = 0;
+    hoverWhenButton = false;
+
     /**
      * Description
      * @param {CglContext} cgl
@@ -105,6 +109,7 @@ export default class GlRectInstancer extends Events
         this.#cgl = cgl;
         this.#name = options.name || "unknown";
         this.#num = options.initNum || 5000;
+        this.hoverWhenButton = !!options.hoverWhenButton;
 
         this.#bounds = { "minX": GlRectInstancer.DEFAULT_BIGNUM, "maxX": -GlRectInstancer.DEFAULT_BIGNUM, "minY": GlRectInstancer.DEFAULT_BIGNUM, "maxY": -GlRectInstancer.DEFAULT_BIGNUM, "minZ": GlRectInstancer.DEFAULT_BIGNUM, "maxZ": -GlRectInstancer.DEFAULT_BIGNUM };
 
@@ -134,7 +139,6 @@ export default class GlRectInstancer extends Events
 
         this.clear();
         this.debugColors = userSettings.get(UserSettings.SETTING_GLUI_DEBUG_COLORS);
-        this.mouseDownCount = 0;
     }
 
     set interactive(i) { this.#interactive = i; }
