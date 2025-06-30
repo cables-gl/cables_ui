@@ -670,6 +670,20 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {MouseEvent} e
+     */
+    _onCanvasMouseUp(e)
+    {
+        this.#rects.mouseUp(e);
+        this.#rectsOver.mouseUp(e);
+        this.mouseDown = false;
+        this.selectRect = null;
+        this.#rectSelect.setSize(0, 0);
+        this.#lastDragX = Number.MAX_SAFE_INTEGER;
+        this.#lastDragY = Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
      * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
@@ -681,8 +695,9 @@ export class GlTimeline extends Events
 
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
-        if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
-        else if (this.#focusScroll)
+
+        // if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
+        if (this.#focusScroll)
         {
         }
         else
@@ -1136,20 +1151,6 @@ export class GlTimeline extends Events
         }
         this.showKeyParamsSoon();
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
-    }
-
-    /**
-     * @param {MouseEvent} e
-     */
-    _onCanvasMouseUp(e)
-    {
-        this.#rects.mouseUp(e);
-        this.#rectsOver.mouseUp(e);
-        this.mouseDown = false;
-        this.selectRect = null;
-        this.#rectSelect.setSize(0, 0);
-        this.#lastDragX = Number.MAX_SAFE_INTEGER;
-        this.#lastDragY = Number.MAX_SAFE_INTEGER;
     }
 
     /**

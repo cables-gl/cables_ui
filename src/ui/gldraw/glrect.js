@@ -484,6 +484,7 @@ export default class GlRect extends Events
      */
     mouseDown(e, x, y)
     {
+        console.log("downnnnnnnn", this.#hovering);
         if (this.#hovering) this.emitEvent(GlRect.EVENT_POINTER_DOWN, e, this, x, y);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e, x, y);
     }
@@ -576,7 +577,7 @@ export default class GlRect extends Events
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }
-            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y);
+            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y, e);
         }
     }
 
