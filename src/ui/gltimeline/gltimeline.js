@@ -696,23 +696,18 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
 
-        // if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
-        if (this.#focusScroll)
-        {
-        }
-        else
-        {
-            if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
-                if (this.hoverKeyRect == null && !e.shiftKey)
-                    if (e.offsetY > this.getFirstLinePosy())
-                        this.unSelectAllKeys("canvas down ");
+        if (this.#focusScroll) return;
 
-            try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
-            catch (er) { this._log.log(er); }
+        if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
+            if (this.hoverKeyRect == null && !e.shiftKey)
+                if (e.offsetY > this.getFirstLinePosy())
+                    this.unSelectAllKeys("canvas down ");
 
-            this.#rects.mouseDown(e, e.offsetX, e.offsetY);
-            this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
-        }
+        try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
+        catch (er) { this._log.log(er); }
+
+        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
+        this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
 
         this.mouseDown = true;
     }
@@ -808,7 +803,6 @@ export class GlTimeline extends Events
                         if (movementX > 0)d = 1 - zf;
                         this.view.setZoomOffset(d, 0);
                     }
-
                 }
                 else
                 {

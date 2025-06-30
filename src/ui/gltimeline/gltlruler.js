@@ -45,8 +45,8 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_POINTER_MOVE, (x, y, event) =>
         {
-            console.log("mnooooveeee", this.pointerDown);
             if (!this.pointerDown) return;
+            if (this.#glTl.loopAreaDrag.isDragging) return;
             this.#glTl.removeKeyPreViz();
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
         });
@@ -61,14 +61,12 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
-            console.log("pointer DOWN");
             this.pointerDown = true;
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
         });
 
         this._glRectBg.on(GlRect.EVENT_POINTER_UP, () =>
         {
-            console.log("pointer UPPP");
             this.pointerDown = false;
         });
 
