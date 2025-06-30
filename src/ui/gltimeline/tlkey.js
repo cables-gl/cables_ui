@@ -198,15 +198,20 @@ export class TlKey extends Events
                 if (dir == 0)
                 {
                     nt = Math.min(nt, 0);
-                    key.setBezCp1(nt, nv);
-                    if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
+                    // key.setBezCp1(nt, nv);
+                    // if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
+                    if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP2(nt * -1, nv * -1);
+                    this.#glTl.selSelectedKeysCP1(nt, nv);
                 }
                 if (dir == 1)
                 {
                     nt = Math.max(nt, 0);
-                    key.setBezCp2(nt, nv);
-                    if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
+                    // key.setBezCp2(nt, nv);
+                    // if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
+                    if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP1(nt * -1, nv * -1);
+                    this.#glTl.selSelectedKeysCP2(nt, nv);
                 }
+
                 this.emitEvent(TlKey.EVENT_POSCHANGE);
                 // this.setKeyPositions();
                 // this.#animLine.update();

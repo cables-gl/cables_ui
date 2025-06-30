@@ -1106,6 +1106,24 @@ export class GlTimeline extends Events
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
+    selSelectedKeysCP1(x, y)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].setBezCp1(x, y);
+        }
+
+    }
+
+    selSelectedKeysCP2(x, y)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].setBezCp2(x, y);
+        }
+
+    }
+
     deleteSelectedKeys()
     {
         if (this.disposed) return;
@@ -2153,6 +2171,16 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+        });
+
+        ele.clickable(ele.byId("kp_value_set"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++) this.#selectedKeys[i].set({ "value": off });
+            this.fixAnimsFromKeys(this.#selectedKeys);
+            this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.clickable(ele.byId("kp_value_movef"), () =>
