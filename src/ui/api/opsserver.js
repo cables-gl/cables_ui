@@ -2080,11 +2080,22 @@ export default class ServerOps
                         if (pasteData && pasteData.ops)
                         {
                             const pastedOp = pasteData.ops.find((clipboardOp) => { return clipboardOp.opId === opIdentifier || clipboardOp.objName === opIdentifier; });
-                            if (pastedOp && pastedOp.objName) oldName = pastedOp.objName;
+                            if (pastedOp && pastedOp.objName)
+                            {
+                                oldName = pastedOp.objName;
+                            }
+                            else
+                            {
+                                const errorReport = gui.patchView.store.createErrorReport("Op not found: " + opIdentifier + " (name: " + oldName + ")");
+                                gui.patchView.store.sendErrorReport(errorReport, false);
+                            }
+                        }
+                        else
+                        {
+                            const errorReport = gui.patchView.store.createErrorReport("Op not found: " + opIdentifier + " (name: " + oldName + ")");
+                            gui.patchView.store.sendErrorReport(errorReport, false);
                         }
                     }
-                    const errorReport = gui.patchView.store.createErrorReport("Failed to load op: " + opIdentifier + " (name: " + oldName + ")");
-                    gui.patchView.store.sendErrorReport(errorReport, false);
 
                     let title = "Failed to load op";
                     let footer = "";
