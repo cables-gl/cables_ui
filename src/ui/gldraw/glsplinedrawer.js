@@ -6,6 +6,8 @@ import { userSettings } from "../components/usersettings.js";
 import { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
+import GlCanvas from "./glcanvas.js";
+import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**
  * draw splines, e.g. cables on the patchfield
@@ -51,12 +53,12 @@ export default class GlSplineDrawer
 
         this._shader = new Shader(cgl, "glSplineDrawer " + name);
         this._shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
+        this._shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
 
         this._uniTime = new Uniform(this._shader, "f", "time", 0);
         this._uniZoom = new Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new Uniform(this._shader, "f", "resX", 0);
         this._uniResY = new Uniform(this._shader, "f", "resY", 0);
-        this._uniZpos = new Uniform(this._shader, "f", "zpos", 0.96);
         this._uniscrollX = new Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this._shader, "f", "scrollY", 0);
         this._uniWidth = new Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
@@ -81,14 +83,6 @@ export default class GlSplineDrawer
             this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
             this._uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
-    }
-
-    /**
-     * @param {number} v
-     */
-    set zPos(v)
-    {
-        this._uniZpos.setValue(v);
     }
 
     /**

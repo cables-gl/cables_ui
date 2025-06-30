@@ -6,6 +6,7 @@ import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
+import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
@@ -463,7 +464,7 @@ export default class GlRectInstancer extends Events
 
         this._attrBuffPos[buffIdx + 0] = x;
         this._attrBuffPos[buffIdx + 1] = y;
-        this._attrBuffPos[buffIdx + 2] = z / 10000;
+        this._attrBuffPos[buffIdx + 2] = z / GlUiCanvas.ZPOSDIV;
 
         if (
             this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
