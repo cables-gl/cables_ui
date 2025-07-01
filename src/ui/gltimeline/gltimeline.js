@@ -797,7 +797,7 @@ export class GlTimeline extends Events
                 {
                     if (Math.abs(movementY) > Math.abs(movementX))
                     {
-                        this.view.scale(movementY * 0.01);
+                        this.view.scaleValues(movementY * 0.01);
                     }
                     else
                     {
@@ -1181,7 +1181,7 @@ export class GlTimeline extends Events
         }
         else if (event.shiftKey && this.isGraphLayout)
         {
-            this.view.scale(event.deltaX * 0.003);
+            this.view.scaleValues(event.deltaX * 0.003);
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
@@ -1194,7 +1194,7 @@ export class GlTimeline extends Events
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
 
-            this.view.scale(delta * 0.07);
+            this.view.scaleValues(delta * 0.07);
         }
 
         this.setHoverKeyRect(null);
