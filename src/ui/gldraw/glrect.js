@@ -534,14 +534,18 @@ export default class GlRect extends Events
         if (!this.interactive) return;
         if (!this.#visible) return;
 
-        const hovering = this.isPointInside(x, y);
         const isHovered = this.#hovering;
+        let hoverChanged = false;
 
-        const hoverChanged = this.#hovering != hovering;
-        this.#hovering = hovering;
+        if (this.#rectInstancer.hoverWhenButton || button == 0)
+        {
+            const hovering = this.isPointInside(x, y);
 
-        if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this, e);
-        else if (!hovering && isHovered) this.emitEvent(GlRect.EVENT_POINTER_UNHOVER, this, e);
+            hoverChanged = this.#hovering != hovering;
+            this.#hovering = hovering;
+            if (hovering && !isHovered) this.emitEvent(GlRect.EVENT_POINTER_HOVER, this, e);
+            else if (!hovering && isHovered) this.emitEvent(GlRect.EVENT_POINTER_UNHOVER, this, e);
+        }
 
         if (hoverChanged)
         {
@@ -566,17 +570,17 @@ export default class GlRect extends Events
             {
                 if (!this.#isDragging)
                 {
-                    // console.log("dragstart", this.name, button);
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
                     console.log("drag start", this.name);
                     this.emitEvent(GlRect.EVENT_DRAGSTART, this, x, y, button, e);
                 }
+
                 this.#dragOffsetX = x;
                 this.#dragOffsetY = y;
             }
-            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y);
+            this.emitEvent(GlRect.EVENT_POINTER_MOVE, x, y, e);
         }
     }
 

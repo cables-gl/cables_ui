@@ -322,7 +322,7 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 col = glTlKeys.COLOR_SELECTED;
-                colBez = [0.6, 0.6, 0.6, 1];
+                colBez = GlTimeline.COLOR_BEZ_HANDLE;
             }
 
             if (k.cp1r) k.cp1r.setColorArray(colBez);
@@ -564,7 +564,7 @@ export class glTlKeys extends Events
                         oldValues = this.#glTl.serializeSelectedKeys();
                         glTlKeys.dragStarted = true;
                         glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
-                        glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY);
+                        glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY - this.#glTl.getFirstLinePosy());
 
                         if (e.altKey) this.#glTl.duplicateSelectedKeys();
                     }
@@ -589,7 +589,7 @@ export class glTlKeys extends Events
                     if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
                     {
                         let offX = e.offsetX;
-                        let offY = e.offsetY;
+                        let offY = e.offsetY - this.#glTl.getFirstLinePosy();
 
                         let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.startDragTime;
                         let offVal = glTlKeys.startDragValue - this.animLine.pixelToValue(offY);

@@ -6,7 +6,7 @@ import Introduction from "./components/introduction.js";
 import Jobs from "./components/jobs.js";
 import OpHistory from "./components/ophistory.js";
 import OpParampanel from "./components/opparampanel/op_parampanel.js";
-import CommandPallete from "./dialogs/commandpalette.js";
+import CommandPalette from "./dialogs/commandpalette.js";
 import OpSelect from "./dialogs/opselect.js";
 import BottomInfoAreaBar from "./elements/bottominfoareabar.js";
 import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay.js";
@@ -191,7 +191,7 @@ export default class Gui extends Events
         this._corePatch.gui = true;
 
         this._jobs = new Jobs();
-        this.cmdPallet = new CommandPallete();
+        this.cmdPalette = new CommandPalette();
 
         this.fileManager = null;
         this.fileManagerEditor = new FileManagerEditor();
@@ -1389,7 +1389,7 @@ export default class Gui extends Events
             });
         });
 
-        ele.byId("nav_cmdplt").addEventListener("click", () => { gui.cmdPallet.show(); });
+        ele.byId("nav_cmdplt").addEventListener("click", () => { gui.cmdPalette.show(); });
         ele.byId("nav_search").addEventListener("click", () => { gui.find(""); });
 
         ele.byId("nav_createBackup").addEventListener("click", () => { CmdPatch.createBackup(); });
@@ -1617,7 +1617,7 @@ export default class Gui extends Events
 
         this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
-        this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPallet.show(); });
+        this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPalette.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.toggleMaximizeCanvas(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, () => { this.cyclePatchBg(); });
         this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, () =>
@@ -1725,7 +1725,7 @@ export default class Gui extends Events
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         }
-        else if (gui.cmdPallet.isVisible()) gui.cmdPallet.close();
+        else if (gui.cmdPalette.isVisible()) gui.cmdPalette.close();
         else if (contextMenu.isVisible()) contextMenu.close();
         else if (gui.isShowingModal())
         {

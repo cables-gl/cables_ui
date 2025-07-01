@@ -10,7 +10,7 @@ import { userSettings } from "../components/usersettings.js";
  * @export
  * @class CommandPallete
  */
-export default class CommandPallete
+export default class CommandPalette
 {
     constructor()
     {
@@ -23,30 +23,34 @@ export default class CommandPallete
         this._defaultIcon = "square";
         this.dynamicCmds = [];
 
-        this.keyDown = (e) =>
+    }
+
+    /**
+     * @param {KeyboardEvent} e
+     */
+    keyDown(e)
+    {
+        switch (e.which)
         {
-            switch (e.which)
-            {
-            case 13:
-                const el = ele.byId("result" + this._cursorIndex);
-                if (el)el.click();
-                break;
-            case 27:
-                this.close();
-                break;
+        case 13:
+            const el = ele.byId("result" + this._cursorIndex);
+            if (el)el.click();
+            break;
+        case 27:
+            this.close();
+            break;
 
-            case 38: // up
-                this.navigate(-1);
-                break;
+        case 38: // up
+            this.navigate(-1);
+            break;
 
-            case 40: // down
-                this.navigate(1);
-                break;
+        case 40: // down
+            this.navigate(1);
+            break;
 
-            default: return;
-            }
-            e.preventDefault();
-        };
+        default: return;
+        }
+        e.preventDefault();
     }
 
     isVisible()
@@ -70,7 +74,7 @@ export default class CommandPallete
             this.doSearch(this._lastSearch);
         }, 100);
 
-        document.addEventListener("keydown", this.keyDown);
+        document.addEventListener("keydown", this.keyDown.bind(this));
     }
 
     /**
@@ -110,7 +114,8 @@ export default class CommandPallete
     {
         const el = ev.target;
         const cmd = el.dataset.cmd;
-        gui.cmdPallet.close();
+
+        gui.cmdPalette.close();
 
         if (el.classList.contains("dyn"))
         {
@@ -122,6 +127,9 @@ export default class CommandPallete
         }
     }
 
+    /**
+     * @param {string} cmdName
+     */
     isCmdInSidebar(cmdName)
     {
         const itemObj = userSettings.get("sidebar_left") || {};
@@ -156,16 +164,20 @@ export default class CommandPallete
         if (cmd.dyn)dynclass = "dyn";
 
         let html = "";
-        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + idx + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
+        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + idx + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPalette.onResultClick(event)>";
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> - " + cmd.category || "unknown category" + "</span>";
 
         const bookmarkIcon = this.getBookmarkIconForCmd(cmd.cmd);
-        html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>";
+        html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPalette.onBookmarkIconClick(event)></span>";
         if (cmd.hotkey)
         {
-            html += "<span class=\"hotkey\">[ " + cmd.hotkey + " ]</span>";
+            html += "<span class=\"hotkey right\">[ " + cmd.hotkey + " ]</span>";
+        }
+        if (cmd.userSetting)
+        {
+            html += "<span class=\"right\">Usersetting: [ " + userSettings.get(cmd.userSetting) + " ]</span>";
         }
         html += "</div>";
 
@@ -174,9 +186,8 @@ export default class CommandPallete
 
     /**
      * @param {String} str - String
-     * @param {String} searchId
      */
-    doSearch(str, searchId)
+    doSearch(str)
     {
         this._lastSearch = str;
 
@@ -218,11 +229,11 @@ export default class CommandPallete
         this._numResults = count;
         ele.byId("searchresult_cmd").innerHTML = html;
 
-        setTimeout(function ()
+        setTimeout(() =>
         {
             this._cursorIndex = 0;
             this.navigate();
-        }.bind(this), 10);
+        }, 10);
     }
 
     navigate(dir)
@@ -243,23 +254,28 @@ export default class CommandPallete
 
     close()
     {
-        document.removeEventListener("keydown", this.keyDown);
+        document.removeEventListener("keydown", this.keyDown.bind(this));
         ele.byId("searchresult_cmd").innerHTML = "";
         document.getElementById("modalbg").style.display = "none";
         ele.hide(ele.byId("cmdpalette"));
     }
 
+    /**
+     * @param {string} id
+     */
     removeDynamic(id)
     {
         for (let i = this.dynamicCmds.length - 1; i > 0; i--)
-        {
             if (this.dynamicCmds[i].id == id)
-            {
                 this.dynamicCmds.splice(i, 1);
-            }
-        }
     }
 
+    /**
+     * @param {string} category
+     * @param {string} title
+     * @param {Function} func
+     * @param {string} icon
+     */
     addDynamic(category, title, func, icon)
     {
         const cmd = {

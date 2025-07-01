@@ -133,7 +133,7 @@ export default class TabPanel extends Events
             );
         }
 
-        for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+        for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPalette.removeDynamic(this._dynCmds[i]);
 
         for (let i = 0; i < this._tabs.length; i++)
         {
@@ -141,7 +141,7 @@ export default class TabPanel extends Events
             {
                 const t = this._tabs[i];
 
-                const cmd = gui.cmdPallet.addDynamic("tab", "Tab " + t.title, () =>
+                const cmd = gui.cmdPalette.addDynamic("tab", "Tab " + t.title, () =>
                 {
                     gui.maintabPanel.show(true);
 

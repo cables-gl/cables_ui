@@ -6,22 +6,25 @@ import { gui } from "../gui.js";
 export default class GlCanvas
 {
 
+    static ZPOSDIV = 10000;
+
+    _firstTime = true;
+    _inited = false;
+    _lastTime = 0;
+    _mouseX = 0;
+    _mouseY = 0;
+    _moveover = true;
+    clear = true;
+    height = 0;
+    loaded = false;
+    width = 0;
+
     /**
      * @param {Patch} _patch
      * @param {HTMLElement} parentEle
      */
     constructor(_patch, parentEle)
     {
-        this._moveover = true;
-        this._firstTime = true;
-        this._lastTime = 0;
-        this.width = 0;
-        this.height = 0;
-        this._mouseX = 0;
-        this._mouseY = 0;
-        this.loaded = false;
-        this._inited = false;
-        this.clear = true;
 
         document.body.style["touch-action"] = "none";
 
@@ -71,22 +74,22 @@ export default class GlCanvas
             this._mouseY = e.offsetY;
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerdown", (e) =>
+        this.canvas.addEventListener("pointerdown", (_e) =>
         {
             this.activityHigh();
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerup", (e) =>
+        this.canvas.addEventListener("pointerup", (_e) =>
         {
             this.activityHigh();
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerleave", (e) =>
+        this.canvas.addEventListener("pointerleave", (_e) =>
         {
             this.activityMedium();
         }, { "passive": true });
 
-        this.canvas.addEventListener("pointerenter", (e) =>
+        this.canvas.addEventListener("pointerenter", (_e) =>
         {
             this.activityHigh();
         }, { "passive": true });

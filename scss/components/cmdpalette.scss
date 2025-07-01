@@ -54,12 +54,15 @@
 
 		.hotkey
 		{
-			position: relative;
-			top: 4px;
 			color: var(--color-07);
 			text-transform: uppercase;
-			float:right;
 			font-family: monospace;
+		}
+		.right
+		{
+			position: relative;
+			top: 4px;
+			float:right;
 		}
 
 		&.selected

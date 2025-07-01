@@ -598,7 +598,6 @@ export default class PatchSaveServer extends Events
                             this.setServerDate(r.updated);
                         }
 
-                        gui.savedState.setSaved("patchServerApi", 0);
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 
@@ -670,6 +669,8 @@ export default class PatchSaveServer extends Events
                         }
                         else
                         {
+                            gui.savedState.setSaved("patchServerApi", 0);
+
                             if (gui.project().summary && gui.project().summary.isTest)
                             {
                                 notifyWarn("Test patch saved", null, { "force": true });

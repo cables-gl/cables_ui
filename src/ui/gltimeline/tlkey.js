@@ -38,7 +38,7 @@ export class TlKey extends Events
 
     /** @type {GlText} */
     text = null;
-    #bezCpSize = 5;
+    #bezCpSize = 10;
 
     /** @type {glTlKeys} */
     tlkeys = null;
@@ -103,7 +103,7 @@ export class TlKey extends Events
 
             this.cp1s = new GlSpline(this.#glTl.splines, "cp1");
             this.cp1s.setParentRect(this.rect.parent);
-            this.cp1s.setColorArray(glTlKeys.COLOR_INACTIVE);
+            this.cp1s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
 
             const bezRect2 = this.#glTl.rects.createRect({ "name": "bezrect2", "draggable": true, "interactive": true });
             bezRect2.data.key = key;
@@ -111,7 +111,7 @@ export class TlKey extends Events
 
             this.cp2s = new GlSpline(this.#glTl.splines, "cp2");
             this.cp2s.setParentRect(this.rect.parent);
-            this.cp2s.setColorArray(glTlKeys.COLOR_INACTIVE);
+            this.cp2s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
 
             this.bindBezCp(bezRect, key.bezCp1, key, 0);
             this.bindBezCp(bezRect2, key.bezCp2, key, 1);
@@ -167,7 +167,9 @@ export class TlKey extends Events
             if (button == 1 && !glTlKeys.dragStarted)
             {
                 oldValues = this.#glTl.serializeSelectedKeys();
-                glTlKeys.dragBezCp = [cp[0], cp[1]];
+                glTlKeys.dragBezCp = key.bezCp1;// [cp[0], cp[1]];
+                if (dir == 1) glTlKeys.dragBezCp = key.bezCp2;
+
                 glTlKeys.dragStarted = true;
                 glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                 glTlKeys.startDragValue = this.tlkeys.animLine.pixelToValue(e.offsetY);
@@ -198,15 +200,20 @@ export class TlKey extends Events
                 if (dir == 0)
                 {
                     nt = Math.min(nt, 0);
-                    key.setBezCp1(nt, nv);
-                    if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
+                    // key.setBezCp1(nt, nv);
+                    // if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
+                    if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP2(nt * -1, nv * -1);
+                    this.#glTl.selSelectedKeysCP1(nt, nv);
                 }
                 if (dir == 1)
                 {
                     nt = Math.max(nt, 0);
-                    key.setBezCp2(nt, nv);
-                    if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
+                    // key.setBezCp2(nt, nv);
+                    // if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
+                    if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP1(nt * -1, nv * -1);
+                    this.#glTl.selSelectedKeysCP2(nt, nv);
                 }
+
                 this.emitEvent(TlKey.EVENT_POSCHANGE);
                 // this.setKeyPositions();
                 // this.#animLine.update();

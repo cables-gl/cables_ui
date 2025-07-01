@@ -146,7 +146,7 @@ CABLES_CMD_UI.showKeys = function ()
 
 CABLES_CMD_UI.showCommandPallet = function ()
 {
-    gui.cmdPallet.show();
+    gui.cmdPalette.show();
 };
 
 CABLES_CMD_UI.centerPatchOps = function ()

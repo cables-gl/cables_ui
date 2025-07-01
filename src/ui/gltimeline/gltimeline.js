@@ -45,6 +45,8 @@ import defaultOps from "../defaultops.js";
 
 export class GlTimeline extends Events
 {
+    static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
+
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
     static USERSETTING_SPLITTER_LEFT = "tl_split_left";
@@ -172,6 +174,7 @@ export class GlTimeline extends Events
     {
         super();
 
+        GlTimeline.COLOR_BEZ_HANDLE = gui.theme.colors_types.num;
         this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;
@@ -670,6 +673,20 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {MouseEvent} e
+     */
+    _onCanvasMouseUp(e)
+    {
+        this.#rects.mouseUp(e);
+        this.#rectsOver.mouseUp(e);
+        this.mouseDown = false;
+        this.selectRect = null;
+        this.#rectSelect.setSize(0, 0);
+        this.#lastDragX = Number.MAX_SAFE_INTEGER;
+        this.#lastDragY = Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
      * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
@@ -681,23 +698,19 @@ export class GlTimeline extends Events
 
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
-        if (this.#focusRuler) this.ruler.setTimeFromPixel(e.offsetX);
-        else if (this.#focusScroll)
-        {
-        }
-        else
-        {
-            if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
-                if (this.hoverKeyRect == null && !e.shiftKey)
-                    if (e.offsetY > this.getFirstLinePosy())
-                        this.unSelectAllKeys("canvas down ");
 
-            try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
-            catch (er) { this._log.log(er); }
+        if (this.#focusScroll) return;
 
-            this.#rects.mouseDown(e, e.offsetX, e.offsetY);
-            this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
-        }
+        if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
+            if (this.hoverKeyRect == null && !e.shiftKey)
+                if (e.offsetY > this.getFirstLinePosy())
+                    this.unSelectAllKeys("canvas down ");
+
+        try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
+        catch (er) { this._log.log(er); }
+
+        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
+        this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
 
         this.mouseDown = true;
     }
@@ -793,7 +806,6 @@ export class GlTimeline extends Events
                         if (movementX > 0)d = 1 - zf;
                         this.view.setZoomOffset(d, 0);
                     }
-
                 }
                 else
                 {
@@ -1094,6 +1106,24 @@ export class GlTimeline extends Events
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
+    selSelectedKeysCP1(x, y)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].setBezCp1(x, y);
+        }
+
+    }
+
+    selSelectedKeysCP2(x, y)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            this.#selectedKeys[i].setBezCp2(x, y);
+        }
+
+    }
+
     deleteSelectedKeys()
     {
         if (this.disposed) return;
@@ -1136,20 +1166,6 @@ export class GlTimeline extends Events
         }
         this.showKeyParamsSoon();
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
-    }
-
-    /**
-     * @param {MouseEvent} e
-     */
-    _onCanvasMouseUp(e)
-    {
-        this.#rects.mouseUp(e);
-        this.#rectsOver.mouseUp(e);
-        this.mouseDown = false;
-        this.selectRect = null;
-        this.#rectSelect.setSize(0, 0);
-        this.#lastDragX = Number.MAX_SAFE_INTEGER;
-        this.#lastDragY = Number.MAX_SAFE_INTEGER;
     }
 
     /**
@@ -1857,15 +1873,18 @@ export class GlTimeline extends Events
             const data = { "colNames": ["time", "value", "easing", "cp1x", "cp1y", "cp2x", "cp2y"], "cells": [] };
             for (let i = 0; i < anim.keys.length; i++)
             {
+                let bezCp1 = anim.keys[i].bezCp1 || [0, 0];
+                let bezCp2 = anim.keys[i].bezCp2 || [0, 0];
+
                 data.cells.push(
                     [
                         anim.keys[i].time,
                         anim.keys[i].value,
                         anim.keys[i].getEasing(),
-                        anim.keys[i].bezCp1[0],
-                        anim.keys[i].bezCp1[1],
-                        anim.keys[i].bezCp2[0],
-                        anim.keys[i].bezCp2[1],
+                        bezCp1[0],
+                        bezCp1[1],
+                        bezCp2[0],
+                        bezCp2[1],
                     ]
                 );
             }
@@ -2093,7 +2112,7 @@ export class GlTimeline extends Events
                                 }
                             },
                             {
-                                "title": "Create Anim Op",
+                                "title": "Create anim op from keyframes",
                                 "func": () =>
                                 {
                                     this.createAnimOpFromSelection();
@@ -2103,10 +2122,12 @@ export class GlTimeline extends Events
                         ]
                 }, e.target);
         });
+
         ele.clickable(ele.byId("kp_movecursor"), () =>
         {
             this.moveSelectedKeys();
         });
+
         ele.clickable(ele.byId("kp_fit"), () =>
         {
             this.fit();
@@ -2152,6 +2173,17 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+        });
+
+        ele.clickable(ele.byId("kp_value_set"), () =>
+        {
+            let off = parseFloat(ele.byId("kp_input_value").value);
+
+            for (let i = 0; i < this.#selectedKeys.length; i++)
+                this.#selectedKeys[i].set({ "value": off });
+            this.fixAnimsFromKeys(this.#selectedKeys);
+            this.showParamKeys();
+            this.#paramLastInputValue = off;
         });
 
         ele.clickable(ele.byId("kp_value_movef"), () =>

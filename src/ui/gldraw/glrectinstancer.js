@@ -5,13 +5,15 @@ import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
+import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
  * @property {String} [name]
  * @property {Number} [initNum]
  * @property {boolean} [allowDragging]
+ * @property {boolean} [hoverWhenButton]
  */
 
 /**
@@ -85,6 +87,9 @@ export default class GlRectInstancer extends Events
     static ATTR_SIZE = "instSize";
     static ATTR_DECO = "instDeco";
 
+    mouseDownCount = 0;
+    hoverWhenButton = false;
+
     /**
      * Description
      * @param {CglContext} cgl
@@ -105,6 +110,7 @@ export default class GlRectInstancer extends Events
         this.#cgl = cgl;
         this.#name = options.name || "unknown";
         this.#num = options.initNum || 5000;
+        this.hoverWhenButton = !!options.hoverWhenButton;
 
         this.#bounds = { "minX": GlRectInstancer.DEFAULT_BIGNUM, "maxX": -GlRectInstancer.DEFAULT_BIGNUM, "minY": GlRectInstancer.DEFAULT_BIGNUM, "maxY": -GlRectInstancer.DEFAULT_BIGNUM, "minZ": GlRectInstancer.DEFAULT_BIGNUM, "maxZ": -GlRectInstancer.DEFAULT_BIGNUM };
 
@@ -133,7 +139,7 @@ export default class GlRectInstancer extends Events
         this.#mesh.numInstances = this.#num;
 
         this.clear();
-        this.debugColors = userSettings.get("gluidebugcolors");
+        this.debugColors = userSettings.get(UserSettings.SETTING_GLUI_DEBUG_COLORS);
     }
 
     set interactive(i) { this.#interactive = i; }
@@ -328,17 +334,6 @@ export default class GlRectInstancer extends Events
         }
         // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
         gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / zoom);
-        // else if (zoom > 800 && zoom < 1100)
-        // {
-        //     console.log(2);
-        //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 450);
-        // }
-        // else if (zoom > 1100)
-        // {
-        //     console.log(3);
-        //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 250);
-        // }
-        // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 1000);
 
         if (this.doBulkUploads)
         {
@@ -350,7 +345,6 @@ export default class GlRectInstancer extends Events
 
             if (this.#updateRangesMin[GlRectInstancer.ATTR_COLOR] != GlRectInstancer.DEFAULT_BIGNUM)
             {
-                // console.log("update colors,", this._updateRangesMax[GlRectInstancer.ATTR_COLOR] - this._updateRangesMin[GlRectInstancer.ATTR_COLOR]);
                 this.#mesh.setAttributeRange(this.#meshAttrCol, this._attrBuffCol, this.#updateRangesMin[GlRectInstancer.ATTR_COLOR], this.#updateRangesMax[GlRectInstancer.ATTR_COLOR]);
                 this._resetAttrRange(GlRectInstancer.ATTR_COLOR);
             }
@@ -470,7 +464,7 @@ export default class GlRectInstancer extends Events
 
         this._attrBuffPos[buffIdx + 0] = x;
         this._attrBuffPos[buffIdx + 1] = y;
-        this._attrBuffPos[buffIdx + 2] = z / 10000;
+        this._attrBuffPos[buffIdx + 2] = z / GlUiCanvas.ZPOSDIV;
 
         if (
             this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
@@ -687,6 +681,7 @@ export default class GlRectInstancer extends Events
                 {
                     this.#draggingRects.push(rect);
                 }
+                console.log("thi", this.#draggingRects);
             });
 
             // r.on(GlRect.EVENT_DRAGEND, () => {});
@@ -732,6 +727,7 @@ export default class GlRectInstancer extends Events
     mouseDown(e, x = 0, y = 0)
     {
         if (!this.#interactive) return;
+        this.mouseDownCount++;
 
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this.#rects.length; i++)
@@ -746,6 +742,7 @@ export default class GlRectInstancer extends Events
      */
     mouseUp(e)
     {
+        if (this.mouseDownCount == 0)console.log("mouse was not down? ");
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 

@@ -22,7 +22,6 @@ OUT float fSplineLength;
 
 UNI float width;
 UNI float widthSelected;
-UNI float zpos;
 
 IN vec3 spline,spline2,spline3;
 
@@ -99,8 +98,8 @@ void main()
     finalPosition.xy*=zoom;
     finalPosition.x+=scrollX;
     finalPosition.y+=scrollY;
-    finalPosition.z=spline.z;
-zz=spline.z;
+    finalPosition.z=spline.z/ZPOSDIV;
+    zz=spline.z;
 
     gl_Position = finalPosition;
 }

@@ -205,14 +205,14 @@ export default class Bookmarks
         for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], true);
 
         for (let i = 0; i < this._dynCmds.length; i++)
-            gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+            gui.cmdPalette.removeDynamic(this._dynCmds[i]);
 
         for (let i = 0; i < this._bookmarks.length; i++)
         {
             const op = gui.corePatch().getOpById(this._bookmarks[i]);
 
             if (!op) continue;
-            const cmd = gui.cmdPallet.addDynamic("bookmark", "" + op.getTitle(), () =>
+            const cmd = gui.cmdPalette.addDynamic("bookmark", "" + op.getTitle(), () =>
             {
                 gui.patchView.centerSelectOp(op.id);
             }, "bookmark");
@@ -225,7 +225,7 @@ export default class Bookmarks
         {
             const sub = subs[i];
 
-            const cmd = gui.cmdPallet.addDynamic("subpatch", "" + sub.name, () =>
+            const cmd = gui.cmdPalette.addDynamic("subpatch", "" + sub.name, () =>
             {
                 gui.patchView.setCurrentSubPatch(sub.id);
                 CABLES.CMD.UI.centerPatchOps();
