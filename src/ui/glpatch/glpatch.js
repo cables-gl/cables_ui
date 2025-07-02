@@ -1969,16 +1969,19 @@ export default class GlPatch extends Events
         for (let i in this._glOpz)
             this._glOpz[i].updateTheme();
     }
+
+    /**
+     * @param {string} ns
+     */
+    static getOpNamespaceColor(ns)
+    {
+    // make static util thing...
+        const parts = ns.split(".");
+        const nss = parts[0] + "." + parts[1];
+
+        if (!gui.theme.colors_namespaces) return [1, 1, 1, 1];
+
+        if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
+        else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
+    }
 }
-
-// make static util thing...
-GlPatch.getOpNamespaceColor = (ns) =>
-{
-    const parts = ns.split(".");
-    const nss = parts[0] + "." + parts[1];
-
-    if (!gui.theme.colors_namespaces) return [1, 1, 1, 1];
-
-    if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
-    else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
-};

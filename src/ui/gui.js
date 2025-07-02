@@ -535,10 +535,10 @@ export default class Gui extends Events
 
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;
-        // this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
         this._elSplitterBottom = this._elSplitterBottom || ele.byId("splitterBottomTabs");
+        this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
 
         this._elCanvasFlash = this._elCanvasFlash || ele.byId("canvasflash");
         this._elIconbarLeft = this._elIconbarLeft || ele.byId("iconbar_sidebar_left");
@@ -561,7 +561,6 @@ export default class Gui extends Events
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
         this._elLibrary = this._elLibrary || ele.byId("library");
-        this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || ele.byId("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || ele.byId("editormaximized");
 
@@ -570,10 +569,11 @@ export default class Gui extends Events
         this._elCablesCanvasContainer = this._elCablesCanvasContainer || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
 
-        const iconBarWidth = 0;
         this.canvasInfoUiHeight = 36;
 
         let patchHeight = window.innerHeight;
+
+        if (this.bottomTabPanel.isVisible()) patchHeight -= this.bottomTabPanel.getHeight();
 
         if (this.isRemoteClient)
         {
@@ -610,7 +610,10 @@ export default class Gui extends Events
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
-        let patchWidth = window.innerWidth - this.rendererWidthScaled;
+        let editorWidth = this.editorWidth;
+        if (!this.maintabPanel.isVisible())editorWidth = 0;
+
+        let patchWidth = window.innerWidth - this.rendererWidthScaled - editorWidth;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             patchWidth = window.innerWidth - this.rightPanelWidth;
@@ -618,16 +621,16 @@ export default class Gui extends Events
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
-        this.corePatch().pause();
-        this.patchView.pause();
+        // this.corePatch().pause();
+        // this.patchView.pause();
 
-        clearTimeout(this.delayedResizeCanvas);
-        this.delayedResizeCanvas = setTimeout(() =>
-        {
-            this._corePatch.cgl.updateSize();
-            this.corePatch().resume();
-            this.patchView.resume();
-        }, 50);
+        // clearTimeout(this.delayedResizeCanvas);
+        // this.delayedResizeCanvas = setTimeout(() =>
+        // {
+        this._corePatch.cgl.updateSize();
+        // this.corePatch().resume();
+        // this.patchView.resume();
+        // }, 50);
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
@@ -635,34 +638,33 @@ export default class Gui extends Events
 
         patchHeight -= infoAreaHeight;
 
-        let editorWidth = this.editorWidth;
-        if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
+        // if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
-        const patchLeft = iconBarWidth;
+        const patchLeft = editorWidth;
 
         if (this.maintabPanel.isVisible())
         {
             const editorbarHeight = 767;
-            const editorHeight = patchHeight - editorbarHeight - this.bottomTabPanel.getHeight();
+            const editorHeight = patchHeight - editorbarHeight;
 
-            this._elMaintab.style.left = iconBarWidth + "px";
+            this._elMaintab.style.left = "px";
             this._elMaintab.style.top = 0 + "px";
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth + "px";
 
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = (patchHeight - this.bottomTabPanel.getHeight()) + 2 + "px";
+            this._elSplitterMaintabs.style.left = editorWidth + "px";
+            this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
             this._elEditorMinimized.style.display = "none";
-            this._elEditorMinimized.style.left = iconBarWidth + "px";
+            this._elEditorMinimized.style.left = 0 + "px";
 
             this._elEditorMaximized.style.display = "block";
-            this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
+            this._elEditorMaximized.style.left = editorWidth + 3 + "px";
 
-            this._elBreadcrumbNav.style.left = editorWidth + iconBarWidth + 15 + "px";
+            this._elBreadcrumbNav.style.left = editorWidth + 15 + "px";
 
             gui.mainTabs.updateSize();
         }
@@ -676,7 +678,7 @@ export default class Gui extends Events
             this._elSplitterMaintabs.style.display = "none";
             // this._elEditorMinimized.style.top = 80 + "px";
 
-            this._elBreadcrumbNav.style.left = iconBarWidth + 15 + "px";
+            this._elBreadcrumbNav.style.left = 15 + "px";
         }
 
         // menu bar top
@@ -714,8 +716,8 @@ export default class Gui extends Events
         this._elPatch.style.top = 0 + "px";
         this._elPatch.style.left = patchLeft + "px";
 
-        this._elLibrary.style.left = iconBarWidth + "px";
-        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
+        this._elLibrary.style.left = 0 + "px";
+        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled + "px";
         this._elLibrary.style.bottom = 0;
 
         this._elIconbarTimeline = this._elIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
@@ -813,14 +815,14 @@ export default class Gui extends Events
         if (this.bottomTabPanel.isVisible())
         {
             this._elSplitterBottom.style.display = "block";
-            this._elSplitterBottom.style.width = patchWidth + "px";
+            this._elSplitterBottom.style.width = editorWidth + patchWidth + "px";
             this._elSplitterBottom.style.bottom = (infoAreaHeight + this.bottomTabPanel.getHeight()) + "px";
 
             this._eleBottomTabs = ele.byId("bottomtabs");
-            this._eleBottomTabs.style.width = patchWidth + "px";
+            this._eleBottomTabs.style.width = editorWidth + patchWidth + "px";
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
             this._eleBottomTabs.style.height = this.bottomTabPanel.getHeight() + "px";
-            this._eleBottomTabs.style.left = iconBarWidth + "px";
+            this._eleBottomTabs.style.left = 0 + "px";
 
             this.bottomTabs.updateSize();
         }
@@ -839,7 +841,7 @@ export default class Gui extends Events
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
-            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.left = 0 + "px";
             this._elCablesCanvasContainer.style.right = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
             this._elCablesCanvasContainer.style.width = "0px";
@@ -865,7 +867,7 @@ export default class Gui extends Events
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
 
-            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.left = 0 + "px";
             this._elCablesCanvasContainer.style.right = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
             this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width;
@@ -901,6 +903,7 @@ export default class Gui extends Events
         this.emitEvent("setLayout");
 
         if (wasFocussed && this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
+        // this.patchView.patchRenderer._cgl.updateSize();
 
         perf.finish();
     }
