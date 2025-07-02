@@ -69,6 +69,9 @@ class UiOp extends Op
         CABLES.OpUnLinkTempReLinkP2 = null;
     }
 
+    /**
+     * @param {Port} otherPort
+     */
     countFittingPorts(otherPort)
     {
         let count = 0;
@@ -79,6 +82,9 @@ class UiOp extends Op
         return count;
     }
 
+    /**
+     * @param {Port} otherPort
+     */
     findFittingPort(otherPort, inPortsFirst = false)
     {
         if (inPortsFirst)
@@ -197,6 +203,11 @@ class UiOp extends Op
         return false;
     }
 
+    /**
+     * @param {number} type
+     * @param {string} name
+     * @param {number} [count]
+     */
     hasParent(type, name, count)
     {
         if (this._ignoreParentChecks) return false;
@@ -628,6 +639,12 @@ class UiOp extends Op
         this.setUiAttribs({ "translate": { "x": x, "y": y } });
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} [w]
+     * @param {number} [h]
+     */
     setTempOpPos(x, y, w, h)
     {
         const pos = {
@@ -734,6 +751,9 @@ class UiOp extends Op
         return 0;
     }
 
+    /**
+     * @param {Port[]} ports
+     */
     countVisiblePorts(ports)
     {
         let index = 0;
@@ -755,6 +775,10 @@ class UiOp extends Op
         return this.countVisiblePorts(this.portsIn);
     }
 
+    /**
+     * @param {number} portIndex
+     * @param {number} numports
+     */
     posByIndex(portIndex, numports, center = false)
     {
         if (portIndex == 0)
@@ -780,6 +804,12 @@ class UiOp extends Op
         return p;
     }
 
+    /**
+     * @param {string} name
+     * @param {string} opid
+     * @param {boolean} [center]
+     * @param {number} [opwidth]
+     */
     getPortPosX(name, opid, center, opwidth)
     {
         let index = 0;

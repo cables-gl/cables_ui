@@ -25,11 +25,12 @@ export default class GlCursor extends Events
 
         this._glPatch = glPatch;
         this._instancer = instancer;
-        this._cursorRect = this._instancer.createRect();
+        this._cursorRect = this._instancer.createRect({ "name": "glcursor", "interactive": false });
         this._cursorRect.setSize(10, 10);
         this._cursorRect.setShape(5);
         this._lastMovement = performance.now();
 
+        /** @type {number|string} */
         this._subPatch = 0;
         this._clientId = clientId;
         this._userId = null;
@@ -55,6 +56,9 @@ export default class GlCursor extends Events
         });
     }
 
+    /**
+     * @param {number|string} _subPatch
+     */
     setSubpatch(_subPatch)
     {
         this._subPatch = _subPatch;
@@ -90,14 +94,28 @@ export default class GlCursor extends Events
         }
     }
 
+    /**
+     * @param {number} _r
+     * @param {number} _g
+     * @param {number} _b
+     * @param {number} _a
+     */
     setColor(_r, _g, _b, _a) { this._cursorRect.setColor(1, 1, 1, 1); }
 
     get visible() { return this._cursorRect.visible; }
 
     set visible(v) { this._cursorRect.visible = v; }
 
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
     setSize(w, h) { this._cursorRect.setSize(w, h); }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     setPosition(x, y)
     {
         this._lastMovement = performance.now();

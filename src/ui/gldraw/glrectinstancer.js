@@ -664,7 +664,7 @@ export default class GlRectInstancer extends Events
     }
 
     /**
-     * @param {import("./glrect.js").GlRectOptions} [options]
+     * @param {import("./glrect.js").GlRectOptions} options
      */
     createRect(options)
     {

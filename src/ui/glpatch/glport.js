@@ -293,6 +293,9 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port, e);
     }
 
+    /**
+     * @param {GlRect} _rect
+     */
     _onHover(_rect)
     {
         if (!this._glPatch.hasFocus) return;
@@ -313,6 +316,9 @@ export default class GlPort
         this._updateColor();
     }
 
+    /**
+     * @param {GlRect} _rect
+     */
     _onUnhover(_rect)
     {
         this._hover = false;
@@ -364,85 +370,99 @@ export default class GlPort
         if (this._dot) this._dot = this._dot.dispose();
         if (this._longPortRect) this._longPortRect = this._longPortRect.dispose();
     }
-}
 
-GlPort.getInactiveColor = (type) =>
-{
-    const perf = gui.uiProfiler.start("[glport] getInactiveColor");
-    let portname = "";
-
-    if (type == portType.number) portname = "num";
-    else if (type == portType.trigger) portname = "trigger";
-    else if (type == portType.object) portname = "obj";
-    else if (type == portType.array) portname = "array";
-    else if (type == portType.string) portname = "string";
-    else if (type == portType.dynamic) portname = "dynamic";
-
-    const name = portname + "_inactive";
-
-    let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [0, 0, 0, 1];
-
-    perf.finish();
-
-    return col;
-};
-
-GlPort.getColorBorder = (type, hovering, selected) =>
-{
-    const perf = gui.uiProfiler.start("[glport] getcolorBorder");
-    let name = "";
-    let portname = "";
-
-    if (type == portType.number) portname = "num";
-    else if (type == portType.trigger) portname = "trigger";
-    else if (type == portType.object) portname = "obj";
-    else if (type == portType.array) portname = "array";
-    else if (type == portType.string) portname = "string";
-    else if (type == portType.dynamic) portname = "dynamic";
-
-    let coll = [1, 0.9, 0.8, 0];
-    if (hovering)
+    /**
+     * @param {number} type
+     * @param {boolean} [hovering]
+     * @param {boolean} [_selected]
+     * @param {number | boolean} [activity]
+     */
+    static getColor(type, hovering, _selected, activity)
     {
-        name = portname + "_hover";
-        coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
+        const perf = gui.uiProfiler.start("[glport] getcolor");
+
+        let name = "";
+        let portname = "";
+
+        if (type == portType.number) portname = "num";
+        else if (type == portType.trigger) portname = "trigger";
+        else if (type == portType.object) portname = "obj";
+        else if (type == portType.array) portname = "array";
+        else if (type == portType.string) portname = "string";
+        else if (type == portType.dynamic) portname = "dynamic";
+
+        if (activity == 0)name = portname + "_inactive";
+
+        if (hovering)name = portname + "_hover";
+        // else if (selected)name = portname + "_selected";
+
+        let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
+
+        perf.finish();
+
+        return col;
     }
-    else if (selected)
+
+    /**
+     * @param {number} type
+     */
+    static getInactiveColor(type)
     {
+        const perf = gui.uiProfiler.start("[glport] getInactiveColor");
+        let portname = "";
+
+        if (type == portType.number) portname = "num";
+        else if (type == portType.trigger) portname = "trigger";
+        else if (type == portType.object) portname = "obj";
+        else if (type == portType.array) portname = "array";
+        else if (type == portType.string) portname = "string";
+        else if (type == portType.dynamic) portname = "dynamic";
+
+        const name = portname + "_inactive";
+
+        let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [0, 0, 0, 1];
+
+        perf.finish();
+
+        return col;
+    }
+
+    /**
+     * @param {number} type
+     * @param {boolean} hovering
+     * @param {boolean} selected
+     */
+    static getColorBorder(type, hovering, selected)
+    {
+        const perf = gui.uiProfiler.start("[glport] getcolorBorder");
+        let name = "";
+        let portname = "";
+
+        if (type == portType.number) portname = "num";
+        else if (type == portType.trigger) portname = "trigger";
+        else if (type == portType.object) portname = "obj";
+        else if (type == portType.array) portname = "array";
+        else if (type == portType.string) portname = "string";
+        else if (type == portType.dynamic) portname = "dynamic";
+
+        let coll = [1, 0.9, 0.8, 0];
+        if (hovering)
+        {
+            name = portname + "_hover";
+            coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
+        }
+        else if (selected)
+        {
         // name = portname + "_selected";
-        coll = gui.theme.colors_patch.selectedCable;
+            coll = gui.theme.colors_patch.selectedCable;
+        }
+        else return coll;
+
+        let col = [coll[0], coll[1], coll[2], coll[3]];
+
+        if (!hovering && !selected)col[3] = 0;
+        perf.finish();
+
+        return col;
     }
-    else return coll;
-
-    let col = [coll[0], coll[1], coll[2], coll[3]];
-
-    if (!hovering && !selected)col[3] = 0;
-    perf.finish();
-
-    return col;
-};
-
-GlPort.getColor = (type, hovering, _selected, activity) =>
-{
-    const perf = gui.uiProfiler.start("[glport] getcolor");
-
-    let name = "";
-    let portname = "";
-
-    if (type == portType.number) portname = "num";
-    else if (type == portType.trigger) portname = "trigger";
-    else if (type == portType.object) portname = "obj";
-    else if (type == portType.array) portname = "array";
-    else if (type == portType.string) portname = "string";
-    else if (type == portType.dynamic) portname = "dynamic";
-
-    if (activity == 0)name = portname + "_inactive";
-
-    if (hovering)name = portname + "_hover";
-    // else if (selected)name = portname + "_selected";
-
-    let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
-
-    perf.finish();
-
-    return col;
-};
+}
