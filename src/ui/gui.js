@@ -621,24 +621,13 @@ export default class Gui extends Events
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
-        // this.corePatch().pause();
-        // this.patchView.pause();
-
-        // clearTimeout(this.delayedResizeCanvas);
-        // this.delayedResizeCanvas = setTimeout(() =>
-        // {
         this._corePatch.cgl.updateSize();
-        // this.corePatch().resume();
-        // this.patchView.resume();
-        // }, 50);
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         patchHeight -= infoAreaHeight;
-
-        // if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = editorWidth;
 
@@ -693,8 +682,6 @@ export default class Gui extends Events
 
         this._elProgressbar.style.left = menupos + 10 + 8 + "px";
         this._elProgressbar.style.top = rMenuBar.y + rMenuBar.height - 5 + "px";
-
-        // this._elProgressbar.style.left = menupos + 10 + "px";
 
         this._elBreadcrumbNav.style.left = menupos + 5 + "px";
         this._elBreadcrumbNav.style.top = 60 + "px";
@@ -798,14 +785,9 @@ export default class Gui extends Events
 
         this._elMenubar.style.top = 0 + "px";
 
-        if (!this.bottomInfoArea.showing)
-        {
-            this._elInfoArea.style.height = 0 + "px";
-        }
-        else
-        {
-            this._elInfoArea.style.height = infoAreaHeight + "px";
-        }
+        if (!this.bottomInfoArea.showing) this._elInfoArea.style.height = 0 + "px";
+        else this._elInfoArea.style.height = infoAreaHeight + "px";
+
         this._elInfoAreaParam.style.right = "0px";
         this._elInfoAreaParam.style.width = this.rendererWidth + "px";
 

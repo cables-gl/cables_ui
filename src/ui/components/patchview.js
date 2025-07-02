@@ -138,9 +138,11 @@ export default class PatchView extends Events
      */
     clickSubPatchNav(subPatchId)
     {
-        gui.patchView.setCurrentSubPatch(subPatchId);
-        gui.patchParamPanel.show(true);
-        this.focus();
+        gui.patchView.setCurrentSubPatch(subPatchId, () =>
+        {
+            gui.patchParamPanel.show(true);
+            this.focus();
+        });
     }
 
     /**
@@ -1151,11 +1153,16 @@ export default class PatchView extends Events
                 // }, 100);
                 }
 
-                gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
-                this._p.emitEvent("subpatchCreated");
+                gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch(), () =>
+                {
+                    this._p.emitEvent("subpatchCreated");
+                });
             });
     }
 
+    /**
+     * @param {string | number} [patchId]
+     */
     setPositionSubPatchInputOutputOps(patchId)
     {
         const b = this.getSubPatchBounds(patchId);
@@ -1224,6 +1231,10 @@ export default class PatchView extends Events
         return op.name;
     }
 
+    /**
+     * @param {string | number} subId
+     * @param {Object[]} [arr]
+     */
     getSubpatchPathArray(subId, arr)
     {
         arr = arr || [];
@@ -1288,6 +1299,9 @@ export default class PatchView extends Events
         }
     }
 
+    /**
+     * @param {boolean} sort
+     */
     getSubPatches(sort) // flat list
     {
         let foundPatchIds = [];
@@ -1460,6 +1474,9 @@ export default class PatchView extends Events
         this.deleteSelectedOps();
     }
 
+    /**
+     * @param {Op[]} selectedOps
+     */
     serializeOps(selectedOps, _options = { })
     {
         function arrayContains(arr, obj)
@@ -1577,9 +1594,9 @@ export default class PatchView extends Events
      * @param {String} oldSub
      * @param {Number} mouseX
      * @param {Number} mouseY
-     * @param {Function} next
+     * @param {Function} [next]
      */
-    clipboardPaste(e, oldSub, mouseX, mouseY, next)
+    clipboardPaste(e, oldSub = "0", mouseX = 0, mouseY = 0, next = null)
     {
         const currentSubPatch = this.getCurrentSubPatch();
 
@@ -1704,7 +1721,7 @@ export default class PatchView extends Events
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             this.currentOpPaste = null;
-            next(project.ops, focusSubpatchop);
+            if (next)next(project.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");
 
@@ -1742,6 +1759,9 @@ export default class PatchView extends Events
         undo.endGroup(undoGroup, "add space y");
     }
 
+    /**
+     * @param {UiOp[]} ops
+     */
     compressSelectedOps(ops)
     {
         if (!ops || ops.length === 0) return;
@@ -1750,146 +1770,22 @@ export default class PatchView extends Events
 
         this.saveUndoSelectedOpsPositions(ops);
 
-        // ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
-
-        // let y = 0;
-        // for (let j = 0; j < ops.length; j++)
-        // {
-        //     y += ops[j].uiAttribs.translate.y;
-        // }
-        // y = Snap.snapOpPosY(y / ops.length);
-
-        // for (let j = 0; j < ops.length; j++)
-        // {
-        //     y = Snap.snapOpPosY(y);
-        //     this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
-        //     this.testCollision(ops[j]);
-        // }
-
         this.cleanOps(ops);
 
         undo.endGroup(undoGroup, "Compress Ops");
     }
 
-    // _cleanOp(op, ops, theOpWidth)
-    // {
-    //     let changed = false;
-
-    //     if (op.portsIn[0] && op.hasAnyInLinked())
-    //     {
-    //         const firstLinkedPort = op.getFirstLinkedInPort();
-    //         for (let i = 0; i < firstLinkedPort.links.length; i++)
-    //         {
-    //             const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
-
-    //             if (ops.indexOf(otherPort.op) == -1) return;
-
-    //             let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
-    //             let extraLines = 1;
-    //             for (let j = otherPort.op.portsOut.length - 1; j >= 0; j--)
-    //             {
-    //                 if (otherPort == otherPort.op.portsOut[j]) break;
-    //                 if (otherPort.op.portsOut[j].isLinked())extraLines++;
-    //             }
-
-    //             changed = true;
-    //             if (otherPort.links.length > 1)extraLines++;
-
-    //             let portIndex = otherPort.op.portsOut.indexOf(otherPort);
-
-    //             this.setTempOpPos(op, otherPort.op.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.op.getTempPosY() + extraLines * glUiConfig.newOpDistanceY);
-    //         }
-    //     }
-
-    //     if (this.testCollision(op))changed = true;
-    // }
-
+    /**
+     * @param {Op[]} ops
+     */
     cleanOps(ops)
     {
         new opCleaner(ops, this.patchRenderer);
-        // c.clean();
-        //     if (ops.length == 0) return
-        //     const entranceOps = [];
-        //     const unconnectedOps = [];
-        //     const otherOps = [];
-        //     let startPosX = ops[0].uiAttribs.translate.x;
-        //     let startPosY = ops[0].uiAttribs.translate.y;
-
-        //     let longestOpPorts = 0;
-
-        //     for (let i = 0; i < ops.length; i++)
-        //     {
-        //         startPosX = Math.min(startPosX, ops[i].uiAttribs.translate.x);
-        //         startPosY = Math.min(startPosY, ops[i].uiAttribs.translate.y);
-
-        //         longestOpPorts = Math.max(longestOpPorts, ops[i].portsIn.length);
-        //         longestOpPorts = Math.max(longestOpPorts, ops[i].portsOut.length);
-
-        //         this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
-
-        //         if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
-        //         {
-        //             entranceOps.push(ops[i]);
-        //             continue;
-        //         }
-
-        //         if (ops[i].isInLinkedToOpOutside(ops))
-        //         {
-        //             entranceOps.push(ops[i]);
-        //             continue;
-        //         }
-
-        //         if (!ops[i].hasLinks())
-        //         {
-        //             unconnectedOps.push(ops[i]);
-        //             continue;
-        //         }
-        //         otherOps.push(ops[i]);
-        //     }
-
-        //     let theOpWidth = Snap.snapOpPosX((longestOpPorts + 1) * (glUiConfig.portWidth + glUiConfig.portPadding));
-
-        //     for (let i = 0; i < ops.length; i++)
-        //         this.setTempOpPos(ops[i], startPosX, startPosY);
-
-        // let firstRowX = Snap.snapOpPosX(startPosX);
-        // startPosY = Snap.snapOpPosY(startPosY);
-
-        // for (let i = 0; i < entranceOps.length; i++)
-        // {
-        //     this.setTempOpPos(entranceOps[i], firstRowX, startPosY);
-        //     firstRowX = Snap.snapOpPosX(firstRowX + theOpWidth);
-        // }
-
-        // for (let i = 0; i < unconnectedOps.length; i++)
-        // {
-        //     this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
-        //     firstRowX = Snap.snapOpPosX(firstRowX + theOpWidth);
-        // }
-
-        // let count = 0;
-        // let found = true;
-        // while (count < 100 || found)
-        // {
-        //     found = false;
-        //     count++;
-        //     for (let i = 0; i < otherOps.length; i++)
-        //         if (this._cleanOp(otherOps[i], ops, theOpWidth))found = true;
-        // }
-
-        // for (let i = 0; i < ops.length; i++)
-        // {
-        //     const op = ops[i];
-        //     if (op.uiAttribs.translateTemp)
-        //     {
-        //         this.setOpPos(op, op.getTempPosX(), op.getTempPosY());
-        //         delete op.uiAttribs.translateTemp;
-        //     }
-        // }
-
-        // this._log.log(count + "iterations");
     }
 
+    /**
+     * @param {UiOp[]} ops
+     */
     alignSelectedOpsVert(ops)
     {
         if (ops.length == 1)
@@ -1973,7 +1869,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Array<UiOp>} selectedOps
+     * @param {UiOp[]} selectedOps
      */
     saveUndoSelectedOpsPositions(selectedOps)
     {
@@ -2481,6 +2377,10 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} newOpObjName
+     */
     replaceOp(opid, newOpObjName, cb = null)
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
@@ -2526,8 +2426,10 @@ export default class PatchView extends Events
                     setTimeout(() =>
                     {
                         newOp.setUiAttrib(theUiAttribs);
-                        this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
-                        if (cb) cb();
+                        this.setCurrentSubPatch(oldUiAttribs.subPatch || 0, () =>
+                        {
+                            if (cb) cb();
+                        });
                     }, 100);
                 }
                 else
@@ -2565,6 +2467,9 @@ export default class PatchView extends Events
         gui.emitEvent("canvasModeChange");
     }
 
+    /**
+     * @param {boolean} b
+     */
     setVisibility(b)
     {
         if (b)
@@ -2773,6 +2678,9 @@ export default class PatchView extends Events
         new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
     }
 
+    /**
+     * @param {String} col
+     */
     setOpColor(col)
     {
         const selectedOps = this.getSelectedOps();
