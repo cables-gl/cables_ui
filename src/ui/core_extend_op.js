@@ -432,7 +432,7 @@ class UiOp extends Op
                     !uri.startsWith("https://") &&
                     !uri.startsWith("data:")
                 )
-                    this.setUiError("protocol", "Invalid URL, should start with https:// or file:// or a slash, etc.");
+                    this.setUiError("protocol", "Invalid URL, should start with https:// or file:// or a slash, etc.", 1);
                 else
                     this.setUiError("protocol", null);
             }
