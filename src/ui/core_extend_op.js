@@ -413,32 +413,48 @@ class UiOp extends Op
         this.setUiError("webglgpu", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
+            const port = this.portsIn[i];
+
             // int inputs
-            if (this.portsIn[i].uiAttribs.increment == "integer")
+            if (port.uiAttribs.increment == "integer")
             {
                 this.setUiError("intfloat", null);
-                if (this.portsIn[i].get() - Math.floor(this.portsIn[i].get()) != 0)
-                    this.setUiError("intfloat", "input is a floating point number, it should be a integer number,use floor,ceil or round op ", 1);
+                if (port.get() - Math.floor(port.get()) != 0)
+                    this.setUiError("intfloat", "Input is a floating point number, it should be a integer number,use floor,ceil or round op ", 1);
             }
 
-            if (this.portsIn[i].links.length && this.portsIn[i].links[0])
+            if (port.uiAttribs.display == "file")
             {
-                const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+                const uri = port.get() || "";
+                if (uri != "" &&
+                    !uri.startsWith("http://") &&
+                    !uri.startsWith("/") &&
+                    !uri.startsWith("https://") &&
+                    !uri.startsWith("data:")
+                )
+                    this.setUiError("protocol", "Invalid URL, should start with https:// or file:// or a slash, etc.");
+                else
+                    this.setUiError("protocol", null);
+            }
+
+            if (port.links.length && port.links[0])
+            {
+                const otherPort = port.links[0].getOtherPort(port);
 
                 if (isWebGpu && otherPort.op.objName.indexOf(defaultOps.prefixes.webgl) == 0)
                 {
-                    this.setUiError("webglgpu", "mixing webgl/webgpu ops: " + otherPort.op.objName, 1);
+                    this.setUiError("webglgpu", "Mixing webgl/webgpu ops: " + otherPort.op.objName, 1);
                 }
 
-                if (this.portsIn[i].type == portType.array)
+                if (port.type == portType.array)
                 {
 
                     if (
                         otherPort.uiAttribs.stride != undefined &&
-                        this.portsIn[i].uiAttribs.stride != undefined &&
-                        otherPort.uiAttribs.stride != this.portsIn[i].uiAttribs.stride)
+                        port.uiAttribs.stride != undefined &&
+                        otherPort.uiAttribs.stride != port.uiAttribs.stride)
                     {
-                        this.setUiError("wrongstride", "Port \"" + this.portsIn[i].name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + this.portsIn[i].uiAttribs.stride, 1);
+                        this.setUiError("wrongstride", "Port \"" + port.name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + port.uiAttribs.stride, 1);
                     }
                 }
             }

@@ -314,7 +314,6 @@ export class GlTimeline extends Events
 
             this.loopAreaStart = t;
         });
-        /// ////////
 
         this.selectedKeysDragArea.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
