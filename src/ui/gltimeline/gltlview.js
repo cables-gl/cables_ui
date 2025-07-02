@@ -43,7 +43,7 @@ export class GlTlView
     {
         this.#tl = tl;
 
-        const defaultEasing = CABLES.Anim.EASING_QUINT_OUT;
+        const defaultEasing = CABLES.Anim.EASING_CUBIC_OUT;
 
         this.#animZoom = new CABLES.Anim({ "defaultEasing": defaultEasing });
         this.#animZoom.setValue(0, this.#zoom);
@@ -125,7 +125,7 @@ export class GlTlView
     /**
      * @param {number} v
      */
-    setMinVal(v, dur = 0.0)
+    setMinVal(v, dur = 0.3)
     {
         if (this.#finalMinVal == v) return;
         this.#finalMinVal = v;
@@ -255,13 +255,16 @@ export class GlTlView
     /**
      * @param {number} delta
      */
-    scale(delta)
+    scaleValues(delta)
     {
         delta = 1 + delta;
         const nmin = this.minVal *= delta;
         const nmax = this.maxVal *= delta;
-        this.minVal = Math.min(nmin, nmax);
-        this.maxVal = Math.max(nmin, nmax);
+        // this.minVal = Math.min(nmin, nmax);
+        // this.maxVal = Math.max(nmin, nmax);
+        this.setMinVal(Math.min(nmin, nmax));
+        this.setMaxVal(Math.max(nmin, nmax));
+
     }
 
     /**
