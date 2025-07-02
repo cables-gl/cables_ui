@@ -125,12 +125,12 @@ export default class PatchView extends Events
      */
     focusSubpatchOp(subPatchId)
     {
-        this._log.log("dupe focusSubpatchOp1");
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
-        gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch);
-        console.log("lala", outerOp.opId);
+        gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch, () =>
+        {
+            gui.patchView.centerSelectOp(outerOp.id);
+        });
 
-        gui.patchView.centerSelectOp(outerOp.opId);
     }
 
     /**
@@ -1239,7 +1239,8 @@ export default class PatchView extends Events
 
                     const patchInfo = {
                         "name": ops[i].name,
-                        "id": ops[i].patchId.get(),
+                        "patchid": ops[i].patchId.get(),
+                        // "id": ops[i].patchId.get(),
                         "type": type
                     };
 
@@ -1248,7 +1249,6 @@ export default class PatchView extends Events
                 }
             }
         }
-
         return arr;
     }
 
@@ -1414,9 +1414,9 @@ export default class PatchView extends Events
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             if (i == 0)
-                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].id + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "</a>";
+                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.focusSubpatchOp('" + names[i].patchid + "');\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span> " + names[i].name + "</a>";
             else
-                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
+                str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].patchid + "');\">" + names[i].name + "</a>";
         }
 
         if (names.length > 0)
@@ -2174,6 +2174,10 @@ export default class PatchView extends Events
         this._patchRenderer.serialize(dataUi);
     }
 
+    /**
+     * @param {string | number} subpatch
+     * @param {Function} next
+     */
     setCurrentSubPatch(subpatch, next)
     {
         gui.restriction.setMessage("subpatchref", null);
@@ -2246,7 +2250,6 @@ export default class PatchView extends Events
     {
         this.setSelectedOpById(opid);
         this._patchRenderer.viewBox.centerSelectedOps();
-        console.log(gui.patchView.getSelectedOps());
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         this.focus();
     }
