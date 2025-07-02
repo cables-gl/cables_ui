@@ -681,7 +681,7 @@ export default class GlRectInstancer extends Events
                 {
                     this.#draggingRects.push(rect);
                 }
-                console.log("thi", this.#draggingRects);
+
             });
 
             // r.on(GlRect.EVENT_DRAGEND, () => {});

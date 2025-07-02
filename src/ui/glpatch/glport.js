@@ -130,10 +130,10 @@ export default class GlPort
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
         {
             if (!this._rect) return;
-            if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
+            if (!this._longPortRect) this._longPortRect = new GlRect(this._rectInstancer, { "name": "longport", "parent": this._parent, "interactive": false });
 
             const col = GlPort.getColor(this._type, false, false, false);
-            this._longPortRect.setColor([col[0], col[1], col[2], 0.5]);
+            this._longPortRect.setColor(col[0], col[1], col[2], 0.5);
 
             this.updateSize();
         }
@@ -163,7 +163,7 @@ export default class GlPort
 
         if (!this._dot && showDot)
         {
-            this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
+            this._dot = new GlRect(this._rectInstancer, { "name": "portdot", "parent": this._rect, "interactive": false });
             this._dot.setSize(0, 0);
             this._rect.addChild(this._dot);
         }
