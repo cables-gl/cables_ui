@@ -53,7 +53,7 @@ export class TlTitle extends Events
     {
         super();
         this.#gltl = gltl;
-        this.#anim = anim;
+        this.#anim = anim || new Anim();
         this.#el = document.createElement("div");
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
