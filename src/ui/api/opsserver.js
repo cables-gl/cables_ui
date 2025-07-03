@@ -619,27 +619,22 @@ export default class ServerOps
             {
                 this._log.info("op-dependency added: " + opName + " " + depSrc);
                 if (res && res.data && res.data.stdout) this._log.info("npm: " + res.data.stdout);
-                gui.emitEvent("refreshManageOp", opName);
                 if (next) next(null, op);
             }, true);
         });
     }
 
-    removeOpDependency(opName, depSrc, depType, next = null)
+    removeOpDependency(opId, depSrc, depType, next = null, confirmed = false)
     {
-        const modal = new ModalDialog({
-            "title": "Really remove dependency from op?",
-            "text": "Delete " + depSrc + " from " + opName + "?",
-            "choice": true
-        });
-        modal.on("onSubmit", () =>
+        let opName = this.getOpNameByIdentifier(opId) || opId;
+        const _remove = () =>
         {
             gui.jobs().start({
                 "id": "removeOpDependency",
-                "title": "removing " + depSrc + " from " + opName
+                "title": "removing " + depSrc + " from " + opId
             });
             platform.talkerAPI.send("removeOpDependency", {
-                "opName": opName,
+                "opName": opId,
                 "src": depSrc,
                 "type": depType
             }, (err, res) =>
@@ -648,20 +643,40 @@ export default class ServerOps
                 if (err)
                 {
                     this._log.warn("unable to remove op-dependency: " + err.msg);
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent("refreshManageOp", opId);
                 }
                 else
                 {
-                    gui.serverOps.loadOpDependencies(opName, () =>
+                    gui.serverOps.loadOpDependencies(opId, () =>
                     {
                         this._log.log("op-dependency removed!", opName, depSrc);
-                        gui.emitEvent("refreshManageOp", opName);
-
                         if (next) next();
                     }, true);
                 }
             });
-        });
+        };
+
+        if (!confirmed)
+        {
+            const modalOptions = {
+                "title": "Really remove dependency from op?",
+                "text": "Remove " + depSrc + " from " + opName + "?",
+                "choice": true
+            };
+            if (depType === "op")
+            {
+                let depOpName = this.getOpNameByIdentifier(depSrc);
+                if (!depOpName) depOpName = "op dependency";
+                modalOptions.text = "Remove " + depOpName + " from " + opName + "?";
+            }
+            const modal = new ModalDialog(modalOptions);
+            modal.on("onSubmit", _remove);
+        }
+        else
+        {
+            _remove(opId, depSrc, depType, next);
+        }
+
     }
 
     deleteAttachment(opName, opId, attName)

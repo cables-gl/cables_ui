@@ -220,10 +220,11 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
+                    const dep = opDoc.dependencies.find((d) => { return d.src == depSrc && d.type == depType; });
 
                     const items = [];
 
-                    let downloadable = depType !== "corelib";
+                    let downloadable = depType !== "corelib" && depType !== "op";
                     if (depType === "lib") downloadable = depSrc.startsWith("/assets/");
 
                     if (downloadable)
@@ -256,6 +257,24 @@ export default class ManageOp
                         });
                     }
 
+                    if (depType === "op" && dep && dep.oldVersion && dep.newestVersion && dep.newestVersion.name)
+                    {
+                        items.push({
+                            "title": "upgrade",
+                            "iconClass": "icon icon-op",
+                            "func": (ee) =>
+                            {
+                                gui.serverOps.addOpDependency(opDoc.id, dep.newestVersion.name, depType, null, () =>
+                                {
+                                    gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
+                                    {
+                                        gui.emitEvent("refreshManageOp", opName);
+                                    }, true);
+                                });
+                            }
+                        });
+                    }
+
                     items.push({
                         "title": "remove",
                         "iconClass": "icon icon-x",
@@ -272,7 +291,10 @@ export default class ManageOp
                             case "commonjs":
                             case "module":
                             default:
-                                gui.serverOps.removeOpDependency(opName, depSrc, depType);
+                                gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
+                                {
+                                    gui.emitEvent("refreshManageOp", opName);
+                                });
                                 break;
                             }
                         }
