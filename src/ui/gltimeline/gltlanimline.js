@@ -272,7 +272,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            console.log("titles", this.#titles);
+            // console.log("titles", this.#titles);
             // this.#titles[i].updateColor();
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
@@ -443,6 +443,7 @@ export class glTlAnimLine extends Events
         {
             for (let j = 0; j < this.#ports.length; j++)
             {
+
                 if (this.#anims[j].tlActive)
                 {
                     let val = this.#anims[j].getValue(t);
