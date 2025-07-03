@@ -7,22 +7,28 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import namespaceutils from "../namespaceutils.js";
+import patchCommands from "../commands/cmd_patch.js";
+import { patchStructureQuery } from "./patchstructure.js";
 
 export default class PatchOutline extends Events
 {
     constructor()
     {
         super();
+        this.queryOptions = {
+            "includeBookmarks": true,
+            "includeSubpatches": true,
+            "includeCommented": true,
+            "includeComments": true,
+            "includeAreas": true,
+            "includeAnimated": true,
+            "includeCustomOps": true,
+            "includeColored": true
+
+        };
 
         this._log = new Logger("PatchOutline");
-        this.includeAreas =
-        this.includeComments =
-        this.includeCustomOps =
-        this.includeCommented =
-        this.includeBookmarks =
-        this.includeAnimated =
-        this.includeColored = true;
-        this.includeSubpatches = false;
+        this.query = new patchStructureQuery();
 
         this._listeningSubs = false;
         this._subTree = new TreeView();
@@ -71,31 +77,14 @@ export default class PatchOutline extends Events
 
         const outlineCfg = p.ui.outline;
 
-        this.includeBookmarks = outlineCfg.includeBookmarks;
-        this.includeSubpatches = outlineCfg.includeSubpatches;
-        this.includeCommented = outlineCfg.includeCommented;
-        this.includeComments = outlineCfg.includeComments;
-        this.includeAreas = outlineCfg.includeAreas;
-        this.includeAnimated = outlineCfg.includeAnimated;
-        this.includeCustomOps = outlineCfg.includeCustomOps;
-        this.includeColored = outlineCfg.includeColored;
+        this.queryOptions = outlineCfg;
 
         this.updateFilterUi();
     }
 
-    serialize(obj)
+    serialize(obj = {})
     {
-        const outlineCfg = {};
-
-        outlineCfg.includeBookmarks = this.includeBookmarks;
-        outlineCfg.includeSubpatches = this.includeSubpatches;
-        outlineCfg.includeCommented = this.includeCommented;
-        outlineCfg.includeComments = this.includeComments;
-        outlineCfg.includeAreas = this.includeAreas;
-        outlineCfg.includeColored = this.includeColored;
-        outlineCfg.includeCustomOps = this.includeCustomOps;
-        outlineCfg.includeAnimated = this.includeAnimated;
-        obj.outline = outlineCfg;
+        obj.outline = this.queryOptions;
     }
 
     updateFilterUi()
@@ -162,8 +151,11 @@ export default class PatchOutline extends Events
         html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
         html += "</div>";
 
-        const su = this._getSubPatchesHierarchy();
+        this.query.setOptions(this.queryOptions);
 
+        const su = this.query.getHierarchy();
+
+        console.log("su  ii", su);
         html += this._subTree.html(su);
 
         let el = ele.byId(id);
@@ -235,127 +227,10 @@ export default class PatchOutline extends Events
         this.updateFilterUi();
     }
 
-    _sanitizeComment(_cmt)
-    {
-        let cmt = escapeHTML(_cmt);
-
-        if (cmt.length > 30)cmt = cmt.substring(0, 30) + "...";
-
-        return cmt;
-    }
-
-    _getUserImagesStringSubpatch(patchId)
-    {
-        let str = "";
-        if (!gui.socket) return "";
-        const userIds = gui.socket.state.getUserInSubpatch(patchId);
-
-        for (let i = 0; i < userIds.length; i++)
-        {
-            str += "<img style='height:15px;border-radius:100%;margin-left:10px;' src=\"" + platform.getCablesUrl() + "/api/avatar/" + userIds[i] + "/mini\"/>";
-        }
-
-        return str;
-    }
-
-    _getSubPatchesHierarchy(patchId = 0)
-    {
-        let mainTitle = "Patch ";
-        if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
-
-        mainTitle += this._getUserImagesStringSubpatch(0);
-
-        let sub =
-        {
-            "title": mainTitle,
-            "id": "0",
-            "order": 0,
-            "subPatchId": "0",
-            "childs": [],
-            "icon": "folder"
-
-        };
-
-        if (gui.patchView.getCurrentSubPatch() == 0)sub.rowClass = "active";
-
-        let subs = [sub];
-
-        if (patchId)
-        {
-            const subOp = gui.patchView.getSubPatchOuterOp(patchId);
-            if (!subOp) return;
-
-            sub.iconBgColor = subOp.uiAttribs.color,
-            sub.title = subOp.getTitle();
-            sub.id = subOp.id;
-            if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
-
-            sub.title += this._getUserImagesStringSubpatch(patchId);
-
-            // html += "!!";
-
-            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(subOp.uiAttribs.comment) + "</span>";
-
-            sub.subPatchId = patchId;
-            sub.id = subOp.id;
-            if (subOp.uiAttribs && subOp.uiAttribs.translate) sub.order = subOp.getTitle() + (subOp.uiAttribs.translate.x * subOp.uiAttribs.translate.y);
-            else sub.order = subOp.getTitle();
-
-            sub.subPatchVer = subOp.storage.subPatchVer || 0;
-
-            if (gui.patchView.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
-            else sub.rowClass = "";
-
-            if (subOp.isSubPatchOp() || subOp.isInBlueprint2())
-            {
-                sub.blueprintVer = subOp.isSubPatchOp();
-                sub.icon = "folder";
-            }
-        }
-
-        const ops = gui.patchView.getAllSubPatchOps(patchId || 0);
-
-        for (let i = 0; i < ops.length; i++)
-        {
-            let included = false;
-
-            if (this.includeSubpatches && ops[i].patchId && ops[i].patchId.get() !== 0) included = true;
-            if (this.includeColored && ops[i].uiAttribs.color) included = true;
-            if (this.includeAreas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1) included = true;
-            if (this.includeBookmarks && ops[i].uiAttribs.bookmarked) included = true;
-            if (this.includeComments && ops[i].uiAttribs.comment_title) included = true;
-            if (this.includeCommented && ops[i].uiAttribs.comment) included = true;
-            if (this.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName)) included = true;
-            if (this.includeAnimated && ops[i].hasAnimPort) included = true;
-
-            if (included)
-            {
-                if (ops[i].patchId && ops[i].patchId.get() !== 0)
-                {
-                    sub.childs.push(this._getSubPatchesHierarchy(ops[i].patchId.get()));
-                }
-                else
-                {
-                    let icon = "bookmark";
-                    if (this.includeCommented && ops[i].uiAttribs.comment) icon = "message";
-                    if (this.includeColored && ops[i].uiAttribs.color) icon = "op";
-                    // todo no hard codrd op names
-                    if (this.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
-                    if (this.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
-                    if (this.includeAnimated && ops[i].hasAnimPort) icon = "clock";
-
-                    let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
-                    if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
-
-                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color });
-                }
-            }
-        }
-
-        if (patchId == 0) return subs;
-        else return sub;
-    }
-
+    /**
+     * @param {{ subPatchId: string; subPatchVer: string; blueprintVer: number; }} item
+     * @param {HTMLElement} el
+     */
     subPatchContextMenu(item, el)
     {
         const items = [];
@@ -364,7 +239,7 @@ export default class PatchOutline extends Events
             func()
             {
                 gui.patchView.focusSubpatchOp(item.subPatchId);
-                CABLES.CMD.PATCH.setOpTitle();
+                patchCommands.setOpTitle();
             },
         });
 

@@ -296,7 +296,7 @@ export default class GlPort
     /**
      * @param {GlRect} _rect
      */
-    _onHover(_rect, e)
+    _onHover(_rect)
     {
         if (!this._glPatch.hasFocus) return;
 
