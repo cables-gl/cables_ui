@@ -111,7 +111,7 @@ export default class PatchOutline extends Events
         if (this.queryOptions.includeAnimated)ele.byId("subtreeFilterAnimated").classList.add("findToggleActive");
         else ele.byId("subtreeFilterAnimated").classList.remove("findToggleActive");
 
-        if (this.includeCustomOps)ele.byId("subtreeFilterCustomOps").classList.add("findToggleActive");
+        if (this.queryOptions.includeCustomOps)ele.byId("subtreeFilterCustomOps").classList.add("findToggleActive");
         else ele.byId("subtreeFilterCustomOps").classList.remove("findToggleActive");
     }
 
@@ -216,7 +216,7 @@ export default class PatchOutline extends Events
         });
         ele.byId("subtreeFilterCustomOps").addEventListener("click", () =>
         {
-            this.includeCustomOps = !this.includeCustomOps;
+            this.queryOptions.includeCustomOps = !this.queryOptions.includeCustomOps;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();

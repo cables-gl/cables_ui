@@ -24,6 +24,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import Collapsable from "../components/collapsable.js";
+import { patchStructureQuery } from "../components/patchstructure.js";
 
 /**
  * @typedef TlConfig
@@ -1237,6 +1238,8 @@ export class GlTimeline extends Events
         ops = gui.corePatch().ops;
 
         this.#firstInit = false;
+
+        new patchStructureQuery();
 
         for (let i = 0; i < ops.length; i++)
         {

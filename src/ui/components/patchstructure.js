@@ -51,39 +51,6 @@ export class patchStructureQuery
         this.options = options;
     }
 
-    deserialize(p)
-    {
-        if (!p || !p.ui || !p.ui.outline) return;
-
-        const outlineCfg = p.ui.outline;
-
-        this.includeBookmarks = outlineCfg.includeBookmarks;
-        this.includeSubpatches = outlineCfg.includeSubpatches;
-        this.includeCommented = outlineCfg.includeCommented;
-        this.includeComments = outlineCfg.includeComments;
-        this.includeAreas = outlineCfg.includeAreas;
-        this.includeAnimated = outlineCfg.includeAnimated;
-        this.includeCustomOps = outlineCfg.includeCustomOps;
-        this.includeColored = outlineCfg.includeColored;
-
-        this.updateFilterUi();
-    }
-
-    serialize(obj)
-    {
-        const outlineCfg = {};
-
-        outlineCfg.includeBookmarks = this.includeBookmarks;
-        outlineCfg.includeSubpatches = this.includeSubpatches;
-        outlineCfg.includeCommented = this.includeCommented;
-        outlineCfg.includeComments = this.includeComments;
-        outlineCfg.includeAreas = this.includeAreas;
-        outlineCfg.includeColored = this.includeColored;
-        outlineCfg.includeCustomOps = this.includeCustomOps;
-        outlineCfg.includeAnimated = this.includeAnimated;
-        obj.outline = outlineCfg;
-    }
-
     _getUserImagesStringSubpatch(patchId)
     {
         let str = "";
@@ -159,15 +126,48 @@ export class patchStructureQuery
         for (let i = 0; i < ops.length; i++)
         {
             let included = false;
+            let includeReasons = [];
 
-            if (this.options.includeSubpatches && ops[i].patchId && ops[i].patchId.get() !== 0) included = true;
-            if (this.options.includeColored && ops[i].uiAttribs.color) included = true;
-            if (this.options.includeAreas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1) included = true;
-            if (this.options.includeBookmarks && ops[i].uiAttribs.bookmarked) included = true;
-            if (this.options.includeComments && ops[i].uiAttribs.comment_title) included = true;
-            if (this.options.includeCommented && ops[i].uiAttribs.comment) included = true;
-            if (this.options.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName)) included = true;
-            if (this.options.includeAnimated && ops[i].hasAnimPort) included = true;
+            if (this.options.includeSubpatches && ops[i].patchId && ops[i].patchId.get() !== 0)
+            {
+                includeReasons.push("includeSubpatches");
+                included = true;
+            }
+            if (this.options.includeColored && ops[i].uiAttribs.color)
+            {
+                includeReasons.push("includeColored");
+                included = true;
+            }
+            if (this.options.includeAreas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1)
+            {
+                includeReasons.push("includeAreas");
+                included = true;
+            }
+            if (this.options.includeBookmarks && ops[i].uiAttribs.bookmarked)
+            {
+                includeReasons.push("includeBookmarks ");
+                included = true;
+            }
+            if (this.options.includeComments && ops[i].uiAttribs.comment_title)
+            {
+                includeReasons.push("includeComments");
+                included = true;
+            }
+            if (this.options.includeCommented && ops[i].uiAttribs.comment)
+            {
+                includeReasons.push("includeCommented ");
+                included = true;
+            }
+            if (this.options.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName))
+            {
+                includeReasons.push("includeCustomOps");
+                included = true;
+            }
+            if (this.options.includeAnimated && ops[i].hasAnimPort)
+            {
+                includeReasons.push("includeAnim");
+                included = true;
+            }
 
             if (included)
             {
