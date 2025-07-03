@@ -27,6 +27,8 @@ import { escapeHTML } from "../utils/helper.js";
  * @property {boolean} [includeAnimated]
  * @property {boolean} [includeColored]
  * @property {boolean} [includeSubpatches]
+
+ * @property {boolean} [includePortsAnimated]
  */
 export class patchStructureQuery
 {
@@ -187,7 +189,19 @@ export class patchStructureQuery
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + patchStructureQuery.sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
 
-                    sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color });
+                    const s = { "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color };
+
+                    if (this.options.includePortsAnimated)
+                    {
+                        s.ports = [];
+                        for (let jj = 0; jj < ops[i].portsIn.length; jj++)
+                        {
+                            if (ops[i].portsIn[jj].isAnimated)s.ports.push({ "name": ops[i].portsIn[jj].name });
+                        }
+
+                    }
+
+                    sub.childs.push(s);
                 }
             }
         }

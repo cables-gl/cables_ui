@@ -1239,7 +1239,9 @@ export class GlTimeline extends Events
 
         this.#firstInit = false;
 
-        new patchStructureQuery();
+        const q = new patchStructureQuery();
+        q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
+        console.log("qqqq", q.getHierarchy());
 
         for (let i = 0; i < ops.length; i++)
         {
