@@ -127,6 +127,49 @@
         {{/if}}
 
         {{#if portJson}}
+            {{#if hasDependencies}}
+                <div class="groupSpacer"><h3>Dependencies</h3></div>
+                <div class="opDependencyList">
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th></th>
+                        </tr>
+                        {{#each opDoc.coreLibs}}
+                            <tr>
+                                <td>{{.}}</td>
+                                <td>corelib</td>
+                                <td></td>
+                            </tr>
+                        {{/each}}
+                        {{#each opDoc.libs}}
+                            <tr>
+                                <td>{{.}}</td>
+                                <td>lib</td>
+                                <td></td>
+                            </tr>
+                        {{/each}}
+                        {{#each opDoc.dependencies}}
+                            <tr>
+                                <td>
+                                    {{#compare type '==' 'npm'}}
+                                        <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{src}}</a>
+                                    {{else}}
+                                        {{#compare type '==' 'op'}}
+                                            {{opName}}
+                                        {{else}}
+                                            {{src}}
+                                        {{/compare}}
+                                    {{/compare}}
+                                </td>
+                                <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
+                                <td></td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                </div>
+            {{/if}}
         {{else}}
           <br/>
             <div class="groupSpacer"><h3>Files</h3></div>
@@ -175,7 +218,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Type</th>
-                            <th> </th>
+                            <th></th>
                         </tr>
                         {{#each opDoc.coreLibs}}
                             <tr>
