@@ -64,7 +64,7 @@ export default class GlViewBox
 
         // cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
 
-        this._eleTabs = document.getElementById("splitterMaintabs");
+        // this._eleTabs = document.getElementById("splitterMaintabs");
 
         // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
@@ -364,14 +364,14 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        if (userInteraction)p = 0;
-        if (p != p)p = 0;
+        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        // if (userInteraction)p = 0;
+        // if (p != p)p = 0;
 
         dur = dur || 0.2;
 
         this._animScrollX.clear(this.glPatch.time);
-        this._animScrollX.setValue(this.glPatch.time + dur, x - p);
+        this._animScrollX.setValue(this.glPatch.time + dur, x);
         this._animScrollY.clear(this.glPatch.time);
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }

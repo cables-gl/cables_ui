@@ -1225,6 +1225,7 @@ export default class GlPatch extends Events
     /**
      * @param {number} x
      * @param {number} y
+     * @param {MouseEvent} [e]
      */
     mouseMove(x, y, e)
     {
