@@ -49,7 +49,6 @@ export default class PatchOutline extends Events
         this._subTree.on("title_click",
             (item, el, event) =>
             {
-                console.log("texsrswt");
                 if (item.id)
                 {
                     if (event.shiftKey)
@@ -91,25 +90,25 @@ export default class PatchOutline extends Events
     {
         if (!ele.byId("subtreeFilterBookmarks")) return;
 
-        if (this.includeBookmarks)ele.byId("subtreeFilterBookmarks").classList.add("findToggleActive");
+        if (this.queryOptions.includeBookmarks)ele.byId("subtreeFilterBookmarks").classList.add("findToggleActive");
         else ele.byId("subtreeFilterBookmarks").classList.remove("findToggleActive");
 
-        if (this.includeSubpatches)ele.byId("subtreeFilterSubPatchOps").classList.add("findToggleActive");
+        if (this.queryOptions.includeSubpatches)ele.byId("subtreeFilterSubPatchOps").classList.add("findToggleActive");
         else ele.byId("subtreeFilterSubPatchOps").classList.remove("findToggleActive");
 
-        if (this.includeCommented)ele.byId("subtreeFilterCommented").classList.add("findToggleActive");
+        if (this.queryOptions.includeCommented)ele.byId("subtreeFilterCommented").classList.add("findToggleActive");
         else ele.byId("subtreeFilterCommented").classList.remove("findToggleActive");
 
-        if (this.includeComments)ele.byId("subtreeFilterComments").classList.add("findToggleActive");
+        if (this.queryOptions.includeComments)ele.byId("subtreeFilterComments").classList.add("findToggleActive");
         else ele.byId("subtreeFilterComments").classList.remove("findToggleActive");
 
-        if (this.includeAreas)ele.byId("subtreeFilterAreas").classList.add("findToggleActive");
+        if (this.queryOptions.includeAreas)ele.byId("subtreeFilterAreas").classList.add("findToggleActive");
         else ele.byId("subtreeFilterAreas").classList.remove("findToggleActive");
 
-        if (this.includeColored)ele.byId("subtreeFilterColored").classList.add("findToggleActive");
+        if (this.queryOptions.includeColored)ele.byId("subtreeFilterColored").classList.add("findToggleActive");
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
 
-        if (this.includeAnimated)ele.byId("subtreeFilterAnimated").classList.add("findToggleActive");
+        if (this.queryOptions.includeAnimated)ele.byId("subtreeFilterAnimated").classList.add("findToggleActive");
         else ele.byId("subtreeFilterAnimated").classList.remove("findToggleActive");
 
         if (this.includeCustomOps)ele.byId("subtreeFilterCustomOps").classList.add("findToggleActive");
@@ -155,7 +154,6 @@ export default class PatchOutline extends Events
 
         const su = this.query.getHierarchy();
 
-        console.log("su  ii", su);
         html += this._subTree.html(su);
 
         let el = ele.byId(id);
@@ -169,49 +167,49 @@ export default class PatchOutline extends Events
 
         ele.byId("subtreeFilterBookmarks").addEventListener("click", () =>
         {
-            this.includeBookmarks = !this.includeBookmarks;
+            this.queryOptions.includeBookmarks = !this.queryOptions.includeBookmarks;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterSubPatchOps").addEventListener("click", () =>
         {
-            this.includeSubpatches = !this.includeSubpatches;
+            this.queryOptions.includeSubpatches = !this.queryOptions.includeSubpatches;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterCommented").addEventListener("click", () =>
         {
-            this.includeCommented = !this.includeCommented;
+            this.queryOptions.includeCommented = !this.queryOptions.includeCommented;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterComments").addEventListener("click", () =>
         {
-            this.includeComments = !this.includeComments;
+            this.queryOptions.includeComments = !this.queryOptions.includeComments;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterAreas").addEventListener("click", () =>
         {
-            this.includeAreas = !this.includeAreas;
+            this.queryOptions.includeAreas = !this.queryOptions.includeAreas;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterColored").addEventListener("click", () =>
         {
-            this.includeColored = !this.includeColored;
+            this.queryOptions.includeColored = !this.queryOptions.includeColored;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();
         });
         ele.byId("subtreeFilterAnimated").addEventListener("click", () =>
         {
-            this.includeAnimated = !this.includeAnimated;
+            this.queryOptions.includeAnimated = !this.queryOptions.includeAnimated;
             this.updateFilterUi();
             this.insert();
             gui.setStateUnsaved();

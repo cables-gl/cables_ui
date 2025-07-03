@@ -40,6 +40,7 @@ export default class GlRect extends Events
     static OPTION_PARENT = "parent";
     static OPTION_NAME = "name";
 
+    /** @type {array} */
     color = vec4.create();
     colorHover = null;
     interactive = true;

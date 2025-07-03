@@ -145,6 +145,8 @@ export default class GlOp extends Events
 
         /** @type {GlRect} */
         this._glColorIndicator = null;
+
+        /** @type {GlRect} */
         this._glColorIndicatorSpacing = null;
 
         /**
@@ -1650,15 +1652,15 @@ export default class GlOp extends Events
             if (!this._glColorIndicator)
             {
 
-                this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
+                this._glColorIndicator = this._instancer.createRect({ "name": "colorindicator", "interactive": false, "parent": this._glRectBg });
                 this._glColorIndicator.setParent(this._glRectBg);
 
-                this._glColorIndicatorSpacing = this._instancer.createRect({ "parent": this._glRectBg });
+                this._glColorIndicatorSpacing = this._instancer.createRect({ "name": "cispacing", "interactive": false, "parent": this._glRectBg });
                 this._glColorIndicatorSpacing.setParent(this._glRectBg);
                 this._glColorIndicatorSpacing.setPosition(-GlOp.COLORINDICATOR_SPACING, 0);
                 this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, this._height);
             }
-            this._glColorIndicator.setColor(chroma.hex(this.opUiAttribs.color).gl());
+            this._glColorIndicator.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
         }
 
         if (this.displayType === this.DISPLAY_UI_AREA && !this.selected)
@@ -1693,7 +1695,7 @@ export default class GlOp extends Events
         if (this._glColorIndicatorSpacing)
         {
             let col = this._glRectBg.color;
-            this._glColorIndicatorSpacing.setColor(col);
+            this._glColorIndicatorSpacing.setColorArray(col);
         }
     }
 
