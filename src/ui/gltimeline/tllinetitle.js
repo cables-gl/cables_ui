@@ -94,7 +94,7 @@ export class TlTitle extends Events
 
         this.#el.appendChild(this.#elTitle);
 
-        if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(anim.tlActive);
+        if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(this.#anim.tlActive);
         else this.setActive(true);
 
         if (options.port) this.setPort(options.port);
