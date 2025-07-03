@@ -251,7 +251,8 @@ export class TlTitle extends Events
 
     toggleActive()
     {
-        this.setActive(!this.#anim.tlActive);
+        if (this.#anim)
+            this.setActive(!this.#anim.tlActive);
     }
 
     /**
