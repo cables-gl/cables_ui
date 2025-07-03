@@ -163,31 +163,36 @@ export class TlTitle extends Events
      */
     setActive(c)
     {
-        this.#anim.tlActive = c;
+        if (this.#anim)
+            this.#anim.tlActive = c;
 
         this.updateIcons();
     }
 
     updateIcons()
     {
-        const c = this.#anim.tlActive;
-
-        if (c) this.#elTitle.classList.add("current");
-        else this.#elTitle.classList.remove("current");
-
-        if (this.activeButton)
+        if (this.#anim)
         {
-            if (!c)
+
+            const c = this.#anim.tlActive;
+
+            if (c) this.#elTitle.classList.add("current");
+            else this.#elTitle.classList.remove("current");
+
+            if (this.activeButton)
             {
-                this.#elTitle.style.opacity = "0.4";
-                this.activeButton.children[0].classList.remove("icon-pencil");
-                this.activeButton.children[0].classList.add("icon-pencil-off");
-            }
-            else
-            {
-                this.#elTitle.style.opacity = "1";
-                this.activeButton.children[0].classList.add("icon-pencil");
-                this.activeButton.children[0].classList.remove("icon-pencil-off");
+                if (!c)
+                {
+                    this.#elTitle.style.opacity = "0.4";
+                    this.activeButton.children[0].classList.remove("icon-pencil");
+                    this.activeButton.children[0].classList.add("icon-pencil-off");
+                }
+                else
+                {
+                    this.#elTitle.style.opacity = "1";
+                    this.activeButton.children[0].classList.add("icon-pencil");
+                    this.activeButton.children[0].classList.remove("icon-pencil-off");
+                }
             }
         }
 

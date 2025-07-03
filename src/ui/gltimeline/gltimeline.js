@@ -1212,6 +1212,38 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
+    hierarchyLine(item, level = 0)
+    {
+        const op = gui.corePatch().getOpById(item.id);
+
+        console.log("aa", item);
+        console.log("op", op);
+
+        if (item.ports)
+        {
+            if (op)
+                for (let i = 0; i < item.ports.length; i++)
+                {
+                    console.log("annnn");
+                    this.#tlAnims.push(
+                        new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], { "collapsable": item.ports.length > 0 && i == 0 })
+                    );
+                }
+        }
+        else
+        if (item.childs)
+            this.#tlAnims.push(
+                new glTlAnimLine(this, [], { "collapsable": item.childs.length > 0, "title": item.title })
+            );
+
+        if (item.childs)
+            for (let i = 0; i < item.childs.length; i++)
+            {
+                this.hierarchyLine(item.childs[i], level++);
+            }
+
+    }
+
     init()
     {
         if (this.disposed) return;
@@ -1242,6 +1274,8 @@ export class GlTimeline extends Events
         const q = new patchStructureQuery();
         q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
         console.log("qqqq", q.getHierarchy());
+        const root = q.getHierarchy()[0];
+        this.hierarchyLine(root);
 
         for (let i = 0; i < ops.length; i++)
         {

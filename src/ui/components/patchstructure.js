@@ -196,7 +196,7 @@ export class patchStructureQuery
                         s.ports = [];
                         for (let jj = 0; jj < ops[i].portsIn.length; jj++)
                         {
-                            if (ops[i].portsIn[jj].isAnimated)s.ports.push({ "name": ops[i].portsIn[jj].name });
+                            if (ops[i].portsIn[jj].isAnimated())s.ports.push({ "name": ops[i].portsIn[jj].name });
                         }
 
                     }

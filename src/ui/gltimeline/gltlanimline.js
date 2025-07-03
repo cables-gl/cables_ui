@@ -95,9 +95,9 @@ export class glTlAnimLine extends Events
 
         // this.height = Math.random() * 80 + 22;
         this.#disposeRects.push(this.#glRectKeysBg);
-
         for (let i = 0; i < ports.length; i++)
         {
+            if (!ports[i]) continue;
             this.#anims[i] = ports[i].anim;
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
@@ -123,8 +123,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            this.setTitle(i, ports[i], ports[i].anim);
+            if (ports[i])
+                this.setTitle(i, ports[i], ports[i].anim);
         }
+        if (ports.length == 0) this.addFolder(options.title);
 
         if (this.isGraphLayout())
         {
@@ -199,6 +201,18 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    addFolder(text)
+    {
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), null, { "port": null, "collapsable": true, "text": text });
+        title.setHeight(this.height - 2);
+        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
+        {
+        });
+
+        this.#titles.push(title);
+        this.setTitlePos();
+    }
+
     /**
      * @param {Op[]} ops
      */
@@ -221,7 +235,6 @@ export class glTlAnimLine extends Events
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
-            // this.#titles[i].#op = this.#ops[i];
         }
     }
 
@@ -259,8 +272,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+            console.log("titles", this.#titles);
             // this.#titles[i].updateColor();
-            this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+            if (this.#keys[i])
+                this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
 
     }
