@@ -664,7 +664,7 @@ export default class GlRectInstancer extends Events
     }
 
     /**
-     * @param {import("./glrect.js").GlRectOptions} [options]
+     * @param {import("./glrect.js").GlRectOptions} options
      */
     createRect(options)
     {
@@ -681,7 +681,7 @@ export default class GlRectInstancer extends Events
                 {
                     this.#draggingRects.push(rect);
                 }
-                console.log("thi", this.#draggingRects);
+
             });
 
             // r.on(GlRect.EVENT_DRAGEND, () => {});

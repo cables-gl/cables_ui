@@ -279,7 +279,8 @@ export default class GlRect extends Events
         if (a === null) a = 1.0;
         if (r.length)
         { // todo remove after jul2025
-            console.warn("setcolor cant use array, lse coloarray");
+            console.warn("setcolor cant use array, use colorarray", this.name, r, g, b, a);
+            logStack();
             vec4.set(this.color, r[0], r[1], r[2], r[3]);
         }
         else
@@ -573,7 +574,6 @@ export default class GlRect extends Events
                     this.#isDragging = true;
                     this.#dragStartX = x;
                     this.#dragStartY = y;
-                    console.log("drag start", this.name);
                     this.emitEvent(GlRect.EVENT_DRAGSTART, this, x, y, button, e);
                 }
 

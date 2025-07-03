@@ -15,7 +15,7 @@ export default class GlSelectionArea
      */
     constructor(rectinstancer)
     {
-        this._selectRect = rectinstancer.createRect();
+        this._selectRect = rectinstancer.createRect({ "name": "glSelectionArea", "interactive": false });
 
         this.updateTheme();
         this._selectRect.setSize(0, 0);
@@ -56,7 +56,7 @@ export default class GlSelectionArea
 
     isVisible()
     {
-        return this._selectRect._w != 0 && this._selectRect._h != 0;
+        return this._selectRect.w != 0 && this._selectRect.h != 0;
     }
 
     /** @deprecated */

@@ -218,6 +218,7 @@ export default class GlCable
         this._splineDrawer.deleteSpline(this._splineIdx);
         this.updateVisible();
         this.updateMouseListener();
+        return null;
     }
 
     _updateDistFromPort()
@@ -464,13 +465,7 @@ export default class GlCable
         this._buttonRect.setColor(col[0], col[1], col[2], col[3]);
     }
 
-    /**
-     * @param {number} _r
-     * @param {number} _g
-     * @param {number} _b
-     * @param {number} _a
-     */
-    setColor(_r, _g, _b, _a)
+    setColor()
     {
         this.updateColor();
     }

@@ -68,7 +68,7 @@ export default class GlLink
         this.crossSubpatch = false;
 
         /** @type {GlRect} */
-        this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect = this._glPatch.rectDrawer.createRect({ "name": "buttonrect", "interactive": true });
         this._buttonRect.setShape(1);
 
         this._buttonRect.on("mouseup", (e) =>
@@ -626,6 +626,9 @@ export default class GlLink
         if (this._buttonRect) this._buttonRect = this._buttonRect.dispose();
     }
 
+    /**
+     * @param {string | number} v
+     */
     _singleValueToString(v)
     {
         let r = null;
@@ -634,6 +637,10 @@ export default class GlLink
         return r;
     }
 
+    /**
+     * @param {number} act
+     * @param {string | any[]} v
+     */
     setFlowModeActivity(act, v)
     {
         if (this._activity == act) return;

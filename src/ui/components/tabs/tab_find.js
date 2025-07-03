@@ -17,6 +17,7 @@ import { UiOp } from "../../core_extend_op.js";
  */
 export default class FindTab
 {
+    _findTimeoutId = null;
     constructor(tabs, str)
     {
         this._toggles = ["recent", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
@@ -26,7 +27,6 @@ export default class FindTab
         this._tabs = tabs;
 
         this._lastSearch = "";
-        this._findTimeoutId = 0;
         this._lastClicked = -1;
         this._lastSelected = -1;
         this._maxIdx = -1;
@@ -289,11 +289,11 @@ export default class FindTab
 
     /**
      * @param {String} str
-     * @param {boolean} userInvoked
+     * @param {boolean} _userInvoked
      * @param {Array<UiOp>} ops
-     * @param {Array} results
+     * @param {Array} [results]
      */
-    _doSearch(str, userInvoked, ops, results)
+    _doSearch(str, _userInvoked, ops, results)
     {
         this._lastSearch = str;
 

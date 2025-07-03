@@ -1,4 +1,4 @@
-import { Link } from "cables";
+import { Link, Op, Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
@@ -18,7 +18,7 @@ export default class SuggestPortDialog
      * @param {Port} port
      * @param {MouseEvent} mouseEvent
      * @param {Function} cb
-     * @param {Function} cbCancel
+     * @param {Function} [cbCancel]
      */
     constructor(op, port, mouseEvent, cb, cbCancel)
     {

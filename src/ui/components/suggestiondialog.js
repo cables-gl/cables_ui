@@ -13,7 +13,7 @@ import { gui } from "../gui.js";
  * @property {String} [shortName] - internal: do not set manually
  * @property {String} [classname] - class
  * @property {Port} [p] - port
- * @property {Function} [cb] - callback
+ * @property {Function} [cb] - [callback]
 */
 
 /**

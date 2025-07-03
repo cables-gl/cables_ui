@@ -80,21 +80,21 @@ export default class GlUiCanvas extends GlCanvas
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.glPatch.needsRedraw = true;
         this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
+        this._lastTime = 0;
     }
 
     render()
     {
         this.glPatch.updateTime();
-        if (this.glPatch.paused) return;
-        if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
+        // if (this.glPatch.paused) return;
+        if (this._targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
 
+        cgl.renderStart(cgl);
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
 
         if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
-
-        cgl.renderStart(cgl);
 
         if (!this._inited)
         {
