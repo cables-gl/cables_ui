@@ -41,13 +41,15 @@ export class TlTitle extends Events
     /** @type {Port} */
     #port;
     #height;
+    collapsed = false;
 
     /**
      * @param {HTMLElement} parentEl
      * @param {Anim} anim
      * @param {GlTimeline} gltl
+     * @param {{ port: any; collapsable: any; }} options
      */
-    constructor(gltl, parentEl, anim, cfg)
+    constructor(gltl, parentEl, anim, options)
     {
         super();
         this.#gltl = gltl;
@@ -68,6 +70,19 @@ export class TlTitle extends Events
             this.#gltl.showParamAnim(this.#anim);
         });
 
+        if (options.collapsable)
+            this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
+                (e) =>
+                {
+                    this.collapsed = !this.collapsed;
+                    this.updateIcons();
+                    console.log("collapse...", this.collapsed);
+
+                }
+            );
+        else
+            this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" style=\"opacity:0\"></span>", null, false);
+
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
             this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
@@ -82,7 +97,7 @@ export class TlTitle extends Events
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(anim.tlActive);
         else this.setActive(true);
 
-        if (cfg.port) this.setPort(cfg.port);
+        if (options.port) this.setPort(options.port);
 
         this.updateIcons();
     }
@@ -200,6 +215,20 @@ export class TlTitle extends Events
                 this.muteButton.children[0].classList.remove("icon-eye-off");
             }
         }
+
+        if (this.collapseButton)
+        {
+            if (this.collapsed)
+            {
+                this.collapseButton.children[0].classList.remove("icon-chevron-right");
+                this.collapseButton.children[0].classList.add("icon-chevron-down");
+            }
+            else
+            {
+                this.collapseButton.children[0].classList.add("icon-chevron-right");
+                this.collapseButton.children[0].classList.remove("icon-chevron-down");
+            }
+        }
     }
 
     /**
@@ -235,7 +264,7 @@ export class TlTitle extends Events
      * @param {string} title
      * @param {Function} cb
      */
-    addButton(title, cb)
+    addButton(title, cb, visible)
     {
         const button = document.createElement("a");
         button.classList.add("button-small");
@@ -244,8 +273,9 @@ export class TlTitle extends Events
         html += title;
         button.innerHTML = html;
         ele.clickable(button, cb);
-        button.addEventListener("contextmenu", (e) => { cb(e); });
+        if (cb) button.addEventListener("contextmenu", (e) => { cb(e); });
         button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
+        if (visible === false)button.style.opacity = "0";
         this.#elButtons.appendChild(button);
         this.#buttons.push({ "ele": button, cb, title });
         return button;

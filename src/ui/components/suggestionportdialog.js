@@ -22,6 +22,8 @@ export default class SuggestPortDialog
      */
     constructor(op, port, mouseEvent, cb, cbCancel)
     {
+
+        /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
         this._suggestions = [];
 
         // linkRecommendations

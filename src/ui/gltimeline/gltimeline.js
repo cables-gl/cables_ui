@@ -23,6 +23,7 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
+import Collapsable from "../components/collapsable.js";
 
 /**
  * @typedef TlConfig
@@ -1239,7 +1240,14 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < ops.length; i++)
         {
+            let numOpAnims = 0;
+            let animIndex = 0;
             const op = ops[i];
+            for (let j = 0; j < op.portsIn.length; j++)
+            {
+                if (op.portsIn[j].anim)numOpAnims++;
+            }
+
             for (let j = 0; j < op.portsIn.length; j++)
             {
                 if (op.portsIn[j].anim)
@@ -1250,11 +1258,15 @@ export class GlTimeline extends Events
 
                         if (this.#layout === GlTimeline.LAYOUT_LINES)
                         {
-                            const a = new glTlAnimLine(this, [op.portsIn[j]]);
+                            const collapsable = numOpAnims > 1 && animIndex == 0;
+
+                            console.log("collaps", collapsable);
+                            const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
                             this.#tlAnims.push(a);
                         }
                         count++;
                     }
+                    animIndex++;
                 }
             }
         }

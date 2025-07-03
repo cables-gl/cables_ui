@@ -1,7 +1,5 @@
 import { Events } from "cables-shared-client";
-
 import { Anim, Op, Port } from "cables";
-import { glMatrix } from "gl-matrix";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
@@ -10,8 +8,15 @@ import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
-import opNames from "../opnameutils.js";
 import { GlTimeline } from "./gltimeline.js";
+import Collapsable from "../components/collapsable.js";
+
+/**
+ * @typedef AnimLineOptions
+ * @property {boolean} [collapsable]
+ * @property {boolean} [keyYpos]
+ * @property {boolean} [multiAnims]
+ */
 
 /**
  * gltimeline anim
@@ -74,7 +79,7 @@ export class glTlAnimLine extends Events
     /**
      * @param {GlTimeline} glTl
      * @param {Array<Port>} ports
-     * @param {Object} options
+     * @param {AnimLineOptions} options
     */
     constructor(glTl, ports, options = {})
     {
@@ -179,7 +184,7 @@ export class glTlAnimLine extends Events
      */
     addTitle(anim, p)
     {
-        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p });
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p, "collapsable": this.#options.collapsable });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {

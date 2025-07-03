@@ -2595,6 +2595,7 @@ export default class PatchView extends Events
     {
         const mouseEvent = { "clientX": 400, "clientY": 400 };
 
+        /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
         const suggestions = [
             {
                 "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
@@ -2636,6 +2637,8 @@ export default class PatchView extends Events
             if (suggestions[id].cb) return suggestions[id].cb();
 
             const p = suggestions[id].p;
+
+            /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
             const sugIn =
             [{
                 "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
