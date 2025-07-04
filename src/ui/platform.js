@@ -1,4 +1,4 @@
-import { Events, Logger, ele } from "cables-shared-client";
+import { Events, Logger, TalkerAPI, ele } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
@@ -88,6 +88,7 @@ export class Platform extends Events
         return this._cfg;
     }
 
+    /** @type {TalkerAPI} */
     get talkerAPI()
     {
         return CABLESUILOADER.talkerAPI;
@@ -569,6 +570,12 @@ export class Platform extends Events
         if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
     }
 
+    /**
+     * @param {string} inputId
+     * @param {number} filterType
+     * @param {string} opid
+     * @param {string} previewId
+     */
     showFileSelect(inputId, filterType, opid, previewId)
     {
         this._log.log("showFileSelect", inputId, filterType, opid, previewId);
@@ -609,6 +616,9 @@ export class Platform extends Events
         return this._cfg && !!this._cfg.patchVersion;
     }
 
+    /**
+     * @param {string} projectId
+     */
     exportPatch(projectId)
     {
         let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;

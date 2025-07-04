@@ -316,6 +316,9 @@ export default class FileManager
         this._buildHtml();
     }
 
+    /**
+     * @param {string} f
+     */
     setFilterType(f)
     {
         this._filterType = f;
@@ -330,6 +333,9 @@ export default class FileManager
         this.reload(cb);
     }
 
+    /**
+     * @param {string} filename
+     */
     _selectFile(filename)
     {
         this._manager.unselectAll();
@@ -340,6 +346,9 @@ export default class FileManager
         if (el) el.scrollIntoView();
     }
 
+    /**
+     * @param {string} filename
+     */
     selectFile(filename)
     {
         if (this._fileSource === "patch")
@@ -828,6 +837,11 @@ export default class FileManager
         });
     }
 
+    /**
+     * @param {string} filename
+     * @param {string} content
+     * @param {Function} cb
+     */
     uploadFile(filename, content, cb)
     {
         gui.jobs().finish("uploadfile" + filename);
