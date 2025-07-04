@@ -1,7 +1,5 @@
 import { Events, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import TreeView from "./treeview.js";
-import subPatchOpUtil from "../subpatchop_util.js";
 import PatchOutline from "./patchoutline.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";

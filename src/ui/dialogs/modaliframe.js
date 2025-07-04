@@ -25,7 +25,7 @@ export default class ModalIframe
     getHtml()
     {
         let html = "";
-        html += "<iframe id=\"modaliframe\" frameborder=\"0\" src=\"" + this._options.src + "\" style=\"min-height: 500px; width: 100%;\" title=\"" + this._options.title + "\"></iframe>";
+        html += "<iframe id=\"modaliframe\" frameborder=\"0\" src=\"" + this._options.src + "\" style=\"height: 550px; width: 100%;\" title=\"" + this._options.title + "\"></iframe>";
         return html;
     }
 

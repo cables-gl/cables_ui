@@ -64,7 +64,7 @@ export default class GlViewBox
 
         // cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
 
-        this._eleTabs = document.getElementById("splitterMaintabs");
+        // this._eleTabs = document.getElementById("splitterMaintabs");
 
         // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
@@ -136,6 +136,9 @@ export default class GlViewBox
         this._mouseRightDownStartY = this._mouseY;
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     _onCanvasMouseDown(e)
     {
         this._onCanvasMouseMove(e);
@@ -148,6 +151,9 @@ export default class GlViewBox
         }
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     _onCanvasMouseMove(e)
     {
         this.setMousePos(e.offsetX, e.offsetY);
@@ -155,7 +161,7 @@ export default class GlViewBox
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
             (this.glPatch.mouseState.buttonStateForScrolling) ||
@@ -173,6 +179,9 @@ export default class GlViewBox
         }
     }
 
+    /**
+     * @param {PointerEvent} _e
+     */
     _onCanvasMouseUp(_e)
     {
         this._oldScrollX = this._scrollX;
@@ -249,9 +258,12 @@ export default class GlViewBox
         });
     }
 
+    /**
+     * @param {number} delta
+     */
     wheelZoom(delta)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
 
         if (delta == 0) return;
 
@@ -352,14 +364,14 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        if (userInteraction)p = 0;
-        if (p != p)p = 0;
+        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        // if (userInteraction)p = 0;
+        // if (p != p)p = 0;
 
         dur = dur || 0.2;
 
         this._animScrollX.clear(this.glPatch.time);
-        this._animScrollX.setValue(this.glPatch.time + dur, x - p);
+        this._animScrollX.setValue(this.glPatch.time + dur, x);
         this._animScrollY.clear(this.glPatch.time);
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }

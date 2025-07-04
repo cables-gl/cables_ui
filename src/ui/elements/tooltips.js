@@ -8,6 +8,11 @@ let tooltipTimeout = null;
 let eleTooltip = null;
 let inited = false;
 
+/**
+ * @param {object} e
+ * @param {string} txt
+ * @param {boolean} [nopadding]
+ */
 export function showToolTip(e, txt, nopadding)
 {
     eleTooltip = eleTooltip || ele.byId("cbltooltip");
@@ -164,6 +169,11 @@ function getPortDescription(thePort, overlink)
     return str;
 }
 
+/**
+ * @param {MouseEvent} event
+ * @param {import("cables").Port} port
+ * @param {boolean | import("../glpatch/gllink.js").default} overlink
+ */
 export function updateHoverToolTip(event, port, overlink)
 {
     gui.emitEvent("portHovered", port);

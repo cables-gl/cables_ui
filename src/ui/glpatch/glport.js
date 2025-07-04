@@ -90,7 +90,7 @@ export default class GlPort
 
         this._mouseEvents.push(this._rect.on("mousedown", this._onMouseDown.bind(this)));
         this._mouseEvents.push(this._rect.on("mouseup", this._onMouseUp.bind(this)));
-        this._mouseEvents.push(this._rect.on("hover", this._onHover.bind(this)));
+        this._mouseEvents.push(this._rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
         this._mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
@@ -302,8 +302,8 @@ export default class GlPort
 
         this._hover = true;
         const event = {
-            "clientX": this._glPatch.viewBox.mouseX,
-            "clientY": this._glPatch.viewBox.mouseY - 25
+            "clientX": this._glPatch.viewBox.mouseX + gui.patchView.boundingRect.left,
+            "clientY": this._glPatch.viewBox.mouseY - 25 + gui.patchView.boundingRect.top
         };
 
         this._glPatch.emitEvent("mouseOverPort", this._glop.id, this._port.name);

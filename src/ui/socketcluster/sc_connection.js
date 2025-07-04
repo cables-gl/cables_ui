@@ -605,6 +605,7 @@ export default class ScConnection extends Events
                             gui.restriction.setMessage("cablesbuild", null);
                             gui.patchView.store.checkUpdated(null, false, true);
 
+                            gui.savedState.setSavedAll("force reload");
                             if (!document.hidden) platform.talkerAPI.send("reload");
 
                             break;

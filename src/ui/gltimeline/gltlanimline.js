@@ -1,7 +1,5 @@
 import { Events } from "cables-shared-client";
-
 import { Anim, Op, Port } from "cables";
-import { glMatrix } from "gl-matrix";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { gui } from "../gui.js";
@@ -10,8 +8,15 @@ import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
-import opNames from "../opnameutils.js";
 import { GlTimeline } from "./gltimeline.js";
+import Collapsable from "../components/collapsable.js";
+
+/**
+ * @typedef AnimLineOptions
+ * @property {boolean} [collapsable]
+ * @property {boolean} [keyYpos]
+ * @property {boolean} [multiAnims]
+ */
 
 /**
  * gltimeline anim
@@ -74,7 +79,7 @@ export class glTlAnimLine extends Events
     /**
      * @param {GlTimeline} glTl
      * @param {Array<Port>} ports
-     * @param {Object} options
+     * @param {AnimLineOptions} options
     */
     constructor(glTl, ports, options = {})
     {
@@ -90,9 +95,9 @@ export class glTlAnimLine extends Events
 
         // this.height = Math.random() * 80 + 22;
         this.#disposeRects.push(this.#glRectKeysBg);
-
         for (let i = 0; i < ports.length; i++)
         {
+            if (!ports[i]) continue;
             this.#anims[i] = ports[i].anim;
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
@@ -118,8 +123,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            this.setTitle(i, ports[i], ports[i].anim);
+            if (ports[i])
+                this.setTitle(i, ports[i], ports[i].anim);
         }
+        if (ports.length == 0) this.addFolder(options.title);
 
         if (this.isGraphLayout())
         {
@@ -179,7 +186,7 @@ export class glTlAnimLine extends Events
      */
     addTitle(anim, p)
     {
-        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p });
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), anim, { "port": p, "collapsable": this.#options.collapsable });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -188,6 +195,18 @@ export class glTlAnimLine extends Events
             gui.patchView.focusOp(this.#ops[title.index].id);
             gui.patchView.centerSelectOp(this.#ops[title.index].id);
             this.updateTitles();
+        });
+
+        this.#titles.push(title);
+        this.setTitlePos();
+    }
+
+    addFolder(text)
+    {
+        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), null, { "port": null, "collapsable": true, "text": text });
+        title.setHeight(this.height - 2);
+        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
+        {
         });
 
         this.#titles.push(title);
@@ -216,7 +235,6 @@ export class glTlAnimLine extends Events
             this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
-            // this.#titles[i].#op = this.#ops[i];
         }
     }
 
@@ -254,8 +272,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+            // console.log("titles", this.#titles);
             // this.#titles[i].updateColor();
-            this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+            if (this.#keys[i])
+                this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
 
     }
@@ -423,6 +443,7 @@ export class glTlAnimLine extends Events
         {
             for (let j = 0; j < this.#ports.length; j++)
             {
+
                 if (this.#anims[j].tlActive)
                 {
                     let val = this.#anims[j].getValue(t);

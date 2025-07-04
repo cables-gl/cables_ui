@@ -39,5 +39,7 @@
  * @typedef colors_types
  * @property {array} [num]
  * @property {array} [string]
- * @property {array} [arraay]
+ * @property {array} [array]
+ * @property {array} [trigger]
+ * @property {array} [obj]
  */

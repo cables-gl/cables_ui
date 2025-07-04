@@ -116,10 +116,11 @@ export default class OpDependencyTab extends Tab
                     {
                         if (!err)
                         {
-                            gui.serverOps.addOpDependency(opName, "./" + newFilename, depType, exportName, () =>
+                            gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
                             {
                                 submitEle.innerText = "Add";
                                 submitEle.disabled = false;
+                                gui.emitEvent("refreshManageOp", opName);
                             });
                         }
                         else
@@ -156,10 +157,11 @@ export default class OpDependencyTab extends Tab
                 }
                 else
                 {
-                    gui.serverOps.addOpDependency(opName, depSrc, depType, exportName, () =>
+                    gui.serverOps.addOpDependency(opDoc.id, depSrc, depType, exportName, () =>
                     {
                         submitEle.innerText = "Add";
                         submitEle.disabled = false;
+                        gui.emitEvent("refreshManageOp", opName);
                     });
                 }
             });

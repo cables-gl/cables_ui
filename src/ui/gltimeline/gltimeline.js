@@ -23,6 +23,8 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
+import Collapsable from "../components/collapsable.js";
+import { patchStructureQuery } from "../components/patchstructure.js";
 
 /**
  * @typedef TlConfig
@@ -1210,6 +1212,38 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
+    hierarchyLine(item, level = 0)
+    {
+        const op = gui.corePatch().getOpById(item.id);
+
+        console.log("aa", item);
+        console.log("op", op);
+
+        if (item.ports)
+        {
+            if (op)
+                for (let i = 0; i < item.ports.length; i++)
+                {
+                    console.log("annnn");
+                    this.#tlAnims.push(
+                        new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], { "collapsable": item.ports.length > 0 && i == 0 })
+                    );
+                }
+        }
+        else
+        if (item.childs)
+            this.#tlAnims.push(
+                new glTlAnimLine(this, [], { "collapsable": item.childs.length > 0, "title": item.title })
+            );
+
+        if (item.childs)
+            for (let i = 0; i < item.childs.length; i++)
+            {
+                this.hierarchyLine(item.childs[i], level++);
+            }
+
+    }
+
     init()
     {
         if (this.disposed) return;
@@ -1237,9 +1271,22 @@ export class GlTimeline extends Events
 
         this.#firstInit = false;
 
+        const q = new patchStructureQuery();
+        q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
+        console.log("qqqq", q.getHierarchy());
+        const root = q.getHierarchy()[0];
+        this.hierarchyLine(root);
+
         for (let i = 0; i < ops.length; i++)
         {
+            let numOpAnims = 0;
+            let animIndex = 0;
             const op = ops[i];
+            for (let j = 0; j < op.portsIn.length; j++)
+            {
+                if (op.portsIn[j].anim)numOpAnims++;
+            }
+
             for (let j = 0; j < op.portsIn.length; j++)
             {
                 if (op.portsIn[j].anim)
@@ -1250,11 +1297,15 @@ export class GlTimeline extends Events
 
                         if (this.#layout === GlTimeline.LAYOUT_LINES)
                         {
-                            const a = new glTlAnimLine(this, [op.portsIn[j]]);
+                            const collapsable = numOpAnims > 1 && animIndex == 0;
+
+                            console.log("collaps", collapsable);
+                            const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
                             this.#tlAnims.push(a);
                         }
                         count++;
                     }
+                    animIndex++;
                 }
             }
         }
