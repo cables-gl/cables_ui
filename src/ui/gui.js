@@ -1910,6 +1910,11 @@ export default class Gui extends Events
         if (!gui.isRemoteClient && platform.showStartupChangelog) platform.showStartupChangelog();
     }
 
+    /**
+     * @param {string} opname
+     * @param {any} _html
+     * @param {function} cb
+     */
     getOpDoc(opname, _html, cb)
     {
         cb(this.opDocs.getHtml(opname));

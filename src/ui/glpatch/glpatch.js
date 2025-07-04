@@ -1821,7 +1821,7 @@ export default class GlPatch extends Events
 
     /**
      * @param {string | number} sub
-     * @param {Function} next
+     * @param {Function} [next]
      */
     restoreSubPatchViewBox(sub, next)
     {
