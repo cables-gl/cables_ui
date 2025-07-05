@@ -95,7 +95,7 @@ export default class SavedState extends Events
      * @param {string} initiator
      * @param {string | number} subpatch
      */
-    setSaved(initiator, subpatch)
+    setSaved(initiator, subpatch = 0)
     {
         if (subpatch === undefined) subpatch = 0;
 

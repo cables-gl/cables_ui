@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
 import GlLinedrawer from "../gldraw/gllinedrawer.js";
@@ -210,7 +211,6 @@ export default class GlPatch extends Events
         {
             this.viewBox.keyScrollY(1);
         });
-
         gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, {}, () =>
         {
             gui.patchView.cursorNavOps(0, -1);
@@ -320,21 +320,12 @@ export default class GlPatch extends Events
                 if (msg.hasOwnProperty("subpatch"))
                     this._glCursors[msg.clientId].setSubpatch(msg.subpatch);
 
-                /*
-                 * {
-                 * this._glCursors[msg.clientId].visible = false;
-                 * }
-                 * else
-                 * {
-                 * this._glCursors[msg.clientId].visible = true;
-                 */
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
-                // }
             });
 
             gui.on("netSelectionArea", (msg) =>
             {
-                if (!this._glSelectionAreas[msg.clientId]) this._glSelectionAreas[msg.clientId] = new GlSelectionArea(this._overLayRects, this);
+                if (!this._glSelectionAreas[msg.clientId]) this._glSelectionAreas[msg.clientId] = new GlSelectionArea(this._overLayRects);
                 const area = this._glSelectionAreas[msg.clientId];
                 if (msg.hide)
                 {
@@ -342,8 +333,7 @@ export default class GlPatch extends Events
                 }
                 else
                 {
-                    if (msg.color)
-                        area.setColor([msg.color.r, msg.color.g, msg.color.b, gui.theme.colors_patch.patchSelectionArea[3]]);
+                    if (msg.color) area.setColor([msg.color.r, msg.color.g, msg.color.b, gui.theme.colors_patch.patchSelectionArea[3]]);
                     area.setPos(msg.x, msg.y, 1000);
                     area.setSize(msg.sizeX, msg.sizeY);
                 }
@@ -379,25 +369,15 @@ export default class GlPatch extends Events
                         }
                     }
 
-                    if (gui.patchView.patchRenderer.viewBox)
-                    {
-                        // why negate X here?
-                        gui.patchView.patchRenderer.viewBox.scrollTo(-msg.scrollX, msg.scrollY);
-                    }
-                    else
-                    {
-                        this.center(msg.scrollX, msg.scrollY);
-                    }
+                    if (gui.patchView.patchRenderer.viewBox) gui.patchView.patchRenderer.viewBox.scrollTo(-msg.scrollX, msg.scrollY);
+                    else this.center(msg.scrollX, msg.scrollY);
                 }
             });
 
             // remove client on connection lost
             gui.on("netClientRemoved", (msg) =>
             {
-                if (this._glCursors[msg.clientId])
-                {
-                    this._glCursors[msg.clientId].visible = false;
-                }
+                if (this._glCursors[msg.clientId]) this._glCursors[msg.clientId].visible = false;
             });
 
             gui.on("netLeaveSession", (msg) =>
@@ -406,10 +386,7 @@ export default class GlPatch extends Events
                 {
                     msg.clients.forEach((client) =>
                     {
-                        if (this._glCursors[client.clientId])
-                        {
-                            this._glCursors[client.clientId].visible = false;
-                        }
+                        if (this._glCursors[client.clientId]) this._glCursors[client.clientId].visible = false;
                     });
                 }
             });
@@ -547,7 +524,7 @@ export default class GlPatch extends Events
                         const border = 5;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
-                        this._dropInOpBorder.setColor(this._dropInCircleRect.color);
+                        this._dropInOpBorder.setColorArray(this._dropInCircleRect.color);
                         this._dropInOpBorder.setOpacity(0.35);
                     }
                 }
@@ -890,12 +867,18 @@ export default class GlPatch extends Events
         gui.opParams.refresh();
     }
 
+    /**
+     * @param {GlLink} l
+     */
     addLink(l)
     {
         if (this.links[l.id]) this.links[l.id].dispose();
         this.links[l.id] = l;
     }
 
+    /**
+     * @param {string} opid
+     */
     focusOpAnim(opid)
     {
         this._focusRectOp = this._glOpz[opid];
@@ -906,7 +889,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {Opid} opid
+     * @param {opid} opid
      */
     focusOp(opid)
     {
@@ -1838,7 +1821,7 @@ export default class GlPatch extends Events
 
     /**
      * @param {string | number} sub
-     * @param {Function} next
+     * @param {Function} [next]
      */
     restoreSubPatchViewBox(sub, next)
     {

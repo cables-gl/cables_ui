@@ -8,12 +8,13 @@ import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
 import GlGuiTab from "../components/tabs/tab_glpatch.js";
 
 import CMD from "./commands.js";
-import Gui, { gui } from "../gui.js";
 import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
 import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
 import { CmdPatch } from "./cmd_patch.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
+
+import Gui, { gui } from "../gui.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -34,7 +35,6 @@ CABLES_CMD_DEBUG.showUserPrefs = function ()
     gui.maintabPanel.show();
 
 };
-
 CABLES_CMD_DEBUG.testCommands = function ()
 {
     for (let i = 0; i < CMD.commands.length; i++)

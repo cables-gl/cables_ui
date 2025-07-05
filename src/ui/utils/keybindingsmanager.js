@@ -9,6 +9,8 @@ import { getHandleBarHtml } from "./handlebars.js";
  * @property {string} [displayGroup]
  * @property {boolean} [cmdCtrl]
  * @property {boolean} [shiftKey]
+ * @property {boolean} [altKey]
+ * @property {boolean} [ignoreInput]
 */
 
 /**
@@ -126,7 +128,7 @@ export default class KeyBindingsManager extends Events
 
             if (!k.target || k.target == e.target.id)
             {
-                if (k.options.minRestriction > window.gui.getRestriction())
+                if (k.options.minRestriction > gui.getRestriction())
                 {
                     notifyError("Not allowed");
                     if (!e.dontPreventDefault) e.preventDefault();
@@ -172,7 +174,7 @@ export default class KeyBindingsManager extends Events
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (k.options.altKey && !e.altKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
-            if (k.options.minRestriction > window.gui.getRestriction()) continue;
+            if (k.options.minRestriction > gui.getRestriction()) continue;
 
             if (!k.target || k.target == e.target.id)
             {

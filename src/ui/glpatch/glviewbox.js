@@ -250,8 +250,6 @@ export default class GlViewBox
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (this._touchpadMode && event.metaKey) this.wheelZoom(delta);
-
         gui.on("themeChanged", () =>
         {
             // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
@@ -313,15 +311,9 @@ export default class GlViewBox
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom()
-    {
-        return (-this._scrollX) / this._zoom;
-    }
+    get scrollXZoom() { return (-this._scrollX) / this._zoom; }
 
-    get scrollYZoom()
-    {
-        return (this._scrollY) / this._zoom;
-    }
+    get scrollYZoom() { return (this._scrollY) / this._zoom; }
 
     get mouseX() { return this._mouseX; }
 
@@ -331,15 +323,9 @@ export default class GlViewBox
 
     get mousePatchY() { return this._mousePatchY; }
 
-    get width()
-    {
-        return this._cgl.canvasWidth;
-    }
+    get width() { return this._cgl.canvasWidth; }
 
-    get height()
-    {
-        return this._cgl.canvasHeight;
-    }
+    get height() { return this._cgl.canvasHeight; }
 
     update()
     {
@@ -353,6 +339,10 @@ export default class GlViewBox
         this.setMousePos(this._mouseX, this._mouseY);
     }
 
+    /**
+     * @param {number} z
+     * @param {number} [dur]
+     */
     animateZoom(z, dur)
     {
         dur = dur || 0.25;
@@ -362,6 +352,12 @@ export default class GlViewBox
         this._animZoom.setValue(this.glPatch.time + dur, z);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} [dur]
+     * @param {boolean} [userInteraction]
+     */
     animateScrollTo(x, y, dur, userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
@@ -376,6 +372,11 @@ export default class GlViewBox
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {boolean} [_userInteraction]
+     */
     scrollTo(x, y, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
@@ -391,6 +392,9 @@ export default class GlViewBox
         gui.patchView.emitEvent("viewBoxChange");
     }
 
+    /**
+     * @param {boolean} [noAnim]
+     */
     centerSelectedOps(noAnim)
     {
         let ops = gui.patchView.getSelectedOps();
@@ -452,6 +456,10 @@ export default class GlViewBox
         this.animateScrollTo(bb.center[0], cy);
     }
 
+    /**
+     * @param {any} _x
+     * @param {any} _y
+     */
     patchToScreenConv(_x, _y)
     {
         let x = _x;
@@ -467,6 +475,10 @@ export default class GlViewBox
         return [x, y];
     }
 
+    /**
+     * @param {number} _x
+     * @param {number} _y
+     */
     patchToScreenCoords(_x, _y)
     {
         let x = _x;
@@ -547,6 +559,13 @@ export default class GlViewBox
         }
     }
 
+    /**
+     * @param {number} dur
+     * @param {string | number} sub
+     * @param {number} [_timeGrey]
+     * @param {number} [_timeVisibleAgain]
+     * @param {Function} [next]
+     */
     animSwitchSubPatch(dur, sub, _timeGrey, _timeVisibleAgain, next)
     {
         this.storeCurrentSubPatch();
@@ -570,6 +589,9 @@ export default class GlViewBox
         if (next)next();
     }
 
+    /**
+     * @param {number} s
+     */
     zoomStep(s)
     {
         let z = this._zoom + 200 * s;
@@ -577,6 +599,9 @@ export default class GlViewBox
         this.animateZoom(z);
     }
 
+    /**
+     * @param {number} d
+     */
     keyScrollX(d)
     {
         this.animateScrollTo(
@@ -586,6 +611,9 @@ export default class GlViewBox
             true);
     }
 
+    /**
+     * @param {number} d
+     */
     keyScrollY(d)
     {
         this.animateScrollTo(
