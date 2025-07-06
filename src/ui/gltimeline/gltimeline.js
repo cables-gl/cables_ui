@@ -1212,8 +1212,12 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
+    /**
+     * @param {PatchStructureQueryItem} item
+     */
     hierarchyLine(item, level = 0)
     {
+        if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
 
         console.log("aa", item);

@@ -8,13 +8,13 @@ import { escapeHTML } from "../utils/helper.js";
  * @typedef PatchStructureItem
  * @property {string} [title]
  * @property {string} [id]
- * @property {number} [order]
- * @property {string} [subPatchId]
+ * @property {string|number} [order]
  * @property {array} [childs]
  * @property {string} [icon]
  * @property {string} [rowClass]
  * @property {string} [iconBgColor]
- * @property {string} [subPatchId]
+ * @property {string|number} [subPatchId]
+ * @property {number} [subPatchVer]
  */
 
 /**
@@ -53,6 +53,9 @@ export class patchStructureQuery
         this.options = options;
     }
 
+    /**
+     * @param {string|number} patchId
+     */
     _getUserImagesStringSubpatch(patchId)
     {
         let str = "";
@@ -67,6 +70,9 @@ export class patchStructureQuery
         return str;
     }
 
+    /**
+     * @param {string|number} patchId
+     */
     getHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
@@ -104,7 +110,7 @@ export class patchStructureQuery
 
             // html += "!!";
 
-            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + this._sanitizeComment(subOp.uiAttribs.comment) + "</span>";
+            if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + patchStructureQuery.sanitizeComment(subOp.uiAttribs.comment) + "</span>";
 
             sub.subPatchId = patchId;
             sub.id = subOp.id;
