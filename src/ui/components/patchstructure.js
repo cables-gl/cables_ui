@@ -27,7 +27,6 @@ import { escapeHTML } from "../utils/helper.js";
  * @property {boolean} [includeAnimated]
  * @property {boolean} [includeColored]
  * @property {boolean} [includeSubpatches]
-
  * @property {boolean} [includePortsAnimated]
  */
 export class patchStructureQuery
