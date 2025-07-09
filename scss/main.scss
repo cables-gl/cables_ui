@@ -428,7 +428,7 @@ body
     .splitter
     {
         background-color:var(--color-splitter);
-        z-index: $zindex_high;
+        z-index: $zindex_canvas;
         position: absolute;
         display: block;
     }
@@ -445,7 +445,6 @@ body
     {
         height:15px !important;
         width:15px !important;
-        z-index: $zindex_high;
         cursor:ne-resize;
     }
 
@@ -454,13 +453,11 @@ body
         height:4px;
         right:0px;
         cursor:ns-resize;
-        z-index: $zindex_canvas;
     }
 
 
     #splitterPatch,#splitterEditor,#splitterMaintabs, .splitterTimeline
     {
-        z-index: $zindex_high;
         width:4px;
         height:100%;
         cursor:ew-resize;
