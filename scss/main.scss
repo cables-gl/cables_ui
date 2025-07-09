@@ -800,7 +800,6 @@ body
     .portSuggest4Linked { border-left:10px solid var(--color_port_dynamic) !important; color:#888;}
     .portSuggest5Linked { border-left:10px solid var(--color_link_string) !important; color:#888;}
 
-
     .scrollPage
     {
         overflow:auto;
@@ -816,15 +815,13 @@ body
         {
             z-index: 9999 !important;
         }
+
         #cablescanvas,#meta
         {
             position: fixed !important;
             right:15px !important;
         }
     }
-
-
-
 
     .cursorAvatar
     {
@@ -836,7 +833,6 @@ body
         border-radius: 100%;
         border:2px solid black;
         pointer-events: none;
-
     }
 
     .patchfield
