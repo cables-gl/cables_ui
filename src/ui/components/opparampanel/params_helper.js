@@ -1,9 +1,9 @@
 import { ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
-import EditorTab from "../tabs/tab_editor.js";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import { createEditor } from "../editor.js";
 
 const paramsHelper =
 {
@@ -247,7 +247,8 @@ const paramsHelper =
 
         if (editorObj)
         {
-            const t = new EditorTab(
+            // const t = new EditorTab();
+            createEditor(
                 {
                     "title": name,
                     "dataId": dataId,

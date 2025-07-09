@@ -308,12 +308,13 @@ export default class EditorTab extends Events
                     this._editor.setValue(res.opFullCode, 1);
                     this._editor.focus();
                 }
-            },
-            (result) =>
-            {
-                notifyError("failed to format code, keeping old version");
-                this._log.warn("code formating http error", result);
-            },
+
+                if (err)
+                {
+                    notifyError("failed to format code, keeping old version");
+                    this._log.warn("code formating http error", res);
+                }
+            }
         );
     }
 
@@ -349,6 +350,11 @@ export default class EditorTab extends Events
         else this.emitEvent("save", onSaveCb.bind(this), this._editor.getValue(), this._editor);
     }
 
+    /**
+     * @param {string} id
+     * @param {string} val
+     * @param {function} cb
+     */
     createEditor(id, val, cb)
     {
         loadAce(() =>

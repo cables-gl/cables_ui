@@ -1,6 +1,5 @@
 import { Logger, TalkerAPI, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
-import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import { notifyError } from "../elements/notification.js";
@@ -15,6 +14,7 @@ import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
+import { createEditor } from "../components/editor.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -1525,7 +1525,8 @@ export default class ServerOps
         let inactive = false;
         if (fromListener) if (lastTab !== title) inactive = true;
 
-        let editorTab = new EditorTab({
+        // let editorTab = new EditorTab({
+        const editorTab = createEditor({
             "title": title,
             "name": opId, // "content": content,
             "loading": true,
@@ -1687,7 +1688,8 @@ export default class ServerOps
 
         if (editorObj)
         {
-            editorTab = new EditorTab({
+            // editorTab = new EditorTab({
+            editorTab = createEditor({
                 "title": title,
                 "name": editorObj.name,
                 "loading": true,
