@@ -220,7 +220,16 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
-                    const dep = opDoc.dependencies.find((d) => { return d.src == depSrc && d.type == depType; });
+                    console.log("OPDOCS", depSrc, depType);
+                    const dep = null;
+                    if (depType !== "corelib" && opDoc.dependencies)
+                    {
+                        opDoc.dependencies.find((d) => { return d.src == depSrc && d.type == depType; });
+                    }
+                    else if (depType === "corelib" && opDoc.coreLibs)
+                    {
+                        opDoc.coreLibs.find((d) => { return d === depSrc; });
+                    }
 
                     const items = [];
 
