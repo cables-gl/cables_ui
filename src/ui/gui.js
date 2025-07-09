@@ -622,8 +622,6 @@ export default class Gui extends Events
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
-        this._corePatch.cgl.updateSize();
-
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
@@ -885,9 +883,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        // if (wasFocussed && this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
-        // this.patchView.patchRenderer._cgl.updateSize();
-
+        this._corePatch.cgl.updateSize();
         perf.finish();
     }
 
@@ -1476,7 +1472,7 @@ export default class Gui extends Events
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
-        ele.byId("nav_log").addEventListener("click", () => { debugCommands.logConsole(); });
+        ele.byId("nav_log").addEventListener("click", () => { CABLES.CMD.DEBUG.logConsole(); });
 
         ele.byId("nav_profiler").addEventListener("click", () => { CmdPatch.patchProfiler(); });
         ele.byId("nav_patchanalysis").addEventListener("click", () => { CmdPatch.analyze(); });
