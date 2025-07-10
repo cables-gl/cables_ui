@@ -1,5 +1,6 @@
 import { Logger, Events, ele } from "cables-shared-client";
 import { now } from "cables";
+import { CgShader } from "cables-corelibs";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";

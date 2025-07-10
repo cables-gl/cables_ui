@@ -17,6 +17,8 @@ import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
 
 const CABLES_CMD_PATCH = {};
+
+/** @type {import("./commands.js").commandObject[]} */
 const CMD_PATCH_COMMANDS = [];
 
 const log = new Logger("CMD_PATCH");
@@ -96,8 +98,8 @@ CABLES_CMD_PATCH.gotoParentSubpatch = function ()
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
 
     if (names.length == 0) return;
-    if (names.length == 1) gui.patchView.setCurrentSubPatch(0);
-    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+    if (names.length == 1) gui.patchView.setCurrentSubPatch(0, null);
+    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id, null);
 };
 
 CABLES_CMD_PATCH.selectAllOps = function ()
@@ -397,7 +399,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
                                     gui.corePatch().deleteOp(OpTempSubpatch.id);
-                                    gui.patchView.setCurrentSubPatch(currentSubpatch);
+                                    gui.patchView.setCurrentSubPatch(currentSubpatch, null);
 
                                     platform.talkerAPI.send("opUpdate",
                                         {
@@ -733,7 +735,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.varName.set(name);
             opGetter.varName.set(name);
 
-            gui.patchView.setCurrentSubPatch(gui.patchView.getCurrentSubPatch());
+            gui.patchView.setCurrentSubPatch(gui.patchView.getCurrentSubPatch(), null);
 
             if (next)next(opSetter, opGetter);
 

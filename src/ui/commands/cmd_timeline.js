@@ -8,6 +8,8 @@ const CABLES_CMD_TIMELINE = {};
 
 const timelineCommands =
 {
+
+    /** @type {import("./commands.js").commandObject[]} */
     "commands": [],
     "functions": CABLES_CMD_TIMELINE
 };
@@ -22,7 +24,6 @@ CABLES_CMD_TIMELINE.TimelineSnapTimes = function ()
 
 CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
 {
-
     gui.glTimeline.createKeyAtCursor();
 };
 
