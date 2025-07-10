@@ -33,16 +33,16 @@ export function bytesArrToBase64(arr)
 
 export default class PatchSaveServer extends Events
 {
+    opCrashed = false;
+    _currentProject = null;
+    _log = new Logger("patchsaveserver");
+    _serverDate = 0;
+    _lastErrorReport = null;
+    isSaving = false;
+
     constructor()
     {
         super();
-        this._currentProject = null;
-        this._log = new Logger("patchsaveserver");
-        this._serverDate = 0;
-        this._lastErrorReport = null;
-
-        this.isSaving = false;
-
     }
 
     getUiSettings()
@@ -488,9 +488,41 @@ export default class PatchSaveServer extends Events
         });
     }
 
+    showSaveWarning(cb)
+    {
+        if (this.opCrashed)
+        {
+            const modal = new ModalDialog({
+                "choice": true,
+                "title": "op crashed",
+                "text": "An error happened while creating ops, the op may not be in the patch any longer. make sure the patch looks fine and has all ops",
+
+                "okButton": {
+                    "text": "save anyway",
+                    "callback": (name) =>
+                    {
+                        console.log("nananananawf");
+                        this.saveCurrentProject(cb, true);
+                    } }
+            });
+            modal.on("onSubmit", () =>
+            {
+                modal.close();
+                this.saveCurrentProject(cb, true);
+
+            });
+            return true;
+        }
+
+    }
+
+    /**
+     * @param {function} [cb]
+     */
     saveCurrentProject(cb, force = false)
     {
         if (gui.showGuestWarning()) return;
+        if (!force && this.showSaveWarning(cb)) return;
         if (!force && gui.showSaveWarning()) return;
 
         if (force)
