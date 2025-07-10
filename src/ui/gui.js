@@ -57,6 +57,7 @@ import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 import timelineCommands from "./commands/cmd_timeline.js";
+import debugCommands from "./commands/cmd_debug.js";
 
 /**
  * @type {Gui}
@@ -577,7 +578,7 @@ export default class Gui extends Events
 
         if (this.isRemoteClient)
         {
-            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_MAXIMIZED;
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
         }
@@ -596,7 +597,7 @@ export default class Gui extends Events
             this.rendererWidth = window.innerWidth * 0.4;
             this.rendererHeight = window.innerHeight * 0.25;
         }
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this.rendererWidth = window.innerWidth;
             this.rendererHeight = window.innerHeight;
@@ -604,7 +605,7 @@ export default class Gui extends Events
 
         if (this._corePatch.cgl && this._corePatch.cgl.canvasScale) canvasScale = this._corePatch.cgl.canvasScale;
 
-        this.rendererWidthScaled = this.rendererWidth * canvasScale;
+        this.rendererWidthScaled = this.rendererWidth * canvasScale;// for command "scale canvas"
         this.rendererHeightScaled = this.rendererHeight * canvasScale;
 
         this.rendererWidth = Math.floor(this.rendererWidth);
@@ -620,8 +621,6 @@ export default class Gui extends Events
             this.rendererHeightScaled = 0;
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
-
-        this._corePatch.cgl.updateSize();
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
@@ -831,7 +830,7 @@ export default class Gui extends Events
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
         else
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
             this._elCablesCanvasContainer.style.right = "initial";
@@ -884,9 +883,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        // if (wasFocussed && this.patchView.patchRenderer.focus) this.patchView.patchRenderer.focus();
-        // this.patchView.patchRenderer._cgl.updateSize();
-
+        this._corePatch.cgl.updateSize();
         perf.finish();
     }
 
@@ -912,7 +909,7 @@ export default class Gui extends Events
 
     cyclePatchBg()
     {
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN) this.toggleMaximizeCanvas();
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED) this.toggleMaximizeCanvas();
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
@@ -932,7 +929,7 @@ export default class Gui extends Events
 
     toggleMaximizeCanvas()
     {
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this.patchView.patchRenderer.storeSubPatchViewBox();
             this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
@@ -945,14 +942,15 @@ export default class Gui extends Events
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_MAXIMIZED;
 
-            if (!this.notifiedFullscreen) notify("press escape to exit fullscreen mode");
+            if (!this.notifiedFullscreen) notify("Press escape to exit maximized mode");
             this.notifiedFullscreen = true;
         }
 
         if (this.canvasManager.getCanvasUiBar())
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+
         this.setLayout();
     }
 
@@ -1470,7 +1468,7 @@ export default class Gui extends Events
 
         ele.byId("nav_timeline").addEventListener("click", () =>
         {
-            CABLES.CMD.TIMELINE.toggleTimeline();
+            timelineCommands.toggleTimeline();
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
@@ -1486,7 +1484,6 @@ export default class Gui extends Events
             ele.byId("nav_uploadfile").classList.add("nav-greyout");
 
             ele.byId("nav_createBackup").classList.add("nav-greyout");
-            // ele.byId("nav_patch_settings").classList.add("nav-greyout");
             ele.byId("nav_viewBackups").classList.add("nav-greyout");
             ele.byId("nav_patch_save").classList.add("nav-greyout");
         }
@@ -1691,7 +1688,7 @@ export default class Gui extends Events
         else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
         else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
-            if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
+            if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
             {
                 this.toggleMaximizeCanvas();
             }

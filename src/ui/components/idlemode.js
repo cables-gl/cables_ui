@@ -14,7 +14,7 @@ const logger = new Logger("idlemode");
 
 function startIdleMode()
 {
-    if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_POPOUT || gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FULLSCREEN) return;
+    if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_POPOUT || gui.canvasManager.mode == gui.canvasManager.CANVASMODE_MAXIMIZED) return;
     if (gui.patchView.hasFocus() && idleFocus) return;
 
     if (!window.gui || !gui.finishedLoading()) return;
