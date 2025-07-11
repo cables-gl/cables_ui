@@ -716,7 +716,7 @@ export default class GlOp extends Events
             {
                 if (!this._instancer) return; // how?
 
-                this._glRectSelected = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false });
+                this._glRectSelected = this._instancer.createRect({ "name": "rectSelected", "parent": this._glRectBg, "interactive": false });
                 this._glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
                 this.updateSize();
@@ -1018,7 +1018,7 @@ export default class GlOp extends Events
                 {
                     const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
 
-                    this._glColorSwatch = this._instancer.createRect({ "parent": this._glRectBg });
+                    this._glColorSwatch = this._instancer.createRect({ "name": "colorSwatch", "interactive": false, "parent": this._glRectBg });
                     this._glColorSwatch.setShape(6);
 
                     this._glColorSwatch.setColor(colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1);
@@ -1512,7 +1512,7 @@ export default class GlOp extends Events
         {
             if (!this._glRectContent)
             {
-                this._glRectContent = this._instancer.createRect();
+                this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });
                 this._glRectContent.setParent(this._glRectBg);
                 this._glRectContent.setPosition(0, this._height);
                 this._glRectContent.setColor(255, 0, 220, 1);
@@ -1542,7 +1542,7 @@ export default class GlOp extends Events
         if (this.displayType == this.DISPLAY_REROUTE_DOT)
         {
             if (!this._glRerouteDot)
-                this._glRerouteDot = this._instancer.createRect({ "draggable": false, "interactive": false });
+                this._glRerouteDot = this._instancer.createRect({ "name": "reroutedog", "draggable": false, "interactive": false });
 
             this._glTitle.text = "";
             this._glRerouteDot.setSize(this._width, this._height);

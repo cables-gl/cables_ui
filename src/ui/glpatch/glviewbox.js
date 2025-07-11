@@ -1,19 +1,24 @@
 import { vec2 } from "gl-matrix";
 import { BoundingBox, CG } from "cables-corelibs";
 import { Anim } from "cables";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { userSettings } from "../components/usersettings.js";
+import GlPatch from "./glpatch.js";
 
 /**
  * Viewbox of current patch
  *
- * @export
- * @class GlViewBox
  */
 export default class GlViewBox
 {
+
+    /**
+     * @param {CglContext} cgl
+     * @param {GlPatch} glPatch
+     */
     constructor(cgl, glPatch)
     {
         this._cgl = cgl;
@@ -24,6 +29,8 @@ export default class GlViewBox
         this._mouseSmooth = [];
         this._mouseSmoothCount = 0;
         this._subPatchViewBoxes = {};
+
+        /** @type {number|string} */
         this._currentSubPatchId = 0;
         this._mouseX = 0;
         this._mouseY = 0;
@@ -111,21 +118,33 @@ export default class GlViewBox
         this._mouseY = y;
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseEnter(e)
     {
         this.setMousePos(e.offsetX, e.offsetY);
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _onCanvasMouseLeave(e)
     {
         this.setMousePos(e.offsetX, e.offsetY);
     }
 
+    /**
+     * @param {MouseEvent} _e
+     */
     _onCanvasSpaceUp(_e)
     {
         this._spaceDown = false;
     }
 
+    /**
+     * @param {MouseEvent} _e
+     */
     _onCanvasSpaceDown(_e)
     {
         if (this._spaceDown) return;
@@ -206,9 +225,21 @@ export default class GlViewBox
 
     animateToCenterAtMouseCoords()
     {
-        this.animateScrollTo(this.mousePatchX, this.mousePatchY * (this._viewResX / this._viewResY));
+        this.animateToCenterAt(this.mousePatchX, this.mousePatchY);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    animateToCenterAt(x, y)
+    {
+        this.animateScrollTo(x, y * (this._viewResX / this._viewResY), 0);
+    }
+
+    /**
+     * @param {WheelEvent} event
+     */
     _onCanvasWheel(event)
     {
         if (this.glPatch.mouseState.buttonMiddle) return;
@@ -356,9 +387,9 @@ export default class GlViewBox
      * @param {number} x
      * @param {number} y
      * @param {number} [dur]
-     * @param {boolean} [userInteraction]
+     * @param {boolean} [_userInteraction]
      */
-    animateScrollTo(x, y, dur, userInteraction)
+    animateScrollTo(x, y, dur, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         // if (userInteraction)p = 0;
@@ -500,6 +531,11 @@ export default class GlViewBox
         return [x, y];
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {boolean} [aspect]
+     */
     screenToPatchCoord(x, y, aspect)
     {
         if (this._scrollY != this._scrollY) this._scrollY = 0;
@@ -543,6 +579,9 @@ export default class GlViewBox
         this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 
+    /**
+     * @param {number|string} sub
+     */
     _restoreSubPatch(sub)
     {
         this._currentSubPatchId = sub;
@@ -621,5 +660,27 @@ export default class GlViewBox
             this._scrollY + d * 100,
             0.15,
             true);
+    }
+
+    startResize()
+    {
+
+        this._oldCenterx = this._scrollX;
+        this._oldCentery = this._scrollY;
+        // const mouse = this.screenToPatchCoord(this.width / 2, this.height / 2, true);
+        this._oldCenterW = this.width;
+
+        console.log("scroll", this._oldCenterx, this._oldCentery);
+        // this._oldCenterx = mouse[0];
+        // this._oldCentery = mouse[1];
+        // console.log("center", mouse, this._zoom);
+    }
+
+    endResize()
+    {
+
+        // this._oldCenterx = this.scrollX;
+        // this._oldCentery = this.scrollY;
+
     }
 }
