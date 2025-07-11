@@ -8,6 +8,8 @@ const CMD_OP_COMMANDS = [];
 
 const opCommands =
 {
+
+    /** @type {import("./commands.js").commandObject[]} */
     "commands": CMD_OP_COMMANDS,
     "functions": CABLES_CMD_OP
 };

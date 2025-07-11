@@ -17,6 +17,8 @@ import UserSettings, { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 
 const CABLES_CMD_DEBUG = {};
+
+/** @type {import("./commands.js").commandObject[]} */
 const CMD_DEBUG_COMMANDS = [];
 
 const log = new Logger("CMD DEBUG");

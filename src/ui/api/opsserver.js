@@ -1644,6 +1644,12 @@ export default class ServerOps
     }
 
     // Shows the editor and displays the code of an op in it
+    /**
+     * @param {string | import("../core_extend_op.js").UiOp} op
+     * @param {boolean} [readOnly]
+     * @param {function} [cb]
+     * @param {boolean} [userInteraction]
+     */
     edit(op, readOnly, cb, userInteraction)
     {
         if (gui.isGuestEditor())

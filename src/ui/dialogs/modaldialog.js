@@ -18,7 +18,6 @@ import { gui } from "../gui.js";
 /**
  * open a modal dialog
  *
- * @param {ModalDialogOptions} options The option object.
  * @example
  * new ModalDialog(
  * {
@@ -28,6 +27,10 @@ import { gui } from "../gui.js";
  */
 export default class ModalDialog extends Events
 {
+
+    /**
+     * @param {ModalDialogOptions} options
+     */
     constructor(options, autoOpen = true)
     {
         super();

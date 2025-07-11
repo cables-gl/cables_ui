@@ -6,16 +6,27 @@ import timelineCommands from "./cmd_timeline.js";
 import uiCommands from "./cmd_ui.js";
 import fileCommands from "./cmd_files.js";
 
-const CMD = {};
-let commands = [];
+/**
+ * @typedef commandObject
+ * @property {string} cmd
+ * @property {function} func
+ * @property {string} category
+ * @property {string} [icon]
+ * @property {string} [infotext]
+ * @property {string} [hotkey]
+ * @property {("hasCommunity"|"showRemoteViewer")} [frontendOption]
+ */
 
-commands = commands.concat(debugCommands.commands);
-commands = commands.concat(patchCommands.commands);
-commands = commands.concat(rendererCommands.commands);
-commands = commands.concat(timelineCommands.commands);
-commands = commands.concat(uiCommands.commands);
-commands = commands.concat(opCommands.commands);
-commands = commands.concat(fileCommands.commands);
+const CMD = {};
+export let cblCommands = [];
+
+cblCommands = cblCommands.concat(debugCommands.commands);
+cblCommands = cblCommands.concat(patchCommands.commands);
+cblCommands = cblCommands.concat(rendererCommands.commands);
+cblCommands = cblCommands.concat(timelineCommands.commands);
+cblCommands = cblCommands.concat(uiCommands.commands);
+cblCommands = cblCommands.concat(opCommands.commands);
+cblCommands = cblCommands.concat(fileCommands.commands);
 
 CMD.DEBUG = debugCommands.functions;
 CMD.PATCH = patchCommands.functions;
@@ -25,11 +36,11 @@ CMD.TIMELINE = timelineCommands.functions;
 CMD.UI = uiCommands.functions;
 CMD.FILES = fileCommands.functions;
 
-CMD.commands = commands;
+CMD.commands = cblCommands;
 
-for (let i = 0; i < commands.length; i++)
+for (let i = 0; i < cblCommands.length; i++)
 {
-    if (!commands[i].category)console.warn("cmd has no category ", commands[i].cmd);
+    if (!cblCommands[i].category)console.warn("cmd has no category ", cblCommands[i].cmd);
 }
 
 export default CMD;

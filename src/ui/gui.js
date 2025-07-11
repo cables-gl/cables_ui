@@ -1,5 +1,6 @@
 import { Logger, Events, ele } from "cables-shared-client";
 import { now } from "cables";
+import { CgShader } from "cables-corelibs";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -379,16 +380,6 @@ export default class Gui extends Events
         if (this.showGuestWarning()) return true;
         if (!this.canSaveInMultiplayer())
         {
-            iziToast.show({
-                "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                "theme": "dark",
-                "title": "multiplayer session",
-                "message": "you cannot save the patch, since you are not the pilot",
-                "progressBar": false,
-                "animateInside": false,
-                "close": true,
-                "timeout": 2000
-            });
             return true;
         }
         if (this.showBackupSaveWarning()) return true;

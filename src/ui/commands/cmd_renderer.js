@@ -7,6 +7,8 @@ const CABLES_CMD_RENDERER = {};
 
 const rendererCommands =
     {
+
+        /** @type {import("./commands.js").commandObject[]} */
         "commands": [],
         "functions": CABLES_CMD_RENDERER
     };
