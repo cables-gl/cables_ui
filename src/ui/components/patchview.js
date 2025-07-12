@@ -2043,10 +2043,15 @@ export default class PatchView extends Events
         this._p.link(op1, pid, op2, p2id);
     }
 
+    /**
+     * @param {number} [x]
+     * @param {number} [y]
+     */
     centerView(x, y)
     {
-        if (this._patchRenderer.center) this._patchRenderer.center(x, y);
-        else this._log.warn("patchRenderer has no function center");
+        if (this._patchRenderer)
+            if (this._patchRenderer.center) this._patchRenderer.center(x, y);
+            else this._log.warn("patchRenderer has no function center");
     }
 
     pauseInteraction()

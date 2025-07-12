@@ -1172,6 +1172,7 @@ export default class GlPatch extends Events
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
         this.debugData.viewZoom = this.viewBox.zoom;
+        this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
 
         this.debugData._mousePatchX = Math.round(this.viewBox._mousePatchX * 100) / 100;
         this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
@@ -1911,6 +1912,7 @@ export default class GlPatch extends Events
 
     /**
      * @param {string|number} subpatchId
+     * @returns {GlSplineDrawer} splinedrawer
      */
     getSplineDrawer(subpatchId)
     {

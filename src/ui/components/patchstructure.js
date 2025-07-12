@@ -48,7 +48,7 @@ export class patchStructureQuery
      */
     setOptions(options)
     {
-        console.log("options", options);
+        // console.log("options", options);
         this.options = options;
     }
 

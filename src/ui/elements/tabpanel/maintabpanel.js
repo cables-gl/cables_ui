@@ -104,7 +104,7 @@ export default class MainTabPanel extends Events
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
-        if (window.gui)gui.setLayout();
+        gui.setLayout();
 
         if (!donotsave && gui.finishedLoading()) userSettings.set("maintabsVisible", false);
     }
@@ -115,6 +115,7 @@ export default class MainTabPanel extends Events
     toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
+        gui.patchView.patchRenderer.viewBox.startResize();
         if (this._visible)
         {
             this.hide();
@@ -123,5 +124,6 @@ export default class MainTabPanel extends Events
             if (actTab) actTab.activate();
         }
         else this.show(userInteraction);
+        gui.patchView.patchRenderer.viewBox.endResize();
     }
 }
