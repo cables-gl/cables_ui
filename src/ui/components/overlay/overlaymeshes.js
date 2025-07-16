@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Framebuffer2, Geometry, Mesh, Shader, Uniform, CGL } from "cables-corelibs";
+import { Framebuffer2, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import { DEG2RAD } from "cables-corelibs/cgl/cgl_utils.js";
 import { nl } from "cables-corelibs/cgl/constants.js";
 import overlayShaderVert from "./overlaymeshes.vert";
