@@ -146,6 +146,8 @@ export class GlTimeline extends Events
     #lastYnoButton = 0;
 
     selectRect = null;
+
+    /** @type {Anim[]} */
     #selectedKeyAnims = [];
     #firstInit = true;
     #focusRuler = false;
@@ -1107,6 +1109,10 @@ export class GlTimeline extends Events
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     selSelectedKeysCP1(x, y)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -1116,6 +1122,10 @@ export class GlTimeline extends Events
 
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     selSelectedKeysCP2(x, y)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)

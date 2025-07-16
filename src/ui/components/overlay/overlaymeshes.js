@@ -1,5 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Framebuffer2, Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+import { nl } from "cables-corelibs/cgl/constants";
+import { DEG2RAD } from "cables-corelibs/cgl/cgl_utils";
 import overlayShaderVert from "./overlaymeshes.vert";
 import { gui } from "../../gui.js";
 
@@ -94,7 +96,7 @@ helperMeshes.drawCircle = function (op, size)
 
             for (let i = 0; i <= Math.round(segments); i++)
             {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                degInRad = (360.0 / Math.round(segments)) * i * DEG2RAD;
                 verts.push(
                     Math.cos(degInRad) * radius,
                     Math.sin(degInRad) * radius,
@@ -151,7 +153,7 @@ helperMeshes.drawSphere = function (op, size)
 
             for (i = 0; i <= Math.round(segments); i++)
             {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                degInRad = (360.0 / Math.round(segments)) * i * DEG2RAD;
                 verts.push(Math.cos(degInRad) * radius);
                 verts.push(0);
                 verts.push(Math.sin(degInRad) * radius);
@@ -169,7 +171,7 @@ helperMeshes.drawSphere = function (op, size)
             tc = [];
             for (i = 0; i <= Math.round(segments); i++)
             {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                degInRad = (360.0 / Math.round(segments)) * i * DEG2RAD;
                 verts.push(Math.cos(degInRad) * radius);
                 verts.push(Math.sin(degInRad) * radius);
                 verts.push(0);
@@ -187,7 +189,7 @@ helperMeshes.drawSphere = function (op, size)
             tc = [];
             for (i = 0; i <= Math.round(segments); i++)
             {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                degInRad = (360.0 / Math.round(segments)) * i * DEG2RAD;
                 verts.push(0);
                 verts.push(Math.cos(degInRad) * radius);
                 verts.push(Math.sin(degInRad) * radius);
@@ -245,20 +247,20 @@ helperMeshes.drawAxisMarker = function (op, size)
         helperMeshes.MARKER.mesh = new Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
         helperMeshes.MARKER.mesh.setGeom(geom);
 
-        const frag = "".endl() + "IN vec3 axisColor;".endl() + "void main()".endl() + "{".endl() + "    vec4 col=vec4(axisColor,1.0);".endl() + "    outColor = col;".endl() + "}";
+        const frag = "" + nl + "IN vec3 axisColor;" + nl + "void main()" + nl + "{" + nl + "    vec4 col=vec4(axisColor,1.0);" + nl + "    outColor = col;" + nl + "}";
 
-        const vert = "".endl()
-            + "IN vec3 vPosition;".endl()
-            + "UNI mat4 projMatrix;".endl()
-            + "UNI mat4 mvMatrix;".endl()
-            + "OUT vec3 axisColor;".endl()
-            + "void main()".endl()
-            + "{".endl()
-            + "   vec4 pos=vec4(vPosition, 1.0);".endl()
-            + "   if(pos.x!=0.0)axisColor=vec3(1.0,0.3,0.0);".endl()
-            + "   if(pos.y!=0.0)axisColor=vec3(0.0,1.0,0.2);".endl()
-            + "   if(pos.z!=0.0)axisColor=vec3(0.0,0.5,1.0);".endl()
-            + "   gl_Position = projMatrix * mvMatrix * pos;".endl()
+        const vert = "" + nl
+            + "IN vec3 vPosition;" + nl
+            + "UNI mat4 projMatrix;" + nl
+            + "UNI mat4 mvMatrix;" + nl
+            + "OUT vec3 axisColor;" + nl
+            + "void main()" + nl
+            + "{" + nl
+            + "   vec4 pos=vec4(vPosition, 1.0);" + nl
+            + "   if(pos.x!=0.0)axisColor=vec3(1.0,0.3,0.0);" + nl
+            + "   if(pos.y!=0.0)axisColor=vec3(0.0,1.0,0.2);" + nl
+            + "   if(pos.z!=0.0)axisColor=vec3(0.0,0.5,1.0);" + nl
+            + "   gl_Position = projMatrix * mvMatrix * pos;" + nl
             + "}";
 
         helperMeshes.MARKER.shader = new Shader(cgl, "markermaterial");
@@ -372,9 +374,9 @@ helperMeshes.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
     vec3.set(helperMeshes.ARROW.vScale, sizeX, sizeX, sizeX);
     mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.ARROW.vScale);
 
-    if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * CGL.DEG2RAD);
-    if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * CGL.DEG2RAD);
-    if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
+    if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * DEG2RAD);
+    if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * DEG2RAD);
+    if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * DEG2RAD);
 
     let shader = helperMeshes.getDefaultShader(cgl);
     if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
@@ -429,9 +431,9 @@ helperMeshes.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
     vec3.set(helperMeshes.XPLANE.vScale, sizeX, sizeX, sizeX);
     mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.XPLANE.vScale);
 
-    if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * CGL.DEG2RAD);
-    if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * CGL.DEG2RAD);
-    if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
+    if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * DEG2RAD);
+    if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * DEG2RAD);
+    if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * DEG2RAD);
 
     let shader = helperMeshes.getDefaultShader(cgl);
     if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
@@ -570,35 +572,35 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
         {
             const shader = new Shader(cgl, "marker overlay");
 
-            const shader_frag = "".endl()
-                + "UNI sampler2D tex;".endl()
-                + "IN vec2 texCoord;".endl()
-                + "void main()".endl()
+            const shader_frag = "" + nl
+                + "UNI sampler2D tex;" + nl
+                + "IN vec2 texCoord;" + nl
+                + "void main()" + nl
                 + "{"
 
-                /*
-                 * .endl()+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
-                 * .endl()+'   gl_FragColor = vec4(gray,1.0);'
+            /*
+                 * +nl+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
+                 * +nl+'   gl_FragColor = vec4(gray,1.0);'
                  */
 
-                    .endl()
+                    + nl
                 + "   gl_FragColor = texture2D(tex,texCoord);"
-                // .endl()+'   if(gl_FragColor.a<0.5)gl_FragColor.a=0.7;'
+                // +nl+'   if(gl_FragColor.a<0.5)gl_FragColor.a=0.7;'
 
-                    .endl()
+                    + nl
                 + "}";
 
-            const shader_vert = "".endl()
-                + "IN vec3 vPosition;".endl()
-                + "UNI mat4 projMatrix;".endl()
-                + "UNI mat4 mvMatrix;".endl()
-                + "OUT vec2 texCoord;".endl()
-                + "IN vec2 attrTexCoord;".endl()
-                + "void main()".endl()
-                + "{".endl()
-                + "   vec4 pos=vec4(vPosition, 1.0);".endl()
-                + "   texCoord=vec2(attrTexCoord.x,1.0-attrTexCoord.y);".endl()
-                + "   gl_Position = projMatrix * mvMatrix * pos;".endl()
+            const shader_vert = "" + nl
+                + "IN vec3 vPosition;" + nl
+                + "UNI mat4 projMatrix;" + nl
+                + "UNI mat4 mvMatrix;" + nl
+                + "OUT vec2 texCoord;" + nl
+                + "IN vec2 attrTexCoord;" + nl
+                + "void main()" + nl
+                + "{" + nl
+                + "   vec4 pos=vec4(vPosition, 1.0);" + nl
+                + "   texCoord=vec2(attrTexCoord.x,1.0-attrTexCoord.y);" + nl
+                + "   gl_Position = projMatrix * mvMatrix * pos;" + nl
                 + "}";
 
             shader.setSource(shader_vert, shader_frag);

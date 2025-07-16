@@ -1,5 +1,6 @@
 import { Logger, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
+import { nl } from "cables-corelibs/cgl/constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -84,7 +85,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
             src += ");";
         }
 
-        src += "".endl();
+        src += "" + nl;
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
 
@@ -94,22 +95,22 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.objType)src += "objType:\"" + p.objType + "\"";
 
-        src += "});".endl();
+        src += "});" + nl;
 
-        if (p.values)src += "port_" + p.id + ".setUiAttribs({\"values\":" + JSON.stringify(p.values) + "});".endl();
-        if (p.addUiAttribs)src += "port_" + p.id + ".setUiAttribs(" + JSON.stringify(p.addUiAttribs) + ");".endl();
+        if (p.values)src += "port_" + p.id + ".setUiAttribs({\"values\":" + JSON.stringify(p.values) + "});" + nl;
+        if (p.addUiAttribs)src += "port_" + p.id + ".setUiAttribs(" + JSON.stringify(p.addUiAttribs) + ");" + nl;
 
-        src += "".endl();
+        src += "" + nl;
     }
 
     src +=
-            "op.initInnerPorts=function(addedOps)".endl() +
-            "{".endl() +
-            "  for(let i=0;i<addedOps.length;i++)".endl() +
-            "  {".endl() +
+            "op.initInnerPorts=function(addedOps)" + nl +
+            "{" + nl +
+            "  for(let i=0;i<addedOps.length;i++)" + nl +
+            "  {" + nl +
 
-            "    if(addedOps[i].innerInput)".endl() +
-            "    {".endl();
+            "    if(addedOps[i].innerInput)" + nl +
+            "    {" + nl;
 
     for (let i = 0; i < ports.ports.length; i++)
     {
@@ -125,24 +126,24 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         else if (p.type == portType.array) outPortFunc = "outArray";
         else if (p.type == portType.string) outPortFunc = "outString";
 
-        src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
+        src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");" + nl;
 
         if (ports.ports[i].type == portType.number || ports.ports[i].type == portType.string)
-            src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
+            src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );" + nl;
 
         if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
-        if (p.type == 0 || p.type == 5) src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
-        else if (p.type == 1) src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
-        else src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".setRef(a); });".endl();
+        if (p.type == 0 || p.type == 5) src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });" + nl;
+        else if (p.type == 1) src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };" + nl;
+        else src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".setRef(a); });" + nl;
 
-        src += "".endl();
+        src += "" + nl;
     }
 
-    src += "    }".endl();
+    src += "    }" + nl;
 
-    src += "if(addedOps[i].innerOutput)".endl() +
-                "{".endl();
+    src += "if(addedOps[i].innerOutput)" + nl +
+                "{" + nl;
 
     for (let i = 0; i < ports.ports.length; i++)
     {
@@ -156,21 +157,19 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (ports.ports[i].type == portType.array) inPortFunc = "inArray";
         if (ports.ports[i].type == portType.string) inPortFunc = "inString";
 
-        src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
+        src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");" + nl;
         if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
-        if (p.type == 0 || p.type == 5) src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
-        else if (p.type == 1) src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
-        else src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".setRef(a); });".endl();
+        if (p.type == 0 || p.type == 5) src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });" + nl;
+        else if (p.type == 1) src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };" + nl;
+        else src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".setRef(a); });" + nl;
 
-        src += "".endl();
+        src += "" + nl;
     }
-    src +=
-                "}".endl();
+    src += "}" + nl;
 
-    src +=
-            "}".endl() +
-        "};".endl();
+    src += "}" + nl +
+        "};" + nl;
 
     return src;
 };
