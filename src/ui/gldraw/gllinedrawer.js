@@ -1,6 +1,6 @@
 import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
-import { nl } from "cables-corelibs/cgl/constants";
-import { gui } from "../gui";
+import { nl } from "cables-corelibs/cgl/constants.js";
+import { gui } from "../gui.js";
 
 /**
  * draw lines on the patchfield
