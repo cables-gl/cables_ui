@@ -283,7 +283,8 @@ const paramsHelper =
 
             gui.corePatch().on(Patch.EVENT_OP_DELETED, (deletedOp) =>
             {
-                if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
+                // todo: get tab and close it...
+                // if (deletedOp.id == opid) gui.mainTabs.closeTab(t._tab.id);
             });
         }
         else
