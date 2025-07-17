@@ -1,4 +1,6 @@
 import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
+import { nl } from "cables-corelibs/cgl/constants.js";
+import { gui } from "../gui.js";
 
 /**
  * draw lines on the patchfield
@@ -29,85 +31,85 @@ export default class GlLinedrawer
         this._shader.ignoreMissingUniforms = true;
         this._shader.glPrimitive = cgl.gl.LINES;
         this._shader.setSource(""
-            .endl() + "IN vec3 vPosition;"
-            .endl() + "IN vec4 color;"
-            .endl() + "IN float vdist;"
-            .endl() + "IN float speed;"
-            .endl() + "OUT float speedy;"
-            .endl() + "OUT float dist;"
-            .endl() + "OUT vec4 col;"
-            .endl() + "OUT vec2 pos2d;"
-            .endl() + "UNI float zoom,resX,resY,scrollX,scrollY;"
+            + nl + "IN vec3 vPosition;"
+            + nl + "IN vec4 color;"
+            + nl + "IN float vdist;"
+            + nl + "IN float speed;"
+            + nl + "OUT float speedy;"
+            + nl + "OUT float dist;"
+            + nl + "OUT vec4 col;"
+            + nl + "OUT vec2 pos2d;"
+            + nl + "UNI float zoom,resX,resY,scrollX,scrollY;"
 
-            .endl() + "void main()"
-            .endl() + "{"
-            .endl() + "    float aspect=resX/resY;"
+            + nl + "void main()"
+            + nl + "{"
+            + nl + "    float aspect=resX/resY;"
 
-            .endl() + "    dist=vdist;"
-            .endl() + "    speedy=speed;"
+            + nl + "    dist=vdist;"
+            + nl + "    speedy=speed;"
 
-            .endl() + "    vec3 pos=vPosition;"
+            + nl + "    vec3 pos=vPosition;"
 
-            .endl() + "    pos.y*=aspect;"
-            .endl() + "    pos.y=0.0-pos.y;"
+            + nl + "    pos.y*=aspect;"
+            + nl + "    pos.y=0.0-pos.y;"
 
-            .endl() + "    pos2d=pos.xy;"
+            + nl + "    pos2d=pos.xy;"
 
-            .endl() + "    col=color;"
-            .endl() + "    pos*=zoom;"
+            + nl + "    col=color;"
+            + nl + "    pos*=zoom;"
 
-            .endl() + "    pos.x+=scrollX;"
-            .endl() + "    pos.y+=scrollY;"
-            .endl() + "    pos.z=0.9;"
+            + nl + "    pos.x+=scrollX;"
+            + nl + "    pos.y+=scrollY;"
+            + nl + "    pos.z=0.9;"
 
-            .endl() + "    gl_Position = vec4(pos,1.0);"
-            .endl() + "}",
+            + nl + "    gl_Position = vec4(pos,1.0);"
+            + nl + "}",
 
         ""
-            .endl() + "UNI float time;"
-            .endl() + "IN vec2 pos2d;"
-            .endl() + "IN vec4 col;"
-            .endl() + "IN float dist;"
-            .endl() + "IN float speedy;"
-            .endl() + "UNI float zoom;"
+            + nl + "UNI float time;"
+            + nl + "IN vec2 pos2d;"
+            + nl + "IN vec4 col;"
+            + nl + "IN float dist;"
+            + nl + "IN float speedy;"
+            + nl + "UNI float zoom;"
 
-            .endl() + "void main()"
-            .endl() + "{"
-            .endl() + "   vec4 finalColor=col;"
-            .endl() + "   if(finalColor.a==0.0) discard;"
-            .endl() + "   float stepLength=5.0;"
+            + nl + "void main()"
+            + nl + "{"
+            + nl + "   vec4 finalColor=col;"
+            + nl + "   if(finalColor.a==0.0) discard;"
+            + nl + "   float stepLength=5.0;"
 
-            .endl() + "   float showSpeed=clamp(speedy,0.4,1.0);"
+            + nl + "   float showSpeed=clamp(speedy,0.4,1.0);"
 
-        // .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
-        // .endl() + "   if(speedy>=1.0) finalColor.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
-        // .endl() + "   else finalColor.rgb = finalColor.rgb;"
-        // .endl() + "   else finalColor.rgb = finalColor.rgb;"
+        // +nl + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
+        // +nl + "   if(speedy>=1.0) finalColor.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
+        // +nl + "   else finalColor.rgb = finalColor.rgb;"
+        // +nl + "   else finalColor.rgb = finalColor.rgb;"
 
-            .endl() + "   finalColor.rgb = finalColor.rgb;"
-            .endl() + "   finalColor.a = showSpeed;"
-        // .endl() + "   finalColor.a = 1.0;"
-        // .endl()+'   color.r = 1.0;'
+            + nl + "   finalColor.rgb = finalColor.rgb;"
+            + nl + "   finalColor.a = showSpeed;"
+        // +nl + "   finalColor.a = 1.0;"
+        // +nl+'   color.r = 1.0;'
 
-        // .endl()+'   color.rgb += (1.0-showSpeed) * col.rgb;'
+        // +nl+'   color.rgb += (1.0-showSpeed) * col.rgb;'
 
-        // .endl()+'   if(speedy==0)'
+        // +nl+'   if(speedy==0)'
 
-        // .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
-        // .endl()+'  a=sin(a);'
-        // .endl()+'  a=(a+1.0)/2.0;'
-        // .endl()+'  a=floor(a);'
-            .endl() + "   #ifdef DEBUG_1"
-            .endl() + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
-            .endl() + "       finalColor.a=1.0;"
-            .endl() + "   #endif"
-            .endl() + "   #ifdef DEBUG_2"
-            .endl() + "       finalColor.rg=uv;"
-            .endl() + "       finalColor.a=1.0;"
-            .endl() + "   #endif"
+        // +nl+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
+        // +nl+'  a=sin(a);'
+        // +nl+'  a=(a+1.0)/2.0;'
+        // +nl+'  a=floor(a);'
+            + nl + "   #ifdef DEBUG_1"
+            + nl + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
+            + nl + "       finalColor.a=1.0;"
+            + nl + "   #endif"
+            + nl + "   #ifdef DEBUG_2"
+            + nl + "       finalColor.rg=uv;"
+            + nl + "       finalColor.a=1.0;"
+            + nl + "   #endif"
 
-            .endl() + "   outColor=finalColor;"
-            .endl() + "}"
+            + nl + "   outColor=finalColor;"
+            + nl + "}"
         );
 
         // floor((sin( distance(vec4(0.,0.,0.,1.0),gl_FragCoord
