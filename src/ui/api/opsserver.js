@@ -874,7 +874,7 @@ export default class ServerOps
                                     if (selectElement)
                                     {
                                         selectElement.length = 0;
-                                        dirRes.forEach((dir, i) =>
+                                        dirRes.data.forEach((dir, i) =>
                                         {
                                             const selected = i === 0;
                                             selectElement.add(new Option(dir, dir, selected, selected));
