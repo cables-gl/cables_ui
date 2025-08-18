@@ -439,11 +439,12 @@ class UiOp extends Op
                 const uri = port.get() || "";
                 if (uri != "" &&
                     !uri.startsWith("http://") &&
-                    !uri.startsWith("/") &&
                     !uri.startsWith("https://") &&
+                    !uri.startsWith("file:/") &&
+                    !uri.startsWith("/") &&
                     !uri.startsWith("data:")
                 )
-                    this.setUiError("protocol", "Invalid URL, should start with https:// or file:// or a slash, etc.", 1);
+                    this.setUiError("protocol", "Invalid URL, should start with https:// or file:/ or a slash, etc.", 1);
                 else
                     this.setUiError("protocol", null);
             }
