@@ -61,7 +61,7 @@
                     <div style="clear:both"></div>
                     <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
                         {{#if ../frontendOptions.openLocalFiles}}
-                            <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                            <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a data-dir="{{p}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir });"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
                         {{else}}
                             <h1>{{divider}}</h1>
                         {{/if}}
@@ -126,7 +126,7 @@
                         <td colspan="100">
                             <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
                                 {{#if ../frontendOptions.openLocalFiles}}
-                                    <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                                    <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a data-dir="{{p}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir });"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
                                 {{else}}
                                     <h1>{{divider}}</h1>
                                 {{/if}}

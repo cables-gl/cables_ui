@@ -147,10 +147,11 @@ export default class FileUploader
         else if (platform.frontendOptions.dragDropLocalFiles)
         {
             const assetPath = platform.getPrefixAssetPath();
-            let finalPath = "file://" + file.path;
-            if (file.path.startsWith(assetPath))
+            let filePath = file.path;
+            let finalPath = "file://" + filePath;
+            if (filePath.startsWith(assetPath))
             {
-                finalPath = file.path.replace(assetPath, "./");
+                finalPath = filePath.replace(assetPath, "./");
             }
             finalPath = finalPath.replaceAll("\\", "/");
             gui.patchView.addAssetOpAuto(finalPath, this._uploadDropEventOrig);
