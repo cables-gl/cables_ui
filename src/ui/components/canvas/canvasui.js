@@ -2,8 +2,15 @@ import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
+/**
+ * the icon bar below the renderer canvas
+ */
 export default class CanvasUi
 {
+
+    /**
+     * @param {import("cables-corelibs").CgContext} cg
+     */
     constructor(cg)
     {
         this._cg = cg;
@@ -166,7 +173,10 @@ export default class CanvasUi
             else icon.style.backgroundColor = "var(--color-07)";
     }
 
-    showCanvasModal(_show)
+    /**
+     * @param {boolean} show
+     */
+    showCanvasModal(show)
     {
         if (userSettings.get("hideCanvasUi")) return;
 
@@ -177,11 +187,11 @@ export default class CanvasUi
         this.updateSizeDisplay();
         this.updateCanvasIconBar();
 
-        this.isCanvasFocussed = _show;
+        this.isCanvasFocussed = show;
         if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
         else this._elCanvasIconbar.classList.add("hidden");
 
-        if (_show)
+        if (show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
 
@@ -209,7 +219,7 @@ export default class CanvasUi
             }, 100);
         }
 
-        this._showing = _show;
+        this._showing = show;
 
         perf.finish();
     }

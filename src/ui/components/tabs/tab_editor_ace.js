@@ -578,8 +578,8 @@ export default class EditorTab extends Events
                     "name": "uniform sampler2D ${1:texName};",
                 },
                 {
-                    "content": "texture(${1:texCoord},${2:samplerTex});",
-                    "name": "texture(texCoord,tex);",
+                    "content": "texture(${2:samplerTex},${1:texCoord});",
+                    "name": "texture(tex,texCoord);",
                 }
             );
             snippetManager.register(snippetsGlsl, "glsl");

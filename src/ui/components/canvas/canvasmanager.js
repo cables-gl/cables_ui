@@ -16,8 +16,11 @@ export default class CanvasManager
 
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_PATCHBG = 1;
-        this.CANVASMODE_FULLSCREEN = 2;
+        this.CANVASMODE_MAXIMIZED = 2;
         this.CANVASMODE_POPOUT = 3;
+
+        /** @deprecated */
+        this.CANVASMODE_FULLSCREEN = 2;
 
         this._canvasMode = this.CANVASMODE_NORMAL;
 
@@ -115,6 +118,9 @@ export default class CanvasManager
         }
     }
 
+    /**
+     * @param {HTMLCanvasElement} canv
+     */
     setCurrentCanvas(canv)
     {
         for (let i = 0; i < this._contexts.length; i++)
@@ -130,6 +136,10 @@ export default class CanvasManager
         this.updateCanvasUi();
     }
 
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
     setSize(w, h)
     {
         for (let i = 0; i < this._contexts.length; i++)
@@ -145,6 +155,9 @@ export default class CanvasManager
         }
     }
 
+    /**
+     * @param {function} cb
+     */
     screenShot(cb, mimeType = "image/png", quality = 1)
     {
         if (this.currentCanvas() && this.currentCanvas().toBlob)
@@ -164,6 +177,9 @@ export default class CanvasManager
         }
     }
 
+    /**
+     * @param {HTMLElement} ele
+     */
     menu(ele)
     {
         let items = [];

@@ -545,6 +545,7 @@ CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
+    // @ts-ignore - if page is loading and a file drag is hovering it will crash because ....
     if (!window.gui || !gui.project()) return;
     const fileElem = document.getElementById("uploaddialog");
 

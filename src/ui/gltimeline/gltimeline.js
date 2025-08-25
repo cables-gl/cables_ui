@@ -37,6 +37,7 @@ import { patchStructureQuery } from "../components/patchstructure.js";
  * @property {Boolean} [restrictToFrames]
  * @property {Number} [bpmHlXth]
  */
+
 /**
  * gl timeline
  *
@@ -1222,9 +1223,6 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
-    /**
-     * @param {PatchStructureQueryItem} item
-     */
     hierarchyLine(item, level = 0)
     {
         if (!item) return;
@@ -1247,7 +1245,9 @@ export class GlTimeline extends Events
         else
         if (item.childs)
             this.#tlAnims.push(
-                new glTlAnimLine(this, [], { "collapsable": item.childs.length > 0, "title": item.title })
+                new glTlAnimLine(this, [], {
+                    "collapsable": item.childs.length > 0,
+                    "title": item.title })
             );
 
         if (item.childs)
