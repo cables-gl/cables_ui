@@ -4,10 +4,8 @@ import { Platform } from "./ui/platform.js"
 declare global {
 
     const CABLESUILOADER:any
-    const gui:Gui
-
-    const logStartup:typeof function
-    const incrementStartup:typeof function
+    const logStartup:typeof Function
+    const incrementStartup:typeof Function
 
     const chroma:any
     const Handlebars:any
@@ -20,7 +18,7 @@ declare global {
     const QRCode:any
     interface Window {
         Handlebars:any
-        logStartup:typeof function
+        logStartup:typeof Function
     }
 
 }

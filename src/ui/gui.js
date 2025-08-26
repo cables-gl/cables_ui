@@ -35,7 +35,6 @@ import SavedState from "./components/savedstate.js";
 import defaultTheme from "./defaulttheme.json";
 import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
-import subPatchOpUtil from "./subpatchop_util.js";
 import { notify, notifyError } from "./elements/notification.js";
 import LoggingTab from "./components/tabs/tab_logfilter.js";
 import HtmlElementOverlay from "./elements/canvasoverlays/htmlelementoverlay.js";
@@ -58,7 +57,6 @@ import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 import timelineCommands from "./commands/cmd_timeline.js";
-import debugCommands from "./commands/cmd_debug.js";
 
 /**
  * @type {Gui}
@@ -94,6 +92,9 @@ export default class Gui extends Events
 
     splitpanePatchPos = 0;
 
+    /**
+     * @param {object} cfg
+     */
     constructor(cfg)
     {
         super();
@@ -1603,7 +1604,7 @@ export default class Gui extends Events
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, () => { undo.redo(); });
         this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { CmdUi.settings(); });
 
-        this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (/** @type {HtmlElementOverlay} */ e) =>
+        this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
             if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CmdUi.showSearch();
@@ -1929,6 +1930,9 @@ export default class Gui extends Events
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
+    /**
+     * @param {string} [str]
+     */
     setCursor(str)
     {
         if (!str) str = "auto";
@@ -1942,6 +1946,10 @@ export default class Gui extends Events
         return this.savedState.isSaved;
     }
 
+    /**
+     * @param {null} params
+     * @param {number} [idx]
+     */
     setTransformGizmo(params, idx)
     {
         if (params == null && idx === undefined)
@@ -2012,6 +2020,9 @@ export default class Gui extends Events
         this.savedState.setUnSaved("unknown", 0);
     }
 
+    /**
+     * @param {function} cb
+     */
     reloadDocs(cb)
     {
         gui.opDocs.addCoreOpDocs();
@@ -2030,6 +2041,9 @@ export default class Gui extends Events
         }, 200);
     }
 
+    /**
+     * @param {number} r
+     */
     hideElementsByRestriction(r)
     {
         if (r == Gui.RESTRICT_MODE_REMOTEVIEW)

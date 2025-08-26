@@ -183,6 +183,9 @@ export default class FileUploader
         gui.jobs().finish("prepareuploadfiles");
     }
 
+    /**
+     * @param {string} [opName]
+     */
     uploadFiles(files, opName)
     {
         if (!window.gui) return;
