@@ -356,6 +356,8 @@ export default class VizLayer extends Events
                 lines[i] = lines[i].replaceAll("\t", "⇿");
                 lines[i] = lines[i].replaceAll("\n", "⏎\n");
             }
+            const maxChars = layer.width / layer.scale / fs * 3;
+            if (lines[i].length > maxChars)lines[i] = lines[i].substring(0, maxChars) + "...";
 
             if (options.showLineNum)
             {
