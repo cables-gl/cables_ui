@@ -767,7 +767,6 @@ export default class GlOp extends Events
         if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 
         // if (this.displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
-        if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
         if (this.displayType == this.DISPLAY_REROUTE_DOT)
         {
@@ -825,6 +824,7 @@ export default class GlOp extends Events
                 this._glRectSelected.setSize(0, 0);
             }
         }
+        if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
         perf.finish();
         this._updateCommentPosition();
