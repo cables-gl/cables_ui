@@ -495,7 +495,7 @@ export class Platform extends Events
                 let modalText = "Enter a name for the backup";
                 if (gui.user.supporterFeatures.includes("overquota_full_project_backup"))
                 {
-                    modalText = "You are currently using all of your <a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage space</a>. Upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
+                    modalText = "You are currently using all of your <a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage</a>. Upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
                     modalText += "To free space your oldest backup will automatically be deleted, automatic backups are currently disabled!<br/><br/>";
                     modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
                 }
