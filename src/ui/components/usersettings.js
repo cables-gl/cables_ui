@@ -37,6 +37,7 @@ export default class UserSettings extends Events
         if (!this.get("patch_wheelmode")) this.set("patch_wheelmode", "zoom");
         if (this.get("glflowmode") === null) this.set("glflowmode", 2);
         if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
+        if (this.get("checkOpCollisions") === null) this.set("checkOpCollisions", true);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("idlemode") === null) this.set("idlemode", false);
         if (this.get("showTipps") === null) this.set("showTipps", true);

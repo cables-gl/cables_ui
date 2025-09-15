@@ -181,6 +181,9 @@ const text =
         "title_snapToGrid": "Snap To Grid",
         "subtitle_snapToGrid": "Ops snap to an invisible grid, makes patches look much cleaner",
 
+        "title_checkOpCollisions": "Check Op collisions",
+        "subtitle_checkOpCollisions": "If activated, ops are moved away when they overlap",
+
         "title_nobrowserWarning": "Hide Warning",
         "subtitle_nobrowserWarning": "Hide that red \"unsupported browser\" warning notification",
 
