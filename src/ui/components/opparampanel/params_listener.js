@@ -537,6 +537,10 @@ class ParamsListener extends Events
                     items.push(item);
                 }
             }
+            if (port.display == "file")
+            {
+
+            }
 
             if (
                 port.type == portType.number &&

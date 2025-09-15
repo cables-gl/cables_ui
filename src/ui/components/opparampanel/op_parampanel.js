@@ -278,7 +278,7 @@ class OpParampanel extends Events
         {
             if (this._portsIn[i].uiAttribs.display && this._portsIn[i].uiAttribs.display == "file")
             {
-                let shortName = String(this._portsIn[i].get() || "none");
+                let shortName = String(this._portsIn[i].get() || "Open Filemanager");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
                 if (op.getSubPatch())
@@ -298,10 +298,9 @@ class OpParampanel extends Events
                     }
                 }
 
-                if (ele.byId("portFilename_" + i))
-                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small tt\" data-tt=\"" + this._portsIn[i].get() + "\" style=\"text-transform:none;\"><span style=\"pointer-events:none;\" class=\"icon icon-file\"></span>" + shortName + "</span>";
-
                 let srcEle = ele.byId("portFilename_" + i + "_src");
+                let buttonOpensFilemanager = true;
+
                 if (srcEle)
                 {
                     let src = "";
@@ -316,8 +315,10 @@ class OpParampanel extends Events
 
                     if (fn.startsWith("http://") || fn.startsWith("https://"))
                     {
+                        buttonOpensFilemanager = false;
                         const parts = fn.split("/");
                         if (parts && parts.length > 1) src = "ext: " + parts[2];
+
                     }
                     if (fn.startsWith("/assets/" + gui.project()._id)) src = "this patch";
                     if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
@@ -339,6 +340,34 @@ class OpParampanel extends Events
                     {
                         gui.getFileManager(null, true).copyFileToPatch(fn);
                     });
+                }
+
+                const filenameButton = ele.byId("portFilename_" + i);
+                if (filenameButton)
+                {
+                    filenameButton.innerHTML = "<span class=\"button-small tt\" data-tt=\"" + this._portsIn[i].get() + "\" style=\"text-transform:none;\"><span style=\"pointer-events:none;\" class=\"icon icon-file\"></span>" + shortName + "</span>";
+
+                    filenameButton.addEventListener("pointerdown", () =>
+                    {
+                        if (buttonOpensFilemanager)
+                        {
+                            // open filemananger
+                            ele.byId("portFilename_" + i + "_src").innerHTML = "";
+                            ele.byId("fileInputContainer_" + i).classList.remove("hidden");
+                            filenameButton.classList.add("hidden");
+                            CABLES.platform.showFileSelect(".portFileVal_" + i, this._portsIn[i].uiAttribs.filter || null, op.id, "portFileVal_" + i + "_preview");
+                        }
+                        else
+                        {
+                            // edit url
+                            ele.byId("portFilenameButton_" + i).classList.toggle("hidden");
+                            ele.byId("fileInputContainer_" + i).classList.toggle("hidden");
+                        }
+                    });
+                }
+                else
+                {
+                    console.log("no filenamebutton");
                 }
             }
 
