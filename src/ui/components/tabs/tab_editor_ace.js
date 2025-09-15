@@ -64,9 +64,11 @@ export default class EditorTab extends Events
         }
 
         let style = "";
+        let html = "";
 
+        if (!options.allowEdit) html += "<br/>Editor is in read only mode (" + (options.allowEditReason || "unknown") + ")<br/><br/>";
         if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
+        html += "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
         this._tab.html(html);
 
         if (options.hasOwnProperty("content")) this.setContent(options.content);
