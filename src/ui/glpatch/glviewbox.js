@@ -392,15 +392,23 @@ export default class GlViewBox
     animateScrollTo(x, y, dur, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        // if (userInteraction)p = 0;
-        // if (p != p)p = 0;
+        let ox = (gui.editorWidth) * 0.5 / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        ox -= (gui.rightPanelWidth) * 0.5 / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+
+        let oy = (gui.bottomTabPanel.height) / this._viewResY * this._animZoom.getValue(this.glPatch.time + 10);
+
+        if (_userInteraction)ox = 0;
+        if (ox != ox)ox = 0;
+
+        if (_userInteraction || !gui.bottomTabPanel.isVisible())oy = 0;
+        if (oy != oy)oy = 0;
 
         dur = dur || 0.2;
 
         this._animScrollX.clear(this.glPatch.time);
-        this._animScrollX.setValue(this.glPatch.time + dur, x);
+        this._animScrollX.setValue(this.glPatch.time + dur, x - ox);
         this._animScrollY.clear(this.glPatch.time);
-        this._animScrollY.setValue(this.glPatch.time + dur, y);
+        this._animScrollY.setValue(this.glPatch.time + dur, y + oy);
     }
 
     /**
