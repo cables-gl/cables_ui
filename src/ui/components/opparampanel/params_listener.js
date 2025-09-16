@@ -14,7 +14,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
-import timelineCommands, { CmdTimeline } from "../../commands/cmd_timeline.js";
+import { CmdTimeline } from "../../commands/cmd_timeline.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
