@@ -115,8 +115,8 @@ function initSplitPanes()
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = e.clientX - 10;
+            let y = e.clientY + 20;
 
             if (x === undefined && e.touches && e.touches.length > 0)
             {

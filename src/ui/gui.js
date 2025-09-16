@@ -56,7 +56,7 @@ import PatchView from "./components/patchview.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
-import timelineCommands, { CmdTimeline } from "./commands/cmd_timeline.js";
+import timelineCommands from "./commands/cmd_timeline.js";
 
 /**
  * @type {Gui}
@@ -429,7 +429,7 @@ export default class Gui extends Events
     getParamPanelEleId()
     {
         let eleId = "options";
-        // if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+        // if (!gui.showTwotaPanels()) eleId = "options_meta";
         return eleId;
     }
 
@@ -685,8 +685,9 @@ export default class Gui extends Events
         // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         this.rightPanelWidth = this.splitpaneRightPos || 450;
 
+        this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
         this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
-        this._elSplitterRight.style.height = (patchHeight + 2) + "px";
+        this._elSplitterRight.style.height = (patchHeight + 2 - this.rendererHeight) + "px";
         this._elSplitterRenderer.style.top = this.rendererHeightScaled + "px";
         this._elSplitterRenderer.style.width = this.rendererWidthScaled + "px";
 
@@ -1464,7 +1465,7 @@ export default class Gui extends Events
 
         ele.byId("nav_timeline").addEventListener("click", () =>
         {
-            CmdTimeline.toggleTimeline();
+            timelineCommands.toggleTimeline();
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
