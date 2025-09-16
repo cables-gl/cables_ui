@@ -1702,6 +1702,7 @@ export default class ServerOps
                 "singleton": true,
                 "syntax": "js",
                 "allowEdit": this.canEditOp(gui.user, editorObj.name),
+                "allowEditReason": this.canEditOpReason(gui.user, editorObj.name),
                 "showSaveButton": true,
                 "editorObj": editorObj,
                 "onClose": (which) =>
@@ -1992,6 +1993,15 @@ export default class ServerOps
         const op = this._ops.find((o) => { return o.name === opName; });
         if (!op) return false;
         return op.allowEdit || false;
+    }
+
+    canEditOpReason(user, opName)
+    {
+        if (!platform.isTrustedPatch()) return "Untrusted patch";
+        if (!user) return "no user";
+        const op = this._ops.find((o) => { return o.name === opName; });
+        if (op && !op.allowEdit) return "no rights";
+        return "unknown";
     }
 
     canEditAttachment(user, opName)

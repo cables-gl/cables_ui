@@ -205,10 +205,14 @@
                         <span id="portFilenameButton_{{ portnum }}">
                             <span
                                 id="portFilename_{{ portnum }}"
-                                onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');"
+                                onclick=""
                                 style="cursor:pointer;">[???]</span>
+                            {{#if port.value}}
+                            {{else}}
+                                <span class="button-small" onclick="ele.byId('portFilenameButton_{{ portnum }}').classList.toggle('hidden');ele.byId('fileInputContainer_{{ portnum }}').classList.toggle('hidden');">Enter URL</span>
+                            {{/if}}
 
-                        <br/>
+                            <br/>
                             <span id="portFilename_{{ portnum }}_src"></span>
                         </span>
 

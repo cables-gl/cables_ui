@@ -744,11 +744,11 @@ export default class FindTab
                 onclickResults += "gui.patchView.selectOpId('" + results[i].op.id + "');";
 
             onclickResults += "gui.patchView.showSelectedOpsPanel();";
-            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " ops found";
 
-            html += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
-
-            html += "</div>";
+            let htmla = "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " Ops found";
+            htmla += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
+            htmla += "</div>";
+            html = htmla + html;
         }
 
         this._eleResults.innerHTML = html;
