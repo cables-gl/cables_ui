@@ -125,19 +125,16 @@ export default class GlOp extends Events
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
-        /**
-         * @type {GlRect}
-         */
+        /** @type {GlRect} */
         this._glRectSelected = null;
 
-        /**
-         * @type {GlRect}
-         */
+        /** @type {GlRect} */
+        this._glRectHighlighted = null;
+
+        /** @type {GlRect} */
         this._glRectBg = null;
 
-        /**
-         * @type {GlRect}
-         */
+        /** @type {GlRect} */
         this._rectResize = null;
 
         /** @type {GlRect} */
@@ -149,18 +146,14 @@ export default class GlOp extends Events
         /** @type {GlRect} */
         this._glColorIndicatorSpacing = null;
 
-        /**
-         * @type {GlRect}
-         */
+        /** @type {GlRect} */
         this._glRerouteDot = null;
 
         this.minWidth = 10;
 
         this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
 
-        /**
-         * @type {GlRect}
-         */
+        /** @type {GlRect} */
         this._glRectArea = null;
 
         this._titleExtPortTimeout = null;
@@ -588,6 +581,8 @@ export default class GlOp extends Events
             this.displayType = this.DISPLAY_REROUTE_DOT;
             this._hideBgRect = true;
         }
+        if (newAttribs.hasOwnProperty("highlighted")) this._updateHighlighted();
+        if (newAttribs.hasOwnProperty("highlightedMore")) this._updateHighlighted();
 
         if (newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
@@ -827,6 +822,7 @@ export default class GlOp extends Events
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
         perf.finish();
+        this._updateHighlighted();
         this._updateCommentPosition();
     }
 
@@ -878,6 +874,7 @@ export default class GlOp extends Events
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this._glRectBg) this._glRectBg = this._glRectBg.dispose();
         if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
+        if (this._glRectHighlighted) this._glRectHighlighted = this._glRectHighlighted.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this._titleExt) this._titleExt = this._titleExt.dispose();
@@ -1206,6 +1203,29 @@ export default class GlOp extends Events
             for (const i in this._links) this._links[i].visible = true;
 
         if (!visi) this._isHovering = false;
+    }
+
+    _updateHighlighted()
+    {
+        if (this._disposed) return;
+        if (this.uiAttribs.highlighted)
+        {
+            if (!this._glRectHighlighted && this.isInCurrentSubPatch())
+            {
+                this._glRectHighlighted = this._instancer.createRect({ "name": "oploading", "draggable": false, "interactive": false });
+                this._glRectHighlighted.setColorArray(gui.theme.colors_patch.opErrorHint);
+                // this._glRectHighlighted.setShape(GlRectInstancer.SHAPE_FRAME);
+
+            }
+            if (this.uiAttribs.highlightedMore)
+                this._glRectHighlighted.setColor(0.8, 0.8, 0.8, 1);
+            else
+                this._glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
+            this._glRectHighlighted.setSize(this._glRectBg.w + 10, this._glRectBg.h + 10);
+            this._glRectHighlighted.setPosition(this._glRectBg.x - 5, this._glRectBg.y - 5, this._glRectBg.z + 0.01);
+            this._glRectHighlighted.visible = true;
+        }
+        if (this._glRectHighlighted && !this.uiAttribs.highlighted) this._glRectHighlighted = this._glRectHighlighted.dispose();
     }
 
     _updateIndicators()

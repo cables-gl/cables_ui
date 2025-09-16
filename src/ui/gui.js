@@ -356,6 +356,24 @@ export default class Gui extends Events
     }
 
     /**
+     * @param {string} opid
+     */
+    hlFindResult(opid)
+    {
+        const op = this.corePatch().getOpById(opid);
+        if (op)op.setUiAttrib({ "highlightedMore": true });
+    }
+
+    /**
+     * @param {string} opid
+     */
+    hlUnFindResult(opid)
+    {
+        const op = this.corePatch().getOpById(opid);
+        if (op)op.setUiAttrib({ "highlightedMore": false });
+    }
+
+    /**
      * @param {String} str
      */
     find(str = "")
