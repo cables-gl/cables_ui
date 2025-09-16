@@ -90,8 +90,6 @@ export default class Gui extends Events
     /** @type {GlTimelineTab} */
     glTimeLineTab = null;
 
-    splitpaneRightPos = 0;
-
     /**
      * @param {object} cfg
      */
@@ -132,6 +130,9 @@ export default class Gui extends Events
         this.canvasMagnifier = null;
 
         this.editorWidth = this.userSettings.get("editorWidth") || 350;
+        this.rightPanelWidth = this.userSettings.get("rightpanelWidth") || 450;
+        this.splitpaneRightPos = this.userSettings.get("rightpanelWidth") || 450;
+
         this._timeoutPauseProfiler = null;
         this._cursor = "";
         this.restriction = new GuiRestrictions();
@@ -683,7 +684,7 @@ export default class Gui extends Events
 
         // this.rightPanelWidth = 200;// this.para;//this.rendererWidthScaled;
         // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
-        this.rightPanelWidth = this.splitpaneRightPos || 450;
+        this.rightPanelWidth = this.splitpaneRightPos;
 
         this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
         this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";

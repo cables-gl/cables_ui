@@ -22,8 +22,10 @@ function initSplitPanes()
             gui.pauseProfiling();
             e.preventDefault();
 
-            const pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            let pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            pos = Math.max(200, pos);
 
+            gui.userSettings.set("rightpanelWidth", pos);
             // if (gui.rendererWidth != -1) gui.rendererWidth = pos;
             gui.splitpaneRightPos = pos;
 
