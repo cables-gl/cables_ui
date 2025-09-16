@@ -1213,12 +1213,16 @@ export default class GlOp extends Events
             if (!this._glRectHighlighted && this.isInCurrentSubPatch())
                 this._glRectHighlighted = this._instancer.createRect({ "name": "oploading", "draggable": false, "interactive": false });
 
-            if (this.uiAttribs.highlightedMore) this._glRectHighlighted.setColor(0.8, 0.8, 0.8, 1);
-            else this._glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
+            if (this._glRectHighlighted)
+            {
+                if (this.uiAttribs.highlightedMore) this._glRectHighlighted.setColor(0.8, 0.8, 0.8, 1);
+                else this._glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
 
-            this._glRectHighlighted.setSize(this._glRectBg.w + 8, this._glRectBg.h + 8);
-            this._glRectHighlighted.setPosition(this._glRectBg.x - 4, this._glRectBg.y - 4, this._glRectBg.z + 0.3);
-            this._glRectHighlighted.visible = true;
+                this._glRectHighlighted.setSize(this._glRectBg.w + 8, this._glRectBg.h + 8);
+                this._glRectHighlighted.setPosition(this._glRectBg.x - 4, this._glRectBg.y - 4, this._glRectBg.z + 0.3);
+                this._glRectHighlighted.visible = true;
+
+            }
         }
         if (this._glRectHighlighted && !this.uiAttribs.highlighted) this._glRectHighlighted = this._glRectHighlighted.dispose();
     }
