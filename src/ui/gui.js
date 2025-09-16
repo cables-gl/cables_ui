@@ -90,7 +90,7 @@ export default class Gui extends Events
     /** @type {GlTimelineTab} */
     glTimeLineTab = null;
 
-    splitpanePatchPos = 0;
+    splitpaneRightPos = 0;
 
     /**
      * @param {object} cfg
@@ -429,7 +429,7 @@ export default class Gui extends Events
     getParamPanelEleId()
     {
         let eleId = "options";
-        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+        // if (!gui.showTwoMetaPanels()) eleId = "options_meta";
         return eleId;
     }
 
@@ -443,19 +443,21 @@ export default class Gui extends Events
         if (gui.currentModal) gui.currentModal.close();
     }
 
-    showTwoMetaPanels()
-    {
-        let r = true;
-        if (this.rendererWidth < 1000) r = false;
+    // showTwoMetaPanels()
+    // {
+    //     let r = true;
+    //     if (this.rendererWidth < 1000) r = false;
 
-        const haschanged = this.showingtwoMetaPanel != r;
-        this.showingtwoMetaPanel = r;
+    //     const haschanged = this.showingtwoMetaPanel != r;
+    //     this.showingtwoMetaPanel = r;
 
-        if (haschanged)
-            this.metaOpParams.updateVisibility(r);
+    //     if (haschanged)
+    //         this.metaOpParams.updateVisibility(r);
 
-        return r;
-    }
+    //     console.log("showtwometa", r);
+    //     return r;
+    //     // return r;
+    // }
 
     /**
      * @param {String} opid
@@ -528,7 +530,7 @@ export default class Gui extends Events
 
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;
-        this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
+        this._elSplitterRight = this._elSplitterRight || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
         this._elSplitterBottom = this._elSplitterBottom || ele.byId("splitterBottomTabs");
         this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
@@ -566,7 +568,7 @@ export default class Gui extends Events
 
         let patchHeight = window.innerHeight;
 
-        if (this.bottomTabPanel.isVisible()) patchHeight -= this.bottomTabPanel.getHeight();
+        // if (this.bottomTabPanel.isVisible()) patchHeight -= this.bottomTabPanel.getHeight();
 
         if (this.isRemoteClient)
         {
@@ -606,21 +608,21 @@ export default class Gui extends Events
         let editorWidth = this.editorWidth;
         if (!this.maintabPanel.isVisible())editorWidth = 0;
 
-        let patchWidth = window.innerWidth - this.rendererWidthScaled - editorWidth;
+        let patchWidth = window.innerWidth;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
-            patchWidth = window.innerWidth - this.rightPanelWidth;
+            patchWidth = window.innerWidth;
             this.rendererHeightScaled = 0;
         }
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
-        const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
+        const optionsWidth = Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2);
 
         patchHeight -= infoAreaHeight;
 
-        const patchLeft = editorWidth;
+        const patchLeft = 0;
 
         if (this.maintabPanel.isVisible())
         {
@@ -679,11 +681,12 @@ export default class Gui extends Events
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
-        this.rightPanelWidth = this.rendererWidthScaled;
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
+        // this.rightPanelWidth = 200;// this.para;//this.rendererWidthScaled;
+        // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
+        this.rightPanelWidth = this.splitpaneRightPos || 450;
 
-        this._elSplitterPatch.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
-        this._elSplitterPatch.style.height = (patchHeight + 2) + "px";
+        this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
+        this._elSplitterRight.style.height = (patchHeight + 2) + "px";
         this._elSplitterRenderer.style.top = this.rendererHeightScaled + "px";
         this._elSplitterRenderer.style.width = this.rendererWidthScaled + "px";
 
@@ -732,7 +735,7 @@ export default class Gui extends Events
 
         let metaWidth;
 
-        if (this.showTwoMetaPanels())
+        // if (this.showTwoMetaPanels())
         {
             metaWidth = this.rightPanelWidth - optionsWidth;
 
@@ -748,19 +751,19 @@ export default class Gui extends Events
 
             this._elOptions.style.display = "block";
         }
-        else
-        {
-            metaWidth = this.rightPanelWidth;
-            this._elMeta.style.right = 0 + "px";
+        // else
+        // {
+        //     metaWidth = this.rightPanelWidth;
+        //     this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-            this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
+        //     this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
+        //     this._elMeta.style.width = metaWidth + "px";
+        //     this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
-            this._elOptions.style.width = 0 + "px";
-            this._elOptions.style.height = 0 + "px";
-            this._elOptions.style.display = "none";
-        }
+        //     this._elOptions.style.width = 0 + "px";
+        //     this._elOptions.style.height = 0 + "px";
+        //     this._elOptions.style.display = "none";
+        // }
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
         ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
@@ -780,7 +783,7 @@ export default class Gui extends Events
         else this._elInfoArea.style.height = infoAreaHeight + "px";
 
         this._elInfoAreaParam.style.right = "0px";
-        this._elInfoAreaParam.style.width = this.rendererWidth + "px";
+        this._elInfoAreaParam.style.width = this.rightPanelWidth + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - infoAreaHeight - this.bottomTabPanel.getHeight()) + "px";

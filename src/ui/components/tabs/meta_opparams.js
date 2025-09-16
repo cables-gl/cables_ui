@@ -25,7 +25,7 @@ export default class MetaOpParams
 
         if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
 
-        if (b === undefined) b = !gui.showTwoMetaPanels();
+        // if (b === undefined) b = !gui.showTwoMetaPanels();
 
         if (b === false)
         {

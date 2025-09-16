@@ -24,8 +24,8 @@ function initSplitPanes()
 
             const pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
 
-            if (gui.rendererWidth != -1) gui.rendererWidth = pos;
-            gui.splitpanePatchPos = pos;
+            // if (gui.rendererWidth != -1) gui.rendererWidth = pos;
+            gui.splitpaneRightPos = pos;
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
