@@ -899,6 +899,7 @@ export default class Gui extends Events
         this.emitEvent("setLayout");
 
         this._corePatch.cgl.updateSize();
+        if (document.activeElement == document.body) gui.patchView.focus();
 
         perf.finish();
     }
