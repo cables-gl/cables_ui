@@ -234,7 +234,8 @@ export class glTlAnimLine extends Events
     {
         for (let i = 0; i < this.#titles.length; i++)
         {
-            this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
+            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].setPos(3, (i * glTlAnimLine.DEFAULT_HEIGHT) + this.posY() - this.#glTl.getFirstLinePosy() - this.#glTl.getFirstLinePosy());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
         }

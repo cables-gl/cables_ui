@@ -1459,7 +1459,8 @@ export class GlTimeline extends Events
 
             this.#cgl.pushDepthTest(true);
 
-            this.#rects.render(resX, resY, -1, this.getScrollY() / resY, resX / 2);
+            const scrollHeight = resY - this.getFirstLinePosy();
+            this.#rects.render(resX, resY, -1, ((this.getScrollY() + scrollHeight) / scrollHeight), resX / 2);
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
