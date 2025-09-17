@@ -182,9 +182,13 @@ export default class FindTab
     {
         for (let i = 0; i < this.hlOps.length; i++)
         {
-            this.hlOps[i].setUiAttrib({ "highlighted": false });
-            this.hlOps[i].setUiAttrib({ "highlighted": false });
+            if (this.hlOps[i])
+            {
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+            }
         }
+        this.hlOps = [];
     }
 
     isClosed()
