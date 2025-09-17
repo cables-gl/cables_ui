@@ -38,7 +38,7 @@ export class glTlRuler extends Events
         this.y = 30;
         this.height = 50;
 
-        this._glRectBg = this.#glTl.rects.createRect({ "name": "ruler bgrect", "draggable": false, "interactive": true });
+        this._glRectBg = this.#glTl.rectsNoScroll.createRect({ "name": "ruler bgrect", "draggable": false, "interactive": true });
         this._glRectBg.setSize(222, this.height);
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this._glRectBg.setPosition(0, this.y, -0.9);
@@ -76,7 +76,7 @@ export class glTlRuler extends Events
         this.markf = [];
         for (let i = 0; i < 300; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "name": "ruler marker frames", "draggable": false, "interactive": false });
+            const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker frames", "draggable": false, "interactive": false });
             mr.setColor(0.0, 0.0, 0.0, 1);
             mr.setPosition(-8888, 0);
             mr.setParent(this._glRectBg);
@@ -86,7 +86,7 @@ export class glTlRuler extends Events
         this.markBeats = [];
         for (let i = 0; i < 400; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "name": "ruler marker beats", "draggable": false, "interactive": false });
+            const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker beats", "draggable": false, "interactive": false });
             mr.setPosition(-8888, 0);
             mr.setParent(this._glRectBg);
             mr.setSize(0, 0);
@@ -96,7 +96,7 @@ export class glTlRuler extends Events
         this.marks = [];
         for (let i = 0; i < 300; i++)
         {
-            const mr = this.#glTl.rects.createRect({ "name": "ruler marker seconds", "draggable": false, "interactive": false });
+            const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker seconds", "draggable": false, "interactive": false });
             mr.setParent(this._glRectBg);
             mr.setPosition(-8888, 0);
             this.marks.push(mr);
