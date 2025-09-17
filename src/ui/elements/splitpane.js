@@ -22,10 +22,12 @@ function initSplitPanes()
             gui.pauseProfiling();
             e.preventDefault();
 
-            const pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            let pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            pos = Math.max(200, pos);
 
-            if (gui.rendererWidth != -1) gui.rendererWidth = pos;
-            gui.splitpanePatchPos = pos;
+            gui.userSettings.set("rightpanelWidth", pos);
+            // if (gui.rendererWidth != -1) gui.rendererWidth = pos;
+            gui.splitpaneRightPos = pos;
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
@@ -115,8 +117,8 @@ function initSplitPanes()
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = e.clientX - 10;
+            let y = e.clientY + 20;
 
             if (x === undefined && e.touches && e.touches.length > 0)
             {

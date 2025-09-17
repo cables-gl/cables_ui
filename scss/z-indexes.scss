@@ -15,7 +15,7 @@ $zindex_patchfield:$zindex_lowest - 1;
 
     #meta,#options
     {
-        z-index: $zindex_lowest - 2;
+        z-index: $zindex_lowest + 1;
     }
 
     .menubar,#subpatch_nav,#bgpreviewButtonsContainer,#bgpreview,.cbl_iconbarContainer
@@ -26,5 +26,5 @@ $zindex_patchfield:$zindex_lowest - 1;
 
 .gluiPreviewLayer
 {
-    z-index: $zindex_over - 1;
+    z-index: $zindex_lowest - 1;
 }

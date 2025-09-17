@@ -57,7 +57,7 @@
     color:var(--color-13);
     position: absolute;
     overflow: hidden;
-    z-index: $zindex_canvas;
+    z-index: $zindex_canvas+1;
     // border:1px solid red;
     // background-color: blue;
     background-color: var(--color-01);

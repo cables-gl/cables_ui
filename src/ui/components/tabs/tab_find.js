@@ -37,6 +37,7 @@ export default class FindTab
 
         let colors = [];
         const warnOps = [];
+        this.hlOps = [];
 
         for (let i = 0; i < gui.corePatch().ops.length; i++)
         {
@@ -67,6 +68,7 @@ export default class FindTab
 
         this._tab.on("close", () =>
         {
+            this.clearHighlightOps();
             gui.opHistory.off(listenerChanged);
 
             for (let i = 0; i < this._listenerids.length; i++)
@@ -81,7 +83,18 @@ export default class FindTab
 
         ele.byId(this._inputId).addEventListener("input", (e) =>
         {
+            this.clearHighlightOps();
             this.search(e.target.value);
+        });
+        ele.byId(this._inputId).addEventListener("keydown", (e) =>
+        {
+            if (e.key == "Escape")
+            {
+                this.clearHighlightOps();
+                this._lastSearch = " ";
+                e.target.value = "";
+                this.search(" ");
+            }
         });
 
         ele.byId(this._inputId).select();
@@ -165,6 +178,15 @@ export default class FindTab
         }
     }
 
+    clearHighlightOps()
+    {
+        for (let i = 0; i < this.hlOps.length; i++)
+        {
+            this.hlOps[i].setUiAttrib({ "highlighted": false });
+            this.hlOps[i].setUiAttrib({ "highlighted": false });
+        }
+    }
+
     isClosed()
     {
         return this._closed;
@@ -207,7 +229,12 @@ export default class FindTab
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
         if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
+        this.hlOps.push(op);
+        op.setUiAttribs({ "highlighted": true });
+
         html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
+        html += " onmouseover=\"gui.hlFindResult('" + op.id + "')\" ";
+        html += " onmouseout=\"gui.hlUnFindResult('" + op.id + "')\" ";
         html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
 
         let colorHandle = "";
@@ -674,6 +701,8 @@ export default class FindTab
 
     search(str, userInvoked)
     {
+        this.clearHighlightOps();
+
         str = str || this._lastSearch;
         // console.log("search str", str, (new Error()).stack);
         this._maxIdx = -1;
