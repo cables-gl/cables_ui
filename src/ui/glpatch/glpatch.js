@@ -280,8 +280,8 @@ export default class GlPatch extends Events
         });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
-        gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
-        gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
+        gui.keys.key("o", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
+        gui.keys.key("i", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
 
         // gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
         // gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
