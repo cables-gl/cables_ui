@@ -56,7 +56,7 @@ import PatchView from "./components/patchview.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
-import timelineCommands from "./commands/cmd_timeline.js";
+import timelineCommands, { CmdTimeline } from "./commands/cmd_timeline.js";
 
 /**
  * @type {Gui}
@@ -1485,7 +1485,7 @@ export default class Gui extends Events
 
         ele.byId("nav_timeline").addEventListener("click", () =>
         {
-            timelineCommands.toggleTimeline();
+            CmdTimeline.toggleTimeline();
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
@@ -1523,8 +1523,7 @@ export default class Gui extends Events
 
     onResize()
     {
-        if (this.canvasManager.getCanvasUiBar())
-            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.canvasManager.blur();
         this.mainTabs.emitEvent("resize");
         this.setLayout();

@@ -171,6 +171,7 @@ export class GlTimeline extends Events
 
     /** @type {glTlDragArea} */
     loopAreaDrag = null;
+    tlTimeScrollContainer;
 
     /**
      * @param {CglContext} cgl
@@ -295,8 +296,15 @@ export class GlTimeline extends Events
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
-
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+
+        this.tlTimeScrollContainer = document.createElement("div");
+        this.tlTimeScrollContainer.classList.add("scrollContainer");
+        this.tlTimeScrollContainer.style.top = this.getFirstLinePosy() + "px";
+
+        cgl.canvas.parentElement.appendChild(this.tlTimeScrollContainer);
+
+        cgl.canvas.parentElement.classList.add("tlContainer");
 
         this.loopAreaDrag.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
@@ -537,6 +545,7 @@ export class GlTimeline extends Events
         return gui.corePatch().timer.getTime();
     }
 
+    /** @type {HTMLElement} */
     parentElement()
     {
         return this.#cgl.canvas.parentElement;
@@ -564,6 +573,8 @@ export class GlTimeline extends Events
         this.#keyOverEl.style.right = 0 + "px";
         this.#keyOverEl.style.bottom = 0 + "px";
         this.#keyOverEl.style.top = "35px";
+
+        this.tlTimeScrollContainer.style.width = wparams + this.#cgl.canvas.width + 15 + "px";
 
     }
 

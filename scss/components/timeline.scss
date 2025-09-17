@@ -1,5 +1,6 @@
 .cablesCssUi
 {
+
     .tlTitle
     {
         position: absolute;
@@ -8,7 +9,7 @@
         padding-right: 5px;
         padding-left: 5px;
         border-left:3px solid transparent;
-        width:100%;
+        width:80%;
         padding-top:4px;
 
 
@@ -81,6 +82,37 @@
         z-index: 9;
     }
 
+    .tlContainer{
+        position: absolute;
+        width:100%;
+
+        canvas{
+            z-index: $zindex_over;
+
+        }
+        .keyOverlay
+        {
+            z-index: $zindex_low;
+
+        }
+        .splitterTimeline
+        {
+            z-index: $zindex_high;
+        }
+
+        .scrollContainer
+        {
+            z-index: $zindex_low;
+            overflow: auto;
+            position: absolute;
+            height: 300px;
+        }
+
+        .scrollheight{
+            height: 1000px;
+        }
+    }
+
     .tltimedisplay
     {
         position: absolute;
@@ -89,18 +121,20 @@
         z-index: 99;
         color: var(--color-08);
         cursor: pointer;
+        z-index: 888;
+
+
         h3
         {
             padding:0px;
             margin:0px;
             color:white;
-            }
+        }
     }
 
     .keyOverlay {
         position: absolute;
         bottom: 10px;
-        right: 10px;
         background-color: var(--color-02);
         width: 300px;
         overflow: auto;
