@@ -68,13 +68,12 @@ export default class FindTab
 
         this._tab.on("close", () =>
         {
-            this.clearHighlightOps();
             gui.opHistory.off(listenerChanged);
 
             for (let i = 0; i < this._listenerids.length; i++)
-            {
                 gui.corePatch().off(this._listenerids[i]);
-            }
+
+            this.clearHighlightOps();
 
             this._closed = true;
         });
@@ -182,9 +181,13 @@ export default class FindTab
     {
         for (let i = 0; i < this.hlOps.length; i++)
         {
-            this.hlOps[i].setUiAttrib({ "highlighted": false });
-            this.hlOps[i].setUiAttrib({ "highlighted": false });
+            if (this.hlOps[i])
+            {
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+            }
         }
+        this.hlOps = [];
     }
 
     isClosed()
@@ -284,7 +287,7 @@ export default class FindTab
         return str;
     }
 
-    _doSearchTriggers(str, userInvoked, ops, results)
+    _doSearchTriggers(str)
     {
         const triggers = gui.corePatch().namedTriggers;
         const foundtriggers = [];
@@ -299,7 +302,7 @@ export default class FindTab
         return foundtriggers;
     }
 
-    _doSearchVars(str, userInvoked, ops, results)
+    _doSearchVars(str)
     {
         const vars = gui.corePatch().getVars();
         const foundVars = [];

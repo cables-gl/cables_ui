@@ -32,11 +32,11 @@ export class glTlScroll extends Events
         this._log = new Logger("gltlscroll");
         this.#glTl = glTl;
 
-        this.#bgRect = this.#glTl.rects.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
+        this.#bgRect = this.#glTl.rectsNoScroll.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
         this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
 
-        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, this.#glTl.rects);
+        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
 
         this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
@@ -50,7 +50,7 @@ export class glTlScroll extends Events
             this.update();
         });
 
-        this.#glRectCursor = this.#glTl.rects.createRect({ "name": "cursor", "draggable": false, "interactive": false });
+        this.#glRectCursor = this.#glTl.rectsNoScroll.createRect({ "name": "cursor", "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
         this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0, -0.1);
@@ -84,7 +84,7 @@ export class glTlScroll extends Events
                     break;
                 }
 
-            if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rects.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" });
+            if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rectsNoScroll.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" });
 
             if (found)
             {

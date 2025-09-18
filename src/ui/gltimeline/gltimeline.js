@@ -83,6 +83,9 @@ export class GlTimeline extends Events
     #rects = null;
 
     /** @type {GlRectInstancer} */
+    #rectsNoScroll;
+
+    /** @type {GlRectInstancer} */
     #rectsOver = null;
 
     /** @type {glTlRuler} */
@@ -171,6 +174,7 @@ export class GlTimeline extends Events
 
     /** @type {glTlDragArea} */
     loopAreaDrag = null;
+    tlTimeScrollContainer;
 
     /**
      * @param {CglContext} cgl
@@ -188,6 +192,7 @@ export class GlTimeline extends Events
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+        this.#rectsNoScroll = new GlRectInstancer(cgl, { "name": "gltl top rects", "allowDragging": true });
 
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
@@ -295,8 +300,15 @@ export class GlTimeline extends Events
         this.#tlTimeDisplay = document.createElement("div");
         this.#tlTimeDisplay.classList.add("tltimedisplay");
         this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
-
         cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+
+        this.tlTimeScrollContainer = document.createElement("div");
+        this.tlTimeScrollContainer.classList.add("scrollContainer");
+        this.tlTimeScrollContainer.style.top = this.getFirstLinePosy() + "px";
+
+        cgl.canvas.parentElement.appendChild(this.tlTimeScrollContainer);
+
+        cgl.canvas.parentElement.classList.add("tlContainer");
 
         this.loopAreaDrag.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
@@ -527,6 +539,11 @@ export class GlTimeline extends Events
         return this.#rects;
     }
 
+    get rectsNoScroll()
+    {
+        return this.#rectsNoScroll;
+    }
+
     get isAnimated()
     {
         return this.view.isAnimated() || this.needsUpdateAll;
@@ -537,6 +554,7 @@ export class GlTimeline extends Events
         return gui.corePatch().timer.getTime();
     }
 
+    /** @type {HTMLElement} */
     parentElement()
     {
         return this.#cgl.canvas.parentElement;
@@ -560,10 +578,13 @@ export class GlTimeline extends Events
         this.setHoverKeyRect(null);
 
         const wparams = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT);
-        this.#keyOverEl.style.width = wparams + "px";
+        this.#keyOverEl.style.width = wparams - 15 + "px";
         this.#keyOverEl.style.right = 0 + "px";
         this.#keyOverEl.style.bottom = 0 + "px";
         this.#keyOverEl.style.top = "35px";
+
+        this.tlTimeScrollContainer.style.width = wparams + this.#cgl.canvas.width + 15 + "px";
+        this.tlTimeScrollContainer.style.height = this.#cgl.canvasHeight - this.getFirstLinePosy() + "px";
 
     }
 
@@ -682,6 +703,7 @@ export class GlTimeline extends Events
     _onCanvasMouseUp(e)
     {
         this.#rects.mouseUp(e);
+        this.#rectsNoScroll.mouseUp(e);
         this.#rectsOver.mouseUp(e);
         this.mouseDown = false;
         this.selectRect = null;
@@ -713,8 +735,8 @@ export class GlTimeline extends Events
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
+        this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
         this.mouseDown = true;
     }
@@ -731,6 +753,7 @@ export class GlTimeline extends Events
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
         this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
         {
@@ -1353,6 +1376,11 @@ export class GlTimeline extends Events
         return false;
     }
 
+    getScrollY()
+    {
+        return this.tlTimeScrollContainer.scrollTop;
+    }
+
     getFirstLinePosy()
     {
         let posy = 0;
@@ -1384,6 +1412,7 @@ export class GlTimeline extends Events
         this.disposed = true;
 
         if (this.#rects) this.#rects = this.#rects.dispose();
+        if (this.#rectsNoScroll) this.#rectsNoScroll = this.#rectsNoScroll.dispose();
     }
 
     updateSize()
@@ -1430,7 +1459,9 @@ export class GlTimeline extends Events
 
             this.#cgl.pushDepthTest(true);
 
-            this.#rects.render(resX, resY, -1, 1, resX / 2);
+            const scrollHeight = resY - this.getFirstLinePosy();
+            this.#rects.render(resX, resY, -1, ((this.getScrollY() + scrollHeight) / scrollHeight), resX / 2);
+            this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
