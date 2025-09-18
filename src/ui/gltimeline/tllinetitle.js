@@ -294,7 +294,8 @@ export class TlTitle extends Events
     setPos(x, y)
     {
         this.#el.style.left = (x) + "px";
-        this.#el.style.top = (y + 35) + "px";
+        this.#el.style.top = (y) + "px";
+        // console.log(this.#gltl.getFirstLinePosy(), y);
     }
 
     dispose()

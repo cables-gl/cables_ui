@@ -585,12 +585,11 @@ export class GlTimeline extends Events
         this.#keyOverEl.style.width = wparams - 15 + "px";
         this.#keyOverEl.style.right = 0 + "px";
         this.#keyOverEl.style.bottom = 0 + "px";
-        this.#keyOverEl.style.top = "35px";
+        this.#keyOverEl.style.top = 0 + "px";
 
         const ls = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT);
-        console.log("splitterleft", ls, this.#cgl.canvas.clientWidth);
 
-        this.tlTimeScrollContainer.style.width = ls + this.#cgl.canvas.clientWidth + 15 + "px";
+        this.tlTimeScrollContainer.style.width = ls + canvWidth + 15 + "px";
         this.tlTimeScrollContainer.style.height = canvHeight - this.getFirstLinePosy() + "px";
 
     }

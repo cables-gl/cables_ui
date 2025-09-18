@@ -56,7 +56,7 @@ import PatchView from "./components/patchview.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
-import timelineCommands, { CmdTimeline } from "./commands/cmd_timeline.js";
+import { CmdTimeline } from "./commands/cmd_timeline.js";
 
 /**
  * @type {Gui}
@@ -1798,7 +1798,7 @@ export default class Gui extends Events
 
         if (this.userSettings.get("showUIPerf") == true) CmdUi.profileUI();
 
-        if (this._corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))timelineCommands.functions.openGlTimeline();
+        if (this._corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))CmdTimeline.openGlTimeline();
 
         this._elGlCanvasDom.addEventListener("pointerenter", () =>
         {
