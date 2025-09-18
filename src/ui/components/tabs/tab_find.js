@@ -77,12 +77,16 @@ export default class FindTab
 
             this._closed = true;
         });
+        gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
+        {
+            this.clearHighlightOps();
+            this.search(this._lastSearch);
+        });
 
         if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
 
         ele.byId(this._inputId).addEventListener("input", (e) =>
         {
-            this.clearHighlightOps();
             this.search(e.target.value);
         });
         ele.byId(this._inputId).addEventListener("keydown", (e) =>
