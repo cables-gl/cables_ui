@@ -24,7 +24,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import Collapsable from "../components/collapsable.js";
-import { patchStructureQuery } from "../components/patchstructure.js";
+import { patchStructureQuery } from "../components/patchstructurequery.js";
 
 /**
  * @typedef TlConfig
@@ -591,7 +591,6 @@ export class GlTimeline extends Events
 
         this.tlTimeScrollContainer.style.width = ls + canvWidth + 15 + "px";
         this.tlTimeScrollContainer.style.height = canvHeight - this.getFirstLinePosy() + "px";
-
     }
 
     snapSelectedKeyTimes()
@@ -817,7 +816,6 @@ export class GlTimeline extends Events
 
                 this.showKeyParamsSoon();
             }
-
         }
         else if (event.buttons == this.buttonForScrolling)
         {
@@ -1251,7 +1249,7 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
-    hierarchyLine(item, level = 0)
+    hierarchyLine(item, level = 0, parentEle)
     {
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
@@ -1259,29 +1257,74 @@ export class GlTimeline extends Events
         console.log("aa", item);
         console.log("op", op);
 
+        const o = { "title": "lala " + item.title };
+        if (item && item.childs && item.childs.length > 0)o.collapsable = true;
+        o.parentEle = parentEle;
+
+        const cont = document.createElement("div");
+        cont.classList.add("linesContainer");
+        parentEle.appendChild(cont);
+
+        if (level > 0 && (item.childs && (item.childs.length > 0)) || (item.ports && item.ports.length > 1))
+        {
+            const toggle = document.createElement("a");
+            toggle.classList.add("icon");
+            toggle.classList.add("icon-chevron-down");
+            // toggle.classList.add("icon-0_5x");
+            // toggle.classList.add("nomargin");
+            toggle.classList.add("toggle");
+            cont.appendChild(toggle);
+            //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
+            //
+            if (item.childs && item.childs.length > 0)
+                cont.append("/" + item.title);
+
+            toggle.addEventListener("click", () =>
+            {
+                if (cont.style.height == "auto" || !cont.style.height)
+                {
+                    cont.style.height = "20px";
+                    toggle.classList.toggle("icon-chevron-down");
+                    toggle.classList.toggle("icon-chevron-right");
+                }
+                else
+                {
+                    cont.style.height = "auto";
+                    toggle.classList.toggle("icon-chevron-down");
+                    toggle.classList.toggle("icon-chevron-right");
+                }
+            });
+        }
+
         if (item.ports)
         {
             if (op)
                 for (let i = 0; i < item.ports.length; i++)
                 {
-                    this.#tlAnims.push(
-                        new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], { "collapsable": item.ports.length > 0 && i == 0 })
-                    );
+                    const a = new glTlAnimLine(this,
+                        [op.getPortByName(item.ports[i].name)],
+                        { "parentEle": cont });
+                    this.#tlAnims.push(a);
                 }
         }
         else
         if (item.childs)
-            this.#tlAnims.push(
-                new glTlAnimLine(this, [], {
-                    "collapsable": item.childs.length > 0,
-                    "title": "noports " + item.title })
-            );
-
-        if (item.childs)
+        {
             for (let i = 0; i < item.childs.length; i++)
             {
-                this.hierarchyLine(item.childs[i], level++);
+                this.hierarchyLine(item.childs[i], level++, cont);
             }
+        }
+        else
+        {
+            console.log("waaaaaaaaaaat");
+        }
+        // if (item.childs)
+        //     this.#tlAnims.push(
+        //         new glTlAnimLine(this, [], {
+        //             "collapsable": item.childs.length > 0,
+        //             "title": "noports " + item.title })
+        //     );
 
     }
 
@@ -1316,40 +1359,40 @@ export class GlTimeline extends Events
         q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
         console.log("qqqq", q.getHierarchy());
         const root = q.getHierarchy()[0];
-        this.hierarchyLine(root);
+        this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            let numOpAnims = 0;
-            let animIndex = 0;
-            const op = ops[i];
-            for (let j = 0; j < op.portsIn.length; j++)
-            {
-                if (op.portsIn[j].anim)numOpAnims++;
-            }
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     let numOpAnims = 0;
+        //     let animIndex = 0;
+        //     const op = ops[i];
+        //     for (let j = 0; j < op.portsIn.length; j++)
+        //     {
+        //         if (op.portsIn[j].anim)numOpAnims++;
+        //     }
 
-            for (let j = 0; j < op.portsIn.length; j++)
-            {
-                if (op.portsIn[j].anim)
-                {
-                    if (this.filter(op.portsIn[j]))
-                    {
-                        ports.push(op.portsIn[j]);
+        //     for (let j = 0; j < op.portsIn.length; j++)
+        //     {
+        //         if (op.portsIn[j].anim)
+        //         {
+        //             if (this.filter(op.portsIn[j]))
+        //             {
+        //                 ports.push(op.portsIn[j]);
 
-                        if (this.#layout === GlTimeline.LAYOUT_LINES)
-                        {
-                            const collapsable = numOpAnims > 1 && animIndex == 0;
+        //                 if (this.#layout === GlTimeline.LAYOUT_LINES)
+        //                 {
+        //                     const collapsable = numOpAnims > 1 && animIndex == 0;
 
-                            console.log("collaps", collapsable);
-                            const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
-                            this.#tlAnims.push(a);
-                        }
-                        count++;
-                    }
-                    animIndex++;
-                }
-            }
-        }
+        //                     console.log("collaps", collapsable);
+        //                     const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
+        //                     this.#tlAnims.push(a);
+        //                 }
+        //                 count++;
+        //             }
+        //             animIndex++;
+        //         }
+        //     }
+        // }
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {

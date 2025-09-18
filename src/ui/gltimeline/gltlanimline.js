@@ -9,7 +9,6 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
-import Collapsable from "../components/collapsable.js";
 
 /**
  * @typedef AnimLineOptions
@@ -122,10 +121,9 @@ export class glTlAnimLine extends Events
         }
 
         for (let i = 0; i < ports.length; i++)
-        {
             if (ports[i])
                 this.setTitle(i, ports[i], ports[i].anim, options.parentEle || this.#glTl.tlTimeScrollContainer);
-        }
+
         if (ports.length == 0) this.addFolder("folder" + options.title);
 
         if (this.isGraphLayout())

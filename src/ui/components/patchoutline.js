@@ -8,7 +8,7 @@ import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import namespaceutils from "../namespaceutils.js";
 import patchCommands from "../commands/cmd_patch.js";
-import { patchStructureQuery } from "./patchstructure.js";
+import { patchStructureQuery } from "./patchstructurequery.js";
 
 export default class PatchOutline extends Events
 {
