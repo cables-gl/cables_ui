@@ -1263,27 +1263,16 @@ export class GlTimeline extends Events
 
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
+        if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
         if (level > 0 && (item.childs && (item.childs.length > 0)) || (item.ports && item.ports.length > 1))
         {
-            const toggle = document.createElement("a");
-            toggle.classList.add("icon");
-            toggle.classList.add("icon-chevron-down");
-            // toggle.classList.add("icon-0_5x");
-            // toggle.classList.add("nomargin");
-            toggle.classList.add("toggle");
-            cont.appendChild(toggle);
-            //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
-            //
-            if (item.childs && item.childs.length > 0)
-                cont.append("/" + item.title);
-
-            toggle.addEventListener("click", () =>
+            const click = () =>
             {
                 if (cont.style.height == "auto" || !cont.style.height)
                 {
-                    cont.style.height = "20px";
+                    cont.style.height = "24px";
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
                 }
@@ -1293,9 +1282,26 @@ export class GlTimeline extends Events
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
                 }
-            });
-        }
+            };
 
+            const toggle = document.createElement("a");
+            toggle.classList.add("icon");
+            toggle.classList.add("icon-chevron-down");
+            toggle.classList.add("toggle");
+            cont.appendChild(toggle);
+            //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
+            //
+            if (item.childs && item.childs.length > 0)
+            {
+                const eleTitle = document.createElement("a");
+                eleTitle.innerHTML = "/" + item.title;
+                cont.appendChild(eleTitle);
+                // cont.append("/" + item.title);
+                eleTitle.addEventListener("click", click);
+            }
+
+            toggle.addEventListener("click", click);
+        }
         if (item.ports)
         {
             if (op)
@@ -1312,7 +1318,7 @@ export class GlTimeline extends Events
         {
             for (let i = 0; i < item.childs.length; i++)
             {
-                this.hierarchyLine(item.childs[i], level++, cont);
+                this.hierarchyLine(item.childs[i], ++level, cont);
             }
         }
         else
