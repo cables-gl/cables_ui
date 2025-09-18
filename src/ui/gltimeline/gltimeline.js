@@ -480,6 +480,9 @@ export class GlTimeline extends Events
         this.saveUserSettings();
     }
 
+    /**
+     * @param {object} cfg
+     */
     loadPatchData(cfg)
     {
         if (!cfg) return;
@@ -554,7 +557,7 @@ export class GlTimeline extends Events
         return gui.corePatch().timer.getTime();
     }
 
-    /** @type {HTMLElement} */
+    /** @returns {HTMLElement} */
     parentElement()
     {
         return this.#cgl.canvas.parentElement;
@@ -566,13 +569,14 @@ export class GlTimeline extends Events
     resize(force)
     {
         if (!force && this.#oldSize == this.#cgl.canvasWidth) return;
-        this.#oldSize = this.#cgl.canvasWidth;
-        this.scroll.setWidth(this.#cgl.canvasWidth);
-        this.ruler.setWidth(this.#cgl.canvasWidth);
+        const canvWidth = this.#cgl.canvas.clientWidth;
+        const canvHeight = this.#cgl.canvas.clientHeight;
+        this.scroll.setWidth(canvWidth);
+        this.ruler.setWidth(canvHeight);
 
-        this.bgRect.setSize(this.#cgl.canvasWidth, this.#cgl.canvasHeight);
+        this.bgRect.setSize(canvWidth, canvHeight);
 
-        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
+        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvas.clientWidth);
 
         this.needsUpdateAll = "resize";
         this.setHoverKeyRect(null);
@@ -583,8 +587,11 @@ export class GlTimeline extends Events
         this.#keyOverEl.style.bottom = 0 + "px";
         this.#keyOverEl.style.top = "35px";
 
-        this.tlTimeScrollContainer.style.width = wparams + this.#cgl.canvas.width + 15 + "px";
-        this.tlTimeScrollContainer.style.height = this.#cgl.canvasHeight - this.getFirstLinePosy() + "px";
+        const ls = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT);
+        console.log("splitterleft", ls, this.#cgl.canvas.clientWidth);
+
+        this.tlTimeScrollContainer.style.width = ls + this.#cgl.canvas.clientWidth + 15 + "px";
+        this.tlTimeScrollContainer.style.height = canvHeight - this.getFirstLinePosy() + "px";
 
     }
 
@@ -1143,7 +1150,6 @@ export class GlTimeline extends Events
         {
             this.#selectedKeys[i].setBezCp1(x, y);
         }
-
     }
 
     /**
