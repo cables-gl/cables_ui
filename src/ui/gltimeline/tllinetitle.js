@@ -100,6 +100,7 @@ export class TlTitle extends Events
         if (options.port) this.setPort(options.port);
 
         this.updateIcons();
+        if (options.title) this.setTitle(options.title);
     }
 
     /**

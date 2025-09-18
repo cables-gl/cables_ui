@@ -188,7 +188,8 @@ export class glTlAnimLine extends Events
      */
     addTitle(anim, p, parent)
     {
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.parentElement(), anim, { "port": p, "collapsable": this.#options.collapsable });
+
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "collapsable": this.#options.collapsable });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -205,10 +206,11 @@ export class glTlAnimLine extends Events
 
     addFolder(text)
     {
-        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), null, { "port": null, "collapsable": true, "text": text });
+        const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
+            console.log("folder...");
         });
 
         this.#titles.push(title);

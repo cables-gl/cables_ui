@@ -569,12 +569,12 @@ export class GlTimeline extends Events
     resize(force)
     {
         if (!force && this.#oldSize == this.#cgl.canvasWidth) return;
-        const canvWidth = this.#cgl.canvas.clientWidth;
-        const canvHeight = this.#cgl.canvas.clientHeight;
-        this.scroll.setWidth(canvWidth);
-        this.ruler.setWidth(canvHeight);
+        const canvWidth = this.#cgl.widthCss;
+        const canvHeight = this.#cgl.heightCss;
+        this.scroll.setWidth(this.#cgl.canvasWidth);
+        this.ruler.setWidth(this.#cgl.height);
 
-        this.bgRect.setSize(canvWidth, canvHeight);
+        this.bgRect.setSize(this.#cgl.width, this.#cgl.height);
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvas.clientWidth);
 
@@ -1264,7 +1264,6 @@ export class GlTimeline extends Events
             if (op)
                 for (let i = 0; i < item.ports.length; i++)
                 {
-                    console.log("annnn");
                     this.#tlAnims.push(
                         new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], { "collapsable": item.ports.length > 0 && i == 0 })
                     );
@@ -1275,7 +1274,7 @@ export class GlTimeline extends Events
             this.#tlAnims.push(
                 new glTlAnimLine(this, [], {
                     "collapsable": item.childs.length > 0,
-                    "title": item.title })
+                    "title": "noports " + item.title })
             );
 
         if (item.childs)
