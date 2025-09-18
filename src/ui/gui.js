@@ -762,7 +762,7 @@ export default class Gui extends Events
             this._elOptions.style.right = metaWidth + "px";
             this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elOptions.style.width = optionsWidth + "px";
-            this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
+            this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.height - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
             this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
