@@ -572,7 +572,7 @@ export class GlTimeline extends Events
         const canvWidth = this.#cgl.widthCss;
         const canvHeight = this.#cgl.heightCss;
         this.scroll.setWidth(this.#cgl.width);
-        this.ruler.setWidth(this.#cgl.height);
+        this.ruler.setWidth(this.#cgl.width);
 
         this.bgRect.setSize(this.#cgl.width, this.#cgl.height);
 
