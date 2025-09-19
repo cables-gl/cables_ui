@@ -1384,7 +1384,7 @@ export class GlTimeline extends Events
         q.setOptions({ "include": { "animated": true, "subpatches": true, "portsAnimated": true } });
         if (this.isGraphLayout())
         {
-            q.setOptions({ "include": { "portsAnimated": true }, "only": { "selected": true } });
+            q.setOptions({ "include": { "portsAnimated": true, "animated": true }, "only": { "selected": true } });
         }
 
         console.log("qqqq", q.getHierarchy());
@@ -1541,7 +1541,10 @@ export class GlTimeline extends Events
             this.#cgl.pushDepthTest(true);
 
             const scrollHeight = resY - this.getFirstLinePosy();
-            this.#rects.render(resX, resY, -1, ((this.getScrollY() + scrollHeight) / scrollHeight), resX / 2);
+
+            console.log("scrrr", this.getScrollY(), scrollHeight, resY);
+            this.#rects.render(resX, resY, -1, 1 + ((this.getScrollY()) / scrollHeight), resX / 2);
+
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
@@ -1786,6 +1789,7 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
+        if (this.isGraphLayout()) return;
 
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));

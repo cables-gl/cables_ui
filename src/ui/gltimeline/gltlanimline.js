@@ -236,37 +236,6 @@ export class glTlAnimLine extends Events
             this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
     }
 
-    updateTitles()
-    {
-        for (let i = 0; i < this.#titles.length; i++)
-            this.#titles[i].updateIcons();
-    }
-
-    setTitlePos()
-    {
-        for (let i = 0; i < this.#titles.length; i++)
-        {
-            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
-            this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
-            this.#titles[i].index = i;
-            this.#titles[i].tlKeys = this.#keys[i];
-        }
-    }
-
-    updateGlPos()
-    {
-        if (!this.isGraphLayout())
-        {
-            const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
-            const r = this.#titles[0].getClientRect();
-            this.setPosition(this.#glRectKeysBg.x, r.top - rc.top + this.#glTl.getFirstLinePosy());
-            this.setHeight(r.height - 10);
-
-            this.#glRectKeysBg.setSize(this.width, r.height - 2);
-
-        }
-    }
-
     posY()
     {
         return this.#glRectKeysBg.y;
@@ -308,6 +277,37 @@ export class glTlAnimLine extends Events
         return !this.#hidden;
     }
 
+    updateTitles()
+    {
+        for (let i = 0; i < this.#titles.length; i++)
+            this.#titles[i].updateIcons();
+    }
+
+    setTitlePos()
+    {
+        for (let i = 0; i < this.#titles.length; i++)
+        {
+            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].index = i;
+            this.#titles[i].tlKeys = this.#keys[i];
+        }
+    }
+
+    updateGlPos()
+    {
+        if (!this.isGraphLayout())
+        {
+            const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
+            const r = this.#titles[0].getClientRect();
+            this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top) + this.#glTl.getFirstLinePosy());
+            this.setHeight(r.height - 10);
+
+            this.#glRectKeysBg.setSize(this.width, r.height - 2);
+
+        }
+    }
+
     update()
     {
         if (this.checkDisposed()) return;
@@ -319,6 +319,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
+        this.updateGlPos();
     }
 
     updateColor()
@@ -352,7 +353,8 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         // this.height = h;
         // this.setWidth(this.width);
-        this.update();
+        // this.update();
+        // this should be removed instead, call update....
     }
 
     /**
