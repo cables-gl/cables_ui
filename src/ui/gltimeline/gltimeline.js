@@ -1328,6 +1328,7 @@ export class GlTimeline extends Events
                         { "parentEle": cont });
                     childLines.push(a);
                     this.#tlAnims.push(a);
+                    if (i > 0)a.getTitle(0).hideOpName = true;
                 }
         }
         else
@@ -1342,12 +1343,8 @@ export class GlTimeline extends Events
         {
             console.log("waaaaaaaaaaat");
         }
-        // if (item.childs)
-        //     this.#tlAnims.push(
-        //         new glTlAnimLine(this, [], {
-        //             "collapsable": item.childs.length > 0,
-        //             "title": "noports " + item.title })
-        //     );
+
+        console.log("animlines", this.#tlAnims.length);
 
     }
 
@@ -1382,6 +1379,8 @@ export class GlTimeline extends Events
         q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
         console.log("qqqq", q.getHierarchy());
         const root = q.getHierarchy()[0];
+
+        this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
         // for (let i = 0; i < ops.length; i++)
