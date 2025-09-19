@@ -196,6 +196,14 @@ export class glTlKeys extends Events
      */
     update()
     {
+        if (this.animLine.isHidden)
+        {
+            for (let i = 0; i < this.#keys.length; i++)
+            {
+                if (!this.#keys[i].isHidden) this.#keys[i].hide();
+            }
+            return;
+        }
         if (this.#disposed)
         {
             this.#disposedWarning++;
@@ -210,6 +218,7 @@ export class glTlKeys extends Events
         const perf = gui.uiProfiler.start("[gltl] update");
         for (let i = 0; i < this.#keys.length; i++)
         {
+            if (this.#keys[i].isHidden) this.#keys[i].show();
             const tlKey = this.#keys[i];
             tlKey.update();
 

@@ -174,6 +174,8 @@ export class GlTimeline extends Events
 
     /** @type {glTlDragArea} */
     loopAreaDrag = null;
+
+    /** @type {HTMLElement} */
     tlTimeScrollContainer;
 
     /**
@@ -1266,22 +1268,36 @@ export class GlTimeline extends Events
         if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
+        /** @type {glTlAnimLine[]} */
+        const childLines = [];
+
         if (level > 0 && (item.childs && (item.childs.length > 0)) || (item.ports && item.ports.length > 1))
         {
             const click = () =>
             {
+
                 if (cont.style.height == "auto" || !cont.style.height)
                 {
                     cont.style.height = "24px";
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
+                    for (let i = 1; i < childLines.length; i++)
+                    {
+                        childLines[i].hide();
+                    }
                 }
                 else
                 {
                     cont.style.height = "auto";
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
+                    for (let i = 0; i < childLines.length; i++)
+                    {
+                        childLines[i].show();
+                    }
                 }
+                this.setPositions();
+
             };
 
             const toggle = document.createElement("a");
@@ -1310,6 +1326,7 @@ export class GlTimeline extends Events
                     const a = new glTlAnimLine(this,
                         [op.getPortByName(item.ports[i].name)],
                         { "parentEle": cont });
+                    childLines.push(a);
                     this.#tlAnims.push(a);
                 }
         }
@@ -1453,8 +1470,10 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
-            this.#tlAnims[i].setPosition(0, posy);
-            posy += this.#tlAnims[i].height;
+            this.#tlAnims[i].updateGlPos();
+            // this.#tlAnims[i].setPosition(0, posy);
+            // if (this.#tlAnims[i].isVisible)
+            //     posy += this.#tlAnims[i].height;
         }
 
     }

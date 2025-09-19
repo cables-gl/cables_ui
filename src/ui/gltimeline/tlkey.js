@@ -43,6 +43,8 @@ export class TlKey extends Events
     /** @type {glTlKeys} */
     tlkeys = null;
 
+    #hidden = false;
+
     /**
      * @param {GlTimeline} gltl
      * @param {glTlKeys} tlkeys
@@ -61,12 +63,34 @@ export class TlKey extends Events
         {
             if (k == this.key) this.dispose();
         });
+    }
 
+    hide()
+    {
+        this.#hidden = true;
+        this.rect.visible = false;
+        this.update();
+    }
+
+    show()
+    {
+        this.#hidden = false;
+        this.rect.visible = true;
+        this.update();
+    }
+
+    get isHidden()
+    {
+        return this.#hidden;
     }
 
     update()
     {
         const keyRect = this.rect;
+        if (this.#hidden)
+        {
+            return;
+        }
         const key = this.key;
         if (key.uiAttribs.text)
         {
@@ -89,8 +113,6 @@ export class TlKey extends Events
             t.setOpacity(0.5);
             this.areaRect = t;
         }
-
-        // this.#keyRects.push(keyRect);
 
         /// ////
 
