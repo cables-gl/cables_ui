@@ -415,7 +415,7 @@ export class GlTimeline extends Events
 
         /// ///////////////////
 
-        gui.on("opSelectChange", (op) =>
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {
             this.selectedOp = op;
 
@@ -458,6 +458,11 @@ export class GlTimeline extends Events
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
         gui.glTimeline = this;
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
+        {
+            if (this.isGraphLayout()) this.init();
+
+        });
 
         this.init();
         this._initUserPrefs();
@@ -477,7 +482,7 @@ export class GlTimeline extends Events
         else this.#selectModeEl.innerHTML = "manual";
 
         this.deactivateAllAnims(true);
-        gui.emitEvent("opSelectChange");
+        gui.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED);
         this.needsUpdateAll = "updategrathselect";
         this.saveUserSettings();
     }
@@ -1376,7 +1381,12 @@ export class GlTimeline extends Events
         this.#firstInit = false;
 
         const q = new patchStructureQuery();
-        q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
+        q.setOptions({ "include": { "animated": true, "subpatches": true, "portsAnimated": true } });
+        if (this.isGraphLayout())
+        {
+            q.setOptions({ "include": { "portsAnimated": true }, "only": { "selected": true } });
+        }
+
         console.log("qqqq", q.getHierarchy());
         const root = q.getHierarchy()[0];
 

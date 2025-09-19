@@ -74,6 +74,8 @@ export default class Gui extends Events
     static EVENT_RESIZE = "resize";
     static EVENT_RESIZE_CANVAS = "resizecanvas";
 
+    static EVENT_OP_SELECTIONCHANGED = "opSelectChange";
+
     static RESTRICT_MODE_LOADING = 0;
     static RESTRICT_MODE_BLUEPRINT = 5;
     static RESTRICT_MODE_REMOTEVIEW = 10;
