@@ -225,8 +225,10 @@ export class glTlKeys extends Events
             this.setKeyShapeSize(tlKey.rect);
 
             if (this.#glTl.selectRect &&
-                this.#glTl.selectRect.x < (tlKey.rect.absX + this.sizeKey) && this.#glTl.selectRect.x2 > tlKey.rect.absX &&
-                this.#glTl.selectRect.y < (tlKey.rect.absY + this.getKeyHeight()) && this.#glTl.selectRect.y2 > tlKey.rect.absY)
+                this.#glTl.selectRect.x < (tlKey.rect.absX + this.sizeKey) &&
+                this.#glTl.selectRect.x2 > tlKey.rect.absX &&
+                this.#glTl.selectRect.y + this.#glTl.getScrollY() < (tlKey.rect.absY + this.getKeyHeight()) &&
+                this.#glTl.selectRect.y2 + this.#glTl.getScrollY() > tlKey.rect.absY)
             {
                 this.#glTl.selectKey(tlKey.key, this.#anim);
             }

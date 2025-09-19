@@ -764,7 +764,8 @@ export class GlTimeline extends Events
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-        this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
+
+        this.#rects.mouseMove(x, y, event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
