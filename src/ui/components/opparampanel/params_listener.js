@@ -563,10 +563,10 @@ class ParamsListener extends Events
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
-                        timelineCommands.functions.TimelinePause();
-                        timelineCommands.functions.TimelineRewindStart();
-                        timelineCommands.functions.openGlTimeline();
-                        timelineCommands.functions.showTimeline();
+                        CmdTimeline.TimelinePause();
+                        CmdTimeline.TimelineRewindStart();
+                        CmdTimeline.openGlTimeline();
+                        CmdTimeline.showTimeline();
                     }
                 });
             }

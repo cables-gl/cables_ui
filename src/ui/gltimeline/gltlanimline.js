@@ -9,7 +9,6 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
-import Collapsable from "../components/collapsable.js";
 
 /**
  * @typedef AnimLineOptions
@@ -122,10 +121,9 @@ export class glTlAnimLine extends Events
         }
 
         for (let i = 0; i < ports.length; i++)
-        {
             if (ports[i])
                 this.setTitle(i, ports[i], ports[i].anim, options.parentEle || this.#glTl.tlTimeScrollContainer);
-        }
+
         if (ports.length == 0) this.addFolder("folder" + options.title);
 
         if (this.isGraphLayout())
@@ -188,7 +186,8 @@ export class glTlAnimLine extends Events
      */
     addTitle(anim, p, parent)
     {
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.parentElement(), anim, { "port": p, "collapsable": this.#options.collapsable });
+
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "collapsable": this.#options.collapsable });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -205,10 +204,11 @@ export class glTlAnimLine extends Events
 
     addFolder(text)
     {
-        const title = new TlTitle(this.#glTl, this.#glTl.parentElement(), null, { "port": null, "collapsable": true, "text": text });
+        const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
+            console.log("folder...");
         });
 
         this.#titles.push(title);
@@ -235,7 +235,7 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < this.#titles.length; i++)
         {
             // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
-            this.#titles[i].setPos(3, (i * glTlAnimLine.DEFAULT_HEIGHT) + this.posY() - this.#glTl.getFirstLinePosy() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
         }

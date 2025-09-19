@@ -77,12 +77,16 @@ export default class FindTab
 
             this._closed = true;
         });
+        gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
+        {
+            this.clearHighlightOps();
+            this.search(this._lastSearch);
+        });
 
         if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
 
         ele.byId(this._inputId).addEventListener("input", (e) =>
         {
-            this.clearHighlightOps();
             this.search(e.target.value);
         });
         ele.byId(this._inputId).addEventListener("keydown", (e) =>
@@ -707,6 +711,12 @@ export default class FindTab
         this.clearHighlightOps();
 
         str = str || this._lastSearch;
+
+        if (this._eleInput.value == "")
+        {
+            this._lastSearch = str = "";
+        }
+
         // console.log("search str", str, (new Error()).stack);
         this._maxIdx = -1;
         this.setSelectedOp(null);
@@ -723,7 +733,7 @@ export default class FindTab
 
         if (str.length < 2)
         {
-            this._eleResults.innerHTML = "Type some more!";
+            this._eleResults.innerHTML = "<div style=\"background-color:var(--color-02);border-bottom:none;\">Type some more!</div>";
             return;
         }
 

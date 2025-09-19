@@ -64,6 +64,7 @@ export class glTlRuler extends Events
 
         this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
         {
+            console.log("text", this._glRectBg.w);
             this.pointerDown = true;
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
         });
@@ -345,6 +346,8 @@ export class glTlRuler extends Events
     {
         this.width = w;
         this._glRectBg.setSize(this.width, this.height);
+
+        console.log("text", this.width);
     }
 
     isHovering()

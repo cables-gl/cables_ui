@@ -70,18 +70,18 @@ export class TlTitle extends Events
             this.#gltl.showParamAnim(this.#anim);
         });
 
-        if (options.collapsable)
-            this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
-                (e) =>
-                {
-                    this.collapsed = !this.collapsed;
-                    this.updateIcons();
-                    console.log("collapse...", this.collapsed);
+        // if (options.collapsable)
+        //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
+        //         (e) =>
+        //         {
+        //             this.collapsed = !this.collapsed;
+        //             this.updateIcons();
+        //             console.log("collapse...", this.collapsed);
 
-                }
-            );
-        else
-            this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" style=\"opacity:0\"></span>", null, false);
+        //         }
+        //     );
+        // else
+        //     this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" style=\"opacity:0\"></span>", null, false);
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
             this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
@@ -100,6 +100,7 @@ export class TlTitle extends Events
         if (options.port) this.setPort(options.port);
 
         this.updateIcons();
+        if (options.title) this.setTitle(options.title);
     }
 
     /**
@@ -294,7 +295,8 @@ export class TlTitle extends Events
     setPos(x, y)
     {
         this.#el.style.left = (x) + "px";
-        this.#el.style.top = (y + 35) + "px";
+        this.#el.style.top = (y) + "px";
+        // console.log(this.#gltl.getFirstLinePosy(), y);
     }
 
     dispose()
