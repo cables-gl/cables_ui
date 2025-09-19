@@ -764,7 +764,7 @@ export class GlTimeline extends Events
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-        this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
@@ -1540,10 +1540,9 @@ export class GlTimeline extends Events
 
             this.#cgl.pushDepthTest(true);
 
-            const scrollHeight = resY - this.getFirstLinePosy();
+            const scrollHeight = resY;// - this.getFirstLinePosy();
 
-            console.log("scrrr", this.getScrollY(), scrollHeight, resY);
-            this.#rects.render(resX, resY, -1, 1 + ((this.getScrollY()) / scrollHeight), resX / 2);
+            this.#rects.render(resX, resY, -1, (1 + ((this.getScrollY() * 2) / Math.floor(scrollHeight))), resX / 2);
 
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.texts.render(resX, resY, -1, 1, resX / 2);

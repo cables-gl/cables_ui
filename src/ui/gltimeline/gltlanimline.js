@@ -300,11 +300,10 @@ export class glTlAnimLine extends Events
         {
             const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
             const r = this.#titles[0].getClientRect();
-            this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top) + this.#glTl.getFirstLinePosy());
+            this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
             this.setHeight(r.height - 10);
 
             this.#glRectKeysBg.setSize(this.width, r.height - 2);
-
         }
     }
 
