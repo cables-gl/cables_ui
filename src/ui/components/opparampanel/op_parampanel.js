@@ -8,7 +8,7 @@ import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
@@ -209,7 +209,7 @@ class OpParampanel extends Events
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
-        gui.emitEvent("opSelectChange", op);
+        gui.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED, op);
 
         this.emitEvent("opSelected", op);
 

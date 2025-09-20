@@ -18,16 +18,29 @@ import { escapeHTML } from "../utils/helper.js";
  */
 
 /**
+ * @typedef PatchStructureQueryIncludeOptions
+ * @property {boolean} [include.all]
+ * @property {boolean} [include.areas]
+ * @property {boolean} [include.comments]
+ * @property {boolean} [include.customOps]
+ * @property {boolean} [include.commented]
+ * @property {boolean} [include.bookmarks]
+ * @property {boolean} [include.animated]
+ * @property {boolean} [include.selected]
+ * @property {boolean} [include.colored]
+ * @property {boolean} [include.subpatches]
+ * @property {boolean} [include.portsAnimated]
+ */
+
+/**
+ * @typedef PatchStructureQueryOnlyOptions
+ * @property {boolean} [include.selected]
+ */
+
+/**
  * @typedef PatchStructureQueryOptions
- * @property {boolean} [includeAreas]
- * @property {boolean} [includeComments]
- * @property {boolean} [includeCustomOps]
- * @property {boolean} [includeCommented]
- * @property {boolean} [includeBookmarks]
- * @property {boolean} [includeAnimated]
- * @property {boolean} [includeColored]
- * @property {boolean} [includeSubpatches]
- * @property {boolean} [includePortsAnimated]
+ * @property {PatchStructureQueryIncludeOptions} [include]
+ * @property {PatchStructureQueryOnlyOptions} [only]
  */
 export class patchStructureQuery
 {
@@ -40,7 +53,7 @@ export class patchStructureQuery
      */
     constructor(options)
     {
-        this.options = options;
+        this.setOptions(options);
     }
 
     /**
@@ -48,8 +61,9 @@ export class patchStructureQuery
      */
     setOptions(options)
     {
-        // console.log("options", options);
-        this.options = options;
+        this.options = options || {};
+        this.options.only = this.options.only || {};
+        this.options.include = this.options.include || {};
     }
 
     /**
@@ -135,46 +149,58 @@ export class patchStructureQuery
             let included = false;
             let includeReasons = [];
 
-            if (this.options.includeSubpatches && ops[i].patchId && ops[i].patchId.get() !== 0)
+            if (this.options.include.subpatches && ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 includeReasons.push("includeSubpatches");
                 included = true;
             }
-            if (this.options.includeColored && ops[i].uiAttribs.color)
+            if (this.options.include.colored && ops[i].uiAttribs.color)
             {
                 includeReasons.push("includeColored");
                 included = true;
             }
-            if (this.options.includeAreas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1)
+            if (this.options.include.areas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1)
             {
                 includeReasons.push("includeAreas");
                 included = true;
             }
-            if (this.options.includeBookmarks && ops[i].uiAttribs.bookmarked)
+            if (this.options.include.bookmarks && ops[i].uiAttribs.bookmarked)
             {
                 includeReasons.push("includeBookmarks ");
                 included = true;
             }
-            if (this.options.includeComments && ops[i].uiAttribs.comment_title)
+            if (this.options.include.comments && ops[i].uiAttribs.comment_title)
             {
                 includeReasons.push("includeComments");
                 included = true;
             }
-            if (this.options.includeCommented && ops[i].uiAttribs.comment)
+            if (this.options.include.commented && ops[i].uiAttribs.comment)
             {
                 includeReasons.push("includeCommented ");
                 included = true;
             }
-            if (this.options.includeCustomOps && namespaceutils.isPrivateOp(ops[i].objName))
+            if (this.options.include.customOps && namespaceutils.isPrivateOp(ops[i].objName))
             {
                 includeReasons.push("includeCustomOps");
                 included = true;
             }
-            if (this.options.includeAnimated && ops[i].hasAnimPort)
+            if (this.options.include.animated && ops[i].hasAnimPort)
             {
                 includeReasons.push("includeAnim");
                 included = true;
             }
+            if (this.options.include.selected && ops[i].uiAttribs.selected)
+            {
+                includeReasons.push("includeSelected");
+                included = true;
+            }
+            if (this.options.include.all)
+            {
+                includeReasons.push("all");
+                included = true;
+            }
+
+            if (this.options.only.selected && !ops[i].uiAttribs.selected) included = false;
 
             if (included)
             {
@@ -185,18 +211,18 @@ export class patchStructureQuery
                 else
                 {
                     let icon = "bookmark";
-                    if (this.options.includeCommented && ops[i].uiAttribs.comment) icon = "message";
-                    if (this.options.includeColored && ops[i].uiAttribs.color) icon = "op";
-                    if (this.options.includeComments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
-                    if (this.options.includeAreas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
-                    if (this.options.includeAnimated && ops[i].hasAnimPort) icon = "clock";
+                    if (this.options.include.commented && ops[i].uiAttribs.comment) icon = "message";
+                    if (this.options.include.colored && ops[i].uiAttribs.color) icon = "op";
+                    if (this.options.include.comments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
+                    if (this.options.include.areas && ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
+                    if (this.options.include.animated && ops[i].hasAnimPort) icon = "clock";
 
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + patchStructureQuery.sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
 
                     const s = { "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color };
 
-                    if (this.options.includePortsAnimated)
+                    if (this.options.include.portsAnimated)
                     {
                         s.ports = [];
                         for (let jj = 0; jj < ops[i].portsIn.length; jj++)

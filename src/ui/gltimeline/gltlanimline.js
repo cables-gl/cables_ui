@@ -75,6 +75,9 @@ export class glTlAnimLine extends Events
     /** @type {TlValueRuler} */
     #valueRuler = null;
 
+    /** @type {boolean} */
+    #hidden = false;
+
     /**
      * @param {GlTimeline} glTl
      * @param {Array<Port>} ports
@@ -180,6 +183,15 @@ export class glTlAnimLine extends Events
     }
 
     /**
+     * @param {string | number} idx
+     * @returns {TlTitle}
+     */
+    getTitle(idx)
+    {
+        return this.#titles[idx];
+    }
+
+    /**
      * @param {Anim} anim
      * @param {Port} [p]
      * @param {HTMLElement} [parent]
@@ -187,7 +199,7 @@ export class glTlAnimLine extends Events
     addTitle(anim, p, parent)
     {
 
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "collapsable": this.#options.collapsable });
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p });
         title.setHeight(this.height - 2);
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -224,23 +236,6 @@ export class glTlAnimLine extends Events
             this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
     }
 
-    updateTitles()
-    {
-        for (let i = 0; i < this.#titles.length; i++)
-            this.#titles[i].updateIcons();
-    }
-
-    setTitlePos()
-    {
-        for (let i = 0; i < this.#titles.length; i++)
-        {
-            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
-            this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
-            this.#titles[i].index = i;
-            this.#titles[i].tlKeys = this.#keys[i];
-        }
-    }
-
     posY()
     {
         return this.#glRectKeysBg.y;
@@ -260,13 +255,70 @@ export class glTlAnimLine extends Events
         }
     }
 
+    hide()
+    {
+        this.#hidden = true;
+        this.update();
+    }
+
+    show()
+    {
+        this.#hidden = false;
+        this.update();
+    }
+
+    get isHidden()
+    {
+        return this.#hidden;
+    }
+
+    get isVisible()
+    {
+        return !this.#hidden;
+    }
+
+    updateTitles()
+    {
+        for (let i = 0; i < this.#titles.length; i++)
+            this.#titles[i].updateIcons();
+    }
+
+    setTitlePos()
+    {
+        for (let i = 0; i < this.#titles.length; i++)
+        {
+            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
+            this.#titles[i].index = i;
+            this.#titles[i].tlKeys = this.#keys[i];
+        }
+    }
+
+    updateGlPos()
+    {
+        if (!this.isGraphLayout())
+        {
+            const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
+            const r = this.#titles[0].getClientRect();
+            this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+            this.setHeight(r.height - 10);
+
+            this.#glRectKeysBg.setSize(this.width, r.height - 2);
+        }
+    }
+
     update()
     {
         if (this.checkDisposed()) return;
         this.updateColor();
 
+        let h = this.height - 2;
+        if (this.#hidden)h = 0;
+        this.#glRectKeysBg.setSize(this.width, h);
+
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
+        this.updateGlPos();
     }
 
     updateColor()
@@ -275,12 +327,9 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            // console.log("titles", this.#titles);
-            // this.#titles[i].updateColor();
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
-
     }
 
     /**
@@ -301,9 +350,10 @@ export class glTlAnimLine extends Events
     {
         if (this.height == h) return;
         if (this.checkDisposed()) return;
-        this.height = h;
-        this.setWidth(this.width);
-        this.update();
+        // this.height = h;
+        // this.setWidth(this.width);
+        // this.update();
+        // this should be removed instead, call update....
     }
 
     /**
@@ -313,10 +363,13 @@ export class glTlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
         this.width = w;
-        // this.#glRectTitle.setSize(this.#glTl.titleSpace, this.height - 1);
-        this.#glRectKeysBg.setSize(this.width, this.height - 2);
-        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].reset();
 
+        // let h = this.height - 2;
+        // if (this.#hidden)h = 0;
+        // this.#glRectKeysBg.setSize(this.width, h);
+        this.update();
+
+        for (let i = 0; i < this.#keys.length; i++) this.#keys[i].reset();
     }
 
     checkDisposed()
@@ -333,8 +386,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
 
-        for (let i = 0; i < this.#listeners.length; i++)
-            this.#listeners[i].remove();
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         this.#listeners = [];
 
@@ -407,12 +459,14 @@ export class glTlAnimLine extends Events
         return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
     }
 
+    /**
+     * @param {number} v
+     */
     valueToPixelRel(v)
     {
         if (this.#keys.length == 0) return 1;
         let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
         return y;
-        // return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
     }
 
     /**

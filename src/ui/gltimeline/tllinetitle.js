@@ -42,6 +42,7 @@ export class TlTitle extends Events
     #port;
     #height;
     collapsed = false;
+    #hideOpName = false;
 
     /**
      * @param {HTMLElement} parentEl
@@ -104,6 +105,15 @@ export class TlTitle extends Events
     }
 
     /**
+     * @param {boolean} b
+     */
+    set hideOpName(b)
+    {
+        this.#hideOpName = b;
+        this.updateFromOp();
+    }
+
+    /**
      * @param {string} t
      */
     setTitle(t)
@@ -146,7 +156,9 @@ export class TlTitle extends Events
         let title = "";
         if (this.#op)
         {
-            title += "<span class=\"" + opNames.getNamespaceClassName(this.#op.objName) + "\">";
+            let style = "";
+            if (this.#hideOpName)style = "color:transparent !important";
+            title += "<span style=\"" + style + "\" class=\"" + opNames.getNamespaceClassName(this.#op.objName) + "\">";
             title += this.#op.name;
             title += "</span>";
 
@@ -315,5 +327,11 @@ export class TlTitle extends Events
     getAnim()
     {
         return this.#anim;
+    }
+
+    getClientRect()
+    {
+        return this.#el.getBoundingClientRect();
+
     }
 }

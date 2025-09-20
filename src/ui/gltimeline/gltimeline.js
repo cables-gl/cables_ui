@@ -174,6 +174,8 @@ export class GlTimeline extends Events
 
     /** @type {glTlDragArea} */
     loopAreaDrag = null;
+
+    /** @type {HTMLElement} */
     tlTimeScrollContainer;
 
     /**
@@ -413,7 +415,7 @@ export class GlTimeline extends Events
 
         /// ///////////////////
 
-        gui.on("opSelectChange", (op) =>
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {
             this.selectedOp = op;
 
@@ -456,6 +458,11 @@ export class GlTimeline extends Events
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
         gui.glTimeline = this;
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
+        {
+            if (this.isGraphLayout()) this.init();
+
+        });
 
         this.init();
         this._initUserPrefs();
@@ -475,7 +482,7 @@ export class GlTimeline extends Events
         else this.#selectModeEl.innerHTML = "manual";
 
         this.deactivateAllAnims(true);
-        gui.emitEvent("opSelectChange");
+        gui.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED);
         this.needsUpdateAll = "updategrathselect";
         this.saveUserSettings();
     }
@@ -757,6 +764,7 @@ export class GlTimeline extends Events
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
+
         this.#rects.mouseMove(x, y, event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
@@ -1266,22 +1274,36 @@ export class GlTimeline extends Events
         if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
+        /** @type {glTlAnimLine[]} */
+        const childLines = [];
+
         if (level > 0 && (item.childs && (item.childs.length > 0)) || (item.ports && item.ports.length > 1))
         {
             const click = () =>
             {
+
                 if (cont.style.height == "auto" || !cont.style.height)
                 {
                     cont.style.height = "24px";
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
+                    for (let i = 1; i < childLines.length; i++)
+                    {
+                        childLines[i].hide();
+                    }
                 }
                 else
                 {
                     cont.style.height = "auto";
                     toggle.classList.toggle("icon-chevron-down");
                     toggle.classList.toggle("icon-chevron-right");
+                    for (let i = 0; i < childLines.length; i++)
+                    {
+                        childLines[i].show();
+                    }
                 }
+                this.setPositions();
+
             };
 
             const toggle = document.createElement("a");
@@ -1310,7 +1332,9 @@ export class GlTimeline extends Events
                     const a = new glTlAnimLine(this,
                         [op.getPortByName(item.ports[i].name)],
                         { "parentEle": cont });
+                    childLines.push(a);
                     this.#tlAnims.push(a);
+                    if (i > 0)a.getTitle(0).hideOpName = true;
                 }
         }
         else
@@ -1325,12 +1349,8 @@ export class GlTimeline extends Events
         {
             console.log("waaaaaaaaaaat");
         }
-        // if (item.childs)
-        //     this.#tlAnims.push(
-        //         new glTlAnimLine(this, [], {
-        //             "collapsable": item.childs.length > 0,
-        //             "title": "noports " + item.title })
-        //     );
+
+        console.log("animlines", this.#tlAnims.length);
 
     }
 
@@ -1362,9 +1382,16 @@ export class GlTimeline extends Events
         this.#firstInit = false;
 
         const q = new patchStructureQuery();
-        q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
+        q.setOptions({ "include": { "animated": true, "subpatches": true, "portsAnimated": true } });
+        if (this.isGraphLayout())
+        {
+            q.setOptions({ "include": { "portsAnimated": true, "animated": true }, "only": { "selected": true } });
+        }
+
         console.log("qqqq", q.getHierarchy());
         const root = q.getHierarchy()[0];
+
+        this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
         // for (let i = 0; i < ops.length; i++)
@@ -1453,8 +1480,10 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
-            this.#tlAnims[i].setPosition(0, posy);
-            posy += this.#tlAnims[i].height;
+            this.#tlAnims[i].updateGlPos();
+            // this.#tlAnims[i].setPosition(0, posy);
+            // if (this.#tlAnims[i].isVisible)
+            //     posy += this.#tlAnims[i].height;
         }
 
     }
@@ -1512,8 +1541,10 @@ export class GlTimeline extends Events
 
             this.#cgl.pushDepthTest(true);
 
-            const scrollHeight = resY - this.getFirstLinePosy();
-            this.#rects.render(resX, resY, -1, ((this.getScrollY() + scrollHeight) / scrollHeight), resX / 2);
+            const scrollHeight = resY;// - this.getFirstLinePosy();
+
+            this.#rects.render(resX, resY, -1, (1 + ((this.getScrollY() * 2) / Math.floor(scrollHeight))), resX / 2);
+
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
@@ -1758,6 +1789,7 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
+        if (this.isGraphLayout()) return;
 
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));

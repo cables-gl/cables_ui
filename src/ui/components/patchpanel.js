@@ -1,7 +1,7 @@
 import { Events, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import PatchOutline from "./patchoutline.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -51,7 +51,7 @@ export default class PatchPanel extends Events
         }
 
         gui.opParams.emitEvent("opSelected", null);
-        gui.opParams.emitEvent("opSelectChange", null);
+        gui.opParams.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED, null);
 
         if (!force && ele.byClass("patchParamPanel")) return;
 
