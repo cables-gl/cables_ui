@@ -95,6 +95,21 @@ export class glTlAnimLine extends Events
         this.#glRectKeysBg.setSize(this.width, this.height - 2);
         this.#glRectKeysBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
+        this.#glRectKeysBg.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            for (let i = 0; i < this.#titles.length; i++)
+                this.#titles[i].hover();
+            this.updateColor();
+
+        });
+        this.#glRectKeysBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+        {
+            for (let i = 0; i < this.#titles.length; i++)
+                this.#titles[i].unhover();
+            this.updateColor();
+
+        });
+
         // this.height = Math.random() * 80 + 22;
         this.#disposeRects.push(this.#glRectKeysBg);
         for (let i = 0; i < ports.length; i++)
@@ -166,7 +181,11 @@ export class glTlAnimLine extends Events
 
     isHovering()
     {
-        return this.#glRectKeysBg.isHovering();
+        let anyhovering = false;
+        for (let i = 0; i < this.#titles.length; i++)
+            if (this.#titles[i].hovering)anyhovering = true;
+
+        return this.#glRectKeysBg.isHovering() || anyhovering;
     }
 
     /**
@@ -209,6 +228,7 @@ export class glTlAnimLine extends Events
             gui.patchView.centerSelectOp(this.#ops[title.index].id);
             this.updateTitles();
         });
+        title.on("hoverchange", this.updateColor.bind(this));
 
         this.#titles.push(title);
         this.setTitlePos();
@@ -324,6 +344,10 @@ export class glTlAnimLine extends Events
     updateColor()
     {
         if (this.checkDisposed()) return;
+        if (this.isHovering())
+            this.#glRectKeysBg.setColor(0.15, 0.15, 0.15, 1);
+        else
+            this.#glRectKeysBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
         for (let i = 0; i < this.#titles.length; i++)
         {
@@ -333,10 +357,10 @@ export class glTlAnimLine extends Events
     }
 
     /**
-     * @param {number} x
+     * @param {number} _x
      * @param {number} y
      */
-    setPosition(x, y)
+    setPosition(_x, y)
     {
         if (this.checkDisposed()) return;
         this.#glRectKeysBg.setPosition(0, y);

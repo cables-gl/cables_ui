@@ -13,6 +13,10 @@
         width:80%;
         padding-top:4px;
 
+        &:hover,&.hover
+        {
+            background-color: #111;
+        }
 
         span
         {

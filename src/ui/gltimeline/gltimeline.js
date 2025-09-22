@@ -23,7 +23,6 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
-import Collapsable from "../components/collapsable.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
 
 /**
@@ -264,6 +263,8 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerleave", () => { this.#rects.pointerLeave(); }, { "passive": true });
+
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
 
