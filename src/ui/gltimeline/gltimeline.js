@@ -1404,7 +1404,6 @@ export class GlTimeline extends Events
         //     {
         //         if (op.portsIn[j].anim)numOpAnims++;
         //     }
-
         //     for (let j = 0; j < op.portsIn.length; j++)
         //     {
         //         if (op.portsIn[j].anim)
@@ -1412,11 +1411,9 @@ export class GlTimeline extends Events
         //             if (this.filter(op.portsIn[j]))
         //             {
         //                 ports.push(op.portsIn[j]);
-
         //                 if (this.#layout === GlTimeline.LAYOUT_LINES)
         //                 {
         //                     const collapsable = numOpAnims > 1 && animIndex == 0;
-
         //                     console.log("collaps", collapsable);
         //                     const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
         //                     this.#tlAnims.push(a);
@@ -1430,6 +1427,7 @@ export class GlTimeline extends Events
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
+            console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());

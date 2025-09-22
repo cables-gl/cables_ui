@@ -142,8 +142,6 @@ export class glTlAnimLine extends Events
             if (ports[i])
                 this.setTitle(i, ports[i], ports[i].anim, options.parentEle || this.#glTl.tlTimeScrollContainer);
 
-        if (ports.length == 0) this.addFolder("folder" + options.title);
-
         if (this.isGraphLayout())
         {
             this.#valueRuler = new TlValueRuler(glTl, this, this.#glRectKeysBg);
@@ -156,6 +154,10 @@ export class glTlAnimLine extends Events
                 this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#glRectKeysBg.y) * 1000) / 1000);
                 this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
             });
+        }
+        else
+        {
+            if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
         }
 
         this.fitValues();
@@ -307,7 +309,6 @@ export class glTlAnimLine extends Events
     {
         for (let i = 0; i < this.#titles.length; i++)
         {
-            // this.#titles[i].setPos(3, i * glTlAnimLine.DEFAULT_HEIGHT + this.posY() - this.#glTl.getFirstLinePosy());
             this.#titles[i].setPos(3, this.posY() - this.#glTl.getFirstLinePosy());
             this.#titles[i].index = i;
             this.#titles[i].tlKeys = this.#keys[i];
@@ -322,8 +323,13 @@ export class glTlAnimLine extends Events
             const r = this.#titles[0].getClientRect();
             this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
             this.setHeight(r.height - 10);
-
             this.#glRectKeysBg.setSize(this.width, r.height - 2);
+        }
+        else
+        {
+            this.setPosition(this.#glRectKeysBg.x, this.#glTl.getFirstLinePosy());
+            this.height = this.#glTl.height;
+            this.#glRectKeysBg.setSize(this.width, this.height - 2);
         }
     }
 
@@ -333,6 +339,7 @@ export class glTlAnimLine extends Events
         this.updateColor();
 
         let h = this.height - 2;
+
         if (this.#hidden)h = 0;
         this.#glRectKeysBg.setSize(this.width, h);
 
@@ -362,6 +369,7 @@ export class glTlAnimLine extends Events
      */
     setPosition(_x, y)
     {
+        y = Math.floor(y);
         if (this.checkDisposed()) return;
         this.#glRectKeysBg.setPosition(0, y);
         this.setTitlePos();
@@ -565,9 +573,7 @@ export class glTlAnimLine extends Events
     render()
     {
         for (let j = 0; j < this.#keys.length; j++)
-        {
             this.#keys[j].render();
-        }
     }
 
     testSelected()
