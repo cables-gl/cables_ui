@@ -97,15 +97,17 @@ export class glTlAnimLine extends Events
 
         this.#glRectKeysBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
-            for (let i = 0; i < this.#titles.length; i++)
-                this.#titles[i].hover();
+            if (!this.isGraphLayout())
+                for (let i = 0; i < this.#titles.length; i++)
+                    this.#titles[i].hover();
             this.updateColor();
 
         });
         this.#glRectKeysBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
-            for (let i = 0; i < this.#titles.length; i++)
-                this.#titles[i].unhover();
+            if (!this.isGraphLayout())
+                for (let i = 0; i < this.#titles.length; i++)
+                    this.#titles[i].unhover();
             this.updateColor();
 
         });
@@ -119,7 +121,7 @@ export class glTlAnimLine extends Events
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
             if (this.#keys[i]) this.#keys[i].dispose();
-            this.#keys[i] = new glTlKeys(glTl, this, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options);
+            this.#keys[i] = new glTlKeys(glTl, this, this.#ports[i].anim, this.#glRectKeysBg, this.#ports[i], this.#options, i);
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
@@ -128,6 +130,15 @@ export class glTlAnimLine extends Events
                 anim.on(Anim.EVENT_CHANGE, () =>
                 {
                     if (!keys.isDragging()) keys.init();
+                }));
+
+            this.#listeners.push(
+                ports[i].on("animLineUpdate", () =>
+                {
+                    this.updateColor();
+                    console.log("hoveeeeeeeee");
+                    keys.updateColors();
+                    this.update();
                 }));
 
             if (ports.length == 1)
@@ -221,7 +232,9 @@ export class glTlAnimLine extends Events
     {
 
         const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p });
-        title.setHeight(this.height - 2);
+        if (this.isGraphLayout()) title.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+        else title.setHeight(this.height - 2);
+
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
@@ -319,11 +332,15 @@ export class glTlAnimLine extends Events
     {
         if (!this.isGraphLayout())
         {
-            const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
-            const r = this.#titles[0].getClientRect();
-            this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
-            this.setHeight(r.height - 10);
-            this.#glRectKeysBg.setSize(this.width, r.height - 2);
+            if (this.#titles[0])
+            {
+                const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
+                const r = this.#titles[0].getClientRect();
+                this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+                this.setHeight(r.height - 10);
+                this.#glRectKeysBg.setSize(this.width, r.height - 2);
+
+            }
         }
         else
         {
@@ -351,7 +368,7 @@ export class glTlAnimLine extends Events
     updateColor()
     {
         if (this.checkDisposed()) return;
-        if (this.isHovering())
+        if (this.isHovering() && !this.isGraphLayout())
             this.#glRectKeysBg.setColor(0.15, 0.15, 0.15, 1);
         else
             this.#glRectKeysBg.setColorArray(gui.theme.colors_patch.opBgRect);

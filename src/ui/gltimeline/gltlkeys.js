@@ -29,7 +29,7 @@ export class glTlKeys extends Events
     static COLOR_NORMAL = [0.7, 0.7, 0.7, 1];
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
-    static COLOR_HIGHLIGHT = [0, 1, 1, 1];
+    static COLOR_HIGHLIGHT = [0.8, 0.8, 0.8, 1];
 
     /** @type {Anim} */
     #anim = null;
@@ -85,6 +85,7 @@ export class glTlKeys extends Events
     #disposedWarning = 0;
     #bezCpZ = -0.3;
     #bezCpSize = 1;
+    #idx = -1;
 
     /**
      * @param {GlTimeline} glTl
@@ -93,8 +94,9 @@ export class glTlKeys extends Events
      * @param {GlRect} parentRect
      * @param {Port} port
      * @param {Object} options
+     * @param {Number} idx
      */
-    constructor(glTl, animLine, anim, parentRect, port, options)
+    constructor(glTl, animLine, anim, parentRect, port, options, idx)
     {
         super();
         this._log = new Logger("gltlKeys");
@@ -103,6 +105,7 @@ export class glTlKeys extends Events
         if (!port) this._log.error("no port");
         this.#anim = anim;
 
+        this.#idx = idx;
         this.#glTl = glTl;
         this.#parentRect = parentRect;
         this.#options = options || {};
@@ -113,9 +116,8 @@ export class glTlKeys extends Events
             {
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
-                {
                     this.#keys[i].update();
-                }
+
             }));
 
         if (this.isLayoutGraph())
@@ -304,10 +306,9 @@ export class glTlKeys extends Events
         const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
         if (this.#spline)
         {
-            if (!this.#anim.uiAttribs.readOnly && this.#anim.tlActive && !this.#port.animMuted)
+            if (this.animLine.getTitle(this.#idx) && this.animLine.getTitle(this.#idx).isHovering)
             {
-                if (this.#port.op.isCurrentUiOp()) this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
-                else this.#spline.setColorArray(glTlKeys.COLOR_NORMAL);
+                this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
             }
             else
             {
@@ -335,7 +336,6 @@ export class glTlKeys extends Events
                 col = glTlKeys.COLOR_SELECTED;
                 colBez = GlTimeline.COLOR_BEZ_HANDLE;
             }
-
             if (k.cp1r) k.cp1r.setColorArray(colBez);
             if (k.cp2r) k.cp2r.setColorArray(colBez);
             if (k.cp1s) k.cp1s.setColorArray(colBez);
