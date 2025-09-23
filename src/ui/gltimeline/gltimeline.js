@@ -23,7 +23,6 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
-import Collapsable from "../components/collapsable.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
 
 /**
@@ -264,6 +263,8 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerleave", () => { this.#rects.pointerLeave(); }, { "passive": true });
+
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
 
@@ -1403,7 +1404,6 @@ export class GlTimeline extends Events
         //     {
         //         if (op.portsIn[j].anim)numOpAnims++;
         //     }
-
         //     for (let j = 0; j < op.portsIn.length; j++)
         //     {
         //         if (op.portsIn[j].anim)
@@ -1411,11 +1411,9 @@ export class GlTimeline extends Events
         //             if (this.filter(op.portsIn[j]))
         //             {
         //                 ports.push(op.portsIn[j]);
-
         //                 if (this.#layout === GlTimeline.LAYOUT_LINES)
         //                 {
         //                     const collapsable = numOpAnims > 1 && animIndex == 0;
-
         //                     console.log("collaps", collapsable);
         //                     const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
         //                     this.#tlAnims.push(a);
@@ -1429,6 +1427,7 @@ export class GlTimeline extends Events
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
+            console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());

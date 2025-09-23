@@ -753,6 +753,18 @@ export default class GlRectInstancer extends Events
         this.#draggingRects = [];
     }
 
+    pointerLeave()
+    {
+        console.log("pointerleave........");
+        for (let i = 0; i < this.#rects.length; i++)
+        {
+            // this.#rects[i].emitEvent(GlRect.EVENT_POINTER_UNHOVER);
+            this.#rects[i].mouseMove(-99999, -99999, 0);
+
+        }
+
+    }
+
     /**
      * @param {string} idx
      */

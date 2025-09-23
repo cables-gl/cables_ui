@@ -65,6 +65,17 @@ export class TlTitle extends Events
 
         this.#elTitle = document.createElement("span");
 
+        this.#el.addEventListener("pointerenter", () =>
+        {
+            this.hovering = true;
+            this.emitEvent("hoverchange");
+        });
+        this.#el.addEventListener("pointerleave", () =>
+        {
+            this.hovering = false;
+            this.emitEvent("hoverchange");
+        });
+
         ele.clickable(this.#elTitle, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
@@ -332,6 +343,18 @@ export class TlTitle extends Events
     getClientRect()
     {
         return this.#el.getBoundingClientRect();
+
+    }
+
+    hover()
+    {
+        this.#el.classList.add("hover");
+
+    }
+
+    unhover()
+    {
+        this.#el.classList.remove("hover");
 
     }
 }

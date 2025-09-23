@@ -557,7 +557,6 @@ export default class GlRect extends Events
                 else this.#rectInstancer.setColor(this.#attrIndex, this.colorHover[0], this.colorHover[1], this.colorHover[2], this.colorHover[3]);
             }
             else this.#rectInstancer.setColor(this.#attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
-
         }
 
         for (let i = 0; i < this.childs.length; i++)
