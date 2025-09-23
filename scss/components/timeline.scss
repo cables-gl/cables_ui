@@ -3,6 +3,7 @@
 
     .tlTitle
     {
+        user-select: none;
         /* position: absolute; */
         background-color: black;
         white-space: nowrap;
@@ -51,6 +52,15 @@
             }
         }
     }
+        .folder{
+            height: 40px;
+            user-select: none;
+            margin-left: 10px;
+            background-color: #444;
+            border-radius: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
 
     .hasSelectedKeys
     {

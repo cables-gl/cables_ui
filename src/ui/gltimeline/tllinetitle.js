@@ -339,7 +339,6 @@ export class TlTitle extends Events
     getClientRect()
     {
         return this.#el.getBoundingClientRect();
-
     }
 
     hover()
@@ -347,8 +346,6 @@ export class TlTitle extends Events
         this.#el.classList.add("hover");
         this.isHovering = true;
         this.#port.emitEvent("animLineUpdate");
-        console.log("ja");
-
     }
 
     unhover()
@@ -356,6 +353,5 @@ export class TlTitle extends Events
         this.#el.classList.remove("hover");
         this.isHovering = false;
         this.#port.emitEvent("animLineUpdate");
-
     }
 }

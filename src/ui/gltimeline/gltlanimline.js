@@ -136,7 +136,6 @@ export class glTlAnimLine extends Events
                 ports[i].on("animLineUpdate", () =>
                 {
                     this.updateColor();
-                    console.log("hoveeeeeeeee");
                     keys.updateColors();
                     this.update();
                 }));
