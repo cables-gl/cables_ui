@@ -126,10 +126,10 @@ function initSplitPanes()
                 y = e.touches[0].clientY;
             }
 
-            gui.rendererWidth = (window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3;
+            gui.rendererWidth = Math.floor((window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3);
 
-            if (splitpane.rendererAspect) gui.rendererHeight = 1 / splitpane.rendererAspect * gui.rendererWidth;
-            else gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
+            if (splitpane.rendererAspect) gui.rendererHeight = Math.floor(1 / splitpane.rendererAspect * gui.rendererWidth);
+            else gui.rendererHeight = Math.floor(y * (1 / gui.corePatch().cgl.canvasScale) - 38);
 
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();

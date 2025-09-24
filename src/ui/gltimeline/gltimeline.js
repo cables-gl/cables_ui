@@ -1312,13 +1312,15 @@ export class GlTimeline extends Events
             toggle.classList.add("icon-chevron-down");
             toggle.classList.add("toggle");
             cont.appendChild(toggle);
-            //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
-            //
+
             if (item.childs && item.childs.length > 0)
             {
                 const eleTitle = document.createElement("a");
-                eleTitle.innerHTML = "/" + item.title;
-                cont.appendChild(eleTitle);
+                if (!item.ports)
+                {
+                    eleTitle.innerHTML = "" + item.title;
+                    eleTitle.classList.add("folder");
+                } cont.appendChild(eleTitle);
                 // cont.append("/" + item.title);
                 eleTitle.addEventListener("click", click);
             }

@@ -40,9 +40,12 @@ export class TlTitle extends Events
 
     /** @type {Port} */
     #port;
-    #height;
+
+    #height = 30;
+
     collapsed = false;
     #hideOpName = false;
+    isHovering = false;
 
     /**
      * @param {HTMLElement} parentEl
@@ -67,12 +70,12 @@ export class TlTitle extends Events
 
         this.#el.addEventListener("pointerenter", () =>
         {
-            this.hovering = true;
+            this.hover();
             this.emitEvent("hoverchange");
         });
         this.#el.addEventListener("pointerleave", () =>
         {
-            this.hovering = false;
+            this.unhover();
             this.emitEvent("hoverchange");
         });
 
@@ -81,19 +84,6 @@ export class TlTitle extends Events
             this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
             this.#gltl.showParamAnim(this.#anim);
         });
-
-        // if (options.collapsable)
-        //     this.collapseButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlcollapse\"></span>",
-        //         (e) =>
-        //         {
-        //             this.collapsed = !this.collapsed;
-        //             this.updateIcons();
-        //             console.log("collapse...", this.collapsed);
-
-        //         }
-        //     );
-        // else
-        //     this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" style=\"opacity:0\"></span>", null, false);
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
             this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
@@ -137,6 +127,7 @@ export class TlTitle extends Events
      */
     setHeight(h)
     {
+        console.log("setheight", h);
         this.#height = h;
         this.#el.style.height = h - 6 + "px";
     }
@@ -217,6 +208,7 @@ export class TlTitle extends Events
                     this.activeButton.children[0].classList.add("icon-pencil");
                     this.activeButton.children[0].classList.remove("icon-pencil-off");
                 }
+                if (this.#port) this.#port.emitEvent("animLineUpdate");
             }
         }
 
@@ -224,9 +216,11 @@ export class TlTitle extends Events
             this.muteButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
                 (e) =>
                 {
-
                     this.#port.animMuted = !this.#port.animMuted;
+                    this.#port.emitEvent("animLineUpdate");
+
                     this.updateIcons();
+
                 }
             );
         if (this.muteButton)
@@ -243,6 +237,8 @@ export class TlTitle extends Events
                 this.muteButton.children[0].classList.add("icon-eye");
                 this.muteButton.children[0].classList.remove("icon-eye-off");
             }
+            this.#port.emitEvent("animLineUpdate");
+
         }
 
         if (this.collapseButton)
@@ -343,18 +339,19 @@ export class TlTitle extends Events
     getClientRect()
     {
         return this.#el.getBoundingClientRect();
-
     }
 
     hover()
     {
         this.#el.classList.add("hover");
-
+        this.isHovering = true;
+        this.#port.emitEvent("animLineUpdate");
     }
 
     unhover()
     {
         this.#el.classList.remove("hover");
-
+        this.isHovering = false;
+        this.#port.emitEvent("animLineUpdate");
     }
 }
