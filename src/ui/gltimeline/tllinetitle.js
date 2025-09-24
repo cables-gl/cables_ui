@@ -50,6 +50,7 @@ export class TlTitle extends Events
     #hideOpName = false;
     isHovering = false;
     folderButton = null;
+    #options = {};
 
     /**
      * @param {HTMLElement} parentEl
@@ -103,11 +104,13 @@ export class TlTitle extends Events
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(this.#anim.tlActive);
         else this.setActive(true);
 
+        this.#options = options;
+
         if (options.animLine) this.animLine = options.animLine;
         if (options.port) this.setPort(options.port);
+        if (options.title) this.setTitle(options.title);
 
         this.updateIcons();
-        if (options.title) this.setTitle(options.title);
     }
 
     /**
@@ -132,7 +135,6 @@ export class TlTitle extends Events
      */
     setHeight(h)
     {
-        console.log("setheight", this.#port.title, h);
         this.#height = h;
         this.#el.style.height = Math.max(0, h - 6) + "px";
     }
@@ -160,7 +162,7 @@ export class TlTitle extends Events
 
     updateTitleFromOp()
     {
-        let title = "";
+        let title = this.#options.title || "";
         if (this.#op)
         {
             let style = "";
@@ -189,6 +191,10 @@ export class TlTitle extends Events
 
             this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
         }
+        else
+        {
+            console.log("no op title....");
+        }
 
         this.setTitle(title);
     }
@@ -198,8 +204,7 @@ export class TlTitle extends Events
      */
     setActive(c)
     {
-        if (this.#anim)
-            this.#anim.tlActive = c;
+        if (this.#anim) this.#anim.tlActive = c;
 
         this.updateIcons();
     }
@@ -213,7 +218,6 @@ export class TlTitle extends Events
                 {
                     this.animLine.toggleFolder();
                     this.updateTitleFromOp();
-
                 });
 
             if (!this.animLine.collapsed)
@@ -226,7 +230,6 @@ export class TlTitle extends Events
                 this.folderButton.children[0].classList.add("icon-chevron-right");
                 this.folderButton.children[0].classList.remove("icon-chevron-down");
             }
-
         }
 
         if (this.#anim)
@@ -263,7 +266,6 @@ export class TlTitle extends Events
                     this.#port.emitEvent("animLineUpdate");
 
                     this.updateIcons();
-
                 }
             );
         if (this.muteButton)
@@ -284,19 +286,6 @@ export class TlTitle extends Events
 
         }
 
-        // if (this.collapseButton)
-        // {
-        //     if (this.collapsed)
-        //     {
-        //         this.collapseButton.children[0].classList.remove("icon-chevron-right");
-        //         this.collapseButton.children[0].classList.add("icon-chevron-down");
-        //     }
-        //     else
-        //     {
-        //         this.collapseButton.children[0].classList.add("icon-chevron-right");
-        //         this.collapseButton.children[0].classList.remove("icon-chevron-down");
-        //     }
-        // }
     }
 
     /**
@@ -358,20 +347,17 @@ export class TlTitle extends Events
     {
         this.#el.style.left = (x) + "px";
         this.#el.style.top = (y) + "px";
-        // console.log(this.#gltl.getFirstLinePosy(), y);
     }
 
     dispose()
     {
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
         this.#el.remove();
-
     }
 
     /* @deprecated */
     updateColor()
     {
-
     }
 
     getAnim()
@@ -388,13 +374,13 @@ export class TlTitle extends Events
     {
         this.#el.classList.add("hover");
         this.isHovering = true;
-        this.#port.emitEvent("animLineUpdate");
+        this.#port?.emitEvent("animLineUpdate");
     }
 
     unhover()
     {
         this.#el.classList.remove("hover");
         this.isHovering = false;
-        this.#port.emitEvent("animLineUpdate");
+        this.#port?.emitEvent("animLineUpdate");
     }
 }

@@ -4,7 +4,6 @@
     .tlTitle
     {
         user-select: none;
-        /* position: absolute; */
         background-color: black;
         white-space: nowrap;
         padding-right: 5px;
@@ -13,6 +12,7 @@
         border-bottom:1px solid #222;
         width:80%;
         padding-top:4px;
+        overflow: hidden;
 
         &:hover,&.hover
         {

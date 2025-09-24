@@ -215,7 +215,6 @@ export class glTlKeys extends Events
     {
         if (this.animLine.isHidden)
         {
-            console.log("is hiddennnnnnnnnnnnnnn");
             for (let i = 0; i < this.#keys.length; i++)
             {
                 if (!this.#keys[i].isHidden) this.#keys[i].hide();

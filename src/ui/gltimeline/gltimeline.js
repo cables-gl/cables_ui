@@ -1258,13 +1258,18 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
+    /**
+     * @param {object} item
+     * @param {HTMLElement} parentEle
+     * @param {glTlAnimLine} [parentLine]
+     */
     hierarchyLine(item, level = 0, parentEle, parentLine)
     {
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
 
-        console.log("aa", item);
-        console.log("op", op);
+        // console.log("aa", item);
+        // console.log("op", op);
 
         const o = { "title": "lala " + item.title };
         if (item && item.childs && item.childs.length > 0)o.collapsable = true;
@@ -1275,61 +1280,6 @@ export class GlTimeline extends Events
         if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
-        /** @type {glTlAnimLine[]} */
-        const childLines = [];
-
-        if (level > 0 && (item.childs && (item.childs.length > 0)) || (item.ports && item.ports.length > 1))
-        {
-            const click = () =>
-            {
-
-                if (cont.style.height == "auto" || !cont.style.height)
-                {
-                    cont.style.height = "24px";
-                    toggle.classList.toggle("icon-chevron-down");
-                    toggle.classList.toggle("icon-chevron-right");
-                    for (let i = 1; i < childLines.length; i++)
-                    {
-                        if (childLines[i].hide)
-                            childLines[i].hide();
-                    }
-                }
-                else
-                {
-                    cont.style.height = "auto";
-                    toggle.classList.toggle("icon-chevron-down");
-                    toggle.classList.toggle("icon-chevron-right");
-                    for (let i = 0; i < childLines.length; i++)
-                    {
-                        childLines[i].show();
-                    }
-                }
-                this.setPositions();
-
-            };
-
-            const toggle = document.createElement("a");
-            toggle.classList.add("icon");
-            toggle.classList.add("icon-chevron-down");
-            toggle.classList.add("toggle");
-            cont.appendChild(toggle);
-
-            if (item.childs && item.childs.length > 0)
-            {
-                const eleTitle = document.createElement("a");
-                if (!item.ports)
-                {
-                    eleTitle.innerHTML = "" + item.title;
-                    eleTitle.classList.add("folder");
-                }
-                cont.appendChild(eleTitle);
-                // cont.append("/" + item.title);
-                eleTitle.addEventListener("click", click);
-            }
-
-            toggle.addEventListener("click", click);
-        }
-
         if (item.ports)
         {
             let first = null;
@@ -1337,19 +1287,12 @@ export class GlTimeline extends Events
                 for (let i = 0; i < item.ports.length; i++)
                 {
                     const o = { "parentEle": cont };
-
-                    const a = new glTlAnimLine(this,
-                        [op.getPortByName(item.ports[i].name)],
-                        o);
+                    const a = new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], o);
 
                     if (parentLine)parentLine.addFolderChild(a);
                     if (first)first.addFolderChild(a);
-                    if (i == 0)
-                    {
-                        first = a;
-                    }
+                    if (i == 0) first = a;
 
-                    childLines.push(a);
                     this.#tlAnims.push(a);
                     if (i > 0)a.getTitle(0).hideOpName = true;
                 }
@@ -1359,8 +1302,19 @@ export class GlTimeline extends Events
         {
             for (let i = 0; i < item.childs.length; i++)
             {
-                this.hierarchyLine(item.childs[i], ++level, cont);
-                childLines.push(item.childs[i]);
+                let a = null;
+                if (item.childs[i].childs)
+                {
+                    a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
+
+                    if (parentLine)parentLine.addFolderChild(a);
+
+                    console.log("hierarch", item.childs[i].title);
+                }
+
+                this.hierarchyLine(item.childs[i], ++level, cont, a);
+                // this.#tlAnims.push(a);
+
             }
         }
         else
@@ -1368,7 +1322,7 @@ export class GlTimeline extends Events
             console.log("waaaaaaaaaaat");
         }
 
-        console.log("animlines", this.#tlAnims.length);
+        // console.log("animlines", this.#tlAnims.length);
 
     }
 

@@ -170,7 +170,13 @@ export class glTlAnimLine extends Events
         else
         {
             // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
-            console.log("no folderanymore......");
+            // console.log("no folderanymore......");
+        }
+
+        if (this.#options.title)
+        {
+            console.log("addtitle", this.#options.title);
+            this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer, { "title": this.#options.title });
         }
 
         this.fitValues();
@@ -233,14 +239,17 @@ export class glTlAnimLine extends Events
     addTitle(anim, p, parent)
     {
 
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this });
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this, "title": this.#options.title });
 
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
-            gui.patchView.selectOpId(this.#ops[title.index].id);
-            gui.patchView.focusOp(this.#ops[title.index].id);
-            gui.patchView.centerSelectOp(this.#ops[title.index].id);
+            if (this.#ops[title.index])
+            {
+                gui.patchView.selectOpId(this.#ops[title.index].id);
+                gui.patchView.focusOp(this.#ops[title.index].id);
+                gui.patchView.centerSelectOp(this.#ops[title.index].id);
+            }
             this.updateTitles();
         });
         title.on("hoverchange", this.updateColor.bind(this));
@@ -338,7 +347,6 @@ export class glTlAnimLine extends Events
         else
         {
             this.#titles[0].setHeight(this.height - 2);
-
         }
 
         if (this.collapsed)
@@ -356,7 +364,6 @@ export class glTlAnimLine extends Events
             }
         }
         this.#glTl.setPositions();
-        console.log("updatetitleeeeeeeeeee");
     }
 
     setTitlePos()
@@ -381,8 +388,6 @@ export class glTlAnimLine extends Events
                 {
                     this.setHeight(0);
                     this.#glRectKeysBg.setSize(0, 0);
-                    console.log("hidd", this.isHidden);
-
                 }
                 else
                 {
@@ -426,9 +431,13 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            this.#keys[i].hidden = this.#hidden;
+
             if (this.#keys[i])
+            {
+                this.#keys[i].hidden = this.#hidden;
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+
+            }
         }
     }
 
