@@ -139,6 +139,21 @@ export class glTlKeys extends Events
         return this.#anim;
     }
 
+    /**
+     * @param {boolean} b
+     */
+    set hidden(b)
+    {
+        if (b)
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].hide();
+        else
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].show();
+        this.updateColors();
+        this.update();
+    }
+
     isCurrentOp()
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
@@ -200,6 +215,7 @@ export class glTlKeys extends Events
     {
         if (this.animLine.isHidden)
         {
+            console.log("is hiddennnnnnnnnnnnnnn");
             for (let i = 0; i < this.#keys.length; i++)
             {
                 if (!this.#keys[i].isHidden) this.#keys[i].hide();
@@ -315,6 +331,7 @@ export class glTlKeys extends Events
                 this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
             }
         }
+
         for (let i = 0; i < this.#keys.length; i++)
         {
             const k = this.#keys[i];
@@ -347,6 +364,7 @@ export class glTlKeys extends Events
             if (k.cp2r) k.cp2r.setShape(shape);
 
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
+            if (this.animLine.isHidden)col = glTlKeys.COLOR_INIT;
             keyRect.setColorArray(col);
         }
 

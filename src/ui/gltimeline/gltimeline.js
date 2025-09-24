@@ -1320,7 +1320,8 @@ export class GlTimeline extends Events
                 {
                     eleTitle.innerHTML = "" + item.title;
                     eleTitle.classList.add("folder");
-                } cont.appendChild(eleTitle);
+                }
+                cont.appendChild(eleTitle);
                 // cont.append("/" + item.title);
                 eleTitle.addEventListener("click", click);
             }
@@ -1346,6 +1347,7 @@ export class GlTimeline extends Events
             for (let i = 0; i < item.childs.length; i++)
             {
                 this.hierarchyLine(item.childs[i], ++level, cont);
+                childLines.push(item.childs[i]);
             }
         }
         else

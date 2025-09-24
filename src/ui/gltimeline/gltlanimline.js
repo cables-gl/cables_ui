@@ -195,7 +195,7 @@ export class glTlAnimLine extends Events
     {
         let anyhovering = false;
         for (let i = 0; i < this.#titles.length; i++)
-            if (this.#titles[i].hovering)anyhovering = true;
+            if (this.#titles[i].isHovering)anyhovering = true;
 
         return this.#glRectKeysBg.isHovering() || anyhovering;
     }
@@ -292,12 +292,17 @@ export class glTlAnimLine extends Events
     hide()
     {
         this.#hidden = true;
+        for (let j = 0; j < this.#keys.length; j++)
+            this.#keys[j].hidden = this.#hidden;
         this.update();
+        this.updateColor();
     }
 
     show()
     {
         this.#hidden = false;
+        for (let j = 0; j < this.#keys.length; j++)
+            this.#keys[j].hidden = this.#hidden;
         this.update();
     }
 
@@ -335,9 +340,19 @@ export class glTlAnimLine extends Events
             {
                 const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
                 const r = this.#titles[0].getClientRect();
-                this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
-                this.setHeight(r.height - 10);
-                this.#glRectKeysBg.setSize(this.width, r.height - 2);
+                if (this.isHidden)
+                {
+                    this.setHeight(0);
+                    this.#glRectKeysBg.setSize(0, 0);
+                    console.log("hidd", this.isHidden);
+
+                }
+                else
+                {
+                    this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+                    // this.setHeight(r.height - 10);
+                    this.#glRectKeysBg.setSize(this.width, r.height - 2);
+                }
 
             }
         }
@@ -356,8 +371,8 @@ export class glTlAnimLine extends Events
 
         let h = this.height - 2;
 
-        if (this.#hidden)h = 0;
-        this.#glRectKeysBg.setSize(this.width, h);
+        if (this.#hidden) this.#glRectKeysBg.setSize(0, 0);
+        else this.#glRectKeysBg.setSize(this.width, h);
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
@@ -374,6 +389,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+            this.#keys[i].hidden = this.#hidden;
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
