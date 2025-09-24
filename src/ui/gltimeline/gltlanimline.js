@@ -12,7 +12,6 @@ import { GlTimeline } from "./gltimeline.js";
 
 /**
  * @typedef AnimLineOptions
- * @property {boolean} [collapsable]
  * @property {boolean} [keyYpos]
  * @property {boolean} [multiAnims]
  */
@@ -77,6 +76,9 @@ export class glTlAnimLine extends Events
 
     /** @type {boolean} */
     #hidden = false;
+
+    /** @type {glTlAnimLine[]} */
+    childLines = [];
 
     /**
      * @param {GlTimeline} glTl
@@ -167,7 +169,8 @@ export class glTlAnimLine extends Events
         }
         else
         {
-            if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
+            // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
+            console.log("no folderanymore......");
         }
 
         this.fitValues();
@@ -230,9 +233,7 @@ export class glTlAnimLine extends Events
     addTitle(anim, p, parent)
     {
 
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p });
-        if (this.isGraphLayout()) title.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
-        else title.setHeight(this.height - 2);
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this });
 
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
@@ -246,20 +247,21 @@ export class glTlAnimLine extends Events
 
         this.#titles.push(title);
         this.setTitlePos();
+        this.updateTitles();
     }
 
-    addFolder(text)
-    {
-        const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
-        title.setHeight(this.height - 2);
-        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
-        {
-            console.log("folder...");
-        });
+    // addFolder(text)
+    // {
+    //     const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
+    //     title.setHeight(this.height - 2);
+    //     title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
+    //     {
+    //         console.log("folder...");
+    //     });
 
-        this.#titles.push(title);
-        this.setTitlePos();
-    }
+    //     this.#titles.push(title);
+    //     this.setTitlePos();
+    // }
 
     /**
      * @param {Op[]} ops
@@ -296,6 +298,8 @@ export class glTlAnimLine extends Events
             this.#keys[j].hidden = this.#hidden;
         this.update();
         this.updateColor();
+        this.updateTitles();
+
     }
 
     show()
@@ -304,6 +308,7 @@ export class glTlAnimLine extends Events
         for (let j = 0; j < this.#keys.length; j++)
             this.#keys[j].hidden = this.#hidden;
         this.update();
+        this.updateTitles();
     }
 
     get isHidden()
@@ -320,6 +325,38 @@ export class glTlAnimLine extends Events
     {
         for (let i = 0; i < this.#titles.length; i++)
             this.#titles[i].updateIcons();
+
+        if (this.isHidden) this.#titles[0].setHeight(0);
+        else
+        if (this.isGraphLayout())
+        {
+            for (let i = 0; i < this.#titles.length; i++)
+            {
+                this.#titles[i].setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+            }
+        }
+        else
+        {
+            this.#titles[0].setHeight(this.height - 2);
+
+        }
+
+        if (this.collapsed)
+        {
+            for (let i = 0; i < this.childLines.length; i++)
+            {
+                this.childLines[i].hide();
+            }
+        }
+        else
+        {
+            for (let i = 0; i < this.childLines.length; i++)
+            {
+                this.childLines[i].show();
+            }
+        }
+        this.#glTl.setPositions();
+        console.log("updatetitleeeeeeeeeee");
     }
 
     setTitlePos()
@@ -533,6 +570,19 @@ export class glTlAnimLine extends Events
         return y;
     }
 
+    getPortTitles()
+    {
+        let str = "";
+        for (let i = 0; i < this.#ports.length; i++)
+        {
+            // if (i > 0)
+            str += ", ";
+            str += this.#ports[i].getTitle();
+        }
+        return str;
+
+    }
+
     /**
      * @param {Op[]} selops
      */
@@ -619,4 +669,41 @@ export class glTlAnimLine extends Events
     {
         return this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS;
     }
+
+    addFolderChild(c)
+    {
+        this.childLines.push(c);
+        this.#titles[0].updateIcons();
+    }
+
+    toggleFolder()
+    {
+        if (this.collapsed) this.expandFolder();
+        else this.collapseFolder();
+    }
+
+    collapseFolder()
+    {
+        for (let i = 0; i < this.childLines.length; i++)
+        {
+            this.childLines[i].hide();
+        }
+        this.collapsed = true;
+        this.#titles[0].updateIcons();
+        this.updateTitles();
+
+    }
+
+    expandFolder()
+    {
+        for (let i = 0; i < this.childLines.length; i++)
+        {
+            this.childLines[i].show();
+        }
+        this.collapsed = false;
+        this.#titles[0].updateIcons();
+        this.updateTitles();
+
+    }
+
 }

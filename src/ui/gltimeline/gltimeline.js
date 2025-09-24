@@ -1258,7 +1258,7 @@ export class GlTimeline extends Events
         return this.#cgl.canvasWidth;
     }
 
-    hierarchyLine(item, level = 0, parentEle)
+    hierarchyLine(item, level = 0, parentEle, parentLine)
     {
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
@@ -1290,7 +1290,8 @@ export class GlTimeline extends Events
                     toggle.classList.toggle("icon-chevron-right");
                     for (let i = 1; i < childLines.length; i++)
                     {
-                        childLines[i].hide();
+                        if (childLines[i].hide)
+                            childLines[i].hide();
                     }
                 }
                 else
@@ -1328,14 +1329,26 @@ export class GlTimeline extends Events
 
             toggle.addEventListener("click", click);
         }
+
         if (item.ports)
         {
+            let first = null;
             if (op)
                 for (let i = 0; i < item.ports.length; i++)
                 {
+                    const o = { "parentEle": cont };
+
                     const a = new glTlAnimLine(this,
                         [op.getPortByName(item.ports[i].name)],
-                        { "parentEle": cont });
+                        o);
+
+                    if (parentLine)parentLine.addFolderChild(a);
+                    if (first)first.addFolderChild(a);
+                    if (i == 0)
+                    {
+                        first = a;
+                    }
+
                     childLines.push(a);
                     this.#tlAnims.push(a);
                     if (i > 0)a.getTitle(0).hideOpName = true;

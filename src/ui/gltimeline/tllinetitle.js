@@ -41,11 +41,15 @@ export class TlTitle extends Events
     /** @type {Port} */
     #port;
 
+    /** @type {glTlAnimLine} */
+    animLine = null;
+
     #height = 30;
 
     collapsed = false;
     #hideOpName = false;
     isHovering = false;
+    folderButton = null;
 
     /**
      * @param {HTMLElement} parentEl
@@ -99,6 +103,7 @@ export class TlTitle extends Events
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(this.#anim.tlActive);
         else this.setActive(true);
 
+        if (options.animLine) this.animLine = options.animLine;
         if (options.port) this.setPort(options.port);
 
         this.updateIcons();
@@ -111,7 +116,7 @@ export class TlTitle extends Events
     set hideOpName(b)
     {
         this.#hideOpName = b;
-        this.updateFromOp();
+        this.updateTitleFromOp();
     }
 
     /**
@@ -127,9 +132,9 @@ export class TlTitle extends Events
      */
     setHeight(h)
     {
-        console.log("setheight", h);
+        console.log("setheight", this.#port.title, h);
         this.#height = h;
-        this.#el.style.height = h - 6 + "px";
+        this.#el.style.height = Math.max(0, h - 6) + "px";
     }
 
     /**
@@ -141,19 +146,19 @@ export class TlTitle extends Events
         this.#listeners.push(
             port.op.on(Op.EVENT_UIATTR_CHANGE, () =>
             {
-                this.updateFromOp();
+                this.updateTitleFromOp();
             }),
             port.on(Port.EVENT_UIATTRCHANGE, () =>
             {
-                this.updateFromOp();
+                this.updateTitleFromOp();
             })
         );
         this.#op = port.op;
         this.#port = port;
-        this.updateFromOp();
+        this.updateTitleFromOp();
     }
 
-    updateFromOp()
+    updateTitleFromOp()
     {
         let title = "";
         if (this.#op)
@@ -164,7 +169,22 @@ export class TlTitle extends Events
             title += this.#op.name;
             title += "</span>";
 
-            title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
+            if (this.animLine && this.animLine.childLines.length > 0 && this.animLine.collapsed)
+            {
+                title += " <span class=\"portname\">" + this.#port.getTitle();
+
+                for (let i = 0; i < this.animLine.childLines.length; i++)
+                {
+                    title += this.animLine.childLines[i].getPortTitles();
+                }
+
+                title += "</span>";
+            }
+            else
+            {
+                title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
+
+            }
             if (this.#op.uiAttribs.comment) title += "<span class=\"comment\"> // " + this.#op.uiAttribs.comment + "</span>";
 
             this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
@@ -186,6 +206,29 @@ export class TlTitle extends Events
 
     updateIcons()
     {
+        if (this.animLine && this.animLine.childLines && this.animLine.childLines.length > 0)
+        {
+            if (!this.folderButton)
+                this.folderButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlmute\"></span>", () =>
+                {
+                    this.animLine.toggleFolder();
+                    this.updateTitleFromOp();
+
+                });
+
+            if (!this.animLine.collapsed)
+            {
+                this.folderButton.children[0].classList.remove("icon-chevron-right");
+                this.folderButton.children[0].classList.add("icon-chevron-down");
+            }
+            else
+            {
+                this.folderButton.children[0].classList.add("icon-chevron-right");
+                this.folderButton.children[0].classList.remove("icon-chevron-down");
+            }
+
+        }
+
         if (this.#anim)
         {
 
@@ -241,19 +284,19 @@ export class TlTitle extends Events
 
         }
 
-        if (this.collapseButton)
-        {
-            if (this.collapsed)
-            {
-                this.collapseButton.children[0].classList.remove("icon-chevron-right");
-                this.collapseButton.children[0].classList.add("icon-chevron-down");
-            }
-            else
-            {
-                this.collapseButton.children[0].classList.add("icon-chevron-right");
-                this.collapseButton.children[0].classList.remove("icon-chevron-down");
-            }
-        }
+        // if (this.collapseButton)
+        // {
+        //     if (this.collapsed)
+        //     {
+        //         this.collapseButton.children[0].classList.remove("icon-chevron-right");
+        //         this.collapseButton.children[0].classList.add("icon-chevron-down");
+        //     }
+        //     else
+        //     {
+        //         this.collapseButton.children[0].classList.add("icon-chevron-right");
+        //         this.collapseButton.children[0].classList.remove("icon-chevron-down");
+        //     }
+        // }
     }
 
     /**
