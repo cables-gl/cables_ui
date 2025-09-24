@@ -78,6 +78,7 @@ export class TlTitle extends Events
             this.hover();
             this.emitEvent("hoverchange");
         });
+
         this.#el.addEventListener("pointerleave", () =>
         {
             this.unhover();

@@ -1271,9 +1271,9 @@ export class GlTimeline extends Events
         // console.log("aa", item);
         // console.log("op", op);
 
-        const o = { "title": "lala " + item.title };
-        if (item && item.childs && item.childs.length > 0)o.collapsable = true;
-        o.parentEle = parentEle;
+        // const o = { "title": "lala " + item.title };
+        // if (item && item.childs && item.childs.length > 0)o.collapsable = true;
+        // o.parentEle = parentEle;
 
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
@@ -1308,13 +1308,9 @@ export class GlTimeline extends Events
                     a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
 
                     if (parentLine)parentLine.addFolderChild(a);
-
-                    console.log("hierarch", item.childs[i].title);
                 }
 
-                this.hierarchyLine(item.childs[i], ++level, cont, a);
-                // this.#tlAnims.push(a);
-
+                this.hierarchyLine(item.childs[i], ++level, cont, a || parentLine);
             }
         }
         else
