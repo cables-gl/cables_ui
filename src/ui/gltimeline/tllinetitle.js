@@ -174,7 +174,9 @@ export class TlTitle extends Events
 
             if (this.animLine && this.animLine.childLines.length > 0 && this.animLine.collapsed)
             {
-                title += " <span class=\"portname\">" + this.#port.getTitle();
+                title += "(" + (this.animLine.childLines.length + 1) + ") ";
+                title += " <span class=\"portname\">";
+                title += this.#port.getTitle();
 
                 for (let i = 0; i < this.animLine.childLines.length; i++)
                 {
