@@ -240,6 +240,7 @@ export default class GlTimelineTab
         this.tlCanvas.setSize(w, parentEle.clientHeight);
         console.log("stttt", w, parentEle.clientWidth, this.#splitterPos, this.#splitterPosRight, parentEle.clientHeight);
         this.resizing = false;
+        document.documentElement.style.setProperty("--timelineSplitterLeft", this.#splitterPos + "px");
 
     }
 

@@ -23,13 +23,13 @@ export class TlTitle extends Events
     #el = null;
 
     /** @type {HTMLElement} */
-    #elButtons = null;
+    #elButtonsLeft = null;
 
     /** @type {HTMLElement} */
     #elTitle = null;
 
-    /** @type {Object} */
-    #buttons = [];
+    // * @type {Object}
+    // #buttons = [];
     #hasSelectedKeys;
 
     /** @type {Op} */
@@ -58,6 +58,8 @@ export class TlTitle extends Events
     isHovering = false;
     folderButton = null;
     #options = {};
+    #elButtonsRight;
+    #elIndent;
 
     /**
      * @param {HTMLElement} parentEl
@@ -74,9 +76,17 @@ export class TlTitle extends Events
         this.#el.classList.add("tlTitle");
         parentEl.appendChild(this.#el);
 
-        this.#elButtons = document.createElement("span");
-        this.#elButtons.classList.add("tlButtons");
-        this.#el.appendChild(this.#elButtons);
+        this.#elButtonsRight = document.createElement("span");
+        this.#elButtonsRight.classList.add("tlButtonsRight");
+        this.#el.appendChild(this.#elButtonsRight);
+
+        this.#elIndent = document.createElement("span");
+        this.#elIndent.classList.add("indent");
+        this.#el.appendChild(this.#elIndent);
+
+        this.#elButtonsLeft = document.createElement("span");
+        this.#elButtonsLeft.classList.add("tlButtonsLeft");
+        this.#el.appendChild(this.#elButtonsLeft);
 
         this.#elTitle = document.createElement("span");
 
@@ -99,7 +109,7 @@ export class TlTitle extends Events
         });
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS)
-            this.activeButton = this.addButton("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
+            this.activeButton = this.addButtonRight("<span class=\"icon icon-pencil icon-0_5x nomargin info\" data-info=\"tlactive\"></span>",
                 (e) =>
                 {
                     if (e.buttons == 2) this.#gltl.deactivateAllAnims();
@@ -272,7 +282,7 @@ export class TlTitle extends Events
         }
 
         if (this.#port && !this.muteButton)
-            this.muteButton = this.addButton("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+            this.muteButton = this.addButtonRight("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
                 (e) =>
                 {
                     this.#port.animMuted = !this.#port.animMuted;
@@ -335,9 +345,22 @@ export class TlTitle extends Events
      * @param {string} title
      * @param {Function} cb
      * @param {boolean} [visible]
+     * @param {undefined} [side]
      */
-    addButton(title, cb, visible)
+    addButtonRight(title, cb, visible, side)
     {
+        return this.addButton(title, cb, visible, 1);
+    }
+
+    /**
+     * @param {string} title
+     * @param {Function} cb
+     * @param {boolean} [visible]
+     * @param {number} [side]
+     */
+    addButton(title, cb, visible, side)
+    {
+
         const button = document.createElement("a");
         button.classList.add("button-small");
 
@@ -348,8 +371,11 @@ export class TlTitle extends Events
         if (cb) button.addEventListener("contextmenu", (e) => { cb(e); });
         button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
         if (visible === false)button.style.opacity = "0";
-        this.#elButtons.appendChild(button);
-        this.#buttons.push({ "ele": button, cb, title });
+
+        if (!side) this.#elButtonsLeft.appendChild(button);
+        else this.#elButtonsRight.appendChild(button);
+
+        // this.#buttons.push({ "ele": button, cb, title });
         return button;
     }
 

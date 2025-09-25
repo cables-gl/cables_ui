@@ -19,11 +19,26 @@
             background-color: #111;
         }
 
+        .tlButtonsLeft
+        {
+            width:22px;
+            display: inline-block;
+            padding-right: 0px;
+        }
+
+        .tlButtonsRight
+        {
+            padding: 0px;
+            position: absolute;
+            left: var(--timelineSplitterLeft);
+            transform: translate(-100%);
+        }
+
         span
         {
             cursor: pointer;
-            padding-right: 10px;
-            padding-left: 5px;
+            padding-right: 5px;
+            padding-left: 2px;
             color:var(--color-07);
 
             &.current
@@ -184,7 +199,7 @@
         position: relative;
         /* border: 1px solid red; */
         overflow: hidden;
-        padding-left: 20px;
+        /* padding-left: 20px; */
 
         .toggle{
             background-color: white;
@@ -194,5 +209,26 @@
             position: absolute;
             margin-left: -20px;
         }
+    }
+        .level1 .indent{ width: 0px; }
+        .level2 .indent{ width: 20px; }
+        .level3 .indent{ width: 40px; }
+        .level4 .indent{ width: 60px; }
+        .level5 .indent{ width: 80px; }
+        .level6 .indent{ width: 100px; }
+        .level7 .indent{ width: 120px; }
+        .level8 .indent{ width: 140px; }
+        .level9 .indent{ width: 160px; }
+        .level10 .indent{ width: 180px; }
+        .level11 .indent{ width: 200px; }
+        .level12 .indent{ width: 220px; }
+        .level13 .indent{ width: 240px; }
+        .level14 .indent{ width: 260px; }
+        .level15 .indent{ width: 280px; }
+        .level16 .indent{ width: 300px; }
+        .level17 .indent{ width: 320px; }
+    .indent{
+        height: 4px;
+        display: inline-block;
     }
 }

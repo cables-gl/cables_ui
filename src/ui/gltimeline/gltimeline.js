@@ -1282,7 +1282,8 @@ export class GlTimeline extends Events
 
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
-        if (level == 0)cont.style.marginLeft = "-20px";
+        cont.classList.add("level" + level);
+        // if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
         if (item.ports)
@@ -1315,7 +1316,7 @@ export class GlTimeline extends Events
                     if (parentLine)parentLine.addFolderChild(a);
                 }
 
-                this.hierarchyLine(item.childs[i], ++level, cont, a || parentLine);
+                this.hierarchyLine(item.childs[i], level + 1, cont, a || parentLine);
             }
         }
         else
