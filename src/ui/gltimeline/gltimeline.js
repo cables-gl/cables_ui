@@ -816,7 +816,6 @@ export class GlTimeline extends Events
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
-                        console.log("selectrecc", this.selectRect);
 
                         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].testSelected();
                     }

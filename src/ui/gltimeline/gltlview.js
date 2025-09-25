@@ -240,7 +240,6 @@ export class GlTlView
 
         const t = this.#timer.getTime();
         this.#animZoom.clear(t);
-        // this.#animZoom.setValue(t, this.#zoom);
         this.#animZoom.setValue(t + dur, zoom);
     }
 

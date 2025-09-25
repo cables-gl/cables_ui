@@ -343,7 +343,7 @@ export class glTlAnimLine extends Events
     getKeyYPos()
     {
         if (this.isHidden && this.parentLine) return this.parentLine.getKeyYPos();
-        return this.#glRectKeysBg.h / 2;
+        return this.height / 2;
     }
 
     updateTitles()
@@ -411,17 +411,15 @@ export class glTlAnimLine extends Events
                 else
                 {
                     this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
-                    // this.setHeight(r.height - 10);
-                    this.#glRectKeysBg.setSize(this.width, r.height - 2);
+                    this.#glRectKeysBg.setSize(this.width, r.height - 1);
                 }
-
             }
         }
         else
         {
             this.setPosition(this.#glRectKeysBg.x, this.#glTl.getFirstLinePosy());
             this.height = this.#glTl.height;
-            this.#glRectKeysBg.setSize(this.width, this.height - 2);
+            this.#glRectKeysBg.setSize(this.width, this.height);
         }
     }
 
@@ -430,7 +428,7 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.updateColor();
 
-        let h = this.height - 2;
+        let h = this.height;
 
         if (this.#hidden) this.#glRectKeysBg.setSize(0, 0);
         else this.#glRectKeysBg.setSize(this.width, h);
@@ -450,7 +448,6 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
