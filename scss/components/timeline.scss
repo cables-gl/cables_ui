@@ -39,7 +39,11 @@
 
         &.selectedOp
         {
-            background-color: #444;
+            .opname
+            {
+                background-color: #555;
+                border-radius: 4px;
+            }
         }
 
         .button-small {

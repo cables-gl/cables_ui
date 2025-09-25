@@ -174,8 +174,11 @@ export class TlTitle extends Events
         if (this.#op)
         {
             let style = "";
+            let classnames = opNames.getNamespaceClassName(this.#op.objName);
+
             if (this.#hideOpName)style = "color:transparent !important";
-            title += "<span style=\"" + style + "\" class=\"" + opNames.getNamespaceClassName(this.#op.objName) + "\">";
+            else classnames += " opname ";
+            title += "<span style=\"" + style + "\" class=\"" + classnames + "\">";
             title += this.#op.name;
             title += "</span>";
 
