@@ -374,6 +374,8 @@ export default class GlRect extends Events
      */
     setPosition(_x, _y, _z = this.#z)
     {
+        let changed = false;
+        if (_x != this.#x || _y != this.#y || _z != this.#z)changed = true;
         this.#x = _x;
         this.#y = _y;
         this.#z = _z;
@@ -392,10 +394,9 @@ export default class GlRect extends Events
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
         for (let i = 0; i < this.childs.length; i++)
-        {
             this.childs[i].updateParentPosition();
-        }
-        this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
+
+        if (changed) this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
 
     updateParentPosition()
