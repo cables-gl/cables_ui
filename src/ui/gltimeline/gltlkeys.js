@@ -139,6 +139,21 @@ export class glTlKeys extends Events
         return this.#anim;
     }
 
+    /**
+     * @param {boolean} b
+     */
+    set hidden(b)
+    {
+        if (b)
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].hide();
+        else
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].show();
+        this.updateColors();
+        this.update();
+    }
+
     isCurrentOp()
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
@@ -198,14 +213,14 @@ export class glTlKeys extends Events
      */
     update()
     {
-        if (this.animLine.isHidden)
-        {
-            for (let i = 0; i < this.#keys.length; i++)
-            {
-                if (!this.#keys[i].isHidden) this.#keys[i].hide();
-            }
-            return;
-        }
+        // if (this.animLine.isHidden)
+        // {
+        //     for (let i = 0; i < this.#keys.length; i++)
+        //     {
+        //         if (!this.#keys[i].isHidden) this.#keys[i].hide();
+        //     }
+        //     return;
+        // }
         if (this.#disposed)
         {
             this.#disposedWarning++;
@@ -315,6 +330,7 @@ export class glTlKeys extends Events
                 this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
             }
         }
+
         for (let i = 0; i < this.#keys.length; i++)
         {
             const k = this.#keys[i];
@@ -347,6 +363,7 @@ export class glTlKeys extends Events
             if (k.cp2r) k.cp2r.setShape(shape);
 
             if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
+            // if (this.animLine.isHidden)col = glTlKeys.COLOR_INIT;
             keyRect.setColorArray(col);
         }
 
@@ -361,6 +378,7 @@ export class glTlKeys extends Events
         // console.log("reason", reason);
         if (this.#glTl.isSelecting()) this.testSelected();
         if (this.#keys.length != this.#anim.keys.length) this.init();
+        let y = this.animLine.getKeyYPos();
 
         const perf = gui.uiProfiler.start("[gltl] setkeypositions");
         for (let i = 0; i < this.#keys.length; i++)
@@ -369,7 +387,6 @@ export class glTlKeys extends Events
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
 
-            let y = (this.#parentRect.h / 2);
             if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);

@@ -12,7 +12,6 @@ import { GlTimeline } from "./gltimeline.js";
 
 /**
  * @typedef AnimLineOptions
- * @property {boolean} [collapsable]
  * @property {boolean} [keyYpos]
  * @property {boolean} [multiAnims]
  */
@@ -77,6 +76,12 @@ export class glTlAnimLine extends Events
 
     /** @type {boolean} */
     #hidden = false;
+
+    /** @type {glTlAnimLine[]} */
+    childLines = [];
+
+    /** @type {glTlAnimLine} */
+    parentLine = null;
 
     /**
      * @param {GlTimeline} glTl
@@ -167,7 +172,14 @@ export class glTlAnimLine extends Events
         }
         else
         {
-            if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
+            // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
+            // console.log("no folderanymore......");
+        }
+
+        if (this.#options.title)
+        {
+            console.log("addtitle", this.#options.title);
+            this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer, { "title": this.#options.title });
         }
 
         this.fitValues();
@@ -195,7 +207,7 @@ export class glTlAnimLine extends Events
     {
         let anyhovering = false;
         for (let i = 0; i < this.#titles.length; i++)
-            if (this.#titles[i].hovering)anyhovering = true;
+            if (this.#titles[i].isHovering)anyhovering = true;
 
         return this.#glRectKeysBg.isHovering() || anyhovering;
     }
@@ -230,36 +242,38 @@ export class glTlAnimLine extends Events
     addTitle(anim, p, parent)
     {
 
-        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p });
-        if (this.isGraphLayout()) title.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
-        else title.setHeight(this.height - 2);
+        const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this, "title": this.#options.title });
 
         title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
-            gui.patchView.selectOpId(this.#ops[title.index].id);
-            gui.patchView.focusOp(this.#ops[title.index].id);
-            gui.patchView.centerSelectOp(this.#ops[title.index].id);
+            if (this.#ops[title.index])
+            {
+                gui.patchView.selectOpId(this.#ops[title.index].id);
+                gui.patchView.focusOp(this.#ops[title.index].id);
+                gui.patchView.centerSelectOp(this.#ops[title.index].id);
+            }
             this.updateTitles();
         });
         title.on("hoverchange", this.updateColor.bind(this));
 
         this.#titles.push(title);
         this.setTitlePos();
+        this.updateTitles();
     }
 
-    addFolder(text)
-    {
-        const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
-        title.setHeight(this.height - 2);
-        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
-        {
-            console.log("folder...");
-        });
+    // addFolder(text)
+    // {
+    //     const title = new TlTitle(this.#glTl, this.#glTl.tlTimeScrollContainer, null, { "port": null, "collapsable": true, "title": text });
+    //     title.setHeight(this.height - 2);
+    //     title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
+    //     {
+    //         console.log("folder...");
+    //     });
 
-        this.#titles.push(title);
-        this.setTitlePos();
-    }
+    //     this.#titles.push(title);
+    //     this.setTitlePos();
+    // }
 
     /**
      * @param {Op[]} ops
@@ -292,13 +306,27 @@ export class glTlAnimLine extends Events
     hide()
     {
         this.#hidden = true;
+        // for (let j = 0; j < this.#keys.length; j++)
+        //     this.#keys[j].hidden = this.#hidden;
         this.update();
+        this.updateColor();
+        this.updateTitles();
+
+        for (let i = 0; i < this.#keys.length; i++)
+            this.#keys[i].setKeyPositions("collapse");
+
     }
 
     show()
     {
         this.#hidden = false;
+        // for (let j = 0; j < this.#keys.length; j++)
+        //     this.#keys[j].hidden = this.#hidden;
         this.update();
+        this.updateTitles();
+
+        for (let i = 0; i < this.#keys.length; i++)
+            this.#keys[i].setKeyPositions("collapse");
     }
 
     get isHidden()
@@ -311,10 +339,49 @@ export class glTlAnimLine extends Events
         return !this.#hidden;
     }
 
+    getKeyYPos()
+    {
+        if (this.isHidden && this.parentLine) return this.parentLine.getKeyYPos();
+        return this.#glRectKeysBg.h / 2;
+    }
+
     updateTitles()
     {
         for (let i = 0; i < this.#titles.length; i++)
             this.#titles[i].updateIcons();
+
+        if (this.isHidden)
+        {
+            this.#titles[0].setHeight(0);
+        }
+        else
+        if (this.isGraphLayout())
+        {
+            for (let i = 0; i < this.#titles.length; i++)
+            {
+                this.#titles[i].setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+            }
+        }
+        else
+        {
+            this.#titles[0].setHeight(this.height - 2);
+        }
+
+        if (this.collapsed)
+        {
+            for (let i = 0; i < this.childLines.length; i++)
+            {
+                this.childLines[i].hide();
+            }
+        }
+        else
+        {
+            for (let i = 0; i < this.childLines.length; i++)
+            {
+                this.childLines[i].show();
+            }
+        }
+        this.#glTl.setPositions();
     }
 
     setTitlePos()
@@ -335,9 +402,17 @@ export class glTlAnimLine extends Events
             {
                 const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
                 const r = this.#titles[0].getClientRect();
-                this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
-                this.setHeight(r.height - 10);
-                this.#glRectKeysBg.setSize(this.width, r.height - 2);
+                if (this.isHidden)
+                {
+                    this.setHeight(0);
+                    // this.#glRectKeysBg.setSize(0, 0);
+                }
+                else
+                {
+                    this.setPosition(this.#glRectKeysBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+                    // this.setHeight(r.height - 10);
+                    this.#glRectKeysBg.setSize(this.width, r.height - 2);
+                }
 
             }
         }
@@ -356,8 +431,8 @@ export class glTlAnimLine extends Events
 
         let h = this.height - 2;
 
-        if (this.#hidden)h = 0;
-        this.#glRectKeysBg.setSize(this.width, h);
+        if (this.#hidden) this.#glRectKeysBg.setSize(0, 0);
+        else this.#glRectKeysBg.setSize(this.width, h);
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
@@ -374,8 +449,13 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+
             if (this.#keys[i])
+            {
+                // this.#keys[i].hidden = this.#hidden;
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+
+            }
         }
     }
 
@@ -398,6 +478,9 @@ export class glTlAnimLine extends Events
     {
         if (this.height == h) return;
         if (this.checkDisposed()) return;
+
+        for (let i = 0; i < this.#keys.length; i++)
+            this.#keys[i].setKeyPositions("collapse");
         // this.height = h;
         // this.setWidth(this.width);
         // this.update();
@@ -517,6 +600,19 @@ export class glTlAnimLine extends Events
         return y;
     }
 
+    getPortTitles()
+    {
+        let str = "";
+        for (let i = 0; i < this.#ports.length; i++)
+        {
+            // if (i > 0)
+            str += ", ";
+            str += this.#ports[i].getTitle();
+        }
+        return str;
+
+    }
+
     /**
      * @param {Op[]} selops
      */
@@ -603,4 +699,54 @@ export class glTlAnimLine extends Events
     {
         return this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS;
     }
+
+    addFolderChild(c)
+    {
+        c.parentLine = this;
+        this.childLines.push(c);
+        this.#titles[0].updateIcons();
+    }
+
+    toggleFolder()
+    {
+        if (this.collapsed) this.expandFolder();
+        else this.collapseFolder();
+    }
+
+    collapseFolder()
+    {
+        for (let i = 0; i < this.childLines.length; i++)
+        {
+            this.childLines[i].hide();
+            this.childLines[i].moveKeysToParent();
+        }
+
+        this.collapsed = true;
+        this.#titles[0].updateIcons();
+        this.updateTitles();
+
+    }
+
+    moveKeysToParent()
+    {
+        this.#glRectKeysBg.setPosition(this.#glRectKeysBg.x, this.parentLine.getYPos(), 0.04);
+
+    }
+
+    getYPos()
+    {
+        return this.#glRectKeysBg.y;
+    }
+
+    expandFolder()
+    {
+        for (let i = 0; i < this.childLines.length; i++)
+        {
+            this.childLines[i].show();
+        }
+        this.collapsed = false;
+        this.#titles[0].updateIcons();
+        this.updateTitles();
+    }
+
 }

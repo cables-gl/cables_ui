@@ -345,8 +345,6 @@ export class glTlRuler extends Events
     {
         this.width = w;
         this._glRectBg.setSize(this.width, this.height);
-
-        console.log("text", this.width);
     }
 
     isHovering()

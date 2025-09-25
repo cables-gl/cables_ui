@@ -41,11 +41,16 @@ export class TlTitle extends Events
     /** @type {Port} */
     #port;
 
+    /** @type {glTlAnimLine} */
+    animLine = null;
+
     #height = 30;
 
     collapsed = false;
     #hideOpName = false;
     isHovering = false;
+    folderButton = null;
+    #options = {};
 
     /**
      * @param {HTMLElement} parentEl
@@ -73,6 +78,7 @@ export class TlTitle extends Events
             this.hover();
             this.emitEvent("hoverchange");
         });
+
         this.#el.addEventListener("pointerleave", () =>
         {
             this.unhover();
@@ -99,10 +105,13 @@ export class TlTitle extends Events
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(this.#anim.tlActive);
         else this.setActive(true);
 
+        this.#options = options;
+
+        if (options.animLine) this.animLine = options.animLine;
         if (options.port) this.setPort(options.port);
+        if (options.title) this.setTitle(options.title);
 
         this.updateIcons();
-        if (options.title) this.setTitle(options.title);
     }
 
     /**
@@ -111,7 +120,7 @@ export class TlTitle extends Events
     set hideOpName(b)
     {
         this.#hideOpName = b;
-        this.updateFromOp();
+        this.updateTitleFromOp();
     }
 
     /**
@@ -127,9 +136,8 @@ export class TlTitle extends Events
      */
     setHeight(h)
     {
-        console.log("setheight", h);
         this.#height = h;
-        this.#el.style.height = h - 6 + "px";
+        this.#el.style.height = Math.max(0, h - 6) + "px";
     }
 
     /**
@@ -141,21 +149,21 @@ export class TlTitle extends Events
         this.#listeners.push(
             port.op.on(Op.EVENT_UIATTR_CHANGE, () =>
             {
-                this.updateFromOp();
+                this.updateTitleFromOp();
             }),
             port.on(Port.EVENT_UIATTRCHANGE, () =>
             {
-                this.updateFromOp();
+                this.updateTitleFromOp();
             })
         );
         this.#op = port.op;
         this.#port = port;
-        this.updateFromOp();
+        this.updateTitleFromOp();
     }
 
-    updateFromOp()
+    updateTitleFromOp()
     {
-        let title = "";
+        let title = this.#options.title || "";
         if (this.#op)
         {
             let style = "";
@@ -164,10 +172,31 @@ export class TlTitle extends Events
             title += this.#op.name;
             title += "</span>";
 
-            title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
+            if (this.animLine && this.animLine.childLines.length > 0 && this.animLine.collapsed)
+            {
+                title += "(" + (this.animLine.childLines.length + 1) + ") ";
+                title += " <span class=\"portname\">";
+                title += this.#port.getTitle();
+
+                for (let i = 0; i < this.animLine.childLines.length; i++)
+                {
+                    title += this.animLine.childLines[i].getPortTitles();
+                }
+
+                title += "</span>";
+            }
+            else
+            {
+                title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
+
+            }
             if (this.#op.uiAttribs.comment) title += "<span class=\"comment\"> // " + this.#op.uiAttribs.comment + "</span>";
 
             this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
+        }
+        else
+        {
+            console.log("no op title....");
         }
 
         this.setTitle(title);
@@ -178,14 +207,34 @@ export class TlTitle extends Events
      */
     setActive(c)
     {
-        if (this.#anim)
-            this.#anim.tlActive = c;
+        if (this.#anim) this.#anim.tlActive = c;
 
         this.updateIcons();
     }
 
     updateIcons()
     {
+        if (this.animLine && this.animLine.childLines && this.animLine.childLines.length > 0)
+        {
+            if (!this.folderButton)
+                this.folderButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlmute\"></span>", () =>
+                {
+                    this.animLine.toggleFolder();
+                    this.updateTitleFromOp();
+                });
+
+            if (!this.animLine.collapsed)
+            {
+                this.folderButton.children[0].classList.remove("icon-chevron-right");
+                this.folderButton.children[0].classList.add("icon-chevron-down");
+            }
+            else
+            {
+                this.folderButton.children[0].classList.add("icon-chevron-right");
+                this.folderButton.children[0].classList.remove("icon-chevron-down");
+            }
+        }
+
         if (this.#anim)
         {
 
@@ -220,7 +269,6 @@ export class TlTitle extends Events
                     this.#port.emitEvent("animLineUpdate");
 
                     this.updateIcons();
-
                 }
             );
         if (this.muteButton)
@@ -241,19 +289,6 @@ export class TlTitle extends Events
 
         }
 
-        if (this.collapseButton)
-        {
-            if (this.collapsed)
-            {
-                this.collapseButton.children[0].classList.remove("icon-chevron-right");
-                this.collapseButton.children[0].classList.add("icon-chevron-down");
-            }
-            else
-            {
-                this.collapseButton.children[0].classList.add("icon-chevron-right");
-                this.collapseButton.children[0].classList.remove("icon-chevron-down");
-            }
-        }
     }
 
     /**
@@ -315,20 +350,17 @@ export class TlTitle extends Events
     {
         this.#el.style.left = (x) + "px";
         this.#el.style.top = (y) + "px";
-        // console.log(this.#gltl.getFirstLinePosy(), y);
     }
 
     dispose()
     {
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
         this.#el.remove();
-
     }
 
     /* @deprecated */
     updateColor()
     {
-
     }
 
     getAnim()
@@ -345,13 +377,13 @@ export class TlTitle extends Events
     {
         this.#el.classList.add("hover");
         this.isHovering = true;
-        this.#port.emitEvent("animLineUpdate");
+        this.#port?.emitEvent("animLineUpdate");
     }
 
     unhover()
     {
         this.#el.classList.remove("hover");
         this.isHovering = false;
-        this.#port.emitEvent("animLineUpdate");
+        this.#port?.emitEvent("animLineUpdate");
     }
 }
