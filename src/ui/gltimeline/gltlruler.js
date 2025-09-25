@@ -43,7 +43,7 @@ export class glTlRuler extends Events
         this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this._glRectBg.setPosition(0, this.y, -0.9);
 
-        this._glRectBg.on(GlRect.EVENT_POINTER_MOVE, (x, y, event) =>
+        this._glRectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, _y, event) =>
         {
             if (!this.pointerDown) return;
             if (this.#glTl.loopAreaDrag.isDragging) return;

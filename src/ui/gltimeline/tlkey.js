@@ -154,11 +154,11 @@ export class TlKey extends Events
 
     /**
      * @param {GlRect} bezRect
-     * @param {number[]} cp
+     * @param {number[]} _cp
      * @param {AnimKey} key
      * @param {number} dir
      */
-    bindBezCp(bezRect, cp, key, dir)
+    bindBezCp(bezRect, _cp, key, dir)
     {
         bezRect.setShape(6);
         bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);

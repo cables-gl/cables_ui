@@ -1,11 +1,18 @@
 import { Events, ele } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
-import { contextMenu } from "../elements/contextmenu.js";
 import { glTlKeys } from "./gltlkeys.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
+
+/**
+ * @typedef {object} TlTitleOptions
+ * @property {String} [title]
+ * @property {Port} [port]
+ * @property {Port} [port]
+ * @property {glTlAnimLine} [animLine]
+ */
 
 export class TlTitle extends Events
 {
@@ -56,7 +63,7 @@ export class TlTitle extends Events
      * @param {HTMLElement} parentEl
      * @param {Anim} anim
      * @param {GlTimeline} gltl
-     * @param {{ port: any; collapsable: any; }} options
+     * @param {TlTitleOptions} options
      */
     constructor(gltl, parentEl, anim, options)
     {
@@ -324,6 +331,7 @@ export class TlTitle extends Events
     /**
      * @param {string} title
      * @param {Function} cb
+     * @param {boolean} [visible]
      */
     addButton(title, cb, visible)
     {

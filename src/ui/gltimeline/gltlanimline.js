@@ -14,6 +14,7 @@ import { GlTimeline } from "./gltimeline.js";
  * @typedef AnimLineOptions
  * @property {boolean} [keyYpos]
  * @property {boolean} [multiAnims]
+ * @property {HTMLElement} [parentEle]
  */
 
 /**
@@ -163,7 +164,7 @@ export class glTlAnimLine extends Events
             this.#glTextSideValue = new GlText(this.#glTl.texts, "");
             this.#disposeRects.push(this.#glTextSideValue);
 
-            this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (x, y) =>
+            this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
             {
                 if (this.#keys.length < 1) return;
                 this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#glRectKeysBg.y) * 1000) / 1000);
@@ -179,7 +180,7 @@ export class glTlAnimLine extends Events
         if (this.#options.title)
         {
             console.log("addtitle", this.#options.title);
-            this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer, { "title": this.#options.title });
+            this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
         }
 
         this.fitValues();
@@ -700,6 +701,9 @@ export class glTlAnimLine extends Events
         return this.#glTl.layout == GlTimeline.LAYOUT_GRAPHS;
     }
 
+    /**
+     * @param {glTlAnimLine} c
+     */
     addFolderChild(c)
     {
         c.parentLine = this;
@@ -724,7 +728,6 @@ export class glTlAnimLine extends Events
         this.collapsed = true;
         this.#titles[0].updateIcons();
         this.updateTitles();
-
     }
 
     moveKeysToParent()
