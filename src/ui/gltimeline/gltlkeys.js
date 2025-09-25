@@ -468,9 +468,12 @@ export class glTlKeys extends Events
             const kr = this.#keys[i].rect;
 
             if (
-                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) && this.#glTl.selectRect.y2 > kr.absY)
+                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) &&
+                this.#glTl.selectRect.x2 > kr.absX &&
+                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) &&
+                this.#glTl.selectRect.y2 > kr.absY)
             {
+                animKey.rect = kr;
                 this.#glTl.selectKey(animKey, this.#anim);
             }
         }

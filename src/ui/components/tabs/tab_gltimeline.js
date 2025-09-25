@@ -196,7 +196,6 @@ export default class GlTimelineTab
         this.#splitter.style.left = this.#splitterPos + "px";
         this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
         this.#tab.contentEle.appendChild(this.#splitter);
-        this.tlCanvas.glTimeline.updateIcons();
 
         this.#splitterRight = document.createElement("div");
         this.#splitterRight.classList.add("splitter");
@@ -204,6 +203,7 @@ export default class GlTimelineTab
         this.#splitterRight.style.right = this.#splitterPosRight + "px";
         this.#splitterRight.addEventListener("pointerdown", this.resizeRendererRight.bind(this), { "passive": false });
         this.#tab.contentEle.appendChild(this.#splitterRight);
+
         this.tlCanvas.glTimeline.updateIcons();
         this.updateSize();
 
@@ -235,7 +235,10 @@ export default class GlTimelineTab
         this.resizing = true;
         this.tlCanvas.glTimeline.resize(true);
         this.tlCanvas.canvas.style.left = this.#splitterPos + "px";
-        this.tlCanvas.setSize(parentEle.clientWidth - this.#splitterPos - this.#splitterPosRight, parentEle.clientHeight);
+
+        const w = parentEle.clientWidth - this.#splitterPos - this.#splitterPosRight;
+        this.tlCanvas.setSize(w, parentEle.clientHeight);
+        console.log("stttt", w, parentEle.clientWidth, this.#splitterPos, this.#splitterPosRight, parentEle.clientHeight);
         this.resizing = false;
 
     }

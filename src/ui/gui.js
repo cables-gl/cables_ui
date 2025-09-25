@@ -813,11 +813,11 @@ export default class Gui extends Events
         if (this.bottomTabPanel.isVisible())
         {
             this._elSplitterBottom.style.display = "block";
-            this._elSplitterBottom.style.width = editorWidth + patchWidth + "px";
+            this._elSplitterBottom.style.width = patchWidth + "px";
             this._elSplitterBottom.style.bottom = (infoAreaHeight + this.bottomTabPanel.getHeight()) + "px";
 
             this._eleBottomTabs = ele.byId("bottomtabs");
-            this._eleBottomTabs.style.width = editorWidth + patchWidth + "px";
+            this._eleBottomTabs.style.width = patchWidth + "px";
             this._eleBottomTabs.style.bottom = infoAreaHeight + "px";
             this._eleBottomTabs.style.height = this.bottomTabPanel.getHeight() + "px";
             this._eleBottomTabs.style.left = 0 + "px";

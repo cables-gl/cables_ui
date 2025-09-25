@@ -452,11 +452,7 @@ export class glTlAnimLine extends Events
         {
 
             if (this.#keys[i])
-            {
-                // this.#keys[i].hidden = this.#hidden;
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
-
-            }
         }
     }
 
@@ -496,9 +492,6 @@ export class glTlAnimLine extends Events
         if (this.checkDisposed()) return;
         this.width = w;
 
-        // let h = this.height - 2;
-        // if (this.#hidden)h = 0;
-        // this.#glRectKeysBg.setSize(this.width, h);
         this.update();
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].reset();
@@ -586,8 +579,6 @@ export class glTlAnimLine extends Events
         if (this.#keys.length == 0) return 1;
         let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.#glRectKeysBg.h - this.#keys[0].getKeyHeight() / 2, 0, false);
 
-        // if (y == -Infinity) y = 0;
-        // if (y == Infinity)y = 0;
         return this.#glRectKeysBg.h - y - this.#glTl.view.offsetY;
     }
 
@@ -611,7 +602,6 @@ export class glTlAnimLine extends Events
             str += this.#ports[i].getTitle();
         }
         return str;
-
     }
 
     /**
@@ -680,7 +670,6 @@ export class glTlAnimLine extends Events
             if (anim == this.#anims[j])
                 return this.#keys[j];
         }
-
     }
 
     render()
@@ -692,8 +681,8 @@ export class glTlAnimLine extends Events
     testSelected()
     {
         if (glTlKeys.dragStarted) return;
-        if (!this.#glTl.isSelecting()) return;
-        for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
+        // if (!this.#glTl.isSelecting()) return;
+        // for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
     }
 
     isGraphLayout()
@@ -733,7 +722,6 @@ export class glTlAnimLine extends Events
     moveKeysToParent()
     {
         this.#glRectKeysBg.setPosition(this.#glRectKeysBg.x, this.parentLine.getYPos(), 0.04);
-
     }
 
     getYPos()

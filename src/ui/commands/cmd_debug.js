@@ -15,6 +15,7 @@ import { CmdPatch } from "./cmd_patch.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
 
 import Gui, { gui } from "../gui.js";
+import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
 
 const CABLES_CMD_DEBUG = {};
 
@@ -120,6 +121,12 @@ CABLES_CMD_DEBUG.debugGlUiColors = function ()
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
     new GlDebugTab(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
+CABLES_CMD_DEBUG.debugTimeline = function ()
+{
+    new GlTimelineDebugTab(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
 
@@ -295,6 +302,12 @@ CMD_DEBUG_COMMANDS.push(
         "cmd": "Glui debug",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.debugGlUi,
+        "icon": "command"
+    },
+    {
+        "cmd": "timeline debug",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.debugTimeline,
         "icon": "command"
     },
     {
