@@ -106,9 +106,6 @@ export class GlTimeline extends Events
     duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
-    /** @type {GlRect} */
-    #rectSelect;
-
     /** @type {GlTlView} */
     view = null;
     needsUpdateAll = "";
@@ -119,6 +116,12 @@ export class GlTimeline extends Events
 
     /** @type {Array<AnimKey>} */
     #selectedKeys = [];
+
+    /** @type {GlRect} */
+    #rectSelect;
+
+    /** @type {object} */
+    selectRect = null;
 
     hoverKeyRect = null;
     disposed = false;
@@ -148,8 +151,6 @@ export class GlTimeline extends Events
     #selOpsStr = "";
     #lastXnoButton = 0;
     #lastYnoButton = 0;
-
-    selectRect = null;
 
     /** @type {Anim[]} */
     #selectedKeyAnims = [];
@@ -716,7 +717,6 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseUp(e)
     {
-        this._onCanvasMouseMove(e);
         glTlKeys.dragStarted = false;
         this.#rects.mouseUp(e);
         this.#rectsNoScroll.mouseUp(e);
@@ -813,10 +813,11 @@ export class GlTimeline extends Events
 
                         this.selectRect = {
                             "x": Math.min(this.#lastXnoButton, x),
-                            "y": Math.min(this.#lastYnoButton, y),
+                            "y": Math.min(this.#lastYnoButton, y) + this.getScrollY(),
                             "x2": Math.max(this.#lastXnoButton, x),
-                            "y2": Math.max(this.#lastYnoButton, y)
+                            "y2": Math.max(this.#lastYnoButton, y) + this.getScrollY()
                         };
+                        console.log("text", y);
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);

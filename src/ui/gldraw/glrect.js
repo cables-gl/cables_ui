@@ -406,8 +406,8 @@ export default class GlRect extends Events
 
     /**
      * Description
-     * @param {any} x
-     * @param {any} y
+     * @param {number} x
+     * @param {number} y
      */
     isPointInside(x, y)
     {
