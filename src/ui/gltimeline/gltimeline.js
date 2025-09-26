@@ -716,6 +716,8 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseUp(e)
     {
+        this._onCanvasMouseMove(e);
+        glTlKeys.dragStarted = false;
         this.#rects.mouseUp(e);
         this.#rectsNoScroll.mouseUp(e);
         this.#rectsOver.mouseUp(e);
@@ -732,6 +734,7 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
+        console.log("lalala", this.#rectSelect);
 
         this.#focusRuler = false;
         this.#focusScroll = false;
@@ -739,6 +742,7 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
 
+        this._onCanvasMouseMove(e);
         if (this.#focusScroll) return;
 
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
@@ -766,7 +770,7 @@ export class GlTimeline extends Events
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-        // this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)

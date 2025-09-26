@@ -107,6 +107,7 @@ export class glTlAnimLine extends Events
                 for (let i = 0; i < this.#titles.length; i++)
                     this.#titles[i].hover();
             this.updateColor();
+            console.log("hover", this.isHovering());
 
         });
         this.#glRectKeysBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>

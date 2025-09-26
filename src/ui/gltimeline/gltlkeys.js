@@ -1,5 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
-import { Anim, Port } from "cables";
+import { Anim, AnimKey, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
@@ -239,11 +239,7 @@ export class glTlKeys extends Events
 
             this.setKeyShapeSize(tlKey.rect);
 
-            if (this.#glTl.selectRect &&
-                this.#glTl.selectRect.x < (tlKey.rect.absX + this.sizeKey) &&
-                this.#glTl.selectRect.x2 > tlKey.rect.absX &&
-                this.#glTl.selectRect.y + this.#glTl.getScrollY() < (tlKey.rect.absY + this.getKeyHeight()) &&
-                this.#glTl.selectRect.y2 + this.#glTl.getScrollY() > tlKey.rect.absY)
+            if (this.testSelectRectKey(tlKey.key, tlKey.rect))
             {
                 this.#glTl.selectKey(tlKey.key, this.#anim);
             }
@@ -458,6 +454,24 @@ export class glTlKeys extends Events
         this.updateColors();
     }
 
+    /**
+     * @param {AnimKey} key
+     * @param {GlRect} kr
+     */
+    testSelectRectKey(key, kr)
+    {
+
+        if (this.#glTl.selectRect &&
+            this.#glTl.selectRect.x < (kr.absX + this.sizeKey) &&
+            this.#glTl.selectRect.x2 > kr.absX &&
+            this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) &&
+            this.#glTl.selectRect.y2 > kr.absY)
+        {
+            return true;
+        }
+        return false;
+    }
+
     testSelected()
     {
         if (glTlKeys.dragStarted) return;
@@ -467,11 +481,7 @@ export class glTlKeys extends Events
             const animKey = this.#keys[i].key;
             const kr = this.#keys[i].rect;
 
-            if (
-                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) &&
-                this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) &&
-                this.#glTl.selectRect.y2 > kr.absY)
+            if (this.testSelectRectKey(animKey, kr))
             {
                 animKey.rect = kr;
                 this.#glTl.selectKey(animKey, this.#anim);
