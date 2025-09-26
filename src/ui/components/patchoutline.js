@@ -28,7 +28,6 @@ export default class PatchOutline extends Events
                 "customOps": true,
                 "colored": true
             }
-
         };
 
         this._log = new Logger("PatchOutline");
@@ -154,6 +153,7 @@ export default class PatchOutline extends Events
         html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
         html += "</div>";
 
+        this.queryOptions.includeUnsavedIndicator = true;
         this.query.setOptions(this.queryOptions);
 
         const su = this.query.getHierarchy();

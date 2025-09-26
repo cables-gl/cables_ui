@@ -821,7 +821,6 @@ export class GlTimeline extends Events
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
 
-                        // console.log("selectrect", this.#rectSelect.x, this.#rectSelect.w, this.#rectSelect.h);
                         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].testSelected();
                     }
                 }
@@ -1313,7 +1312,7 @@ export class GlTimeline extends Events
             for (let i = 0; i < item.childs.length; i++)
             {
                 let a = null;
-                if (item.childs[i].childs)
+                if (item.childs[i] && item.childs[i].childs)
                 {
                     a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
 
@@ -1337,6 +1336,28 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
+        const q = new patchStructureQuery();
+        q.setOptions({
+            "include": { "animated": true, "subpatches": true, "portsAnimated": true },
+            "includeUnsavedIndicator": false,
+            "removeEmptySubpatches": true });
+
+        if (this.isGraphLayout())
+        {
+            q.setOptions({
+                "include": { "portsAnimated": true, "animated": true },
+                "only": { "selected": true },
+                "includeUnsavedIndicator": false,
+            });
+        }
+
+        const hier = q.getHierarchy();
+        const hstr = JSON.stringify(hier);
+
+        if (hstr == this.lastHierStr) return;
+        this.lastHierStr = hstr;
+        console.log("reinit tree", q.getHierarchy());
+
         CABLES.UI.PREVISKEYVAL = null;
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
@@ -1359,15 +1380,7 @@ export class GlTimeline extends Events
 
         this.#firstInit = false;
 
-        const q = new patchStructureQuery();
-        q.setOptions({ "include": { "animated": true, "subpatches": true, "portsAnimated": true } });
-        if (this.isGraphLayout())
-        {
-            q.setOptions({ "include": { "portsAnimated": true, "animated": true }, "only": { "selected": true } });
-        }
-
-        console.log("qqqq", q.getHierarchy());
-        const root = q.getHierarchy()[0];
+        const root = hier[0];
 
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);

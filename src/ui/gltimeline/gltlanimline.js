@@ -178,10 +178,7 @@ export class glTlAnimLine extends Events
         }
 
         if (this.#options.title)
-        {
-            console.log("addtitle", this.#options.title);
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
-        }
 
         this.fitValues();
         this.updateColor();
@@ -222,7 +219,6 @@ export class glTlAnimLine extends Events
     setTitle(idx, p, anim, parentEle)
     {
         while (this.#titles.length <= idx) this.addTitle(anim, p, parentEle);
-        // this.#titles[idx].setPort(p);
         this.setTitlePos();
     }
 
