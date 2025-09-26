@@ -703,17 +703,18 @@ export default class PatchSaveServer extends Events
                         {
                             gui.savedState.setSaved("patchServerApi", 0);
 
-                            if (gui.project().summary && gui.project().summary.isTest)
+                            const patchSummary = gui.getPatchSummary();
+                            if (patchSummary && patchSummary.isTest)
                             {
                                 notifyWarn("Test patch saved", null, { "force": true });
                             }
                             else
-                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
                             {
                                 notifyWarn("Example patch saved", null, { "force": true });
                             }
                             else
-                            if (gui.project().summary && gui.project().summary.isPublic)
+                            if (patchSummary && patchSummary.isPublic)
                             {
                                 notifyWarn("Published patch saved", null, { "force": true });
                             }
@@ -812,11 +813,6 @@ export default class PatchSaveServer extends Events
                         }
                         else
                         {
-                            if (re.data && re.data.summary)
-                            {
-                                gui.project().summary = re.data.summary;
-                                gui.patchParamPanel.show(true);
-                            }
                             platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
                             {
                                 gui.setProjectName(newName);

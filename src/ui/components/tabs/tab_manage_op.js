@@ -164,8 +164,8 @@ export default class ManageOp
                     doc.attachmentFiles = attachmentFiles;
                 }
 
-                doc.libs = gui.serverOps.getOpLibs(opName, false).map((lib) => { return lib.name; });
-                doc.coreLibs = gui.serverOps.getCoreLibs(opName, false).map((lib) => { return lib.name; });
+                doc.libs = gui.serverOps.getOpLibs(opName).map((lib) => { return lib.name; });
+                doc.coreLibs = gui.serverOps.getCoreLibs(opName).map((lib) => { return lib.name; });
                 summary = gui.opDocs.getSummary(opName) || "No Summary";
                 const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
                 if (portJson && portJson.ports)
