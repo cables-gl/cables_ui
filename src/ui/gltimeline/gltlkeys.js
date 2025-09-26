@@ -239,7 +239,7 @@ export class glTlKeys extends Events
 
             this.setKeyShapeSize(tlKey.rect);
 
-            if (this.testSelectRectKey(tlKey.key, tlKey.rect))
+            if (this.#glTl.selectRect && this.testSelectRectKey(tlKey.key, tlKey.rect))
             {
                 this.#glTl.selectKey(tlKey.key, this.#anim);
             }
@@ -576,7 +576,6 @@ export class glTlKeys extends Events
 
                 keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
                 {
-
                     if (this.#glTl.isSelecting()) return;
 
                     if (!this.#glTl.isKeySelected(key) && this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
@@ -696,10 +695,7 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
-        for (let i in this.#keyLookup)
-        {
-            this.#keyLookup[i].dispose();
-        }
+        for (let i in this.#keyLookup) this.#keyLookup[i].dispose();
 
         this.#keyLookup = {};
         this.removeAllEventListeners();
@@ -722,7 +718,6 @@ export class glTlKeys extends Events
     render()
     {
         if (this.#glTl.isAnimated) this.update();
-        // this.setKeyPositions();
     }
 
 }

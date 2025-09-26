@@ -107,7 +107,6 @@ export class glTlAnimLine extends Events
                 for (let i = 0; i < this.#titles.length; i++)
                     this.#titles[i].hover();
             this.updateColor();
-            console.log("hover", this.isHovering());
 
         });
         this.#glRectKeysBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
@@ -679,8 +678,8 @@ export class glTlAnimLine extends Events
     testSelected()
     {
         if (glTlKeys.dragStarted) return;
-        // if (!this.#glTl.isSelecting()) return;
-        // for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
+        if (!this.#glTl.isSelecting()) return;
+        for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
     }
 
     isGraphLayout()

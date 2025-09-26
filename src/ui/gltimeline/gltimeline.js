@@ -718,11 +718,11 @@ export class GlTimeline extends Events
     _onCanvasMouseUp(e)
     {
         glTlKeys.dragStarted = false;
+        this.selectRect = null;
         this.#rects.mouseUp(e);
         this.#rectsNoScroll.mouseUp(e);
         this.#rectsOver.mouseUp(e);
         this.mouseDown = false;
-        this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
         this.#lastDragX = Number.MAX_SAFE_INTEGER;
         this.#lastDragY = Number.MAX_SAFE_INTEGER;
@@ -817,11 +817,11 @@ export class GlTimeline extends Events
                             "x2": Math.max(this.#lastXnoButton, x),
                             "y2": Math.max(this.#lastYnoButton, y) + this.getScrollY()
                         };
-                        console.log("text", y);
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
                         this.#rectSelect.setSize(x - this.#lastXnoButton, y - this.#lastYnoButton);
 
+                        // console.log("selectrect", this.#rectSelect.x, this.#rectSelect.w, this.#rectSelect.h);
                         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].testSelected();
                     }
                 }
