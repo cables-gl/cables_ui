@@ -458,16 +458,6 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.addEventListener(
-            "updatePatchSummary",
-            (opts, _next) =>
-            {
-                const project = gui.project();
-                if (project) gui.project().summary = opts;
-                gui.patchParamPanel.show(true);
-            },
-        );
-
         this.talkerAPI.send("getPatch", {}, (_err, r) =>
         {
             this._cfg.patch = r;

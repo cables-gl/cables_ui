@@ -1,7 +1,7 @@
 import { ele, HandlebarsHelper } from "cables-shared-client";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
-import Gui from "./gui.js";
+import Gui, { gui } from "./gui.js";
 import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -13,6 +13,7 @@ import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
 import { userSettings } from "./components/usersettings.js";
+import { getHandleBarHtml } from "./utils/handlebars.js";
 
 /**
  * manage the start of the ui/editor
@@ -166,7 +167,14 @@ export default function startUi(cfg)
 
                 for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-                gui.patchParamPanel.show();
+                platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
+                {
+                    if (!err)
+                    {
+                        gui.setPatchSummary(summary.data);
+                        gui.patchParamPanel.show();
+                    }
+                });
 
                 setTimeout(() =>
                 {
