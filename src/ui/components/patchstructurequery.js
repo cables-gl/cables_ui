@@ -92,7 +92,7 @@ export class patchStructureQuery
     getHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
-        console.log("opts", this.options);
+
         if (this.options.includeUnsavedIndicator)
             if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
 

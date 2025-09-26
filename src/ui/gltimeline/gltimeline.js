@@ -24,6 +24,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef TlConfig
@@ -1276,17 +1277,9 @@ export class GlTimeline extends Events
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
 
-        // console.log("aa", item);
-        // console.log("op", op);
-
-        // const o = { "title": "lala " + item.title };
-        // if (item && item.childs && item.childs.length > 0)o.collapsable = true;
-        // o.parentEle = parentEle;
-
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
         cont.classList.add("level" + level);
-        // if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
         if (item.ports)
@@ -1532,9 +1525,12 @@ export class GlTimeline extends Events
 
             const scrollHeight = resY;// - this.getFirstLinePosy();
 
-            this.#rects.render(resX, resY, -1, (1 + ((this.getScrollY() * 2) / Math.floor(scrollHeight))), resX / 2);
+            let scrollAdd = this.getScrollY() * 2;
+            if (this.isGraphLayout())scrollAdd = 0;
+            this.#rects.render(resX, resY, -1, (1 + (scrollAdd / Math.floor(scrollHeight))), resX / 2);
 
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
+
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
@@ -2291,6 +2287,12 @@ export class GlTimeline extends Events
                         ]
                 }, e.target);
         });
+        ele.clickable(ele.byId("kp_looparea"), () =>
+        {
+            const time = this.getSelectedKeysBoundsTime();
+            this.loopAreaStart = time.min;
+            this.loopAreaEnd = time.max;
+        });
 
         ele.clickable(ele.byId("kp_movecursor"), () =>
         {
@@ -2399,6 +2401,37 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {UiOp} op
+     */
+    showParamOp(op)
+    {
+
+        this.showParams();
+        const html = getHandleBarHtml(
+            "params_animop", {
+                "op": op
+            });
+        this.#elKeyParamPanel.innerHTML = html;
+
+        ele.clickable(ele.byId("ap_selectopkeys"), () =>
+        {
+
+            this.unSelectAllKeys();
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                console.log("tttt", i, op);
+                if (this.#tlAnims[i].getOp() == op)
+                    for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
+                    {
+                        const keys = this.#tlAnims[i].getGlKeysForAnim(this.#tlAnims[i].anims[j]);
+                        if (keys)keys.selectAll();
+                    }
+                this.#tlAnims[i].update();
+            }
+        });
+    }
+
+    /**
      * @param {Anim} anim
      */
     showParamAnim(anim)
@@ -2420,6 +2453,7 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
             this.showSpreadSheet(anim);

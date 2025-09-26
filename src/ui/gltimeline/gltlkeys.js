@@ -401,6 +401,7 @@ export class glTlKeys extends Events
             if (k.text)
             {
                 const t = k.text;
+                t.setParentRect(this.animLine);
                 if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
                 else
                 {
