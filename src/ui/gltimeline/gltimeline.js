@@ -61,6 +61,7 @@ export class GlTimeline extends Events
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
 
+    static EVENT_MOUSEMOVE = "mousemove";
     static EVENT_KEYSELECTIONCHANGE = "keySelectionChange";
 
     #lastDragX = Number.MAX_SAFE_INTEGER;
@@ -155,8 +156,8 @@ export class GlTimeline extends Events
     #firstInit = true;
     #focusRuler = false;
     #focusScroll = false;
-    #keyOverEl;
-    #tlTimeDisplay;
+    #elKeyParamPanel;
+    #elTimeDisplay;
 
     #oldSize = -1;
     #perfFps = new FpsCounter();
@@ -274,10 +275,10 @@ export class GlTimeline extends Events
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
-        this.#keyOverEl = document.createElement("div");
-        this.#keyOverEl.classList.add("keyOverlay");
-        this.#keyOverEl.setAttribute("id", "keyOverlay");
-        cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+        this.#elKeyParamPanel = document.createElement("div");
+        this.#elKeyParamPanel.classList.add("keyOverlay");
+        this.#elKeyParamPanel.setAttribute("id", "keyOverlay");
+        cgl.canvas.parentElement.appendChild(this.#elKeyParamPanel);
 
         this.#filterInputEl = document.createElement("input");
         this.#filterInputEl.classList.add("filterInput");
@@ -300,10 +301,10 @@ export class GlTimeline extends Events
             this.updateGraphSelectMode();
         });
 
-        this.#tlTimeDisplay = document.createElement("div");
-        this.#tlTimeDisplay.classList.add("tltimedisplay");
-        this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
-        cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+        this.#elTimeDisplay = document.createElement("div");
+        this.#elTimeDisplay.classList.add("tltimedisplay");
+        this.#elTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
+        cgl.canvas.parentElement.appendChild(this.#elTimeDisplay);
 
         this.tlTimeScrollContainer = document.createElement("div");
         this.tlTimeScrollContainer.classList.add("scrollContainer");
@@ -590,10 +591,10 @@ export class GlTimeline extends Events
         this.setHoverKeyRect(null);
 
         const wparams = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT);
-        this.#keyOverEl.style.width = wparams - 15 + "px";
-        this.#keyOverEl.style.right = 0 + "px";
-        this.#keyOverEl.style.bottom = 0 + "px";
-        this.#keyOverEl.style.top = 0 + "px";
+        this.#elKeyParamPanel.style.width = wparams - 15 + "px";
+        this.#elKeyParamPanel.style.right = 0 + "px";
+        this.#elKeyParamPanel.style.bottom = 0 + "px";
+        this.#elKeyParamPanel.style.top = 0 + "px";
 
         const ls = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT);
 
@@ -759,14 +760,13 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseMove(event)
     {
-        this.emitEvent("mousemove", event);
+        this.emitEvent(GlTimeline.EVENT_MOUSEMOVE, event);
 
         let x = event.offsetX;
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-
-        this.#rects.mouseMove(x, y, event.buttons, event);
+        // this.#rects.mouseMove(x, y, event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
@@ -822,7 +822,6 @@ export class GlTimeline extends Events
                 }
 
                 this.needsUpdateAll = "mouse m";
-
                 this.showKeyParamsSoon();
             }
         }
@@ -1082,6 +1081,11 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
+    getSelectedKeys()
+    {
+        return this.#selectedKeys;
+    }
+
     updateSelectedKeysDragArea()
     {
         const timeBounds = this.getSelectedKeysBoundsTime();
@@ -1277,7 +1281,8 @@ export class GlTimeline extends Events
 
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
-        if (level == 0)cont.style.marginLeft = "-20px";
+        cont.classList.add("level" + level);
+        // if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
         if (item.ports)
@@ -1310,7 +1315,7 @@ export class GlTimeline extends Events
                     if (parentLine)parentLine.addFolderChild(a);
                 }
 
-                this.hierarchyLine(item.childs[i], ++level, cont, a || parentLine);
+                this.hierarchyLine(item.childs[i], level + 1, cont, a || parentLine);
             }
         }
         else
@@ -1595,7 +1600,7 @@ export class GlTimeline extends Events
 
         if (this.#oldhtml != html)
         {
-            this.#tlTimeDisplay.innerHTML = html;
+            this.#elTimeDisplay.innerHTML = html;
             this.#oldhtml = html;
         }
         this.scroll.update();
@@ -2172,7 +2177,7 @@ export class GlTimeline extends Events
     {
 
         let showCurves = false;
-        if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
+        if (this.getNumSelectedKeys() == 0) return this.#elKeyParamPanel.innerHTML = "";
 
         const timebounds = this.getSelectedKeysBoundsTime();
         const valbounds = this.getSelectedKeysBoundsValue();
@@ -2235,7 +2240,7 @@ export class GlTimeline extends Events
                 "showCurves": showCurves,
                 "comment": comment
             });
-        this.#keyOverEl.innerHTML = html;
+        this.#elKeyParamPanel.innerHTML = html;
 
         ele.clickable(ele.byId("kp_more"), (e) =>
         {
@@ -2387,7 +2392,7 @@ export class GlTimeline extends Events
                 "errors": this.testAnim(anim.keys),
                 "length": Math.round(anim.getLengthLoop() * 1000) / 1000
             });
-        this.#keyOverEl.innerHTML = html;
+        this.#elKeyParamPanel.innerHTML = html;
 
         ele.clickable(ele.byId("ap_select"), () =>
         {

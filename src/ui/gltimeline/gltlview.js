@@ -114,7 +114,6 @@ export class GlTlView
     checkMinMaxVals()
     {
         // console.log("", this.#finalMinVal, this.#finalMaxVal);
-
         // if (this.#finalMinVal == this.#finalMaxVal) this.#finalMaxVal = this.#finalMinVal + 1;
         // if (this.maxVal == this.minVal)
         // {
@@ -241,7 +240,6 @@ export class GlTlView
 
         const t = this.#timer.getTime();
         this.#animZoom.clear(t);
-        // this.#animZoom.setValue(t, this.#zoom);
         this.#animZoom.setValue(t + dur, zoom);
     }
 
@@ -260,11 +258,8 @@ export class GlTlView
         delta = 1 + delta;
         const nmin = this.minVal *= delta;
         const nmax = this.maxVal *= delta;
-        // this.minVal = Math.min(nmin, nmax);
-        // this.maxVal = Math.max(nmin, nmax);
         this.setMinVal(Math.min(nmin, nmax));
         this.setMaxVal(Math.max(nmin, nmax));
-
     }
 
     /**

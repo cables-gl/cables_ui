@@ -1,17 +1,13 @@
-import { Events, Logger, ele } from "cables-shared-client";
-
-import { Anim, AnimKey, Port } from "cables";
+import { Events, Logger } from "cables-shared-client";
+import { Anim, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
-import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
-import GlText from "../gldraw/gltext.js";
-import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { TlKey } from "./tlkey.js";
 
@@ -125,6 +121,8 @@ export class glTlKeys extends Events
             this.#spline = new GlSpline(this.#glTl.splines, port.name);
             this.#spline.setParentRect(parentRect);
         }
+
+        this.#options = options;
 
         this.init();
     }
@@ -470,9 +468,12 @@ export class glTlKeys extends Events
             const kr = this.#keys[i].rect;
 
             if (
-                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) && this.#glTl.selectRect.y2 > kr.absY)
+                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) &&
+                this.#glTl.selectRect.x2 > kr.absX &&
+                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) &&
+                this.#glTl.selectRect.y2 > kr.absY)
             {
+                animKey.rect = kr;
                 this.#glTl.selectKey(animKey, this.#anim);
             }
         }
@@ -523,7 +524,7 @@ export class glTlKeys extends Events
             {
 
                 keyRect.draggableMove = true;
-                keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
+                keyRect.on(GlRect.EVENT_POINTER_HOVER, (_r, e) =>
                 {
                     if (glTlKeys.dragStarted) return;
                     if (this.#glTl.isSelecting()) return;
