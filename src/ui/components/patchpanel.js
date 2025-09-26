@@ -66,6 +66,7 @@ export default class PatchPanel extends Events
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;
+
             html += getHandleBarHtml("patch_summary",
                 {
                     "projectId": projectId,

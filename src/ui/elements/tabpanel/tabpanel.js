@@ -497,6 +497,11 @@ export default class TabPanel extends Events
         {
             gui.setProjectName(opts.name);
             platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
+        });
+
+        talkerAPI.on("updatePatchSummary", (opts, next) =>
+        {
+            gui.project().summary = opts;
             gui.patchParamPanel.show(true);
         });
 

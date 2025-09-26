@@ -702,10 +702,9 @@ export default class PatchView extends Events
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
-        const patchSummary = gui.getPatchSummary();
         let isExamplePatch = false;
-        if (patchSummary)
-            isExamplePatch = patchSummary.isBasicExample || (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0);
+        if (gui.project().summary)
+            isExamplePatch = gui.project().summary.isBasicExample || (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0);
 
         if (!this._checkErrorTimeout)
         {
@@ -728,7 +727,7 @@ export default class PatchView extends Events
 
         let showAttentionIcon = this.hasUiErrors;
 
-        if (this.hasOldOps && (patchSummary && patchSummary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
+        if (this.hasOldOps && (gui.project().summary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
 
         clearTimeout(this._checkErrorTimeout);
 
@@ -2882,16 +2881,15 @@ export default class PatchView extends Events
 
     highlightExamplePatchOps()
     {
-        const patchSummary = gui.getPatchSummary();
-        if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
+        if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
         {
             const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
                 ops[i].setUiAttribs({ "color": null });
 
-            for (let j = 0; j < patchSummary.exampleForOps.length; j++)
+            for (let j = 0; j < gui.project().summary.exampleForOps.length; j++)
             {
-                const opz = gui.corePatch().getOpsByObjName(patchSummary.exampleForOps[j]);
+                const opz = gui.corePatch().getOpsByObjName(gui.project().summary.exampleForOps[j]);
                 for (let k = 0; k < opz.length; k++)
                 {
                     // const opname = opz[k];

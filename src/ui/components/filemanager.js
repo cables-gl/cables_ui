@@ -605,8 +605,7 @@ export default class FileManager
                                         let title = "Really delete this file?";
                                         let okButton = null;
 
-                                        const patchSummary = gui.getPatchSummary();
-                                        if (patchSummary && patchSummary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
+                                        if (gui.project().summary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
 
                                         if (!allowDelete)
                                         {

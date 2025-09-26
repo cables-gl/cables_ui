@@ -339,12 +339,9 @@ export default class FindTab
         {
             if (str == ":attention")
             {
-                const patchSummary = gui.getPatchSummary();
                 if (
-                    patchSummary && (
-                        patchSummary.isBasicExample ||
-                        (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0))
-                )
+                    gui.project().summary.isBasicExample ||
+                    (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0))
                 {
                     FindTab.searchOutDated(ops, results);
                     for (let i = 0; i < results.length; i++)
