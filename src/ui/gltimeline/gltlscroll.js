@@ -90,8 +90,10 @@ export class glTlScroll extends Events
             {
                 const x = stepSeconds * i * this.#glTl.view.pixelPerSecond;
                 this.#indicatorRects[i].setPosition(x, this.height / 3, -0.1);
-                this.#indicatorRects[i].setSize(stepSeconds * this.#glTl.view.pixelPerSecond / 3, this.height / 3);
+                // this.#indicatorRects[i].setSize(stepSeconds * this.#glTl.view.pixelPerSecond / 3, this.height / 3);
+                this.#indicatorRects[i].setSize(this.height / 3, this.height / 3);
 
+                this.#indicatorRects[i].setShape(GlRect.SHAPE_RHOMB);
                 this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
                 this.#indicatorRects[i].setParent(this.#bgRect);
             }

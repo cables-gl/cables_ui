@@ -515,9 +515,7 @@ export default class Gui extends Events
 
     showBottomTabs()
     {
-
         if (!this.logTab) this.logTab = new LogTab(this.bottomTabs);
-        // this.logTab.show();
 
         if (!this.bottomTabPanel.isVisible())
         {

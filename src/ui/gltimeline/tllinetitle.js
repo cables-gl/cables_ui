@@ -62,6 +62,8 @@ export class TlTitle extends Events
     #elIndent;
     #elOpname;
     #elPortname;
+    #elValue;
+    #elPortValue;
 
     /**
      * @param {HTMLElement} parentEl
@@ -93,8 +95,19 @@ export class TlTitle extends Events
         this.#elOpname = document.createElement("span");
         this.#el.appendChild(this.#elOpname);
 
+        this.#elPortValue = document.createElement("span");
+        this.#elPortValue.classList.add("portAndValue");
+        this.#el.appendChild(this.#elPortValue);
+
         this.#elPortname = document.createElement("span");
-        this.#el.appendChild(this.#elPortname);
+        this.#elPortValue.appendChild(this.#elPortname);
+
+        // this.#elValue = document.createElement("span");
+        // this.#elValue.classList.add("value");
+        // this.#elPortValue.appendChild(this.#elValue);
+
+        // this.updateValue(0);
+        // if (!this.#anim) this.#elPortValue.style.display = "none";
 
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
@@ -111,6 +124,11 @@ export class TlTitle extends Events
             this.emitEvent("hoverchange");
         });
 
+        this.#elTitle.addEventListener("pointerenter", () =>
+        {
+
+        });
+
         ele.clickable(this.#elOpname, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
@@ -119,6 +137,8 @@ export class TlTitle extends Events
 
         ele.clickable(this.#elPortname, (e) =>
         {
+            this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
+
             this.#gltl.showParamAnim(this.#anim);
         });
 
@@ -428,6 +448,12 @@ export class TlTitle extends Events
 
     hover()
     {
+        if (this.#port)
+        {
+            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+            if (portParamRow) portParamRow.classList.add("hoverTimeline");
+        }
+
         this.#el.classList.add("hover");
         this.isHovering = true;
         this.#port?.emitEvent("animLineUpdate");
@@ -435,8 +461,22 @@ export class TlTitle extends Events
 
     unhover()
     {
+        if (this.#port)
+        {
+            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+            if (portParamRow) portParamRow.classList.remove("hoverTimeline");
+        }
         this.#el.classList.remove("hover");
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");
+    }
+
+    /**
+     * @param {number} [t]
+     */
+    updateValue(t)
+    {
+        // if (this.#anim)
+        //     this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
     }
 }

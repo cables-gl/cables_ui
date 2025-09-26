@@ -1619,6 +1619,11 @@ export class GlTimeline extends Events
         }
         this.scroll.update();
         this.updateSelectedKeysDragArea();
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+        {
+            this.#tlAnims[i].updateTitleValues(this.cursorTime);
+        }
     }
 
     updateAllElements()

@@ -342,6 +342,14 @@ export class glTlAnimLine extends Events
         return this.height / 2;
     }
 
+    /**
+     * @param {number} [t]
+     */
+    updateTitleValues(t)
+    {
+        for (let i = 0; i < this.#titles.length; i++) this.#titles[i].updateValue(t);
+    }
+
     updateTitles()
     {
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].updateIcons();
