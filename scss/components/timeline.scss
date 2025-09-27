@@ -25,6 +25,19 @@
             display: inline-block;
             padding-right: 0px;
         }
+        .portAndValue
+        {
+            position: absolute;
+            left: calc(var(--timelineSplitterLeft) * 0.6);
+            /* transform: translate(-100%); */
+        }
+        /* .value */
+        /* { */
+            /* padding-left: 10px; */
+            /* padding-right: 10px; */
+            /* font-family: monospace; */
+        /* } */
+
 
         .tlButtonsRight
         {

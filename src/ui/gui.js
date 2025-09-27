@@ -515,9 +515,7 @@ export default class Gui extends Events
 
     showBottomTabs()
     {
-
         if (!this.logTab) this.logTab = new LogTab(this.bottomTabs);
-        // this.logTab.show();
 
         if (!this.bottomTabPanel.isVisible())
         {
@@ -1121,6 +1119,20 @@ export default class Gui extends Events
             gui.corePatch().name = name;
             if (this._currentProject) this._currentProject.name = name;
         }
+    }
+
+    getPatchSummary()
+    {
+        if (!this._currentProject) return null;
+        return this._currentProject.summary;
+    }
+
+    /**
+     * @param {Object} projectSummary
+     */
+    setPatchSummary(projectSummary)
+    {
+        this._currentProject.summary = projectSummary;
     }
 
     createProject()

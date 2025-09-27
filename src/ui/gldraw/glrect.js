@@ -40,6 +40,20 @@ export default class GlRect extends Events
     static OPTION_PARENT = "parent";
     static OPTION_NAME = "name";
 
+    static SHAPE_RECT = 1;
+    static SHAPE_CIRCLE = 1;
+    static SHAPE_TRIANGLE_BOTTOM = 2;
+    static SHAPE_FRAME = 4;
+    static SHAPE_CURSOR = 5;
+    static SHAPE_FILLED_CIRCLE = 6;
+    static SHAPE_CROSS = 7;
+    static SHAPE_LOADING_INDICATOR = 8;
+    static SHAPE_HALF_BLOCK_TOP = 9;
+    static SHAPE_HALF_BLOCK_BOTTOM = 10;
+    static SHAPE_ARROW_DOWN = 11;
+    static SHAPE_PLUS = 12;
+    static SHAPE_RHOMB = 13;
+
     /** @type {array} */
     color = vec4.create();
     colorHover = null;
@@ -374,6 +388,8 @@ export default class GlRect extends Events
      */
     setPosition(_x, _y, _z = this.#z)
     {
+        let changed = false;
+        if (_x != this.#x || _y != this.#y || _z != this.#z)changed = true;
         this.#x = _x;
         this.#y = _y;
         this.#z = _z;
@@ -392,10 +408,9 @@ export default class GlRect extends Events
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
         for (let i = 0; i < this.childs.length; i++)
-        {
             this.childs[i].updateParentPosition();
-        }
-        this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
+
+        if (changed) this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
 
     updateParentPosition()
@@ -405,8 +420,8 @@ export default class GlRect extends Events
 
     /**
      * Description
-     * @param {any} x
-     * @param {any} y
+     * @param {number} x
+     * @param {number} y
      */
     isPointInside(x, y)
     {

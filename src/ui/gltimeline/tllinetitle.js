@@ -16,7 +16,7 @@ import opNames from "../opnameutils.js";
 
 export class TlTitle extends Events
 {
-    static EVENT_TITLECLICKED = "titleClicked";
+    static EVENT_CLICK_OPNAME = "titleClicked";
     index = 0;
 
     /** @type {HTMLElement} */
@@ -60,6 +60,10 @@ export class TlTitle extends Events
     #options = {};
     #elButtonsRight;
     #elIndent;
+    #elOpname;
+    #elPortname;
+    #elValue;
+    #elPortValue;
 
     /**
      * @param {HTMLElement} parentEl
@@ -88,7 +92,25 @@ export class TlTitle extends Events
         this.#elButtonsLeft.classList.add("tlButtonsLeft");
         this.#el.appendChild(this.#elButtonsLeft);
 
+        this.#elOpname = document.createElement("span");
+        this.#el.appendChild(this.#elOpname);
+
+        this.#elPortValue = document.createElement("span");
+        this.#elPortValue.classList.add("portAndValue");
+        this.#el.appendChild(this.#elPortValue);
+
+        this.#elPortname = document.createElement("span");
+        this.#elPortValue.appendChild(this.#elPortname);
+
+        // this.#elValue = document.createElement("span");
+        // this.#elValue.classList.add("value");
+        // this.#elPortValue.appendChild(this.#elValue);
+
+        // this.updateValue(0);
+        // if (!this.#anim) this.#elPortValue.style.display = "none";
+
         this.#elTitle = document.createElement("span");
+        this.#el.appendChild(this.#elTitle);
 
         this.#el.addEventListener("pointerenter", () =>
         {
@@ -102,9 +124,21 @@ export class TlTitle extends Events
             this.emitEvent("hoverchange");
         });
 
-        ele.clickable(this.#elTitle, (e) =>
+        this.#elTitle.addEventListener("pointerenter", () =>
         {
-            this.emitEvent(TlTitle.EVENT_TITLECLICKED, this, e);
+
+        });
+
+        ele.clickable(this.#elOpname, (e) =>
+        {
+            this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
+            this.#gltl.showParamOp(this.#op);
+        });
+
+        ele.clickable(this.#elPortname, (e) =>
+        {
+            this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
+
             this.#gltl.showParamAnim(this.#anim);
         });
 
@@ -116,8 +150,6 @@ export class TlTitle extends Events
                     this.toggleActive();
                 }
             );
-
-        this.#el.appendChild(this.#elTitle);
 
         if (this.#gltl.layout == GlTimeline.LAYOUT_GRAPHS) this.setActive(this.#anim.tlActive);
         else this.setActive(true);
@@ -184,32 +216,36 @@ export class TlTitle extends Events
         if (this.#op)
         {
             let style = "";
-            let classnames = opNames.getNamespaceClassName(this.#op.objName);
 
-            if (this.#hideOpName)style = "color:transparent !important";
-            else classnames += " opname ";
-            title += "<span style=\"" + style + "\" class=\"" + classnames + "\">";
-            title += this.#op.name;
-            title += "</span>";
+            this.#elOpname.innerHTML = this.#op.name;
+            this.#elOpname.classList.add(opNames.getNamespaceClassName(this.#op.objName));
+            this.#elOpname.classList.add("opname");
+
+            if (this.#hideOpName) this.#elOpname.style = "color:transparent !important;background-color:transparent !important";
+
+            let portnames = "";
 
             if (this.animLine && this.animLine.childLines.length > 0 && this.animLine.collapsed)
             {
-                title += "(" + (this.animLine.childLines.length + 1) + ") ";
-                title += " <span class=\"portname\">";
-                title += this.#port.getTitle();
+                portnames += "(" + (this.animLine.childLines.length + 1) + ") ";
+                portnames += " <span class=\"portname\">";
+                portnames += this.#port.getTitle();
 
                 for (let i = 0; i < this.animLine.childLines.length; i++)
                 {
-                    title += this.animLine.childLines[i].getPortTitles();
+                    portnames += this.animLine.childLines[i].getPortTitles();
                 }
 
-                title += "</span>";
+                portnames += "</span>";
             }
             else
             {
-                title += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
-
+                portnames += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
             }
+
+            this.#elPortname.innerHTML = portnames;
+            this.#elPortname.classList.add("portname");
+
             if (this.#op.uiAttribs.comment) title += "<span class=\"comment\"> // " + this.#op.uiAttribs.comment + "</span>";
 
             this.setBorderColor(false, this.#op.uiAttribs.color || "transparent");
@@ -412,6 +448,12 @@ export class TlTitle extends Events
 
     hover()
     {
+        if (this.#port)
+        {
+            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+            if (portParamRow) portParamRow.classList.add("hoverTimeline");
+        }
+
         this.#el.classList.add("hover");
         this.isHovering = true;
         this.#port?.emitEvent("animLineUpdate");
@@ -419,8 +461,22 @@ export class TlTitle extends Events
 
     unhover()
     {
+        if (this.#port)
+        {
+            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+            if (portParamRow) portParamRow.classList.remove("hoverTimeline");
+        }
         this.#el.classList.remove("hover");
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");
+    }
+
+    /**
+     * @param {number} [t]
+     */
+    updateValue(t)
+    {
+        // if (this.#anim)
+        //     this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
     }
 }

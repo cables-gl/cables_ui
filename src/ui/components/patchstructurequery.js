@@ -41,7 +41,10 @@ import { escapeHTML } from "../utils/helper.js";
  * @typedef PatchStructureQueryOptions
  * @property {PatchStructureQueryIncludeOptions} [include]
  * @property {PatchStructureQueryOnlyOptions} [only]
- */
+ * @property {boolean} [removeEmptySubpatches]
+ * @property {boolean} [includeUnsavedIndicator]
+
+*/
 export class patchStructureQuery
 {
 
@@ -89,7 +92,9 @@ export class patchStructureQuery
     getHierarchy(patchId = 0)
     {
         let mainTitle = "Patch ";
-        if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
+
+        if (this.options.includeUnsavedIndicator)
+            if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
 
         mainTitle += this._getUserImagesStringSubpatch(0);
 
@@ -102,7 +107,6 @@ export class patchStructureQuery
             "subPatchId": "0",
             "childs": [],
             "icon": "folder"
-
         };
 
         if (gui.patchView.getCurrentSubPatch() == 0)sub.rowClass = "active";
@@ -120,8 +124,6 @@ export class patchStructureQuery
             if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
 
             sub.title += this._getUserImagesStringSubpatch(patchId);
-
-            // html += "!!";
 
             if (subOp.uiAttribs.comment)sub.title += " <span style=\"color: var(--color-special);\">// " + patchStructureQuery.sanitizeComment(subOp.uiAttribs.comment) + "</span>";
 
@@ -229,16 +231,32 @@ export class patchStructureQuery
                         {
                             if (ops[i].portsIn[jj].isAnimated())s.ports.push({ "name": ops[i].portsIn[jj].name });
                         }
-
                     }
 
                     sub.childs.push(s);
                 }
             }
         }
+        if (this.options.removeEmptySubpatches)
+        {
+            this.deleteEmptyChilds(sub);
+        }
 
         if (patchId == 0) return subs;
         else return sub;
+    }
+
+    deleteEmptyChilds(p)
+    {
+        if (p && p.childs)
+            for (let i = p.childs.length - 1; i >= 0; i--)
+            {
+                if (p.childs[i] && p.childs[i].subPatchVer && p.childs[i].childs && p.childs[i].childs.length == 0)
+                {
+                    p.childs.splice(i, 1);
+                }
+                else this.deleteEmptyChilds(p.childs[i]);
+            }
     }
 
     /**

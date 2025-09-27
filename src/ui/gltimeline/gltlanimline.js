@@ -178,10 +178,7 @@ export class glTlAnimLine extends Events
         }
 
         if (this.#options.title)
-        {
-            console.log("addtitle", this.#options.title);
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
-        }
 
         this.fitValues();
         this.updateColor();
@@ -222,7 +219,6 @@ export class glTlAnimLine extends Events
     setTitle(idx, p, anim, parentEle)
     {
         while (this.#titles.length <= idx) this.addTitle(anim, p, parentEle);
-        // this.#titles[idx].setPort(p);
         this.setTitlePos();
     }
 
@@ -245,7 +241,7 @@ export class glTlAnimLine extends Events
 
         const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this, "title": this.#options.title });
 
-        title.on(TlTitle.EVENT_TITLECLICKED, (title, e) =>
+        title.on(TlTitle.EVENT_CLICK_OPNAME, (title, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
             if (this.#ops[title.index])
@@ -346,10 +342,17 @@ export class glTlAnimLine extends Events
         return this.height / 2;
     }
 
+    /**
+     * @param {number} [t]
+     */
+    updateTitleValues(t)
+    {
+        for (let i = 0; i < this.#titles.length; i++) this.#titles[i].updateValue(t);
+    }
+
     updateTitles()
     {
-        for (let i = 0; i < this.#titles.length; i++)
-            this.#titles[i].updateIcons();
+        for (let i = 0; i < this.#titles.length; i++) this.#titles[i].updateIcons();
 
         if (this.isHidden)
         {
@@ -399,6 +402,9 @@ export class glTlAnimLine extends Events
     {
         if (!this.isGraphLayout())
         {
+            if (this.#options.title)
+                console.log("posyyyyyyyy", this.isHidden, this.#hidden, this.#options.title, this.#glRectKeysBg.y, this.#glRectKeysBg.h);
+
             if (this.#titles[0])
             {
                 const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
@@ -678,8 +684,8 @@ export class glTlAnimLine extends Events
     testSelected()
     {
         if (glTlKeys.dragStarted) return;
-        // if (!this.#glTl.isSelecting()) return;
-        // for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
+        if (!this.#glTl.isSelecting()) return;
+        for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
     }
 
     isGraphLayout()
@@ -737,4 +743,8 @@ export class glTlAnimLine extends Events
         this.updateTitles();
     }
 
+    getOp()
+    {
+        return this.#ops[0];
+    }
 }

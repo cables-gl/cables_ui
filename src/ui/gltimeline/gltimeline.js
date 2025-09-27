@@ -24,6 +24,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef TlConfig
@@ -106,9 +107,6 @@ export class GlTimeline extends Events
     duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
-    /** @type {GlRect} */
-    #rectSelect;
-
     /** @type {GlTlView} */
     view = null;
     needsUpdateAll = "";
@@ -119,6 +117,12 @@ export class GlTimeline extends Events
 
     /** @type {Array<AnimKey>} */
     #selectedKeys = [];
+
+    /** @type {GlRect} */
+    #rectSelect;
+
+    /** @type {object} */
+    selectRect = null;
 
     hoverKeyRect = null;
     disposed = false;
@@ -148,8 +152,6 @@ export class GlTimeline extends Events
     #selOpsStr = "";
     #lastXnoButton = 0;
     #lastYnoButton = 0;
-
-    selectRect = null;
 
     /** @type {Anim[]} */
     #selectedKeyAnims = [];
@@ -716,11 +718,12 @@ export class GlTimeline extends Events
      */
     _onCanvasMouseUp(e)
     {
+        glTlKeys.dragStarted = false;
+        this.selectRect = null;
         this.#rects.mouseUp(e);
         this.#rectsNoScroll.mouseUp(e);
         this.#rectsOver.mouseUp(e);
         this.mouseDown = false;
-        this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
         this.#lastDragX = Number.MAX_SAFE_INTEGER;
         this.#lastDragY = Number.MAX_SAFE_INTEGER;
@@ -732,6 +735,7 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
+        console.log("lalala", this.#rectSelect);
 
         this.#focusRuler = false;
         this.#focusScroll = false;
@@ -739,6 +743,7 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
 
+        this._onCanvasMouseMove(e);
         if (this.#focusScroll) return;
 
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
@@ -766,7 +771,7 @@ export class GlTimeline extends Events
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-        // this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
         if (event.buttons == 1)
@@ -809,9 +814,9 @@ export class GlTimeline extends Events
 
                         this.selectRect = {
                             "x": Math.min(this.#lastXnoButton, x),
-                            "y": Math.min(this.#lastYnoButton, y),
+                            "y": Math.min(this.#lastYnoButton, y) + this.getScrollY(),
                             "x2": Math.max(this.#lastXnoButton, x),
-                            "y2": Math.max(this.#lastYnoButton, y)
+                            "y2": Math.max(this.#lastYnoButton, y) + this.getScrollY()
                         };
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
@@ -1272,17 +1277,9 @@ export class GlTimeline extends Events
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
 
-        // console.log("aa", item);
-        // console.log("op", op);
-
-        // const o = { "title": "lala " + item.title };
-        // if (item && item.childs && item.childs.length > 0)o.collapsable = true;
-        // o.parentEle = parentEle;
-
         const cont = document.createElement("div");
         cont.classList.add("linesContainer");
         cont.classList.add("level" + level);
-        // if (level == 0)cont.style.marginLeft = "-20px";
         parentEle.appendChild(cont);
 
         if (item.ports)
@@ -1308,7 +1305,7 @@ export class GlTimeline extends Events
             for (let i = 0; i < item.childs.length; i++)
             {
                 let a = null;
-                if (item.childs[i].childs)
+                if (item.childs[i] && item.childs[i].childs)
                 {
                     a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
 
@@ -1332,6 +1329,28 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
+        const q = new patchStructureQuery();
+        q.setOptions({
+            "include": { "animated": true, "subpatches": true, "portsAnimated": true },
+            "includeUnsavedIndicator": false,
+            "removeEmptySubpatches": true });
+
+        if (this.isGraphLayout())
+        {
+            q.setOptions({
+                "include": { "portsAnimated": true, "animated": true },
+                "only": { "selected": true },
+                "includeUnsavedIndicator": false,
+            });
+        }
+
+        const hier = q.getHierarchy();
+        const hstr = JSON.stringify(hier);
+
+        if (hstr == this.lastHierStr) return;
+        this.lastHierStr = hstr;
+        console.log("reinit tree", q.getHierarchy());
+
         CABLES.UI.PREVISKEYVAL = null;
         this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
         this.splines.setWidth(2);
@@ -1354,15 +1373,7 @@ export class GlTimeline extends Events
 
         this.#firstInit = false;
 
-        const q = new patchStructureQuery();
-        q.setOptions({ "include": { "animated": true, "subpatches": true, "portsAnimated": true } });
-        if (this.isGraphLayout())
-        {
-            q.setOptions({ "include": { "portsAnimated": true, "animated": true }, "only": { "selected": true } });
-        }
-
-        console.log("qqqq", q.getHierarchy());
-        const root = q.getHierarchy()[0];
+        const root = hier[0];
 
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
@@ -1514,9 +1525,12 @@ export class GlTimeline extends Events
 
             const scrollHeight = resY;// - this.getFirstLinePosy();
 
-            this.#rects.render(resX, resY, -1, (1 + ((this.getScrollY() * 2) / Math.floor(scrollHeight))), resX / 2);
+            let scrollAdd = this.getScrollY() * 2;
+            if (this.isGraphLayout())scrollAdd = 0;
+            this.#rects.render(resX, resY, -1, (1 + (scrollAdd / Math.floor(scrollHeight))), resX / 2);
 
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
+
             this.texts.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
@@ -1605,6 +1619,11 @@ export class GlTimeline extends Events
         }
         this.scroll.update();
         this.updateSelectedKeysDragArea();
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+        {
+            this.#tlAnims[i].updateTitleValues(this.cursorTime);
+        }
     }
 
     updateAllElements()
@@ -2273,6 +2292,12 @@ export class GlTimeline extends Events
                         ]
                 }, e.target);
         });
+        ele.clickable(ele.byId("kp_looparea"), () =>
+        {
+            const time = this.getSelectedKeysBoundsTime();
+            this.loopAreaStart = time.min;
+            this.loopAreaEnd = time.max;
+        });
 
         ele.clickable(ele.byId("kp_movecursor"), () =>
         {
@@ -2381,6 +2406,37 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {UiOp} op
+     */
+    showParamOp(op)
+    {
+
+        this.showParams();
+        const html = getHandleBarHtml(
+            "params_animop", {
+                "op": op
+            });
+        this.#elKeyParamPanel.innerHTML = html;
+
+        ele.clickable(ele.byId("ap_selectopkeys"), () =>
+        {
+
+            this.unSelectAllKeys();
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                console.log("tttt", i, op);
+                if (this.#tlAnims[i].getOp() == op)
+                    for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
+                    {
+                        const keys = this.#tlAnims[i].getGlKeysForAnim(this.#tlAnims[i].anims[j]);
+                        if (keys)keys.selectAll();
+                    }
+                this.#tlAnims[i].update();
+            }
+        });
+    }
+
+    /**
      * @param {Anim} anim
      */
     showParamAnim(anim)
@@ -2402,6 +2458,7 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
             this.showSpreadSheet(anim);
