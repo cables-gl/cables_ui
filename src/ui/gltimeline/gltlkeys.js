@@ -350,8 +350,8 @@ export class glTlKeys extends Events
             if (k.cp2r) k.cp2r.setColorArray(colBez);
             if (k.cp1s) k.cp1s.setColorArray(colBez);
             if (k.cp2s) k.cp2s.setColorArray(colBez);
-            let shape = GlRectInstancer.SHAPE_FILLED_CIRCLE;
-            if (animKey.uiAttribs.bezFree) shape = GlRectInstancer.SHAPE_CIRCLE;
+            let shape = GlRect.SHAPE_FILLED_CIRCLE;
+            if (animKey.uiAttribs.bezFree) shape = GlRect.SHAPE_CIRCLE;
 
             if (k.cp1r) k.cp1r.setShape(shape);
             if (k.cp2r) k.cp2r.setShape(shape);
@@ -401,7 +401,6 @@ export class glTlKeys extends Events
             if (k.text)
             {
                 const t = k.text;
-                t.setParentRect(this.animLine);
                 if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
                 else
                 {

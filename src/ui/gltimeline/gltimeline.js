@@ -266,7 +266,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerleave", () => { this.#rects.pointerLeave(); }, { "passive": true });
+        cgl.canvas.addEventListener("pointerleave", (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
 
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
@@ -735,7 +735,6 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
-        console.log("lalala", this.#rectSelect);
 
         this.#focusRuler = false;
         this.#focusScroll = false;
@@ -918,14 +917,12 @@ export class GlTimeline extends Events
             if (this.#selectedKeys[i].temp.preDragTime === undefined)
             {
                 this.predragSelectedKeys();
-                console.log("predrag undefined!");
             }
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
-        // console.log("selectedkeys", this.#selectedKeys.length);
     }
 
     predragSelectedKeys()
@@ -952,7 +949,6 @@ export class GlTimeline extends Events
      */
     setSelectedKeysEasing(easing)
     {
-
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
@@ -964,12 +960,8 @@ export class GlTimeline extends Events
 
     createAnimOpFromSelection()
     {
-
         gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": (o) =>
         {
-            console.log("op added", o);
-            console.log(o.portsIn[0].anim);
-
             const anim = o.portsIn[0].anim;
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -979,7 +971,6 @@ export class GlTimeline extends Events
             }
 
         } });
-
     }
 
     /**
@@ -2058,7 +2049,6 @@ export class GlTimeline extends Events
                     ]
                 );
             }
-            console.log("data", data);
             return data;
         };
 
@@ -2093,7 +2083,6 @@ export class GlTimeline extends Events
                 {
                     if (!content.cells[i])
                     {
-                        console.log("abbruch");
                         continue;
                     }
                     const o = {
@@ -2424,7 +2413,6 @@ export class GlTimeline extends Events
             this.unSelectAllKeys();
             for (let i = 0; i < this.#tlAnims.length; i++)
             {
-                console.log("tttt", i, op);
                 if (this.#tlAnims[i].getOp() == op)
                     for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
                     {

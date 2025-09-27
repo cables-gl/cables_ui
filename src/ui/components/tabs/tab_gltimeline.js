@@ -243,6 +243,9 @@ export default class GlTimelineTab
 
     }
 
+    /**
+     * @param {MouseEvent} ev
+     */
     resizeRenderer(ev)
     {
         ev.preventDefault();
@@ -265,6 +268,9 @@ export default class GlTimelineTab
         window.splitpane.listeners.push(f);
     }
 
+    /**
+     * @param {MouseEvent} ev
+     */
     resizeRendererRight(ev)
     {
         ev.preventDefault();

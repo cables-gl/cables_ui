@@ -25,20 +25,6 @@ import GlUiCanvas from "../glpatch/gluicanvas.js";
  */
 export default class GlRectInstancer extends Events
 {
-
-    static SHAPE_CIRCLE = 1.0;
-    static SHAPE_TRIANGLEBOTTOM = 2.0;
-    static SHAPE_FRAME = 4.0;
-    static SHAPE_CURSOR = 5.0;
-    static SHAPE_FILLED_CIRCLE = 6.0;
-    static SHAPE_CROSS = 7.0;
-    static SHAPE_LOADING_INDICATOR = 8.0;
-    static SHAPE_HALF_BLOCK_TOP = 9.0;
-    static SHAPE_HALF_BLOCK_BOTTOM = 10.0;
-    static SHAPE_ARROW_DOWN = 11.0;
-    static SHAPE_PLUS = 12.0;
-    static SHAPE_RHOMB = 13.0;
-
     #counter = 0;
     #num = 0;
     #name = "";
@@ -559,14 +545,6 @@ export default class GlRectInstancer extends Events
      */
     setColor(idx, r, g, b, a)
     {
-        if (r.length)// todo remove after~jul25
-        {
-            console.warn("setcolor array");
-            a = r[3];
-            b = r[2];
-            g = r[1];
-            r = r[0];
-        }
         if (
             this._float32Diff(this._attrBuffCol[idx * 4 + 0], r) ||
             this._float32Diff(this._attrBuffCol[idx * 4 + 1], g) ||
@@ -668,7 +646,7 @@ export default class GlRectInstancer extends Events
      */
     createRect(options)
     {
-        options = options || {};
+        options = options || { "name": "no name", "interactive": false };
         const r = new GlRect(this, options);
         this.#rects.push(r);
 
@@ -763,9 +741,7 @@ export default class GlRectInstancer extends Events
         {
             // this.#rects[i].emitEvent(GlRect.EVENT_POINTER_UNHOVER);
             this.#rects[i].mouseMove(-99999, -99999, 0, e);
-
         }
-
     }
 
     /**
@@ -773,12 +749,8 @@ export default class GlRectInstancer extends Events
      */
     removeRect(idx)
     {
-
         for (let i = 0; i < this.#rects.length; i++)
             if (this.#rects[i] && this.#rects[i].idx == idx)
-            {
                 this.#rects.splice(i, 1);
-            }
-
     }
 }

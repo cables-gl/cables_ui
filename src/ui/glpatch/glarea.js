@@ -57,7 +57,7 @@ export default class GlArea
          * @type {GlRect}
          */
         this._rectResize = this._instancer.createRect({ "name": "glarea resize", "interactive": true, "draggable": true });
-        this._rectResize.setShape(2);
+        this._rectResize.setShape(GlRect.SHAPE_TRIANGLE_BOTTOM);
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
         this._rectResize.setColor(0, 0, 0, 0.2);
         this._rectResize.setPosition(200 - this.resizeCornerSize, 200 - this.resizeCornerSize);

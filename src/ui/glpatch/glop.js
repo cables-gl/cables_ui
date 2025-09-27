@@ -1016,7 +1016,7 @@ export default class GlOp extends Events
                     const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
 
                     this._glColorSwatch = this._instancer.createRect({ "name": "colorSwatch", "interactive": false, "parent": this._glRectBg });
-                    this._glColorSwatch.setShape(6);
+                    this._glColorSwatch.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
                     this._glColorSwatch.setColor(colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1);
                     this.updateSize();
@@ -1285,7 +1285,7 @@ export default class GlOp extends Events
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false, "name": "hint dot" });
                 this._glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
-                this._glDotHint.setShape(6);
+                this._glDotHint.setShape(GlRect.SHAPE_FILLED_CIRCLE);
             }
 
             if (hasWarnings && !this._glDotWarning)
@@ -1293,7 +1293,7 @@ export default class GlOp extends Events
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false, "name": "warn dot" });
                 this._glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
-                this._glDotWarning.setShape(6);
+                this._glDotWarning.setShape(GlRect.SHAPE_FILLED_CIRCLE);
             }
 
             if (hasErrors && !this._glDotError)
@@ -1301,7 +1301,7 @@ export default class GlOp extends Events
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false, "name": "error dot" });
                 this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotError.setColorArray(gui.theme.colors_patch.opError);
-                this._glDotError.setShape(6);
+                this._glDotError.setShape(GlRect.SHAPE_FILLED_CIRCLE);
                 this._glDotError.interactive = false;
                 this._glDotError.visible = this._visible && hasErrors;
             }
@@ -1311,7 +1311,7 @@ export default class GlOp extends Events
                 this._glNotWorkingCross = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false, "name": "notwork cross" });
                 this._glNotWorkingCross.setSize(this._height * 0.25, this._height * 0.25);
                 this._glNotWorkingCross.setColorArray(gui.theme.colors_patch.opNotWorkingCross);
-                this._glNotWorkingCross.setShape(7);
+                this._glNotWorkingCross.setShape(GlRect.SHAPE_CROSS);
                 this._glNotWorkingCross.interactive = false;
                 this._glNotWorkingCross.visible = this.visible && notworking;
             }
@@ -1434,7 +1434,7 @@ export default class GlOp extends Events
         if (this.opUiAttribs.resizable && !this._rectResize)
         {
             this._rectResize = this._instancer.createRect({ "name": "op resize", "parent": this._glRectBg, "draggable": true, "interactive": true });
-            this._rectResize.setShape(2);
+            this._rectResize.setShape(GlRect.SHAPE_TRIANGLE_BOTTOM);
 
             if (this.opUiAttribs.hasOwnProperty("resizableX")) this._rectResize.draggableX = this.opUiAttribs.resizableX;
             if (this.opUiAttribs.hasOwnProperty("resizableY")) this._rectResize.draggableY = this.opUiAttribs.resizableY;
@@ -1570,7 +1570,7 @@ export default class GlOp extends Events
             this._glRerouteDot.setParent(this._glRectBg);
 
             this._glRerouteDot.setColorArray(GlPort.getInactiveColor(this._glPorts[0].port.type));
-            this._glRerouteDot.setShape(6);
+            this._glRerouteDot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
             this._glRectBg.setColor(0, 0, 0, 0);
             // this._glRectBg.setSize(0.0);

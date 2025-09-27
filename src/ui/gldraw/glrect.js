@@ -40,7 +40,7 @@ export default class GlRect extends Events
     static OPTION_PARENT = "parent";
     static OPTION_NAME = "name";
 
-    static SHAPE_RECT = 1;
+    static SHAPE_RECT = 0;
     static SHAPE_CIRCLE = 1;
     static SHAPE_TRIANGLE_BOTTOM = 2;
     static SHAPE_FRAME = 4;
@@ -124,7 +124,7 @@ export default class GlRect extends Events
         if (this.#rectInstancer.debugColors && this.name != "gldrawdebug")
         {
             this.#debugRect = this.#rectInstancer.createRect({ "name": "gldrawdebug", "interactive": false, "parent": this });
-            this.#debugRect.setShape(GlRectInstancer.SHAPE_FRAME);
+            this.#debugRect.setShape(GlRect.SHAPE_FRAME);
             this.on(GlRect.EVENT_POINTER_MOVE, () => { this.updateDebugColor(); });
             this.on(GlRect.EVENT_POINTER_HOVER, () => { this.updateDebugColor(); });
             this.on(GlRect.EVENT_POINTER_UNHOVER, () => { this.updateDebugColor(); });
