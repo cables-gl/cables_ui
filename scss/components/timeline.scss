@@ -191,10 +191,16 @@
         color: var(--color-08);
         cursor: pointer;
         z-index: 888;
-
+        padding: 10px;
+        min-height: 40px;
+        background-color: #000;
+        min-width: 140px;
+        user-select: none;
+        margin-top: 5px;
 
         h3
         {
+        pointer-events: none ;
             padding:0px;
             margin:0px;
             color:white;

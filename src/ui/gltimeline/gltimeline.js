@@ -1585,27 +1585,27 @@ export class GlTimeline extends Events
             this.#cursorText.text = secondss;
 
             html += "<h3>Second " + secondss + "</h3>";
-            html += frame + "f ";
+            html += "Frame " + frame;
 
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
             html += "<h3>Frame " + frame + "</h3>";
-            html += secondss + "s ";
+            html += "Second " + secondss;
 
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            // if (this.cfg.showBeats) html += beat + "b<br>";
         }
-        if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
-        {
-            this.#cursorText.text = beat;
-            html += "<h3>Beat " + beat + "</h3>";
-            html += secondss + "s ";
-            html += frame + "f ";
+        // if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
+        // {
+        //     this.#cursorText.text = beat;
+        //     html += "<h3>Beat " + beat + "</h3>";
+        //     html += secondss + "s ";
+        //     html += frame + "f ";
 
-            if (this.cfg.showBeats) html += "" + beat + "b<br>";
-        }
+        //     if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        // }
 
         if (this.#oldhtml != html)
         {
@@ -1688,9 +1688,10 @@ export class GlTimeline extends Events
 
     cycleDisplayUnits()
     {
+        console.log("cycleeeeeeeeeeeee ");
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
-        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
-        else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+        // else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
         this.needsUpdateAll = "displayunit changed";
         this.saveUserSettings();
