@@ -958,19 +958,23 @@ export class GlTimeline extends Events
         this.showKeyParamsSoon();
     }
 
+    /**
+     * @param {UiOp} o
+     */
+    #eventOnOpAdd(o)
+    {
+        const anim = o.portsIn[0].anim;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
+            anim.addKey(nk);
+        }
+    }
+
     createAnimOpFromSelection()
     {
-        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": (o) =>
-        {
-            const anim = o.portsIn[0].anim;
-
-            for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
-                const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
-                anim.addKey(nk);
-            }
-
-        } });
+        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": this.#eventOnOpAdd.bind(this) });
     }
 
     /**
@@ -1116,9 +1120,9 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    unSelectAllKeys(reason)
+    unSelectAllKeys(_reason)
     {
         if (this.selectedKeysDragArea.isHovering) return;
         const old = this.#selectedKeys.length;

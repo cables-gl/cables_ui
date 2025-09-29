@@ -12,6 +12,7 @@ import { GlTimeline } from "./gltimeline.js";
 
 /**
  * @typedef AnimLineOptions
+ * @property {string} [title]
  * @property {boolean} [keyYpos]
  * @property {boolean} [multiAnims]
  * @property {HTMLElement} [parentEle]
@@ -339,7 +340,7 @@ export class glTlAnimLine extends Events
     getKeyYPos()
     {
         if (this.isHidden && this.parentLine) return this.parentLine.getKeyYPos();
-        return this.height / 2;
+        return Math.floor(this.height / 2);
     }
 
     /**

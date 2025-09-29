@@ -12,11 +12,18 @@ import { UiOp } from "./core_extend_op.js";
  */
 class UiPatch extends Patch
 {
+
+    /**
+     * @param {import("cables/src/core/core_patch.js").PatchConfig} cfg
+     */
     constructor(cfg)
     {
         super(cfg);
     }
 
+    /**
+     * @param {string[]} opids
+     */
     _opIdsToOps(opids)
     {
         let ops = [];
@@ -27,6 +34,9 @@ class UiPatch extends Patch
         return ops;
     }
 
+    /**
+     * @param {UiOp} op
+     */
     hasOp(op)
     {
         for (const i in this.ops)

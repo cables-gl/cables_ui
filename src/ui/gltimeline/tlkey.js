@@ -107,8 +107,8 @@ export class TlKey extends Events
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             t.setParent(keyRect);
             t.setColor(1, 1, 0, 0.3);
-            t.setPosition(1, 1, -0.8);
-            t.setSize(33, 33);
+            t.setPosition(1, 0, -0.8);
+            t.setSize(33, 20);
             t.setColorHex(key.uiAttribs.color);
             t.setOpacity(0.5);
             this.areaRect = t;
@@ -160,7 +160,7 @@ export class TlKey extends Events
      */
     bindBezCp(bezRect, _cp, key, dir)
     {
-        bezRect.setShape(6);
+        bezRect.setShape(GlRect.SHAPE_FILLED_CIRCLE);
         bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);
         bezRect.setParent(this.rect.parent);
         bezRect.draggableMove = true;
