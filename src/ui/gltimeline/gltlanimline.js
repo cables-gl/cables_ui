@@ -9,6 +9,7 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * @typedef AnimLineOptions
@@ -678,8 +679,23 @@ export class glTlAnimLine extends Events
 
     render()
     {
-        for (let j = 0; j < this.#keys.length; j++)
-            this.#keys[j].render();
+        let skipRendering = false;
+        if (this.#ports)
+        {
+            for (let j = 0; j < this.#keys.length; j++)
+            {
+                if (this.#ports[j].renderTimeLine)
+                {
+                    this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+                    skipRendering = true;
+                }
+            }
+        }
+        if (!skipRendering)
+        {
+            for (let j = 0; j < this.#keys.length; j++)
+                this.#keys[j].render();
+        }
     }
 
     testSelected()

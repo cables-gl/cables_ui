@@ -1694,7 +1694,6 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "displayunit changed";
         this.saveUserSettings();
-
     }
 
     /**
