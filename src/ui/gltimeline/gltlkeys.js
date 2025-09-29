@@ -451,11 +451,11 @@ export class glTlKeys extends Events
                 }
                 else
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - (this.getKeyHeight2()) + 1);
+                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - (this.getKeyHeight2()) + 2);
                     if (this.showKeysAsFrames())
                         k.areaRect.setPosition(this.getKeyWidth2(), -kr.h + this.getKeyHeight(), 0.4);
                     else
-                        k.areaRect.setPosition(this.getKeyWidth2(), -this.animLine.height / 2 + (this.getKeyHeight2()), 0.4);
+                        k.areaRect.setPosition(this.getKeyWidth2(), -this.animLine.height / 2 + (this.getKeyHeight2() + 2), 0.4);
                 }
             }
             perf.finish();
