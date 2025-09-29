@@ -1101,6 +1101,20 @@ export default class Gui extends Events
         }
     }
 
+    getPatchSummary()
+    {
+        if (!this._currentProject) return null;
+        return this._currentProject.summary;
+    }
+
+    /**
+     * @param {Object} projectSummary
+     */
+    setPatchSummary(projectSummary)
+    {
+        this._currentProject.summary = projectSummary;
+    }
+
     createProject()
     {
         if (gui.showGuestWarning()) return;
