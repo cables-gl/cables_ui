@@ -282,15 +282,15 @@ export class GlTimeline extends Events
         this.#elKeyParamPanel.setAttribute("id", "keyOverlay");
         cgl.canvas.parentElement.appendChild(this.#elKeyParamPanel);
 
-        this.#filterInputEl = document.createElement("input");
-        this.#filterInputEl.classList.add("filterInput");
-        this.#filterInputEl.setAttribute("placeholder", "filter...");
-        cgl.canvas.parentElement.appendChild(this.#filterInputEl);
-        this.#filterInputEl.addEventListener("input", () =>
-        {
-            this.#filterString = this.#filterInputEl.value;
-            this.init();
-        });
+        // this.#filterInputEl = document.createElement("input");
+        // this.#filterInputEl.classList.add("filterInput");
+        // this.#filterInputEl.setAttribute("placeholder", "filter...");
+        // cgl.canvas.parentElement.appendChild(this.#filterInputEl);
+        // this.#filterInputEl.addEventListener("input", () =>
+        // {
+        //     this.#filterString = this.#filterInputEl.value;
+        //     this.init();
+        // });
 
         this.#selectModeEl = document.createElement("div");
         this.#selectModeEl.classList.add("selectMode");

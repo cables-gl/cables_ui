@@ -435,23 +435,32 @@ export class glTlKeys extends Events
         }
 
         // color areas
-        for (let i = 0; i < this.#keys.length - 1; i++)
+        for (let i = 0; i < this.#keys.length; i++)
         {
             const animKey = this.#keys[i].key;
             if (animKey.uiAttribs.color)
             {
                 const k = this.#keys[i];
                 const kr = this.#keys[i].rect;
-                const kr2 = this.#keys[i + 1].rect;
+
+                let kr2 = kr;
+                if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
+
                 if (!k.areaRect) continue;
                 if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
+                    if (kr2)
+                        k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
                     k.areaRect.setPosition(this.getKeyWidth2(), Math.min(0, kr2.y - kr.y) + this.getKeyWidth2(), 0.8);
                 }
                 else
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - (this.getKeyHeight2()) + 2);
+                    let x = 0;
+                    if (kr != kr2)x = kr2.x - kr.x;
+                    else x = 8888;
+
+                    k.areaRect.setSize(x, this.animLine.height - (this.getKeyHeight2()) + 2);
+
                     if (this.showKeysAsFrames())
                         k.areaRect.setPosition(this.getKeyWidth2(), -kr.h + this.getKeyHeight(), 0.4);
                     else
