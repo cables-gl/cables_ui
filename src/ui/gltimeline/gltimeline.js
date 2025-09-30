@@ -266,7 +266,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerleave", () => { this.#rects.pointerLeave(); }, { "passive": true });
+        cgl.canvas.addEventListener("pointerleave", (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
 
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
@@ -282,15 +282,15 @@ export class GlTimeline extends Events
         this.#elKeyParamPanel.setAttribute("id", "keyOverlay");
         cgl.canvas.parentElement.appendChild(this.#elKeyParamPanel);
 
-        this.#filterInputEl = document.createElement("input");
-        this.#filterInputEl.classList.add("filterInput");
-        this.#filterInputEl.setAttribute("placeholder", "filter...");
-        cgl.canvas.parentElement.appendChild(this.#filterInputEl);
-        this.#filterInputEl.addEventListener("input", () =>
-        {
-            this.#filterString = this.#filterInputEl.value;
-            this.init();
-        });
+        // this.#filterInputEl = document.createElement("input");
+        // this.#filterInputEl.classList.add("filterInput");
+        // this.#filterInputEl.setAttribute("placeholder", "filter...");
+        // cgl.canvas.parentElement.appendChild(this.#filterInputEl);
+        // this.#filterInputEl.addEventListener("input", () =>
+        // {
+        //     this.#filterString = this.#filterInputEl.value;
+        //     this.init();
+        // });
 
         this.#selectModeEl = document.createElement("div");
         this.#selectModeEl.classList.add("selectMode");
@@ -735,7 +735,6 @@ export class GlTimeline extends Events
     _onCanvasMouseDown(e)
     {
         if (!e.pointerType) return;
-        console.log("lalala", this.#rectSelect);
 
         this.#focusRuler = false;
         this.#focusScroll = false;
@@ -918,14 +917,12 @@ export class GlTimeline extends Events
             if (this.#selectedKeys[i].temp.preDragTime === undefined)
             {
                 this.predragSelectedKeys();
-                console.log("predrag undefined!");
             }
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
-        // console.log("selectedkeys", this.#selectedKeys.length);
     }
 
     predragSelectedKeys()
@@ -952,7 +949,6 @@ export class GlTimeline extends Events
      */
     setSelectedKeysEasing(easing)
     {
-
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
@@ -962,24 +958,23 @@ export class GlTimeline extends Events
         this.showKeyParamsSoon();
     }
 
+    /**
+     * @param {UiOp} o
+     */
+    #eventOnOpAdd(o)
+    {
+        const anim = o.portsIn[0].anim;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
+            anim.addKey(nk);
+        }
+    }
+
     createAnimOpFromSelection()
     {
-
-        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": (o) =>
-        {
-            console.log("op added", o);
-            console.log(o.portsIn[0].anim);
-
-            const anim = o.portsIn[0].anim;
-
-            for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
-                const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
-                anim.addKey(nk);
-            }
-
-        } });
-
+        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": this.#eventOnOpAdd.bind(this) });
     }
 
     /**
@@ -1125,9 +1120,9 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    unSelectAllKeys(reason)
+    unSelectAllKeys(_reason)
     {
         if (this.selectedKeysDragArea.isHovering) return;
         const old = this.#selectedKeys.length;
@@ -1590,27 +1585,27 @@ export class GlTimeline extends Events
             this.#cursorText.text = secondss;
 
             html += "<h3>Second " + secondss + "</h3>";
-            html += frame + "f ";
+            html += "Frame " + frame;
 
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
             html += "<h3>Frame " + frame + "</h3>";
-            html += secondss + "s ";
+            html += "Second " + secondss;
 
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            // if (this.cfg.showBeats) html += beat + "b<br>";
         }
-        if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
-        {
-            this.#cursorText.text = beat;
-            html += "<h3>Beat " + beat + "</h3>";
-            html += secondss + "s ";
-            html += frame + "f ";
+        // if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
+        // {
+        //     this.#cursorText.text = beat;
+        //     html += "<h3>Beat " + beat + "</h3>";
+        //     html += secondss + "s ";
+        //     html += frame + "f ";
 
-            if (this.cfg.showBeats) html += "" + beat + "b<br>";
-        }
+        //     if (this.cfg.showBeats) html += "" + beat + "b<br>";
+        // }
 
         if (this.#oldhtml != html)
         {
@@ -1693,13 +1688,13 @@ export class GlTimeline extends Events
 
     cycleDisplayUnits()
     {
+        console.log("cycleeeeeeeeeeeee ");
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
-        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
-        else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+        // else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
         this.needsUpdateAll = "displayunit changed";
         this.saveUserSettings();
-
     }
 
     /**
@@ -2058,7 +2053,6 @@ export class GlTimeline extends Events
                     ]
                 );
             }
-            console.log("data", data);
             return data;
         };
 
@@ -2093,7 +2087,6 @@ export class GlTimeline extends Events
                 {
                     if (!content.cells[i])
                     {
-                        console.log("abbruch");
                         continue;
                     }
                     const o = {
@@ -2424,7 +2417,6 @@ export class GlTimeline extends Events
             this.unSelectAllKeys();
             for (let i = 0; i < this.#tlAnims.length; i++)
             {
-                console.log("tttt", i, op);
                 if (this.#tlAnims[i].getOp() == op)
                     for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
                     {

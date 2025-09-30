@@ -220,8 +220,7 @@ export class TlTitle extends Events
             this.#elOpname.innerHTML = this.#op.name;
             this.#elOpname.classList.add(opNames.getNamespaceClassName(this.#op.objName));
             this.#elOpname.classList.add("opname");
-
-            if (this.#hideOpName) this.#elOpname.style = "color:transparent !important;background-color:transparent !important";
+            if (this.#hideOpName) this.#elOpname.classList.add("hiddenOpname");
 
             let portnames = "";
 
@@ -283,9 +282,11 @@ export class TlTitle extends Events
             {
                 this.folderButton.children[0].classList.remove("icon-chevron-right");
                 this.folderButton.children[0].classList.add("icon-chevron-down");
+                this.#el.parentElement.classList.remove("collapsed");
             }
             else
             {
+                this.#el.parentElement.classList.add("collapsed");
                 this.folderButton.children[0].classList.add("icon-chevron-right");
                 this.folderButton.children[0].classList.remove("icon-chevron-down");
             }
@@ -342,9 +343,7 @@ export class TlTitle extends Events
                 this.muteButton.children[0].classList.remove("icon-eye-off");
             }
             this.#port.emitEvent("animLineUpdate");
-
         }
-
     }
 
     /**
@@ -357,7 +356,6 @@ export class TlTitle extends Events
         else this.#el.classList.remove("selectedOp");
 
         this.#elTitle.style.borderLeft = "3px solid " + color;
-
     }
 
     toggleActive()

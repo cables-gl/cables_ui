@@ -1,5 +1,12 @@
 .cablesCssUi
 {
+    --portNameWidth:150px;
+
+    .collapsed .tlTitle:not(:first-child)
+    {
+        padding-top:0px !important;
+        border-bottom:0px  ;
+    }
 
     .tlTitle
     {
@@ -25,19 +32,24 @@
             display: inline-block;
             padding-right: 0px;
         }
+
         .portAndValue
         {
+            border-left:3px solid transparent;
             position: absolute;
-            left: calc(var(--timelineSplitterLeft) * 0.6);
-            /* transform: translate(-100%); */
+            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px);
+            width: var(--portNameWidth);
+            max-width: var(--portNameWidth);
+            overflow: hidden ;
+            text-overflow: ellipsis;
         }
-        /* .value */
-        /* { */
-            /* padding-left: 10px; */
-            /* padding-right: 10px; */
-            /* font-family: monospace; */
-        /* } */
-
+        .portAndValue:hover
+        {
+            *{
+                background-color:var(--textedit-comment);
+                color:#000;
+            }
+        }
 
         .tlButtonsRight
         {
@@ -65,6 +77,7 @@
             color:var(--textedit-comment);
         }
 
+
         &.selectedOp
         {
             .opname
@@ -72,6 +85,12 @@
                 background-color: #555;
                 border-radius: 4px;
             }
+        }
+
+        .hiddenOpname
+        {
+            color:transparent !important;
+            background-color:transparent !important
         }
 
         .button-small {
@@ -96,7 +115,10 @@
 
     .hasSelectedKeys
     {
-        border-left:3px solid #ffff00;
+        .portAndValue{
+            border-left:3px solid #ffff00;
+
+        }
     }
 
     .onkey
@@ -169,10 +191,16 @@
         color: var(--color-08);
         cursor: pointer;
         z-index: 888;
-
+        padding: 10px;
+        min-height: 40px;
+        background-color: #000;
+        min-width: 140px;
+        user-select: none;
+        margin-top: 5px;
 
         h3
         {
+        pointer-events: none ;
             padding:0px;
             margin:0px;
             color:white;

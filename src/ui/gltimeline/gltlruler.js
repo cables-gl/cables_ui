@@ -14,8 +14,8 @@ import { GlTimeline } from "./gltimeline.js";
 export class glTlRuler extends Events
 {
 
-    static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
-    static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
+    // static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
+    // static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
 
     static COLOR_MARK_OUTRANGE = [0, 0, 0, 1];
     static COLOR_MARK_SIZE0 = [1, 1, 1, 0.2];
@@ -83,15 +83,15 @@ export class glTlRuler extends Events
             this.markf.push(mr);
         }
 
-        this.markBeats = [];
-        for (let i = 0; i < 400; i++)
-        {
-            const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker beats", "draggable": false, "interactive": false });
-            mr.setPosition(-8888, 0);
-            mr.setParent(this._glRectBg);
-            mr.setSize(0, 0);
-            this.markBeats.push(mr);
-        }
+        // this.markBeats = [];
+        // for (let i = 0; i < 400; i++)
+        // {
+        //     const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker beats", "draggable": false, "interactive": false });
+        //     mr.setPosition(-8888, 0);
+        //     mr.setParent(this._glRectBg);
+        //     mr.setSize(0, 0);
+        //     this.markBeats.push(mr);
+        // }
 
         this.marks = [];
         for (let i = 0; i < 300; i++)
@@ -172,32 +172,32 @@ export class glTlRuler extends Events
         else
             for (let i = 0; i < this.markf.length; i++) this.markf[i].setSize(0, 0);
 
-        if (this.#glTl.cfg.showBeats)
-        {
-            const bps = this.#glTl.bpm / 60;
-            const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
+        // if (this.#glTl.cfg.showBeats)
+        // {
+        //     const bps = this.#glTl.bpm / 60;
+        //     const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
 
-            for (let i = 0; i < this.markBeats.length; i++)
-            {
-                const mr = this.markBeats[i];
-                const t = offset + (i * (1 / bps));
-                const x = this.#glTl.view.timeToPixel(t - (this.#glTl.view.offset));
+        //     for (let i = 0; i < this.markBeats.length; i++)
+        //     {
+        //         const mr = this.markBeats[i];
+        //         const t = offset + (i * (1 / bps));
+        //         const x = this.#glTl.view.timeToPixel(t - (this.#glTl.view.offset));
 
-                mr.setSize(onebeatPixel - 2, 5);
-                mr.setPosition(x, 1);
+        //         mr.setSize(onebeatPixel - 2, 5);
+        //         mr.setPosition(x, 1);
 
-                // const absBeat = Math.floor((t) * bps);
-                // if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
-                // else
-                mr.setColorArray(glTlRuler.COLOR_BEATS);
+        //         // const absBeat = Math.floor((t) * bps);
+        //         // if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
+        //         // else
+        //         mr.setColorArray(glTlRuler.COLOR_BEATS);
 
-                if (t < 0) mr.setOpacity(0.3);
-            }
-        }
-        else
-        {
-            for (let i = 0; i < this.markBeats.length; i++) this.markBeats[i].setSize(0, 0);
-        }
+        //         if (t < 0) mr.setOpacity(0.3);
+        //     }
+        // }
+        // else
+        // {
+        //     for (let i = 0; i < this.markBeats.length; i++) this.markBeats[i].setSize(0, 0);
+        // }
 
         for (let i = 0; i < this.marks.length; i++)
         {

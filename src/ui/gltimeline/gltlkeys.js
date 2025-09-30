@@ -191,6 +191,16 @@ export class glTlKeys extends Events
         return this.getKeyWidth();
     }
 
+    getKeyHeight2()
+    {
+        return Math.ceil(this.getKeyHeight() / 2);
+    }
+
+    getKeyWidth2()
+    {
+        return Math.floor(this.getKeyWidth() / 2);
+    }
+
     getKeyWidth()
     {
         if (this.isLayoutGraph())
@@ -350,8 +360,8 @@ export class glTlKeys extends Events
             if (k.cp2r) k.cp2r.setColorArray(colBez);
             if (k.cp1s) k.cp1s.setColorArray(colBez);
             if (k.cp2s) k.cp2s.setColorArray(colBez);
-            let shape = GlRectInstancer.SHAPE_FILLED_CIRCLE;
-            if (animKey.uiAttribs.bezFree) shape = GlRectInstancer.SHAPE_CIRCLE;
+            let shape = GlRect.SHAPE_FILLED_CIRCLE;
+            if (animKey.uiAttribs.bezFree) shape = GlRect.SHAPE_CIRCLE;
 
             if (k.cp1r) k.cp1r.setShape(shape);
             if (k.cp2r) k.cp2r.setShape(shape);
@@ -385,9 +395,9 @@ export class glTlKeys extends Events
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
-            rx -= this.getKeyWidth() / 2;
-            let ry = y - this.getKeyHeight() / 2;
-            if (this.isLayoutGraph()) ry = y - this.getKeyWidth() / 2;
+            rx -= this.getKeyWidth2();
+            let ry = y - this.getKeyHeight2() - 2;
+            if (this.isLayoutGraph()) ry = y - this.getKeyWidth2();
 
             if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
@@ -401,7 +411,6 @@ export class glTlKeys extends Events
             if (k.text)
             {
                 const t = k.text;
-                t.setParentRect(this.animLine);
                 if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
                 else
                 {
@@ -426,27 +435,36 @@ export class glTlKeys extends Events
         }
 
         // color areas
-        for (let i = 0; i < this.#keys.length - 1; i++)
+        for (let i = 0; i < this.#keys.length; i++)
         {
             const animKey = this.#keys[i].key;
             if (animKey.uiAttribs.color)
             {
                 const k = this.#keys[i];
                 const kr = this.#keys[i].rect;
-                const kr2 = this.#keys[i + 1].rect;
+
+                let kr2 = kr;
+                if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
+
                 if (!k.areaRect) continue;
                 if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
-                    k.areaRect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
+                    if (kr2)
+                        k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
+                    k.areaRect.setPosition(this.getKeyWidth2(), Math.min(0, kr2.y - kr.y) + this.getKeyWidth2(), 0.8);
                 }
                 else
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - 1);
+                    let x = 0;
+                    if (kr != kr2)x = kr2.x - kr.x;
+                    else x = 8888;
+
+                    k.areaRect.setSize(x, this.animLine.height - (this.getKeyHeight2()) + 2);
+
                     if (this.showKeysAsFrames())
-                        k.areaRect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyHeight(), 0.4);
+                        k.areaRect.setPosition(this.getKeyWidth2(), -kr.h + this.getKeyHeight(), 0.4);
                     else
-                        k.areaRect.setPosition(this.getKeyWidth() / 2, -this.animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
+                        k.areaRect.setPosition(this.getKeyWidth2(), -this.animLine.height / 2 + (this.getKeyHeight2() + 2), 0.4);
                 }
             }
             perf.finish();

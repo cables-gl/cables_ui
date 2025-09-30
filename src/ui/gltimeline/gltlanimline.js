@@ -9,9 +9,11 @@ import { GlTlView } from "./gltlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
 
 /**
  * @typedef AnimLineOptions
+ * @property {string} [title]
  * @property {boolean} [keyYpos]
  * @property {boolean} [multiAnims]
  * @property {HTMLElement} [parentEle]
@@ -339,7 +341,7 @@ export class glTlAnimLine extends Events
     getKeyYPos()
     {
         if (this.isHidden && this.parentLine) return this.parentLine.getKeyYPos();
-        return this.height / 2;
+        return Math.floor(this.height / 2);
     }
 
     /**
@@ -677,8 +679,23 @@ export class glTlAnimLine extends Events
 
     render()
     {
-        for (let j = 0; j < this.#keys.length; j++)
-            this.#keys[j].render();
+        let skipRendering = false;
+        if (this.#ports)
+        {
+            for (let j = 0; j < this.#keys.length; j++)
+            {
+                if (this.#ports[j].renderTimeLine)
+                {
+                    this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+                    skipRendering = true;
+                }
+            }
+        }
+        if (!skipRendering)
+        {
+            for (let j = 0; j < this.#keys.length; j++)
+                this.#keys[j].render();
+        }
     }
 
     testSelected()

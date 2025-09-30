@@ -677,7 +677,6 @@ export default class Gui extends Events
             else this._elEditorMinimized.style.display = "none";
 
             this._elSplitterMaintabs.style.display = "none";
-            // this._elEditorMinimized.style.top = 80 + "px";
 
             this._elBreadcrumbNav.style.left = 15 + "px";
         }
@@ -753,37 +752,19 @@ export default class Gui extends Events
             }
         }
 
-        let metaWidth;
+        let metaWidth = this.rightPanelWidth - optionsWidth;
 
-        // if (this.showTwoMetaPanels())
-        {
-            metaWidth = this.rightPanelWidth - optionsWidth;
+        this._elOptions.style.right = metaWidth + "px";
+        this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
+        this._elOptions.style.width = optionsWidth + "px";
+        this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
 
-            this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-            this._elOptions.style.width = optionsWidth + "px";
-            this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
+        this._elMeta.style.right = 0 + "px";
+        this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
+        this._elMeta.style.width = metaWidth + "px";
+        this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
-            this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-            this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
-
-            this._elOptions.style.display = "block";
-        }
-        // else
-        // {
-        //     metaWidth = this.rightPanelWidth;
-        //     this._elMeta.style.right = 0 + "px";
-
-        //     this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-        //     this._elMeta.style.width = metaWidth + "px";
-        //     this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
-
-        //     this._elOptions.style.width = 0 + "px";
-        //     this._elOptions.style.height = 0 + "px";
-        //     this._elOptions.style.display = "none";
-        // }
+        this._elOptions.style.display = "block";
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
         ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
@@ -1033,7 +1014,6 @@ export default class Gui extends Events
         this._showTiming = false;
         ele.hide(ele.byId("timing"));
         gui.setLayout();
-
     }
 
     hideTimeline()
@@ -1218,7 +1198,6 @@ export default class Gui extends Events
                             "title": "Canvas As Patch Background",
                             "func": CmdUi.togglePatchBgRenderer
                         }
-
                     ]
             }, el);
     }
@@ -2374,6 +2353,4 @@ export default class Gui extends Events
             ele.byId("cablescanvas").style.opacity = "0.0000000001";
         document.body.style["pointer-events"] = "none";
     }
-
-    // srtneisrt
 }

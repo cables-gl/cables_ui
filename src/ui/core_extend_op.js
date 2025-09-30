@@ -8,6 +8,7 @@ import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import text from "./text.js";
+import { UiPatch } from "./core_extend_patch.js";
 
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
