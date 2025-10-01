@@ -313,6 +313,7 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#keys.length; i++)
             this.#keys[i].setKeyPositions("collapse");
+
         this.foreachTlVizPorts((p) =>
         {
             p.emitEvent("tlVizHide");

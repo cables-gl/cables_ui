@@ -626,6 +626,8 @@ export default class Gui extends Events
 
         let editorWidth = this.editorWidth;
         if (!this.maintabPanel.isVisible())editorWidth = 0;
+        if (editorWidth > window.innerWidth - this.rendererWidth)editorWidth = window.innerWidth - this.rendererWidth - 20;
+        if (editorWidth > window.innerWidth - this.rightPanelWidth)editorWidth = window.innerWidth - this.rightPanelWidth - 20;
 
         let patchWidth = window.innerWidth;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)

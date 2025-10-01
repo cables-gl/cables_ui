@@ -1281,6 +1281,7 @@ export class GlTimeline extends Events
         {
             let first = null;
             if (op)
+            {
                 for (let i = 0; i < item.ports.length; i++)
                 {
                     const o = { "parentEle": cont };
@@ -1293,6 +1294,7 @@ export class GlTimeline extends Events
                     this.#tlAnims.push(a);
                     if (i > 0)a.getTitle(0).hideOpName = true;
                 }
+            }
         }
         else
         if (item.childs)
@@ -1333,13 +1335,14 @@ export class GlTimeline extends Events
         if (this.isGraphLayout())
         {
             q.setOptions({
-                "include": { "portsAnimated": true, "animated": true },
-                "only": { "selected": true },
+                "include": { "animated": true, "subpatches": true, "portsAnimated": true },
                 "includeUnsavedIndicator": false,
+                "only": { "selected": true },
             });
         }
 
         const hier = q.getHierarchy();
+        console.log("hier", hier);
         const hstr = JSON.stringify(hier);
 
         if (hstr == this.lastHierStr) return;
