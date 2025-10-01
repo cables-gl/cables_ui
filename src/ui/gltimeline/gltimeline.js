@@ -179,6 +179,7 @@ export class GlTimeline extends Events
 
     /** @type {HTMLElement} */
     tlTimeScrollContainer;
+    #clipboardKeys;
 
     /**
      * @param {CglContext} cgl
@@ -1812,6 +1813,7 @@ export class GlTimeline extends Events
     copy(event = null)
     {
         const obj = { "keys": this.serializeSelectedKeys(true) };
+        this.#clipboardKeys = obj;
 
         notify("copied " + obj.keys.length + " keys", null, { "force": true });
         if (event)
@@ -2458,6 +2460,13 @@ export class GlTimeline extends Events
                 const keys = this.#tlAnims[i].getGlKeysForAnim(anim);
                 if (keys)keys.selectAll();
             }
+        });
+
+        ele.clickable(ele.byId("ap_paste"), () =>
+        {
+
+            anim.deserialize(this.#clipboardKeys);
+
         });
 
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
