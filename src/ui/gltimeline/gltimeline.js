@@ -461,7 +461,23 @@ export class GlTimeline extends Events
                 this.#selOpsStr = selOpsStr;
             }
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
+
+            let found = false;
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                for (let j = 0; j < selops.length; j++)
+                {
+                    if (this.#tlAnims[i].getOp() == selops[j])
+                    {
+                        this.#tlAnims[i].getTitle(0).scrollIntoView();
+                        found = true;
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
         });
+
         gui.glTimeline = this;
         gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {

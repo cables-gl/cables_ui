@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
@@ -281,7 +282,11 @@ export class glTlAnimLine extends Events
     activateSelectedOps(ops)
     {
         for (let i = 0; i < this.#ports.length; i++)
-            this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
+        {
+            const act = (ops.indexOf(this.#ports[i].op) != -1);
+
+            this.#ports[i].anim.tlActive = act;
+        }
     }
 
     posY()
