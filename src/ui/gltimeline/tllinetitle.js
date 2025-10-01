@@ -491,6 +491,14 @@ export class TlTitle extends Events
 
     scrollIntoView()
     {
-        this.#el.scrollIntoView({ "block": "start", "container": "nearest" });
+        const elem = this.#el;
+        let rectElem = elem.getBoundingClientRect();
+        let rectContainer = this.#gltl.tlTimeScrollContainer.getBoundingClientRect();
+        if (rectElem.bottom > rectContainer.bottom || rectElem.top < rectContainer.top)
+        {
+            this.#el.scrollIntoView({ "block": "start", "container": "nearest" });
+            document.body.scrollTop = 0;
+        }
+
     }
 }
