@@ -758,7 +758,7 @@ export class GlTimeline extends Events
         this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
         for (let i = 0; i < this.#tlAnims.length; i++)
-            if (this.#tlAnims[i].isHovering())
+            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
                 this.showParamAnim(this.#tlAnims[i].anims[0]);
         this.mouseDown = true;
     }
@@ -2470,6 +2470,18 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_paste"), () =>
         {
+            console.log(this.#clipboardKeys);
+            anim.deserialize(this.#clipboardKeys);
+        });
+        ele.clickable(ele.byId("ap_paste_at_time"), () =>
+        {
+            console.log("keys", this.#clipboardKeys);
+            if (!this.#clipboardKeys) return;
+
+            const startTime = this.#clipboardKeys.keys[0].t;
+            for (let i = 0; i < this.#clipboardKeys.keys.length; i++)
+                this.#clipboardKeys.keys[i].t += this.cursorTime - startTime;
+
             anim.deserialize(this.#clipboardKeys);
         });
 
