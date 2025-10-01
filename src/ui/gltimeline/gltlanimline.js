@@ -313,6 +313,10 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#keys.length; i++)
             this.#keys[i].setKeyPositions("collapse");
+        this.foreachTlVizPorts((p) =>
+        {
+            p.emitEvent("tlVizHide");
+        });
 
     }
 
@@ -512,6 +516,7 @@ export class glTlAnimLine extends Events
     {
         if (this.#disposed) return;
         this.#disposed = true;
+        this.foreachTlVizPorts((p) => { p.emitEvent("tlVizDispose"); });
         if (this.#valueRuler) this.#valueRuler = this.#valueRuler.dispose();
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
@@ -677,24 +682,41 @@ export class glTlAnimLine extends Events
         }
     }
 
-    render()
+    foreachTlVizPorts(cb)
     {
-        let skipRendering = false;
         if (this.#ports)
         {
             for (let j = 0; j < this.#keys.length; j++)
             {
-                if (this.#ports[j].renderTimeLine)
-                {
-                    this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
-                    skipRendering = true;
-                }
+                if (this.#ports[j].renderTimeLine) cb(this.#ports[j]);
             }
         }
+
+    }
+
+    render()
+    {
+        let skipRendering = false;
+        // if (this.#ports)
+        // {
+        //     for (let j = 0; j < this.#keys.length; j++)
+        //     {
+        //         if (this.#ports[j].renderTimeLine)
+        //         {
+        //             this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+        //             skipRendering = true;
+        //         }
+        //     }
+        // }
+        this.foreachTlVizPorts((p) =>
+        {
+            p.renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+            skipRendering = true;
+
+        });
         if (!skipRendering)
         {
-            for (let j = 0; j < this.#keys.length; j++)
-                this.#keys[j].render();
+            for (let j = 0; j < this.#keys.length; j++) this.#keys[j].render();
         }
     }
 
