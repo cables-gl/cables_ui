@@ -743,13 +743,13 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
 
-        this._onCanvasMouseMove(e);
-        if (this.#focusScroll) return;
-
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
                 if (e.offsetY > this.getFirstLinePosy())
                     this.unSelectAllKeys("canvas down ");
+
+        this._onCanvasMouseMove(e);
+        if (this.#focusScroll) return;
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
@@ -757,6 +757,9 @@ export class GlTimeline extends Events
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            if (this.#tlAnims[i].isHovering())
+                this.showParamAnim(this.#tlAnims[i].anims[0]);
         this.mouseDown = true;
     }
 
@@ -1116,8 +1119,8 @@ export class GlTimeline extends Events
         clearTimeout(this.toParamKeys);
         this.toParamKeys = setTimeout(() =>
         {
-            this.showParamKeys();
-        }, 100);
+            if (this.getNumSelectedKeys() > 0 || this.#elKeyParamPanel.dataset.panel == "param_keys") this.showParamKeys();
+        }, 50);
     }
 
     unselectAllKeysSilent()
@@ -2263,6 +2266,7 @@ export class GlTimeline extends Events
                 "showCurves": showCurves,
                 "comment": comment
             });
+        this.#elKeyParamPanel.dataset.panel = "param_keys";
         this.#elKeyParamPanel.innerHTML = html;
 
         ele.clickable(ele.byId("kp_more"), (e) =>
@@ -2421,6 +2425,7 @@ export class GlTimeline extends Events
                 "op": op
             });
         this.#elKeyParamPanel.innerHTML = html;
+        this.#elKeyParamPanel.dataset.panel = "params_animop";
 
         ele.clickable(ele.byId("ap_selectopkeys"), () =>
         {
@@ -2452,6 +2457,7 @@ export class GlTimeline extends Events
                 "length": Math.round(anim.getLengthLoop() * 1000) / 1000
             });
         this.#elKeyParamPanel.innerHTML = html;
+        this.#elKeyParamPanel.dataset.panel = "params_anim";
 
         ele.clickable(ele.byId("ap_select"), () =>
         {
@@ -2464,9 +2470,7 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_paste"), () =>
         {
-
             anim.deserialize(this.#clipboardKeys);
-
         });
 
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
