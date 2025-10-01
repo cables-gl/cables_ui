@@ -927,6 +927,8 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            gui.savedState.setUnSaved("deserializekeys", this.#tlAnims[i].getOp().getSubPatch());
     }
 
     predragSelectedKeys()
@@ -1875,6 +1877,7 @@ export class GlTimeline extends Events
                     newKeys.push(l);
                     an.addKey(l);
                     found = true;
+                    gui.savedState.setUnSaved("deserializekeys", this.#tlAnims[j].getOp().getSubPatch());
                 }
             }
 
@@ -1882,6 +1885,7 @@ export class GlTimeline extends Events
                 notfoundallAnims = true;
 
         }
+
         return { "keys": newKeys, "notfoundallAnims": notfoundallAnims };
     }
 

@@ -10,6 +10,7 @@ import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef AnimLineOptions
@@ -32,7 +33,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<Anim>} */
     #anims = [];
 
-    /** @type {Array<Op>} */
+    /** @type {Array<UiOp>} */
     #ops = [];
 
     /** @type {GlRect} */
