@@ -1119,6 +1119,13 @@ export class GlTimeline extends Events
         }, 100);
     }
 
+    unselectAllKeysSilent()
+    {
+        this.#selectedKeys = [];
+        this.#selectedKeyAnims = [];
+
+    }
+
     /**
      * @param {string} [_reason]
      */
@@ -1126,8 +1133,7 @@ export class GlTimeline extends Events
     {
         if (this.selectedKeysDragArea.isHovering) return;
         const old = this.#selectedKeys.length;
-        this.#selectedKeys = [];
-        this.#selectedKeyAnims = [];
+        this.unselectAllKeysSilent();
         this.showKeyParamsSoon();
         this.setHoverKeyRect(null);
         if (old != 0) this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
