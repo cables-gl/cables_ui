@@ -83,6 +83,9 @@ export default class Gui extends Events
     static RESTRICT_MODE_EXPLORER = 30;
     static RESTRICT_MODE_FULL = 40;
 
+    static PREF_LAYOUT_EDITORWIDTH = "editorWidth";
+    static PREF_LAYOUT_RIGHT_PANEL_WIDTH = "rightpanelWidth";
+    static PREF_LAYOUT_BOTTOM_PANEL_HEIGHT = "bottomPanelHeight";
     hasAnims = false;
     unload = false;
 
@@ -131,9 +134,9 @@ export default class Gui extends Events
 
         this.canvasMagnifier = null;
 
-        this.editorWidth = this.userSettings.get("editorWidth") || 350;
-        this.rightPanelWidth = this.userSettings.get("rightpanelWidth") || 450;
-        this.splitpaneRightPos = this.userSettings.get("rightpanelWidth") || 450;
+        this.editorWidth = this.userSettings.get(Gui.PREF_LAYOUT_EDITORWIDTH) || 350;
+        this.rightPanelWidth = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
+        this.splitpaneRightPos = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
 
         this._timeoutPauseProfiler = null;
         this._cursor = "";
