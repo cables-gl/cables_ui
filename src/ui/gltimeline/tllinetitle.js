@@ -135,7 +135,7 @@ export class TlTitle extends Events
             this.#gltl.showParamOp(this.#op);
         });
 
-        ele.clickable(this.#elPortname, (e) =>
+        ele.clickable(this.#elPortValue, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
 

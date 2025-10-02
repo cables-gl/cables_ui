@@ -1925,34 +1925,42 @@ export class GlTimeline extends Events
 
             e.preventDefault();
 
-            const json = JSON.parse(str);
-            if (json)
+            try
             {
-                if (json.keys)
+
+                const json = JSON.parse(str);
+                if (json)
                 {
-                    const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
-                    const notfoundallAnims = deser.notfoundallAnims;
-
-                    if (notfoundallAnims)
+                    if (json.keys)
                     {
-                        notifyWarn("could not find all anims for pasted keys");
+                        const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
+                        const notfoundallAnims = deser.notfoundallAnims;
+
+                        if (notfoundallAnims)
+                        {
+                            notifyWarn("could not find all anims for pasted keys");
+                        }
+                        else
+                        {
+                            notify(json.keys.length + " keys pasted");
+                        }
+
+                        const animPorts = gui.corePatch().getAllAnimPorts();
+                        for (let i = 0; i < animPorts.length; i++)
+                            if (animPorts[i].anim)
+                                animPorts[i].anim.removeDuplicates();
+
+                        this.needsUpdateAll = "";
+
+                        return;
                     }
-                    else
-                    {
-                        notify(json.keys.length + " keys pasted");
-                    }
-
-                    const animPorts = gui.corePatch().getAllAnimPorts();
-                    for (let i = 0; i < animPorts.length; i++)
-                        if (animPorts[i].anim)
-                            animPorts[i].anim.removeDuplicates();
-
-                    this.needsUpdateAll = "";
-
-                    return;
                 }
             }
-            CABLES.UI.notify("Paste failed");
+            catch (e)
+            {
+                notifyWarn("Timeline paste failed");
+
+            }
         }
     }
 
@@ -2494,10 +2502,27 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+        ele.clickable(ele.byId("ap_size"), () =>
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                if (this.#tlAnims[i].anims[0] == anim)
+                {
+                    let h = 150;
+                    if (anim.uiAttribs.height == h)h = glTlAnimLine.DEFAULT_HEIGHT;
+                    this.#tlAnims[i].setHeight(h);
+                    anim.setUiAttribs({ "height": h });
+                    this.#tlAnims[i].updateTitles();
+                    this.#tlAnims[i].update();
+                    this.#tlAnims[i].updateGlPos();
+                    this.updateAllElements();
+                }
+            }
+
+        });
 
         ele.clickable(ele.byId("ap_paste"), () =>
         {
-            console.log(this.#clipboardKeys);
             anim.deserialize(this.#clipboardKeys);
         });
         ele.clickable(ele.byId("ap_paste_at_time"), () =>
