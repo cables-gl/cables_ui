@@ -611,13 +611,24 @@ export class glTlKeys extends Events
 
                 keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
                 {
-                    console.log("key startdrag");
+                    console.log("key startdrag1", glTlKeys.dragStarted);
                     if (this.#glTl.isSelecting()) return;
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
                     this.#glTl.predragSelectedKeys();
                     if (button == 1 && !glTlKeys.dragStarted)
                     {
+                        console.log("yaaaaaaaaaaa", this.#glTl.getSelectedKeys());
+                        if (this.#glTl.getNumSelectedKeys() == 0)
+                        {
+                            this.#glTl.selectKey(key, this.anim);
+                        }
+                        if (!this.#glTl.isKeySelected(key))
+                        {
+                            this.#glTl.unselectAllKeysSilent();
+                            this.#glTl.selectKey(key, this.anim);
+
+                        }
                         oldValues = this.#glTl.serializeSelectedKeys();
                         glTlKeys.dragStarted = true;
                         glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);

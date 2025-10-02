@@ -297,7 +297,10 @@ export class TlTitle extends Events
 
             const c = this.#anim.tlActive;
 
-            if (c) this.#elTitle.classList.add("current");
+            if (c)
+            {
+                this.#elTitle.classList.add("current");
+            }
             else this.#elTitle.classList.remove("current");
 
             if (this.activeButton)
@@ -352,7 +355,15 @@ export class TlTitle extends Events
      */
     setBorderColor(selected, color)
     {
-        if (selected) this.#el.classList.add("selectedOp");
+        if (selected)
+        {
+            if (this.index == 0)
+            {
+                this.#el.classList.add("selectedOp");
+                this.#el.classList.add("selectedOp");
+
+            }
+        }
         else this.#el.classList.remove("selectedOp");
 
         this.#elTitle.style.borderLeft = "3px solid " + color;
@@ -476,5 +487,18 @@ export class TlTitle extends Events
     {
         // if (this.#anim)
         //     this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
+    }
+
+    scrollIntoView()
+    {
+        const elem = this.#el;
+        let rectElem = elem.getBoundingClientRect();
+        let rectContainer = this.#gltl.tlTimeScrollContainer.getBoundingClientRect();
+        if (rectElem.bottom > rectContainer.bottom || rectElem.top < rectContainer.top)
+        {
+            this.#el.scrollIntoView({ "block": "start", "container": "nearest" });
+            document.body.scrollTop = 0;
+        }
+
     }
 }

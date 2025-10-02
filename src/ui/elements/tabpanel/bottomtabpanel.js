@@ -1,5 +1,5 @@
 import { Events, ele } from "cables-shared-client";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 import uiconfig from "../../uiconfig.js";
 import TabPanel from "./tabpanel.js";
@@ -22,7 +22,7 @@ export default class BottomTabPanel extends Events
         this._tabs.showTabListButton = false;
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
-        this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
+        this.height = userSettings.get(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT) || uiconfig.timingPanelHeight;
 
         this._tabs.on("onTabAdded", (tab, existedBefore) =>
         {
@@ -116,7 +116,7 @@ export default class BottomTabPanel extends Events
         this._toBottomPanel = setTimeout(() =>
         {
             this.fixHeight();
-            userSettings.set("bottomPanelHeight", this.height);
+            userSettings.set(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT, this.height);
         }, 100);
         gui.setLayout();
 

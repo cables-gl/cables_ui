@@ -491,7 +491,7 @@ export default class GlViewBox
 
         if (cy != cy) cy = 0;
 
-        gui.patchView.getSubPatchBounds();
+        // gui.patchView.getSubPatchBounds();
         this.animateScrollTo(bb.center[0], cy);
     }
 

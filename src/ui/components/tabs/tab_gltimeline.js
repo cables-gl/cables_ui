@@ -39,7 +39,7 @@ export default class GlTimelineTab
         this.#tab.contentEle.innerHTML = "";
 
         this.#splitterPos = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
-        this.#splitterPosRight = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT) || 200;
+        this.#splitterPosRight = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT) || 200;
 
         tabs.on("resize", () =>
         {

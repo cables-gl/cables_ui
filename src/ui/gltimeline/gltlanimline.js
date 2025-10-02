@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
@@ -10,6 +11,7 @@ import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef AnimLineOptions
@@ -32,7 +34,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<Anim>} */
     #anims = [];
 
-    /** @type {Array<Op>} */
+    /** @type {Array<UiOp>} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -280,7 +282,11 @@ export class glTlAnimLine extends Events
     activateSelectedOps(ops)
     {
         for (let i = 0; i < this.#ports.length; i++)
-            this.#ports[i].anim.tlActive = (ops.indexOf(this.#ports[i].op) != -1);
+        {
+            const act = (ops.indexOf(this.#ports[i].op) != -1);
+
+            this.#ports[i].anim.tlActive = act;
+        }
     }
 
     posY()
@@ -313,6 +319,11 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#keys.length; i++)
             this.#keys[i].setKeyPositions("collapse");
+
+        this.foreachTlVizPorts((p) =>
+        {
+            p.emitEvent("tlVizHide");
+        });
 
     }
 
@@ -512,6 +523,7 @@ export class glTlAnimLine extends Events
     {
         if (this.#disposed) return;
         this.#disposed = true;
+        this.foreachTlVizPorts((p) => { p.emitEvent("tlVizDispose"); });
         if (this.#valueRuler) this.#valueRuler = this.#valueRuler.dispose();
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
@@ -677,24 +689,41 @@ export class glTlAnimLine extends Events
         }
     }
 
-    render()
+    foreachTlVizPorts(cb)
     {
-        let skipRendering = false;
         if (this.#ports)
         {
             for (let j = 0; j < this.#keys.length; j++)
             {
-                if (this.#ports[j].renderTimeLine)
-                {
-                    this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
-                    skipRendering = true;
-                }
+                if (this.#ports[j].renderTimeLine) cb(this.#ports[j]);
             }
         }
+
+    }
+
+    render()
+    {
+        let skipRendering = false;
+        // if (this.#ports)
+        // {
+        //     for (let j = 0; j < this.#keys.length; j++)
+        //     {
+        //         if (this.#ports[j].renderTimeLine)
+        //         {
+        //             this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+        //             skipRendering = true;
+        //         }
+        //     }
+        // }
+        this.foreachTlVizPorts((p) =>
+        {
+            p.renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+            skipRendering = true;
+
+        });
         if (!skipRendering)
         {
-            for (let j = 0; j < this.#keys.length; j++)
-                this.#keys[j].render();
+            for (let j = 0; j < this.#keys.length; j++) this.#keys[j].render();
         }
     }
 

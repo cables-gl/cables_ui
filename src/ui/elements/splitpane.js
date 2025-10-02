@@ -25,8 +25,7 @@ function initSplitPanes()
             let pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
             pos = Math.max(200, pos);
 
-            gui.userSettings.set("rightpanelWidth", pos);
-            // if (gui.rendererWidth != -1) gui.rendererWidth = pos;
+            gui.userSettings.set(Gui.PREF_LAYOUT_RIGHTPANELWIDTH, pos);
             gui.splitpaneRightPos = pos;
 
             gui.setLayout();
@@ -58,7 +57,7 @@ function initSplitPanes()
 
             gui.editorWidth = e.clientX;
             if (gui.editorWidth < 30)gui.editorWidth = 30;
-            userSettings.set("editorWidth", gui.editorWidth);
+            userSettings.set(Gui.PREF_LAYOUT_EDITORWIDTH, gui.editorWidth);
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
