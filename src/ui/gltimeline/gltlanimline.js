@@ -500,10 +500,10 @@ export class glTlAnimLine extends Events
         this.height = h;
 
         for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].setKeyPositions("collapse");
-        // this.setWidth(this.width);
-        // this.update();
-        // this should be removed instead, call update....
+        {
+            // this.#keys[i].setKeyPositions("collapse");
+            this.#keys[i].reset();
+        }
     }
 
     /**

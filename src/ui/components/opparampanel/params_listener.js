@@ -555,6 +555,7 @@ class ParamsListener extends Events
                     title = "Remove Animation";
                     icon = "icon icon-x";
                 }
+
                 items.push({
                     "title": title,
                     "iconClass": icon,

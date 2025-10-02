@@ -1565,7 +1565,7 @@ export class GlTimeline extends Events
 
             this.texts.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2);
             this.textsNoScroll.render(resX, resY, -1, 1, resX / 2);
-            this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+            this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
             this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
@@ -1590,7 +1590,7 @@ export class GlTimeline extends Events
 
         if (CABLES.UI.PREVISKEYVAL != undefined && CABLES.UI.PREVISKEYVAL != null)
         {
-            if (this.isGraphLayout() && !this.keyframeAutoCreate)
+            if (this.isGraphLayout() && !this.keyframeAutoCreate && this.#tlAnims[0])
             {
                 const y = this.#tlAnims[0].valueToPixel(CABLES.UI.PREVISKEYVAL) + this.getFirstLinePosy();
                 this.cursorNewKeyVis.setPosition(this.view.timeToPixelScreen(this.cursorTime) - this.cursorNewKeyVis.w / 2, y, -0.5);
@@ -2520,7 +2520,8 @@ export class GlTimeline extends Events
                     this.#tlAnims[i].updateTitles();
                     this.#tlAnims[i].update();
                     this.#tlAnims[i].updateGlPos();
-                    this.updateAllElements();
+                    // this.updateAllElements();
+                    this.needsUpdateAll = "height..";
                 }
             }
 
