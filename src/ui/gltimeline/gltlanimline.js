@@ -136,11 +136,7 @@ export class glTlAnimLine extends Events
             const keys = this.#keys[i];
             const anim = ports[i].anim;
             console.log("animheight", anim.uiAttribs.height);
-            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height)
-            {
-                console.log("found height!!!");
-                this.setHeight(anim.uiAttribs.height);
-            }
+            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight(anim.uiAttribs.height);
 
             this.#listeners.push(
                 anim.on(Anim.EVENT_CHANGE, () =>

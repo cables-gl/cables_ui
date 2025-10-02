@@ -116,12 +116,6 @@ export class glTlKeys extends Events
 
             }));
 
-        if (this.isLayoutGraph())
-        {
-            this.#spline = new GlSpline(this.#glTl.splines, port.name);
-            this.#spline.setParentRect(parentRect);
-        }
-
         this.#options = options;
 
         this.init();
@@ -234,6 +228,16 @@ export class glTlKeys extends Events
             this.#disposedWarning++;
             return;
         }
+        if (!this.isLayoutGraph() && this.#spline)
+        {
+            this.#spline.dispose();
+            this.#spline = null;
+        }
+        if (this.isLayoutGraph() && !this.#spline)
+        {
+            this.#spline = new GlSpline(this.#glTl.splines, this.#port.name);
+            this.#spline.setParentRect(this.#parentRect);
+        }
 
         if (this.#keys.length != this.#anim.keys.length) return this.init();
 
@@ -317,7 +321,7 @@ export class glTlKeys extends Events
 
     isLayoutGraph()
     {
-        return this.animLine.height > 50 || this.animLine.isGraphLayout();
+        return this.animLine.height > glTlAnimLine.DEFAULT_HEIGHT || this.animLine.isGraphLayout();
     }
 
     updateColors()
@@ -618,7 +622,6 @@ export class glTlKeys extends Events
                     this.#glTl.predragSelectedKeys();
                     if (button == 1 && !glTlKeys.dragStarted)
                     {
-                        console.log("yaaaaaaaaaaa", this.#glTl.getSelectedKeys());
                         if (this.#glTl.getNumSelectedKeys() == 0)
                         {
                             this.#glTl.selectKey(key, this.anim);

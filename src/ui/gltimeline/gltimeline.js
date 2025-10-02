@@ -2509,9 +2509,14 @@ export class GlTimeline extends Events
                 if (this.#tlAnims[i].anims[0] == anim)
                 {
                     let h = 150;
-                    if (anim.uiAttribs.height == h)h = glTlAnimLine.DEFAULT_HEIGHT;
+
+                    if (!anim.uiAttribs.height)h = 100;
+                    else if (anim.uiAttribs.height == 100)h = 150;
+                    else h = glTlAnimLine.DEFAULT_HEIGHT;
+
                     this.#tlAnims[i].setHeight(h);
-                    anim.setUiAttribs({ "height": h });
+                    if (h == glTlAnimLine.DEFAULT_HEIGHT) anim.setUiAttribs({ "height": 0 });
+                    else anim.setUiAttribs({ "height": h });
                     this.#tlAnims[i].updateTitles();
                     this.#tlAnims[i].update();
                     this.#tlAnims[i].updateGlPos();
