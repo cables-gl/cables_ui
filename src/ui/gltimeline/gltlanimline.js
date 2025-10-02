@@ -184,6 +184,8 @@ export class glTlAnimLine extends Events
         if (this.#options.title)
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
 
+        console.log("collllllllllll", this.getOp()?.uiAttribs);
+        if (!this.isGraphLayout() && this.getOp()?.uiAttribs.tlCollapsed) this.collapseFolder();
         this.fitValues();
         this.updateColor();
     }
@@ -285,6 +287,7 @@ export class glTlAnimLine extends Events
         {
             const act = (ops.indexOf(this.#ports[i].op) != -1);
 
+            if (act) this.#titles[0].scrollIntoView();
             this.#ports[i].anim.tlActive = act;
         }
     }
@@ -749,10 +752,11 @@ export class glTlAnimLine extends Events
         this.#titles[0].updateIcons();
     }
 
-    toggleFolder()
+    toggleCollapse()
     {
         if (this.collapsed) this.expandFolder();
         else this.collapseFolder();
+        this.getOp().setUiAttrib({ "tlCollapsed": this.collapsed });
     }
 
     collapseFolder()
