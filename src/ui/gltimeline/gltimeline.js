@@ -1826,11 +1826,11 @@ export class GlTimeline extends Events
         const bounds = this.getSelectedKeysBoundsTime();
         if (bounds.length == 0)
         {
-            this.view.scrollTo(bounds.min - this.view.visibleTime / 2);
+            this.view.scrollTo((bounds.min - this.view.visibleTime / 2) / 2);
         }
         else
         {
-            this.view.setZoomLength(bounds.length + bounds.length * 0.2);
+            this.view.setZoomLength((bounds.length + (bounds.length * 0.2)) * 2);
             this.view.scrollTo(bounds.min - bounds.length * 0.1);
         }
     }
