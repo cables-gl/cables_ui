@@ -77,6 +77,9 @@ export class GlTimeline extends Events
     /** @type {GlTextWriter} */
     texts = null;
 
+    /** @type {GlTextWriter} */
+    textsNoScroll = null;
+
     /** @type {GlSplineDrawer} */
     splines;
 
@@ -165,6 +168,8 @@ export class GlTimeline extends Events
     #perfFps = new FpsCounter();
     #filterInputEl;
     #filterString = "";
+
+    /** @type {GlText} */
     #cursorText;
     #cursorTextBgRect;
     #cursorY = 30;
@@ -196,6 +201,7 @@ export class GlTimeline extends Events
 
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
+        this.textsNoScroll = new GlTextWriter(cgl, { "name": "textnoscroll", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
         this.#rectsNoScroll = new GlRectInstancer(cgl, { "name": "gltl top rects", "allowDragging": true });
 
@@ -236,7 +242,7 @@ export class GlTimeline extends Events
         this.#cursorTextBgRect.setParent(this.cursorVertLineRect);
         this.#cursorTextBgRect.setColor(0.2, 0.2, 0.2, 1);
 
-        this.#cursorText = new GlText(this.texts, "???");
+        this.#cursorText = new GlText(this.textsNoScroll, "???");
         this.#cursorText.setParentRect(this.cursorVertLineRect);
         this.setColorRectSpecial(this.#cursorText);
 
@@ -1557,7 +1563,8 @@ export class GlTimeline extends Events
 
             this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
 
-            this.texts.render(resX, resY, -1, 1, resX / 2);
+            this.texts.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2);
+            this.textsNoScroll.render(resX, resY, -1, 1, resX / 2);
             this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 

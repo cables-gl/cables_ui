@@ -105,7 +105,7 @@ export class glTlRuler extends Events
         this.titles = [];
         for (let i = 0; i < 100; i++)
         {
-            const mt = new GlText(this.#glTl.texts, "");
+            const mt = new GlText(this.#glTl.textsNoScroll, "");
 
             this.titles.push(mt);
         }
