@@ -2190,6 +2190,10 @@ export default class Gui extends Events
         {
             this.hasAnims = true;
         });
+        this._corePatch.on("portAnimCreated", () =>
+        {
+
+        });
 
         this._corePatch.on("portAnimUpdated", (_options) =>
         {

@@ -105,7 +105,7 @@ export class glTlRuler extends Events
         this.titles = [];
         for (let i = 0; i < 100; i++)
         {
-            const mt = new GlText(this.#glTl.texts, "");
+            const mt = new GlText(this.#glTl.textsNoScroll, "");
 
             this.titles.push(mt);
         }
@@ -199,6 +199,8 @@ export class glTlRuler extends Events
         //     for (let i = 0; i < this.markBeats.length; i++) this.markBeats[i].setSize(0, 0);
         // }
 
+        // console.log("pixelscale", pixelScale);
+
         for (let i = 0; i < this.marks.length; i++)
         {
             const mr = this.marks[i];
@@ -229,7 +231,7 @@ export class glTlRuler extends Events
                 else
                 if (pixelScale < 4)
                 {
-                    time = offset + (i * 10);
+                    time = offset + i;
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 30 == 0)
                     {
@@ -240,7 +242,7 @@ export class glTlRuler extends Events
                 else
                 if (pixelScale < 8)
                 {
-                    time = offset + (i * 10);
+                    time = offset + (i);
                     x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
                     if (time % 10 == 0)
                     {
@@ -281,18 +283,19 @@ export class glTlRuler extends Events
                 }
                 else
                 {
-                    if (time % 1 == 0) size = 1;
 
                     if (pixelScale < 15)
                     {
-                        if (time % 20 == 0) size = 2;
+                        if (time % 10 == 0) size = 2;
                     }
                     else if (pixelScale < 25)
                     {
+                        if (time % 1 == 0) size = 1;
                         if (time % 5 == 0) size = 2;
                     }
                     else if (pixelScale < 40)
                     {
+                        if (time % 1 == 0) size = 1;
                         if (time % 2 == 0) size = 2;
                     }
                     else

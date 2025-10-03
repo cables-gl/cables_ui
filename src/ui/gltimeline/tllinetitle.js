@@ -135,7 +135,7 @@ export class TlTitle extends Events
             this.#gltl.showParamOp(this.#op);
         });
 
-        ele.clickable(this.#elPortname, (e) =>
+        ele.clickable(this.#elPortValue, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
 
@@ -274,7 +274,7 @@ export class TlTitle extends Events
             if (!this.folderButton)
                 this.folderButton = this.addButton("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlmute\"></span>", () =>
                 {
-                    this.animLine.toggleFolder();
+                    this.animLine.toggleCollapse();
                     this.updateTitleFromOp();
                 });
 

@@ -135,6 +135,8 @@ export class glTlAnimLine extends Events
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
+            console.log("animheight", anim.uiAttribs.height);
+            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight(anim.uiAttribs.height);
 
             this.#listeners.push(
                 anim.on(Anim.EVENT_CHANGE, () =>
@@ -154,7 +156,7 @@ export class glTlAnimLine extends Events
                 this.#listeners.push(
                     anim.on(Anim.EVENT_UIATTRIB_CHANGE, () =>
                     {
-                        this.height = Math.random() * 80 + 22;
+                        // this.height = anim.uiAttribs.height c;
                     }));
         }
 
@@ -171,6 +173,7 @@ export class glTlAnimLine extends Events
             this.#glRectKeysBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
             {
                 if (this.#keys.length < 1) return;
+
                 this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#glRectKeysBg.y) * 1000) / 1000);
                 this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
             });
@@ -184,6 +187,7 @@ export class glTlAnimLine extends Events
         if (this.#options.title)
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
 
+        if (!this.isGraphLayout() && this.getOp()?.uiAttribs.tlCollapsed) this.collapseFolder();
         this.fitValues();
         this.updateColor();
     }
@@ -285,6 +289,7 @@ export class glTlAnimLine extends Events
         {
             const act = (ops.indexOf(this.#ports[i].op) != -1);
 
+            if (act) this.#titles[0].scrollIntoView();
             this.#ports[i].anim.tlActive = act;
         }
     }
@@ -489,15 +494,16 @@ export class glTlAnimLine extends Events
      */
     setHeight(h)
     {
+        h = h || glTlAnimLine.DEFAULT_HEIGHT;
         if (this.height == h) return;
         if (this.checkDisposed()) return;
+        this.height = h;
 
         for (let i = 0; i < this.#keys.length; i++)
-            this.#keys[i].setKeyPositions("collapse");
-        // this.height = h;
-        // this.setWidth(this.width);
-        // this.update();
-        // this should be removed instead, call update....
+        {
+            // this.#keys[i].setKeyPositions("collapse");
+            this.#keys[i].reset();
+        }
     }
 
     /**
@@ -749,10 +755,11 @@ export class glTlAnimLine extends Events
         this.#titles[0].updateIcons();
     }
 
-    toggleFolder()
+    toggleCollapse()
     {
         if (this.collapsed) this.expandFolder();
         else this.collapseFolder();
+        this.getOp()?.setUiAttrib({ "tlCollapsed": this.collapsed });
     }
 
     collapseFolder()

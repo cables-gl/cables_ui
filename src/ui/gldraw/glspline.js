@@ -72,6 +72,7 @@ export default class GlSpline
             y = this.#parentRect.y;
             z = this.#parentRect.z;
         }
+
         for (let i = 0; i < this.#points.length; i += 3)
         {
             finalPoints[i + 0] = this.#points[i + 0] + x;
