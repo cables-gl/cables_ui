@@ -116,7 +116,7 @@ export class TlKey extends Events
 
         /// ////
 
-        if (this.#glTl.isGraphLayout() && !this.cp1r && key.getEasing() == Anim.EASING_CUBICSPLINE)
+        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && key.getEasing() == Anim.EASING_CUBICSPLINE)
         {
             const bezRect = this.#glTl.rects.createRect({ "name": "bezrect", "draggable": true, "interactive": true });
 

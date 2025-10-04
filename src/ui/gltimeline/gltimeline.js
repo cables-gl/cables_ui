@@ -137,7 +137,7 @@ export class GlTimeline extends Events
     /** @type {CglContext} */
     #cgl = null;
     #isAnimated = false;
-    buttonForScrolling = 2;
+    buttonForPanning = 2;
     toParamKeys = null;
 
     loopAreaStart = 0;
@@ -537,7 +537,7 @@ export class GlTimeline extends Events
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
-        this.buttonForScrolling = userSettingScrollButton || 2;
+        this.buttonForPanning = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);
         this.keyframeAutoCreate = userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES, true);
@@ -855,31 +855,42 @@ export class GlTimeline extends Events
                 this.showKeyParamsSoon();
             }
         }
-        else if (event.buttons == this.buttonForScrolling)
+        else if (event.buttons == this.buttonForPanning)
         {
+
             if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
             {
                 const movementX = event.offsetX - this.#lastDragX;
                 const movementY = event.offsetY - this.#lastDragY;
 
-                if (event.metaKey || event.ctrlKey)
+                if (!this.isFreePanningMode())
                 {
-                    if (Math.abs(movementY) > Math.abs(movementX))
-                    {
-                        this.view.scaleValues(movementY * 0.01);
-                    }
-                    else
-                    {
-                        let zf = (1 / (this.view.zoom)) * 0.3;
-                        let d = 1 + zf;
-                        if (movementX > 0)d = 1 - zf;
-                        this.view.setZoomOffset(d, 0);
-                    }
+
+                    this.tlTimeScrollContainer.scrollTop -= movementY;
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+
                 }
                 else
                 {
-                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                    if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                    if (event.metaKey || event.ctrlKey)
+                    {
+                        if (Math.abs(movementY) > Math.abs(movementX))
+                        {
+                            this.view.scaleValues(movementY * 0.01);
+                        }
+                        else
+                        {
+                            let zf = (1 / (this.view.zoom)) * 0.3;
+                            let d = 1 + zf;
+                            if (movementX > 0)d = 1 - zf;
+                            this.view.setZoomOffset(d, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                    }
                 }
             }
 
@@ -1278,12 +1289,23 @@ export class GlTimeline extends Events
 
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
-
-            this.view.scaleValues(delta * 0.07);
+            if (this.isFreePanningMode())
+            {
+                this.view.scaleValues(delta * 0.07);
+            }
+            else
+            {
+                // this.tlTimeScrollContainer.scrollTop += delta;
+            }
         }
 
         this.setHoverKeyRect(null);
         this.needsUpdateAll = "wheel";
+    }
+
+    isFreePanningMode()
+    {
+        return this.isGraphLayout();
     }
 
     isGraphLayout()
@@ -1812,26 +1834,27 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
-        if (this.isGraphLayout()) return;
+        // if (this.isGraphLayout()) return;
 
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         if (range > 0)
         {
-            this.view.setMinVal(boundsy.min - (range * 0.1));
-            this.view.setMaxVal(boundsy.max + (range * 0.1));
+            this.view.setMinVal(boundsy.min - (range * 0.1) * 2);
+            this.view.setMaxVal(boundsy.max + (range * 0.1) * 2);
             this.view.scrollToY(0);
         }
 
         const bounds = this.getSelectedKeysBoundsTime();
+        console.log("bounds", bounds);
         if (bounds.length == 0)
         {
             this.view.scrollTo((bounds.min - this.view.visibleTime / 2) / 2);
         }
         else
         {
-            this.view.setZoomLength((bounds.length + (bounds.length * 0.2)) * 2);
-            this.view.scrollTo(bounds.min - bounds.length * 0.1);
+            this.view.setZoomLength((bounds.length * 2) + (bounds.length * 0.1));
+            this.view.scrollTo(bounds.min - (bounds.length * 0.05));
         }
     }
 
