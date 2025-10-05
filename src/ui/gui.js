@@ -1651,10 +1651,10 @@ export default class Gui extends Events
             }
         });
 
-        this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
-        {
-            gui.toggleTimeline();
-        });
+        // this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
+        // {
+        //     gui.toggleTimeline();
+        // });
 
         this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, () =>
         {
