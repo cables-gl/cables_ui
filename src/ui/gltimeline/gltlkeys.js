@@ -616,7 +616,12 @@ export class glTlKeys extends Events
                 keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
                 {
                     console.log("key startdrag1", glTlKeys.dragStarted);
-                    if (this.#glTl.isSelecting()) return;
+                    if (this.#glTl.isSelecting())
+                    {
+                        console.log("isselecting...");
+                        return;
+
+                    }
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
                     this.#glTl.predragSelectedKeys();
@@ -657,7 +662,7 @@ export class glTlKeys extends Events
                         glTlKeys.dragStartY = e.offsetY;
                     }
 
-                    if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
+                    if (button == 1)
                     {
                         let offX = e.offsetX;
                         let offY = e.offsetY - this.#glTl.getFirstLinePosy();
@@ -681,6 +686,7 @@ export class glTlKeys extends Events
                         this.animLine.update();
                         hideToolTip();
                     }
+                    else { console.log("noe", keyRect); }
                 });
 
                 keyRect.on(GlRect.EVENT_DRAGEND, () =>
@@ -699,10 +705,8 @@ export class glTlKeys extends Events
                         redo() {}
                     });
                 });
-
             }
             tlKey.update();
-
         }
 
         this.setKeyPositions();
@@ -740,7 +744,6 @@ export class glTlKeys extends Events
     getDebug()
     {
         const o = {};
-        // o.points = this.#point.s;
         o.updateCount = this.#updateCount;
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();

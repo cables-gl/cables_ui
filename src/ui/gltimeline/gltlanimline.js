@@ -122,7 +122,6 @@ export class glTlAnimLine extends Events
 
         });
 
-        // this.height = Math.random() * 80 + 22;
         this.#disposeRects.push(this.#glRectKeysBg);
         for (let i = 0; i < ports.length; i++)
         {
