@@ -325,8 +325,15 @@ export class glTlKeys extends Events
         this.#updateCount++;
     }
 
+    drawKeys()
+    {
+        if (this.#port.uiAttribs.hasOwnProperty("tlDrawKeys")) return this.#port.uiAttribs.tlDrawKeys;
+        return true;
+    }
+
     drawSpline()
     {
+        if (!this.drawKeys) return false;
         return true;
     }
 
@@ -406,6 +413,12 @@ export class glTlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+            if (!this.drawKeys())
+            {
+                kr.setPosition(0, 0, 0);
+                kr.visible = false;
+                continue;
+            }
 
             if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
 
