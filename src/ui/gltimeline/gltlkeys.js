@@ -228,12 +228,12 @@ export class glTlKeys extends Events
             this.#disposedWarning++;
             return;
         }
-        if (!this.isLayoutGraph() && this.#spline)
+        if (!this.drawSpline() && this.#spline)
         {
             this.#spline.dispose();
             this.#spline = null;
         }
-        if (this.isLayoutGraph() && !this.#spline)
+        if (this.drawSpline() && !this.#spline)
         {
             this.#spline = new GlSpline(this.#glTl.splines, this.#port.name);
             this.#spline.setParentRect(this.#parentRect);
@@ -277,7 +277,7 @@ export class glTlKeys extends Events
         if (this.#anim.tlActive)z = -0.5;
         if (this.#port.op.isCurrentUiOp())z = -0.6;
 
-        if (this.isLayoutGraph())
+        if (this.drawSpline())
         {
             const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
@@ -288,28 +288,34 @@ export class glTlKeys extends Events
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
-                let v = this.#anim.getValue(t);
-
-                if (v == lv && i < steps - 3)
+                if (this.#anim.hasStarted(t) && !this.anim.hasEnded(t))
                 {
-                    skipped = true;
-                    continue;
-                }
+                    let v = this.#anim.getValue(t);
 
-                if (skipped)
-                {
-                    let y = this.animLine.valueToPixel(lv);
+                    if (v == lv && i < steps - 3)
+                    {
+                        skipped = true;
+                        continue;
+                    }
+
+                    if (skipped)
+                    {
+                        let y = this.animLine.valueToPixel(lv);
+                        if (!this.isLayoutGraph())y = this.animLine.height / 2;
+                        pointsSort.push(x, y, z);
+                    }
+
+                    lv = v;
+                    let y = this.animLine.valueToPixel(v);
+                    // if (!this.isLayoutGraph)y = this.animLine.posY() + this.animLine.height / 2;
+                    if (!this.isLayoutGraph())y = Math.floor(this.animLine.height / 2) - 2;
                     pointsSort.push(x, y, z);
+                    skipped = false;
                 }
-
-                lv = v;
-                let y = this.animLine.valueToPixel(v);
-                pointsSort.push(x, y, z);
-                skipped = false;
             }
         }
 
-        if (this.isLayoutGraph() && this.#spline)
+        if (this.drawSpline() && this.#spline)
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(pointsSort);
@@ -319,9 +325,22 @@ export class glTlKeys extends Events
         this.#updateCount++;
     }
 
+    drawKeys()
+    {
+        if (this.#port.uiAttribs.hasOwnProperty("tlDrawKeys")) return this.#port.uiAttribs.tlDrawKeys;
+        return true;
+    }
+
+    drawSpline()
+    {
+        if (!this.drawKeys) return false;
+        return true;
+    }
+
     isLayoutGraph()
     {
-        return this.animLine.height > glTlAnimLine.DEFAULT_HEIGHT || this.animLine.isGraphLayout();
+        // return this.animLine.height > glTlAnimLine.DEFAULT_HEIGHT ||
+        return this.animLine.isGraphLayout();
     }
 
     updateColors()
@@ -394,6 +413,12 @@ export class glTlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+            if (!this.drawKeys())
+            {
+                kr.setPosition(0, 0, 0);
+                kr.visible = false;
+                continue;
+            }
 
             if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
 
@@ -676,6 +701,7 @@ export class glTlKeys extends Events
                             else offTime = 0;
                         }
 
+                        if (!this.isLayoutGraph())offVal = 0;
                         if (this.#glTl.getNumSelectedKeys() > 0)
                         {
                             this.#glTl.dragSelectedKeys(offTime, offVal);

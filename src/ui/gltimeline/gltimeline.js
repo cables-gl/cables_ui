@@ -2610,7 +2610,7 @@ export class GlTimeline extends Events
         {
             this.#rectHoverKey.setShape(kr.shape);
             this.#rectHoverKey.setSize(kr.w + size, kr.h + size);
-            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2, kr.absZ + 0.023);
+            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2 - this.getScrollY(), kr.absZ + 0.023);
         }
         else
         {
