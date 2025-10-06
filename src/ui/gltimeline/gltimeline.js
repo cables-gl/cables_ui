@@ -275,6 +275,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
 
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
@@ -759,6 +760,20 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {MouseEvent} e
+     */
+    _onCanvasDblClick(e)
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+            {
+                const anim = this.#tlAnims[i].anims[0];
+                const time = this.snapTime(this.view.pixelToTime(e.offsetX) + this.view.offset);
+                anim.setValue(time, anim.getValue(time));
+            }
+    }
+
+    /**
      * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
@@ -788,10 +803,10 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++)
             if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
             {
-                gui.patchView.focusOp(this.#tlAnims[i].getOp().id);
+                gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
                 this.showParamAnim(this.#tlAnims[i].anims[0]);
 
-                this.#tlAnims[i].getTitle(0).hover();
+                this.#tlAnims[i].getTitle(0)?.hover();
 
             }
         this.mouseDown = true;
