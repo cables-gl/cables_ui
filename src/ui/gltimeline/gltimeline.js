@@ -787,7 +787,13 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#tlAnims.length; i++)
             if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+            {
+                gui.patchView.focusOp(this.#tlAnims[i].getOp().id);
                 this.showParamAnim(this.#tlAnims[i].anims[0]);
+
+                this.#tlAnims[i].getTitle(0).hover();
+
+            }
         this.mouseDown = true;
     }
 
@@ -2505,7 +2511,6 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_selectopkeys"), () =>
         {
-
             this.unSelectAllKeys();
             for (let i = 0; i < this.#tlAnims.length; i++)
             {

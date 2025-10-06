@@ -292,7 +292,7 @@ export class glTlKeys extends Events
                 {
                     let v = this.#anim.getValue(t);
 
-                    if (v == lv && i < steps - 3)
+                    if (this.isLayoutGraph() && v == lv && i < steps - 3)
                     {
                         skipped = true;
                         continue;
