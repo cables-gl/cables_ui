@@ -29,7 +29,6 @@ import { UiOp } from "../core_extend_op.js";
 /**
  * @typedef TlConfig
  * @property {Number} fps
- * @property {Number} [duration]
  * @property {Number} [bpm]
  * @property {Boolean} [fadeInFrames]
  * @property {Boolean} [showBeats]
@@ -45,7 +44,6 @@ import { UiOp } from "../core_extend_op.js";
  * @class GlTimeline
  * @extends {Events}
  */
-
 export class GlTimeline extends Events
 {
     static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
@@ -107,7 +105,6 @@ export class GlTimeline extends Events
     /** @type {GlRect} */
     cursorNewKeyVis;
 
-    duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
     /** @type {GlTlView} */
@@ -262,6 +259,10 @@ export class GlTimeline extends Events
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
 
+        gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
+        {
+            this.ruler.update();
+        });
         gui.corePatch().timer.on(Timer.EVENT_PLAY_PAUSE, () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
@@ -552,6 +553,11 @@ export class GlTimeline extends Events
         userSettings.set(GlTimeline.USERSETTING_UNITS, this.displayUnits);
         userSettings.set(GlTimeline.USERSETTING_AUTO_KEYFRAMES, this.keyframeAutoCreate);
         userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
+    }
+
+    get duration()
+    {
+        return gui.corePatch().animMaxTime;
     }
 
     /** @returns {number} */
@@ -1703,7 +1709,6 @@ export class GlTimeline extends Events
     onConfig(cfg)
     {
         this.cfg = cfg;
-        this.duration = cfg.duration;
         this.needsUpdateAll = "on config";
     }
 
