@@ -378,6 +378,7 @@ export default class GlViewBox
     {
         dur = dur || 0.25;
 
+        if (isNaN(z)) return console.error("zoom is nan");
         this._animZoom.clear();
         this._animZoom.setValue(this.glPatch.time, this._zoom);
         this._animZoom.setValue(this.glPatch.time + dur, z);
@@ -436,6 +437,7 @@ export default class GlViewBox
      */
     centerSelectedOps(noAnim)
     {
+
         let ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) ops = gui.corePatch().ops;
 
@@ -446,6 +448,7 @@ export default class GlViewBox
             this.scrollTo(0, 0);
             return;
         }
+        if (this._viewResX == 0 || this._viewResY == 0) return;
 
         const bb = new BoundingBox();
         const subp = this.glPatch.getCurrentSubPatch();
