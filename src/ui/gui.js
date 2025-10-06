@@ -136,7 +136,7 @@ export default class Gui extends Events
 
         this.editorWidth = this.userSettings.get(Gui.PREF_LAYOUT_EDITORWIDTH) || 350;
         this.rightPanelWidth = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
-        this.splitpaneRightPos = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
+        // this.splitpaneRightPos = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
 
         this._timeoutPauseProfiler = null;
         this._cursor = "";
@@ -552,7 +552,7 @@ export default class Gui extends Events
 
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;
-        this._elSplitterRight = this._elSplitterRight || ele.byId("splitterPatch");
+        this._elSplitterRight = this._elSplitterRight || ele.byId("splitterRightPanel");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
         this._elSplitterBottom = this._elSplitterBottom || ele.byId("splitterBottomTabs");
         this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
@@ -706,7 +706,7 @@ export default class Gui extends Events
 
         // this.rightPanelWidth = 200;// this.para;//this.rendererWidthScaled;
         // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
-        this.rightPanelWidth = this.splitpaneRightPos;
+        // this.rightPanelWidth = this.splitpaneRightPos;
 
         this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
         this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
@@ -901,7 +901,7 @@ export default class Gui extends Events
     {
         this._oldCanvasWidth = this.rendererWidth;
         this._oldCanvasHeight = this.rendererHeight;
-        this.rightPanelWidth = this.rendererWidth;
+        // this.rightPanelWidth = this.rendererWidth;
 
         this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
         this.userSettings.set("canvasMode", "patchbg");
