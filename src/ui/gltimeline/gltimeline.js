@@ -1649,18 +1649,27 @@ export class GlTimeline extends Events
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
         {
             this.#cursorText.text = secondss;
-
+            html += "<div>";
             html += "<h3>Second " + secondss + "</h3>";
             html += "Frame " + frame;
+            html += "</div>";
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) + "s";
+            html += "</div>";
 
             // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
+            html += "<div>";
             html += "<h3>Frame " + frame + "</h3>";
             html += "Second " + secondss;
+            html += "</div>";
 
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) * this.fps + "f";
+            html += "</div>";
             // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         // if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
@@ -1672,6 +1681,10 @@ export class GlTimeline extends Events
 
         //     if (this.cfg.showBeats) html += "" + beat + "b<br>";
         // }
+        html += "<div>";
+        if (this.cursorTime / this.duration <= 1)
+            html += Math.min(Math.floor((this.cursorTime / this.duration) * 100), 100) + "%";
+        html += "</div>";
 
         if (this.#oldhtml != html)
         {
