@@ -113,11 +113,9 @@ export class glTlKeys extends Events
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
                     this.#keys[i].update();
-
             }));
 
         this.#options = options;
-
         this.init();
     }
 
@@ -215,14 +213,7 @@ export class glTlKeys extends Events
      */
     update()
     {
-        // if (this.animLine.isHidden)
-        // {
-        //     for (let i = 0; i < this.#keys.length; i++)
-        //     {
-        //         if (!this.#keys[i].isHidden) this.#keys[i].hide();
-        //     }
-        //     return;
-        // }
+
         if (this.#disposed)
         {
             this.#disposedWarning++;
@@ -418,6 +409,7 @@ export class glTlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+
             if (!this.drawKeys())
             {
                 kr.setPosition(0, 0, 0);
@@ -425,13 +417,13 @@ export class glTlKeys extends Events
                 continue;
             }
 
-            if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
+            if (this.shouldDrawGraphSpline()) y = this.animLine.valueToPixel(animKey.value);
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
             rx -= this.getKeyWidth2();
             let ry = y - this.getKeyHeight2() - 2;
-            if (this.isLayoutGraph()) ry = y - this.getKeyWidth2();
+            if (this.shouldDrawGraphSpline()) ry = y - this.getKeyWidth2();
 
             if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
@@ -706,7 +698,7 @@ export class glTlKeys extends Events
                             else offTime = 0;
                         }
 
-                        if (!this.isLayoutGraph())offVal = 0;
+                        if (!this.shouldDrawGraphSpline())offVal = 0;
                         if (this.#glTl.getNumSelectedKeys() > 0)
                         {
                             this.#glTl.dragSelectedKeys(offTime, offVal);

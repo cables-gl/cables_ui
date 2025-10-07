@@ -2588,8 +2588,9 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_debug"), (e) =>
         {
-            console.log("text", e.target);
-            e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), " ", 4) + "</pre>";
+            console.log("anim serialized", e.target);
+            e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), null, 2) + "</pre>";
+
         });
 
         ele.clickable(ele.byId("ap_size"), () =>

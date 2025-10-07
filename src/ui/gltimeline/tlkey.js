@@ -106,7 +106,6 @@ export class TlKey extends Events
         {
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             t.setParent(keyRect);
-            // t.setColor(1, 1, 0, 0.3);
             t.setPosition(1, 0, -0.8);
             t.setSize(73, 5);
             t.setColorHex(key.uiAttribs.color);
