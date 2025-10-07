@@ -519,10 +519,7 @@ export class glTlAnimLine extends Events
         this.pixelHeight = h;
 
         for (let i = 0; i < this.#keys.length; i++)
-        {
             this.#keys[i].reset();
-        }
-        console.log("hhhhhhhhhhhhhhhhhhhh", h);
     }
 
     /**

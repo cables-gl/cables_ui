@@ -1430,13 +1430,15 @@ export class GlTimeline extends Events
         q.setOptions({
             "include": { "animated": true, "subpatches": true, "portsAnimated": true },
             "includeUnsavedIndicator": false,
-            "removeEmptySubpatches": true });
+            "removeEmptySubpatches": true
+        });
 
         if (this.isGraphLayout())
         {
             q.setOptions({
                 "include": { "animated": true, "subpatches": true, "portsAnimated": true },
                 "includeUnsavedIndicator": false,
+                "removeEmptySubpatches": true,
                 "only": { "selected": true },
             });
         }
@@ -2600,7 +2602,6 @@ export class GlTimeline extends Events
                 if (this.#tlAnims[i].anims[0] == anim)
                 {
                     let h = ((anim.uiAttribs.height || 0) + 1) % glTlAnimLine.SIZES.length;
-                    console.log("hhhhhhhhhhhh", h);
 
                     this.#tlAnims[i].setLineHeight(h);
                     anim.setUiAttribs({ "height": h });

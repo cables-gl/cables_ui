@@ -155,6 +155,7 @@ export class patchStructureQuery
             {
                 includeReasons.push("includeSubpatches");
                 included = true;
+
             }
             if (this.options.include.colored && ops[i].uiAttribs.color)
             {
@@ -202,7 +203,7 @@ export class patchStructureQuery
                 included = true;
             }
 
-            if (this.options.only.selected && !ops[i].uiAttribs.selected) included = false;
+            if (this.options.only.selected && !ops[i].uiAttribs.selected && !ops[i].patchId) included = false;
 
             if (included)
             {
