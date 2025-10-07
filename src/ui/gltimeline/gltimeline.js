@@ -29,7 +29,6 @@ import { UiOp } from "../core_extend_op.js";
 /**
  * @typedef TlConfig
  * @property {Number} fps
- * @property {Number} [duration]
  * @property {Number} [bpm]
  * @property {Boolean} [fadeInFrames]
  * @property {Boolean} [showBeats]
@@ -45,7 +44,6 @@ import { UiOp } from "../core_extend_op.js";
  * @class GlTimeline
  * @extends {Events}
  */
-
 export class GlTimeline extends Events
 {
     static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
@@ -107,7 +105,6 @@ export class GlTimeline extends Events
     /** @type {GlRect} */
     cursorNewKeyVis;
 
-    duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
     /** @type {GlTlView} */
@@ -262,6 +259,10 @@ export class GlTimeline extends Events
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
 
+        gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
+        {
+            this.ruler.update();
+        });
         gui.corePatch().timer.on(Timer.EVENT_PLAY_PAUSE, () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
@@ -274,6 +275,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
 
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
@@ -554,6 +556,11 @@ export class GlTimeline extends Events
         userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
     }
 
+    get duration()
+    {
+        return gui.corePatch().animMaxTime;
+    }
+
     /** @returns {number} */
     get bpm()
     {
@@ -753,6 +760,20 @@ export class GlTimeline extends Events
     }
 
     /**
+     * @param {MouseEvent} e
+     */
+    _onCanvasDblClick(e)
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+            {
+                const anim = this.#tlAnims[i].anims[0];
+                const time = this.snapTime(this.view.pixelToTime(e.offsetX) + this.view.offset);
+                anim.setValue(time, anim.getValue(time));
+            }
+    }
+
+    /**
      * @param {PointerEvent} e
      */
     _onCanvasMouseDown(e)
@@ -781,7 +802,13 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#tlAnims.length; i++)
             if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+            {
+                gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
                 this.showParamAnim(this.#tlAnims[i].anims[0]);
+
+                this.#tlAnims[i].getTitle(0)?.hover();
+
+            }
         this.mouseDown = true;
     }
 
@@ -1643,18 +1670,27 @@ export class GlTimeline extends Events
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
         {
             this.#cursorText.text = secondss;
-
+            html += "<div>";
             html += "<h3>Second " + secondss + "</h3>";
             html += "Frame " + frame;
+            html += "</div>";
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) + "s";
+            html += "</div>";
 
             // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
+            html += "<div>";
             html += "<h3>Frame " + frame + "</h3>";
             html += "Second " + secondss;
+            html += "</div>";
 
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) * this.fps + "f";
+            html += "</div>";
             // if (this.cfg.showBeats) html += beat + "b<br>";
         }
         // if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
@@ -1666,6 +1702,10 @@ export class GlTimeline extends Events
 
         //     if (this.cfg.showBeats) html += "" + beat + "b<br>";
         // }
+        html += "<div>";
+        if (this.cursorTime / this.duration <= 1)
+            html += Math.min(Math.floor((this.cursorTime / this.duration) * 100), 100) + "%";
+        html += "</div>";
 
         if (this.#oldhtml != html)
         {
@@ -1703,7 +1743,6 @@ export class GlTimeline extends Events
     onConfig(cfg)
     {
         this.cfg = cfg;
-        this.duration = cfg.duration;
         this.needsUpdateAll = "on config";
     }
 
@@ -2487,7 +2526,6 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_selectopkeys"), () =>
         {
-
             this.unSelectAllKeys();
             for (let i = 0; i < this.#tlAnims.length; i++)
             {

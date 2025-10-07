@@ -10,7 +10,7 @@ export default initSplitPanes;
 
 function initSplitPanes()
 {
-    ele.byId("splitterPatch").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterRightPanel").addEventListener("pointerdown", function (ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -23,10 +23,10 @@ function initSplitPanes()
             e.preventDefault();
 
             let pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
-            pos = Math.max(200, pos);
+            pos = Math.max(320, pos);
 
-            gui.userSettings.set(Gui.PREF_LAYOUT_RIGHTPANELWIDTH, pos);
-            gui.splitpaneRightPos = pos;
+            gui.userSettings.set(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH, pos);
+            gui.rightPanelWidth = pos;
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
@@ -37,7 +37,7 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    ele.byId("splitterPatch").addEventListener("pointerup", function (_e)
+    ele.byId("splitterRightPanel").addEventListener("pointerup", function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
