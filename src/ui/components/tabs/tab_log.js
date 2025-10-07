@@ -34,7 +34,6 @@ export default class LogTab extends Events
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-        // this._html();
         logFilter.on("initiatorsChanged", this._html.bind(this));
 
         this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));

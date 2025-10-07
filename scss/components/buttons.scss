@@ -114,6 +114,9 @@
     .button-inactive
     {
         opacity: 0.5;
+    }
+    .button-disabled
+    {
         pointer-events: none;
     }
 }
