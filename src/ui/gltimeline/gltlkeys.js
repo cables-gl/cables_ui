@@ -334,7 +334,7 @@ export class glTlKeys extends Events
 
     shouldDrawGraphSpline()
     {
-        return this.isLayoutGraph() || this.animLine.height > glTlAnimLine.DEFAULT_HEIGHT;
+        return this.isLayoutGraph() || this.animLine.lineHeight > 0;
     }
 
     shouldDrawSpline()

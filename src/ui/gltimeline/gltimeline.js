@@ -2586,21 +2586,23 @@ export class GlTimeline extends Events
             }
         });
 
+        ele.clickable(ele.byId("ap_debug"), (e) =>
+        {
+            console.log("text", e.target);
+            e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), " ", 4) + "</pre>";
+        });
+
         ele.clickable(ele.byId("ap_size"), () =>
         {
             for (let i = 0; i < this.#tlAnims.length; i++)
             {
                 if (this.#tlAnims[i].anims[0] == anim)
                 {
-                    let h = 150;
+                    let h = ((anim.uiAttribs.height || 0) + 1) % glTlAnimLine.SIZES.length;
+                    console.log("hhhhhhhhhhhh", h);
 
-                    if (!anim.uiAttribs.height)h = 100;
-                    else if (anim.uiAttribs.height == 100)h = 150;
-                    else h = glTlAnimLine.DEFAULT_HEIGHT;
-
-                    this.#tlAnims[i].setHeight(h);
-                    if (h == glTlAnimLine.DEFAULT_HEIGHT) anim.setUiAttribs({ "height": 0 });
-                    else anim.setUiAttribs({ "height": h });
+                    this.#tlAnims[i].setLineHeight(h);
+                    anim.setUiAttribs({ "height": h });
                     this.#tlAnims[i].updateTitles();
                     this.#tlAnims[i].update();
                     this.#tlAnims[i].updateGlPos();

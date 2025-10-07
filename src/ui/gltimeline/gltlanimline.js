@@ -1,5 +1,4 @@
 import { Events } from "cables-shared-client";
-
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
@@ -30,6 +29,7 @@ import { UiOp } from "../core_extend_op.js";
  */
 export class glTlAnimLine extends Events
 {
+    static SIZES = [30, 50, 100];
 
     /** @type {Array<Anim>} */
     #anims = [];
@@ -55,10 +55,9 @@ export class glTlAnimLine extends Events
     /** @type {Array<Port>} */
     #ports = [];
 
-    static DEFAULT_HEIGHT = 30;
-
     width = 222;
-    height = glTlAnimLine.DEFAULT_HEIGHT;
+    lineHeight = 0;
+    pixelHeight = 0;
 
     /** @type {Array<Object >} */
     #disposeRects = [];
@@ -127,6 +126,7 @@ export class glTlAnimLine extends Events
         {
             if (!ports[i]) continue;
             this.#anims[i] = ports[i].anim;
+            if (i == 0) this.setLineHeight(this.#anims[i].uiAttribs.height || 0);
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
             if (this.#keys[i]) this.#keys[i].dispose();
@@ -158,6 +158,7 @@ export class glTlAnimLine extends Events
                         // this.height = anim.uiAttribs.height c;
                     }));
         }
+        this.setHeight();
 
         for (let i = 0; i < ports.length; i++)
             if (ports[i])
@@ -441,8 +442,8 @@ export class glTlAnimLine extends Events
         else
         {
             this.setPosition(this.#glRectKeysBg.x, this.#glTl.getFirstLinePosy());
-            this.height = this.#glTl.height;
             this.#glRectKeysBg.setSize(this.width, this.height);
+            this.setHeight();
         }
     }
 
@@ -488,21 +489,49 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
-    /**
-     * @param {number} h
-     */
-    setHeight(h)
+    get height()
     {
-        h = h || glTlAnimLine.DEFAULT_HEIGHT;
-        if (this.height == h) return;
-        if (this.checkDisposed()) return;
-        this.height = h;
+        this.setHeight();
+        return this.pixelHeight;
+        // if (this.isGraphLayout()) return this.#glTl.height;
+        // else
+        // {
+        //     return glTlAnimLine.SIZES[this.lineHeight];
+        // }
+    }
+
+    /**
+     * @param {number} [h]
+     */
+    setHeight()
+    {
+        let h = 0;
+        if (this.isGraphLayout())
+        {
+            h = this.#glTl.height;
+        }
+        else
+        {
+            h = glTlAnimLine.SIZES[this.lineHeight];
+        }
+
+        if (this.pixelHeight == h) return;
+        this.pixelHeight = h;
 
         for (let i = 0; i < this.#keys.length; i++)
         {
-            // this.#keys[i].setKeyPositions("collapse");
             this.#keys[i].reset();
         }
+        console.log("hhhhhhhhhhhhhhhhhhhh", h);
+    }
+
+    /**
+     * @param { number} h
+     */
+    setLineHeight(h)
+    {
+        this.lineHeight = h;
+        this.setHeight();
     }
 
     /**
