@@ -373,19 +373,19 @@ export class glTlAnimLine extends Events
 
         if (this.isHidden)
         {
-            this.#titles[0].setHeight(0);
+            this.#titles[0]?.setHeight(0);
         }
         else
         if (this.isGraphLayout())
         {
             for (let i = 0; i < this.#titles.length; i++)
             {
-                this.#titles[i].setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+                this.#titles[i]?.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
             }
         }
         else
         {
-            this.#titles[0].setHeight(this.height - 2);
+            this.#titles[0]?.setHeight(this.height - 2);
         }
 
         if (this.collapsed)

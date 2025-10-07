@@ -34,9 +34,7 @@ export default class LogTab extends Events
         this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-        this.data = { "cells": this.cells, "colNames": this.colNames };
-
-        this._html();
+        // this._html();
         logFilter.on("initiatorsChanged", this._html.bind(this));
 
         this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));
@@ -89,6 +87,12 @@ export default class LogTab extends Events
         this._showLog();
     }
 
+    /**
+     * @param {{ opInstId: string; initiator: string; }} log
+     * @param {string} txt
+     * @param {string} level
+     * @param {number} [timediff]
+     */
     _logLine(log, txt, level, timediff)
     {
         let spacerClass = "";
@@ -318,14 +322,17 @@ export default class LogTab extends Events
         if (el)el.innerHTML = html;
     }
 
+    /**
+     * @param {any} l
+     * @param {string} url
+     * @param {number} line
+     */
     _logErrorSrcCodeLine(l, url, line)
     {
         if (!url) return;
         if (url.includes("[native code]")) return;
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
-
-        // export const ajax = function (url, cb, method, post, contenttype, jsonP, headers = {}, options = {})
 
         const logger = this._log;
         utils.ajax(
@@ -358,7 +365,6 @@ export default class LogTab extends Events
                         url.indexOf("cables.gl/assets/") == -1 && //  when asset libraries
                         url.indexOf("/api/lib/") == -1 && //  when libraries
                         url.indexOf("ops/code/project/") == -1 //  when using patch special ops
-
                     )
                     {
                         if (!this.sentAutoReport)
