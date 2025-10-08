@@ -128,12 +128,9 @@ export class GlTimeline extends Events
     disposed = false;
 
     #oldhtml = "";
-    #canvasMouseDown = false;
-    #paused = false;
 
     /** @type {CglContext} */
     #cgl = null;
-    #isAnimated = false;
     buttonForPanning = 2;
     toParamKeys = null;
 
@@ -145,7 +142,6 @@ export class GlTimeline extends Events
         "fps": 30,
         "bpm": 180,
         "fadeInFrames": true,
-        "showBeats": true,
         "restrictToFrames": true
     };
 
@@ -909,7 +905,6 @@ export class GlTimeline extends Events
 
                     this.tlTimeScrollContainer.scrollTop -= movementY;
                     if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-
                 }
                 else
                 {
@@ -1512,7 +1507,6 @@ export class GlTimeline extends Events
         {
             console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -1523,7 +1517,6 @@ export class GlTimeline extends Events
         this.updateIcons();
 
         perf.finish();
-
     }
 
     /**
@@ -2530,7 +2523,7 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {UiOp} op
+     * @param {Op} op
      */
     showParamOp(op)
     {

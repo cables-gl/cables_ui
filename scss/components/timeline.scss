@@ -201,6 +201,9 @@
         grid-template-columns: 2fr 1fr 1fr;
         width:calc(var(--timelineSplitterLeft) - 40px);
 
+        div
+        {pointer-events: none;}
+
         h3
         {
             pointer-events: none;
