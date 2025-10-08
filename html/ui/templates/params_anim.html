@@ -10,10 +10,10 @@
         <br/>
         <br/>
         loop:
-        <a id="ap_loop_off" class="button-left button-small">off</a>
-        <a id="ap_loop_repeat" class="button-middle button-small">repeat</a>
-        <a id="ap_loop_mirror" class="button-middle button-small">mirror</a>
-        <a id="ap_loop_offset" class="button-right button-small">offset</a>
+        <a id="ap_loop_off" class="button-left button-small {{#compare anim.loop '==' 0}} button-active{{/compare}}">off</a>
+        <a id="ap_loop_repeat" class="button-middle button-small {{#compare anim.loop '==' 1}} button-active{{/compare}}">repeat</a>
+        <a id="ap_loop_mirror" class="button-middle button-small {{#compare anim.loop '==' 2}} button-active{{/compare}}">mirror</a>
+        <a id="ap_loop_offset" class="button-right button-small {{#compare anim.loop '==' 3}} button-active{{/compare}}">offset</a>
         <hr/>
         <br/>
         <a id="ap_paste" class="button-small">paste keys</a>

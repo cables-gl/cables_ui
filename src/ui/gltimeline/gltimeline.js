@@ -2638,22 +2638,26 @@ export class GlTimeline extends Events
         {
             anim.setLoop(Anim.LOOP_OFF);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
 
         ele.clickable(ele.byId("ap_loop_mirror"), () =>
         {
             anim.setLoop(Anim.LOOP_MIRROR);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_repeat"), () =>
         {
             anim.setLoop(Anim.LOOP_REPEAT);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_offset"), () =>
         {
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
     }
 
