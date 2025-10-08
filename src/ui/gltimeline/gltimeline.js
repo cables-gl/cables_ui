@@ -178,6 +178,8 @@ export class GlTimeline extends Events
     /** @type {HTMLElement} */
     tlTimeScrollContainer;
     #clipboardKeys;
+    #spacePressed = false;
+    #cursor;
 
     /**
      * @param {CglContext} cgl
@@ -370,6 +372,9 @@ export class GlTimeline extends Events
             this.updateAllElements();
 
         });
+
+        gui.keys.key(" ", "Drag left mouse button to pan timeline", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = false; this.emitEvent("spaceup"); });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
@@ -843,7 +848,49 @@ export class GlTimeline extends Events
         this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
-        if (event.buttons == 1)
+        if (event.buttons == this.buttonForPanning || this.#spacePressed && event.buttons == 1)
+        {
+
+            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
+            {
+                const movementX = event.offsetX - this.#lastDragX;
+                const movementY = event.offsetY - this.#lastDragY;
+
+                if (!this.isFreePanningMode())
+                {
+
+                    this.tlTimeScrollContainer.scrollTop -= movementY;
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                }
+                else
+                {
+                    if (event.metaKey || event.ctrlKey)
+                    {
+                        if (Math.abs(movementY) > Math.abs(movementX))
+                        {
+                            this.view.scaleValues(movementY * 0.01);
+                        }
+                        else
+                        {
+                            let zf = (1 / (this.view.zoom)) * 0.3;
+                            let d = 1 + zf;
+                            if (movementX > 0)d = 1 - zf;
+                            this.view.setZoomOffset(d, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                    }
+                }
+            }
+
+            this.#lastDragX = event.offsetX;
+            this.#lastDragY = event.offsetY;
+            this.needsUpdateAll = "mouse drag pan";
+        }
+        else if (event.buttons == 1)
         {
             if (event.ctrlKey || event.metaKey)
             {
@@ -898,48 +945,6 @@ export class GlTimeline extends Events
                 this.needsUpdateAll = "mouse m";
                 this.showKeyParamsSoon();
             }
-        }
-        else if (event.buttons == this.buttonForPanning)
-        {
-
-            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
-            {
-                const movementX = event.offsetX - this.#lastDragX;
-                const movementY = event.offsetY - this.#lastDragY;
-
-                if (!this.isFreePanningMode())
-                {
-
-                    this.tlTimeScrollContainer.scrollTop -= movementY;
-                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                }
-                else
-                {
-                    if (event.metaKey || event.ctrlKey)
-                    {
-                        if (Math.abs(movementY) > Math.abs(movementX))
-                        {
-                            this.view.scaleValues(movementY * 0.01);
-                        }
-                        else
-                        {
-                            let zf = (1 / (this.view.zoom)) * 0.3;
-                            let d = 1 + zf;
-                            if (movementX > 0)d = 1 - zf;
-                            this.view.setZoomOffset(d, 0);
-                        }
-                    }
-                    else
-                    {
-                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
-                    }
-                }
-            }
-
-            this.#lastDragX = event.offsetX;
-            this.#lastDragY = event.offsetY;
-            this.needsUpdateAll = "mouse drag pan";
         }
         else
         {
@@ -1649,7 +1654,18 @@ export class GlTimeline extends Events
 
             this.#cgl.popDepthTest();
         }
+        this.#updateMouseCursor();
         this.#perfFps.endFrame();
+    }
+
+    #updateMouseCursor()
+    {
+        let cur = "auto";
+        if (this.#spacePressed) cur = "grabbing";
+
+        if (this.#cursor != cur) this.#cgl.setCursor(cur);
+
+        this.#cursor = cur;
     }
 
     updateCursor()
