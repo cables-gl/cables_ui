@@ -1,4 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
+import { map } from "cables/src/core/utils.js";
 import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
 import { gui } from "../gui.js";
@@ -139,17 +140,22 @@ export class glTlRuler extends Events
      */
     between(t, a, b)
     {
-        return t > a && t < b;
+        const f = map(t, a, b, 0, 1);
+
+        const f1 = map(f, 0, 0.25, 0, 1);
+
+        return f1;
     }
 
     /**
      * @param {number} s
      * @param {string | boolean} title
-     * @param {boolean} showTitle
      * @param {boolean} special
+     * @param {number} [fade]
      */
-    addMarker(s, title, showTitle, special)
+    addMarker(s, title, showTitle, special, fade)
     {
+        if (fade == undefined)fade = 1;
         if (s < 0) return;
         if (this.count == this.marks.length) return console.log("too many marks");
         const x = this.#glTl.view.timeToPixel(s - this.#glTl.view.offset);
@@ -160,20 +166,26 @@ export class glTlRuler extends Events
         if (showTitle)
         {
             mheight = 20;
-            mr.setColor(0.8, 0.8, 0.8, 1);
+            mr.setColor(0.8, 0.8, 0.8, showTitle);
 
-            if (this.titleCounter == 0 || x - this.titles[this.titleCounter - 1].x > this.titles[this.titleCounter - 1].width * 1.8)
+            if ((this.timeTitleLookup[s] || 0) < showTitle && this.titleCounter < this.titles.length)// this.titleCounter == 0 || x - this.titles[this.titleCounter - 1].x > this.titles[this.titleCounter - 1].width * 1.8)
             {
+                this.timeTitleLookup[s] = showTitle;
                 this.titles[this.titleCounter].text = String(title);// (Math.round(s * 100) / 100) + "s";
                 this.titles[this.titleCounter].setParentRect(this._glRectBg);
                 this.titles[this.titleCounter].setPosition(x - this.titles[this.titleCounter].width / 2, 1);
+                this.titles[this.titleCounter].setOpacity(showTitle);
                 this.titleCounter++;
+            }
+            if (this.titleCounter >= this.titles.length)
+            {
+                console.log("too many titles...");
             }
         }
         else
         {
             if (special) mheight = 14;
-            mr.setColor(0.5, 0.5, 0.5, 1);
+            mr.setColor(0.5, 0.5, 0.5, fade);
         }
 
         mr.setSize(1, mheight);
@@ -192,6 +204,7 @@ export class glTlRuler extends Events
     update()
     {
         this.timeMarkerLookup = {};
+        this.timeTitleLookup = {};
         const timeLeft = Math.floor(this.#glTl.view.timeLeft);
         const timeRight = Math.ceil(this.#glTl.view.timeRight);
 
@@ -205,12 +218,16 @@ export class glTlRuler extends Events
 
         const widthOneFrame = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
 
-        const widthTenSecond = this.#glTl.view.timeToPixel(10);
-        const widthOneSecond = this.#glTl.view.timeToPixel(1);
         const widthTenthSecond = this.#glTl.view.timeToPixel(0.1);
         const widthHalfSecond = this.#glTl.view.timeToPixel(0.5);
-        const widthOneMinute = this.#glTl.view.timeToPixel(60);
+        const widthOneSecond = this.#glTl.view.timeToPixel(1);
+        const widthFiveSecond = this.#glTl.view.timeToPixel(5);
+        const widthTenSecond = this.#glTl.view.timeToPixel(10);
         const widthHalfMinute = this.#glTl.view.timeToPixel(30);
+        const widthOneMinute = this.#glTl.view.timeToPixel(60);
+        const widthFiveMinute = this.#glTl.view.timeToPixel(300);
+        const widthTenMinutes = this.#glTl.view.timeToPixel(600);
+        const widthHalfHour = this.#glTl.view.timeToPixel(1800);
         const widthOneHour = this.#glTl.view.timeToPixel(3600);
 
         this.count = 0;
@@ -219,33 +236,60 @@ export class glTlRuler extends Events
         /// /////////////////////////////////////////////////////////////
         // things without title
 
-        if (widthHalfSecond > 15)
-            for (let s = timeLeft; s < timeRight; s += 0.5) this.addMarker(s, "", false, true);
-
-        if (widthTenSecond > 15)
-            for (let s = timeLeftMinute; s < timeRightMinute; s += 10) this.addMarker(s, false, false, true);
-
         /// /////////////////////////////////////////////////////////////
         // things with title
         const frameInSeconds = 1 / this.#glTl.fps;
+        let fade = 0;
+        let minWidth = 40;
+        let maxWidth = 60;
 
-        if (widthOneFrame > 5)
-            for (let s = timeLeft; s < timeRight; s += frameInSeconds) this.addMarker(s, Math.floor(s / frameInSeconds) + "f", widthOneFrame > 20 && this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES, false);
+        fade = this.between(widthOneFrame, 10, 15);
+        if (fade)
+            for (let s = timeLeft; s < timeRight; s += frameInSeconds) this.addMarker(s, Math.floor(s / frameInSeconds) + "f", this.between(widthOneFrame, minWidth, maxWidth) * (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES ? 1 : 0), false, fade);
 
-        if (widthTenthSecond > 10)
-            for (let s = timeLeft; s < timeRight; s += 0.1) this.addMarker(s, this.title(s), widthTenthSecond > 30, false);
+        fade = this.between(widthTenthSecond, 10, 15);
+        if (fade)
+            for (let s = timeLeft; s < timeRight; s += 0.1) this.addMarker(s, this.title(s), this.between(widthTenthSecond, minWidth, maxWidth), false, fade);
 
-        if (widthOneSecond > 10)
-            for (let s = timeLeft; s < timeRight; s += 1) this.addMarker(s, this.title(s), widthOneSecond > 30, false);
+        fade = this.between(widthHalfSecond, 10, 15);
+        if (fade)
+            for (let s = timeLeft; s < timeRight; s += 0.5) this.addMarker(s, "", false, true, fade);
 
-        if (widthHalfMinute > 10)
-            for (let s = timeLeftMinute; s < timeRightMinute; s += 30) this.addMarker(s, this.title(s), widthHalfMinute > 30, true);
+        fade = this.between(widthOneSecond, 5, 10);
+        if (fade)
+            for (let s = timeLeft; s < timeRight; s += 1) this.addMarker(s, this.title(s), this.between(widthOneSecond, minWidth, maxWidth), false, fade);
 
-        if (widthOneMinute > 10)
-            for (let s = timeLeftMinute; s < timeRightMinute; s += 60) this.addMarker(s, s / 60 + "m", widthOneMinute > 30, false);
+        fade = this.between(widthTenSecond, 5, 10);
+        if (fade)
+            for (let s = timeLeftMinute; s < timeRightMinute; s += 10) this.addMarker(s, this.title(s), this.between(widthTenSecond, minWidth, maxWidth), true, fade);
 
-        if (widthOneHour > 10)
-            for (let s = timeLeftHour; s < timeRightHour; s += 3600) this.addMarker(s, s / 3600 + "h", widthOneHour > 30, false);
+        fade = this.between(widthFiveSecond, 5, 10);
+        if (fade)
+            for (let s = timeLeftMinute; s < timeRightMinute; s += 5) this.addMarker(s, this.title(s), this.between(widthFiveSecond, minWidth, maxWidth), true, fade);
+
+        fade = this.between(widthHalfMinute, 5, 10);
+        if (fade)
+            for (let s = timeLeftMinute; s < timeRightMinute; s += 30) this.addMarker(s, this.title(s), this.between(widthHalfMinute, minWidth, maxWidth), true, fade);
+
+        fade = this.between(widthOneMinute, 5, 10);
+        if (fade)
+            for (let s = timeLeftMinute; s < timeRightMinute; s += 60) this.addMarker(s, s / 60 + "m", this.between(widthOneMinute, minWidth, maxWidth), false, fade);
+
+        fade = this.between(widthFiveMinute, 5, 10);
+        if (fade)
+            for (let s = timeLeftHour; s < timeRightHour; s += 300) this.addMarker(s, s / 60 + "m", this.between(widthFiveMinute, minWidth, maxWidth), false, fade);
+
+        fade = this.between(widthTenMinutes, 5, 10);
+        if (fade)
+            for (let s = timeLeftHour; s < timeRightHour; s += 600) this.addMarker(s, s / 60 + "m", this.between(widthTenMinutes, minWidth, maxWidth), false, fade);
+
+        fade = this.between(widthHalfHour, 5, 10);
+        if (fade)
+            for (let s = timeLeftHour; s < timeRightHour; s += 1800) this.addMarker(s, s / 60 + "m", this.between(widthHalfHour, minWidth, maxWidth), false, fade);
+
+        fade = this.between(widthOneHour, 5, 10);
+        if (fade)
+            for (let s = timeLeftHour; s < timeRightHour; s += 3600) this.addMarker(s, s / 3600 + "h", this.between(widthOneHour, minWidth, maxWidth), false, fade);
 
         /// /////////////////////////////////////////////////////////////
 

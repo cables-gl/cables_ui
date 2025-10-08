@@ -259,7 +259,6 @@ export default class FindTab
         if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
         if (result.history) html += "<span class=\"search-history-item\">" + result.history + "</span><br/>";
         if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
-        // html += "" + op.objName + "<br/>";
         html += result.where || "";
 
         let highlightsubpatch = "";
