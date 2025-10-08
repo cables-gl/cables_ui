@@ -1,6 +1,7 @@
 import { Events, Logger } from "cables-shared-client";
 import { Anim, AnimKey, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import { INSPECT_MAX_BYTES } from "buffer";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
@@ -10,6 +11,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { TlKey } from "./tlkey.js";
+import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
 
 /**
  * gltl key rendering
@@ -26,6 +28,9 @@ export class glTlKeys extends Events
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
     static COLOR_HIGHLIGHT = [0.8, 0.8, 0.8, 1];
+    static COLOR_SPLINE = [0.4, 0.4, 0.4, 1];
+    static COLOR_SPLINE_HIGHLIGHTED = [0.5, 0.5, 0.5, 1];
+    static COLOR_SPLINE_OUTSIDE = [0.0, 0.0, 0.0, 1];
 
     /** @type {Anim} */
     #anim = null;
@@ -52,6 +57,12 @@ export class glTlKeys extends Events
 
     /** @type {GlSpline} */
     #spline;
+
+    /** @type {GlSpline} */
+    #splineAfter;
+
+    /** @type {GlSpline} */
+    #splineBefore;
 
     #disposed = false;
 
@@ -113,11 +124,9 @@ export class glTlKeys extends Events
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
                     this.#keys[i].update();
-
             }));
 
         this.#options = options;
-
         this.init();
     }
 
@@ -215,28 +224,25 @@ export class glTlKeys extends Events
      */
     update()
     {
-        // if (this.animLine.isHidden)
-        // {
-        //     for (let i = 0; i < this.#keys.length; i++)
-        //     {
-        //         if (!this.#keys[i].isHidden) this.#keys[i].hide();
-        //     }
-        //     return;
-        // }
+
         if (this.#disposed)
         {
             this.#disposedWarning++;
             return;
         }
-        if (!this.drawSpline() && this.#spline)
+        if (!this.shouldDrawSpline() && this.#spline)
         {
             this.#spline.dispose();
             this.#spline = null;
         }
-        if (this.drawSpline() && !this.#spline)
+        if (this.shouldDrawSpline() && !this.#spline)
         {
             this.#spline = new GlSpline(this.#glTl.splines, this.#port.name);
             this.#spline.setParentRect(this.#parentRect);
+            this.#splineBefore = new GlSpline(this.#glTl.splines, "before " + this.#port.name);
+            this.#splineBefore.setParentRect(this.#parentRect);
+            this.#splineAfter = new GlSpline(this.#glTl.splines, "after " + this.#port.name);
+            this.#splineAfter.setParentRect(this.#parentRect);
         }
 
         if (this.#keys.length != this.#anim.keys.length) return this.init();
@@ -254,9 +260,7 @@ export class glTlKeys extends Events
             this.setKeyShapeSize(tlKey.rect);
 
             if (this.#glTl.selectRect && this.testSelectRectKey(tlKey.key, tlKey.rect))
-            {
                 this.#glTl.selectKey(tlKey.key, this.#anim);
-            }
 
         }
         perf.finish();
@@ -272,12 +276,15 @@ export class glTlKeys extends Events
         this.#needsUpdate = false;
 
         const pointsSort = [];
+        const pointsSortAfter = [];
+        const pointsSortBefore = [];
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.5;
         if (this.#port.op.isCurrentUiOp())z = -0.6;
+        let lastArray = pointsSort;
 
-        if (this.drawSpline())
+        if (this.shouldDrawSpline())
         {
             const steps = (this.#glTl.width) / 1;
             let lv = 9999999;
@@ -288,37 +295,49 @@ export class glTlKeys extends Events
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
                 const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
-                if (this.#anim.hasStarted(t) && !this.anim.hasEnded(t))
+                if (t < 0) continue;
+                let pointArray = pointsSort;
+                if (this.anim.hasEnded(t)) pointArray = pointsSortAfter;
+                if (!this.anim.hasStarted(t)) pointArray = pointsSortBefore;
+                if (lastArray != pointArray) lv *= 2;
+
+                if (lastArray != pointArray && pointArray == pointsSortAfter)
                 {
-                    let v = this.#anim.getValue(t);
-
-                    if (this.isLayoutGraph() && v == lv && i < steps - 3)
-                    {
-                        skipped = true;
-                        continue;
-                    }
-
-                    if (skipped)
-                    {
-                        let y = this.animLine.valueToPixel(lv);
-                        if (!this.isLayoutGraph())y = this.animLine.height / 2;
-                        pointsSort.push(x, y, z);
-                    }
-
-                    lv = v;
-                    let y = this.animLine.valueToPixel(v);
-                    // if (!this.isLayoutGraph)y = this.animLine.posY() + this.animLine.height / 2;
-                    if (!this.isLayoutGraph())y = Math.floor(this.animLine.height / 2) - 2;
-                    pointsSort.push(x, y, z);
-                    skipped = false;
+                    pointArray.push(lastArray[lastArray.length - 3], lastArray[lastArray.length - 2], lastArray[lastArray.length - 1]);
+                    lastArray = pointArray;
                 }
+
+                let v = this.#anim.getValue(t);
+
+                if (this.shouldDrawGraphSpline() && v == lv && i < steps - 3)
+                {
+                    skipped = true;
+                    continue;
+                }
+
+                if (skipped)
+                {
+                    let y = this.animLine.valueToPixel(lv);
+                    if (!this.shouldDrawGraphSpline())y = this.animLine.height / 2;
+                    pointArray.push(x, y, z);
+                }
+
+                lv = v;
+                let y = this.animLine.valueToPixel(v);
+                if (!this.shouldDrawGraphSpline())y = Math.floor(this.animLine.height / 2) - 2;
+                pointArray.push(x, y, z);
+                skipped = false;
             }
         }
 
-        if (this.drawSpline() && this.#spline)
+        if (this.shouldDrawSpline() && this.#spline)
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(pointsSort);
+            this.#splineAfter.getDrawer().rebuildLater();
+            this.#splineAfter.setPoints(pointsSortAfter);
+            this.#splineBefore.getDrawer().rebuildLater();
+            this.#splineBefore.setPoints(pointsSortBefore);
         }
 
         this.updateColors();
@@ -331,7 +350,12 @@ export class glTlKeys extends Events
         return true;
     }
 
-    drawSpline()
+    shouldDrawGraphSpline()
+    {
+        return this.isLayoutGraph() || this.animLine.lineHeight > 0;
+    }
+
+    shouldDrawSpline()
     {
         if (!this.drawKeys) return false;
         return true;
@@ -339,7 +363,6 @@ export class glTlKeys extends Events
 
     isLayoutGraph()
     {
-        // return this.animLine.height > glTlAnimLine.DEFAULT_HEIGHT ||
         return this.animLine.isGraphLayout();
     }
 
@@ -349,13 +372,12 @@ export class glTlKeys extends Events
         if (this.#spline)
         {
             if (this.animLine.getTitle(this.#idx) && this.animLine.getTitle(this.#idx).isHovering)
-            {
-                this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
-            }
+                this.#spline.setColorArray(glTlKeys.COLOR_SPLINE_HIGHLIGHTED);
             else
-            {
-                this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
-            }
+                this.#spline.setColorArray(glTlKeys.COLOR_SPLINE);
+
+            if (this.#splineAfter) this.#splineAfter.setColorArray(glTlKeys.COLOR_SPLINE_OUTSIDE);
+            if (this.#splineBefore) this.#splineBefore.setColorArray(glTlKeys.COLOR_SPLINE_OUTSIDE);
         }
 
         for (let i = 0; i < this.#keys.length; i++)
@@ -413,6 +435,7 @@ export class glTlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+
             if (!this.drawKeys())
             {
                 kr.setPosition(0, 0, 0);
@@ -420,13 +443,13 @@ export class glTlKeys extends Events
                 continue;
             }
 
-            if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
+            if (this.shouldDrawGraphSpline()) y = this.animLine.valueToPixel(animKey.value);
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
             rx -= this.getKeyWidth2();
             let ry = y - this.getKeyHeight2() - 2;
-            if (this.isLayoutGraph()) ry = y - this.getKeyWidth2();
+            if (this.shouldDrawGraphSpline()) ry = y - this.getKeyWidth2();
 
             if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
@@ -645,8 +668,8 @@ export class glTlKeys extends Events
                     {
                         console.log("isselecting...");
                         return;
-
                     }
+
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
                     this.#glTl.predragSelectedKeys();
@@ -701,7 +724,7 @@ export class glTlKeys extends Events
                             else offTime = 0;
                         }
 
-                        if (!this.isLayoutGraph())offVal = 0;
+                        if (!this.shouldDrawGraphSpline())offVal = 0;
                         if (this.#glTl.getNumSelectedKeys() > 0)
                         {
                             this.#glTl.dragSelectedKeys(offTime, offVal);
@@ -758,6 +781,8 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
         if (this.#spline) this.#spline = this.#spline.dispose();
+        if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
+        if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
         for (let i in this.#keyLookup) this.#keyLookup[i].dispose();
 
         this.#keyLookup = {};

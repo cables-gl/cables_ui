@@ -2128,6 +2128,11 @@ export default class PatchView extends Events
         gui.corePatch().emitEvent("subpatchesChanged");
     }
 
+    getLastFocussedOp()
+    {
+        return gui.opParams.getCurrentOp();
+    }
+
     /**
      * @param {string} opid
      */

@@ -60,6 +60,11 @@ CABLES_CMD_TIMELINE.togglePlay = function ()
     else gui.corePatch().timer.play();
 };
 
+CABLES_CMD_TIMELINE.toggleGraph = function ()
+{
+    gui.glTimeline?.toggleGraphLayout();
+};
+
 CABLES_CMD_TIMELINE.openGlTimeline = function ()
 {
     gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
@@ -138,6 +143,12 @@ timelineCommands.commands.push(
         "cmd": "snap selected keys times to fps",
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.TimelineSnapTimes
+    },
+    {
+        "cmd": "timeline toggle line/graph layout",
+        "category": "timeline",
+        "icon": "chart-spline",
+        "func": CABLES_CMD_TIMELINE.toggleGraph
     }
 
 );

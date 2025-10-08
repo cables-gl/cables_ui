@@ -1,5 +1,5 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Anim, AnimKey, Port, Timer, Patch } from "cables";
+import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -270,9 +270,9 @@ export class GlTimeline extends Events
 
         cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointermove", this._onCanvasPointerMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasPointerUp.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasPointerDown.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
@@ -664,17 +664,25 @@ export class GlTimeline extends Events
 
         this.saveUserSettings();
         this.updateIcons();
-        this.init();
+        console.log("lasrt", gui.patchView.getLastFocussedOp());
+        this.init(gui.patchView.getLastFocussedOp());
+        this.needsUpdateAll = "togglelayout";
+
     }
 
     updateIcons()
     {
 
         if (this.keyframeAutoCreate)
+        {
             ele.byId("autokeyframe").parentElement.classList.add("button-active");
+            ele.byId("autokeyframe").parentElement.classList.remove("button-inactive");
+        }
         else
+        {
             ele.byId("autokeyframe").parentElement.classList.remove("button-active");
-
+            ele.byId("autokeyframe").parentElement.classList.add("button-inactive");
+        }
         if (this.loopAreaEnd == 0)
         {
             ele.byId("tlloop").classList.remove("icon-x");
@@ -688,18 +696,23 @@ export class GlTimeline extends Events
 
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
+        ele.byId("togglegraph1").parentElement.classList.remove("button-inactive");
+        ele.byId("togglegraph2").parentElement.classList.remove("button-inactive");
+
         ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
         ele.byId("zoomgraph2").parentElement.classList.remove("button-inactive");
 
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS)
         {
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
+            ele.byId("togglegraph2").parentElement.classList.add("button-inactive");
             this.#selectModeEl.classList.remove("hidden");
         }
         else
         {
             this.#selectModeEl.classList.add("hidden");
             ele.byId("togglegraph2").parentElement.classList.add("button-active");
+            ele.byId("togglegraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
@@ -746,7 +759,7 @@ export class GlTimeline extends Events
     /**
      * @param {MouseEvent} e
      */
-    _onCanvasMouseUp(e)
+    _onCanvasPointerUp(e)
     {
         glTlKeys.dragStarted = false;
         this.selectRect = null;
@@ -776,7 +789,7 @@ export class GlTimeline extends Events
     /**
      * @param {PointerEvent} e
      */
-    _onCanvasMouseDown(e)
+    _onCanvasPointerDown(e)
     {
         if (!e.pointerType) return;
 
@@ -791,7 +804,7 @@ export class GlTimeline extends Events
                 if (e.offsetY > this.getFirstLinePosy())
                     this.unSelectAllKeys("canvas down ");
 
-        this._onCanvasMouseMove(e);
+        this._onCanvasPointerMove(e);
         if (this.#focusScroll) return;
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
@@ -803,6 +816,7 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++)
             if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
             {
+                gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
                 gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
                 this.showParamAnim(this.#tlAnims[i].anims[0]);
 
@@ -815,7 +829,7 @@ export class GlTimeline extends Events
     /**
      * @param {MouseEvent} event
      */
-    _onCanvasMouseMove(event)
+    _onCanvasPointerMove(event)
     {
         this.emitEvent(GlTimeline.EVENT_MOUSEMOVE, event);
 
@@ -1404,7 +1418,10 @@ export class GlTimeline extends Events
 
     }
 
-    init()
+    /**
+     * @param {Op} [gop]
+     */
+    init(gop)
     {
         if (this.disposed) return;
         const perf = gui.uiProfiler.start("[gltimeline] init");
@@ -1413,13 +1430,15 @@ export class GlTimeline extends Events
         q.setOptions({
             "include": { "animated": true, "subpatches": true, "portsAnimated": true },
             "includeUnsavedIndicator": false,
-            "removeEmptySubpatches": true });
+            "removeEmptySubpatches": true
+        });
 
         if (this.isGraphLayout())
         {
             q.setOptions({
                 "include": { "animated": true, "subpatches": true, "portsAnimated": true },
                 "includeUnsavedIndicator": false,
+                "removeEmptySubpatches": true,
                 "only": { "selected": true },
             });
         }
@@ -1441,16 +1460,16 @@ export class GlTimeline extends Events
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
-        let ops = [];
-        let count = 0;
+        // let count = 0;
         const ports = [];
 
-        let selops = gui.patchView.getSelectedOps();
-        if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
+        // let ops = gui.patchView.getSelectedOps() || [gop];
+        // console.log("ops", ops, gop);
+        // if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
 
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
         // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
-        ops = gui.corePatch().ops;
+        // ops = gui.corePatch().ops;
 
         this.#firstInit = false;
 
@@ -2545,13 +2564,18 @@ export class GlTimeline extends Events
      */
     showParamAnim(anim)
     {
-        this.showParams();
-        const html = getHandleBarHtml(
-            "params_anim", {
-                "anim": anim,
-                "errors": this.testAnim(anim.keys),
-                "length": Math.round(anim.getLengthLoop() * 1000) / 1000
-            });
+        if (!anim)
+        {
+            console.log("nope");
+            return;
+        }
+        const options = {
+            "anim": anim,
+            "errors": this.testAnim(anim.keys),
+            "length": Math.round(anim.getLengthLoop() * 1000) / 1000
+        };
+
+        const html = getHandleBarHtml("params_anim", options);
         this.#elKeyParamPanel.innerHTML = html;
         this.#elKeyParamPanel.dataset.panel = "params_anim";
 
@@ -2563,29 +2587,30 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+
+        ele.clickable(ele.byId("ap_debug"), (e) =>
+        {
+            console.log("anim serialized", e.target);
+            e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), null, 2) + "</pre>";
+
+        });
+
         ele.clickable(ele.byId("ap_size"), () =>
         {
             for (let i = 0; i < this.#tlAnims.length; i++)
             {
                 if (this.#tlAnims[i].anims[0] == anim)
                 {
-                    let h = 150;
+                    let h = ((anim.uiAttribs.height || 0) + 1) % glTlAnimLine.SIZES.length;
 
-                    if (!anim.uiAttribs.height)h = 100;
-                    else if (anim.uiAttribs.height == 100)h = 150;
-                    else h = glTlAnimLine.DEFAULT_HEIGHT;
-
-                    this.#tlAnims[i].setHeight(h);
-                    if (h == glTlAnimLine.DEFAULT_HEIGHT) anim.setUiAttribs({ "height": 0 });
-                    else anim.setUiAttribs({ "height": h });
+                    this.#tlAnims[i].setLineHeight(h);
+                    anim.setUiAttribs({ "height": h });
                     this.#tlAnims[i].updateTitles();
                     this.#tlAnims[i].update();
                     this.#tlAnims[i].updateGlPos();
-                    // this.updateAllElements();
                     this.needsUpdateAll = "height..";
                 }
             }
-
         });
 
         ele.clickable(ele.byId("ap_paste"), () =>
@@ -2652,7 +2677,6 @@ export class GlTimeline extends Events
         }
         else
         {
-            // logStack();
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
     }
