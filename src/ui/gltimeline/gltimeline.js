@@ -757,6 +757,22 @@ export class GlTimeline extends Events
      */
     _onCanvasPointerUp(e)
     {
+        if (performance.now() - this.mouseDownStart < 200)
+            if (!glTlKeys.dragStarted && !this.hoverKeyRect)
+                for (let i = 0; i < this.#tlAnims.length; i++)
+                    if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+                    {
+                        if (!gui.patchView.isCurrentOp(this.#tlAnims[i].getOp()))
+                        {
+
+                            gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
+                            gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
+                            this.showParamAnim(this.#tlAnims[i].anims[0]);
+
+                        }
+                        this.#tlAnims[i].getTitle(0)?.hover();
+                    }
+
         glTlKeys.dragStarted = false;
         this.selectRect = null;
         this.#rects.mouseUp(e);
@@ -798,7 +814,7 @@ export class GlTimeline extends Events
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
                 if (e.offsetY > this.getFirstLinePosy())
-                    this.unSelectAllKeys("canvas down ");
+                    this.unSelectAllKeys("canvas down");
 
         this._onCanvasPointerMove(e);
         if (this.#focusScroll) return;
@@ -809,17 +825,8 @@ export class GlTimeline extends Events
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
-        for (let i = 0; i < this.#tlAnims.length; i++)
-            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
-            {
-                gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
-                gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
-                this.showParamAnim(this.#tlAnims[i].anims[0]);
-
-                this.#tlAnims[i].getTitle(0)?.hover();
-
-            }
         this.mouseDown = true;
+        this.mouseDownStart = performance.now();
     }
 
     /**
@@ -1904,7 +1911,7 @@ export class GlTimeline extends Events
         }
         else
         {
-            this.view.setZoomLength((bounds.length * 2) + (bounds.length * 0.1));
+            this.view.setZoomLength((bounds.length) + (bounds.length * 0.1));
             this.view.scrollTo(bounds.min - (bounds.length * 0.05));
         }
     }
