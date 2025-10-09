@@ -11,6 +11,7 @@
  UNI sampler2D tex0;
  UNI sampler2D tex1;
  UNI sampler2D tex2;
+ UNI sampler2D tex3;
 
  float median(float r, float g, float b)
  {
@@ -113,6 +114,7 @@ float samp(in vec2 uv, float w) {
     // if(int(useTexture)==0)finalColor=texture(tex0,uv);
     if(int(useTexture)==1)finalColor=texture(tex1,uv);
     if(int(useTexture)==2)finalColor=texture(tex2,uv);
+    if(int(useTexture)==3)finalColor=texture(tex3,uv);
 
     float shape=decoration.r;
     float border=decoration.g;

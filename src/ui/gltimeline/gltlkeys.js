@@ -357,7 +357,7 @@ export class glTlKeys extends Events
 
     shouldDrawSpline()
     {
-        if (!this.drawKeys) return false;
+        if (!this.drawKeys()) return false;
         return true;
     }
 

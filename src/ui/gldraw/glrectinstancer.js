@@ -114,9 +114,10 @@ export default class GlRectInstancer extends Events
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
         this._unimsdfUnit = new Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
-        this._uniTexture1 = new Uniform(this.#shader, "t", "tex1", 0);
-        this._uniTexture2 = new Uniform(this.#shader, "t", "tex2", 1);
-        this._uniTexture3 = new Uniform(this.#shader, "t", "tex3", 2);
+        this._uniTexture1 = new Uniform(this.#shader, "t", "tex0", 0);
+        this._uniTexture2 = new Uniform(this.#shader, "t", "tex1", 1);
+        this._uniTexture3 = new Uniform(this.#shader, "t", "tex2", 2);
+        this._uniTexture3 = new Uniform(this.#shader, "t", "tex3", 3);
 
         this.#geom = new Geometry("rectinstancer " + this.#name);
         this.#geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -240,73 +241,6 @@ export default class GlRectInstancer extends Events
         return this.#draggingRects.length > 0;
     }
 
-    // _setupTextures()
-    // {
-    //     console.log("setup textures");
-    //     this.#needsTextureUpdate = false;
-    //     let count = 0;
-
-    //     let minIdx = GlRectInstancer.DEFAULT_BIGNUM;
-    //     let maxIdx = -GlRectInstancer.DEFAULT_BIGNUM;
-
-    //     for (let i = 0; i < this.#rects.length; i++)
-    //     {
-    //         let changed = false;
-    //         const thatRectIdx = this.#rects[i].idx;
-
-    //         // if (this.#rects[i].texture)
-    //         // {
-    //         //     let found = false;
-
-    //         //     for (let j = 0; j < this.#textures.length; j++)
-    //         //     {
-    //         //         if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
-    //         //         {
-    //         //             found = true;
-
-    //         //             if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
-
-    //         //             this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
-    //         //             minIdx = Math.min(thatRectIdx, minIdx);
-    //         //             maxIdx = Math.max(thatRectIdx, maxIdx);
-    //         //         }
-    //         //     }
-
-    //         //     if (!found)
-    //         //     {
-    //         //         this._attrBuffTextures[thatRectIdx] = count;
-    //         //         this.#textures[count] =
-    //         //             {
-    //         //                 "texture": this.#rects[i].texture,
-    //         //                 "num": count
-    //         //             };
-    //         //         count++;
-    //         //     }
-    //         // }
-    //         // else
-    //         // {
-    //         //     if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
-    //         //     this._attrBuffTextures[thatRectIdx] = -1;
-    //         // }
-
-    //         // if (this._attrBuffTextures[thatRectIdx] != this.#rects[i].texture)
-    //         {
-    //             this._attrBuffTextures[thatRectIdx] = this.#rects[i].texture;
-    //             changed = true;
-    //         }
-    //         // if (changed)
-    //         {
-    //             minIdx = Math.min(this.#rects[i].idx, minIdx);
-    //             maxIdx = Math.max(this.#rects[i].idx, maxIdx);
-    //         }
-    //     }
-
-    //     // console.log("text", this.#name, this.#textures.length);
-    //     // console.log(" tex", this._attrBuffTextures);
-
-    //     this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, minIdx, maxIdx);
-    // }
-
     /**
      * @param {string | number} slot
      * @param {Texture} tex
@@ -322,23 +256,6 @@ export default class GlRectInstancer extends Events
         }
         this.#shader.toggleDefine("SDF_TEXTURE", sdf);
         this.#textures[slot] = tex;
-    }
-
-    _bindTextures()
-    {
-        for (let i = 0; i < this.#textures.length; i++)
-            if (this.#textures[i] && this.#textures[i].tex)
-            {
-                this.#cgl.setTexture(i, this.#textures[i].tex);
-            }
-            else
-            {
-                this.#cgl.setTexture(i, Texture.getRandomTexture(this.#cgl).tex);
-            }
-
-        // console.log("bindtex....", this.#name, this.#textures);
-
-        // if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
     }
 
     /**
@@ -405,13 +322,27 @@ export default class GlRectInstancer extends Events
         this._uniTime.set(performance.now() / 1000);
 
         // if (this.#needsTextureUpdate) this._setupTextures();
-        this._bindTextures();
 
         if (this.#needsRebuild) this.rebuild();
 
         this.emitEvent("render");
 
+        if (!this.#textures[0]) this.#textures[0] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[1]) this.#textures[1] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[2]) this.#textures[2] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[3]) this.#textures[3] = Texture.getTempTexture(this.#cgl);
+
+        this.#shader.pushTexture(this._uniTexture1, this.#textures[0].tex);
+        this.#shader.pushTexture(this._uniTexture2, this.#textures[1].tex);
+        this.#shader.pushTexture(this._uniTexture3, this.#textures[2].tex);
+        this.#shader.pushTexture(this._uniTexture3, this.#textures[3].tex);
+
         this.#mesh.render(this.#shader);
+
+        this.#shader.popTexture();
+        this.#shader.popTexture();
+        this.#shader.popTexture();
+        this.#shader.popTexture();
     }
 
     rebuild()
