@@ -1,27 +1,27 @@
 
- IN vec4 col;
- IN vec4 posSize;
- IN float zz;
- IN highp vec2 uv;
- IN vec4 decoration;
- IN float useTexture;
- UNI float time;
- UNI float zoom;
- UNI float msdfUnit;
- UNI sampler2D tex0;
- UNI sampler2D tex1;
- UNI sampler2D tex2;
- UNI sampler2D tex3;
+IN vec4 col;
+IN vec4 posSize;
+IN float zz;
+IN highp vec2 uv;
+IN vec4 decoration;
+IN float useTexture;
+UNI float time;
+UNI float zoom;
+UNI float msdfUnit;
+UNI sampler2D tex0;
+UNI sampler2D tex1;
+UNI sampler2D tex2;
+UNI sampler2D tex3;
 
- float median(float r, float g, float b)
- {
+float median(float r, float g, float b)
+{
     return max(min(r, g), min(max(r, g), b));
- }
+}
 
- float median(vec3 rgb)
- {
+float median(vec3 rgb)
+{
     return max(min(rgb.r, rgb.g), min(max(rgb.r, rgb.g),rgb.b));
- }
+}
 
 float screenPxRange()
 {

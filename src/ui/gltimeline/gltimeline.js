@@ -2548,6 +2548,15 @@ export class GlTimeline extends Events
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
         }
+        ele.byId("kp_clip").addEventListener("change", () =>
+        {
+            for (let j = 0; j < this.#selectedKeys.length; j++)
+            {
+                this.#selectedKeys[j].clip = true;
+                this.#selectedKeys[j].clipId = "fake";
+            }
+
+        });
     }
 
     /**
