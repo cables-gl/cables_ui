@@ -128,12 +128,9 @@ export class GlTimeline extends Events
     disposed = false;
 
     #oldhtml = "";
-    #canvasMouseDown = false;
-    #paused = false;
 
     /** @type {CglContext} */
     #cgl = null;
-    #isAnimated = false;
     buttonForPanning = 2;
     toParamKeys = null;
 
@@ -145,7 +142,6 @@ export class GlTimeline extends Events
         "fps": 30,
         "bpm": 180,
         "fadeInFrames": true,
-        "showBeats": true,
         "restrictToFrames": true
     };
 
@@ -182,6 +178,8 @@ export class GlTimeline extends Events
     /** @type {HTMLElement} */
     tlTimeScrollContainer;
     #clipboardKeys;
+    #spacePressed = false;
+    #cursor;
 
     /**
      * @param {CglContext} cgl
@@ -374,6 +372,9 @@ export class GlTimeline extends Events
             this.updateAllElements();
 
         });
+
+        gui.keys.key(" ", "Drag left mouse button to pan timeline", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = false; this.emitEvent("spaceup"); });
 
         gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
         {
@@ -761,6 +762,22 @@ export class GlTimeline extends Events
      */
     _onCanvasPointerUp(e)
     {
+        if (performance.now() - this.mouseDownStart < 200)
+            if (!glTlKeys.dragStarted && !this.hoverKeyRect)
+                for (let i = 0; i < this.#tlAnims.length; i++)
+                    if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+                    {
+                        if (!gui.patchView.isCurrentOp(this.#tlAnims[i].getOp()))
+                        {
+
+                            gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
+                            gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
+                            this.showParamAnim(this.#tlAnims[i].anims[0]);
+
+                        }
+                        this.#tlAnims[i].getTitle(0)?.hover();
+                    }
+
         glTlKeys.dragStarted = false;
         this.selectRect = null;
         this.#rects.mouseUp(e);
@@ -802,7 +819,7 @@ export class GlTimeline extends Events
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
                 if (e.offsetY > this.getFirstLinePosy())
-                    this.unSelectAllKeys("canvas down ");
+                    this.unSelectAllKeys("canvas down");
 
         this._onCanvasPointerMove(e);
         if (this.#focusScroll) return;
@@ -813,17 +830,8 @@ export class GlTimeline extends Events
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
-        for (let i = 0; i < this.#tlAnims.length; i++)
-            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
-            {
-                gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
-                gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
-                this.showParamAnim(this.#tlAnims[i].anims[0]);
-
-                this.#tlAnims[i].getTitle(0)?.hover();
-
-            }
         this.mouseDown = true;
+        this.mouseDownStart = performance.now();
     }
 
     /**
@@ -840,7 +848,49 @@ export class GlTimeline extends Events
         this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
         this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
-        if (event.buttons == 1)
+        if (event.buttons == this.buttonForPanning || this.#spacePressed && event.buttons == 1)
+        {
+
+            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
+            {
+                const movementX = event.offsetX - this.#lastDragX;
+                const movementY = event.offsetY - this.#lastDragY;
+
+                if (!this.isFreePanningMode())
+                {
+
+                    this.tlTimeScrollContainer.scrollTop -= movementY;
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                }
+                else
+                {
+                    if (event.metaKey || event.ctrlKey)
+                    {
+                        if (Math.abs(movementY) > Math.abs(movementX))
+                        {
+                            this.view.scaleValues(movementY * 0.01);
+                        }
+                        else
+                        {
+                            let zf = (1 / (this.view.zoom)) * 0.3;
+                            let d = 1 + zf;
+                            if (movementX > 0)d = 1 - zf;
+                            this.view.setZoomOffset(d, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                    }
+                }
+            }
+
+            this.#lastDragX = event.offsetX;
+            this.#lastDragY = event.offsetY;
+            this.needsUpdateAll = "mouse drag pan";
+        }
+        else if (event.buttons == 1)
         {
             if (event.ctrlKey || event.metaKey)
             {
@@ -895,49 +945,6 @@ export class GlTimeline extends Events
                 this.needsUpdateAll = "mouse m";
                 this.showKeyParamsSoon();
             }
-        }
-        else if (event.buttons == this.buttonForPanning)
-        {
-
-            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
-            {
-                const movementX = event.offsetX - this.#lastDragX;
-                const movementY = event.offsetY - this.#lastDragY;
-
-                if (!this.isFreePanningMode())
-                {
-
-                    this.tlTimeScrollContainer.scrollTop -= movementY;
-                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-
-                }
-                else
-                {
-                    if (event.metaKey || event.ctrlKey)
-                    {
-                        if (Math.abs(movementY) > Math.abs(movementX))
-                        {
-                            this.view.scaleValues(movementY * 0.01);
-                        }
-                        else
-                        {
-                            let zf = (1 / (this.view.zoom)) * 0.3;
-                            let d = 1 + zf;
-                            if (movementX > 0)d = 1 - zf;
-                            this.view.setZoomOffset(d, 0);
-                        }
-                    }
-                    else
-                    {
-                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
-                    }
-                }
-            }
-
-            this.#lastDragX = event.offsetX;
-            this.#lastDragY = event.offsetY;
-            this.needsUpdateAll = "mouse drag pan";
         }
         else
         {
@@ -1512,7 +1519,6 @@ export class GlTimeline extends Events
         {
             console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -1523,7 +1529,6 @@ export class GlTimeline extends Events
         this.updateIcons();
 
         perf.finish();
-
     }
 
     /**
@@ -1649,7 +1654,18 @@ export class GlTimeline extends Events
 
             this.#cgl.popDepthTest();
         }
+        this.#updateMouseCursor();
         this.#perfFps.endFrame();
+    }
+
+    #updateMouseCursor()
+    {
+        let cur = "auto";
+        if (this.#spacePressed) cur = "grabbing";
+
+        if (this.#cursor != cur) this.#cgl.setCursor(cur);
+
+        this.#cursor = cur;
     }
 
     updateCursor()
@@ -1911,7 +1927,7 @@ export class GlTimeline extends Events
         }
         else
         {
-            this.view.setZoomLength((bounds.length * 2) + (bounds.length * 0.1));
+            this.view.setZoomLength((bounds.length) + (bounds.length * 0.1));
             this.view.scrollTo(bounds.min - (bounds.length * 0.05));
         }
     }
@@ -2530,7 +2546,7 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {UiOp} op
+     * @param {Op} op
      */
     showParamOp(op)
     {
@@ -2638,22 +2654,26 @@ export class GlTimeline extends Events
         {
             anim.setLoop(Anim.LOOP_OFF);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
 
         ele.clickable(ele.byId("ap_loop_mirror"), () =>
         {
             anim.setLoop(Anim.LOOP_MIRROR);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_repeat"), () =>
         {
             anim.setLoop(Anim.LOOP_REPEAT);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_offset"), () =>
         {
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
         });
     }
 

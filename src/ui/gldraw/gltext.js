@@ -53,6 +53,8 @@ export default class GlText
      * @param {number} x
      */
     set x(x) { this._x = x; this.rebuild(); }
+    get x() { return this._x; }
+    get y() { return this._y; }
 
     /**
      * @param {number} y

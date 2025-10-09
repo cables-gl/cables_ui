@@ -5,6 +5,7 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef {object} TlTitleOptions
@@ -13,7 +14,6 @@ import opNames from "../opnameutils.js";
  * @property {Port} [port]
  * @property {glTlAnimLine} [animLine]
  */
-
 export class TlTitle extends Events
 {
     static EVENT_CLICK_OPNAME = "titleClicked";
@@ -51,8 +51,6 @@ export class TlTitle extends Events
     /** @type {glTlAnimLine} */
     animLine = null;
 
-    #height = 30;
-
     collapsed = false;
     #hideOpName = false;
     isHovering = false;
@@ -62,7 +60,6 @@ export class TlTitle extends Events
     #elIndent;
     #elOpname;
     #elPortname;
-    #elValue;
     #elPortValue;
 
     /**
@@ -101,13 +98,6 @@ export class TlTitle extends Events
 
         this.#elPortname = document.createElement("span");
         this.#elPortValue.appendChild(this.#elPortname);
-
-        // this.#elValue = document.createElement("span");
-        // this.#elValue.classList.add("value");
-        // this.#elPortValue.appendChild(this.#elValue);
-
-        // this.updateValue(0);
-        // if (!this.#anim) this.#elPortValue.style.display = "none";
 
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
@@ -185,7 +175,6 @@ export class TlTitle extends Events
      */
     setHeight(h)
     {
-        this.#height = h;
         this.#el.style.height = Math.max(0, h - 6) + "px";
     }
 
@@ -361,7 +350,6 @@ export class TlTitle extends Events
             {
                 this.#el.classList.add("selectedOp");
                 this.#el.classList.add("selectedOp");
-
             }
         }
         else this.#el.classList.remove("selectedOp");
