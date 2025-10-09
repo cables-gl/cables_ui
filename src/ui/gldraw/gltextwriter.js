@@ -51,6 +51,7 @@ export default class GlTextWriter
             this.#fontTex = Texture.load(this.#cgl, "img/worksans-regular.png", (err, tex) =>
             {
                 // this.#rectDrawer.setTexture(0, this.#fontTex, true);
+                this.#rectDrawer.setTexture(0, tex, true);
             }, { "flip": false, "filter": Texture.FILTER_LINEAR });
         }
         this.#rectDrawer.setTexture(0, this.#fontTex, true);

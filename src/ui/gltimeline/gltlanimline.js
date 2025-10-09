@@ -430,7 +430,7 @@ export class glTlAnimLine extends Events
                 const r = this.#titles[0].getClientRect();
                 if (this.isHidden)
                 {
-                    this.setHeight(0);
+                    this.setHeight();
                     // this.#glRectKeysBg.setSize(0, 0);
                 }
                 else

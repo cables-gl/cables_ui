@@ -216,6 +216,8 @@ export default class GlText
                 continue;
             }
             rectCount++;
+
+            /** @type {GlRect} */
             const rect = this._rects[rectCount] || this._textWriter.rectDrawer.createRect({ "name": "textrect", "interactive": false });
             rect.visible = this._visible;
             this._rects[rectCount] = rect;

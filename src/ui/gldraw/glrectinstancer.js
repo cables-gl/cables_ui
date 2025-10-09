@@ -33,7 +33,7 @@ export default class GlRectInstancer extends Events
     #needsRebuildReason = "";
     #cgl;
     #interactive = true;
-    #needsTextureUpdate = false;
+    // #needsTextureUpdate = false;
     #reUploadAttribs = true;
     allowDragging = false;
     doBulkUploads = true;
@@ -68,7 +68,7 @@ export default class GlRectInstancer extends Events
 
     static DEFAULT_BIGNUM = 999999;
     static ATTR_TEXRECT = "texRect";
-    static ATTR_CONTENT_TEX = "contentTexture";
+    static ATTR_TEX = "contentTexture";
     static ATTR_POS = "instPos";
     static ATTR_COLOR = "instCol";
     static ATTR_SIZE = "instSize";
@@ -240,72 +240,72 @@ export default class GlRectInstancer extends Events
         return this.#draggingRects.length > 0;
     }
 
-    _setupTextures()
-    {
-        this.#needsTextureUpdate = false;
-        this.#textures.length = 0;
-        let count = 0;
+    // _setupTextures()
+    // {
+    //     console.log("setup textures");
+    //     this.#needsTextureUpdate = false;
+    //     let count = 0;
 
-        let minIdx = GlRectInstancer.DEFAULT_BIGNUM;
-        let maxIdx = -GlRectInstancer.DEFAULT_BIGNUM;
+    //     let minIdx = GlRectInstancer.DEFAULT_BIGNUM;
+    //     let maxIdx = -GlRectInstancer.DEFAULT_BIGNUM;
 
-        for (let i = 0; i < this.#rects.length; i++)
-        {
-            let changed = false;
-            const thatRectIdx = this.#rects[i].idx;
+    //     for (let i = 0; i < this.#rects.length; i++)
+    //     {
+    //         let changed = false;
+    //         const thatRectIdx = this.#rects[i].idx;
 
-            // if (this.#rects[i].texture)
-            // {
-            //     let found = false;
+    //         // if (this.#rects[i].texture)
+    //         // {
+    //         //     let found = false;
 
-            //     for (let j = 0; j < this.#textures.length; j++)
-            //     {
-            //         if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
-            //         {
-            //             found = true;
+    //         //     for (let j = 0; j < this.#textures.length; j++)
+    //         //     {
+    //         //         if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
+    //         //         {
+    //         //             found = true;
 
-            //             if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
+    //         //             if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
 
-            //             this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
-            //             minIdx = Math.min(thatRectIdx, minIdx);
-            //             maxIdx = Math.max(thatRectIdx, maxIdx);
-            //         }
-            //     }
+    //         //             this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
+    //         //             minIdx = Math.min(thatRectIdx, minIdx);
+    //         //             maxIdx = Math.max(thatRectIdx, maxIdx);
+    //         //         }
+    //         //     }
 
-            //     if (!found)
-            //     {
-            //         this._attrBuffTextures[thatRectIdx] = count;
-            //         this.#textures[count] =
-            //             {
-            //                 "texture": this.#rects[i].texture,
-            //                 "num": count
-            //             };
-            //         count++;
-            //     }
-            // }
-            // else
-            // {
-            //     if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
-            //     this._attrBuffTextures[thatRectIdx] = -1;
-            // }
+    //         //     if (!found)
+    //         //     {
+    //         //         this._attrBuffTextures[thatRectIdx] = count;
+    //         //         this.#textures[count] =
+    //         //             {
+    //         //                 "texture": this.#rects[i].texture,
+    //         //                 "num": count
+    //         //             };
+    //         //         count++;
+    //         //     }
+    //         // }
+    //         // else
+    //         // {
+    //         //     if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
+    //         //     this._attrBuffTextures[thatRectIdx] = -1;
+    //         // }
 
-            if (this._attrBuffTextures[thatRectIdx] != this.#rects[i].texture)
-            {
-                this._attrBuffTextures[thatRectIdx] = this.#rects[i].texture;
-                changed = true;
-            }
-            if (changed)
-            {
-                minIdx = Math.min(this.#rects[i].idx, minIdx);
-                maxIdx = Math.max(this.#rects[i].idx, maxIdx);
-            }
-        }
+    //         // if (this._attrBuffTextures[thatRectIdx] != this.#rects[i].texture)
+    //         {
+    //             this._attrBuffTextures[thatRectIdx] = this.#rects[i].texture;
+    //             changed = true;
+    //         }
+    //         // if (changed)
+    //         {
+    //             minIdx = Math.min(this.#rects[i].idx, minIdx);
+    //             maxIdx = Math.max(this.#rects[i].idx, maxIdx);
+    //         }
+    //     }
 
-        // console.log("text", this.#name, this.#textures.length);
-        // console.log(" tex", this._attrBuffTextures);
+    //     // console.log("text", this.#name, this.#textures.length);
+    //     // console.log(" tex", this._attrBuffTextures);
 
-        this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, minIdx, maxIdx);
-    }
+    //     this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, minIdx, maxIdx);
+    // }
 
     /**
      * @param {string | number} slot
@@ -320,7 +320,6 @@ export default class GlRectInstancer extends Events
             console.log("not a texure!!!!!");
             logStack();
         }
-        if (this.#textures[slot] == tex) return;
         this.#shader.toggleDefine("SDF_TEXTURE", sdf);
         this.#textures[slot] = tex;
     }
@@ -330,14 +329,13 @@ export default class GlRectInstancer extends Events
         for (let i = 0; i < this.#textures.length; i++)
             if (this.#textures[i] && this.#textures[i].tex)
             {
-
-                if (i == 1)console.log("yae");
                 this.#cgl.setTexture(i, this.#textures[i].tex);
             }
             else
             {
                 this.#cgl.setTexture(i, Texture.getRandomTexture(this.#cgl).tex);
             }
+
         // console.log("bindtex....", this.#name, this.#textures);
 
         // if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
@@ -379,6 +377,12 @@ export default class GlRectInstancer extends Events
                 this._resetAttrRange(GlRectInstancer.ATTR_SIZE);
             }
 
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_TEX] != GlRectInstancer.DEFAULT_BIGNUM)
+            {
+                this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, this.#updateRangesMin[GlRectInstancer.ATTR_TEX], this.#updateRangesMax[GlRectInstancer.ATTR_TEX]);
+                this._resetAttrRange(GlRectInstancer.ATTR_TEX);
+            }
+
             if (this.#updateRangesMin[GlRectInstancer.ATTR_DECO] != GlRectInstancer.DEFAULT_BIGNUM)
             {
                 this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, this.#updateRangesMin[GlRectInstancer.ATTR_DECO], this.#updateRangesMax[GlRectInstancer.ATTR_DECO]);
@@ -400,7 +404,7 @@ export default class GlRectInstancer extends Events
 
         this._uniTime.set(performance.now() / 1000);
 
-        if (this.#needsTextureUpdate) this._setupTextures();
+        // if (this.#needsTextureUpdate) this._setupTextures();
         this._bindTextures();
 
         if (this.#needsRebuild) this.rebuild();
@@ -426,7 +430,7 @@ export default class GlRectInstancer extends Events
             this.#meshAttrSize = this.#mesh.setAttribute(GlRectInstancer.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
             this.#meshAttrDeco = this.#mesh.setAttribute(GlRectInstancer.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
             this.#meshAttrTexRect = this.#mesh.setAttribute(GlRectInstancer.ATTR_TEXRECT, this._attrBuffTexRect, 4, { "instanced": true });
-            this.#meshAttrTex = this.#mesh.setAttribute(GlRectInstancer.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+            this.#meshAttrTex = this.#mesh.setAttribute(GlRectInstancer.ATTR_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this.#reUploadAttribs = false;
             perf.finish();
         }
@@ -448,7 +452,7 @@ export default class GlRectInstancer extends Events
             this._setupAttribBuffers();
             this.#needsRebuild = true;
             this.#needsRebuildReason = "resize";
-            this.#needsTextureUpdate = true;
+            // this.#needsTextureUpdate = true;
             this.#reUploadAttribs = true;
         }
         return this.#counter;
@@ -534,6 +538,25 @@ export default class GlRectInstancer extends Events
 
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_SIZE, idx * 2, (idx + 1) * 2);
         else this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
+    }
+
+    /**
+     * @param {number} idx
+     * @param {number} x
+     */
+    setTextureIdx(idx, x)
+    {
+        if (this._float32Diff(this._attrBuffTextures[idx], x))
+        {
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "size change";
+        }
+        else return;
+
+        this._attrBuffTextures[idx] = x;
+
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_TEX, idx, (idx + 1));
+        else this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, idx, (idx + 1));
     }
 
     /**
@@ -702,7 +725,7 @@ export default class GlRectInstancer extends Events
             // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
-        r.on(GlRect.EVENT_TEXTURECHANGED, () => { this.#needsTextureUpdate = true; });
+        // r.on(GlRect.EVENT_TEXTURECHANGED, () => { this.#needsTextureUpdate = true; });
 
         return r;
     }

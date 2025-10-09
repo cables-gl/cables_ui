@@ -6,11 +6,11 @@
  IN vec4 decoration;
  IN float useTexture;
  UNI float time;
+ UNI float zoom;
+ UNI float msdfUnit;
  UNI sampler2D tex0;
  UNI sampler2D tex1;
  UNI sampler2D tex2;
- UNI float zoom;
- UNI float msdfUnit;
 
  float median(float r, float g, float b)
  {
@@ -106,11 +106,13 @@ float samp(in vec2 uv, float w) {
             finalColor=texture(tex0,uv);
         #endif
 
-        // if(int(useTexture)==0)finalColor=texture(tex0,uv);
-        if(int(useTexture)==1)finalColor=texture(tex1,uv);
-        if(int(useTexture)==2)finalColor=texture(tex2,uv);
 
     }
+
+    // if(int(useTexture)==0)finalColor.r=1.0;
+    // if(int(useTexture)==0)finalColor=texture(tex0,uv);
+    if(int(useTexture)==1)finalColor=texture(tex1,uv);
+    if(int(useTexture)==2)finalColor=texture(tex2,uv);
 
     float shape=decoration.r;
     float border=decoration.g;
