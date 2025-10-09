@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { logStack } from "cables/src/core/utils.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
@@ -43,7 +44,7 @@ export default class GlRectInstancer extends Events
     /** @type {Array<GlRect>} */
     #rects = [];
 
-    /** @type {Array<Object>} */
+    /** @type {Array<Texture>} */
     #textures = [];
 
     /** @type {GlRect[]} */
@@ -113,7 +114,9 @@ export default class GlRectInstancer extends Events
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
         this._unimsdfUnit = new Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
-        this._uniTexture = new Uniform(this.#shader, "t", "tex", 0);
+        this._uniTexture1 = new Uniform(this.#shader, "t", "tex1", 0);
+        this._uniTexture2 = new Uniform(this.#shader, "t", "tex2", 1);
+        this._uniTexture3 = new Uniform(this.#shader, "t", "tex3", 2);
 
         this.#geom = new Geometry("rectinstancer " + this.#name);
         this.#geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -251,41 +254,46 @@ export default class GlRectInstancer extends Events
             let changed = false;
             const thatRectIdx = this.#rects[i].idx;
 
-            if (this.#rects[i].texture)
+            // if (this.#rects[i].texture)
+            // {
+            //     let found = false;
+
+            //     for (let j = 0; j < this.#textures.length; j++)
+            //     {
+            //         if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
+            //         {
+            //             found = true;
+
+            //             if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
+
+            //             this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
+            //             minIdx = Math.min(thatRectIdx, minIdx);
+            //             maxIdx = Math.max(thatRectIdx, maxIdx);
+            //         }
+            //     }
+
+            //     if (!found)
+            //     {
+            //         this._attrBuffTextures[thatRectIdx] = count;
+            //         this.#textures[count] =
+            //             {
+            //                 "texture": this.#rects[i].texture,
+            //                 "num": count
+            //             };
+            //         count++;
+            //     }
+            // }
+            // else
+            // {
+            //     if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
+            //     this._attrBuffTextures[thatRectIdx] = -1;
+            // }
+
+            if (this._attrBuffTextures[thatRectIdx] != this.#rects[i].texture)
             {
-                let found = false;
-
-                for (let j = 0; j < this.#textures.length; j++)
-                {
-                    if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
-                    {
-                        found = true;
-
-                        if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
-
-                        this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
-                        minIdx = Math.min(thatRectIdx, minIdx);
-                        maxIdx = Math.max(thatRectIdx, maxIdx);
-                    }
-                }
-
-                if (!found)
-                {
-                    this._attrBuffTextures[thatRectIdx] = count;
-                    this.#textures[count] =
-                        {
-                            "texture": this.#rects[i].texture,
-                            "num": count
-                        };
-                    count++;
-                }
+                this._attrBuffTextures[thatRectIdx] = this.#rects[i].texture;
+                changed = true;
             }
-            else
-            {
-                if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
-                this._attrBuffTextures[thatRectIdx] = -1;
-            }
-
             if (changed)
             {
                 minIdx = Math.min(this.#rects[i].idx, minIdx);
@@ -293,16 +301,46 @@ export default class GlRectInstancer extends Events
             }
         }
 
-        this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
+        // console.log("text", this.#name, this.#textures.length);
+        // console.log(" tex", this._attrBuffTextures);
+
+        this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, minIdx, maxIdx);
+    }
+
+    /**
+     * @param {string | number} slot
+     * @param {Texture} tex
+     * @param {boolean | import("cables").Port} sdf
+     */
+    setTexture(slot, tex, sdf)
+    {
+        if (!tex)
+        {
+
+            console.log("not a texure!!!!!");
+            logStack();
+        }
+        if (this.#textures[slot] == tex) return;
+        this.#shader.toggleDefine("SDF_TEXTURE", sdf);
+        this.#textures[slot] = tex;
     }
 
     _bindTextures()
     {
-        for (let i = 0; i < 4; i++)
-            if (this.#textures[0])
-                this.#cgl.setTexture(i, this.#textures[0].texture.tex);
+        for (let i = 0; i < this.#textures.length; i++)
+            if (this.#textures[i] && this.#textures[i].tex)
+            {
 
-        if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
+                if (i == 1)console.log("yae");
+                this.#cgl.setTexture(i, this.#textures[i].tex);
+            }
+            else
+            {
+                this.#cgl.setTexture(i, Texture.getRandomTexture(this.#cgl).tex);
+            }
+        // console.log("bindtex....", this.#name, this.#textures);
+
+        // if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
     }
 
     /**
@@ -319,7 +357,7 @@ export default class GlRectInstancer extends Events
         {
         }
         // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
-        gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / zoom);
+        gui.patchView._patchRenderer.textWriter.rectDrawer._unimsdfUnit.setValue(8 / zoom);
 
         if (this.doBulkUploads)
         {
@@ -613,13 +651,12 @@ export default class GlRectInstancer extends Events
      * @param {Texture} tex
      * @param {boolean} sdf
      */
-    setAllTexture(tex, sdf)
-    {
-        this.#shader.toggleDefine("SDF_TEXTURE", sdf);
+    // setAllTexture(tex, sdf)
+    // {
 
-        for (let i = 0; i < this.#rects.length; i++)
-            this.#rects[i].setTexture(tex);
-    }
+    //     for (let i = 0; i < this.#rects.length; i++)
+    //         this.#rects[i].setTexture(tex);
+    // }
 
     /**
      * @param {string} attr
@@ -665,7 +702,7 @@ export default class GlRectInstancer extends Events
             // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
-        r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
+        r.on(GlRect.EVENT_TEXTURECHANGED, () => { this.#needsTextureUpdate = true; });
 
         return r;
     }
@@ -683,9 +720,7 @@ export default class GlRectInstancer extends Events
         if (this.allowDragging && this.#draggingRects.length > 0 && button)
         {
             for (let i = 0; i < this.#draggingRects.length; i++)
-            {
                 this.#draggingRects[i].mouseDrag(x, y, button, event);
-            }
 
             return;
         }

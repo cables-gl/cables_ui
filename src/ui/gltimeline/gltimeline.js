@@ -499,6 +499,11 @@ export class GlTimeline extends Events
         this.updateParamKeyframes();
     }
 
+    get cgl()
+    {
+        return this.#cgl;
+    }
+
     toggleAutoKeyframe()
     {
         this.keyframeAutoCreate = !this.keyframeAutoCreate;

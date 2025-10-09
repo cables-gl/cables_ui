@@ -69,7 +69,7 @@ export default class GlRect extends Events
     /** @type {GlRectInstancer} */
     #rectInstancer = null;
     #attrIndex = null;
-    #texture = null;
+    #texture = -1;
     #shape = 0;
     #data = {};
 

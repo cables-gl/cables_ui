@@ -23,6 +23,7 @@ export default class GlText
         {
             throw new Error("glgui text constructor without textwriter");
         }
+
         this.disposed = false;
         this._visible = true;
         this._textWriter = textWriter;
@@ -223,9 +224,8 @@ export default class GlText
             rect.setSize(this._map(ch.width), this._map(ch.height));
             rect.setColorArray(this._color);
 
-            rect.setTexRect(
-                ch.x / 1024, ch.y / 1024, ch.width / 1024, ch.height / 1024);
-            rect.setTexture(this._textWriter.getFontTexture());
+            rect.setTexRect(ch.x / 1024, ch.y / 1024, ch.width / 1024, ch.height / 1024);
+            rect.setTexture(0);
 
             posX += this._map(ch.xadvance);
         }

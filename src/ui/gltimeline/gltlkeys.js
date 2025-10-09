@@ -420,9 +420,9 @@ export class glTlKeys extends Events
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    setKeyPositions(reason)
+    setKeyPositions(_reason)
     {
         // console.log("reason", reason);
         if (this.#glTl.isSelecting()) this.testSelected();

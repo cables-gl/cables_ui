@@ -6,7 +6,9 @@
  IN vec4 decoration;
  IN float useTexture;
  UNI float time;
- UNI sampler2D tex;
+ UNI sampler2D tex0;
+ UNI sampler2D tex1;
+ UNI sampler2D tex2;
  UNI float zoom;
  UNI float msdfUnit;
 
@@ -28,7 +30,7 @@ float screenPxRange()
         vec2 unitRange = vec2(pxRange)/vec2(1024.0);
     #endif
     #ifdef WEBGL2
-        vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));
+        vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex0, 0));
     #endif
 
     vec2 screenTexSize = vec2(1.0)/fwidth(uv);
@@ -41,7 +43,7 @@ float contour(in float d, in float w) {
 }
 
 float samp(in vec2 uv, float w) {
-    return contour(median(texture2D(tex, uv).rgb), w);
+    return contour(median(texture2D(tex0, uv).rgb), w);
 }
 
 
@@ -52,45 +54,39 @@ float samp(in vec2 uv, float w) {
     finalColor.rgb=col.rgb;
     finalColor.a=1.0;
 
-    if(useTexture>=0.0)
+    if(int(useTexture)==0)
     {
         #ifdef SDF_TEXTURE
+            float dist = median(texture2D(tex0, uv).rgb);
 
+            // fwidth helps keep outlines a constant width irrespective of scaling
+            // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
+            float width = fwidth(dist);
+            // Stefan Gustavson's fwidth
+            //float width = 0.7 * length(vec2(dFdx(dist), dFdy(dist)));
 
-    float dist = median(texture2D(tex, uv).rgb);
+            // basic version
+            //float alpha = smoothstep(0.5 - width, 0.5 + width, dist);
 
-    // fwidth helps keep outlines a constant width irrespective of scaling
-    // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
-    float width = fwidth(dist);
-    // Stefan Gustavson's fwidth
-    //float width = 0.7 * length(vec2(dFdx(dist), dFdy(dist)));
+            // supersampled version
 
-// basic version
-    //float alpha = smoothstep(0.5 - width, 0.5 + width, dist);
+            float alpha = contour( dist, width );
+            //float alpha = aastep( 0.5, dist );
 
-// supersampled version
+            // ------- (comment this block out to get your original behavior)
+            // Supersample, 4 extra points
+            float dscale = 0.354; // half of 1/sqrt2; you can play with this
+            vec2 duv = dscale * (dFdx(uv) + dFdy(uv));
+            vec4 box = vec4(uv-duv, uv+duv);
 
-    float alpha = contour( dist, width );
-    //float alpha = aastep( 0.5, dist );
+            float asum = samp( box.xy, width )
+                       + samp( box.zw, width )
+                       + samp( box.xw, width )
+                       + samp( box.zy, width );
 
-    // ------- (comment this block out to get your original behavior)
-    // Supersample, 4 extra points
-    float dscale = 0.354; // half of 1/sqrt2; you can play with this
-    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));
-    vec4 box = vec4(uv-duv, uv+duv);
-
-    float asum = samp( box.xy, width )
-               + samp( box.zw, width )
-               + samp( box.xw, width )
-               + samp( box.zy, width );
-
-    // weighted average, with 4 extra points having 0.5 weight each,
-    // so 1 + 0.5*4 = 3 is the divisor
-    float opacity = (alpha + 0.5 * asum) / 3.0;
-
-
-
-
+            // weighted average, with 4 extra points having 0.5 weight each,
+            // so 1 + 0.5*4 = 3 is the divisor
+            float opacity = (alpha + 0.5 * asum) / 3.0;
             // vec4 smpl=texture(tex,uv);
             // float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;
             // // vec2 msdfUnit = vec2(1.0/pow(zoom,2.0))/10000.0;//8.0/vec2(1024);
@@ -107,13 +103,13 @@ float samp(in vec2 uv, float w) {
         #endif
 
         #ifndef SDF_TEXTURE
-            finalColor=texture(tex,uv);
-            // if(int(useTexture)==1)finalColor=texture(tex[1],uv);
-            // if(int(useTexture)==2)finalColor=texture(tex[2],uv);
-            // if(int(useTexture)==3)finalColor=texture(tex[3],uv);
-            // if(int(useTexture)==4)finalColor=texture(tex[4],uv);
-            // if(int(useTexture)==5)finalColor=texture(tex[5],uv);
+            finalColor=texture(tex0,uv);
         #endif
+
+        // if(int(useTexture)==0)finalColor=texture(tex0,uv);
+        if(int(useTexture)==1)finalColor=texture(tex1,uv);
+        if(int(useTexture)==2)finalColor=texture(tex2,uv);
+
     }
 
     float shape=decoration.r;
@@ -121,7 +117,7 @@ float samp(in vec2 uv, float w) {
     float selected=decoration.b;
 
 
-    if(shape==1.0) // circl
+    if(shape==1.0) // circlu
     {
         float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
         float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
@@ -256,5 +252,9 @@ float samp(in vec2 uv, float w) {
     #endif
 
     if(finalColor.a==0.0)discard;
+
+    // if(int(useTexture)==0)finalColor=vec4(1.,0.,0.,1.0);
+    // if(int(useTexture)==1)finalColor=vec4(0.,1.,0.,1.0);
+    // if(int(useTexture)==2)finalColor=vec4(0.,0.,1.,1.0);
     outColor=finalColor;
 }

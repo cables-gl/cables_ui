@@ -271,19 +271,18 @@ export class TlTitle extends Events
             {
                 this.folderButton.children[0].classList.remove("icon-chevron-right");
                 this.folderButton.children[0].classList.add("icon-chevron-down");
-                this.#el.parentElement.classList.remove("collapsed");
+                if (this.#el.parentElement) this.#el.parentElement.classList.remove("collapsed");
             }
             else
             {
-                this.#el.parentElement.classList.add("collapsed");
                 this.folderButton.children[0].classList.add("icon-chevron-right");
                 this.folderButton.children[0].classList.remove("icon-chevron-down");
+                if (this.#el.parentElement) this.#el.parentElement.classList.add("collapsed");
             }
         }
 
         if (this.#anim)
         {
-
             const c = this.#anim.tlActive;
 
             if (c)
