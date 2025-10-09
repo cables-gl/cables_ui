@@ -111,7 +111,11 @@ export class TlKey extends Events
             if (key.uiAttribs.color)
                 t.setColorHex(key.uiAttribs.color);
             else
+            {
                 t.setColorHex("#aaaaaa");
+                t.setBorder(1);
+
+            }
             t.setOpacity(0.5);
             this.areaRect = t;
         }

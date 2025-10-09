@@ -500,26 +500,21 @@ export class glTlKeys extends Events
                 // if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
 
                 if (!k.areaRect) continue;
-                if (this.shouldDrawGraphSpline())
+
+                let w = kr2.x - kr.x;
+                if (i == this.#keys.length - 1)w = 9999;
+
+                let h = this.animLine.height - (this.getKeyHeight2()) + 2;
+                let y = -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
+
+                if (this.isLayoutGraph())
                 {
-                    if (kr2) k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
-
-                    // k.areaRect.setPosition(this.getKeyWidth2(), this.animLine.posY(), 0.8);
+                    h = 88888;
+                    y -= h / 2;
                 }
-                else
-                {
-                    let w = 0;
-                    if (i == this.#keys.length - 1)w = 9999;
-                    else if (kr != kr2)w = kr2.x - kr.x;
-                    else w = 8888;
 
-                    k.areaRect.setSize(w, this.animLine.height - (this.getKeyHeight2()) + 2);
-
-                    // if (this.showKeysAsFrames())
-                    //     k.areaRect.setPosition(this.getKeyWidth2(), -kr.h + this.getKeyHeight(), 0.4);
-                    // else
-                    k.areaRect.setPosition(this.getKeyWidth2(), -this.animLine.height / 2 + (this.getKeyHeight2() + 2), 0.4);
-                }
+                k.areaRect.setSize(w, h);
+                k.areaRect.setPosition(this.getKeyWidth2(), y, 0.4);
             }
             perf.finish();
         }
