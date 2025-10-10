@@ -736,7 +736,7 @@ export default class GlSplineDrawer
         if (!this._rebuildLater)
         {
             this._rebuildLater = performance.now();
-            this._rebuildReason = "new spline...";
+            this._rebuildReason = str;
         }
     }
 

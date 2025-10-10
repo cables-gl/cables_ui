@@ -181,6 +181,10 @@ export class GlTimeline extends Events
     #spacePressed = false;
     #cursor;
 
+    /** @type {HTMLElement} */
+    #elInfoOverlay;
+    #elInfoOverlayTimeout;
+
     /**
      * @param {CglContext} cgl
     */
@@ -310,10 +314,21 @@ export class GlTimeline extends Events
             this.updateGraphSelectMode();
         });
 
+        this.#elInfoOverlay = ele.byId("tlInfoOverlay");
+
         this.#elTimeDisplay = document.createElement("div");
         this.#elTimeDisplay.classList.add("tltimedisplay");
         this.#elTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
         cgl.canvas.parentElement.appendChild(this.#elTimeDisplay);
+        this.#elTimeDisplay.addEventListener("pointerenter", () =>
+        {
+            this.refreshInfoOverlay();
+        });
+        this.#elTimeDisplay.addEventListener("pointerleave", () =>
+        {
+            clearTimeout(this.#elInfoOverlayTimeout);
+            this.#elInfoOverlay.classList.add("hidden");
+        });
 
         this.tlTimeScrollContainer = document.createElement("div");
         this.tlTimeScrollContainer.classList.add("scrollContainer");
@@ -502,6 +517,26 @@ export class GlTimeline extends Events
     get cgl()
     {
         return this.#cgl;
+    }
+
+    refreshInfoOverlay()
+    {
+        this.#elInfoOverlay.classList.remove("hidden");
+        let str = "fps: ";
+        str += this.cgl.fpsCounter.stats.fps;
+        str += "<br/>";
+        str += "ms: ";
+        str += this.cgl.fpsCounter.stats.ms;
+
+        this.#elInfoOverlay.style.transform = "initial";
+        this.#elInfoOverlay.style.left = "10px";
+        const y = this.#elTimeDisplay.getBoundingClientRect().y;
+        const h = this.#elTimeDisplay.getBoundingClientRect().height;
+        this.#elInfoOverlay.style.top = y - h - 50 + "px";
+        this.#elInfoOverlay.innerHTML = str;
+        clearTimeout(this.#elInfoOverlayTimeout);
+        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 100);
+
     }
 
     toggleAutoKeyframe()
