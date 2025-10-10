@@ -96,7 +96,7 @@ export class TlKey extends Events
         if (!this.areaRect && (key.uiAttribs.color || isClip))
         {
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
-            t.setParent(keyRect);
+            // t.setParent(keyRect);
             t.setPosition(1, 0, -0.8);
             t.setSize(73, 5);
             if (isClip)

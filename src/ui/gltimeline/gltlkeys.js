@@ -528,22 +528,21 @@ export class glTlKeys extends Events
                 if (i < this.#keys.length - 1) kr2 = this.#keys[i + 1].rect;
                 // if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
 
-                if (!k.areaRect) continue;
-
                 let w = (kr2 || kr).x - kr.x;
                 if (i == this.#keys.length - 1)w = 9999;
 
-                let h = this.animLine.height - (this.getKeyHeight2()) + 2;
-                let y = -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
+                let h = this.animLine.height;// -(this.getKeyHeight2()) + 2;
+                let y = this.animLine.posY();// -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
 
                 if (this.isLayoutGraph())
                 {
                     h = 88888;
                     y -= h / 2;
                 }
+                console.log("xxxx", kr.x, y, w, h);
 
                 k.areaRect.setSize(w, h);
-                k.areaRect.setPosition(this.getKeyWidth2(), y, 0.4);
+                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
             }
             perf.finish();
         }
