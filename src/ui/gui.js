@@ -737,7 +737,7 @@ export default class Gui extends Events
         this._elIconbarBottom = this._elIconbarBottom || ele.byId("iconbar_sidebar_bottom");
         if (this._elIconbarBottom)
         {
-            this._elIconbarBottom.style.right = this.rendererWidthScaled + 20 + "px";
+            this._elIconbarBottom.style.right = this.rightPanelWidth + 20 + "px";
             this._elIconbarBottom.style.bottom = 10 + infoAreaHeight + "px";
         }
 
@@ -871,15 +871,15 @@ export default class Gui extends Events
         }
 
         // flashing canvas overlay when saving
-        this._elCanvasFlash.style.width = this.rendererWidth * canvasScale + "px";
-        this._elCanvasFlash.style.height = this.rendererHeight * canvasScale + "px";
+        this._elCanvasFlash.style.width = this.rendererWidthScaled + "px";
+        this._elCanvasFlash.style.height = this.rendererHeightScaled + "px";
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
-        this._elBgPreview.style.right = (this.rightPanelWidth + 10) + "px";
+        this._elBgPreview.style.right = (this.rendererWidthScaled + 10) + "px";
         this._elBgPreview.style.top = (menubarHeight + 55) + "px";
 
-        this._elBgPreviewButtonContainer.style.right = this.rightPanelWidth + "px";
+        this._elBgPreviewButtonContainer.style.right = this.rendererWidthScaled + "px";
         // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
 
         this.emitEvent("setLayout");

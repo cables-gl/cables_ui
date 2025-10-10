@@ -92,16 +92,6 @@ export class TlKey extends Events
             return;
         }
         const key = this.key;
-        if (key.uiAttribs.text)
-        {
-            if (!this.text)
-            {
-                this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
-                this.text.setParentRect(keyRect);
-            }
-            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
-        }
-
         if (!this.areaRect && (key.uiAttribs.color || key.clip))
         {
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
@@ -113,15 +103,23 @@ export class TlKey extends Events
             else
             {
                 t.setColorHex("#aaaaaa");
-                t.setBorder(1);
-
+                t.setBorder(2);
+                if (!key.uiAttribs.text) key.uiAttribs.text = "CLIP " + key.clipId;
             }
             t.setOpacity(0.5);
             this.areaRect = t;
         }
         if (this.areaRect && !(key.uiAttribs.color || key.clip)) this.areaRect = this.areaRect.dispose();
 
-        /// ////
+        if (key.uiAttribs.text)
+        {
+            if (!this.text)
+            {
+                this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                this.text.setParentRect(keyRect);
+            }
+            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
+        }
 
         if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && key.getEasing() == Anim.EASING_CUBICSPLINE)
         {
