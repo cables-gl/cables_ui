@@ -441,6 +441,9 @@ export default class GlPatch extends Events
         this._cablesHoverButtonRect = undefined;
     }
 
+    get textWriter()
+    { return this._textWriter; }
+
     get name() { return "glpatch"; }
 
     get time() { return this._time; }

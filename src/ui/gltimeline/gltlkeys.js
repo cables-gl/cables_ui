@@ -357,7 +357,7 @@ export class glTlKeys extends Events
 
     shouldDrawSpline()
     {
-        if (!this.drawKeys) return false;
+        if (!this.drawKeys()) return false;
         return true;
     }
 
@@ -420,9 +420,9 @@ export class glTlKeys extends Events
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    setKeyPositions(reason)
+    setKeyPositions(_reason)
     {
         // console.log("reason", reason);
         if (this.#glTl.isSelecting()) this.testSelected();
@@ -490,34 +490,31 @@ export class glTlKeys extends Events
         for (let i = 0; i < this.#keys.length; i++)
         {
             const animKey = this.#keys[i].key;
-            if (animKey.uiAttribs.color)
+            const k = this.#keys[i];
+            if (k.areaRect)
             {
-                const k = this.#keys[i];
                 const kr = this.#keys[i].rect;
 
-                let kr2 = kr;
-                if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
+                let kr2 = null;
+                if (i < this.#keys.length - 1) kr2 = this.#keys[i + 1].rect;
+                // if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
 
                 if (!k.areaRect) continue;
-                if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
-                {
-                    if (kr2)
-                        k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
-                    k.areaRect.setPosition(this.getKeyWidth2(), Math.min(0, kr2.y - kr.y) + this.getKeyWidth2(), 0.8);
-                }
-                else
-                {
-                    let x = 0;
-                    if (kr != kr2)x = kr2.x - kr.x;
-                    else x = 8888;
 
-                    k.areaRect.setSize(x, this.animLine.height - (this.getKeyHeight2()) + 2);
+                let w = kr2.x - kr.x;
+                if (i == this.#keys.length - 1)w = 9999;
 
-                    if (this.showKeysAsFrames())
-                        k.areaRect.setPosition(this.getKeyWidth2(), -kr.h + this.getKeyHeight(), 0.4);
-                    else
-                        k.areaRect.setPosition(this.getKeyWidth2(), -this.animLine.height / 2 + (this.getKeyHeight2() + 2), 0.4);
+                let h = this.animLine.height - (this.getKeyHeight2()) + 2;
+                let y = -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
+
+                if (this.isLayoutGraph())
+                {
+                    h = 88888;
+                    y -= h / 2;
                 }
+
+                k.areaRect.setSize(w, h);
+                k.areaRect.setPosition(this.getKeyWidth2(), y, 0.4);
             }
             perf.finish();
         }

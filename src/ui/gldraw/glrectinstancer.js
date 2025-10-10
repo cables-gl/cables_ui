@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { logStack } from "cables/src/core/utils.js";
 import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
@@ -32,7 +33,7 @@ export default class GlRectInstancer extends Events
     #needsRebuildReason = "";
     #cgl;
     #interactive = true;
-    #needsTextureUpdate = false;
+    // #needsTextureUpdate = false;
     #reUploadAttribs = true;
     allowDragging = false;
     doBulkUploads = true;
@@ -43,7 +44,7 @@ export default class GlRectInstancer extends Events
     /** @type {Array<GlRect>} */
     #rects = [];
 
-    /** @type {Array<Object>} */
+    /** @type {Array<Texture>} */
     #textures = [];
 
     /** @type {GlRect[]} */
@@ -67,7 +68,7 @@ export default class GlRectInstancer extends Events
 
     static DEFAULT_BIGNUM = 999999;
     static ATTR_TEXRECT = "texRect";
-    static ATTR_CONTENT_TEX = "contentTexture";
+    static ATTR_TEX = "contentTexture";
     static ATTR_POS = "instPos";
     static ATTR_COLOR = "instCol";
     static ATTR_SIZE = "instSize";
@@ -113,7 +114,10 @@ export default class GlRectInstancer extends Events
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
         this._unimsdfUnit = new Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
-        this._uniTexture = new Uniform(this.#shader, "t", "tex", 0);
+        this._uniTexture1 = new Uniform(this.#shader, "t", "tex0", 0);
+        this._uniTexture2 = new Uniform(this.#shader, "t", "tex1", 1);
+        this._uniTexture3 = new Uniform(this.#shader, "t", "tex2", 2);
+        this._uniTexture3 = new Uniform(this.#shader, "t", "tex3", 3);
 
         this.#geom = new Geometry("rectinstancer " + this.#name);
         this.#geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -237,72 +241,21 @@ export default class GlRectInstancer extends Events
         return this.#draggingRects.length > 0;
     }
 
-    _setupTextures()
+    /**
+     * @param {string | number} slot
+     * @param {Texture} tex
+     * @param {boolean | import("cables").Port} sdf
+     */
+    setTexture(slot, tex, sdf)
     {
-        this.#needsTextureUpdate = false;
-        this.#textures.length = 0;
-        let count = 0;
-
-        let minIdx = GlRectInstancer.DEFAULT_BIGNUM;
-        let maxIdx = -GlRectInstancer.DEFAULT_BIGNUM;
-
-        for (let i = 0; i < this.#rects.length; i++)
+        if (!tex)
         {
-            let changed = false;
-            const thatRectIdx = this.#rects[i].idx;
 
-            if (this.#rects[i].texture)
-            {
-                let found = false;
-
-                for (let j = 0; j < this.#textures.length; j++)
-                {
-                    if (this.#textures[j] && this.#textures[j].texture == this.#rects[i].texture)
-                    {
-                        found = true;
-
-                        if (this._attrBuffTextures[thatRectIdx] != this.#textures[j].num)changed = true;
-
-                        this._attrBuffTextures[thatRectIdx] = this.#textures[j].num;
-                        minIdx = Math.min(thatRectIdx, minIdx);
-                        maxIdx = Math.max(thatRectIdx, maxIdx);
-                    }
-                }
-
-                if (!found)
-                {
-                    this._attrBuffTextures[thatRectIdx] = count;
-                    this.#textures[count] =
-                        {
-                            "texture": this.#rects[i].texture,
-                            "num": count
-                        };
-                    count++;
-                }
-            }
-            else
-            {
-                if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
-                this._attrBuffTextures[thatRectIdx] = -1;
-            }
-
-            if (changed)
-            {
-                minIdx = Math.min(this.#rects[i].idx, minIdx);
-                maxIdx = Math.max(this.#rects[i].idx, maxIdx);
-            }
+            console.log("not a texure!!!!!");
+            logStack();
         }
-
-        this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
-    }
-
-    _bindTextures()
-    {
-        for (let i = 0; i < 4; i++)
-            if (this.#textures[0])
-                this.#cgl.setTexture(i, this.#textures[0].texture.tex);
-
-        if (this.#textures[0]) this.#cgl.setTexture(0, this.#textures[0].texture.tex);
+        this.#shader.toggleDefine("SDF_TEXTURE", sdf);
+        this.#textures[slot] = tex;
     }
 
     /**
@@ -319,7 +272,7 @@ export default class GlRectInstancer extends Events
         {
         }
         // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
-        gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / zoom);
+        gui.patchView._patchRenderer.textWriter.rectDrawer._unimsdfUnit.setValue(8 / zoom);
 
         if (this.doBulkUploads)
         {
@@ -339,6 +292,12 @@ export default class GlRectInstancer extends Events
             {
                 this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, this.#updateRangesMin[GlRectInstancer.ATTR_SIZE], this.#updateRangesMax[GlRectInstancer.ATTR_SIZE]);
                 this._resetAttrRange(GlRectInstancer.ATTR_SIZE);
+            }
+
+            if (this.#updateRangesMin[GlRectInstancer.ATTR_TEX] != GlRectInstancer.DEFAULT_BIGNUM)
+            {
+                this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, this.#updateRangesMin[GlRectInstancer.ATTR_TEX], this.#updateRangesMax[GlRectInstancer.ATTR_TEX]);
+                this._resetAttrRange(GlRectInstancer.ATTR_TEX);
             }
 
             if (this.#updateRangesMin[GlRectInstancer.ATTR_DECO] != GlRectInstancer.DEFAULT_BIGNUM)
@@ -362,14 +321,28 @@ export default class GlRectInstancer extends Events
 
         this._uniTime.set(performance.now() / 1000);
 
-        if (this.#needsTextureUpdate) this._setupTextures();
-        this._bindTextures();
+        // if (this.#needsTextureUpdate) this._setupTextures();
 
         if (this.#needsRebuild) this.rebuild();
 
         this.emitEvent("render");
 
+        if (!this.#textures[0]) this.#textures[0] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[1]) this.#textures[1] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[2]) this.#textures[2] = Texture.getTempTexture(this.#cgl);
+        if (!this.#textures[3]) this.#textures[3] = Texture.getTempTexture(this.#cgl);
+
+        this.#shader.pushTexture(this._uniTexture1, this.#textures[0].tex);
+        this.#shader.pushTexture(this._uniTexture2, this.#textures[1].tex);
+        this.#shader.pushTexture(this._uniTexture3, this.#textures[2].tex);
+        this.#shader.pushTexture(this._uniTexture3, this.#textures[3].tex);
+
         this.#mesh.render(this.#shader);
+
+        this.#shader.popTexture();
+        this.#shader.popTexture();
+        this.#shader.popTexture();
+        this.#shader.popTexture();
     }
 
     rebuild()
@@ -388,7 +361,7 @@ export default class GlRectInstancer extends Events
             this.#meshAttrSize = this.#mesh.setAttribute(GlRectInstancer.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
             this.#meshAttrDeco = this.#mesh.setAttribute(GlRectInstancer.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
             this.#meshAttrTexRect = this.#mesh.setAttribute(GlRectInstancer.ATTR_TEXRECT, this._attrBuffTexRect, 4, { "instanced": true });
-            this.#meshAttrTex = this.#mesh.setAttribute(GlRectInstancer.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+            this.#meshAttrTex = this.#mesh.setAttribute(GlRectInstancer.ATTR_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this.#reUploadAttribs = false;
             perf.finish();
         }
@@ -410,7 +383,7 @@ export default class GlRectInstancer extends Events
             this._setupAttribBuffers();
             this.#needsRebuild = true;
             this.#needsRebuildReason = "resize";
-            this.#needsTextureUpdate = true;
+            // this.#needsTextureUpdate = true;
             this.#reUploadAttribs = true;
         }
         return this.#counter;
@@ -496,6 +469,25 @@ export default class GlRectInstancer extends Events
 
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_SIZE, idx * 2, (idx + 1) * 2);
         else this.#mesh.setAttributeRange(this.#meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
+    }
+
+    /**
+     * @param {number} idx
+     * @param {number} x
+     */
+    setTextureIdx(idx, x)
+    {
+        if (this._float32Diff(this._attrBuffTextures[idx], x))
+        {
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "size change";
+        }
+        else return;
+
+        this._attrBuffTextures[idx] = x;
+
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_TEX, idx, (idx + 1));
+        else this.#mesh.setAttributeRange(this.#meshAttrTex, this._attrBuffTextures, idx, (idx + 1));
     }
 
     /**
@@ -613,13 +605,12 @@ export default class GlRectInstancer extends Events
      * @param {Texture} tex
      * @param {boolean} sdf
      */
-    setAllTexture(tex, sdf)
-    {
-        this.#shader.toggleDefine("SDF_TEXTURE", sdf);
+    // setAllTexture(tex, sdf)
+    // {
 
-        for (let i = 0; i < this.#rects.length; i++)
-            this.#rects[i].setTexture(tex);
-    }
+    //     for (let i = 0; i < this.#rects.length; i++)
+    //         this.#rects[i].setTexture(tex);
+    // }
 
     /**
      * @param {string} attr
@@ -665,7 +656,7 @@ export default class GlRectInstancer extends Events
             // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
 
-        r.on("textureChanged", () => { this.#needsTextureUpdate = true; });
+        // r.on(GlRect.EVENT_TEXTURECHANGED, () => { this.#needsTextureUpdate = true; });
 
         return r;
     }
@@ -683,9 +674,7 @@ export default class GlRectInstancer extends Events
         if (this.allowDragging && this.#draggingRects.length > 0 && button)
         {
             for (let i = 0; i < this.#draggingRects.length; i++)
-            {
                 this.#draggingRects[i].mouseDrag(x, y, button, event);
-            }
 
             return;
         }

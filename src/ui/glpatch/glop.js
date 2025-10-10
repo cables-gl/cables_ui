@@ -690,8 +690,8 @@ export default class GlOp extends Events
         if (this._glComment)
         {
             let x = this.w + gluiconfig.portWidth;
-            if (this._rectResize)x += this._rectResize.w;
-            if (this._glColorSwatch)x += this._height / 2;
+            if (this._rectResize) x += this._rectResize.w;
+            if (this._glColorSwatch) x += this._height / 2;
             if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
             else this._glComment.setPosition(12, this._height, 0); // comment op (weird hardcoded values because of title scaling)
         }
@@ -1529,28 +1529,29 @@ export default class GlOp extends Events
 
         if (this.opUiAttribs.glPreviewTexture)
         {
-            if (!this._glRectContent)
-            {
-                this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });
-                this._glRectContent.setParent(this._glRectBg);
-                this._glRectContent.setPosition(0, this._height);
-                this._glRectContent.setColor(255, 0, 220, 1);
+            console.log("glprevtex");
+            //     if (!this._glRectContent)
+            //     {
+            //         this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });
+            //         this._glRectContent.setParent(this._glRectBg);
+            //         this._glRectContent.setPosition(0, this._height);
+            //         this._glRectContent.setColor(255, 0, 220, 1);
 
-                const p = this._op.getPort("Texture");
-                this._visPort = p;
+            //         const p = this._op.getPort("Texture");
+            //         this._visPort = p;
 
-                this._visPort.onChange = () =>
-                {
-                    const t = this._visPort.get();
+            //         this._visPort.onChange = () =>
+            //         {
+            //             const t = this._visPort.get();
 
-                    if (t)
-                    {
-                        const asp = this._width / t.width * 2.5;
-                        this._glRectContent.setSize(t.width * asp, t.height * asp);
-                        this._glRectContent.setTexture(this._visPort.get());
-                    }
-                };
-            }
+            //         if (t)
+            //         {
+            //             const asp = this._width / t.width * 2.5;
+            //             this._glRectContent.setSize(t.width * asp, t.height * asp);
+            //             this._glRectContent.setTexture(this._visPort.get());
+            //         }
+            //     };
+            // }
         }
 
         if (doUpdateSize) this.updateSize();

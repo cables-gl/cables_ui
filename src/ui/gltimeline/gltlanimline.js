@@ -31,10 +31,10 @@ export class glTlAnimLine extends Events
 {
     static SIZES = [30, 50, 100];
 
-    /** @type {Array<Anim>} */
+    /** @type {Anim[]} */
     #anims = [];
 
-    /** @type {Array<UiOp>} */
+    /** @type {Op[]} */
     #ops = [];
 
     /** @type {GlRect} */
@@ -101,6 +101,7 @@ export class glTlAnimLine extends Events
         this.#view = glTl.view;
         this.width = glTl.width;
         this.#rectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true, "name": "keysBg" });
+
         this.#rectBg.setSize(this.width, this.height - 2);
         this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
@@ -429,7 +430,7 @@ export class glTlAnimLine extends Events
                 const r = this.#titles[0].getClientRect();
                 if (this.isHidden)
                 {
-                    this.setHeight(0);
+                    this.setHeight();
                     // this.#glRectKeysBg.setSize(0, 0);
                 }
                 else
@@ -747,7 +748,7 @@ export class glTlAnimLine extends Events
         // }
         this.foreachTlVizPorts((p) =>
         {
-            p.renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
+            p.renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this, "cgl": this.#glTl.cgl });
             skipRendering = true;
 
         });

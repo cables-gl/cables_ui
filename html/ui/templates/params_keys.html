@@ -73,6 +73,17 @@
         <a id="kp_value_movef" class="button-right button-small">+</a>
         <a id="kp_value_set" class="button-right button-small">set</a>
 
+        <br/>
+        <br/>
+        clip:
+        <select id="kp_clip">
+            <option>-- </option>
+            <option>clip1</option>
+            <option>clip2</option>
+            <option>clip3</option>
+            <option>clip4</option>
+        </select>
+
         <hr/>
         <br/>
         <input style="width:250px" id="kp_comment" placeholder="comment" value="{{comment}}">&nbsp;
@@ -80,7 +91,7 @@
             {{#each commentColors}}
                 <a data-col="{{.}}" style="background-color:{{.}};" class="kp_colorbutton colorbutton"></a>
             {{/each}}
-            <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
+            <a style="background-color:#fff;" class="kp_colorbutton colorbutton icon-x icon"></a>
         <div style="clear:both"> </div>
         <br/>
 

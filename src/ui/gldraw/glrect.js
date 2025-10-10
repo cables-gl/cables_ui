@@ -32,7 +32,7 @@ export default class GlRect extends Events
     static EVENT_DRAGEND = "dragEnd";
 
     static EVENT_POSITIONCHANGED = "positionChanged";
-    static EVENT_TEXTURECHANGED = "textureChanged";
+    // static EVENT_TEXTURECHANGED = "textureChanged";
     static EVENT_RESIZE = "resize";
 
     static OPTION_INTERACTIVE = "interactive";
@@ -69,7 +69,7 @@ export default class GlRect extends Events
     /** @type {GlRectInstancer} */
     #rectInstancer = null;
     #attrIndex = null;
-    #texture = null;
+    #texture = -1;
     #shape = 0;
     #data = {};
 
@@ -372,13 +372,14 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {Texture} t
+     * @param {Number} t
      */
     setTexture(t)
     {
-        if (this.#texture == t) return;
+        this.#rectInstancer.setTextureIdx(this.#attrIndex, t);
+        // if (this.#texture == t) return;
         this.#texture = t;
-        this.emitEvent(GlRect.EVENT_TEXTURECHANGED);
+        // this.emitEvent(GlRect.EVENT_TEXTURECHANGED);
     }
 
     /**

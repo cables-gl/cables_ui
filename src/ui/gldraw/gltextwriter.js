@@ -1,4 +1,5 @@
 import { CGL, Texture } from "cables-corelibs";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
@@ -15,6 +16,10 @@ import GlRectInstancer from "./glrectinstancer.js";
  */
 export default class GlTextWriter
 {
+    #fontTex = null;
+    #cgl = null;
+    #rectDrawer = null;
+    #name = "unknown";
 
     /**
      * @param {CglContext} cgl
@@ -22,16 +27,15 @@ export default class GlTextWriter
      */
     constructor(cgl, options)
     {
-        this._cgl = cgl;
+        this.#cgl = cgl;
         options = options || {};
-        this._name = options.name || "unknown";
+        if (options.name) this.#name = options.name;
         if (!cgl) throw new Error("[gltextwriter] no cgl");
 
-        this._rectDrawer = new GlRectInstancer(cgl, { "initNum": options.initNum, "name": "textrects_" + this._name });
-        this._fontTex = null;
+        this.#rectDrawer = new GlRectInstancer(cgl, { "initNum": options.initNum, "name": "textrects_" + this.#name });
     }
 
-    get rectDrawer() { return this._rectDrawer; }
+    get rectDrawer() { return this.#rectDrawer; }
 
     /**
      * @param {Number} resX
@@ -42,24 +46,26 @@ export default class GlTextWriter
      */
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        if (!this._fontTex)
+        if (!this.#fontTex)
         {
-            this._fontTex = Texture.load(this._cgl, "img/worksans-regular.png", () =>
+            this.#fontTex = Texture.load(this.#cgl, "img/worksans-regular.png", (err, tex) =>
             {
-                this._rectDrawer.setAllTexture(this._fontTex, true);
+                // this.#rectDrawer.setTexture(0, this.#fontTex, true);
+                this.#rectDrawer.setTexture(0, tex, true);
             }, { "flip": false, "filter": Texture.FILTER_LINEAR });
         }
+        this.#rectDrawer.setTexture(0, this.#fontTex, true);
 
-        this._rectDrawer.render(resX, resY, scrollX, scrollY, zoom);
+        this.#rectDrawer.render(resX, resY, scrollX, scrollY, zoom);
     }
 
     getFontTexture()
     {
-        return this._fontTex;
+        return this.#fontTex;
     }
 
     setDebugRenderer(i)
     {
-        this._rectDrawer.setDebugRenderer(i);
+        this.#rectDrawer.setDebugRenderer(i);
     }
 }
