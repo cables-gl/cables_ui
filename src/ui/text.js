@@ -35,6 +35,7 @@ const text =
 
     "tlIpLin": "set keys to linear easing",
     "tlIpBez": "set keys to bezier easing",
+    "tlIpClip": "clip - reference another animation",
     "tlIpAbs": "set keys to absolute easing",
     "tlIpCurves": "set keys to predefined easing functions",
     "tlloopdelete": "toggle loop area",

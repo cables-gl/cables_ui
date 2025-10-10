@@ -206,7 +206,11 @@ export class TlTitle extends Events
         {
             let style = "";
 
-            this.#elOpname.innerHTML = this.#op.name;
+            let opname = this.#op.name;
+            if (this.#port.op.uiAttribs.extendTitle)
+                opname += " <span class=\"extendTitle\"> " + this.#port.op.uiAttribs.extendTitle + "</span>";
+            this.#elOpname.innerHTML = opname;
+
             this.#elOpname.classList.add(opNames.getNamespaceClassName(this.#op.objName));
             this.#elOpname.classList.add("opname");
             if (this.#hideOpName) this.#elOpname.classList.add("hiddenOpname");
@@ -228,7 +232,9 @@ export class TlTitle extends Events
             }
             else
             {
-                portnames += " <span class=\"portname\">" + (this.#port.uiAttribs.title || this.#port.name) + "</span>";
+                portnames += " <span class=\"portname\">";
+                portnames += (this.#port.uiAttribs.title || this.#port.name);
+                portnames += "</span>";
             }
 
             this.#elPortname.innerHTML = portnames;
@@ -285,10 +291,7 @@ export class TlTitle extends Events
         {
             const c = this.#anim.tlActive;
 
-            if (c)
-            {
-                this.#elTitle.classList.add("current");
-            }
+            if (c) this.#elTitle.classList.add("current");
             else this.#elTitle.classList.remove("current");
 
             if (this.activeButton)
@@ -353,7 +356,7 @@ export class TlTitle extends Events
         }
         else this.#el.classList.remove("selectedOp");
 
-        this.#elTitle.style.borderLeft = "3px solid " + color;
+        this.#el.style.borderLeft = "3px solid " + color;
     }
 
     toggleActive()

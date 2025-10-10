@@ -2408,13 +2408,14 @@ export class GlTimeline extends Events
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
+            showCurves = showCurves || (ease > 4 && ease < 28);
         }
         else
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
             {
                 hasReadOnly = hasReadOnly || this.#selectedKeys[i].anim.uiAttribs.readOnly || false;
-                showCurves = showCurves || ease > 4;
+                showCurves = showCurves || (ease > 4 && ease < 28);
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
             }
         }
@@ -2423,6 +2424,7 @@ export class GlTimeline extends Events
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
         const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        console.log("showcurves", showCurves);
 
         const html = getHandleBarHtml(
             "params_keys", {
@@ -2587,18 +2589,18 @@ export class GlTimeline extends Events
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
         }
-        ele.byId("kp_clip").addEventListener("change", () =>
-        {
-            for (let j = 0; j < this.#selectedKeys.length; j++)
+        if (ele.byId("kp_clip"))
+            ele.byId("kp_clip").addEventListener("change", () =>
             {
-                const e = ele.byId("kp_clip");
-                const name = e.options[e.selectedIndex].text;
-                this.#selectedKeys[j].clip = name;
-                this.#selectedKeys[j].setClip(name, null);
-                this.updateAllElements();
-            }
+                for (let j = 0; j < this.#selectedKeys.length; j++)
+                {
+                    const e = ele.byId("kp_clip");
+                    const name = e.options[e.selectedIndex].value;
+                    this.#selectedKeys[j].setClip(name, gui.corePatch().getVar(name)?.getValue());
+                    this.updateAllElements();
+                }
 
-        });
+            });
     }
 
     /**

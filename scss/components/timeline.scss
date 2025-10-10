@@ -75,8 +75,10 @@
         .portname
         {
             color:var(--textedit-comment);
+            .extendTitle{
+                color:#aaa;
+            }
         }
-
 
         &.selectedOp
         {
