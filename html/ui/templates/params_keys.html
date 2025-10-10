@@ -78,10 +78,11 @@
         clip:
         <select id="kp_clip">
             <option>-- </option>
-            <option>clip1</option>
-            <option>clip2</option>
-            <option>clip3</option>
-            <option>clip4</option>
+            {{#each clipsVars}}
+                <option {{#compare name '==' ../clipId}}selected{{/compare}}>
+                    {{name}}
+                </option>
+            {{/each}}
         </select>
 
         <hr/>

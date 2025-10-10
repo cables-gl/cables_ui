@@ -363,7 +363,6 @@ export class glTlKeys extends Events
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(pointsSort);
-            console.log("poinrs", pointsSort.length);
             this.#splineAfter.getDrawer().rebuildLater();
             this.#splineAfter.setPoints(pointsSortAfter);
             this.#splineBefore.getDrawer().rebuildLater();

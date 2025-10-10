@@ -2422,13 +2422,17 @@ export class GlTimeline extends Events
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
+        const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+
         const html = getHandleBarHtml(
             "params_keys", {
                 "writable": !hasReadOnly,
                 "numKeys": this.#selectedKeys.length,
                 "timeLength": timestr,
+                "clipsVars": vars,
                 "timeBounds": timeBoundsStr,
                 "valueBounds": valstr,
+                "clipId": this.#selectedKeys[0].clipId,
                 "lastInputValue": this.#paramLastInputValue,
                 "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
@@ -2587,8 +2591,11 @@ export class GlTimeline extends Events
         {
             for (let j = 0; j < this.#selectedKeys.length; j++)
             {
-                this.#selectedKeys[j].clip = true;
-                this.#selectedKeys[j].clipId = "fake";
+                const e = ele.byId("kp_clip");
+                const name = e.options[e.selectedIndex].text;
+                this.#selectedKeys[j].clip = name;
+                this.#selectedKeys[j].setClip(name, null);
+                this.updateAllElements();
             }
 
         });
