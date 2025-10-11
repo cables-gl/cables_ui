@@ -1,13 +1,12 @@
 <script id="tab_find" type="text/x-handlebars-template">
 
-    <div class="tabContentScrollContainer">
-
+<div style="display: grid;grid-template-rows: 150px auto;height: 100%;">
+    <div style="overflow: auto;">
         <div id="tabsearchbox" class="tabsearchbox">
             <input class="medium notIgnoreEscape" id="{{inputid}}" autocomplete="off" style="margin:4px;width:95%;" type="search">
             <input class="hidden" id="{{inputid}}_toggles" autocomplete="off"  type="search">
         </div>
 
-        <br/>
         Find Ops:&nbsp;
 
         {{#each toggles}}
@@ -18,13 +17,15 @@
             &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
         {{/each}}
 
-        <br/><br/>
-
-        <div id="tabsearchresult" class="tabSearchResultsContainer"></div>
-        <div id="ophistory" class=""></div>
+        <br/>
+        <br/>
 
     </div>
-
+    <div style="overflow: auto;">
+        <div id="tabsearchresult" class="tabSearchResultsContainer"></div>
+        <div id="ophistory" class=""></div>
+    </div>
+</div>
 </script>
 
 

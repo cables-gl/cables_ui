@@ -92,6 +92,27 @@ export class TlKey extends Events
             return;
         }
         const key = this.key;
+        const isClip = key.getEasing() == Anim.EASING_CLIP;
+        if (!this.areaRect && (key.uiAttribs.color || isClip))
+        {
+            const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
+            // t.setParent(keyRect);
+            t.setPosition(1, 0, -0.8);
+            t.setSize(73, 5);
+            if (isClip)
+            {
+                t.setColorHex("#444444");
+                t.setBorder(2);
+            }
+            if (key.uiAttribs.color)
+            {
+                t.setColorHex(key.uiAttribs.color);
+            }
+            t.setOpacity(0.5);
+            this.areaRect = t;
+        }
+        if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
+
         if (key.uiAttribs.text)
         {
             if (!this.text)
@@ -100,30 +121,10 @@ export class TlKey extends Events
                 this.text.setParentRect(keyRect);
             }
             if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
+            if (key.clipId && this.text.text != key.clipId) this.text.text = key.clipId;
         }
 
-        if (!this.areaRect && (key.uiAttribs.color || key.clip))
-        {
-            const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
-            t.setParent(keyRect);
-            t.setPosition(1, 0, -0.8);
-            t.setSize(73, 5);
-            if (key.uiAttribs.color)
-                t.setColorHex(key.uiAttribs.color);
-            else
-            {
-                t.setColorHex("#aaaaaa");
-                t.setBorder(1);
-
-            }
-            t.setOpacity(0.5);
-            this.areaRect = t;
-        }
-        if (this.areaRect && !(key.uiAttribs.color || key.clip)) this.areaRect = this.areaRect.dispose();
-
-        /// ////
-
-        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && key.getEasing() == Anim.EASING_CUBICSPLINE)
+        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && isClip)
         {
             const bezRect = this.#glTl.rects.createRect({ "name": "bezrect", "draggable": true, "interactive": true });
 

@@ -11,21 +11,44 @@
     {{#if writable}}
     <div class="content panel">
 
+
         <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
         <a data-info="tlIpAbs" class="info iconbutton nomargin {{#compare easing '==' '1' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);"><span class="icon icon-ease-absolute"></span></a>
-        <a data-info="tlIpCurves" class="info iconbutton nomargin {{#if showCurves  }}button-active{{/if}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-        <a data-info="tlIpBez" class="info iconbutton nomargin {{#compare easing '==' '4' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);"><span class="icon icon-tangent"></span></a>
-
+        <a data-info="tlIpCurves" class="info iconbutton nomargin {{#if showCurves}}button-active{{/if}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
+        <a data-info="tlIpBez" class="info iconbutton nomargin {{#compare easing '==' '4' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);"><span class="icon icon-tangent"></span></a>
+        <a data-info="tlIpClip" class="info iconbutton nomargin {{#compare easing '==' '28' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CLIP);"><span class="icon icon-clapperboard"></span></a>
         <br/><br/>
 
+        {{#compare easing '==' '0' }}
+            <h3 class="nomargin">Linear Interpolation</h3>
+        {{/compare}}
+        {{#compare easing '==' '1' }}
+            <h3 class="nomargin">Smoothstep Interpolation</h3>
+        {{/compare}}
+
+        {{#compare easing '==' '28' }}
+            <h3 class="nomargin">Clip: Reference another anim</h3>
+            <select id="kp_clip" style="margin-top: 5px;">
+                <option value="">-- </option>
+                {{#each clipsVars}}
+                    <option value="{{name}}" {{#compare name '==' ../clipId}}selected{{/compare}}>
+                        {{name}}
+                    </option>
+                {{/each}}
+            </select>
+            <br/>
+        {{/compare}}
+
         {{#compare easing '==' '4' }}
+            <h3 class="nomargin">Bezier Curves</h3>
             <a id="kp_bezfree" class="button-small eleAsButton" tabindex="0">toggle free tangents </a>
             <br/>
             <a id="kp_bezreset" class="button-small eleAsButton" tabindex="0">reset</a>
             <br/>
         {{/compare}}
-
         {{#if showCurves}}
+            <h3 class="nomargin">Predefined Curves</h3>
+            <br/>
             <a class="iconbutton nomargin {{#compare easing '==' '11' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_IN);"><span class="icon icon-ease-cub-in"></span></a>
             <a class="iconbutton nomargin {{#compare easing '==' '5' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_IN);"><span class="icon icon-ease-cub-in"></span></a>
             <a class="iconbutton nomargin {{#compare easing '==' '22' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUART_IN);"><span class="icon icon-ease-cub-in"></span></a>
@@ -55,6 +78,7 @@
             <a class="iconbutton nomargin {{#compare easing '==' '21' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
             <br/><br/>
         {{/if}}
+        <hr/>
 
         <a id="kp_movecursor" class="button-small">Move to cursor</a>
         <br/>
@@ -72,17 +96,6 @@
         <a id="kp_value_moveb" class="button-left button-small">-</a>
         <a id="kp_value_movef" class="button-right button-small">+</a>
         <a id="kp_value_set" class="button-right button-small">set</a>
-
-        <br/>
-        <br/>
-        clip:
-        <select id="kp_clip">
-            <option>-- </option>
-            <option>clip1</option>
-            <option>clip2</option>
-            <option>clip3</option>
-            <option>clip4</option>
-        </select>
 
         <hr/>
         <br/>

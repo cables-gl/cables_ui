@@ -181,6 +181,10 @@ export class GlTimeline extends Events
     #spacePressed = false;
     #cursor;
 
+    /** @type {HTMLElement} */
+    #elInfoOverlay;
+    #elInfoOverlayTimeout;
+
     /**
      * @param {CglContext} cgl
     */
@@ -310,10 +314,21 @@ export class GlTimeline extends Events
             this.updateGraphSelectMode();
         });
 
+        this.#elInfoOverlay = ele.byId("tlInfoOverlay");
+
         this.#elTimeDisplay = document.createElement("div");
         this.#elTimeDisplay.classList.add("tltimedisplay");
         this.#elTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
         cgl.canvas.parentElement.appendChild(this.#elTimeDisplay);
+        this.#elTimeDisplay.addEventListener("pointerenter", () =>
+        {
+            this.refreshInfoOverlay();
+        });
+        this.#elTimeDisplay.addEventListener("pointerleave", () =>
+        {
+            clearTimeout(this.#elInfoOverlayTimeout);
+            this.#elInfoOverlay.classList.add("hidden");
+        });
 
         this.tlTimeScrollContainer = document.createElement("div");
         this.tlTimeScrollContainer.classList.add("scrollContainer");
@@ -502,6 +517,26 @@ export class GlTimeline extends Events
     get cgl()
     {
         return this.#cgl;
+    }
+
+    refreshInfoOverlay()
+    {
+        this.#elInfoOverlay.classList.remove("hidden");
+        let str = "fps: ";
+        str += this.cgl.fpsCounter.stats.fps;
+        str += "<br/>";
+        str += "ms: ";
+        str += this.cgl.fpsCounter.stats.ms;
+
+        this.#elInfoOverlay.style.transform = "initial";
+        this.#elInfoOverlay.style.left = "10px";
+        const y = this.#elTimeDisplay.getBoundingClientRect().y;
+        const h = this.#elTimeDisplay.getBoundingClientRect().height;
+        this.#elInfoOverlay.style.top = y - h - 50 + "px";
+        this.#elInfoOverlay.innerHTML = str;
+        clearTimeout(this.#elInfoOverlayTimeout);
+        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 100);
+
     }
 
     toggleAutoKeyframe()
@@ -2373,13 +2408,14 @@ export class GlTimeline extends Events
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
+            showCurves = showCurves || (ease > 4 && ease < 28);
         }
         else
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
             {
                 hasReadOnly = hasReadOnly || this.#selectedKeys[i].anim.uiAttribs.readOnly || false;
-                showCurves = showCurves || ease > 4;
+                showCurves = showCurves || (ease > 4 && ease < 28);
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
             }
         }
@@ -2387,13 +2423,18 @@ export class GlTimeline extends Events
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
+        const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        console.log("showcurves", showCurves);
+
         const html = getHandleBarHtml(
             "params_keys", {
                 "writable": !hasReadOnly,
                 "numKeys": this.#selectedKeys.length,
                 "timeLength": timestr,
+                "clipsVars": vars,
                 "timeBounds": timeBoundsStr,
                 "valueBounds": valstr,
+                "clipId": this.#selectedKeys[0].clipId,
                 "lastInputValue": this.#paramLastInputValue,
                 "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
@@ -2548,15 +2589,18 @@ export class GlTimeline extends Events
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
             });
         }
-        ele.byId("kp_clip").addEventListener("change", () =>
-        {
-            for (let j = 0; j < this.#selectedKeys.length; j++)
+        if (ele.byId("kp_clip"))
+            ele.byId("kp_clip").addEventListener("change", () =>
             {
-                this.#selectedKeys[j].clip = true;
-                this.#selectedKeys[j].clipId = "fake";
-            }
+                for (let j = 0; j < this.#selectedKeys.length; j++)
+                {
+                    const e = ele.byId("kp_clip");
+                    const name = e.options[e.selectedIndex].value;
+                    this.#selectedKeys[j].setClip(name, gui.corePatch().getVar(name)?.getValue());
+                    this.updateAllElements();
+                }
 
-        });
+            });
     }
 
     /**
