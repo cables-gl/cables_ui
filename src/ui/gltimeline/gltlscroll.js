@@ -93,14 +93,17 @@ export class glTlScroll extends Events
                 if (ports[j].anim.hasKeyframesBetween(stepSeconds * i, stepSeconds * (i + 1)))
                 {
                     found = true;
-                    const indStart = ports[j].anim.getKeyIndex(stepSeconds * i);
-                    const indEnd = ports[j].anim.getKeyIndex(stepSeconds * (i + 1));
-                    for (let ki = indStart; ki <= indEnd; ki++)
+
+                    for (let ki = 0; ki < ports[j].anim.keys.length; ki++)
                     {
-                        if (this.#glTl.isKeySelected(ports[j].anim.keys[ki]))
+                        if (ports[j].anim.keys[ki].time >= stepSeconds * i &&
+                             ports[j].anim.keys[ki].time < stepSeconds * (i + 1))
                         {
-                            selected = true;
-                            break;
+                            if (this.#glTl.isKeySelected(ports[j].anim.keys[ki]))
+                            {
+                                selected = true;
+                                break;
+                            }
                         }
                     }
                     break;
