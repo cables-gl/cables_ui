@@ -893,11 +893,6 @@ export default class GlOp extends Events
         for (let i = 0; i < ports.length; i++)
         {
 
-            /*
-             * this._log.log(ports[i]);
-             * this._log.log("this.op.getSubPatch() != ports[i].op.id", this.op.getSubPatch(), ports[i].op.id);
-             */
-
             if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
                 const key = "glPortIndex_" + (ports[i].uiAttribs.order || 0) + this.op.id;
@@ -910,7 +905,6 @@ export default class GlOp extends Events
             }
             else
             {
-                // this._log.log("noe");
                 if (ports[i].uiAttribs.glPortIndex != count) emit = true;
                 ports[i].setUiAttribs({ "glPortIndex": count });
             }
@@ -920,14 +914,6 @@ export default class GlOp extends Events
             if (ports[i].uiAttribs.hidePort) continue;
             count++;
         }
-
-        /*
-         * if (ports[0])this._log.log(ports[0].op.objName);
-         * for (let i = 0; i < ports.length; i++)
-         * {
-         *     this._log.log(i, ports[i].name, ports[i].uiAttribs.glPortIndex);
-         * }
-         */
 
         if (emit)
         {

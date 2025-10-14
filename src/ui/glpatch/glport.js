@@ -48,6 +48,9 @@ export default class GlPort
     /** @type {GlRect} */
     #parentRect;
 
+    /** @type {GlRect} */
+    #rect;
+
     /**
      * Description
      * @param {GlPatch} glpatch
@@ -74,22 +77,21 @@ export default class GlPort
         /** @type {GlRectInstancer} */
         this._rectInstancer = rectInstancer;
 
-        /** @type {GlRect} */
-        this._rect = new GlRect(this._rectInstancer, { "name": "port" + this.#name, "parent": this.#parentRect, "interactive": true });
+        this.#rect = new GlRect(this._rectInstancer, { "name": "port" + this.#name, "parent": this.#parentRect, "interactive": true });
 
         this.#mouseButtonRightTimeDown = 0;
         this.#posX = posCount * (gluiconfig.portWidth + gluiconfig.portPadding);
         if (!this.#parentRect) this.#log.warn("no parent rect given");
-        else this.#parentRect.addChild(this._rect);
+        else this.#parentRect.addChild(this.#rect);
 
         this.portIndex = posCount;
 
         this._updateColor();
 
-        this.#mouseEvents.push(this._rect.on("mousedown", this._onMouseDown.bind(this)));
-        this.#mouseEvents.push(this._rect.on("mouseup", this._onMouseUp.bind(this)));
-        this.#mouseEvents.push(this._rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
-        this.#mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
+        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_DOWN, this._onMouseDown.bind(this)));
+        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_UP, this._onMouseUp.bind(this)));
+        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
+        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_UNHOVER, this._onUnhover.bind(this)));
 
         this.#port.on("onLinkChanged", this._onLinkChanged.bind(this));
         this.#port.on("onValueChangeUi", () =>
@@ -127,7 +129,7 @@ export default class GlPort
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
         {
-            if (!this._rect) return;
+            if (!this.#rect) return;
             if (!this.#longPortRect) this.#longPortRect = new GlRect(this._rectInstancer, { "name": "longport", "parent": this.#parentRect, "interactive": false });
 
             const col = GlPort.getColor(this.#type, false, false, false);
@@ -141,18 +143,18 @@ export default class GlPort
     {
         if (this.#port.isLinked() && !this.#port.isAnimated() && !this.#port.isBoundToVar())
         {
-            this._rect.setShape(0);
+            this.#rect.setShape(0);
         }
         else
         {
-            if (this.#direction == PortDir.out) this._rect.setShape(9);
-            else this._rect.setShape(10);
+            if (this.#direction == PortDir.out) this.#rect.setShape(9);
+            else this.#rect.setShape(10);
         }
     }
 
     _updateColor()
     {
-        if (!this._rect) return;
+        if (!this.#rect) return;
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
@@ -161,9 +163,9 @@ export default class GlPort
 
         if (!this.#dot && showDot)
         {
-            this.#dot = new GlRect(this._rectInstancer, { "name": "portdot", "parent": this._rect, "interactive": false });
+            this.#dot = new GlRect(this._rectInstancer, { "name": "portdot", "parent": this.#rect, "interactive": false });
             this.#dot.setSize(0, 0);
-            this._rect.addChild(this.#dot);
+            this.#rect.addChild(this.#dot);
         }
 
         if (this.#dot)
@@ -173,8 +175,8 @@ export default class GlPort
                 if (this.#port.uiAttribs.notWorking) this.#dot.setColor(0.8, 0.2, 0.2, 1);
                 else this.#dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let dotPosY = this._rect.h / 4 - dotSize / 2;
-                if (this.direction == PortDir.in) dotPosY += this._rect.h / 2;
+                let dotPosY = this.#rect.h / 4 - dotSize / 2;
+                if (this.direction == PortDir.in) dotPosY += this.#rect.h / 2;
 
                 if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
@@ -199,12 +201,12 @@ export default class GlPort
         if (this.#glPatch.vizFlowMode == 0)act = 10;
 
         const col = GlPort.getColor(this.#type, hover, false, act);
-        this._rect.setColorArray(col);
+        this.#rect.setColorArray(col);
 
-        if (this.#port.uiAttribs.addPort) this._rect.setOpacity(0.7);
-        else this._rect.setOpacity(1);
+        if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
+        else this.#rect.setOpacity(1);
 
-        if (this.#port.uiAttribs.hasOwnProperty("opacity")) this._rect.setOpacity(this.#port.uiAttribs.opacity);
+        if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
 
     get direction()
@@ -214,12 +216,12 @@ export default class GlPort
 
     get width()
     {
-        return this._rect.w;
+        return this.#rect.w;
     }
 
     updateSize()
     {
-        if (!this._rect) return;
+        if (!this.#rect) return;
 
         let h = gluiconfig.portHeight * 2;
         let y = 0;
@@ -245,8 +247,8 @@ export default class GlPort
 
         this.#posX = this.#glop.getPortPos(this.#name, false);
 
-        this._rect.setPosition(this.#posX, y, -0.0001);
-        this._rect.setSize(gluiconfig.portWidth, h);
+        this.#rect.setPosition(this.#posX, y, -0.0001);
+        this.#rect.setSize(gluiconfig.portWidth, h);
 
         if (this.#longPortRect)
         {
@@ -342,7 +344,7 @@ export default class GlPort
 
     get glOp() { return this.#glop; }
 
-    get rect() { return this._rect; }
+    get rect() { return this.#rect; }
 
     setFlowModeActivity(_a)
     {
@@ -361,10 +363,10 @@ export default class GlPort
                 this.#glop._links[i].visible = false;
 
         for (let i = 0; i < this.#mouseEvents.length; i++)
-            this._rect.off(this.#mouseEvents[i]);
+            this.#rect.off(this.#mouseEvents[i]);
 
         this.#mouseEvents.length = 0;
-        if (this._rect) this._rect = this._rect.dispose();
+        if (this.#rect) this.#rect = this.#rect.dispose();
         if (this.#dot) this.#dot = this.#dot.dispose();
         if (this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
     }

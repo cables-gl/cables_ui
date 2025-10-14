@@ -13,6 +13,29 @@ import GlRect from "../gldraw/glrect.js";
 export default class GlDragLine
 {
 
+    /** @type {GlPort} */
+    #glPort;
+
+    /** @type {GlPatch} */
+    #glPatch;
+
+    /** @type {GlSplineDrawer} */
+    #splineDrawer;
+
+    /** @type {GlRect} */
+    #rect = null;
+
+    _startPortOpId = null;
+    _startPortId = null;
+
+    _startGlPorts = [];
+    _lineIndices = [];
+    _color = [1, 1, 1, 1];
+
+    _x = 0;
+    _y = 0;
+    _z = -1.0;
+
     /**
      * @param {GlSplineDrawer} splineDrawer
      * @param {GlPatch} glpatch
@@ -21,33 +44,12 @@ export default class GlDragLine
     {
         this._log = new Logger("gldragline");
 
-        /**
-         * @type {GlRect}
-         */
-        this._rect = null;
+        this.#splineDrawer = splineDrawer;
+        this._splineIdx = this.#splineDrawer.getSplineIndex();
 
-        /**
-         * @type {GlSplineDrawer}
-         */
-        this._splineDrawer = splineDrawer;
-        this._splineIdx = this._splineDrawer.getSplineIndex();
+        this.#glPatch = glpatch;
 
-        /**
-         * @type {GlPatch}
-         */
-        this._glPatch = glpatch;
-
-        this._startPortOpId = null;
-        this._startPortId = null;
-
-        this._startGlPorts = [];
-        this._lineIndices = [];
         this._clearSpline();
-        this._color = [1, 1, 1, 1];
-
-        this._x = 0;
-        this._y = 0;
-        this._z = -1.0;
 
         glpatch.on("mouseup", (e) =>
         {
@@ -70,36 +72,36 @@ export default class GlDragLine
                         const port = op.getPortByName(ele.dataset.portname);
                         if (port)
                         {
-                            this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, port, e);
+                            this.#glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, port, e);
                         }
                     }
                 }
             }
 
-            if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == MouseState.BUTTON_LEFT &&
+            if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this.#glPort && this.#glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {
-                let x = this._glPatch.viewBox.mousePatchX;
+                let x = this.#glPatch.viewBox.mousePatchX;
                 let pos =
                 {
-                    "subPatch": this._glPatch.subPatch,
+                    "subPatch": this.#glPatch.subPatch,
                     "x": x,
-                    "y": this._glPatch.viewBox.mousePatchY
+                    "y": this.#glPatch.viewBox.mousePatchY
                 };
 
-                if (Math.abs(this._glPort.glOp.x - x) < 200)
+                if (Math.abs(this.#glPort.glOp.x - x) < 200)
                 {
-                    pos.x = this._glPort.glOp.x + this._glPort.glOp.op.getPortPosX(this._glPort.port.name, this._glPort.glOp.op.id);
+                    pos.x = this.#glPort.glOp.x + this.#glPort.glOp.op.getPortPosX(this.#glPort.port.name, this.#glPort.glOp.op.id);
                     pos.noSnap = true;
                 }
 
                 gui.opSelect().show(
                     pos,
-                    this._glPort.port.op,
-                    this._glPort.port);
+                    this.#glPort.port.op,
+                    this.#glPort.port);
             }
 
             this.stop();
-            this._glPatch.showOpCursor(false);
+            this.#glPatch.showOpCursor(false);
         });
 
         glpatch.on("mouseDragLink", (glport, _opid, _portName, _e) =>
@@ -120,7 +122,7 @@ export default class GlDragLine
             else if (this._button == MouseState.BUTTON_RIGHT)
             {
                 this.setPort(glport);
-                const glports = this._glPatch.getConnectedGlPorts(opid, portName);
+                const glports = this.#glPatch.getConnectedGlPorts(opid, portName);
 
                 if (!e.altKey && glport) gui.patchView.unlinkPort(opid, glport.id);
 
@@ -203,7 +205,7 @@ export default class GlDragLine
 
     get glPort()
     {
-        return this._glPort;
+        return this.#glPort;
     }
 
     /**
@@ -213,17 +215,17 @@ export default class GlDragLine
     {
         if (!glp)
         {
-            this._glPort = this._rect = null;
-            this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            this.#glPort = this.#rect = null;
+            this.#splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
             return;
         }
 
         this._startPortOpId = glp.port.op.id;
         this._startPortId = glp.port.id;
-        this._rect = glp.rect;
-        this._glPort = glp;
+        this.#rect = glp.rect;
+        this.#glPort = glp;
 
-        this._glPatch.allowDragging = false;
+        this.#glPatch.allowDragging = false;
 
         this._update();
     }
@@ -232,26 +234,26 @@ export default class GlDragLine
     {
         for (let i = 0; i < this._lineIndices.length; i++)
         {
-            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            this._splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
+            this.#splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            this.#splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
         }
-        this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
-        this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        this.#splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
+        this.#splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }
 
     _update()
     {
-        if (!this.isActive) this._glPatch.showOpCursor(false);
+        if (!this.isActive) this.#glPatch.showOpCursor(false);
         if (!this.isActive) return;
 
-        if (!this._glPatch.isMouseOverOp() && (!this._glPatch._cablesHoverButtonRect || !this._glPatch._cablesHoverButtonRect.isHovering)) this._glPatch.showOpCursor(true);
-        else this._glPatch.showOpCursor(false);
+        if (!this.#glPatch.isMouseOverOp() && (!this.#glPatch._cablesHoverButtonRect || !this.#glPatch._cablesHoverButtonRect.isHovering)) this.#glPatch.showOpCursor(true);
+        else this.#glPatch.showOpCursor(false);
 
         this._clearSpline();
 
-        if (this._glPort)
+        if (this.#glPort)
         {
-            const col = GlPort.getColor(this._glPort._port.type);
+            const col = GlPort.getColor(this.#glPort.port.type);
 
             if (col) this.setColor(col);
         }
@@ -267,10 +269,10 @@ export default class GlDragLine
                  * if (!this._startGlPorts[i].glOp) continue;
                  * if (!this._startGlPorts[i].rect) continue;
                  */
-                if (count > this._lineIndices.length - 1) this._lineIndices[count] = this._splineDrawer.getSplineIndex();
+                if (count > this._lineIndices.length - 1) this._lineIndices[count] = this.#splineDrawer.getSplineIndex();
 
                 if (this._startGlPorts[i].rect)
-                    this._splineDrawer.setSpline(
+                    this.#splineDrawer.setSpline(
                         this._lineIndices[count],
                         [
                             this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + glUiConfig.portWidth / 2,
@@ -285,25 +287,25 @@ export default class GlDragLine
         }
         else
         {
-            if (this._rect && this._glPort)
+            if (this.#rect && this.#glPort)
             {
-                this._splineDrawer.setSpline(this._splineIdx,
+                this.#splineDrawer.setSpline(this._splineIdx,
                     [
-                        this._glPort.glOp.x + this._rect.x + glUiConfig.portWidth / 2,
-                        this._glPort.glOp.y + this._rect.y + glUiConfig.portHeight / 2,
+                        this.#glPort.glOp.x + this.#rect.x + glUiConfig.portWidth / 2,
+                        this.#glPort.glOp.y + this.#rect.y + glUiConfig.portHeight / 2,
                         this._z,
                         this._x, this._y, this._z,
                         this._x, this._y, this._z,
                     ]);
 
-                this._splineDrawer.setSplineColor(this._splineIdx, this._color);
+                this.#splineDrawer.setSplineColor(this._splineIdx, this._color);
             }
         }
     }
 
     get isActive()
     {
-        return this._glPort != null;
+        return this.#glPort != null;
     }
 
     stop()
@@ -312,7 +314,7 @@ export default class GlDragLine
         this._startGlPorts.length = 0;
         this.setPort(null);
 
-        this._glPatch.allowDragging = true;// this._patchDragWasAllowed;
+        this.#glPatch.allowDragging = true;// this._patchDragWasAllowed;
         this._clearSpline();
     }
 
@@ -334,8 +336,8 @@ export default class GlDragLine
     {
         this._color = rgba;
         for (let i = 0; i < this._lineIndices.length; i++)
-            this._splineDrawer.setSplineColor(this._lineIndices[i], this._color);
+            this.#splineDrawer.setSplineColor(this._lineIndices[i], this._color);
 
-        this._splineDrawer.setSplineColor(this._splineIdx, this._color);
+        this.#splineDrawer.setSplineColor(this._splineIdx, this._color);
     }
 }

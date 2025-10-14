@@ -38,6 +38,9 @@
     {{else}}
 
             {{#if port.uiAttribs.multiPort}}
+            {{#if port.uiAttribs.hideMultiPortUi}}
+            {{else}}
+
                 </td><td>
 
                     {{#if port.uiAttribs.multiPort}}Multiport {{/if}}
@@ -52,6 +55,7 @@
                         auto
                     {{/if}}
                 </td>
+            {{/if}}
             {{/if}}
 
             {{#if port.uiAttribs.display}}

@@ -848,11 +848,8 @@ class UiOp extends Op
         {
             if (this.portsIn[i].uiAttribs.hidePort) continue;
 
-            if (this.portsIn[i].name == name)
-            {
-                // return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || index) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
-                return this.posByIndex(index, this.getNumVisiblePortsIn(), center);
-            }
+            if (this.portsIn[i].name == name) return this.posByIndex(index, this.getNumVisiblePortsIn(), center);
+
             index++;
         }
 
@@ -862,9 +859,8 @@ class UiOp extends Op
             if (this.portsOut[i].uiAttribs.hidePort) continue;
 
             if (this.portsOut[i].name == name)
-            {
                 return this.posByIndex(index, this.getNumVisiblePortsOut(), center);// * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
-            }
+
             index++;
         }
 
