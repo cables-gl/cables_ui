@@ -193,6 +193,7 @@ export default class GlTimelineTab
         this.#splitter = document.createElement("div");
         this.#splitter.classList.add("splitter");
         this.#splitter.classList.add("splitterTimeline");
+        this.#splitter.classList.add("splitterLeft");
         this.#splitter.style.left = this.#splitterPos + "px";
         this.#splitter.addEventListener("pointerdown", this.resizeRenderer.bind(this), { "passive": false });
         this.#tab.contentEle.appendChild(this.#splitter);
@@ -200,6 +201,7 @@ export default class GlTimelineTab
         this.#splitterRight = document.createElement("div");
         this.#splitterRight.classList.add("splitter");
         this.#splitterRight.classList.add("splitterTimeline");
+        this.#splitterRight.classList.add("splitterRight");
         this.#splitterRight.style.right = this.#splitterPosRight + "px";
         this.#splitterRight.addEventListener("pointerdown", this.resizeRendererRight.bind(this), { "passive": false });
         this.#tab.contentEle.appendChild(this.#splitterRight);

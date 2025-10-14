@@ -1,4 +1,5 @@
 import { Events, Logger } from "cables-shared-client/index.js";
+import { clamp } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
@@ -77,9 +78,9 @@ export class glTlScroll extends Events
 
     updateIndicators()
     {
-        const steps = Math.floor((this.#width || 10) / 100);
-        const stepSeconds = this.#glTl.duration / steps;
-        this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
+        const steps = Math.floor((this.#width || 10) / 10);
+        const stepSeconds = this.#glTl.duration / (steps - 2);
+        this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps) + 1;
 
         const ports = gui.corePatch().getAllAnimPorts();
 
@@ -101,7 +102,6 @@ export class glTlScroll extends Events
                             selected = true;
                             break;
                         }
-
                     }
                     break;
                 }
@@ -124,7 +124,7 @@ export class glTlScroll extends Events
             }
             else
             {
-                this.#indicatorRects[i].setSize(2, 2);
+                this.#indicatorRects[i].setSize(0, 0);
             }
         }
     }
@@ -151,19 +151,16 @@ export class glTlScroll extends Events
     {
         const pixelVisible = this.#glTl.view.visibleTime * this.#glTl.view.pixelPerSecond;
         let x = this.#glTl.view.offset * this.#glTl.view.pixelPerSecond;
-        let cx = gui.corePatch().timer.getTime() * this.#glTl.view.pixelPerSecond;
+        let cx = Math.ceil(gui.corePatch().timer.getTime() * this.#glTl.view.pixelPerSecond);
 
         this.#dragBar.set(x, 0, -0.1, pixelVisible);
-        this.#glRectCursor.setPosition(cx, 0);
+
+        this.#glRectCursor.setPosition(Math.max(0, cx - 1), 0);
+
         this.updateIndicators();
 
         const bounds = this.#glTl.getSelectedKeysBoundsTime();
 
-        if (this.#glTl.getNumSelectedKeys() > 0)
-        {
-            // this.#glRectSelection.setPosition(bounds.min * this.#glTl.view.pixelPerSecond, 0);
-            // this.#glRectSelection.setSize((bounds.max - bounds.min) * this.#glTl.view.pixelPerSecond + 2, this.height);
-        }
     }
 
     isHovering()
