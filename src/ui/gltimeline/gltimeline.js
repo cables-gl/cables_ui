@@ -29,12 +29,10 @@ import { UiOp } from "../core_extend_op.js";
 /**
  * @typedef TlConfig
  * @property {Number} fps
- * @property {Number} [bpm]
  * @property {Boolean} [fadeInFrames]
  * @property {Boolean} [showBeats]
  * @property {String} [displayUnits]
  * @property {Boolean} [restrictToFrames]
- * @property {Number} [bpmHlXth]
  */
 
 /**
@@ -140,7 +138,6 @@ export class GlTimeline extends Events
     /** @type {TlConfig} */
     cfg = CABLES.timelineConfig || {
         "fps": 30,
-        "bpm": 180,
         "fadeInFrames": true,
         "restrictToFrames": true
     };
@@ -605,12 +602,6 @@ export class GlTimeline extends Events
     get duration()
     {
         return gui.corePatch().animMaxTime;
-    }
-
-    /** @returns {number} */
-    get bpm()
-    {
-        return this.cfg.bpm;
     }
 
     /** @returns {number} */
@@ -1770,7 +1761,6 @@ export class GlTimeline extends Events
         while (parts[1].length < 3) parts[1] += "0";
         const secondss = parts[0] + "." + parts[1];
         const frame = String(Math.floor(this.cursorTime * this.fps));
-        const beat = String(Math.floor(this.cursorTime * (this.bpm / 60) + 1));
         const padd = 14;
         const w = this.#cursorText.width + padd;
 
@@ -1857,6 +1847,12 @@ export class GlTimeline extends Events
     {
         this.cfg = cfg;
         this.needsUpdateAll = "on config";
+
+        cfg = CABLES.timelineConfig || {
+            "fps": 30,
+            "fadeInFrames": true,
+            "restrictToFrames": true
+        };
     }
 
     fit()

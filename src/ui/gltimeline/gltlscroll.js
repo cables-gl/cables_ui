@@ -161,6 +161,11 @@ export class glTlScroll extends Events
 
         const bounds = this.#glTl.getSelectedKeysBoundsTime();
 
+        if (this.#glTl.getNumSelectedKeys() > 0)
+        {
+            // this.#glRectSelection.setPosition(bounds.min * this.#glTl.view.pixelPerSecond, 0);
+            // this.#glRectSelection.setSize((bounds.max - bounds.min) * this.#glTl.view.pixelPerSecond + 2, this.height);
+        }
     }
 
     isHovering()
