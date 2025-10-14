@@ -1377,14 +1377,6 @@ export class GlTimeline extends Events
 
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
-            if (this.isFreePanningMode())
-            {
-                this.view.scaleValues(delta * 0.07);
-            }
-            else
-            {
-                // this.tlTimeScrollContainer.scrollTop += delta;
-            }
         }
 
         this.setHoverKeyRect(null);
