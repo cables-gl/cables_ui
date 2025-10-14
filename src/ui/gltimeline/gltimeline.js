@@ -2424,7 +2424,6 @@ export class GlTimeline extends Events
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
         const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
-        console.log("showcurves", showCurves);
 
         const html = getHandleBarHtml(
             "params_keys", {

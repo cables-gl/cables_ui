@@ -539,8 +539,6 @@ export class glTlKeys extends Events
                     h = 88888;
                     y -= h / 2;
                 }
-                console.log("xxxx", kr.x, y, w, h);
-
                 k.areaRect.setSize(w, h);
                 k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
             }

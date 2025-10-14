@@ -197,7 +197,7 @@ export default class Gui extends Events
         /** @type {PatchView} */
         this.patchView = new PatchView(this._corePatch);
 
-        this._corePatch.gui = true;
+        this._corePatch.gui = this;
 
         this._jobs = new Jobs();
         this.cmdPalette = new CommandPalette();
