@@ -21,7 +21,7 @@ export default class TexturePreviewer
 {
     constructor()
     {
-        this._log = new Logger();
+        this._log = new Logger("TexturePreviewer");
 
         this._texturePorts = [];
         this._showing = false;

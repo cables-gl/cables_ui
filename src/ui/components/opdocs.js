@@ -17,9 +17,10 @@ import { gui } from "../gui.js";
  */
 export default class OpDocs
 {
+    #log = new Logger("OpDocs");
+
     constructor()
     {
-        this._log = new Logger();
         this._opDocs = [];
         this.libs = [];
         this.coreLibs = [];
@@ -47,7 +48,7 @@ export default class OpDocs
      */
     addTypeStringToPorts(ports)
     {
-        if (!ports) { this._log.warn("addTypeStringToPorts(): ports is not defined"); return; }
+        if (!ports) { this.#log.warn("addTypeStringToPorts(): ports is not defined"); return; }
         for (let i = 0; i < ports.length; i++)
         {
             const port = ports[i];
@@ -87,7 +88,7 @@ export default class OpDocs
      */
     setPortDocTexts(ports, opDoc)
     {
-        if (!ports) { this._log.warn("getPortDocText called with empty argument!"); return; }
+        if (!ports) { this.#log.warn("getPortDocText called with empty argument!"); return; }
         for (let i = 0; i < ports.length; i++)
         {
             const port = ports[i];
@@ -134,7 +135,7 @@ export default class OpDocs
      */
     extendOpDocs(_opDocs)
     {
-        if (!_opDocs) { this._log.error("No op docs found!"); return; }
+        if (!_opDocs) { this.#log.error("No op docs found!"); return; }
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
@@ -429,7 +430,7 @@ export default class OpDocs
         for (const i in defaultOps.defaultOpNames)
         {
             const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
-            if (!doc) this._log.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated?");
+            if (!doc) this.#log.error("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated?");
         }
 
         perf.finish();

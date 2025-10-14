@@ -579,12 +579,12 @@ export default class GlOp extends Events
             if (!this.#op.portsIn[0].isLinked()) mathStr += this.#op.portsIn[0].get();
             else if (!this.#op.portsIn[1].isLinked())mathStr += "x";
 
-            if (this.#op.objName.indexOf("Ops.Math.Sum") == 0) mathStr += "+";
-            else if (this.#op.objName.indexOf("Ops.Math.Multiply") == 0) mathStr += "*";
-            else if (this.#op.objName.indexOf("Ops.Math.Divide") == 0) mathStr += "/";
-            else if (this.#op.objName.indexOf("Ops.Math.Subtract") == 0) mathStr += "-";
-            else if (this.#op.objName.indexOf("Ops.Math.Compare.GreaterThan") == 0) mathStr += ">";
-            else if (this.#op.objName.indexOf("Ops.Math.Compare.LessThan") == 0) mathStr += "<";
+            if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Sum) == 0) mathStr += "+";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Multiply) == 0) mathStr += "*";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Divide) == 0) mathStr += "/";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Subtract) == 0) mathStr += "-";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.GreaterThan) == 0) mathStr += ">";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.LessThan) == 0) mathStr += "<";
             else mathStr += "?";
 
             if (!this.#op.portsIn[1].isLinked()) mathStr += this.#op.portsIn[1].get();
