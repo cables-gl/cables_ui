@@ -214,7 +214,7 @@ export class GlTimeline extends Events
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
         this.selectedKeysDragArea = new glTlDragArea(this, null, this.#rectsOver);
-        this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
+        this.selectedKeysDragArea.setColor(1, 1, 0, 0.5);
 
         this.loopAreaDrag = new glTlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
@@ -1275,7 +1275,7 @@ export class GlTimeline extends Events
             else
                 this.selectedKeysDragArea.set(
                     newX,
-                    this.getFirstLinePosy(),
+                    this.height - 15,
                     -0.9,
                     this.view.timeToPixel(timeBounds.max - timeBounds.min),
                     15);
@@ -1287,7 +1287,7 @@ export class GlTimeline extends Events
         this.toParamKeys = setTimeout(() =>
         {
             if (this.getNumSelectedKeys() > 0 || this.#elKeyParamPanel.dataset.panel == "param_keys") this.showParamKeys();
-        }, 50);
+        }, 30);
     }
 
     unselectAllKeysSilent()
