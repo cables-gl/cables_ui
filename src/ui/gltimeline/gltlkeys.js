@@ -121,6 +121,7 @@ export class glTlKeys extends Events
         this.#listeners.push(
             anim.on(Anim.EVENT_CHANGE, () =>
             {
+
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
                     this.#keys[i].update();

@@ -287,6 +287,17 @@ class UiPatch extends Patch
         return ports;
     }
 
+    getAllAnimOps()
+    {
+        const animOps = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].hasAnimPort)
+                animOps.push(ops[i]);
+
+        return animOps;
+    }
+
     reloadOp(objName, cb, refOldOp)
     {
         let count = 0;

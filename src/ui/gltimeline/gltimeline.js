@@ -406,6 +406,11 @@ export class GlTimeline extends Events
             this.view.centerCursor();
         });
 
+        gui.keys.key("d", "Delete Selected Keys", "down", cgl.canvas.id, {}, () =>
+        {
+            this.deleteSelectedKeys();
+        });
+
         gui.keys.key("a", "move keys to cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.moveSelectedKeys();
@@ -1021,6 +1026,42 @@ export class GlTimeline extends Events
         return this.#selectedKeys.length;
     }
 
+    /**
+     * @param {Anim} anim
+     * @param {string} [reason]
+     */
+    setUnsavedForAnim(anim, reason)
+    {
+        const op = this.getPortForAnim(anim)?.op;
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            gui.savedState.setUnSaved(reason || "unknown", op?.getSubPatch());
+    }
+
+    /**
+     * @param {string} [reason]
+     */
+    setUnsavedForSelectedKeys(reason)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const anim = this.#selectedKeys[i].anim;
+            if (anim) this.setUnsavedForAnim(anim, reason);
+        }
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    getPortForAnim(anim)
+    {
+        const ports = gui.corePatch().getAllAnimPorts();
+        for (let i = 0; i < ports.length; i++)
+        {
+            if (ports[i].anim == anim) return ports[i];
+        }
+    }
+
     sortSelectedKeyAnims()
     {
         for (let i = 0; i < this.#selectedKeyAnims.length; i++)
@@ -1048,8 +1089,7 @@ export class GlTimeline extends Events
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
-        for (let i = 0; i < this.#tlAnims.length; i++)
-            gui.savedState.setUnSaved("deserializekeys", this.#tlAnims[i].getOp()?.getSubPatch());
+        this.setUnsavedForSelectedKeys();
     }
 
     predragSelectedKeys()
@@ -1068,6 +1108,7 @@ export class GlTimeline extends Events
     {
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
         this.moveSelectedKeysDelta(minTime);
+        this.setUnsavedForSelectedKeys();
         this.needsUpdateAll = "moveselected";
     }
 
@@ -1082,6 +1123,7 @@ export class GlTimeline extends Events
             this.#selectedKeys[i].set({ "e": easing });
         }
         this.needsUpdateAll = "selselected";
+        this.setUnsavedForSelectedKeys("set selected key easing");
         this.showKeyParamsSoon();
     }
 
@@ -1116,6 +1158,7 @@ export class GlTimeline extends Events
         }
         this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "seltselectedtime";
+        this.setUnsavedForSelectedKeys();
     }
 
     /**
@@ -1153,6 +1196,7 @@ export class GlTimeline extends Events
 
         this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "moveselectdelta";
+        this.setUnsavedForSelectedKeys();
 
     }
 
@@ -1328,6 +1372,8 @@ export class GlTimeline extends Events
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+            const op = this.getPortForAnim(this.#selectedKeys[i].anim)?.op;
+            gui.savedState.setUnSaved("deleted keys", op?.getSubPatch());
         }
 
         this.unSelectAllKeys("delete keys");
@@ -2489,9 +2535,9 @@ export class GlTimeline extends Events
         ele.clickable(ele.byId("kp_bezreset"), () =>
         {
             for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
                 this.#selectedKeys[i].bezReset();
-            }
+
+            this.setUnsavedForSelectedKeys();
         });
         ele.clickable(ele.byId("kp_bezfree"), () =>
         {
@@ -2500,6 +2546,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].setUiAttribs({ "bezFree": !this.#selectedKeys[i].uiAttribs.bezFree });
                 if (!this.#selectedKeys[i].uiAttribs.bezFree) this.#selectedKeys[i].bezReset();
             }
+            this.setUnsavedForSelectedKeys();
 
         });
 
@@ -2513,6 +2560,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+            this.setUnsavedForSelectedKeys();
         });
 
         ele.clickable(ele.byId("kp_time_moveb"), () =>
@@ -2526,6 +2574,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+            this.setUnsavedForSelectedKeys();
         });
 
         ele.clickable(ele.byId("kp_value_set"), () =>
@@ -2536,6 +2585,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
@@ -2547,6 +2597,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
@@ -2558,6 +2609,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
@@ -2568,6 +2620,7 @@ export class GlTimeline extends Events
 
                 for (let i = 0; i < this.#selectedKeys.length; i++)
                     this.#selectedKeys[i].setUiAttribs({ "text": txt });
+                this.setUnsavedForSelectedKeys();
             });
 
         const buttons = ele.byClassAll("kp_colorbutton");
@@ -2578,6 +2631,8 @@ export class GlTimeline extends Events
             {
                 for (let j = 0; j < this.#selectedKeys.length; j++)
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
+
+                this.setUnsavedForSelectedKeys();
             });
         }
         if (ele.byId("kp_clip"))
@@ -2589,6 +2644,7 @@ export class GlTimeline extends Events
                     const name = e.options[e.selectedIndex].value;
                     this.#selectedKeys[j].setClip(name, gui.corePatch().getVar(name)?.getValue());
                     this.updateAllElements();
+                    this.setUnsavedForSelectedKeys();
                 }
 
             });
@@ -2704,6 +2760,7 @@ export class GlTimeline extends Events
             anim.setLoop(Anim.LOOP_OFF);
             this.needsUpdateAll = "loopchange";
             this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
 
         ele.clickable(ele.byId("ap_loop_mirror"), () =>
@@ -2711,18 +2768,21 @@ export class GlTimeline extends Events
             anim.setLoop(Anim.LOOP_MIRROR);
             this.needsUpdateAll = "loopchange";
             this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_repeat"), () =>
         {
             anim.setLoop(Anim.LOOP_REPEAT);
             this.needsUpdateAll = "loopchange";
             this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
         ele.clickable(ele.byId("ap_loop_offset"), () =>
         {
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
             this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
     }
 
