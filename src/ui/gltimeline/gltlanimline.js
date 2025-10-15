@@ -382,7 +382,7 @@ export class glTlAnimLine extends Events
         {
             for (let i = 0; i < this.#titles.length; i++)
             {
-                this.#titles[i]?.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+                this.#titles[i]?.setHeight(glTlAnimLine.SIZES[0]);
             }
         }
         else
@@ -404,6 +404,7 @@ export class glTlAnimLine extends Events
                 this.childLines[i].show();
             }
         }
+
         this.#glTl.setPositions();
     }
 
@@ -431,7 +432,6 @@ export class glTlAnimLine extends Events
                 if (this.isHidden)
                 {
                     this.setHeight();
-                    // this.#glRectKeysBg.setSize(0, 0);
                 }
                 else
                 {
@@ -490,20 +490,17 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    get drawAreaHeight()
+    {
+        return this.pixelHeight - 4;// todo whyyyyyyyyyy
+    }
+
     get height()
     {
         this.setHeight();
         return this.pixelHeight;
-        // if (this.isGraphLayout()) return this.#glTl.height;
-        // else
-        // {
-        //     return glTlAnimLine.SIZES[this.lineHeight];
-        // }
     }
 
-    /**
-     * @param {number} [h]
-     */
     setHeight()
     {
         let h = 0;

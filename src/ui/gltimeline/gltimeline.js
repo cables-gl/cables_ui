@@ -1634,6 +1634,8 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         let posy = this.getFirstLinePosy();
 
+        // this.#tlAnims.sort((a,b)=>{})
+
         for (let i = 0; i < this.#tlAnims.length; i++)
         {
             this.#tlAnims[i].updateGlPos();
