@@ -13,15 +13,16 @@ import { CmdPatch } from "../commands/cmd_patch.js";
  */
 export default class SavedState extends Events
 {
+    #log = new Logger("SavedState");
+    #statesSaved = {};
+    _statesInitiator = {};
+    _talkerState = null;
+    _timeout = null;
+    _addedGuiListener = false;
+
     constructor()
     {
         super();
-        this._log = new Logger("SavedState");
-        this._statesSaved = {};
-        this._statesInitiator = {};
-        this._talkerState = null;
-        this._timeout = null;
-        this._addedGuiListener = false;
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -79,10 +80,10 @@ export default class SavedState extends Events
     {
         let changed = false;
 
-        for (const sp in this._statesSaved)
+        for (const sp in this.#statesSaved)
         {
-            if (this._statesSaved[sp] != true)changed = true;
-            this._statesSaved[sp] = true;
+            if (this.#statesSaved[sp] != true)changed = true;
+            this.#statesSaved[sp] = true;
             this.log(initiator, sp, true);
         }
         if (changed)gui.corePatch().emitEvent("savedStateChanged");
@@ -99,10 +100,10 @@ export default class SavedState extends Events
     {
         if (subpatch === undefined) subpatch = 0;
 
-        const changed = this._statesSaved[subpatch] !== true;
+        const changed = this.#statesSaved[subpatch] !== true;
         if (changed) gui.corePatch().emitEvent("savedStateChanged");
 
-        this._statesSaved[subpatch] = true;
+        this.#statesSaved[subpatch] = true;
         this.log(initiator, subpatch, true);
         gui.corePatch().emitEvent("subpatchesChanged");
 
@@ -111,7 +112,7 @@ export default class SavedState extends Events
 
     /**
      * @param {string} initiator
-     * @param {string | number | boolean} [subpatch]
+     * @param {string | number} [subpatch]
      */
     setUnSaved(initiator, subpatch)
     {
@@ -119,7 +120,7 @@ export default class SavedState extends Events
         if (gui.isRemoteClient) return;
 
         if (subpatch === undefined)
-            this._log.log("setUnSaved subpatch undefined", initiator, subpatch);
+            this.#log.log("setUnSaved subpatch undefined", initiator, subpatch);
 
         if (subpatch === undefined)
         {
@@ -134,9 +135,9 @@ export default class SavedState extends Events
         if (subpatch === true)subpatch = 0;
         subpatch = subpatch || 0;
 
-        const changed = this._statesSaved[subpatch] != false;
+        const changed = this.#statesSaved[subpatch] != false;
 
-        this._statesSaved[subpatch] = false;
+        this.#statesSaved[subpatch] = false;
 
         this.log(initiator, subpatch, false);
 
@@ -163,18 +164,18 @@ export default class SavedState extends Events
      */
     getStateBlueprint(bp)
     {
-        if (!this._statesSaved.hasOwnProperty(bp))
-            this._log.log("does not have state for ", bp);
+        if (!this.#statesSaved.hasOwnProperty(bp))
+            this.#log.log("does not have state for ", bp);
 
-        return this._statesSaved[bp];
+        return this.#statesSaved[bp];
     }
 
     getUnsavedPatchSubPatchOps()
     {
         const opIds = [];
-        for (let i in this._statesSaved)
+        for (let i in this.#statesSaved)
         {
-            if (!this._statesSaved[i])
+            if (!this.#statesSaved[i])
             {
                 const op = gui.patchView.getSubPatchOuterOp(i);
 
@@ -217,14 +218,14 @@ export default class SavedState extends Events
             ele.byId("patchname").classList.add("warning");
 
             let str = "";
-            for (const idx in this._statesSaved)
+            for (const idx in this.#statesSaved)
             {
-                if (this._statesSaved[idx]) continue;
+                if (this.#statesSaved[idx]) continue;
                 let subname = gui.patchView.getSubPatchName(idx);
 
                 if (!subname)
                 {
-                    delete this._statesSaved[idx];
+                    delete this.#statesSaved[idx];
                     this.updateUiLater();
                     continue;
                 }
@@ -234,7 +235,7 @@ export default class SavedState extends Events
             str += "<li class=\"divide\"></li>";
             ele.byId("savestates").innerHTML = str;
 
-            for (const idx in this._statesSaved)
+            for (const idx in this.#statesSaved)
             {
                 const el = ele.byId("clickSave_" + idx);
                 if (el)
@@ -254,10 +255,10 @@ export default class SavedState extends Events
      */
     isSavedSubOp(subOpName)
     {
-        for (const idx in this._statesSaved)
+        for (const idx in this.#statesSaved)
         {
             let subname = gui.patchView.getSubPatchName(idx);
-            if (subOpName == subname) return this._statesSaved[idx] !== false;
+            if (subOpName == subname) return this.#statesSaved[idx] !== false;
         }
         return true;
     }
@@ -267,7 +268,7 @@ export default class SavedState extends Events
      */
     isSavedSubPatch(subPatchId)
     {
-        return this._statesSaved[subPatchId] !== false;
+        return this.#statesSaved[subPatchId] !== false;
     }
 
     updateRestrictionDisplay()
@@ -284,10 +285,10 @@ export default class SavedState extends Events
                 {
                     if (!gui.patchView.patchRenderer.greyOut)
                     {
-                        this._log.log("updaterestrict?!");
+                        this.#log.log("updaterestrict?!");
 
                         let theIdx = null;
-                        for (const idx in this._statesSaved)
+                        for (const idx in this.#statesSaved)
                         {
                             let subname = gui.patchView.getSubPatchName(idx);
                             if (exposeOp.objName == subname)
@@ -315,8 +316,8 @@ export default class SavedState extends Events
 
     get isSaved()
     {
-        for (const idx in this._statesSaved)
-            if (!this._statesSaved[idx]) return false;
+        for (const idx in this.#statesSaved)
+            if (!this.#statesSaved[idx]) return false;
 
         return true;
     }

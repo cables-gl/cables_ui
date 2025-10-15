@@ -1,5 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import { now } from "cables";
+import { Patch, now } from "cables";
 import { CgShader } from "cables-corelibs";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
@@ -164,7 +164,7 @@ export default class Gui extends Events
         /** @type {UiPatch} */
         // @ts-ignore
         this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
-        this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
+        this._patchLoadEndiD = this._corePatch.on(Patch.EVENT_PATCHLOADEND,
             () =>
             {
                 this._corePatch.off(this._patchLoadEndiD);
@@ -176,9 +176,9 @@ export default class Gui extends Events
 
                 this.corePatch().logStartup("Patch loaded");
             });
-        this.on("libLoadError",
 
-            (/** @type {String} */ libName) =>
+        this.on("libLoadError",
+            (libName) =>
             {
                 this.showLibLoadError(libName);
             });
@@ -197,7 +197,7 @@ export default class Gui extends Events
         /** @type {PatchView} */
         this.patchView = new PatchView(this._corePatch);
 
-        this._corePatch.gui = true;
+        this._corePatch.gui = this;
 
         this._jobs = new Jobs();
         this.cmdPalette = new CommandPalette();

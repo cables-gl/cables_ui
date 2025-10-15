@@ -24,11 +24,12 @@ import { CmdTimeline } from "../../commands/cmd_timeline.js";
  */
 class ParamsListener extends Events
 {
+    _log = new Logger("Paramslistener");
+
     constructor(panelid)
     {
         super();
 
-        this._log = new Logger("Paramslistener");
         this.panelId = panelid;
 
         this._watchPorts = [];
@@ -133,7 +134,6 @@ class ParamsListener extends Events
             {
                 port.toggleManual();
             });
-            else this._log.log("cant find multiport");
 
             const elInc = ele.byId("multiport_inc_" + port.op.id + "_" + port.name);
             if (elInc)elInc.addEventListener("click", () =>

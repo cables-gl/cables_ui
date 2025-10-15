@@ -440,7 +440,7 @@ export default class GlCable
 
     get hovering()
     {
-        return this._buttonRect.isHovering() || (this._link._glOpIn && this._link._glOpIn.hovering) || (this._link._glOpOut && this._link._glOpOut.hovering);
+        return this._buttonRect.isHovering() || (this._link.opIn && this._link.opIn.isHovering()) || (this._link.opOut && this._link.opOut.isHovering());
     }
 
     updateColor()
@@ -577,8 +577,8 @@ export default class GlCable
                 gui.patchView.getSelectedOps().length == 1 &&
 
                 (
-                    (this._link._glOpIn.op.id == selectedOp.id) ||
-                    (this._link._glOpOut.op.id == selectedOp.id)
+                    (this._link.opIn.op.id == selectedOp.id) ||
+                    (this._link.opOut.op.id == selectedOp.id)
                 )
             )
             {

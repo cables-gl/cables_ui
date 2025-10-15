@@ -171,6 +171,14 @@
         {
             z-index: $zindex_high;
         }
+        .splitterLeft
+        {
+            margin-left: -4px;//do not overlap with gl
+        }
+        .splitterRight
+        {
+            margin-right: -4px;//do not overlap with gl
+        }
 
         .scrollContainer
         {

@@ -30,7 +30,7 @@ export class glTlKeys extends Events
     static COLOR_HIGHLIGHT = [0.8, 0.8, 0.8, 1];
     static COLOR_SPLINE = [0.4, 0.4, 0.4, 1];
     static COLOR_SPLINE_HIGHLIGHTED = [0.5, 0.5, 0.5, 1];
-    static COLOR_SPLINE_OUTSIDE = [0.0, 0.0, 0.0, 1];
+    static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 1];
 
     /** @type {Anim} */
     #anim = null;
@@ -151,6 +151,7 @@ export class glTlKeys extends Events
         else
             for (let i = 0; i < this.#keys.length; i++)
                 this.#keys[i].show();
+
         this.updateColors();
         this.update();
     }
@@ -214,6 +215,7 @@ export class glTlKeys extends Events
             if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
+
         let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
         if (!this.showKeysAsFrames() && !this.isLayoutGraph()) return 11;
 
@@ -230,11 +232,13 @@ export class glTlKeys extends Events
             this.#disposedWarning++;
             return;
         }
+
         if (!this.shouldDrawSpline() && this.#spline)
         {
             this.#spline.dispose();
             this.#spline = null;
         }
+
         if (this.shouldDrawSpline() && !this.#spline)
         {
             this.#spline = new GlSpline(this.#glTl.splines, this.#port.name);
@@ -480,7 +484,7 @@ export class glTlKeys extends Events
             let ry = y - this.getKeyHeight2() - 2;
             if (this.shouldDrawGraphSpline()) ry = y - this.getKeyWidth2();
 
-            if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
+            if (rx != rx || ry != ry)console.log("garlic nan", animKey.time, this.#glTl.view.offset, rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
             let z = -0.6;
             if (this.#anim.tlActive)z = -0.9;
@@ -539,8 +543,6 @@ export class glTlKeys extends Events
                     h = 88888;
                     y -= h / 2;
                 }
-                console.log("xxxx", kr.x, y, w, h);
-
                 k.areaRect.setSize(w, h);
                 k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
             }
