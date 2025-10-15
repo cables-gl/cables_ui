@@ -1449,6 +1449,16 @@ export class GlTimeline extends Events
         cont.classList.add("linesContainer");
         cont.classList.add("level" + level);
         parentEle.appendChild(cont);
+        if (level == 0)
+        {
+            console.log("level0", item);
+            item.childs.sort((a, b) =>
+            {
+                const op = gui.corePatch().getOpById(a.id);
+                const op2 = gui.corePatch().getOpById(b.id);
+                return (op.uiAttribs.tlOrder || 100) - (op2.uiAttribs.tlOrder || 100);
+            });
+        }
 
         if (item.ports)
         {
