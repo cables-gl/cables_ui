@@ -86,11 +86,9 @@ export class TlKey extends Events
 
     update()
     {
+        if (this.#hidden) return;
+
         const keyRect = this.rect;
-        if (this.#hidden)
-        {
-            return;
-        }
         const key = this.key;
         const isClip = key.getEasing() == Anim.EASING_CLIP;
         if (!this.areaRect && (key.uiAttribs.color || isClip))
@@ -124,7 +122,7 @@ export class TlKey extends Events
             if (key.clipId && this.text.text != key.clipId) this.text.text = key.clipId;
         }
 
-        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && isClip)
+        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && !isClip)
         {
             const bezRect = this.#glTl.rects.createRect({ "name": "bezrect", "draggable": true, "interactive": true });
 

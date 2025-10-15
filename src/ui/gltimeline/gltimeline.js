@@ -456,9 +456,7 @@ export class GlTimeline extends Events
 
             const selops = gui.patchView.getSelectedOps();
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
-            {
                 this.#tlAnims[0].activateSelectedOps(selops);
-            }
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
@@ -548,6 +546,7 @@ export class GlTimeline extends Events
     toggleAutoKeyframe()
     {
         this.keyframeAutoCreate = !this.keyframeAutoCreate;
+        notify("automatically create keys on changes " + this.keyframeAutoCreate);
         this.updateIcons();
         this.saveUserSettings();
     }
@@ -1079,7 +1078,8 @@ export class GlTimeline extends Events
             "undo": () =>
             {
                 for (let i = 0; i < oldSe.length; i++)
-                    oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+                    if (this.#selectedKeys[i])
+                        oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
             },
             redo() {}
         });
@@ -1465,7 +1465,6 @@ export class GlTimeline extends Events
         parentEle.appendChild(cont);
         if (level == 0)
         {
-            console.log("level0", item);
             item.childs.sort((a, b) =>
             {
                 const op = gui.corePatch().getOpById(a.id);
@@ -1518,12 +1517,10 @@ export class GlTimeline extends Events
 
     }
 
-    /**
-     * @param {Op} [gop]
-     */
-    init(gop)
+    init()
     {
         if (this.disposed) return;
+
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
         const q = new patchStructureQuery();
@@ -1544,73 +1541,34 @@ export class GlTimeline extends Events
         }
 
         const hier = q.getHierarchy();
-        console.log("hier", hier);
+        const root = hier[0];
         const hstr = JSON.stringify(hier);
 
+        if (root.childs == 0 && this.isGraphLayout()) return;
         if (hstr == this.lastHierStr) return;
         this.lastHierStr = hstr;
-        console.log("reinit tree", q.getHierarchy());
 
         CABLES.UI.PREVISKEYVAL = null;
-        this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
-        this.splines.setWidth(2);
-        this.splines.setFadeout(false);
-        this.splines.doTessEdges = false;
+        console.log("new spline?Q");
+        if (!this.splines)
+        {
+            this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
+            this.splines.setWidth(2);
+            this.splines.setFadeout(false);
+            this.splines.doTessEdges = false;
+        }
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
-        // let count = 0;
         const ports = [];
 
-        // let ops = gui.patchView.getSelectedOps() || [gop];
-        // console.log("ops", ops, gop);
-        // if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
-
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
-        // ops = gui.corePatch().ops;
-
         this.#firstInit = false;
-
-        const root = hier[0];
-
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
-        // for (let i = 0; i < ops.length; i++)
-        // {
-        //     let numOpAnims = 0;
-        //     let animIndex = 0;
-        //     const op = ops[i];
-        //     for (let j = 0; j < op.portsIn.length; j++)
-        //     {
-        //         if (op.portsIn[j].anim)numOpAnims++;
-        //     }
-        //     for (let j = 0; j < op.portsIn.length; j++)
-        //     {
-        //         if (op.portsIn[j].anim)
-        //         {
-        //             if (this.filter(op.portsIn[j]))
-        //             {
-        //                 ports.push(op.portsIn[j]);
-        //                 if (this.#layout === GlTimeline.LAYOUT_LINES)
-        //                 {
-        //                     const collapsable = numOpAnims > 1 && animIndex == 0;
-        //                     console.log("collaps", collapsable);
-        //                     const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
-        //                     this.#tlAnims.push(a);
-        //                 }
-        //                 count++;
-        //             }
-        //             animIndex++;
-        //         }
-        //     }
-        // }
-
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
-            console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
@@ -1733,7 +1691,7 @@ export class GlTimeline extends Events
 
             this.texts.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2);
             this.textsNoScroll.render(resX, resY, -1, 1, resX / 2);
-            this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+            if (this.splines) this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
             this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
@@ -2845,5 +2803,10 @@ export class GlTimeline extends Events
     removeKeyPreViz()
     {
         CABLES.UI.PREVISKEYVAL = null;
+    }
+
+    addUndoState(anims)
+    {
+
     }
 }

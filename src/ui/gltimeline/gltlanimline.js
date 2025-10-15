@@ -135,8 +135,7 @@ export class glTlAnimLine extends Events
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
-            console.log("animheight", anim.uiAttribs.height);
-            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight(anim.uiAttribs.height);
+            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight();
 
             this.#listeners.push(
                 anim.on(Anim.EVENT_CHANGE, () =>
@@ -276,7 +275,6 @@ export class glTlAnimLine extends Events
     //     {
     //         console.log("folder...");
     //     });
-
     //     this.#titles.push(title);
     //     this.setTitlePos();
     // }
@@ -286,6 +284,7 @@ export class glTlAnimLine extends Events
      */
     activateSelectedOps(ops)
     {
+        console.log("olds", ops);
         for (let i = 0; i < this.#ports.length; i++)
         {
             const act = (ops.indexOf(this.#ports[i].op) != -1);
