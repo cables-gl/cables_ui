@@ -342,11 +342,14 @@ export class glTlKeys extends Events
                 }
 
                 let v = this.#anim.getValue(t);
-
-                if (this.shouldDrawGraphSpline() && v == lv && i < steps - 3)
+                if (this.shouldDrawGraphSpline() && v == lv && i < steps - 3 && i > 1)
                 {
-                    skipped = true;
-                    continue;
+                    let k = this.#anim.getKey(t);
+                    if (k.getEasing() != Anim.EASING_ABSOLUTE)
+                    {
+                        skipped = true;
+                        continue;
+                    }
                 }
 
                 if (skipped)
@@ -444,8 +447,6 @@ export class glTlKeys extends Events
             if (k.cp1r) k.cp1r.setShape(shape);
             if (k.cp2r) k.cp2r.setShape(shape);
 
-            // if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
-            // if (this.animLine.isHidden)col = glTlKeys.COLOR_INIT;
             keyRect.setColorArray(col);
         }
 
@@ -530,7 +531,6 @@ export class glTlKeys extends Events
 
                 let kr2 = null;
                 if (i < this.#keys.length - 1) kr2 = this.#keys[i + 1].rect;
-                // if (i < this.#keys.length - 1) this.#keys[i + 1].rect;
 
                 let w = (kr2 || kr).x - kr.x;
                 if (i == this.#keys.length - 1)w = 9999;
@@ -707,6 +707,7 @@ export class glTlKeys extends Events
                         }
                         if (!this.#glTl.isKeySelected(key))
                         {
+
                             this.#glTl.unselectAllKeysSilent();
                             this.#glTl.selectKey(key, this.anim);
 

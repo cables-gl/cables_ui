@@ -1549,13 +1549,12 @@ export class GlTimeline extends Events
         this.lastHierStr = hstr;
 
         CABLES.UI.PREVISKEYVAL = null;
-        console.log("new spline?Q");
         if (!this.splines)
         {
             this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
             this.splines.setWidth(2);
             this.splines.setFadeout(false);
-            this.splines.doTessEdges = false;
+            this.splines.doTessEdges = true;
         }
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
@@ -1616,15 +1615,8 @@ export class GlTimeline extends Events
         if (this.disposed) return;
         let posy = this.getFirstLinePosy();
 
-        // this.#tlAnims.sort((a,b)=>{})
-
         for (let i = 0; i < this.#tlAnims.length; i++)
-        {
             this.#tlAnims[i].updateGlPos();
-            // this.#tlAnims[i].setPosition(0, posy);
-            // if (this.#tlAnims[i].isVisible)
-            //     posy += this.#tlAnims[i].height;
-        }
 
     }
 
