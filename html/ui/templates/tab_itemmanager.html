@@ -307,7 +307,7 @@
             File Ops
             <br/><br/>
             {{#each file.ops}}
-                <a class="button" onclick="gui.patchView.addAssetOpAuto('{{../assetPath}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
+                <a class="cblbutton" onclick="gui.patchView.addAssetOpAuto('{{../assetPath}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
                 <br/><br/>
             {{/each}}
         {{/if}}
@@ -316,7 +316,7 @@
             File Tools
             <br/><br/>
             {{#each file.converters}}
-                <a class="button" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}', '{{ ../file.fileDb.name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
+                <a class="cblbutton" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}', '{{ ../file.fileDb.name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
                 <br/>
             {{/each}}
         {{/if}}
@@ -325,7 +325,7 @@
         {{#if isReference}}
         {{else}}
         <br/><br/>
-        <span class="button" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}">
+        <span class="cblbutton" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}">
             <a class="info icon icon-1x icon-trash"></a>Delete File
 
         </span>
