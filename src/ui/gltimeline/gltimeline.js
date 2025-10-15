@@ -323,8 +323,12 @@ export class GlTimeline extends Events
         });
         this.#elTimeDisplay.addEventListener("pointerleave", () =>
         {
-            clearTimeout(this.#elInfoOverlayTimeout);
-            this.#elInfoOverlay.classList.add("hidden");
+            setTimeout(() =>
+            {
+
+                clearTimeout(this.#elInfoOverlayTimeout);
+                this.#elInfoOverlay.classList.add("hidden");
+            }, 10000);
         });
 
         this.tlTimeScrollContainer = document.createElement("div");

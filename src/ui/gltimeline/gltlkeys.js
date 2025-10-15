@@ -27,7 +27,7 @@ export class glTlKeys extends Events
     static COLOR_NORMAL = [0.7, 0.7, 0.7, 1];
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
-    static COLOR_HIGHLIGHT = [0.8, 0.8, 0.8, 1];
+    // static COLOR_HIGHLIGHT = [0.0, 0.8, 0.8, 1];
     static COLOR_SPLINE = [0.4, 0.4, 0.4, 1];
     static COLOR_SPLINE_HIGHLIGHTED = [0.5, 0.5, 0.5, 1];
     static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 1];
@@ -444,7 +444,7 @@ export class glTlKeys extends Events
             if (k.cp1r) k.cp1r.setShape(shape);
             if (k.cp2r) k.cp2r.setShape(shape);
 
-            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
+            // if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             // if (this.animLine.isHidden)col = glTlKeys.COLOR_INIT;
             keyRect.setColorArray(col);
         }
