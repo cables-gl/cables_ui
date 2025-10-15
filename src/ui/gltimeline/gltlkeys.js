@@ -630,7 +630,6 @@ export class glTlKeys extends Events
             let oldValues = {};
             if (!key.anim.uiAttribs.readOnly)
             {
-
                 keyRect.draggableMove = true;
                 keyRect.on(GlRect.EVENT_POINTER_HOVER, (_r, e) =>
                 {
@@ -772,14 +771,15 @@ export class glTlKeys extends Events
                     this.#glTl.needsUpdateAll = "dragged";
                     glTlKeys.dragStarted = false;
 
-                    undo.add({
-                        "title": "timeline move keys",
-                        "undo": () =>
-                        {
-                            this.#glTl.deserializeKeys(oldValues);
-                        },
-                        redo() {}
-                    });
+                    // undo.add({
+                    //     "title": "timeline move keys",
+                    //     "undo": () =>
+                    //     {
+                    //         console.log("oldvalu",oldValues)
+                    //         this.#glTl.deserializeKeys(oldValues);
+                    //     },
+                    //     redo() {}
+                    // });
                 });
             }
             tlKey.update();

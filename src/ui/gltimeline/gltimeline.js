@@ -1071,14 +1071,24 @@ export class GlTimeline extends Events
     dragSelectedKeys(deltaTime, deltaValue, sort)
     {
         if (deltaTime == 0 && deltaValue == 0) return;
+
+        const oldSe = this.#selectedKeys;
+
+        undo.add({
+            "title": "timeline move keys",
+            "undo": () =>
+            {
+                for (let i = 0; i < oldSe.length; i++)
+                    oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+            },
+            redo() {}
+        });
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
+            if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
 
-            if (this.#selectedKeys[i].temp.preDragTime === undefined)
-            {
-                this.predragSelectedKeys();
-            }
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
@@ -2123,14 +2133,18 @@ export class GlTimeline extends Events
                         const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
                         const notfoundallAnims = deser.notfoundallAnims;
 
-                        if (notfoundallAnims)
-                        {
-                            notifyWarn("could not find all anims for pasted keys");
-                        }
-                        else
-                        {
-                            notify(json.keys.length + " keys pasted");
-                        }
+                        if (notfoundallAnims) notifyWarn("could not find all anims for pasted keys");
+                        else notify(json.keys.length + " keys pasted");
+
+                        undo.add({
+                            "title": "timeline paste keys keys",
+                            undo()
+                            {
+                                for (let i = 0; i < deser.keys.length; i++)
+                                    deser.keys[i].delete();
+                            },
+                            redo() { }
+                        });
 
                         const animPorts = gui.corePatch().getAllAnimPorts();
                         for (let i = 0; i < animPorts.length; i++)
@@ -2146,7 +2160,6 @@ export class GlTimeline extends Events
             catch (e)
             {
                 notifyWarn("Timeline paste failed");
-
             }
         }
     }
@@ -2168,10 +2181,7 @@ export class GlTimeline extends Events
             undo()
             {
                 for (let i = 0; i < newKeys.length; i++)
-                {
                     newKeys[i].delete();
-                }
-                // key.set(oldValues);
             },
             redo()
             {
