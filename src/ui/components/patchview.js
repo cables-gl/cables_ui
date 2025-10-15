@@ -155,7 +155,11 @@ export default class PatchView extends Events
         (function (opname, _opid)
         {
             const oldValues = {};
-            for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+            for (let i = 0; i < op.portsIn.length; i++)
+            {
+                oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+                if (op.portsIn[i].anim) oldValues[op.portsIn[i].name + "_anim"] = op.portsIn[i].anim.getSerialized();
+            }
 
             undo.add({
                 "title": "delete op",
@@ -174,6 +178,12 @@ export default class PatchView extends Events
                             {
                                 port.set(oldValues[i]);
                                 gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
+                                if (oldValues[i + "_anim"])
+                                {
+                                    port.setAnimated(true);
+                                    port.anim.deserialize(oldValues[i + "_anim"]);
+
+                                }
                             }
                         }
                     }
