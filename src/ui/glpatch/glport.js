@@ -125,6 +125,7 @@ export default class GlPort
         if (attribs.hasOwnProperty("expose")) this._updateColor();
 
         if (attribs.hasOwnProperty("addPort")) this._updateColor();
+        if (attribs.hasOwnProperty("greyout")) this._updateColor();
 
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
@@ -137,6 +138,7 @@ export default class GlPort
 
             this.updateSize();
         }
+
     }
 
     updateShape()
@@ -158,7 +160,6 @@ export default class GlPort
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
-
         const showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
 
         if (!this.#dot && showDot)
@@ -205,6 +206,8 @@ export default class GlPort
 
         if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
         else this.#rect.setOpacity(1);
+
+        if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
 
         if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
