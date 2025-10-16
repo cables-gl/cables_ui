@@ -36,7 +36,7 @@ export default class ModalDialog extends Events
         super();
         this._log = new Logger("ModalDialog");
 
-        if (window.gui && gui.currentModal) gui.currentModal.close();
+        if (gui && gui.currentModal) gui.currentModal.close();
         this._options = options;
         this._options.okButton = this._options.okButton || {};
         if (!this._options.okButton.text) this._options.okButton.text = "Ok";
@@ -58,7 +58,7 @@ export default class ModalDialog extends Events
 
         ele.byId("modalclose").style.display = "block";
 
-        if (window.gui) gui.currentModal = this;
+        if (gui) gui.currentModal = this;
 
         this._bg.on("hide", this.close.bind(this));
     }
@@ -67,7 +67,7 @@ export default class ModalDialog extends Events
     {
         this._ele.remove();
         this._bg.hide();
-        if (window.gui) gui.currentModal = null;
+        if (gui) gui.currentModal = null;
         this.emitEvent("onClose", this);
     }
 
@@ -316,12 +316,9 @@ export default class ModalDialog extends Events
         {
             let state = checkbox.checked;
             if (state)
-            {
                 if (checkbox.value && (checkbox.value !== "on"))
-                {
                     state = checkbox.value;
-                }
-            }
+
             checkboxStates[checkbox.getAttribute("name")] = state;
         });
         return checkboxStates;
