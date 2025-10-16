@@ -481,6 +481,7 @@ export default class GlOp extends Events
         {
             if (this.#glPatch._portDragLine.isActive && this.glPatch.hoverPort == null)
             {
+                gui.showInfo("link to any port!!!!!!!");
                 this.op.setUiAttrib({ "highlighted": true });
             }
             if (this.glPatch.hoverPort != null)
