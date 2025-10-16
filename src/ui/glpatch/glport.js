@@ -126,6 +126,7 @@ export default class GlPort
 
         if (attribs.hasOwnProperty("addPort")) this._updateColor();
         if (attribs.hasOwnProperty("greyout")) this._updateColor();
+        if (attribs.hasOwnProperty("hover")) this.updateSize();
 
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
@@ -244,6 +245,11 @@ export default class GlPort
             h = 0;
             if (this.#port.direction == PortDir.in) y = 0;
             else y = this.#glop.h;
+        }
+        if (this.#port.uiAttribs.hover)
+        {
+            y -= h;
+            h *= 2;
         }
 
         this.updateShape();

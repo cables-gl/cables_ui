@@ -2362,4 +2362,18 @@ export default class Gui extends Events
             ele.byId("cablescanvas").style.opacity = "0.0000000001";
         document.body.style["pointer-events"] = "none";
     }
+
+    hoverPortStart(id, opname, portname)
+    {
+        this.lastHoverPort = this.corePatch().getOpById(id)?.getPortByName(portname);
+        this.lastHoverPort.setUiAttribs({ "hover": true });
+        this.opDocs.showPortDoc(opname, portname);
+    }
+
+    hoverPortEnd()
+    {
+        if (this.lastHoverPort)
+            this.lastHoverPort.setUiAttribs({ "hover": false });
+
+    }
 }
