@@ -315,6 +315,7 @@ export default class GlPort
             "clientY": this.#glPatch.viewBox.mouseY - 25 + gui.patchView.boundingRect.top
         };
 
+        this.#glPatch.hoverPort = this;
         this.#glPatch.emitEvent("mouseOverPort", this.#glop.id, this.#port.name);
 
         for (const i in this.#glop._links)
@@ -330,6 +331,7 @@ export default class GlPort
      */
     _onUnhover(_rect)
     {
+        this.#glPatch.hoverPort = null;
         this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
@@ -338,6 +340,7 @@ export default class GlPort
         for (const i in this.#glop._links)
             this.#glop._links[i].highlight(false);
 
+        this.#glPatch.emitEvent("mouseOverPortOut", this.#glop.id, this.#port.name);
         this._updateColor();
     }
 
