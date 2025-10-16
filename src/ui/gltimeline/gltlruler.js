@@ -214,6 +214,9 @@ export class glTlRuler extends Events
         const timeLeftHour = Math.floor(this.#glTl.view.timeLeft / 3600) * 3600;
         const timeRightHour = Math.ceil(this.#glTl.view.timeRight / 3600) * 3600;
 
+        const timeLeftDay = Math.floor(this.#glTl.view.timeLeft / (24 * 3600)) * (24 * 3600);
+        const timeRightDay = Math.ceil(this.#glTl.view.timeRight / (24 * 3600)) * (24 * 3600);
+
         const dur = this.#glTl.view.visibleTime;
 
         const widthOneFrame = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
@@ -229,6 +232,7 @@ export class glTlRuler extends Events
         const widthTenMinutes = this.#glTl.view.timeToPixel(600);
         const widthHalfHour = this.#glTl.view.timeToPixel(1800);
         const widthOneHour = this.#glTl.view.timeToPixel(3600);
+        const widthOneDay = this.#glTl.view.timeToPixel(24 * 3600);
 
         this.count = 0;
         this.titleCounter = 0;
@@ -291,6 +295,9 @@ export class glTlRuler extends Events
         if (fade)
             for (let s = timeLeftHour; s < timeRightHour; s += 3600) this.addMarker(s, s / 3600 + "h", this.between(widthOneHour, minWidth, maxWidth), false, fade);
 
+        fade = this.between(widthOneDay, 50, 100);
+        if (fade)
+            for (let s = timeLeftDay; s < timeRightDay; s += (24 * 3600)) this.addMarker(s, s / (24 * 3600) + "d", this.between(widthOneDay, minWidth, maxWidth), false, fade);
         /// /////////////////////////////////////////////////////////////
 
         for (let i = this.count; i < this.marks.length; i++)

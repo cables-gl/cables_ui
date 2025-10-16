@@ -135,8 +135,7 @@ export class glTlAnimLine extends Events
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
-            console.log("animheight", anim.uiAttribs.height);
-            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight(anim.uiAttribs.height);
+            if (!this.isGraphLayout() && i == 0 && anim.uiAttribs.height) this.setHeight();
 
             this.#listeners.push(
                 anim.on(Anim.EVENT_CHANGE, () =>
@@ -276,7 +275,6 @@ export class glTlAnimLine extends Events
     //     {
     //         console.log("folder...");
     //     });
-
     //     this.#titles.push(title);
     //     this.setTitlePos();
     // }
@@ -286,6 +284,7 @@ export class glTlAnimLine extends Events
      */
     activateSelectedOps(ops)
     {
+        console.log("olds", ops);
         for (let i = 0; i < this.#ports.length; i++)
         {
             const act = (ops.indexOf(this.#ports[i].op) != -1);
@@ -382,7 +381,7 @@ export class glTlAnimLine extends Events
         {
             for (let i = 0; i < this.#titles.length; i++)
             {
-                this.#titles[i]?.setHeight(glTlAnimLine.DEFAULT_HEIGHT);
+                this.#titles[i]?.setHeight(glTlAnimLine.SIZES[0]);
             }
         }
         else
@@ -404,6 +403,7 @@ export class glTlAnimLine extends Events
                 this.childLines[i].show();
             }
         }
+
         this.#glTl.setPositions();
     }
 
@@ -431,7 +431,6 @@ export class glTlAnimLine extends Events
                 if (this.isHidden)
                 {
                     this.setHeight();
-                    // this.#glRectKeysBg.setSize(0, 0);
                 }
                 else
                 {
@@ -490,20 +489,17 @@ export class glTlAnimLine extends Events
         this.setTitlePos();
     }
 
+    get drawAreaHeight()
+    {
+        return this.pixelHeight - 4;// todo whyyyyyyyyyy
+    }
+
     get height()
     {
         this.setHeight();
         return this.pixelHeight;
-        // if (this.isGraphLayout()) return this.#glTl.height;
-        // else
-        // {
-        //     return glTlAnimLine.SIZES[this.lineHeight];
-        // }
     }
 
-    /**
-     * @param {number} [h]
-     */
     setHeight()
     {
         let h = 0;

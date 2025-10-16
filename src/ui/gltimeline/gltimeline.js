@@ -323,8 +323,12 @@ export class GlTimeline extends Events
         });
         this.#elTimeDisplay.addEventListener("pointerleave", () =>
         {
-            clearTimeout(this.#elInfoOverlayTimeout);
-            this.#elInfoOverlay.classList.add("hidden");
+            setTimeout(() =>
+            {
+
+                clearTimeout(this.#elInfoOverlayTimeout);
+                this.#elInfoOverlay.classList.add("hidden");
+            }, 10000);
         });
 
         this.tlTimeScrollContainer = document.createElement("div");
@@ -452,9 +456,7 @@ export class GlTimeline extends Events
 
             const selops = gui.patchView.getSelectedOps();
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
-            {
                 this.#tlAnims[0].activateSelectedOps(selops);
-            }
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
@@ -544,6 +546,7 @@ export class GlTimeline extends Events
     toggleAutoKeyframe()
     {
         this.keyframeAutoCreate = !this.keyframeAutoCreate;
+        notify("automatically create keys on changes " + this.keyframeAutoCreate);
         this.updateIcons();
         this.saveUserSettings();
     }
@@ -1067,14 +1070,25 @@ export class GlTimeline extends Events
     dragSelectedKeys(deltaTime, deltaValue, sort)
     {
         if (deltaTime == 0 && deltaValue == 0) return;
+
+        const oldSe = this.#selectedKeys;
+
+        undo.add({
+            "title": "timeline move keys",
+            "undo": () =>
+            {
+                for (let i = 0; i < oldSe.length; i++)
+                    if (this.#selectedKeys[i])
+                        oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+            },
+            redo() {}
+        });
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
+            if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
 
-            if (this.#selectedKeys[i].temp.preDragTime === undefined)
-            {
-                this.predragSelectedKeys();
-            }
             this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
@@ -1449,6 +1463,15 @@ export class GlTimeline extends Events
         cont.classList.add("linesContainer");
         cont.classList.add("level" + level);
         parentEle.appendChild(cont);
+        if (level == 0)
+        {
+            item.childs.sort((a, b) =>
+            {
+                const op = gui.corePatch().getOpById(a.id);
+                const op2 = gui.corePatch().getOpById(b.id);
+                return (op.uiAttribs.tlOrder || 100) - (op2.uiAttribs.tlOrder || 100);
+            });
+        }
 
         if (item.ports)
         {
@@ -1494,12 +1517,10 @@ export class GlTimeline extends Events
 
     }
 
-    /**
-     * @param {Op} [gop]
-     */
-    init(gop)
+    init()
     {
         if (this.disposed) return;
+
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
         const q = new patchStructureQuery();
@@ -1520,73 +1541,33 @@ export class GlTimeline extends Events
         }
 
         const hier = q.getHierarchy();
-        console.log("hier", hier);
+        const root = hier[0];
         const hstr = JSON.stringify(hier);
 
+        if (root.childs == 0 && this.isGraphLayout()) return;
         if (hstr == this.lastHierStr) return;
         this.lastHierStr = hstr;
-        console.log("reinit tree", q.getHierarchy());
 
         CABLES.UI.PREVISKEYVAL = null;
-        this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
-        this.splines.setWidth(2);
-        this.splines.setFadeout(false);
-        this.splines.doTessEdges = false;
+        if (!this.splines)
+        {
+            this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
+            this.splines.setWidth(2);
+            this.splines.setFadeout(false);
+            this.splines.doTessEdges = true;
+        }
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
-        // let count = 0;
         const ports = [];
 
-        // let ops = gui.patchView.getSelectedOps() || [gop];
-        // console.log("ops", ops, gop);
-        // if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
-
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
-        // ops = gui.corePatch().ops;
-
         this.#firstInit = false;
-
-        const root = hier[0];
-
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
-        // for (let i = 0; i < ops.length; i++)
-        // {
-        //     let numOpAnims = 0;
-        //     let animIndex = 0;
-        //     const op = ops[i];
-        //     for (let j = 0; j < op.portsIn.length; j++)
-        //     {
-        //         if (op.portsIn[j].anim)numOpAnims++;
-        //     }
-        //     for (let j = 0; j < op.portsIn.length; j++)
-        //     {
-        //         if (op.portsIn[j].anim)
-        //         {
-        //             if (this.filter(op.portsIn[j]))
-        //             {
-        //                 ports.push(op.portsIn[j]);
-        //                 if (this.#layout === GlTimeline.LAYOUT_LINES)
-        //                 {
-        //                     const collapsable = numOpAnims > 1 && animIndex == 0;
-        //                     console.log("collaps", collapsable);
-        //                     const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
-        //                     this.#tlAnims.push(a);
-        //                 }
-        //                 count++;
-        //             }
-        //             animIndex++;
-        //         }
-        //     }
-        // }
-
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
-            console.log("reinint");
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
@@ -1635,12 +1616,7 @@ export class GlTimeline extends Events
         let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
-        {
             this.#tlAnims[i].updateGlPos();
-            // this.#tlAnims[i].setPosition(0, posy);
-            // if (this.#tlAnims[i].isVisible)
-            //     posy += this.#tlAnims[i].height;
-        }
 
     }
 
@@ -1707,7 +1683,7 @@ export class GlTimeline extends Events
 
             this.texts.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2);
             this.textsNoScroll.render(resX, resY, -1, 1, resX / 2);
-            this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+            if (this.splines) this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
             this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
@@ -2107,14 +2083,18 @@ export class GlTimeline extends Events
                         const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
                         const notfoundallAnims = deser.notfoundallAnims;
 
-                        if (notfoundallAnims)
-                        {
-                            notifyWarn("could not find all anims for pasted keys");
-                        }
-                        else
-                        {
-                            notify(json.keys.length + " keys pasted");
-                        }
+                        if (notfoundallAnims) notifyWarn("could not find all anims for pasted keys");
+                        else notify(json.keys.length + " keys pasted");
+
+                        undo.add({
+                            "title": "timeline paste keys keys",
+                            undo()
+                            {
+                                for (let i = 0; i < deser.keys.length; i++)
+                                    deser.keys[i].delete();
+                            },
+                            redo() { }
+                        });
 
                         const animPorts = gui.corePatch().getAllAnimPorts();
                         for (let i = 0; i < animPorts.length; i++)
@@ -2130,7 +2110,6 @@ export class GlTimeline extends Events
             catch (e)
             {
                 notifyWarn("Timeline paste failed");
-
             }
         }
     }
@@ -2152,10 +2131,7 @@ export class GlTimeline extends Events
             undo()
             {
                 for (let i = 0; i < newKeys.length; i++)
-                {
                     newKeys[i].delete();
-                }
-                // key.set(oldValues);
             },
             redo()
             {
@@ -2819,5 +2795,10 @@ export class GlTimeline extends Events
     removeKeyPreViz()
     {
         CABLES.UI.PREVISKEYVAL = null;
+    }
+
+    addUndoState(anims)
+    {
+
     }
 }
