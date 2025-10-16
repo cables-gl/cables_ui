@@ -477,7 +477,7 @@ export default class GlOp extends Events
 
     _onMouseHover()
     {
-        if (this.#glRectBg.isHovering())
+        if (this.#glRectBg?.isHovering())
         {
             if (this.#glPatch._portDragLine.isActive && this.glPatch.hoverPort == null)
             {
