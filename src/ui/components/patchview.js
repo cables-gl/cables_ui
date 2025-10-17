@@ -1960,6 +1960,12 @@ export default class PatchView extends Events
         undo.endGroup(undoGroup, "Unlink Port");
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {string} opid
+     * @param {string} pid
+     * @param {string} op2id
+     */
     linkPortToOp(e, opid, pid, op2id)
     {
         let op1 = this._p.getOpById(opid);
@@ -1998,6 +2004,12 @@ export default class PatchView extends Events
         }
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {string} opid
+     * @param {string[]} opids
+     * @param {string[]} portnames
+     */
     linkPortsToOp(e, opid, opids, portnames)
     {
         if (!opids || opids.length == 0 || !portnames || portnames.length == 0) return;

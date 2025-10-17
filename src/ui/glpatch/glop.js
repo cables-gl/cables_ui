@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port } from "cables";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -15,6 +16,7 @@ import { PortDir, portType } from "../core_constants.js";
 import { UiOp } from "../core_extend_op.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlLink from "./gllink.js";
+import SuggestionDialog from "../components/suggestiondialog.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -70,7 +72,7 @@ export default class GlOp extends Events
     _glRectSelected = null;
 
     /** @type {GlRect} */
-    _glRectHighlighted = null;
+    #glRectHighlighted = null;
 
     /** @type {GlRect} */
     #glRectBg = null;
@@ -479,22 +481,41 @@ export default class GlOp extends Events
     {
         if (this.#glRectBg?.isHovering())
         {
-            if (this.#glPatch._portDragLine.isActive && this.glPatch.hoverPort == null)
+            if (this.#glPatch.portDragLine?.isActive && this.glPatch.hoverPort == null)
             {
-                gui.showInfo("link to any port!!!!!!!");
-                this.op.setUiAttrib({ "highlighted": true });
+                if (!this.#glPatch.suggestionTeaser)
+                    this.#glPatch.suggestionTeaser = new SuggestionDialog([
+                        { "name": "" },
+                        { "name": "" },
+                        { "name": "" }
+                    ],
+                    null,
+                    { "clientX": 0, "clientY": 0 },
+                    null,
+                    null,
+                    null,
+                    null,
+                    { "noAnim": false, "tease": true, "hide": true, "opacity": 0.5 });
+
+                this.#glPatch.suggestionTeaser.show();
+                this.#glPatch.suggestionTeaser.setPos(this.#glPatch.viewBox.mouseX, this.#glPatch.viewBox.mouseY);
+                // this.op.setUiAttrib({ "highlighted": true });
+                // this.#glRectHighlighted.setColorArray(this.#glPatch.portDragLine.color);
+                console.log("thi", this.#glPatch.portDragLine.color);
             }
-            if (this.glPatch.hoverPort != null)
-            {
-                this._onMouseUnHover();
-            }
+            if (this.glPatch.hoverPort != null) this._onMouseUnHover();
         }
     }
 
     _onMouseUnHover()
     {
-        this.op.setUiAttrib({ "highlighted": false });
+        // this.op.setUiAttrib({ "highlighted": false });
 
+        if (this.#glPatch.suggestionTeaser)
+        {
+            this.#glPatch.suggestionTeaser.close();
+            this.#glPatch.suggestionTeaser = null;
+        }
     }
 
     /**
@@ -849,7 +870,7 @@ export default class GlOp extends Events
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
-        if (this._glRectHighlighted) this._glRectHighlighted = this._glRectHighlighted.dispose();
+        if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
         if (this.#glTitle) this.#glTitle = this.#glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this._titleExt) this._titleExt = this._titleExt.dispose();
@@ -1169,21 +1190,22 @@ export default class GlOp extends Events
         if (this._disposed) return;
         if (this.uiAttribs.highlighted)
         {
-            if (!this._glRectHighlighted && this.isInCurrentSubPatch())
-                this._glRectHighlighted = this.#instancer.createRect({ "name": "oploading", "draggable": false, "interactive": false });
+            if (!this.#glRectHighlighted && this.isInCurrentSubPatch())
+                this.#glRectHighlighted = this.#instancer.createRect({ "name": "oploading", "draggable": false, "interactive": false });
 
-            if (this._glRectHighlighted)
+            if (this.#glRectHighlighted)
             {
-                if (this.uiAttribs.highlightedMore) this._glRectHighlighted.setColor(0.8, 0.8, 0.8, 1);
-                else this._glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
+                if (this.#glRectBg?.isHovering() && this.#glPatch.portDragLine?.isActive && this.glPatch.hoverPort == null) this.#glRectHighlighted.setColorArray(this.#glPatch.portDragLine.color);
+                else if (this.uiAttribs.highlightedMore) this.#glRectHighlighted.setColor(0.8, 0.8, 0.8, 1);
+                else this.#glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
 
-                this._glRectHighlighted.setSize(this.#glRectBg.w + 8, this.#glRectBg.h + 8);
-                this._glRectHighlighted.setPosition(this.#glRectBg.x - 4, this.#glRectBg.y - 4, this.#glRectBg.z + 0.3);
-                this._glRectHighlighted.visible = true;
+                this.#glRectHighlighted.setSize(this.#glRectBg.w + 8, this.#glRectBg.h + 8);
+                this.#glRectHighlighted.setPosition(this.#glRectBg.x - 4, this.#glRectBg.y - 4, this.#glRectBg.z + 0.3);
+                this.#glRectHighlighted.visible = true;
 
             }
         }
-        if (this._glRectHighlighted && !this.uiAttribs.highlighted) this._glRectHighlighted = this._glRectHighlighted.dispose();
+        if (this.#glRectHighlighted && !this.uiAttribs.highlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
     }
 
     _updateIndicators()

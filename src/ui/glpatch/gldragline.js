@@ -30,7 +30,7 @@ export default class GlDragLine
 
     _startGlPorts = [];
     _lineIndices = [];
-    _color = [1, 1, 1, 1];
+    color = [1, 1, 1, 1];
 
     _x = 0;
     _y = 0;
@@ -298,7 +298,7 @@ export default class GlDragLine
                         this._x, this._y, this._z,
                     ]);
 
-                this.#splineDrawer.setSplineColor(this._splineIdx, this._color);
+                this.#splineDrawer.setSplineColor(this._splineIdx, this.color);
             }
         }
     }
@@ -334,10 +334,10 @@ export default class GlDragLine
      */
     setColor(rgba)
     {
-        this._color = rgba;
+        this.color = rgba;
         for (let i = 0; i < this._lineIndices.length; i++)
-            this.#splineDrawer.setSplineColor(this._lineIndices[i], this._color);
+            this.#splineDrawer.setSplineColor(this._lineIndices[i], this.color);
 
-        this.#splineDrawer.setSplineColor(this._splineIdx, this._color);
+        this.#splineDrawer.setSplineColor(this._splineIdx, this.color);
     }
 }

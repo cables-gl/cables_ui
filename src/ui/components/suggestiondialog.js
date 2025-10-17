@@ -25,6 +25,9 @@ import { gui } from "../gui.js";
  */
 export default class SuggestionDialog
 {
+    #eleDialog;
+    #action;
+    #cb;
 
     /**
      * @param {SuggestionItem[]} suggestions
@@ -35,17 +38,23 @@ export default class SuggestionDialog
      * @param {boolean} [_showSelect]
      * @param {Function} [cbCancel]
      */
-    constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel)
+    constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel, options = {})
     {
-        this._cb = cb;
-        this._action = _action;
-        this._eleDialog = ele.byId("suggestionDialog");
-        this._bg = new ModalBackground();
-        this._bg.on("hide", () =>
+        this.#cb = cb;
+        this.#action = _action;
+        this.#eleDialog = document.createElement("div");// ele.byId("suggestionDialog");
+        document.body.appendChild(this.#eleDialog);
+        this.#eleDialog.classList.add("suggestionDialog");
+
+        if (!options.tease)
         {
-            this.close();
-            if (cbCancel)cbCancel();
-        });
+            this._bg = new ModalBackground();
+            this._bg.on("hide", () =>
+            {
+                this.close();
+                if (cbCancel)cbCancel();
+            });
+        }
 
         this.doShowSelect = _showSelect;
 
@@ -72,17 +81,18 @@ export default class SuggestionDialog
             if (suggestions[i].name) suggestions[i].shortName = suggestions[i].name;
         }
 
-        this._eleDialog.innerHTML = getHandleBarHtml("suggestions", {
+        this.#eleDialog.innerHTML = getHandleBarHtml("suggestions", {
             suggestions,
             _showSelect
         });
-        this._bg.show();
+        if (this._bg) this._bg.show();
 
-        ele.show(this._eleDialog);
+        if (!options.hide) ele.show(this.#eleDialog);
 
-        this._eleDialog.style.left = mouseEvent.clientX + "px";
-        this._eleDialog.style.top = mouseEvent.clientY + "px";
+        this.#eleDialog.style.left = mouseEvent.clientX + "px";
+        this.#eleDialog.style.top = mouseEvent.clientY + "px";
 
+        if (options.opacity) this.#eleDialog.style.opacity = options.opacity;
         for (let i = 0; i < suggestions.length; i++)
         {
             suggestions[i].rot = (((i) - (suggestions.length / 2)) * sugDegree);
@@ -90,18 +100,20 @@ export default class SuggestionDialog
 
             suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
-            const sugEle = ele.byId("suggestion" + i);
+            // const sugEle = ele.byId("suggestion" + i);
+            const sugEle = this.#eleDialog.getElementsByClassName("suggestion" + i)[0];
 
             if (suggestions[i].class)sugEle.classList.add(suggestions[i].class);
 
-            sugEle.animate([
-                { "left": -left + "px", "opacity": 0 },
-                { "left": 0 + "px", "opacity": 1 },
-            ], {
-                "duration": 150 + i * 50,
-                "easing": "ease-out",
-                "iterations": 1,
-            });
+            if (!options.noAnim)
+                sugEle.animate([
+                    { "left": -left + "px", "opacity": 0 },
+                    { "left": 0 + "px", "opacity": 1 },
+                ], {
+                    "duration": 150 + i * 50,
+                    "easing": "ease-out",
+                    "iterations": 1,
+                });
 
             suggestions[i].id = i;
         }
@@ -109,24 +121,45 @@ export default class SuggestionDialog
 
     close()
     {
-        this._eleDialog.innerHTML = "";
+        this.#eleDialog.innerHTML = "";
 
-        ele.hide(this._eleDialog);
-        this._bg.hide();
+        ele.hide(this.#eleDialog);
+        if (this._bg) this._bg.hide();
 
         CABLES.UI.suggestions = null;
         gui.patchView.focus();
+        this.#eleDialog.remove();
     }
 
     showSelect()
     {
-        if (this._cb) this._cb();
+        if (this.#cb) this.#cb();
         else this.close();
+    }
+
+    show()
+    {
+        ele.show(this.#eleDialog);
+    }
+
+    hide()
+    {
+        ele.hide(this.#eleDialog);
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    setPos(x, y)
+    {
+        this.#eleDialog.style.left = x + "px";
+        this.#eleDialog.style.top = y + "px";
     }
 
     action(id)
     {
         this.close();
-        this._action(id);
+        this.#action(id);
     }
 }
