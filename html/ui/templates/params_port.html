@@ -25,7 +25,7 @@
     </tr>
 {{/if}}
 
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="paramport_{{panelid}}_{{port.id}} {{#if port.uiAttribs.hideParam}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="paramport_{{panelid}}_{{port.id}} {{#if port.uiAttribs.hideParam}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}" onmouseout="gui.hoverPortEnd()" onmouseover="gui.hoverPortStart('{{op.id}}','{{op.objName}}','{{port.name}}');">
 
 
     {{#if port.uiAttribs.multiPort}}

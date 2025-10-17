@@ -125,6 +125,8 @@ export default class GlPort
         if (attribs.hasOwnProperty("expose")) this._updateColor();
 
         if (attribs.hasOwnProperty("addPort")) this._updateColor();
+        if (attribs.hasOwnProperty("greyout")) this._updateColor();
+        if (attribs.hasOwnProperty("hover")) this.updateSize();
 
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
@@ -137,6 +139,7 @@ export default class GlPort
 
             this.updateSize();
         }
+
     }
 
     updateShape()
@@ -158,7 +161,6 @@ export default class GlPort
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
-
         const showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
 
         if (!this.#dot && showDot)
@@ -206,6 +208,8 @@ export default class GlPort
         if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
         else this.#rect.setOpacity(1);
 
+        if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
+
         if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
 
@@ -241,6 +245,11 @@ export default class GlPort
             h = 0;
             if (this.#port.direction == PortDir.in) y = 0;
             else y = this.#glop.h;
+        }
+        if (this.#port.uiAttribs.hover)
+        {
+            y -= h;
+            h *= 2;
         }
 
         this.updateShape();
@@ -306,6 +315,7 @@ export default class GlPort
             "clientY": this.#glPatch.viewBox.mouseY - 25 + gui.patchView.boundingRect.top
         };
 
+        this.#glPatch.hoverPort = this;
         this.#glPatch.emitEvent("mouseOverPort", this.#glop.id, this.#port.name);
 
         for (const i in this.#glop._links)
@@ -321,6 +331,7 @@ export default class GlPort
      */
     _onUnhover(_rect)
     {
+        this.#glPatch.hoverPort = null;
         this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
@@ -329,6 +340,7 @@ export default class GlPort
         for (const i in this.#glop._links)
             this.#glop._links[i].highlight(false);
 
+        this.#glPatch.emitEvent("mouseOverPortOut", this.#glop.id, this.#port.name);
         this._updateColor();
     }
 

@@ -26,7 +26,7 @@
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
 
         {{#compare port.uiAttribs.display '==' 'button' }}
-            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                 {{#if port.uiAttribs.buttonTitle }}
                     {{port.uiAttribs.buttonTitle}}
                 {{else}}
@@ -77,7 +77,7 @@
 
                 {{#compare port.uiAttribs.display '==' 'button' }}
                 </td><td>
-                    <span tabindex="0"  class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+                    <span tabindex="0"  class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                         {{#if port.uiAttribs.buttonTitle }}
                             {{port.uiAttribs.buttonTitle}}
                         {{else}}

@@ -209,6 +209,17 @@ export default class GlOp extends Events
 
         this._initGl();
 
+        this.#glPatch.on("mouseOverPort", (_num) =>
+        {
+            this._onMouseHover();
+
+        });
+        this.#glPatch.on("mouseOverPortOut", (_num) =>
+        {
+            this._onMouseHover();
+
+        });
+
         this.#glPatch.on("selectedOpsChanged", (_num) =>
         {
             if (!this.#visible) return;
@@ -251,6 +262,9 @@ export default class GlOp extends Events
             this.#glRectBg.on(GlRect.EVENT_DRAG, this._onBgRectDrag.bind(this));
             this.#glRectBg.on(GlRect.EVENT_DRAGEND, this._onBgRectDragEnd.bind(this));
             this.#glRectBg.on(GlRect.EVENT_POINTER_DOWN, this._onMouseDown.bind(this));
+
+            this.#glRectBg.on(GlRect.EVENT_POINTER_HOVER, this._onMouseHover.bind(this));
+            this.#glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, this._onMouseUnHover.bind(this));
             this.#glRectBg.on(GlRect.EVENT_POINTER_UP, this._onMouseUp.bind(this));
         }
 
@@ -461,6 +475,28 @@ export default class GlOp extends Events
         perf.finish();
     }
 
+    _onMouseHover()
+    {
+        if (this.#glRectBg?.isHovering())
+        {
+            if (this.#glPatch._portDragLine.isActive && this.glPatch.hoverPort == null)
+            {
+                gui.showInfo("link to any port!!!!!!!");
+                this.op.setUiAttrib({ "highlighted": true });
+            }
+            if (this.glPatch.hoverPort != null)
+            {
+                this._onMouseUnHover();
+            }
+        }
+    }
+
+    _onMouseUnHover()
+    {
+        this.op.setUiAttrib({ "highlighted": false });
+
+    }
+
     /**
      * @param {any} e
      */
@@ -473,6 +509,7 @@ export default class GlOp extends Events
 
         this.#glPatch.opShakeDetector.up();
         this.#glPatch.emitEvent("mouseUpOverOp", e, this.#id);
+        this._onMouseUnHover();
 
         this.endPassiveDrag();
         this.glPatch.snap.update();
