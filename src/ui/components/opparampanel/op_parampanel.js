@@ -795,6 +795,17 @@ class OpParampanel extends Events
     {
         return this._currentOp;
     }
+
+    hidePorts(arr)
+    {
+        console.log("arrrrrr", arr);
+        for (let i = 0; i < arr.length; i++)
+        {
+            const p = this.op.getPort(arr[i]);
+            p.setUiAttribs({ "hidePort": true });
+        }
+
+    }
 }
 
 export default OpParampanel;

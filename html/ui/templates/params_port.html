@@ -18,7 +18,7 @@
 {{#if groupSpacer}}
     <tr>
         <td colspan="11" >
-            <div class="groupSpacer">
+            <div class="groupSpacer" onclick=" gui.opParams.hidePorts([{{#each portGroupNames}}'{{.}}', {{/each}}]); ">
                 {{startGroup}}
             </div>
         </td>

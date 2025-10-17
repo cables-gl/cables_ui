@@ -28,6 +28,7 @@ export default class SuggestionDialog
     #eleDialog;
     #action;
     #cb;
+    #options;
 
     /**
      * @param {SuggestionItem[]} suggestions
@@ -40,6 +41,7 @@ export default class SuggestionDialog
      */
     constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel, options = {})
     {
+        this.#options = options;
         this.#cb = cb;
         this.#action = _action;
         this.#eleDialog = document.createElement("div");// ele.byId("suggestionDialog");
@@ -64,7 +66,8 @@ export default class SuggestionDialog
             return;
         }
 
-        CABLES.UI.suggestions = this;
+        if (!options.tease)
+            CABLES.UI.suggestions = this;
 
         let sugDegree = 6;
         const sugHeight = 23;
@@ -126,19 +129,21 @@ export default class SuggestionDialog
         ele.hide(this.#eleDialog);
         if (this._bg) this._bg.hide();
 
-        CABLES.UI.suggestions = null;
+        if (!this.#options.tease) CABLES.UI.suggestions = null;
         gui.patchView.focus();
         this.#eleDialog.remove();
     }
 
     showSelect()
     {
+        if (!this.#options.tease) CABLES.UI.suggestions = this;
         if (this.#cb) this.#cb();
         else this.close();
     }
 
     show()
     {
+        if (!this.#options.tease) CABLES.UI.suggestions = this;
         ele.show(this.#eleDialog);
     }
 
