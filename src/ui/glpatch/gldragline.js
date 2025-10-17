@@ -203,6 +203,11 @@ export default class GlDragLine
         });
     }
 
+    get glOp()
+    {
+        return this.#glPort.glOp;
+    }
+
     get glPort()
     {
         return this.#glPort;

@@ -481,7 +481,7 @@ export default class GlOp extends Events
     {
         if (this.#glRectBg?.isHovering())
         {
-            if (this.#glPatch.portDragLine?.isActive && this.glPatch.hoverPort == null)
+            if (this.#glPatch.portDragLine?.isActive && this.#glPatch.portDragLine?.glOp != this && this.glPatch.hoverPort == null)
             {
                 if (!this.#glPatch.suggestionTeaser)
                     this.#glPatch.suggestionTeaser = new SuggestionDialog([
@@ -499,9 +499,6 @@ export default class GlOp extends Events
 
                 this.#glPatch.suggestionTeaser.show();
                 this.#glPatch.suggestionTeaser.setPos(this.#glPatch.viewBox.mouseX, this.#glPatch.viewBox.mouseY);
-                // this.op.setUiAttrib({ "highlighted": true });
-                // this.#glRectHighlighted.setColorArray(this.#glPatch.portDragLine.color);
-                console.log("thi", this.#glPatch.portDragLine.color);
             }
             if (this.glPatch.hoverPort != null) this._onMouseUnHover();
         }
@@ -509,7 +506,6 @@ export default class GlOp extends Events
 
     _onMouseUnHover()
     {
-        // this.op.setUiAttrib({ "highlighted": false });
 
         if (this.#glPatch.suggestionTeaser)
         {
