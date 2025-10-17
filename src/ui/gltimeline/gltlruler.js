@@ -203,6 +203,7 @@ export class glTlRuler extends Events
 
     update()
     {
+        this.updateOld();
         this.timeMarkerLookup = {};
         this.timeTitleLookup = {};
         const timeLeft = Math.floor(this.#glTl.view.timeLeft);
@@ -249,7 +250,7 @@ export class glTlRuler extends Events
 
         fade = this.between(widthOneFrame, 10, 15);
         if (fade)
-            for (let s = timeLeft; s < timeRight; s += frameInSeconds) this.addMarker(s, Math.floor(s / frameInSeconds) + "f", this.between(widthOneFrame, minWidth, maxWidth) * (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES ? 1 : 0), false, fade);
+            for (let s = timeLeft; s < timeRight; s += frameInSeconds) this.addMarker(s, Math.ceil(s / frameInSeconds) + "f", this.between(widthOneFrame, minWidth, maxWidth) * (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES ? 1 : 0), false, fade);
 
         fade = this.between(widthTenthSecond, 10, 15);
         if (fade)
@@ -332,7 +333,7 @@ export class glTlRuler extends Events
             const oneframePixel = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
             if (oneframePixel >= 5)
             {
-                const mheight = this.height * 0.6;
+                const mheight = this.height * 0.7;
                 for (let i = 0; i < this.markf.length; i++)
                 {
                     const mr = this.markf[i];
@@ -342,7 +343,7 @@ export class glTlRuler extends Events
 
                     mr.setSize(oneframePixel - 2, this.height - mheight);
                     mr.setPosition(x + 1 - oneframePixel / 2, mheight);
-                    mr.setColor(0.13, 0.13, 0.13, a);
+                    mr.setColor(0.53, 0.53, 0.53, a);
 
                     if (t < 0) this.markf[i].setSize(0, 0);
                 }
@@ -355,174 +356,6 @@ export class glTlRuler extends Events
         }
         else
             for (let i = 0; i < this.markf.length; i++) this.markf[i].setSize(0, 0);
-
-        // if (this.#glTl.cfg.showBeats)
-        // {
-        //     const bps = this.#glTl.bpm / 60;
-        //     const onebeatPixel = this.#glTl.view.timeToPixel(1 / bps);
-
-        //     for (let i = 0; i < this.markBeats.length; i++)
-        //     {
-        //         const mr = this.markBeats[i];
-        //         const t = offset + (i * (1 / bps));
-        //         const x = this.#glTl.view.timeToPixel(t - (this.#glTl.view.offset));
-
-        //         mr.setSize(onebeatPixel - 2, 5);
-        //         mr.setPosition(x, 1);
-
-        //         // const absBeat = Math.floor((t) * bps);
-        //         // if ((absBeat + 1) % (this.#glTl.cfg.bpmHlXth || 4) == 0) mr.setColorArray(glTlRuler.COLOR_BEAT4);
-        //         // else
-        //         mr.setColorArray(glTlRuler.COLOR_BEATS);
-
-        //         if (t < 0) mr.setOpacity(0.3);
-        //     }
-        // }
-        // else
-        // {
-        //     for (let i = 0; i < this.markBeats.length; i++) this.markBeats[i].setSize(0, 0);
-        // }
-
-        // console.log("pixelscale", pixelScale);
-
-        for (let i = 0; i < this.marks.length; i++)
-        {
-            const mr = this.marks[i];
-            let x = 0;
-            let title = null;
-            titleCounter %= this.titles.length;
-
-            let time = 0;
-            let size = -1;
-
-            if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
-            {
-
-                if (pixelScale > 50)
-                {
-                    time = offset + i * 0.1;
-                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                    if (time % 1 == 0.5)
-                    {
-                        size = 1;
-                    }
-                    if (time % 1 == 0) // full seconds
-                    {
-                        size = 2;
-                        title = (time) + "s";
-                    }
-                }
-                else
-                if (pixelScale < 4)
-                {
-                    time = offset + i;
-                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                    if (time % 30 == 0)
-                    {
-                        title = (time) + "s";
-                        size = 2;
-                    }
-                }
-                else
-                if (pixelScale < 8)
-                {
-                    time = offset + (i);
-                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                    if (time % 10 == 0)
-                    {
-                        size = 2;
-                        title = (time) + "s";
-                    }
-                }
-                else
-                if (pixelScale < 50)
-                {
-                    time = offset + i;
-                    x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-                    if (time % 1 == 0)
-                    {
-                        size = 0;
-                    }
-                    if (time % 10 == 0)
-                    {
-                        size = 2;
-                        title = (time) + "s";
-                    }
-                    else if (time % 5 == 0)
-                    {
-                        title = (time) + "s";
-                        size = 1;
-                    }
-                }
-            }
-            if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
-            {
-                time = offset + i * 0.5;
-                x = this.#glTl.view.timeToPixel(time - this.#glTl.view.offset);
-
-                if (pixelScale > 40)
-                {
-                    if (time % 1 == 0.5) size = 1;
-                    else if (time % 1 == 0) size = 2;
-                }
-                else
-                {
-
-                    if (pixelScale < 15)
-                    {
-                        if (time % 10 == 0) size = 2;
-                    }
-                    else if (pixelScale < 25)
-                    {
-                        if (time % 1 == 0) size = 1;
-                        if (time % 5 == 0) size = 2;
-                    }
-                    else if (pixelScale < 40)
-                    {
-                        if (time % 1 == 0) size = 1;
-                        if (time % 2 == 0) size = 2;
-                    }
-                    else
-                    {
-                        size = 0;
-                    }
-                }
-                if (size == 2)
-                    title = Math.floor((time) * this.#glTl.fps) + "f";
-            }
-
-            let h = 10;
-            if (size == -1) x = -19999;
-            else if (size == 0) h = 14;
-            else if (size == 1) h = 15;
-            else if (size == 2) h = 25;
-
-            if (size > -1)
-                if (time < 0 || time > this.#glTl.duration)
-                {
-                    mr.setColorArray(glTlRuler.COLOR_MARK_OUTRANGE);
-                    mr.setSize(1, h);
-                }
-                else
-                {
-                    mr.setColorArray(glTlRuler.COLOR_MARK_SIZES[size]);
-                    mr.setSize(1, h);
-                    if (size == 2) mr.setSize(1, h + this.#glTl.height);
-                }
-            mr.setPosition(x, this.height - h);
-
-            if (title && x < this.#glTl.width)
-            {
-                if (time < 0 || time > this.#glTl.duration) this.titles[titleCounter].setColor(0, 0, 0, 1);
-                else this.titles[titleCounter].setColor(1, 1, 1, 1);
-
-                this.titles[titleCounter].text = title;
-                this.titles[titleCounter].setParentRect(this._glRectBg);
-                this.titles[titleCounter].setPosition(x, this.height - h - 23);
-
-                titleCounter++;
-            }
-        }
     }
 
     /**

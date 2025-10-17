@@ -2099,7 +2099,8 @@ export default class PatchView extends Events
                 const suggs = [];
                 for (let i = 0; i < converters.length; i++)
                 {
-                    suggs.push({ "name": "♻ " + opNames.getShortName(converters[i].op),
+                    suggs.push({
+                        "name": "♻ " + opNames.getShortName(converters[i].op),
                         "class": "port_text_color_" + p2.getTypeString().toLowerCase()
                     });
                 }
