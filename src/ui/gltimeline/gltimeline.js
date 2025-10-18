@@ -1421,8 +1421,8 @@ export class GlTimeline extends Events
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY > 0) delta = 1.1;
-            else delta = 0.9;
+            if (event.deltaY > 0) delta = 1.3;
+            else delta = 0.7;
 
             this.view.setZoomOffset(delta);
 

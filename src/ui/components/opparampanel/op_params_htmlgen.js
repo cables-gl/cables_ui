@@ -109,6 +109,7 @@ class PortHtmlGenerator
             const opGroup = ports[i].uiAttribs.group;
             let startGroup = null;
             let groupSpacer = false;
+            const portGroupNames = [];
 
             if (!ports[i].uiAttribs.hideParam)
             {
@@ -119,6 +120,13 @@ class PortHtmlGenerator
                     groupSpacer = true;
                     lastGroup = opGroup;
                     startGroup = lastGroup;
+                    for (let j = 0; j < ports.length; j++)
+                    {
+                        if (ports[j].uiAttribs.group == startGroup)
+                        {
+                            portGroupNames.push(ports[j].name);
+                        }
+                    }
                 }
             }
 
@@ -129,6 +137,7 @@ class PortHtmlGenerator
                 "panelid": this._panelId,
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
+                "portGroupNames": portGroupNames,
                 "dirStr": "in",
                 "cablesUrl": platform.getCablesUrl(),
                 "openLocalFiles": platform.frontendOptions.openLocalFiles,
@@ -191,6 +200,8 @@ class PortHtmlGenerator
             let startGroup = null;
             let groupSpacer = false;
 
+            const portGroupNames = [];
+
             const opGroup = ports[i].uiAttribs.group;
 
             if (lastGroup != opGroup && !opGroup) groupSpacer = true;
@@ -199,6 +210,15 @@ class PortHtmlGenerator
                 groupSpacer = true;
                 lastGroup = opGroup;
                 startGroup = lastGroup;
+
+                for (let j = 0; j < ports.length; j++)
+                {
+                    console.log("text", ports[j].uiAttribs.group);
+                    if (ports[j].uiAttribs.group == startGroup)
+                    {
+                        portGroupNames.push(ports[j].name);
+                    }
+                }
             }
 
             const tmplData = {
@@ -207,6 +227,7 @@ class PortHtmlGenerator
                 "panelid": this._panelId,
                 "groupSpacer": groupSpacer,
                 "startGroup": startGroup,
+                "portGroupNames": portGroupNames,
                 "portnum": i,
                 "isInput": false,
                 "op": ports[i].op

@@ -187,3 +187,13 @@ opNames.getRerouteOp = (type) =>
     if (type == portType.object) return defaultOps.defaultOpNames.rerouteObject;
     if (type == portType.trigger) return defaultOps.defaultOpNames.rerouteTrigger;
 };
+
+/**
+ * @param {string} fullName
+ */
+opNames.getShortName = (fullName) =>
+{
+    const parts = fullName.split(".");
+    return parts[parts.length - 1];
+
+};

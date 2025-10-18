@@ -14,6 +14,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdOp } from "../../commands/cmd_op.js";
 import uiconfig from "../../uiconfig.js";
+import { UiOp } from "../../core_extend_op.js";
 
 /**
  * op parameter panel
@@ -153,7 +154,7 @@ class OpParampanel extends Events
     }
 
     /**
-     * @param {Op|String} op
+     * @param {UiOp|String} op
      */
     show(op)
     {
@@ -794,6 +795,17 @@ class OpParampanel extends Events
     getCurrentOp()
     {
         return this._currentOp;
+    }
+
+    hidePorts(arr)
+    {
+        // console.log("arrrrrr", arr);
+        // for (let i = 0; i < arr.length; i++)
+        // {
+        //     const p = this.op.getPort(arr[i]);
+        //     p.setUiAttribs({ "hidePort": true });
+        // }
+
     }
 }
 

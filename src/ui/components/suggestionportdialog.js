@@ -2,6 +2,7 @@ import { Link, Op, Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
+import { getConverters } from "./converterops.js";
 
 /**
  * show suggestions for linking a port
@@ -33,11 +34,8 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-
-                Link.canLink(theport, port))
-            {
-                this._addPort(theport);
-            }
+                theport.direction != port.direction
+            ) this.#addPort(theport, Link.canLink(theport, port), getConverters(theport, port).length > 0);
         }
 
         for (let i = 0; i < op.portsOut.length; i++)
@@ -46,7 +44,16 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-                Link.canLink(theport, port)) this._addPort(theport);
+                theport.direction != port.direction
+                // Link.canLink(theport, port)
+            ) this.#addPort(theport, Link.canLink(theport, port), getConverters(theport, port).length > 0);
+            // else
+            // {
+            //     const convs = getConverters(theport, port);
+            //     if()
+            //     console.log("text", convs);
+            //     this.#addPortConv(theport);
+            // }
         }
 
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
@@ -74,22 +81,35 @@ export default class SuggestPortDialog
         }, false, cbCancel);
     }
 
-    _addPort(p)
+    /**
+     * @param {Port} p
+     * @param {boolean} directLink
+     * @param {boolean} converter
+     */
+    #addPort(p, directLink, converter)
     {
+        if (!directLink && !converter) return;
+
         for (let i = 0; i < this._suggestions.length; i++)
             if (this._suggestions[i].p == p) return;
 
         let className = "portSuggest" + p.type;
         if (p.isLinked()) className += "Linked";
+        let name = "";
+        if (converter)name += "♻ ";
 
+        className = "port_text_color_" + p.getTypeString().toLowerCase();
+
+        name += p.title;
         this._suggestions.push({
             "class": className,
             "p": p,
             "op": p.op.id,
-            "name": p.title,
+            "name": name,
             // "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),
             "isAnimated": p.isAnimated()
         });
     }
+
 }

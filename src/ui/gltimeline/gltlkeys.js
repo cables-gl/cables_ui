@@ -164,9 +164,10 @@ export class glTlKeys extends Events
 
     showKeysAsFrames()
     {
-        if (this.isLayoutGraph()) return false;
-        let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
-        return kwidth > 5;
+        // if (this.isLayoutGraph()) return false;
+        // let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        // return kwidth > 5;
+        return false;
     }
 
     /**

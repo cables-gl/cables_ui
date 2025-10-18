@@ -88,19 +88,19 @@ export default class GlLink
 
             if (this._glPatch.isDraggingPort())
             {
-                if (this._glPatch._portDragLine.isActive)
+                if (this._glPatch.portDragLine.isActive)
                 {
 
-                    const fromOp = gui.corePatch().getOpById(this._glPatch._portDragLine._startPortOpId);
+                    const fromOp = gui.corePatch().getOpById(this._glPatch.portDragLine._startPortOpId);
 
                     if (!fromOp) return;
-                    const fromPort = fromOp.getPortById(this._glPatch._portDragLine._startPortId);
+                    const fromPort = fromOp.getPortById(this._glPatch.portDragLine._startPortId);
 
                     let otherPort = link.portOut;
 
                     if (!otherPort || !fromPort)
                     {
-                        this.#log.warn("port not found", otherPort, fromPort, this._glPatch._portDragLine);
+                        this.#log.warn("port not found", otherPort, fromPort, this._glPatch.portDragLine);
                         return;
                     }
 
@@ -109,7 +109,7 @@ export default class GlLink
                         if (fromPort.direction != link.portIn.direction) otherPort = link.portIn;
 
                         this._link.remove();
-                        this._glPatch._portDragLine.stop();
+                        this._glPatch.portDragLine.stop();
 
                         gui.corePatch().link(
                             fromOp, fromPort.name, otherPort.op, otherPort.name);
