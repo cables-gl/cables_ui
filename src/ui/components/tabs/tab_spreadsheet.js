@@ -1,6 +1,8 @@
 import { Port, utils } from "cables";
 import { ele, Events, Logger } from "cables-shared-client";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import Tab from "../../elements/tabpanel/tab.js";
+import { gui } from "../../gui.js";
 
 /**
  * @typedef SpreadSheetOptions
@@ -10,9 +12,16 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
  * @property {string[]} [colNames]
  * @property {[string[]]} [cells]
  */
-
 export default class SpreadSheetTab extends Events
 {
+    #log = new Logger("SpreadSheetTab");
+    #cellMate = null;
+    #port = null;
+    #options = null;
+    #tab = null;
+
+    /** @type {TabPanel} */
+    #tabs = null;
 
     /**
      * @param {TabPanel} tabs
@@ -23,39 +32,43 @@ export default class SpreadSheetTab extends Events
     constructor(tabs, port, data, options)
     {
         super();
-        this._tabs = tabs;
-        this._log = new Logger("SpreadSheetTab");
+        this.#tabs = tabs;
 
         options = options || {};
 
         if (options.colNames && !options.numColumns)options.numColumns = options.colNames.length;
-        this._numCols = options.numColumns || 3;
-        this._rows = 25;
 
-        this._port = port;
-        this.cells = [];
-        this._inputs = [];
-        this._options = options;
-        this.colNames = [];
+        this.#port = port;
+        this.#options = options;
 
-        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": false });
-        this._tabs.addTab(this._tab, true);
+        this.#tab = new Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": false });
+        this.#tabs.addTab(this.#tab, true);
 
-        // if (port)port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
+        this.#tab.on(Tab.EVENT_RESIZE, () =>
+        {
+            this.#cellMate.resize();
+        });
 
-        // this.data = { "cells": this.cells, "colNames": this.colNames };
+        this.#tab.on(Tab.EVENT_ACTIVATE, () =>
+        {
+            this.#cellMate.resize();
+        });
 
-        // if (data) this.initData(data);
-        // else
-        // {
-        //     for (let i = 0; i < this._numCols; i++) this.getColName(i);
-        // }
+        this.show();
+        gui.maintabPanel.show();
+        this.#tab.addButton("export csv", () =>
+        {
+            this.#cellMate.download("cables.csv", this.#cellMate.toCsv());
 
-        // this._id = "spread" + utils.uuid();
-        // this._updateUiAttribs();
+        });
     }
 
     show()
     {
+
+        let html = "<div></div>";
+        this.#tab.html(html);
+
+        this.#cellMate = new CellMate(this.#tab.contentEle);
     }
 }

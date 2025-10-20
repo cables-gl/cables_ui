@@ -66,7 +66,7 @@ export default class TabPanel extends Events
 
         this.on("resize", () =>
         {
-            for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent("resize");
+            for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent(Tab.EVENT_RESIZE);
         });
     }
 

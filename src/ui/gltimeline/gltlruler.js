@@ -1,9 +1,11 @@
 import { Events, Logger } from "cables-shared-client";
 import { map } from "cables/src/core/utils.js";
+import { Patch } from "cables";
 import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
+import { GlTlView } from "./gltlview.js";
 
 /**
  * gltl ruler display
@@ -14,10 +16,6 @@ import { GlTimeline } from "./gltimeline.js";
  */
 export class glTlRuler extends Events
 {
-
-    // static COLOR_BEATS = [0.5, 0.5, 0.5, 1];
-    // static COLOR_BEAT4 = [0.8, 0.8, 0.8, 1];
-
     static COLOR_MARK_OUTRANGE = [0, 0, 0, 0.5];
     static COLOR_MARK_SIZE0 = [1, 1, 1, 0.1];
     static COLOR_MARK_SIZE1 = [1, 1, 1, 0.2];
@@ -26,55 +24,22 @@ export class glTlRuler extends Events
 
     /** @type {GlTimeline} */
     #glTl;
-    pointerDown = false;
 
     /**
      * @param {GlTimeline} glTl
      */
-    constructor(glTl)
+    constructor(glTl, r, fullview)
     {
         super();
+        this.fullView = fullview;
         this._log = new Logger("glTlRuler");
         this.#glTl = glTl;
-        this.y = 30;
-        this.height = 50;
+        this.y = r.y;
+        this.height = r.h;
+        this.view = this.#glTl.view;
+        if (fullview) this.view = new GlTlView(glTl);
 
-        this._glRectBg = this.#glTl.rectsNoScroll.createRect({ "name": "ruler bgrect", "draggable": false, "interactive": true });
-        this._glRectBg.setSize(222, this.height);
-        this._glRectBg.setColor(0.25, 0.25, 0.25, 1);
-        this._glRectBg.setPosition(0, this.y, -0.9);
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, _y, event) =>
-        {
-            if (!this.pointerDown) return;
-            if (this.#glTl.loopAreaDrag.isDragging) return;
-            this.#glTl.removeKeyPreViz();
-
-            gui.corePatch().timer.pause();
-            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
-
-        });
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
-        {
-            if (CABLES.UI.showDevInfos)
-                gui.showInfo("visible time" + this.#glTl.view.visibleTime);
-        });
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
-        {
-        });
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_DOWN, (event, _r, _x, _y) =>
-        {
-            this.pointerDown = true;
-            gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
-        });
-
-        this._glRectBg.on(GlRect.EVENT_POINTER_UP, () =>
-        {
-            this.pointerDown = false;
-        });
+        this._glRectBg = r;
 
         this.markf = [];
         for (let i = 0; i < 300; i++)
@@ -85,16 +50,6 @@ export class glTlRuler extends Events
             mr.setParent(this._glRectBg);
             this.markf.push(mr);
         }
-
-        // this.markBeats = [];
-        // for (let i = 0; i < 400; i++)
-        // {
-        //     const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker beats", "draggable": false, "interactive": false });
-        //     mr.setPosition(-8888, 0);
-        //     mr.setParent(this._glRectBg);
-        //     mr.setSize(0, 0);
-        //     this.markBeats.push(mr);
-        // }
 
         this.marks = [];
         for (let i = 0; i < 700; i++)
@@ -113,6 +68,16 @@ export class glTlRuler extends Events
             this.titles.push(mt);
         }
 
+        gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
+        {
+            if (this.fullView)
+            {
+                this.view.scrollTo(0);
+                this.view.setZoomLength(gui.corePatch().animMaxTime);
+            }
+
+            this.update();
+        });
         this.update();
     }
 
@@ -121,16 +86,7 @@ export class glTlRuler extends Events
      */
     setTimeFromPixel(x)
     {
-        gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(x) + this.#glTl.view.offset));
-    }
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    setPosition(x, y)
-    {
-        this._glRectBg.setPosition(x, y);
+        gui.corePatch().timer.setTime(this.#glTl.snapTime(this.view.pixelToTime(x) + this.view.offset));
     }
 
     /**
@@ -158,7 +114,7 @@ export class glTlRuler extends Events
         if (fade == undefined)fade = 1;
         if (s < 0) return;
         if (this.count == this.marks.length) return console.log("too many marks");
-        const x = this.#glTl.view.timeToPixel(s - this.#glTl.view.offset);
+        const x = this.view.timeToPixel(s - this.view.offset);
 
         let mr = this.marks[this.count];
         let mheight = 7;
@@ -203,37 +159,39 @@ export class glTlRuler extends Events
 
     update()
     {
+        console.log("offsetttttt", this.view.offset);
         this.updateOld();
         this.timeMarkerLookup = {};
         this.timeTitleLookup = {};
-        const timeLeft = Math.floor(this.#glTl.view.timeLeft);
-        const timeRight = Math.ceil(this.#glTl.view.timeRight);
 
-        const timeLeftMinute = Math.floor(this.#glTl.view.timeLeft / 60) * 60;
-        const timeRightMinute = Math.ceil(this.#glTl.view.timeRight / 60) * 60;
+        const timeLeft = Math.floor(this.view.timeLeft);
+        const timeRight = Math.ceil(this.view.timeRight);
 
-        const timeLeftHour = Math.floor(this.#glTl.view.timeLeft / 3600) * 3600;
-        const timeRightHour = Math.ceil(this.#glTl.view.timeRight / 3600) * 3600;
+        const timeLeftMinute = Math.floor(this.view.timeLeft / 60) * 60;
+        const timeRightMinute = Math.ceil(this.view.timeRight / 60) * 60;
 
-        const timeLeftDay = Math.floor(this.#glTl.view.timeLeft / (24 * 3600)) * (24 * 3600);
-        const timeRightDay = Math.ceil(this.#glTl.view.timeRight / (24 * 3600)) * (24 * 3600);
+        const timeLeftHour = Math.floor(this.view.timeLeft / 3600) * 3600;
+        const timeRightHour = Math.ceil(this.view.timeRight / 3600) * 3600;
 
-        const dur = this.#glTl.view.visibleTime;
+        const timeLeftDay = Math.floor(this.view.timeLeft / (24 * 3600)) * (24 * 3600);
+        const timeRightDay = Math.ceil(this.view.timeRight / (24 * 3600)) * (24 * 3600);
 
-        const widthOneFrame = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
+        const dur = this.view.visibleTime;
 
-        const widthTenthSecond = this.#glTl.view.timeToPixel(0.1);
-        const widthHalfSecond = this.#glTl.view.timeToPixel(0.5);
-        const widthOneSecond = this.#glTl.view.timeToPixel(1);
-        const widthFiveSecond = this.#glTl.view.timeToPixel(5);
-        const widthTenSecond = this.#glTl.view.timeToPixel(10);
-        const widthHalfMinute = this.#glTl.view.timeToPixel(30);
-        const widthOneMinute = this.#glTl.view.timeToPixel(60);
-        const widthFiveMinute = this.#glTl.view.timeToPixel(300);
-        const widthTenMinutes = this.#glTl.view.timeToPixel(600);
-        const widthHalfHour = this.#glTl.view.timeToPixel(1800);
-        const widthOneHour = this.#glTl.view.timeToPixel(3600);
-        const widthOneDay = this.#glTl.view.timeToPixel(24 * 3600);
+        const widthOneFrame = this.view.timeToPixel(1 / this.#glTl.fps);
+
+        const widthTenthSecond = this.view.timeToPixel(0.1);
+        const widthHalfSecond = this.view.timeToPixel(0.5);
+        const widthOneSecond = this.view.timeToPixel(1);
+        const widthFiveSecond = this.view.timeToPixel(5);
+        const widthTenSecond = this.view.timeToPixel(10);
+        const widthHalfMinute = this.view.timeToPixel(30);
+        const widthOneMinute = this.view.timeToPixel(60);
+        const widthFiveMinute = this.view.timeToPixel(300);
+        const widthTenMinutes = this.view.timeToPixel(600);
+        const widthHalfHour = this.view.timeToPixel(1800);
+        const widthOneHour = this.view.timeToPixel(3600);
+        const widthOneDay = this.view.timeToPixel(24 * 3600);
 
         this.count = 0;
         this.titleCounter = 0;
@@ -317,9 +275,9 @@ export class glTlRuler extends Events
 
     updateOld()
     {
-        let pixelScale = this.#glTl.view.timeToPixel(1);
+        let pixelScale = this.view.timeToPixel(1);
         let titleCounter = 0;
-        let offset = Math.floor(this.#glTl.view.offset);
+        let offset = Math.floor(this.view.offset);
 
         for (let i = 0; i < this.titles.length; i++)
         {
@@ -330,7 +288,7 @@ export class glTlRuler extends Events
 
         if (this.#glTl.cfg.fadeInFrames)
         {
-            const oneframePixel = this.#glTl.view.timeToPixel(1 / this.#glTl.fps);
+            const oneframePixel = this.view.timeToPixel(1 / this.#glTl.fps);
             if (oneframePixel >= 5)
             {
                 const mheight = this.height * 0.7;
@@ -338,7 +296,7 @@ export class glTlRuler extends Events
                 {
                     const mr = this.markf[i];
                     const t = offset + i * (1 / this.#glTl.fps);
-                    const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
+                    const x = this.view.timeToPixel(t - this.view.offset);
                     const a = CABLES.map(oneframePixel, 5, 10, 0.04, 0.3);
 
                     mr.setSize(oneframePixel - 2, this.height - mheight);
@@ -358,17 +316,4 @@ export class glTlRuler extends Events
             for (let i = 0; i < this.markf.length; i++) this.markf[i].setSize(0, 0);
     }
 
-    /**
-     * @param {number} w
-     */
-    setWidth(w)
-    {
-        this.width = w;
-        this._glRectBg.setSize(this.width, this.height);
-    }
-
-    isHovering()
-    {
-        return this._glRectBg.isHovering();
-    }
 }
