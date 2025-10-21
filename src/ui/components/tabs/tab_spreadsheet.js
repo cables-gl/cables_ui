@@ -105,9 +105,7 @@ export default class SpreadSheetTab extends Events
     onChange()
     {
         console.log(this.#cellMate.toObj());
-
         this.#port.setRef(this.#cellMate.toObj());
-
     }
 }
 

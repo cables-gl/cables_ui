@@ -1,3 +1,4 @@
+let countInst=0
 
 console.log("cellmate 34")
 class CellMate
@@ -24,9 +25,11 @@ class CellMate
 	#scrollX=0;
 	#elContainer=null;
 	#options={}
+	countInst=0
 
 	constructor(container,options)
 	{
+		this.countInst= ++countInst;
 		this.#data.length=this.#dataWidth*this.#dataHeight;
 		this.#options=options
 
@@ -54,15 +57,15 @@ class CellMate
 
 	cellId(x,y)
 	{
-		return "cell"+(x-this.#scrollX)+"_"+(y-this.#scrollY);	
+		return "cell"+this.countInst+"_"+(x-this.#scrollX)+"_"+(y-this.#scrollY);	
 	}
 	cellRowHeadId(y)
 	{
-		return "rowHead"+(y-this.#scrollY);	
+		return "rowHead"+this.countInst+"_"+(y-this.#scrollY);	
 	}
 	cellColHeadId(x)
 	{
-		return "colHead"+(x-this.#scrollX);	
+		return "colHead"+this.countInst+"_"+(x-this.#scrollX);	
 	}
 
 	clampCursor()
@@ -121,8 +124,8 @@ class CellMate
 
 		if(e&&e.shiftKey&&this.#selectionStartX==-1)
 		{
-			document.getElementsByClassName("rowHead"+this.cursorScreenY)[0]?.classList.remove("selected");
-			document.getElementsByClassName("colHead"+this.cursorScreenX)[0]?.classList.remove("selected");
+			document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.remove("selected");
+			document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.remove("selected");
 		}
 
 		let cursorEl=this.getCursorEl();
@@ -146,11 +149,11 @@ class CellMate
 		if(e&&e.shiftKey)this.setEndSelection(this.cursorScreenX+this.#scrollX,this.cursorScreenY+this.#scrollY );
 		else
 		{
-			document.getElementsByClassName("rowHead"+this.cursorScreenY)[0]?.classList.add("selected");
-			document.getElementsByClassName("colHead"+this.cursorScreenX)[0]?.classList.add("selected");
+			document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.add("selected");
+			document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.add("selected");
 		}
 		this.updateStatus();
-    cursorEl?.scrollIntoView();
+    // cursorEl?.scrollIntoView();
 	}
 
 	startSelection(x,y)
@@ -247,6 +250,7 @@ class CellMate
 		})
 		this.removeEmptyRowCols()
 		this.redrawData()
+		console.log("delee")
 	}
 
 	updateSelection()
@@ -688,7 +692,7 @@ class CellMate
 		{
 			const elColHead=document.createElement("div")
 			elColHead.classList.add("head");
-			if(x>0)elColHead.classList.add("colHead"+(x-1));
+			if(x>0)elColHead.classList.add(this.cellColHeadId(x-1));
 			elColHead.dataset.idx=x;
 			if(x>0)elColHead.dataset.x=x-1;
 			elRow.appendChild(elColHead);
@@ -714,7 +718,7 @@ class CellMate
 
 			const elRowHead=document.createElement("div")
 			elRowHead.classList.add("head")
-			elRowHead.classList.add("rowHead"+y)
+			elRowHead.classList.add(this.cellRowHeadId(y))
 			elRow.appendChild(elRowHead)
 			elRowHead.innerHTML=y;
 			const row=y
@@ -820,6 +824,13 @@ class CellMate
 
 			this.notify("copied "+this.lastSelectedForeachCount+" entries");
 		});
+		this.#elTable.addEventListener("cut",(e)=>
+		{
+			navigator.clipboard.writeText(this.toTxt());
+			this.deleteSelectionContent()
+
+			this.notify("copied "+this.lastSelectedForeachCount+" entries");
+		});
 
 		this.#elTable.addEventListener("paste",(e)=>
 		{
@@ -847,6 +858,7 @@ class CellMate
 				{
 					this.unFocusInput();
 					this.focusCell(this.cursorScreenX,this.cursorScreenY);
+					this.redrawDataArea()
 				}
 			}
 			else if(!this.#elActiveInput && (e.key=="Delete"||e.key=="Backspace")) this.deleteSelectionContent();
@@ -861,7 +873,9 @@ class CellMate
 				{
 					if(!this.#elActiveInput) this.focusCell(this.cursorScreenX,this.cursorScreenY);
 				}
-				else console.log(e)
+				else {
+					console.log(e)
+				}
 
 		});
 		this.redrawData();
