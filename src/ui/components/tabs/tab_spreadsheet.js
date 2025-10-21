@@ -98,7 +98,6 @@ export default class SpreadSheetTab extends Events
         this.#cellMate = new CellMate(this.#tab.contentEle,
             {
                 "onChange": this.onChange.bind(this)
-
             });
         this.#cellMate.fromObj(this.#port.get());
     }

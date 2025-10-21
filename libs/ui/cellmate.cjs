@@ -359,7 +359,7 @@ class CellMate
 			for(let i=0;i<rows.length;i++)
 			{
 				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.cellWidth+"px)"
-				console.log("repeat("+this.#width+","+this.cellWidth+"px)");
+				// console.log("repeat("+this.#width+","+this.cellWidth+"px)");
 			}
 		}
 	}
@@ -385,18 +385,24 @@ class CellMate
 		console.log("resize to ",w,h)
 		this.resize()
 	}
+isNumeric(n)
+{
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 	setValue(x,y,v)
 	{
 
-		if(x>=this.#dataWidth || y>=this.#dataHeight)
-			this.resizeData(Math.max(x+1,this.#dataWidth-1),Math.max(y+1,this.#dataHeight-1))
+		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
+			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
 
 		const idx=x+this.#dataWidth*y;
 		while(idx>this.#data.length)
 			for(let i=0;i<this.#width;i++) this.#data.push("");
 
+		if(this.isNumeric(v))v=parseFloat(v);
 		this.#data[idx]=v;
+
 		const inputEle=document.getElementById(this.cellId(x,y))
 		if(inputEle)inputEle.value=v;
 		if(this.#options.onChange)this.#options.onChange()
@@ -412,9 +418,8 @@ class CellMate
 			return
 		}
 
-		console.log("from objjjjjjjjjjj",o)
 		if(o.colTitles)this.#colTitles=o.colTitles;
-		if(o.data)this.data=o.data;
+		if(o.data)this.#data=o.data;
 		if(o.width)this.#dataWidth=o.width;
 		if(o.height)this.#dataHeight=o.height;
 
@@ -518,6 +523,7 @@ class CellMate
 			for(let x=0;x<this.#dataWidth;x++)
 				for(let y=0;y<this.#dataHeight;y++)
 					arr[x][y]=this.getValue(x,y)
+
 				
 			return arr;
 		
@@ -567,7 +573,15 @@ class CellMate
 			{
 				const elCell=document.getElementById(this.cellId(x,y));
 				if(!elCell){console.log("cell not found");contiune}
-				if(elCell&& x<this.#dataWidth&& y<this.#dataHeight) elCell.value=this.#data[(x)+(y)*this.#dataWidth];
+
+				const v=this.#data[(x)+(y)*this.#dataWidth]
+
+				if(elCell&& x<this.#dataWidth&& y<this.#dataHeight)
+				{
+					elCell.value=v;
+					if(this.isNumeric(v))elCell.classList.add("numeric")
+					else elCell.classList.remove("numeric")
+				}
 				else elCell.value="";
 			}
 		}
