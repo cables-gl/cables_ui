@@ -245,6 +245,7 @@ class CellMate
 		this.forEachSelected((x,y,v)=>{
 			this.setValue(x,y,"")
 		})
+		this.removeEmptyRowCols()
 		this.redrawData()
 	}
 
@@ -384,15 +385,17 @@ class CellMate
 		this.#dataHeight=h;
 		console.log("resize to ",w,h)
 		this.resize()
+		this.redrawDataArea()
+
 	}
-isNumeric(n)
-{
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
+
+	isNumeric(n)
+	{
+	    return !isNaN(parseFloat(n)) && isFinite(n);
+	}
 
 	setValue(x,y,v)
 	{
-
 		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
 			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
 
@@ -405,8 +408,53 @@ isNumeric(n)
 
 		const inputEle=document.getElementById(this.cellId(x,y))
 		if(inputEle)inputEle.value=v;
+		if(v=="")this.redrawDataArea()
+
+		// setTimeout( this.removeEmptyRowCols.bind(this),300);
 		if(this.#options.onChange)this.#options.onChange()
+
 	}
+
+	lastRowEmpty()
+	{
+			const y=this.#dataHeight-1;
+			for(let i=0;i<this.#dataWidth;i++)
+				if(this.#data[i+y*this.#dataWidth]) return false
+
+			return true
+	}
+	lastColEmpty()
+	{
+			const x=this.#dataWidth-1;
+			for(let i=0;i<this.#dataHeight;i++)
+				if(this.#data[x+i*this.#dataWidth]) return false
+
+			return true
+	}
+
+	removeEmptyRowCols()
+	{
+
+		let redraw=false
+		while(this.lastRowEmpty())
+		{
+			this.resizeData(this.#dataWidth,this.#dataHeight-1)
+			redraw=true
+		}
+		while(this.lastColEmpty())
+		{
+			this.resizeData(this.#dataWidth-1,this.#dataHeight)
+			redraw=true
+		}
+
+		if(redraw)
+		{
+			this.redrawDataArea()
+			this.redrawData()
+			
+		}
+	}
+
 
 	fromObj(o)
 	{
@@ -415,7 +463,7 @@ isNumeric(n)
 			this.#data=[1]
 			this.#dataWidth=1
 			this.#dataHeight=1
-			return
+			return;
 		}
 
 		if(o.colTitles)this.#colTitles=o.colTitles;
@@ -423,7 +471,8 @@ isNumeric(n)
 		if(o.width)this.#dataWidth=o.width;
 		if(o.height)this.#dataHeight=o.height;
 
-		this.updateStatus()
+		this.removeEmptyRowCols();
+		this.updateStatus();
 		this.redrawData();
 	}
 	
@@ -448,8 +497,8 @@ isNumeric(n)
 			const cols=rows[i].split(separator);
 
 			for(let j=0;j<cols.length;j++)
-			if(cols[j]!=undefined&&cols[j]!=null)
-				this.setValue(this.absX+j,this.absY+i,cols[j])
+				if(cols[j]!=undefined && cols[j]!=null)
+					this.setValue(this.absX+j,this.absY+i,cols[j])
 		}
 	}
 
@@ -553,6 +602,18 @@ isNumeric(n)
 		return str;
 	}
 
+	redrawDataArea()
+	{
+		
+		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
+			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
+			{
+				const elCell=document.getElementById(this.cellId(x,y));
+				if(elCell&& x<this.#dataWidth&& y<this.#dataHeight) elCell.classList.add("value")
+				else elCell.classList.remove("value")
+			}
+	}
+
 	redrawData()
 	{
 		for(let x=0;x<this.#width;x++)
@@ -581,11 +642,16 @@ isNumeric(n)
 					elCell.value=v;
 					if(this.isNumeric(v))elCell.classList.add("numeric")
 					else elCell.classList.remove("numeric")
+
 				}
-				else elCell.value="";
+				else
+				{
+					elCell.value="";
+				}
 			}
 		}
 
+		this.redrawDataArea();
 		this.updateSelection();
 		this.updateStatus();
 	}
@@ -716,7 +782,8 @@ isNumeric(n)
 
 				elInput.addEventListener("blur",(e)=>
 				{
-					this.redrawData()
+					this.removeEmptyRowCols();
+					this.redrawData();
 				});
 
 				elCell.addEventListener("click",(e)=>
