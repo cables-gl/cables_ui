@@ -51,16 +51,13 @@ export default class SpreadSheetTab extends Events
         this.#port = port;
         this.#options = options;
 
-        this.#tab = new Tab(options.title || "", {
-            "icon": "edit",
+        this.#tab = new Tab(options.title || port.op.getTitle(), {
+            "icon": "spreadsheet",
             "infotext": "tab_spreadsheet",
             "padding": true,
             "singleton": false });
 
-        editorSession.rememberOpenEditor(SpreadSheetTab.TABSESSION_NAME, this.#currentId, {
-            "portname": port.name,
-            "opid": port.op.id,
-        }, true);
+        this.#tabs.addTab(this.#tab, true);
 
         this.#tab.on("close", () =>
         {
@@ -84,7 +81,10 @@ export default class SpreadSheetTab extends Events
 
         });
 
-        this.#tabs.addTab(this.#tab, true);
+        editorSession.rememberOpenEditor(SpreadSheetTab.TABSESSION_NAME, this.#currentId, {
+            "portname": port.name,
+            "opid": port.op.id,
+        }, true);
         this.show();
         gui.maintabPanel.show(true);
     }
@@ -95,7 +95,20 @@ export default class SpreadSheetTab extends Events
         let html = "<div></div>";
         this.#tab.html(html);
 
-        this.#cellMate = new CellMate(this.#tab.contentEle);
+        this.#cellMate = new CellMate(this.#tab.contentEle,
+            {
+                "onChange": this.onChange.bind(this)
+
+            });
+        this.#cellMate.fromObj(this.#port.get());
+    }
+
+    onChange()
+    {
+        console.log(this.#cellMate.toObj());
+
+        this.#port.setRef(this.#cellMate.toObj());
+
     }
 }
 
@@ -103,6 +116,6 @@ editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
 {
     console.log("dataaa", data);
     const op = gui.corePatch().getOpById(data.opid);
-
+    if (!op) return console.log("no spread op found..");
     new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
 });
