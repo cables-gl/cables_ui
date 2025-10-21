@@ -4,6 +4,7 @@ import GlRect from "../gldraw/glrect.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
+import { glTlRuler } from "./gltlruler.js";
 
 export class glTlScroll extends Events
 {
@@ -26,6 +27,7 @@ export class glTlScroll extends Events
 
     /** @type {GlRect[]} */
     #indicatorRects = [];
+    #rulerBg;
 
     /**
      * @param {GlTimeline} glTl
@@ -39,6 +41,13 @@ export class glTlScroll extends Events
         this.#bgRect = this.#glTl.rectsNoScroll.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
         this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
+
+        this.#rulerBg = this.#glTl.rectsNoScroll.createRect({ "name": "scroll rulesbg", "draggable": false, "interactive": false });
+        this.#rulerBg.setColor(0.2, 0.2, 0.9, 1);
+        this.#rulerBg.setPosition(0, 0, 0.1);
+        this.#rulerBg.setSize(this.#width, this.height);
+        this.ruler = new glTlRuler(glTl, this.#rulerBg, true);
+        this.ruler.update();
 
         this.#dragBar = new glTlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
 
@@ -148,6 +157,8 @@ export class glTlScroll extends Events
     {
         this.#width = w;
         this.#bgRect.setSize(this.#width, this.height);
+        this.ruler.update();
+
     }
 
     update()
@@ -169,6 +180,7 @@ export class glTlScroll extends Events
             // this.#glRectSelection.setPosition(bounds.min * this.#glTl.view.pixelPerSecond, 0);
             // this.#glRectSelection.setSize((bounds.max - bounds.min) * this.#glTl.view.pixelPerSecond + 2, this.height);
         }
+        this.ruler.update();
     }
 
     isHovering()

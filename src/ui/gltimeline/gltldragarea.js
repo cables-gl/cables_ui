@@ -1,7 +1,10 @@
 import { Events, Logger } from "cables-shared-client/index.js";
+import { Patch } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { glTlRuler } from "./gltlruler.js";
+import { gui } from "../gui.js";
 
 export class glTlDragArea extends Events
 {
@@ -68,6 +71,11 @@ export class glTlDragArea extends Events
         if (parent) this.#rectSizeRight.setParent(parent);
 
         /// ////
+        this.glRectBg = this.#glTl.rectsNoScroll.createRect({ "name": "ruler bgrect", "draggable": false, "interactive": true });
+        this.glRectBg.setSize(222, this.height);
+        this.glRectBg.setColor(0.25, 0.25, 0.25, 1);
+        this.glRectBg.setPosition(0, 0, -0.9);
+        this.ruler = new glTlRuler(glTl, this.glRectBg);
 
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {

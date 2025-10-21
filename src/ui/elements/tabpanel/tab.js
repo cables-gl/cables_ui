@@ -20,6 +20,7 @@ import TabPanel from "./tabpanel.js";
 
 export default class Tab extends Events
 {
+    static EVENT_RESIZE = "resize";
     static EVENT_CLOSE = "close";
     static EVENT_DEACTIVATE = "onDeactivate";
     static EVENT_ACTIVATE = "onActivate";
@@ -60,8 +61,12 @@ export default class Tab extends Events
             this.toolbarContainerEle.classList.add("toolbar");
             this.toolbarContainerEle.innerHTML = getHandleBarHtml("tabpanel_toolbar",
                 {
-                    "options": this.options, "id": this.id, "title": this.title, "hideToolbar": true,
+                    "options": this.options,
+                    "id": this.id,
+                    "title": this.title,
+                    "hideToolbar": true,
                 });
+
             eleContainer.appendChild(this.toolbarContainerEle);
 
             const tbEl = ele.byId("toolbarContent" + this.id);
@@ -113,7 +118,9 @@ export default class Tab extends Events
 
     getSaveButton()
     {
-        for (let i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == text.editorSaveButton) return this.buttons[i];
+        for (let i = 0; i < this.buttons.length; i++)
+            if (this.buttons[i].title == text.editorSaveButton)
+                return this.buttons[i];
     }
 
     remove()

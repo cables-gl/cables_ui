@@ -25,6 +25,7 @@ import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
 import { UiOp } from "../core_extend_op.js";
+import { glTlHead } from "./gltltimehead.js";
 
 /**
  * @typedef TlConfig
@@ -88,7 +89,7 @@ export class GlTimeline extends Events
     /** @type {GlRectInstancer} */
     #rectsOver = null;
 
-    /** @type {glTlRuler} */
+    /** @type {} */
     ruler = null;
 
     /** @type {glTlScroll} */
@@ -203,7 +204,7 @@ export class GlTimeline extends Events
 
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
-        this.ruler = new glTlRuler(this);
+        this.ruler = new glTlHead(this);
 
         this.scroll = new glTlScroll(this);
 
@@ -258,10 +259,6 @@ export class GlTimeline extends Events
         this.#rectSelect.setPosition(0, 0, -0.9);
         this.#rectSelect.setColorArray(gui.theme.colors_patch.patchSelectionArea);
 
-        gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
-        {
-            this.ruler.update();
-        });
         gui.corePatch().timer.on(Timer.EVENT_PLAY_PAUSE, () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
