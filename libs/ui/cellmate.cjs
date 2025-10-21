@@ -112,21 +112,17 @@ class CellMate
 
 	setCursorAbs(x,y,e)
 	{
-		if(e&&e.shiftKey&&this.#selectionStartX==-1)
-		{
-			this.startSelection(this.absX,this.absY);
-		}
+		if(e&&e.shiftKey&&this.#selectionStartX==-1) this.startSelection(this.absX,this.absY);
 
-		x-=this.#scrollX;
-		y-=this.#scrollY;
+		document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.remove("selected");
+		document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.remove("selected");
 
 		if(e&&!e.shiftKey&&this.#selectionEndX!=-1)this.unselectAll();
 
-		if(e&&e.shiftKey&&this.#selectionStartX==-1)
-		{
-			document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.remove("selected");
-			document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.remove("selected");
-		}
+		// -----------------
+
+		x-=this.#scrollX;
+		y-=this.#scrollY;
 
 		let cursorEl=this.getCursorEl();
 		if(cursorEl)
@@ -231,7 +227,7 @@ class CellMate
 				for(let x=sx;x<=ex;x++)
 				{
 					count++;
-					cb(x,y,this.getValue(x,y),x==ex-1);
+					cb(x,y,this.getValue(x,y),x-sx,y+sy);
 				}
 		else console.log("nono")
 
@@ -592,11 +588,11 @@ class CellMate
 		const separator="\t";
 		let str="";
 		let yy=-1;
-		this.forEachSelected((x,y,v,lastCol)=>
+		this.forEachSelected((x,y,v,xrel,yrel)=>
 		{
 			if(yy!=-1&&y>yy) str+="\n";
 
-			if(x>0)str+=separator;
+			if(xrel>0)str+=separator;
 			str+=v;
 
 			yy=y;
@@ -834,13 +830,14 @@ class CellMate
 
 		this.#elTable.addEventListener("paste",(e)=>
 		{
-	        this.isPasting = true;
-	        if (e.clipboardData.types.indexOf("text/plain") == -1)
-	        {
-	            console.log("Paste failed",e.clipboardData.types);
-	            return;
-	        }
-	        let str = e.clipboardData.getData("text/plain");
+      this.isPasting = true;
+      if (e.clipboardData.types.indexOf("text/plain") == -1)
+      {
+          console.log("Paste failed",e.clipboardData.types);
+          return;
+      }
+      let str = e.clipboardData.getData("text/plain");
+
 			this.fromTxt(str);
 			e.preventDefault();
 		});

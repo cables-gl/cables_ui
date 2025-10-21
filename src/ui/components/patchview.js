@@ -2016,14 +2016,15 @@ export default class PatchView extends Events
         {
             const fitp = op2.findFittingPort(p);
 
-            if (fitp.type == p.type)
-            {
-                this._p.link(op1, pid, op2, fitp.name);
-            }
-            else
-            {
-                gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
-            }
+            if (fitp)
+                if (fitp.type == p.type)
+                {
+                    this._p.link(op1, pid, op2, fitp.name);
+                }
+                else
+                {
+                    gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
+                }
         }
     }
 
