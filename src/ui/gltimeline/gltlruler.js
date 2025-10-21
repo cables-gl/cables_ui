@@ -159,7 +159,6 @@ export class glTlRuler extends Events
 
     update()
     {
-        console.log("offsetttttt", this.view.offset);
         this.updateOld();
         this.timeMarkerLookup = {};
         this.timeTitleLookup = {};

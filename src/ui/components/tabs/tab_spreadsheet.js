@@ -3,6 +3,7 @@ import { ele, Events, Logger } from "cables-shared-client";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * @typedef SpreadSheetOptions
@@ -14,6 +15,8 @@ import { gui } from "../../gui.js";
  */
 export default class SpreadSheetTab extends Events
 {
+    static TABSESSION_NAME = "spreadsheet";
+
     #log = new Logger("SpreadSheetTab");
     #cellMate = null;
     #port = null;
@@ -22,17 +25,24 @@ export default class SpreadSheetTab extends Events
 
     /** @type {TabPanel} */
     #tabs = null;
+    #currentId;
 
     /**
      * @param {TabPanel} tabs
      * @param {Port} port
-     * @param {any} data
-     * @param {SpreadSheetOptions} options
+     * @param {SpreadSheetOptions} [options]
      */
-    constructor(tabs, port, data, options)
+    constructor(tabs, port, options)
     {
         super();
+        if (!port)
+        {
+            console.log("spreadsheettab missing args");
+            return;
+        }
+
         this.#tabs = tabs;
+        this.#currentId = port.op.id + "_" + port.name;
 
         options = options || {};
 
@@ -41,11 +51,25 @@ export default class SpreadSheetTab extends Events
         this.#port = port;
         this.#options = options;
 
-        this.#tab = new Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": false });
-        this.#tabs.addTab(this.#tab, true);
+        this.#tab = new Tab(options.title || "", {
+            "icon": "edit",
+            "infotext": "tab_spreadsheet",
+            "padding": true,
+            "singleton": false });
+
+        editorSession.rememberOpenEditor(SpreadSheetTab.TABSESSION_NAME, this.#currentId, {
+            "portname": port.name,
+            "opid": port.op.id,
+        }, true);
+
+        this.#tab.on("close", () =>
+        {
+            editorSession.remove(SpreadSheetTab.TABSESSION_NAME, this.#currentId);
+        });
 
         this.#tab.on(Tab.EVENT_RESIZE, () =>
         {
+            console.log("resize tabbbbbbbbb");
             this.#cellMate.resize();
         });
 
@@ -54,13 +78,15 @@ export default class SpreadSheetTab extends Events
             this.#cellMate.resize();
         });
 
-        this.show();
-        gui.maintabPanel.show();
         this.#tab.addButton("export csv", () =>
         {
             this.#cellMate.download("cables.csv", this.#cellMate.toCsv());
 
         });
+
+        this.#tabs.addTab(this.#tab, true);
+        this.show();
+        gui.maintabPanel.show(true);
     }
 
     show()
@@ -72,3 +98,11 @@ export default class SpreadSheetTab extends Events
         this.#cellMate = new CellMate(this.#tab.contentEle);
     }
 }
+
+editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
+{
+    console.log("dataaa", data);
+    const op = gui.corePatch().getOpById(data.opid);
+
+    new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
+});
