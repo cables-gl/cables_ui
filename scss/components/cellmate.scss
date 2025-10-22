@@ -1,4 +1,3 @@
-
 .cellmateNotification {
     float: right;
 }
@@ -48,6 +47,10 @@
         border: 1px solid #ffff00;
     }
 
+    .value {
+        background-color: #333;
+    }
+
     .selected {
         background-color: #555526;
         outline: 1px solid #888800;
@@ -59,11 +62,12 @@
         background-color: #222;
         color: #ccc;
         width: calc(100% - 1px);
-        height: 100%;
+        height: calc(100% - 1px);
         outline: 1px solid var(--color-grid);
         margin-bottom: 1px;
-        border: none;
+        border: 1px solid transparent;
         font-family: monospace;
+        padding: 0px;
 
         &:focus {
             outline: 1px solid #00cccc;
@@ -72,6 +76,10 @@
 
     &:focus {
         outline: 1px solid #444;
+    }
+
+    .numeric {
+        color: #4adab5
     }
 
 }

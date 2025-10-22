@@ -1,68 +1,883 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["CellMate"] = factory();
-	else
-		root["CellMate"] = factory();
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+let countInst=0
 
-/***/ "./index.js":
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
-/***/ ((module) => {
+console.log("cellmate 34")
+class CellMate
+{
+	cellWidth=100;
+	#width=-1;
+	#height=30;
+	#data=[0];
+	#dataWidth=1;
+	#dataHeight=1;
 
-eval("{\nconsole.log(\"cellmate yay\")\n\nclass CellMate\n{\n\tcellWidth=100;\n\t#width=-1;\n\t#height=30;\n\t#data=[];\n\t#dataWidth=5;\n\t#dataHeight=99;\n\n\tcursorScreenX=0;\n\tcursorScreenY=0;\n\n\t#elTable=null;;\n\t#elActiveInput=null;\n\n\t#selectionStartX=-1\n\t#selectionStartY=-1\n\t#selectionEndX=-1\n\t#selectionEndY=-1\n\t#colTitles=[\"a\",\"b\"];\n\t#scrollY=0;\n\t#scrollX=0;\n\t#elContainer=null;\n\n\tconstructor(container)\n\t{\n\t\tthis.#data.length=this.#dataWidth*this.#dataHeight;\n\n\t\tfor(let i=0;i<this.#dataWidth*this.#dataHeight;i++)\n\t\t\tthis.#data[i]=Math.random();\n\n\t\tconsole.log(\"containe\",container)\n\n\n\t\tthis.#elContainer=container;\n\t\tthis.html();\n\t\tthis.resize();\n\t\tthis.setCursor(this.cursorScreenX,this.cursorScreenY);\n\n\n\n\t\t// this.download(\"bla.csv\",this.toCsv(true))\n\t\t// console.log(this.toCsv())\n\t}\n\tget absX()\n\t{\n\t\treturn this.cursorScreenX+this.#scrollX\n\t}\n\tget absY()\n\t{\n\t\treturn this.cursorScreenY+this.#scrollY\n\t}\n\n\tcellId(x,y)\n\t{\n\t\treturn \"cell\"+(x-this.#scrollX)+\"_\"+(y-this.#scrollY);\t\n\t}\n\tcellRowHeadId(y)\n\t{\n\t\treturn \"rowHead\"+(y-this.#scrollY);\t\n\t}\n\tcellColHeadId(x)\n\t{\n\t\treturn \"colHead\"+(x-this.#scrollX);\t\n\t}\n\n\tclampCursor()\n\t{\n\t\tthis.cursorScreenX=Math.max(0,this.cursorScreenX)\n\t\tthis.cursorScreenY=Math.max(0,this.cursorScreenY)\n\n\t\tthis.cursorScreenX=Math.min(this.#width-1,this.cursorScreenX)\n\t\tthis.cursorScreenY=Math.min(this.#height-1,this.cursorScreenY)\n\t}\n\tnotify(t)\n\t{\n\t\tclearTimeout(this.clearTimeout);\n\t\tthis.elNotify.innerHTML=t;\n\t\tthis.clearNotify=setTimeout(()=>\n\t\t{\n\t\t\tthis.elNotify.innerHTML=\"\";\n\t\t},3000);\n\t}\n\n\tfocusCell(x,y)\n\t{\n\t\tthis.setCursor(x,y);\n\t\tthis.getCursorEl()?.removeAttribute(\"readonly\")\n\n\t\tthis.#elActiveInput=this.getCursorEl()\n\n\t\tthis.getCursorEl()?.focus();\n\t\tthis.getCursorEl()?.select();\n\t}\n\n\tunFocusInput()\n\t{\n\t\tif(!this.#elActiveInput)return;\n\t\tthis.#elActiveInput.blur();\n\t\tthis.getCursorEl().setAttribute(\"readonly\",true)\n\t\tthis.#elActiveInput=null;\n\t}\n\n\tsetCursor(x,y,e)\n\t{\n\t\tthis.setCursorAbs(x+this.#scrollX,y+this.#scrollY,e)\n\t}\n\n\tsetCursorAbs(x,y,e)\n\t{\n\t\tif(e&&e.shiftKey&&this.#selectionStartX==-1)\n\t\t{\n\t\t\tthis.startSelection(this.absX,this.absY);\n\t\t}\n\n\t\tx-=this.#scrollX;\n\t\ty-=this.#scrollY;\n\n\t\tif(e&&!e.shiftKey&&this.#selectionEndX!=-1)this.unselectAll();\n\n\t\tif(e&&e.shiftKey&&this.#selectionStartX==-1)\n\t\t{\n\t\t\tdocument.getElementsByClassName(\"rowHead\"+this.cursorScreenY)[0]?.classList.remove(\"selected\");\n\t\t\tdocument.getElementsByClassName(\"colHead\"+this.cursorScreenX)[0]?.classList.remove(\"selected\");\n\t\t}\n\n\t\tlet cursorEl=this.getCursorEl();\n\t\tif(cursorEl)\n\t\t{\n\t\t\tcursorEl.classList.remove(\"cursor\");\n\t\t\tif(this.#elActiveInput) this.unFocusInput();\n\t\t}\n\n\t\tthis.cursorScreenX=x;\n\t\tthis.cursorScreenY=y;\n\t\tthis.clampCursor();\n\n\t\tcursorEl=this.getCursorEl()\n\t\tif(cursorEl)\n\t\t{\n\t\t\tcursorEl.classList.add(\"cursor\");\n\t\t\tcursorEl.setAttribute(\"readonly\",true)\n\t\t}\n\t\tthis.#elTable.focus()\n\t\tif(e&&e.shiftKey)this.setEndSelection(this.cursorScreenX+this.#scrollX,this.cursorScreenY+this.#scrollY );\n\t\telse\n\t\t{\n\t\t\tdocument.getElementsByClassName(\"rowHead\"+this.cursorScreenY)[0]?.classList.add(\"selected\");\n\t\t\tdocument.getElementsByClassName(\"colHead\"+this.cursorScreenX)[0]?.classList.add(\"selected\");\n\t\t}\n\t\tthis.updateStatus();\n    cursorEl?.scrollIntoView();\n\t}\n\n\tstartSelection(x,y)\n\t{\n\t\tthis.#selectionStartX=x\n\t\tthis.#selectionStartY=y\n\t}\n\n\tsetEndSelection(x,y)\n\t{\n\t\tthis.#selectionEndX=x\n\t\tthis.#selectionEndY=y\n\t\tthis.updateSelection();\n\t}\n\n\tselectRow(r,e)\n\t{\n\t\tif(e && e.shiftKey)\n\t\t{\n\t\t\tthis.setEndSelection(this.#dataWidth,Math.max(r,this.#selectionStartY));\n\t\t\tthis.startSelection(0,Math.min(r,this.#selectionStartY))\n\t\n\t\t}else\n\t\t{\n\t\t\tthis.startSelection(0,r)\n\t\t\tthis.setEndSelection(this.#dataWidth,r)\n\t\t}\n\t\tthis.updateSelection()\n\t}\n\n\tselectCol(col,e)\n\t{\n\t\tif(e && e.shiftKey)\n\t\t{\n\t\t\tthis.setEndSelection(Math.max(col,this.#selectionStartX),this.#dataHeight);\n\t\t\tthis.startSelection(Math.min(col,this.#selectionStartX),0)\n\t\n\t\t}else\n\t\t{\n\t\t\tthis.startSelection(col,0)\n\t\t\tthis.setEndSelection(col,this.#dataHeight);\n\t\t}\n\t\tthis.updateSelection()\n\t}\n\n\tunselectAll()\n\t{\n\t\tlet eles=this.#elTable.getElementsByClassName(\"selected\")\n\t\twhile(eles.length)\n\t\t{\n\t\t\tfor(let i=0;i<eles.length;i++)eles[i].classList.remove(\"selected\")\n\t\t\teles=this.#elTable.getElementsByClassName(\"selected\")\n\t\t}\n\n\t\tthis.#selectionStartX=this.#selectionStartY=this.#selectionEndX=this.#selectionEndY=-1;\n\t}\n\tgetValue(x,y)\n\t{\n\t\tlet v=this.#data[x+y*this.#dataWidth];\n\t\tif(v==undefined)v=\"\";\n\t\treturn v;\n\t}\n\n\tforEachSelected(cb)\n\t{\n\t\tconst sx=Math.min(this.#selectionStartX,this.#selectionEndX)\n\t\tconst sy=Math.min(this.#selectionStartY,this.#selectionEndY)\n\t\tconst ex=Math.max(this.#selectionStartX,this.#selectionEndX)\n\t\tconst ey=Math.max(this.#selectionStartY,this.#selectionEndY)\n\t\tconsole.log(\"selected\",sx,sy,ex,ey)\n\n\t\tlet count=0;\n\t\tif(sx!=-1&&sy!=-1&&ex!=-1&&ey!=-1)\n\t\t\tfor(let y=sy;y<=ey;y++)\n\t\t\t\tfor(let x=sx;x<=ex;x++)\n\t\t\t\t{\n\t\t\t\t\tcount++;\n\t\t\t\t\tcb(x,y,this.getValue(x,y),x==ex-1);\n\t\t\t\t}\n\t\telse console.log(\"nono\")\n\n\t\tif(count==0){\n\t\t\tcb(this.absX,this.absY,this.getValue(this.absX,this.absY))\n\t\t\tcount++\n\t\t}\n\t\tthis.lastSelectedForeachCount=count\n\t\treturn count\n\t}\n\n\tdeleteSelectionContent(c)\n\t{\n\t\tthis.forEachSelected((x,y,v)=>{\n\t\t\tthis.setValue(x,y,\"\")\n\t\t})\n\t\tthis.redrawData()\n\t}\n\n\tupdateSelection()\n\t{\n\t\tlet eles=Array.from(this.#elTable.getElementsByClassName(\"selected\"));\n\t\tfor(let i=0;i<eles.length;i++)eles[i].classList.remove(\"selected\")\n\n\t\tconst sx=Math.min(this.#selectionStartX,this.#selectionEndX)\n\t\tconst sy=Math.min(this.#selectionStartY,this.#selectionEndY)\n\t\tconst ex=Math.max(this.#selectionStartX,this.#selectionEndX)\n\t\tconst ey=Math.max(this.#selectionStartY,this.#selectionEndY)\n\n\t\tfor(let absy=sy;absy<=ey;absy++)\n\t\t{\n\t\t\tif(absy-this.#scrollY>this.#height)continue;\n\n\t\t\tconst eleRowHead=document.getElementsByClassName(this.cellRowHeadId(absy))\n\t\t\tif(eleRowHead[0])eleRowHead[0].classList.add(\"selected\")\n\n\t\t\tfor(let absx=sx;absx<=ex;absx++)\n\t\t\t{\n\t\t\t\t\tif(absy==sy)\n\t\t\t\t\t{\n\t\t\t\t\t\tconst eleColHead=document.getElementsByClassName(this.cellColHeadId(absx))\n\t\t\t\t\t\tif(eleColHead[0])eleColHead[0].classList.add(\"selected\")\n\t\t\t\t\t}\n\n\t\t\t\t\tconst ele=document.getElementById(this.cellId(absx,absy))\n\t\t\t\t\tele?.classList.add(\"selected\")\n\t\t\t}\n\t\t}\n\t}\n\n\tgetCursorEl( )\n\t{\n\t\treturn document.getElementById(this.cellId(this.absX,this.absY));\n\t}\n\n\tmoveCursorUp(e)\n\t{\n\t\tif(this.cursorScreenY<1&&this.#scrollY)return this.scrollUp();\n\t\tthis.setCursor(this.cursorScreenX,this.cursorScreenY-1,e);\n\t\tif(e)e.preventDefault();\n\n\t}\n\n\tmoveCursorDown(e)\n\t{\n\t\tif(this.cursorScreenY>=this.#height-1)return this.scrollDown();\n\t\tthis.setCursor(this.cursorScreenX,this.cursorScreenY+1,e);\n\t\tif(e)e.preventDefault();\n\t}\n\n\tmoveCursorLeft(e)\n\t{\n\t\tif(this.cursorScreenX<1&&this.#scrollX)return this.scrollLeft();\n\t\tthis.setCursor(this.cursorScreenX-1,this.cursorScreenY,e);\n\t\tif(e)e.preventDefault();\n\t}\n\n\tmoveCursorRight(e)\n\t{\n\t\tif(this.cursorScreenX>=this.#width-1)return this.scrollRight();\n\t\tthis.setCursor(this.cursorScreenX+1,this.cursorScreenY,e);\n\t\tif(e)e.preventDefault();\n\t}\n\n\tscrollUp()\n\t{\n\t\tthis.#scrollY--;\n\t\tif(this.#scrollY<0)this.#scrollY=0;\n\t\tthis.redrawData();\n\t}\n\tscrollDown(num)\n\t{\n\t\tthis.#scrollY+=num||1;\n\t\tthis.redrawData();\n\t}\n\tscrollRight(num)\n\t{\n\t\tthis.#scrollX+=num||1;\n\t\tthis.redrawData();\n\t}\n\tscrollLeft()\n\t{\n\t\tthis.#scrollX--;\n\t\tthis.redrawData();\n\t}\n\n\tmoveY(num)\n\t{\n\t\tfor(let i=0;i<Math.abs(num);i++)\n\t\t{\n\t\t\tif(num>0)this.moveCursorDown()\n\t\t\telse this.moveCursorUp()\n\t\t}\n\t}\n\n\tresize()\n\t{\n\t\tconst colNum=Math.floor(this.#elContainer.clientWidth/this.cellWidth)-1;\n\t\tconst rowNum=Math.floor(this.#elContainer.clientHeight/22)-2;\n\n\t\tif(this.#width!=colNum||this.#height!=rowNum)\n\t\t{\n\t\t\tthis.#width=colNum;\n\t\t\tthis.#height=rowNum;\n\t\t\tthis.html()\n\t\t\tconst rows=this.#elTable.getElementsByClassName(\"row\")\n\n\t\t\tfor(let i=0;i<rows.length;i++)\n\t\t\t{\n\t\t\t\trows[i].style[\"grid-template-columns\"]=\"repeat(\"+(this.#width+1)+\",\"+this.cellWidth+\"px)\"\n\t\t\t\tconsole.log(\"repeat(\"+this.#width+\",\"+this.cellWidth+\"px)\");\n\t\t\t}\n\t\t}\n\t}\n\n\tresizeData(w,h)\n\t{\n\t\tconst newData=[]\n\t\tfor(let x=0;x<w;x++)\n\t\t{\n\t\t\tfor(let y=0;y<h;y++)\n\t\t\t{\n\t\t\t\tnewData[x+y*w]=\"\";\n\t\t\t\tif(x<this.#dataWidth && y<this.#dataHeight)\n\t\t\t\t{\n\t\t\t\t\tnewData[x+y*w]=this.#data[x+y*this.#dataWidth];\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tthis.#data=newData;\n\t\tthis.#dataWidth=w;\n\t\tthis.#dataHeight=h;\n\t\tconsole.log(\"resize to \",w,h)\n\t\tresize()\n\t}\n\n\tsetValue(x,y,v)\n\t{\n\t\tif(x>=this.#dataWidth || y>=this.#dataHeight)\n\t\t\tthis.resizeData(Math.max(x+1,this.#dataWidth-1),Math.max(y+1,this.#dataHeight-1))\n\n\t\tconst idx=x+this.#dataWidth*y;\n\t\twhile(idx>this.#data.length)\n\t\t\tfor(let i=0;i<this.#width;i++) this.#data.push(\"\");\n\n\t\tthis.#data[idx]=v;\n\t\tconst inputEle=document.getElementById(this.cellId(x,y))\n\t\tif(inputEle)inputEle.value=v;\n\t}\n\n\tfromTxt(txt,x,y)\n\t{\n\t\tconst separator=\"\\t\";\n\t\tconst rows=txt.split(\"\\n\");\n\n\t\tfor(let i=0;i<rows.length;i++)\n\t\t{\n\t\t\tconst cols=rows[i].split(separator);\n\n\t\t\tfor(let j=0;j<cols.length;j++)\n\t\t\tif(cols[j]!=undefined&&cols[j]!=null)\n\t\t\t\tthis.setValue(this.absX+j,this.absY+i,cols[j])\n\t\t}\n\t}\n\n\ttoCsv(includeHead=true)\n\t{\n\t\t\tlet str=\"\"\n\t\t\tconst separator=\";\"\n\t\t\tif(includeHead)\n\t\t\t{\n\t\t\t\tfor(let x=0;x<this.#dataWidth;x++)\n\t\t\t\t{\n\t\t\t\t\tstr+=this.#colTitles[x]||x\n\t\t\t\t\tif(x<this.#dataWidth-1)str+=separator\n\t\t\t\t}\n\n\t\t\t\tstr+=\"\\n\"\n\t\t\t}\n\n\t\t\tfor(let y=0;y<this.#dataHeight;y++)\n\t\t\t{\n\t\t\t\tfor(let x=0;x<this.#dataWidth;x++)\n\t\t\t\t{\n\n\t\t\t\t\tstr+=this.getValue(x,y);\n\t\t\t\t\tif(x<this.#dataWidth-1)str+=separator\n\t\t\t\t\t\n\t\t\t\t}\n\t\t\t\tstr+=\"\\n\"\n\t\t\t}\n\t\treturn str\n\t}\n\n\tdownload(filename,str)\n\t{\n\t  var element = document.createElement('a');\n\t  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));\n\t  element.setAttribute('download', filename);\n\n\t  element.style.display = 'none';\n\t  document.body.appendChild(element);\n\n\t  element.click();\n\n\t  document.body.removeChild(element);\n\t}\t\t\n\t\n\ttoJson()\n\t{\n\t\tconst arr=[]\n\n\t\t\tfor(let y=0;y<this.#dataHeight;y++)\n\t\t\t{\n\t\t\t\tconst json={};\n\t\t\t\tfor(let x=0;x<this.#dataWidth;x++)\n\t\t\t\t{\n\t\t\t\t\tconst title=this.#colTitles[x]||String(x);\n\t\t\t\t\tjson[title]=this.getValue(x,y);\n\t\t\t\t}\n\t\t\t\tarr.push(json);\n\t\t\t}\n\t\t\treturn arr\n\t}\n\n\ttoArray(multiple )\n\t{\n\t\tif(multiple)\n\t\t{\n\t\t\tconst arr=[]\n\t\t\tfor(let x=0;x<this.#dataWidth;x++) arr[x]=[]\n\n\t\t\tfor(let x=0;x<this.#dataWidth;x++)\n\t\t\t\tfor(let y=0;y<this.#dataHeight;y++)\n\t\t\t\t\tarr[x][y]=this.getValue(x,y)\n\t\t\t\t\n\t\t\treturn arr;\n\t\t\n\t\t}\n\t\telse{\n\t\t\treturn structuredClone(this.#data)\n\t\t}\n\t\t\n\t}\n\n\ttoTxt()\n\t{\n\t\tconst separator=\"\\t\";\n\t\tlet str=\"\";\n\t\tlet yy=-1;\n\t\tthis.forEachSelected((x,y,v,lastCol)=>\n\t\t{\n\t\t\tif(yy!=-1&&y>yy) str+=\"\\n\";\n\n\t\t\tif(x>0)str+=separator;\n\t\t\tstr+=v;\n\n\t\t\tyy=y;\n\t\t});\n\t\tconsole.log(str)\n\n\t\treturn str;\n\t}\n\n\tredrawData()\n\t{\n\t\tfor(let x=0;x<this.#width;x++)\n\t\t{\n\t\t\tconst head=document.getElementsByClassName(this.cellColHeadId(x))[0];\n\t\t\tif(!head)continue;\n\t\t\tlet s=String(x+this.#scrollX);\n\t\t\tif(this.#colTitles[x+this.#scrollX]) s+=\":\" +this.#colTitles[x+this.#scrollX];\n\t\t\thead.innerHTML=s;\n\t\t}\n\n\t\tfor(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)\n\t\t{\n\t\t\tconst eleRowHead=document.getElementsByClassName(this.cellRowHeadId(y))[0];\n\t\t\teleRowHead.innerHTML=y+this.#scrollY;\n\n\t\t\tfor(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)\n\t\t\t{\n\t\t\t\tconst elCell=document.getElementById(this.cellId(x,y));\n\t\t\t\tif(x<this.#dataWidth&& y<this.#dataHeight) elCell.value=this.#data[(x)+(y)*this.#dataWidth];\n\t\t\t\telse elCell.value=\"\";\n\t\t\t}\n\t\t}\n\n\t\tthis.updateSelection();\n\t\tthis.updateStatus();\n\t}\n\n\tupdateStatus()\n\t{\n\t\tlet str=\"\";\n\t\tstr+=(this.absX )+\",\"+(this.absY);\n\t\tstr+=\" | \";\n\t\tstr+=this.#dataWidth+\"x\"+this.#dataHeight;\n\t\tif(this.#selectionStartX>-1)\n\t\t{\n\t\t\tstr+=\" | \";\n\t\t\tstr+=this.#selectionStartX+\",\"+this.#selectionStartY;\n\t\t\tstr+=\" - \";\n\t\t\tstr+=this.#selectionEndX+\",\"+this.#selectionEndY;\n\t\t}\n\t\tthis.elStatus.innerHTML=str;\n\t}\n\n\thtml()\n\t{\n\t\tthis.#elContainer.innerHTML=\"\"\n\n\t\tconst elTable=document.createElement(\"div\")\n\t\telTable.classList.add(\"cellmatetable\")\n\t\telTable.setAttribute(\"tabindex\",1);\n\n\t\tconst elRow=document.createElement(\"div\")\n\t\telRow.classList.add(\"row\");\n\t\telTable.appendChild(elRow);\n\n\t\tfor(let x=0;x<this.#width+1;x++)\n\t\t{\n\t\t\tconst elColHead=document.createElement(\"div\")\n\t\t\telColHead.classList.add(\"head\");\n\t\t\tif(x>0)elColHead.classList.add(\"colHead\"+(x-1));\n\t\t\telColHead.dataset.idx=x;\n\t\t\tif(x>0)elColHead.dataset.x=x-1;\n\t\t\telRow.appendChild(elColHead);\n\t\t\tif(x) elColHead.innerHTML=x;\n\n\t\t\telColHead.addEventListener(\"dblclick\",(e)=>{\n\t\t\t\tconst t=prompt(\"title\");\n\t\t\t\tthis.#colTitles[parseInt(e.srcElement.dataset.x)]=t;\n\t\t\t\tthis.redrawData();\n\t\t\t\tconsole.log(this.#colTitles)\n\t\t\t});\n\t\t\tconst col=x;\n\t\t\telColHead.addEventListener(\"click\",(e)=>{\n\t\t\t\tthis.selectCol(col-1,e)\n\t\t\t});\n\t\t}\n\n\t\tfor(let y=0;y<this.#height;y++)\n\t\t{\n\t\t\tconst elRow=document.createElement(\"div\")\n\t\t\telRow.classList.add(\"row\");\n\t\t\telTable.appendChild(elRow);\n\n\t\t\tconst elRowHead=document.createElement(\"div\")\n\t\t\telRowHead.classList.add(\"head\")\n\t\t\telRowHead.classList.add(\"rowHead\"+y)\n\t\t\telRow.appendChild(elRowHead)\n\t\t\telRowHead.innerHTML=y;\n\t\t\tconst row=y\n\t\t\telRowHead.addEventListener(\"click\",(e)=>{\n\t\t\t\tthis.selectRow(row,e);\n\t\t\t});\n\t\t\tfor(let x=0;x<this.#width;x++)\n\t\t\t{\n\t\t\t\tconst elCell=document.createElement(\"div\")\n\t\t\t\telCell.classList.add(\"cell\")\n\t\t\t\telRow.appendChild(elCell)\n\t\t\t\tconst elInput=document.createElement(\"input\");\n\t\t\t\telInput.id=this.cellId(x,y)\n\t\t\t\telInput.setAttribute(\"readonly\",true)\n\t\t\t\telInput.dataset.x=x;\n\t\t\t\telInput.dataset.y=y;\n\t\t\t\telCell.appendChild(elInput);\n\n\t\t\t\telInput.addEventListener(\"pointerdown\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.mouseDown=true;\n\t\t\t\t\tthis.unselectAll();\n\t\t\t\t\tthis.#selectionStartX=parseInt(e.srcElement.dataset.x)+this.#scrollX;\n\t\t\t\t\tthis.#selectionStartY=parseInt(e.srcElement.dataset.y)+this.#scrollY;\n\t\t\t\t\tthis.setCursorAbs(this.#selectionStartX,this.#selectionStartY)\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"pointerup\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.mouseDown=false;\n\t\t\t\t\tif(parseInt(e.srcElement.dataset.x)+this.#scrollX==this.#selectionStartX&& parseInt(e.srcElement.dataset.y)+this.#scrollY==this.#selectionStartY\t\t\t\t)\n\t\t\t\t\t{\n\t\t\t\t\t\tthis.#selectionStartX=-1;\n\t\t\t\t\t\tthis.#selectionStartY=-1;\n\t\t\t\t\t\tthis.#selectionEndX=-1;\n\t\t\t\t\t\tthis.#selectionEndY=-1;\n\t\t\t\t\t}\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"pointerenter\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tif(this.mouseDown && this.#selectionStartX!=-1)\n\t\t\t\t\t{\n\t\t\t\t\t\tthis.#selectionEndX=parseInt(e.srcElement.dataset.x)+this.#scrollX;\n\t\t\t\t\t\tthis.#selectionEndY=parseInt(e.srcElement.dataset.y)+this.#scrollY;\n\t\t\t\t\t\tthis.updateStatus();\n\t\t\t\t\t\tthis.updateSelection();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\telInput.addEventListener(\"wheel\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tif(e.deltaY>0){\n\t\t\t\t\t\tthis.scrollDown(1);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tthis.scrollUp(1);\n\t\t\t\t\t}\n\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"input\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.setValue(this.absX,this.absY,e.srcElement.value)\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"blur\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.redrawData()\n\t\t\t\t});\n\n\t\t\t\telCell.addEventListener(\"click\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.setCursor(parseInt(e.srcElement.dataset.x), parseInt(e.srcElement.dataset.y),e);\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"dblclick\",(e)=>\n\t\t\t\t{\n\t\t\t\t\tthis.focusCell(parseInt(e.srcElement.dataset.x), parseInt(e.srcElement.dataset.y),e);\n\t\t\t\t});\n\n\t\t\t\telInput.addEventListener(\"keydown\",(e)=>\n\t\t\t\t{\n\t\n\t\t\t\t});\n\t\t\t}\n\t\t}\n\n\t\tthis.#elTable=elTable;\n\t\tthis.#elContainer.appendChild(elTable)\n\n\t\tthis.elStatus=document.createElement(\"div\");\n\t\tthis.elStatus.classList.add(\"cellmateStatus\");\n\t\tthis.#elContainer.appendChild(this.elStatus);\n\n\t\tthis.elNotify=document.createElement(\"div\");\n\t\tthis.elNotify.classList.add(\"cellmateNotification\");\n\t\tthis.#elContainer.appendChild(this.elNotify);\n\n\t\tthis.#elTable.addEventListener(\"copy\",(e)=>\n\t\t{\n\t\t\tnavigator.clipboard.writeText(this.toTxt());\n\n\t\t\tthis.notify(\"copied \"+this.lastSelectedForeachCount+\" entries\");\n\t\t});\n\n\t\tthis.#elTable.addEventListener(\"paste\",(e)=>\n\t\t{\n\t        this.isPasting = true;\n\t        if (e.clipboardData.types.indexOf(\"text/plain\") == -1)\n\t        {\n\t            console.log(\"Paste failed\",e.clipboardData.types);\n\t            return;\n\t        }\n\t        let str = e.clipboardData.getData(\"text/plain\");\n\t\t\tthis.fromTxt(str);\n\t\t\te.preventDefault();\n\t\t});\n\n\t\tthis.#elTable.addEventListener(\"keydown\",(e)=>\n\t\t{\n\t\t\tif(e.key==\"Enter\")\n\t\t\t{\n\t\t\t\tif(this.#elActiveInput)\n\t\t\t\t{\n\t\t\t\t\tthis.unFocusInput();\n\t\t\t\t\tthis.moveCursorDown()\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tthis.unFocusInput();\n\t\t\t\t\tthis.focusCell(this.cursorScreenX,this.cursorScreenY);\n\t\t\t\t}\n\t\t\t}\n\t\t\telse if(!this.#elActiveInput && (e.key==\"Delete\"||e.key==\"Backspace\")) this.deleteSelectionContent();\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"ArrowDown\") this.moveCursorDown(e);\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"ArrowUp\") this.moveCursorUp(e);\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"ArrowLeft\") this.moveCursorLeft(e);\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"ArrowRight\") this.moveCursorRight(e);\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"PageUp\") this.moveY(-this.#height);\n\t\t\telse if(!this.#elActiveInput &&  e.key==\"PageDown\") this.moveY(this.#height);\n\t\t\telse\n\t\t\t\tif(e.code && (e.code.startsWith(\"Digit\") || e.code.startsWith(\"Key\") ))\n\t\t\t\t{\n\t\t\t\t\tif(!this.#elActiveInput) this.focusCell(this.cursorScreenX,this.cursorScreenY);\n\t\t\t\t}\n\t\t\t\telse console.log(e)\n\n\t\t});\n\t\tthis.redrawData();\n\t}\n\t\n}\n\nmodule.exports=CellMate;\n\n\n//# sourceURL=webpack://CellMate/./index.js?\n}");
+	cursorScreenX=0;
+	cursorScreenY=0;
 
-/***/ })
+	#elTable=null;;
+	#elActiveInput=null;
 
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./index.js");
-/******/ 	
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
+	#selectionStartX=-1
+	#selectionStartY=-1
+	#selectionEndX=-1
+	#selectionEndY=-1
+	#colTitles=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+	#scrollY=0;
+	#scrollX=0;
+	#elContainer=null;
+	#options={}
+	countInst=0
+
+	constructor(container,options)
+	{
+		this.countInst= ++countInst;
+		this.#data.length=this.#dataWidth*this.#dataHeight;
+		this.#options=options
+
+		// for(let i=0;i<this.#dataWidth*this.#dataHeight;i++)
+		// 	this.#data[i]=Math.random();
+
+		console.log("containe",container)
+
+		this.#elContainer=container;
+		this.html();
+		this.resize();
+		this.setCursor(this.cursorScreenX,this.cursorScreenY);
+
+		// this.download("bla.csv",this.toCsv(true))
+		// console.log(this.toCsv())
+	}
+	get absX()
+	{
+		return this.cursorScreenX+this.#scrollX
+	}
+	get absY()
+	{
+		return this.cursorScreenY+this.#scrollY
+	}
+
+	cellId(x,y)
+	{
+		return "cell"+this.countInst+"_"+(x-this.#scrollX)+"_"+(y-this.#scrollY);	
+	}
+	cellRowHeadId(y)
+	{
+		return "rowHead"+this.countInst+"_"+(y-this.#scrollY);	
+	}
+	cellColHeadId(x)
+	{
+		return "colHead"+this.countInst+"_"+(x-this.#scrollX);	
+	}
+
+	clampCursor()
+	{
+		this.cursorScreenX=Math.max(0,this.cursorScreenX)
+		this.cursorScreenY=Math.max(0,this.cursorScreenY)
+
+		this.cursorScreenX=Math.min(this.#width-1,this.cursorScreenX)
+		this.cursorScreenY=Math.min(this.#height-1,this.cursorScreenY)
+	}
+	notify(t)
+	{
+		clearTimeout(this.clearTimeout);
+		this.elNotify.innerHTML=t;
+		this.clearNotify=setTimeout(()=>
+		{
+			this.elNotify.innerHTML="";
+		},3000);
+	}
+
+	focusCell(x,y)
+	{
+		this.setCursor(x,y);
+		this.getCursorEl()?.removeAttribute("readonly")
+
+		this.#elActiveInput=this.getCursorEl()
+
+		this.getCursorEl()?.focus();
+		this.getCursorEl()?.select();
+	}
+
+	unFocusInput()
+	{
+		if(!this.#elActiveInput)return;
+		this.#elActiveInput.blur();
+		this.getCursorEl().setAttribute("readonly",true)
+		this.#elActiveInput=null;
+	}
+
+	setCursor(x,y,e)
+	{
+		this.setCursorAbs(x+this.#scrollX,y+this.#scrollY,e)
+	}
+
+	setCursorAbs(x,y,e)
+	{
+		if(e&&e.shiftKey&&this.#selectionStartX==-1) this.startSelection(this.absX,this.absY);
+
+		document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.remove("selected");
+		document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.remove("selected");
+
+		if(e&&!e.shiftKey&&this.#selectionEndX!=-1)this.unselectAll();
+
+		// -----------------
+
+		x-=this.#scrollX;
+		y-=this.#scrollY;
+
+		let cursorEl=this.getCursorEl();
+		if(cursorEl)
+		{
+			cursorEl.classList.remove("cursor");
+			if(this.#elActiveInput) this.unFocusInput();
+		}
+
+		this.cursorScreenX=x;
+		this.cursorScreenY=y;
+		this.clampCursor();
+
+		cursorEl=this.getCursorEl()
+		if(cursorEl)
+		{
+			cursorEl.classList.add("cursor");
+			cursorEl.setAttribute("readonly",true)
+		}
+		this.#elTable.focus()
+		if(e&&e.shiftKey)this.setEndSelection(this.cursorScreenX+this.#scrollX,this.cursorScreenY+this.#scrollY );
+		else
+		{
+			document.getElementsByClassName(this.cellRowHeadId(this.cursorScreenY))[0]?.classList.add("selected");
+			document.getElementsByClassName(this.cellColHeadId(this.cursorScreenX))[0]?.classList.add("selected");
+		}
+		this.updateStatus();
+    // cursorEl?.scrollIntoView();
+	}
+
+	startSelection(x,y)
+	{
+		this.#selectionStartX=x
+		this.#selectionStartY=y
+	}
+
+	setEndSelection(x,y)
+	{
+		this.#selectionEndX=x
+		this.#selectionEndY=y
+		this.updateSelection();
+	}
+
+	selectRow(r,e)
+	{
+		if(e && e.shiftKey)
+		{
+			this.setEndSelection(this.#dataWidth,Math.max(r,this.#selectionStartY));
+			this.startSelection(0,Math.min(r,this.#selectionStartY))
+	
+		}else
+		{
+			this.startSelection(0,r)
+			this.setEndSelection(this.#dataWidth,r)
+		}
+		this.updateSelection()
+	}
+
+	selectCol(col,e)
+	{
+		if(e && e.shiftKey)
+		{
+			this.setEndSelection(Math.max(col,this.#selectionStartX),this.#dataHeight);
+			this.startSelection(Math.min(col,this.#selectionStartX),0)
+	
+		}else
+		{
+			this.startSelection(col,0)
+			this.setEndSelection(col,this.#dataHeight);
+		}
+		this.updateSelection()
+	}
+
+	unselectAll()
+	{
+		let eles=this.#elTable.getElementsByClassName("selected")
+		while(eles.length)
+		{
+			for(let i=0;i<eles.length;i++)eles[i].classList.remove("selected")
+			eles=this.#elTable.getElementsByClassName("selected")
+		}
+
+		this.#selectionStartX=this.#selectionStartY=this.#selectionEndX=this.#selectionEndY=-1;
+	}
+	getValue(x,y)
+	{
+		let v=this.#data[x+y*this.#dataWidth];
+		if(v==undefined)v="";
+		return v;
+	}
+
+	forEachSelected(cb)
+	{
+		const sx=Math.min(this.#selectionStartX,this.#selectionEndX)
+		const sy=Math.min(this.#selectionStartY,this.#selectionEndY)
+		const ex=Math.max(this.#selectionStartX,this.#selectionEndX)
+		const ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+		console.log("selected",sx,sy,ex,ey)
+
+		let count=0;
+		if(sx!=-1&&sy!=-1&&ex!=-1&&ey!=-1)
+			for(let y=sy;y<=ey;y++)
+				for(let x=sx;x<=ex;x++)
+				{
+					count++;
+					cb(x,y,this.getValue(x,y),x-sx,y+sy);
+				}
+		else console.log("nono")
+
+		if(count==0){
+			cb(this.absX,this.absY,this.getValue(this.absX,this.absY))
+			count++
+		}
+		this.lastSelectedForeachCount=count
+		return count
+	}
+
+	deleteSelectionContent(c)
+	{
+		this.forEachSelected((x,y,v)=>{
+			this.setValue(x,y,"")
+		})
+		this.removeEmptyRowCols()
+		this.redrawData()
+		console.log("delee")
+	}
+
+	updateSelection()
+	{
+		let eles=Array.from(this.#elTable.getElementsByClassName("selected"));
+		for(let i=0;i<eles.length;i++)eles[i].classList.remove("selected")
+
+		const sx=Math.min(this.#selectionStartX,this.#selectionEndX)
+		const sy=Math.min(this.#selectionStartY,this.#selectionEndY)
+		const ex=Math.max(this.#selectionStartX,this.#selectionEndX)
+		const ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+
+		for(let absy=sy;absy<=ey;absy++)
+		{
+			if(absy-this.#scrollY>this.#height)continue;
+
+			const eleRowHead=document.getElementsByClassName(this.cellRowHeadId(absy))
+			if(eleRowHead[0])eleRowHead[0].classList.add("selected")
+
+			for(let absx=sx;absx<=ex;absx++)
+			{
+					if(absy==sy)
+					{
+						const eleColHead=document.getElementsByClassName(this.cellColHeadId(absx))
+						if(eleColHead[0])eleColHead[0].classList.add("selected")
+					}
+
+					const ele=document.getElementById(this.cellId(absx,absy))
+					ele?.classList.add("selected")
+			}
+		}
+	}
+
+	getCursorEl( )
+	{
+		return document.getElementById(this.cellId(this.absX,this.absY));
+	}
+
+	moveCursorUp(e)
+	{
+		if(this.cursorScreenY<1&&this.#scrollY)return this.scrollUp();
+		this.setCursor(this.cursorScreenX,this.cursorScreenY-1,e);
+		if(e)e.preventDefault();
+
+	}
+
+	moveCursorDown(e)
+	{
+		if(this.cursorScreenY>=this.#height-1)return this.scrollDown();
+		this.setCursor(this.cursorScreenX,this.cursorScreenY+1,e);
+		if(e)e.preventDefault();
+	}
+
+	moveCursorLeft(e)
+	{
+		if(this.cursorScreenX<1&&this.#scrollX)return this.scrollLeft();
+		this.setCursor(this.cursorScreenX-1,this.cursorScreenY,e);
+		if(e)e.preventDefault();
+	}
+
+	moveCursorRight(e)
+	{
+		if(this.cursorScreenX>=this.#width-1)return this.scrollRight();
+		this.setCursor(this.cursorScreenX+1,this.cursorScreenY,e);
+		if(e)e.preventDefault();
+	}
+
+	scrollUp()
+	{
+		this.#scrollY--;
+		if(this.#scrollY<0)this.#scrollY=0;
+		this.redrawData();
+	}
+	scrollDown(num)
+	{
+		this.#scrollY+=num||1;
+		this.redrawData();
+	}
+	scrollRight(num)
+	{
+		this.#scrollX+=num||1;
+		this.redrawData();
+	}
+	scrollLeft()
+	{
+		this.#scrollX--;
+		this.redrawData();
+	}
+
+	moveY(num)
+	{
+		for(let i=0;i<Math.abs(num);i++)
+		{
+			if(num>0)this.moveCursorDown()
+			else this.moveCursorUp()
+		}
+	}
+
+	resize()
+	{
+		const colNum=Math.floor(this.#elContainer.clientWidth/this.cellWidth)-1;
+		const rowNum=Math.floor(this.#elContainer.clientHeight/22)-2;
+
+		if(this.#width!=colNum||this.#height!=rowNum)
+		{
+			this.#width=colNum;
+			this.#height=rowNum;
+			this.html()
+			const rows=this.#elTable.getElementsByClassName("row")
+
+			for(let i=0;i<rows.length;i++)
+			{
+				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.cellWidth+"px)"
+				// console.log("repeat("+this.#width+","+this.cellWidth+"px)");
+			}
+		}
+	}
+
+	resizeData(w,h)
+	{
+		const newData=[]
+		for(let x=0;x<w;x++)
+		{
+			for(let y=0;y<h;y++)
+			{
+				newData[x+y*w]="";
+				if(x<this.#dataWidth && y<this.#dataHeight)
+				{
+					newData[x+y*w]=this.#data[x+y*this.#dataWidth];
+				}
+			}
+		}
+
+		this.#data=newData;
+		this.#dataWidth=w;
+		this.#dataHeight=h;
+		console.log("resize to ",w,h)
+		this.resize()
+		this.redrawDataArea()
+
+	}
+
+	isNumeric(n)
+	{
+	    return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+	setValue(x,y,v)
+	{
+		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
+			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
+
+		const idx=x+this.#dataWidth*y;
+		while(idx>this.#data.length)
+			for(let i=0;i<this.#width;i++) this.#data.push("");
+
+		if(this.isNumeric(v))v=parseFloat(v);
+		this.#data[idx]=v;
+
+		const inputEle=document.getElementById(this.cellId(x,y))
+		if(inputEle)inputEle.value=v;
+		if(v=="")this.redrawDataArea()
+
+		// setTimeout( this.removeEmptyRowCols.bind(this),300);
+		if(this.#options.onChange)this.#options.onChange()
+
+	}
+
+	lastRowEmpty()
+	{
+			const y=this.#dataHeight-1;
+			for(let i=0;i<this.#dataWidth;i++)
+				if(this.#data[i+y*this.#dataWidth]) return false
+
+			return true
+	}
+	lastColEmpty()
+	{
+			const x=this.#dataWidth-1;
+			for(let i=0;i<this.#dataHeight;i++)
+				if(this.#data[x+i*this.#dataWidth]) return false
+
+			return true
+	}
+
+	removeEmptyRowCols()
+	{
+
+		let redraw=false
+		while(this.lastRowEmpty())
+		{
+			this.resizeData(this.#dataWidth,this.#dataHeight-1)
+			redraw=true
+		}
+		while(this.lastColEmpty())
+		{
+			this.resizeData(this.#dataWidth-1,this.#dataHeight)
+			redraw=true
+		}
+
+		if(redraw)
+		{
+			this.redrawDataArea()
+			this.redrawData()
+			
+		}
+	}
+
+
+	fromObj(o)
+	{
+		if(!o)
+		{
+			this.#data=[1]
+			this.#dataWidth=1
+			this.#dataHeight=1
+			return;
+		}
+
+		if(o.colTitles)this.#colTitles=o.colTitles;
+		if(o.data)this.#data=o.data;
+		if(o.width)this.#dataWidth=o.width;
+		if(o.height)this.#dataHeight=o.height;
+
+		this.removeEmptyRowCols();
+		this.updateStatus();
+		this.redrawData();
+	}
+	
+	toObj()
+	{
+		return{
+			"colTitles":this.#colTitles,
+			"data":this.#data,
+			"width":this.#dataWidth,
+			"height":this.#dataHeight
+		}
+		
+	}
+
+	fromTxt(txt,x,y)
+	{
+		const separator="\t";
+		const rows=txt.split("\n");
+
+		for(let i=0;i<rows.length;i++)
+		{
+			const cols=rows[i].split(separator);
+
+			for(let j=0;j<cols.length;j++)
+				if(cols[j]!=undefined && cols[j]!=null)
+					this.setValue(this.absX+j,this.absY+i,cols[j])
+		}
+	}
+
+	toCsv(includeHead=true)
+	{
+			let str=""
+			const separator=";"
+			if(includeHead)
+			{
+				for(let x=0;x<this.#dataWidth;x++)
+				{
+					str+=this.#colTitles[x]||x
+					if(x<this.#dataWidth-1)str+=separator
+				}
+
+				str+="\n"
+			}
+
+			for(let y=0;y<this.#dataHeight;y++)
+			{
+				for(let x=0;x<this.#dataWidth;x++)
+				{
+
+					str+=this.getValue(x,y);
+					if(x<this.#dataWidth-1)str+=separator
+					
+				}
+				str+="\n"
+			}
+		return str
+	}
+
+	download(filename,str)
+	{
+	  var element = document.createElement('a');
+	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+	  element.setAttribute('download', filename);
+
+	  element.style.display = 'none';
+	  document.body.appendChild(element);
+
+	  element.click();
+
+	  document.body.removeChild(element);
+	}		
+	
+	toJson()
+	{
+		const arr=[]
+
+			for(let y=0;y<this.#dataHeight;y++)
+			{
+				const json={};
+				for(let x=0;x<this.#dataWidth;x++)
+				{
+					const title=this.#colTitles[x]||String(x);
+					json[title]=this.getValue(x,y);
+				}
+				arr.push(json);
+			}
+			return arr
+	}
+
+	toArray(multiple )
+	{
+		if(multiple)
+		{
+			const arr=[]
+			for(let x=0;x<this.#dataWidth;x++) arr[x]=[]
+
+			for(let x=0;x<this.#dataWidth;x++)
+				for(let y=0;y<this.#dataHeight;y++)
+					arr[x][y]=this.getValue(x,y)
+
+				
+			return arr;
+		
+		}
+		else{
+			return structuredClone(this.#data)
+		}
+		
+	}
+
+	toTxt()
+	{
+		const separator="\t";
+		let str="";
+		let yy=-1;
+		this.forEachSelected((x,y,v,xrel,yrel)=>
+		{
+			if(yy!=-1&&y>yy) str+="\n";
+
+			if(xrel>0)str+=separator;
+			str+=v;
+
+			yy=y;
+		});
+		console.log(str)
+
+		return str;
+	}
+
+	redrawDataArea()
+	{
+		
+		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
+			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
+			{
+				const elCell=document.getElementById(this.cellId(x,y));
+				if(elCell&& x<this.#dataWidth&& y<this.#dataHeight) elCell.classList.add("value")
+				else elCell.classList.remove("value")
+			}
+	}
+
+	redrawData()
+	{
+		for(let x=0;x<this.#width;x++)
+		{
+			const head=document.getElementsByClassName(this.cellColHeadId(x))[0];
+			if(!head)continue;
+			let s=String(x+this.#scrollX);
+			if(this.#colTitles[x+this.#scrollX]) s+=":" +this.#colTitles[x+this.#scrollX];
+			head.innerHTML=s;
+		}
+
+		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
+		{
+			const eleRowHead=document.getElementsByClassName(this.cellRowHeadId(y))[0];
+			eleRowHead.innerHTML=y+this.#scrollY;
+
+			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
+			{
+				const elCell=document.getElementById(this.cellId(x,y));
+				if(!elCell){console.log("cell not found");contiune}
+
+				const v=this.#data[(x)+(y)*this.#dataWidth]
+
+				if(elCell&& x<this.#dataWidth&& y<this.#dataHeight)
+				{
+					elCell.value=v;
+					if(this.isNumeric(v))elCell.classList.add("numeric")
+					else elCell.classList.remove("numeric")
+
+				}
+				else
+				{
+					elCell.value="";
+				}
+			}
+		}
+
+		this.redrawDataArea();
+		this.updateSelection();
+		this.updateStatus();
+	}
+
+	updateStatus()
+	{
+		let str="";
+		str+=(this.absX )+","+(this.absY);
+		str+=" | ";
+		str+=this.#dataWidth+"x"+this.#dataHeight;
+		if(this.#selectionStartX>-1)
+		{
+			str+=" | ";
+			str+=this.#selectionStartX+","+this.#selectionStartY;
+			str+=" - ";
+			str+=this.#selectionEndX+","+this.#selectionEndY;
+		}
+		this.elStatus.innerHTML=str;
+	}
+
+	html()
+	{
+		this.#elContainer.innerHTML=""
+
+		const elTable=document.createElement("div")
+		elTable.classList.add("cellmatetable")
+		elTable.setAttribute("tabindex",1);
+
+		const elRow=document.createElement("div")
+		elRow.classList.add("row");
+		elTable.appendChild(elRow);
+
+		for(let x=0;x<this.#width+1;x++)
+		{
+			const elColHead=document.createElement("div")
+			elColHead.classList.add("head");
+			if(x>0)elColHead.classList.add(this.cellColHeadId(x-1));
+			elColHead.dataset.idx=x;
+			if(x>0)elColHead.dataset.x=x-1;
+			elRow.appendChild(elColHead);
+			if(x) elColHead.innerHTML=x;
+
+			elColHead.addEventListener("dblclick",(e)=>{
+				const t=prompt("title");
+				this.#colTitles[parseInt(e.srcElement.dataset.x)]=t;
+				this.redrawData();
+				console.log(this.#colTitles)
+			});
+			const col=x;
+			elColHead.addEventListener("click",(e)=>{
+				this.selectCol(col-1,e)
+			});
+		}
+
+		for(let y=0;y<this.#height;y++)
+		{
+			const elRow=document.createElement("div")
+			elRow.classList.add("row");
+			elTable.appendChild(elRow);
+
+			const elRowHead=document.createElement("div")
+			elRowHead.classList.add("head")
+			elRowHead.classList.add(this.cellRowHeadId(y))
+			elRow.appendChild(elRowHead)
+			elRowHead.innerHTML=y;
+			const row=y
+			elRowHead.addEventListener("click",(e)=>{
+				this.selectRow(row,e);
+			});
+			for(let x=0;x<this.#width;x++)
+			{
+				const elCell=document.createElement("div")
+				elCell.classList.add("cell")
+				elRow.appendChild(elCell)
+				const elInput=document.createElement("input");
+				elInput.id=this.cellId(x,y)
+				elInput.setAttribute("readonly",true)
+				elInput.dataset.x=x;
+				elInput.dataset.y=y;
+				elCell.appendChild(elInput);
+
+				elInput.addEventListener("pointerdown",(e)=>
+				{
+					this.mouseDown=true;
+					this.unselectAll();
+					this.#selectionStartX=parseInt(e.srcElement.dataset.x)+this.#scrollX;
+					this.#selectionStartY=parseInt(e.srcElement.dataset.y)+this.#scrollY;
+					this.setCursorAbs(this.#selectionStartX,this.#selectionStartY)
+				});
+
+				elInput.addEventListener("pointerup",(e)=>
+				{
+					this.mouseDown=false;
+					if(parseInt(e.srcElement.dataset.x)+this.#scrollX==this.#selectionStartX&& parseInt(e.srcElement.dataset.y)+this.#scrollY==this.#selectionStartY				)
+					{
+						this.#selectionStartX=-1;
+						this.#selectionStartY=-1;
+						this.#selectionEndX=-1;
+						this.#selectionEndY=-1;
+					}
+				});
+
+				elInput.addEventListener("pointerenter",(e)=>
+				{
+					if(this.mouseDown && this.#selectionStartX!=-1)
+					{
+						this.#selectionEndX=parseInt(e.srcElement.dataset.x)+this.#scrollX;
+						this.#selectionEndY=parseInt(e.srcElement.dataset.y)+this.#scrollY;
+						this.updateStatus();
+						this.updateSelection();
+					}
+				});
+				elInput.addEventListener("wheel",(e)=>
+				{
+					if(e.deltaY>0){
+						this.scrollDown(1);
+					}
+					else {
+						this.scrollUp(1);
+					}
+
+				});
+
+				elInput.addEventListener("input",(e)=>
+				{
+					this.setValue(this.absX,this.absY,e.srcElement.value)
+				});
+
+				elInput.addEventListener("blur",(e)=>
+				{
+					this.removeEmptyRowCols();
+					this.redrawData();
+				});
+
+				elCell.addEventListener("click",(e)=>
+				{
+					this.setCursor(parseInt(e.srcElement.dataset.x), parseInt(e.srcElement.dataset.y),e);
+				});
+
+				elInput.addEventListener("dblclick",(e)=>
+				{
+					this.focusCell(parseInt(e.srcElement.dataset.x), parseInt(e.srcElement.dataset.y),e);
+				});
+
+				elInput.addEventListener("keydown",(e)=>
+				{
+	
+				});
+			}
+		}
+
+		this.#elTable=elTable;
+		this.#elContainer.appendChild(elTable)
+
+		this.elStatus=document.createElement("div");
+		this.elStatus.classList.add("cellmateStatus");
+		this.#elContainer.appendChild(this.elStatus);
+
+		this.elNotify=document.createElement("div");
+		this.elNotify.classList.add("cellmateNotification");
+		this.#elContainer.appendChild(this.elNotify);
+
+		this.#elTable.addEventListener("copy",(e)=>
+		{
+			navigator.clipboard.writeText(this.toTxt());
+
+			this.notify("copied "+this.lastSelectedForeachCount+" entries");
+		});
+		this.#elTable.addEventListener("cut",(e)=>
+		{
+			navigator.clipboard.writeText(this.toTxt());
+			this.deleteSelectionContent()
+
+			this.notify("copied "+this.lastSelectedForeachCount+" entries");
+		});
+
+		this.#elTable.addEventListener("paste",(e)=>
+		{
+      this.isPasting = true;
+      if (e.clipboardData.types.indexOf("text/plain") == -1)
+      {
+          console.log("Paste failed",e.clipboardData.types);
+          return;
+      }
+      let str = e.clipboardData.getData("text/plain");
+
+			this.fromTxt(str);
+			e.preventDefault();
+		});
+
+		this.#elTable.addEventListener("keydown",(e)=>
+		{
+			if(e.key=="Enter")
+			{
+				if(this.#elActiveInput)
+				{
+					this.unFocusInput();
+					this.moveCursorDown()
+				}
+				else
+				{
+					this.unFocusInput();
+					this.focusCell(this.cursorScreenX,this.cursorScreenY);
+					this.redrawDataArea()
+				}
+			}
+			else if(!this.#elActiveInput && (e.key=="Delete"||e.key=="Backspace")) this.deleteSelectionContent();
+			else if(!this.#elActiveInput &&  e.key=="ArrowDown") this.moveCursorDown(e);
+			else if(!this.#elActiveInput &&  e.key=="ArrowUp") this.moveCursorUp(e);
+			else if(!this.#elActiveInput &&  e.key=="ArrowLeft") this.moveCursorLeft(e);
+			else if(!this.#elActiveInput &&  e.key=="ArrowRight") this.moveCursorRight(e);
+			else if(!this.#elActiveInput &&  e.key=="PageUp") this.moveY(-this.#height);
+			else if(!this.#elActiveInput &&  e.key=="PageDown") this.moveY(this.#height);
+			else
+				if(e.code && (e.code.startsWith("Digit") || e.code.startsWith("Key") ))
+				{
+					if(!this.#elActiveInput) this.focusCell(this.cursorScreenX,this.cursorScreenY);
+				}
+				else {
+					console.log(e)
+				}
+
+		});
+		this.redrawData();
+	}
+	
+}
+
+module.exports=CellMate;

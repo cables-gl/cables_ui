@@ -1,5 +1,6 @@
 import { Logger, ele } from "cables-shared-client";
 import { utils } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
@@ -19,19 +20,43 @@ import namespace from "../../namespaceutils.js";
  */
 export default class ManageOp
 {
+    static TABSESSION_NAME = "manageOp";
+
+    #log = new Logger("ManageOp");
+    #initialized = false;
+
+    /** @type {EventListener[]} */
+    #refreshListener = [];
+
+    /** @type {EventListener[]} */
+    #refreshCoreListener = [];
+    #currentName;
+    #currentId;
+    #id = utils.shortId();
+
+    /** @type {Tab} */
+    #tab;
+
+    /** @type {number} */
+    #timeout;
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} tabs
+     * @param {string} opId
+     */
     constructor(tabs, opId)
     {
-        this._log = new Logger("ManageOp");
+
         if (!opId)
         {
-            editorSession.remove("manageOp", opId);
+            editorSession.remove(ManageOp.TABSESSION_NAME, opId);
             return;
         }
 
         let opDoc = gui.opDocs.getOpDocById(opId);
         if (!opDoc && opId.startsWith("Ops."))
         {
-            this._log.warn("manage op paramerter should not be objname, but id", opId);
+            this.#log.warn("manage op paramerter should not be objname, but id", opId);
             opDoc = gui.opDocs.getOpDocByName(opId);
             if (opDoc) opId = opDoc.id;
             else return;
@@ -40,89 +65,82 @@ export default class ManageOp
         let opObjName = "";
         if (opDoc) opObjName = opDoc.name;
 
-        this._initialized = false;
-        this._currentName = opObjName;
-        this._currentId = opId;
-        this._id = utils.shortId();
-        this._refreshListener = [];
-        this._refreshCoreListener = [];
+        this.#currentName = opObjName;
+        this.#currentId = opId;
 
-        this._tab = new Tab(opObjName, {
+        this.#tab = new Tab(opObjName, {
             "icon": "op",
             "infotext": "tab_code",
             "padding": true,
             "tabPanel": tabs,
             "singleton": true
         });
-        tabs.addTab(this._tab, true);
+        tabs.addTab(this.#tab, true);
         this.show();
 
-        this._tab.on("close", () =>
+        this.#tab.on("close", () =>
         {
-            editorSession.remove("manageOp", this._currentId);
+            editorSession.remove(ManageOp.TABSESSION_NAME, this.#currentId);
 
-            for (let i in this._refreshListener)
-            {
-                gui.off(this._refreshListener[i]);
-            }
-            for (let i in this._refreshCoreListener)
-            {
-                gui.corePatch().off(this._refreshCoreListener[i]);
-            }
+            for (let i in this.#refreshListener)
+                gui.off(this.#refreshListener[i]);
+
+            for (let i in this.#refreshCoreListener)
+                gui.corePatch().off(this.#refreshCoreListener[i]);
 
         });
 
         gui.maintabPanel.show(true);
 
-        this._refreshListener.push(
+        this.#refreshListener.push(
             gui.on("refreshManageOp", (name) =>
             {
-                if (name === undefined || this._currentName == name) this.show();
+                if (name === undefined || this.#currentName == name) this.show();
             }));
 
-        this._refreshCoreListener.push(
+        this.#refreshCoreListener.push(
             gui.corePatch().on("opReloaded", (name) =>
             {
-                if (name === undefined || this._currentName == name) this.show();
+                if (name === undefined || this.#currentName == name) this.show();
             }));
     }
 
     init()
     {
-        if (this._initialized) return;
+        if (this.#initialized) return;
         this._initialized = true;
     }
 
     show()
     {
-        editorSession.remove("manageOp", this._currentId);
-        editorSession.rememberOpenEditor("manageOp", this._currentId, {
-            "opname": this._currentName,
-            "opid": this._currentId
+        editorSession.remove(ManageOp.TABSESSION_NAME, this.#currentId);
+        editorSession.rememberOpenEditor(ManageOp.TABSESSION_NAME, this.#currentId, {
+            "opname": this.#currentName,
+            "opid": this.#currentId
         }, true);
 
-        this._id = utils.shortId();
-        this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
-        const opDoc = gui.opDocs.getOpDocById(this._currentId);
+        this.#id = utils.shortId();
+        this.#tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
+        const opDoc = gui.opDocs.getOpDocById(this.#currentId);
 
         if (!opDoc)
         {
-            this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patch");
-            this._tab.remove();
+            this.#tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patch");
+            this.#tab.remove();
             return;
         }
 
         // timeout needed to not have multiple requests and refreshes when saving i.e. subpatchops
-        clearTimeout(this._timeout);
-        this._timeout = setTimeout(() =>
+        clearTimeout(this.#timeout);
+        this.#timeout = setTimeout(() =>
         {
             platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
             {
-                if (error) this._log.warn("error api?", error);
+                if (error) this.#log.warn("error api?", error);
 
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
                 const doc = {};
-                const opName = this._currentName;
+                const opName = this.#currentName;
                 let summary = "";
                 let portJson = null;
 
@@ -156,7 +174,7 @@ export default class ManageOp
                                 }
                                 catch (e)
                                 {
-                                    this._log.error(e);
+                                    this.#log.error(e);
                                 }
                             }
                         }
@@ -201,7 +219,7 @@ export default class ManageOp
                         "opname": opDoc.name,
                         "doc": doc,
                         "opDoc": opDoc,
-                        "viewId": this._id,
+                        "viewId": this.#id,
                         "subPatchSaved": gui.savedState.isSavedSubOp(opName),
                         "portJson": portJson,
                         "summary": summary,
@@ -214,9 +232,9 @@ export default class ManageOp
                         "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
                     });
 
-                this._tab.html(html);
+                this.#tab.html(html);
 
-                ele.clickables(this._tab.contentEle, ".dependency-options", (e, dataset) =>
+                ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
@@ -318,7 +336,7 @@ export default class ManageOp
 
                 if (canEditOp)
                 {
-                    const dependencyTabId = this._id + "_dependencytabs";
+                    const dependencyTabId = this.#id + "_dependencytabs";
                     const tabPanel = ele.byId(dependencyTabId);
                     if (tabPanel)
                     {
@@ -328,7 +346,7 @@ export default class ManageOp
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
                             "canEditOp": canEditOp,
-                            "viewId": this._id
+                            "viewId": this.#id
                         };
 
                         if (tabPanel) tabPanel.innerHTML = "";
@@ -338,7 +356,7 @@ export default class ManageOp
 
                     if (portJson && portJson.ports)
                     {
-                        const buttonCreate = ele.byId(this._id + "_port_create");
+                        const buttonCreate = ele.byId(this.#id + "_port_create");
                         if (buttonCreate) buttonCreate.addEventListener("click", () =>
                         {
                             subPatchOpUtil.portEditDialog(opName);
@@ -350,25 +368,25 @@ export default class ManageOp
                             if (!p || !p.id) continue;
 
                             const id = p.id;
-                            const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
+                            const buttonDelete = ele.byId(this.#id + "_port_delete_" + id);
                             if (buttonDelete) buttonDelete.addEventListener("click", () =>
                             {
                                 subPatchOpUtil.portJsonDelete(opName, id);
                             });
 
-                            const buttonTitle = ele.byId(this._id + "_port_title_" + id);
+                            const buttonTitle = ele.byId(this.#id + "_port_title_" + id);
                             if (buttonTitle) buttonTitle.addEventListener("click", () =>
                             {
                                 subPatchOpUtil.portEditDialog(opName, id, p);
                             });
 
-                            const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
+                            const buttonMoveUp = ele.byId(this.#id + "_port_up_" + id);
                             if (buttonMoveUp) buttonMoveUp.addEventListener("click", () =>
                             {
                                 subPatchOpUtil.portJsonMove(opName, id, -1);
                             });
 
-                            const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
+                            const buttonMoveDown = ele.byId(this.#id + "_port_down_" + id);
                             if (buttonMoveDown) buttonMoveDown.addEventListener("click", () =>
                             {
                                 subPatchOpUtil.portJsonMove(opName, id, 1);
@@ -401,3 +419,8 @@ export default class ManageOp
         }, 100);
     }
 }
+
+editorSession.addListener(ManageOp.TABSESSION_NAME, (id, data) =>
+{
+    new ManageOp(gui.mainTabs, id);
+});
