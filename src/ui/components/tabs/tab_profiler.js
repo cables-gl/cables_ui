@@ -42,6 +42,31 @@ export default class Profiler
     }
 
     /**
+     * @param {{ [x: string]: any; }} opids
+     * @param {number} allTimes
+     */
+    updateHeatmap(opids, allTimes)
+    {
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
+
+            if (opids[op.id])
+            {
+                op.setUiAttribs({ "heatmapActive": true, "heatmapColor": opids[op.id].timeUsedFrame / allTimes });
+
+            }
+            else
+            {
+                op.setUiAttribs({ "heatmapActive": false });
+
+            }
+        }
+
+    }
+
+    /**
      * @param {number} which
      */
     setTab(which)
@@ -82,7 +107,7 @@ export default class Profiler
         if (!profiler) return;
 
         const items = profiler.getItems();
-        console.log("items", items);
+
         let html = "";
         let htmlBar = "";
         let allTimes = 0;
@@ -92,6 +117,7 @@ export default class Profiler
         let cumulate = true;
         if (this._subTab == 1 || this._subTab == 3) cumulate = false;
 
+        let allFrameTime = 0;
         const cumulated = {};
         const cumulatedSubPatches = {};
         const opids = {};
@@ -100,8 +126,9 @@ export default class Profiler
         {
             const item = items[i];
             allTimes += item.timeUsed;
+            allFrameTime += item.timeUsedFrame;
 
-            opids[item.opid] = 1;
+            opids[item.opid] = item;
 
             if (cumulatedSubPatches[item.subPatch])
             {
@@ -134,6 +161,8 @@ export default class Profiler
                 sortedItems.push(item);
             }
         }
+
+        this.updateHeatmap(opids, allFrameTime);
 
         let allPortTriggers = 0;
         for (const i in sortedItems)
@@ -198,7 +227,7 @@ export default class Profiler
                 html += "<span>";
 
                 html += item.title;
-                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "/" + Math.round(item.timeUsedFrame * 100) / 100 + "ms </span></td>";
 
                 if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
                 if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";

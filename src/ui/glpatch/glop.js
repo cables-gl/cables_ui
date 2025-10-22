@@ -1003,8 +1003,14 @@ export default class GlOp extends Events
                         this._glColorSwatch?.setColor(colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get());
                     };
 
-                    colorPorts[0].on("onUiAttrChange", (attrs, _port) =>
+                    colorPorts[0].on(Port.EVENT_UIATTRCHANGE, (attrs, _port) =>
                     {
+                        if (attrs.hasOwnProperty("heatmapActive"))
+                        {
+                            this._updateColors();
+
+                        }
+
                         if (attrs.hasOwnProperty("greyout"))
                         {
                             if (attrs.greyout)
@@ -1570,6 +1576,17 @@ export default class GlOp extends Events
     _updateColors()
     {
         if (!this.#glRectBg || !this.#glTitle) return;
+
+        if (this.opUiAttribs.hasOwnProperty("heatmapActive"))
+        {
+            if (this.opUiAttribs.heatmapActive) this.#glRectBg.setColor(
+                0.1 + (this.opUiAttribs.heatmapColor), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapColor), 1);
+            else this.#glRectBg.setColor(0, 0, 0, 1);
+
+            this.#glTitle.setColor(1, 1, 1, 1);
+            return;
+
+        }
 
         if (this.opUiAttribs.comment_title)
         {
