@@ -3,6 +3,8 @@ import { Patch } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { gui } from "../../gui.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * cpu profile the running patch, what is most expensive?
@@ -12,16 +14,26 @@ import { gui } from "../../gui.js";
  */
 export default class Profiler
 {
+    static TABSESSION_NAME = "spreadsheet";
+    #tab;
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
-        this._tab = new Tab("Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
-        tabs.addTab(this._tab, true);
+        this.#tab = new Tab("Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
+        tabs.addTab(this.#tab, true);
         this.show();
 
         this.colors = ["#7AC4E0", "#D183BF", "#9091D6", "#FFC395", "#F0D165", "#63A8E8", "#CF5D9D", "#66C984", "#D66AA6", "#515151"];
         this.intervalId = null;
         this.lastPortTriggers = 0;
         this._subTab = 0;
+        this.#tab.on("close", () =>
+        {
+            editorSession.remove(Profiler.TABSESSION_NAME, "profiler");
+        });
 
         gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
@@ -29,6 +41,9 @@ export default class Profiler
         gui.corePatch().on("onUnLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     }
 
+    /**
+     * @param {number} which
+     */
     setTab(which)
     {
         ele.byId("profilerTabOpsCum").classList.remove("tabActiveSubtab");
@@ -50,8 +65,10 @@ export default class Profiler
 
     show()
     {
+        editorSession.rememberOpenEditor(Profiler.TABSESSION_NAME, "profiler", { }, true);
+
         const html = getHandleBarHtml("meta_profiler", {});
-        this._tab.html(html);
+        this.#tab.html(html);
 
         ele.byId("profilerstartbutton").addEventListener("click", function ()
         {
@@ -65,6 +82,7 @@ export default class Profiler
         if (!profiler) return;
 
         const items = profiler.getItems();
+        console.log("items", items);
         let html = "";
         let htmlBar = "";
         let allTimes = 0;
@@ -271,3 +289,7 @@ export default class Profiler
         if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
     }
 }
+editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
+{
+    new Profiler(gui.mainTabs);
+});
