@@ -1,8 +1,11 @@
+
 let countInst=0
 
 console.log("cellmate 34")
 class CellMate
 {
+
+		#rowHeight=22
 	cellWidth=100;
 	#width=-1;
 	#height=30;
@@ -24,8 +27,13 @@ class CellMate
 	#scrollY=0;
 	#scrollX=0;
 	#elContainer=null;
-	#options={}
-	countInst=0
+	#options={};
+	countInst=0;
+	#elScrollVert;
+	#elScrollVertInner;
+	#pauseScrolling=false
+	#scrollTimeOut=null;
+	#redrawTimeout=null;
 
 	constructor(container,options)
 	{
@@ -142,6 +150,7 @@ class CellMate
 			cursorEl.setAttribute("readonly",true)
 		}
 		this.#elTable.focus()
+
 		if(e&&e.shiftKey)this.setEndSelection(this.cursorScreenX+this.#scrollX,this.cursorScreenY+this.#scrollY );
 		else
 		{
@@ -254,10 +263,11 @@ class CellMate
 		let eles=Array.from(this.#elTable.getElementsByClassName("selected"));
 		for(let i=0;i<eles.length;i++)eles[i].classList.remove("selected")
 
-		const sx=Math.min(this.#selectionStartX,this.#selectionEndX)
-		const sy=Math.min(this.#selectionStartY,this.#selectionEndY)
-		const ex=Math.max(this.#selectionStartX,this.#selectionEndX)
-		const ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+		let sx=Math.min(this.#selectionStartX,this.#selectionEndX)
+		let sy=Math.min(this.#selectionStartY,this.#selectionEndY)
+		let ex=Math.max(this.#selectionStartX,this.#selectionEndX)
+		let ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+		if(sx==-1) sx=ex=sy=ey=-1
 
 		for(let absy=sy;absy<=ey;absy++)
 		{
@@ -287,10 +297,9 @@ class CellMate
 
 	moveCursorUp(e)
 	{
-		if(this.cursorScreenY<1&&this.#scrollY)return this.scrollUp();
+		if(this.cursorScreenY<1 && this.#scrollY)return this.scrollUp();
 		this.setCursor(this.cursorScreenX,this.cursorScreenY-1,e);
 		if(e)e.preventDefault();
-
 	}
 
 	moveCursorDown(e)
@@ -302,7 +311,7 @@ class CellMate
 
 	moveCursorLeft(e)
 	{
-		if(this.cursorScreenX<1&&this.#scrollX)return this.scrollLeft();
+		if(this.cursorScreenX<1 && this.#scrollX)return this.scrollLeft();
 		this.setCursor(this.cursorScreenX-1,this.cursorScreenY,e);
 		if(e)e.preventDefault();
 	}
@@ -318,22 +327,29 @@ class CellMate
 	{
 		this.#scrollY--;
 		if(this.#scrollY<0)this.#scrollY=0;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollDown(num)
 	{
 		this.#scrollY+=num||1;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollRight(num)
 	{
 		this.#scrollX+=num||1;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollLeft()
 	{
 		this.#scrollX--;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
 
 	moveY(num)
@@ -345,10 +361,36 @@ class CellMate
 		}
 	}
 
+redrawDataSoon(){
+	
+		clearTimeout(this.#redrawTimeout) 
+		this.#redrawTimeout=setTimeout(()=>
+			{
+				this.redrawData();
+			},10);
+}
+updateScrollBarsSoon()
+	{
+		clearTimeout(this.#scrollTimeOut) 
+		this.#scrollTimeOut=setTimeout(()=>
+			{
+				this.updateScrollBars();
+			},10);
+	}
+
+	updateScrollBars()
+	{
+		this.#elScrollVert.style.height=(this.#elContainer.clientHeight-this.#rowHeight)+"px";
+		this.#elScrollVertInner.style.height=(this.#dataHeight*this.#rowHeight)+"px";
+		this.#pauseScrolling=true;
+		this.#elScrollVert.scrollTo(0,this.#scrollY*this.#rowHeight);
+		this.#pauseScrolling=false;
+	}
+
 	resize()
 	{
 		const colNum=Math.floor(this.#elContainer.clientWidth/this.cellWidth)-1;
-		const rowNum=Math.floor(this.#elContainer.clientHeight/22)-2;
+		const rowNum=Math.floor(this.#elContainer.clientHeight/this.#rowHeight)-2;
 
 		if(this.#width!=colNum||this.#height!=rowNum)
 		{
@@ -363,6 +405,7 @@ class CellMate
 				// console.log("repeat("+this.#width+","+this.cellWidth+"px)");
 			}
 		}
+		this.updateScrollBars()
 	}
 
 	resizeData(w,h)
@@ -386,7 +429,6 @@ class CellMate
 		console.log("resize to ",w,h)
 		this.resize()
 		this.redrawDataArea()
-
 	}
 
 	isNumeric(n)
@@ -412,7 +454,6 @@ class CellMate
 
 		// setTimeout( this.removeEmptyRowCols.bind(this),300);
 		if(this.#options.onChange)this.#options.onChange()
-
 	}
 
 	lastRowEmpty()
@@ -616,6 +657,7 @@ class CellMate
 
 	redrawData()
 	{
+
 		for(let x=0;x<this.#width;x++)
 		{
 			const head=document.getElementsByClassName(this.cellColHeadId(x))[0];
@@ -628,6 +670,7 @@ class CellMate
 		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
 		{
 			const eleRowHead=document.getElementsByClassName(this.cellRowHeadId(y))[0];
+			if(!eleRowHead)return;
 			eleRowHead.innerHTML=y+this.#scrollY;
 
 			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
@@ -684,6 +727,23 @@ class CellMate
 		elRow.classList.add("row");
 		elTable.appendChild(elRow);
 
+		this.#elScrollVert=document.createElement("div");
+		this.#elScrollVert.classList.add("cellMateScrollVert")
+
+		this.#elScrollVertInner=document.createElement("div")
+		this.#elScrollVert.appendChild(this.#elScrollVertInner);
+		this.#elContainer.appendChild(this.#elScrollVert);
+
+		this.#elScrollVert.addEventListener("scroll", () => {
+
+			if(!this.#pauseScrolling)
+			{
+				
+			this.#scrollY=Math.floor(this.#elScrollVert.scrollTop/this.#rowHeight);
+			this.redrawData()
+			}
+	 });
+
 		for(let x=0;x<this.#width+1;x++)
 		{
 			const elColHead=document.createElement("div")
@@ -698,8 +758,8 @@ class CellMate
 				const t=prompt("title");
 				this.#colTitles[parseInt(e.srcElement.dataset.x)]=t;
 				this.redrawData();
-				console.log(this.#colTitles)
 			});
+
 			const col=x;
 			elColHead.addEventListener("click",(e)=>{
 				this.selectCol(col-1,e)
@@ -876,6 +936,14 @@ class CellMate
 
 		});
 		this.redrawData();
+	}
+
+	dispose()
+	{
+		this.#elTable.remove()
+		this.#elTable=null;
+		this.#data=null
+		
 	}
 	
 }

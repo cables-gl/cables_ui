@@ -79,7 +79,20 @@
     }
 
     .numeric {
-        color: #4adab5
+        color: #4adab5;
     }
 
+}
+
+.cellMateScrollVert {
+    position: absolute;
+    z-index: 8888888;
+    right: 0px;
+    overflow: auto;
+    width: 25px;
+    height: 500px;
+
+    div {
+        height: 1000px;
+    }
 }

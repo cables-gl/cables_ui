@@ -62,11 +62,11 @@ export default class SpreadSheetTab extends Events
         this.#tab.on("close", () =>
         {
             editorSession.remove(SpreadSheetTab.TABSESSION_NAME, this.#currentId);
+            this.#cellMate.dispose();
         });
 
         this.#tab.on(Tab.EVENT_RESIZE, () =>
         {
-            console.log("resize tabbbbbbbbb");
             this.#cellMate.resize();
         });
 
@@ -111,7 +111,6 @@ export default class SpreadSheetTab extends Events
 
 editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
 {
-    console.log("dataaa", data);
     const op = gui.corePatch().getOpById(data.opid);
     if (!op) return console.log("no spread op found..");
     new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
