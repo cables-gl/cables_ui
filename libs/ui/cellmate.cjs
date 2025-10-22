@@ -389,10 +389,10 @@ updateScrollBarsSoon()
 	updateScrollBars()
 	{
 		this.#elScrollVert.style.height=(this.#elContainer.clientHeight-this.#rowHeight)+"px";
-		this.#elScrollVertInner.style.height=(this.#dataHeight*this.#rowHeight)+"px";
+		this.#elScrollVertInner.style.height=(this.#dataHeight*this.#rowHeight+(2*this.#rowHeight))+"px";
 
 		this.#elScrollHor.style.width=(this.#elContainer.clientWidth-this.#cellWidth)+"px";
-		this.#elScrollHorInner.style.width=(this.#dataWidth*this.#cellWidth)+"px";
+		this.#elScrollHorInner.style.width=(this.#dataWidth*this.#cellWidth+(2*this.#cellWidth))+"px";
 
 		this.#pauseScrolling=true;
 		this.#elScrollHor.scrollTo(this.#scrollX*this.#cellWidth,0);
@@ -771,7 +771,7 @@ const		oldValue=this.getValue(x,y);
 		this.#elScrollVert.addEventListener("scroll", () => {
 			if(!this.#pauseScrolling)
 			{
-				this.#scrollY=Math.floor(this.#elScrollVert.scrollTop/this.#rowHeight);
+				this.#scrollY=Math.round(this.#elScrollVert.scrollTop/this.#rowHeight);
 				this.redrawData()
 			}
 		 });
@@ -783,7 +783,7 @@ const		oldValue=this.getValue(x,y);
 		this.#elScrollHor.addEventListener("scroll", () => {
 			if(!this.#pauseScrolling)
 			{
-				this.#scrollX=Math.floor(this.#elScrollHor.scrollLeft/this.#cellWidth);
+				this.#scrollX=Math.round(this.#elScrollHor.scrollLeft/this.#cellWidth);
 				this.redrawData()
 			}
 		 });
