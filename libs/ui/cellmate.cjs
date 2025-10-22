@@ -4,9 +4,8 @@ let countInst=0
 console.log("cellmate 34")
 class CellMate
 {
-
-		#rowHeight=22
-	cellWidth=100;
+	#rowHeight=22
+	#cellWidth=100;
 	#width=-1;
 	#height=30;
 	#data=[0];
@@ -31,6 +30,8 @@ class CellMate
 	countInst=0;
 	#elScrollVert;
 	#elScrollVertInner;
+	#elScrollHor;
+	#elScrollHorInner;
 	#pauseScrolling=false
 	#scrollTimeOut=null;
 	#redrawTimeout=null;
@@ -84,6 +85,7 @@ class CellMate
 		this.cursorScreenX=Math.min(this.#width-1,this.cursorScreenX)
 		this.cursorScreenY=Math.min(this.#height-1,this.cursorScreenY)
 	}
+
 	notify(t)
 	{
 		clearTimeout(this.clearTimeout);
@@ -382,14 +384,19 @@ updateScrollBarsSoon()
 	{
 		this.#elScrollVert.style.height=(this.#elContainer.clientHeight-this.#rowHeight)+"px";
 		this.#elScrollVertInner.style.height=(this.#dataHeight*this.#rowHeight)+"px";
+
+		this.#elScrollHor.style.width=(this.#elContainer.clientWidth-this.#cellWidth)+"px";
+		this.#elScrollHorInner.style.width=(this.#dataWidth*this.#cellWidth)+"px";
+
 		this.#pauseScrolling=true;
+		this.#elScrollHor.scrollTo(this.#scrollX*this.#cellWidth,0);
 		this.#elScrollVert.scrollTo(0,this.#scrollY*this.#rowHeight);
 		this.#pauseScrolling=false;
 	}
 
 	resize()
 	{
-		const colNum=Math.floor(this.#elContainer.clientWidth/this.cellWidth)-1;
+		const colNum=Math.floor(this.#elContainer.clientWidth/this.#cellWidth)-1;
 		const rowNum=Math.floor(this.#elContainer.clientHeight/this.#rowHeight)-2;
 
 		if(this.#width!=colNum||this.#height!=rowNum)
@@ -401,7 +408,7 @@ updateScrollBarsSoon()
 
 			for(let i=0;i<rows.length;i++)
 			{
-				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.cellWidth+"px)"
+				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.#cellWidth+"px)"
 				// console.log("repeat("+this.#width+","+this.cellWidth+"px)");
 			}
 		}
@@ -660,10 +667,10 @@ updateScrollBarsSoon()
 
 		for(let x=0;x<this.#width;x++)
 		{
-			const head=document.getElementsByClassName(this.cellColHeadId(x))[0];
+			const head=document.getElementsByClassName(this.cellColHeadId(x+this.#scrollX))[0];
 			if(!head)continue;
 			let s=String(x+this.#scrollX);
-			if(this.#colTitles[x+this.#scrollX]) s+=":" +this.#colTitles[x+this.#scrollX];
+			if(this.#colTitles[x+this.#scrollX]) s+=":" + this.#colTitles[x + this.#scrollX];
 			head.innerHTML=s;
 		}
 
@@ -685,7 +692,6 @@ updateScrollBarsSoon()
 					elCell.value=v;
 					if(this.isNumeric(v))elCell.classList.add("numeric")
 					else elCell.classList.remove("numeric")
-
 				}
 				else
 				{
@@ -729,20 +735,28 @@ updateScrollBarsSoon()
 
 		this.#elScrollVert=document.createElement("div");
 		this.#elScrollVert.classList.add("cellMateScrollVert")
-
 		this.#elScrollVertInner=document.createElement("div")
 		this.#elScrollVert.appendChild(this.#elScrollVertInner);
 		this.#elContainer.appendChild(this.#elScrollVert);
-
 		this.#elScrollVert.addEventListener("scroll", () => {
-
 			if(!this.#pauseScrolling)
 			{
-				
-			this.#scrollY=Math.floor(this.#elScrollVert.scrollTop/this.#rowHeight);
-			this.redrawData()
+				this.#scrollY=Math.floor(this.#elScrollVert.scrollTop/this.#rowHeight);
+				this.redrawData()
 			}
-	 });
+		 });
+		this.#elScrollHor=document.createElement("div");
+		this.#elScrollHor.classList.add("cellMateScrollHor")
+		this.#elScrollHorInner=document.createElement("div")
+		this.#elScrollHor.appendChild(this.#elScrollHorInner);
+		this.#elContainer.appendChild(this.#elScrollHor);
+		this.#elScrollHor.addEventListener("scroll", () => {
+			if(!this.#pauseScrolling)
+			{
+				this.#scrollX=Math.floor(this.#elScrollHor.scrollLeft/this.#cellWidth);
+				this.redrawData()
+			}
+		 });
 
 		for(let x=0;x<this.#width+1;x++)
 		{
