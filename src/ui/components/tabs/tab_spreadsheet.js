@@ -4,6 +4,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import undo from "../../utils/undo.js";
 
 /**
  * @typedef SpreadSheetOptions
@@ -97,6 +98,7 @@ export default class SpreadSheetTab extends Events
 
         this.#cellMate = new CellMate(this.#tab.contentEle,
             {
+                "undo": undo,
                 "onChange": this.onChange.bind(this)
             });
         this.#cellMate.fromObj(this.#port.get());

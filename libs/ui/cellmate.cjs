@@ -1,7 +1,13 @@
 
+/**
+ * @typedef CellMateOptions
+ * @property  {UndoManager} [undo] undo manager
+ * @property  {HTMLElement} container element,cellmate will inject itself into this element
+ */
+
 let countInst=0
 
-console.log("cellmate 34")
+
 class CellMate
 {
 	#rowHeight=22
@@ -445,6 +451,8 @@ updateScrollBarsSoon()
 
 	setValue(x,y,v)
 	{
+const		oldValue=this.getValue(x,y);
+
 		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
 			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
 
@@ -461,6 +469,28 @@ updateScrollBarsSoon()
 
 		// setTimeout( this.removeEmptyRowCols.bind(this),300);
 		if(this.#options.onChange)this.#options.onChange()
+
+		if(this.#options.undo)
+		{
+			console.log("add undo")
+			const that=this;
+			const data=this.#data
+      this.#options.undo.add({
+          "title": "setvalue",
+          undo()
+          {
+						console.log("undo",idx,oldValue)
+						data[idx]=oldValue;
+						that.redrawData()
+          },
+          redo()
+          {
+							data[idx]=v;
+							that.redrawData()
+          }
+      });
+			
+		}
 	}
 
 	lastRowEmpty()
@@ -851,7 +881,17 @@ updateScrollBarsSoon()
 
 				elInput.addEventListener("input",(e)=>
 				{
-					this.setValue(this.absX,this.absY,e.srcElement.value)
+				  if (this.#options.undo&& (e.ctrlKey || e.metaKey) && e.key === "z")
+				  {
+				  	e.preventDefault()
+				  	elInput.blur()
+				  	if(event.shiftKey) this.#options.undo.redo();
+				  	else this.#options.undo.undo();
+				  }
+				  else
+				  {
+	 					this.setValue(this.absX,this.absY,e.srcElement.value)
+				  }
 				});
 
 				elInput.addEventListener("blur",(e)=>
@@ -918,6 +958,13 @@ updateScrollBarsSoon()
 
 		this.#elTable.addEventListener("keydown",(e)=>
 		{
+		  if (this.#options.undo&& (e.ctrlKey || e.metaKey) && e.key === "z")
+		  {
+		  	e.preventDefault()
+		  	if(event.shiftKey) this.#options.undo.redo();
+		  	else this.#options.undo.undo();
+		  }
+		  else
 			if(e.key=="Enter")
 			{
 				if(this.#elActiveInput)
@@ -944,8 +991,9 @@ updateScrollBarsSoon()
 				{
 					if(!this.#elActiveInput) this.focusCell(this.cursorScreenX,this.cursorScreenY);
 				}
-				else {
-					console.log(e)
+				else
+				{
+					console.log(e);
 				}
 
 		});
@@ -956,8 +1004,7 @@ updateScrollBarsSoon()
 	{
 		this.#elTable.remove()
 		this.#elTable=null;
-		this.#data=null
-		
+		this.#data=null;
 	}
 	
 }
