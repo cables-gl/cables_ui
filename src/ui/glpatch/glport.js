@@ -248,7 +248,8 @@ export default class GlPort
         }
         if (this.#port.uiAttribs.hover)
         {
-            y -= h;
+            if (this.direction == PortDir.in)
+                y -= h;
             h *= 2;
         }
 

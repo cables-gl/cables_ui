@@ -71,12 +71,14 @@ export default class Profiler
             else
             {
                 op.setUiAttribs({ "heatmapIntensity": 0 });
-
             }
         }
 
     }
 
+    /**
+     * @param {number} n
+     */
     round(n)
     {
         return Math.round(n * 100) / 100;
