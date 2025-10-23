@@ -111,10 +111,6 @@ export class glTlAnimLine extends Events
             if (!this.isGraphLayout() && this.#ports.length > 0)
                 this.#ports[0].setUiAttribs({ "hover": true });
 
-            if (!this.isGraphLayout())
-                for (let i = 0; i < this.#titles.length; i++)
-                    this.#titles[i].hover();
-
             this.updateColor();
 
         });
@@ -123,9 +119,6 @@ export class glTlAnimLine extends Events
             if (!this.isGraphLayout() && this.#ports.length > 0)
                 this.#ports[0].setUiAttribs({ "hover": false });
 
-            if (!this.isGraphLayout())
-                for (let i = 0; i < this.#titles.length; i++)
-                    this.#titles[i].unhover();
             this.updateColor();
 
         });
@@ -162,7 +155,10 @@ export class glTlAnimLine extends Events
             this.#listeners.push(
                 ports[i].on(Port.EVENT_UIATTRCHANGE, (attrs) =>
                 {
-                    if (attrs.hasOwnProperty("hover")) this.updateColor();
+                    if (attrs.hasOwnProperty("hover"))
+                    {
+                        this.updateColor();
+                    }
                 }));
 
             if (ports.length == 1)
@@ -489,9 +485,15 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+            // if (this.#titles[i].getAnim().port.uiAttribs.hover)
+            //     this.#titles[i].hover();
+            // else
+            this.#titles[i].updateColor();
+
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
+
     }
 
     /**

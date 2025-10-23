@@ -430,9 +430,10 @@ export class TlTitle extends Events
         this.#el.remove();
     }
 
-    /* @deprecated */
     updateColor()
     {
+        if (this.#port.uiAttribs.hover) this.#elPortname.classList.add("hover");
+        else this.#elPortname.classList.remove("hover");
     }
 
     getAnim()
@@ -447,15 +448,9 @@ export class TlTitle extends Events
 
     hover()
     {
-        // if (this.#port)
-        // {
-        //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
-        //     if (portParamRow) portParamRow.classList.add("hoverPort");
-        // }
-
-        this.#el.classList.add("hover");
         this.isHovering = true;
         this.#port?.emitEvent("animLineUpdate");
+        this.#port?.setUiAttribs({ "hover": true });
     }
 
     unhover()
@@ -465,9 +460,9 @@ export class TlTitle extends Events
         //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
         //     if (portParamRow) portParamRow.classList.remove("hoverPort");
         // }
-        this.#el.classList.remove("hover");
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");
+        this.#port?.setUiAttribs({ "hover": false });
     }
 
     /**

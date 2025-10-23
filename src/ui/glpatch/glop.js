@@ -213,14 +213,12 @@ export default class GlOp extends Events
 
         gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
         {
-            console.log("mouse over port", a, b, c);
             this._onMouseHover();
 
         });
         gui.on(Gui.EVENT_MOUSEOVERPORT_OUT, (_num) =>
         {
             this._onMouseHover();
-
         });
 
         this.#glPatch.on("selectedOpsChanged", (_num) =>
