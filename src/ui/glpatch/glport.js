@@ -226,6 +226,7 @@ export default class GlPort
     updateSize()
     {
         if (!this.#rect) return;
+        const oldh = this.#rect.h;
 
         let h = gluiconfig.portHeight * 2;
         let y = 0;
@@ -260,6 +261,7 @@ export default class GlPort
 
         this.#rect.setPosition(this.#posX, y, -0.0001);
         this.#rect.setSize(gluiconfig.portWidth, h);
+        if (oldh != h) this._updateColor();
 
         if (this.#longPortRect)
         {
