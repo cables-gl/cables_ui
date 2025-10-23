@@ -94,7 +94,8 @@ export default class SuggestionDialog
         {
             sugeles[i].addEventListener("click", (e) =>
             {
-                CABLES.UI.suggestions.action(e.target.dataset.id);
+                if (CABLES.UI.suggestions)
+                    CABLES.UI.suggestions.action(e.target.dataset.id);
             });
 
             sugeles[i].addEventListener("pointerenter", (e) =>
