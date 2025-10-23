@@ -1,6 +1,7 @@
 import { ele, Events } from "cables-shared-client";
 import { utils } from "cables";
 import { gui } from "../../gui.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * debug: showing uiattribs of currently selected op
@@ -11,6 +12,8 @@ import { gui } from "../../gui.js";
  */
 export default class OpWatchUiAttribs extends Events
 {
+    static TABSESSION_NAME = "watchuiattr";
+
     constructor(tabs)
     {
         super();
@@ -23,6 +26,12 @@ export default class OpWatchUiAttribs extends Events
         this._op = null;
         this.rebuildHtml();
         this.setOp(gui.opParams.op);
+        editorSession.rememberOpenEditor(OpWatchUiAttribs.TABSESSION_NAME, "profiler", { }, true);
+
+        this._tab.on("close", () =>
+        {
+            editorSession.remove(OpWatchUiAttribs.TABSESSION_NAME, "profiler");
+        });
 
         gui.opParams.on("opSelected", () =>
         {
@@ -97,3 +106,7 @@ export default class OpWatchUiAttribs extends Events
             hljs.highlightElement(el);
     }
 }
+editorSession.addListener(OpWatchUiAttribs.TABSESSION_NAME, (id, data) =>
+{
+    new OpWatchUiAttribs(gui.mainTabs);
+});

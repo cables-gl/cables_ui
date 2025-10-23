@@ -3,6 +3,8 @@ import { Patch } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { gui } from "../../gui.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * cpu profile the running patch, what is most expensive?
@@ -12,16 +14,26 @@ import { gui } from "../../gui.js";
  */
 export default class Profiler
 {
+    static TABSESSION_NAME = "spreadsheet";
+    #tab;
+
+    /**
+     * @param {TabPanel} tabs
+     */
     constructor(tabs)
     {
-        this._tab = new Tab("Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
-        tabs.addTab(this._tab, true);
+        this.#tab = new Tab("Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
+        tabs.addTab(this.#tab, true);
         this.show();
 
         this.colors = ["#7AC4E0", "#D183BF", "#9091D6", "#FFC395", "#F0D165", "#63A8E8", "#CF5D9D", "#66C984", "#D66AA6", "#515151"];
         this.intervalId = null;
         this.lastPortTriggers = 0;
         this._subTab = 0;
+        this.#tab.on("close", () =>
+        {
+            editorSession.remove(Profiler.TABSESSION_NAME, "profiler");
+        });
 
         gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
@@ -29,6 +41,34 @@ export default class Profiler
         gui.corePatch().on("onUnLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     }
 
+    /**
+     * @param {{ [x: string]: any; }} opids
+     * @param {number} allTimes
+     */
+    updateHeatmap(opids, allTimes)
+    {
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
+
+            if (opids[op.id])
+            {
+                op.setUiAttribs({ "heatmapActive": true, "heatmapColor": opids[op.id].timeUsedFrame / allTimes });
+
+            }
+            else
+            {
+                op.setUiAttribs({ "heatmapActive": false });
+
+            }
+        }
+
+    }
+
+    /**
+     * @param {number} which
+     */
     setTab(which)
     {
         ele.byId("profilerTabOpsCum").classList.remove("tabActiveSubtab");
@@ -50,8 +90,10 @@ export default class Profiler
 
     show()
     {
+        editorSession.rememberOpenEditor(Profiler.TABSESSION_NAME, "profiler", { }, true);
+
         const html = getHandleBarHtml("meta_profiler", {});
-        this._tab.html(html);
+        this.#tab.html(html);
 
         ele.byId("profilerstartbutton").addEventListener("click", function ()
         {
@@ -65,6 +107,7 @@ export default class Profiler
         if (!profiler) return;
 
         const items = profiler.getItems();
+
         let html = "";
         let htmlBar = "";
         let allTimes = 0;
@@ -74,6 +117,7 @@ export default class Profiler
         let cumulate = true;
         if (this._subTab == 1 || this._subTab == 3) cumulate = false;
 
+        let allFrameTime = 0;
         const cumulated = {};
         const cumulatedSubPatches = {};
         const opids = {};
@@ -82,8 +126,9 @@ export default class Profiler
         {
             const item = items[i];
             allTimes += item.timeUsed;
+            allFrameTime += item.timeUsedFrame;
 
-            opids[item.opid] = 1;
+            opids[item.opid] = item;
 
             if (cumulatedSubPatches[item.subPatch])
             {
@@ -116,6 +161,8 @@ export default class Profiler
                 sortedItems.push(item);
             }
         }
+
+        this.updateHeatmap(opids, allFrameTime);
 
         let allPortTriggers = 0;
         for (const i in sortedItems)
@@ -180,7 +227,7 @@ export default class Profiler
                 html += "<span>";
 
                 html += item.title;
-                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "/" + Math.round(item.timeUsedFrame * 100) / 100 + "ms </span></td>";
 
                 if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
                 if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";
@@ -271,3 +318,7 @@ export default class Profiler
         if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
     }
 }
+editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
+{
+    new Profiler(gui.mainTabs);
+});

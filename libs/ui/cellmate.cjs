@@ -1,9 +1,17 @@
+
+/**
+ * @typedef CellMateOptions
+ * @property  {UndoManager} [undo] undo manager
+ * @property  {HTMLElement} container element,cellmate will inject itself into this element
+ */
+
 let countInst=0
 
-console.log("cellmate 34")
+
 class CellMate
 {
-	cellWidth=100;
+	#rowHeight=22
+	#cellWidth=100;
 	#width=-1;
 	#height=30;
 	#data=[0];
@@ -24,8 +32,15 @@ class CellMate
 	#scrollY=0;
 	#scrollX=0;
 	#elContainer=null;
-	#options={}
-	countInst=0
+	#options={};
+	countInst=0;
+	#elScrollVert;
+	#elScrollVertInner;
+	#elScrollHor;
+	#elScrollHorInner;
+	#pauseScrolling=false
+	#scrollTimeOut=null;
+	#redrawTimeout=null;
 
 	constructor(container,options)
 	{
@@ -76,6 +91,7 @@ class CellMate
 		this.cursorScreenX=Math.min(this.#width-1,this.cursorScreenX)
 		this.cursorScreenY=Math.min(this.#height-1,this.cursorScreenY)
 	}
+
 	notify(t)
 	{
 		clearTimeout(this.clearTimeout);
@@ -142,6 +158,7 @@ class CellMate
 			cursorEl.setAttribute("readonly",true)
 		}
 		this.#elTable.focus()
+
 		if(e&&e.shiftKey)this.setEndSelection(this.cursorScreenX+this.#scrollX,this.cursorScreenY+this.#scrollY );
 		else
 		{
@@ -254,10 +271,11 @@ class CellMate
 		let eles=Array.from(this.#elTable.getElementsByClassName("selected"));
 		for(let i=0;i<eles.length;i++)eles[i].classList.remove("selected")
 
-		const sx=Math.min(this.#selectionStartX,this.#selectionEndX)
-		const sy=Math.min(this.#selectionStartY,this.#selectionEndY)
-		const ex=Math.max(this.#selectionStartX,this.#selectionEndX)
-		const ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+		let sx=Math.min(this.#selectionStartX,this.#selectionEndX)
+		let sy=Math.min(this.#selectionStartY,this.#selectionEndY)
+		let ex=Math.max(this.#selectionStartX,this.#selectionEndX)
+		let ey=Math.max(this.#selectionStartY,this.#selectionEndY)
+		if(sx==-1) sx=ex=sy=ey=-1
 
 		for(let absy=sy;absy<=ey;absy++)
 		{
@@ -287,10 +305,9 @@ class CellMate
 
 	moveCursorUp(e)
 	{
-		if(this.cursorScreenY<1&&this.#scrollY)return this.scrollUp();
+		if(this.cursorScreenY<1 && this.#scrollY)return this.scrollUp();
 		this.setCursor(this.cursorScreenX,this.cursorScreenY-1,e);
 		if(e)e.preventDefault();
-
 	}
 
 	moveCursorDown(e)
@@ -302,7 +319,7 @@ class CellMate
 
 	moveCursorLeft(e)
 	{
-		if(this.cursorScreenX<1&&this.#scrollX)return this.scrollLeft();
+		if(this.cursorScreenX<1 && this.#scrollX)return this.scrollLeft();
 		this.setCursor(this.cursorScreenX-1,this.cursorScreenY,e);
 		if(e)e.preventDefault();
 	}
@@ -318,22 +335,29 @@ class CellMate
 	{
 		this.#scrollY--;
 		if(this.#scrollY<0)this.#scrollY=0;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollDown(num)
 	{
 		this.#scrollY+=num||1;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollRight(num)
 	{
 		this.#scrollX+=num||1;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
+
 	scrollLeft()
 	{
 		this.#scrollX--;
-		this.redrawData();
+		this.updateScrollBarsSoon()
+		this.redrawDataSoon();
 	}
 
 	moveY(num)
@@ -345,10 +369,41 @@ class CellMate
 		}
 	}
 
+redrawDataSoon(){
+	
+		clearTimeout(this.#redrawTimeout) 
+		this.#redrawTimeout=setTimeout(()=>
+			{
+				this.redrawData();
+			},10);
+}
+updateScrollBarsSoon()
+	{
+		clearTimeout(this.#scrollTimeOut) 
+		this.#scrollTimeOut=setTimeout(()=>
+			{
+				this.updateScrollBars();
+			},10);
+	}
+
+	updateScrollBars()
+	{
+		this.#elScrollVert.style.height=(this.#elContainer.clientHeight-this.#rowHeight)+"px";
+		this.#elScrollVertInner.style.height=(this.#dataHeight*this.#rowHeight+(2*this.#rowHeight))+"px";
+
+		this.#elScrollHor.style.width=(this.#elContainer.clientWidth-this.#cellWidth)+"px";
+		this.#elScrollHorInner.style.width=(this.#dataWidth*this.#cellWidth+(2*this.#cellWidth))+"px";
+
+		this.#pauseScrolling=true;
+		this.#elScrollHor.scrollTo(this.#scrollX*this.#cellWidth,0);
+		this.#elScrollVert.scrollTo(0,this.#scrollY*this.#rowHeight);
+		this.#pauseScrolling=false;
+	}
+
 	resize()
 	{
-		const colNum=Math.floor(this.#elContainer.clientWidth/this.cellWidth)-1;
-		const rowNum=Math.floor(this.#elContainer.clientHeight/22)-2;
+		const colNum=Math.floor(this.#elContainer.clientWidth/this.#cellWidth)-1;
+		const rowNum=Math.floor(this.#elContainer.clientHeight/this.#rowHeight)-2;
 
 		if(this.#width!=colNum||this.#height!=rowNum)
 		{
@@ -359,10 +414,11 @@ class CellMate
 
 			for(let i=0;i<rows.length;i++)
 			{
-				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.cellWidth+"px)"
+				rows[i].style["grid-template-columns"]="repeat("+(this.#width+1)+","+this.#cellWidth+"px)"
 				// console.log("repeat("+this.#width+","+this.cellWidth+"px)");
 			}
 		}
+		this.updateScrollBars()
 	}
 
 	resizeData(w,h)
@@ -386,7 +442,6 @@ class CellMate
 		console.log("resize to ",w,h)
 		this.resize()
 		this.redrawDataArea()
-
 	}
 
 	isNumeric(n)
@@ -396,6 +451,8 @@ class CellMate
 
 	setValue(x,y,v)
 	{
+const		oldValue=this.getValue(x,y);
+
 		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
 			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
 
@@ -413,6 +470,27 @@ class CellMate
 		// setTimeout( this.removeEmptyRowCols.bind(this),300);
 		if(this.#options.onChange)this.#options.onChange()
 
+		if(this.#options.undo)
+		{
+			console.log("add undo")
+			const that=this;
+			const data=this.#data
+      this.#options.undo.add({
+          "title": "setvalue",
+          undo()
+          {
+						console.log("undo",idx,oldValue)
+						data[idx]=oldValue;
+						that.redrawData()
+          },
+          redo()
+          {
+							data[idx]=v;
+							that.redrawData()
+          }
+      });
+			
+		}
 	}
 
 	lastRowEmpty()
@@ -616,18 +694,20 @@ class CellMate
 
 	redrawData()
 	{
+
 		for(let x=0;x<this.#width;x++)
 		{
-			const head=document.getElementsByClassName(this.cellColHeadId(x))[0];
+			const head=document.getElementsByClassName(this.cellColHeadId(x+this.#scrollX))[0];
 			if(!head)continue;
 			let s=String(x+this.#scrollX);
-			if(this.#colTitles[x+this.#scrollX]) s+=":" +this.#colTitles[x+this.#scrollX];
+			if(this.#colTitles[x+this.#scrollX]) s+=":" + this.#colTitles[x + this.#scrollX];
 			head.innerHTML=s;
 		}
 
 		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
 		{
 			const eleRowHead=document.getElementsByClassName(this.cellRowHeadId(y))[0];
+			if(!eleRowHead)return;
 			eleRowHead.innerHTML=y+this.#scrollY;
 
 			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
@@ -642,7 +722,6 @@ class CellMate
 					elCell.value=v;
 					if(this.isNumeric(v))elCell.classList.add("numeric")
 					else elCell.classList.remove("numeric")
-
 				}
 				else
 				{
@@ -684,6 +763,31 @@ class CellMate
 		elRow.classList.add("row");
 		elTable.appendChild(elRow);
 
+		this.#elScrollVert=document.createElement("div");
+		this.#elScrollVert.classList.add("cellMateScrollVert")
+		this.#elScrollVertInner=document.createElement("div")
+		this.#elScrollVert.appendChild(this.#elScrollVertInner);
+		this.#elContainer.appendChild(this.#elScrollVert);
+		this.#elScrollVert.addEventListener("scroll", () => {
+			if(!this.#pauseScrolling)
+			{
+				this.#scrollY=Math.round(this.#elScrollVert.scrollTop/this.#rowHeight);
+				this.redrawData()
+			}
+		 });
+		this.#elScrollHor=document.createElement("div");
+		this.#elScrollHor.classList.add("cellMateScrollHor")
+		this.#elScrollHorInner=document.createElement("div")
+		this.#elScrollHor.appendChild(this.#elScrollHorInner);
+		this.#elContainer.appendChild(this.#elScrollHor);
+		this.#elScrollHor.addEventListener("scroll", () => {
+			if(!this.#pauseScrolling)
+			{
+				this.#scrollX=Math.round(this.#elScrollHor.scrollLeft/this.#cellWidth);
+				this.redrawData()
+			}
+		 });
+
 		for(let x=0;x<this.#width+1;x++)
 		{
 			const elColHead=document.createElement("div")
@@ -698,8 +802,8 @@ class CellMate
 				const t=prompt("title");
 				this.#colTitles[parseInt(e.srcElement.dataset.x)]=t;
 				this.redrawData();
-				console.log(this.#colTitles)
 			});
+
 			const col=x;
 			elColHead.addEventListener("click",(e)=>{
 				this.selectCol(col-1,e)
@@ -777,7 +881,17 @@ class CellMate
 
 				elInput.addEventListener("input",(e)=>
 				{
-					this.setValue(this.absX,this.absY,e.srcElement.value)
+				  if (this.#options.undo&& (e.ctrlKey || e.metaKey) && e.key === "z")
+				  {
+				  	e.preventDefault()
+				  	elInput.blur()
+				  	if(event.shiftKey) this.#options.undo.redo();
+				  	else this.#options.undo.undo();
+				  }
+				  else
+				  {
+	 					this.setValue(this.absX,this.absY,e.srcElement.value)
+				  }
 				});
 
 				elInput.addEventListener("blur",(e)=>
@@ -844,6 +958,13 @@ class CellMate
 
 		this.#elTable.addEventListener("keydown",(e)=>
 		{
+		  if (this.#options.undo&& (e.ctrlKey || e.metaKey) && e.key === "z")
+		  {
+		  	e.preventDefault()
+		  	if(event.shiftKey) this.#options.undo.redo();
+		  	else this.#options.undo.undo();
+		  }
+		  else
 			if(e.key=="Enter")
 			{
 				if(this.#elActiveInput)
@@ -870,12 +991,20 @@ class CellMate
 				{
 					if(!this.#elActiveInput) this.focusCell(this.cursorScreenX,this.cursorScreenY);
 				}
-				else {
-					console.log(e)
+				else
+				{
+					console.log(e);
 				}
 
 		});
 		this.redrawData();
+	}
+
+	dispose()
+	{
+		this.#elTable.remove()
+		this.#elTable=null;
+		this.#data=null;
 	}
 	
 }

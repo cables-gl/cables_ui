@@ -4,6 +4,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import undo from "../../utils/undo.js";
 
 /**
  * @typedef SpreadSheetOptions
@@ -62,11 +63,11 @@ export default class SpreadSheetTab extends Events
         this.#tab.on("close", () =>
         {
             editorSession.remove(SpreadSheetTab.TABSESSION_NAME, this.#currentId);
+            this.#cellMate.dispose();
         });
 
         this.#tab.on(Tab.EVENT_RESIZE, () =>
         {
-            console.log("resize tabbbbbbbbb");
             this.#cellMate.resize();
         });
 
@@ -97,6 +98,7 @@ export default class SpreadSheetTab extends Events
 
         this.#cellMate = new CellMate(this.#tab.contentEle,
             {
+                "undo": undo,
                 "onChange": this.onChange.bind(this)
             });
         this.#cellMate.fromObj(this.#port.get());
@@ -111,7 +113,6 @@ export default class SpreadSheetTab extends Events
 
 editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
 {
-    console.log("dataaa", data);
     const op = gui.corePatch().getOpById(data.opid);
     if (!op) return console.log("no spread op found..");
     new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));

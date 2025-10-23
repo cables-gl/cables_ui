@@ -6,6 +6,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * show user editor preferences, stored in {@link UserSettings}
@@ -15,6 +16,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
  */
 export default class Preferences
 {
+    static TABSESSION_NAME = "userprefs";
 
     /**
      * @param {TabPanel} tabs
@@ -24,6 +26,11 @@ export default class Preferences
         this._tab = new Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
         tabs.addTab(this._tab, true);
 
+        editorSession.rememberOpenEditor(Preferences.TABSESSION_NAME, "Preferences", { }, true);
+        this._tab.on("close", () =>
+        {
+            editorSession.remove(Preferences.TABSESSION_NAME, "Preferences");
+        });
         this.show();
     }
 
@@ -186,3 +193,7 @@ export default class Preferences
         });
     }
 }
+editorSession.addListener(Preferences.TABSESSION_NAME, (id, data) =>
+{
+    new Preferences(gui.mainTabs);
+});

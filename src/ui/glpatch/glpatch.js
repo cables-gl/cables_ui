@@ -36,9 +36,7 @@ import SuggestionDialog from "../components/suggestiondialog.js";
  */
 export default class GlPatch extends Events
 {
-
     hoverPort = null;
-
     paused = false;
     pauseTimeOut = null;
     blueprint = false;
