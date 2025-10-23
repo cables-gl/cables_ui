@@ -42,10 +42,9 @@ export default class Profiler
     }
 
     /**
-     * @param {{ [x: string]: any; }} opids
-     * @param {number} allTimes
+     * @param {number} maxTime
      */
-    updateHeatmap(opids, allTimes)
+    updateHeatmap(opids, maxTime)
     {
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
@@ -54,16 +53,26 @@ export default class Profiler
 
             if (opids[op.id])
             {
-                op.setUiAttribs({ "heatmapActive": true, "heatmapColor": opids[op.id].timeUsedFrame / allTimes });
+                op.setUiAttribs({
+                    "heatmapIntensity": opids[op.id].timePsMs / maxTime,
+                    "commentOverwrite":
+                        this.round(opids[op.id].timePsMs) + "ms ps\n" +
+                        this.round(opids[op.id].timePsCount) + "x ps\n" +
+                        this.round(opids[op.id].timePsMsAvg) + "ms avg" });
 
             }
             else
             {
-                op.setUiAttribs({ "heatmapActive": false });
+                op.setUiAttribs({ "heatmapIntensity": 0 });
 
             }
         }
 
+    }
+
+    round(n)
+    {
+        return Math.round(n * 100) / 100;
     }
 
     /**
@@ -120,14 +129,18 @@ export default class Profiler
         let allFrameTime = 0;
         const cumulated = {};
         const cumulatedSubPatches = {};
+
+        /** @type {Object.<string,import("cables/src/core/core_profiler.js").ProfilerItem>} */
         const opids = {};
+        let maxMsSecond = 0;
 
         for (const i in items)
         {
             const item = items[i];
-            allTimes += item.timeUsed;
+            allTimes += item.timePsMs;
             allFrameTime += item.timeUsedFrame;
 
+            maxMsSecond = Math.max(maxMsSecond, item.timePsMs);
             opids[item.opid] = item;
 
             if (cumulatedSubPatches[item.subPatch])
@@ -162,12 +175,12 @@ export default class Profiler
             }
         }
 
-        this.updateHeatmap(opids, allFrameTime);
+        this.updateHeatmap(opids, maxMsSecond);
 
         let allPortTriggers = 0;
         for (const i in sortedItems)
         {
-            sortedItems[i].percent = sortedItems[i].timeUsed / allTimes * 100;
+            sortedItems[i].percent = sortedItems[i].timePsMs / allTimes * 100;
             allPortTriggers += sortedItems[i].numTriggers;
         }
         this.lastPortTriggers = allPortTriggers;
@@ -208,7 +221,7 @@ export default class Profiler
             html += "<td class=\"colname\">%</td>";
             html += "<td class=\"colname\">Port Name</td>";
             html += "<td class=\"colname\">Per Frame</td>";
-            html += "<td class=\"colname\">Time used</td>";
+            html += "<td class=\"colname\">Ms Per Second</td>";
             html += "<td class=\"colname\">Ops</td>";
             html += "</td>";
 
@@ -227,7 +240,7 @@ export default class Profiler
                 html += "<span>";
 
                 html += item.title;
-                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "/" + Math.round(item.timeUsedFrame * 100) / 100 + "ms </span></td>";
+                html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + this.round(item.timePsMs) + "ms </span></td>";
 
                 if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
                 if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";
