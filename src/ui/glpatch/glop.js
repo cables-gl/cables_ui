@@ -211,12 +211,13 @@ export default class GlOp extends Events
 
         this._initGl();
 
-        this.#glPatch.on("mouseOverPort", (_num) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
         {
+            console.log("mouse over port", a, b, c);
             this._onMouseHover();
 
         });
-        this.#glPatch.on("mouseOverPortOut", (_num) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT_OUT, (_num) =>
         {
             this._onMouseHover();
 
@@ -1581,7 +1582,6 @@ export default class GlOp extends Events
         {
             if (this.opUiAttribs.heatmapIntensity)
             {
-
                 this.#glTitle.setColor(1, 1, 1, 1);
                 this.#glRectBg.setColor(
                     0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);

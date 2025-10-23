@@ -73,6 +73,8 @@ export default class Gui extends Events
 
     static EVENT_RESIZE = "resize";
     static EVENT_RESIZE_CANVAS = "resizecanvas";
+    static EVENT_MOUSEOVERPORT = "mouseOverPort";
+    static EVENT_MOUSEOVERPORT_OUT = "mouseOverPortOut";
 
     static EVENT_OP_SELECTIONCHANGED = "opSelectChange";
 

@@ -447,11 +447,11 @@ export class TlTitle extends Events
 
     hover()
     {
-        if (this.#port)
-        {
-            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
-            if (portParamRow) portParamRow.classList.add("hoverTimeline");
-        }
+        // if (this.#port)
+        // {
+        //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+        //     if (portParamRow) portParamRow.classList.add("hoverPort");
+        // }
 
         this.#el.classList.add("hover");
         this.isHovering = true;
@@ -460,11 +460,11 @@ export class TlTitle extends Events
 
     unhover()
     {
-        if (this.#port)
-        {
-            const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
-            if (portParamRow) portParamRow.classList.remove("hoverTimeline");
-        }
+        // if (this.#port)
+        // {
+        //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
+        //     if (portParamRow) portParamRow.classList.remove("hoverPort");
+        // }
         this.#el.classList.remove("hover");
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");

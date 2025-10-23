@@ -1081,7 +1081,7 @@ export default class PatchSaveServer extends Events
         for (let i = 0; i < data.ops.length; i++)
         {
             if (data.ops[i].uiAttribs.commentOverwrite) delete data.ops[i].uiAttribs.commentOverwrite;
-            if (data.ops[i].uiAttribs.heatmapIntensity) delete data.ops[i].uiAttribs.heatmapIntensity;
+            if (data.ops[i].uiAttribs.hasOwnProperty("heatmapIntensity")) delete data.ops[i].uiAttribs.heatmapIntensity;
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
