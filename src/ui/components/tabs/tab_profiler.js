@@ -53,13 +53,20 @@ export default class Profiler
 
             if (opids[op.id])
             {
-                op.setUiAttribs({
+                const o =
+                {
                     "heatmapIntensity": opids[op.id].timePsMs / maxTime,
-                    "commentOverwrite":
+                };
+
+                if (op.isCurrentUiOp())
+                    o.commentOverwrite =
                         this.round(opids[op.id].timePsMs) + "ms ps\n" +
                         this.round(opids[op.id].timePsCount) + "x ps\n" +
-                        this.round(opids[op.id].timePsMsAvg) + "ms avg" });
+                        this.round(opids[op.id].timePsMsAvg) + "ms avg pf";
+                else
+                    o.commentOverwrite = null;
 
+                op.setUiAttribs(o);
             }
             else
             {

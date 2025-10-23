@@ -1579,11 +1579,19 @@ export default class GlOp extends Events
 
         if (this.opUiAttribs.hasOwnProperty("heatmapIntensity"))
         {
-            if (this.opUiAttribs.heatmapIntensity) this.#glRectBg.setColor(
-                0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);
-            else this.#glRectBg.setColor(0, 0, 0, 1);
+            if (this.opUiAttribs.heatmapIntensity)
+            {
 
-            this.#glTitle.setColor(1, 1, 1, 1);
+                this.#glTitle.setColor(1, 1, 1, 1);
+                this.#glRectBg.setColor(
+                    0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);
+            }
+            // else
+            // {
+            //     this.#glRectBg.setColor(0.2, 0.2, 0.2, 1);
+            //     this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
+            // }
+
             return;
 
         }
