@@ -1817,7 +1817,6 @@ export default class Gui extends Events
             CABLES.UI.MODAL.showError("no webgl", "your browser does not support webgl");
             return;
         }
-        if (this.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (this.userSettings.get("openLogTab") == true) this.showLogging();
 
         gui.transformOverlay.updateVisibility();

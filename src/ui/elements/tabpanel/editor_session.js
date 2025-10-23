@@ -1,4 +1,5 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
+import ItemManager from "../../components/tabs/tab_item_manager.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
 import { userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";

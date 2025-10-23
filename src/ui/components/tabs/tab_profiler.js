@@ -14,7 +14,7 @@ import { editorSession } from "../../elements/tabpanel/editor_session.js";
  */
 export default class Profiler
 {
-    static TABSESSION_NAME = "spreadsheet";
+    static TABSESSION_NAME = "profiler";
     #tab;
 
     /**
@@ -340,6 +340,7 @@ export default class Profiler
         if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
     }
 }
+
 editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
 {
     new Profiler(gui.mainTabs);
