@@ -3,6 +3,7 @@ import { utils } from "cables";
 import text from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import TabPanel from "./tabpanel.js";
+import { CssClassNames } from "../../theme.js";
 
 /**
  * @typedef TabOptions
@@ -100,11 +101,12 @@ export default class Tab extends Events
     /**
      * @param {string} title
      * @param {Function} cb
+     * @param {string | any[]} [classes]
      */
     addButton(title, cb, classes)
     {
         const button = document.createElement("a");
-        button.classList.add("button-small");
+        button.classList.add(CssClassNames.BUTTON_SMALL);
 
         let html = "";
         html += title;

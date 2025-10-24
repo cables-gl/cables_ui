@@ -6,6 +6,7 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
 import { UiOp } from "../core_extend_op.js";
+import { CssClassNames, DomEvents } from "../theme.js";
 
 /**
  * @typedef {object} TlTitleOptions
@@ -102,21 +103,16 @@ export class TlTitle extends Events
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
 
-        this.#el.addEventListener("pointerenter", () =>
+        this.#el.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
             this.hover();
             this.emitEvent("hoverchange");
         });
 
-        this.#el.addEventListener("pointerleave", () =>
+        this.#el.addEventListener(DomEvents.POINTER_LEAVE, () =>
         {
             this.unhover();
             this.emitEvent("hoverchange");
-        });
-
-        this.#elTitle.addEventListener("pointerenter", () =>
-        {
-
         });
 
         ele.clickable(this.#elOpname, (e) =>
@@ -346,15 +342,6 @@ export class TlTitle extends Events
      */
     setBorderColor(selected, color)
     {
-        if (selected)
-        {
-            if (this.index == 0)
-            {
-                this.#el.classList.add("selectedOp");
-                this.#el.classList.add("selectedOp");
-            }
-        }
-        else this.#el.classList.remove("selectedOp");
 
         this.#el.style.borderLeft = "3px solid " + color;
     }
@@ -397,7 +384,7 @@ export class TlTitle extends Events
     {
 
         const button = document.createElement("a");
-        button.classList.add("button-small");
+        button.classList.add(CssClassNames.BUTTON_SMALL);
 
         let html = "";
         html += title;
@@ -432,6 +419,12 @@ export class TlTitle extends Events
 
     updateColor()
     {
+        if (this.#op && this.#op.uiAttribs.selected)
+        {
+            if (this.index == 0) this.#el.classList.add("selectedOp");
+        }
+        else this.#el.classList.remove("selectedOp");
+
         if (this.#port.uiAttribs.hover) this.#elPortname.classList.add("hover");
         else this.#elPortname.classList.remove("hover");
     }
@@ -455,11 +448,6 @@ export class TlTitle extends Events
 
     unhover()
     {
-        // if (this.#port)
-        // {
-        //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
-        //     if (portParamRow) portParamRow.classList.remove("hoverPort");
-        // }
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");
         this.#port?.setUiAttribs({ "hover": false });

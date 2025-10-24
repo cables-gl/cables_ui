@@ -1,6 +1,7 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import { CssClassNames } from "../theme.js";
 
 /**
  * configuration object for a modal dialog
@@ -45,7 +46,7 @@ export default class ModalDialog extends Events
 
         this._options.cancelButton = this._options.cancelButton || {};
         if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
-        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "cblbutton";
+        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = CssClassNames.BUTTON;
         if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
 
         this._checkboxGroups = this._options.checkboxGroups || [];

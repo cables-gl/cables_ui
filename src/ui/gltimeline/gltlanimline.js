@@ -62,6 +62,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<Object >} */
     #disposeRects = [];
 
+    /** @type {AnimLineOptions} */
     #options = {};
 
     /** @type {TlTitle[]} */
@@ -70,22 +71,20 @@ export class glTlAnimLine extends Events
     /** @type {EventListener[]} */
     #listeners = [];
 
-    #disposed = false;
-
     /** @type {GlTlView} */
     #view = null;
 
     /** @type {TlValueRuler} */
     #valueRuler = null;
 
-    /** @type {boolean} */
-    #hidden = false;
-
     /** @type {glTlAnimLine[]} */
     childLines = [];
 
     /** @type {glTlAnimLine} */
     parentLine = null;
+
+    #hidden = false;
+    #disposed = false;
 
     /**
      * @param {GlTimeline} glTl
