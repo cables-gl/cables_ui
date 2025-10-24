@@ -5,6 +5,7 @@ import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { glTlRuler } from "./gltlruler.js";
 import { gui } from "../gui.js";
+import { GuiText } from "../text.js";
 
 export class glTlDragArea extends Events
 {
@@ -76,6 +77,11 @@ export class glTlDragArea extends Events
         this.glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this.glRectBg.setPosition(0, 0, -0.9);
         this.ruler = new glTlRuler(glTl, this.glRectBg);
+
+        this.rectMove.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            gui.showInfo(GuiText.tlhover_keys_dragarea);
+        });
 
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {

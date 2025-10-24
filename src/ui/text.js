@@ -31,6 +31,8 @@ export const GuiText =
     "tlnextkey": "`j` Next keyframe || `k` Previous keyframe",
     "tltogglegraph": "Toggle graph view/dopesheet",
     "tltoggle": "`ctrl space` Toggle timeline",
+    "tlautokeyframe": "Automatically create keys on parameter change",
+    "tladdkey": "Create key at cursor",
     "tlactive": "[LMB] toggle editable || [RMB] deactivate all others || `dblclick` activate all",
 
     "tlhover_scroll": "## Animation Overview \n\n * [DRAG_LMB] - Scroll vieport ",
@@ -38,6 +40,7 @@ export const GuiText =
     "tlhover_animline": "## Anim Line \n\n * `double click` Create key || [DRAG_LMB] Select keys || `j/k` Jump prev/next keys || `f` Fit keys to screel || `c` Center cursor",
     "tlhover_title": "## anim line title \n\n * [LMB] Click to focus op",
     "tlhover_display": "## Time display \n\n * [LMB] Toggle between frames and seconds",
+    "tlhover_keys_dragarea": "## Area \n\n * [LMB] Drag area || [LMB] Right edge: scale area ",
 
     "tlIpLin": "set keys to linear easing",
     "tlIpBez": "set keys to bezier easing",
