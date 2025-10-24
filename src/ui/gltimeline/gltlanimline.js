@@ -191,6 +191,7 @@ export class glTlAnimLine extends Events
         }
         else
         {
+            this.#valueRuler?.dispose();
             // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
             // console.log("no folderanymore......");
         }

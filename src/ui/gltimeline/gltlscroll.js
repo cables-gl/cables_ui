@@ -4,7 +4,6 @@ import GlRect from "../gldraw/glrect.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
-import { glTlRuler } from "./gltlruler.js";
 import { GuiText } from "../text.js";
 
 export class glTlScroll extends Events

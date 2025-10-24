@@ -76,7 +76,6 @@ export class glTlDragArea extends Events
         this.glRectBg.setSize(222, this.height);
         this.glRectBg.setColor(0.25, 0.25, 0.25, 1);
         this.glRectBg.setPosition(0, 0, -0.9);
-        this.ruler = new glTlRuler(glTl, this.glRectBg);
 
         this.rectMove.on(GlRect.EVENT_POINTER_HOVER, () =>
         {

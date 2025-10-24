@@ -4,7 +4,6 @@ import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
-import { glTlRuler } from "./gltlruler.js";
 import { glTlScroll } from "./gltlscroll.js";
 import { GlTlView } from "./gltlview.js";
 import Gui, { gui } from "../gui.js";
@@ -63,6 +62,7 @@ export class GlTimeline extends Events
 
     static EVENT_MOUSEMOVE = "mousemove";
     static EVENT_KEYSELECTIONCHANGE = "keySelectionChange";
+    static EVENT_LAYOUTCHANGE = "layoutchanged";
 
     #lastDragX = Number.MAX_SAFE_INTEGER;
     #lastDragY = Number.MAX_SAFE_INTEGER;
@@ -707,9 +707,9 @@ export class GlTimeline extends Events
 
         this.saveUserSettings();
         this.updateIcons();
-        console.log("lasrt", gui.patchView.getLastFocussedOp());
         this.init(gui.patchView.getLastFocussedOp());
         this.needsUpdateAll = "togglelayout";
+        this.emitEvent(GlTimeline.EVENT_LAYOUTCHANGE);
 
     }
 
@@ -829,6 +829,8 @@ export class GlTimeline extends Events
         this.#rectSelect.setSize(0, 0);
         this.#lastDragX = Number.MAX_SAFE_INTEGER;
         this.#lastDragY = Number.MAX_SAFE_INTEGER;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++) this.#selectedKeys[i].temp = {};// reset predragtimes...
     }
 
     /**

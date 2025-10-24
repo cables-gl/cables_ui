@@ -118,6 +118,16 @@ export class glTlKeys extends Events
         this.#options = options || {};
         this.#port = port;
         this.animLine = animLine;
+
+        this.#listeners.push(
+            this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
+            {
+
+                this.#changeLayout();
+                console.log("layoutttttt changeeeeeeeeee", this.#glTl.isGraphLayout());
+
+            }));
+
         this.#listeners.push(
             anim.on(Anim.EVENT_CHANGE, () =>
             {
@@ -138,6 +148,13 @@ export class glTlKeys extends Events
     get anim()
     {
         return this.#anim;
+    }
+
+    #changeLayout()
+    {
+        if (!this.#glTl.isGraphLayout())
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].removeBezCp();
     }
 
     /**
@@ -703,24 +720,28 @@ export class glTlKeys extends Events
 
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
+
                     this.#glTl.predragSelectedKeys();
+
                     if (button == 1 && !glTlKeys.dragStarted)
                     {
                         if (this.#glTl.getNumSelectedKeys() == 0)
                         {
                             this.#glTl.selectKey(key, this.anim);
                         }
+
                         if (!this.#glTl.isKeySelected(key))
                         {
-
                             this.#glTl.unselectAllKeysSilent();
                             this.#glTl.selectKey(key, this.anim);
-
                         }
+
                         oldValues = this.#glTl.serializeSelectedKeys();
                         glTlKeys.dragStarted = true;
                         glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                         glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY - this.#glTl.getFirstLinePosy());
+
+                        console.log("startdragtime", glTlKeys.startDragTime);
 
                         if (e.altKey) this.#glTl.duplicateSelectedKeys();
                     }
@@ -762,6 +783,7 @@ export class glTlKeys extends Events
                             this.#glTl.dragSelectedKeys(offTime, offVal);
                             this.#anim.sortKeys();
                         }
+
                         this.setKeyPositions();
                         this.#glTl.setHoverKeyRect(keyRect);
                         this.animLine.update();

@@ -260,16 +260,19 @@ export class TlKey extends Events
 
     }
 
-    dispose()
+    removeBezCp()
     {
-
-        if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
         if (this.cp2r) this.cp2r = this.cp2r.dispose();
         if (this.cp1s) this.cp1s = this.cp1s.dispose();
         if (this.cp2s) this.cp2s = this.cp2s.dispose();
-        if (this.text) this.text = this.GuiText.dispose();
-        if (this.areaRect) this.areaRect = this.areaRect.dispose();
+    }
 
+    dispose()
+    {
+        this.removeBezCp();
+        if (this.rect) this.rect = this.rect.dispose();
+        if (this.text) this.text = this.text.dispose();
+        if (this.areaRect) this.areaRect = this.areaRect.dispose();
     }
 }

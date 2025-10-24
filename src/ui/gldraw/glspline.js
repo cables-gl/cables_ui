@@ -112,6 +112,7 @@ export default class GlSpline
 
     dispose()
     {
+
         this.#disposed = true;
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.#splineIdx = -1;
