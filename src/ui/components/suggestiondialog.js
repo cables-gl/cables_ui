@@ -88,6 +88,35 @@ export default class SuggestionDialog
             suggestions,
             _showSelect
         });
+
+        const sugeles = this.#eleDialog.getElementsByClassName("suggestion");
+        for (let i = 0; i < sugeles.length; i++)
+        {
+            sugeles[i].addEventListener("click", (e) =>
+            {
+                if (CABLES.UI.suggestions)
+                    CABLES.UI.suggestions.action(e.target.dataset.id);
+            });
+
+            sugeles[i].addEventListener("pointerenter", (e) =>
+            {
+                for (let i = 0; i < suggestions.length; i++)
+                    if (suggestions[i].id == e.target.dataset.id && suggestions[i].p)
+                    {
+                        this.lastPortHover = suggestions[i].p;
+
+                        suggestions[i].p.setUiAttribs({ "hover": true });
+                    }
+            });
+
+            sugeles[i].addEventListener("pointerleave", (e) =>
+            {
+                for (let i = 0; i < suggestions.length; i++)
+                    if (suggestions[i].id == e.target.dataset.id && suggestions[i].p)
+                        suggestions[i].p.setUiAttribs({ "hover": false });
+            });
+        }
+
         if (this._bg) this._bg.show();
 
         if (!options.hide) ele.show(this.#eleDialog);
@@ -128,10 +157,13 @@ export default class SuggestionDialog
 
         ele.hide(this.#eleDialog);
         if (this._bg) this._bg.hide();
+        if (this.lastPortHover) this.lastPortHover.setUiAttribs({ "hover": false });
 
         if (!this.#options.tease) CABLES.UI.suggestions = null;
         gui.patchView.focus();
         this.#eleDialog.remove();
+
+        if (this.lastPortHover) this.lastPortHover.setUiAttribs({ "hover": false });
     }
 
     showSelect()

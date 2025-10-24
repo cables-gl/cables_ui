@@ -31,7 +31,6 @@ export default class FileManager
         this._files = [];
 
         gui.maintabPanel.show(userInteraction);
-        userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
 
@@ -46,7 +45,6 @@ export default class FileManager
 
         this._manager.addEventListener("close", () =>
         {
-            userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
 

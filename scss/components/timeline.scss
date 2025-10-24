@@ -43,11 +43,13 @@
             overflow: hidden ;
             text-overflow: ellipsis;
         }
-        .portAndValue:hover
+
+        .hover
         {
             *{
                 background-color:var(--textedit-comment);
-                color:#000;
+                color:#000 !important;
+                border-radius: 5px;
             }
         }
 

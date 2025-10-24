@@ -211,15 +211,14 @@ export default class GlOp extends Events
 
         this._initGl();
 
-        this.#glPatch.on("mouseOverPort", (_num) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
         {
             this._onMouseHover();
 
         });
-        this.#glPatch.on("mouseOverPortOut", (_num) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT_OUT, (_num) =>
         {
             this._onMouseHover();
-
         });
 
         this.#glPatch.on("selectedOpsChanged", (_num) =>
@@ -1005,7 +1004,7 @@ export default class GlOp extends Events
 
                     colorPorts[0].on(Port.EVENT_UIATTRCHANGE, (attrs, _port) =>
                     {
-                        if (attrs.hasOwnProperty("heatmapActive"))
+                        if (attrs.hasOwnProperty("heatmapIntensity"))
                         {
                             this._updateColors();
 
@@ -1453,7 +1452,7 @@ export default class GlOp extends Events
             });
         }
 
-        const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
+        const comment = this.opUiAttribs.commentOverwrite || this.opUiAttribs.comment || this.opUiAttribs.comment_text;
 
         if (comment)
         {
@@ -1577,13 +1576,20 @@ export default class GlOp extends Events
     {
         if (!this.#glRectBg || !this.#glTitle) return;
 
-        if (this.opUiAttribs.hasOwnProperty("heatmapActive"))
+        if (this.opUiAttribs.hasOwnProperty("heatmapIntensity"))
         {
-            if (this.opUiAttribs.heatmapActive) this.#glRectBg.setColor(
-                0.1 + (this.opUiAttribs.heatmapColor), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapColor), 1);
-            else this.#glRectBg.setColor(0, 0, 0, 1);
+            if (this.opUiAttribs.heatmapIntensity)
+            {
+                this.#glTitle.setColor(1, 1, 1, 1);
+                this.#glRectBg.setColor(
+                    0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);
+            }
+            // else
+            // {
+            //     this.#glRectBg.setColor(0.2, 0.2, 0.2, 1);
+            //     this.#glTitle.setColor(0.7, 0.7, 0.7, 1);
+            // }
 
-            this.#glTitle.setColor(1, 1, 1, 1);
             return;
 
         }

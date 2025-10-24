@@ -86,12 +86,26 @@ class OpParampanel extends Events
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
     }
 
+    /**
+     * @param {object} attr
+     * @param {Port} port
+     */
     _onUiAttrChangePort(attr, port)
     {
         if (!attr) return;
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
-
         // todo: only update this part of the html
+
+        if (attr.hasOwnProperty("hover"))
+        {
+            const portParamRow = ele.byClass("paramport_1_" + port.id);
+            if (portParamRow)
+            {
+                if (attr.hover) portParamRow.classList.add("hoverPort");
+                else portParamRow.classList.remove("hoverPort");
+            }
+        }
+
     }
 
     _stopListeners(op)

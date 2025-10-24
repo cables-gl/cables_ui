@@ -2,7 +2,7 @@ import { Events } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { glTlKeys } from "./gltlkeys.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import { GlTlView } from "./gltlview.js";
@@ -107,17 +107,18 @@ export class glTlAnimLine extends Events
 
         this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
-            if (!this.isGraphLayout())
-                for (let i = 0; i < this.#titles.length; i++)
-                    this.#titles[i].hover();
+
+            if (!this.isGraphLayout() && this.#ports.length > 0)
+                this.#ports[0].setUiAttribs({ "hover": true });
+
             this.updateColor();
 
         });
         this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
-            if (!this.isGraphLayout())
-                for (let i = 0; i < this.#titles.length; i++)
-                    this.#titles[i].unhover();
+            if (!this.isGraphLayout() && this.#ports.length > 0)
+                this.#ports[0].setUiAttribs({ "hover": false });
+
             this.updateColor();
 
         });
@@ -149,6 +150,15 @@ export class glTlAnimLine extends Events
                     this.updateColor();
                     keys.updateColors();
                     this.update();
+                }));
+
+            this.#listeners.push(
+                ports[i].on(Port.EVENT_UIATTRCHANGE, (attrs) =>
+                {
+                    if (attrs.hasOwnProperty("hover"))
+                    {
+                        this.updateColor();
+                    }
                 }));
 
             if (ports.length == 1)
@@ -212,6 +222,9 @@ export class glTlAnimLine extends Events
     isHovering()
     {
         let anyhovering = false;
+        for (let i = 0; i < this.#ports.length; i++)
+            anyhovering = anyhovering || this.#ports[i].uiAttribs.hover;
+
         for (let i = 0; i < this.#titles.length; i++)
             if (this.#titles[i].isHovering)anyhovering = true;
 
@@ -472,9 +485,15 @@ export class glTlAnimLine extends Events
 
         for (let i = 0; i < this.#titles.length; i++)
         {
+            // if (this.#titles[i].getAnim().port.uiAttribs.hover)
+            //     this.#titles[i].hover();
+            // else
+            this.#titles[i].updateColor();
+
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
         }
+
     }
 
     /**

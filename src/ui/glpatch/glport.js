@@ -4,7 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
 import { hideToolTip, updateHoverToolTip } from "../elements/tooltips.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlOp from "./glop.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -226,6 +226,7 @@ export default class GlPort
     updateSize()
     {
         if (!this.#rect) return;
+        const oldh = this.#rect.h;
 
         let h = gluiconfig.portHeight * 2;
         let y = 0;
@@ -246,10 +247,12 @@ export default class GlPort
             if (this.#port.direction == PortDir.in) y = 0;
             else y = this.#glop.h;
         }
+
         if (this.#port.uiAttribs.hover)
         {
-            y -= h;
-            h *= 2;
+            if (this.direction == PortDir.in)
+                y -= h * 0.75;
+            h *= 1.75;
         }
 
         this.updateShape();
@@ -258,6 +261,7 @@ export default class GlPort
 
         this.#rect.setPosition(this.#posX, y, -0.0001);
         this.#rect.setSize(gluiconfig.portWidth, h);
+        if (oldh != h) this._updateColor();
 
         if (this.#longPortRect)
         {
@@ -316,13 +320,14 @@ export default class GlPort
         };
 
         this.#glPatch.hoverPort = this;
-        this.#glPatch.emitEvent("mouseOverPort", this.#glop.id, this.#port.name);
+        gui.emitEvent(Gui.EVENT_MOUSEOVERPORT, this.#glop.id, this.#port.name);
 
         for (const i in this.#glop._links)
             if (this.#glop._links[i].portIdIn == this.#id || this.#glop._links[i].portIdOut == this.#id)
                 this.#glop._links[i].highlight(true);
 
         updateHoverToolTip(event, this.#port, false);
+        this.#port.setUiAttribs({ "hover": true });
         this._updateColor();
     }
 
@@ -333,6 +338,7 @@ export default class GlPort
     {
         this.#glPatch.hoverPort = null;
         this._hover = false;
+        this.#port.setUiAttribs({ "hover": false });
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
         hideToolTip();
@@ -340,7 +346,7 @@ export default class GlPort
         for (const i in this.#glop._links)
             this.#glop._links[i].highlight(false);
 
-        this.#glPatch.emitEvent("mouseOverPortOut", this.#glop.id, this.#port.name);
+        gui.emitEvent(Gui.EVENT_MOUSEOVERPORT_OUT, this.#glop.id, this.#port.name);
         this._updateColor();
     }
 

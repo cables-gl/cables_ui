@@ -73,6 +73,8 @@ export default class Gui extends Events
 
     static EVENT_RESIZE = "resize";
     static EVENT_RESIZE_CANVAS = "resizecanvas";
+    static EVENT_MOUSEOVERPORT = "mouseOverPort";
+    static EVENT_MOUSEOVERPORT_OUT = "mouseOverPortOut";
 
     static EVENT_OP_SELECTIONCHANGED = "opSelectChange";
 
@@ -1815,7 +1817,6 @@ export default class Gui extends Events
             CABLES.UI.MODAL.showError("no webgl", "your browser does not support webgl");
             return;
         }
-        if (this.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (this.userSettings.get("openLogTab") == true) this.showLogging();
 
         gui.transformOverlay.updateVisibility();
