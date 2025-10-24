@@ -350,7 +350,7 @@ export class glTlKeys extends Events
                 if (this.shouldDrawGraphSpline() && v == lv && i < steps - 3 && i > 1)
                 {
                     let k = this.#anim.getKey(t);
-                    if (k.getEasing() != Anim.EASING_ABSOLUTE)
+                    if (k && k.getEasing() != Anim.EASING_ABSOLUTE)
                     {
                         skipped = true;
                         continue;

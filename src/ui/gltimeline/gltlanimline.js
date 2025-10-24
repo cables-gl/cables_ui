@@ -226,8 +226,8 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < this.#ports.length; i++)
             anyhovering = anyhovering || this.#ports[i].uiAttribs.hover;
 
-        for (let i = 0; i < this.#titles.length; i++)
-            if (this.#titles[i].isHovering)anyhovering = true;
+        // for (let i = 0; i < this.#titles.length; i++)
+        //     if (this.#titles[i].isHovering)anyhovering = true;
 
         return this.#rectBg.isHovering() || anyhovering;
     }
