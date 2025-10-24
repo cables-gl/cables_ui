@@ -571,18 +571,15 @@ class ParamsListener extends Events
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
-                        console.log("animmmmmmmmmm", thePort, thePort.uiAttribs.increment, thePort.anim);
-                        if (thePort.anim && (thePort.uiAttribs.increment == "integer" || thePort.uiAttribs.display == "bool"))
+
+                        if (thePort.anim && (thePort.uiAttribs.hasOwnProperty("tlEase") || thePort.uiAttribs.display == "bool"))
                         {
+                            if (thePort.uiAttribs.hasOwnProperty("tlEase")) thePort.anim.defaultEasing = thePort.uiAttribs.tlEase;
+                            else thePort.anim.defaultEasing = Anim.EASING_ABSOLUTE;
 
-                            thePort.anim.defaultEasing = Anim.EASING_ABSOLUTE;
-                            console.log("easeeeeeeee", thePort.anim.defaultEasing == Anim.EASING_ABSOLUTE);
-                            thePort.anim.setKeyEasing(0, Anim.EASING_ABSOLUTE);
-
+                            thePort.anim.setKeyEasing(0, thePort.anim.defaultEasing);
                         }
-                        // CmdTimeline.TimelinePause();
-                        // CmdTimeline.TimelineRewindStart();
-                        // CmdTimeline.openGlTimeline();
+
                         CmdTimeline.showTimeline();
                     }
                 });
