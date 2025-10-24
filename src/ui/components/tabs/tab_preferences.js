@@ -1,7 +1,7 @@
 import { ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
@@ -153,7 +153,7 @@ export default class Preferences
 
     show()
     {
-        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": text.preferences });
+        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": GuiText.preferences });
         this._tab.html(html);
         this.updateValues();
 

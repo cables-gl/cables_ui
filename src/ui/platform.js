@@ -1,13 +1,13 @@
 import { Events, Logger, TalkerAPI, ele } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
-import text from "./text.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
 import { gui } from "./gui.js";
 import { userSettings } from "./components/usersettings.js";
+import { GuiText } from "./text.js";
 
 /**
  * @type {Platform}
@@ -274,8 +274,8 @@ export class Platform extends Events
             iziToast.error({
                 "position": "topRight",
                 "theme": "dark",
-                "title": text.notOptimizedBrowser_title,
-                "message": text.notOptimizedBrowser_text,
+                "title": GuiGuiText.notOptimizedBrowser_title,
+                "message": GuiGuiText.notOptimizedBrowser_text,
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
@@ -516,7 +516,7 @@ export class Platform extends Events
                         },
                         "title": "Backup",
                         "warning": true,
-                        "text": text.projectBackupNotSaved,
+                        "text": GuiGuiText.projectBackupNotSaved,
                     });
 
                 }

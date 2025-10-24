@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
 import { Link, utils } from "cables";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import { gui } from "../gui.js";
 import { PortDir, portType } from "../core_constants.js";
 
@@ -159,10 +159,10 @@ function getPortDescription(thePort, overlink)
     {
         let strInfo = "";
 
-        if (thePort.direction == PortDir.in) strInfo += text.portDirIn;
-        if (thePort.direction == PortDir.out) strInfo += text.portDirOut;
-        if (thePort.isLinked()) strInfo += text.portMouseUnlink;
-        else strInfo += text.portMouseCreate;
+        if (thePort.direction == PortDir.in) strInfo += GuiText.portDirIn;
+        if (thePort.direction == PortDir.out) strInfo += GuiText.portDirOut;
+        if (thePort.isLinked()) strInfo += GuiText.portMouseUnlink;
+        else strInfo += GuiText.portMouseCreate;
         gui.showInfo(strInfo);
     }
 

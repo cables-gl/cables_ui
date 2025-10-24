@@ -2,7 +2,7 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
@@ -226,7 +226,7 @@ export default class FindTab
         let info = "";
         this._maxIdx = idx;
 
-        info += "## searchresult \n\n* score : " + result.score + text.searchResult + "\n";
+        info += "## searchresult \n\n* score : " + result.score + GuiText.searchResult + "\n";
 
         if (op.op)op = op.op;
 

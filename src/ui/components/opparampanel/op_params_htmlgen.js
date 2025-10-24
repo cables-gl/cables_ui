@@ -5,7 +5,7 @@ import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { platform } from "../../platform.js";
-import text from "../../text.js";
+import { GuiText } from "../../text.js";
 import { handleBarPrecompiled } from "../../utils/handlebars.js";
 import { userSettings } from "../usersettings.js";
 
@@ -65,7 +65,7 @@ class PortHtmlGenerator
             "frontendOptions": platform.frontendOptions,
             "isBookmarked": isBookmarked,
             "colorClass": opNames.getNamespaceClassName(op.objName),
-            "texts": text,
+            "texts": GuiText,
             "user": gui.user,
             "optitle": op.getTitle(),
             "canEditOp": canEditOp,
@@ -91,7 +91,7 @@ class PortHtmlGenerator
         return this._templatePortsHead({
             "dirStr": dir,
             "title": title,
-            "texts": text,
+            "texts": GuiText,
         }, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });
     }
 
@@ -144,7 +144,7 @@ class PortHtmlGenerator
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,
-                "texts": text,
+                "texts": GuiText,
                 "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 

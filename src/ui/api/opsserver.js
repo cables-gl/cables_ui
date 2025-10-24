@@ -1,7 +1,7 @@
 import { Logger, TalkerAPI, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
@@ -1654,7 +1654,7 @@ export default class ServerOps
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", text.guestHint);
+            CABLES.UI.MODAL.showError("Demo Editor", GuiText.guestHint);
             return;
         }
 

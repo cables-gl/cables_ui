@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client/index.js";
 import { userSettings } from "../components/usersettings.js";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import ModalDialog from "./modaldialog.js";
 
 /**
@@ -15,7 +15,7 @@ export default class Tips
     {
         this._index = 0;
         this._wasShown = false;
-        this._index = Math.round(text.tips.length * Math.random());
+        this._index = Math.round(GuiText.tips.length * Math.random());
     }
 
     next()
@@ -38,10 +38,10 @@ export default class Tips
 
     show()
     {
-        if (this._index >= text.tips.length) this._index = 0;
+        if (this._index >= GuiText.tips.length) this._index = 0;
         let html = "";// '<h2>Tipps</h2>';
 
-        const tip = text.tips[this._index];
+        const tip = GuiText.tips[this._index];
 
         html += "<div>";
         html += "</div>";
@@ -54,7 +54,7 @@ export default class Tips
         html += "    <h3>" + (tip.title || "Did you know...") + "</h3>";
         html += marked.parse(tip.descr);
         // html += '    <br/>';
-        html += "    " + (this._index + 1) + "/" + text.tips.length;
+        html += "    " + (this._index + 1) + "/" + GuiText.tips.length;
         html += "  </div>";
         html += "<div style=\"clear:both;\"></div>";
         html += "</div>";

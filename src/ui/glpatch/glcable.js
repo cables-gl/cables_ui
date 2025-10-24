@@ -1,6 +1,6 @@
 import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import GlPort from "./glport.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
@@ -601,7 +601,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText) this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
-            gui.showInfo(text.linkAddCircle);
+            gui.showInfo(GuiText.linkAddCircle);
 
             perf.finish();
             return true;

@@ -75,7 +75,7 @@ export default class OpDocs
         {
             if (opDoc.docs.ports[i].name === port.name)
             {
-                return opDoc.docs.ports[i].text.trim();
+                return opDoc.docs.ports[i].GuiText.trim();
             }
         }
         perf.finish();

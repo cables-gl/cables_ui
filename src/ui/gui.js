@@ -26,7 +26,6 @@ import { getHandleBarHtml } from "./utils/handlebars.js";
 import WatchArrayTab from "./components/tabs/tab_watcharray.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import { hideInfo, showInfo } from "./elements/tooltips.js";
-import text from "./text.js";
 import LongPressConnector from "./elements/longpressconnector.js";
 import CanvasManager from "./components/canvas/canvasmanager.js";
 import GuiRestrictions from "./components/guirestrictions.js";
@@ -57,6 +56,7 @@ import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 import { CmdTimeline } from "./commands/cmd_timeline.js";
+import { GuiText } from "./text.js";
 
 /**
  * @type {Gui}
@@ -419,7 +419,7 @@ export default class Gui extends Events
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                text.guestHint + "<br/><br/><a href=\"" + platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
+                GuiText.guestHint + "<br/><br/><a href=\"" + platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
             );
             return true;
         }
@@ -1802,7 +1802,7 @@ export default class Gui extends Events
 
         this._elGlCanvasDom.addEventListener("pointerenter", () =>
         {
-            gui.showInfo(text.canvas);
+            gui.showInfo(GuiText.canvas);
         });
 
         this._elGlCanvasDom.addEventListener("pointerleave", () =>
@@ -2157,7 +2157,7 @@ export default class Gui extends Events
 
         ele.byId("undev").addEventListener("pointerEnter", () =>
         {
-            gui.showInfo(text.undevLogo);
+            gui.showInfo(GuiText.undevLogo);
         });
         ele.byId("undev").addEventListener("pointerLeave", () =>
         {

@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
 import paramsHelper from "./params_helper.js";
@@ -15,7 +15,7 @@ export default valueChanger;
  */
 function valueChanger(eleId, focus, portName, opid)
 {
-    gui.showInfo(text.valueChangerInput);
+    gui.showInfo(GuiText.valueChangerInput);
 
     const eleInput = ele.byId(eleId);
     const eleContainer = ele.byId(eleId + "-container");

@@ -6,6 +6,7 @@ import GlRect from "../gldraw/glrect.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { GlTlView } from "./gltlview.js";
+import { GuiText } from "../text.js";
 
 /**
  * gltl ruler display
@@ -22,8 +23,17 @@ export class glTlRuler extends Events
     static COLOR_MARK_SIZE2 = [1, 1, 1, 0.1];
     static COLOR_MARK_SIZES = [this.COLOR_MARK_SIZE0, this.COLOR_MARK_SIZE1, this.COLOR_MARK_SIZE2];
 
+    #log = new Logger("glTlRuler");
+
     /** @type {GlTimeline} */
     #glTl;
+
+    /** @type {GlRect} */
+    #glRectBg;
+
+    markf = [];
+    marks = [];
+    titles = [];
 
     /**
      * @param {GlTimeline} glTl
@@ -32,35 +42,36 @@ export class glTlRuler extends Events
     {
         super();
         this.fullView = fullview;
-        this._log = new Logger("glTlRuler");
         this.#glTl = glTl;
         this.y = r.y;
         this.height = r.h;
         this.view = this.#glTl.view;
         if (fullview) this.view = new GlTlView(glTl);
 
-        this._glRectBg = r;
+        this.#glRectBg = r;
 
-        this.markf = [];
+        this.#glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            gui.showInfo(GuiText.tlhover_ruler);
+        });
+
         for (let i = 0; i < 300; i++)
         {
             const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker frames", "draggable": false, "interactive": false });
             mr.setColor(0.0, 0.0, 0.0, 1);
             mr.setPosition(-8888, 0);
-            mr.setParent(this._glRectBg);
+            mr.setParent(this.#glRectBg);
             this.markf.push(mr);
         }
 
-        this.marks = [];
         for (let i = 0; i < 700; i++)
         {
             const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker seconds", "draggable": false, "interactive": false });
-            mr.setParent(this._glRectBg);
+            mr.setParent(this.#glRectBg);
             mr.setPosition(-8888, 0);
             this.marks.push(mr);
         }
 
-        this.titles = [];
         for (let i = 0; i < 100; i++)
         {
             const mt = new GlText(this.#glTl.textsNoScroll, "");
@@ -78,6 +89,7 @@ export class glTlRuler extends Events
 
             this.update();
         });
+
         this.update();
     }
 
@@ -128,7 +140,7 @@ export class glTlRuler extends Events
             {
                 this.timeTitleLookup[s] = showTitle;
                 this.titles[this.titleCounter].text = String(title);// (Math.round(s * 100) / 100) + "s";
-                this.titles[this.titleCounter].setParentRect(this._glRectBg);
+                this.titles[this.titleCounter].setParentRect(this.#glRectBg);
                 this.titles[this.titleCounter].setPosition(x - this.titles[this.titleCounter].width / 2, 1);
                 this.titles[this.titleCounter].setOpacity(showTitle);
                 this.titleCounter++;

@@ -7,6 +7,7 @@ import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
 import { UiOp } from "../core_extend_op.js";
 import { CssClassNames, DomEvents } from "../theme.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef {object} TlTitleOptions
@@ -105,6 +106,7 @@ export class TlTitle extends Events
 
         this.#el.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
+            gui.showInfo(GuiText.tlhover_title);
             this.hover();
             this.emitEvent("hoverchange");
         });

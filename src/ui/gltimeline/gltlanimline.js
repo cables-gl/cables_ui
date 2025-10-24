@@ -11,6 +11,7 @@ import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { UiOp } from "../core_extend_op.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef AnimLineOptions
@@ -106,6 +107,7 @@ export class glTlAnimLine extends Events
 
         this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
+            gui.showInfo(GuiText.tlhover_animline);
 
             if (!this.isGraphLayout() && this.#ports.length > 0)
                 this.#ports[0].setUiAttribs({ "hover": true });

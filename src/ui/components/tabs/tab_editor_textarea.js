@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
@@ -34,7 +34,7 @@ export default class EditorTabTextArea extends Events
                 "type": options.syntax,
                 "name": options.name,
                 "dataId": options.dataId || options.name,
-                "infotext": text.editorTab,
+                "infotext": GuiText.editorTab,
                 "singleton": options.singleton,
             });
 
@@ -83,7 +83,7 @@ export default class EditorTabTextArea extends Events
 
         if (this._options.allowEdit)
         {
-            if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(text.editorSaveButton, () =>
+            if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(GuiText.editorSaveButton, () =>
             {
                 this.save();
             });
@@ -93,7 +93,7 @@ export default class EditorTabTextArea extends Events
             else hideFormatButton = true;
             if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-            if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+            if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
         }
 
         this._tab.addEventListener("close", this._options.onClose);

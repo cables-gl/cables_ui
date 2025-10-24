@@ -6,7 +6,6 @@ import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./socketcluster/sc_connection.js";
-import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
@@ -14,6 +13,7 @@ import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
 import { userSettings } from "./components/usersettings.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
+import { GuiText } from "./text.js";
 
 /**
  * manage the start of the ui/editor
@@ -130,8 +130,8 @@ export default function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
-                ele.byId("patchnavhelperEmpty").innerHTML = text.patch_hint_overlay_empty;
-                ele.byId("patchnavhelperBounds").innerHTML = text.patch_hint_overlay_outofbounds;
+                ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 
@@ -141,7 +141,7 @@ export default function startUi(cfg)
                     projectId = gui.project().shortId || gui.project()._id;
                 }
                 new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": platform.getCablesUrl() + "/remote_client/" + projectId,
+                    "GuiText": platform.getCablesUrl() + "/remote_client/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -150,7 +150,7 @@ export default function startUi(cfg)
                 });
 
                 new QRCode(document.getElementById("patch_view_qr"), {
-                    "text": platform.getCablesUrl() + "/p/" + projectId,
+                    "GuiText": platform.getCablesUrl() + "/p/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",

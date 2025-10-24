@@ -1,4 +1,4 @@
-const text =
+export const GuiText =
 {
     "save_screenshot": "## Save Screenshot\n\nDownload renderer output as an image file",
     "toggle_sound": "## Toggle Sound\n\nTurn sound on or off",
@@ -33,6 +33,12 @@ const text =
     "tltoggle": "`ctrl space` Toggle timeline",
     "tlactive": "[LMB] toggle editable || [RMB] deactivate all others || `dblclick` activate all",
 
+    "tlhover_scroll": "## Animation Overview \n\n * [DRAG_LMB] - Scroll vieport ",
+    "tlhover_ruler": "## Ruler \n\n * [DRAG_LMB] - set time || `mousewheel` zoom in/out ",
+    "tlhover_animline": "## Anim Line \n\n * `double click` Create key || [DRAG_LMB] Select keys || `j/k` Jump prev/next keys || `f` Fit keys to screel || `c` Center cursor",
+    "tlhover_title": "## anim line title \n\n * [LMB] Click to focus op",
+    "tlhover_display": "## Time display \n\n * [LMB] Toggle between frames and seconds",
+
     "tlIpLin": "set keys to linear easing",
     "tlIpBez": "set keys to bezier easing",
     "tlIpClip": "clip - reference another animation",
@@ -40,6 +46,7 @@ const text =
     "tlIpCurves": "set keys to predefined easing functions",
     "tlloopdelete": "toggle loop area",
     "tlfit": "zoon to fit selected or all keys",
+    "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='/docs/timeline'>read the documentation</a>",
 
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
@@ -424,5 +431,3 @@ const text =
 
     ]
 };
-
-export default text;

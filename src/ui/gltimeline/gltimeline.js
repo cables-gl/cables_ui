@@ -27,6 +27,7 @@ import { patchStructureQuery } from "../components/patchstructurequery.js";
 import { UiOp } from "../core_extend_op.js";
 import { glTlHead } from "./gltltimehead.js";
 import { DomEvents, CssClassNames } from "../theme.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef TlConfig
@@ -318,7 +319,9 @@ export class GlTimeline extends Events
         this.#elTimeDisplay.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
             this.refreshInfoOverlay();
+            gui.showInfo(GuiText.tlhover_display);
         });
+
         this.#elTimeDisplay.addEventListener(DomEvents.POINTER_LEAVE, () =>
         {
             setTimeout(() =>
@@ -1563,6 +1566,15 @@ export class GlTimeline extends Events
         this.#firstInit = false;
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
+
+        if (this.#tlAnims.length == 0)
+        {
+            console.log("no anims!s");
+            const elee = document.createElement("div");
+            elee.style = "text-align:center;width:calc(var(--timelineSplitterLeft) - 30px);padding:10px;diplay:inline-block;";
+            elee.innerHTML = marked(GuiText.noanims);
+            this.tlTimeScrollContainer.appendChild(elee);
+        }
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {

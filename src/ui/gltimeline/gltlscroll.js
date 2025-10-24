@@ -5,6 +5,7 @@ import { glTlDragArea } from "./gltldragarea.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlRuler } from "./gltlruler.js";
+import { GuiText } from "../text.js";
 
 export class glTlScroll extends Events
 {
@@ -50,6 +51,11 @@ export class glTlScroll extends Events
         this.ruler.update();
 
         this.#dragBar = new glTlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
+        this.#bgRect.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            gui.showInfo(GuiText.tlhover_scroll);
+
+        });
 
         this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
         {

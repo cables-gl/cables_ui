@@ -3,7 +3,7 @@ import { utils } from "cables";
 import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
@@ -384,7 +384,7 @@ export default class FileManager
     {
         if (gui.isGuestEditor())
         {
-            if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (text.guestHint);
+            if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (GuiText.guestHint);
             return;
         }
 
