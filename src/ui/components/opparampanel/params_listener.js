@@ -1,4 +1,5 @@
 import { ele, Events, Logger } from "cables-shared-client";
+import { Anim, Port } from "cables";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
@@ -338,6 +339,12 @@ class ParamsListener extends Events
         });
     }
 
+    /**
+     * @param {Port[]} ports
+     * @param {number} index
+     * @param {string} panelid
+     * @param {string} dirStr
+     */
     initPortClickListener(ports, index, panelid, dirStr)
     {
         const thePort = ports[index];
@@ -359,14 +366,14 @@ class ParamsListener extends Events
             {
                 if (thePort.objType && thePort.objType.indexOf("sg_"))
                 {
-                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, function (newop)
+                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, (newop) =>
                     {
                         gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
                 }
                 if (thePort.type == portType.object)
                 {
-                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, function (newop)
+                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, (newop) =>
                     {
                         gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
@@ -564,6 +571,15 @@ class ParamsListener extends Events
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
+                        console.log("animmmmmmmmmm", thePort, thePort.uiAttribs.increment, thePort.anim);
+                        if (thePort.anim && (thePort.uiAttribs.increment == "integer" || thePort.uiAttribs.display == "bool"))
+                        {
+
+                            thePort.anim.defaultEasing = Anim.EASING_ABSOLUTE;
+                            console.log("easeeeeeeee", thePort.anim.defaultEasing == Anim.EASING_ABSOLUTE);
+                            thePort.anim.setKeyEasing(0, Anim.EASING_ABSOLUTE);
+
+                        }
                         // CmdTimeline.TimelinePause();
                         // CmdTimeline.TimelineRewindStart();
                         // CmdTimeline.openGlTimeline();

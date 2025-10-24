@@ -172,14 +172,18 @@ export class glTlKeys extends Events
 
     /**
      * @param {GlRect} kr
+     * @param {TlKey} [key]
      */
-    setKeyShapeSize(kr)
+    setKeyShapeSize(kr, key)
     {
         const w = this.getKeyWidth();
 
         if (!this.showKeysAsFrames() || this.isLayoutGraph())
         {
-            kr.setShape(13);
+            if (key.key.getEasing() == Anim.EASING_LINEAR) kr.setShape(GlRect.SHAPE_RHOMB);
+            else if (key.key.getEasing() == Anim.EASING_ABSOLUTE) kr.setShape(GlRect.SHAPE_RECT);
+            else kr.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+
             kr.setSize(w, w);
         }
         else
@@ -262,7 +266,7 @@ export class glTlKeys extends Events
             const tlKey = this.#keys[i];
             tlKey.update();
 
-            this.setKeyShapeSize(tlKey.rect);
+            this.setKeyShapeSize(tlKey.rect, tlKey);
 
             if (this.#glTl.selectRect && this.testSelectRectKey(tlKey.key, tlKey.rect))
                 this.#glTl.selectKey(tlKey.key, this.#anim);
@@ -493,7 +497,7 @@ export class glTlKeys extends Events
             if (this.#port.op.isCurrentUiOp())z = -0.94;
 
             kr.setPosition(rx, ry, z);
-            this.setKeyShapeSize(kr);
+            this.setKeyShapeSize(kr, k);
 
             if (k.text)
             {
@@ -621,7 +625,7 @@ export class glTlKeys extends Events
             this.#keyLookup[key.id] = tlKey;
             const keyRect = tlKey.rect;
 
-            this.setKeyShapeSize(keyRect);
+            this.setKeyShapeSize(keyRect, tlKey);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);

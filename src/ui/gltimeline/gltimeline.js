@@ -2682,7 +2682,6 @@ export class GlTimeline extends Events
         {
             console.log("anim serialized", e.target);
             e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), null, 2) + "</pre>";
-
         });
 
         ele.clickable(ele.byId("ap_size"), () =>
