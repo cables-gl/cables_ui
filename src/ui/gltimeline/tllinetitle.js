@@ -97,12 +97,15 @@ export class TlTitle extends Events
         this.#elPortValue = document.createElement("span");
         this.#elPortValue.classList.add("portAndValue");
         this.#el.appendChild(this.#elPortValue);
+        this.#elPortValue.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#elPortname = document.createElement("span");
         this.#elPortValue.appendChild(this.#elPortname);
 
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
+
+        this.#el.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#el.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
@@ -174,6 +177,14 @@ export class TlTitle extends Events
     setHeight(h)
     {
         this.#el.style.height = Math.max(0, h - 6) + "px";
+    }
+
+    selectAllKeys()
+    {
+        this.#gltl.unSelectAllKeys();
+        // this.#gltl.deactivateAllAnims(true);
+        const keys = this.animLine.getGlKeysForAnim(this.#anim);
+        keys.selectAll();
     }
 
     /**
@@ -327,10 +338,12 @@ export class TlTitle extends Events
                 this.#elTitle.style.opacity = "0.4";
                 this.muteButton.children[0].classList.remove("icon-eye");
                 this.muteButton.children[0].classList.add("icon-eye-off");
+                this.muteButton.children[0].style.backgroundColor = "red";
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
+                this.muteButton.children[0].style.backgroundColor = "";
                 this.muteButton.children[0].classList.add("icon-eye");
                 this.muteButton.children[0].classList.remove("icon-eye-off");
             }
@@ -393,7 +406,7 @@ export class TlTitle extends Events
         button.innerHTML = html;
         ele.clickable(button, cb);
         if (cb) button.addEventListener("contextmenu", (e) => { cb(e); });
-        button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
+        button.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.#gltl.deactivateAllAnims(true); });
         if (visible === false)button.style.opacity = "0";
 
         if (!side) this.#elButtonsLeft.appendChild(button);

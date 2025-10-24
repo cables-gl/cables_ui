@@ -1664,6 +1664,7 @@ export default class Gui extends Events
 
             if (this._spaceBarStart === 0) this._spaceBarStart = Date.now();
         });
+        gui.keys.key(" ", "Rewind and play Timeline", "down", null, { "cmdCtrl": true }, (_e) => { gui.corePatch().timer.setTime(0); gui.corePatch().timer.play(); });
 
         this.keys.key(" ", "Play/Pause timeline", "up", null, { "ignoreInput": true }, () =>
         {

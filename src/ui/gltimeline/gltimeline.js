@@ -390,15 +390,17 @@ export class GlTimeline extends Events
 
         });
 
-        gui.keys.key(" ", "Drag left mouse button to pan timeline", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = true; this.emitEvent("spacedown"); });
-        gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.#spacePressed = false; this.emitEvent("spaceup"); });
+        gui.keys.key(" ", "Drag left mouse button to pan timeline", "down", cgl.canvas.id, { "displayGroup": "Timeline" }, (_e) => { this.#spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (_e) => { console.log("spaceup"); this.#spacePressed = false; this.emitEvent("spaceup"); });
 
-        gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key(" ", "Rewind and play", "down", cgl.canvas.id, { "cmdCtrl": true }, (_e) => { gui.corePatch().timer.setTime(0); gui.corePatch().timer.play(); });
+
+        gui.keys.key(".", "Forward one frame", "down", cgl.canvas.id, {}, () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1 / this.fps);
         });
 
-        gui.keys.key(",", "rewind one frame", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key(",", "Rewind one frame", "down", cgl.canvas.id, {}, () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1 / this.fps);
         });
@@ -413,12 +415,12 @@ export class GlTimeline extends Events
             this.deleteSelectedKeys();
         });
 
-        gui.keys.key("a", "move keys to cursor", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("a", "Move keys to cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.moveSelectedKeys();
         });
 
-        gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("f", "Zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.fit();
         });
@@ -433,12 +435,12 @@ export class GlTimeline extends Events
             this.jumpKey(1);
         });
 
-        gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("delete", "Delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
         });
 
-        gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("backspace", "Delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
             this.needsUpdateAll = "deletekey";
@@ -1298,9 +1300,17 @@ export class GlTimeline extends Events
 
     unselectAllKeysSilent()
     {
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const k = this.#selectedKeys[i];
+            setTimeout(() =>
+            {
+                if (k)k.emitChange();
+            }, 30);
+        }
         this.#selectedKeys = [];
         this.#selectedKeyAnims = [];
-
     }
 
     /**
@@ -1329,6 +1339,7 @@ export class GlTimeline extends Events
                 }
             }
         }
+
         this.needsUpdateAll = "selectall";
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
@@ -1397,8 +1408,10 @@ export class GlTimeline extends Events
         if (glTlKeys.dragStarted) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
+
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
+            k.emitChange();
         }
         this.showKeyParamsSoon();
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);

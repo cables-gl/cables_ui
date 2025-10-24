@@ -726,6 +726,7 @@ export class glTlAnimLine extends Events
 
     /**
      * @param {Anim} anim
+     * @returns Array<glTlKeys>
      */
     getGlKeysForAnim(anim)
     {
