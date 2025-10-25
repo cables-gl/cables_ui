@@ -35,6 +35,7 @@
 
         .portAndValue
         {
+            background-color:black ;
             border-left:3px solid transparent;
             position: absolute;
             left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px);
@@ -57,8 +58,10 @@
         {
             padding: 0px;
             position: absolute;
-            left: var(--timelineSplitterLeft);
+            left: calc(var(--timelineSplitterLeft) - 5px);
             transform: translate(-100%);
+            z-index: 999;
+
         }
 
         span

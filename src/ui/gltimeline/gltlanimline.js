@@ -11,6 +11,7 @@ import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { UiOp } from "../core_extend_op.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef AnimLineOptions
@@ -62,6 +63,7 @@ export class glTlAnimLine extends Events
     /** @type {Array<Object >} */
     #disposeRects = [];
 
+    /** @type {AnimLineOptions} */
     #options = {};
 
     /** @type {TlTitle[]} */
@@ -70,22 +72,20 @@ export class glTlAnimLine extends Events
     /** @type {EventListener[]} */
     #listeners = [];
 
-    #disposed = false;
-
     /** @type {GlTlView} */
     #view = null;
 
     /** @type {TlValueRuler} */
     #valueRuler = null;
 
-    /** @type {boolean} */
-    #hidden = false;
-
     /** @type {glTlAnimLine[]} */
     childLines = [];
 
     /** @type {glTlAnimLine} */
     parentLine = null;
+
+    #hidden = false;
+    #disposed = false;
 
     /**
      * @param {GlTimeline} glTl
@@ -107,6 +107,7 @@ export class glTlAnimLine extends Events
 
         this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
+            gui.showInfo(GuiText.tlhover_animline);
 
             if (!this.isGraphLayout() && this.#ports.length > 0)
                 this.#ports[0].setUiAttribs({ "hover": true });
@@ -190,6 +191,7 @@ export class glTlAnimLine extends Events
         }
         else
         {
+            this.#valueRuler?.dispose();
             // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
             // console.log("no folderanymore......");
         }
@@ -225,8 +227,8 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < this.#ports.length; i++)
             anyhovering = anyhovering || this.#ports[i].uiAttribs.hover;
 
-        for (let i = 0; i < this.#titles.length; i++)
-            if (this.#titles[i].isHovering)anyhovering = true;
+        // for (let i = 0; i < this.#titles.length; i++)
+        //     if (this.#titles[i].isHovering)anyhovering = true;
 
         return this.#rectBg.isHovering() || anyhovering;
     }
@@ -725,6 +727,7 @@ export class glTlAnimLine extends Events
 
     /**
      * @param {Anim} anim
+     * @returns Array<glTlKeys>
      */
     getGlKeysForAnim(anim)
     {

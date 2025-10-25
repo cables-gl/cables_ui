@@ -7,7 +7,7 @@ import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
-import text from "./text.js";
+import { GuiText } from  "./text.js";
 import { UiPatch } from "./core_extend_patch.js";
 import { getConverters } from "./components/converterops.js";
 
@@ -354,19 +354,19 @@ class UiOp extends Op
                 this.hasParent(portType.trigger, "TextureEffects.ImageCompose") ||
                 this.hasParent(portType.trigger, "TextureEffects.ImageCompose_v2");
 
-            if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
+            if (!working) notWorkingMsg = GuiText.working_connected_to + "ImageCompose";
         }
 
         if (this.linkTimeRules.forbiddenParent && working)
         {
             working = !this.hasParent(this.linkTimeRules.forbiddenParentType || null, this.linkTimeRules.forbiddenParent);
-            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this.linkTimeRules.forbiddenParent + "";
+            if (!working) notWorkingMsg = GuiText.working_shouldNotBeChildOf + this.linkTimeRules.forbiddenParent + "";
         }
 
         if (this.linkTimeRules.needsParentOp && working)
         {
             working = this.hasParent(null, this.linkTimeRules.needsParentOp);
-            if (!working) notWorkingMsg = text.working_connected_to + this.linkTimeRules.needsParentOp + "";
+            if (!working) notWorkingMsg = GuiText.working_connected_to + this.linkTimeRules.needsParentOp + "";
         }
 
         if (this.linkTimeRules.needsStringToWork.length > 0)
@@ -384,7 +384,7 @@ class UiOp extends Op
                 {
                     working = false;
 
-                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_or_string;
+                    if (!notWorkingMsg) notWorkingMsg = GuiText.working_connected_needs_connections_or_string;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
 
@@ -413,7 +413,7 @@ class UiOp extends Op
                 {
                     working = false;
 
-                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_to;
+                    if (!notWorkingMsg) notWorkingMsg = GuiText.working_connected_needs_connections_to;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
 

@@ -6,6 +6,8 @@ import { glTlAnimLine } from "./gltlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
 import { UiOp } from "../core_extend_op.js";
+import { CssClassNames, DomEvents } from "../theme.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef {object} TlTitleOptions
@@ -95,6 +97,7 @@ export class TlTitle extends Events
         this.#elPortValue = document.createElement("span");
         this.#elPortValue.classList.add("portAndValue");
         this.#el.appendChild(this.#elPortValue);
+        this.#elPortValue.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#elPortname = document.createElement("span");
         this.#elPortValue.appendChild(this.#elPortname);
@@ -102,21 +105,19 @@ export class TlTitle extends Events
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
 
-        this.#el.addEventListener("pointerenter", () =>
+        this.#el.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
+
+        this.#el.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
+            gui.showInfo(GuiText.tlhover_title);
             this.hover();
             this.emitEvent("hoverchange");
         });
 
-        this.#el.addEventListener("pointerleave", () =>
+        this.#el.addEventListener(DomEvents.POINTER_LEAVE, () =>
         {
             this.unhover();
             this.emitEvent("hoverchange");
-        });
-
-        this.#elTitle.addEventListener("pointerenter", () =>
-        {
-
         });
 
         ele.clickable(this.#elOpname, (e) =>
@@ -176,6 +177,14 @@ export class TlTitle extends Events
     setHeight(h)
     {
         this.#el.style.height = Math.max(0, h - 6) + "px";
+    }
+
+    selectAllKeys()
+    {
+        this.#gltl.unSelectAllKeys();
+        // this.#gltl.deactivateAllAnims(true);
+        const keys = this.animLine.getGlKeysForAnim(this.#anim);
+        keys.selectAll();
     }
 
     /**
@@ -329,10 +338,12 @@ export class TlTitle extends Events
                 this.#elTitle.style.opacity = "0.4";
                 this.muteButton.children[0].classList.remove("icon-eye");
                 this.muteButton.children[0].classList.add("icon-eye-off");
+                this.muteButton.children[0].style.backgroundColor = "red";
             }
             else
             {
                 this.#elTitle.style.opacity = "1";
+                this.muteButton.children[0].style.backgroundColor = "";
                 this.muteButton.children[0].classList.add("icon-eye");
                 this.muteButton.children[0].classList.remove("icon-eye-off");
             }
@@ -346,15 +357,6 @@ export class TlTitle extends Events
      */
     setBorderColor(selected, color)
     {
-        if (selected)
-        {
-            if (this.index == 0)
-            {
-                this.#el.classList.add("selectedOp");
-                this.#el.classList.add("selectedOp");
-            }
-        }
-        else this.#el.classList.remove("selectedOp");
 
         this.#el.style.borderLeft = "3px solid " + color;
     }
@@ -397,14 +399,14 @@ export class TlTitle extends Events
     {
 
         const button = document.createElement("a");
-        button.classList.add("button-small");
+        button.classList.add(CssClassNames.BUTTON_SMALL);
 
         let html = "";
         html += title;
         button.innerHTML = html;
         ele.clickable(button, cb);
         if (cb) button.addEventListener("contextmenu", (e) => { cb(e); });
-        button.addEventListener("dblclick", (e) => { this.#gltl.deactivateAllAnims(true); });
+        button.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.#gltl.deactivateAllAnims(true); });
         if (visible === false)button.style.opacity = "0";
 
         if (!side) this.#elButtonsLeft.appendChild(button);
@@ -432,6 +434,12 @@ export class TlTitle extends Events
 
     updateColor()
     {
+        if (this.#op && this.#op.uiAttribs.selected)
+        {
+            if (this.index == 0) this.#el.classList.add("selectedOp");
+        }
+        else this.#el.classList.remove("selectedOp");
+
         if (this.#port.uiAttribs.hover) this.#elPortname.classList.add("hover");
         else this.#elPortname.classList.remove("hover");
     }
@@ -455,11 +463,6 @@ export class TlTitle extends Events
 
     unhover()
     {
-        // if (this.#port)
-        // {
-        //     const portParamRow = ele.byClass("paramport_1_" + this.#port.id);
-        //     if (portParamRow) portParamRow.classList.remove("hoverPort");
-        // }
         this.isHovering = false;
         this.#port?.emitEvent("animLineUpdate");
         this.#port?.setUiAttribs({ "hover": false });

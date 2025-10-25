@@ -22,7 +22,6 @@ import { UiOp } from "./core_extend_op.js";
 import PlatformCommunity from "./platform_community.js";
 import PlatformElectron from "./platform_electron.js";
 import startUi from "./startgui.js";
-import text from "./text.js";
 import { logFilter } from "./utils/logfilter.js";
 import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
@@ -31,6 +30,7 @@ import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
+import { GuiText } from "./text.js";
 
 window.CABLES = CABLES || {};
 CABLES.CG = CG;
@@ -69,7 +69,7 @@ CABLES.UI.DEFAULTOPS = defaultOps;
 CABLES.contextMenu = contextMenu; // TODO: delete when old timeline is replaced
 CABLES.UI.Collapsable = Collapsable;
 
-CABLES.UI.TEXTS = text;
+CABLES.UI.TEXTS = GuiText;
 
 CABLES.UI.ModalDialog = ModalDialog; // needs to stay - is used in ops
 CABLES.UI.ModalError = ModalError;

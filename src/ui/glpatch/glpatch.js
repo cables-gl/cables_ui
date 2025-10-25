@@ -14,7 +14,7 @@ import MouseState from "./mousestate.js";
 import GlCursor from "./glcursor.js";
 import ShakeDetector from "./shakedetect.js";
 import VizLayer from "./vizlayer.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import Gui, { gui } from "../gui.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
@@ -740,7 +740,7 @@ export default class GlPatch extends Events
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
             {
                 this.unselectAll();
-                gui.showInfo(text.patch);
+                gui.showInfo(GuiText.patch);
                 gui.patchView.showDefaultPanel();
             }
         }

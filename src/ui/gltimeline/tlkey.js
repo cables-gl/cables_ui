@@ -116,10 +116,10 @@ export class TlKey extends Events
             if (!this.text)
             {
                 this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
-                this.text.setParentRect(keyRect);
+                this.GuiText.setParentRect(keyRect);
             }
-            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
-            if (key.clipId && this.text.text != key.clipId) this.text.text = key.clipId;
+            if (!this.GuiText.text != key.uiAttribs.text) this.GuiText.text = key.uiAttribs.text;
+            if (key.clipId && this.GuiText.text != key.clipId) this.GuiText.text = key.clipId;
         }
 
         if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && !isClip)
@@ -260,16 +260,19 @@ export class TlKey extends Events
 
     }
 
-    dispose()
+    removeBezCp()
     {
-
-        if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
         if (this.cp2r) this.cp2r = this.cp2r.dispose();
         if (this.cp1s) this.cp1s = this.cp1s.dispose();
         if (this.cp2s) this.cp2s = this.cp2s.dispose();
+    }
+
+    dispose()
+    {
+        this.removeBezCp();
+        if (this.rect) this.rect = this.rect.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
-
     }
 }

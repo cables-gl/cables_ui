@@ -2,7 +2,7 @@ import { Logger, ele, Events } from "cables-shared-client";
 
 import { Port, utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
@@ -254,7 +254,7 @@ class OpParampanel extends Events
 
         let html = this._htmlGen.getHtmlOpHeader(op);
 
-        gui.showInfo(text.patchSelectedOp);
+        gui.showInfo(GuiText.patchSelectedOp);
 
         if (this._portsIn.length > 0)
         {

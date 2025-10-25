@@ -6,7 +6,7 @@ import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import undo from "../utils/undo.js";
 import opCleaner from "./cleanops.js";
@@ -634,7 +634,7 @@ export default class PatchView extends Events
 
             ele.byId(gui.getParamPanelEleId()).innerHTML = html;
             gui.setTransformGizmo(null);
-            gui.showInfo(text.patchSelectedMultiOps);
+            gui.showInfo(GuiText.patchSelectedMultiOps);
         }
         else
         {

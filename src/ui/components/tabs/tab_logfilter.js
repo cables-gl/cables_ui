@@ -1,7 +1,7 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { gui } from "../../gui.js";
 import { logFilter } from "../../utils/logfilter.js";
 
@@ -35,7 +35,7 @@ export default class LoggingTab extends Events
 
     _html()
     {
-        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": logFilter.getTabInfo() });
+        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": GuiText.preferences, "info": logFilter.getTabInfo() });
         this._tab.html(html);
     }
 

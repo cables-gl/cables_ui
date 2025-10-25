@@ -132,7 +132,6 @@ export default class SuggestionDialog
 
             suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
-            // const sugEle = ele.byId("suggestion" + i);
             const sugEle = this.#eleDialog.getElementsByClassName("suggestion" + i)[0];
 
             if (suggestions[i].class)sugEle.classList.add(suggestions[i].class);

@@ -1,5 +1,5 @@
 import { ele, Events } from "cables-shared-client";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import uiconfig from "../uiconfig.js";
 import { userSettings } from "../components/usersettings.js";
 
@@ -136,7 +136,7 @@ export default class BottomInfoAreaBar extends Events
     setContent(txt)
     {
         this._eleInfoAreaParam.classList.add("hidden");
-        txt = txt || text.infoArea || "";
+        txt = txt || GuiText.infoArea || "";
 
         if (this._txt == txt) return;
 
@@ -152,7 +152,7 @@ export default class BottomInfoAreaBar extends Events
     {
         let key = e.target.dataset.info;
         let txt = key;
-        if (text[key]) txt = text[key];
+        if (GuiText[key]) txt = GuiText[key];
 
         if (e.target.dataset.info && !txt)
         {
