@@ -4,6 +4,7 @@
  * @property  {UndoManager} [undo] undo manager
  * @property  {HTMLElement} container element,cellmate will inject itself into this element
  */
+ console.log("cellmate 4")
 
 let countInst=0
 
@@ -451,7 +452,7 @@ updateScrollBarsSoon()
 
 	setValue(x,y,v)
 	{
-const		oldValue=this.getValue(x,y);
+		const oldValue=this.getValue(x,y);
 
 		if(x>=this.#dataWidth) this.resizeData(Math.max(x+1,this.#dataWidth-1),this.#dataHeight)
 			else if( y>=this.#dataHeight) this.resizeData(this.#dataWidth,Math.max(y+1,this.#dataHeight-1))
@@ -467,7 +468,6 @@ const		oldValue=this.getValue(x,y);
 		if(inputEle)inputEle.value=v;
 		if(v=="")this.redrawDataArea()
 
-		// setTimeout( this.removeEmptyRowCols.bind(this),300);
 		if(this.#options.onChange)this.#options.onChange()
 
 		if(this.#options.undo)
@@ -513,20 +513,21 @@ const		oldValue=this.getValue(x,y);
 	removeEmptyRowCols()
 	{
 
-		let redraw=false
+		let changed=false
 		while(this.lastRowEmpty())
 		{
 			this.resizeData(this.#dataWidth,this.#dataHeight-1)
-			redraw=true
+			changed=true
 		}
 		while(this.lastColEmpty())
 		{
 			this.resizeData(this.#dataWidth-1,this.#dataHeight)
-			redraw=true
+			changed=true
 		}
 
-		if(redraw)
+		if(changed)
 		{
+			if(this.#options.onChange)this.#options.onChange()
 			this.redrawDataArea()
 			this.redrawData()
 			
@@ -801,6 +802,8 @@ const		oldValue=this.getValue(x,y);
 			elColHead.addEventListener("dblclick",(e)=>{
 				const t=prompt("title");
 				this.#colTitles[parseInt(e.srcElement.dataset.x)]=t;
+				if(this.#options.onChange)this.#options.onChange()
+
 				this.redrawData();
 			});
 
