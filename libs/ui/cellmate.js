@@ -1,16 +1,56 @@
-
+/******/ // The require scope
+/******/ var __webpack_require__ = {};
+/******/ 
+/************************************************************************/
+/******/ /* webpack/runtime/define property getters */
+/******/ (() => {
+/******/ 	// define getter functions for harmony exports
+/******/ 	__webpack_require__.d = (exports, definition) => {
+/******/ 		for(var key in definition) {
+/******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 			}
+/******/ 		}
+/******/ 	};
+/******/ })();
+/******/ 
+/******/ /* webpack/runtime/hasOwnProperty shorthand */
+/******/ (() => {
+/******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ })();
+/******/ 
+/******/ /* webpack/runtime/make namespace object */
+/******/ (() => {
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = (exports) => {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/ })();
+/******/ 
+/************************************************************************/
+var __webpack_exports__ = {};
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CellMate: () => (/* binding */ CellMate)
+/* harmony export */ });
 /**
  * @typedef CellMateOptions
  * @property  {UndoManager} [undo] undo manager
  * @property  {HTMLElement} container element,cellmate will inject itself into this element
  */
- console.log("cellmate 8")
 
+console.log("cellmate 9")
 
 let countInst=0
 
 
-export class CellMate
+class CellMate
 {
 	#rowHeight=22
 	#cellWidth=100;
@@ -64,6 +104,7 @@ export class CellMate
 
 		// this.download("bla.csv",this.toCsv(true))
 		// console.log(this.toCsv())
+
 	}
 	get absX()
 	{
@@ -76,15 +117,15 @@ export class CellMate
 
 	cellId(x,y)
 	{
-		return "cell"+this.countInst+"_"+(x-this.#scrollX)+"_"+(y-this.#scrollY);	
+		return "cell"+this.countInst+"_"+(x-this.#scrollX)+"_"+(y-this.#scrollY);
 	}
 	cellRowHeadId(y)
 	{
-		return "rowHead"+this.countInst+"_"+(y-this.#scrollY);	
+		return "rowHead"+this.countInst+"_"+(y-this.#scrollY);
 	}
 	cellColHeadId(x)
 	{
-		return "colHead"+this.countInst+"_"+(x-this.#scrollX);	
+		return "colHead"+this.countInst+"_"+(x-this.#scrollX);
 	}
 
 	clampCursor()
@@ -192,7 +233,7 @@ export class CellMate
 		{
 			this.setEndSelection(this.#dataWidth,Math.max(r,this.#selectionStartY));
 			this.startSelection(0,Math.min(r,this.#selectionStartY))
-	
+
 		}else
 		{
 			this.startSelection(0,r)
@@ -207,7 +248,7 @@ export class CellMate
 		{
 			this.setEndSelection(Math.max(col,this.#selectionStartX),this.#dataHeight);
 			this.startSelection(Math.min(col,this.#selectionStartX),0)
-	
+
 		}else
 		{
 			this.startSelection(col,0)
@@ -374,8 +415,8 @@ export class CellMate
 	}
 
 redrawDataSoon(){
-	
-		clearTimeout(this.#redrawTimeout) 
+
+		clearTimeout(this.#redrawTimeout)
 		this.#redrawTimeout=setTimeout(()=>
 			{
 				this.redrawData();
@@ -383,7 +424,7 @@ redrawDataSoon(){
 }
 updateScrollBarsSoon()
 	{
-		clearTimeout(this.#scrollTimeOut) 
+		clearTimeout(this.#scrollTimeOut)
 		this.#scrollTimeOut=setTimeout(()=>
 			{
 				this.updateScrollBars();
@@ -492,7 +533,7 @@ updateScrollBarsSoon()
 							that.redrawData()
           }
       });
-			
+
 		}
 	}
 
@@ -533,7 +574,7 @@ updateScrollBarsSoon()
 			if(this.#options.onChange)this.#options.onChange()
 			this.redrawDataArea()
 			this.redrawData()
-			
+
 		}
 	}
 
@@ -557,7 +598,7 @@ updateScrollBarsSoon()
 		this.updateStatus();
 		this.redrawData();
 	}
-	
+
 	toObj()
 	{
 		return{
@@ -566,7 +607,7 @@ updateScrollBarsSoon()
 			"width":this.#dataWidth,
 			"height":this.#dataHeight
 		}
-		
+
 	}
 
 	fromTxt(txt,x,y)
@@ -606,7 +647,7 @@ updateScrollBarsSoon()
 
 					str+=this.getValue(x,y);
 					if(x<this.#dataWidth-1)str+=separator
-					
+
 				}
 				str+="\n"
 			}
@@ -625,8 +666,8 @@ updateScrollBarsSoon()
 	  element.click();
 
 	  document.body.removeChild(element);
-	}		
-	
+	}
+
 	toJson()
 	{
 		const arr=[]
@@ -655,14 +696,14 @@ updateScrollBarsSoon()
 				for(let y=0;y<this.#dataHeight;y++)
 					arr[x][y]=this.getValue(x,y)
 
-				
+
 			return arr;
-		
+
 		}
 		else{
 			return structuredClone(this.#data)
 		}
-		
+
 	}
 
 	toTxt()
@@ -686,7 +727,7 @@ updateScrollBarsSoon()
 
 	redrawDataArea()
 	{
-		
+
 		for(let y=this.#scrollY;y<this.#scrollY+this.#height;y++)
 			for(let x=this.#scrollX;x<this.#width+this.#scrollX;x++)
 			{
@@ -918,7 +959,7 @@ updateScrollBarsSoon()
 
 				elInput.addEventListener("keydown",(e)=>
 				{
-	
+
 				});
 			}
 		}
@@ -1012,7 +1053,12 @@ updateScrollBarsSoon()
 		this.#elTable=null;
 		this.#data=null;
 	}
-	
+
 }
 
 
+
+const __webpack_exports__CellMate = __webpack_exports__.CellMate;
+export { __webpack_exports__CellMate as CellMate };
+
+//# sourceMappingURL=cellmate.js.map
