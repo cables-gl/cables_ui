@@ -4,12 +4,13 @@
  * @property  {UndoManager} [undo] undo manager
  * @property  {HTMLElement} container element,cellmate will inject itself into this element
  */
- console.log("cellmate 4")
+ console.log("cellmate 8")
+
 
 let countInst=0
 
 
-class CellMate
+export class CellMate
 {
 	#rowHeight=22
 	#cellWidth=100;
@@ -36,6 +37,8 @@ class CellMate
 	#options={};
 	countInst=0;
 	#elScrollVert;
+
+
 	#elScrollVertInner;
 	#elScrollHor;
 	#elScrollHorInner;
@@ -1012,4 +1015,4 @@ updateScrollBarsSoon()
 	
 }
 
-module.exports=CellMate;
+
