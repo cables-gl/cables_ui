@@ -709,7 +709,7 @@ export default class GlRectInstancer extends Events
      */
     mouseUp(e)
     {
-        if (this.mouseDownCount == 0)console.log("mouse was not down? ");
+        // if (this.mouseDownCount == 0)console.log("mouse was not down? ");
         if (!this.#interactive) return;
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 

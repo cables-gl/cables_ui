@@ -1604,12 +1604,6 @@ export default class Gui extends Events
                 else
                 {
                     return false;
-                    // if (e.target.hasAttribute("data-portnum"))
-                    // {
-                    //     const n = e.target.dataset.portnum;
-                    //     const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
-                    //     if (nextInputEle) nextInputEle.focus();
-                    // }
                 }
         });
 
@@ -2160,6 +2154,7 @@ export default class Gui extends Events
         {
             gui.showInfo(GuiText.undevLogo);
         });
+
         ele.byId("undev").addEventListener("pointerLeave", () =>
         {
             hideInfo();

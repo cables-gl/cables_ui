@@ -301,6 +301,13 @@ export default class GradientEditor
         return s;
     }
 
+    /**
+     * @param {number} pos
+     * @param {number} posy
+     * @param {number} [r]
+     * @param {number} [g]
+     * @param {number} [b]
+     */
     addKey(pos, posy, r, g, b)
     {
         if (r == undefined)

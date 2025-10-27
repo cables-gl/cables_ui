@@ -152,9 +152,19 @@ export class glTlKeys extends Events
 
     #changeLayout()
     {
+
         if (!this.#glTl.isGraphLayout())
+        {
+            if (this.#spline)
+            {
+                this.#spline.dispose();
+                this.#spline = null;
+            }
+
             for (let i = 0; i < this.#keys.length; i++)
                 this.#keys[i].removeBezCp();
+
+        }
     }
 
     /**
@@ -253,12 +263,6 @@ export class glTlKeys extends Events
         {
             this.#disposedWarning++;
             return;
-        }
-
-        if (!this.shouldDrawSpline() && this.#spline)
-        {
-            this.#spline.dispose();
-            this.#spline = null;
         }
 
         if (this.shouldDrawSpline() && !this.#spline)
@@ -740,8 +744,6 @@ export class glTlKeys extends Events
                         glTlKeys.dragStarted = true;
                         glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                         glTlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY - this.#glTl.getFirstLinePosy());
-
-                        console.log("startdragtime", glTlKeys.startDragTime);
 
                         if (e.altKey) this.#glTl.duplicateSelectedKeys();
                     }

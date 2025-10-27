@@ -26,6 +26,7 @@ import { CmdOp } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 import GlLink from "./gllink.js";
 import SuggestionDialog from "../components/suggestiondialog.js";
+import { DomEvents } from "../theme.js";
 
 /**
  * rendering the patchfield
@@ -181,13 +182,13 @@ export default class GlPatch extends Events
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this._onCanvasMouseMove.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_UP, this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_DOWN, this._onCanvasMouseDown.bind(this), { "passive": false });
 
-        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, this._onCanvasMouseLeave.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_ENTER, this._onCanvasMouseEnter.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this._onCanvasDblClick.bind(this), { "passive": false });
         cgl.canvas.addEventListener("focus", this.isFocused.bind(this));
         cgl.canvas.addEventListener("blur", this.isFocused.bind(this));
 

@@ -174,7 +174,7 @@ export class TlKey extends Events
         /** @type {Object} */
         let oldValues = {};
 
-        bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
+        bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, _e) =>
         {
             if (bezRect.color[3] == 0) return;
             this.#glTl.setHoverKeyRect(bezRect);
