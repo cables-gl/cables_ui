@@ -289,7 +289,7 @@ export default class GlPort
     {
         if (e.buttons == MouseState.BUTTON_RIGHT) this.#mouseButtonRightTimeDown = performance.now();
 
-        this.#glPatch.emitEvent("mouseDownOverPort", this, this.#glop.id, this.#port.name, e);
+        this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, this, this.#glop.id, this.#port.name, e);
     }
 
     _onMouseUp(e, _rect)
@@ -303,7 +303,7 @@ export default class GlPort
                 return;
             }
         }
-        this.#glPatch.emitEvent("mouseUpOverPort", this.#port.op.id, this.#port, e);
+        this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_UP_OVER_PORT, this.#port.op.id, this.#port, e);
     }
 
     /**

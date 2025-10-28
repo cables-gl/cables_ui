@@ -130,7 +130,7 @@ export default class GlDragLine
             }
         });
 
-        glpatch.on("mouseUpOverOp", (e, opid) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_UP_OVER_OP, (e, opid) =>
         {
             if (!this.isActive) return;
 
