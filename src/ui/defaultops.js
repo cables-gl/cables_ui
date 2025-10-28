@@ -13,7 +13,7 @@ const defaultOpNames =
     "anim": "Ops.TimeLine.Anim",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
-    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
+    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
     "defaultOpJson": "Ops.Json.HttpRequest_v4",
