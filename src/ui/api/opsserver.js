@@ -2136,75 +2136,7 @@ export default class ServerOps
                             gui.patchView.store.sendErrorReport(errorReport, false);
                         }
                     }
-
-                    let title = "Failed to load op";
-                    let footer = "";
-                    let otherEnvName = "dev.cables.gl";
-                    let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
-                    let otherEnvButton = "Try " + otherEnvName;
-                    let errMsg = "";
-                    let opLinks = [];
-                    let hideEnvButton = false;
-                    if (err.data)
-                    {
-                        if (err.data.text) errMsg = err.data.text;
-                        if (err.data.footer) footer = err.data.footer;
-                        if (err.data.otherEnvName)
-                        {
-                            otherEnvButton = "Try " + err.data.otherEnvName;
-                        }
-                        if (err.data.reasons)
-                        {
-                            opLinks = err.data.reasons;
-                            if (oldName)
-                            {
-                                for (let i = 0; i < opLinks.length; i++)
-                                {
-                                    if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
-                                }
-                            }
-                        }
-                        if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
-                        if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
-                        if (err.data.editorLink) editorLink = err.data.editorLink;
-                        if (err.data.hideEnvButton) hideEnvButton = true;
-                    }
-
-                    const continueLoadingCallback = () =>
-                    {
-                        cb([]);
-                    };
-
-                    const tryOtherEnvCallback = () =>
-                    {
-                        window.open(editorLink);
-                    };
-
-                    const modalOptions = {
-                        "title": title,
-                        "footer": footer,
-                        "text": errMsg,
-                        "notices": opLinks
-                    };
-                    if (!hideEnvButton)
-                    {
-                        modalOptions.choice = true;
-                        modalOptions.okButton = { "text": otherEnvButton };
-                        modalOptions.cancelButton = {
-                            "text": "Continue loading",
-                            "callback": continueLoadingCallback
-                        };
-                    }
-                    else
-                    {
-                        modalOptions.showOkButton = true;
-                    }
-                    const modal = new ModalDialog(modalOptions);
-                    if (!hideEnvButton)
-                    {
-                        modal.on("onSubmit", tryOtherEnvCallback);
-                        modal.on("onClose", continueLoadingCallback);
-                    }
+                    this._opNotFoundModal(opIdentifier, oldName, err, cb);
                 }
                 else
                 {
@@ -2282,7 +2214,13 @@ export default class ServerOps
                         gui.jobs().finish("missingops");
                         cb(newOps);
                     });
-                    loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
+                    loadjs(missingOpUrl, lid, {
+                        "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); },
+                        "error": (urls) =>
+                        {
+                            this._opNotFoundModal(opIdentifier, oldName, err, cb);
+                        }
+                    });
                 }
             });
         }
@@ -2390,5 +2328,89 @@ export default class ServerOps
         if (opIdentifier.startsWith(defaultOps.prefixes.op)) return opIdentifier;
         const opDoc = gui.opDocs.getOpDocById(opIdentifier);
         return opDoc ? opDoc.name : undefined;
+    }
+
+    _opNotFoundModal(opIdentifier, oldName, err = {}, cb = null)
+    {
+        let title = "Failed to load op";
+        let footer = "";
+        let otherEnvName = "dev.cables.gl";
+        let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
+        let otherEnvButton = "Try " + otherEnvName;
+        let errMsg = "";
+        let opLinks = [];
+        let hideEnvButton = false;
+        if (err && err.data)
+        {
+            if (err.data.text) errMsg = err.data.text;
+            if (err.data.footer) footer = err.data.footer;
+            if (err.data.otherEnvName)
+            {
+                otherEnvButton = "Try " + err.data.otherEnvName;
+            }
+            if (err.data.reasons)
+            {
+                opLinks = err.data.reasons;
+                if (oldName)
+                {
+                    for (let i = 0; i < opLinks.length; i++)
+                    {
+                        if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
+                    }
+                }
+            }
+            if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
+            if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
+            if (err.data.editorLink) editorLink = err.data.editorLink;
+            if (err.data.hideEnvButton) hideEnvButton = true;
+        }
+        else
+        {
+            if (oldName)
+            {
+                opLinks.push(oldName);
+            }
+            else
+            {
+                opLinks.push(opIdentifier);
+            }
+        }
+
+        const continueLoadingCallback = () =>
+        {
+            gui.patchView.store.opCrashed = true;
+            if (cb) cb([]);
+        };
+
+        const tryOtherEnvCallback = () =>
+        {
+            window.open(editorLink);
+        };
+
+        const modalOptions = {
+            "title": title,
+            "footer": footer,
+            "text": errMsg,
+            "notices": opLinks
+        };
+        if (!hideEnvButton)
+        {
+            modalOptions.choice = true;
+            modalOptions.okButton = { "text": otherEnvButton };
+            modalOptions.cancelButton = {
+                "text": "Continue loading",
+                "callback": continueLoadingCallback
+            };
+        }
+        else
+        {
+            modalOptions.showOkButton = true;
+        }
+        const modal = new ModalDialog(modalOptions);
+        if (!hideEnvButton)
+        {
+            modal.on("onSubmit", tryOtherEnvCallback);
+            modal.on("onClose", continueLoadingCallback);
+        }
     }
 }
