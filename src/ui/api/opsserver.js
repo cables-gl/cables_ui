@@ -1,7 +1,7 @@
 import { Logger, TalkerAPI, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
-import { GuiText } from  "../text.js";
+import { GuiText } from "../text.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
@@ -295,7 +295,15 @@ export default class ServerOps
             "layout": opObj
         }, (err, res) =>
         {
-            if (err) this._log.error(err);
+            if (err)
+            {
+                this._log.error(err);
+            }
+            else
+            {
+                l.layout = opObj;
+                gui.emitEvent("refreshManageOp", op.objName);
+            }
         });
         return true; // has changed
     }
