@@ -2,7 +2,7 @@ import { Logger, ele, Events } from "cables-shared-client";
 
 import { Port, utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { GuiText } from  "../../text.js";
+import { GuiText } from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
@@ -313,6 +313,7 @@ class OpParampanel extends Events
                     }
                 }
 
+                let eleOpen = ele.byId("portOpenAsset_" + i);
                 let srcEle = ele.byId("portFilename_" + i + "_src");
                 let buttonOpensFilemanager = true;
 
@@ -324,17 +325,26 @@ class OpParampanel extends Events
                     if (fn == "" || fn == 0)src = "";
                     else if (!fn.startsWith("/")) src = "relative";
                     if (fn.startsWith("/")) src = "abs";
+                    if (fn.startsWith("./")) src = "current dir";
 
                     if (fn.startsWith("file:")) src = "file";
                     if (fn.startsWith("data:")) src = "dataUrl";
+
+                    let openSrc = "";
+                    let openOnClick = "";
 
                     if (fn.startsWith("http://") || fn.startsWith("https://"))
                     {
                         buttonOpensFilemanager = false;
                         const parts = fn.split("/");
                         if (parts && parts.length > 1) src = "ext: " + parts[2];
-
+                        openSrc = fn;
                     }
+                    if ((fn.startsWith("file:") || fn.startsWith("/") || fn.startsWith("./")) && platform.isElectron())
+                    {
+                        openOnClick = "CABLES.CMD.ELECTRON.openFileManager('" + fn + "')";
+                    }
+
                     if (fn.startsWith("/assets/" + gui.project()._id)) src = "this patch";
                     if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
                     {
@@ -345,10 +355,21 @@ class OpParampanel extends Events
                             src += " <a target=\"_blank\" class=\"button-small\" id=\"copyToPatch" + i + "\">copy</a>";
                         }
                     }
+
+                    if (fn.startsWith("/assets/"))
+                        openSrc = platform.getCablesUrl() + "/asset/patches/?filename=" + fn;
+
                     if (fn.startsWith("/assets/library/")) src = "lib";
 
                     if (src != "") src = "[ " + src + " ]";
 
+                    if (eleOpen)
+                    {
+                        if (openOnClick) eleOpen.setAttribute("onclick", openOnClick);
+                        if (openSrc) eleOpen.setAttribute("href", openSrc);
+
+                        if (!openOnClick && !openSrc) eleOpen.remove();
+                    }
                     srcEle.innerHTML = src;
 
                     ele.clickable(ele.byId("copyToPatch" + i), () =>

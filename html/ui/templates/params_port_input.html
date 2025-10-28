@@ -195,11 +195,7 @@
                     </td>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
-                        {{#if openLocalFiles}}
-                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.ELECTRON.openFileManager('{{port.value}}')"></a>
-                        {{else}}
-                            <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
-                        {{/if}}
+                        <a class="icon icon-external iconhover" id="portOpenAsset_{{ portnum }}" target="_blank"></a>
                         <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
                         <a class="icon icon-text-cursor-input iconhover" onclick="ele.byId('portFilenameButton_{{ portnum }}').classList.toggle('hidden');ele.byId('fileInputContainer_{{ portnum }}').classList.toggle('hidden');" target="_blank" ></a>
                         {{#if fileEditable}}

@@ -17,7 +17,7 @@ import hljs from "./highlight_min.cjs";
 import colorrick from "./colorrick.cjs";
 import MathParser from "./mathparser.js";
 import UndoManager from "./undomanager.js";
-import CellMate from "./cellmate.cjs";
+import { CellMate } from "./cellmate.js";
 
 window.chroma = chroma;
 window.ColorRick = colorrick;
