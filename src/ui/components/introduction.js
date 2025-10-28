@@ -59,7 +59,7 @@ export default class Introduction
             "bottom"
         );
         this.defineIntroStep(
-            "#metatabpanel",
+            "#options",
             "In the info area you get help. Hover over any element on the page to receive information about it.",
             "left"
         );
