@@ -520,7 +520,7 @@ export default class GlOp extends Events
                         { "noAnim": false, "tease": true, "hide": true, "opacity": 0.5 });
 
                     }
-                }, 500);
+                }, 400);
 
                 this.#glPatch.suggestionTeaser.show();
                 this.#glPatch.suggestionTeaser.setPos(this.#glPatch.viewBox.mouseX, this.#glPatch.viewBox.mouseY);
