@@ -114,7 +114,10 @@ export default class SuggestPortDialog
         {
 
             if (p.uiAttribs.group)
-                this.#suggestions.push({ "name": p.uiAttribs.group, "class": "groupname" });
+            {
+                this.#suggestions.push({ "name": p.uiAttribs.group, "class": "groupname", "spacing": 0 });
+
+            }
             else
             if (this.lastPort)
                 spacing = 8;

@@ -156,8 +156,10 @@
     .groupname
     {
         color:var(--color-10);
-        background-color: transparent !important;
+        background-color: var(--color-03) !important;
         pointer-events: none;
+        transform: translate(calc( -100% - 10px ),22px)  !important;
+        /* top: 22px; */
     }
 
     .recommended-suggestion
