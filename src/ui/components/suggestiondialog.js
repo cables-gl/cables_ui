@@ -13,7 +13,8 @@ import { gui } from "../gui.js";
  * @property {String} [shortName] - internal: do not set manually
  * @property {String} [classname] - class
  * @property {Port} [p] - port
- * @property {Op} [op] - op
+ * @property {String} [op] - op id
+ * @property {Number} [spacing] - extra spacing
  * @property {Function} [cb] - [callback]
 */
 

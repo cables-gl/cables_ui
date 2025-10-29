@@ -271,7 +271,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this.#onCanvasPointerMove.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_UP, this.#onCanvasPointerUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_DOWN, this.#onCanvasPointerDown.bind(this), { "passive": true });
-        cgl.canvas.addEventListener(DomEvents.POINTER_WHEEL, this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_WHEEL, this.#onCanvasWheel.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this._onCanvasDblClick.bind(this), { "passive": false });
 
@@ -1422,7 +1422,7 @@ export class GlTimeline extends Events
     /**
      * @param {WheelEvent} event
      */
-    _onCanvasWheel(event)
+    #onCanvasWheel(event)
     {
         this.pixelPerSecond = this.view.timeToPixel(1);
 
@@ -1440,7 +1440,7 @@ export class GlTimeline extends Events
             if (event.deltaY > 0) delta = 1.3;
             else delta = 0.7;
 
-            this.view.setZoomOffset(delta);
+            this.view.setZoomOffsetWheel(delta, event);
 
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
