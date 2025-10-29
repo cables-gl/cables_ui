@@ -126,20 +126,27 @@ export class TlKey extends Events
             if (key.clipId && this.text.text != key.clipId)
             {
                 const v = gui.corePatch().getVar(key.clipId);
-                const anim = v.getValue();
-                if (this.#clipAnim != anim)
+                if (v)
                 {
-                    this.#clipAnim = anim;
-                    anim.on(Anim.EVENT_CHANGE, () =>
+
+                    const anim = v.getValue();
+                    if (this.#clipAnim != anim)
                     {
-                        this.tlkeys.updateSoon();
-                    });
+                        this.#clipAnim = anim;
+                        if (anim)
+                        {
+                            anim.on(Anim.EVENT_CHANGE, () =>
+                            {
+                                this.tlkeys.updateSoon();
+                            });
+                        }
 
-                    let title = key.clipId;
-                    if (title.startsWith(GlTimeline.CLIP_VAR_PREFIX))
-                        title = title.substring(GlTimeline.CLIP_VAR_PREFIX.length, title.length);
+                        let title = key.clipId;
+                        if (title.startsWith(GlTimeline.CLIP_VAR_PREFIX))
+                            title = title.substring(GlTimeline.CLIP_VAR_PREFIX.length, title.length);
 
-                    this.text.text = title;
+                        this.text.text = title;
+                    }
                 }
             }
         }

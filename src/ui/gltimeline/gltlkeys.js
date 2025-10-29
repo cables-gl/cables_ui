@@ -10,8 +10,8 @@ import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { TlKey } from "./tlkey.js";
 import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
+import { TlKey } from "./tlkey.js";
 
 /**
  * gltl key rendering

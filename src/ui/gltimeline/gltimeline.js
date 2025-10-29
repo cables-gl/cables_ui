@@ -2435,7 +2435,8 @@ export class GlTimeline extends Events
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
-        const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        let vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        vars = vars.filter((v) => { return v.name.startsWith(GlTimeline.CLIP_VAR_PREFIX); });
 
         const html = getHandleBarHtml(
             "params_keys", {
@@ -2542,9 +2543,8 @@ export class GlTimeline extends Events
             if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
-            }
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
             this.setUnsavedForSelectedKeys();
@@ -2556,6 +2556,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
             this.setUnsavedForSelectedKeys();
@@ -2568,6 +2569,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
             this.setUnsavedForSelectedKeys();
