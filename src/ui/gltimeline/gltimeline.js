@@ -47,6 +47,7 @@ import { GuiText } from "../text.js";
 export class GlTimeline extends Events
 {
     static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
+    static CLIP_VAR_PREFIX = "_clip";
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";

@@ -6,6 +6,7 @@ import { GlTimeline } from "./gltimeline.js";
 import GlSpline from "../gldraw/glspline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import undo from "../utils/undo.js";
+import { gui } from "../gui.js";
 
 export class TlKey extends Events
 {
@@ -44,6 +45,7 @@ export class TlKey extends Events
     tlkeys = null;
 
     #hidden = false;
+    #clipAnim;
 
     /**
      * @param {GlTimeline} gltl
@@ -111,15 +113,35 @@ export class TlKey extends Events
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
-        if (key.uiAttribs.text)
+        if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)
             {
                 this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
                 this.text.setParentRect(keyRect);
             }
+
             if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
-            if (key.clipId && this.text.text != key.clipId) this.text.text = key.clipId;
+
+            if (key.clipId && this.text.text != key.clipId)
+            {
+                const v = gui.corePatch().getVar(key.clipId);
+                const anim = v.getValue();
+                if (this.#clipAnim != anim)
+                {
+                    this.#clipAnim = anim;
+                    anim.on(Anim.EVENT_CHANGE, () =>
+                    {
+                        this.tlkeys.updateSoon();
+                    });
+
+                    let title = key.clipId;
+                    if (title.startsWith(GlTimeline.CLIP_VAR_PREFIX))
+                        title = title.substring(GlTimeline.CLIP_VAR_PREFIX.length, title.length);
+
+                    this.text.text = title;
+                }
+            }
         }
 
         if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && !isClip)

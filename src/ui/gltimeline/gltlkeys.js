@@ -143,6 +143,11 @@ export class glTlKeys extends Events
         this.init();
     }
 
+    updateSoon()
+    {
+        this.#needsUpdate = true;
+    }
+
     isDragging()
     {
         return glTlKeys.dragStarted;
