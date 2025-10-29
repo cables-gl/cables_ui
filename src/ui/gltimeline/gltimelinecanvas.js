@@ -29,6 +29,11 @@ export class glTimelineCanvas extends GlCanvas
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
 
         this.glTimeline = new GlTimeline(this.cgl);
+
+        if (!this.glTimeline)
+        {
+            console.error("timeline b0rken");
+        }
     }
 
     render()
@@ -54,9 +59,11 @@ export class glTimelineCanvas extends GlCanvas
 
         if (this._firstTime) this._firstTime = false;
 
-        this.glTimeline.render(this.width, this.height);
-
-        if (this.glTimeline.isAnimated) this.activityHigh();
+        if (this.glTimeline)
+        {
+            this.glTimeline.render(this.width, this.height);
+            if (this.glTimeline.isAnimated) this.activityHigh();
+        }
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();

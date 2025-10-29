@@ -116,10 +116,10 @@ export class TlKey extends Events
             if (!this.text)
             {
                 this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
-                this.GuiText.setParentRect(keyRect);
+                this.text.setParentRect(keyRect);
             }
-            if (!this.GuiText.text != key.uiAttribs.text) this.GuiText.text = key.uiAttribs.text;
-            if (key.clipId && this.GuiText.text != key.clipId) this.GuiText.text = key.clipId;
+            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
+            if (key.clipId && this.text.text != key.clipId) this.text.text = key.clipId;
         }
 
         if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && !isClip)
