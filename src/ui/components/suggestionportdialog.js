@@ -35,6 +35,7 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
+                !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
             ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
         }
@@ -45,6 +46,7 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
+                !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
                 // Link.canLink(theport, port)
             ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
@@ -96,6 +98,7 @@ export default class SuggestPortDialog
      * @param {Port} p
      * @param {boolean} directLink
      * @param {boolean} converter
+     * @param {Port} otherPort
      */
     #addPort(p, directLink, converter, otherPort)
     {
