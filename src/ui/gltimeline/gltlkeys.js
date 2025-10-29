@@ -122,17 +122,13 @@ export class glTlKeys extends Events
         this.#listeners.push(
             gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
             {
-                console.log("duration change");
                 this.#needsUpdate = true;
             }));
 
         this.#listeners.push(
             this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
             {
-
                 this.#changeLayout();
-                console.log("layoutttttt changeeeeeeeeee", this.#glTl.isGraphLayout());
-
             }));
 
         this.#listeners.push(
