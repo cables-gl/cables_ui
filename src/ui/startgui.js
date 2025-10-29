@@ -100,8 +100,6 @@ export default function startUi(cfg)
                     }
                 });
 
-                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
-
                 gui.bindKeys();
                 ele.byId("maincomponents").style.display = "inline";
 
@@ -175,6 +173,8 @@ export default function startUi(cfg)
                         gui.patchParamPanel.show();
                     }
                 });
+
+                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 setTimeout(() =>
                 {

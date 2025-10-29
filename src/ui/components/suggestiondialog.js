@@ -41,12 +41,16 @@ export default class SuggestionDialog
      */
     constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel, options = {})
     {
+
+        this.createTime = performance.now();
         this.#options = options;
         this.#cb = cb;
         this.#action = _action;
         this.#eleDialog = document.createElement("div");// ele.byId("suggestionDialog");
         document.body.appendChild(this.#eleDialog);
         this.#eleDialog.classList.add("suggestionDialog");
+
+        if (!mouseEvent) console.log("no mouseevent........");
 
         if (!options.tease)
         {

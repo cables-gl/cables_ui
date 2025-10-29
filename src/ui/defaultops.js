@@ -13,7 +13,7 @@ const defaultOpNames =
     "anim": "Ops.TimeLine.Anim",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
-    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
+    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
     "defaultOpJson": "Ops.Json.HttpRequest_v4",
@@ -59,6 +59,7 @@ const defaultOpNames =
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString_v2",
     "TriggerOnChangeArray": "Ops.Trigger.TriggerOnChangeArray_v2",
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber_v2",
+    "TriggerOnChangeObject": "Ops.Trigger.TriggerOnChangeObject_v2",
 
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 
@@ -269,6 +270,27 @@ const defaultOps = {
             "op": defaultOpNames.incrementor,
             "portIn": "Increment",
             "portOut": "Value",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.number,
+            "op": defaultOpNames.ObjectGetNumber,
+            "portIn": "Data",
+            "portOut": "Result",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.string,
+            "op": defaultOpNames.ObjectGetString,
+            "portIn": "data",
+            "portOut": "result",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.trigger,
+            "op": defaultOpNames.TriggerOnChangeObject,
+            "portIn": "Object",
+            "portOut": "Changed",
         }
 
     ],

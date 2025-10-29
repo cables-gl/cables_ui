@@ -102,7 +102,8 @@
 }
 
 .introjs-showElement {
-  z-index: $z-index-intro-element-to-be-explained;
+    max-width: calc(100% - 320px);
+  /* z-index: $z-index-intro-element-to-be-explained; */
 }
 
 .introjs-arrow {

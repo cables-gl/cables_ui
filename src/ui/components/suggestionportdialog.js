@@ -13,6 +13,9 @@ import { getConverters } from "./converterops.js";
 export default class SuggestPortDialog
 {
 
+    /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
+    #suggestions = [];
+
     /**
      * Description
      * @param {Op} op
@@ -20,12 +23,10 @@ export default class SuggestPortDialog
      * @param {MouseEvent} mouseEvent
      * @param {Function} cb
      * @param {Function} [cbCancel]
+     * @param {boolean} [useConverter]
      */
-    constructor(op, port, mouseEvent, cb, cbCancel)
+    constructor(op, port, mouseEvent, cb, cbCancel, useConverter)
     {
-
-        /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
-        this._suggestions = [];
 
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
@@ -35,7 +36,7 @@ export default class SuggestPortDialog
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
                 theport.direction != port.direction
-            ) this.#addPort(theport, Link.canLink(theport, port), getConverters(theport, port).length > 0);
+            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
         }
 
         for (let i = 0; i < op.portsOut.length; i++)
@@ -46,7 +47,8 @@ export default class SuggestPortDialog
                 !theport.uiAttribs.readOnly &&
                 theport.direction != port.direction
                 // Link.canLink(theport, port)
-            ) this.#addPort(theport, Link.canLink(theport, port), getConverters(theport, port).length > 0);
+            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+
             // else
             // {
             //     const convs = getConverters(theport, port);
@@ -63,7 +65,7 @@ export default class SuggestPortDialog
 
         if (op.isSubPatchOp())
         {
-            this._suggestions.push({
+            this.#suggestions.push({
                 "p": null,
                 "op": op,
                 "name": "create SubPatch Port",
@@ -71,13 +73,22 @@ export default class SuggestPortDialog
             });
         }
 
-        new SuggestionDialog(this._suggestions, op, mouseEvent, cb, (id) =>
+        new SuggestionDialog(this.#suggestions, op, mouseEvent, (...args) =>
         {
-            for (const i in this._suggestions)
-                if (this._suggestions[i].id == id)
+            cb(...args);
+
+        }, (id) =>
+        {
+            let found = false;
+            for (const i in this.#suggestions)
+            {
+                if (this.#suggestions[i].id == id)
                 {
-                    cb(this._suggestions[i].p, this._suggestions[i].op, this._suggestions[i]);
+                    cb(this.#suggestions[i].p, this.#suggestions[i].op, this.#suggestions[i], useConverter);
+                    found = true;
                 }
+            }
+            console.log("not found id........", id);
         }, false, cbCancel);
     }
 
@@ -86,22 +97,25 @@ export default class SuggestPortDialog
      * @param {boolean} directLink
      * @param {boolean} converter
      */
-    #addPort(p, directLink, converter)
+    #addPort(p, directLink, converter, otherPort)
     {
         if (!directLink && !converter) return;
 
-        for (let i = 0; i < this._suggestions.length; i++)
-            if (this._suggestions[i].p == p) return;
+        for (let i = 0; i < this.#suggestions.length; i++)
+            if (this.#suggestions[i].p == p) return;
 
         let className = "portSuggest" + p.type;
+
         if (p.isLinked()) className += "Linked";
         let name = "";
-        if (converter)name += "♻ ";
+        if (converter)name +=
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + otherPort.getTypeString().toLowerCase() + "\">▐ →</span> " +
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + p.getTypeString().toLowerCase() + "\">▌</span>";
 
         className = "port_text_color_" + p.getTypeString().toLowerCase();
 
         name += p.title;
-        this._suggestions.push({
+        this.#suggestions.push({
             "class": className,
             "p": p,
             "op": p.op.id,

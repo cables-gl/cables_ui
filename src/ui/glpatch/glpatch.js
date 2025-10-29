@@ -37,6 +37,9 @@ import { DomEvents } from "../theme.js";
  */
 export default class GlPatch extends Events
 {
+    static EVENT_MOUSE_UP_OVER_OP = "mouseUpOverOp";
+    static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
+    static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
 
     hoverPort = null;
     paused = false;

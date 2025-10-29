@@ -96,6 +96,7 @@ export default class Gui extends Events
 
     /** @type {GlTimelineTab} */
     glTimeLineTab = null;
+    longLinkHover = false;
 
     /**
      * @param {object} cfg

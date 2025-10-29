@@ -483,8 +483,9 @@ export default class GlOp extends Events
             if (this.#glPatch.portDragLine?.isActive && this.#glPatch.portDragLine?.glOp != this && this.glPatch.hoverPort == null)
             {
                 if (!this.#glPatch.suggestionTeaser)
+                {
+                    gui.longLinkHover = false;
                     this.#glPatch.suggestionTeaser = new SuggestionDialog([
-                        { "name": "" },
                         { "name": "" },
                         { "name": "" }
                     ],
@@ -495,6 +496,31 @@ export default class GlOp extends Events
                     null,
                     null,
                     { "noAnim": false, "tease": true, "hide": true, "opacity": 0.5 });
+                }
+
+                setTimeout(() =>
+                {
+                    gui.longLinkHover = true;
+                    if (this.#glPatch.suggestionTeaser)
+                    {
+                        gui.longLinkHover = true;
+                        this.#glPatch.suggestionTeaser.close();
+
+                        this.#glPatch.suggestionTeaser = new SuggestionDialog([
+                            { "name": "" },
+                            { "name": "" },
+                            { "name": "" }
+                        ],
+                        null,
+                        { "clientX": 0, "clientY": 0 },
+                        null,
+                        null,
+                        null,
+                        null,
+                        { "noAnim": false, "tease": true, "hide": true, "opacity": 0.5 });
+
+                    }
+                }, 400);
 
                 this.#glPatch.suggestionTeaser.show();
                 this.#glPatch.suggestionTeaser.setPos(this.#glPatch.viewBox.mouseX, this.#glPatch.viewBox.mouseY);
@@ -505,7 +531,6 @@ export default class GlOp extends Events
 
     _onMouseUnHover()
     {
-
         if (this.#glPatch.suggestionTeaser)
         {
             this.#glPatch.suggestionTeaser.close();
@@ -524,7 +549,7 @@ export default class GlOp extends Events
         }
 
         this.#glPatch.opShakeDetector.up();
-        this.#glPatch.emitEvent("mouseUpOverOp", e, this.#id);
+        this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_UP_OVER_OP, e, this.#id);
         this._onMouseUnHover();
 
         this.endPassiveDrag();

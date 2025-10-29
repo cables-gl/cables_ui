@@ -7,7 +7,7 @@ import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
-import { GuiText } from  "./text.js";
+import { GuiText } from "./text.js";
 import { UiPatch } from "./core_extend_patch.js";
 import { getConverters } from "./components/converterops.js";
 
@@ -73,33 +73,35 @@ class UiOp extends Op
 
     /**
      * @param {Port} otherPort
+     * @param {boolean} countConverters
      */
-    countFittingPorts(otherPort)
+    countFittingPorts(otherPort, countConverters)
     {
         let count = 0;
         if (otherPort.direction == Port.DIR_IN)
-            for (const ipo in this.portsOut) if (getConverters(otherPort, this.portsOut[ipo]).length > 0 || Link.canLink(otherPort, this.portsOut[ipo])) count++;
+            for (const ipo in this.portsOut) if ((countConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) count++;
 
         if (otherPort.direction == Port.DIR_OUT)
-            for (const ipi in this.portsIn) if (getConverters(otherPort, this.portsIn[ipi]).length > 0 || Link.canLink(otherPort, this.portsIn[ipi])) count++;
+            for (const ipi in this.portsIn) if ((countConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) count++;
 
         return count;
     }
 
     /**
      * @param {Port} otherPort
+     * @param {undefined} useConverters
      */
-    findFittingPort(otherPort, inPortsFirst = false)
+    findFittingPort(otherPort, inPortsFirst = false, useConverters)
     {
         if (inPortsFirst)
         {
-            for (const ipi in this.portsIn) if (getConverters(otherPort, this.portsIn[ipi]).length > 0 || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
-            for (const ipo in this.portsOut) if (getConverters(otherPort, this.portsOut[ipo]).length > 0 || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if ((useConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if ((useConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
         }
         else
         {
-            for (const ipo in this.portsOut) if (getConverters(otherPort, this.portsOut[ipo]).length > 0 || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
-            for (const ipi in this.portsIn) if (getConverters(otherPort, this.portsIn[ipi]).length > 0 || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if ((useConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if ((useConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
         }
     }
 

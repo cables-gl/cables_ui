@@ -6,7 +6,7 @@ import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
-import { GuiText } from  "../text.js";
+import { GuiText } from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import undo from "../utils/undo.js";
 import opCleaner from "./cleanops.js";
@@ -1968,31 +1968,41 @@ export default class PatchView extends Events
      */
     linkPortToOp(e, opid, pid, op2id)
     {
+
+        /** @type {UiOp} */
         let op1 = this._p.getOpById(opid);
+
+        /** @type {UiOp} */
         let op2 = this._p.getOpById(op2id);
         const p = op1.getPort(pid);
-        const numFitting = op2.countFittingPorts(p);
+        let showConverter = gui.longLinkHover;
+        let numFitting = op2.countFittingPorts(p, showConverter);
+        if (numFitting == 0 && !showConverter)
+        {
+            showConverter = true;
+            numFitting = op2.countFittingPorts(p, true);
+        }
 
         const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
         const isbpOp = op2.isSubPatchOp() || isInnerOp;
-        console.log("numfitting", numFitting);
 
         if (isbpOp || numFitting > 1)
         {
-            new SuggestPortDialog(op2, p, e, (thePort, newOpId, options) =>
+            new SuggestPortDialog(op2, p, e, (thePort, newOpId, options, useconverter) =>
             {
+
                 if (options.createSpOpPort)
                 {
                     subPatchOpUtil.addPortToBlueprint(options.op.opId, p, {
                         "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp, sugg) =>
                         {
-
                             if (Link.canLink(thePort, sugg.p))
+                            {
                                 this._p.link(op1, pid, newOp, newPortJson.id);
+                            }
                             else
                             {
-
                                 gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
                             }
                         }
@@ -2010,13 +2020,14 @@ export default class PatchView extends Events
                         gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
                     }
                 }
-            });
+            }, null, showConverter);
         }
         else
         {
-            const fitp = op2.findFittingPort(p);
+            const fitp = op2.findFittingPort(p, showConverter);
 
             if (fitp)
+            {
                 if (fitp.type == p.type)
                 {
                     this._p.link(op1, pid, op2, fitp.name);
@@ -2025,6 +2036,11 @@ export default class PatchView extends Events
                 {
                     gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
                 }
+            }
+            else
+            {
+                console.log("no fitp");
+            }
         }
     }
 
@@ -2034,14 +2050,14 @@ export default class PatchView extends Events
      * @param {string[]} opids
      * @param {string[]} portnames
      */
-    linkPortsToOp(e, opid, opids, portnames)
+    linkPortsToOp(e, opid, opids, portnames, showConverters = false)
     {
         if (!opids || opids.length == 0 || !portnames || portnames.length == 0) return;
 
         const op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(opids[0]);
         const p = op2.getPort(portnames[0]);
-        const numFitting = op1.countFittingPorts(p);
+        const numFitting = op1.countFittingPorts(p, showConverters);
 
         if (numFitting > 1)
         {
@@ -2053,11 +2069,11 @@ export default class PatchView extends Events
                         op2 = this._p.getOpById(opids[i]);
                         this._p.link(op2, portnames[i], op1, suggport.id);
                     }
-            });
+            }, null, true);
         }
         else
         {
-            const fitp = op1.findFittingPort(p);
+            const fitp = op1.findFittingPort(p, showConverters);
 
             if (fitp)
                 for (let i = 0; i < portnames.length; i++)
@@ -2080,37 +2096,40 @@ export default class PatchView extends Events
         let op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(op2id);
 
-        if (!op1 || !op2) return;
-
+        if (!op1 || !op2)
         {
-            // helper number2string auto insert....
-            let p1 = op1.getPortByName(pid);
-            let p2 = op2.getPortByName(p2id);
+            console.log("no linkop");
+            return;
+        }
 
-            const converters = getConverters(p1, p2);
-            console.log("converters", converters);
+        // helper number2string auto insert....
+        let p1 = op1.getPortByName(pid);
+        let p2 = op2.getPortByName(p2id);
 
-            if (converters.length == 1)
+        const converters = getConverters(p1, p2);
+
+        if (converters.length == 1)
+        {
+            convertPorts(p1, p2, converters[0]);
+            return;
+        }
+        if (converters.length > 1)
+        {
+            const suggs = [];
+            for (let i = 0; i < converters.length; i++)
             {
-                convertPorts(p1, p2, converters[0]);
-                return;
-            }
-            if (converters.length > 1)
-            {
-                const suggs = [];
-                for (let i = 0; i < converters.length; i++)
-                {
-                    suggs.push({
-                        "name": "♻ " + opNames.getShortName(converters[i].op),
-                        "class": "port_text_color_" + p2.getTypeString().toLowerCase()
-                    });
-                }
-
-                new SuggestionDialog(suggs, op2, event, null, function (sid)
-                {
-                    convertPorts(p1, p2, converters[sid]);
+                suggs.push({
+                    "name": "♻ " + opNames.getShortName(converters[i].op),
+                    "class": "port_text_color_" + p2.getTypeString().toLowerCase()
                 });
             }
+
+            new SuggestionDialog(suggs, op2, event, null, function (sid)
+            {
+                convertPorts(p1, p2, converters[sid]);
+            });
+
+            return;
         }
 
         this._p.link(op1, pid, op2, p2id);
@@ -2686,6 +2705,7 @@ export default class PatchView extends Events
     suggestionBetweenTwoOps(op1, op2)
     {
         const mouseEvent = { "clientX": 400, "clientY": 400 };
+        let showConv = true;
 
         /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
         const suggestions = [
@@ -2700,13 +2720,13 @@ export default class PatchView extends Events
         {
             const p = op1.portsOut[j];
 
-            const numFitting = op2.countFittingPorts(p);
+            const numFitting = op2.countFittingPorts(p, showConv);
             let addText = "...";
             if (numFitting > 0)
             {
                 if (numFitting == 1)
                 {
-                    const p2 = op2.findFittingPort(p);
+                    const p2 = op2.findFittingPort(p, showConv);
                     addText = p2.title;
                 }
 

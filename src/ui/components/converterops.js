@@ -5,6 +5,7 @@ import { gui } from "../gui.js";
 
 export function convertPorts(p1, p2, converter)
 {
+    console.log("convertports", p1, p2);
     let found = false;
     let pFrom = null;
     let pTo = null;
