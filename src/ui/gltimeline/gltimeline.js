@@ -1093,8 +1093,10 @@ export class GlTimeline extends Events
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
+            let tt = this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime);
+            tt = Math.max(0, tt);
 
-            this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
+            this.#selectedKeys[i].set({ "t": tt, "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = "dragselect";

@@ -1,5 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
-import { Anim, AnimKey, Port } from "cables";
+import { Anim, AnimKey, Patch, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { INSPECT_MAX_BYTES } from "buffer";
 import GlRect from "../gldraw/glrect.js";
@@ -118,6 +118,13 @@ export class glTlKeys extends Events
         this.#options = options || {};
         this.#port = port;
         this.animLine = animLine;
+
+        this.#listeners.push(
+            gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
+            {
+                console.log("duration change");
+                this.#needsUpdate = true;
+            }));
 
         this.#listeners.push(
             this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
@@ -317,17 +324,15 @@ export class glTlKeys extends Events
         if (this.shouldDrawSpline() && !this.shouldDrawGraphSpline())
         {
             const y = Math.floor(this.animLine.height / 2) - 2;
-            pointsSortBefore.push(-100, y, z);
             let t = 0;
             let x = 0;
 
-            if (this.anim.keys.length > 0)
+            if (this.anim.keys.length > 0 && this.anim.keys[0].time != 0)
             {
+                pointsSortBefore.push(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), y, z);
                 let t = this.anim.keys[0].time;
                 pointsSortBefore.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
             }
-            else
-                pointsSortBefore.push(9900, y, z);
 
             for (let i = 0; i < this.anim.keys.length; i++)
             {
@@ -339,8 +344,8 @@ export class glTlKeys extends Events
             {
                 t = this.anim.keys[this.anim.keys.length - 1].time;
                 pointsSortAfter.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+                pointsSortAfter.push(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#glTl.view.offset), y, z);
             }
-            pointsSortAfter.push(9900, y, z);
 
         }
         else
