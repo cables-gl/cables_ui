@@ -83,7 +83,7 @@ export default class SuggestionDialog
             suggestions[i].id = i;
             suggestions[i].rot = (((i) - (suggestions.length / 2)) * sugDegree);
             suggestions[i].left = 15 - Math.abs(((i) - ((suggestions.length - 1) / 2)) * 3) / 2;
-            suggestions[i].top = (i * sugHeight) - (suggestions.length * sugHeight / 2) - sugHeight;
+            suggestions[i].top = (i * sugHeight) - (suggestions.length * sugHeight / 2) - sugHeight + (suggestions[i].spacing || 0);
             suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
             if (suggestions[i].name) suggestions[i].shortName = suggestions[i].name;
         }
