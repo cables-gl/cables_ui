@@ -165,8 +165,9 @@ export class glTlKeys extends Events
         {
             if (this.#spline)
             {
-                this.#spline.dispose();
-                this.#spline = null;
+                if (this.#spline) this.#spline = this.#spline.dispose();
+                if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+                if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
             }
 
             for (let i = 0; i < this.#keys.length; i++)
@@ -275,11 +276,14 @@ export class glTlKeys extends Events
 
         if (this.shouldDrawSpline() && !this.#spline)
         {
-            this.#spline = new GlSpline(this.#glTl.splines, this.#port.name);
+            if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
+            if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+
+            this.#spline = new GlSpline(this.#glTl.splines, "spline" + this.#port.name);
             this.#spline.setParentRect(this.#parentRect);
-            this.#splineBefore = new GlSpline(this.#glTl.splines, "before " + this.#port.name);
+            this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
             this.#splineBefore.setParentRect(this.#parentRect);
-            this.#splineAfter = new GlSpline(this.#glTl.splines, "after " + this.#port.name);
+            this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
             this.#splineAfter.setParentRect(this.#parentRect);
         }
 

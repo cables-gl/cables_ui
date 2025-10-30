@@ -100,8 +100,8 @@ export class glTlAnimLine extends Events
         this.#glTl = glTl;
         this.#view = glTl.view;
         this.width = glTl.width;
-        this.#rectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true, "name": "keysBg" });
 
+        this.#rectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true, "name": "keysBg" });
         this.#rectBg.setSize(this.width, this.height - 2);
         this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
@@ -113,15 +113,14 @@ export class glTlAnimLine extends Events
                 this.#ports[0].setUiAttribs({ "hover": true });
 
             this.updateColor();
-
         });
+
         this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
             if (!this.isGraphLayout() && this.#ports.length > 0)
                 this.#ports[0].setUiAttribs({ "hover": false });
 
             this.updateColor();
-
         });
 
         this.#disposeRects.push(this.#rectBg);
@@ -192,8 +191,6 @@ export class glTlAnimLine extends Events
         else
         {
             this.#valueRuler?.dispose();
-            // if (ports.length == 0) this.addFolder("folder" + (options.title || "unknown"));
-            // console.log("no folderanymore......");
         }
 
         if (this.#options.title)

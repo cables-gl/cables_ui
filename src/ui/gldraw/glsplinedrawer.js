@@ -12,8 +12,6 @@ import GlUiCanvas from "../glpatch/gluicanvas.js";
 /**
  * draw splines, e.g. cables on the patchfield
  *
- * @export
- * @class GlSplineDrawer
  */
 export default class GlSplineDrawer
 {
