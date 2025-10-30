@@ -549,6 +549,9 @@ export class GlTimeline extends Events
         str += "<br/>";
         str += "ms: ";
         str += this.cgl.fpsCounter.stats.ms;
+        str += "<br/>";
+        str += "rects: ";
+        str += this.#rectsNoScroll.getNumRects() + "," + this.#rectsOver.getNumRects() + "," + this.#rects.getNumRects();
 
         this.#elInfoOverlay.style.transform = "initial";
         this.#elInfoOverlay.style.left = "10px";
