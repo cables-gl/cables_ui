@@ -12,6 +12,20 @@ import GlTextWriter from "./gltextwriter.js";
  */
 export default class GlText
 {
+    #textWriter;
+
+    #x = 0;
+    #y = 0;
+    #z = 0;
+
+    /** @type {GlRect[]} */
+    #rects = [];
+    _width = 0;
+    _height = 0;
+    _color = [1, 1, 1, 1];
+    _align = 0;
+    _scale = 1.2;
+    _parentRect = null;
 
     /**
      * @param {GlTextWriter} textWriter
@@ -26,18 +40,8 @@ export default class GlText
 
         this.disposed = false;
         this._visible = true;
-        this._textWriter = textWriter;
+        this.#textWriter = textWriter;
         this._string = string || "";
-        this._x = 0;
-        this._y = 0;
-        this._z = 0;
-        this._rects = [];
-        this._width = 0;
-        this._height = 0;
-        this._color = [1, 1, 1, 1];
-        this._align = 0;
-        this._scale = 1.2;
-        this._parentRect = null;
 
         this._font = font;
         if (this._font && this._font.chars)
@@ -53,24 +57,24 @@ export default class GlText
     /**
      * @param {number} x
      */
-    set x(x) { this._x = x; this.rebuild(); }
-    get x() { return this._x; }
-    get y() { return this._y; }
+    set x(x) { this.#x = x; this.rebuild(); }
+    get x() { return this.#x; }
+    get y() { return this.#y; }
 
     /**
      * @param {number} y
      */
-    set y(y) { this._y = y; this.rebuild(); }
+    set y(y) { this.#y = y; this.rebuild(); }
 
     /**
      * @param {number} z
      */
-    set z(z) { this._z = z; this.rebuild(); }
+    set z(z) { this.#z = z; this.rebuild(); }
 
     set text(t)
     {
         if (this.disposed) return;
-        this._string = t;
+        this._string = t || "";
         this.rebuild();
     }
 
@@ -87,9 +91,9 @@ export default class GlText
      */
     setPosition(x, y, z = 0)
     {
-        this._x = x;
-        this._y = y;
-        this._z = z;
+        this.#x = x;
+        this.#y = y;
+        this.#z = z;
 
         this.rebuild();
     }
@@ -110,8 +114,8 @@ export default class GlText
     {
         if (this._visible === v) return;
         this._visible = v;
-        for (let i = 0; i < this._rects.length; i++)
-            if (this._rects[i]) this._rects[i].visible = v;
+        for (let i = 0; i < this.#rects.length; i++)
+            if (this.#rects[i]) this.#rects[i].visible = v;
     }
 
     /**
@@ -159,7 +163,7 @@ export default class GlText
         }
         else vec4.set(this._color, r, g, b, a);
 
-        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColorArray(this._color);
+        for (let i = 0; i < this.#rects.length; i++) if (this.#rects[i]) this.#rects[i].setColorArray(this._color);
     }
 
     /**
@@ -170,7 +174,7 @@ export default class GlText
         if (this.disposed) return;
         vec4.set(this._color, r[0], r[1], r[2], 1);
 
-        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColorArray(this._color);
+        for (let i = 0; i < this.#rects.length; i++) if (this.#rects[i]) this.#rects[i].setColorArray(this._color);
 
     }
 
@@ -187,9 +191,9 @@ export default class GlText
         this._width = this._map(w);
 
         const lineHeight = this._map(this._font.info.size / 2) + 13;
-        let posX = this._x;
-        let posY = this._y + lineHeight;
-        let posZ = this._z;
+        let posX = this.#x;
+        let posY = this.#y + lineHeight;
+        let posZ = this.#z;
         let countLines = 1;
 
         if (this._parentRect)
@@ -209,8 +213,8 @@ export default class GlText
             const ch = this._font.characters[char] || this._font.characters["?"];
             if (char == "\n")
             {
-                posX = this._x;
-                if (this._parentRect) posX = this._x + this._parentRect.x;
+                posX = this.#x;
+                if (this._parentRect) posX = this.#x + this._parentRect.x;
                 posY += lineHeight;
                 countLines++;
                 continue;
@@ -218,9 +222,9 @@ export default class GlText
             rectCount++;
 
             /** @type {GlRect} */
-            const rect = this._rects[rectCount] || this._textWriter.rectDrawer.createRect({ "name": "textrect", "interactive": false });
+            const rect = this.#rects[rectCount] || this.#textWriter.rectDrawer.createRect({ "name": "textrect", "interactive": false });
             rect.visible = this._visible;
-            this._rects[rectCount] = rect;
+            this.#rects[rectCount] = rect;
 
             rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0, posZ); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
@@ -232,12 +236,12 @@ export default class GlText
             posX += this._map(ch.xadvance);
         }
 
-        for (let i = rectCount + 1; i < this._rects.length; i++)
+        for (let i = rectCount + 1; i < this.#rects.length; i++)
         {
-            if (this._rects[i])
+            if (this.#rects[i])
             {
-                this._rects[i].setSize(0, 0);
-                this._rects[i].visible = false;
+                this.#rects[i].setSize(0, 0);
+                this.#rects[i].visible = false;
             }
         }
 
@@ -248,13 +252,13 @@ export default class GlText
     {
         this.setColor(1, 0, 0, 1);
         this.disposed = true;
-        for (let i = 0; i < this._rects.length; i++)
-            if (this._rects[i])
+        for (let i = 0; i < this.#rects.length; i++)
+            if (this.#rects[i])
             {
-                this._rects[i].dispose();
+                this.#rects[i].dispose();
             }
 
-        this._rects.length = 0;
+        this.#rects.length = 0;
         this._string = "";
         return null;
     }

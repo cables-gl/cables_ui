@@ -141,8 +141,8 @@
         &:hover
         {
             cursor:pointer !important;
-            background-color: $highlight-color-dark;
-            color: var(--color-13);
+            background-color: var(--color-04);
+            color: var(--color-12);
         }
 
 		.icon
@@ -152,6 +152,14 @@
 		    mask-position-y: 2px;
             vertical-align: bottom;
 		}
+    }
+    .groupname
+    {
+        color:var(--color-10);
+        background-color: var(--color-03) !important;
+        pointer-events: none;
+        transform: translate(calc( -100% - 10px ),22px)  !important;
+        /* top: 22px; */
     }
 
     .recommended-suggestion

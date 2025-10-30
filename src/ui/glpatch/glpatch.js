@@ -1182,8 +1182,8 @@ export default class GlPatch extends Events
         this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
 
-        this.debugData._mousePatchX = Math.round(this.viewBox._mousePatchX * 100) / 100;
-        this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
+        this.debugData._mousePatchX = Math.round(this.viewBox.mousePatchX * 100) / 100;
+        this.debugData._mousePatchY = Math.round(this.viewBox.mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
         this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);

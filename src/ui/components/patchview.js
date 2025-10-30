@@ -2128,7 +2128,7 @@ export default class PatchView extends Events
             {
                 convertPorts(p1, p2, converters[sid]);
             });
-
+        
             return;
         }
 

@@ -302,7 +302,6 @@ export default class GlViewBox
         else delta = 1 + 0.2 * wheelMultiplier;
 
         const mouse = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
-
         const newZoom = this._zoom * delta;
 
         const x = this._scrollX + mouse[0];

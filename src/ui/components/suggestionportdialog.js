@@ -35,6 +35,7 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
+                !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
             ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
         }
@@ -45,17 +46,10 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
+                !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
-                // Link.canLink(theport, port)
             ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
 
-            // else
-            // {
-            //     const convs = getConverters(theport, port);
-            //     if()
-            //     console.log("text", convs);
-            //     this.#addPortConv(theport);
-            // }
         }
 
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
@@ -96,6 +90,7 @@ export default class SuggestPortDialog
      * @param {Port} p
      * @param {boolean} directLink
      * @param {boolean} converter
+     * @param {Port} otherPort
      */
     #addPort(p, directLink, converter, otherPort)
     {
@@ -114,10 +109,27 @@ export default class SuggestPortDialog
 
         className = "port_text_color_" + p.getTypeString().toLowerCase();
 
+        let spacing = 0;
+        if (!this.lastPort || this.lastPort.uiAttribs.group != p.uiAttribs.group)
+        {
+
+            if (p.uiAttribs.group)
+            {
+                this.#suggestions.push({ "name": p.uiAttribs.group, "class": "groupname" });
+
+            }
+            else
+            if (this.lastPort)
+                spacing = 8;
+        }
+        // console.log("text", p.uiAttribs.group, this.lastPort.uiAttribs.group, spacing);
+        this.lastPort = p;
+
         name += p.title;
         this.#suggestions.push({
             "class": className,
             "p": p,
+            "spacing": spacing,
             "op": p.op.id,
             "name": name,
             // "isLinked": p.isLinked(),

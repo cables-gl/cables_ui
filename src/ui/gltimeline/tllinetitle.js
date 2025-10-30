@@ -440,8 +440,9 @@ export class TlTitle extends Events
         }
         else this.#el.classList.remove("selectedOp");
 
-        if (this.#port.uiAttribs.hover) this.#elPortname.classList.add("hover");
-        else this.#elPortname.classList.remove("hover");
+        if (this.#port)
+            if (this.#port.uiAttribs.hover) this.#elPortname.classList.add("hover");
+            else this.#elPortname.classList.remove("hover");
     }
 
     getAnim()

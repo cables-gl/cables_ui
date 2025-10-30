@@ -203,29 +203,33 @@ class namespace
         if (!outerName || !innerName) return "Unknown op";
         if (this.getNamespace(innerName).startsWith(this.getNamespace(outerName)) || this.getNamespace(outerName).startsWith(this.getNamespace(innerName))) return false;
 
+        const outerLink = "<a href=\"/op/" + outerName + "\" target=\"_blank\">" + outerName + "</a>";
+        const innerLink = "<a href=\"/op/" + innerName + "\" target=\"_blank\">" + innerName + "</a>";
+        const opText = "<br/>" + outerLink + " cannot contain " + innerLink;
+
         if (this.isCoreOp(outerName))
         {
-            if (this.isExtensionOp(innerName)) return "(SubpatchOp) Core ops cannot contain extension ops.";
-            if (this.isTeamOp(innerName)) return "(SubpatchOp) Core ops cannot contain team ops.";
-            if (this.isUserOp(innerName)) return "(SubpatchOp) Core ops cannot contain user ops.";
-            if (this.isPatchOp(innerName)) return "(SubpatchOp) Core ops cannot contain patch ops.";
+            if (this.isExtensionOp(innerName)) return "Core ops cannot contain extension ops." + opText;
+            if (this.isTeamOp(innerName)) return "Core ops cannot contain team ops." + opText;
+            if (this.isUserOp(innerName)) return "Core ops cannot contain user ops." + opText;
+            if (this.isPatchOp(innerName)) return "Core ops cannot contain patch ops." + opText;
         }
         else if (this.isExtensionOp(outerName))
         {
-            if (this.isTeamOp(innerName)) return "(SubpatchOp) Extension ops cannot contain team ops.";
-            if (this.isUserOp(innerName)) return "(SubpatchOp) Extension ops cannot contain user ops.";
-            if (this.isPatchOp(innerName)) return "(SubpatchOp) Extension ops cannot contain patch ops.";
+            if (this.isTeamOp(innerName)) return "Extension ops cannot contain team ops." + opText;
+            if (this.isUserOp(innerName)) return "Extension ops cannot contain user ops." + opText;
+            if (this.isPatchOp(innerName)) return "Extension ops cannot contain patch ops." + opText;
         }
         else if (this.isTeamOp(outerName))
         {
-            if (this.isTeamOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) Team ops cannot contain ops of other teams.";
-            if (this.isUserOp(innerName)) return "(SubpatchOp) Team ops cannot contain user ops.";
-            if (this.isPatchOp(innerName)) return "(SubpatchOp) Team ops cannot contain patch ops.";
+            if (this.isTeamOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "Team ops cannot contain ops of other teams." + opText;
+            if (this.isUserOp(innerName)) return "Team ops cannot contain user ops." + opText;
+            if (this.isPatchOp(innerName)) return "Team ops cannot contain patch ops." + opText;
         }
         else if (this.isUserOp(outerName))
         {
-            if (this.isUserOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) User ops cannot contain ops of other users.";
-            if (this.isPatchOp(innerName)) return "(SubpatchOp) User ops cannot contain patch ops.";
+            if (this.isUserOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "User ops cannot contain ops of other users." + opText;
+            if (this.isPatchOp(innerName)) return "User ops cannot contain patch ops." + opText;
         }
         else if (this.isPatchOp(outerName))
         {

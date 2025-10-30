@@ -47,6 +47,7 @@ import { GuiText } from "../text.js";
 export class GlTimeline extends Events
 {
     static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
+    static CLIP_VAR_PREFIX = "_clip";
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
@@ -271,7 +272,7 @@ export class GlTimeline extends Events
         cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this.#onCanvasPointerMove.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_UP, this.#onCanvasPointerUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_DOWN, this.#onCanvasPointerDown.bind(this), { "passive": true });
-        cgl.canvas.addEventListener(DomEvents.POINTER_WHEEL, this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_WHEEL, this.#onCanvasWheel.bind(this), { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
         cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this._onCanvasDblClick.bind(this), { "passive": false });
 
@@ -1093,8 +1094,10 @@ export class GlTimeline extends Events
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
+            let tt = this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime);
+            tt = Math.max(0, tt);
 
-            this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
+            this.#selectedKeys[i].set({ "t": tt, "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = "dragselect";
@@ -1422,7 +1425,7 @@ export class GlTimeline extends Events
     /**
      * @param {WheelEvent} event
      */
-    _onCanvasWheel(event)
+    #onCanvasWheel(event)
     {
         this.pixelPerSecond = this.view.timeToPixel(1);
 
@@ -1440,7 +1443,7 @@ export class GlTimeline extends Events
             if (event.deltaY > 0) delta = 1.3;
             else delta = 0.7;
 
-            this.view.setZoomOffset(delta);
+            this.view.setZoomOffsetWheel(delta, event);
 
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
@@ -2432,7 +2435,8 @@ export class GlTimeline extends Events
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
-        const vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        let vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        vars = vars.filter((v) => { return v.name.startsWith(GlTimeline.CLIP_VAR_PREFIX); });
 
         const html = getHandleBarHtml(
             "params_keys", {
@@ -2539,9 +2543,8 @@ export class GlTimeline extends Events
             if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
-            }
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
             this.setUnsavedForSelectedKeys();
@@ -2553,6 +2556,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
             this.setUnsavedForSelectedKeys();
@@ -2565,6 +2569,7 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
             this.setUnsavedForSelectedKeys();
