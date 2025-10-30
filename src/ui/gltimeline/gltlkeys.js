@@ -121,10 +121,10 @@ export class glTlKeys extends Events
         this.animLine = animLine;
 
         this.#listeners.push(
+
             this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
             {
                 this.disposeSplines();
-
             }),
 
             gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>

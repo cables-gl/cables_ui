@@ -164,7 +164,6 @@ export class TlKey extends Events
             this.cp1r = bezRect;
             if (!this.cp1s)
             {
-
                 this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
                 {
                     if (this.cp1s) this.cp1s = this.cp1s.dispose();

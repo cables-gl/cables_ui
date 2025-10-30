@@ -21,8 +21,44 @@ export default class GlSplineDrawer extends Events
     #geom;
     static EVENT_CLEARED = "clear";
 
-    /** @type {GlSpline[]} */
+    /** @type {Object} */
     #splines;
+    #cgl;
+    #rebuildLater;
+    #count;
+    #shader;
+
+    /** @type {Float32Array} */
+    #verts;
+
+    /** @type {Float32Array} */
+    #pointsProgress;
+    #pointsSplineLength;
+
+    /** @type {Float32Array} */
+    #points;
+
+    /** @type {Float32Array} */
+    #points2;
+
+    /** @type {Float32Array} */
+    #points3;
+    #doDraw;
+
+    /** @type {Float32Array} */
+    #speeds;
+
+    /** @type {Number[]} */
+    #thePoints;
+    #splineIndex;
+    #rebuildReason;
+    #splineHidden;
+
+    /** @type {Number[]} */
+    #splineColors;
+
+    /** @type {Mesh} */
+    #mesh;
 
     /**
      * @param {CglContext} cgl
@@ -32,10 +68,10 @@ export default class GlSplineDrawer extends Events
     {
         super();
         this.name = name;
-        this._cgl = cgl;
-        this._count = -1;
+        this.#cgl = cgl;
+        this.#count = -1;
 
-        this._rebuildLater = performance.now();
+        this.#rebuildLater = performance.now();
         this.doTessEdges = true;
         this.doCalcProgress = true;
 
@@ -43,30 +79,30 @@ export default class GlSplineDrawer extends Events
 
         this.clear();
 
-        this._shader = new Shader(cgl, "glSplineDrawer " + name);
-        this._shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
-        this._shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
+        this.#shader = new Shader(cgl, "glSplineDrawer " + name);
+        this.#shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
+        this.#shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
 
-        this._uniTime = new Uniform(this._shader, "f", "time", 0);
-        this._uniZoom = new Uniform(this._shader, "f", "zoom", 0);
-        this._uniResX = new Uniform(this._shader, "f", "resX", 0);
-        this._uniResY = new Uniform(this._shader, "f", "resY", 0);
-        this._uniscrollX = new Uniform(this._shader, "f", "scrollX", 0);
-        this._uniscrollY = new Uniform(this._shader, "f", "scrollY", 0);
-        this._uniWidth = new Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
-        this._uniWidthSelected = new Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
+        this._uniTime = new Uniform(this.#shader, "f", "time", 0);
+        this._uniZoom = new Uniform(this.#shader, "f", "zoom", 0);
+        this._uniResX = new Uniform(this.#shader, "f", "resX", 0);
+        this._uniResY = new Uniform(this.#shader, "f", "resY", 0);
+        this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
+        this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
+        this._uniWidth = new Uniform(this.#shader, "f", "width", gui.theme.patch.cablesWidth || 3);
+        this._uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
 
-        this._uniFadeoutOptions = new Uniform(this._shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
+        this._uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
 
-        this._uniMousePos = new Uniform(this._shader, "2f", "mousePos");
+        this._uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
 
-        this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
-        this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+        this.#shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
+        this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
 
         userSettings.on("change", (which, val) =>
         {
-            if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
-            if (which == "glflowmode") this._shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+            if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
+            if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
         gui.on("themeChanged", () =>
@@ -79,28 +115,26 @@ export default class GlSplineDrawer extends Events
 
     clear()
     {
-
-        this._count = -1;
+        this.#count = -1;
         if (this.#geom) this.#geom.clear();
-        if (this._mesh) this._mesh = this._mesh.dispose();
-        this._verts = new Float32Array();
-        this._pointsProgress = new Float32Array();
-        this._pointsSplineLength = new Float32Array();
-        this._points = new Float32Array();
-        this._points2 = new Float32Array();
-        this._points3 = new Float32Array();
-        this._doDraw = new Float32Array();
-        this._speeds = new Float32Array();
-        this._thePoints = [];
+        if (this.#mesh) this.#mesh = this.#mesh.dispose();
+        this.#verts = new Float32Array();
+        this.#pointsProgress = new Float32Array();
+        this.#pointsSplineLength = new Float32Array();
+        this.#points = new Float32Array();
+        this.#points2 = new Float32Array();
+        this.#points3 = new Float32Array();
+        this.#doDraw = new Float32Array();
+        this.#speeds = new Float32Array();
+        this.#thePoints = [];
 
-        this._splineIndex = null;
-        this._rebuildReason = "";
+        this.#splineIndex = null;
+        this.#rebuildReason = "";
 
-        this._splineHidden = [];
-        this._splineColors = [];
+        this.#splineHidden = [];
+        this.#splineColors = [];
         this.#splines = [];
         this.emitEvent(GlSplineDrawer.EVENT_CLEARED);
-
     }
 
     /**
@@ -108,7 +142,7 @@ export default class GlSplineDrawer extends Events
      */
     setFadeout(b)
     {
-        this._shader.toggleDefine("FADEOUT", b);
+        this.#shader.toggleDefine("FADEOUT", b);
     }
 
     getNumSplines()
@@ -129,21 +163,21 @@ export default class GlSplineDrawer extends Events
     {
         if (this.#splines.length == 0) return;
 
-        if (this._rebuildLater > 0)
+        if (this.#rebuildLater > 0)
         {
-            if (performance.now() - this._rebuildLater > 30) this.rebuild();
+            if (performance.now() - this.#rebuildLater > 30) this.rebuild();
             clearTimeout(this._laterTimeout);
             this._laterTimeout = setTimeout(
                 () =>
                 {
                     this.rebuild();
-                    this._rebuildLater = 0;
+                    this.#rebuildLater = 0;
                 }, 30);
         }
 
-        if (this._mesh)
+        if (this.#mesh)
         {
-            this._cgl.pushShader(this._shader);
+            this.#cgl.pushShader(this.#shader);
 
             this._uniResX.set(resX);
             this._uniResY.set(resY);
@@ -157,21 +191,20 @@ export default class GlSplineDrawer extends Events
 
             this._uniFadeoutOptions.set(fadeOutOpts);
 
-            if (this._points.length > 0) this._mesh.render(this._shader);
-            this._cgl.popShader();
-
+            if (this.#points.length > 0) this.#mesh.render(this.#shader);
+            this.#cgl.popShader();
         }
     }
 
     get count()
     {
-        return this._count + 1;
+        return this.#count + 1;
     }
 
     getSplineIndex(name = "")
     {
-        this._count++;
-        this.#splines[this._count] =
+        this.#count++;
+        this.#splines[this.#count] =
         {
             "name": name,
             "points": [],
@@ -179,17 +212,15 @@ export default class GlSplineDrawer extends Events
             "colorInactive": [0, 1, 0, 1],
             "colorBorder": [0, 0, 0, 0],
             "speed": 1,
-            "index": this._count,
+            "index": this.#count,
             "hidden": false,
             "pointsNeedProgressUpdate": true,
             "deleted": false
         };
 
         this.rebuildLater("new spline");
-        // this._rebuildLater = true;
-        // this._rebuildReason = "new spline...";
 
-        return this._count;
+        return this.#count;
     }
 
     /**
@@ -206,8 +237,8 @@ export default class GlSplineDrawer extends Events
      */
     setDebugRenderer(i)
     {
-        this._shader.toggleDefine("DEBUG_1", i == 1);
-        this._shader.toggleDefine("DEBUG_2", i == 2);
+        this.#shader.toggleDefine("DEBUG_1", i == 1);
+        this.#shader.toggleDefine("DEBUG_2", i == 2);
     }
 
     /**
@@ -332,7 +363,7 @@ export default class GlSplineDrawer extends Events
         let isDifferent = true;
         let isDifferentLength = false;
 
-        if (!this._rebuildLater)
+        if (!this.#rebuildLater)
         {
             if (this.#splines[idx] && this.#splines[idx].origPoints)
             {
@@ -413,18 +444,18 @@ export default class GlSplineDrawer extends Events
     buildMesh()
     {
         const perf = gui.uiProfiler.start("[glspline] buildMesh");
-        const num = this._thePoints.length / 3;
-        if (this._verts.length != num * 18)
+        const num = this.#thePoints.length / 3;
+        if (this.#verts.length != num * 18)
         {
-            this._verts = new Float32Array(num * 18);
+            this.#verts = new Float32Array(num * 18);
         }
 
         const max = 1;
         const min = -max;
 
-        for (let i = 0; i < this._thePoints.length / 3; i++)
+        for (let i = 0; i < this.#thePoints.length / 3; i++)
         {
-            this._verts.set([
+            this.#verts.set([
                 max, min, 0,
                 0, min, 0,
                 max, max, 0,
@@ -433,12 +464,12 @@ export default class GlSplineDrawer extends Events
                 max, max, 0],
             i * 18);
         }
-        this.#geom.vertices = this._verts;
+        this.#geom.vertices = this.#verts;
 
-        if (!this._mesh) this._mesh = new Mesh(this._cgl, this.#geom);
+        if (!this.#mesh) this.#mesh = new Mesh(this.#cgl, this.#geom);
 
-        this._mesh.addVertexNumbers = false;
-        this._mesh.updateVertices(this.#geom);
+        this.#mesh.addVertexNumbers = false;
+        this.#mesh.updateVertices(this.#geom);
 
         perf.finish();
     }
@@ -448,7 +479,7 @@ export default class GlSplineDrawer extends Events
      */
     _updateAttribsSpeed(idx)
     {
-        if (!this._mesh)
+        if (!this.#mesh)
         {
             this.rebuildLater("update speed");
             // this._rebuildLater = true;
@@ -468,10 +499,10 @@ export default class GlSplineDrawer extends Events
             for (let j = 0; j < 6; j++)
             {
                 count += 3;
-                this._speeds[(off + count) / 3] = this.#splines[idx].speed;
+                this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
             }
         }
-        this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
+        this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
     }
 
     /**
@@ -496,7 +527,7 @@ export default class GlSplineDrawer extends Events
         if (!gui.patchView._patchRenderer) return;
         if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
 
-        if (!this._mesh || !this._colors)
+        if (!this.#mesh || !this._colors)
         {
             this.rebuildLater("no mesh/colors");
             // this._rebuildReason = "no mesh/colors";
@@ -535,9 +566,9 @@ export default class GlSplineDrawer extends Events
                     const idx3 = i * 3;
                     const idx31 = (i + 1) * 3;
 
-                    this._pointsProgress[ofc3 + 1] =
-                        this._pointsProgress[ofc3 + 3] =
-                        this._pointsProgress[ofc3 + 4] = totalDistance;
+                    this.#pointsProgress[ofc3 + 1] =
+                        this.#pointsProgress[ofc3 + 3] =
+                        this.#pointsProgress[ofc3 + 4] = totalDistance;
 
                     if (
                         !isNaN(points[idx3 + 0]) &&
@@ -555,15 +586,15 @@ export default class GlSplineDrawer extends Events
                         if (d)totalDistance += d;
                     }
 
-                    this._pointsProgress[ofc3 + 0] = totalDistance;
-                    this._pointsProgress[ofc3 + 2] = totalDistance;
-                    this._pointsProgress[ofc3 + 5] = totalDistance;
+                    this.#pointsProgress[ofc3 + 0] = totalDistance;
+                    this.#pointsProgress[ofc3 + 2] = totalDistance;
+                    this.#pointsProgress[ofc3 + 5] = totalDistance;
 
                     count += 6 * 3;
                 }
 
-                for (let i = 0; i < this._pointsProgress.length; i++)
-                    this._pointsSplineLength[i] = totalDistance;
+                for (let i = 0; i < this.#pointsProgress.length; i++)
+                    this.#pointsSplineLength[i] = totalDistance;
 
                 perf2.finish();
             }
@@ -578,7 +609,7 @@ export default class GlSplineDrawer extends Events
             {
                 const idxArr = (off + count) / 3;
                 const idxArr4 = idxArr * 4;
-                this._speeds[idxArr + 0] = this.#splines[idx].speed;
+                this.#speeds[idxArr + 0] = this.#splines[idx].speed;
 
                 this._colors[idxArr4 + 0] = this.#splines[idx].color[0];
                 this._colors[idxArr4 + 1] = this.#splines[idx].color[1];
@@ -597,9 +628,9 @@ export default class GlSplineDrawer extends Events
 
                 for (let k = 0; k < 3; k++)
                 {
-                    this._points[off + count] = points[(Math.max(0, i - 1)) * 3 + k];
-                    this._points2[off + count] = points[(i + 0) * 3 + k];
-                    this._points3[off + count] = points[(i + 1) * 3 + k];
+                    this.#points[off + count] = points[(Math.max(0, i - 1)) * 3 + k];
+                    this.#points2[off + count] = points[(i + 0) * 3 + k];
+                    this.#points3[off + count] = points[(i + 1) * 3 + k];
                     count++;
                 }
             }
@@ -608,17 +639,17 @@ export default class GlSplineDrawer extends Events
 
         const perf3 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates setAttributeRanges");
 
-        if (updateWhat === undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
-        if (updateWhat === undefined || updateWhat.colorsInactive) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
-        if (updateWhat === undefined || updateWhat.colorsBorder) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat === undefined || updateWhat.colors) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat === undefined || updateWhat.colorsInactive) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat === undefined || updateWhat.colorsBorder) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
 
-        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
-        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
-        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline"), this.#points, off, off + count);
+        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline2"), this.#points2, off, off + count);
+        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline3"), this.#points3, off, off + count);
 
-        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
-        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineLength"), this._pointsSplineLength, off / 3, (off + count) / 3);
-        if (updateWhat === undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
+        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("splineProgress"), this.#pointsProgress, off / 3, (off + count) / 3);
+        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("splineLength"), this.#pointsSplineLength, off / 3, (off + count) / 3);
+        if (updateWhat === undefined || updateWhat.speed) this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
         perf3.finish();
         perf.finish();
     }
@@ -626,12 +657,12 @@ export default class GlSplineDrawer extends Events
     rebuild()
     {
         if (this.#splines.length == 0) return;
-        this._rebuildReason = "unknown";
-        this._splineIndex = [];
+        this.#rebuildReason = "unknown";
+        this.#splineIndex = [];
         let count = 0;
         let numPoints = 0;
 
-        this._thePoints = []; // todo calc length beforehand
+        this.#thePoints = []; // todo calc length beforehand
 
         const perf = gui.uiProfiler.start("[glspline] rebuild " + this.name);
 
@@ -644,7 +675,7 @@ export default class GlSplineDrawer extends Events
                 return;
 
             }
-            if (spline.startOffset != count * 6 || this._splineIndex[numPoints] != i)
+            if (spline.startOffset != count * 6 || this.#splineIndex[numPoints] != i)
             {
                 spline.startOffset = count * 6;
                 spline.pointsNeedProgressUpdate = true;
@@ -654,22 +685,22 @@ export default class GlSplineDrawer extends Events
                 for (let j = 0; j < spline.points.length / 3; j++)
                 {
                     const j3 = j * 3;
-                    this._thePoints[count++] = spline.points[j3 + 0];
-                    this._thePoints[count++] = spline.points[j3 + 1];
-                    this._thePoints[count++] = spline.points[j3 + 2];
-                    this._splineIndex[numPoints] = i;
+                    this.#thePoints[count++] = spline.points[j3 + 0];
+                    this.#thePoints[count++] = spline.points[j3 + 1];
+                    this.#thePoints[count++] = spline.points[j3 + 2];
+                    this.#splineIndex[numPoints] = i;
 
                     numPoints++;
                 }
         }
 
-        if (this._thePoints.length === 0) return;
+        if (this.#thePoints.length === 0) return;
 
         let newLength = numPoints * 3 * 6;
 
         this.buildMesh();
 
-        newLength = this._verts.length / 6 * 6;
+        newLength = this.#verts.length / 6 * 6;
 
         if (newLength == 0) return;
 
@@ -677,42 +708,42 @@ export default class GlSplineDrawer extends Events
         let lastIndex = 0;
         let drawable = 0;
 
-        if (this._points.length < newLength)
+        if (this.#points.length < newLength)
         {
             this._colors = new Float32Array(newLength / 3 * 4);
             this._colorsInactive = new Float32Array(newLength / 3 * 4);
             this._colorsBorder = new Float32Array(newLength / 3 * 4);
 
-            this._points = new Float32Array(newLength);
-            this._points2 = new Float32Array(newLength);
-            this._points3 = new Float32Array(newLength);
+            this.#points = new Float32Array(newLength);
+            this.#points2 = new Float32Array(newLength);
+            this.#points3 = new Float32Array(newLength);
 
-            this._doDraw = new Float32Array(newLength / 3);
-            this._pointsProgress = new Float32Array(newLength / 3);
-            this._pointsSplineLength = new Float32Array(newLength / 3);
-            this._speeds = new Float32Array(newLength / 3);
+            this.#doDraw = new Float32Array(newLength / 3);
+            this.#pointsProgress = new Float32Array(newLength / 3);
+            this.#pointsSplineLength = new Float32Array(newLength / 3);
+            this.#speeds = new Float32Array(newLength / 3);
         }
 
-        for (let i = 0; i < this._thePoints.length / 3; i++)
+        for (let i = 0; i < this.#thePoints.length / 3; i++)
         {
-            if (this._splineIndex)
+            if (this.#splineIndex)
             {
 
-                if (i > 1 && lastIndex != this._splineIndex[i]) drawable = 0.0;
+                if (i > 1 && lastIndex != this.#splineIndex[i]) drawable = 0.0;
                 else drawable = 1.0;
-                lastIndex = this._splineIndex[i];
+                lastIndex = this.#splineIndex[i];
             }
             else drawable = 1.0;
 
             for (let j = 0; j < 6; j++)
             {
-                this._doDraw[count / 3] = drawable;
+                this.#doDraw[count / 3] = drawable;
 
-                if (this.#splines[this._splineIndex[i]])
+                if (this.#splines[this.#splineIndex[i]])
                 {
-                    this._speeds[count / 3] = this.#splines[this._splineIndex[i]].speed;
+                    this.#speeds[count / 3] = this.#splines[this.#splineIndex[i]].speed;
                 }
-                else this._speeds[count / 3] = 0;
+                else this.#speeds[count / 3] = 0;
 
                 for (let k = 0; k < 3; k++)
                 {
@@ -724,19 +755,19 @@ export default class GlSplineDrawer extends Events
 
         const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
 
-        this._mesh.setAttribute("speed", this._speeds, 1);
+        this.#mesh.setAttribute("speed", this.#speeds, 1);
 
-        this._mesh.setAttribute("splineDoDraw", this._doDraw, 1);
+        this.#mesh.setAttribute("splineDoDraw", this.#doDraw, 1);
 
-        this._mesh.setAttribute("vcolor", this._colors, 4);
-        this._mesh.setAttribute("vcolorInactive", this._colorsInactive, 4);
-        this._mesh.setAttribute("vcolorBorder", this._colorsBorder, 4);
+        this.#mesh.setAttribute("vcolor", this._colors, 4);
+        this.#mesh.setAttribute("vcolorInactive", this._colorsInactive, 4);
+        this.#mesh.setAttribute("vcolorBorder", this._colorsBorder, 4);
 
-        this._mesh.setAttribute("spline", this._points, 3);
-        this._mesh.setAttribute("spline2", this._points2, 3);
-        this._mesh.setAttribute("spline3", this._points3, 3);
-        this._mesh.setAttribute("splineProgress", this._pointsProgress, 1);
-        this._mesh.setAttribute("splineLength", this._pointsSplineLength, 1);
+        this.#mesh.setAttribute("spline", this.#points, 3);
+        this.#mesh.setAttribute("spline2", this.#points2, 3);
+        this.#mesh.setAttribute("spline3", this.#points3, 3);
+        this.#mesh.setAttribute("splineProgress", this.#pointsProgress, 1);
+        this.#mesh.setAttribute("splineLength", this.#pointsSplineLength, 1);
 
         perfAttribs.finish(this.#splines.length + "splines, length " + newLength);
 
@@ -750,7 +781,7 @@ export default class GlSplineDrawer extends Events
 
         perfAttribs2.finish("num" + this.#splines.length);
 
-        this._rebuildLater = 0;
+        this.#rebuildLater = 0;
         perf.finish();
 
         let l = 0;
@@ -766,10 +797,10 @@ export default class GlSplineDrawer extends Events
      */
     rebuildLater(str)
     {
-        if (!this._rebuildLater)
+        if (!this.#rebuildLater)
         {
-            this._rebuildLater = performance.now();
-            this._rebuildReason = str;
+            this.#rebuildLater = performance.now();
+            this.#rebuildReason = str;
         }
     }
 
@@ -825,7 +856,7 @@ export default class GlSplineDrawer extends Events
 
     dispose()
     {
-        if (this._mesh) this._mesh.dispose();
+        if (this.#mesh) this.#mesh.dispose();
         return null;
     }
 }
