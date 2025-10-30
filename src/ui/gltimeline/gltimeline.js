@@ -547,7 +547,7 @@ export class GlTimeline extends Events
         let str = "debug";
         str += "<br/>fps: " + this.cgl.fpsCounter.stats.fps;
         str += "<br/>ms: " + this.cgl.fpsCounter.stats.ms;
-        str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + "," + this.#rectsOver.getNumRects() + "," + this.#rects.getNumRects();
+        str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + ", " + this.#rectsOver.getNumRects() + ", " + this.#rects.getNumRects();
         str += "<br/>text rects: " + this.textsNoScroll.rectDrawer.getNumRects(); str += "<br/>splines: " + this.splines?.count;
 
         this.#elInfoOverlay.style.transform = "initial";
@@ -719,6 +719,8 @@ export class GlTimeline extends Events
     {
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
         else this.#layout = GlTimeline.LAYOUT_GRAPHS;
+
+        if (this.splines) this.splines.clear();
 
         this.saveUserSettings();
         this.updateIcons();

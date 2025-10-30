@@ -12,6 +12,7 @@ import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
 import { TlKey } from "./tlkey.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 /**
  * gltl key rendering
@@ -120,24 +121,28 @@ export class glTlKeys extends Events
         this.animLine = animLine;
 
         this.#listeners.push(
+            this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
+            {
+
+            }),
+
             gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
             {
                 this.#needsUpdate = true;
-            }));
+            }),
 
-        this.#listeners.push(
             this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
             {
                 this.#changeLayout();
-            }));
+            }),
 
-        this.#listeners.push(
             anim.on(Anim.EVENT_CHANGE, () =>
             {
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
                     this.#keys[i].update();
-            }));
+            })
+        );
 
         this.#options = options;
         this.init();
@@ -274,17 +279,26 @@ export class glTlKeys extends Events
             return;
         }
 
-        if (this.shouldDrawSpline() && !this.#spline)
+        if (this.shouldDrawSpline())
         {
-            if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
-            if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
 
-            this.#spline = new GlSpline(this.#glTl.splines, "spline" + this.#port.name);
-            this.#spline.setParentRect(this.#parentRect);
-            this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
-            this.#splineBefore.setParentRect(this.#parentRect);
-            this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
-            this.#splineAfter.setParentRect(this.#parentRect);
+            if (!this.#spline)
+            {
+                this.#spline = new GlSpline(this.#glTl.splines, "spline" + this.#port.name);
+                this.#spline.setParentRect(this.#parentRect);
+            }
+
+            if (!this.#splineBefore)
+            {
+                this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
+                this.#splineBefore.setParentRect(this.#parentRect);
+            }
+
+            if (!this.#splineAfter)
+            {
+                this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
+                this.#splineAfter.setParentRect(this.#parentRect);
+            }
         }
 
         if (this.#keys.length != this.#anim.keys.length) return this.init();
@@ -840,14 +854,20 @@ export class glTlKeys extends Events
         this.#glTl.setHoverKeyRect(null);
     }
 
-    dispose()
+    disposeSplines()
     {
-        this.reset();
-        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
-
         if (this.#spline) this.#spline = this.#spline.dispose();
         if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
         if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+    }
+
+    dispose()
+    {
+        this.reset();
+        this.disposeSplines();
+
+        for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
+
         for (let i in this.#keyLookup) this.#keyLookup[i].dispose();
 
         this.#keyLookup = {};
