@@ -123,6 +123,7 @@ export class glTlKeys extends Events
         this.#listeners.push(
             this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
             {
+                this.disposeSplines();
 
             }),
 
