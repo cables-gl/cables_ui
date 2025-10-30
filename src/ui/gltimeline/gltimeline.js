@@ -527,6 +527,20 @@ export class GlTimeline extends Events
         return this.#cgl;
     }
 
+    get overlayRects()
+    {
+        return this.#rectsOver;
+    }
+
+    /**
+     * @param {GlTextWriter} writer
+     * @param {string} string
+     */
+    createText(writer, string)
+    {
+        return new GlText(writer, string);
+    }
+
     refreshInfoOverlay()
     {
         this.#elInfoOverlay.classList.remove(CssClassNames.HIDDEN);
