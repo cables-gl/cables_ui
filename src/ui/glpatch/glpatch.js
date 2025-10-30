@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
-import GlLinedrawer from "../gldraw/gllinedrawer.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
@@ -112,7 +111,7 @@ export default class GlPatch extends Events
         this.viewBox = new GlViewBox(cgl, this);
 
         this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
-        this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
+        this._lines = new GlSplineDrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
         this._rectInstancer.hoverWhenButton;
         this._overLayRects.hoverWhenButton = false;

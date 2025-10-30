@@ -557,8 +557,7 @@ export class GlTimeline extends Events
         this.#elInfoOverlay.style.top = y - h - 40 + "px";
         this.#elInfoOverlay.innerHTML = str;
         clearTimeout(this.#elInfoOverlayTimeout);
-        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 100);
-
+        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 500);
     }
 
     toggleAutoKeyframe()
