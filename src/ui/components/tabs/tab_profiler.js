@@ -30,6 +30,7 @@ export default class Profiler
         this.intervalId = null;
         this.lastPortTriggers = 0;
         this._subTab = 0;
+
         this.#tab.on("close", () =>
         {
             editorSession.remove(Profiler.TABSESSION_NAME, "profiler");
@@ -43,6 +44,7 @@ export default class Profiler
 
     /**
      * @param {number} maxTime
+     * @param {import("cables/src/core/core_profiler.js").ProfilerItem[]} opids
      */
     updateHeatmap(opids, maxTime)
     {
@@ -271,7 +273,6 @@ export default class Profiler
         const htmlPeaks = "";
         sortedItems.sort(function (a, b) { return b.peak - a.peak; });
 
-        // if (Object.keys(cumulatedSubPatches).length > 1)
         if (this._subTab == 1)
         {
             const subPatches = [];
@@ -281,11 +282,13 @@ export default class Profiler
                 allTimesUsed += cumulatedSubPatches[i].timeUsed;
                 subPatches.push(cumulatedSubPatches[i]);
             }
+
             for (let i = 0; i < subPatches.length; i++)
             {
                 subPatches[i].name = gui.patchView.getSubPatchName(subPatches[i].subPatch);
                 subPatches[i].percent = subPatches[i].timeUsed / allTimesUsed * 100;
             }
+
             subPatches.sort(function (a, b) { return b.percent - a.percent; });
 
             html += "<h3>Subpatches</h3>";
@@ -321,7 +324,6 @@ export default class Profiler
         }
 
         ele.byId("profilerui").style.display = "block";
-        // ele.byId("profilerlistPeaks").innerHTML = htmlPeaks;
         ele.byId("profilerbar").innerHTML = htmlBar;
         ele.byId("profilerlist").innerHTML = html;
         ele.byId("profilerstartbutton").style.display = "none";

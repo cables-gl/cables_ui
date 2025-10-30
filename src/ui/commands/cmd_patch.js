@@ -15,6 +15,7 @@ import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
+import TabDebugger from "../components/tabs/tab_debugger.js";
 
 const CABLES_CMD_PATCH = {};
 
@@ -1240,6 +1241,12 @@ CABLES_CMD_PATCH.patchProfiler = () =>
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_PATCH.patchDebugger = () =>
+{
+    new TabDebugger(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Select all ops",
@@ -1535,6 +1542,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "pie-chart",
         "func": CABLES_CMD_PATCH.patchProfiler
+    },
+    {
+        "cmd": "Patch Debugger",
+        "category": "patch",
+        "icon": "list",
+        "func": CABLES_CMD_PATCH.patchDebugger
     },
 
 );

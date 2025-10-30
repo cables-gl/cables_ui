@@ -537,7 +537,7 @@ export class glTlKeys extends Events
                 }
             }
 
-            if (k.cp1r && k.cp1r.visible)
+            if (k.cp1r && k.cp1r.visible && animKey.bezCp1 && animKey.bezCp1)
             {
                 let ks = kr.w / 2;
                 let s = k.cp1r.w / 2;

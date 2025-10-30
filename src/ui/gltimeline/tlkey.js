@@ -113,6 +113,10 @@ export class TlKey extends Events
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
+        if (!key.uiAttribs.text && this.text)
+        {
+            this.text = this.text.dispose();
+        }
         if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)

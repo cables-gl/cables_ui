@@ -2591,7 +2591,7 @@ export class GlTimeline extends Events
         if (ele.byId("kp_comment"))
             ele.byId("kp_comment").addEventListener("input", () =>
             {
-                let txt = ele.byId("kp_comment").value;
+                let txt = ele.byId("kp_comment").value || "";
 
                 for (let i = 0; i < this.#selectedKeys.length; i++)
                     this.#selectedKeys[i].setUiAttribs({ "text": txt });
