@@ -637,7 +637,7 @@ export default class GlRectInstancer extends Events
      */
     createRect(options)
     {
-        console.log("new rect", this.#name, options?.name);
+        // console.log("new rect", this.#name, options?.name);
         options = options || { "name": "no name", "interactive": false };
         const r = new GlRect(this, options);
         this.#rects.push(r);
