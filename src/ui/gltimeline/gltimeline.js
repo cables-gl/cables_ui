@@ -544,20 +544,17 @@ export class GlTimeline extends Events
     refreshInfoOverlay()
     {
         this.#elInfoOverlay.classList.remove(CssClassNames.HIDDEN);
-        let str = "fps: ";
-        str += this.cgl.fpsCounter.stats.fps;
-        str += "<br/>";
-        str += "ms: ";
-        str += this.cgl.fpsCounter.stats.ms;
-        str += "<br/>";
-        str += "rects: ";
-        str += this.#rectsNoScroll.getNumRects() + "," + this.#rectsOver.getNumRects() + "," + this.#rects.getNumRects();
+        let str = "debug";
+        str += "<br/>fps: " + this.cgl.fpsCounter.stats.fps;
+        str += "<br/>ms: " + this.cgl.fpsCounter.stats.ms;
+        str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + "," + this.#rectsOver.getNumRects() + "," + this.#rects.getNumRects();
+        str += "<br/>text rects: " + this.textsNoScroll.rectDrawer.getNumRects(); str += "<br/>splines: " + this.splines.count;
 
         this.#elInfoOverlay.style.transform = "initial";
         this.#elInfoOverlay.style.left = "10px";
-        const y = this.#elTimeDisplay.getBoundingClientRect().y;
-        const h = this.#elTimeDisplay.getBoundingClientRect().height;
-        this.#elInfoOverlay.style.top = y - h - 50 + "px";
+        const y = this.#elTimeDisplay.getBoundingClientRect().top;
+        const h = this.#elInfoOverlay.getBoundingClientRect().height;
+        this.#elInfoOverlay.style.top = y - h - 40 + "px";
         this.#elInfoOverlay.innerHTML = str;
         clearTimeout(this.#elInfoOverlayTimeout);
         this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 100);

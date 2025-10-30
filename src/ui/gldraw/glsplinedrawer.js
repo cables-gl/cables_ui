@@ -93,6 +93,11 @@ export default class GlSplineDrawer
         this._shader.toggleDefine("FADEOUT", b);
     }
 
+    getNumSplines()
+    {
+        return this._splines.length;
+    }
+
     /**
      * @param {number} resX
      * @param {number} resY
