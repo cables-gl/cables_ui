@@ -64,6 +64,7 @@ export class TlKey extends Events
 
         key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
         {
+            console.log("keydel...");
             if (k == this.key) this.dispose();
         });
     }
