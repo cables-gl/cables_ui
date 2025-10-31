@@ -918,8 +918,9 @@ export class glTlKeys extends Events
 
     getNumSplinePoints()
     {
-        return this.#spline.getNumPoints() +
-        this.#spline.getNumPoints() +
-        this.#spline.getNumPoints();
+        return;
+        this.#spline?.getNumPoints() +
+        this.#splineAfter?.getNumPoints() +
+        this.#splineBefore?.getNumPoints();
     }
 }
