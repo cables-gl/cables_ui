@@ -153,6 +153,7 @@ export class glTlKeys extends Events
     updateSoon()
     {
         this.#needsUpdate = true;
+        if (!this.updTimeout) this.updTimeout = setTimeout(() => { this.update(); this.updTimeout = null; }, 30);
     }
 
     isDragging()
@@ -410,7 +411,7 @@ export class glTlKeys extends Events
                 if (this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE || this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
                     unit = 1;
                 else
-                    unit = map(Math.abs(delta), 0, 4, 8, 2, Anim.EASING_LINEAR, true);
+                    unit = map(Math.abs(delta), 0, 4, 4, 2, Anim.EASING_LINEAR, true);
 
                 if (idx != lastKeyIdx || pointArray.length < 2 || pointArray[pointArray.length - 2] != y)
                 {
@@ -448,6 +449,7 @@ export class glTlKeys extends Events
         }
 
         this.updateColors();
+        this.updTimeout = null;
         this.#updateCount++;
     }
 
