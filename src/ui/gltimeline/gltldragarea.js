@@ -71,12 +71,6 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
 
-        /// ////
-        this.glRectBg = this.#glTl.rectsNoScroll.createRect({ "name": "ruler bgrect", "draggable": false, "interactive": true });
-        this.glRectBg.setSize(222, this.height);
-        this.glRectBg.setColor(0.25, 0.25, 0.25, 1);
-        this.glRectBg.setPosition(0, 0, -0.9);
-
         this.rectMove.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             gui.showInfo(GuiText.tlhover_keys_dragarea);
