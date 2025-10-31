@@ -527,24 +527,37 @@ export class GlTimeline extends Events
         return this.#cgl;
     }
 
+    get overlayRects()
+    {
+        return this.#rectsOver;
+    }
+
+    /**
+     * @param {GlTextWriter} writer
+     * @param {string} string
+     */
+    createText(writer, string)
+    {
+        return new GlText(writer, string);
+    }
+
     refreshInfoOverlay()
     {
         this.#elInfoOverlay.classList.remove(CssClassNames.HIDDEN);
-        let str = "fps: ";
-        str += this.cgl.fpsCounter.stats.fps;
-        str += "<br/>";
-        str += "ms: ";
-        str += this.cgl.fpsCounter.stats.ms;
+        let str = "debug";
+        str += "<br/>fps: " + this.cgl.fpsCounter.stats.fps;
+        str += "<br/>ms: " + this.cgl.fpsCounter.stats.ms;
+        str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + ", " + this.#rectsOver.getNumRects() + ", " + this.#rects.getNumRects();
+        str += "<br/>text rects: " + this.textsNoScroll.rectDrawer.getNumRects(); str += "<br/>splines: " + this.splines?.count;
 
         this.#elInfoOverlay.style.transform = "initial";
         this.#elInfoOverlay.style.left = "10px";
-        const y = this.#elTimeDisplay.getBoundingClientRect().y;
-        const h = this.#elTimeDisplay.getBoundingClientRect().height;
-        this.#elInfoOverlay.style.top = y - h - 50 + "px";
+        const y = this.#elTimeDisplay.getBoundingClientRect().top;
+        const h = this.#elInfoOverlay.getBoundingClientRect().height;
+        this.#elInfoOverlay.style.top = y - h - 40 + "px";
         this.#elInfoOverlay.innerHTML = str;
         clearTimeout(this.#elInfoOverlayTimeout);
-        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 100);
-
+        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 500);
     }
 
     toggleAutoKeyframe()
@@ -705,6 +718,8 @@ export class GlTimeline extends Events
     {
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
         else this.#layout = GlTimeline.LAYOUT_GRAPHS;
+
+        if (this.splines) this.splines.clear();
 
         this.saveUserSettings();
         this.updateIcons();
@@ -2591,7 +2606,7 @@ export class GlTimeline extends Events
         if (ele.byId("kp_comment"))
             ele.byId("kp_comment").addEventListener("input", () =>
             {
-                let txt = ele.byId("kp_comment").value;
+                let txt = ele.byId("kp_comment").value || "";
 
                 for (let i = 0; i < this.#selectedKeys.length; i++)
                     this.#selectedKeys[i].setUiAttribs({ "text": txt });

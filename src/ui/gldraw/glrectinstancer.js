@@ -637,6 +637,7 @@ export default class GlRectInstancer extends Events
      */
     createRect(options)
     {
+        // console.log("new rect", this.#name, options?.name);
         options = options || { "name": "no name", "interactive": false };
         const r = new GlRect(this, options);
         this.#rects.push(r);
@@ -650,13 +651,8 @@ export default class GlRectInstancer extends Events
                 {
                     this.#draggingRects.push(rect);
                 }
-
             });
-
-            // r.on(GlRect.EVENT_DRAGEND, () => {});
         }
-
-        // r.on(GlRect.EVENT_TEXTURECHANGED, () => { this.#needsTextureUpdate = true; });
 
         return r;
     }

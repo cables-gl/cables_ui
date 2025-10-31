@@ -30,6 +30,11 @@ export default class GlSpline
         this.#splineDrawer = splineDrawer;
         this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
+        splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
+        {
+            this.dispose();
+
+        });
     }
 
     /**
@@ -112,7 +117,6 @@ export default class GlSpline
 
     dispose()
     {
-
         this.#disposed = true;
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.#splineIdx = -1;

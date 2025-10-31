@@ -7,6 +7,7 @@ import GlSpline from "../gldraw/glspline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 export class TlKey extends Events
 {
@@ -113,6 +114,10 @@ export class TlKey extends Events
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
+        if (!key.uiAttribs.text && this.text)
+        {
+            this.text = this.text.dispose();
+        }
         if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)
@@ -157,6 +162,17 @@ export class TlKey extends Events
 
             bezRect.data.key = key;
             this.cp1r = bezRect;
+            if (!this.cp1s)
+            {
+                this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
+                {
+                    if (this.cp1s) this.cp1s = this.cp1s.dispose();
+                    if (this.cp2s) this.cp2s = this.cp2s.dispose();
+                });
+            }
+
+            if (this.cp1s) this.cp1s = this.cp1s.dispose();
+            if (this.cp2s) this.cp2s = this.cp2s.dispose();
 
             this.cp1s = new GlSpline(this.#glTl.splines, "cp1");
             this.cp1s.setParentRect(this.rect.parent);

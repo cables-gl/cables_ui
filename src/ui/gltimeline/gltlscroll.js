@@ -94,7 +94,7 @@ export class glTlScroll extends Events
     {
         const steps = Math.floor((this.#width || 10) / 10);
         const stepSeconds = this.#glTl.duration / (steps - 2);
-        this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps) + 1;
+        this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
 
         const ports = gui.corePatch().getAllAnimPorts();
 
@@ -123,7 +123,7 @@ export class glTlScroll extends Events
                     break;
                 }
             }
-            if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rectsNoScroll.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" });
+            if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rectsNoScroll.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" + i });
 
             if (found)
             {

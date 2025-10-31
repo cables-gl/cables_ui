@@ -28,7 +28,6 @@ void main()
     // float darken=1.0;
     // float minOpacity=0.7;
 
-
     #ifdef DRAWSPEED
         if(fspeed==0.0)finalColor=finactiveColor;
         if(fspeed==1.0)finalColor=fcolor;
@@ -102,6 +101,7 @@ void main()
 
 // finalColor=finactiveColor;
 // finalColor.rgb*=fProgress/fSplineLength;
+// finalColor=vec4(1.0);
 
     outColor = finalColor;
 }
