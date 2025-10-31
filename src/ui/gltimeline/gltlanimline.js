@@ -840,4 +840,14 @@ export class glTlAnimLine extends Events
     {
         return this.#ops[0];
     }
+
+    getNumSplinePoints()
+    {
+        let count = 0;
+        for (let i = 0; i < this.#keys.length; i++)
+        {
+            count += this.#keys[i].getNumSplinePoints();
+        }
+        return count;
+    }
 }
