@@ -136,7 +136,7 @@ export default class PlatformElectron extends Platform
                 },
                 "title": "Backup",
                 "warning": true,
-                "text": GuiGuiText.projectBackupNotSaved,
+                "text": GuiText.projectBackupNotSaved,
             });
 
             return;
