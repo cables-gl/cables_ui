@@ -2375,3 +2375,4 @@ export default class Gui extends Events
 
     }
 }
+console.log("text");
