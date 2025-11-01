@@ -122,4 +122,9 @@ export default class GlSpline
         this.#splineIdx = -1;
         return null;
     }
+
+    getNumPoints()
+    {
+        return this.#points.length / 3;
+    }
 }

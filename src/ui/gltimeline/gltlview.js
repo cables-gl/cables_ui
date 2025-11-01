@@ -222,7 +222,6 @@ export class GlTlView
     setZoomLength(len)
     {
         if (len < 0.1)len = 0.1;
-        console.log("set zoom length", len);
         let zoom = len;
         let dur = 0.3;
         this.#animZoom.clear(this.#timer.getTime());

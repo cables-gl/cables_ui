@@ -2,6 +2,7 @@ import { Events, Logger } from "cables-shared-client";
 import { Anim, AnimKey, Patch, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { INSPECT_MAX_BYTES } from "buffer";
+import { map } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
@@ -152,6 +153,7 @@ export class glTlKeys extends Events
     updateSoon()
     {
         this.#needsUpdate = true;
+        if (!this.updTimeout) this.updTimeout = setTimeout(() => { this.update(); this.updTimeout = null; }, 30);
     }
 
     isDragging()
@@ -338,7 +340,7 @@ export class glTlKeys extends Events
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.5;
         if (this.#port.op.isCurrentUiOp())z = -0.6;
-        let lastArray = pointsSort;
+        let lastArray = null;
 
         if (this.shouldDrawSpline() && !this.shouldDrawGraphSpline())
         {
@@ -370,50 +372,70 @@ export class glTlKeys extends Events
         else
         if (this.shouldDrawSpline())
         {
+            let y = 0;
+            let x = 0;
             const steps = (this.#glTl.width) / 1;
-            let lv = 9999999;
             let skipped = false;
-            for (let i = 0; i < steps; i++)
+            let lastX = 0;
+            let lastY = 0;
+            let lastKeyIdx = -1;
+            let unit = 2;
+            let lastDelta = 99;
+
+            for (let i = 0; i < steps; i += unit)
             {
                 // todo:add exact keys
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
-                const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
-
-                if (t < 0) continue;
-                let pointArray = pointsSort;
-                if (this.anim.hasEnded(t)) pointArray = pointsSortAfter;
-                if (!this.anim.hasStarted(t)) pointArray = pointsSortBefore;
-                if (lastArray != pointArray) lv *= 2;
-
-                if (lastArray != pointArray && pointArray == pointsSortAfter)
-                {
-                    pointArray.push(lastArray[lastArray.length - 3], lastArray[lastArray.length - 2], lastArray[lastArray.length - 1]);
-                    lastArray = pointArray;
-                }
+                const idx = this.anim.getKeyIndex(t);
+                x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
                 let v = this.#anim.getValue(t);
-                if (this.shouldDrawGraphSpline() && v == lv && i < steps - 3 && i > 1)
-                {
-                    let k = this.#anim.getKey(t);
-                    if (k && k.getEasing() != Anim.EASING_ABSOLUTE)
-                    {
-                        skipped = true;
-                        continue;
-                    }
-                }
+                y = this.animLine.valueToPixel(v);
 
-                if (skipped)
+                let pointArray = pointsSortBefore;
+
+                if (this.anim.keys.length > 0 && t >= this.anim.keys[0].time) pointArray = pointsSort;
+                if (this.anim.hasEnded(t)) pointArray = pointsSortAfter;
+
+                if (pointArray != lastArray)
                 {
-                    let y = this.animLine.valueToPixel(lv);
-                    if (!this.shouldDrawGraphSpline())y = this.animLine.height / 2;
+                    if (lastArray)lastArray.push(lastX, y, z);
+                    if (lastArray)lastArray.push(x, y, z);
+
                     pointArray.push(x, y, z);
+                    lastX = x;
                 }
 
-                lv = v;
-                let y = this.animLine.valueToPixel(v);
-                pointArray.push(x, y, z);
+                const delta = (lastY - y);
+
+                if (this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE || this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
+                    unit = 1;
+                else
+                    unit = map(Math.abs(delta), 0, 4, 4, 2, Anim.EASING_LINEAR, true);
+
+                if (idx != lastKeyIdx || pointArray.length < 2 || pointArray[pointArray.length - 2] != y)
+                {
+                    if (idx != lastKeyIdx || this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE)
+                        pointArray.push(lastX, y, z);
+
+                    if (this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
+                    {
+                        if (Math.abs(delta - lastDelta) > 0.001)
+                            pointArray.push(x, y, z);
+                    }
+                    else
+                        pointArray.push(x, y, z);
+
+                    lastX = x;
+                }
+
+                lastDelta = delta;
+                lastArray = pointArray;
                 skipped = false;
+                lastKeyIdx = idx;
+                lastY = y;
             }
+            lastArray.push(x, y, z);
         }
 
         if (this.shouldDrawSpline() && this.#spline)
@@ -427,6 +449,7 @@ export class glTlKeys extends Events
         }
 
         this.updateColors();
+        this.updTimeout = null;
         this.#updateCount++;
     }
 
@@ -893,4 +916,11 @@ export class glTlKeys extends Events
         if (this.#glTl.isAnimated) this.update();
     }
 
+    getNumSplinePoints()
+    {
+        return;
+        this.#spline?.getNumPoints() +
+        this.#splineAfter?.getNumPoints() +
+        this.#splineBefore?.getNumPoints();
+    }
 }

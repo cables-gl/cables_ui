@@ -76,6 +76,7 @@ export default class GlSplineDrawer extends Events
         this.doCalcProgress = true;
 
         this.#geom = new Geometry("GlSplineDrawer_" + name);
+        // this.#geom.glPrimitive = cgl.gl.POINTS;
 
         this.clear();
 

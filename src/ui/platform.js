@@ -274,8 +274,8 @@ export class Platform extends Events
             iziToast.error({
                 "position": "topRight",
                 "theme": "dark",
-                "title": GuiGuiText.notOptimizedBrowser_title,
-                "message": GuiGuiText.notOptimizedBrowser_text,
+                "title": GuiText.notOptimizedBrowser_title,
+                "message": GuiText.notOptimizedBrowser_text,
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
@@ -516,7 +516,7 @@ export class Platform extends Events
                         },
                         "title": "Backup",
                         "warning": true,
-                        "text": GuiGuiText.projectBackupNotSaved,
+                        "text": GuiText.projectBackupNotSaved,
                     });
 
                 }

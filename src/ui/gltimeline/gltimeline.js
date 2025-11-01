@@ -549,6 +549,7 @@ export class GlTimeline extends Events
         str += "<br/>ms: " + this.cgl.fpsCounter.stats.ms;
         str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + ", " + this.#rectsOver.getNumRects() + ", " + this.#rects.getNumRects();
         str += "<br/>text rects: " + this.textsNoScroll.rectDrawer.getNumRects(); str += "<br/>splines: " + this.splines?.count;
+        str += "<br/>spline points: " + this.getNumSplinePoints();
 
         this.#elInfoOverlay.style.transform = "initial";
         this.#elInfoOverlay.style.left = "10px";
@@ -558,6 +559,15 @@ export class GlTimeline extends Events
         this.#elInfoOverlay.innerHTML = str;
         clearTimeout(this.#elInfoOverlayTimeout);
         this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 500);
+    }
+
+    getNumSplinePoints()
+    {
+        let count = 0;
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            count += this.#tlAnims[i].getNumSplinePoints();
+
+        return count;
     }
 
     toggleAutoKeyframe()
