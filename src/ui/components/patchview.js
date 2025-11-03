@@ -1997,14 +1997,17 @@ export default class PatchView extends Events
                         "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp, sugg) =>
                         {
-                            if (Link.canLink(thePort, sugg.p))
-                            {
-                                this._p.link(op1, pid, newOp, newPortJson.id);
-                            }
-                            else
-                            {
-                                gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
-                            }
+                            // if (sugg && Link.canLink(thePort, sugg.p))
+                            // {
+                            //     this._p.link(op1, pid, newOp, newPortJson.id);
+                            // }
+                            // else
+                            // {
+                            //     if (thePort)
+                            //         gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
+                            //     else
+                            //         console.error("unknown subpatchop stuff");
+                            // }
                         }
                     });
                 }
@@ -2028,14 +2031,8 @@ export default class PatchView extends Events
 
             if (fitp)
             {
-                if (fitp.type == p.type)
-                {
-                    this._p.link(op1, pid, op2, fitp.name);
-                }
-                else
-                {
-                    gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
-                }
+                if (fitp.type == p.type) this._p.link(op1, pid, op2, fitp.name);
+                else gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
             }
             else
             {
@@ -2128,7 +2125,7 @@ export default class PatchView extends Events
             {
                 convertPorts(p1, p2, converters[sid]);
             });
-        
+
             return;
         }
 

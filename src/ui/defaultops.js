@@ -8,7 +8,7 @@ import { portType } from "./core_constants.js";
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
-    "string": "Ops.String.String_v2",
+    "string": "Ops.String.String_v3",
     "array": "Ops.Array.Array_v3",
     "anim": "Ops.TimeLine.Anim",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
