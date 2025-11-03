@@ -2364,14 +2364,13 @@ export default class Gui extends Events
     hoverPortStart(id, opname, portname)
     {
         this.lastHoverPort = this.corePatch().getOpById(id)?.getPortByName(portname);
-        this.lastHoverPort.setUiAttribs({ "hover": true });
+        this.lastHoverPort?.setUiAttribs({ "hover": true });
         this.opDocs.showPortDoc(opname, portname);
     }
 
     hoverPortEnd()
     {
-        if (this.lastHoverPort)
-            this.lastHoverPort.setUiAttribs({ "hover": false });
+        this.lastHoverPort?.setUiAttribs({ "hover": false });
 
     }
 }
