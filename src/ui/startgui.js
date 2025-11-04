@@ -124,8 +124,6 @@ export default function startUi(cfg)
                     if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
-                gui.patchView.checkPatchErrors();
-
                 gui.patchView.setCurrentSubPatch(0);
 
                 ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
@@ -172,6 +170,7 @@ export default function startUi(cfg)
                         gui.setPatchSummary(summary.data);
                         gui.patchView.highlightExamplePatchOps();
                         gui.patchParamPanel.show();
+                        gui.patchView.checkPatchErrors();
 
                         if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
