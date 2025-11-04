@@ -2962,6 +2962,7 @@ export default class PatchView extends Events
 
     highlightExamplePatchOps()
     {
+        console.log("highlight...");
         const patchSummary = gui.getPatchSummary();
         if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
         {

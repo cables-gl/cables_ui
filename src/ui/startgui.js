@@ -171,6 +171,7 @@ export default function startUi(cfg)
                     {
                         gui.setPatchSummary(JSON.stringify(summary.data));
                         gui.patchParamPanel.show();
+                        console.log("has summary");
                         gui.patchView.highlightExamplePatchOps();
 
                         if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
