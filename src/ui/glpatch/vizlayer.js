@@ -307,6 +307,12 @@ export default class VizLayer extends Events
         };
     }
 
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {VizLayerOptions} layer
+     * @param {string[]} lines
+     * @param {VizTextOptions} options
+     */
     renderText(ctx, layer, lines, options)
     {
         let indent = "";
@@ -316,7 +322,7 @@ export default class VizLayer extends Events
         let padding = fs * 0.25;
         const lineHeight = fs + padding;
         let numLines = Math.floor(layer.height / layer.scale / lineHeight);
-        let offset = Math.floor(options.scroll * lines.length);
+        let offset = Math.floor((options.scroll || 0) * lines.length);
 
         offset = Math.max(offset, 0);
         offset = Math.min(offset, lines.length - numLines);
