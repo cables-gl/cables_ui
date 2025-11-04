@@ -56,127 +56,129 @@ export default function startUi(cfg)
             return;
         }
 
-        gui.bind(() =>
+        platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
         {
-            incrementStartup();
-            platform.initRouting(() =>
+            if (err)
+                console.log("error in summary", err);
+
+            gui.bind(() =>
             {
                 incrementStartup();
-                gui.showUiElements();
-                gui.setLayout();
-                incrementStartup();
-                userSettings.init();
-                incrementStartup();
-
-                platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
+                platform.initRouting(() =>
                 {
-                    if (!err)
+                    incrementStartup();
+                    gui.opSelect().prepare();
+                    userSettings.init();
+                    incrementStartup();
+
+                    gui.opSelect().reload();
+                    gui.showWelcomeNotifications();
+                    incrementStartup();
+                    gui.showUiElements();
+                    gui.setLayout();
+                    gui.opSelect().prepare();
+                    incrementStartup();
+                    gui.opSelect().search();
+                    gui.setElementBgPattern(ele.byId("cablescanvas"));
+
+                    editorSession.open();
+
+                    gui.setFontSize(userSettings.get("fontSizeOff"));
+
+                    userSettings.on("change", function (key, v)
                     {
-                        gui.setPatchSummary(summary.data);
-                        gui.opSelect().prepare();
-
-                        gui.opSelect().reload();
-                        gui.showWelcomeNotifications();
-                        gui.setLayout();
-                        gui.opSelect().prepare();
-                        incrementStartup();
-                        gui.opSelect().search();
-                        gui.setElementBgPattern(ele.byId("cablescanvas"));
-
-                        editorSession.open();
-
-                        gui.setFontSize(userSettings.get("fontSizeOff"));
-
-                        userSettings.on("change", function (key, v)
+                        if (key == "fontSizeOff")
                         {
-                            if (key == "fontSizeOff")
-                            {
-                                gui.setFontSize(v);
-                            }
-
-                            if (key == "bgpattern")
-                            {
-                                gui.setElementBgPattern(ele.byId("cablescanvas"));
-                                gui.setElementBgPattern(ele.byId("bgpreview"));
-                            }
-
-                            if (key == "hideSizeBar")
-                            {
-                                gui.setLayout();
-                            }
-                        });
-
-                        gui.bindKeys();
-                        ele.byId("maincomponents").style.display = "inline";
-
-                        const socketClusterConfig = platform.getSocketclusterConfig();
-                        if (!gui.socket && socketClusterConfig.enabled)
-                        {
-                            gui.socket = new ScConnection(socketClusterConfig);
+                            gui.setFontSize(v);
                         }
 
-                        startIdleListeners();
-
-                        new HtmlInspector();
-
-                        if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
-
-                        gui.maintabPanel.init();
-
-                        gui.corePatch().logStartup("finished loading cables");
-
-                        gui.patchView.checkPatchErrors();
-
-                        gui.patchView.setCurrentSubPatch(0);
-
-                        ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
-                        ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
-
-                        document.getElementById("loadingstatusLog").style.display = "none";
-
-                        let projectId = gui.patchId;
-                        if (gui.project())
+                        if (key == "bgpattern")
                         {
-                            projectId = gui.project().shortId || gui.project()._id;
+                            gui.setElementBgPattern(ele.byId("cablescanvas"));
+                            gui.setElementBgPattern(ele.byId("bgpreview"));
                         }
-                        new QRCode(document.getElementById("remote_view_qr"), {
-                            "GuiText": platform.getCablesUrl() + "/remote_client/" + projectId,
-                            "width": 200,
-                            "height": 200,
-                            "colorDark": "#000000",
-                            "colorLight": "#ffffff",
-                            "correctLevel": QRCode.CorrectLevel.H
-                        });
 
-                        new QRCode(document.getElementById("patch_view_qr"), {
-                            "GuiText": platform.getCablesUrl() + "/p/" + projectId,
-                            "width": 200,
-                            "height": 200,
-                            "colorDark": "#000000",
-                            "colorLight": "#ffffff",
-                            "correctLevel": QRCode.CorrectLevel.H
-                        });
-
-                        if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
-
-                        CABLES.UI.loaded = true;
-                        CABLES.UI.loadedTime = performance.now();
-
-                        gui.corePatch().clearSubPatchCache();
-
-                        for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
-
-                        gui.patchView.highlightExamplePatchOps();
-                        gui.patchParamPanel.show();
-
-                        if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
-
-                        setTimeout(() =>
+                        if (key == "hideSizeBar")
                         {
-                            window.gui.emitEvent("uiloaded");
-                            gui.corePatch().timer.setTime(0);
-                        }, 100);
+                            gui.setLayout();
+                        }
+                    });
+
+                    gui.bindKeys();
+                    ele.byId("maincomponents").style.display = "inline";
+
+                    const socketClusterConfig = platform.getSocketclusterConfig();
+                    if (!gui.socket && socketClusterConfig.enabled)
+                    {
+                        gui.socket = new ScConnection(socketClusterConfig);
                     }
+
+                    startIdleListeners();
+
+                    new HtmlInspector();
+
+                    if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
+
+                    gui.maintabPanel.init();
+
+                    gui.corePatch().logStartup("finished loading cables");
+
+                    setTimeout(() =>
+                    {
+                        if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
+                    }, 1000);
+
+                    gui.patchView.checkPatchErrors();
+
+                    gui.patchView.setCurrentSubPatch(0);
+
+                    ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
+                    ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
+
+                    document.getElementById("loadingstatusLog").style.display = "none";
+
+                    let projectId = gui.patchId;
+                    if (gui.project())
+                    {
+                        projectId = gui.project().shortId || gui.project()._id;
+                    }
+                    new QRCode(document.getElementById("remote_view_qr"), {
+                        "GuiText": platform.getCablesUrl() + "/remote_client/" + projectId,
+                        "width": 200,
+                        "height": 200,
+                        "colorDark": "#000000",
+                        "colorLight": "#ffffff",
+                        "correctLevel": QRCode.CorrectLevel.H
+                    });
+
+                    new QRCode(document.getElementById("patch_view_qr"), {
+                        "GuiText": platform.getCablesUrl() + "/p/" + projectId,
+                        "width": 200,
+                        "height": 200,
+                        "colorDark": "#000000",
+                        "colorLight": "#ffffff",
+                        "correctLevel": QRCode.CorrectLevel.H
+                    });
+
+                    if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
+
+                    CABLES.UI.loaded = true;
+                    CABLES.UI.loadedTime = performance.now();
+
+                    gui.corePatch().clearSubPatchCache();
+
+                    for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
+
+                    gui.setPatchSummary(summary.data);
+                    gui.patchParamPanel.show();
+
+                    if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+
+                    setTimeout(() =>
+                    {
+                        window.gui.emitEvent("uiloaded");
+                        gui.corePatch().timer.setTime(0);
+                    }, 100);
                 });
 
             });
