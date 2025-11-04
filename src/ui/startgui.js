@@ -171,16 +171,16 @@ export default function startUi(cfg)
                     {
                         gui.setPatchSummary(summary.data);
                         gui.patchParamPanel.show();
+                        if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+
+                        setTimeout(() =>
+                        {
+                            window.gui.emitEvent("uiloaded");
+                            gui.corePatch().timer.setTime(0);
+                        }, 100);
                     }
                 });
 
-                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
-
-                setTimeout(() =>
-                {
-                    window.gui.emitEvent("uiloaded");
-                    gui.corePatch().timer.setTime(0);
-                }, 100);
             });
         });
     });
