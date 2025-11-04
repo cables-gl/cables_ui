@@ -170,8 +170,8 @@ export default function startUi(cfg)
                     if (!err)
                     {
                         gui.setPatchSummary(JSON.stringify(summary.data));
-                        gui.patchView.highlightExamplePatchOps();
                         gui.patchParamPanel.show();
+                        gui.patchView.highlightExamplePatchOps();
 
                         if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
