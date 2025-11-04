@@ -176,7 +176,7 @@ export default function startUi(cfg)
 
                     setTimeout(() =>
                     {
-                        window.gui.emitEvent("uiloaded");
+                        gui.emitEvent(Gui.EVENT_UILOADED);
                         gui.corePatch().timer.setTime(0);
                     }, 100);
                 });

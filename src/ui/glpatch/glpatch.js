@@ -310,7 +310,7 @@ export default class GlPatch extends Events
             this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
         });
 
-        gui.on("uiloaded", () =>
+        gui.on(Gui.EVENT_UILOADED, () =>
         {
             this.snap.update();
             // update remote cursor positions

@@ -17,6 +17,10 @@ import { logFilter } from "../../utils/logfilter.js";
  */
 export default class LogTab extends Events
 {
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} tabs
+     */
     constructor(tabs)
     {
         super();
@@ -48,7 +52,8 @@ export default class LogTab extends Events
 
         this._tab.addButton("Clear", () =>
         {
-            logFilter.logs.length = 0; this._html();
+            logFilter.logs.length = 0;
+            this._html();
         });
 
         this._tab.addButton("Copy to clipboard", () =>
@@ -62,12 +67,11 @@ export default class LogTab extends Events
             navigator.clipboard.writeText(txt);
         });
 
-        this._tab.addEventListener(
-            "close",
-            () =>
-            {
-                this.close();
-            });
+        this._tab.addEventListener("close", () =>
+        {
+            this.close();
+        });
+        this._html();
     }
 
     close()

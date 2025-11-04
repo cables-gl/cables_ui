@@ -1,7 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 
 /**
@@ -26,7 +26,7 @@ export default class VizLayer extends Events
         this._glPatch = glPatch;
         this.paused = userSettings.get("vizlayerpaused") || false;
 
-        gui.on("uiloaded", () =>
+        gui.on(Gui.EVENT_UILOADED, () =>
         {
             this._updateSize();
         });
