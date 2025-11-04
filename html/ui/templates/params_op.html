@@ -55,9 +55,9 @@
         {{/if}}
 
         {{#if op.isDeprecated }}
-            <div class="warning" id="">
+            <div class="warning-error warning-error-level2" id="">
                 This operator is outdated.
-                {{#if op.isDeprecatedAlternative }}
+                {{#if op.isDeprecatedAlternative}}
                 <br/>
                 we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
                 {{/if}}
