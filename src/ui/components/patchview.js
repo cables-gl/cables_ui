@@ -2962,7 +2962,6 @@ export default class PatchView extends Events
 
     highlightExamplePatchOps()
     {
-        console.log("highlight...");
         const patchSummary = gui.getPatchSummary();
         if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
         {
@@ -2977,14 +2976,12 @@ export default class PatchView extends Events
                 const opz = gui.corePatch().getOpsByObjName(patchSummary.exampleForOps[j]);
                 for (let k = 0; k < opz.length; k++)
                 {
-                    // const opname = opz[k];
                     opz[k].setUiAttribs({ "color": "#5dc0fd" });
                 }
             }
 
             if (gui.user.isStaff && patchSummary.title != patchTitle)
             {
-                console.log("setting example patch title");
                 this.store.setPatchName(patchTitle);
                 patchTitle += " Example";
             }
