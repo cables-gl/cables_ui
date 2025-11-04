@@ -89,7 +89,7 @@ const defaultOpNames =
 
     "stringEditor": "Ops.String.StringEditor",
     "sequence": "Ops.Trigger.Sequence",
-    "divElement": "Ops.Html.Elements.DivElement_v3",
+    "divElement": "Ops.Html.Elements.Element_v2",
     "customShader": "Ops.Gl.Shader.CustomShader_v2",
 
     "GreaterThan": "Ops.Math.Compare.GreaterThan",
