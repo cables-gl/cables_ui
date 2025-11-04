@@ -61,15 +61,17 @@ export default function startUi(cfg)
             incrementStartup();
             platform.initRouting(() =>
             {
+                gui.setLayout();
+                incrementStartup();
+                userSettings.init();
+                incrementStartup();
 
                 platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
                 {
                     if (!err)
                     {
-                        incrementStartup();
+                        gui.setPatchSummary(summary.data);
                         gui.opSelect().prepare();
-                        userSettings.init();
-                        incrementStartup();
 
                         gui.opSelect().reload();
                         gui.showWelcomeNotifications();
@@ -164,7 +166,6 @@ export default function startUi(cfg)
 
                         for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-                        gui.setPatchSummary(summary.data);
                         gui.patchView.highlightExamplePatchOps();
                         gui.patchParamPanel.show();
 
