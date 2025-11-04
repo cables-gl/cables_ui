@@ -1,10 +1,9 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Anim, AnimKey, Port, Timer, Patch } from "cables";
+import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { glTlAnimLine } from "./gltlanimline.js";
-import { glTlRuler } from "./gltlruler.js";
 import { glTlScroll } from "./gltlscroll.js";
 import { GlTlView } from "./gltlview.js";
 import Gui, { gui } from "../gui.js";
@@ -23,20 +22,21 @@ import { glTlKeys } from "./gltlkeys.js";
 import { glTlDragArea } from "./gltldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
-import Collapsable from "../components/collapsable.js";
-import { patchStructureQuery } from "../components/patchstructure.js";
+import { patchStructureQuery } from "../components/patchstructurequery.js";
+import { UiOp } from "../core_extend_op.js";
+import { glTlHead } from "./gltltimehead.js";
+import { DomEvents, CssClassNames } from "../theme.js";
+import { GuiText } from "../text.js";
 
 /**
  * @typedef TlConfig
  * @property {Number} fps
- * @property {Number} [duration]
- * @property {Number} [bpm]
  * @property {Boolean} [fadeInFrames]
  * @property {Boolean} [showBeats]
  * @property {String} [displayUnits]
  * @property {Boolean} [restrictToFrames]
- * @property {Number} [bpmHlXth]
  */
+
 /**
  * gl timeline
  *
@@ -44,10 +44,10 @@ import { patchStructureQuery } from "../components/patchstructure.js";
  * @class GlTimeline
  * @extends {Events}
  */
-
 export class GlTimeline extends Events
 {
     static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
+    static CLIP_VAR_PREFIX = "_clip";
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
@@ -61,7 +61,9 @@ export class GlTimeline extends Events
     static DISPLAYUNIT_FRAMES = 1;
     static DISPLAYUNIT_BEATS = 2;
 
+    static EVENT_MOUSEMOVE = "mousemove";
     static EVENT_KEYSELECTIONCHANGE = "keySelectionChange";
+    static EVENT_LAYOUTCHANGE = "layoutchanged";
 
     #lastDragX = Number.MAX_SAFE_INTEGER;
     #lastDragY = Number.MAX_SAFE_INTEGER;
@@ -75,6 +77,9 @@ export class GlTimeline extends Events
     /** @type {GlTextWriter} */
     texts = null;
 
+    /** @type {GlTextWriter} */
+    textsNoScroll = null;
+
     /** @type {GlSplineDrawer} */
     splines;
 
@@ -82,9 +87,12 @@ export class GlTimeline extends Events
     #rects = null;
 
     /** @type {GlRectInstancer} */
+    #rectsNoScroll;
+
+    /** @type {GlRectInstancer} */
     #rectsOver = null;
 
-    /** @type {glTlRuler} */
+    /** @type {} */
     ruler = null;
 
     /** @type {glTlScroll} */
@@ -99,11 +107,7 @@ export class GlTimeline extends Events
     /** @type {GlRect} */
     cursorNewKeyVis;
 
-    duration = 120;
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
-
-    /** @type {GlRect} */
-    #rectSelect;
 
     /** @type {GlTlView} */
     view = null;
@@ -116,17 +120,20 @@ export class GlTimeline extends Events
     /** @type {Array<AnimKey>} */
     #selectedKeys = [];
 
+    /** @type {GlRect} */
+    #rectSelect;
+
+    /** @type {object} */
+    selectRect = null;
+
     hoverKeyRect = null;
     disposed = false;
 
     #oldhtml = "";
-    #canvasMouseDown = false;
-    #paused = false;
 
     /** @type {CglContext} */
     #cgl = null;
-    #isAnimated = false;
-    buttonForScrolling = 2;
+    buttonForPanning = 2;
     toParamKeys = null;
 
     loopAreaStart = 0;
@@ -135,9 +142,7 @@ export class GlTimeline extends Events
     /** @type {TlConfig} */
     cfg = CABLES.timelineConfig || {
         "fps": 30,
-        "bpm": 180,
         "fadeInFrames": true,
-        "showBeats": true,
         "restrictToFrames": true
     };
 
@@ -145,18 +150,20 @@ export class GlTimeline extends Events
     #lastXnoButton = 0;
     #lastYnoButton = 0;
 
-    selectRect = null;
+    /** @type {Anim[]} */
     #selectedKeyAnims = [];
     #firstInit = true;
     #focusRuler = false;
     #focusScroll = false;
-    #keyOverEl;
-    #tlTimeDisplay;
+    #elKeyParamPanel;
+    #elTimeDisplay;
 
     #oldSize = -1;
     #perfFps = new FpsCounter();
     #filterInputEl;
     #filterString = "";
+
+    /** @type {GlText} */
     #cursorText;
     #cursorTextBgRect;
     #cursorY = 30;
@@ -168,6 +175,16 @@ export class GlTimeline extends Events
 
     /** @type {glTlDragArea} */
     loopAreaDrag = null;
+
+    /** @type {HTMLElement} */
+    tlTimeScrollContainer;
+    #clipboardKeys;
+    #spacePressed = false;
+    #cursor;
+
+    /** @type {HTMLElement} */
+    #elInfoOverlay;
+    #elInfoOverlayTimeout;
 
     /**
      * @param {CglContext} cgl
@@ -184,11 +201,13 @@ export class GlTimeline extends Events
 
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
+        this.textsNoScroll = new GlTextWriter(cgl, { "name": "textnoscroll", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
+        this.#rectsNoScroll = new GlRectInstancer(cgl, { "name": "gltl top rects", "allowDragging": true });
 
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
-        this.ruler = new glTlRuler(this);
+        this.ruler = new glTlHead(this);
 
         this.scroll = new glTlScroll(this);
 
@@ -196,7 +215,7 @@ export class GlTimeline extends Events
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
         this.selectedKeysDragArea = new glTlDragArea(this, null, this.#rectsOver);
-        this.selectedKeysDragArea.setColor(1, 1, 0, 0.3);
+        this.selectedKeysDragArea.setColor(1, 1, 0, 0.5);
 
         this.loopAreaDrag = new glTlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
@@ -223,7 +242,7 @@ export class GlTimeline extends Events
         this.#cursorTextBgRect.setParent(this.cursorVertLineRect);
         this.#cursorTextBgRect.setColor(0.2, 0.2, 0.2, 1);
 
-        this.#cursorText = new GlText(this.texts, "???");
+        this.#cursorText = new GlText(this.textsNoScroll, "???");
         this.#cursorText.setParentRect(this.cursorVertLineRect);
         this.setColorRectSpecial(this.#cursorText);
 
@@ -250,10 +269,13 @@ export class GlTimeline extends Events
 
         cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this.#onCanvasPointerMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_UP, this.#onCanvasPointerUp.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_DOWN, this.#onCanvasPointerDown.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_WHEEL, this.#onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, (e) => { this.#rects.pointerLeave(e); }, { "passive": true });
+        cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this._onCanvasDblClick.bind(this), { "passive": false });
+
         cgl.on("resize", () => { this.resize(true); });
         gui.on(Gui.EVENT_RESIZE, () => { this.resize(true); });
 
@@ -263,24 +285,24 @@ export class GlTimeline extends Events
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.init(); });
         gui.corePatch().on("portAnimToggle", () => { this.init(); });
 
-        this.#keyOverEl = document.createElement("div");
-        this.#keyOverEl.classList.add("keyOverlay");
-        this.#keyOverEl.setAttribute("id", "keyOverlay");
-        cgl.canvas.parentElement.appendChild(this.#keyOverEl);
+        this.#elKeyParamPanel = document.createElement("div");
+        this.#elKeyParamPanel.classList.add("keyOverlay");
+        this.#elKeyParamPanel.setAttribute("id", "keyOverlay");
+        cgl.canvas.parentElement.appendChild(this.#elKeyParamPanel);
 
-        this.#filterInputEl = document.createElement("input");
-        this.#filterInputEl.classList.add("filterInput");
-        this.#filterInputEl.setAttribute("placeholder", "filter...");
-        cgl.canvas.parentElement.appendChild(this.#filterInputEl);
-        this.#filterInputEl.addEventListener("input", () =>
-        {
-            this.#filterString = this.#filterInputEl.value;
-            this.init();
-        });
+        // this.#filterInputEl = document.createElement("input");
+        // this.#filterInputEl.classList.add("filterInput");
+        // this.#filterInputEl.setAttribute("placeholder", "filter...");
+        // cgl.canvas.parentElement.appendChild(this.#filterInputEl);
+        // this.#filterInputEl.addEventListener("input", () =>
+        // {
+        //     this.#filterString = this.#filterInputEl.value;
+        //     this.init();
+        // });
 
         this.#selectModeEl = document.createElement("div");
         this.#selectModeEl.classList.add("selectMode");
-        this.#selectModeEl.classList.add("button-small");
+        this.#selectModeEl.classList.add(CssClassNames.BUTTON_SMALL);
         this.#selectModeEl.innerHTML = "selected";
         cgl.canvas.parentElement.appendChild(this.#selectModeEl);
         ele.clickable(this.#selectModeEl, () =>
@@ -289,11 +311,35 @@ export class GlTimeline extends Events
             this.updateGraphSelectMode();
         });
 
-        this.#tlTimeDisplay = document.createElement("div");
-        this.#tlTimeDisplay.classList.add("tltimedisplay");
-        this.#tlTimeDisplay.addEventListener("click", this.cycleDisplayUnits.bind(this));
+        this.#elInfoOverlay = ele.byId("tlInfoOverlay");
 
-        cgl.canvas.parentElement.appendChild(this.#tlTimeDisplay);
+        this.#elTimeDisplay = document.createElement("div");
+        this.#elTimeDisplay.classList.add("tltimedisplay");
+        this.#elTimeDisplay.addEventListener(DomEvents.POINTER_CLICK, this.cycleDisplayUnits.bind(this));
+        cgl.canvas.parentElement.appendChild(this.#elTimeDisplay);
+        this.#elTimeDisplay.addEventListener(DomEvents.POINTER_ENTER, () =>
+        {
+            this.refreshInfoOverlay();
+            gui.showInfo(GuiText.tlhover_display);
+        });
+
+        this.#elTimeDisplay.addEventListener(DomEvents.POINTER_LEAVE, () =>
+        {
+            setTimeout(() =>
+            {
+
+                clearTimeout(this.#elInfoOverlayTimeout);
+                this.#elInfoOverlay.classList.add(CssClassNames.HIDDEN);
+            }, 10000);
+        });
+
+        this.tlTimeScrollContainer = document.createElement("div");
+        this.tlTimeScrollContainer.classList.add("scrollContainer");
+        this.tlTimeScrollContainer.style.top = this.getFirstLinePosy() + "px";
+
+        cgl.canvas.parentElement.appendChild(this.tlTimeScrollContainer);
+
+        cgl.canvas.parentElement.classList.add("tlContainer");
 
         this.loopAreaDrag.on(glTlDragArea.EVENT_MOVE, (e) =>
         {
@@ -345,12 +391,17 @@ export class GlTimeline extends Events
 
         });
 
-        gui.keys.key(".", "forward one frame", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key(" ", "Drag left mouse button to pan timeline", "down", cgl.canvas.id, { "displayGroup": "Timeline" }, (_e) => { this.#spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (_e) => { console.log("spaceup"); this.#spacePressed = false; this.emitEvent("spaceup"); });
+
+        gui.keys.key(" ", "Rewind and play", "down", cgl.canvas.id, { "cmdCtrl": true }, (_e) => { gui.corePatch().timer.setTime(0); gui.corePatch().timer.play(); });
+
+        gui.keys.key(".", "Forward one frame", "down", cgl.canvas.id, {}, () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 1 / this.fps);
         });
 
-        gui.keys.key(",", "rewind one frame", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key(",", "Rewind one frame", "down", cgl.canvas.id, {}, () =>
         {
             gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 1 / this.fps);
         });
@@ -360,12 +411,17 @@ export class GlTimeline extends Events
             this.view.centerCursor();
         });
 
-        gui.keys.key("a", "move keys to cursor", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("d", "Delete Selected Keys", "down", cgl.canvas.id, {}, () =>
+        {
+            this.deleteSelectedKeys();
+        });
+
+        gui.keys.key("a", "Move keys to cursor", "down", cgl.canvas.id, {}, () =>
         {
             this.moveSelectedKeys();
         });
 
-        gui.keys.key("f", "zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("f", "Zoom to all or selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.fit();
         });
@@ -380,12 +436,12 @@ export class GlTimeline extends Events
             this.jumpKey(1);
         });
 
-        gui.keys.key("delete", "delete selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("delete", "Delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
         });
 
-        gui.keys.key("backspace", "delete selected keys", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("backspace", "Delete selected keys", "down", cgl.canvas.id, {}, () =>
         {
             this.deleteSelectedKeys();
             this.needsUpdateAll = "deletekey";
@@ -398,15 +454,13 @@ export class GlTimeline extends Events
 
         /// ///////////////////
 
-        gui.on("opSelectChange", (op) =>
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {
             this.selectedOp = op;
 
             const selops = gui.patchView.getSelectedOps();
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
-            {
                 this.#tlAnims[0].activateSelectedOps(selops);
-            }
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
@@ -439,17 +493,87 @@ export class GlTimeline extends Events
                 this.#selOpsStr = selOpsStr;
             }
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
+
+            let found = false;
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                for (let j = 0; j < selops.length; j++)
+                {
+                    if (this.#tlAnims[i].getOp() == selops[j])
+                    {
+                        this.#tlAnims[i].getTitle(0).scrollIntoView();
+                        found = true;
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
         });
+
         gui.glTimeline = this;
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
+        {
+            if (this.isGraphLayout()) this.init();
+
+        });
 
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
     }
 
+    get cgl()
+    {
+        return this.#cgl;
+    }
+
+    get overlayRects()
+    {
+        return this.#rectsOver;
+    }
+
+    /**
+     * @param {GlTextWriter} writer
+     * @param {string} string
+     */
+    createText(writer, string)
+    {
+        return new GlText(writer, string);
+    }
+
+    refreshInfoOverlay()
+    {
+        this.#elInfoOverlay.classList.remove(CssClassNames.HIDDEN);
+        let str = "debug";
+        str += "<br/>fps: " + this.cgl.fpsCounter.stats.fps;
+        str += "<br/>ms: " + this.cgl.fpsCounter.stats.ms;
+        str += "<br/>rects: " + this.#rectsNoScroll.getNumRects() + ", " + this.#rectsOver.getNumRects() + ", " + this.#rects.getNumRects();
+        str += "<br/>text rects: " + this.textsNoScroll.rectDrawer.getNumRects(); str += "<br/>splines: " + this.splines?.count;
+        str += "<br/>spline points: " + this.getNumSplinePoints();
+
+        this.#elInfoOverlay.style.transform = "initial";
+        this.#elInfoOverlay.style.left = "10px";
+        const y = this.#elTimeDisplay.getBoundingClientRect().top;
+        const h = this.#elInfoOverlay.getBoundingClientRect().height;
+        this.#elInfoOverlay.style.top = y - h - 40 + "px";
+        this.#elInfoOverlay.innerHTML = str;
+        clearTimeout(this.#elInfoOverlayTimeout);
+        this.#elInfoOverlayTimeout = setTimeout(this.refreshInfoOverlay.bind(this), 500);
+    }
+
+    getNumSplinePoints()
+    {
+        let count = 0;
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            count += this.#tlAnims[i].getNumSplinePoints();
+
+        return count;
+    }
+
     toggleAutoKeyframe()
     {
         this.keyframeAutoCreate = !this.keyframeAutoCreate;
+        notify("automatically create keys on changes " + this.keyframeAutoCreate);
         this.updateIcons();
         this.saveUserSettings();
     }
@@ -460,11 +584,14 @@ export class GlTimeline extends Events
         else this.#selectModeEl.innerHTML = "manual";
 
         this.deactivateAllAnims(true);
-        gui.emitEvent("opSelectChange");
+        gui.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED);
         this.needsUpdateAll = "updategrathselect";
         this.saveUserSettings();
     }
 
+    /**
+     * @param {object} cfg
+     */
     loadPatchData(cfg)
     {
         if (!cfg) return;
@@ -485,7 +612,7 @@ export class GlTimeline extends Events
     _initUserPrefs()
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
-        this.buttonForScrolling = userSettingScrollButton || 2;
+        this.buttonForPanning = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);
         this.keyframeAutoCreate = userSettings.get(GlTimeline.USERSETTING_AUTO_KEYFRAMES, true);
@@ -502,10 +629,9 @@ export class GlTimeline extends Events
         userSettings.set(GlTimeline.USERSETTING_GRAPH_SELECTMODE, !!this.graphSelectMode);
     }
 
-    /** @returns {number} */
-    get bpm()
+    get duration()
     {
-        return this.cfg.bpm;
+        return gui.corePatch().animMaxTime;
     }
 
     /** @returns {number} */
@@ -524,6 +650,11 @@ export class GlTimeline extends Events
         return this.#rects;
     }
 
+    get rectsNoScroll()
+    {
+        return this.#rectsNoScroll;
+    }
+
     get isAnimated()
     {
         return this.view.isAnimated() || this.needsUpdateAll;
@@ -534,6 +665,7 @@ export class GlTimeline extends Events
         return gui.corePatch().timer.getTime();
     }
 
+    /** @returns {HTMLElement} */
     parentElement()
     {
         return this.#cgl.canvas.parentElement;
@@ -545,23 +677,28 @@ export class GlTimeline extends Events
     resize(force)
     {
         if (!force && this.#oldSize == this.#cgl.canvasWidth) return;
-        this.#oldSize = this.#cgl.canvasWidth;
-        this.scroll.setWidth(this.#cgl.canvasWidth);
-        this.ruler.setWidth(this.#cgl.canvasWidth);
+        const canvWidth = this.#cgl.widthCss;
+        const canvHeight = this.#cgl.heightCss;
+        this.scroll.setWidth(this.#cgl.width);
+        this.ruler.setWidth(this.#cgl.width);
 
-        this.bgRect.setSize(this.#cgl.canvasWidth, this.#cgl.canvasHeight);
+        this.bgRect.setSize(this.#cgl.width, this.#cgl.height);
 
-        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvasWidth);
+        for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].setWidth(this.#cgl.canvas.clientWidth);
 
         this.needsUpdateAll = "resize";
         this.setHoverKeyRect(null);
 
         const wparams = userSettings.get(GlTimeline.USERSETTING_SPLITTER_RIGHT);
-        this.#keyOverEl.style.width = wparams + "px";
-        this.#keyOverEl.style.right = 0 + "px";
-        this.#keyOverEl.style.bottom = 0 + "px";
-        this.#keyOverEl.style.top = "35px";
+        this.#elKeyParamPanel.style.width = wparams - 15 + "px";
+        this.#elKeyParamPanel.style.right = 0 + "px";
+        this.#elKeyParamPanel.style.bottom = 0 + "px";
+        this.#elKeyParamPanel.style.top = 0 + "px";
 
+        const ls = userSettings.get(GlTimeline.USERSETTING_SPLITTER_LEFT);
+
+        this.tlTimeScrollContainer.style.width = ls + canvWidth + 15 + "px";
+        this.tlTimeScrollContainer.style.height = canvHeight - this.getFirstLinePosy() + "px";
     }
 
     snapSelectedKeyTimes()
@@ -592,19 +729,29 @@ export class GlTimeline extends Events
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS) this.#layout = GlTimeline.LAYOUT_LINES;
         else this.#layout = GlTimeline.LAYOUT_GRAPHS;
 
+        if (this.splines) this.splines.clear();
+
         this.saveUserSettings();
         this.updateIcons();
-        this.init();
+        this.init(gui.patchView.getLastFocussedOp());
+        this.needsUpdateAll = "togglelayout";
+        this.emitEvent(GlTimeline.EVENT_LAYOUTCHANGE);
+
     }
 
     updateIcons()
     {
 
         if (this.keyframeAutoCreate)
+        {
             ele.byId("autokeyframe").parentElement.classList.add("button-active");
+            ele.byId("autokeyframe").parentElement.classList.remove("button-inactive");
+        }
         else
+        {
             ele.byId("autokeyframe").parentElement.classList.remove("button-active");
-
+            ele.byId("autokeyframe").parentElement.classList.add("button-inactive");
+        }
         if (this.loopAreaEnd == 0)
         {
             ele.byId("tlloop").classList.remove("icon-x");
@@ -618,18 +765,23 @@ export class GlTimeline extends Events
 
         ele.byId("togglegraph1").parentElement.classList.remove("button-active");
         ele.byId("togglegraph2").parentElement.classList.remove("button-active");
+        ele.byId("togglegraph1").parentElement.classList.remove("button-inactive");
+        ele.byId("togglegraph2").parentElement.classList.remove("button-inactive");
+
         ele.byId("zoomgraph1").parentElement.classList.remove("button-inactive");
         ele.byId("zoomgraph2").parentElement.classList.remove("button-inactive");
 
         if (this.#layout == GlTimeline.LAYOUT_GRAPHS)
         {
             ele.byId("togglegraph1").parentElement.classList.add("button-active");
+            ele.byId("togglegraph2").parentElement.classList.add("button-inactive");
             this.#selectModeEl.classList.remove("hidden");
         }
         else
         {
             this.#selectModeEl.classList.add("hidden");
             ele.byId("togglegraph2").parentElement.classList.add("button-active");
+            ele.byId("togglegraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph1").parentElement.classList.add("button-inactive");
             ele.byId("zoomgraph2").parentElement.classList.add("button-inactive");
         }
@@ -676,21 +828,55 @@ export class GlTimeline extends Events
     /**
      * @param {MouseEvent} e
      */
-    _onCanvasMouseUp(e)
+    #onCanvasPointerUp(e)
     {
+        if (performance.now() - this.mouseDownStart < 200)
+            if (!glTlKeys.dragStarted && !this.hoverKeyRect)
+                for (let i = 0; i < this.#tlAnims.length; i++)
+                    if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+                    {
+                        if (!gui.patchView.isCurrentOp(this.#tlAnims[i].getOp()))
+                        {
+
+                            // gui.patchView.centerSelectOp(this.#tlAnims[i].getOp()?.id);
+                            // gui.patchView.focusOp(this.#tlAnims[i].getOp()?.id);
+                            // this.showParamAnim(this.#tlAnims[i].anims[0]);
+
+                        }
+                        this.#tlAnims[i].getTitle(0)?.hover();
+                    }
+
+        glTlKeys.dragStarted = false;
+        this.selectRect = null;
         this.#rects.mouseUp(e);
+        this.#rectsNoScroll.mouseUp(e);
         this.#rectsOver.mouseUp(e);
         this.mouseDown = false;
-        this.selectRect = null;
         this.#rectSelect.setSize(0, 0);
         this.#lastDragX = Number.MAX_SAFE_INTEGER;
         this.#lastDragY = Number.MAX_SAFE_INTEGER;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++) this.#selectedKeys[i].temp = {};// reset predragtimes...
+    }
+
+    /**
+     * @param {MouseEvent} e
+     */
+    _onCanvasDblClick(e)
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+            {
+                const anim = this.#tlAnims[i].anims[0];
+                const time = this.snapTime(this.view.pixelToTime(e.offsetX) + this.view.offset);
+                anim.setValue(time, anim.getValue(time));
+            }
     }
 
     /**
      * @param {PointerEvent} e
      */
-    _onCanvasMouseDown(e)
+    #onCanvasPointerDown(e)
     {
         if (!e.pointerType) return;
 
@@ -700,36 +886,81 @@ export class GlTimeline extends Events
         if (this.ruler.isHovering()) this.#focusRuler = true;
         if (this.scroll.isHovering()) this.#focusScroll = true;
 
-        if (this.#focusScroll) return;
-
         if (!this.selectedKeysDragArea.isHovering && !this.selectRect && e.buttons == 1)
             if (this.hoverKeyRect == null && !e.shiftKey)
                 if (e.offsetY > this.getFirstLinePosy())
-                    this.unSelectAllKeys("canvas down ");
+                    this.unSelectAllKeys("canvas down");
+
+        this.#onCanvasPointerMove(e);
+        if (this.#focusScroll) return;
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        this.#rects.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
+        this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
 
         this.mouseDown = true;
+        this.mouseDownStart = performance.now();
     }
 
     /**
      * @param {MouseEvent} event
      */
-    _onCanvasMouseMove(event)
+    #onCanvasPointerMove(event)
     {
-        this.emitEvent("mousemove", event);
+        this.emitEvent(GlTimeline.EVENT_MOUSEMOVE, event);
 
         let x = event.offsetX;
         let y = event.offsetY;
 
         this.#rectsOver.mouseMove(x, y, event.buttons, event);
-        this.#rects.mouseMove(x, y, event.buttons, event);
+        this.#rects.mouseMove(x, y + this.getScrollY(), event.buttons, event);
+        this.#rectsNoScroll.mouseMove(x, y, event.buttons, event);
 
-        if (event.buttons == 1)
+        if (event.buttons == this.buttonForPanning || this.#spacePressed && event.buttons == 1)
+        {
+
+            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
+            {
+                const movementX = event.offsetX - this.#lastDragX;
+                const movementY = event.offsetY - this.#lastDragY;
+
+                if (!this.isFreePanningMode())
+                {
+
+                    this.tlTimeScrollContainer.scrollTop -= movementY;
+                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                }
+                else
+                {
+                    if (event.metaKey || event.ctrlKey)
+                    {
+                        if (Math.abs(movementY) > Math.abs(movementX))
+                        {
+                            this.view.scaleValues(movementY * 0.01);
+                        }
+                        else
+                        {
+                            let zf = (1 / (this.view.zoom)) * 0.3;
+                            let d = 1 + zf;
+                            if (movementX > 0)d = 1 - zf;
+                            this.view.setZoomOffset(d, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
+                        if (!event.shiftKey) this.view.scrollY(movementY, 0);
+                    }
+                }
+            }
+
+            this.#lastDragX = event.offsetX;
+            this.#lastDragY = event.offsetY;
+            this.needsUpdateAll = "mouse drag pan";
+        }
+        else if (event.buttons == 1)
         {
             if (event.ctrlKey || event.metaKey)
             {
@@ -769,9 +1000,9 @@ export class GlTimeline extends Events
 
                         this.selectRect = {
                             "x": Math.min(this.#lastXnoButton, x),
-                            "y": Math.min(this.#lastYnoButton, y),
+                            "y": Math.min(this.#lastYnoButton, y) + this.getScrollY(),
                             "x2": Math.max(this.#lastXnoButton, x),
-                            "y2": Math.max(this.#lastYnoButton, y)
+                            "y2": Math.max(this.#lastYnoButton, y) + this.getScrollY()
                         };
 
                         this.#rectSelect.setPosition(this.#lastXnoButton, this.#lastYnoButton, -1);
@@ -782,42 +1013,8 @@ export class GlTimeline extends Events
                 }
 
                 this.needsUpdateAll = "mouse m";
-
                 this.showKeyParamsSoon();
             }
-
-        }
-        else if (event.buttons == this.buttonForScrolling)
-        {
-            if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
-            {
-                const movementX = event.offsetX - this.#lastDragX;
-                const movementY = event.offsetY - this.#lastDragY;
-
-                if (event.metaKey || event.ctrlKey)
-                {
-                    if (Math.abs(movementY) > Math.abs(movementX))
-                    {
-                        this.view.scaleValues(movementY * 0.01);
-                    }
-                    else
-                    {
-                        let zf = (1 / (this.view.zoom)) * 0.3;
-                        let d = 1 + zf;
-                        if (movementX > 0)d = 1 - zf;
-                        this.view.setZoomOffset(d, 0);
-                    }
-                }
-                else
-                {
-                    if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
-                    if (!event.shiftKey) this.view.scrollY(movementY, 0);
-                }
-            }
-
-            this.#lastDragX = event.offsetX;
-            this.#lastDragY = event.offsetY;
-            this.needsUpdateAll = "mouse drag pan";
         }
         else
         {
@@ -854,6 +1051,42 @@ export class GlTimeline extends Events
         return this.#selectedKeys.length;
     }
 
+    /**
+     * @param {Anim} anim
+     * @param {string} [reason]
+     */
+    setUnsavedForAnim(anim, reason)
+    {
+        const op = this.getPortForAnim(anim)?.op;
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            gui.savedState.setUnSaved(reason || "unknown", op?.getSubPatch());
+    }
+
+    /**
+     * @param {string} [reason]
+     */
+    setUnsavedForSelectedKeys(reason)
+    {
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const anim = this.#selectedKeys[i].anim;
+            if (anim) this.setUnsavedForAnim(anim, reason);
+        }
+    }
+
+    /**
+     * @param {Anim} anim
+     */
+    getPortForAnim(anim)
+    {
+        const ports = gui.corePatch().getAllAnimPorts();
+        for (let i = 0; i < ports.length; i++)
+        {
+            if (ports[i].anim == anim) return ports[i];
+        }
+    }
+
     sortSelectedKeyAnims()
     {
         for (let i = 0; i < this.#selectedKeyAnims.length; i++)
@@ -868,21 +1101,33 @@ export class GlTimeline extends Events
     dragSelectedKeys(deltaTime, deltaValue, sort)
     {
         if (deltaTime == 0 && deltaValue == 0) return;
+
+        const oldSe = this.#selectedKeys;
+
+        undo.add({
+            "title": "timeline move keys",
+            "undo": () =>
+            {
+                for (let i = 0; i < oldSe.length; i++)
+                    if (this.#selectedKeys[i])
+                        oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+            },
+            redo() {}
+        });
+
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
+            if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
+            let tt = this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime);
+            tt = Math.max(0, tt);
 
-            if (this.#selectedKeys[i].temp.preDragTime === undefined)
-            {
-                this.predragSelectedKeys();
-                console.log("predrag undefined!");
-            }
-            this.#selectedKeys[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime), "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
+            this.#selectedKeys[i].set({ "t": tt, "v": this.#selectedKeys[i].temp.preDragValue + deltaValue });
         }
 
         this.needsUpdateAll = "dragselect";
         if (sort) this.sortSelectedKeyAnims();
-        // console.log("selectedkeys", this.#selectedKeys.length);
+        this.setUnsavedForSelectedKeys();
     }
 
     predragSelectedKeys()
@@ -901,6 +1146,7 @@ export class GlTimeline extends Events
     {
         let minTime = time - this.getKeysSmallestTime(this.#selectedKeys);
         this.moveSelectedKeysDelta(minTime);
+        this.setUnsavedForSelectedKeys();
         this.needsUpdateAll = "moveselected";
     }
 
@@ -909,34 +1155,33 @@ export class GlTimeline extends Events
      */
     setSelectedKeysEasing(easing)
     {
-
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeys[i].set({ "e": easing });
         }
         this.needsUpdateAll = "selselected";
+        this.setUnsavedForSelectedKeys("set selected key easing");
         this.showKeyParamsSoon();
+    }
+
+    /**
+     * @param {UiOp} o
+     */
+    #eventOnOpAdd(o)
+    {
+        const anim = o.portsIn[0].anim;
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
+            anim.addKey(nk);
+        }
     }
 
     createAnimOpFromSelection()
     {
-
-        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": (o) =>
-        {
-            console.log("op added", o);
-            console.log(o.portsIn[0].anim);
-
-            const anim = o.portsIn[0].anim;
-
-            for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
-                const nk = new AnimKey(this.#selectedKeys[i].getSerialized(), anim);
-                anim.addKey(nk);
-            }
-
-        } });
-
+        gui.patchView.addOp(defaultOps.defaultOpNames.anim, { "onOpAdd": this.#eventOnOpAdd.bind(this) });
     }
 
     /**
@@ -951,6 +1196,7 @@ export class GlTimeline extends Events
         }
         this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "seltselectedtime";
+        this.setUnsavedForSelectedKeys();
     }
 
     /**
@@ -988,6 +1234,7 @@ export class GlTimeline extends Events
 
         this.fixAnimsFromKeys(this.#selectedKeys);
         this.needsUpdateAll = "moveselectdelta";
+        this.setUnsavedForSelectedKeys();
 
     }
 
@@ -1043,6 +1290,11 @@ export class GlTimeline extends Events
         return { "min": min, "max": max, "length": Math.abs(max) - Math.abs(min) };
     }
 
+    getSelectedKeys()
+    {
+        return this.#selectedKeys;
+    }
+
     updateSelectedKeysDragArea()
     {
         const timeBounds = this.getSelectedKeysBoundsTime();
@@ -1061,7 +1313,7 @@ export class GlTimeline extends Events
             else
                 this.selectedKeysDragArea.set(
                     newX,
-                    this.getFirstLinePosy(),
+                    this.height - 15,
                     -0.9,
                     this.view.timeToPixel(timeBounds.max - timeBounds.min),
                     15);
@@ -1072,19 +1324,33 @@ export class GlTimeline extends Events
         clearTimeout(this.toParamKeys);
         this.toParamKeys = setTimeout(() =>
         {
-            this.showParamKeys();
-        }, 100);
+            if (this.getNumSelectedKeys() > 0 || this.#elKeyParamPanel.dataset.panel == "param_keys") this.showParamKeys();
+        }, 30);
+    }
+
+    unselectAllKeysSilent()
+    {
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            const k = this.#selectedKeys[i];
+            setTimeout(() =>
+            {
+                if (k)k.emitChange();
+            }, 30);
+        }
+        this.#selectedKeys = [];
+        this.#selectedKeyAnims = [];
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    unSelectAllKeys(reason)
+    unSelectAllKeys(_reason)
     {
         if (this.selectedKeysDragArea.isHovering) return;
         const old = this.#selectedKeys.length;
-        this.#selectedKeys = [];
-        this.#selectedKeyAnims = [];
+        this.unselectAllKeysSilent();
         this.showKeyParamsSoon();
         this.setHoverKeyRect(null);
         if (old != 0) this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
@@ -1103,19 +1369,27 @@ export class GlTimeline extends Events
                 }
             }
         }
+
         this.needsUpdateAll = "selectall";
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     selSelectedKeysCP1(x, y)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
             this.#selectedKeys[i].setBezCp1(x, y);
         }
-
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     selSelectedKeysCP2(x, y)
     {
         for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -1145,6 +1419,8 @@ export class GlTimeline extends Events
         {
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
+            const op = this.getPortForAnim(this.#selectedKeys[i].anim)?.op;
+            gui.savedState.setUnSaved("deleted keys", op?.getSubPatch());
         }
 
         this.unSelectAllKeys("delete keys");
@@ -1162,8 +1438,10 @@ export class GlTimeline extends Events
         if (glTlKeys.dragStarted) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
+
             this.#selectedKeys.push(k);
             this.#selectedKeyAnims.push(a);
+            k.emitChange();
         }
         this.showKeyParamsSoon();
         this.emitEvent(GlTimeline.EVENT_KEYSELECTIONCHANGE);
@@ -1172,7 +1450,7 @@ export class GlTimeline extends Events
     /**
      * @param {WheelEvent} event
      */
-    _onCanvasWheel(event)
+    #onCanvasWheel(event)
     {
         this.pixelPerSecond = this.view.timeToPixel(1);
 
@@ -1187,19 +1465,22 @@ export class GlTimeline extends Events
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
             let delta = 0;
-            if (event.deltaY > 0) delta = 1.1;
-            else delta = 0.9;
+            if (event.deltaY > 0) delta = 1.3;
+            else delta = 0.7;
 
-            this.view.setZoomOffset(delta);
+            this.view.setZoomOffsetWheel(delta, event);
 
             if (event.deltaY > 0) delta = 1;
             else delta = -1;
-
-            this.view.scaleValues(delta * 0.07);
         }
 
         this.setHoverKeyRect(null);
         this.needsUpdateAll = "wheel";
+    }
+
+    isFreePanningMode()
+    {
+        return this.isGraphLayout();
     }
 
     isGraphLayout()
@@ -1213,111 +1494,134 @@ export class GlTimeline extends Events
     }
 
     /**
-     * @param {PatchStructureQueryItem} item
+     * @param {object} item
+     * @param {HTMLElement} parentEle
+     * @param {glTlAnimLine} [parentLine]
      */
-    hierarchyLine(item, level = 0)
+    hierarchyLine(item, level = 0, parentEle, parentLine)
     {
         if (!item) return;
         const op = gui.corePatch().getOpById(item.id);
 
-        console.log("aa", item);
-        console.log("op", op);
+        const cont = document.createElement("div");
+        cont.classList.add("linesContainer");
+        cont.classList.add("level" + level);
+        parentEle.appendChild(cont);
+        if (level == 0)
+        {
+            item.childs.sort((a, b) =>
+            {
+                const op = gui.corePatch().getOpById(a.id);
+                const op2 = gui.corePatch().getOpById(b.id);
+                return (op.uiAttribs.tlOrder || 100) - (op2.uiAttribs.tlOrder || 100);
+            });
+        }
 
         if (item.ports)
         {
+            let first = null;
             if (op)
+            {
                 for (let i = 0; i < item.ports.length; i++)
                 {
-                    console.log("annnn");
-                    this.#tlAnims.push(
-                        new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], { "collapsable": item.ports.length > 0 && i == 0 })
-                    );
+                    const o = { "parentEle": cont };
+                    const a = new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], o);
+
+                    if (parentLine)parentLine.addFolderChild(a);
+                    if (first)first.addFolderChild(a);
+                    if (i == 0) first = a;
+
+                    this.#tlAnims.push(a);
+                    if (i > 0)a.getTitle(0).hideOpName = true;
                 }
+            }
         }
         else
         if (item.childs)
-            this.#tlAnims.push(
-                new glTlAnimLine(this, [], { "collapsable": item.childs.length > 0, "title": item.title })
-            );
-
-        if (item.childs)
+        {
             for (let i = 0; i < item.childs.length; i++)
             {
-                this.hierarchyLine(item.childs[i], level++);
+                let a = null;
+                if (item.childs[i] && item.childs[i].childs)
+                {
+                    a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
+
+                    if (parentLine)parentLine.addFolderChild(a);
+                }
+
+                this.hierarchyLine(item.childs[i], level + 1, cont, a || parentLine);
             }
+        }
+        else
+        {
+            console.log("waaaaaaaaaaat");
+        }
+
+        // console.log("animlines", this.#tlAnims.length);
 
     }
 
     init()
     {
         if (this.disposed) return;
+
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
+        const q = new patchStructureQuery();
+        q.setOptions({
+            "include": { "animated": true, "subpatches": true, "portsAnimated": true },
+            "includeUnsavedIndicator": false,
+            "removeEmptySubpatches": true
+        });
+
+        if (this.isGraphLayout())
+        {
+            q.setOptions({
+                "include": { "animated": true, "subpatches": true, "portsAnimated": true },
+                "includeUnsavedIndicator": false,
+                "removeEmptySubpatches": true,
+                "only": { "selected": true },
+            });
+        }
+
+        const hier = q.getHierarchy();
+        const root = hier[0];
+        const hstr = JSON.stringify(hier);
+
+        if (root.childs == 0 && this.isGraphLayout()) return;
+        if (hstr == this.lastHierStr) return;
+        this.lastHierStr = hstr;
+
         CABLES.UI.PREVISKEYVAL = null;
-        this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
-        this.splines.setWidth(2);
-        this.splines.setFadeout(false);
-        this.splines.doTessEdges = false;
+        if (!this.splines)
+        {
+            this.splines = new GlSplineDrawer(this.#cgl, "gltlSplines_0");
+            this.splines.setWidth(2);
+            this.splines.setFadeout(false);
+            this.splines.doTessEdges = true;
+        }
 
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].dispose();
         this.#tlAnims = [];
 
-        let ops = [];
-        let count = 0;
         const ports = [];
 
-        let selops = gui.patchView.getSelectedOps();
-        if (this.#layout == GlTimeline.LAYOUT_LINES) ops = gui.corePatch().ops;
-
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && selops.length > 0) ops = selops;
-        // if (this.#layout == GlTimeline.LAYOUT_GRAPHS && this.#firstInit)ops = i
-        ops = gui.corePatch().ops;
-
         this.#firstInit = false;
+        this.tlTimeScrollContainer.innerHTML = "";
+        this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
-        const q = new patchStructureQuery();
-        q.setOptions({ "includeAnimated": true, "includeSubpatches": true, "includePortsAnimated": true });
-        console.log("qqqq", q.getHierarchy());
-        const root = q.getHierarchy()[0];
-        this.hierarchyLine(root);
-
-        for (let i = 0; i < ops.length; i++)
+        if (this.#tlAnims.length == 0)
         {
-            let numOpAnims = 0;
-            let animIndex = 0;
-            const op = ops[i];
-            for (let j = 0; j < op.portsIn.length; j++)
-            {
-                if (op.portsIn[j].anim)numOpAnims++;
-            }
-
-            for (let j = 0; j < op.portsIn.length; j++)
-            {
-                if (op.portsIn[j].anim)
-                {
-                    if (this.filter(op.portsIn[j]))
-                    {
-                        ports.push(op.portsIn[j]);
-
-                        if (this.#layout === GlTimeline.LAYOUT_LINES)
-                        {
-                            const collapsable = numOpAnims > 1 && animIndex == 0;
-
-                            console.log("collaps", collapsable);
-                            const a = new glTlAnimLine(this, [op.portsIn[j]], { "collapsable": collapsable });
-                            this.#tlAnims.push(a);
-                        }
-                        count++;
-                    }
-                    animIndex++;
-                }
-            }
+            console.log("no anims!s");
+            const elee = document.createElement("div");
+            elee.style = "text-align:center;width:calc(var(--timelineSplitterLeft) - 30px);padding:10px;diplay:inline-block;";
+            elee.innerHTML = marked(GuiText.noanims);
+            this.tlTimeScrollContainer.appendChild(elee);
         }
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
             const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
-            multiAnim.setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -1328,7 +1632,6 @@ export class GlTimeline extends Events
         this.updateIcons();
 
         perf.finish();
-
     }
 
     /**
@@ -1341,6 +1644,11 @@ export class GlTimeline extends Events
             port.name.toLowerCase().includes(this.#filterString)) return true;
 
         return false;
+    }
+
+    getScrollY()
+    {
+        return this.tlTimeScrollContainer.scrollTop;
     }
 
     getFirstLinePosy()
@@ -1361,11 +1669,7 @@ export class GlTimeline extends Events
         let posy = this.getFirstLinePosy();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
-        {
-            this.#tlAnims[i].setPosition(0, posy);
-            posy += this.#tlAnims[i].height;
-        }
-
+            this.#tlAnims[i].updateGlPos();
     }
 
     dispose()
@@ -1374,13 +1678,13 @@ export class GlTimeline extends Events
         this.disposed = true;
 
         if (this.#rects) this.#rects = this.#rects.dispose();
+        if (this.#rectsNoScroll) this.#rectsNoScroll = this.#rectsNoScroll.dispose();
     }
 
     updateSize()
     {
         if (this.disposed) return;
         this.setPositions();
-        // this.updateAllElements();
         this.needsUpdateAll = "updatesize";
     }
 
@@ -1406,7 +1710,6 @@ export class GlTimeline extends Events
         {
             if (this.disposed) return;
             this.view.updateAnims();
-            // if (this.needsUpdateAll) console.log("needs update", this.needsUpdateAll);
             if (this.view.isAnimated() || this.needsUpdateAll) this.updateAllElements();
 
             this.updateCursor();
@@ -1420,9 +1723,17 @@ export class GlTimeline extends Events
 
             this.#cgl.pushDepthTest(true);
 
-            this.#rects.render(resX, resY, -1, 1, resX / 2);
-            this.texts.render(resX, resY, -1, 1, resX / 2);
-            this.splines.render(resX, resY, -1, 1, resX / 2, this.#lastXnoButton, this.#lastYnoButton);
+            const scrollHeight = resY;// - this.getFirstLinePosy();
+
+            let scrollAdd = this.getScrollY() * 2;
+            if (this.isGraphLayout())scrollAdd = 0;
+            this.#rects.render(resX, resY, -1, (1 + (scrollAdd / Math.floor(scrollHeight))), resX / 2);
+
+            this.#rectsNoScroll.render(resX, resY, -1, 1, resX / 2);
+
+            this.texts.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2);
+            this.textsNoScroll.render(resX, resY, -1, 1, resX / 2);
+            if (this.splines) this.splines.render(resX, resY, -1, 1 + (scrollAdd / Math.floor(scrollHeight)), resX / 2, this.#lastXnoButton, this.#lastYnoButton);
             this.#rectsOver.render(resX, resY, -1, 1, resX / 2);
 
             this.#rectLoopArea.setPosition(this.view.timeToPixelScreen(this.loopAreaStart), this.getFirstLinePosy(), -1);
@@ -1438,7 +1749,18 @@ export class GlTimeline extends Events
 
             this.#cgl.popDepthTest();
         }
+        this.#updateMouseCursor();
         this.#perfFps.endFrame();
+    }
+
+    #updateMouseCursor()
+    {
+        let cur = "auto";
+        if (this.#spacePressed) cur = "grabbing";
+
+        if (this.#cursor != cur) this.#cgl.setCursor(cur);
+
+        this.#cursor = cur;
     }
 
     updateCursor()
@@ -1447,7 +1769,7 @@ export class GlTimeline extends Events
 
         if (CABLES.UI.PREVISKEYVAL != undefined && CABLES.UI.PREVISKEYVAL != null)
         {
-            if (this.isGraphLayout() && !this.keyframeAutoCreate)
+            if (this.isGraphLayout() && !this.keyframeAutoCreate && this.#tlAnims[0])
             {
                 const y = this.#tlAnims[0].valueToPixel(CABLES.UI.PREVISKEYVAL) + this.getFirstLinePosy();
                 this.cursorNewKeyVis.setPosition(this.view.timeToPixelScreen(this.cursorTime) - this.cursorNewKeyVis.w / 2, y, -0.5);
@@ -1455,7 +1777,6 @@ export class GlTimeline extends Events
         }
         else
         {
-
             this.cursorNewKeyVis.setPosition(-777777, -888888);
         }
 
@@ -1465,12 +1786,10 @@ export class GlTimeline extends Events
         while (parts[1].length < 3) parts[1] += "0";
         const secondss = parts[0] + "." + parts[1];
         const frame = String(Math.floor(this.cursorTime * this.fps));
-        const beat = String(Math.floor(this.cursorTime * (this.bpm / 60) + 1));
         const padd = 14;
         const w = this.#cursorText.width + padd;
 
         this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
-
         this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
         this.#cursorTextBgRect.setSize(w, 20);
 
@@ -1478,37 +1797,43 @@ export class GlTimeline extends Events
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS)
         {
             this.#cursorText.text = secondss;
-
+            html += "<div>";
             html += "<h3>Second " + secondss + "</h3>";
-            html += frame + "f ";
-
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            html += "Frame " + frame;
+            html += "</div>";
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) + "s";
+            html += "</div>";
         }
+
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
         {
             this.#cursorText.text = frame;
+            html += "<div>";
             html += "<h3>Frame " + frame + "</h3>";
-            html += secondss + "s ";
+            html += "Second " + secondss;
+            html += "</div>";
 
-            if (this.cfg.showBeats) html += beat + "b<br>";
+            html += "<div>";
+            html += "max " + Math.ceil(this.duration) * this.fps + "f";
+            html += "</div>";
         }
-        if (this.displayUnits == GlTimeline.DISPLAYUNIT_BEATS)
-        {
-            this.#cursorText.text = beat;
-            html += "<h3>Beat " + beat + "</h3>";
-            html += secondss + "s ";
-            html += frame + "f ";
 
-            if (this.cfg.showBeats) html += "" + beat + "b<br>";
-        }
+        html += "<div>";
+        if (this.cursorTime / this.duration <= 1)
+            html += Math.min(Math.floor((this.cursorTime / this.duration) * 100), 100) + "%";
+        html += "</div>";
 
         if (this.#oldhtml != html)
         {
-            this.#tlTimeDisplay.innerHTML = html;
+            this.#elTimeDisplay.innerHTML = html;
             this.#oldhtml = html;
         }
         this.scroll.update();
         this.updateSelectedKeysDragArea();
+
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            this.#tlAnims[i].updateTitleValues(this.cursorTime);
     }
 
     updateAllElements()
@@ -1533,16 +1858,19 @@ export class GlTimeline extends Events
     onConfig(cfg)
     {
         this.cfg = cfg;
-        this.duration = cfg.duration;
         this.needsUpdateAll = "on config";
+
+        cfg = CABLES.timelineConfig || {
+            "fps": 30,
+            "fadeInFrames": true,
+            "restrictToFrames": true
+        };
     }
 
     fit()
     {
-
         if (this.getNumSelectedKeys() == 1)
         {
-
             const t = this.#selectedKeys[0].time;
             if (gui.corePatch().timer.getTime() != t)
             {
@@ -1579,12 +1907,10 @@ export class GlTimeline extends Events
     cycleDisplayUnits()
     {
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_SECONDS) this.displayUnits = GlTimeline.DISPLAYUNIT_FRAMES;
-        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_BEATS;
-        else this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
+        else if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) this.displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
         this.needsUpdateAll = "displayunit changed";
         this.saveUserSettings();
-
     }
 
     /**
@@ -1609,7 +1935,6 @@ export class GlTimeline extends Events
 
                     if (anim.keys[newIndex].time != this.view.cursorTime)
                     {
-
                         if (dir == 1 && anim.keys[newIndex].time > this.view.cursorTime)
                         {
                             if (!theKey) theKey = anim.keys[newIndex];
@@ -1664,25 +1989,25 @@ export class GlTimeline extends Events
 
     zoomToFitSelection()
     {
-
         const boundsy = this.getSelectedKeysBoundsValue();
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         if (range > 0)
         {
-            this.view.setMinVal(boundsy.min - (range * 0.1));
-            this.view.setMaxVal(boundsy.max + (range * 0.1));
+            this.view.setMinVal(boundsy.min - (range * 0.1) * 2);
+            this.view.setMaxVal(boundsy.max + (range * 0.1) * 2);
             this.view.scrollToY(0);
         }
 
         const bounds = this.getSelectedKeysBoundsTime();
+        console.log("bounds", bounds);
         if (bounds.length == 0)
         {
-            this.view.scrollTo(bounds.min - this.view.visibleTime / 2);
+            this.view.scrollTo((bounds.min - this.view.visibleTime / 2) / 2);
         }
         else
         {
-            this.view.setZoomLength(bounds.length + bounds.length * 0.2);
-            this.view.scrollTo(bounds.min - bounds.length * 0.1);
+            this.view.setZoomLength((bounds.length) + (bounds.length * 0.1));
+            this.view.scrollTo(bounds.min - (bounds.length * 0.05));
         }
     }
 
@@ -1692,6 +2017,7 @@ export class GlTimeline extends Events
     copy(event = null)
     {
         const obj = { "keys": this.serializeSelectedKeys(true) };
+        this.#clipboardKeys = obj;
 
         notify("copied " + obj.keys.length + " keys", null, { "force": true });
         if (event)
@@ -1701,7 +2027,6 @@ export class GlTimeline extends Events
             event.preventDefault();
         }
         return obj;
-
     }
 
     /**
@@ -1750,6 +2075,7 @@ export class GlTimeline extends Events
                     newKeys.push(l);
                     an.addKey(l);
                     found = true;
+                    gui.savedState.setUnSaved("deserializekeys", this.#tlAnims[j].getOp()?.getSubPatch());
                 }
             }
 
@@ -1757,6 +2083,7 @@ export class GlTimeline extends Events
                 notfoundallAnims = true;
 
         }
+
         return { "keys": newKeys, "notfoundallAnims": notfoundallAnims };
     }
 
@@ -1773,34 +2100,45 @@ export class GlTimeline extends Events
 
             e.preventDefault();
 
-            const json = JSON.parse(str);
-            if (json)
+            try
             {
-                if (json.keys)
+
+                const json = JSON.parse(str);
+                if (json)
                 {
-                    const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
-                    const notfoundallAnims = deser.notfoundallAnims;
-
-                    if (notfoundallAnims)
+                    if (json.keys)
                     {
-                        notifyWarn("could not find all anims for pasted keys");
+                        const deser = this.deserializeKeys(json.keys, { "setCursorTime": true });
+                        const notfoundallAnims = deser.notfoundallAnims;
+
+                        if (notfoundallAnims) notifyWarn("could not find all anims for pasted keys");
+                        else notify(json.keys.length + " keys pasted");
+
+                        undo.add({
+                            "title": "timeline paste keys keys",
+                            undo()
+                            {
+                                for (let i = 0; i < deser.keys.length; i++)
+                                    deser.keys[i].delete();
+                            },
+                            redo() { }
+                        });
+
+                        const animPorts = gui.corePatch().getAllAnimPorts();
+                        for (let i = 0; i < animPorts.length; i++)
+                            if (animPorts[i].anim)
+                                animPorts[i].anim.removeDuplicates();
+
+                        this.needsUpdateAll = "";
+
+                        return;
                     }
-                    else
-                    {
-                        notify(json.keys.length + " keys pasted");
-                    }
-
-                    const animPorts = gui.corePatch().getAllAnimPorts();
-                    for (let i = 0; i < animPorts.length; i++)
-                        if (animPorts[i].anim)
-                            animPorts[i].anim.removeDuplicates();
-
-                    this.needsUpdateAll = "";
-
-                    return;
                 }
             }
-            CABLES.UI.notify("Paste failed");
+            catch (e)
+            {
+                notifyWarn("Timeline paste failed");
+            }
         }
     }
 
@@ -1813,7 +2151,6 @@ export class GlTimeline extends Events
     duplicateSelectedKeys()
     {
         const o = this.copy();
-
         const newKeys = this.deserializeKeys(o.keys, false).keys;
 
         undo.add({
@@ -1821,10 +2158,7 @@ export class GlTimeline extends Events
             undo()
             {
                 for (let i = 0; i < newKeys.length; i++)
-                {
                     newKeys[i].delete();
-                }
-                // key.set(oldValues);
             },
             redo()
             {
@@ -1942,7 +2276,6 @@ export class GlTimeline extends Events
                     ]
                 );
             }
-            console.log("data", data);
             return data;
         };
 
@@ -1977,7 +2310,6 @@ export class GlTimeline extends Events
                 {
                     if (!content.cells[i])
                     {
-                        console.log("abbruch");
                         continue;
                     }
                     const o = {
@@ -2080,7 +2412,7 @@ export class GlTimeline extends Events
     {
 
         let showCurves = false;
-        if (this.getNumSelectedKeys() == 0) return this.#keyOverEl.innerHTML = "";
+        if (this.getNumSelectedKeys() == 0) return this.#elKeyParamPanel.innerHTML = "";
 
         const timebounds = this.getSelectedKeysBoundsTime();
         const valbounds = this.getSelectedKeysBoundsValue();
@@ -2113,13 +2445,14 @@ export class GlTimeline extends Events
         {
             const k = this.#selectedKeys[0];
             if (k.uiAttribs.text)comment = this.#selectedKeys[0].uiAttribs.text;
+            showCurves = showCurves || (ease > 4 && ease < 28);
         }
         else
         {
             for (let i = 1; i < this.#selectedKeys.length; i++)
             {
                 hasReadOnly = hasReadOnly || this.#selectedKeys[i].anim.uiAttribs.readOnly || false;
-                showCurves = showCurves || ease > 4;
+                showCurves = showCurves || (ease > 4 && ease < 28);
                 if (ease != this.#selectedKeys[i].getEasing()) ease = -1;
             }
         }
@@ -2127,13 +2460,18 @@ export class GlTimeline extends Events
         let unit = "seconds";
         if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) unit = "frames";
 
+        let vars = gui.corePatch().getVars(Port.TYPE_OBJECT);
+        vars = vars.filter((v) => { return v.name.startsWith(GlTimeline.CLIP_VAR_PREFIX); });
+
         const html = getHandleBarHtml(
             "params_keys", {
                 "writable": !hasReadOnly,
                 "numKeys": this.#selectedKeys.length,
                 "timeLength": timestr,
+                "clipsVars": vars,
                 "timeBounds": timeBoundsStr,
                 "valueBounds": valstr,
+                "clipId": this.#selectedKeys[0].clipId,
                 "lastInputValue": this.#paramLastInputValue,
                 "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
@@ -2143,7 +2481,8 @@ export class GlTimeline extends Events
                 "showCurves": showCurves,
                 "comment": comment
             });
-        this.#keyOverEl.innerHTML = html;
+        this.#elKeyParamPanel.dataset.panel = "param_keys";
+        this.#elKeyParamPanel.innerHTML = html;
 
         ele.clickable(ele.byId("kp_more"), (e) =>
         {
@@ -2172,9 +2511,14 @@ export class GlTimeline extends Events
                                     this.createAnimOpFromSelection();
                                 }
                             },
-
                         ]
                 }, e.target);
+        });
+        ele.clickable(ele.byId("kp_looparea"), () =>
+        {
+            const time = this.getSelectedKeysBoundsTime();
+            this.loopAreaStart = time.min;
+            this.loopAreaEnd = time.max;
         });
 
         ele.clickable(ele.byId("kp_movecursor"), () =>
@@ -2190,10 +2534,11 @@ export class GlTimeline extends Events
         ele.clickable(ele.byId("kp_bezreset"), () =>
         {
             for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
                 this.#selectedKeys[i].bezReset();
-            }
+
+            this.setUnsavedForSelectedKeys();
         });
+
         ele.clickable(ele.byId("kp_bezfree"), () =>
         {
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -2201,7 +2546,7 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].setUiAttribs({ "bezFree": !this.#selectedKeys[i].uiAttribs.bezFree });
                 if (!this.#selectedKeys[i].uiAttribs.bezFree) this.#selectedKeys[i].bezReset();
             }
-
+            this.setUnsavedForSelectedKeys();
         });
 
         ele.clickable(ele.byId("kp_time_movef"), () =>
@@ -2214,6 +2559,7 @@ export class GlTimeline extends Events
             }
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+            this.setUnsavedForSelectedKeys();
         });
 
         ele.clickable(ele.byId("kp_time_moveb"), () =>
@@ -2222,11 +2568,11 @@ export class GlTimeline extends Events
             if (this.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)off *= 1 / this.fps;
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
-            {
                 this.#selectedKeys[i].set({ "time": this.snapTime(this.#selectedKeys[i].time - off) });
-            }
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.#paramLastInputMove = off;
+            this.setUnsavedForSelectedKeys();
         });
 
         ele.clickable(ele.byId("kp_value_set"), () =>
@@ -2235,8 +2581,10 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
@@ -2246,8 +2594,10 @@ export class GlTimeline extends Events
 
             for (let i = 0; i < this.#selectedKeys.length; i++)
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value - off });
+
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
@@ -2259,28 +2609,76 @@ export class GlTimeline extends Events
                 this.#selectedKeys[i].set({ "value": this.#selectedKeys[i].value + off });
             this.fixAnimsFromKeys(this.#selectedKeys);
             this.showParamKeys();
+            this.setUnsavedForSelectedKeys();
             this.#paramLastInputValue = off;
         });
 
         if (ele.byId("kp_comment"))
             ele.byId("kp_comment").addEventListener("input", () =>
             {
-                let txt = ele.byId("kp_comment").value;
+                let txt = ele.byId("kp_comment").value || "";
 
                 for (let i = 0; i < this.#selectedKeys.length; i++)
                     this.#selectedKeys[i].setUiAttribs({ "text": txt });
+                this.setUnsavedForSelectedKeys();
             });
 
         const buttons = ele.byClassAll("kp_colorbutton");
         for (let i = 0; i < buttons.length; i++)
         {
             const button = buttons[i];
-            button.addEventListener("click", () =>
+            button.addEventListener(DomEvents.POINTER_CLICK, () =>
             {
                 for (let j = 0; j < this.#selectedKeys.length; j++)
                     this.#selectedKeys[j].setUiAttribs({ "color": button.dataset.col });
+
+                this.setUnsavedForSelectedKeys();
             });
         }
+
+        if (ele.byId("kp_clip"))
+            ele.byId("kp_clip").addEventListener("change", () =>
+            {
+                for (let j = 0; j < this.#selectedKeys.length; j++)
+                {
+                    const e = ele.byId("kp_clip");
+                    const name = e.options[e.selectedIndex].value;
+                    this.#selectedKeys[j].setClip(name, gui.corePatch().getVar(name)?.getValue());
+                    this.updateAllElements();
+                    this.setUnsavedForSelectedKeys();
+                }
+
+            });
+    }
+
+    /**
+     * @param {Op} op
+     */
+    showParamOp(op)
+    {
+        this.showParams();
+        const html = getHandleBarHtml(
+            "params_animop", {
+                "op": op
+            });
+
+        this.#elKeyParamPanel.innerHTML = html;
+        this.#elKeyParamPanel.dataset.panel = "params_animop";
+
+        ele.clickable(ele.byId("ap_selectopkeys"), () =>
+        {
+            this.unSelectAllKeys();
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                if (this.#tlAnims[i].getOp() == op)
+                    for (let j = 0; j < this.#tlAnims[i].anims.length; j++)
+                    {
+                        const keys = this.#tlAnims[i].getGlKeysForAnim(this.#tlAnims[i].anims[j]);
+                        if (keys)keys.selectAll();
+                    }
+                this.#tlAnims[i].update();
+            }
+        });
     }
 
     /**
@@ -2288,14 +2686,20 @@ export class GlTimeline extends Events
      */
     showParamAnim(anim)
     {
-        this.showParams();
-        const html = getHandleBarHtml(
-            "params_anim", {
-                "anim": anim,
-                "errors": this.testAnim(anim.keys),
-                "length": Math.round(anim.getLengthLoop() * 1000) / 1000
-            });
-        this.#keyOverEl.innerHTML = html;
+        if (!anim)
+        {
+            console.log("nope");
+            return;
+        }
+        const options = {
+            "anim": anim,
+            "errors": this.testAnim(anim.keys),
+            "length": Math.round(anim.getLengthLoop() * 1000) / 1000
+        };
+
+        const html = getHandleBarHtml("params_anim", options);
+        this.#elKeyParamPanel.innerHTML = html;
+        this.#elKeyParamPanel.dataset.panel = "params_anim";
 
         ele.clickable(ele.byId("ap_select"), () =>
         {
@@ -2305,6 +2709,48 @@ export class GlTimeline extends Events
                 if (keys)keys.selectAll();
             }
         });
+
+        ele.clickable(ele.byId("ap_debug"), (e) =>
+        {
+            console.log("anim serialized", e.target);
+            e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), null, 2) + "</pre>";
+        });
+
+        ele.clickable(ele.byId("ap_size"), () =>
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++)
+            {
+                if (this.#tlAnims[i].anims[0] == anim)
+                {
+                    let h = ((anim.uiAttribs.height || 0) + 1) % glTlAnimLine.SIZES.length;
+
+                    this.#tlAnims[i].setLineHeight(h);
+                    anim.setUiAttribs({ "height": h });
+                    this.#tlAnims[i].updateTitles();
+                    this.#tlAnims[i].update();
+                    this.#tlAnims[i].updateGlPos();
+                    this.needsUpdateAll = "height..";
+                }
+            }
+        });
+
+        ele.clickable(ele.byId("ap_paste"), () =>
+        {
+            anim.deserialize(this.#clipboardKeys);
+        });
+
+        ele.clickable(ele.byId("ap_paste_at_time"), () =>
+        {
+            console.log("keys", this.#clipboardKeys);
+            if (!this.#clipboardKeys) return;
+
+            const startTime = this.#clipboardKeys.keys[0].t;
+            for (let i = 0; i < this.#clipboardKeys.keys.length; i++)
+                this.#clipboardKeys.keys[i].t += this.cursorTime - startTime;
+
+            anim.deserialize(this.#clipboardKeys);
+        });
+
         ele.clickable(ele.byId("ap_spreadsheet"), () =>
         {
             this.showSpreadSheet(anim);
@@ -2314,22 +2760,32 @@ export class GlTimeline extends Events
         {
             anim.setLoop(Anim.LOOP_OFF);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
 
         ele.clickable(ele.byId("ap_loop_mirror"), () =>
         {
             anim.setLoop(Anim.LOOP_MIRROR);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
+
         ele.clickable(ele.byId("ap_loop_repeat"), () =>
         {
             anim.setLoop(Anim.LOOP_REPEAT);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
+
         ele.clickable(ele.byId("ap_loop_offset"), () =>
         {
             anim.setLoop(Anim.LOOP_OFFSET);
             this.needsUpdateAll = "loopchange";
+            this.showParamAnim(anim);
+            this.setUnsavedForAnim(anim);
         });
     }
 
@@ -2349,11 +2805,10 @@ export class GlTimeline extends Events
         {
             this.#rectHoverKey.setShape(kr.shape);
             this.#rectHoverKey.setSize(kr.w + size, kr.h + size);
-            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2, kr.absZ + 0.023);
+            this.#rectHoverKey.setPosition(kr.absX - size / 2, kr.absY - size / 2 - this.getScrollY(), kr.absZ + 0.023);
         }
         else
         {
-            // logStack();
             this.#rectHoverKey.setPosition(-9999, -9999);
         }
     }
@@ -2371,5 +2826,10 @@ export class GlTimeline extends Events
     removeKeyPreViz()
     {
         CABLES.UI.PREVISKEYVAL = null;
+    }
+
+    addUndoState(anims)
+    {
+
     }
 }

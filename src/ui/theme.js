@@ -1,3 +1,22 @@
+export class CssClassNames
+{
+    static BUTTON_SMALL = "button-small";
+    static BUTTON = "cblbutton";
+    static HIDDEN = "hidden";
+}
+
+export class DomEvents
+{
+    static POINTER_CLICK = "click";
+    static POINTER_DBL_CLICK = "dblclick";
+    static POINTER_ENTER = "pointerenter";
+    static POINTER_LEAVE = "pointerleave";
+    static POINTER_MOVE = "pointermove";
+    static POINTER_DOWN = "pointerdown";
+    static POINTER_UP = "pointerup";
+    static POINTER_WHEEL = "wheel";
+}
+
 /**
  * @typedef cbltheme_colors_patch
  * @property {number[]} opBgRectSelected

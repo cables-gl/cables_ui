@@ -482,9 +482,9 @@ export default class ScUiMultiplayer extends Events
             el.innerHTML = text;
             text = el.textContent || el.innerText || "";
             const maxLength = 32;
-            if (text.length > maxLength)
+            if (GuiText.length > maxLength)
             {
-                text = text.substring(0, maxLength) + "...";
+                text = GuiText.substring(0, maxLength) + "...";
             }
 
             notify(payload.username + " says:", text, {

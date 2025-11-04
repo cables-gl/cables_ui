@@ -1,5 +1,5 @@
 import { Events, ele } from "cables-shared-client";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 import uiconfig from "../../uiconfig.js";
 import TabPanel from "./tabpanel.js";
@@ -10,6 +10,7 @@ export default class BottomTabPanel extends Events
 
     _visible = false;
     _toBottomPanel = null;
+    #tabPanel;
 
     /**
      * @param {TabPanel} tabs
@@ -18,13 +19,13 @@ export default class BottomTabPanel extends Events
     {
         super();
 
-        this._tabs = tabs;
-        this._tabs.showTabListButton = false;
+        this.#tabPanel = tabs;
+        this.#tabPanel.showTabListButton = false;
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
-        this.height = userSettings.get("bottomPanelHeight") || uiconfig.timingPanelHeight;
+        this.height = userSettings.get(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT) || uiconfig.timingPanelHeight;
 
-        this._tabs.on("onTabAdded", (tab, existedBefore) =>
+        this.#tabPanel.on("onTabAdded", (tab, existedBefore) =>
         {
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
@@ -35,9 +36,9 @@ export default class BottomTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this._tabs.on("onTabRemoved", (_tab) =>
+        this.#tabPanel.on("onTabRemoved", (_tab) =>
         {
-            if (this._tabs.getNumTabs() == 0)
+            if (this.#tabPanel.getNumTabs() == 0)
             {
                 this.hide();
                 gui.setLayout();
@@ -64,9 +65,9 @@ export default class BottomTabPanel extends Events
     show(userInteraction = false)
     {
         if (gui.unload) return;
-        this._tabs.emitEvent("resize");
+        this.#tabPanel.emitEvent("resize");
 
-        if (this._tabs.getNumTabs() == 0)
+        if (this.#tabPanel.getNumTabs() == 0)
         {
             this.hide(true);
             return;
@@ -116,11 +117,12 @@ export default class BottomTabPanel extends Events
         this._toBottomPanel = setTimeout(() =>
         {
             this.fixHeight();
-            userSettings.set("bottomPanelHeight", this.height);
+            userSettings.set(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT, this.height);
         }, 100);
         gui.setLayout();
 
-        this._tabs.emitEvent("resize");
+        this.#tabPanel.emitEvent("resize");
+        gui.maintabPanel.emitEvent("resize");
     }
 
     /**
@@ -130,12 +132,13 @@ export default class BottomTabPanel extends Events
     {
         ele.byId("splitterBottomTabs").style.display = "none";
 
-        this._tabs.emitEvent("resize");
+        this.#tabPanel.emitEvent("resize");
 
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
         gui.setLayout();
+        gui.maintabPanel.resize();
 
         if (!donotsave && gui.finishedLoading()) userSettings.set(BottomTabPanel.USERSETTINGS_VISIBLE, false);
     }

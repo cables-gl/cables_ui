@@ -74,7 +74,8 @@ export default class CommandPalette
             this.doSearch(this._lastSearch);
         }, 100);
 
-        document.addEventListener("keydown", this.keyDown.bind(this));
+        this.keyDown = this.keyDown.bind(this);
+        document.addEventListener("keydown", this.keyDown);
     }
 
     /**
@@ -84,6 +85,7 @@ export default class CommandPalette
     {
         ev.stopPropagation();
 
+        /** @type {HTMLElement} */
         const el = ev.target;
         const cmd = el.closest(".result").dataset.cmd;
         const itemObj = userSettings.get("sidebar_left") || {};
@@ -209,19 +211,20 @@ export default class CommandPalette
             }
         }
 
-        for (let i = 0; i < CABLES.CMD.commands.length; i++)
+        const commands = CABLES.CMD.commands;
+        for (let i = 0; i < commands.length; i++)
         {
-            const cmd = CABLES.CMD.commands[i].cmd;
+            const cmd = commands[i].cmd;
 
             let show = true;
-            if (CABLES.CMD.commands[i].frontendOption)
-                show = platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
+            if (commands[i].frontendOption)
+                show = platform.frontendOptions[commands[i].frontendOption];
 
             if (!show) continue;
-            if (!str && CABLES.CMD.commands[i].category == "debug") continue;
+            if (!str && commands[i].category == "debug") continue;
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
-                html += this.addResult(CABLES.CMD.commands[i], count);
+                html += this.addResult(commands[i], count);
                 count++;
             }
         }
@@ -254,7 +257,7 @@ export default class CommandPalette
 
     close()
     {
-        document.removeEventListener("keydown", this.keyDown.bind(this));
+        document.removeEventListener("keydown", this.keyDown);
         ele.byId("searchresult_cmd").innerHTML = "";
         document.getElementById("modalbg").style.display = "none";
         ele.hide(ele.byId("cmdpalette"));

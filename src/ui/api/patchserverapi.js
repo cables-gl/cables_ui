@@ -33,16 +33,16 @@ export function bytesArrToBase64(arr)
 
 export default class PatchSaveServer extends Events
 {
+    opCrashed = false;
+    _currentProject = null;
+    _log = new Logger("patchsaveserver");
+    _serverDate = 0;
+    _lastErrorReport = null;
+    isSaving = false;
+
     constructor()
     {
         super();
-        this._currentProject = null;
-        this._log = new Logger("patchsaveserver");
-        this._serverDate = 0;
-        this._lastErrorReport = null;
-
-        this.isSaving = false;
-
     }
 
     getUiSettings()
@@ -466,7 +466,7 @@ export default class PatchSaveServer extends Events
                 }
                 else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
                 {
-                    let patchOpsText = "You are out of storage space, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
+                    let patchOpsText = "You are out of asset storage, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
                     modalNotices.push(patchOpsText);
                     saveAsModal.show();
                 }
@@ -488,9 +488,41 @@ export default class PatchSaveServer extends Events
         });
     }
 
+    showSaveWarning(cb)
+    {
+        if (this.opCrashed)
+        {
+            const modal = new ModalDialog({
+                "choice": true,
+                "title": "op crashed",
+                "text": "An error happened while creating ops, the op may not be in the patch any longer. make sure the patch looks fine and has all ops",
+
+                "okButton": {
+                    "text": "save anyway",
+                    "callback": (name) =>
+                    {
+                        console.log("nananananawf");
+                        this.saveCurrentProject(cb, true);
+                    } }
+            });
+            modal.on("onSubmit", () =>
+            {
+                modal.close();
+                this.saveCurrentProject(cb, true);
+
+            });
+            return true;
+        }
+
+    }
+
+    /**
+     * @param {function} [cb]
+     */
     saveCurrentProject(cb, force = false)
     {
         if (gui.showGuestWarning()) return;
+        if (!force && this.showSaveWarning(cb)) return;
         if (!force && gui.showSaveWarning()) return;
 
         if (force)
@@ -671,17 +703,18 @@ export default class PatchSaveServer extends Events
                         {
                             gui.savedState.setSaved("patchServerApi", 0);
 
-                            if (gui.project().summary && gui.project().summary.isTest)
+                            const patchSummary = gui.getPatchSummary();
+                            if (patchSummary && patchSummary.isTest)
                             {
                                 notifyWarn("Test patch saved", null, { "force": true });
                             }
                             else
-                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
                             {
                                 notifyWarn("Example patch saved", null, { "force": true });
                             }
                             else
-                            if (gui.project().summary && gui.project().summary.isPublic)
+                            if (patchSummary && patchSummary.isPublic)
                             {
                                 notifyWarn("Published patch saved", null, { "force": true });
                             }
@@ -749,6 +782,46 @@ export default class PatchSaveServer extends Events
         }, 100);
     }
 
+    /**
+     * @param {string} v
+     * @param {function} [cb]
+     */
+    setPatchName(v, cb)
+    {
+
+        const currentProject = gui.project();
+        platform.talkerAPI.send(
+            "setProjectName",
+            {
+                "id": currentProject._id,
+                "name": v
+            },
+            (error, re) =>
+            {
+                const newName = re.data ? re.data.name : "";
+                if (error || !newName)
+                {
+                    const options = {
+                        "title": "Failed to set project name!",
+                        "html": "Error: " + re.msg,
+                        "warning": true,
+                        "showOkButton": true
+                    };
+                    new ModalDialog(options);
+                }
+                else
+                {
+                    platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                    {
+                        gui.setProjectName(newName);
+                        gui.patchParamPanel.show(true);
+                    });
+                    if (cb) cb(newName);
+                }
+            });
+
+    }
+
     showModalTitleDialog(cb = null)
     {
         const currentProject = gui.project();
@@ -759,39 +832,7 @@ export default class PatchSaveServer extends Events
             "promptValue": currentProject.name,
             "promptOk": (v) =>
             {
-                platform.talkerAPI.send(
-                    "setProjectName",
-                    {
-                        "id": currentProject._id,
-                        "name": v
-                    },
-                    (error, re) =>
-                    {
-                        const newName = re.data ? re.data.name : "";
-                        if (error || !newName)
-                        {
-                            const options = {
-                                "title": "Failed to set project name!",
-                                "html": "Error: " + re.msg,
-                                "warning": true,
-                                "showOkButton": true
-                            };
-                            new ModalDialog(options);
-                        }
-                        else
-                        {
-                            if (re.data && re.data.summary)
-                            {
-                                gui.project().summary = re.data.summary;
-                                gui.patchParamPanel.show(true);
-                            }
-                            platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
-                            {
-                                gui.setProjectName(newName);
-                            });
-                            if (cb) cb(newName);
-                        }
-                    });
+                this.setPatchName(v, cb);
             }
         });
     }
@@ -1052,6 +1093,8 @@ export default class PatchSaveServer extends Events
 
         for (let i = 0; i < data.ops.length; i++)
         {
+            if (data.ops[i].uiAttribs.commentOverwrite) delete data.ops[i].uiAttribs.commentOverwrite;
+            if (data.ops[i].uiAttribs.hasOwnProperty("heatmapIntensity")) delete data.ops[i].uiAttribs.heatmapIntensity;
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;

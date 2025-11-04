@@ -1,13 +1,13 @@
 import { Events, Logger, TalkerAPI, ele } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
-import text from "./text.js";
 import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
 import { gui } from "./gui.js";
 import { userSettings } from "./components/usersettings.js";
+import { GuiText } from "./text.js";
 
 /**
  * @type {Platform}
@@ -274,8 +274,8 @@ export class Platform extends Events
             iziToast.error({
                 "position": "topRight",
                 "theme": "dark",
-                "title": text.notOptimizedBrowser_title,
-                "message": text.notOptimizedBrowser_text,
+                "title": GuiText.notOptimizedBrowser_title,
+                "message": GuiText.notOptimizedBrowser_text,
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
@@ -458,16 +458,6 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.addEventListener(
-            "updatePatchSummary",
-            (opts, _next) =>
-            {
-                const project = gui.project();
-                if (project) gui.project().summary = opts;
-                gui.patchParamPanel.show(true);
-            },
-        );
-
         this.talkerAPI.send("getPatch", {}, (_err, r) =>
         {
             this._cfg.patch = r;
@@ -495,7 +485,7 @@ export class Platform extends Events
                 let modalText = "Enter a name for the backup";
                 if (gui.user.supporterFeatures.includes("overquota_full_project_backup"))
                 {
-                    modalText = "You are currently using all of your <a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage space</a>. Upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
+                    modalText = "You are currently using all of your <a href=\"" + quotaOverviewUrl + "\" target=\"_blank\">backup storage</a>. Upgade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter level</a> to get more space.<br/>";
                     modalText += "To free space your oldest backup will automatically be deleted, automatic backups are currently disabled!<br/><br/>";
                     modalText += "You can still <a href=\"" + exportUrl + "\" target=\"_blank\">export your patch</a> and <a href=\"" + importUrl + "\" target=\"_blank\">import</a> it later.";
                 }
@@ -526,7 +516,7 @@ export class Platform extends Events
                         },
                         "title": "Backup",
                         "warning": true,
-                        "text": text.projectBackupNotSaved,
+                        "text": GuiText.projectBackupNotSaved,
                     });
 
                 }

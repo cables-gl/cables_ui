@@ -2,8 +2,15 @@ import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
+/**
+ * the icon bar below the renderer canvas
+ */
 export default class CanvasUi
 {
+
+    /**
+     * @param {import("cables-corelibs").CgContext} cg
+     */
     constructor(cg)
     {
         this._cg = cg;
@@ -15,7 +22,7 @@ export default class CanvasUi
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
         this._elcanvasCtxSwitcher = this._elcanvasCtxSwitcher || ele.byId("canvasCtxSwitcher");
         this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
-        this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
+        this._elSplitterRightPanel = this._elSplitterRightPanel || ele.byId("splitterRightPanel");
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
         this._elCtxSwitcher = this._elCtxSwitcher || document.getElementById("canvasCtxSwitcher");
 
@@ -118,7 +125,7 @@ export default class CanvasUi
 
         const perf = gui.uiProfiler.start("[canvasUi] updateCanvasIconBar");
 
-        const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
+        const splitterPatchRect = this._elSplitterRightPanel.getBoundingClientRect();
         const bodyRect = document.body.getBoundingClientRect();
 
         perf.finish();
@@ -166,7 +173,10 @@ export default class CanvasUi
             else icon.style.backgroundColor = "var(--color-07)";
     }
 
-    showCanvasModal(_show)
+    /**
+     * @param {boolean} show
+     */
+    showCanvasModal(show)
     {
         if (userSettings.get("hideCanvasUi")) return;
 
@@ -177,11 +187,11 @@ export default class CanvasUi
         this.updateSizeDisplay();
         this.updateCanvasIconBar();
 
-        this.isCanvasFocussed = _show;
+        this.isCanvasFocussed = show;
         if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
         else this._elCanvasIconbar.classList.add("hidden");
 
-        if (_show)
+        if (show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
 
@@ -209,7 +219,7 @@ export default class CanvasUi
             }, 100);
         }
 
-        this._showing = _show;
+        this._showing = show;
 
         perf.finish();
     }

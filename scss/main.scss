@@ -150,6 +150,7 @@ body
     {
         user-select: none;
     }
+
     .selectable
     {
         user-select:text !important;
@@ -344,7 +345,7 @@ body
 
 
     // scrollbar
-    $color-scrollbar-thumb: #2a2a2a;
+    $color-scrollbar-thumb: #444;
     $color-scrollbar-background: transparent;
 
     ::-webkit-scrollbar, &::-webkit-scrollbar {
@@ -428,7 +429,7 @@ body
     .splitter
     {
         background-color:var(--color-splitter);
-        z-index: $zindex_high;
+        z-index: $zindex_canvas;
         position: absolute;
         display: block;
     }
@@ -445,7 +446,6 @@ body
     {
         height:15px !important;
         width:15px !important;
-        z-index: $zindex_high;
         cursor:ne-resize;
     }
 
@@ -454,22 +454,20 @@ body
         height:4px;
         right:0px;
         cursor:ns-resize;
-        z-index: $zindex_canvas;
     }
 
 
-    #splitterPatch,#splitterEditor,#splitterMaintabs, .splitterTimeline
+    #splitterRightPanel,#splitterEditor,#splitterMaintabs,.splitterTimeline
     {
-        z-index: $zindex_high;
         width:4px;
         height:100%;
         cursor:ew-resize;
     }
 
-    #splitterPatch
-    {
-        background-color: transparent;
-    }
+    /* #splitterPatch */
+    /* { */
+        /* background-color: transparent; */
+    /* } */
 
     .clone
     {
@@ -783,6 +781,7 @@ body
 @import 'components/gradienteditor.scss';
 @import 'components/buttons.scss';
 @import 'components/preferences.scss';
+@import 'components/cellmate.scss';
 
 
 .cablesCssUi
@@ -803,7 +802,6 @@ body
     .portSuggest4Linked { border-left:10px solid var(--color_port_dynamic) !important; color:#888;}
     .portSuggest5Linked { border-left:10px solid var(--color_link_string) !important; color:#888;}
 
-
     .scrollPage
     {
         overflow:auto;
@@ -819,15 +817,13 @@ body
         {
             z-index: 9999 !important;
         }
+
         #cablescanvas,#meta
         {
             position: fixed !important;
             right:15px !important;
         }
     }
-
-
-
 
     .cursorAvatar
     {
@@ -839,7 +835,6 @@ body
         border-radius: 100%;
         border:2px solid black;
         pointer-events: none;
-
     }
 
     .patchfield
@@ -858,4 +853,8 @@ body
         outline:none !important;
     }
 
+}
+*:focus{
+    outline: none;
+    /* outline-color:var(--color-special); */
 }

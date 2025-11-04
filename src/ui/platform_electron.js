@@ -1,9 +1,9 @@
 import { ele } from "cables-shared-client";
 import { Platform } from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
-import text from "./text.js";
 import { notify } from "./elements/notification.js";
 import { gui } from "./gui.js";
+import { GuiText } from "./text.js";
 
 /**
  * platform for standalone / electron version
@@ -136,7 +136,7 @@ export default class PlatformElectron extends Platform
                 },
                 "title": "Backup",
                 "warning": true,
-                "text": text.projectBackupNotSaved,
+                "text": GuiText.projectBackupNotSaved,
             });
 
             return;

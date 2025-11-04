@@ -1,0 +1,113 @@
+.cellmateNotification {
+    float: right;
+}
+
+.cellmateStatus {
+    font-family: monospace;
+    background-color: #151515;
+    padding: 5px;
+    outline: 1px solid #555;
+}
+
+.cellmatetable {
+    --color-grid: #444;
+
+    font-family: monospace;
+    display: grid;
+
+    .row {
+        display: grid;
+        grid-template-columns: repeat(5, 100px);
+    }
+
+    .head {
+        user-select: none;
+        display: inline-block;
+        background-color: #151515;
+        text-align: center;
+        outline: 1px solid var(--color-grid);
+
+        &.selected {
+            outline: 1px solid var(--color-grid);
+            background-color: #282800;
+            color: #ffff00;
+        }
+    }
+
+    .cell,
+    .head {
+        border: 0px solid #aaa;
+        padding: 0px;
+        padding-bottom: 2px;
+        padding-right: 1px;
+        height: 20px;
+    }
+
+    .cursor {
+        border: 1px solid #ffff00;
+    }
+
+    .value {
+        background-color: #333;
+    }
+
+    .selected {
+        background-color: #555526;
+        outline: 1px solid #888800;
+        color: #ffff00;
+    }
+
+    input {
+        display: block;
+        background-color: #222;
+        color: #ccc;
+        width: calc(100% - 1px);
+        height: calc(100% - 1px);
+        outline: 1px solid var(--color-grid);
+        margin-bottom: 1px;
+        border: 1px solid transparent;
+        font-family: monospace;
+        padding: 0px;
+
+        &:focus {
+            outline: 1px solid #00cccc;
+        }
+    }
+
+    &:focus {
+        outline: 1px solid #444;
+    }
+
+    .numeric {
+        color: #4adab5;
+    }
+
+}
+
+.cellMateScrollHor,
+.cellMateScrollVert {
+
+    overflow: scroll;
+    position: absolute;
+    z-index: 8888888;
+}
+
+.cellMateScrollVert {
+    right: 0px;
+    width: 25px;
+    height: 500px;
+
+    div {
+        height: 1000px;
+    }
+}
+
+.cellMateScrollHor {
+    bottom: 25px;
+    width: 500px;
+    height: 30px;
+
+    div {
+        height: 1000px;
+    }
+}

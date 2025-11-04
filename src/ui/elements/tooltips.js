@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
 import { Link, utils } from "cables";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import { gui } from "../gui.js";
 import { PortDir, portType } from "../core_constants.js";
 
@@ -84,7 +84,7 @@ function eleTtOut(_e)
 
 export function showInfo(txt, param)
 {
-    if (param)gui.bottomInfoArea.setContentParam(txt);
+    if (param)gui.bottomInfoArea?.setContentParam(txt);
     else gui.bottomInfoArea.setContent(txt);
 }
 
@@ -144,25 +144,17 @@ function getPortDescription(thePort, overlink)
         str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
     }
 
-    // if (!overlink)
-    // {
-    if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
+    if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + "</b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
-    // }
-    // else
-    // {
-    // str += overlink.opOut.op.getTitle() + "." + overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" align=\"bottom\" ></i>" + overlink.opIn.op.getTitle() + "." + overlink._portNameInput;
-    // str += overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" ></i>" + overlink._portNameInput;
-    // }
 
     if (!overlink)
     {
         let strInfo = "";
 
-        if (thePort.direction == PortDir.in) strInfo += text.portDirIn;
-        if (thePort.direction == PortDir.out) strInfo += text.portDirOut;
-        if (thePort.isLinked()) strInfo += text.portMouseUnlink;
-        else strInfo += text.portMouseCreate;
+        if (thePort.direction == PortDir.in) strInfo += GuiText.portDirIn;
+        if (thePort.direction == PortDir.out) strInfo += GuiText.portDirOut;
+        if (thePort.isLinked()) strInfo += GuiText.portMouseUnlink;
+        else strInfo += GuiText.portMouseCreate;
         gui.showInfo(strInfo);
     }
 

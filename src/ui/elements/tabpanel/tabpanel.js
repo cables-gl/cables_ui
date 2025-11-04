@@ -25,9 +25,11 @@ import Tab from "./tab.js";
  */
 export default class TabPanel extends Events
 {
+    static EVENT_RESIZE = "resize";
 
     /** @type {TabPanelOptions} */
     #options;
+    #eleId;
 
     /**
      * @param {String} eleId
@@ -40,7 +42,7 @@ export default class TabPanel extends Events
 
         this.#options = options;
         this.id = utils.uuid();
-        this._eleId = eleId;
+        this.#eleId = eleId;
         this._tabs = [];
         this._eleContentContainer = null;
         this._eleTabPanel = null;
@@ -51,10 +53,10 @@ export default class TabPanel extends Events
         this._eleTabPanel.classList.add("tabpanel");
         this._eleTabPanel.innerHTML = "";
 
-        const el = ele.byId(this._eleId);
+        const el = ele.byId(this.#eleId);
         if (!el)
         {
-            this._log.error("could not find ele " + this._eleId);
+            this._log.error("could not find ele " + this.#eleId);
             return;
         }
         el.appendChild(this._eleTabPanel);
@@ -64,9 +66,9 @@ export default class TabPanel extends Events
         this._eleContentContainer.innerHTML = "";
         el.appendChild(this._eleContentContainer);
 
-        this.on("resize", () =>
+        this.on(TabPanel.EVENT_RESIZE, () =>
         {
-            for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent("resize");
+            for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent(Tab.EVENT_RESIZE);
         });
     }
 
@@ -137,7 +139,7 @@ export default class TabPanel extends Events
 
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (window.gui && this._eleId == "maintabs")
+            if (window.gui && this.#eleId == "maintabs")
             {
                 const t = this._tabs[i];
 
@@ -255,7 +257,7 @@ export default class TabPanel extends Events
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
+            if (userSettings.get("tabsLastTitle_" + this.#eleId) == this._tabs[i].title)
             {
                 this.activateTab(this._tabs[i].id);
                 found = true;
@@ -270,7 +272,7 @@ export default class TabPanel extends Events
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;
-        userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
+        userSettings.set("tabsLastTitle_" + this.#eleId, activeTab.title);
     }
 
     /**
@@ -497,11 +499,6 @@ export default class TabPanel extends Events
         {
             gui.setProjectName(opts.name);
             platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
-        });
-
-        talkerAPI.on("updatePatchSummary", (opts, next) =>
-        {
-            gui.project().summary = opts;
             gui.patchParamPanel.show(true);
         });
 

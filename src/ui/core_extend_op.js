@@ -7,7 +7,9 @@ import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
-import text from "./text.js";
+import { GuiText } from "./text.js";
+import { UiPatch } from "./core_extend_patch.js";
+import { getConverters } from "./components/converterops.js";
 
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
@@ -71,39 +73,40 @@ class UiOp extends Op
 
     /**
      * @param {Port} otherPort
+     * @param {boolean} countConverters
      */
-    countFittingPorts(otherPort)
+    countFittingPorts(otherPort, countConverters)
     {
         let count = 0;
-        for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) count++;
+        if (otherPort.direction == Port.DIR_IN)
+            for (const ipo in this.portsOut) if ((countConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) count++;
 
-        for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) count++;
+        if (otherPort.direction == Port.DIR_OUT)
+            for (const ipi in this.portsIn) if ((countConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) count++;
 
         return count;
     }
 
     /**
      * @param {Port} otherPort
+     * @param {undefined} useConverters
      */
-    findFittingPort(otherPort, inPortsFirst = false)
+    findFittingPort(otherPort, inPortsFirst = false, useConverters)
     {
         if (inPortsFirst)
         {
-            for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
-            for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if ((useConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if ((useConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
         }
         else
         {
-            for (const ipo in this.portsOut) if (Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
-            for (const ipi in this.portsIn) if (Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if ((useConverters && getConverters(otherPort, this.portsOut[ipo]).length > 0) || Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if ((useConverters && getConverters(otherPort, this.portsIn[ipi]).length > 0) || Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
         }
     }
 
     /**
      * disconnect all links
-     * @function
-     * @instance
-     * @memberof Op
      */
     unLink()
     {
@@ -121,6 +124,10 @@ class UiOp extends Op
         this.unLinkOptions(true, true);
     }
 
+    /**
+     * @param {boolean} tryRelink
+     * @param {boolean} temporary
+     */
     unLinkOptions(tryRelink, temporary)
     {
         let i = 0;
@@ -349,19 +356,19 @@ class UiOp extends Op
                 this.hasParent(portType.trigger, "TextureEffects.ImageCompose") ||
                 this.hasParent(portType.trigger, "TextureEffects.ImageCompose_v2");
 
-            if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
+            if (!working) notWorkingMsg = GuiText.working_connected_to + "ImageCompose";
         }
 
         if (this.linkTimeRules.forbiddenParent && working)
         {
             working = !this.hasParent(this.linkTimeRules.forbiddenParentType || null, this.linkTimeRules.forbiddenParent);
-            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this.linkTimeRules.forbiddenParent + "";
+            if (!working) notWorkingMsg = GuiText.working_shouldNotBeChildOf + this.linkTimeRules.forbiddenParent + "";
         }
 
         if (this.linkTimeRules.needsParentOp && working)
         {
             working = this.hasParent(null, this.linkTimeRules.needsParentOp);
-            if (!working) notWorkingMsg = text.working_connected_to + this.linkTimeRules.needsParentOp + "";
+            if (!working) notWorkingMsg = GuiText.working_connected_to + this.linkTimeRules.needsParentOp + "";
         }
 
         if (this.linkTimeRules.needsStringToWork.length > 0)
@@ -379,7 +386,7 @@ class UiOp extends Op
                 {
                     working = false;
 
-                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_or_string;
+                    if (!notWorkingMsg) notWorkingMsg = GuiText.working_connected_needs_connections_or_string;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
 
@@ -408,7 +415,7 @@ class UiOp extends Op
                 {
                     working = false;
 
-                    if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_to;
+                    if (!notWorkingMsg) notWorkingMsg = GuiText.working_connected_needs_connections_to;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
 
@@ -442,6 +449,10 @@ class UiOp extends Op
                     !uri.startsWith("https://") &&
                     !uri.startsWith("file:/") &&
                     !uri.startsWith("/") &&
+<<<<<<< HEAD
+=======
+                    !uri.startsWith("./") && // needed for local files in standalone that are relative to the projectfolder, file-urls can't contain relative paths
+>>>>>>> develop
                     !uri.startsWith("data:")
                 )
                     this.setUiError("protocol", "Invalid URL, should start with https:// or file:/ or a slash, etc.", 1);
@@ -845,11 +856,8 @@ class UiOp extends Op
         {
             if (this.portsIn[i].uiAttribs.hidePort) continue;
 
-            if (this.portsIn[i].name == name)
-            {
-                // return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || index) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
-                return this.posByIndex(index, this.getNumVisiblePortsIn(), center);
-            }
+            if (this.portsIn[i].name == name) return this.posByIndex(index, this.getNumVisiblePortsIn(), center);
+
             index++;
         }
 
@@ -859,9 +867,8 @@ class UiOp extends Op
             if (this.portsOut[i].uiAttribs.hidePort) continue;
 
             if (this.portsOut[i].name == name)
-            {
                 return this.posByIndex(index, this.getNumVisiblePortsOut(), center);// * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
-            }
+
             index++;
         }
 
@@ -887,6 +894,7 @@ class UiOp extends Op
 
         return portOut;
     }
+
 }
 
 export { UiOp };

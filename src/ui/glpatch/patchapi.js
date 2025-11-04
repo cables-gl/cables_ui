@@ -1,10 +1,11 @@
 import { Logger } from "cables-shared-client";
-import { Patch } from "cables";
+import { Op, Patch } from "cables";
 import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
+import { UiOp } from "../core_extend_op.js";
 
 const DEFAULT_ACTIVITY = 0;
 
@@ -301,6 +302,9 @@ export default class GlPatchAPI
         });
     }
 
+    /**
+     * @param {UiOp} op
+     */
     _onDeleteOp(op)
     {
         if (!undo.paused()) gui.savedState.setUnSaved("patchApiOnDeleteOp", op.getSubPatch());
@@ -319,6 +323,9 @@ export default class GlPatchAPI
             gui.bookmarks.needRefreshSubs = true;
     }
 
+    /**
+     * @param {string} opid
+     */
     showOpParams(opid)
     {
         setTimeout(() =>
@@ -328,6 +335,12 @@ export default class GlPatchAPI
         }, 33);
     }
 
+    /**
+     * @param {string} opIdIn
+     * @param {string} opIdOut
+     * @param {string} portIdIn
+     * @param {string} portIdOut
+     */
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
         const opIn = gui.corePatch().getOpById(opIdIn);

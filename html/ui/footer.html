@@ -106,13 +106,19 @@
         {
             let platformClass = "PlatformCommunity";
             if(cfg && cfg.platformClass) {
+                // only electron...
                 if(CABLES.hasOwnProperty(cfg.platformClass)) {
                     platformClass = cfg.platformClass;
                     console.info("using sandbox from", platformClass);
                 }else{
                     console.error("could not find class for sandbox", cfg.platformClass, "using", platformClass);
                 }
+            }
 
+            if(!CABLES[platformClass])
+            {
+                console.error("no cfg or platformClass")
+                return;
             }
             CABLES.platform = new CABLES[platformClass](cfg);
 

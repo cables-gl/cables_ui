@@ -1,31 +1,43 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import { gui } from "../../gui.js";
 
 export default class ItemManager extends Events
 {
+    static TABSESSION_NAME = "itemmanager";
+    #tab;
+    #display;
+
+    /**
+     * @param {string | import("../../elements/tabpanel/tabpanel.js").default} title
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} [tabs]
+     */
     constructor(title, tabs)
     {
         super();
         this.listHtmlOptions = {};
-        this._display = "icons";
-        this._tab = new Tab(title, {
+        this.#display = "icons";
+        this.#tab = new Tab(title, {
             "icon": "folder",
-            "singleton": "true",
+            "singleton": true,
             "padding": true,
         });
-        tabs.addTab(this._tab);
+        tabs.addTab(this.#tab);
 
-        this._tab.addEventListener(
+        this.#tab.addEventListener(
             "close",
             () =>
             {
                 this.emitEvent("close");
+                editorSession.remove(ItemManager.TABSESSION_NAME, "profiler");
             },
         );
 
         this._items = [];
         this.updateHtml();
+        editorSession.rememberOpenEditor(ItemManager.TABSESSION_NAME, "profiler", { }, true);
     }
 
     clear()
@@ -33,17 +45,23 @@ export default class ItemManager extends Events
         this._items.length = 0;
     }
 
+    /**
+     * @param {string} t
+     */
     setDisplay(t)
     {
-        this._display = t;
+        this.#display = t;
         this.updateHtml();
     }
 
-    getDisplay(t)
+    getDisplay()
     {
-        return this._display;
+        return this.#display;
     }
 
+    /**
+     * @param {string} id
+     */
     removeItem(id)
     {
         let nextId = null;
@@ -79,10 +97,10 @@ export default class ItemManager extends Events
         const options = { "items": this._items };
         for (const i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
 
-        if (this._display === "icons") html = getHandleBarHtml("tab_itemmanager", options);
+        if (this.#display === "icons") html = getHandleBarHtml("tab_itemmanager", options);
         else html = getHandleBarHtml("tab_itemmanager_list", options);
 
-        this._tab.html("<div id=\"item_manager\" class=\"item_manager\">" + html + "</div>");
+        this.#tab.html("<div id=\"item_manager\" class=\"item_manager\">" + html + "</div>");
     }
 
     getItemByTitleContains(t)
@@ -210,3 +228,8 @@ export default class ItemManager extends Events
         this.filterItems();
     }
 }
+
+editorSession.addListener(ItemManager.TABSESSION_NAME, (id, data) =>
+{
+    gui.showFileManager();
+});

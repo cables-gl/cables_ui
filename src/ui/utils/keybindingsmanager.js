@@ -196,7 +196,7 @@ export default class KeyBindingsManager extends Events
      * @param {string} key
      * @param {string} title
      * @param {string} event
-     * @param {null} target
+     * @param {string} target
      * @param {KeyOptions} options
      * @param {Function} cb
      */
@@ -224,7 +224,7 @@ export default class KeyBindingsManager extends Events
      * @param {string | any[]} key
      * @param {string} title
      * @param {string} event
-     * @param {null} target
+     * @param {string} target
      * @param {KeyOptions} options
      * @param {keyCallback} cb
      */

@@ -19,7 +19,7 @@
                         <span class="dir">{{dir}}</span>
                         <div class="controls">
                             using <span class="usedOps">{{numUsedOps}}</span> of <span class="ops">{{numOps}}</span> ops&nbsp;
-                            <a class="icon icon-folder icon-0_75x" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{dir}}'});"></a>&nbsp;
+                            <a class="icon icon-folder icon-0_75x" data-dir="{{dir}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir});"></a>&nbsp;
                             {{#unless fixedPlace}}<a class="removeOpProjectDir icon icon-x icon-0_75x" data-dir="{{dir}}"></a>{{/unless}}
                         </div>
                     </div>

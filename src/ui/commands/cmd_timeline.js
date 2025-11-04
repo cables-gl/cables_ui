@@ -8,6 +8,8 @@ const CABLES_CMD_TIMELINE = {};
 
 const timelineCommands =
 {
+
+    /** @type {import("./commands.js").commandObject[]} */
     "commands": [],
     "functions": CABLES_CMD_TIMELINE
 };
@@ -22,7 +24,6 @@ CABLES_CMD_TIMELINE.TimelineSnapTimes = function ()
 
 CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
 {
-
     gui.glTimeline.createKeyAtCursor();
 };
 
@@ -57,6 +58,11 @@ CABLES_CMD_TIMELINE.togglePlay = function ()
 {
     if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
     else gui.corePatch().timer.play();
+};
+
+CABLES_CMD_TIMELINE.toggleGraph = function ()
+{
+    gui.glTimeline?.toggleGraphLayout();
 };
 
 CABLES_CMD_TIMELINE.openGlTimeline = function ()
@@ -137,6 +143,12 @@ timelineCommands.commands.push(
         "cmd": "snap selected keys times to fps",
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.TimelineSnapTimes
+    },
+    {
+        "cmd": "timeline toggle line/graph layout",
+        "category": "timeline",
+        "icon": "chart-spline",
+        "func": CABLES_CMD_TIMELINE.toggleGraph
     }
 
 );

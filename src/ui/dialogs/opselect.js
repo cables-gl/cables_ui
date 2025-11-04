@@ -3,7 +3,7 @@ import { Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import Gui, { gui } from "../gui.js";
 import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
@@ -370,10 +370,11 @@ export default class OpSelect
 
                 if (docs)
                 {
+                    html += "<a class=\"button-small button-icon\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.OP.manageOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+
                     if (docs.allowEdit)
                     {
-
-                        html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.OP.manageOp('" + docs.id + "');gui.pressedEscape();\"><span class=\"icon icon-op\"></span></a>";
+                        html += "<a class=\"button-small button-icon\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"gui.serverOps.edit('" + opName + "', false,null,true);gui.pressedEscape();\"><span class=\"icon icon-edit\"></span></a>";
                         if (platform.frontendOptions.hasOpDirectories && docs.opDirFull)
                             html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.ELECTRON.openOpDir('', '" + opName + "');gui.pressedEscape();\"><span class=\"icon icon-folder\"></span></a>";
 
@@ -540,7 +541,7 @@ export default class OpSelect
             this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
             this._eleOpsearchmodal.innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text, "patchOps": this._opSearch.numPatchops });
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": GuiText, "patchOps": this._opSearch.numPatchops });
 
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));

@@ -1,7 +1,7 @@
 import { notify } from "../elements/notification.js";
 import { gui } from "../gui.js";
 import opNames from "../opnameutils.js";
-import text from "../text.js";
+import { GuiText } from  "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 /**
@@ -154,7 +154,7 @@ export default class Bookmarks
                         elements[eli].classList.remove("icon-bookmark-filled");
                         elements[eli].classList.add("icon-bookmark");
                     }
-                    notify(text.bookmark_removed);
+                    notify(GuiText.bookmark_removed);
                     return;
                 }
             }
@@ -169,7 +169,7 @@ export default class Bookmarks
             }
 
             gui.patchView.centerSelectOp(id);
-            notify(text.bookmark_added);
+            notify(GuiText.bookmark_added);
             gui.corePatch().emitEvent("bookmarkschanged");
         }
 

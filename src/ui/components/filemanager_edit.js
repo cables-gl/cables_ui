@@ -2,7 +2,7 @@ import { utils } from "cables";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import EditorTab from "./tabs/tab_editor.js";
+import { createEditor } from "./editor.js";
 
 /**
  * edit text files directly from the filemanager
@@ -43,7 +43,8 @@ export default class FileManagerEditor
 
                 let editorObj = editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
 
-                new EditorTab(
+                // new EditorTab(
+                createEditor(
                     {
                         "title": name,
                         "content": _data,

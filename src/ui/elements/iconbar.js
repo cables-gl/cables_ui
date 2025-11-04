@@ -2,6 +2,7 @@ import { ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
+import { cblCommands } from "../commands/commands.js";
 
 export default class IconBar
 {
@@ -67,9 +68,9 @@ export default class IconBar
         }
 
         for (let i = 0; i < items.length; i++)
-            for (let j = 0; j < CABLES.CMD.commands.length; j++)
-                if (CABLES.CMD.commands[j].cmd == items[i])
-                    this.addItem(CABLES.CMD.commands[j]);
+            for (let j = 0; j < cblCommands.length; j++)
+                if (cblCommands[j].cmd == items[i])
+                    this.addItem(cblCommands[j]);
 
         this._buildHtml();
     }
@@ -94,6 +95,9 @@ export default class IconBar
         ele.byId("mainContainer").appendChild(this._eleContainer);
     }
 
+    /**
+     * @param {commandObject} item
+     */
     addItem(item)
     {
         this._items.push(item);

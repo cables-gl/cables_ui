@@ -1,19 +1,19 @@
-import { Events, Logger, ele } from "cables-shared-client";
-
-import { Anim, AnimKey, Port } from "cables";
+import { Events, Logger } from "cables-shared-client";
+import { Anim, AnimKey, Patch, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import { INSPECT_MAX_BYTES } from "buffer";
+import { map } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
-import { GlTlView } from "./gltlview.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
-import GlText from "../gldraw/gltext.js";
-import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
 import { TlKey } from "./tlkey.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 /**
  * gltl key rendering
@@ -29,7 +29,10 @@ export class glTlKeys extends Events
     static COLOR_NORMAL = [0.7, 0.7, 0.7, 1];
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_CURRENT_LINE = [1, 1, 1, 1];
-    static COLOR_HIGHLIGHT = [0, 1, 1, 1];
+    // static COLOR_HIGHLIGHT = [0.0, 0.8, 0.8, 1];
+    static COLOR_SPLINE = [0.4, 0.4, 0.4, 1];
+    static COLOR_SPLINE_HIGHLIGHTED = [0.5, 0.5, 0.5, 1];
+    static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 1];
 
     /** @type {Anim} */
     #anim = null;
@@ -56,6 +59,12 @@ export class glTlKeys extends Events
 
     /** @type {GlSpline} */
     #spline;
+
+    /** @type {GlSpline} */
+    #splineAfter;
+
+    /** @type {GlSpline} */
+    #splineBefore;
 
     #disposed = false;
 
@@ -85,6 +94,7 @@ export class glTlKeys extends Events
     #disposedWarning = 0;
     #bezCpZ = -0.3;
     #bezCpSize = 1;
+    #idx = -1;
 
     /**
      * @param {GlTimeline} glTl
@@ -93,8 +103,9 @@ export class glTlKeys extends Events
      * @param {GlRect} parentRect
      * @param {Port} port
      * @param {Object} options
+     * @param {Number} idx
      */
-    constructor(glTl, animLine, anim, parentRect, port, options)
+    constructor(glTl, animLine, anim, parentRect, port, options, idx)
     {
         super();
         this._log = new Logger("gltlKeys");
@@ -103,28 +114,46 @@ export class glTlKeys extends Events
         if (!port) this._log.error("no port");
         this.#anim = anim;
 
+        this.#idx = idx;
         this.#glTl = glTl;
         this.#parentRect = parentRect;
         this.#options = options || {};
         this.#port = port;
         this.animLine = animLine;
+
         this.#listeners.push(
+
+            this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
+            {
+                this.disposeSplines();
+            }),
+
+            gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () =>
+            {
+                this.#needsUpdate = true;
+            }),
+
+            this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
+            {
+                this.#changeLayout();
+            }),
+
             anim.on(Anim.EVENT_CHANGE, () =>
             {
                 this.#needsUpdate = true;
                 for (let i = 0; i < this.#keys.length; i++)
-                {
                     this.#keys[i].update();
-                }
-            }));
+            })
+        );
 
-        if (this.isLayoutGraph())
-        {
-            this.#spline = new GlSpline(this.#glTl.splines, port.name);
-            this.#spline.setParentRect(parentRect);
-        }
-
+        this.#options = options;
         this.init();
+    }
+
+    updateSoon()
+    {
+        this.#needsUpdate = true;
+        if (!this.updTimeout) this.updTimeout = setTimeout(() => { this.update(); this.updTimeout = null; }, 30);
     }
 
     isDragging()
@@ -137,6 +166,40 @@ export class glTlKeys extends Events
         return this.#anim;
     }
 
+    #changeLayout()
+    {
+
+        if (!this.#glTl.isGraphLayout())
+        {
+            if (this.#spline)
+            {
+                if (this.#spline) this.#spline = this.#spline.dispose();
+                if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+                if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
+            }
+
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].removeBezCp();
+
+        }
+    }
+
+    /**
+     * @param {boolean} b
+     */
+    set hidden(b)
+    {
+        if (b)
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].hide();
+        else
+            for (let i = 0; i < this.#keys.length; i++)
+                this.#keys[i].show();
+
+        this.updateColors();
+        this.update();
+    }
+
     isCurrentOp()
     {
         let isCurrentOp = gui.patchView.isCurrentOp(this.#port.op);
@@ -145,21 +208,26 @@ export class glTlKeys extends Events
 
     showKeysAsFrames()
     {
-        if (this.isLayoutGraph()) return false;
-        let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
-        return kwidth > 5;
+        // if (this.isLayoutGraph()) return false;
+        // let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
+        // return kwidth > 5;
+        return false;
     }
 
     /**
      * @param {GlRect} kr
+     * @param {TlKey} [key]
      */
-    setKeyShapeSize(kr)
+    setKeyShapeSize(kr, key)
     {
         const w = this.getKeyWidth();
 
         if (!this.showKeysAsFrames() || this.isLayoutGraph())
         {
-            kr.setShape(13);
+            if (key.key.getEasing() == Anim.EASING_LINEAR) kr.setShape(GlRect.SHAPE_RHOMB);
+            else if (key.key.getEasing() == Anim.EASING_ABSOLUTE) kr.setShape(GlRect.SHAPE_RECT);
+            else kr.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+
             kr.setSize(w, w);
         }
         else
@@ -176,6 +244,16 @@ export class glTlKeys extends Events
         return this.getKeyWidth();
     }
 
+    getKeyHeight2()
+    {
+        return Math.ceil(this.getKeyHeight() / 2);
+    }
+
+    getKeyWidth2()
+    {
+        return Math.floor(this.getKeyWidth() / 2);
+    }
+
     getKeyWidth()
     {
         if (this.isLayoutGraph())
@@ -186,6 +264,7 @@ export class glTlKeys extends Events
             if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
+
         let kwidth = this.#glTl.view.timeToPixel(1 / 30) - 1;
         if (!this.showKeysAsFrames() && !this.isLayoutGraph()) return 11;
 
@@ -196,10 +275,33 @@ export class glTlKeys extends Events
      */
     update()
     {
+
         if (this.#disposed)
         {
             this.#disposedWarning++;
             return;
+        }
+
+        if (this.shouldDrawSpline())
+        {
+
+            if (!this.#spline)
+            {
+                this.#spline = new GlSpline(this.#glTl.splines, "spline" + this.#port.name);
+                this.#spline.setParentRect(this.#parentRect);
+            }
+
+            if (!this.#splineBefore)
+            {
+                this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
+                this.#splineBefore.setParentRect(this.#parentRect);
+            }
+
+            if (!this.#splineAfter)
+            {
+                this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
+                this.#splineAfter.setParentRect(this.#parentRect);
+            }
         }
 
         if (this.#keys.length != this.#anim.keys.length) return this.init();
@@ -210,82 +312,167 @@ export class glTlKeys extends Events
         const perf = gui.uiProfiler.start("[gltl] update");
         for (let i = 0; i < this.#keys.length; i++)
         {
+            if (this.#keys[i].isHidden) this.#keys[i].show();
             const tlKey = this.#keys[i];
             tlKey.update();
 
-            this.setKeyShapeSize(tlKey.rect);
+            this.setKeyShapeSize(tlKey.rect, tlKey);
 
-            if (this.#glTl.selectRect &&
-                this.#glTl.selectRect.x < (tlKey.rect.absX + this.sizeKey) && this.#glTl.selectRect.x2 > tlKey.rect.absX &&
-                this.#glTl.selectRect.y < (tlKey.rect.absY + this.getKeyHeight()) && this.#glTl.selectRect.y2 > tlKey.rect.absY)
-            {
+            if (this.#glTl.selectRect && this.testSelectRectKey(tlKey.key, tlKey.rect))
                 this.#glTl.selectKey(tlKey.key, this.#anim);
-            }
 
         }
         perf.finish();
 
         if (wasSelected != this.#hasSelectedKeys) this.updateColors();
 
-        this.setKeyPositions("update");
-
         /// /////////
 
         if (!this.#glTl.view.isAnimated() && !this.#needsUpdate) return;
+        this.setKeyPositions("update");
 
         this.#needsUpdate = false;
 
         const pointsSort = [];
+        const pointsSortAfter = [];
+        const pointsSortBefore = [];
 
         let z = -0.4;
         if (this.#anim.tlActive)z = -0.5;
         if (this.#port.op.isCurrentUiOp())z = -0.6;
+        let lastArray = null;
 
-        if (this.isLayoutGraph())
+        if (this.shouldDrawSpline() && !this.shouldDrawGraphSpline())
         {
+            const y = Math.floor(this.animLine.height / 2) - 2;
+            let t = 0;
+            let x = 0;
+
+            if (this.anim.keys.length > 0 && this.anim.keys[0].time != 0)
+            {
+                pointsSortBefore.push(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), y, z);
+                let t = this.anim.keys[0].time;
+                pointsSortBefore.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+            }
+
+            for (let i = 0; i < this.anim.keys.length; i++)
+            {
+                t = this.anim.keys[i].time;
+                pointsSort.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+            }
+
+            if (this.anim.keys.length > 0)
+            {
+                t = this.anim.keys[this.anim.keys.length - 1].time;
+                pointsSortAfter.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+                pointsSortAfter.push(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#glTl.view.offset), y, z);
+            }
+
+        }
+        else
+        if (this.shouldDrawSpline())
+        {
+            let y = 0;
+            let x = 0;
             const steps = (this.#glTl.width) / 1;
-            let lv = 9999999;
             let skipped = false;
-            for (let i = 0; i < steps; i++)
+            let lastX = 0;
+            let lastY = 0;
+            let lastKeyIdx = -1;
+            let unit = 2;
+            let lastDelta = 99;
+
+            for (let i = 0; i < steps; i += unit)
             {
                 // todo:add exact keys
                 const t = CABLES.map(i, 0, steps, this.#glTl.view.timeLeft, this.#glTl.view.timeRight);
-                const x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
+                const idx = this.anim.getKeyIndex(t);
+                x = this.#glTl.view.timeToPixel(t - this.#glTl.view.offset);
 
                 let v = this.#anim.getValue(t);
+                y = this.animLine.valueToPixel(v);
 
-                if (v == lv && i < steps - 3)
+                let pointArray = pointsSortBefore;
+
+                if (this.anim.keys.length > 0 && t >= this.anim.keys[0].time) pointArray = pointsSort;
+                if (this.anim.hasEnded(t)) pointArray = pointsSortAfter;
+
+                if (pointArray != lastArray)
                 {
-                    skipped = true;
-                    continue;
+                    if (lastArray)lastArray.push(lastX, y, z);
+                    if (lastArray)lastArray.push(x, y, z);
+
+                    pointArray.push(x, y, z);
+                    lastX = x;
                 }
 
-                if (skipped)
+                const delta = (lastY - y);
+
+                if (this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE || this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
+                    unit = 1;
+                else
+                    unit = map(Math.abs(delta), 0, 4, 4, 2, Anim.EASING_LINEAR, true);
+
+                if (idx != lastKeyIdx || pointArray.length < 2 || pointArray[pointArray.length - 2] != y)
                 {
-                    let y = this.animLine.valueToPixel(lv);
-                    pointsSort.push(x, y, z);
+                    if (idx != lastKeyIdx || this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE)
+                        pointArray.push(lastX, y, z);
+
+                    if (this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
+                    {
+                        if (Math.abs(delta - lastDelta) > 0.001)
+                            pointArray.push(x, y, z);
+                    }
+                    else
+                        pointArray.push(x, y, z);
+
+                    lastX = x;
                 }
 
-                lv = v;
-                let y = this.animLine.valueToPixel(v);
-                pointsSort.push(x, y, z);
+                lastDelta = delta;
+                lastArray = pointArray;
                 skipped = false;
+                lastKeyIdx = idx;
+                lastY = y;
             }
+            lastArray?.push(x, y, z);
         }
 
-        if (this.isLayoutGraph() && this.#spline)
+        if (this.shouldDrawSpline() && this.#spline)
         {
             this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(pointsSort);
+            this.#splineAfter.getDrawer().rebuildLater();
+            this.#splineAfter.setPoints(pointsSortAfter);
+            this.#splineBefore.getDrawer().rebuildLater();
+            this.#splineBefore.setPoints(pointsSortBefore);
         }
 
         this.updateColors();
+        this.updTimeout = null;
         this.#updateCount++;
+    }
+
+    drawKeys()
+    {
+        if (this.#port.uiAttribs.hasOwnProperty("tlDrawKeys")) return this.#port.uiAttribs.tlDrawKeys;
+        return true;
+    }
+
+    shouldDrawGraphSpline()
+    {
+        return this.isLayoutGraph() || this.animLine.lineHeight > 0;
+    }
+
+    shouldDrawSpline()
+    {
+        if (!this.drawKeys()) return false;
+        return true;
     }
 
     isLayoutGraph()
     {
-        return this.animLine.height > 50 || this.animLine.isGraphLayout();
+        return this.animLine.isGraphLayout();
     }
 
     updateColors()
@@ -293,16 +480,15 @@ export class glTlKeys extends Events
         const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
         if (this.#spline)
         {
-            if (!this.#anim.uiAttribs.readOnly && this.#anim.tlActive && !this.#port.animMuted)
-            {
-                if (this.#port.op.isCurrentUiOp()) this.#spline.setColorArray(glTlKeys.COLOR_HIGHLIGHT);
-                else this.#spline.setColorArray(glTlKeys.COLOR_NORMAL);
-            }
+            if (this.animLine.getTitle(this.#idx) && this.animLine.getTitle(this.#idx).isHovering)
+                this.#spline.setColorArray(glTlKeys.COLOR_SPLINE_HIGHLIGHTED);
             else
-            {
-                this.#spline.setColorArray(glTlKeys.COLOR_INACTIVE);
-            }
+                this.#spline.setColorArray(glTlKeys.COLOR_SPLINE);
+
+            if (this.#splineAfter) this.#splineAfter.setColorArray(glTlKeys.COLOR_SPLINE_OUTSIDE);
+            if (this.#splineBefore) this.#splineBefore.setColorArray(glTlKeys.COLOR_SPLINE_OUTSIDE);
         }
+
         for (let i = 0; i < this.#keys.length; i++)
         {
             const k = this.#keys[i];
@@ -324,18 +510,16 @@ export class glTlKeys extends Events
                 col = glTlKeys.COLOR_SELECTED;
                 colBez = GlTimeline.COLOR_BEZ_HANDLE;
             }
-
             if (k.cp1r) k.cp1r.setColorArray(colBez);
             if (k.cp2r) k.cp2r.setColorArray(colBez);
             if (k.cp1s) k.cp1s.setColorArray(colBez);
             if (k.cp2s) k.cp2s.setColorArray(colBez);
-            let shape = GlRectInstancer.SHAPE_FILLED_CIRCLE;
-            if (animKey.uiAttribs.bezFree) shape = GlRectInstancer.SHAPE_CIRCLE;
+            let shape = GlRect.SHAPE_FILLED_CIRCLE;
+            if (animKey.uiAttribs.bezFree) shape = GlRect.SHAPE_CIRCLE;
 
             if (k.cp1r) k.cp1r.setShape(shape);
             if (k.cp2r) k.cp2r.setShape(shape);
 
-            if (this.#anim.tlActive && animKey.time == this.#glTl.view.cursorTime) col = glTlKeys.COLOR_HIGHLIGHT;
             keyRect.setColorArray(col);
         }
 
@@ -343,13 +527,13 @@ export class glTlKeys extends Events
     }
 
     /**
-     * @param {string} [reason]
+     * @param {string} [_reason]
      */
-    setKeyPositions(reason)
+    setKeyPositions(_reason)
     {
-        // console.log("reason", reason);
         if (this.#glTl.isSelecting()) this.testSelected();
         if (this.#keys.length != this.#anim.keys.length) this.init();
+        let y = this.animLine.getKeyYPos();
 
         const perf = gui.uiProfiler.start("[gltl] setkeypositions");
         for (let i = 0; i < this.#keys.length; i++)
@@ -358,23 +542,29 @@ export class glTlKeys extends Events
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
 
-            let y = (this.#parentRect.h / 2);
-            if (this.isLayoutGraph()) y = this.animLine.valueToPixel(animKey.value);
+            if (!this.drawKeys())
+            {
+                kr.setPosition(0, 0, 0);
+                kr.visible = false;
+                continue;
+            }
+
+            if (this.shouldDrawGraphSpline()) y = this.animLine.valueToPixel(animKey.value);
 
             let rx = this.#glTl.view.timeToPixel(animKey.time - this.#glTl.view.offset);
 
-            rx -= this.getKeyWidth() / 2;
-            let ry = y - this.getKeyHeight() / 2;
-            if (this.isLayoutGraph()) ry = y - this.getKeyWidth() / 2;
+            rx -= this.getKeyWidth2();
+            let ry = y - this.getKeyHeight2() - 2;
+            if (this.shouldDrawGraphSpline()) ry = y - this.getKeyWidth2();
 
-            if (rx != rx || ry != ry)console.log("nan", rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
+            if (rx != rx || ry != ry)console.log("garlic nan", animKey.time, this.#glTl.view.offset, rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
             let z = -0.6;
             if (this.#anim.tlActive)z = -0.9;
             if (this.#port.op.isCurrentUiOp())z = -0.94;
 
             kr.setPosition(rx, ry, z);
-            this.setKeyShapeSize(kr);
+            this.setKeyShapeSize(kr, k);
 
             if (k.text)
             {
@@ -387,7 +577,7 @@ export class glTlKeys extends Events
                 }
             }
 
-            if (k.cp1r && k.cp1r.visible)
+            if (k.cp1r && k.cp1r.visible && animKey.bezCp1 && animKey.bezCp1)
             {
                 let ks = kr.w / 2;
                 let s = k.cp1r.w / 2;
@@ -403,33 +593,53 @@ export class glTlKeys extends Events
         }
 
         // color areas
-        for (let i = 0; i < this.#keys.length - 1; i++)
+        for (let i = 0; i < this.#keys.length; i++)
         {
             const animKey = this.#keys[i].key;
-            if (animKey.uiAttribs.color)
+            const k = this.#keys[i];
+            if (k.areaRect)
             {
-                const k = this.#keys[i];
                 const kr = this.#keys[i].rect;
-                const kr2 = this.#keys[i + 1].rect;
-                if (!k.areaRect) continue;
-                if (this.#glTl.isGraphLayout() && !this.#glTl.isMultiLine())
+
+                let kr2 = null;
+                if (i < this.#keys.length - 1) kr2 = this.#keys[i + 1].rect;
+
+                let w = (kr2 || kr).x - kr.x;
+                if (i == this.#keys.length - 1)w = 9999;
+
+                let h = this.animLine.height;// -(this.getKeyHeight2()) + 2;
+                let y = this.animLine.posY();// -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
+
+                if (this.isLayoutGraph())
                 {
-                    k.areaRect.setSize(kr2.x - kr.x, Math.abs(kr2.y - kr.y));
-                    k.areaRect.setPosition(this.getKeyWidth() / 2, Math.min(0, kr2.y - kr.y) + this.getKeyWidth() / 2, 0.8);
+                    h = 88888;
+                    y -= h / 2;
                 }
-                else
-                {
-                    k.areaRect.setSize(kr2.x - kr.x, this.animLine.height - 1);
-                    if (this.showKeysAsFrames())
-                        k.areaRect.setPosition(this.getKeyWidth() / 2, -kr.h + this.getKeyHeight(), 0.4);
-                    else
-                        k.areaRect.setPosition(this.getKeyWidth() / 2, -this.animLine.height / 2 + this.getKeyHeight() / 2 + 1, 0.4);
-                }
+                k.areaRect.setSize(w, h);
+                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
             }
             perf.finish();
         }
 
         this.updateColors();
+    }
+
+    /**
+     * @param {AnimKey} key
+     * @param {GlRect} kr
+     */
+    testSelectRectKey(key, kr)
+    {
+
+        if (this.#glTl.selectRect &&
+            this.#glTl.selectRect.x < (kr.absX + this.sizeKey) &&
+            this.#glTl.selectRect.x2 > kr.absX &&
+            this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) &&
+            this.#glTl.selectRect.y2 > kr.absY)
+        {
+            return true;
+        }
+        return false;
     }
 
     testSelected()
@@ -441,10 +651,9 @@ export class glTlKeys extends Events
             const animKey = this.#keys[i].key;
             const kr = this.#keys[i].rect;
 
-            if (
-                this.#glTl.selectRect.x < (kr.absX + this.sizeKey) && this.#glTl.selectRect.x2 > kr.absX &&
-                this.#glTl.selectRect.y < (kr.absY + this.getKeyHeight()) && this.#glTl.selectRect.y2 > kr.absY)
+            if (this.testSelectRectKey(animKey, kr))
             {
+                animKey.rect = kr;
                 this.#glTl.selectKey(animKey, this.#anim);
             }
         }
@@ -477,13 +686,13 @@ export class glTlKeys extends Events
             }
 
             const tlKey = new TlKey(this.#glTl, this, key);
-            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions("poschange"); this.update(); });
+            tlKey.on(TlKey.EVENT_POSCHANGE, () => { this.setKeyPositions("poschange"); this.updateSoon(); });
             tlKey.on(TlKey.EVENT_HOVERCHANGE, () => { this.updateColors(); });
             this.#keys.push(tlKey);
             this.#keyLookup[key.id] = tlKey;
             const keyRect = tlKey.rect;
 
-            this.setKeyShapeSize(keyRect);
+            this.setKeyShapeSize(keyRect, tlKey);
             keyRect.setColorArray(glTlKeys.COLOR_INIT);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);
@@ -493,9 +702,8 @@ export class glTlKeys extends Events
             let oldValues = {};
             if (!key.anim.uiAttribs.readOnly)
             {
-
                 keyRect.draggableMove = true;
-                keyRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
+                keyRect.on(GlRect.EVENT_POINTER_HOVER, (_r, e) =>
                 {
                     if (glTlKeys.dragStarted) return;
                     if (this.#glTl.isSelecting()) return;
@@ -537,7 +745,6 @@ export class glTlKeys extends Events
 
                 keyRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
                 {
-
                     if (this.#glTl.isSelecting()) return;
 
                     if (!this.#glTl.isKeySelected(key) && this.#glTl.hoverKeyRect && !this.#glTl.isKeySelected(key))
@@ -554,13 +761,31 @@ export class glTlKeys extends Events
 
                 keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
                 {
-                    console.log("key startdrag");
-                    if (this.#glTl.isSelecting()) return;
+                    console.log("key startdrag1", glTlKeys.dragStarted);
+                    if (this.#glTl.isSelecting())
+                    {
+                        console.log("isselecting...");
+                        return;
+                    }
+
                     glTlKeys.dragStartX = e.offsetX;
                     glTlKeys.dragStartY = e.offsetY;
+
                     this.#glTl.predragSelectedKeys();
+
                     if (button == 1 && !glTlKeys.dragStarted)
                     {
+                        if (this.#glTl.getNumSelectedKeys() == 0)
+                        {
+                            this.#glTl.selectKey(key, this.anim);
+                        }
+
+                        if (!this.#glTl.isKeySelected(key))
+                        {
+                            this.#glTl.unselectAllKeysSilent();
+                            this.#glTl.selectKey(key, this.anim);
+                        }
+
                         oldValues = this.#glTl.serializeSelectedKeys();
                         glTlKeys.dragStarted = true;
                         glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
@@ -586,7 +811,7 @@ export class glTlKeys extends Events
                         glTlKeys.dragStartY = e.offsetY;
                     }
 
-                    if (button == 1 && keyRect == this.#glTl.hoverKeyRect)
+                    if (button == 1)
                     {
                         let offX = e.offsetX;
                         let offY = e.offsetY - this.#glTl.getFirstLinePosy();
@@ -600,16 +825,19 @@ export class glTlKeys extends Events
                             else offTime = 0;
                         }
 
+                        if (!this.shouldDrawGraphSpline())offVal = 0;
                         if (this.#glTl.getNumSelectedKeys() > 0)
                         {
                             this.#glTl.dragSelectedKeys(offTime, offVal);
                             this.#anim.sortKeys();
                         }
+
                         this.setKeyPositions();
                         this.#glTl.setHoverKeyRect(keyRect);
                         this.animLine.update();
                         hideToolTip();
                     }
+                    else { console.log("noe", keyRect); }
                 });
 
                 keyRect.on(GlRect.EVENT_DRAGEND, () =>
@@ -619,19 +847,18 @@ export class glTlKeys extends Events
                     this.#glTl.needsUpdateAll = "dragged";
                     glTlKeys.dragStarted = false;
 
-                    undo.add({
-                        "title": "timeline move keys",
-                        "undo": () =>
-                        {
-                            this.#glTl.deserializeKeys(oldValues);
-                        },
-                        redo() {}
-                    });
+                    // undo.add({
+                    //     "title": "timeline move keys",
+                    //     "undo": () =>
+                    //     {
+                    //         console.log("oldvalu",oldValues)
+                    //         this.#glTl.deserializeKeys(oldValues);
+                    //     },
+                    //     redo() {}
+                    // });
                 });
-
             }
             tlKey.update();
-
         }
 
         this.setKeyPositions();
@@ -651,16 +878,21 @@ export class glTlKeys extends Events
         this.#glTl.setHoverKeyRect(null);
     }
 
+    disposeSplines()
+    {
+        if (this.#spline) this.#spline = this.#spline.dispose();
+        if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
+        if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+    }
+
     dispose()
     {
         this.reset();
+        this.disposeSplines();
+
         for (let i = 0; i < this.#listeners.length; i++) this.#listeners[i].remove();
 
-        if (this.#spline) this.#spline = this.#spline.dispose();
-        for (let i in this.#keyLookup)
-        {
-            this.#keyLookup[i].dispose();
-        }
+        for (let i in this.#keyLookup) this.#keyLookup[i].dispose();
 
         this.#keyLookup = {};
         this.removeAllEventListeners();
@@ -672,7 +904,6 @@ export class glTlKeys extends Events
     getDebug()
     {
         const o = {};
-        // o.points = this.#point.s;
         o.updateCount = this.#updateCount;
         o.initCount = this.#initCount;
         o.animated = this.#glTl.view.isAnimated();
@@ -683,7 +914,13 @@ export class glTlKeys extends Events
     render()
     {
         if (this.#glTl.isAnimated) this.update();
-        // this.setKeyPositions();
     }
 
+    getNumSplinePoints()
+    {
+        return;
+        this.#spline?.getNumPoints() +
+        this.#splineAfter?.getNumPoints() +
+        this.#splineBefore?.getNumPoints();
+    }
 }

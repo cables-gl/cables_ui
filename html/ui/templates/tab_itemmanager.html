@@ -61,7 +61,7 @@
                     <div style="clear:both"></div>
                     <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
                         {{#if ../frontendOptions.openLocalFiles}}
-                            <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                            <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a data-dir="{{p}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir });"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
                         {{else}}
                             <h1>{{divider}}</h1>
                         {{/if}}
@@ -126,7 +126,7 @@
                         <td colspan="100">
                             <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
                                 {{#if ../frontendOptions.openLocalFiles}}
-                                    <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '{{p}}'});"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
+                                    <h2>{{divider}}{{#unless isLibraryFile}}&nbsp;<a data-dir="{{p}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir });"><span class="icon icon-folder"></span></a>{{/unless}}</h2>
                                 {{else}}
                                     <h1>{{divider}}</h1>
                                 {{/if}}
@@ -307,7 +307,7 @@
             File Ops
             <br/><br/>
             {{#each file.ops}}
-                <a class="button" onclick="gui.patchView.addAssetOpAuto('{{../assetPath}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
+                <a class="cblbutton" onclick="gui.patchView.addAssetOpAuto('{{../assetPath}}')"><span class="icon icon-plus-circle"></span>add <b>{{.}}</b></a>
                 <br/><br/>
             {{/each}}
         {{/if}}
@@ -316,7 +316,7 @@
             File Tools
             <br/><br/>
             {{#each file.converters}}
-                <a class="button" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}', '{{ ../file.fileDb.name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
+                <a class="cblbutton" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}', '{{ ../file.fileDb.name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
                 <br/>
             {{/each}}
         {{/if}}
@@ -325,7 +325,7 @@
         {{#if isReference}}
         {{else}}
         <br/><br/>
-        <span class="button" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}">
+        <span class="cblbutton" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}">
             <a class="info icon icon-1x icon-trash"></a>Delete File
 
         </span>

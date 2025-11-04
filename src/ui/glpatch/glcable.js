@@ -1,6 +1,6 @@
 import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import GlPort from "./glport.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
@@ -440,7 +440,7 @@ export default class GlCable
 
     get hovering()
     {
-        return this._buttonRect.isHovering() || (this._link._glOpIn && this._link._glOpIn.hovering) || (this._link._glOpOut && this._link._glOpOut.hovering);
+        return this._buttonRect.isHovering() || (this._link.opIn && this._link.opIn.isHovering()) || (this._link.opOut && this._link.opOut.isHovering());
     }
 
     updateColor()
@@ -577,8 +577,8 @@ export default class GlCable
                 gui.patchView.getSelectedOps().length == 1 &&
 
                 (
-                    (this._link._glOpIn.op.id == selectedOp.id) ||
-                    (this._link._glOpOut.op.id == selectedOp.id)
+                    (this._link.opIn.op.id == selectedOp.id) ||
+                    (this._link.opOut.op.id == selectedOp.id)
                 )
             )
             {
@@ -601,7 +601,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText) this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
-            gui.showInfo(text.linkAddCircle);
+            gui.showInfo(GuiText.linkAddCircle);
 
             perf.finish();
             return true;

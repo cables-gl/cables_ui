@@ -30,6 +30,11 @@ export default class GlSpline
         this.#splineDrawer = splineDrawer;
         this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
+        splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
+        {
+            this.dispose();
+
+        });
     }
 
     /**
@@ -72,6 +77,7 @@ export default class GlSpline
             y = this.#parentRect.y;
             z = this.#parentRect.z;
         }
+
         for (let i = 0; i < this.#points.length; i += 3)
         {
             finalPoints[i + 0] = this.#points[i + 0] + x;
@@ -115,5 +121,10 @@ export default class GlSpline
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.#splineIdx = -1;
         return null;
+    }
+
+    getNumPoints()
+    {
+        return this.#points.length / 3;
     }
 }

@@ -10,7 +10,7 @@ export default initSplitPanes;
 
 function initSplitPanes()
 {
-    ele.byId("splitterPatch").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterRightPanel").addEventListener("pointerdown", function (ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -22,10 +22,11 @@ function initSplitPanes()
             gui.pauseProfiling();
             e.preventDefault();
 
-            const pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            let pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+            pos = Math.max(320, pos);
 
-            if (gui.rendererWidth != -1) gui.rendererWidth = pos;
-            gui.splitpanePatchPos = pos;
+            gui.userSettings.set(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH, pos);
+            gui.rightPanelWidth = pos;
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
@@ -36,7 +37,7 @@ function initSplitPanes()
         splitpane.listeners.push(mm);
     });
 
-    ele.byId("splitterPatch").addEventListener("pointerup", function (_e)
+    ele.byId("splitterRightPanel").addEventListener("pointerup", function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
@@ -56,7 +57,7 @@ function initSplitPanes()
 
             gui.editorWidth = e.clientX;
             if (gui.editorWidth < 30)gui.editorWidth = 30;
-            userSettings.set("editorWidth", gui.editorWidth);
+            userSettings.set(Gui.PREF_LAYOUT_EDITORWIDTH, gui.editorWidth);
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
@@ -115,8 +116,8 @@ function initSplitPanes()
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = e.clientX - 10;
+            let y = e.clientY + 20;
 
             if (x === undefined && e.touches && e.touches.length > 0)
             {
@@ -124,10 +125,10 @@ function initSplitPanes()
                 y = e.touches[0].clientY;
             }
 
-            gui.rendererWidth = (window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3;
+            gui.rendererWidth = Math.floor((window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3);
 
-            if (splitpane.rendererAspect) gui.rendererHeight = 1 / splitpane.rendererAspect * gui.rendererWidth;
-            else gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
+            if (splitpane.rendererAspect) gui.rendererHeight = Math.floor(1 / splitpane.rendererAspect * gui.rendererWidth);
+            else gui.rendererHeight = Math.floor(y * (1 / gui.corePatch().cgl.canvasScale) - 38);
 
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();

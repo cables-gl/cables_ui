@@ -185,8 +185,9 @@
 
             <br/><br/>
 
+            <div class="groupSpacer"><h3>Dependencies</h3></div>
+
             {{#if hasDependencies}}
-                <div class="groupSpacer"><h3>Dependencies</h3></div>
                 <div class="opDependencyList">
                     <table class="table">
                         <tr>
@@ -239,12 +240,14 @@
                         {{/each}}
                     </table>
                 </div>
+                {{else}}
+                Op has no dependecies
+                <br/><br/>
             {{/if}}
 
             {{#if canEditOp}}
-                {{#unless hasDependencies}}<div class="groupSpacer"><h3>Dependencies</h3></div>{{/unless}}
-                Add javascript libraries/modules to your op<br/><br/>
-                <a class="button" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependencies</a>
+                <a class="button" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
+                add <a class="link" href="https://cables.gl/docs/5_writing_ops/dev_libraries/dev_libraries" target="_blank"> libraries and modules</a> to your op<br/><br/>
                 <div id="{{viewId}}_dependencytabs" class="dependencytabs hidden"></div>
             {{/if}}
 

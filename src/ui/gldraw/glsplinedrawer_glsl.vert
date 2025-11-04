@@ -101,5 +101,6 @@ void main()
     finalPosition.z=spline.z/ZPOSDIV;
     zz=spline.z;
 
+    gl_PointSize=4.0;
     gl_Position = finalPosition;
 }

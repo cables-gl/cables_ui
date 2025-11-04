@@ -2,7 +2,7 @@
 .cablesCssUi
 {
     // all buttons
-    .button,.button-small
+    .cblbutton, .button,.button-small
     {
         display:inline-block;
         user-select: none;
@@ -41,7 +41,7 @@
 
 
     // bigger button styles
-    .button, .redbutton, .bluebutton
+    .cblbutton,.button, .redbutton, .bluebutton
     {
         padding: 5px 16px;
         margin-right:10px;
@@ -114,6 +114,9 @@
     .button-inactive
     {
         opacity: 0.5;
+    }
+    .button-disabled
+    {
         pointer-events: none;
     }
 }

@@ -1,7 +1,11 @@
 import { Events, Logger } from "cables-shared-client/index.js";
+import { Patch } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { glTlRuler } from "./gltlruler.js";
+import { gui } from "../gui.js";
+import { GuiText } from "../text.js";
 
 export class glTlDragArea extends Events
 {
@@ -67,7 +71,10 @@ export class glTlDragArea extends Events
         this.#rectSizeRight.setColor(0.3, 0.3, 0.3, 1);
         if (parent) this.#rectSizeRight.setParent(parent);
 
-        /// ////
+        this.rectMove.on(GlRect.EVENT_POINTER_HOVER, () =>
+        {
+            gui.showInfo(GuiText.tlhover_keys_dragarea);
+        });
 
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
@@ -108,14 +115,14 @@ export class glTlDragArea extends Events
             const off = e.offsetX - this.#dragStartX;
             const factor = Math.max(0.000001, (e.offsetX - this.rectMove.x) / this.#dragStartWidth);
 
-            let newPos = this.#dragStartX + off;
-            const newPosTime = this.#glTl.snapTime(this.#glTl.view.pixelScreenToTime(newPos));
-            newPos = this.#glTl.view.timeToPixelScreen(newPosTime);
+            // let newPos = this.#dragStartX + off;
+            // const newPosTime = this.#glTl.snapTime(this.#glTl.view.pixelScreenToTime(newPos));
+            // newPos = this.#glTl.view.timeToPixelScreen(newPosTime);
 
             this.emitEvent(glTlDragArea.EVENT_RIGHT, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
             this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
 
-            this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
+            // this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
         });
 
         this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>

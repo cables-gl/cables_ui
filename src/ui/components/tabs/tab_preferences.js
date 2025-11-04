@@ -1,11 +1,12 @@
 import { ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * show user editor preferences, stored in {@link UserSettings}
@@ -15,6 +16,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
  */
 export default class Preferences
 {
+    static TABSESSION_NAME = "userprefs";
 
     /**
      * @param {TabPanel} tabs
@@ -24,6 +26,11 @@ export default class Preferences
         this._tab = new Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
         tabs.addTab(this._tab, true);
 
+        editorSession.rememberOpenEditor(Preferences.TABSESSION_NAME, "Preferences", { }, true);
+        this._tab.on("close", () =>
+        {
+            editorSession.remove(Preferences.TABSESSION_NAME, "Preferences");
+        });
         this.show();
     }
 
@@ -60,6 +67,7 @@ export default class Preferences
     updateValues()
     {
         this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
+        this.setSwitchValue("checkOpCollisions", userSettings.get("checkOpCollisions"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
@@ -145,7 +153,7 @@ export default class Preferences
 
     show()
     {
-        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": text.preferences });
+        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": GuiText.preferences });
         this._tab.html(html);
         this.updateValues();
 
@@ -185,3 +193,7 @@ export default class Preferences
         });
     }
 }
+editorSession.addListener(Preferences.TABSESSION_NAME, (id, data) =>
+{
+    new Preferences(gui.mainTabs);
+});

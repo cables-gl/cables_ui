@@ -1,8 +1,9 @@
 import { Events, ele } from "cables-shared-client";
 import { utils } from "cables";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import TabPanel from "./tabpanel.js";
+import { CssClassNames } from "../../theme.js";
 
 /**
  * @typedef TabOptions
@@ -20,6 +21,7 @@ import TabPanel from "./tabpanel.js";
 
 export default class Tab extends Events
 {
+    static EVENT_RESIZE = "resize";
     static EVENT_CLOSE = "close";
     static EVENT_DEACTIVATE = "onDeactivate";
     static EVENT_ACTIVATE = "onActivate";
@@ -60,8 +62,12 @@ export default class Tab extends Events
             this.toolbarContainerEle.classList.add("toolbar");
             this.toolbarContainerEle.innerHTML = getHandleBarHtml("tabpanel_toolbar",
                 {
-                    "options": this.options, "id": this.id, "title": this.title, "hideToolbar": true,
+                    "options": this.options,
+                    "id": this.id,
+                    "title": this.title,
+                    "hideToolbar": true,
                 });
+
             eleContainer.appendChild(this.toolbarContainerEle);
 
             const tbEl = ele.byId("toolbarContent" + this.id);
@@ -95,11 +101,12 @@ export default class Tab extends Events
     /**
      * @param {string} title
      * @param {Function} cb
+     * @param {string | any[]} [classes]
      */
     addButton(title, cb, classes)
     {
         const button = document.createElement("a");
-        button.classList.add("button-small");
+        button.classList.add(CssClassNames.BUTTON_SMALL);
 
         let html = "";
         html += title;
@@ -113,7 +120,9 @@ export default class Tab extends Events
 
     getSaveButton()
     {
-        for (let i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == text.editorSaveButton) return this.buttons[i];
+        for (let i = 0; i < this.buttons.length; i++)
+            if (this.buttons[i].title == GuiText.editorSaveButton)
+                return this.buttons[i];
     }
 
     remove()

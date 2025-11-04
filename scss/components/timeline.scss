@@ -1,22 +1,74 @@
 .cablesCssUi
 {
+    --portNameWidth:150px;
+
+    .collapsed .tlTitle:not(:first-child)
+    {
+        padding-top:0px !important;
+        border-bottom:0px  ;
+    }
+
     .tlTitle
     {
-        position: absolute;
+        user-select: none;
         background-color: black;
         white-space: nowrap;
         padding-right: 5px;
         padding-left: 5px;
         border-left:3px solid transparent;
-        width:100%;
+        border-bottom:1px solid #222;
+        width:80%;
         padding-top:4px;
+        overflow: hidden;
 
+        &:hover,&.hover
+        {
+            background-color: #111;
+        }
+
+        .tlButtonsLeft
+        {
+            width:22px;
+            display: inline-block;
+            padding-right: 0px;
+        }
+
+        .portAndValue
+        {
+            background-color:black ;
+            border-left:3px solid transparent;
+            position: absolute;
+            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px);
+            width: var(--portNameWidth);
+            max-width: var(--portNameWidth);
+            overflow: hidden ;
+            text-overflow: ellipsis;
+        }
+
+        .hover
+        {
+            *{
+                background-color:var(--textedit-comment);
+                color:#000 !important;
+                border-radius: 5px;
+            }
+        }
+
+        .tlButtonsRight
+        {
+            padding: 0px;
+            position: absolute;
+            left: calc(var(--timelineSplitterLeft) - 5px);
+            transform: translate(-100%);
+            z-index: 999;
+
+        }
 
         span
         {
             cursor: pointer;
-            padding-right: 10px;
-            padding-left: 5px;
+            padding-right: 5px;
+            padding-left: 2px;
             color:var(--color-07);
 
             &.current
@@ -28,10 +80,24 @@
         .portname
         {
             color:var(--textedit-comment);
+            .extendTitle{
+                color:#aaa;
+            }
         }
+
         &.selectedOp
         {
-            background-color: #444;
+            .opname
+            {
+                background-color: #555;
+                border-radius: 4px;
+            }
+        }
+
+        .hiddenOpname
+        {
+            color:transparent !important;
+            background-color:transparent !important
         }
 
         .button-small {
@@ -44,10 +110,22 @@
             }
         }
     }
+        .folder{
+            height: 40px;
+            user-select: none;
+            margin-left: 10px;
+            background-color: #444;
+            border-radius: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
 
     .hasSelectedKeys
     {
-        border-left:3px solid #ffff00;
+        .portAndValue{
+            border-left:3px solid #ffff00;
+
+        }
     }
 
     .onkey
@@ -58,16 +136,16 @@
     .filterInput
     {
         width: 60px;
-        top: 81px;
-        left: 21px;
+        top: 1px;
+        left: 140px;
         position: absolute;
     }
 
     .selectMode
     {
-        left: 94px;
+        left: 174px;
         position: absolute;
-        top: 74px;
+        top: 14px;
     }
 
     .timelineminimize
@@ -81,26 +159,78 @@
         z-index: 9;
     }
 
+    .tlContainer{
+        position: absolute;
+        width:100%;
+
+        canvas{
+            z-index: $zindex_over;
+
+        }
+        .keyOverlay
+        {
+            z-index: $zindex_low;
+
+        }
+        .splitterTimeline
+        {
+            z-index: $zindex_high;
+        }
+        .splitterLeft
+        {
+            margin-left: -4px;//do not overlap with gl
+        }
+        .splitterRight
+        {
+            margin-right: -4px;//do not overlap with gl
+        }
+
+        .scrollContainer
+        {
+            z-index: $zindex_low;
+            overflow: auto;
+            position: absolute;
+        }
+
+        .scrollheight{
+            height: 1000px;
+        }
+    }
+
     .tltimedisplay
     {
         position: absolute;
-        top: 40px;
+        top: 0px;
         left: 10px;
         z-index: 99;
         color: var(--color-08);
         cursor: pointer;
+        z-index: 888;
+        padding: 10px;
+        min-height: 40px;
+        background-color: #000;
+        min-width: 140px;
+        user-select: none;
+        margin-top: 5px;
+        display: grid ;
+        grid-template-columns: 2fr 1fr 1fr;
+        width:calc(var(--timelineSplitterLeft) - 40px);
+
+        div
+        {pointer-events: none;}
+
         h3
         {
+            pointer-events: none;
             padding:0px;
             margin:0px;
             color:white;
-            }
+        }
     }
 
     .keyOverlay {
         position: absolute;
         bottom: 10px;
-        right: 10px;
         background-color: var(--color-02);
         width: 300px;
         overflow: auto;
@@ -124,5 +254,43 @@
         {
             padding:10px;
         }
+    }
+
+    .linesContainer
+    {
+        position: relative;
+        /* border: 1px solid red; */
+        overflow: hidden;
+        /* padding-left: 20px; */
+
+        .toggle{
+            background-color: white;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            position: absolute;
+            margin-left: -20px;
+        }
+    }
+        .level1 .indent{ width: 0px; }
+        .level2 .indent{ width: 20px; }
+        .level3 .indent{ width: 40px; }
+        .level4 .indent{ width: 60px; }
+        .level5 .indent{ width: 80px; }
+        .level6 .indent{ width: 100px; }
+        .level7 .indent{ width: 120px; }
+        .level8 .indent{ width: 140px; }
+        .level9 .indent{ width: 160px; }
+        .level10 .indent{ width: 180px; }
+        .level11 .indent{ width: 200px; }
+        .level12 .indent{ width: 220px; }
+        .level13 .indent{ width: 240px; }
+        .level14 .indent{ width: 260px; }
+        .level15 .indent{ width: 280px; }
+        .level16 .indent{ width: 300px; }
+        .level17 .indent{ width: 320px; }
+    .indent{
+        height: 4px;
+        display: inline-block;
     }
 }

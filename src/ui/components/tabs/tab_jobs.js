@@ -1,7 +1,7 @@
 import { Events } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { gui } from "../../gui.js";
 
 export default class JobsTab extends Events
@@ -39,7 +39,7 @@ export default class JobsTab extends Events
 
         list.sort((a, b) => { return b.timeStart - a.timeStart; });
 
-        const html = getHandleBarHtml("tab_jobs", { "user": gui.user, "texts": text.preferences, "list": list });
+        const html = getHandleBarHtml("tab_jobs", { "user": gui.user, "texts": GuiText.preferences, "list": list });
         this._tab.html(html);
     }
 }

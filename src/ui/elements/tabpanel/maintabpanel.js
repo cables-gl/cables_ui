@@ -2,6 +2,7 @@ import { Events } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 import TabPanel from "./tabpanel.js";
+import Tab from "./tab.js";
 
 /**
  * the maintabpanel on the left side of the patchfield, can be minimized
@@ -13,6 +14,9 @@ import TabPanel from "./tabpanel.js";
 export default class MainTabPanel extends Events
 {
 
+    /** @type {TabPanel} */
+    #tabPanel;
+
     /**
      * @param {TabPanel} tabs
      */
@@ -20,14 +24,13 @@ export default class MainTabPanel extends Events
     {
         super();
 
-        /** @type {TabPanel} */
-        this._tabs = tabs;
-        this._tabs.showTabListButton = true;
+        this.#tabPanel = tabs;
+        this.#tabPanel.showTabListButton = true;
         this._visible = false;
         this._ele = document.getElementById("maintabs");
         this._ele.style.display = "none";
 
-        this._tabs.on("onTabAdded", (tab, existedBefore) =>
+        this.#tabPanel.on("onTabAdded", (tab, existedBefore) =>
         {
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
@@ -38,9 +41,9 @@ export default class MainTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this._tabs.on("onTabRemoved", (tab) =>
+        this.#tabPanel.on("onTabRemoved", (tab) =>
         {
-            if (this._tabs.getNumTabs() == 0)
+            if (this.#tabPanel.getNumTabs() == 0)
             {
                 this.hide();
                 gui.setLayout();
@@ -50,7 +53,7 @@ export default class MainTabPanel extends Events
 
     get tabs()
     {
-        return this._tabs;
+        return this.#tabPanel;
     }
 
     init()
@@ -58,6 +61,11 @@ export default class MainTabPanel extends Events
         const showMainTabs = userSettings.get("maintabsVisible");
         if (showMainTabs) this.show();
         else this.hide(true);
+    }
+
+    resize()
+    {
+        this.#tabPanel.emitEvent(TabPanel.EVENT_RESIZE);
     }
 
     isVisible()
@@ -70,7 +78,7 @@ export default class MainTabPanel extends Events
      */
     show(userInteraction = false)
     {
-        if (this._tabs.getNumTabs() == 0)
+        if (this.#tabPanel.getNumTabs() == 0)
         {
             this.hide(true);
             return;
@@ -92,8 +100,8 @@ export default class MainTabPanel extends Events
 
         gui.setLayout();
 
-        this._tabs.updateSize();
-        if (this._tabs.getActiveTab()) this._tabs.getActiveTab().activate();
+        this.#tabPanel.updateSize();
+        if (this.#tabPanel.getActiveTab()) this.#tabPanel.getActiveTab().activate();
     }
 
     /**
@@ -104,7 +112,7 @@ export default class MainTabPanel extends Events
         this._visible = false;
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
-        if (window.gui)gui.setLayout();
+        gui.setLayout();
 
         if (!donotsave && gui.finishedLoading()) userSettings.set("maintabsVisible", false);
     }
@@ -115,6 +123,7 @@ export default class MainTabPanel extends Events
     toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
+        gui.patchView.patchRenderer.viewBox.startResize();
         if (this._visible)
         {
             this.hide();
@@ -123,5 +132,6 @@ export default class MainTabPanel extends Events
             if (actTab) actTab.activate();
         }
         else this.show(userInteraction);
+        gui.patchView.patchRenderer.viewBox.endResize();
     }
 }

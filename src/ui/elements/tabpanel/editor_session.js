@@ -1,5 +1,5 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
-import ManageOp from "../../components/tabs/tab_manage_op.js";
+import ItemManager from "../../components/tabs/tab_item_manager.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
 import { userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
@@ -9,25 +9,22 @@ import { gui } from "../../gui.js";
  */
 export default class EditorSession
 {
+    #openEditors;
+    #listeners;
 
     /**
      * @param {boolean} userInteraction
      */
     constructor(userInteraction)
     {
-        this._openEditors = [];
-        this._listeners = {};
+        this.#openEditors = [];
+        this.#listeners = {};
         this._loadingCount = 0;
         this._loadedCurrentTab = false;
 
         this.addListener("param", (name, data) =>
         {
             paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
-        });
-
-        this.addListener("manageOp", (id, data) =>
-        {
-            new ManageOp(gui.mainTabs, id);
         });
 
         this.addListener("welcometab", (name, data) =>
@@ -38,7 +35,7 @@ export default class EditorSession
 
     store()
     {
-        userSettings.set("openEditors", this._openEditors);
+        userSettings.set("openEditors", this.#openEditors);
     }
 
     loaded()
@@ -48,7 +45,7 @@ export default class EditorSession
 
     openEditors()
     {
-        return this._openEditors;
+        return this.#openEditors;
     }
 
     startLoadingTab()
@@ -83,12 +80,12 @@ export default class EditorSession
         while (found)
         {
             found = false;
-            for (let i = 0; i < this._openEditors.length; i++)
+            for (let i = 0; i < this.#openEditors.length; i++)
             {
-                if (this._openEditors[i].name == name && this._openEditors[i].type == type)
+                if (this.#openEditors[i].name == name && this.#openEditors[i].type == type)
                 {
                     found = true;
-                    this._openEditors.splice(i, 1);
+                    this.#openEditors.splice(i, 1);
                     break;
                 }
             }
@@ -107,15 +104,15 @@ export default class EditorSession
      */
     rememberOpenEditor(type, name, data, skipSetEditorTab)
     {
-        for (let i = 0; i < this._openEditors.length; i++)
+        for (let i = 0; i < this.#openEditors.length; i++)
         {
-            if (this._openEditors[i].name == name && this._openEditors[i].type == type)
+            if (this.#openEditors[i].name == name && this.#openEditors[i].type == type)
             {
                 return;
             }
         }
         const obj = { "name": name, "type": type, "data": data || {} };
-        this._openEditors.push(obj);
+        this.#openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
             userSettings.set("editortab", name);
@@ -136,7 +133,7 @@ export default class EditorSession
         {
             for (let i = 0; i < sessions.length; i++)
             {
-                if (this._listeners[sessions[i].type]) this._listeners[sessions[i].type](sessions[i].name, sessions[i].data || {});
+                if (this.#listeners[sessions[i].type]) this.#listeners[sessions[i].type](sessions[i].name, sessions[i].data || {});
                 else console.warn("no editorsession listener for " + sessions[i].type + " (" + sessions[i].name + ")");
             }
         }
@@ -149,7 +146,7 @@ export default class EditorSession
      */
     addListener(type, cb)
     {
-        this._listeners[type] = cb;
+        this.#listeners[type] = cb;
     }
 }
 

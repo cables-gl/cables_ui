@@ -32,6 +32,7 @@ export default class OpHistory extends Events
             opid = this._history[this._position];
         }
         this._focusCurrent();
+        gui.patchView.centerSelectOp(opid);
     }
 
     _focusCurrent()
@@ -46,6 +47,8 @@ export default class OpHistory extends Events
         if (this._position + 1 > this._history.length - 1) return;
         this._position++;
         this._focusCurrent();
+        const opid = this._history[this._position];
+        gui.patchView.centerSelectOp(opid);
     }
 
     getAsArray(max)

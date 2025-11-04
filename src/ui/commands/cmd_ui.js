@@ -14,6 +14,8 @@ import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 
 const CABLES_CMD_UI = {};
+
+/** @type {import("./commands.js").commandObject[]} */
 const CMD_UI_COMMANDS = [];
 
 const uiCommands =
@@ -106,19 +108,6 @@ CABLES_CMD_UI.showChat = function ()
 CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
     userSettings.set("bgpreview", !userSettings.get("bgpreview"));
-};
-
-CABLES_CMD_UI.hideMinimap = function ()
-{
-    userSettings.set("showMinimap", false);
-    gui.hideMiniMap();
-};
-
-CABLES_CMD_UI.toggleMinimap = function ()
-{
-    userSettings.set("showMinimap", !userSettings.get("showMinimap"));
-    if (userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
-    else CABLES_CMD_UI.hideMinimap();
 };
 
 CABLES_CMD_UI.showSearch = function (str)

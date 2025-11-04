@@ -32,13 +32,27 @@ export default class GlRect extends Events
     static EVENT_DRAGEND = "dragEnd";
 
     static EVENT_POSITIONCHANGED = "positionChanged";
-    static EVENT_TEXTURECHANGED = "textureChanged";
+    // static EVENT_TEXTURECHANGED = "textureChanged";
     static EVENT_RESIZE = "resize";
 
     static OPTION_INTERACTIVE = "interactive";
     static OPTION_DRAGGABLE = "draggable";
     static OPTION_PARENT = "parent";
     static OPTION_NAME = "name";
+
+    static SHAPE_RECT = 0;
+    static SHAPE_CIRCLE = 1;
+    static SHAPE_TRIANGLE_BOTTOM = 2;
+    static SHAPE_FRAME = 4;
+    static SHAPE_CURSOR = 5;
+    static SHAPE_FILLED_CIRCLE = 6;
+    static SHAPE_CROSS = 7;
+    static SHAPE_LOADING_INDICATOR = 8;
+    static SHAPE_HALF_BLOCK_TOP = 9;
+    static SHAPE_HALF_BLOCK_BOTTOM = 10;
+    static SHAPE_ARROW_DOWN = 11;
+    static SHAPE_PLUS = 12;
+    static SHAPE_RHOMB = 13;
 
     /** @type {array} */
     color = vec4.create();
@@ -55,7 +69,7 @@ export default class GlRect extends Events
     /** @type {GlRectInstancer} */
     #rectInstancer = null;
     #attrIndex = null;
-    #texture = null;
+    #texture = -1;
     #shape = 0;
     #data = {};
 
@@ -110,7 +124,7 @@ export default class GlRect extends Events
         if (this.#rectInstancer.debugColors && this.name != "gldrawdebug")
         {
             this.#debugRect = this.#rectInstancer.createRect({ "name": "gldrawdebug", "interactive": false, "parent": this });
-            this.#debugRect.setShape(GlRectInstancer.SHAPE_FRAME);
+            this.#debugRect.setShape(GlRect.SHAPE_FRAME);
             this.on(GlRect.EVENT_POINTER_MOVE, () => { this.updateDebugColor(); });
             this.on(GlRect.EVENT_POINTER_HOVER, () => { this.updateDebugColor(); });
             this.on(GlRect.EVENT_POINTER_UNHOVER, () => { this.updateDebugColor(); });
@@ -358,13 +372,14 @@ export default class GlRect extends Events
     }
 
     /**
-     * @param {Texture} t
+     * @param {Number} t
      */
     setTexture(t)
     {
-        if (this.#texture == t) return;
+        this.#rectInstancer.setTextureIdx(this.#attrIndex, t);
+        // if (this.#texture == t) return;
         this.#texture = t;
-        this.emitEvent(GlRect.EVENT_TEXTURECHANGED);
+        // this.emitEvent(GlRect.EVENT_TEXTURECHANGED);
     }
 
     /**
@@ -374,6 +389,8 @@ export default class GlRect extends Events
      */
     setPosition(_x, _y, _z = this.#z)
     {
+        let changed = false;
+        if (_x != this.#x || _y != this.#y || _z != this.#z)changed = true;
         this.#x = _x;
         this.#y = _y;
         this.#z = _z;
@@ -392,10 +409,9 @@ export default class GlRect extends Events
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
         for (let i = 0; i < this.childs.length; i++)
-        {
             this.childs[i].updateParentPosition();
-        }
-        this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
+
+        if (changed) this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
 
     updateParentPosition()
@@ -405,8 +421,8 @@ export default class GlRect extends Events
 
     /**
      * Description
-     * @param {any} x
-     * @param {any} y
+     * @param {number} x
+     * @param {number} y
      */
     isPointInside(x, y)
     {
@@ -557,7 +573,6 @@ export default class GlRect extends Events
                 else this.#rectInstancer.setColor(this.#attrIndex, this.colorHover[0], this.colorHover[1], this.colorHover[2], this.colorHover[3]);
             }
             else this.#rectInstancer.setColor(this.#attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
-
         }
 
         for (let i = 0; i < this.childs.length; i++)

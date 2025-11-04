@@ -1,18 +1,19 @@
 import { ele, HandlebarsHelper } from "cables-shared-client";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
-import Gui from "./gui.js";
+import Gui, { gui } from "./gui.js";
 import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./socketcluster/sc_connection.js";
-import text from "./text.js";
 import { notifyError } from "./elements/notification.js";
 import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
 import { userSettings } from "./components/usersettings.js";
+import { getHandleBarHtml } from "./utils/handlebars.js";
+import { GuiText } from "./text.js";
 
 /**
  * manage the start of the ui/editor
@@ -99,8 +100,6 @@ export default function startUi(cfg)
                     }
                 });
 
-                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
-
                 gui.bindKeys();
                 ele.byId("maincomponents").style.display = "inline";
 
@@ -129,8 +128,8 @@ export default function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
-                ele.byId("patchnavhelperEmpty").innerHTML = text.patch_hint_overlay_empty;
-                ele.byId("patchnavhelperBounds").innerHTML = text.patch_hint_overlay_outofbounds;
+                ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 
@@ -140,7 +139,7 @@ export default function startUi(cfg)
                     projectId = gui.project().shortId || gui.project()._id;
                 }
                 new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": platform.getCablesUrl() + "/remote_client/" + projectId,
+                    "GuiText": platform.getCablesUrl() + "/remote_client/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -149,7 +148,7 @@ export default function startUi(cfg)
                 });
 
                 new QRCode(document.getElementById("patch_view_qr"), {
-                    "text": platform.getCablesUrl() + "/p/" + projectId,
+                    "GuiText": platform.getCablesUrl() + "/p/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -166,13 +165,24 @@ export default function startUi(cfg)
 
                 for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-                gui.patchParamPanel.show();
-
-                setTimeout(() =>
+                platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
                 {
-                    window.gui.emitEvent("uiloaded");
-                    gui.corePatch().timer.setTime(0);
-                }, 100);
+                    if (!err)
+                    {
+                        gui.setPatchSummary(summary.data);
+                        gui.patchView.highlightExamplePatchOps();
+                        gui.patchParamPanel.show();
+
+                        if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+
+                        setTimeout(() =>
+                        {
+                            window.gui.emitEvent("uiloaded");
+                            gui.corePatch().timer.setTime(0);
+                        }, 100);
+                    }
+                });
+
             });
         });
     });

@@ -2,18 +2,19 @@ import { Logger, ele, Events } from "cables-shared-client";
 
 import { Port, utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdOp } from "../../commands/cmd_op.js";
 import uiconfig from "../../uiconfig.js";
+import { UiOp } from "../../core_extend_op.js";
 
 /**
  * op parameter panel
@@ -85,12 +86,26 @@ class OpParampanel extends Events
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
     }
 
+    /**
+     * @param {object} attr
+     * @param {Port} port
+     */
     _onUiAttrChangePort(attr, port)
     {
         if (!attr) return;
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
-
         // todo: only update this part of the html
+
+        if (attr.hasOwnProperty("hover"))
+        {
+            const portParamRow = ele.byClass("paramport_1_" + port.id);
+            if (portParamRow)
+            {
+                if (attr.hover) portParamRow.classList.add("hoverPort");
+                else portParamRow.classList.remove("hoverPort");
+            }
+        }
+
     }
 
     _stopListeners(op)
@@ -153,7 +168,7 @@ class OpParampanel extends Events
     }
 
     /**
-     * @param {Op|String} op
+     * @param {UiOp|String} op
      */
     show(op)
     {
@@ -209,7 +224,7 @@ class OpParampanel extends Events
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
-        gui.emitEvent("opSelectChange", op);
+        gui.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED, op);
 
         this.emitEvent("opSelected", op);
 
@@ -239,7 +254,7 @@ class OpParampanel extends Events
 
         let html = this._htmlGen.getHtmlOpHeader(op);
 
-        gui.showInfo(text.patchSelectedOp);
+        gui.showInfo(GuiText.patchSelectedOp);
 
         if (this._portsIn.length > 0)
         {
@@ -278,7 +293,7 @@ class OpParampanel extends Events
         {
             if (this._portsIn[i].uiAttribs.display && this._portsIn[i].uiAttribs.display == "file")
             {
-                let shortName = String(this._portsIn[i].get() || "none");
+                let shortName = String(this._portsIn[i].get() || "Open Filemanager");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
                 if (op.getSubPatch())
@@ -298,10 +313,10 @@ class OpParampanel extends Events
                     }
                 }
 
-                if (ele.byId("portFilename_" + i))
-                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button-small tt\" data-tt=\"" + this._portsIn[i].get() + "\" style=\"text-transform:none;\"><span style=\"pointer-events:none;\" class=\"icon icon-file\"></span>" + shortName + "</span>";
-
+                let eleOpen = ele.byId("portOpenAsset_" + i);
                 let srcEle = ele.byId("portFilename_" + i + "_src");
+                let buttonOpensFilemanager = true;
+
                 if (srcEle)
                 {
                     let src = "";
@@ -310,15 +325,26 @@ class OpParampanel extends Events
                     if (fn == "" || fn == 0)src = "";
                     else if (!fn.startsWith("/")) src = "relative";
                     if (fn.startsWith("/")) src = "abs";
+                    if (fn.startsWith("./")) src = "current dir";
 
                     if (fn.startsWith("file:")) src = "file";
                     if (fn.startsWith("data:")) src = "dataUrl";
 
+                    let openSrc = "";
+                    let openOnClick = "";
+
                     if (fn.startsWith("http://") || fn.startsWith("https://"))
                     {
+                        buttonOpensFilemanager = false;
                         const parts = fn.split("/");
                         if (parts && parts.length > 1) src = "ext: " + parts[2];
+                        openSrc = fn;
                     }
+                    if ((fn.startsWith("file:") || fn.startsWith("/") || fn.startsWith("./")) && platform.isElectron())
+                    {
+                        openOnClick = "CABLES.CMD.ELECTRON.openFileManager('" + fn + "')";
+                    }
+
                     if (fn.startsWith("/assets/" + gui.project()._id)) src = "this patch";
                     if (fn.startsWith("/assets/") && !fn.startsWith("/assets/" + gui.project()._id))
                     {
@@ -329,16 +355,55 @@ class OpParampanel extends Events
                             src += " <a target=\"_blank\" class=\"button-small\" id=\"copyToPatch" + i + "\">copy</a>";
                         }
                     }
+
+                    if (fn.startsWith("/assets/"))
+                        openSrc = platform.getCablesUrl() + "/asset/patches/?filename=" + fn;
+
                     if (fn.startsWith("/assets/library/")) src = "lib";
 
                     if (src != "") src = "[ " + src + " ]";
 
+                    if (eleOpen)
+                    {
+                        if (openOnClick) eleOpen.setAttribute("onclick", openOnClick);
+                        if (openSrc) eleOpen.setAttribute("href", openSrc);
+
+                        if (!openOnClick && !openSrc) eleOpen.remove();
+                    }
                     srcEle.innerHTML = src;
 
                     ele.clickable(ele.byId("copyToPatch" + i), () =>
                     {
                         gui.getFileManager(null, true).copyFileToPatch(fn);
                     });
+                }
+
+                const filenameButton = ele.byId("portFilename_" + i);
+                if (filenameButton)
+                {
+                    filenameButton.innerHTML = "<span class=\"button-small tt\" data-tt=\"" + this._portsIn[i].get() + "\" style=\"text-transform:none;\"><span style=\"pointer-events:none;\" class=\"icon icon-file\"></span>" + shortName + "</span>";
+
+                    filenameButton.addEventListener("pointerdown", () =>
+                    {
+                        if (buttonOpensFilemanager)
+                        {
+                            // open filemananger
+                            ele.byId("portFilename_" + i + "_src").innerHTML = "";
+                            ele.byId("fileInputContainer_" + i).classList.remove("hidden");
+                            filenameButton.classList.add("hidden");
+                            CABLES.platform.showFileSelect(".portFileVal_" + i, this._portsIn[i].uiAttribs.filter || null, op.id, "portFileVal_" + i + "_preview");
+                        }
+                        else
+                        {
+                            // edit url
+                            ele.byId("portFilenameButton_" + i).classList.toggle("hidden");
+                            ele.byId("fileInputContainer_" + i).classList.toggle("hidden");
+                        }
+                    });
+                }
+                else
+                {
+                    console.log("no filenamebutton");
                 }
             }
 
@@ -765,6 +830,17 @@ class OpParampanel extends Events
     getCurrentOp()
     {
         return this._currentOp;
+    }
+
+    hidePorts(arr)
+    {
+        // console.log("arrrrrr", arr);
+        // for (let i = 0; i < arr.length; i++)
+        // {
+        //     const p = this.op.getPort(arr[i]);
+        //     p.setUiAttribs({ "hidePort": true });
+        // }
+
     }
 }
 

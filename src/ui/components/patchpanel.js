@@ -1,7 +1,7 @@
 import { Events, ele } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import PatchOutline from "./patchoutline.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
@@ -51,11 +51,11 @@ export default class PatchPanel extends Events
         }
 
         gui.opParams.emitEvent("opSelected", null);
-        gui.opParams.emitEvent("opSelectChange", null);
+        gui.opParams.emitEvent(Gui.EVENT_OP_SELECTIONCHANGED, null);
 
         if (!force && ele.byClass("patchParamPanel")) return;
 
-        let html = "<div class=\"patchParamPanel panel bookmarkpanel\">";
+        let html = "<div class=\"patchParamPanel bookmarkpanel\">";
 
         const project = gui.project();
         if (project)
@@ -66,7 +66,6 @@ export default class PatchPanel extends Events
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;
-
             html += getHandleBarHtml("patch_summary",
                 {
                     "projectId": projectId,
@@ -78,8 +77,9 @@ export default class PatchPanel extends Events
                     "patchHost": host
                 });
         }
+        else console.log("no gui project");
 
-        html += "<br/><div id=\"_cbl_outlinetree\"></div>";
+        html += "<div id=\"_cbl_outlinetree\" class=\"panel\"></div>";
 
         if (gui.longPressConnector.isActive())
         {

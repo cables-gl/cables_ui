@@ -2,6 +2,7 @@ import { Link, Op, Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
+import { getConverters } from "./converterops.js";
 
 /**
  * show suggestions for linking a port
@@ -12,6 +13,9 @@ import SuggestionDialog from "./suggestiondialog.js";
 export default class SuggestPortDialog
 {
 
+    /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
+    #suggestions = [];
+
     /**
      * Description
      * @param {Op} op
@@ -19,12 +23,10 @@ export default class SuggestPortDialog
      * @param {MouseEvent} mouseEvent
      * @param {Function} cb
      * @param {Function} [cbCancel]
+     * @param {boolean} [useConverter]
      */
-    constructor(op, port, mouseEvent, cb, cbCancel)
+    constructor(op, port, mouseEvent, cb, cbCancel, useConverter)
     {
-
-        /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
-        this._suggestions = [];
 
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
@@ -33,11 +35,9 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-
-                Link.canLink(theport, port))
-            {
-                this._addPort(theport);
-            }
+                !theport.uiAttribs.greyout &&
+                theport.direction != port.direction
+            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
         }
 
         for (let i = 0; i < op.portsOut.length; i++)
@@ -46,7 +46,10 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-                Link.canLink(theport, port)) this._addPort(theport);
+                !theport.uiAttribs.greyout &&
+                theport.direction != port.direction
+            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+
         }
 
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
@@ -56,7 +59,7 @@ export default class SuggestPortDialog
 
         if (op.isSubPatchOp())
         {
-            this._suggestions.push({
+            this.#suggestions.push({
                 "p": null,
                 "op": op,
                 "name": "create SubPatch Port",
@@ -64,32 +67,75 @@ export default class SuggestPortDialog
             });
         }
 
-        new SuggestionDialog(this._suggestions, op, mouseEvent, cb, (id) =>
+        new SuggestionDialog(this.#suggestions, op, mouseEvent, (...args) =>
         {
-            for (const i in this._suggestions)
-                if (this._suggestions[i].id == id)
+            cb(...args);
+
+        }, (id) =>
+        {
+            let found = false;
+            for (const i in this.#suggestions)
+            {
+                if (this.#suggestions[i].id == id)
                 {
-                    cb(this._suggestions[i].p, this._suggestions[i].op, this._suggestions[i]);
+                    cb(this.#suggestions[i].p, this.#suggestions[i].op, this.#suggestions[i], useConverter);
+                    found = true;
                 }
+            }
+            console.log("not found id........", id);
         }, false, cbCancel);
     }
 
-    _addPort(p)
+    /**
+     * @param {Port} p
+     * @param {boolean} directLink
+     * @param {boolean} converter
+     * @param {Port} otherPort
+     */
+    #addPort(p, directLink, converter, otherPort)
     {
-        for (let i = 0; i < this._suggestions.length; i++)
-            if (this._suggestions[i].p == p) return;
+        if (!directLink && !converter) return;
+
+        for (let i = 0; i < this.#suggestions.length; i++)
+            if (this.#suggestions[i].p == p) return;
 
         let className = "portSuggest" + p.type;
-        if (p.isLinked()) className += "Linked";
 
-        this._suggestions.push({
+        if (p.isLinked()) className += "Linked";
+        let name = "";
+        if (converter)name +=
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + otherPort.getTypeString().toLowerCase() + "\">▐ →</span> " +
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + p.getTypeString().toLowerCase() + "\">▌</span>";
+
+        className = "port_text_color_" + p.getTypeString().toLowerCase();
+
+        let spacing = 0;
+        if (!this.lastPort || this.lastPort.uiAttribs.group != p.uiAttribs.group)
+        {
+
+            if (p.uiAttribs.group)
+            {
+                this.#suggestions.push({ "name": p.uiAttribs.group, "class": "groupname" });
+
+            }
+            else
+            if (this.lastPort)
+                spacing = 8;
+        }
+        // console.log("text", p.uiAttribs.group, this.lastPort.uiAttribs.group, spacing);
+        this.lastPort = p;
+
+        name += p.title;
+        this.#suggestions.push({
             "class": className,
             "p": p,
+            "spacing": spacing,
             "op": p.op.id,
-            "name": p.title,
+            "name": name,
             // "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),
             "isAnimated": p.isAnimated()
         });
     }
+
 }

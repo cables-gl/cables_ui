@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
@@ -35,7 +35,7 @@ export default class EditorTab extends Events
                 "type": options.syntax,
                 "name": options.name,
                 "dataId": options.dataId || options.name,
-                "infotext": text.editorTab,
+                "infotext": GuiText.editorTab,
                 "singleton": options.singleton,
             });
 
@@ -64,9 +64,11 @@ export default class EditorTab extends Events
         }
 
         let style = "";
+        let html = "";
 
+        if (!options.allowEdit) html += "<br/>Editor is in read only mode (" + (options.allowEditReason || "unknown") + ")<br/><br/>";
         if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
+        html += "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
         this._tab.html(html);
 
         if (options.hasOwnProperty("content")) this.setContent(options.content);
@@ -127,7 +129,7 @@ export default class EditorTab extends Events
 
                 if (this._options.allowEdit)
                 {
-                    if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(text.editorSaveButton, () =>
+                    if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(GuiText.editorSaveButton, () =>
                     {
                         this.save();
                     });
@@ -137,7 +139,7 @@ export default class EditorTab extends Events
                     else hideFormatButton = true;
                     if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-                    if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+                    if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
                 }
                 else
                 {
@@ -308,12 +310,13 @@ export default class EditorTab extends Events
                     this._editor.setValue(res.opFullCode, 1);
                     this._editor.focus();
                 }
-            },
-            (result) =>
-            {
-                notifyError("failed to format code, keeping old version");
-                this._log.warn("code formating http error", result);
-            },
+
+                if (err)
+                {
+                    notifyError("failed to format code, keeping old version");
+                    this._log.warn("code formating http error", res);
+                }
+            }
         );
     }
 
@@ -349,6 +352,11 @@ export default class EditorTab extends Events
         else this.emitEvent("save", onSaveCb.bind(this), this._editor.getValue(), this._editor);
     }
 
+    /**
+     * @param {string} id
+     * @param {string} val
+     * @param {function} cb
+     */
     createEditor(id, val, cb)
     {
         loadAce(() =>
@@ -572,8 +580,8 @@ export default class EditorTab extends Events
                     "name": "uniform sampler2D ${1:texName};",
                 },
                 {
-                    "content": "texture(${1:texCoord},${2:samplerTex});",
-                    "name": "texture(texCoord,tex);",
+                    "content": "texture(${2:samplerTex},${1:texCoord});",
+                    "name": "texture(tex,texCoord);",
                 }
             );
             snippetManager.register(snippetsGlsl, "glsl");

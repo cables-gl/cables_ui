@@ -1,6 +1,7 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
+import { CssClassNames } from "../theme.js";
 
 /**
  * configuration object for a modal dialog
@@ -18,7 +19,6 @@ import { gui } from "../gui.js";
 /**
  * open a modal dialog
  *
- * @param {ModalDialogOptions} options The option object.
  * @example
  * new ModalDialog(
  * {
@@ -28,12 +28,16 @@ import { gui } from "../gui.js";
  */
 export default class ModalDialog extends Events
 {
+
+    /**
+     * @param {ModalDialogOptions} options
+     */
     constructor(options, autoOpen = true)
     {
         super();
         this._log = new Logger("ModalDialog");
 
-        if (window.gui && gui.currentModal) gui.currentModal.close();
+        if (gui && gui.currentModal) gui.currentModal.close();
         this._options = options;
         this._options.okButton = this._options.okButton || {};
         if (!this._options.okButton.text) this._options.okButton.text = "Ok";
@@ -42,7 +46,7 @@ export default class ModalDialog extends Events
 
         this._options.cancelButton = this._options.cancelButton || {};
         if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
-        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "button";
+        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = CssClassNames.BUTTON;
         if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
 
         this._checkboxGroups = this._options.checkboxGroups || [];
@@ -55,7 +59,7 @@ export default class ModalDialog extends Events
 
         ele.byId("modalclose").style.display = "block";
 
-        if (window.gui) gui.currentModal = this;
+        if (gui) gui.currentModal = this;
 
         this._bg.on("hide", this.close.bind(this));
     }
@@ -64,7 +68,7 @@ export default class ModalDialog extends Events
     {
         this._ele.remove();
         this._bg.hide();
-        if (window.gui) gui.currentModal = null;
+        if (gui) gui.currentModal = null;
         this.emitEvent("onClose", this);
     }
 
@@ -144,7 +148,7 @@ export default class ModalDialog extends Events
         {
             html += "<br/>";
             html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"button\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.choice)
@@ -313,12 +317,9 @@ export default class ModalDialog extends Events
         {
             let state = checkbox.checked;
             if (state)
-            {
                 if (checkbox.value && (checkbox.value !== "on"))
-                {
                     state = checkbox.value;
-                }
-            }
+
             checkboxStates[checkbox.getAttribute("name")] = state;
         });
         return checkboxStates;

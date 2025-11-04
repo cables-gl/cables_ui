@@ -26,7 +26,7 @@
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
 
         {{#compare port.uiAttribs.display '==' 'button' }}
-            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                 {{#if port.uiAttribs.buttonTitle }}
                     {{port.uiAttribs.buttonTitle}}
                 {{else}}
@@ -38,6 +38,9 @@
     {{else}}
 
             {{#if port.uiAttribs.multiPort}}
+            {{#if port.uiAttribs.hideMultiPortUi}}
+            {{else}}
+
                 </td><td>
 
                     {{#if port.uiAttribs.multiPort}}Multiport {{/if}}
@@ -52,6 +55,7 @@
                         auto
                     {{/if}}
                 </td>
+            {{/if}}
             {{/if}}
 
             {{#if port.uiAttribs.display}}
@@ -73,7 +77,7 @@
 
                 {{#compare port.uiAttribs.display '==' 'button' }}
                 </td><td>
-                    <span tabindex="0"  class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
+                    <span tabindex="0"  class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                         {{#if port.uiAttribs.buttonTitle }}
                             {{port.uiAttribs.buttonTitle}}
                         {{else}}
@@ -107,6 +111,7 @@
 
                         <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
                         <input autocomplete="off" data-portname="{{port.name}}" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
+
                     </div>
                 {{/compare}}
 
@@ -190,11 +195,7 @@
                     </td>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
-                        {{#if openLocalFiles}}
-                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.ELECTRON.openFileManager('{{port.value}}')"></a>
-                        {{else}}
-                            <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
-                        {{/if}}
+                        <a class="icon icon-external iconhover" id="portOpenAsset_{{ portnum }}" target="_blank"></a>
                         <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
                         <a class="icon icon-text-cursor-input iconhover" onclick="ele.byId('portFilenameButton_{{ portnum }}').classList.toggle('hidden');ele.byId('fileInputContainer_{{ portnum }}').classList.toggle('hidden');" target="_blank" ></a>
                         {{#if fileEditable}}
@@ -205,18 +206,20 @@
                         <span id="portFilenameButton_{{ portnum }}">
                             <span
                                 id="portFilename_{{ portnum }}"
-                                onclick="document.getElementById('portFilename_{{ portnum }}_src').innerHTML='';document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');CABLES.platform.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ port.op.id }}','portFileVal_{{ portnum }}_preview');"
+                                onclick=""
                                 style="cursor:pointer;">[???]</span>
+                            {{#if port.value}}
+                            {{else}}
+                                <span class="button-small" onclick="ele.byId('portFilenameButton_{{ portnum }}').classList.toggle('hidden');ele.byId('fileInputContainer_{{ portnum }}').classList.toggle('hidden');">Enter URL</span>
+                            {{/if}}
 
-<br/>
+                            <br/>
                             <span id="portFilename_{{ portnum }}_src"></span>
                         </span>
 
                         <span id="fileInputContainer_{{ portnum }}" class="hidden">
                             <input autocomplete="off" class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" style="width:90%;display:inline-block;"/>
                         </span>
-
-
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'text' }}
                     </td><td>
@@ -248,6 +251,7 @@
                                 onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
                                 <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
+
                             </div>
                         {{/compare}}
                         {{#compare port.type '==' 3}}

@@ -6,6 +6,8 @@ import { GlTimeline } from "./gltimeline.js";
 import GlSpline from "../gldraw/glspline.js";
 import { glTlKeys } from "./gltlkeys.js";
 import undo from "../utils/undo.js";
+import { gui } from "../gui.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 
 export class TlKey extends Events
 {
@@ -43,6 +45,9 @@ export class TlKey extends Events
     /** @type {glTlKeys} */
     tlkeys = null;
 
+    #hidden = false;
+    #clipAnim;
+
     /**
      * @param {GlTimeline} gltl
      * @param {glTlKeys} tlkeys
@@ -59,47 +64,116 @@ export class TlKey extends Events
 
         key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
         {
+            console.log("keydel...");
             if (k == this.key) this.dispose();
         });
+    }
 
+    hide()
+    {
+        this.#hidden = true;
+        this.rect.visible = false;
+        this.update();
+    }
+
+    show()
+    {
+        this.#hidden = false;
+        this.rect.visible = true;
+        this.update();
+    }
+
+    get isHidden()
+    {
+        return this.#hidden;
     }
 
     update()
     {
+        if (this.#hidden) return;
+
         const keyRect = this.rect;
         const key = this.key;
-        if (key.uiAttribs.text)
+        const isClip = key.getEasing() == Anim.EASING_CLIP;
+        if (!this.areaRect && (key.uiAttribs.color || isClip))
+        {
+            const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
+            // t.setParent(keyRect);
+            t.setPosition(1, 0, -0.8);
+            t.setSize(73, 5);
+            if (isClip)
+            {
+                t.setColorHex("#444444");
+                t.setBorder(2);
+            }
+            if (key.uiAttribs.color)
+            {
+                t.setColorHex(key.uiAttribs.color);
+            }
+            t.setOpacity(0.5);
+            this.areaRect = t;
+        }
+        if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
+
+        if (!key.uiAttribs.text && this.text)
+        {
+            this.text = this.text.dispose();
+        }
+        if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)
             {
                 this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
                 this.text.setParentRect(keyRect);
             }
+
             if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
+
+            if (key.clipId && this.text.text != key.clipId)
+            {
+                const v = gui.corePatch().getVar(key.clipId);
+                if (v)
+                {
+
+                    const anim = v.getValue();
+                    if (this.#clipAnim != anim)
+                    {
+                        this.#clipAnim = anim;
+                        if (anim)
+                        {
+                            anim.on(Anim.EVENT_CHANGE, () =>
+                            {
+                                this.tlkeys.updateSoon();
+                            });
+                        }
+
+                        let title = key.clipId;
+                        if (title.startsWith(GlTimeline.CLIP_VAR_PREFIX))
+                            title = title.substring(GlTimeline.CLIP_VAR_PREFIX.length, title.length);
+
+                        this.text.text = title;
+                    }
+                }
+            }
         }
 
-        if (!this.areaRect && key.uiAttribs.color)
-        {
-            const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
-            t.setParent(keyRect);
-            t.setColor(1, 1, 0, 0.3);
-            t.setPosition(1, 1, -0.8);
-            t.setSize(33, 33);
-            t.setColorHex(key.uiAttribs.color);
-            t.setOpacity(0.5);
-            this.areaRect = t;
-        }
-
-        // this.#keyRects.push(keyRect);
-
-        /// ////
-
-        if (this.#glTl.isGraphLayout() && !this.cp1r && key.getEasing() == Anim.EASING_CUBICSPLINE)
+        if (this.rect && this.#glTl.isGraphLayout() && !this.cp1r && !isClip)
         {
             const bezRect = this.#glTl.rects.createRect({ "name": "bezrect", "draggable": true, "interactive": true });
 
             bezRect.data.key = key;
             this.cp1r = bezRect;
+            if (!this.cp1s)
+            {
+                this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
+                {
+                    if (this.cp1s) this.cp1s = this.cp1s.dispose();
+                    if (this.cp2s) this.cp2s = this.cp2s.dispose();
+                });
+            }
+
+            if (this.cp1s) this.cp1s = this.cp1s.dispose();
+            if (this.cp2s) this.cp2s = this.cp2s.dispose();
 
             this.cp1s = new GlSpline(this.#glTl.splines, "cp1");
             this.cp1s.setParentRect(this.rect.parent);
@@ -132,13 +206,13 @@ export class TlKey extends Events
 
     /**
      * @param {GlRect} bezRect
-     * @param {number[]} cp
+     * @param {number[]} _cp
      * @param {AnimKey} key
      * @param {number} dir
      */
-    bindBezCp(bezRect, cp, key, dir)
+    bindBezCp(bezRect, _cp, key, dir)
     {
-        bezRect.setShape(6);
+        bezRect.setShape(GlRect.SHAPE_FILLED_CIRCLE);
         bezRect.setSize(this.#bezCpSize + dir * 3, this.#bezCpSize + dir * 3);
         bezRect.setParent(this.rect.parent);
         bezRect.draggableMove = true;
@@ -146,7 +220,7 @@ export class TlKey extends Events
         /** @type {Object} */
         let oldValues = {};
 
-        bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, e) =>
+        bezRect.on(GlRect.EVENT_POINTER_HOVER, (r, _e) =>
         {
             if (bezRect.color[3] == 0) return;
             this.#glTl.setHoverKeyRect(bezRect);
@@ -200,25 +274,18 @@ export class TlKey extends Events
                 if (dir == 0)
                 {
                     nt = Math.min(nt, 0);
-                    // key.setBezCp1(nt, nv);
-                    // if (!key.uiAttribs.bezFree) key.setBezCp2(nt * -1, nv * -1);
                     if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP2(nt * -1, nv * -1);
                     this.#glTl.selSelectedKeysCP1(nt, nv);
                 }
                 if (dir == 1)
                 {
                     nt = Math.max(nt, 0);
-                    // key.setBezCp2(nt, nv);
-                    // if (!key.uiAttribs.bezFree) key.setBezCp1(nt * -1, nv * -1);
                     if (!key.uiAttribs.bezFree) this.#glTl.selSelectedKeysCP1(nt * -1, nv * -1);
                     this.#glTl.selSelectedKeysCP2(nt, nv);
                 }
 
                 this.emitEvent(TlKey.EVENT_POSCHANGE);
-                // this.setKeyPositions();
-                // this.#animLine.update();
                 this.#glTl.setHoverKeyRect(bezRect);
-                // hideToolTip();
             }
         });
 
@@ -239,16 +306,19 @@ export class TlKey extends Events
 
     }
 
-    dispose()
+    removeBezCp()
     {
-
-        if (this.rect) this.rect = this.rect.dispose();
         if (this.cp1r) this.cp1r = this.cp1r.dispose();
         if (this.cp2r) this.cp2r = this.cp2r.dispose();
         if (this.cp1s) this.cp1s = this.cp1s.dispose();
         if (this.cp2s) this.cp2s = this.cp2s.dispose();
+    }
+
+    dispose()
+    {
+        this.removeBezCp();
+        if (this.rect) this.rect = this.rect.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
-
     }
 }

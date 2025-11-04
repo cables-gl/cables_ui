@@ -327,7 +327,7 @@ export default class ScState extends Events
                 this._clients[msg.clientId].x = msg.x;
                 this._clients[msg.clientId].y = msg.y;
                 this._clients[msg.clientId].subpatch = msg.subpatch;
-                this._clients[msg.clientId].zoom = msg.zoom;
+                // this._clients[msg.clientId].zoom = msg.zoom;
                 this._clients[msg.clientId].center = msg.center;
                 this._clients[msg.clientId].scrollX = msg.scrollX;
                 this._clients[msg.clientId].scrollY = msg.scrollY;

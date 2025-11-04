@@ -3,6 +3,7 @@ import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
+import { UiPatch } from "../core_extend_patch.js";
 
 /**
  * canvas for the patchfield {@link GlPatch}
@@ -12,6 +13,11 @@ import GlPatchAPI from "./patchapi.js";
  */
 export default class GlUiCanvas extends GlCanvas
 {
+
+    /**
+     * @param {UiPatch} _patch
+     * @param {HTMLElement} parentEle
+     */
     constructor(_patch, parentEle)
     {
         super(_patch, parentEle);
@@ -23,6 +29,7 @@ export default class GlUiCanvas extends GlCanvas
         this.cgl.on("resize", () =>
         {
             this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+            gui.patchView.centerView();
         });
 
         this.cgl.on("beginFrame", () =>

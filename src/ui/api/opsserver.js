@@ -1,8 +1,7 @@
 import { Logger, TalkerAPI, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
-import EditorTab from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
 import ModalError from "../dialogs/modalerror.js";
@@ -15,6 +14,7 @@ import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
+import { createEditor } from "../components/editor.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -295,7 +295,15 @@ export default class ServerOps
             "layout": opObj
         }, (err, res) =>
         {
-            if (err) this._log.error(err);
+            if (err)
+            {
+                this._log.error(err);
+            }
+            else
+            {
+                l.layout = opObj;
+                gui.emitEvent("refreshManageOp", op.objName);
+            }
         });
         return true; // has changed
     }
@@ -874,7 +882,7 @@ export default class ServerOps
                                     if (selectElement)
                                     {
                                         selectElement.length = 0;
-                                        dirRes.forEach((dir, i) =>
+                                        dirRes.data.forEach((dir, i) =>
                                         {
                                             const selected = i === 0;
                                             selectElement.add(new Option(dir, dir, selected, selected));
@@ -1525,7 +1533,8 @@ export default class ServerOps
         let inactive = false;
         if (fromListener) if (lastTab !== title) inactive = true;
 
-        let editorTab = new EditorTab({
+        // let editorTab = new EditorTab({
+        const editorTab = createEditor({
             "title": title,
             "name": opId, // "content": content,
             "loading": true,
@@ -1643,11 +1652,17 @@ export default class ServerOps
     }
 
     // Shows the editor and displays the code of an op in it
+    /**
+     * @param {string | import("../core_extend_op.js").UiOp} op
+     * @param {boolean} [readOnly]
+     * @param {function} [cb]
+     * @param {boolean} [userInteraction]
+     */
     edit(op, readOnly, cb, userInteraction)
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", text.guestHint);
+            CABLES.UI.MODAL.showError("Demo Editor", GuiText.guestHint);
             return;
         }
 
@@ -1687,13 +1702,15 @@ export default class ServerOps
 
         if (editorObj)
         {
-            editorTab = new EditorTab({
+            // editorTab = new EditorTab({
+            editorTab = createEditor({
                 "title": title,
                 "name": editorObj.name,
                 "loading": true,
                 "singleton": true,
                 "syntax": "js",
                 "allowEdit": this.canEditOp(gui.user, editorObj.name),
+                "allowEditReason": this.canEditOpReason(gui.user, editorObj.name),
                 "showSaveButton": true,
                 "editorObj": editorObj,
                 "onClose": (which) =>
@@ -1986,6 +2003,15 @@ export default class ServerOps
         return op.allowEdit || false;
     }
 
+    canEditOpReason(user, opName)
+    {
+        if (!platform.isTrustedPatch()) return "Untrusted patch";
+        if (!user) return "no user";
+        const op = this._ops.find((o) => { return o.name === opName; });
+        if (op && !op.allowEdit) return "no rights";
+        return "unknown";
+    }
+
     canEditAttachment(user, opName)
     {
         return this.canEditOp(user, opName);
@@ -2110,75 +2136,7 @@ export default class ServerOps
                             gui.patchView.store.sendErrorReport(errorReport, false);
                         }
                     }
-
-                    let title = "Failed to load op";
-                    let footer = "";
-                    let otherEnvName = "dev.cables.gl";
-                    let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
-                    let otherEnvButton = "Try " + otherEnvName;
-                    let errMsg = "";
-                    let opLinks = [];
-                    let hideEnvButton = false;
-                    if (err.data)
-                    {
-                        if (err.data.text) errMsg = err.data.text;
-                        if (err.data.footer) footer = err.data.footer;
-                        if (err.data.otherEnvName)
-                        {
-                            otherEnvButton = "Try " + err.data.otherEnvName;
-                        }
-                        if (err.data.reasons)
-                        {
-                            opLinks = err.data.reasons;
-                            if (oldName)
-                            {
-                                for (let i = 0; i < opLinks.length; i++)
-                                {
-                                    if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
-                                }
-                            }
-                        }
-                        if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
-                        if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
-                        if (err.data.editorLink) editorLink = err.data.editorLink;
-                        if (err.data.hideEnvButton) hideEnvButton = true;
-                    }
-
-                    const continueLoadingCallback = () =>
-                    {
-                        cb([]);
-                    };
-
-                    const tryOtherEnvCallback = () =>
-                    {
-                        window.open(editorLink);
-                    };
-
-                    const modalOptions = {
-                        "title": title,
-                        "footer": footer,
-                        "text": errMsg,
-                        "notices": opLinks
-                    };
-                    if (!hideEnvButton)
-                    {
-                        modalOptions.choice = true;
-                        modalOptions.okButton = { "text": otherEnvButton };
-                        modalOptions.cancelButton = {
-                            "text": "Continue loading",
-                            "callback": continueLoadingCallback
-                        };
-                    }
-                    else
-                    {
-                        modalOptions.showOkButton = true;
-                    }
-                    const modal = new ModalDialog(modalOptions);
-                    if (!hideEnvButton)
-                    {
-                        modal.on("onSubmit", tryOtherEnvCallback);
-                        modal.on("onClose", continueLoadingCallback);
-                    }
+                    this._opNotFoundModal(opIdentifier, oldName, err, cb);
                 }
                 else
                 {
@@ -2256,7 +2214,13 @@ export default class ServerOps
                         gui.jobs().finish("missingops");
                         cb(newOps);
                     });
-                    loadjs(missingOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
+                    loadjs(missingOpUrl, lid, {
+                        "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); },
+                        "error": (urls) =>
+                        {
+                            this._opNotFoundModal(opIdentifier, oldName, err, cb);
+                        }
+                    });
                 }
             });
         }
@@ -2364,5 +2328,89 @@ export default class ServerOps
         if (opIdentifier.startsWith(defaultOps.prefixes.op)) return opIdentifier;
         const opDoc = gui.opDocs.getOpDocById(opIdentifier);
         return opDoc ? opDoc.name : undefined;
+    }
+
+    _opNotFoundModal(opIdentifier, oldName, err = {}, cb = null)
+    {
+        let title = "Failed to load op";
+        let footer = "";
+        let otherEnvName = "dev.cables.gl";
+        let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
+        let otherEnvButton = "Try " + otherEnvName;
+        let errMsg = "";
+        let opLinks = [];
+        let hideEnvButton = false;
+        if (err && err.data)
+        {
+            if (err.data.text) errMsg = err.data.text;
+            if (err.data.footer) footer = err.data.footer;
+            if (err.data.otherEnvName)
+            {
+                otherEnvButton = "Try " + err.data.otherEnvName;
+            }
+            if (err.data.reasons)
+            {
+                opLinks = err.data.reasons;
+                if (oldName)
+                {
+                    for (let i = 0; i < opLinks.length; i++)
+                    {
+                        if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
+                    }
+                }
+            }
+            if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
+            if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
+            if (err.data.editorLink) editorLink = err.data.editorLink;
+            if (err.data.hideEnvButton) hideEnvButton = true;
+        }
+        else
+        {
+            if (oldName)
+            {
+                opLinks.push(oldName);
+            }
+            else
+            {
+                opLinks.push(opIdentifier);
+            }
+        }
+
+        const continueLoadingCallback = () =>
+        {
+            gui.patchView.store.opCrashed = true;
+            if (cb) cb([]);
+        };
+
+        const tryOtherEnvCallback = () =>
+        {
+            window.open(editorLink);
+        };
+
+        const modalOptions = {
+            "title": title,
+            "footer": footer,
+            "text": errMsg,
+            "notices": opLinks
+        };
+        if (!hideEnvButton)
+        {
+            modalOptions.choice = true;
+            modalOptions.okButton = { "text": otherEnvButton };
+            modalOptions.cancelButton = {
+                "text": "Continue loading",
+                "callback": continueLoadingCallback
+            };
+        }
+        else
+        {
+            modalOptions.showOkButton = true;
+        }
+        const modal = new ModalDialog(modalOptions);
+        if (!hideEnvButton)
+        {
+            modal.on("onSubmit", tryOtherEnvCallback);
+            modal.on("onClose", continueLoadingCallback);
+        }
     }
 }

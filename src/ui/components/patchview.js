@@ -1,12 +1,13 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import { Link, Op, Patch, Port, utils } from "cables";
 import { BoundingBox, Geometry, Shader } from "cables-corelibs";
+import { getShortOpName } from "cables/src/core/utils.js";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
-import text from "../text.js";
+import { GuiText } from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import undo from "../utils/undo.js";
 import opCleaner from "./cleanops.js";
@@ -74,10 +75,10 @@ export default class PatchView extends Events
         // corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
         corepatch.on(Patch.EVENT_OP_DELETED, this._onDeleteOpUndo.bind(this));
 
-        corepatch.on(Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
-        corepatch.on(Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
-        corepatch.on("onLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
-        corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
+        corepatch.on(Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused()) gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
+        corepatch.on(Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused()) gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
+        corepatch.on("onLink", (p1, p2) => { if (!undo.paused()) gui.savedState.setUnSaved("onLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
+        corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused()) gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
     }
 
     get element() { return this._element || PatchView.getElement(); }
@@ -155,7 +156,11 @@ export default class PatchView extends Events
         (function (opname, _opid)
         {
             const oldValues = {};
-            for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+            for (let i = 0; i < op.portsIn.length; i++)
+            {
+                oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+                if (op.portsIn[i].anim) oldValues[op.portsIn[i].name + "_anim"] = op.portsIn[i].anim.getSerialized();
+            }
 
             undo.add({
                 "title": "delete op",
@@ -174,6 +179,12 @@ export default class PatchView extends Events
                             {
                                 port.set(oldValues[i]);
                                 gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
+                                if (oldValues[i + "_anim"])
+                                {
+                                    port.setAnimated(true);
+                                    port.anim.deserialize(oldValues[i + "_anim"]);
+
+                                }
                             }
                         }
                     }
@@ -228,7 +239,7 @@ export default class PatchView extends Events
 
         if (gui.isRemoteClient)
         {
-            if (cb)cb();
+            if (cb) cb();
             return;
         }
 
@@ -271,7 +282,7 @@ export default class PatchView extends Events
 
             perf2.finish();
 
-            if (cb)cb();
+            if (cb) cb();
         });
     }
 
@@ -320,6 +331,8 @@ export default class PatchView extends Events
      */
     testCollision(op)
     {
+        if (userSettings.get("checkOpCollisions") === false) return;
+
         if (!op || !op.uiAttribs) return;
         let count = 0;
         let collided = {};
@@ -346,23 +359,23 @@ export default class PatchView extends Events
                     if (
                         (
                             glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
-                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                            glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
                         )
-                    ||
-                    (
-                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
-                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
-                    )
-                    ||
-                    (
-                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
-                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
-                    )
-                    ||
-                    (
-                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
-                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
-                    )
+                        ||
+                        (
+                            glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                            glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                        )
+                        ||
+                        (
+                            glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
+                            glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                        )
+                        ||
+                        (
+                            glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                            glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                        )
                     )
                     {
                         let mulDirY = 1;
@@ -374,7 +387,7 @@ export default class PatchView extends Events
                         if (link)
                         {
                             let p = link.portIn;
-                            if (link.portOut.op == op)p = link.portOut;
+                            if (link.portOut.op == op) p = link.portOut;
                             const otherPort = link.getOtherPort(p);
                             x = otherPort.op.uiAttribs.translate.x + otherPort.op.getPortPosX(otherPort.name);
                         }
@@ -591,8 +604,9 @@ export default class PatchView extends Events
                 });
 
                 this.testCollision(newOp);
-                if (cb)cb(newOp);
-            } });
+                if (cb) cb(newOp);
+            }
+        });
     }
 
     showSelectedOpsPanel()
@@ -621,7 +635,7 @@ export default class PatchView extends Events
 
             ele.byId(gui.getParamPanelEleId()).innerHTML = html;
             gui.setTransformGizmo(null);
-            gui.showInfo(text.patchSelectedMultiOps);
+            gui.showInfo(GuiText.patchSelectedMultiOps);
         }
         else
         {
@@ -648,8 +662,8 @@ export default class PatchView extends Events
                 {
                     op.uiAttr({ "selected": true });
 
-                // if (op.isSubPatchOp())
-                // this.selectAllOpsSubPatch(op.patchId.get(), true);
+                    // if (op.isSubPatchOp())
+                    // this.selectAllOpsSubPatch(op.patchId.get(), true);
                 }
                 else if (!noUnselect) op.uiAttr({ "selected": false });
             }
@@ -699,9 +713,10 @@ export default class PatchView extends Events
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
+        const patchSummary = gui.getPatchSummary();
         let isExamplePatch = false;
-        if (gui.project().summary)
-            isExamplePatch = gui.project().summary.isBasicExample || (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0);
+        if (patchSummary)
+            isExamplePatch = patchSummary.isBasicExample || (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0);
 
         if (!this._checkErrorTimeout)
         {
@@ -724,7 +739,7 @@ export default class PatchView extends Events
 
         let showAttentionIcon = this.hasUiErrors;
 
-        if (this.hasOldOps && (gui.project().summary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
+        if (this.hasOldOps && (patchSummary && patchSummary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
 
         clearTimeout(this._checkErrorTimeout);
 
@@ -1019,14 +1034,17 @@ export default class PatchView extends Events
         const padding = 80;
         const trans = {
             "x": Snap.snapOpPosX(bounds.minX - 0.8 * padding),
-            "y": Snap.snapOpPosY(bounds.minY - 1.2 * padding) };
+            "y": Snap.snapOpPosY(bounds.minY - 1.2 * padding)
+        };
 
         const areaOp = this._p.addOp(defaultOps.defaultOpNames.uiArea, {
             "translate": trans,
             "subPatch": this.getCurrentSubPatch(),
             "area": {
                 "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
-                "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2 * padding)) } });
+                "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2 * padding))
+            }
+        });
 
         (function (opid)
         {
@@ -1038,10 +1056,13 @@ export default class PatchView extends Events
                 },
                 redo()
                 {
-                    gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, { "translate": trans,
+                    gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, {
+                        "translate": trans,
                         "area": {
                             "w": Snap.snapOpPosX(bounds.maxX - bounds.minX + (2.75 * padding)),
-                            "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2.2 * padding)) } });
+                            "h": Snap.snapOpPosY(bounds.maxY - bounds.minY + (2.2 * padding))
+                        }
+                    });
                 }
             });
         }(areaOp.id));
@@ -1050,7 +1071,7 @@ export default class PatchView extends Events
     createSubPatchFromSelection(version = 0, next = null, options = {})
     {
         let opname = defaultOps.defaultOpNames.subPatch;
-        if (version == 2)opname = defaultOps.defaultOpNames.subPatch2;
+        if (version == 2) opname = defaultOps.defaultOpNames.subPatch2;
 
         const selectedOps = this.getSelectedOps();
 
@@ -1060,7 +1081,8 @@ export default class PatchView extends Events
                 const bounds = this.getSelectionBounds();
                 let trans = {
                     "x": bounds.minX + (bounds.maxX - bounds.minX) / 2,
-                    "y": bounds.minY };
+                    "y": bounds.minY
+                };
 
                 if (options.translate) trans = options.translate;
 
@@ -1148,9 +1170,9 @@ export default class PatchView extends Events
 
                     this.setPositionSubPatchInputOutputOps();
 
-                    if (next)next(patchId, patchOp);
+                    if (next) next(patchId, patchOp);
 
-                // }, 100);
+                    // }, 100);
                 }
 
                 gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch(), () =>
@@ -1191,8 +1213,8 @@ export default class PatchView extends Events
         {
             x = (patchInputOP || patchOutputOP).uiAttribs.translate.x;
 
-            if (x < b.minX)x = b.minX;
-            if (x > b.maxX)x = b.maxX;
+            if (x < b.minX) x = b.minX;
+            if (x > b.maxX) x = b.maxX;
         }
 
         if (patchInputOP)
@@ -1200,7 +1222,8 @@ export default class PatchView extends Events
             let y = Math.min(patchInputOP.uiAttribs.translate.y, b.minY - gluiconfig.newOpDistanceY * 2);
 
             patchInputOP.setUiAttribs(
-                { "translate":
+                {
+                    "translate":
                     {
                         "x": x,
                         "y": y
@@ -1213,7 +1236,8 @@ export default class PatchView extends Events
             let y = Math.max(patchOutputOP.uiAttribs.translate.y, b.maxY + gluiconfig.newOpDistanceY * 2);
 
             patchOutputOP.setUiAttribs(
-                { "translate":
+                {
+                    "translate":
                     {
                         "x": x,
                         "y": y
@@ -1477,7 +1501,7 @@ export default class PatchView extends Events
     /**
      * @param {Op[]} selectedOps
      */
-    serializeOps(selectedOps, _options = { })
+    serializeOps(selectedOps, _options = {})
     {
         function arrayContains(arr, obj)
         {
@@ -1721,7 +1745,7 @@ export default class PatchView extends Events
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             this.currentOpPaste = null;
-            if (next)next(project.ops, focusSubpatchop);
+            if (next) next(project.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");
 
@@ -1860,7 +1884,8 @@ export default class PatchView extends Events
             });
         }
 
-        op.setUiAttribs({ "translate":
+        op.setUiAttribs({
+            "translate":
             {
                 "x": x,
                 "y": y
@@ -1880,7 +1905,7 @@ export default class PatchView extends Events
             obj.id = selectedOps[j].id;
 
             if (!selectedOps[j].uiAttribs) selectedOps[j].uiAttribs = {};
-            if (!selectedOps[j].uiAttribs.translate)selectedOps[j].uiAttribs.translate = { "x": 0, "y": 0 };
+            if (!selectedOps[j].uiAttribs.translate) selectedOps[j].uiAttribs.translate = { "x": 0, "y": 0 };
 
             obj.x = selectedOps[j].uiAttribs.translate.x;
             obj.y = selectedOps[j].uiAttribs.translate.y;
@@ -1936,50 +1961,101 @@ export default class PatchView extends Events
         undo.endGroup(undoGroup, "Unlink Port");
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {string} opid
+     * @param {string} pid
+     * @param {string} op2id
+     */
     linkPortToOp(e, opid, pid, op2id)
     {
+
+        /** @type {UiOp} */
         let op1 = this._p.getOpById(opid);
+
+        /** @type {UiOp} */
         let op2 = this._p.getOpById(op2id);
         const p = op1.getPort(pid);
-        const numFitting = op2.countFittingPorts(p);
+        let showConverter = gui.longLinkHover;
+        let numFitting = op2.countFittingPorts(p, showConverter);
+        if (numFitting == 0 && !showConverter)
+        {
+            showConverter = true;
+            numFitting = op2.countFittingPorts(p, true);
+        }
 
         const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
         const isbpOp = op2.isSubPatchOp() || isInnerOp;
 
         if (isbpOp || numFitting > 1)
         {
-            new SuggestPortDialog(op2, p, e, (thePort, newOpId, options) =>
+            new SuggestPortDialog(op2, p, e, (thePort, newOpId, options, useconverter) =>
             {
+
                 if (options.createSpOpPort)
                 {
-                    subPatchOpUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
-                        "cb": (newPortJson, newOp) =>
+                    subPatchOpUtil.addPortToBlueprint(options.op.opId, p, {
+                        "reverseDir": !isInnerOp,
+                        "cb": (newPortJson, newOp, sugg) =>
                         {
-                            this._p.link(op1, pid, newOp, newPortJson.id);
-                        } });
+                            // if (sugg && Link.canLink(thePort, sugg.p))
+                            // {
+                            //     this._p.link(op1, pid, newOp, newPortJson.id);
+                            // }
+                            // else
+                            // {
+                            //     if (thePort)
+                            //         gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
+                            //     else
+                            //         console.error("unknown subpatchop stuff");
+                            // }
+                        }
+                    });
                 }
                 else
                 {
                     op2 = this._p.getOpById(newOpId);
-                    this._p.link(op1, pid, op2, thePort.name);
+                    if (Link.canLink(thePort, p))
+                    {
+                        this._p.link(op1, pid, op2, thePort.name);
+                    }
+                    else
+                    {
+                        gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
+                    }
                 }
-            });
+            }, null, showConverter);
         }
         else
         {
-            const fitp = op2.findFittingPort(p);
-            if (fitp) this._p.link(op1, pid, op2, fitp.name);
+            const fitp = op2.findFittingPort(p, showConverter);
+
+            if (fitp)
+            {
+                if (fitp.type == p.type) this._p.link(op1, pid, op2, fitp.name);
+                else gui.patchView.linkPorts(opid, p.name, op2id, fitp.name, e);
+            }
+            else
+            {
+                console.log("no fitp");
+            }
         }
     }
 
-    linkPortsToOp(e, opid, opids, portnames)
+    /**
+     * @param {MouseEvent} e
+     * @param {string} opid
+     * @param {string[]} opids
+     * @param {string[]} portnames
+     */
+    linkPortsToOp(e, opid, opids, portnames, showConverters = false)
     {
         if (!opids || opids.length == 0 || !portnames || portnames.length == 0) return;
 
         const op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(opids[0]);
         const p = op2.getPort(portnames[0]);
-        const numFitting = op1.countFittingPorts(p);
+        const numFitting = op1.countFittingPorts(p, showConverters);
 
         if (numFitting > 1)
         {
@@ -1991,11 +2067,11 @@ export default class PatchView extends Events
                         op2 = this._p.getOpById(opids[i]);
                         this._p.link(op2, portnames[i], op1, suggport.id);
                     }
-            });
+            }, null, true);
         }
         else
         {
-            const fitp = op1.findFittingPort(p);
+            const fitp = op1.findFittingPort(p, showConverters);
 
             if (fitp)
                 for (let i = 0; i < portnames.length; i++)
@@ -2006,47 +2082,66 @@ export default class PatchView extends Events
         }
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} pid
+     * @param {string} op2id
+     * @param {string} p2id
+     * @param {MouseEvent} event
+     */
     linkPorts(opid, pid, op2id, p2id, event)
     {
         let op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(op2id);
 
-        if (!op1 || !op2) return;
-
+        if (!op1 || !op2)
         {
-            // helper number2string auto insert....
-            let p1 = op1.getPortByName(pid);
-            let p2 = op2.getPortByName(p2id);
+            console.log("no linkop");
+            return;
+        }
 
-            const converters = getConverters(p1, p2);
+        // helper number2string auto insert....
+        let p1 = op1.getPortByName(pid);
+        let p2 = op2.getPortByName(p2id);
 
-            if (converters.length == 1)
+        const converters = getConverters(p1, p2);
+
+        if (converters.length == 1)
+        {
+            convertPorts(p1, p2, converters[0]);
+            return;
+        }
+        if (converters.length > 1)
+        {
+            const suggs = [];
+            for (let i = 0; i < converters.length; i++)
             {
-                convertPorts(p1, p2, converters[0]);
-                return;
-            }
-            if (converters.length > 1)
-            {
-                const suggs = [];
-                for (let i = 0; i < converters.length; i++)
-                {
-                    suggs.push({ "name": converters[i].op });
-                }
-
-                new SuggestionDialog(suggs, op2, event, null, function (sid)
-                {
-                    convertPorts(p1, p2, converters[sid]);
+                suggs.push({
+                    "name": "♻ " + opNames.getShortName(converters[i].op),
+                    "class": "port_text_color_" + p2.getTypeString().toLowerCase()
                 });
             }
+
+            new SuggestionDialog(suggs, op2, event, null, function (sid)
+            {
+                convertPorts(p1, p2, converters[sid]);
+            });
+
+            return;
         }
 
         this._p.link(op1, pid, op2, p2id);
     }
 
+    /**
+     * @param {number} [x]
+     * @param {number} [y]
+     */
     centerView(x, y)
     {
-        if (this._patchRenderer.center) this._patchRenderer.center(x, y);
-        else this._log.warn("patchRenderer has no function center");
+        if (this._patchRenderer)
+            if (this._patchRenderer.center) this._patchRenderer.center(x, y);
+            else this._log.warn("patchRenderer has no function center");
     }
 
     pauseInteraction()
@@ -2107,6 +2202,11 @@ export default class PatchView extends Events
         gui.corePatch().emitEvent("subpatchesChanged");
     }
 
+    getLastFocussedOp()
+    {
+        return gui.opParams.getCurrentOp();
+    }
+
     /**
      * @param {string} opid
      */
@@ -2136,7 +2236,7 @@ export default class PatchView extends Events
     selectOpId(id)
     {
         const op = this._p.getOpById(id);
-        if (op)op.setUiAttribs({ "selected": true });
+        if (op) op.setUiAttribs({ "selected": true });
     }
 
     /**
@@ -2298,82 +2398,84 @@ export default class PatchView extends Events
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
-            this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
-            {
-                const origOp = this._p.getOpById(opid);
-
-                if (!newOp || !origOp)
+            this.addOp(newOpObjName, {
+                "onOpAdd": (newOp) =>
                 {
-                    this._log.warn("could not replace op.?", newOp, origOp);
-                    return;
-                }
+                    const origOp = this._p.getOpById(opid);
 
-                let allFine = true;
-                let html = "<h3>Replacing Op</h3>";
-
-                html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
-
-                let htmlList = "";
-                htmlList += "<table>";
-                for (let i = 0; i < origOp.portsIn.length; i++)
-                {
-                    let found = false;
-
-                    htmlList += "<tr>";
-                    htmlList += "<td>Port " + origOp.portsIn[i].name + "</td>";
-
-                    for (let j = 0; j < newOp.portsIn.length; j++)
+                    if (!newOp || !origOp)
                     {
-                        if (newOp.portsIn[j] && origOp.portsIn[i])
+                        this._log.warn("could not replace op.?", newOp, origOp);
+                        return;
+                    }
+
+                    let allFine = true;
+                    let html = "<h3>Replacing Op</h3>";
+
+                    html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
+
+                    let htmlList = "";
+                    htmlList += "<table>";
+                    for (let i = 0; i < origOp.portsIn.length; i++)
+                    {
+                        let found = false;
+
+                        htmlList += "<tr>";
+                        htmlList += "<td>Port " + origOp.portsIn[i].name + "</td>";
+
+                        for (let j = 0; j < newOp.portsIn.length; j++)
                         {
-                            if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                            if (newOp.portsIn[j] && origOp.portsIn[i])
                             {
-                                found = true;
-                                break;
+                                if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                                {
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
+
+                        htmlList += "<td>";
+                        if (!found)
+                        {
+                            htmlList += "NOT FOUND in new version!";
+                            allFine = false;
+                        }
+
+                        htmlList += "</td>";
+                        htmlList += "</tr>";
                     }
 
-                    htmlList += "<td>";
-                    if (!found)
+                    this._p.deleteOp(newOp.id);
+                    htmlList += "</table>";
+
+                    if (allFine)
                     {
-                        htmlList += "NOT FOUND in new version!";
-                        allFine = false;
+                        gui.patchView.replaceOp(opid, newOpObjName);
+                        return;
+                        // html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                    }
+                    else
+                    {
+                        html += "Not all old Ports are available in never version of the op. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                        html += htmlList;
                     }
 
-                    htmlList += "</td>";
-                    htmlList += "</tr>";
+                    html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
+                    html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
+
+                    setTimeout(() =>
+                    {
+                        this.setSelectedOpById(origOp.id);
+                    }, 100);
+
+                    this.selectOpId(newOp.id);
+                    gui.opParams.show(newOp.id);
+                    this._patchRenderer.focusOpAnim(newOp.id);
+
+                    new ModalDialog({ "html": html });
                 }
-
-                this._p.deleteOp(newOp.id);
-                htmlList += "</table>";
-
-                if (allFine)
-                {
-                    gui.patchView.replaceOp(opid, newOpObjName);
-                    return;
-                    // html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
-                }
-                else
-                {
-                    html += "Not all old Ports are available in never version of the op. Make sure you test if it behaves the same, very accurately.<br/><br/>";
-                    html += htmlList;
-                }
-
-                html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
-                html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
-
-                setTimeout(() =>
-                {
-                    this.setSelectedOpById(origOp.id);
-                }, 100);
-
-                this.selectOpId(newOp.id);
-                gui.opParams.show(newOp.id);
-                this._patchRenderer.focusOpAnim(newOp.id);
-
-                new ModalDialog({ "html": html });
-            } });
+            });
         });
     }
 
@@ -2385,58 +2487,65 @@ export default class PatchView extends Events
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
-            this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
-            {
-                const origOp = this._p.getOpById(opid);
-
-                if (origOp)
+            this.addOp(newOpObjName, {
+                "onOpAdd": (newOp) =>
                 {
-                    const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
+                    const origOp = this._p.getOpById(opid);
 
-                    const theUiAttribs = {};
-                    for (const i in oldUiAttribs)
+                    if (origOp)
                     {
-                        if (i == "uierrors") continue;
-                        theUiAttribs[i] = oldUiAttribs[i];
-                    }
-                    newOp.setUiAttrib(theUiAttribs);
+                        const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
-                    this.copyOpInputPorts(origOp, newOp);
-
-                    for (let i = 0; i < origOp.portsIn.length; i++)
-                    {
-                        for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                        const theUiAttribs = {};
+                        for (const i in oldUiAttribs)
                         {
-                            const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                            if (i == "uierrors") continue;
+                            theUiAttribs[i] = oldUiAttribs[i];
                         }
-                    }
-
-                    for (let i = 0; i < origOp.portsOut.length; i++)
-                    {
-                        for (let j = 0; j < origOp.portsOut[i].links.length; j++)
-                        {
-                            const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                            this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
-                        }
-                    }
-
-                    this._p.deleteOp(origOp.id);
-
-                    setTimeout(() =>
-                    {
                         newOp.setUiAttrib(theUiAttribs);
-                        this.setCurrentSubPatch(oldUiAttribs.subPatch || 0, () =>
+
+                        this.copyOpInputPorts(origOp, newOp);
+
+                        for (let i = 0; i < origOp.portsIn.length; i++)
                         {
-                            if (cb) cb();
-                        });
-                    }, 100);
+                            for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                            {
+                                const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                                origOp.portsIn[i].links[j].remove();
+
+                                this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                            }
+                        }
+
+                        for (let i = 0; i < origOp.portsOut.length; i++)
+                        {
+                            for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                            {
+                                const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+
+                                origOp.portsOut[i].links[j].remove();
+                                // origOp.portsOut[i].links[j].link(otherPort, newOp.getPort(origOp.portsOut[i].name.toLowerCase(), true))
+                                this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                            }
+                        }
+
+                        this._p.deleteOp(origOp.id);
+
+                        setTimeout(() =>
+                        {
+                            newOp.setUiAttrib(theUiAttribs);
+                            this.setCurrentSubPatch(oldUiAttribs.subPatch || 0, () =>
+                            {
+                                if (cb) cb();
+                            });
+                        }, 100);
+                    }
+                    else
+                    {
+                        this._log.error("no origop ?!");
+                    }
                 }
-                else
-                {
-                    this._log.error("no origop ?!");
-                }
-            } });
+            });
         });
     }
 
@@ -2594,6 +2703,7 @@ export default class PatchView extends Events
     suggestionBetweenTwoOps(op1, op2)
     {
         const mouseEvent = { "clientX": 400, "clientY": 400 };
+        let showConv = true;
 
         /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
         const suggestions = [
@@ -2608,13 +2718,13 @@ export default class PatchView extends Events
         {
             const p = op1.portsOut[j];
 
-            const numFitting = op2.countFittingPorts(p);
+            const numFitting = op2.countFittingPorts(p, showConv);
             let addText = "...";
             if (numFitting > 0)
             {
                 if (numFitting == 1)
                 {
-                    const p2 = op2.findFittingPort(p);
+                    const p2 = op2.findFittingPort(p, showConv);
                     addText = p2.title;
                 }
 
@@ -2640,11 +2750,11 @@ export default class PatchView extends Events
 
             /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
             const sugIn =
-            [{
-                "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
-                "name": "<span class=\"icon icon-op\"></span>IN: " + op2.getTitle(),
-                "classname": ""
-            }];
+                [{
+                    "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
+                    "name": "<span class=\"icon icon-op\"></span>IN: " + op2.getTitle(),
+                    "classname": ""
+                }];
 
             for (let i = 0; i < op2.portsIn.length; i++)
             {
@@ -2795,7 +2905,7 @@ export default class PatchView extends Events
         }
 
         const idx = ports.indexOf(port);
-        if (idx + dir >= 0)move(ports, idx, idx + dir);
+        if (idx + dir >= 0) move(ports, idx, idx + dir);
 
         for (let i = 0; i < ports.length; i++) ports[i].setUiAttribs({ "order": i });
 
@@ -2852,21 +2962,30 @@ export default class PatchView extends Events
 
     highlightExamplePatchOps()
     {
-        if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+        const patchSummary = gui.getPatchSummary();
+        if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
         {
+            let patchTitle = "";
             const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
                 ops[i].setUiAttribs({ "color": null });
 
-            for (let j = 0; j < gui.project().summary.exampleForOps.length; j++)
+            for (let j = 0; j < patchSummary.exampleForOps.length; j++)
             {
-                const opz = gui.corePatch().getOpsByObjName(gui.project().summary.exampleForOps[j]);
+                patchTitle += getShortOpName(patchSummary.exampleForOps[j]) + " ";
+                const opz = gui.corePatch().getOpsByObjName(patchSummary.exampleForOps[j]);
                 for (let k = 0; k < opz.length; k++)
                 {
-                    // const opname = opz[k];
                     opz[k].setUiAttribs({ "color": "#5dc0fd" });
                 }
             }
+
+            if (gui.user.isStaff && patchSummary.title != patchTitle)
+            {
+                patchTitle += " Example";
+                this.store.setPatchName(patchTitle);
+            }
+
         }
     }
 

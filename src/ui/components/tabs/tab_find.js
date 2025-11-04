@@ -2,7 +2,7 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
+import { GuiText } from  "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
@@ -37,6 +37,7 @@ export default class FindTab
 
         let colors = [];
         const warnOps = [];
+        this.hlOps = [];
 
         for (let i = 0; i < gui.corePatch().ops.length; i++)
         {
@@ -70,11 +71,16 @@ export default class FindTab
             gui.opHistory.off(listenerChanged);
 
             for (let i = 0; i < this._listenerids.length; i++)
-            {
                 gui.corePatch().off(this._listenerids[i]);
-            }
+
+            this.clearHighlightOps();
 
             this._closed = true;
+        });
+        gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
+        {
+            this.clearHighlightOps();
+            this.search(this._lastSearch);
         });
 
         if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
@@ -82,6 +88,16 @@ export default class FindTab
         ele.byId(this._inputId).addEventListener("input", (e) =>
         {
             this.search(e.target.value);
+        });
+        ele.byId(this._inputId).addEventListener("keydown", (e) =>
+        {
+            if (e.key == "Escape")
+            {
+                this.clearHighlightOps();
+                this._lastSearch = " ";
+                e.target.value = "";
+                this.search(" ");
+            }
         });
 
         ele.byId(this._inputId).select();
@@ -165,6 +181,19 @@ export default class FindTab
         }
     }
 
+    clearHighlightOps()
+    {
+        for (let i = 0; i < this.hlOps.length; i++)
+        {
+            if (this.hlOps[i])
+            {
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+                this.hlOps[i].setUiAttrib({ "highlighted": false });
+            }
+        }
+        this.hlOps = [];
+    }
+
     isClosed()
     {
         return this._closed;
@@ -197,7 +226,7 @@ export default class FindTab
         let info = "";
         this._maxIdx = idx;
 
-        info += "## searchresult \n\n* score : " + result.score + text.searchResult + "\n";
+        info += "## searchresult \n\n* score : " + result.score + GuiText.searchResult + "\n";
 
         if (op.op)op = op.op;
 
@@ -207,7 +236,12 @@ export default class FindTab
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
         if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
+        this.hlOps.push(op);
+        op.setUiAttribs({ "highlighted": true });
+
         html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
+        html += " onmouseover=\"gui.hlFindResult('" + op.id + "')\" ";
+        html += " onmouseout=\"gui.hlUnFindResult('" + op.id + "')\" ";
         html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
 
         let colorHandle = "";
@@ -225,7 +259,6 @@ export default class FindTab
         if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
         if (result.history) html += "<span class=\"search-history-item\">" + result.history + "</span><br/>";
         if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
-        // html += "" + op.objName + "<br/>";
         html += result.where || "";
 
         let highlightsubpatch = "";
@@ -257,7 +290,7 @@ export default class FindTab
         return str;
     }
 
-    _doSearchTriggers(str, userInvoked, ops, results)
+    _doSearchTriggers(str)
     {
         const triggers = gui.corePatch().namedTriggers;
         const foundtriggers = [];
@@ -272,7 +305,7 @@ export default class FindTab
         return foundtriggers;
     }
 
-    _doSearchVars(str, userInvoked, ops, results)
+    _doSearchVars(str)
     {
         const vars = gui.corePatch().getVars();
         const foundVars = [];
@@ -305,9 +338,12 @@ export default class FindTab
         {
             if (str == ":attention")
             {
+                const patchSummary = gui.getPatchSummary();
                 if (
-                    gui.project().summary.isBasicExample ||
-                    (gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0))
+                    patchSummary && (
+                        patchSummary.isBasicExample ||
+                        (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0))
+                )
                 {
                     FindTab.searchOutDated(ops, results);
                     for (let i = 0; i < results.length; i++)
@@ -674,7 +710,15 @@ export default class FindTab
 
     search(str, userInvoked)
     {
+        this.clearHighlightOps();
+
         str = str || this._lastSearch;
+
+        if (this._eleInput.value == "")
+        {
+            this._lastSearch = str = "";
+        }
+
         // console.log("search str", str, (new Error()).stack);
         this._maxIdx = -1;
         this.setSelectedOp(null);
@@ -691,7 +735,7 @@ export default class FindTab
 
         if (str.length < 2)
         {
-            this._eleResults.innerHTML = "Type some more!";
+            this._eleResults.innerHTML = "<div style=\"background-color:var(--color-02);border-bottom:none;\">Type some more!</div>";
             return;
         }
 
@@ -744,11 +788,11 @@ export default class FindTab
                 onclickResults += "gui.patchView.selectOpId('" + results[i].op.id + "');";
 
             onclickResults += "gui.patchView.showSelectedOpsPanel();";
-            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " ops found";
 
-            html += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
-
-            html += "</div>";
+            let htmla = "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " Ops found";
+            htmla += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
+            htmla += "</div>";
+            html = htmla + html;
         }
 
         this._eleResults.innerHTML = html;

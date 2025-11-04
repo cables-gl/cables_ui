@@ -1,4 +1,5 @@
 import { ele, Events, Logger } from "cables-shared-client";
+import { Anim, Port } from "cables";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
@@ -14,7 +15,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
-import timelineCommands, { CmdTimeline } from "../../commands/cmd_timeline.js";
+import { CmdTimeline } from "../../commands/cmd_timeline.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -24,11 +25,12 @@ import timelineCommands, { CmdTimeline } from "../../commands/cmd_timeline.js";
  */
 class ParamsListener extends Events
 {
+    _log = new Logger("Paramslistener");
+
     constructor(panelid)
     {
         super();
 
-        this._log = new Logger("Paramslistener");
         this.panelId = panelid;
 
         this._watchPorts = [];
@@ -133,7 +135,6 @@ class ParamsListener extends Events
             {
                 port.toggleManual();
             });
-            else this._log.log("cant find multiport");
 
             const elInc = ele.byId("multiport_inc_" + port.op.id + "_" + port.name);
             if (elInc)elInc.addEventListener("click", () =>
@@ -338,6 +339,12 @@ class ParamsListener extends Events
         });
     }
 
+    /**
+     * @param {Port[]} ports
+     * @param {number} index
+     * @param {string} panelid
+     * @param {string} dirStr
+     */
     initPortClickListener(ports, index, panelid, dirStr)
     {
         const thePort = ports[index];
@@ -359,14 +366,14 @@ class ParamsListener extends Events
             {
                 if (thePort.objType && thePort.objType.indexOf("sg_"))
                 {
-                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, function (newop)
+                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, (newop) =>
                     {
                         gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
                 }
                 if (thePort.type == portType.object)
                 {
-                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, function (newop)
+                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, (newop) =>
                     {
                         gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
@@ -537,6 +544,10 @@ class ParamsListener extends Events
                     items.push(item);
                 }
             }
+            if (port.display == "file")
+            {
+
+            }
 
             if (
                 port.type == portType.number &&
@@ -551,6 +562,7 @@ class ParamsListener extends Events
                     title = "Remove Animation";
                     icon = "icon icon-x";
                 }
+
                 items.push({
                     "title": title,
                     "iconClass": icon,
@@ -559,10 +571,16 @@ class ParamsListener extends Events
                         gui.savedState.setUnSaved("setPortAnimated", port.op.getSubPatch());
 
                         paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
-                        timelineCommands.functions.TimelinePause();
-                        timelineCommands.functions.TimelineRewindStart();
-                        timelineCommands.functions.openGlTimeline();
-                        timelineCommands.functions.showTimeline();
+
+                        if (thePort.anim && (thePort.uiAttribs.hasOwnProperty("tlEase") || thePort.uiAttribs.display == "bool"))
+                        {
+                            if (thePort.uiAttribs.hasOwnProperty("tlEase")) thePort.anim.defaultEasing = thePort.uiAttribs.tlEase;
+                            else thePort.anim.defaultEasing = Anim.EASING_ABSOLUTE;
+
+                            thePort.anim.setKeyEasing(0, thePort.anim.defaultEasing);
+                        }
+
+                        CmdTimeline.showTimeline();
                     }
                 });
             }

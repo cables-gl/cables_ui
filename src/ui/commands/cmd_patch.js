@@ -15,8 +15,11 @@ import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
+import TabDebugger from "../components/tabs/tab_debugger.js";
 
 const CABLES_CMD_PATCH = {};
+
+/** @type {import("./commands.js").commandObject[]} */
 const CMD_PATCH_COMMANDS = [];
 
 const log = new Logger("CMD_PATCH");
@@ -96,8 +99,8 @@ CABLES_CMD_PATCH.gotoParentSubpatch = function ()
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
 
     if (names.length == 0) return;
-    if (names.length == 1) gui.patchView.setCurrentSubPatch(0);
-    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+    if (names.length == 1) gui.patchView.setCurrentSubPatch(0, null);
+    else gui.patchView.setCurrentSubPatch(names[names.length - 1].id, null);
 };
 
 CABLES_CMD_PATCH.selectAllOps = function ()
@@ -397,7 +400,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
                                     gui.corePatch().deleteOp(OpTempSubpatch.id);
-                                    gui.patchView.setCurrentSubPatch(currentSubpatch);
+                                    gui.patchView.setCurrentSubPatch(currentSubpatch, null);
 
                                     platform.talkerAPI.send("opUpdate",
                                         {
@@ -543,6 +546,7 @@ CABLES_CMD_PATCH.reuploadFile = function (id, fileName)
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
+    // @ts-ignore - if page is loading and a file drag is hovering it will crash because ....
     if (!window.gui || !gui.project()) return;
     const fileElem = document.getElementById("uploaddialog");
 
@@ -733,7 +737,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.varName.set(name);
             opGetter.varName.set(name);
 
-            gui.patchView.setCurrentSubPatch(gui.patchView.getCurrentSubPatch());
+            gui.patchView.setCurrentSubPatch(gui.patchView.getCurrentSubPatch(), null);
 
             if (next)next(opSetter, opGetter);
 
@@ -1237,6 +1241,12 @@ CABLES_CMD_PATCH.patchProfiler = () =>
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_PATCH.patchDebugger = () =>
+{
+    new TabDebugger(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Select all ops",
@@ -1532,6 +1542,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "pie-chart",
         "func": CABLES_CMD_PATCH.patchProfiler
+    },
+    {
+        "cmd": "Patch Debugger",
+        "category": "patch",
+        "icon": "list",
+        "func": CABLES_CMD_PATCH.patchDebugger
     },
 
 );

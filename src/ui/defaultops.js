@@ -8,15 +8,15 @@ import { portType } from "./core_constants.js";
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
-    "string": "Ops.String.String_v2",
+    "string": "Ops.String.String_v3",
     "array": "Ops.Array.Array_v3",
     "anim": "Ops.TimeLine.Anim",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
-    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
+    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
-    "defaultOpJson": "Ops.Json.HttpRequest_v3",
+    "defaultOpJson": "Ops.Json.HttpRequest_v4",
     "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
     "VarTriggerNumber": "Ops.Vars.VarTriggerNumber",
@@ -59,6 +59,7 @@ const defaultOpNames =
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString_v2",
     "TriggerOnChangeArray": "Ops.Trigger.TriggerOnChangeArray_v2",
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber_v2",
+    "TriggerOnChangeObject": "Ops.Trigger.TriggerOnChangeObject_v2",
 
     "TriggerOnChangedTrue": "Ops.Boolean.TriggerChangedTrue",
 
@@ -88,7 +89,7 @@ const defaultOpNames =
 
     "stringEditor": "Ops.String.StringEditor",
     "sequence": "Ops.Trigger.Sequence",
-    "divElement": "Ops.Html.Elements.DivElement_v3",
+    "divElement": "Ops.Html.Elements.Element_v2",
     "customShader": "Ops.Gl.Shader.CustomShader_v2",
 
     "GreaterThan": "Ops.Math.Compare.GreaterThan",
@@ -134,7 +135,7 @@ const defaultOpNames =
     "ObjectGetObjectByPath": "Ops.Data.JsonPath.ObjectGetObjectByPath",
     "ObjectGetStringByPath": "Ops.Data.JsonPath.ObjectGetStringByPath_v2",
 
-    "HttpRequest": "Ops.Json.HttpRequest_v3",
+    "HttpRequest": "Ops.Json.HttpRequest_v4",
     "glMainloop": "Ops.Gl.MainLoop_v2"
 
 };
@@ -269,6 +270,27 @@ const defaultOps = {
             "op": defaultOpNames.incrementor,
             "portIn": "Increment",
             "portOut": "Value",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.number,
+            "op": defaultOpNames.ObjectGetNumber,
+            "portIn": "Data",
+            "portOut": "Result",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.string,
+            "op": defaultOpNames.ObjectGetString,
+            "portIn": "data",
+            "portOut": "result",
+        },
+        {
+            "typeFrom": portType.object,
+            "typeTo": portType.trigger,
+            "op": defaultOpNames.TriggerOnChangeObject,
+            "portIn": "Object",
+            "portOut": "Changed",
         }
 
     ],
