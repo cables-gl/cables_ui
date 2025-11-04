@@ -814,6 +814,8 @@ export default class PatchSaveServer extends Events
                     platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
                     {
                         gui.setProjectName(newName);
+                        console.log("hasrneasrneasrnasreasrtne", newName);
+                        gui.patchParamPanel.show();
                     });
                     if (cb) cb(newName);
                 }
