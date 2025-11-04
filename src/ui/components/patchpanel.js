@@ -43,7 +43,6 @@ export default class PatchPanel extends Events
     show(force)
     {
         if (!gui.finishedLoading()) return;
-        console.log("lalalas");
 
         if (this._firstTime)
         {
