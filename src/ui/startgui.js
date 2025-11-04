@@ -61,6 +61,8 @@ export default function startUi(cfg)
             incrementStartup();
             platform.initRouting(() =>
             {
+                incrementStartup();
+                gui.showUiElements();
                 gui.setLayout();
                 incrementStartup();
                 userSettings.init();
@@ -75,8 +77,6 @@ export default function startUi(cfg)
 
                         gui.opSelect().reload();
                         gui.showWelcomeNotifications();
-                        incrementStartup();
-                        gui.showUiElements();
                         gui.setLayout();
                         gui.opSelect().prepare();
                         incrementStartup();

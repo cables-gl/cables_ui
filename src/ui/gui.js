@@ -1786,8 +1786,8 @@ export default class Gui extends Events
 
         this._log.logGui("");
 
-        ele.show(ele.byId("cablescanvas"));
         ele.show(ele.byId("mainContainer"));
+        // ele.show(ele.byId("cablescanvas"));
 
         ele.byId("menubar").classList.remove("hidden");
 
