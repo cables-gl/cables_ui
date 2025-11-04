@@ -435,7 +435,7 @@ export class glTlKeys extends Events
                 lastKeyIdx = idx;
                 lastY = y;
             }
-            lastArray.push(x, y, z);
+            lastArray?.push(x, y, z);
         }
 
         if (this.shouldDrawSpline() && this.#spline)
