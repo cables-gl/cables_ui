@@ -68,6 +68,7 @@ export default function startUi(cfg)
                 {
                     incrementStartup();
                     gui.opSelect().prepare();
+                    gui.setPatchSummary(summary.data);
                     userSettings.init();
                     incrementStartup();
 
@@ -169,7 +170,6 @@ export default function startUi(cfg)
 
                     for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-                    gui.setPatchSummary(summary.data);
                     gui.patchParamPanel.show();
 
                     if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
