@@ -167,6 +167,7 @@ export default function startUi(cfg)
                     CABLES.UI.loadedTime = performance.now();
 
                     gui.corePatch().clearSubPatchCache();
+                    gui.patchView.highlightExamplePatchOps();
 
                     for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
