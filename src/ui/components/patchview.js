@@ -2963,7 +2963,6 @@ export default class PatchView extends Events
     highlightExamplePatchOps()
     {
         const patchSummary = gui.getPatchSummary();
-        console.log("pat", patchSummary);
         if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
         {
             let patchTitle = "";
