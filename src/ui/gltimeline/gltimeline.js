@@ -1999,7 +1999,7 @@ export class GlTimeline extends Events
         }
 
         const bounds = this.getSelectedKeysBoundsTime();
-        console.log("bounds", bounds);
+
         if (bounds.length == 0)
         {
             this.view.scrollTo((bounds.min - this.view.visibleTime / 2) / 2);

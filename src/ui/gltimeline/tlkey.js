@@ -103,7 +103,7 @@ export class TlKey extends Events
             t.setSize(73, 5);
             if (isClip)
             {
-                t.setColorHex("#444444");
+                t.setColorHex("#4477aa");
                 t.setBorder(2);
             }
             if (key.uiAttribs.color)
