@@ -1,6 +1,7 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import { Link, Op, Patch, Port, utils } from "cables";
 import { BoundingBox, Geometry, Shader } from "cables-corelibs";
+import { getShortOpName } from "cables/src/core/utils.js";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -2964,20 +2965,29 @@ export default class PatchView extends Events
         const patchSummary = gui.getPatchSummary();
         if (patchSummary && patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0)
         {
+            let patchTitle = "";
             const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
                 ops[i].setUiAttribs({ "color": null });
 
             for (let j = 0; j < patchSummary.exampleForOps.length; j++)
             {
+                patchTitle += getShortOpName(patchSummary.exampleForOps[j]) + " ";
                 const opz = gui.corePatch().getOpsByObjName(patchSummary.exampleForOps[j]);
                 for (let k = 0; k < opz.length; k++)
                 {
-                    // const opname = opz[k];
                     opz[k].setUiAttribs({ "color": "#5dc0fd" });
                 }
             }
+
+            if (gui.user.isStaff && patchSummary.title != patchTitle)
+            {
+                patchTitle += " Example";
+                this.store.setPatchName(patchTitle);
+            }
+
         }
+        else { console.log("has no patch summary"); }
     }
 
     warnLargestPort()

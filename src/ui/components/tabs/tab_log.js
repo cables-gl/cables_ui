@@ -17,43 +17,52 @@ import { logFilter } from "../../utils/logfilter.js";
  */
 export default class LogTab extends Events
 {
+
+    #id = "loggingHtmlId123";
+    #log = new Logger("LogTab");
+    _logs = [];
+    closed = false;
+    report = [];
+    lastErrorSrc = [];
+    _hasError = false;
+    lastErrorMsg = null;
+    sentAutoReport = false;
+    hasErrorButton = false;
+    #tabs;
+    #tab;
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} tabs
+     */
     constructor(tabs)
     {
         super();
-        this._tabs = tabs;
-        this._log = new Logger("LogTab");
-        this._logs = [];
-        this.closed = false;
-        this.report = [];
-        this.lastErrorSrc = [];
-        this._hasError = false;
-        this.lastErrorMsg = null;
-        this.sentAutoReport = false;
-        this.hasErrorButton = false;
+        this.#tabs = tabs;
 
-        this._tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
-        this._tabs.addTab(this._tab, true);
+        this.#tab = new Tab("Log", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": true });
+        this.#tabs.addTab(this.#tab, true);
 
-        logFilter.on("initiatorsChanged", this._html.bind(this));
+        logFilter.on("initiatorsChanged", this.#html.bind(this));
 
-        this._showlogListener = logFilter.on("logAdded", this._showLog.bind(this));
+        this._showlogListener = logFilter.on("logAdded", this.#showLog.bind(this));
 
-        const b = this._tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
+        const b = this.#tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
-        const alwaysOpenButton = this._tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
+        const alwaysOpenButton = this.#tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
         {
             userSettings.set("openLogTab", !userSettings.get("openLogTab"));
             alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get("openLogTab") || false);
         });
 
-        this._tab.addButton("Clear", () =>
+        this.#tab.addButton("Clear", () =>
         {
-            logFilter.logs.length = 0; this._html();
+            logFilter.logs.length = 0;
+            this.#html();
         });
 
-        this._tab.addButton("Copy to clipboard", () =>
+        this.#tab.addButton("Copy to clipboard", () =>
         {
-            const el = ele.byId("loggingHtmlId123");
+            const el = ele.byId(this.#id);
             let txt = el.innerText;
             txt = txt.replaceAll("] \n", "] ");
             let lines = txt.split("\n");
@@ -62,12 +71,12 @@ export default class LogTab extends Events
             navigator.clipboard.writeText(txt);
         });
 
-        this._tab.addEventListener(
-            "close",
-            () =>
-            {
-                this.close();
-            });
+        this.#tab.addEventListener(Tab.EVENT_CLOSE, () =>
+        {
+            this.close();
+        });
+
+        this.#html();
     }
 
     close()
@@ -79,11 +88,11 @@ export default class LogTab extends Events
         gui.logTab = null;
     }
 
-    _html()
+    #html()
     {
-        const html = "<div id=\"loggingHtmlId123\" class=\"logList\"></div>";
-        this._tab.html(html);
-        this._showLog();
+        const html = "<div id=\"" + this.#id + "\" class=\"logList\"></div>";
+        this.#tab.html(html);
+        this.#showLog();
     }
 
     /**
@@ -92,7 +101,7 @@ export default class LogTab extends Events
      * @param {string} level
      * @param {number} [timediff]
      */
-    _logLine(log, txt, level, timediff)
+    #logLine(log, txt, level, timediff)
     {
         let spacerClass = "";
 
@@ -126,7 +135,7 @@ export default class LogTab extends Events
         return html;
     }
 
-    _showLog()
+    #showLog()
     {
         if (this.closed) return;
         let html = "";
@@ -161,7 +170,7 @@ export default class LogTab extends Events
         if (this._hasError && !this.hasErrorButton)
         {
             this.hasErrorButton = true;
-            this._tab.addButton("Send Error Report", () =>
+            this.#tab.addButton("Send Error Report", () =>
             {
                 const errorReport = gui.patchView.store.createErrorReport(this.lastErrorMsg);
                 gui.patchView.store.sendErrorReport(errorReport, true);
@@ -203,7 +212,7 @@ export default class LogTab extends Events
                             for (let k = 0; k < Math.min(2, errorStack.length); k++)
                             {
                                 if (k === 0 && i == logFilter.logs.length - 1)
-                                    this._logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
+                                    this.#logErrorSrcCodeLine(l, errorStack[k].fileName, errorStack[k].lineNumber - 1);
 
                                 errorStack[k].fileName = errorStack[k].fileName || null;
 
@@ -224,7 +233,7 @@ export default class LogTab extends Events
                             }
                             stackHtml += "</table>";
 
-                            html += this._logLine(l, stackHtml, l.level, timediff);
+                            html += this.#logLine(l, stackHtml, l.level, timediff);
 
                             let txt = "[" + arg.constructor.name + "] ";
                             let msg = "";
@@ -238,12 +247,12 @@ export default class LogTab extends Events
                             if (msg) this.lastErrorMsg += msg;
                             txt += " " + msg;
 
-                            html += this._logLine(l, txt, l.level);
+                            html += this.#logLine(l, txt, l.level);
                         }
                         else
                         {
                             currentLine += "??? " + arg.constructor.name;
-                            this._log.log("what is this", arg);
+                            this.#log.log("what is this", arg);
                         }
                     }
                     else
@@ -309,38 +318,38 @@ export default class LogTab extends Events
                         }
                     }
                 }
-                if (currentLine) html += this._logLine(l, currentLine, l.level, timediff);
+                if (currentLine) html += this.#logLine(l, currentLine, l.level, timediff);
             }
         }
         catch (e)
         {
-            this._log.log("error in error", e);
+            this.#log.log("error in error", e);
         }
 
-        const el = ele.byId("loggingHtmlId123");
+        const el = ele.byId(this.#id);
         if (el)el.innerHTML = html;
     }
 
     /**
-     * @param {any} l
+     * @param {any} _l
      * @param {string} url
      * @param {number} line
      */
-    _logErrorSrcCodeLine(l, url, line)
+    #logErrorSrcCodeLine(_l, url, line)
     {
         if (!url) return;
         if (url.includes("[native code]")) return;
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 
-        const logger = this._log;
+        const logger = this.#log;
         utils.ajax(
             url,
             (err, _data, xhr) =>
             {
                 if (err)
                 {
-                    this._log.error("error fetching logline2", url, err, _data, xhr);
+                    this.#log.error("error fetching logline2", url, err, _data, xhr);
                     return;
                 }
 
@@ -379,7 +388,7 @@ export default class LogTab extends Events
                 }
                 catch (e)
                 {
-                    this._log.log("could not parse lines.", e, url);
+                    this.#log.log("could not parse lines.", e, url);
                 }
             },
             "GET",

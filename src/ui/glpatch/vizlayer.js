@@ -1,7 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 
 /**
@@ -26,7 +26,7 @@ export default class VizLayer extends Events
         this._glPatch = glPatch;
         this.paused = userSettings.get("vizlayerpaused") || false;
 
-        gui.on("uiloaded", () =>
+        gui.on(Gui.EVENT_UILOADED, () =>
         {
             this._updateSize();
         });
@@ -307,6 +307,12 @@ export default class VizLayer extends Events
         };
     }
 
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {VizLayerOptions} layer
+     * @param {string[]} lines
+     * @param {VizTextOptions} options
+     */
     renderText(ctx, layer, lines, options)
     {
         let indent = "";
@@ -316,7 +322,7 @@ export default class VizLayer extends Events
         let padding = fs * 0.25;
         const lineHeight = fs + padding;
         let numLines = Math.floor(layer.height / layer.scale / lineHeight);
-        let offset = Math.floor(options.scroll * lines.length);
+        let offset = Math.floor((options.scroll || 0) * lines.length);
 
         offset = Math.max(offset, 0);
         offset = Math.min(offset, lines.length - numLines);

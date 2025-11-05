@@ -782,6 +782,46 @@ export default class PatchSaveServer extends Events
         }, 100);
     }
 
+    /**
+     * @param {string} v
+     * @param {function} [cb]
+     */
+    setPatchName(v, cb)
+    {
+
+        const currentProject = gui.project();
+        platform.talkerAPI.send(
+            "setProjectName",
+            {
+                "id": currentProject._id,
+                "name": v
+            },
+            (error, re) =>
+            {
+                const newName = re.data ? re.data.name : "";
+                if (error || !newName)
+                {
+                    const options = {
+                        "title": "Failed to set project name!",
+                        "html": "Error: " + re.msg,
+                        "warning": true,
+                        "showOkButton": true
+                    };
+                    new ModalDialog(options);
+                }
+                else
+                {
+                    platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                    {
+                        gui.setProjectName(newName);
+                        gui.patchParamPanel.show(true);
+                    });
+                    if (cb) cb(newName);
+                }
+            });
+
+    }
+
     showModalTitleDialog(cb = null)
     {
         const currentProject = gui.project();
@@ -792,34 +832,7 @@ export default class PatchSaveServer extends Events
             "promptValue": currentProject.name,
             "promptOk": (v) =>
             {
-                platform.talkerAPI.send(
-                    "setProjectName",
-                    {
-                        "id": currentProject._id,
-                        "name": v
-                    },
-                    (error, re) =>
-                    {
-                        const newName = re.data ? re.data.name : "";
-                        if (error || !newName)
-                        {
-                            const options = {
-                                "title": "Failed to set project name!",
-                                "html": "Error: " + re.msg,
-                                "warning": true,
-                                "showOkButton": true
-                            };
-                            new ModalDialog(options);
-                        }
-                        else
-                        {
-                            platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
-                            {
-                                gui.setProjectName(newName);
-                            });
-                            if (cb) cb(newName);
-                        }
-                    });
+                this.setPatchName(v, cb);
             }
         });
     }

@@ -55,7 +55,7 @@ export default class PatchPanel extends Events
 
         if (!force && ele.byClass("patchParamPanel")) return;
 
-        let html = "<div class=\"patchParamPanel  bookmarkpanel\">";
+        let html = "<div class=\"patchParamPanel bookmarkpanel\">";
 
         const project = gui.project();
         if (project)
@@ -77,6 +77,7 @@ export default class PatchPanel extends Events
                     "patchHost": host
                 });
         }
+        else console.log("no gui project");
 
         html += "<div id=\"_cbl_outlinetree\" class=\"panel\"></div>";
 

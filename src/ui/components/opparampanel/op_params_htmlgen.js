@@ -213,11 +213,8 @@ class PortHtmlGenerator
 
                 for (let j = 0; j < ports.length; j++)
                 {
-                    console.log("text", ports[j].uiAttribs.group);
                     if (ports[j].uiAttribs.group == startGroup)
-                    {
                         portGroupNames.push(ports[j].name);
-                    }
                 }
             }
 

@@ -71,6 +71,7 @@ export { gui };
 export default class Gui extends Events
 {
 
+    static EVENT_UILOADED = "uiloaded";
     static EVENT_RESIZE = "resize";
     static EVENT_RESIZE_CANVAS = "resizecanvas";
     static EVENT_MOUSEOVERPORT = "mouseOverPort";
@@ -174,7 +175,6 @@ export default class Gui extends Events
                 this.corePatch().logStartup("patch loaded 2");
 
                 this.bookmarks.updateDynamicCommands();
-                this.patchView.highlightExamplePatchOps();
                 this.savedState.setSaved("patch load end", 0);
 
                 this.corePatch().logStartup("Patch loaded");
@@ -1787,8 +1787,8 @@ export default class Gui extends Events
 
         this._log.logGui("");
 
-        ele.show(ele.byId("cablescanvas"));
         ele.show(ele.byId("mainContainer"));
+        ele.show(ele.byId("cablescanvas"));
 
         ele.byId("menubar").classList.remove("hidden");
 
