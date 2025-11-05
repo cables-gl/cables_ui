@@ -27,10 +27,9 @@ export class glTlKeys extends Events
     static COLOR_INIT = [0.9, 0.0, 0.9, 1];
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_NORMAL = [1, 1, 1, 1];
-    // static COLOR_HIGHLIGHT = [0.0, 0.8, 0.8, 1];
-    static COLOR_SPLINE = [0.4, 0.4, 0.4, 1];
-    static COLOR_SPLINE_HIGHLIGHTED = [0.8, 0.8, 0.8, 1];
-    static COLOR_SPLINE_HASSELECTEDKEYS = [0.8, 0.8, 0.4, 1];
+
+    static COLOR_SPLINE = [0.8, 0.8, 0.8, 1];
+    static COLOR_SPLINE_SELECTED = [0.9, 0.9, 0.7, 1];
     static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 0.4];
     static COLOR_SPLINE_OUTSIDE_SELECTED = [0.3, 0.3, 0.1, 0.4];
 
@@ -494,11 +493,12 @@ export class glTlKeys extends Events
         if (isSelected)c = glTlKeys.COLOR_SELECTED;
 
         const col = structuredClone(c);
-        col[3] = 0.3;
+        col[3] = 0.6;
 
-        if (hasSelectedKeys)col[3] += 0.25;
-        if (hovering)col[3] += 0.25;
-        if (!readonly)col[3] += 0.25;
+        if (hovering)col[3] += 0.3;
+        if (isSelected) col[3] = 1;
+
+        if (readonly)col[3] *= 0.4;
 
         return col;
 
@@ -521,15 +521,15 @@ export class glTlKeys extends Events
         }
         else
         {
-            if (hasSelectedKeys) c = glTlKeys.COLOR_SPLINE_HASSELECTEDKEYS;
+            if (hasSelectedKeys) c = glTlKeys.COLOR_SPLINE_SELECTED;
             else c = glTlKeys.COLOR_SPLINE;
-
         }
 
-        const col = structuredClone(c);
-        let o = 0.3;
-        if (!readonly)o += 0.3;
-        if (hovering)o += 0.3;
+        let col = structuredClone(c);
+        let o = 0.1;
+        if (hovering)o = 1;
+        // if (hovering)col = [1, 0, 0, 0.5];// col[3] += 0.3;
+        if (readonly)o *= 0.4;
 
         col[3] = o;
         return col;
@@ -540,9 +540,10 @@ export class glTlKeys extends Events
     {
         const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
 
-        const hovering = this.animLine.getTitle(this.#idx)?.isHovering;
+        const hovering = this.animLine.isHovering();// getTitle(this.#idx)?.isHovering;
         const selected = this.#hasSelectedKeys;
-        const readonly = this.anim.uiAttribs.readOnly;
+        const readonly = !!this.anim.uiAttribs.readOnly;
+        // console.log("ho", hovering, selected, readonly);
 
         if (this.#spline)
         {
@@ -576,6 +577,7 @@ export class glTlKeys extends Events
             if (k.cp2r) k.cp2r.setColorArray(colBez);
             if (k.cp1s) k.cp1s.setColorArray(colBez);
             if (k.cp2s) k.cp2s.setColorArray(colBez);
+
             let shape = GlRect.SHAPE_FILLED_CIRCLE;
             if (animKey.uiAttribs.bezFree) shape = GlRect.SHAPE_CIRCLE;
 
@@ -597,6 +599,8 @@ export class glTlKeys extends Events
         if (this.#glTl.isSelecting()) this.testSelected();
         if (this.#keys.length != this.#anim.keys.length) this.init();
         let y = this.animLine.getKeyYPos();
+
+        const hovering = this.animLine.isHovering();// getTitle(this.#idx)?.isHovering;
 
         const perf = gui.uiProfiler.start("[gltl] setkeypositions");
         for (let i = 0; i < this.#keys.length; i++)
@@ -626,8 +630,9 @@ export class glTlKeys extends Events
             if (rx != rx || ry != ry)console.log("garlic nan", animKey.time, this.#glTl.view.offset, rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
             let z = -0.6;
-            if (this.#anim.tlActive)z = -0.9;
-            if (this.#port.op.isCurrentUiOp())z = -0.94;
+            // if (this.#anim.tlActive)z = -0.9;
+            // if (this.#port.op.isCurrentUiOp())z = -0.94;
+            if (hovering || this.#hasSelectedKeys)z -= 0.1;
 
             kr.setPosition(rx, ry, z);
             this.setKeyShapeSize(kr, k);

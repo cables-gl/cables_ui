@@ -113,6 +113,7 @@ export class glTlAnimLine extends Events
                 this.#ports[0].setUiAttribs({ "hover": true });
 
             this.updateColor();
+            this.updateColorKeys();
         });
 
         this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
@@ -121,6 +122,7 @@ export class glTlAnimLine extends Events
                 this.#ports[0].setUiAttribs({ "hover": false });
 
             this.updateColor();
+            this.updateColorKeys();
         });
 
         this.#disposeRects.push(this.#rectBg);
@@ -220,6 +222,7 @@ export class glTlAnimLine extends Events
 
     isHovering()
     {
+        if (this.isGraphLayout()) return false;
         let anyhovering = false;
         for (let i = 0; i < this.#ports.length; i++)
             anyhovering = anyhovering || this.#ports[i].uiAttribs.hover;
@@ -272,7 +275,7 @@ export class glTlAnimLine extends Events
             }
             this.updateTitles();
         });
-        title.on("hoverchange", this.updateColor.bind(this));
+        // title.on("hoverchange", this.updateColor.bind(this));
 
         this.#titles.push(title);
         this.setTitlePos();
@@ -474,24 +477,32 @@ export class glTlAnimLine extends Events
         this.updateGlPos();
     }
 
+    updateColorKeys()
+    {
+
+        for (let i = 0; i < this.#keys.length; i++)
+        {
+            this.#keys[i].updateColors();
+        }
+    }
+
     updateColor()
     {
         if (this.checkDisposed()) return;
-        if (this.isHovering() && !this.isGraphLayout())
-            this.#rectBg.setColor(0.15, 0.15, 0.15, 1);
-        else
-            this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
+
+        if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColor(0.15, 0.15, 0.15, 1);
+        else this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            // if (this.#titles[i].getAnim().port.uiAttribs.hover)
-            //     this.#titles[i].hover();
-            // else
-            this.#titles[i].updateColor();
 
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+
+            this.#titles[i].updateColor();
         }
+
+        this.updateColorKeys();
 
     }
 

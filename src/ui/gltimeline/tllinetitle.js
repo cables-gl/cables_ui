@@ -8,6 +8,7 @@ import opNames from "../opnameutils.js";
 import { UiOp } from "../core_extend_op.js";
 import { CssClassNames, DomEvents } from "../theme.js";
 import { GuiText } from "../text.js";
+import { gui } from "../gui.js";
 
 /**
  * @typedef {object} TlTitleOptions
@@ -458,15 +459,15 @@ export class TlTitle extends Events
     hover()
     {
         this.isHovering = true;
-        this.#port?.emitEvent("animLineUpdate");
         this.#port?.setUiAttribs({ "hover": true });
+        this.#port?.emitEvent("animLineUpdate");
     }
 
     unhover()
     {
         this.isHovering = false;
-        this.#port?.emitEvent("animLineUpdate");
         this.#port?.setUiAttribs({ "hover": false });
+        this.#port?.emitEvent("animLineUpdate");
     }
 
     /**
