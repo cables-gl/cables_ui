@@ -423,8 +423,8 @@ export class TlTitle extends Events
      */
     setPos(x, y)
     {
-        this.#el.style.left = (x) + "px";
-        this.#el.style.top = (y) + "px";
+        this.#el.style.left = (x * window.devicePixelRatio) + "px";
+        this.#el.style.top = (y * window.devicePixelRatio) + "px";
     }
 
     dispose()

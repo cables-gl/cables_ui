@@ -281,10 +281,6 @@ export default class GlViewBox
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        gui.on("themeChanged", () =>
-        {
-            // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
-        });
     }
 
     /**

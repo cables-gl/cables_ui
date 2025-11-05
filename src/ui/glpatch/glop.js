@@ -1893,7 +1893,7 @@ export default class GlOp extends Events
         this.updateSize();
         this._updateIndicators();
 
-        if (this._titleExt) this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
+        if (this._titleExt) this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
         if (this._glRectSelected) this._glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);

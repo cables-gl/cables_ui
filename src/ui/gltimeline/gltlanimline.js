@@ -103,27 +103,34 @@ export class glTlAnimLine extends Events
 
         this.#rectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true, "name": "keysBg" });
         this.#rectBg.setSize(this.width, this.height - 2);
-        this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
+        this.#rectBg.setColorArray([1, 1, 1, 1]);
 
-        this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
-        {
-            gui.showInfo(GuiText.tlhover_animline);
+        this.#listeners.push(
+            gui.on(Gui.EVENT_THEMECHANGED, () =>
+            {
+                this.updateTheme();
+            }),
 
-            if (!this.isGraphLayout() && this.#ports.length > 0)
-                this.#ports[0].setUiAttribs({ "hover": true });
+            this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
+            {
+                gui.showInfo(GuiText.tlhover_animline);
 
-            this.updateColor();
-            this.updateColorKeys();
-        });
+                if (!this.isGraphLayout() && this.#ports.length > 0)
+                    this.#ports[0].setUiAttribs({ "hover": true });
 
-        this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
-        {
-            if (!this.isGraphLayout() && this.#ports.length > 0)
-                this.#ports[0].setUiAttribs({ "hover": false });
+                this.updateColor();
+                this.updateColorKeys();
+            }),
 
-            this.updateColor();
-            this.updateColorKeys();
-        });
+            this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+            {
+                if (!this.isGraphLayout() && this.#ports.length > 0)
+                    this.#ports[0].setUiAttribs({ "hover": false });
+
+                this.updateColor();
+                this.updateColorKeys();
+            })
+        );
 
         this.#disposeRects.push(this.#rectBg);
         for (let i = 0; i < ports.length; i++)
@@ -199,7 +206,14 @@ export class glTlAnimLine extends Events
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
 
         if (!this.isGraphLayout() && this.getOp()?.uiAttribs.tlCollapsed) this.collapseFolder();
+
+        this.updateTheme();
         this.fitValues();
+        this.updateColor();
+    }
+
+    updateTheme()
+    {
         this.updateColor();
     }
 
@@ -436,8 +450,8 @@ export class glTlAnimLine extends Events
     {
         if (!this.isGraphLayout())
         {
-            if (this.#options.title)
-                console.log("posyyyyyyyy", this.isHidden, this.#hidden, this.#options.title, this.#rectBg.y, this.#rectBg.h);
+            // if (this.#options.title)
+            //     console.log("posyyyyyyyy", this.isHidden, this.#hidden, this.#options.title, this.#rectBg.y, this.#rectBg.h);
 
             if (this.#titles[0])
             {
@@ -449,7 +463,9 @@ export class glTlAnimLine extends Events
                 }
                 else
                 {
-                    this.setPosition(this.#rectBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+                    this.setPosition(
+                        this.#rectBg.x,
+                        ((r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosyCSS()));
                     this.#rectBg.setSize(this.width, r.height - 1);
                 }
             }
@@ -490,12 +506,11 @@ export class glTlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
 
-        if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColor(0.15, 0.15, 0.15, 1);
-        else this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
+        if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColorArray(gui.theme.colors_timeline.background_hover);
+        else this.#rectBg.setColorArray(gui.theme.colors_timeline.background);
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
 

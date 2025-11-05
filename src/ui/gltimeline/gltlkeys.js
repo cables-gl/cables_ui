@@ -6,7 +6,7 @@ import { map } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import undo from "../utils/undo.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlAnimLine } from "./gltlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
@@ -24,9 +24,6 @@ import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
  */
 export class glTlKeys extends Events
 {
-    static COLOR_INIT = [0.9, 0.0, 0.9, 1];
-    static COLOR_SELECTED = [1, 1, 0.0, 1];
-    static COLOR_NORMAL = [1, 1, 1, 1];
 
     static COLOR_CLIP_AREA = [0.0, 0.4, 0.5, 1];
 
@@ -123,6 +120,11 @@ export class glTlKeys extends Events
         this.animLine = animLine;
 
         this.#listeners.push(
+
+            gui.on(Gui.EVENT_THEMECHANGED, () =>
+            {
+                this.updateColors();
+            }),
 
             this.#glTl.splines.on(GlSplineDrawer.EVENT_CLEARED, () =>
             {
@@ -492,8 +494,8 @@ export class glTlKeys extends Events
      */
     getKeyColor(isSelected, hasSelectedKeys, hovering, readonly)
     {
-        let c = glTlKeys.COLOR_NORMAL;
-        if (isSelected)c = glTlKeys.COLOR_SELECTED;
+        let c = gui.theme.colors_timeline.key || [1, 1, 1, 1];
+        if (isSelected)c = gui.theme.colors_timeline.key_selected || [1, 1, 1, 1];
 
         const col = structuredClone(c);
         col[3] = 0.6;
@@ -546,7 +548,6 @@ export class glTlKeys extends Events
         const hovering = this.animLine.isHovering();// getTitle(this.#idx)?.isHovering;
         const selected = this.#hasSelectedKeys;
         const readonly = !!this.anim.uiAttribs.readOnly;
-        // console.log("ho", hovering, selected, readonly);
 
         if (this.#spline)
         {
@@ -774,7 +775,6 @@ export class glTlKeys extends Events
             const keyRect = tlKey.rect;
 
             this.setKeyShapeSize(keyRect, tlKey);
-            keyRect.setColorArray(glTlKeys.COLOR_INIT);
             keyRect.setParent(this.#parentRect);
             keyRect.setPosition(Math.random() * 399, Math.random() * 399);
             keyRect.data.key = key;

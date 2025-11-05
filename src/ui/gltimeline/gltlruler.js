@@ -3,7 +3,7 @@ import { map } from "cables/src/core/utils.js";
 import { Patch } from "cables";
 import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { GlTlView } from "./gltlview.js";
 import { GuiText } from "../text.js";
@@ -31,8 +31,13 @@ export class glTlRuler extends Events
     /** @type {GlRect} */
     #glRectBg;
 
+    /** @type {GlRect[]} */
     markf = [];
+
+    /** @type {GlRect[]} */
     marks = [];
+
+    /** @type {GlText[]} */
     titles = [];
 
     /**
@@ -58,7 +63,7 @@ export class glTlRuler extends Events
         for (let i = 0; i < 300; i++)
         {
             const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker frames", "draggable": false, "interactive": false });
-            mr.setColor(0.0, 0.0, 0.0, 1);
+            mr.setColorArray(gui.theme.colors_timeline.ruler_frames);
             mr.setPosition(-8888, 0);
             mr.setParent(this.#glRectBg);
             this.markf.push(mr);
@@ -68,6 +73,7 @@ export class glTlRuler extends Events
         {
             const mr = this.#glTl.rectsNoScroll.createRect({ "name": "ruler marker seconds", "draggable": false, "interactive": false });
             mr.setParent(this.#glRectBg);
+            mr.setColorArray(gui.theme.colors_timeline.ruler_tick);
             mr.setPosition(-8888, 0);
             this.marks.push(mr);
         }
@@ -90,7 +96,29 @@ export class glTlRuler extends Events
             this.update();
         });
 
+        gui.on(Gui.EVENT_THEMECHANGED, () =>
+        {
+            this.updateTheme();
+        });
+
+        this.updateTheme();
         this.update();
+    }
+
+    updateTheme()
+    {
+        this.#glRectBg.setColorArray(gui.theme.colors_timeline.ruler_background);
+
+        for (let i = 0; i < this.markf.length; i++)
+        {
+            this.markf[i].setColorArray(gui.theme.colors_timeline.ruler_frames);
+        }
+
+        for (let i = 0; i < this.marks.length; i++)
+        {
+            this.marks[i].setColorArray(gui.theme.colors_timeline.ruler_tick);
+        }
+
     }
 
     /**

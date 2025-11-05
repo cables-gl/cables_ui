@@ -2,7 +2,7 @@ import { Logger } from "cables-shared-client";
 import gluiconfig from "./gluiconfig.js";
 import { GuiText } from "../text.js";
 import GlPort from "./glport.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -73,7 +73,7 @@ export default class GlCable
             this._unHover();
         });
 
-        gui.on("themeChanged", () =>
+        gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
             this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
             this._buttonSize = gui.theme.patch.cableButtonSize || 17;
