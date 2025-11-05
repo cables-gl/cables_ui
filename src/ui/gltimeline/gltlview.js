@@ -163,7 +163,7 @@ export class GlTlView
 
     get pixelPerSecond()
     {
-        return (this.#tl.width) / this.#tl.duration;
+        return (this.#tl.width / window.devicePixelRatio) / this.#tl.duration;
     }
 
     get visibleTime()
@@ -185,10 +185,11 @@ export class GlTlView
 
     /**
      * @param {number} t
+     * @param {number} [zoom]
      */
     timeToPixel(t, zoom)
     {
-        const r = t * (this.#tl.width / (zoom || this.#zoom));
+        const r = t * (this.#tl.width / window.devicePixelRatio / (zoom || this.#zoom));
         return r;
     }
 
@@ -202,6 +203,7 @@ export class GlTlView
 
     /**
      * @param {number} x
+     * @param {number} [zoom]
      */
     pixelToTime(x, zoom)
     {
@@ -210,6 +212,7 @@ export class GlTlView
 
     /**
      * @param {number} x
+     * @param {number} [zoom]
      */
     pixelScreenToTime(x, zoom)
     {
@@ -244,6 +247,7 @@ export class GlTlView
     /**
      * @param {number} delta
      * @param {number} dur
+     * @param {WheelEvent} e
      */
     setZoomOffsetWheel(delta, e, dur = 0.3)
     {
@@ -269,7 +273,7 @@ export class GlTlView
      */
     scaleValues(delta)
     {
-        delta = 1 + delta;
+        delta = delta;
         const nmin = this.minVal *= delta;
         const nmax = this.maxVal *= delta;
         this.setMinVal(Math.min(nmin, nmax));
@@ -306,7 +310,6 @@ export class GlTlView
      */
     scrollToY(scrolly, duration = 0.2)
     {
-
         const t = this.#timer.getTime();
         this.#animScrollY.clear(t);
         this.#animScrollY.setValue(t + duration, scrolly);
@@ -358,7 +361,6 @@ export class GlTlView
             "visibleTime": this.visibleTime
         };
         return o;
-
     }
 
     saveState()

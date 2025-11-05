@@ -641,7 +641,7 @@ export class glTlAnimLine extends Events
      */
     pixelToValue(posy)
     {
-        return CABLES.map(posy, 0, this.height, this.#view.minVal, this.#view.maxVal);
+        return CABLES.map(posy, 0, this.height / window.devicePixelRatio, this.#view.minVal, this.#view.maxVal);
     }
 
     /**
@@ -652,7 +652,7 @@ export class glTlAnimLine extends Events
     {
         if (this.#keys.length == 0) return 1;
         let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.height - this.#keys[0].getKeyHeight() / 2, 0, false);
-        return this.height - y - this.#glTl.view.offsetY;
+        return (this.height - y - this.#glTl.view.offsetY) / window.devicePixelRatio;
     }
 
     /**

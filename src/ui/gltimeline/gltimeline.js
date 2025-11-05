@@ -1113,6 +1113,7 @@ export class GlTimeline extends Events
 
         }
         console.log("text", sers);
+
         return sers;
     }
 
@@ -1489,8 +1490,8 @@ export class GlTimeline extends Events
         }
         else if (event.shiftKey && this.isGraphLayout)
         {
-            let v = 0.5;
-            if (event.deltaY < 0)v *= -1;
+            let v = 1.3;
+            if (event.deltaX < 0)v = 0.7;
             this.view.scaleValues(v);
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
@@ -1691,6 +1692,9 @@ export class GlTimeline extends Events
 
         this.ruler.setPosition(0, posy);
         posy += this.ruler.height;
+
+        posy /= window.devicePixelRatio;
+
         return posy;
     }
 
@@ -2024,8 +2028,8 @@ export class GlTimeline extends Events
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         if (range > 0)
         {
-            this.view.setMinVal(boundsy.min - (range * 0.025) * 2);
-            this.view.setMaxVal(boundsy.max + (range * 0.025) * 2);
+            this.view.setMinVal(boundsy.min - (range * 0.1));
+            this.view.setMaxVal(boundsy.max + (range * 0.1));
             this.view.scrollToY(0);
         }
 
