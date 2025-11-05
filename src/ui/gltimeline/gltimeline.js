@@ -1093,6 +1093,29 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims[i].sortKeys();
     }
 
+    serializeSelecdetAnims()
+    {
+        const anims = {};
+        const sers = [];
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            anims[this.#selectedKeys[i].anim.id] = this.#selectedKeys[i].anim;
+        }
+        for (const i in anims)
+        {
+
+            /** @type {Anim} */
+            const an = anims[i];
+            const ser = an.getSerialized();
+            ser.anim = an;
+            sers.push(ser);
+
+        }
+        console.log("text", sers);
+        return sers;
+    }
+
     /**
      * @param {number} deltaTime
      * @param {number} deltaValue
@@ -1102,15 +1125,19 @@ export class GlTimeline extends Events
     {
         if (deltaTime == 0 && deltaValue == 0) return;
 
-        const oldSe = this.#selectedKeys;
+        const oldSel = this.serializeSelecdetAnims();
 
         undo.add({
             "title": "timeline move keys",
             "undo": () =>
             {
-                for (let i = 0; i < oldSe.length; i++)
-                    if (this.#selectedKeys[i])
-                        oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+                for (let i = 0; i < oldSel.length; i++)
+                {
+                    oldSel[i].anim.deserialize(oldSel[i], true);
+                    // this.getani
+                }
+                //     if (this.#selectedKeys[i])
+                //         oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
             },
             redo() {}
         });

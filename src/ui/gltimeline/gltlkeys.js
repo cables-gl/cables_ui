@@ -410,6 +410,7 @@ export class glTlKeys extends Events
 
                 const delta = (lastY - y);
 
+                if (!this.anim || !this.anim.keys[idx]) continue;
                 if (this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE || this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)
                     unit = 1;
                 else
@@ -417,7 +418,7 @@ export class glTlKeys extends Events
 
                 if (idx != lastKeyIdx || pointArray.length < 2 || pointArray[pointArray.length - 2] != y)
                 {
-                    if (idx != lastKeyIdx || this.anim.keys[idx].getEasing() == Anim.EASING_ABSOLUTE)
+                    if (idx != lastKeyIdx || this.anim.keys[idx]?.getEasing() == Anim.EASING_ABSOLUTE)
                         pointArray.push(lastX, y, z);
 
                     if (this.anim.keys[idx].getEasing() == Anim.EASING_LINEAR)

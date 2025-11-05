@@ -315,8 +315,10 @@ export class TlKey extends Events
     dispose()
     {
         this.removeBezCp();
+        if (this.rect) this.rect.visible = false;
         if (this.rect) this.rect = this.rect.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
+        this.tlkeys.updateSoon();
     }
 }
