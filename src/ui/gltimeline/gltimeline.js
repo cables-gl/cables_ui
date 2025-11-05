@@ -460,7 +460,7 @@ export class GlTimeline extends Events
 
             const selops = gui.patchView.getSelectedOps();
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
-                this.#tlAnims[0].activateSelectedOps(selops);
+                this.#tlAnims[0]?.activateSelectedOps(selops);
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
@@ -480,7 +480,7 @@ export class GlTimeline extends Events
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
                 const ops = gui.patchView.getSelectedOps();
-                this.#tlAnims[0].activateSelectedOps(ops);
+                this.#tlAnims[0]?.activateSelectedOps(ops);
             }
 
             let selOpsStr = "";
