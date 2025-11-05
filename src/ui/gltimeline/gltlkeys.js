@@ -28,6 +28,8 @@ export class glTlKeys extends Events
     static COLOR_SELECTED = [1, 1, 0.0, 1];
     static COLOR_NORMAL = [1, 1, 1, 1];
 
+    static COLOR_CLIP_AREA = [0.0, 0.4, 0.5, 1];
+
     static COLOR_SPLINE = [0.8, 0.8, 0.8, 1];
     static COLOR_SPLINE_SELECTED = [0.9, 0.9, 0.7, 1];
     static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 0.4];
@@ -678,7 +680,7 @@ export class glTlKeys extends Events
                 let w = (kr2 || kr).x - kr.x;
                 if (i == this.#keys.length - 1)w = 9999;
 
-                let h = this.animLine.height;// -(this.getKeyHeight2()) + 2;
+                let h = this.animLine.height - 3;// -(this.getKeyHeight2()) + 2;
                 let y = this.animLine.posY();// -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
 
                 if (this.isLayoutGraph())

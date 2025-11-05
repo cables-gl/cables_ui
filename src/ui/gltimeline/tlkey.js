@@ -100,10 +100,10 @@ export class TlKey extends Events
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             // t.setParent(keyRect);
             t.setPosition(1, 0, -0.8);
-            t.setSize(73, 5);
+            // t.setSize(73, 5);
             if (isClip)
             {
-                t.setColorHex("#111122");
+                t.setColorArray(glTlKeys.COLOR_CLIP_AREA);
                 t.setBorder(2);
             }
             if (key.uiAttribs.color)
@@ -115,10 +115,8 @@ export class TlKey extends Events
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
-        if (!key.uiAttribs.text && this.text)
-        {
-            this.text = this.text.dispose();
-        }
+        if (!key.uiAttribs.text && this.text) this.text = this.text.dispose();
+
         if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)
