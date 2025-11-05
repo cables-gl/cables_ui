@@ -523,7 +523,7 @@ export class glTlAnimLine extends Events
         let h = 0;
         if (this.isGraphLayout())
         {
-            h = this.#glTl.height;
+            h = this.#glTl.height - this.#glTl.getFirstLinePosy();
         }
         else
         {
@@ -828,9 +828,8 @@ export class glTlAnimLine extends Events
     expandFolder()
     {
         for (let i = 0; i < this.childLines.length; i++)
-        {
             this.childLines[i].show();
-        }
+
         this.collapsed = false;
         this.#titles[0].updateIcons();
         this.updateTitles();
@@ -845,9 +844,8 @@ export class glTlAnimLine extends Events
     {
         let count = 0;
         for (let i = 0; i < this.#keys.length; i++)
-        {
             count += this.#keys[i].getNumSplinePoints();
-        }
+
         return count;
     }
 }

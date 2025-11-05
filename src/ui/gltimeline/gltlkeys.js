@@ -544,8 +544,11 @@ export class glTlKeys extends Events
 
             if (!this.drawKeys())
             {
-                kr.setPosition(0, 0, 0);
-                kr.visible = false;
+                if (kr.visible)
+                {
+                    kr.setPosition(0, 0, 0);
+                    kr.visible = false;
+                }
                 continue;
             }
 
@@ -568,13 +571,13 @@ export class glTlKeys extends Events
 
             if (k.text)
             {
-                const t = k.text;
-                if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
-                else
-                {
-                    if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);
-                    else t.setPosition(20, -10, 0);
-                }
+                // const t = k.text;
+                // if (this.#glTl.isGraphLayout()) t.setPosition(20, 10, 0);
+                // else
+                // {
+                //     if (this.showKeysAsFrames()) t.setPosition(20, 0, 0);
+                //     else t.setPosition(20, -10, 0);
+                // }
             }
 
             if (k.cp1r && k.cp1r.visible && animKey.bezCp1 && animKey.bezCp1)
@@ -918,9 +921,8 @@ export class glTlKeys extends Events
 
     getNumSplinePoints()
     {
-        return;
-        this.#spline?.getNumPoints() +
-        this.#splineAfter?.getNumPoints() +
-        this.#splineBefore?.getNumPoints();
+        return this.#spline?.getNumPoints() +
+            this.#splineAfter?.getNumPoints() +
+            this.#splineBefore?.getNumPoints();
     }
 }

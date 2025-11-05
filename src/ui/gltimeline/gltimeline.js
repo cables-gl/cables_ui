@@ -1993,8 +1993,8 @@ export class GlTimeline extends Events
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         if (range > 0)
         {
-            this.view.setMinVal(boundsy.min - (range * 0.1) * 2);
-            this.view.setMaxVal(boundsy.max + (range * 0.1) * 2);
+            this.view.setMinVal(boundsy.min - (range * 0.5) * 2);
+            this.view.setMaxVal(boundsy.max + (range * 0.5) * 2);
             this.view.scrollToY(0);
         }
 

@@ -408,8 +408,9 @@ export default class GlRect extends Events
 
         this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
-        for (let i = 0; i < this.childs.length; i++)
-            this.childs[i].updateParentPosition();
+        if (changed)
+            for (let i = 0; i < this.childs.length; i++)
+                this.childs[i].updateParentPosition();
 
         if (changed) this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }
