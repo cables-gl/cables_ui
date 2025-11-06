@@ -24,6 +24,7 @@ import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
  */
 export class glTlKeys extends Events
 {
+    static ZPOS_BEZIER = -0.6;
 
     static COLOR_CLIP_AREA = [0.0, 0.4, 0.5, 1];
 
@@ -90,8 +91,7 @@ export class glTlKeys extends Events
     #listeners = [];
     #hasSelectedKeys = false;
     #disposedWarning = 0;
-    #bezCpZ = 0.3;
-    #bezCpSize = 1;
+    // #bezCpSize = 1;
     #idx = -1;
 
     /**
@@ -657,13 +657,13 @@ export class glTlKeys extends Events
                 let ks = kr.w / 2;
                 let s = k.cp1r.w / 2;
                 const pos = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp1[0]), this.animLine.valueToPixel(animKey.value + animKey.bezCp1[1])];
-                k.cp1s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos[0], pos[1], this.#bezCpZ]);
-                k.cp1r.setPosition(pos[0] - s, pos[1] - s, this.#bezCpZ);
+                k.cp1s.setPoints([rx + ks, ry + ks, glTlKeys.ZPOS_BEZIER, pos[0], pos[1], glTlKeys.ZPOS_BEZIER]);
+                k.cp1r.setPosition(pos[0] - s, pos[1] - s, glTlKeys.ZPOS_BEZIER);
 
                 s = k.cp2r.w / 2;
                 const pos2 = [rx + ks + this.#glTl.view.timeToPixel(animKey.bezCp2[0]), this.animLine.valueToPixel(animKey.value + animKey.bezCp2[1])];
-                k.cp2s.setPoints([rx + ks, ry + ks, this.#bezCpZ, pos2[0], pos2[1], this.#bezCpZ]);
-                k.cp2r.setPosition(pos2[0] - s, pos2[1] - s, this.#bezCpZ);
+                k.cp2s.setPoints([rx + ks, ry + ks, glTlKeys.ZPOS_BEZIER, pos2[0], pos2[1], glTlKeys.ZPOS_BEZIER]);
+                k.cp2r.setPosition(pos2[0] - s, pos2[1] - s, glTlKeys.ZPOS_BEZIER);
             }
         }
 
