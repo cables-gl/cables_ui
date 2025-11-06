@@ -2311,6 +2311,10 @@ export default class Gui extends Events
         {
             document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_textedit[i] || [1, 1, 1, 1]));
         }
+        for (let i in theme.colors_timeline)
+        {
+            document.documentElement.style.setProperty("--timeline_" + i, rgbtohex(theme.colors_timeline[i] || [1, 1, 1, 1]));
+        }
 
         theme.colors_vizlayer = theme.colors_vizlayer || {};
         for (let i in theme.colors_vizlayer)

@@ -124,14 +124,13 @@
     .hasSelectedKeys
     {
         .portAndValue{
-            border-left:3px solid #ffff00;
-
+            border-left:3px solid var(--timeline_key_selected);
         }
     }
 
     .onkey
     {
-        background-color: #00FFFF !important;
+        background-color: var(--timeline_key_selected) !important;
     }
 
     .filterInput
