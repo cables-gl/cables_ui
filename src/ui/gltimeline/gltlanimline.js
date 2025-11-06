@@ -116,8 +116,8 @@ export class glTlAnimLine extends Events
                 }
                 else
                 {
-                    this.#glTextSideValue = this.#glTextSideValue.dispose();
-                    this.#valueRuler = this.#valueRuler?.dispose();
+                    if (this.#glTextSideValue) this.#glTextSideValue = this.#glTextSideValue.dispose();
+                    if (this.#valueRuler) this.#valueRuler = this.#valueRuler?.dispose();
                 }
             }),
 
