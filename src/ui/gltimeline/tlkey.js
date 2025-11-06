@@ -97,41 +97,43 @@ export class TlKey extends Events
         if (!this.areaRect && (key.uiAttribs.color || isClip))
         {
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
-            // t.setParent(keyRect);
             t.setPosition(1, 0, -0.8);
-            // t.setSize(73, 5);
+
             if (isClip)
             {
-                t.setColorArray(glTlKeys.COLOR_CLIP_AREA);
+                t.setColorArray(gui.theme.colors_timeline.key_cliparea);
                 t.setBorder(2);
             }
+            else
             if (key.uiAttribs.color)
-            {
                 t.setColorHex(key.uiAttribs.color);
-            }
-            t.setOpacity(0.5);
+
             this.areaRect = t;
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
-        if (!key.uiAttribs.text && this.text) this.text = this.text.dispose();
+        if (!(key.uiAttribs.text || key.clipId) && this.text) this.text = this.text.dispose();
 
         if (key.uiAttribs.text || key.clipId)
         {
+            let thetext = key.clipId || key.uiAttribs.text;
+
+            if (thetext.startsWith(GlTimeline.CLIP_VAR_PREFIX))
+                thetext = thetext.substring(GlTimeline.CLIP_VAR_PREFIX.length, thetext.length);
+
             if (!this.text)
             {
-                this.text = new GlText(this.#glTl.texts, key.uiAttribs.text);
+                this.text = new GlText(this.#glTl.texts, thetext);
                 this.text.setParentRect(keyRect);
             }
 
-            if (!this.text.text != key.uiAttribs.text) this.text.text = key.uiAttribs.text;
+            if (!this.text.text != thetext) this.text.text = thetext;
 
             if (key.clipId && this.text.text != key.clipId)
             {
                 const v = gui.corePatch().getVar(key.clipId);
                 if (v)
                 {
-
                     const anim = v.getValue();
                     if (this.#clipAnim != anim)
                     {
@@ -144,11 +146,6 @@ export class TlKey extends Events
                             });
                         }
 
-                        let title = key.clipId;
-                        if (title.startsWith(GlTimeline.CLIP_VAR_PREFIX))
-                            title = title.substring(GlTimeline.CLIP_VAR_PREFIX.length, title.length);
-
-                        this.text.text = title;
                     }
                 }
             }
@@ -174,7 +171,7 @@ export class TlKey extends Events
 
             this.cp1s = new GlSpline(this.#glTl.splines, "cp1");
             this.cp1s.setParentRect(this.rect.parent);
-            this.cp1s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
+            this.cp1s.setColorArray(gui.theme.colors_timeline.key_bezier);
 
             const bezRect2 = this.#glTl.rects.createRect({ "name": "bezrect2", "draggable": true, "interactive": true });
             bezRect2.data.key = key;
@@ -182,7 +179,7 @@ export class TlKey extends Events
 
             this.cp2s = new GlSpline(this.#glTl.splines, "cp2");
             this.cp2s.setParentRect(this.rect.parent);
-            this.cp2s.setColorArray(GlTimeline.COLOR_BEZ_HANDLE);
+            this.cp2s.setColorArray(gui.theme.colors_timeline.key_bezier);
 
             this.bindBezCp(bezRect, key.bezCp1, key, 0);
             this.bindBezCp(bezRect2, key.bezCp2, key, 1);

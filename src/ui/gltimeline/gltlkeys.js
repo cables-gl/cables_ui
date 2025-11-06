@@ -26,13 +26,6 @@ export class glTlKeys extends Events
 {
     static ZPOS_BEZIER = -0.6;
 
-    static COLOR_CLIP_AREA = [0.0, 0.4, 0.5, 1];
-
-    static COLOR_SPLINE = [0.8, 0.8, 0.8, 1];
-    static COLOR_SPLINE_SELECTED = [0.9, 0.9, 0.7, 1];
-    static COLOR_SPLINE_OUTSIDE = [0.1, 0.1, 0.1, 0.4];
-    static COLOR_SPLINE_OUTSIDE_SELECTED = [0.1, 0.1, 0.1, 0.4];
-
     /** @type {Anim} */
     #anim = null;
 
@@ -693,6 +686,7 @@ export class glTlKeys extends Events
                 k.areaRect.setSize(w, h);
                 k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
                 if (animKey.anim.uiAttribs.readOnly)k.areaRect.setOpacity(0.1);
+                else k.areaRect.setOpacity(1);
             }
             perf.finish();
         }

@@ -106,6 +106,32 @@ export class glTlAnimLine extends Events
         this.#rectBg.setColorArray([1, 1, 1, 1]);
 
         this.#listeners.push(
+            this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
+            {
+                if (this.#glTl.isGraphLayout())
+                {
+                    this.#valueRuler = new TlValueRuler(glTl, this, this.#rectBg);
+                    this.#glTextSideValue = new GlText(this.#glTl.texts, "");
+                    this.#disposeRects.push(this.#glTextSideValue);
+                }
+                else
+                {
+                    this.#glTextSideValue = this.#glTextSideValue.dispose();
+                    this.#valueRuler = this.#valueRuler?.dispose();
+                }
+            }),
+
+            this.#rectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
+            {
+                if (this.#glTextSideValue)
+                {
+                    if (this.#keys.length < 1) return;
+
+                    this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#rectBg.y) * 1000) / 1000);
+                    this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
+                }
+            }),
+
             gui.on(Gui.EVENT_THEMECHANGED, () =>
             {
                 this.updateTheme();
@@ -182,25 +208,6 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < ports.length; i++)
             if (ports[i])
                 this.setTitle(i, ports[i], ports[i].anim, options.parentEle || this.#glTl.tlTimeScrollContainer);
-
-        if (this.isGraphLayout())
-        {
-            this.#valueRuler = new TlValueRuler(glTl, this, this.#rectBg);
-            this.#glTextSideValue = new GlText(this.#glTl.texts, "");
-            this.#disposeRects.push(this.#glTextSideValue);
-
-            this.#rectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
-            {
-                if (this.#keys.length < 1) return;
-
-                this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#rectBg.y) * 1000) / 1000);
-                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
-            });
-        }
-        else
-        {
-            this.#valueRuler?.dispose();
-        }
 
         if (this.#options.title)
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
@@ -535,7 +542,7 @@ export class glTlAnimLine extends Events
 
     get drawAreaHeight()
     {
-        return this.pixelHeight - 4;// todo whyyyyyyyyyy
+        return this.pixelHeight - 4;// todo why
     }
 
     get height()
