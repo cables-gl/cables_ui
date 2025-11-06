@@ -3,11 +3,11 @@ import { Patch } from "cables";
 import GlRect from "../gldraw/glrect.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { glTlRuler } from "./gltlruler.js";
+import { glTlRuler } from "./tlruler.js";
 import { gui } from "../gui.js";
 import { GuiText } from "../text.js";
 
-export class glTlDragArea extends Events
+export class TlDragArea extends Events
 {
     static EVENT_MOVE = "move";
     static EVENT_RIGHT = "scale";
@@ -88,7 +88,7 @@ export class glTlDragArea extends Events
         {
             let offpixel = this.#dragStartX - e.offsetX;
 
-            this.emitEvent(glTlDragArea.EVENT_MOVE, { "offpixel": offpixel, "x": e.offsetX, "delta": this.#delta });
+            this.emitEvent(TlDragArea.EVENT_MOVE, { "offpixel": offpixel, "x": e.offsetX, "delta": this.#delta });
 
             this.isDragging = true;
 
@@ -119,7 +119,7 @@ export class glTlDragArea extends Events
             // const newPosTime = this.#glTl.snapTime(this.#glTl.view.pixelScreenToTime(newPos));
             // newPos = this.#glTl.view.timeToPixelScreen(newPosTime);
 
-            this.emitEvent(glTlDragArea.EVENT_RIGHT, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
+            this.emitEvent(TlDragArea.EVENT_RIGHT, { "factor": factor, "x": e.offsetX, "origWidth": this.#dragStartWidth });
             this.rectMove.setSize(e.offsetX - this.rectMove.x, this.rectMove.h);
 
             // this.#rectSizeRight.setPosition(newPos, this.#rectSizeRight.y);
@@ -145,7 +145,7 @@ export class glTlDragArea extends Events
         {
             this.isDragging = true;
 
-            this.emitEvent(glTlDragArea.EVENT_LEFT, { "x": e.offsetX, "origWidth": this.#dragStartWidth });
+            this.emitEvent(TlDragArea.EVENT_LEFT, { "x": e.offsetX, "origWidth": this.#dragStartWidth });
         });
 
         this.#rectSizeLeft.on(GlRect.EVENT_DRAGEND, () =>

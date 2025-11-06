@@ -4,7 +4,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlSpline from "../gldraw/glspline.js";
-import { glTlKeys } from "./gltlkeys.js";
+import { TlKeys } from "./tlkeys.js";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
 import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
@@ -42,7 +42,7 @@ export class TlKey extends Events
     text = null;
     #bezCpSize = 10;
 
-    /** @type {glTlKeys} */
+    /** @type {TlKeys} */
     tlkeys = null;
 
     #hidden = false;
@@ -50,7 +50,7 @@ export class TlKey extends Events
 
     /**
      * @param {GlTimeline} gltl
-     * @param {glTlKeys} tlkeys
+     * @param {TlKeys} tlkeys
      * @param {AnimKey} key
      * @param {GlRect} [rect]
      */
@@ -230,17 +230,17 @@ export class TlKey extends Events
         {
             if (bezRect.color[3] == 0) return;
             if (this.#glTl.isSelecting()) return;
-            glTlKeys.dragStartX = e.offsetX;
-            glTlKeys.dragStartY = e.offsetY;
-            if (button == 1 && !glTlKeys.dragStarted)
+            TlKeys.dragStartX = e.offsetX;
+            TlKeys.dragStartY = e.offsetY;
+            if (button == 1 && !TlKeys.dragStarted)
             {
                 oldValues = this.#glTl.serializeSelectedKeys();
-                glTlKeys.dragBezCp = key.bezCp1;// [cp[0], cp[1]];
-                if (dir == 1) glTlKeys.dragBezCp = key.bezCp2;
+                TlKeys.dragBezCp = key.bezCp1;// [cp[0], cp[1]];
+                if (dir == 1) TlKeys.dragBezCp = key.bezCp2;
 
-                glTlKeys.dragStarted = true;
-                glTlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
-                glTlKeys.startDragValue = this.tlkeys.animLine.pixelToValue(e.offsetY);
+                TlKeys.dragStarted = true;
+                TlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
+                TlKeys.startDragValue = this.tlkeys.animLine.pixelToValue(e.offsetY);
             }
         });
 
@@ -248,9 +248,9 @@ export class TlKey extends Events
         {
             this.click = false;
             if (this.#glTl.isSelecting()) return;
-            if (glTlKeys.startDragTime == -1111)
+            if (TlKeys.startDragTime == -1111)
             {
-                console.log("cant drag bez...", glTlKeys.dragStarted, this.#glTl.isSelecting());
+                console.log("cant drag bez...", TlKeys.dragStarted, this.#glTl.isSelecting());
                 return;
             }
 
@@ -259,11 +259,11 @@ export class TlKey extends Events
                 let offX = e.offsetX;
                 let offY = e.offsetY;
 
-                let offTime = this.#glTl.view.pixelToTime(offX) - glTlKeys.startDragTime;
-                let offVal = glTlKeys.startDragValue - this.tlkeys.animLine.pixelToValue(offY);
+                let offTime = this.#glTl.view.pixelToTime(offX) - TlKeys.startDragTime;
+                let offVal = TlKeys.startDragValue - this.tlkeys.animLine.pixelToValue(offY);
 
-                let nt = offTime + glTlKeys.dragBezCp[0];
-                let nv = offVal + glTlKeys.dragBezCp[1];
+                let nt = offTime + TlKeys.dragBezCp[0];
+                let nv = offVal + TlKeys.dragBezCp[1];
 
                 if (dir == 0)
                 {
@@ -286,7 +286,7 @@ export class TlKey extends Events
         bezRect.on(GlRect.EVENT_DRAGEND, () =>
         {
             this.#glTl.needsUpdateAll = "draggedbez";
-            glTlKeys.dragStarted = false;
+            TlKeys.dragStarted = false;
 
             undo.add({
                 "title": "timeline move keys",

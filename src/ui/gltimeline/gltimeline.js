@@ -3,9 +3,9 @@ import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
 import { CG, CGL, FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import { glTlAnimLine } from "./gltlanimline.js";
-import { glTlScroll } from "./gltlscroll.js";
-import { GlTlView } from "./gltlview.js";
+import { TlAnimLine } from "./tlanimline.js";
+import { tlScroll } from "./tlscroll.js";
+import { tlView } from "./tlview.js";
 import Gui, { gui } from "../gui.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
@@ -18,13 +18,13 @@ import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import uiconfig from "../uiconfig.js";
-import { glTlKeys } from "./gltlkeys.js";
-import { glTlDragArea } from "./gltldragarea.js";
+import { TlKeys } from "./tlkeys.js";
+import { TlDragArea as GlDragArea } from "./tldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
 import { patchStructureQuery } from "../components/patchstructurequery.js";
 import { UiOp } from "../core_extend_op.js";
-import { glTlHead } from "./gltltimehead.js";
+import { tlHead } from "./tltimehead.js";
 import { DomEvents, CssClassNames } from "../theme.js";
 import { GuiText } from "../text.js";
 
@@ -94,10 +94,10 @@ export class GlTimeline extends Events
     /** @type {} */
     ruler = null;
 
-    /** @type {glTlScroll} */
+    /** @type {tlScroll} */
     scroll = null;
 
-    /** @type {Array<glTlAnimLine>} */
+    /** @type {Array<TlAnimLine>} */
     #tlAnims = [];
 
     /** @type {GlRect} */
@@ -108,7 +108,7 @@ export class GlTimeline extends Events
 
     displayUnits = GlTimeline.DISPLAYUNIT_SECONDS;
 
-    /** @type {GlTlView} */
+    /** @type {tlView} */
     view = null;
     needsUpdateAll = "";
 
@@ -169,10 +169,10 @@ export class GlTimeline extends Events
     #rectLoopArea;
     #rectHoverKey;
 
-    /** @type {glTlDragArea} */
+    /** @type {glDragArea} */
     selectedKeysDragArea = null;
 
-    /** @type {glTlDragArea} */
+    /** @type {glDragArea} */
     loopAreaDrag = null;
 
     /** @type {HTMLElement} */
@@ -196,7 +196,7 @@ export class GlTimeline extends Events
         this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;
-        this.view = new GlTlView(this);
+        this.view = new tlView(this);
 
         this.#layout = userSettings.get(GlTimeline.USERSETTING_LAYOUT) || GlTimeline.LAYOUT_LINES;
         this.texts = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
@@ -206,14 +206,14 @@ export class GlTimeline extends Events
 
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
-        this.ruler = new glTlHead(this);
+        this.ruler = new tlHead(this);
 
-        this.scroll = new glTlScroll(this);
+        this.scroll = new tlScroll(this);
 
         if (gui.patchView.store.getUiSettings())
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
-        this.selectedKeysDragArea = new glTlDragArea(this, null, this.#rectsOver);
+        this.selectedKeysDragArea = new GlDragArea(this, null, this.#rectsOver);
         if (gui.theme.colors_timeline.key_selected)
             this.selectedKeysDragArea.setColor(
                 gui.theme.colors_timeline.key_selected[0],
@@ -221,7 +221,7 @@ export class GlTimeline extends Events
                 gui.theme.colors_timeline.key_selected[2]
             );
 
-        this.loopAreaDrag = new glTlDragArea(this, null, this.#rectsOver);
+        this.loopAreaDrag = new GlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
 
         this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
@@ -350,7 +350,7 @@ export class GlTimeline extends Events
 
         cgl.canvas.parentElement.classList.add("tlContainer");
 
-        this.loopAreaDrag.on(glTlDragArea.EVENT_MOVE, (e) =>
+        this.loopAreaDrag.on(GlDragArea.EVENT_MOVE, (e) =>
         {
             const t = this.view.pixelToTime(e.x - e.delta) + this.view.offset;
             const l = this.loopAreaEnd - this.loopAreaStart;
@@ -359,27 +359,27 @@ export class GlTimeline extends Events
             this.loopAreaEnd = t + l;
         });
 
-        this.loopAreaDrag.on(glTlDragArea.EVENT_RIGHT, (e) =>
+        this.loopAreaDrag.on(GlDragArea.EVENT_RIGHT, (e) =>
         {
             const t = this.view.pixelToTime(e.x) + this.view.offset;
             this.loopAreaEnd = t;
         });
 
-        this.loopAreaDrag.on(glTlDragArea.EVENT_LEFT, (e) =>
+        this.loopAreaDrag.on(GlDragArea.EVENT_LEFT, (e) =>
         {
             const t = this.view.pixelToTime(e.x) + this.view.offset;
 
             this.loopAreaStart = t;
         });
 
-        this.selectedKeysDragArea.on(glTlDragArea.EVENT_MOVE, (e) =>
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_MOVE, (e) =>
         {
             let offTime = -this.view.pixelToTime(e.offpixel);
 
             this.dragSelectedKeys(offTime, 0, true);
         });
 
-        this.selectedKeysDragArea.on(glTlDragArea.EVENT_RIGHT, (e) =>
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_RIGHT, (e) =>
         {
             let mintime = 9999999;
             for (let i = 0; i < this.#selectedKeys.length; i++)
@@ -850,7 +850,7 @@ export class GlTimeline extends Events
     #onCanvasPointerUp(e)
     {
         if (performance.now() - this.mouseDownStart < 200)
-            if (!glTlKeys.dragStarted && !this.hoverKeyRect)
+            if (!TlKeys.dragStarted && !this.hoverKeyRect)
                 for (let i = 0; i < this.#tlAnims.length; i++)
                     if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
                     {
@@ -865,7 +865,7 @@ export class GlTimeline extends Events
                         this.#tlAnims[i].getTitle(0)?.hover();
                     }
 
-        glTlKeys.dragStarted = false;
+        TlKeys.dragStarted = false;
         this.selectRect = null;
         this.#rects.mouseUp(e);
         this.#rectsNoScroll.mouseUp(e);
@@ -1475,7 +1475,7 @@ export class GlTimeline extends Events
      */
     selectKey(k, a)
     {
-        if (glTlKeys.dragStarted) return;
+        if (TlKeys.dragStarted) return;
         if (a.tlActive && !this.isKeySelected(k))
         {
 
@@ -1544,7 +1544,7 @@ export class GlTimeline extends Events
     /**
      * @param {object} item
      * @param {HTMLElement} parentEle
-     * @param {glTlAnimLine} [parentLine]
+     * @param {TlAnimLine} [parentLine]
      */
     hierarchyLine(item, level = 0, parentEle, parentLine)
     {
@@ -1573,7 +1573,7 @@ export class GlTimeline extends Events
                 for (let i = 0; i < item.ports.length; i++)
                 {
                     const o = { "parentEle": cont };
-                    const a = new glTlAnimLine(this, [op.getPortByName(item.ports[i].name)], o);
+                    const a = new TlAnimLine(this, [op.getPortByName(item.ports[i].name)], o);
 
                     if (parentLine)parentLine.addFolderChild(a);
                     if (first)first.addFolderChild(a);
@@ -1592,7 +1592,7 @@ export class GlTimeline extends Events
                 let a = null;
                 if (item.childs[i] && item.childs[i].childs)
                 {
-                    a = new glTlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
+                    a = new TlAnimLine(this, [], { "title": item.childs[i].title, "parentEle": cont });
 
                     if (parentLine)parentLine.addFolderChild(a);
                 }
@@ -1669,7 +1669,7 @@ export class GlTimeline extends Events
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS)
         {
-            const multiAnim = new glTlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
+            const multiAnim = new TlAnimLine(this, ports, { "keyYpos": true, "multiAnims": true });
             multiAnim.setPosition(0, this.getFirstLinePosy());
             this.#tlAnims.push(multiAnim);
         }
@@ -2229,7 +2229,7 @@ export class GlTimeline extends Events
             "tlAnims": [],
             "view": this.view.getDebug(),
             "perf": this.#perfFps.stats,
-            "dragstarted": glTlKeys.dragStarted
+            "dragstarted": TlKeys.dragStarted
         };
 
         for (let anii = 0; anii < this.#tlAnims.length; anii++)
@@ -2778,7 +2778,7 @@ export class GlTimeline extends Events
             {
                 if (this.#tlAnims[i].anims[0] == anim)
                 {
-                    let h = ((anim.uiAttribs.height || 0) + 1) % glTlAnimLine.SIZES.length;
+                    let h = ((anim.uiAttribs.height || 0) + 1) % TlAnimLine.SIZES.length;
 
                     this.#tlAnims[i].setLineHeight(h);
                     anim.setUiAttribs({ "height": h });
@@ -2850,7 +2850,7 @@ export class GlTimeline extends Events
      */
     setHoverKeyRect(kr)
     {
-        if (glTlKeys.dragStarted)
+        if (TlKeys.dragStarted)
             this.#rectHoverKey.setPosition(-9999, -9999);
 
         const size = 6;

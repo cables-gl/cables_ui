@@ -1,18 +1,18 @@
 import { Events, Logger } from "cables-shared-client/index.js";
 import { clamp } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
-import { glTlDragArea } from "./gltldragarea.js";
+import { TlDragArea } from "./tldragarea.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { GuiText } from "../text.js";
 
-export class glTlScroll extends Events
+export class tlScroll extends Events
 {
 
     /** @type {GlRect} */
     #bgRect = null;
 
-    /** @type {glTlDragArea} */
+    /** @type {TlDragArea} */
     #dragBar = null;
 
     /** @type {GlRect} */
@@ -49,20 +49,20 @@ export class glTlScroll extends Events
         // this.ruler = new glTlRuler(glTl, this.#rulerBg, true);
         // this.ruler.update();
 
-        this.#dragBar = new glTlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
+        this.#dragBar = new TlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
         this.#bgRect.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             gui.showInfo(GuiText.tlhover_scroll);
 
         });
 
-        this.#dragBar.on(glTlDragArea.EVENT_MOVE, (e) =>
+        this.#dragBar.on(TlDragArea.EVENT_MOVE, (e) =>
         {
             const f = (e.x - e.delta) / this.#width * this.#glTl.duration;
             this.#glTl.view.scrollTo(f);
         });
 
-        this.#dragBar.on(glTlDragArea.EVENT_RIGHT, (e) =>
+        this.#dragBar.on(TlDragArea.EVENT_RIGHT, (e) =>
         {
             this.#glTl.view.setZoomLength(e.origWidth * e.factor / this.#width * this.#glTl.duration);
             this.update();

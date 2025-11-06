@@ -5,7 +5,7 @@ import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
 import Gui, { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
-import { GlTlView } from "./gltlview.js";
+import { tlView } from "./tlview.js";
 import { GuiText } from "../text.js";
 
 /**
@@ -51,7 +51,7 @@ export class glTlRuler extends Events
         this.y = r.y;
         this.height = r.h;
         this.view = this.#glTl.view;
-        if (fullview) this.view = new GlTlView(glTl);
+        if (fullview) this.view = new tlView(glTl);
 
         this.#glRectBg = r;
 

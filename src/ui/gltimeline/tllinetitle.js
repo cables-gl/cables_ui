@@ -1,8 +1,8 @@
 import { Events, ele } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
-import { glTlKeys } from "./gltlkeys.js";
-import { glTlAnimLine } from "./gltlanimline.js";
+import { TlKeys } from "./tlkeys.js";
+import { TlAnimLine } from "./tlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
 import { UiOp } from "../core_extend_op.js";
@@ -15,7 +15,7 @@ import { gui } from "../gui.js";
  * @property {String} [title]
  * @property {Port} [port]
  * @property {Port} [port]
- * @property {glTlAnimLine} [animLine]
+ * @property {TlAnimLine} [animLine]
  */
 export class TlTitle extends Events
 {
@@ -31,14 +31,12 @@ export class TlTitle extends Events
     /** @type {HTMLElement} */
     #elTitle = null;
 
-    // * @type {Object}
-    // #buttons = [];
     #hasSelectedKeys;
 
     /** @type {Op} */
     #op;
 
-    /** @type {glTlKeys} */
+    /** @type {TlKeys} */
     tlKeys;
 
     /** @type {Anim} */
@@ -51,7 +49,7 @@ export class TlTitle extends Events
     /** @type {Port} */
     #port;
 
-    /** @type {glTlAnimLine} */
+    /** @type {TlAnimLine} */
     animLine = null;
 
     collapsed = false;
