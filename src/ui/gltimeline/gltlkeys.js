@@ -664,6 +664,11 @@ export class glTlKeys extends Events
             const k = this.#keys[i];
             if (k.areaRect)
             {
+                if (i == this.#keys.length - 1)
+                {
+                    k.areaRect.setSize(0, 0);
+                    continue;
+                }
                 const kr = this.#keys[i].rect;
 
                 let kr2 = null;
@@ -683,9 +688,8 @@ export class glTlKeys extends Events
                         y += Math.min(kr.y, kr2.y + kr2.h);
                     }
                     else { h = 0; y += kr.y; }
-
-                    // this.#anim.get
                 }
+
                 k.areaRect.setSize(w, h);
                 k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
                 if (animKey.anim.uiAttribs.readOnly)k.areaRect.setOpacity(0.1);
