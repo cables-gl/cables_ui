@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
-import { CG, CGL, FpsCounter } from "cables-corelibs";
+import { FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { TlAnimLine } from "./tlanimline.js";
@@ -63,6 +63,8 @@ export class GlTimeline extends Events
     static EVENT_MOUSEMOVE = "mousemove";
     static EVENT_KEYSELECTIONCHANGE = "keySelectionChange";
     static EVENT_LAYOUTCHANGE = "layoutchanged";
+
+    #log = new Logger("gltimeline");
 
     #lastDragX = Number.MAX_SAFE_INTEGER;
     #lastDragY = Number.MAX_SAFE_INTEGER;
@@ -151,7 +153,6 @@ export class GlTimeline extends Events
 
     /** @type {Anim[]} */
     #selectedKeyAnims = [];
-    #firstInit = true;
     #focusRuler = false;
     #focusScroll = false;
     #elKeyParamPanel;
@@ -159,7 +160,6 @@ export class GlTimeline extends Events
 
     #oldSize = -1;
     #perfFps = new FpsCounter();
-    #filterInputEl;
     #filterString = "";
 
     /** @type {GlText} */
@@ -169,10 +169,10 @@ export class GlTimeline extends Events
     #rectLoopArea;
     #rectHoverKey;
 
-    /** @type {glDragArea} */
+    /** @type {GlDragArea} */
     selectedKeysDragArea = null;
 
-    /** @type {glDragArea} */
+    /** @type {GlDragArea} */
     loopAreaDrag = null;
 
     /** @type {HTMLElement} */
@@ -193,7 +193,6 @@ export class GlTimeline extends Events
         super();
 
         GlTimeline.COLOR_BEZ_HANDLE = gui.theme.colors_types.num;
-        this._log = new Logger("gltimeline");
 
         this.#cgl = cgl;
         this.view = new tlView(this);
@@ -203,11 +202,9 @@ export class GlTimeline extends Events
         this.textsNoScroll = new GlTextWriter(cgl, { "name": "textnoscroll", "initNum": 1000 });
         this.#rects = new GlRectInstancer(cgl, { "name": "gltl rects", "allowDragging": true });
         this.#rectsNoScroll = new GlRectInstancer(cgl, { "name": "gltl top rects", "allowDragging": true });
-
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
         this.ruler = new tlHead(this);
-
         this.scroll = new tlScroll(this);
 
         if (gui.patchView.store.getUiSettings())
@@ -914,7 +911,7 @@ export class GlTimeline extends Events
         if (this.#focusScroll) return;
 
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
-        catch (er) { this._log.log(er); }
+        catch (er) { this.#log.log(er); }
 
         this.#rectsOver.mouseDown(e, e.offsetX, e.offsetY);
         this.#rectsNoScroll.mouseDown(e, e.offsetX, e.offsetY);
@@ -1349,13 +1346,13 @@ export class GlTimeline extends Events
         const newX = this.view.timeToPixelScreen(timeBounds.min);
 
         if (changed || newX != this.selectedKeysDragArea.x)
-            if (timeBounds.length == 0) this.selectedKeysDragArea.set(0, 0, 0, 0, 0);
+            if (this.getNumSelectedKeys() == 0) this.selectedKeysDragArea.set(0, 0, 0, 0, 0);
             else
                 this.selectedKeysDragArea.set(
                     newX,
                     (this.height - 15) / window.devicePixelRatio,
                     -0.9,
-                    this.view.timeToPixel(timeBounds.max - timeBounds.min),
+                    this.view.timeToPixel(timeBounds.max - timeBounds.min) + 20,
                     15 * window.devicePixelRatio);
     }
 
@@ -1654,7 +1651,6 @@ export class GlTimeline extends Events
 
         const ports = [];
 
-        this.#firstInit = false;
         this.tlTimeScrollContainer.innerHTML = "";
         this.hierarchyLine(root, 0, this.tlTimeScrollContainer);
 
