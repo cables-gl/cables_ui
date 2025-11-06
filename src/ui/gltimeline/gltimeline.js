@@ -46,7 +46,6 @@ import { GuiText } from "../text.js";
  */
 export class GlTimeline extends Events
 {
-    static COLOR_BEZ_HANDLE = [1, 1, 1, 1];
     static CLIP_VAR_PREFIX = "_clip";
 
     static USERSETTING_LAYOUT = "tl_layout";
@@ -1354,10 +1353,10 @@ export class GlTimeline extends Events
             else
                 this.selectedKeysDragArea.set(
                     newX,
-                    (this.height - 25) / window.devicePixelRatio,
+                    (this.height - 15) / window.devicePixelRatio,
                     -0.9,
                     this.view.timeToPixel(timeBounds.max - timeBounds.min),
-                    25 * window.devicePixelRatio);
+                    15 * window.devicePixelRatio);
     }
 
     showKeyParamsSoon()

@@ -44,12 +44,6 @@ export class glTlKeys extends Events
 
     #keyLookup = {};
 
-    /** @type {Array<GlRect>} */
-    // #keyRects = [];
-
-    /** @type {Array<GlRect>} */
-    // #dopeRects = [];
-
     /** @type {GlRect} */
     #parentRect = null;
 
@@ -261,9 +255,10 @@ export class glTlKeys extends Events
         if (this.isLayoutGraph())
         {
             let s = this.sizeKey * 0.6;
-            if (this.#anim.tlActive)s = this.sizeKey * 0.8;
-            if (this.#port.animMuted)s = this.sizeKey * 0;
-            if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
+            // if (this.#anim.tlActive)
+            s = this.sizeKey * 0.8;
+            // if (this.#port.animMuted)s = this.sizeKey * 0;
+            // if (this.#port.op.isCurrentUiOp())s = this.sizeKey;
             return s;
         }
 
@@ -496,16 +491,11 @@ export class glTlKeys extends Events
     {
         let c = gui.theme.colors_timeline.key || [1, 1, 1, 1];
         if (isSelected)c = gui.theme.colors_timeline.key_selected || [1, 1, 1, 1];
+        // if (isSelected)c = gui.theme.colors_timeline.key_selected || [1, 1, 1, 1];
 
-        const col = structuredClone(c);
-        col[3] = 0.6;
+        if (readonly)c = gui.theme.colors_timeline.key_readonly || [1, 1, 1, 1];
 
-        if (hovering)col[3] += 0.3;
-        if (isSelected) col[3] = 1;
-
-        if (readonly)col[3] *= 0.4;
-
-        return col;
+        return c;
 
     }
 
@@ -518,42 +508,43 @@ export class glTlKeys extends Events
     getSplineColor(hasSelectedKeys, outside, hovering, readonly)
     {
         let c = [];
-
         if (outside)
         {
-            if (hasSelectedKeys) c = glTlKeys.COLOR_SPLINE_OUTSIDE_SELECTED;
-            else c = glTlKeys.COLOR_SPLINE_OUTSIDE;
+            c = gui.theme.colors_timeline.spline_outside || [1, 1, 1, 1];
+            if (hasSelectedKeys)c = gui.theme.colors_timeline.spline_outside_selectedkeys || [1, 1, 1, 1];
+            if (hovering)c = gui.theme.colors_timeline.spline_outside_hover || [1, 1, 1, 1];
+            if (readonly)c = gui.theme.colors_timeline.spline_outside_readonly || [1, 1, 1, 1];
         }
         else
         {
-            if (hasSelectedKeys) c = glTlKeys.COLOR_SPLINE_SELECTED;
-            else c = glTlKeys.COLOR_SPLINE;
+            c = gui.theme.colors_timeline.spline || [1, 1, 1, 1];
+            if (hasSelectedKeys)c = gui.theme.colors_timeline.spline_selectedkeys || [1, 1, 1, 1];
+            if (hovering)c = gui.theme.colors_timeline.spline_hover || [1, 1, 1, 1];
+            if (readonly)c = gui.theme.colors_timeline.spline_readonly || [1, 1, 1, 1];
         }
+        return c;
+    }
 
-        let col = structuredClone(c);
-        let o = 0.1;
-        if (hovering)o = 1;
-        // if (hovering)col = [1, 0, 0, 0.5];// col[3] += 0.3;
-        if (readonly)o *= 0.4;
-
-        col[3] = o;
-        return col;
-
+    get isReadonly()
+    {
+        return !!this.anim.uiAttribs.readOnly || !this.#anim.tlActive || this.#port.animMuted;
     }
 
     updateColors()
     {
         const perf = gui.uiProfiler.start("[gltlkeys] updatecolors");
 
-        const hovering = this.animLine.isHovering();// getTitle(this.#idx)?.isHovering;
-        const selected = this.#hasSelectedKeys;
-        const readonly = !!this.anim.uiAttribs.readOnly;
+        let hovering = false;
+        if (this.isLayoutGraph()) hovering = this.animLine.getTitle(this.#idx)?.isHovering;
+        else hovering = this.animLine.isHovering();
+
+        const readonly = this.isReadonly;
 
         if (this.#spline)
         {
-            this.#spline.setColorArray(this.getSplineColor(selected, false, hovering, readonly));
-            this.#splineAfter.setColorArray(this.getSplineColor(selected, true, hovering, readonly));
-            this.#splineBefore.setColorArray(this.getSplineColor(selected, true, hovering, readonly));
+            this.#spline.setColorArray(this.getSplineColor(this.#hasSelectedKeys, false, hovering, readonly));
+            this.#splineAfter.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
+            this.#splineBefore.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
         }
 
         for (let i = 0; i < this.#keys.length; i++)
@@ -564,10 +555,9 @@ export class glTlKeys extends Events
             if (!animKey) return;
 
             let colBez = [0, 0, 0, 0];
-            // if (!animKey.anim.uiAttribs.readOnly && animKey.anim.tlActive)col = [0.8, 0.8, 0.8, 1];
             let keyIsselected = false;
 
-            if (!animKey.anim.uiAttribs.readOnly && this.#glTl.isKeySelected(animKey))
+            if (!readonly && this.#glTl.isKeySelected(animKey))
             {
                 if (!this.#hasSelectedKeys)
                 {
@@ -575,7 +565,7 @@ export class glTlKeys extends Events
                     this.#needsUpdate = true;
                 }
                 keyIsselected = true;
-                colBez = GlTimeline.COLOR_BEZ_HANDLE;
+                colBez = gui.theme.colors_timeline.key_bezier;
             }
             if (k.cp1r) k.cp1r.setColorArray(colBez);
             if (k.cp2r) k.cp2r.setColorArray(colBez);
