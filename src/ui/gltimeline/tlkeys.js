@@ -855,7 +855,7 @@ export class TlKeys extends Events
                             this.#glTl.selectKey(key, this.anim);
                         }
 
-                        oldValues = this.#glTl.serializeSelectedKeys();
+                        oldValues = this.#glTl.serializeSelectedAnims();
                         TlKeys.dragStarted = true;
                         TlKeys.startDragTime = this.#glTl.view.pixelToTime(e.offsetX);
                         TlKeys.startDragValue = this.animLine.pixelToValue(e.offsetY - this.#glTl.getFirstLinePosy());
@@ -916,15 +916,19 @@ export class TlKeys extends Events
                     this.#glTl.needsUpdateAll = "dragged";
                     TlKeys.dragStarted = false;
 
-                    // undo.add({
-                    //     "title": "timeline move keys",
-                    //     "undo": () =>
-                    //     {
-                    //         console.log("oldvalu",oldValues)
-                    //         this.#glTl.deserializeKeys(oldValues);
-                    //     },
-                    //     redo() {}
-                    // });
+                    const undosel = oldValues;
+                    undo.add({
+                        "title": "timeline move keys",
+                        "undo": () =>
+                        {
+                            for (let i = 0; i < undosel.length; i++)
+                                undosel[i].anim.deserialize(undosel[i], true);
+
+                            this.#glTl.updateAllElements();
+                        },
+                        redo() {}
+                    });
+
                 });
             }
             tlKey.update();

@@ -380,7 +380,6 @@ export class GlTimeline extends Events
         this.selectedKeysDragArea.on(GlDragArea.EVENT_START, (e) =>
         {
             this.#undoSelection = this.serializeSelectedAnims();
-            console.log("undose", this.#undoSelection);
         });
 
         this.selectedKeysDragArea.on(GlDragArea.EVENT_END, (e) =>
@@ -390,13 +389,10 @@ export class GlTimeline extends Events
                 "title": "timeline move keys",
                 "undo": () =>
                 {
-                    console.log("UNDO", undosel);
                     for (let i = 0; i < undosel.length; i++)
-                    {
                         undosel[i].anim.deserialize(undosel[i], true);
 
-                    }
-                    this.updateAllElements();
+                    // this.updateAllElements();
                 },
                 redo() {}
             });
@@ -420,6 +416,11 @@ export class GlTimeline extends Events
             }
 
             this.updateAllElements();
+
+        });
+
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_LEFT, (e) =>
+        {
 
         });
 
