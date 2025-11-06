@@ -184,6 +184,7 @@ export class GlTimeline extends Events
     /** @type {HTMLElement} */
     #elInfoOverlay;
     #elInfoOverlayTimeout;
+    #undoSelection;
 
     /**
      * @param {CglContext} cgl
@@ -374,6 +375,31 @@ export class GlTimeline extends Events
             let offTime = -this.view.pixelToTime(e.offpixel);
 
             this.dragSelectedKeys(offTime, 0, true);
+        });
+
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_START, (e) =>
+        {
+            this.#undoSelection = this.serializeSelectedAnims();
+            console.log("undose", this.#undoSelection);
+        });
+
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_END, (e) =>
+        {
+            const undosel = this.#undoSelection;
+            undo.add({
+                "title": "timeline move keys",
+                "undo": () =>
+                {
+                    console.log("UNDO", undosel);
+                    for (let i = 0; i < undosel.length; i++)
+                    {
+                        undosel[i].anim.deserialize(undosel[i], true);
+
+                    }
+                    this.updateAllElements();
+                },
+                redo() {}
+            });
         });
 
         this.selectedKeysDragArea.on(GlDragArea.EVENT_RIGHT, (e) =>
@@ -1109,7 +1135,7 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims[i].sortKeys();
     }
 
-    serializeSelecdetAnims()
+    serializeSelectedAnims()
     {
         const anims = {};
         const sers = [];
@@ -1139,18 +1165,6 @@ export class GlTimeline extends Events
     dragSelectedKeys(deltaTime, deltaValue, sort)
     {
         if (deltaTime == 0 && deltaValue == 0) return;
-
-        const oldSel = this.serializeSelecdetAnims();
-
-        undo.add({
-            "title": "timeline move keys",
-            "undo": () =>
-            {
-                for (let i = 0; i < oldSel.length; i++)
-                    oldSel[i].anim.deserialize(oldSel[i], true);
-            },
-            redo() {}
-        });
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {

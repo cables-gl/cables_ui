@@ -6,9 +6,12 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { glTlRuler } from "./tlruler.js";
 import { gui } from "../gui.js";
 import { GuiText } from "../text.js";
+import undo from "../utils/undo.js";
 
 export class TlDragArea extends Events
 {
+    static EVENT_START = "start";
+    static EVENT_END = "end";
     static EVENT_MOVE = "move";
     static EVENT_RIGHT = "scale";
     static EVENT_LEFT = "left";
@@ -78,6 +81,7 @@ export class TlDragArea extends Events
 
         this.rectMove.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
+            this.emitEvent(TlDragArea.EVENT_START);
             this.#dragStartX = e.offsetX;
             this.#glTl.predragSelectedKeys();
             this.#delta = e.offsetX - this.rectMove.x;
@@ -97,12 +101,15 @@ export class TlDragArea extends Events
         this.rectMove.on(GlRect.EVENT_DRAGEND, () =>
         {
             this.isDragging = false;
+            this.emitEvent(TlDragArea.EVENT_END);
         });
 
         /// ////
 
         this.#rectSizeRight.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
         {
+            this.emitEvent(TlDragArea.EVENT_START);
+            console.log("dragstart");
             this.#dragStartX = e.offsetX;
             this.#dragStartWidth = this.rectMove.w;
             this.#glTl.predragSelectedKeys();
@@ -127,6 +134,8 @@ export class TlDragArea extends Events
 
         this.#rectSizeRight.on(GlRect.EVENT_DRAGEND, () =>
         {
+
+            this.emitEvent(TlDragArea.EVENT_END);
             console.log("dragEND area");
             this.isDragging = false;
         });
@@ -152,6 +161,7 @@ export class TlDragArea extends Events
         {
             console.log("dragEND area");
             this.isDragging = false;
+            this.emitEvent(TlDragArea.EVENT_END);
         });
 
     }
