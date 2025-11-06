@@ -684,9 +684,9 @@ export class TlKeys extends Events
                 }
 
                 k.areaRect.setSize(w, h);
-                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y, -0.1);
+                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y);
                 if (animKey.anim.uiAttribs.readOnly)k.areaRect.setOpacity(0.1);
-                else k.areaRect.setOpacity(1);
+                else k.areaRect.setOpacity(0.4);
             }
             perf.finish();
         }
