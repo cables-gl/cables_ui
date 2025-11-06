@@ -116,7 +116,7 @@ export class TlKey extends Events
         {
             if (!this.#glTl.isGraphLayout())
             {
-                if (isClip)
+                if (isClip && !this.tlkeys.shouldDrawGraphSpline())
                     this.areaRect.setPosition(this.areaRect.x, this.areaRect.y, -0.57);
                 else
                     this.areaRect.setPosition(this.areaRect.x, this.areaRect.y, -0.17);
