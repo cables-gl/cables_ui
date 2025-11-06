@@ -99,13 +99,21 @@ export default class SuggestPortDialog
         for (let i = 0; i < this.#suggestions.length; i++)
             if (this.#suggestions[i].p == p) return;
 
+        let pInput = p;
+        let pOutput = otherPort;
+        if (pInput.direction == Port.DIR_OUT)
+        {
+            pInput = otherPort;
+            pOutput = p;
+        }
+
         let className = "portSuggest" + p.type;
 
         if (p.isLinked()) className += "Linked";
-        let name = "";
-        if (converter)name +=
-         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + otherPort.getTypeString().toLowerCase() + "\">▐ →</span> " +
-         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + p.getTypeString().toLowerCase() + "\">▌</span>";
+        let name = p.title;
+        if (converter)name =
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + pOutput.getTypeString().toLowerCase() + "\">▐ " + pOutput.title + "</span><span style=\"color:#bbbbbb;\"> →</span> " +
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + pInput.getTypeString().toLowerCase() + "\">▌" + pInput.title + "</span>";
 
         className = "port_text_color_" + p.getTypeString().toLowerCase();
 
@@ -125,7 +133,6 @@ export default class SuggestPortDialog
         // console.log("text", p.uiAttribs.group, this.lastPort.uiAttribs.group, spacing);
         this.lastPort = p;
 
-        name += p.title;
         this.#suggestions.push({
             "class": className,
             "p": p,
