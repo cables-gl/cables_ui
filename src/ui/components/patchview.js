@@ -1998,19 +1998,7 @@ export default class PatchView extends Events
                     subPatchOpUtil.addPortToBlueprint(options.op.opId, p, {
                         "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp, sugg) =>
-                        {
-                            // if (sugg && Link.canLink(thePort, sugg.p))
-                            // {
-                            //     this._p.link(op1, pid, newOp, newPortJson.id);
-                            // }
-                            // else
-                            // {
-                            //     if (thePort)
-                            //         gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
-                            //     else
-                            //         console.error("unknown subpatchop stuff");
-                            // }
-                        }
+                        {}
                     });
                 }
                 else

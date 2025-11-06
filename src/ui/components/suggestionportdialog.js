@@ -25,31 +25,68 @@ export default class SuggestPortDialog
      * @param {Function} [cbCancel]
      * @param {boolean} [useConverter]
      */
-    constructor(op, port, mouseEvent, cb, cbCancel, useConverter)
+    constructor(op, port, mouseEvent, cb, cbCancel, useConverter, forceConverter)
     {
-
-        // linkRecommendations
-        for (let i = 0; i < op.portsIn.length; i++)
+        let countConv = 0;
+        const types = {};
+        for (let kk = 0; kk < 2; kk++)
         {
-            const theport = op.portsIn[i];
-            if (
-                !theport.uiAttribs.hidePort &&
+            // linkRecommendations
+            for (let i = 0; i < op.portsIn.length; i++)
+            {
+                const theport = op.portsIn[i];
+                if (
+                    !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
                 !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
-            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
-        }
+                )
+                {
+                    if (kk == 1)
+                        this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+                    if (!forceConverter && port.type != theport.type)
+                    {
+                        types[theport.type] = true;
+                        countConv++;
+                    }
 
-        for (let i = 0; i < op.portsOut.length; i++)
-        {
-            const theport = op.portsOut[i];
-            if (
-                !theport.uiAttribs.hidePort &&
+                }
+            }
+
+            for (let i = 0; i < op.portsOut.length; i++)
+            {
+                const theport = op.portsOut[i];
+                console.log(getConverters(theport, port));
+                if (
+                    !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
                 !theport.uiAttribs.greyout &&
                 theport.direction != port.direction
-            ) this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+                )
+                {
+                    if (kk == 1)
+                        this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+                    if (!forceConverter && port.type != theport.type)
+                    {
+                        types[theport.type] = true;
+                        countConv++;
+                    }
+                }
 
+            }
+            if (kk == 0 && countConv > 3)
+            {
+                let str = "";
+                for (const ty in types)
+                    str += "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + Port.getTypeString(ty).toLowerCase() + "\">▐ </span> ";
+
+                this.#suggestions.push({
+                    "class": "",
+                    "spacing": 10,
+                    "name": str + " ⇆ insert converter op"
+                });
+                useConverter = false;
+            }
         }
 
         if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
@@ -78,8 +115,17 @@ export default class SuggestPortDialog
             {
                 if (this.#suggestions[i].id == id)
                 {
-                    cb(this.#suggestions[i].p, this.#suggestions[i].op, this.#suggestions[i], useConverter);
                     found = true;
+                    if (!this.#suggestions[i].op)
+                    {
+                        console.log("joooooooooo");
+
+                        new SuggestPortDialog(op, port, mouseEvent, cb, cbCancel, true, true);
+                    }
+                    else
+                    {
+                        cb(this.#suggestions[i].p, this.#suggestions[i].op, this.#suggestions[i], useConverter);
+                    }
                 }
             }
             console.log("not found id........", id);
@@ -130,7 +176,6 @@ export default class SuggestPortDialog
             if (this.lastPort)
                 spacing = 8;
         }
-        // console.log("text", p.uiAttribs.group, this.lastPort.uiAttribs.group, spacing);
         this.lastPort = p;
 
         this.#suggestions.push({
