@@ -78,6 +78,7 @@ export default class Gui extends Events
     static EVENT_MOUSEOVERPORT_OUT = "mouseOverPortOut";
 
     static EVENT_OP_SELECTIONCHANGED = "opSelectChange";
+    static EVENT_THEMECHANGED = "themeChanged";
 
     static RESTRICT_MODE_LOADING = 0;
     static RESTRICT_MODE_BLUEPRINT = 5;
@@ -2339,7 +2340,7 @@ export default class Gui extends Events
 
         nsColors.textContent = strNsCss;
 
-        this.emitEvent("themeChanged");
+        this.emitEvent(Gui.EVENT_THEMECHANGED);
         return missing;
     }
 

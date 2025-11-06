@@ -19,6 +19,8 @@ CABLES.OpUnLinkTempReLinkP2 = null;
  */
 class UiOp extends Op
 {
+    static PORT_UIATTR_HOVER = "hover";
+
     constructor(patch, objName, id = null)
     {
         super(patch, objName, id);

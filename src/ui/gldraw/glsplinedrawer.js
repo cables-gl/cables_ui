@@ -5,7 +5,7 @@ import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { Events } from "cables-shared-client";
 import { userSettings } from "../components/usersettings.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
 import GlCanvas from "./glcanvas.js";
@@ -106,7 +106,7 @@ export default class GlSplineDrawer extends Events
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
-        gui.on("themeChanged", () =>
+        gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
             this._uniWidth.set(gui.theme.patch.cablesWidth || 3);
             this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);

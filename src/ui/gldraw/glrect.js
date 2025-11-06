@@ -99,6 +99,9 @@ export default class GlRect extends Events
     #log = new Logger("GlRect");
 
     name = "unknown";
+    #oldAbsZ;
+    #oldAbsY;
+    #oldAbsX;
 
     /**
      * @param {GlRectInstancer} instancer
@@ -390,7 +393,6 @@ export default class GlRect extends Events
     setPosition(_x, _y, _z = this.#z)
     {
         let changed = false;
-        if (_x != this.#x || _y != this.#y || _z != this.#z)changed = true;
         this.#x = _x;
         this.#y = _y;
         this.#z = _z;
@@ -405,11 +407,20 @@ export default class GlRect extends Events
             this.#absY += this.getParentY();
             this.#absZ += this.getParentZ();
         }
+        if (this.#oldAbsX != this.absX || this.#oldAbsY != this.absY || this.#oldAbsZ != this.absZ)
+        {
+            this.#oldAbsX = this.absX;
+            this.#oldAbsY = this.absY;
+            this.#oldAbsZ = this.absZ;
+            changed = true;
+        }
 
-        this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
+        if (changed)
+            this.#rectInstancer.setPosition(this.#attrIndex, this.#absX, this.#absY, this.#absZ);
 
-        for (let i = 0; i < this.childs.length; i++)
-            this.childs[i].updateParentPosition();
+        if (changed)
+            for (let i = 0; i < this.childs.length; i++)
+                this.childs[i].updateParentPosition();
 
         if (changed) this.emitEvent(GlRect.EVENT_POSITIONCHANGED);
     }

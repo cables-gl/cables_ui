@@ -133,7 +133,7 @@ export class glTlScroll extends Events
                 this.#indicatorRects[i].setShape(GlRect.SHAPE_RHOMB);
 
                 if (selected)
-                    this.#indicatorRects[i].setColor(1, 1, 0, 1);
+                    this.#indicatorRects[i].setColorArray(gui.theme.colors_timeline.key_selected);
                 else
                     this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
 

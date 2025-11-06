@@ -2987,7 +2987,7 @@ export default class PatchView extends Events
             }
 
         }
-        else { console.log("has no patch summary"); }
+        if (!patchSummary) { console.error("has no patch summary"); }
     }
 
     warnLargestPort()

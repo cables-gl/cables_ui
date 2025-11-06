@@ -194,7 +194,7 @@ export default class GlPatch extends Events
         cgl.canvas.addEventListener("focus", this.isFocused.bind(this));
         cgl.canvas.addEventListener("blur", this.isFocused.bind(this));
 
-        gui.on("themeChanged", this.updateTheme.bind(this));
+        gui.on(Gui.EVENT_THEMECHANGED, this.updateTheme.bind(this));
 
         gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
         {
@@ -802,13 +802,9 @@ export default class GlPatch extends Events
     isFocused()
     {
         const isf = document.activeElement == this._cgl.canvas;
-        // if (!this.wasFocussed && isf)
-        // {
-        //     if (gui.glTimeline)gui.glTimeline.hideOverlayPanels();
-        // }
+
         this.wasFocussed = isf;
         return isf;
-
     }
 
     isMouseOverOp()

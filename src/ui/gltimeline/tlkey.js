@@ -64,7 +64,6 @@ export class TlKey extends Events
 
         key.anim.on(Anim.EVENT_KEY_DELETE, (k) =>
         {
-            console.log("keydel...");
             if (k == this.key) this.dispose();
         });
     }
@@ -100,10 +99,10 @@ export class TlKey extends Events
             const t = this.#glTl.rects.createRect({ "name": "key color", "draggable": false, "interactive": false });
             // t.setParent(keyRect);
             t.setPosition(1, 0, -0.8);
-            t.setSize(73, 5);
+            // t.setSize(73, 5);
             if (isClip)
             {
-                t.setColorHex("#444444");
+                t.setColorArray(glTlKeys.COLOR_CLIP_AREA);
                 t.setBorder(2);
             }
             if (key.uiAttribs.color)
@@ -115,10 +114,8 @@ export class TlKey extends Events
         }
         if (this.areaRect && !(key.uiAttribs.color || isClip)) this.areaRect = this.areaRect.dispose();
 
-        if (!key.uiAttribs.text && this.text)
-        {
-            this.text = this.text.dispose();
-        }
+        if (!key.uiAttribs.text && this.text) this.text = this.text.dispose();
+
         if (key.uiAttribs.text || key.clipId)
         {
             if (!this.text)
@@ -317,8 +314,10 @@ export class TlKey extends Events
     dispose()
     {
         this.removeBezCp();
+        if (this.rect) this.rect.visible = false;
         if (this.rect) this.rect = this.rect.dispose();
         if (this.text) this.text = this.text.dispose();
         if (this.areaRect) this.areaRect = this.areaRect.dispose();
+        this.tlkeys.updateSoon();
     }
 }

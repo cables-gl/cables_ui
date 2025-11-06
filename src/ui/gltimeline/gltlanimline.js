@@ -103,25 +103,34 @@ export class glTlAnimLine extends Events
 
         this.#rectBg = this.#glTl.rects.createRect({ "draggable": false, "interactive": true, "name": "keysBg" });
         this.#rectBg.setSize(this.width, this.height - 2);
-        this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
+        this.#rectBg.setColorArray([1, 1, 1, 1]);
 
-        this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
-        {
-            gui.showInfo(GuiText.tlhover_animline);
+        this.#listeners.push(
+            gui.on(Gui.EVENT_THEMECHANGED, () =>
+            {
+                this.updateTheme();
+            }),
 
-            if (!this.isGraphLayout() && this.#ports.length > 0)
-                this.#ports[0].setUiAttribs({ "hover": true });
+            this.#rectBg.on(GlRect.EVENT_POINTER_HOVER, () =>
+            {
+                gui.showInfo(GuiText.tlhover_animline);
 
-            this.updateColor();
-        });
+                if (!this.isGraphLayout() && this.#ports.length > 0)
+                    this.#ports[0].setUiAttribs({ "hover": true });
 
-        this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
-        {
-            if (!this.isGraphLayout() && this.#ports.length > 0)
-                this.#ports[0].setUiAttribs({ "hover": false });
+                this.updateColor();
+                this.updateColorKeys();
+            }),
 
-            this.updateColor();
-        });
+            this.#rectBg.on(GlRect.EVENT_POINTER_UNHOVER, () =>
+            {
+                if (!this.isGraphLayout() && this.#ports.length > 0)
+                    this.#ports[0].setUiAttribs({ "hover": false });
+
+                this.updateColor();
+                this.updateColorKeys();
+            })
+        );
 
         this.#disposeRects.push(this.#rectBg);
         for (let i = 0; i < ports.length; i++)
@@ -197,7 +206,14 @@ export class glTlAnimLine extends Events
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
 
         if (!this.isGraphLayout() && this.getOp()?.uiAttribs.tlCollapsed) this.collapseFolder();
+
+        this.updateTheme();
         this.fitValues();
+        this.updateColor();
+    }
+
+    updateTheme()
+    {
         this.updateColor();
     }
 
@@ -220,6 +236,7 @@ export class glTlAnimLine extends Events
 
     isHovering()
     {
+        if (this.isGraphLayout()) return false;
         let anyhovering = false;
         for (let i = 0; i < this.#ports.length; i++)
             anyhovering = anyhovering || this.#ports[i].uiAttribs.hover;
@@ -272,7 +289,7 @@ export class glTlAnimLine extends Events
             }
             this.updateTitles();
         });
-        title.on("hoverchange", this.updateColor.bind(this));
+        // title.on("hoverchange", this.updateColor.bind(this));
 
         this.#titles.push(title);
         this.setTitlePos();
@@ -433,8 +450,8 @@ export class glTlAnimLine extends Events
     {
         if (!this.isGraphLayout())
         {
-            if (this.#options.title)
-                console.log("posyyyyyyyy", this.isHidden, this.#hidden, this.#options.title, this.#rectBg.y, this.#rectBg.h);
+            // if (this.#options.title)
+            //     console.log("posyyyyyyyy", this.isHidden, this.#hidden, this.#options.title, this.#rectBg.y, this.#rectBg.h);
 
             if (this.#titles[0])
             {
@@ -446,7 +463,9 @@ export class glTlAnimLine extends Events
                 }
                 else
                 {
-                    this.setPosition(this.#rectBg.x, (r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosy());
+                    this.setPosition(
+                        this.#rectBg.x,
+                        ((r.top - rc.top + this.#glTl.tlTimeScrollContainer.scrollTop) + this.#glTl.getFirstLinePosyCSS()));
                     this.#rectBg.setSize(this.width, r.height - 1);
                 }
             }
@@ -474,24 +493,31 @@ export class glTlAnimLine extends Events
         this.updateGlPos();
     }
 
+    updateColorKeys()
+    {
+
+        for (let i = 0; i < this.#keys.length; i++)
+        {
+            this.#keys[i].updateColors();
+        }
+    }
+
     updateColor()
     {
         if (this.checkDisposed()) return;
-        if (this.isHovering() && !this.isGraphLayout())
-            this.#rectBg.setColor(0.15, 0.15, 0.15, 1);
-        else
-            this.#rectBg.setColorArray(gui.theme.colors_patch.opBgRect);
+
+        if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColorArray(gui.theme.colors_timeline.background_hover);
+        else this.#rectBg.setColorArray(gui.theme.colors_timeline.background);
 
         for (let i = 0; i < this.#titles.length; i++)
         {
-            // if (this.#titles[i].getAnim().port.uiAttribs.hover)
-            //     this.#titles[i].hover();
-            // else
-            this.#titles[i].updateColor();
-
             if (this.#keys[i])
                 this.#titles[i].setHasSelectedKeys(this.#keys[i].hasSelectedKeys());
+
+            this.#titles[i].updateColor();
         }
+
+        this.updateColorKeys();
 
     }
 
@@ -523,7 +549,7 @@ export class glTlAnimLine extends Events
         let h = 0;
         if (this.isGraphLayout())
         {
-            h = this.#glTl.height;
+            h = this.#glTl.height - this.#glTl.getFirstLinePosy();
         }
         else
         {
@@ -630,7 +656,7 @@ export class glTlAnimLine extends Events
      */
     pixelToValue(posy)
     {
-        return CABLES.map(posy, 0, this.height, this.#view.minVal, this.#view.maxVal);
+        return CABLES.map(posy, 0, this.height / window.devicePixelRatio, this.#view.minVal, this.#view.maxVal);
     }
 
     /**
@@ -641,7 +667,7 @@ export class glTlAnimLine extends Events
     {
         if (this.#keys.length == 0) return 1;
         let y = CABLES.map(v + 0.0000001, this.#view.minVal, this.#view.maxVal, this.#keys[0].getKeyHeight(), this.height - this.#keys[0].getKeyHeight() / 2, 0, false);
-        return this.height - y - this.#glTl.view.offsetY;
+        return (this.height - y - this.#glTl.view.offsetY) / window.devicePixelRatio;
     }
 
     /**
@@ -828,9 +854,8 @@ export class glTlAnimLine extends Events
     expandFolder()
     {
         for (let i = 0; i < this.childLines.length; i++)
-        {
             this.childLines[i].show();
-        }
+
         this.collapsed = false;
         this.#titles[0].updateIcons();
         this.updateTitles();
@@ -845,9 +870,8 @@ export class glTlAnimLine extends Events
     {
         let count = 0;
         for (let i = 0; i < this.#keys.length; i++)
-        {
             count += this.#keys[i].getNumSplinePoints();
-        }
+
         return count;
     }
 }

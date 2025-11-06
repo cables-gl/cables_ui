@@ -215,7 +215,12 @@ export class GlTimeline extends Events
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
 
         this.selectedKeysDragArea = new glTlDragArea(this, null, this.#rectsOver);
-        this.selectedKeysDragArea.setColor(1, 1, 0, 0.5);
+        if (gui.theme.colors_timeline.key_selected)
+            this.selectedKeysDragArea.setColor(
+                gui.theme.colors_timeline.key_selected[0],
+                gui.theme.colors_timeline.key_selected[1],
+                gui.theme.colors_timeline.key_selected[2]
+            );
 
         this.loopAreaDrag = new glTlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
@@ -266,6 +271,11 @@ export class GlTimeline extends Events
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
         });
+
+        gui.on(Gui.EVENT_THEMECHANGED, () =>
+        {
+            this.updateTheme();
+        }),
 
         cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
@@ -335,7 +345,7 @@ export class GlTimeline extends Events
 
         this.tlTimeScrollContainer = document.createElement("div");
         this.tlTimeScrollContainer.classList.add("scrollContainer");
-        this.tlTimeScrollContainer.style.top = this.getFirstLinePosy() + "px";
+        this.tlTimeScrollContainer.style.top = this.getFirstLinePosyCSS() + "px";
 
         cgl.canvas.parentElement.appendChild(this.tlTimeScrollContainer);
 
@@ -460,7 +470,7 @@ export class GlTimeline extends Events
 
             const selops = gui.patchView.getSelectedOps();
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
-                this.#tlAnims[0].activateSelectedOps(selops);
+                this.#tlAnims[0]?.activateSelectedOps(selops);
 
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
 
@@ -480,7 +490,7 @@ export class GlTimeline extends Events
             if (this.graphSelectMode && this.layout == GlTimeline.LAYOUT_GRAPHS)
             {
                 const ops = gui.patchView.getSelectedOps();
-                this.#tlAnims[0].activateSelectedOps(ops);
+                this.#tlAnims[0]?.activateSelectedOps(ops);
             }
 
             let selOpsStr = "";
@@ -520,6 +530,16 @@ export class GlTimeline extends Events
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
+    }
+
+    updateTheme()
+    {
+        this.selectedKeysDragArea.setColor(
+            gui.theme.colors_timeline.key_selected[0],
+            gui.theme.colors_timeline.key_selected[1],
+            gui.theme.colors_timeline.key_selected[2]
+        );
+
     }
 
     get cgl()
@@ -1093,6 +1113,28 @@ export class GlTimeline extends Events
             this.#selectedKeyAnims[i].sortKeys();
     }
 
+    serializeSelecdetAnims()
+    {
+        const anims = {};
+        const sers = [];
+
+        for (let i = 0; i < this.#selectedKeys.length; i++)
+        {
+            anims[this.#selectedKeys[i].anim.id] = this.#selectedKeys[i].anim;
+        }
+        for (const i in anims)
+        {
+
+            /** @type {Anim} */
+            const an = anims[i];
+            const ser = an.getSerialized();
+            ser.anim = an;
+            sers.push(ser);
+        }
+
+        return sers;
+    }
+
     /**
      * @param {number} deltaTime
      * @param {number} deltaValue
@@ -1102,15 +1144,14 @@ export class GlTimeline extends Events
     {
         if (deltaTime == 0 && deltaValue == 0) return;
 
-        const oldSe = this.#selectedKeys;
+        const oldSel = this.serializeSelecdetAnims();
 
         undo.add({
             "title": "timeline move keys",
             "undo": () =>
             {
-                for (let i = 0; i < oldSe.length; i++)
-                    if (this.#selectedKeys[i])
-                        oldSe[i].set({ "t": this.snapTime(this.#selectedKeys[i].temp.preDragTime), "v": this.#selectedKeys[i].temp.preDragValue });
+                for (let i = 0; i < oldSel.length; i++)
+                    oldSel[i].anim.deserialize(oldSel[i], true);
             },
             redo() {}
         });
@@ -1313,10 +1354,10 @@ export class GlTimeline extends Events
             else
                 this.selectedKeysDragArea.set(
                     newX,
-                    this.height - 15,
+                    (this.height - 25) / window.devicePixelRatio,
                     -0.9,
                     this.view.timeToPixel(timeBounds.max - timeBounds.min),
-                    15);
+                    25 * window.devicePixelRatio);
     }
 
     showKeyParamsSoon()
@@ -1456,11 +1497,19 @@ export class GlTimeline extends Events
 
         if (event.metaKey)
         {
-            this.view.scroll(this.view.visibleTime * event.deltaY * 0.0005);
+            let v = 0.1;
+            if (event.deltaY < 0)v *= -1;
+            this.view.scroll(this.view.visibleTime * v);
         }
-        else if (event.shiftKey && this.isGraphLayout)
+        else if (event.shiftKey && this.isGraphLayout())
         {
-            this.view.scaleValues(event.deltaX * 0.003);
+            let v = 1.3;
+            if (event.deltaX < 0)v = 0.7;
+            this.view.scaleValues(v);
+        }
+        else if (event.shiftKey && !this.isGraphLayout())
+        {
+            this.tlTimeScrollContainer.scrollTop += event.deltaX;
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
@@ -1651,6 +1700,11 @@ export class GlTimeline extends Events
         return this.tlTimeScrollContainer.scrollTop;
     }
 
+    getFirstLinePosyCSS()
+    {
+        return this.getFirstLinePosy() * window.devicePixelRatio;
+    }
+
     getFirstLinePosy()
     {
         let posy = 0;
@@ -1660,6 +1714,9 @@ export class GlTimeline extends Events
 
         this.ruler.setPosition(0, posy);
         posy += this.ruler.height;
+
+        posy /= window.devicePixelRatio;
+
         return posy;
     }
 
@@ -1993,13 +2050,13 @@ export class GlTimeline extends Events
         const range = (Math.abs(boundsy.min) + Math.abs(boundsy.max));
         if (range > 0)
         {
-            this.view.setMinVal(boundsy.min - (range * 0.1) * 2);
-            this.view.setMaxVal(boundsy.max + (range * 0.1) * 2);
+            this.view.setMinVal(boundsy.min - (range * 0.1));
+            this.view.setMaxVal(boundsy.max + (range * 0.1));
             this.view.scrollToY(0);
         }
 
         const bounds = this.getSelectedKeysBoundsTime();
-        console.log("bounds", bounds);
+
         if (bounds.length == 0)
         {
             this.view.scrollTo((bounds.min - this.view.visibleTime / 2) / 2);
