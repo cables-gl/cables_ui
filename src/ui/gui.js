@@ -1,6 +1,7 @@
 import { Logger, Events, ele } from "cables-shared-client";
 import { Patch, now } from "cables";
 import { CgShader } from "cables-corelibs";
+import defaultTheme from "./defaulttheme.json";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
 import Introduction from "./components/introduction.js";
@@ -31,7 +32,6 @@ import CanvasManager from "./components/canvas/canvasmanager.js";
 import GuiRestrictions from "./components/guirestrictions.js";
 import PatchPanel from "./components/patchpanel.js";
 import SavedState from "./components/savedstate.js";
-import defaultTheme from "./defaulttheme.json";
 import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
 import { notify, notifyError } from "./elements/notification.js";
@@ -57,6 +57,7 @@ import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 import { CmdTimeline } from "./commands/cmd_timeline.js";
 import { GuiText } from "./text.js";
+import { setUpTheme } from "./theme.js";
 
 /**
  * @type {Gui}
@@ -2126,9 +2127,16 @@ export default class Gui extends Events
         if (this.bottomInfoArea) this.bottomInfoArea.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
     }
 
+    /**
+     * @param {import("./theme.js").CablesTheme} theme
+     */
+    setTheme(theme)
+    {
+        setUpTheme(theme);
+    }
+
     init()
     {
-        // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
         this.setTheme(JSON.parse(JSON.stringify(defaultTheme)));
 
@@ -2267,85 +2275,6 @@ export default class Gui extends Events
     getSavedStateChangesBlueprintSubPatches()
     {
         return [];// this._savedStateChangesBlueprintSubPatches; // old blueprints
-    }
-
-    /** @param {CablesTheme} theme */
-    setTheme(theme = {})
-    {
-        if (!theme) return;
-
-        theme = JSON.parse(JSON.stringify(theme));
-        theme.colors = theme.colors || {};
-
-        const missing = {};
-
-        /**
-         * @param {Array<Number>} rgb
-         */
-        function rgbtohex(rgb)
-        {
-            return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
-        }
-
-        const topics = Object.keys(defaultTheme);
-
-        for (let i = 0; i < topics.length; i++)
-        {
-            const topic = topics[i];
-            theme[topic] = theme[topic] || {};
-            missing[topic] = {};
-
-            for (let j in defaultTheme[topic])
-            {
-                if (!theme[topic].hasOwnProperty(j))
-                    missing[topic][j] = theme[topic][j] = defaultTheme[topic][j];
-            }
-        }
-
-        for (let i in theme.colors_html)
-        {
-            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_html[i] || [1, 1, 1, 1]));
-        }
-
-        for (let i in theme.colors_textedit)
-        {
-            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_textedit[i] || [1, 1, 1, 1]));
-        }
-        for (let i in theme.colors_timeline)
-        {
-            document.documentElement.style.setProperty("--timeline_" + i, rgbtohex(theme.colors_timeline[i] || [1, 1, 1, 1]));
-        }
-
-        theme.colors_vizlayer = theme.colors_vizlayer || {};
-        for (let i in theme.colors_vizlayer)
-        {
-            theme.colors_vizlayer[i] = rgbtohex(theme.colors_vizlayer[i] || [1, 1, 1, 1]);
-        }
-
-        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors_types.trigger || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors_types.num || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors_types.obj || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors_types.string || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
-
-        this.theme = theme;
-
-        const nsColors = document.createElement("style");
-        document.body.appendChild(nsColors);
-
-        let strNsCss = "";
-
-        for (let i in theme.colors_namespaces)
-        {
-            let ns = i;
-            ns = ns.replaceAll(".", "_");
-            strNsCss += ".nsColor_" + ns + "{color:" + rgbtohex(theme.colors_namespaces[i]) + " !important;}\n";
-        }
-
-        nsColors.textContent = strNsCss;
-
-        this.emitEvent(Gui.EVENT_THEMECHANGED);
-        return missing;
     }
 
     getDefaultTheme()
