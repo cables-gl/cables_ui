@@ -286,7 +286,7 @@ export class tlView
      */
     scroll(delta, duration = 0.2)
     {
-        let finalTime = this.#offset + delta;
+        let finalTime = Math.max(0, this.#offset + delta);
 
         const t = this.#timer.getTime();
         this.#animScroll.clear(t);
@@ -301,7 +301,7 @@ export class tlView
     {
         const t = this.#timer.getTime();
         this.#animScroll.clear(t);
-        this.#animScroll.setValue(t + duration, finalTime);
+        this.#animScroll.setValue(t + duration, Math.max(0, finalTime));
     }
 
     /**

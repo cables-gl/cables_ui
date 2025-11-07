@@ -182,6 +182,11 @@ export class TlDragArea extends Events
         this.#rectRight.setPosition(x + this.#width, y, z);
     }
 
+    setColorArray(arr)
+    {
+        this.setColor(arr[0], arr[1], arr[2], arr[3]);
+    }
+
     /**
      * @param {number} r
      * @param {number} g
