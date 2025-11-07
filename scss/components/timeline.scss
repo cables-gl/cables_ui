@@ -49,7 +49,7 @@
         {
             *{
                 background-color:var(--textedit-comment);
-                color:#000 !important;
+                color:var(--color-12);
                 border-radius: 5px;
             }
         }
@@ -79,7 +79,8 @@
 
         .portname
         {
-            color:var(--textedit-comment);
+            padding-left: 4px;
+            color:var(--color-11);
             .extendTitle{
                 color:#aaa;
             }
@@ -123,14 +124,13 @@
     .hasSelectedKeys
     {
         .portAndValue{
-            border-left:3px solid #ffff00;
-
+            border-left:3px solid var(--timeline_key_selected);
         }
     }
 
     .onkey
     {
-        background-color: #00FFFF !important;
+        background-color: var(--timeline_key_selected) !important;
     }
 
     .filterInput

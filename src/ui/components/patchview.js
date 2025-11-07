@@ -689,7 +689,7 @@ export default class PatchView extends Events
             {
                 this.hasOldOps = true;
                 perf.finish();
-                if (setUiError) this._p.ops[i].setUiError("outdated", "outdated");
+                if (setUiError) this._p.ops[i].setUiError("outdated", "Outdated op in example patch");
                 else return;
             }
         }
@@ -1977,6 +1977,7 @@ export default class PatchView extends Events
         let op2 = this._p.getOpById(op2id);
         const p = op1.getPort(pid);
         let showConverter = gui.longLinkHover;
+        let numPerfectFit = op2.countFittingPorts(p, false);
         let numFitting = op2.countFittingPorts(p, showConverter);
         if (numFitting == 0 && !showConverter)
         {
@@ -1987,7 +1988,7 @@ export default class PatchView extends Events
         const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
         const isbpOp = op2.isSubPatchOp() || isInnerOp;
 
-        if (isbpOp || numFitting > 1)
+        if (isbpOp || (numFitting > 0 && numPerfectFit != 1))
         {
             new SuggestPortDialog(op2, p, e, (thePort, newOpId, options, useconverter) =>
             {
@@ -1997,19 +1998,7 @@ export default class PatchView extends Events
                     subPatchOpUtil.addPortToBlueprint(options.op.opId, p, {
                         "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp, sugg) =>
-                        {
-                            // if (sugg && Link.canLink(thePort, sugg.p))
-                            // {
-                            //     this._p.link(op1, pid, newOp, newPortJson.id);
-                            // }
-                            // else
-                            // {
-                            //     if (thePort)
-                            //         gui.patchView.linkPorts(opid, pid, op2id, thePort.id, e);
-                            //     else
-                            //         console.error("unknown subpatchop stuff");
-                            // }
-                        }
+                        {}
                     });
                 }
                 else
@@ -2091,7 +2080,11 @@ export default class PatchView extends Events
      */
     linkPorts(opid, pid, op2id, p2id, event)
     {
+
+        /** @type {Op} */
         let op1 = this._p.getOpById(opid);
+
+        /** @type {Op} */
         let op2 = this._p.getOpById(op2id);
 
         if (!op1 || !op2)
@@ -2103,6 +2096,14 @@ export default class PatchView extends Events
         // helper number2string auto insert....
         let p1 = op1.getPortByName(pid);
         let p2 = op2.getPortByName(p2id);
+
+        let pInput = p1;
+        let pOutput = p2;
+        if (p1.direction == Port.DIR_OUT)
+        {
+            pInput = p2;
+            pOutput = p1;
+        }
 
         const converters = getConverters(p1, p2);
 
@@ -2116,8 +2117,11 @@ export default class PatchView extends Events
             const suggs = [];
             for (let i = 0; i < converters.length; i++)
             {
+                let convStr =
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + pOutput.getTypeString().toLowerCase() + "\">▐ →</span> " +
+         "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + pInput.getTypeString().toLowerCase() + "\">▌</span>";
                 suggs.push({
-                    "name": "♻ " + opNames.getShortName(converters[i].op),
+                    "name": convStr + opNames.getShortName(converters[i].op),
                     "class": "port_text_color_" + p2.getTypeString().toLowerCase()
                 });
             }

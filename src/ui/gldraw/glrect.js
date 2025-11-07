@@ -3,7 +3,6 @@ import { vec4 } from "gl-matrix";
 import { Texture } from "cables";
 import { logStack } from "cables/src/core/utils.js";
 import GlRectInstancer from "./glrectinstancer.js";
-import { glTimelineCanvas } from "../gltimeline/gltimelinecanvas.js";
 
 /**
  * @typedef {Object} GlRectOptions

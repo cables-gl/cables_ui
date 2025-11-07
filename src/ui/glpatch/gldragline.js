@@ -88,16 +88,19 @@ export default class GlDragLine
                     "y": this.#glPatch.viewBox.mousePatchY
                 };
 
-                if (Math.abs(this.#glPort.glOp.x - x) < 200)
+                if (this.#glPort.glOp.op)
                 {
-                    pos.x = this.#glPort.glOp.x + this.#glPort.glOp.op.getPortPosX(this.#glPort.port.name, this.#glPort.glOp.op.id);
-                    pos.noSnap = true;
-                }
+                    if (Math.abs(this.#glPort.glOp.x - x) < 200)
+                    {
+                        pos.x = this.#glPort.glOp.x + this.#glPort.glOp.op.getPortPosX(this.#glPort.port.name, this.#glPort.glOp.op.id);
+                        pos.noSnap = true;
+                    }
 
-                gui.opSelect().show(
-                    pos,
-                    this.#glPort.port.op,
-                    this.#glPort.port);
+                    gui.opSelect().show(
+                        pos,
+                        this.#glPort.port.op,
+                        this.#glPort.port);
+                }
             }
 
             this.stop();

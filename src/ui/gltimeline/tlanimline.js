@@ -1,11 +1,11 @@
 import { Events } from "cables-shared-client";
 import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
-import { glTlKeys } from "./gltlkeys.js";
+import { TlKeys } from "./tlkeys.js";
 import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlText from "../gldraw/gltext.js";
-import { GlTlView } from "./gltlview.js";
+import { tlView } from "./tlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
@@ -28,7 +28,7 @@ import { GuiText } from "../text.js";
  * @class glTlAnim
  * @extends {Events}
  */
-export class glTlAnimLine extends Events
+export class TlAnimLine extends Events
 {
     static SIZES = [30, 50, 100];
 
@@ -50,7 +50,7 @@ export class glTlAnimLine extends Events
     /** @type {GlTimeline} */
     #glTl = null;
 
-    /** @type {Array<glTlKeys>} */
+    /** @type {Array<TlKeys>} */
     #keys = [];
 
     /** @type {Array<Port>} */
@@ -72,16 +72,16 @@ export class glTlAnimLine extends Events
     /** @type {EventListener[]} */
     #listeners = [];
 
-    /** @type {GlTlView} */
+    /** @type {tlView} */
     #view = null;
 
     /** @type {TlValueRuler} */
     #valueRuler = null;
 
-    /** @type {glTlAnimLine[]} */
+    /** @type {TlAnimLine[]} */
     childLines = [];
 
-    /** @type {glTlAnimLine} */
+    /** @type {TlAnimLine} */
     parentLine = null;
 
     #hidden = false;
@@ -106,6 +106,32 @@ export class glTlAnimLine extends Events
         this.#rectBg.setColorArray([1, 1, 1, 1]);
 
         this.#listeners.push(
+            this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
+            {
+                if (this.#glTl.isGraphLayout())
+                {
+                    this.#valueRuler = new TlValueRuler(glTl, this, this.#rectBg);
+                    this.#glTextSideValue = new GlText(this.#glTl.texts, "");
+                    this.#disposeRects.push(this.#glTextSideValue);
+                }
+                else
+                {
+                    if (this.#glTextSideValue) this.#glTextSideValue = this.#glTextSideValue.dispose();
+                    if (this.#valueRuler) this.#valueRuler = this.#valueRuler?.dispose();
+                }
+            }),
+
+            this.#rectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
+            {
+                if (this.#glTextSideValue)
+                {
+                    if (this.#keys.length < 1) return;
+
+                    this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#rectBg.y) * 1000) / 1000);
+                    this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
+                }
+            }),
+
             gui.on(Gui.EVENT_THEMECHANGED, () =>
             {
                 this.updateTheme();
@@ -141,7 +167,7 @@ export class glTlAnimLine extends Events
             this.#ops[i] = ports[i].op;
             this.#ports[i] = ports[i];
             if (this.#keys[i]) this.#keys[i].dispose();
-            this.#keys[i] = new glTlKeys(glTl, this, this.#ports[i].anim, this.#rectBg, this.#ports[i], this.#options, i);
+            this.#keys[i] = new TlKeys(glTl, this, this.#ports[i].anim, this.#rectBg, this.#ports[i], this.#options, i);
 
             const keys = this.#keys[i];
             const anim = ports[i].anim;
@@ -182,25 +208,6 @@ export class glTlAnimLine extends Events
         for (let i = 0; i < ports.length; i++)
             if (ports[i])
                 this.setTitle(i, ports[i], ports[i].anim, options.parentEle || this.#glTl.tlTimeScrollContainer);
-
-        if (this.isGraphLayout())
-        {
-            this.#valueRuler = new TlValueRuler(glTl, this, this.#rectBg);
-            this.#glTextSideValue = new GlText(this.#glTl.texts, "");
-            this.#disposeRects.push(this.#glTextSideValue);
-
-            this.#rectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
-            {
-                if (this.#keys.length < 1) return;
-
-                this.#glTextSideValue.text = String(Math.round(this.pixelToValue(this.height - y + this.#rectBg.y) * 1000) / 1000);
-                this.#glTextSideValue.setPosition(this.width - this.#glTextSideValue.width - 10, y - 20, -0.5);
-            });
-        }
-        else
-        {
-            this.#valueRuler?.dispose();
-        }
 
         if (this.#options.title)
             this.addTitle(null, null, options.parentEle || this.#glTl.tlTimeScrollContainer);
@@ -410,7 +417,7 @@ export class glTlAnimLine extends Events
         {
             for (let i = 0; i < this.#titles.length; i++)
             {
-                this.#titles[i]?.setHeight(glTlAnimLine.SIZES[0]);
+                this.#titles[i]?.setHeight(TlAnimLine.SIZES[0]);
             }
         }
         else
@@ -535,7 +542,7 @@ export class glTlAnimLine extends Events
 
     get drawAreaHeight()
     {
-        return this.pixelHeight - 4;// todo whyyyyyyyyyy
+        return this.pixelHeight - 4;// todo why
     }
 
     get height()
@@ -553,7 +560,7 @@ export class glTlAnimLine extends Events
         }
         else
         {
-            h = glTlAnimLine.SIZES[this.lineHeight];
+            h = TlAnimLine.SIZES[this.lineHeight];
         }
 
         if (this.pixelHeight == h) return;
@@ -801,7 +808,7 @@ export class glTlAnimLine extends Events
 
     testSelected()
     {
-        if (glTlKeys.dragStarted) return;
+        if (TlKeys.dragStarted) return;
         if (!this.#glTl.isSelecting()) return;
         for (let j = 0; j < this.#keys.length; j++) this.#keys[j].testSelected();
     }
@@ -812,7 +819,7 @@ export class glTlAnimLine extends Events
     }
 
     /**
-     * @param {glTlAnimLine} c
+     * @param {TlAnimLine} c
      */
     addFolderChild(c)
     {

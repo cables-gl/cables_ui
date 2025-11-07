@@ -4,7 +4,7 @@ import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
-import { glTlRuler } from "./gltlruler.js";
+import { glTlRuler } from "./tlruler.js";
 
 /**
  * gltl ruler display
@@ -13,7 +13,7 @@ import { glTlRuler } from "./gltlruler.js";
  * @class glTlRuler
  * @extends {Events}
  */
-export class glTlHead extends Events
+export class tlHead extends Events
 {
 
     /** @type {GlTimeline} */

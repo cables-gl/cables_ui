@@ -2,7 +2,7 @@ import { Anim } from "cables";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 
-export class GlTlView
+export class tlView
 {
 
     /** @type {GlTimeline} */

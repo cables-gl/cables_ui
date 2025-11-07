@@ -1,7 +1,7 @@
 import GlRect from "../gldraw/glrect.js";
 import { GlTimeline } from "./gltimeline.js";
-import { glTlAnimLine } from "./gltlanimline.js";
-import { GlTlView } from "./gltlview.js";
+import { TlAnimLine } from "./tlanimline.js";
+import { tlView } from "./tlview.js";
 
 export class TlValueRuler
 {
@@ -14,19 +14,19 @@ export class TlValueRuler
     /** @type {GlTimeline} */
     #glTl;
 
-    /** @type {GlTlView} */
+    /** @type {tlView} */
     #view;
 
     /** @type {GlRect[]} */
     #marker = [];
     #parentRect;
 
-    /** @type {glTlAnimLine} */
+    /** @type {TlAnimLine} */
     #animLine;
 
     /**
      * @param {GlTimeline} glTl
-     * @param {glTlAnimLine} animline
+     * @param {TlAnimLine} animline
      * @param {GlRect} parentRect
      */
     constructor(glTl, animline, parentRect)
