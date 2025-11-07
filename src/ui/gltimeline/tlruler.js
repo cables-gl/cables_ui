@@ -39,6 +39,7 @@ export class glTlRuler extends Events
 
     /** @type {GlText[]} */
     titles = [];
+    #currentFps = 30;
 
     /**
      * @param {GlTimeline} glTl
@@ -137,7 +138,6 @@ export class glTlRuler extends Events
     between(t, a, b)
     {
         const f = map(t, a, b, 0, 1);
-
         const f1 = map(f, 0, 0.25, 0, 1);
 
         return f1;
@@ -158,6 +158,9 @@ export class glTlRuler extends Events
 
         let mr = this.marks[this.count];
         let mheight = 7;
+
+        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+            if (title.includes(".")) return;
 
         if (showTitle)
         {
@@ -194,7 +197,11 @@ export class glTlRuler extends Events
 
     title(s)
     {
-        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) return Math.round(s * 100) / 100 * this.#glTl.fps + "f";
+        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
+        {
+            const fr = Math.round(s * 100) / 100 * this.#glTl.fps;
+            return fr + "f";
+        }
         return Math.round(s * 100) / 100 + "s";
     }
 
@@ -218,8 +225,14 @@ export class glTlRuler extends Events
 
         const dur = this.view.visibleTime;
 
-        const widthOneFrame = this.view.timeToPixel(1 / this.#glTl.fps);
+        if (this.#glTl.fps != this.#currentFps)
+        {
 
+        }
+        this.#currentFps = this.#glTl.fps;
+        console.log("text", this.#currentFps);
+
+        const widthOneFrame = this.view.timeToPixel(1 / this.#glTl.fps);
         const widthTenthSecond = this.view.timeToPixel(0.1);
         const widthHalfSecond = this.view.timeToPixel(0.5);
         const widthOneSecond = this.view.timeToPixel(1);
@@ -326,6 +339,7 @@ export class glTlRuler extends Events
             this.titles[i].setParentRect(null);
         }
 
+        // fadin frames...
         if (this.#glTl.cfg.fadeInFrames)
         {
             const oneframePixel = this.view.timeToPixel(1 / this.#glTl.fps);

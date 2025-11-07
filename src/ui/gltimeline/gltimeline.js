@@ -909,13 +909,20 @@ export class GlTimeline extends Events
      */
     _onCanvasDblClick(e)
     {
-        for (let i = 0; i < this.#tlAnims.length; i++)
-            if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
-            {
-                const anim = this.#tlAnims[i].anims[0];
-                const time = this.snapTime(this.view.pixelToTime(e.offsetX) + this.view.offset);
-                anim.setValue(time, anim.getValue(time));
-            }
+        if (this.scroll.isHovering())
+        {
+            this.zoomToFitAll();
+        }
+        else
+        {
+            for (let i = 0; i < this.#tlAnims.length; i++)
+                if (this.#tlAnims[i].isHovering() && this.#tlAnims[i] && this.#tlAnims[i].anims[0])
+                {
+                    const anim = this.#tlAnims[i].anims[0];
+                    const time = this.snapTime(this.view.pixelToTime(e.offsetX) + this.view.offset);
+                    anim.setValue(time, anim.getValue(time));
+                }
+        }
     }
 
     /**
@@ -965,7 +972,6 @@ export class GlTimeline extends Events
 
         if (event.buttons == this.buttonForPanning || this.#spacePressed && event.buttons == 1)
         {
-
             if (this.#lastDragX != Number.MAX_SAFE_INTEGER)
             {
                 const movementX = event.offsetX - this.#lastDragX;
@@ -973,7 +979,6 @@ export class GlTimeline extends Events
 
                 if (!this.isFreePanningMode())
                 {
-
                     this.tlTimeScrollContainer.scrollTop -= movementY;
                     if (movementX != 0) this.view.scroll(-this.view.pixelToTime(movementX), 0);
                 }
@@ -1025,8 +1030,7 @@ export class GlTimeline extends Events
                         if (this.#tlAnims[i].isHovering())
                         {
                             const t = this.snapTime(this.view.pixelToTime(x) + this.view.timeLeft);
-                            this.createKey(
-                                this.#tlAnims[i].anims[0], t, this.#tlAnims[i].anims[0].getValue(t));
+                            this.createKey(this.#tlAnims[i].anims[0], t, this.#tlAnims[i].anims[0].getValue(t));
                         }
                     }
                 }
@@ -1066,7 +1070,6 @@ export class GlTimeline extends Events
             this.#lastXnoButton = x;
             this.#lastYnoButton = y;
         }
-
     }
 
     /**
@@ -2056,6 +2059,12 @@ export class GlTimeline extends Events
         this.view.scrollTo(this.loopAreaStart - padd);
     }
 
+    zoomToFitAll()
+    {
+        this.view.setZoomLength(this.duration);
+        this.view.scrollTo(0);
+    }
+
     zoomToFitSelection()
     {
         const boundsy = this.getSelectedKeysBoundsValue();
@@ -2897,8 +2906,4 @@ export class GlTimeline extends Events
         CABLES.UI.PREVISKEYVAL = null;
     }
 
-    addUndoState(anims)
-    {
-
-    }
 }

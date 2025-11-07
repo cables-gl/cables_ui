@@ -205,6 +205,6 @@ export class tlOverview extends Events
 
     isHovering()
     {
-        return this.#bgRect.isHovering();
+        return this.#bgRect.isHovering() || this.#dragBar.isHovering;
     }
 }
