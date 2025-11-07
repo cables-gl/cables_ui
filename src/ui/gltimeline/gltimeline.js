@@ -4,7 +4,7 @@ import { FpsCounter } from "cables-corelibs";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { TlAnimLine } from "./tlanimline.js";
-import { tlScroll } from "./tlscroll.js";
+import { tlOverview } from "./tloverview.js";
 import { tlView } from "./tlview.js";
 import Gui, { gui } from "../gui.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
@@ -96,7 +96,7 @@ export class GlTimeline extends Events
     /** @type {} */
     ruler = null;
 
-    /** @type {tlScroll} */
+    /** @type {tlOverview} */
     scroll = null;
 
     /** @type {Array<TlAnimLine>} */
@@ -206,7 +206,7 @@ export class GlTimeline extends Events
         this.#rectsOver = new GlRectInstancer(cgl, { "name": "gltl rectsOver", "allowDragging": true });
 
         this.ruler = new tlHead(this);
-        this.scroll = new tlScroll(this);
+        this.scroll = new tlOverview(this);
 
         if (gui.patchView.store.getUiSettings())
             this.loadPatchData(gui.patchView.store.getUiSettings().timeline);
@@ -231,13 +231,11 @@ export class GlTimeline extends Events
         this.cursorVertLineRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorVert" });
         this.cursorVertLineRect.setSize(1, cgl.canvasHeight);
         this.cursorVertLineRect.setPosition(0, 0, -1);
-        this.setColorRectSpecial(this.cursorVertLineRect);
 
         this.cursorNewKeyVis = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "curcorKeyViz" });
         this.cursorNewKeyVis.setSize(5214, 1);
         this.cursorNewKeyVis.setPosition(0, 0, -1);
         this.cursorNewKeyVis.setColor(0, 0, 0);
-        this.setColorRectSpecial(this.cursorNewKeyVis);
 
         this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorTextBg" });
         this.#cursorTextBgRect.setSize(40, 20);
@@ -246,7 +244,6 @@ export class GlTimeline extends Events
 
         this.#cursorText = new GlText(this.textsNoScroll, "???");
         this.#cursorText.setParentRect(this.cursorVertLineRect);
-        this.setColorRectSpecial(this.#cursorText);
 
         this.#rectLoopArea = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "loopArea" });
         this.#rectLoopArea.setSize(40, 20);
@@ -550,6 +547,7 @@ export class GlTimeline extends Events
 
         });
 
+        this.updateTheme();
         this.init();
         this._initUserPrefs();
         this.updateParamKeyframes();
@@ -557,6 +555,10 @@ export class GlTimeline extends Events
 
     updateTheme()
     {
+        this.#cursorText.setColorArray(gui.theme.colors_timeline.cursor || [1, 1, 1, 1]);
+        this.cursorVertLineRect.setColorArray(gui.theme.colors_timeline.cursor || [1, 1, 1, 1]);
+        this.cursorNewKeyVis.setColorArray(gui.theme.colors_timeline.cursor || [1, 1, 1, 1]);
+
         this.selectedKeysDragArea.setColor(
             gui.theme.colors_timeline.key_selected[0],
             gui.theme.colors_timeline.key_selected[1],
@@ -851,7 +853,7 @@ export class GlTimeline extends Events
 
     getColorSpecial()
     {
-        return [0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1];
+        return gui.theme.colors_timeline.cursor || [0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1];
     }
 
     /**

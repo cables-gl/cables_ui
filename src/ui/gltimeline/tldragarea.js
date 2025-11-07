@@ -70,6 +70,8 @@ export class TlDragArea extends Events
         this.#rectRight.setSize(this.#handleWidth, this.height);
         if (parent) this.#rectRight.setParent(parent);
 
+        this.setColor(1, 0, 0, 1);
+
         this.#rectMove.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             gui.showInfo(GuiText.tlhover_keys_dragarea);
