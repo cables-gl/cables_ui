@@ -47,11 +47,13 @@ export class tlOverview extends Events
         this.#rulerBg.setSize(this.#width, this.height);
 
         this.#dragBar = new TlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
+
         this.#bgRect.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             gui.showInfo(GuiText.tlhover_scroll);
 
         });
+
         gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
             this.updateColors();

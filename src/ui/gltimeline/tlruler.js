@@ -169,7 +169,8 @@ export class glTlRuler extends Events
                 this.timeTitleLookup[s] = showTitle;
                 this.titles[this.titleCounter].text = String(title);// (Math.round(s * 100) / 100) + "s";
                 this.titles[this.titleCounter].setParentRect(this.#glRectBg);
-                this.titles[this.titleCounter].setPosition(x - this.titles[this.titleCounter].width / 2, 1);
+                this.titles[this.titleCounter].setPosition(x, 1);
+                if (this.titleCounter == 0) this.titles[this.titleCounter].setPosition(x + this.titles[this.titleCounter].width / 2, 1);
                 this.titles[this.titleCounter].setOpacity(showTitle);
                 this.titleCounter++;
             }

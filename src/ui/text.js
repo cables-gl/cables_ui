@@ -49,7 +49,7 @@ export const GuiText =
     "tlIpAbs": "Set keys to absolute easing",
     "tlIpCurves": "Set keys to predefined easing functions",
     "tlloopdelete": "Toggle loop area",
-    "tlfit": "Zoom to fit selected or all keys",
+    "tlfit": "`f` Zoom to fit selected or all keys",
     "tlmute": "Mute animation",
     "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='/docs/timeline'>read the documentation</a>",
 
