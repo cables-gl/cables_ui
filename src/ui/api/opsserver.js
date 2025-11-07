@@ -361,10 +361,7 @@ export default class ServerOps
     {
         options = options || { "openEditor": true };
 
-        // const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
         gui.savingTitleAnimStart("Cloning Op...");
-
-        // loadingModal.setTask("cloning " + oldname + " to " + name);
 
         const cloneRequest = {
             "opname": oldname,
