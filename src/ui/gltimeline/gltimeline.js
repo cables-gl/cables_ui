@@ -326,8 +326,8 @@ export class GlTimeline extends Events
         cgl.canvas.parentElement.appendChild(this.#elTimeDisplay);
         this.#elTimeDisplay.addEventListener(DomEvents.POINTER_ENTER, () =>
         {
-            this.refreshInfoOverlay();
-            gui.showInfo(GuiText.tlhover_display);
+            // this.refreshInfoOverlay();
+            // gui.showInfo(GuiText.tlhover_display);
         });
 
         this.#elTimeDisplay.addEventListener(DomEvents.POINTER_LEAVE, () =>
