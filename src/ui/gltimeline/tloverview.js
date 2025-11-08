@@ -2,11 +2,12 @@ import { Events, Logger } from "cables-shared-client/index.js";
 import { clamp } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import { TlDragArea } from "./tldragarea.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { GuiText } from "../text.js";
 
-export class tlScroll extends Events
+// overview
+export class tlOverview extends Events
 {
 
     /** @type {GlRect} */
@@ -35,26 +36,30 @@ export class tlScroll extends Events
     constructor(glTl)
     {
         super();
-        this._log = new Logger("gltlscroll");
+        this._log = new Logger("tlOverview");
         this.#glTl = glTl;
 
         this.#bgRect = this.#glTl.rectsNoScroll.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
-        this.#bgRect.setColor(0.2, 0.2, 0.2, 1);
         this.#bgRect.setSize(this.#width, this.height);
 
         this.#rulerBg = this.#glTl.rectsNoScroll.createRect({ "name": "scroll rulesbg", "draggable": false, "interactive": false });
-        this.#rulerBg.setColor(0.2, 0.2, 0.9, 1);
         this.#rulerBg.setPosition(0, 0, 0.1);
         this.#rulerBg.setSize(this.#width, this.height);
-        // this.ruler = new glTlRuler(glTl, this.#rulerBg, true);
-        // this.ruler.update();
 
         this.#dragBar = new TlDragArea(glTl, this.#bgRect, this.#glTl.rectsNoScroll);
+
         this.#bgRect.on(GlRect.EVENT_POINTER_HOVER, () =>
         {
             gui.showInfo(GuiText.tlhover_scroll);
 
         });
+
+        gui.on(Gui.EVENT_THEMECHANGED, () =>
+        {
+            this.updateColors();
+            this.update();
+            this.updateIndicators();
+        }),
 
         this.#dragBar.on(TlDragArea.EVENT_MOVE, (e) =>
         {
@@ -76,11 +81,19 @@ export class tlScroll extends Events
 
         this.#glRectCursor = this.#glTl.rectsNoScroll.createRect({ "name": "cursor", "draggable": false, "interactive": false });
         this.#glRectCursor.setSize(1, this.height);
-        this.#glRectCursor.setColor(0.02745098039215691, 0.968627450980392, 0.5490196078431373, 1);
         this.#glRectCursor.setPosition(0, 0, -0.1);
         this.#glRectCursor.setParent(this.#bgRect);
 
+        this.updateColors();
         this.update();
+    }
+
+    updateColors()
+    {
+
+        this.#glRectCursor.setColorArray(gui.theme.colors_timeline.cursor);
+        this.#dragBar.setColorArray(gui.theme.colors_timeline.overview_bar || [1, 1, 1, 1]);
+        this.#bgRect.setColorArray(gui.theme.colors_timeline.overview_background);
     }
 
     showAll()
@@ -110,8 +123,7 @@ export class tlScroll extends Events
 
                     for (let ki = 0; ki < ports[j].anim.keys.length; ki++)
                     {
-                        if (ports[j].anim.keys[ki].time >= stepSeconds * i &&
-                             ports[j].anim.keys[ki].time < stepSeconds * (i + 1))
+                        if (ports[j].anim.keys[ki].time >= stepSeconds * i && ports[j].anim.keys[ki].time < stepSeconds * (i + 1))
                         {
                             if (this.#glTl.isKeySelected(ports[j].anim.keys[ki]))
                             {
@@ -168,7 +180,10 @@ export class tlScroll extends Events
 
     update()
     {
-        const pixelVisible = this.#glTl.view.visibleTime * this.#glTl.view.pixelPerSecond;
+        // const pixelVisible = (this.#glTl.view.visibleTime / this.#glTl.duration) * (this.#width / this.#glTl.view.pixelPerSecond);
+
+        const pixelVisible = (this.#glTl.view.visibleTime) * this.#glTl.view.pixelPerSecond;
+        // console.log("this.#glTl.view.offset", this.#glTl.view.offset);
         let x = this.#glTl.view.offset * this.#glTl.view.pixelPerSecond;
         let cx = Math.ceil(gui.corePatch().timer.getTime() * this.#glTl.view.pixelPerSecond);
 
@@ -190,6 +205,6 @@ export class tlScroll extends Events
 
     isHovering()
     {
-        return this.#bgRect.isHovering();
+        return this.#bgRect.isHovering() || this.#dragBar.isHovering;
     }
 }

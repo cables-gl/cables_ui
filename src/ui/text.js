@@ -36,7 +36,7 @@ export const GuiText =
     "tlactive": "[LMB] toggle editable || [RMB] deactivate all others || `dblclick` activate all",
     "tlKeyIconParam": "[LMB] Create key - filled when key is exactly current cursor time",
 
-    "tlhover_scroll": "## Animation Overview \n\n * [DRAG_LMB] - Scroll vieport ",
+    "tlhover_scroll": "## Animation Overview \n\n * [DRAG_LMB] - Scroll viewport || `dblclick` zoom out ",
     "tlhover_ruler": "## Ruler \n\n * [DRAG_LMB] - set time || `mousewheel` zoom in/out ",
     "tlhover_animline": "## Anim Line \n\n * `double click` Create key || [DRAG_LMB] Select keys || `j/k` Jump prev/next keys || `f` Fit keys to screel || `c` Center cursor",
     "tlhover_title": "## anim line title \n\n * [LMB] Click to focus op || `doubleclick` select all keys",
@@ -49,7 +49,7 @@ export const GuiText =
     "tlIpAbs": "Set keys to absolute easing",
     "tlIpCurves": "Set keys to predefined easing functions",
     "tlloopdelete": "Toggle loop area",
-    "tlfit": "Zoom to fit selected or all keys",
+    "tlfit": "`f` Zoom to fit selected or all keys",
     "tlmute": "Mute animation",
     "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='/docs/timeline'>read the documentation</a>",
 
