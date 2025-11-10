@@ -578,7 +578,7 @@ body
         background-color: var(--color-07);
         mask-repeat: no-repeat;
         display: block;
-        z-index: $zindex_lowest;
+        z-index: $zindex_over;
     }
 
     .shaderErrorCode
