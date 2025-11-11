@@ -1527,7 +1527,7 @@ export class GlTimeline extends Events
         {
             let delta = -1.0;
             if (event.deltaY > 0) delta = 1.0;
-            this.tlTimeScrollContainer.scrollTop += event.deltaX;
+            this.tlTimeScrollContainer.scrollTop += delta;
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
