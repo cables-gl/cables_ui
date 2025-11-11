@@ -1520,8 +1520,8 @@ export class GlTimeline extends Events
         else if (event.shiftKey && this.isGraphLayout())
         {
             let delta = 0.7;
-            if (event.wheelDelta > 0) delta = 1.3;
-            this.view.scaleValues(delta * 2);
+            if (event.wheelDelta < 0) delta = 1.3;
+            this.view.scaleValues(delta);
         }
         else if (event.shiftKey && !this.isGraphLayout())
         {
