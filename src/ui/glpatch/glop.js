@@ -1472,6 +1472,7 @@ export default class GlOp extends Events
                         this.#glPorts[i].updateSize();
 
                     if (this.#op) this.#op.setUiAttrib({ "height": h, "width": w });
+                    if (this.#op) this.#op.emitEvent("resize", { "height": h, "width": w });
                     this.updateSize();
                 }
             });

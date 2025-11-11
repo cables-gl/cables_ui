@@ -320,13 +320,12 @@ export class TlAnimLine extends Events
      */
     activateSelectedOps(ops)
     {
-        console.log("olds", ops);
         for (let i = 0; i < this.#ports.length; i++)
         {
             const act = (ops.indexOf(this.#ports[i].op) != -1);
 
             if (act) this.#titles[0].scrollIntoView();
-            this.#ports[i].anim.tlActive = act;
+            if (this.#ports[i].anim) this.#ports[i].anim.tlActive = act;
         }
     }
 
