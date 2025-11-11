@@ -39,7 +39,6 @@ export class glTlRuler extends Events
 
     /** @type {GlText[]} */
     titles = [];
-    #currentFps = 30;
 
     /**
      * @param {GlTimeline} glTl
@@ -224,13 +223,6 @@ export class glTlRuler extends Events
         const timeRightDay = Math.ceil(this.view.timeRight / (24 * 3600)) * (24 * 3600);
 
         const dur = this.view.visibleTime;
-
-        if (this.#glTl.fps != this.#currentFps)
-        {
-
-        }
-        this.#currentFps = this.#glTl.fps;
-        console.log("text", this.#currentFps);
 
         const widthOneFrame = this.view.timeToPixel(1 / this.#glTl.fps);
         const widthTenthSecond = this.view.timeToPixel(0.1);

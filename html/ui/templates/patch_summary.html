@@ -99,9 +99,12 @@
 
 {{#if sameHost}}
 {{else}}
-    <div class="warning-error warning-error-level0">
-        Patch was last saved on a different environment: <a class="link" href="{{patchHost}}" target="top">{{patchHost}}</a>
-    </div>
+    {{#if project.summary.exampleForOps }}
+    {{else}}
+        <div class="warning-error warning-error-level0">
+            Patch was last saved on a different environment: <a class="link" href="{{patchHost}}" target="top">{{patchHost}}</a>
+        </div>
+    {{/if}}
 {{/if}}
 
 
