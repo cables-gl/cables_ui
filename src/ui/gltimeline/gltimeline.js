@@ -1525,18 +1525,17 @@ export class GlTimeline extends Events
         }
         else if (event.shiftKey && !this.isGraphLayout())
         {
+            let delta = -1.0;
+            if (event.deltaY > 0) delta = 1.0;
             this.tlTimeScrollContainer.scrollTop += event.deltaX;
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
-            let delta = 0;
+            let delta = 0.7;
             if (event.deltaY > 0) delta = 1.3;
-            else delta = 0.7;
 
             this.view.setZoomOffsetWheel(delta, event);
 
-            if (event.deltaY > 0) delta = 1;
-            else delta = -1;
         }
 
         this.setHoverKeyRect(null);
