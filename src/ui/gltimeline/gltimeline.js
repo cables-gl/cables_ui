@@ -1519,15 +1519,15 @@ export class GlTimeline extends Events
         }
         else if (event.shiftKey && this.isGraphLayout())
         {
-            let v = 1.3;
-            if (event.deltaX < 0)v = 0.7;
-            this.view.scaleValues(v);
+            let delta = 0.7;
+            if (event.deltaX > 0) delta = 1.3;
+            this.view.scaleValues(delta * 2);
         }
         else if (event.shiftKey && !this.isGraphLayout())
         {
-            let delta = -1.0;
-            if (event.deltaY > 0) delta = 1.0;
-            this.tlTimeScrollContainer.scrollTop += delta;
+            let delta = -1;
+            if (event.deltaX > 0) delta = 1;
+            this.tlTimeScrollContainer.scrollTop += delta * 9;
         }
         else if (Math.abs(event.deltaY) > Math.abs(event.deltaX))
         {
