@@ -1,4 +1,4 @@
-import { Logger, Events, ele } from "cables-shared-client";
+import { Logger, Events, ele, TalkerAPI } from "cables-shared-client";
 import { Patch, now } from "cables";
 import { CgShader } from "cables-corelibs";
 import defaultTheme from "./defaulttheme.json";
@@ -1139,7 +1139,7 @@ export default class Gui extends Events
             "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (randomize || name) platform.talkerAPI.send("newPatch", { "name": name });
+                if (randomize || name) platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, { "name": name });
             }
         });
     }
@@ -1291,7 +1291,7 @@ export default class Gui extends Events
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
 
-        platform.talkerAPI.send("fileConvert",
+        platform.talkerAPI.send(TalkerAPI.CMD_CONVERT_FILE,
             {
                 "fileId": fileId,
                 "converterId": converterId,
@@ -1348,7 +1348,7 @@ export default class Gui extends Events
         navCablesLogo.addEventListener("pointerenter", () =>
         {
             if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
-            platform.talkerAPI.send("getRecentPatches", {}, (_err, r) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (_err, r) =>
             {
 
                 lastTimeRecent = performance.now();

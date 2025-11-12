@@ -1,4 +1,4 @@
-import { Logger, Events } from "cables-shared-client";
+import { Logger, Events, TalkerAPI } from "cables-shared-client";
 import PacoConnector from "./sc_paconnector.js";
 
 import ScState from "./sc_state.js";
@@ -606,7 +606,7 @@ export default class ScConnection extends Events
                             gui.patchView.store.checkUpdated(null, false, true);
 
                             gui.savedState.setSavedAll("force reload");
-                            if (!document.hidden) platform.talkerAPI.send("reload");
+                            if (!document.hidden) platform.talkerAPI.send(TalkerAPI.CMD_RELOAD_PATCH);
 
                             break;
                         }

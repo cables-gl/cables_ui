@@ -1,4 +1,4 @@
-import { Events, Logger, ele } from "cables-shared-client";
+import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import subPatchOpUtil from "../subpatchop_util.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -199,7 +199,7 @@ export default class SavedState extends Events
     {
         if (this.isSaved)
         {
-            if (this._talkerState != this.isSaved) platform.talkerAPI.send("setIconSaved");
+            if (this._talkerState != this.isSaved) platform.talkerAPI.send(TalkerAPI.CMD_SET_ICON_SAVED);
             this._talkerState = this.isSaved;
 
             const elePatchName = ele.byId("patchname");
@@ -212,7 +212,7 @@ export default class SavedState extends Events
         }
         else
         {
-            if (this._talkerState != this.isSaved) platform.talkerAPI.send("setIconUnsaved");
+            if (this._talkerState != this.isSaved) platform.talkerAPI.send(TalkerAPI.CMD_SET_ICON_UNSAVED);
             this._talkerState = this.isSaved;
 
             ele.byId("patchname").classList.add("warning");

@@ -6,6 +6,8 @@
 </body>
 <script>
     "use strict";
+    import { TalkerAPI } from "cables-shared-client";
+
     var CABLESUILOADER = CABLESUILOADER || {};
     var CABLES = CABLES || {};
 
@@ -125,7 +127,7 @@
             incrementStartup();
             logStartup("loaded ui");
 
-            CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
+            CABLESUILOADER.talkerAPI.send(TalkerAPI.CMD_GET_ALL_OPDOCS, { "projectId": cfg.patchId }, (err, _data) =>
             {
                 if (err)
                 {
@@ -174,7 +176,7 @@
             document.getElementById("loadingstatusLog").innerHTML += "error: could not get response from talker api. editor not in iframe? <br/>";
         },1000);
 
-        CABLESUILOADER.talkerAPI.send("requestPatchData", {}, function (response)
+        CABLESUILOADER.talkerAPI.send(CABLESUILOADER.talkerAPI.CMD_REQUEST_PATCH_DATA, {}, function (response)
         {
             clearTimeout(reqTimeout);
 

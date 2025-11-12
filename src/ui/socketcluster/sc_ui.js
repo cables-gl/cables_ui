@@ -1,3 +1,4 @@
+import { TalkerAPI } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -19,7 +20,7 @@ export default class ScUi
         {
             this._connection.on("createdSubPatchOp", (_msg) =>
             {
-                platform.talkerAPI.send("reload");
+                platform.talkerAPI.send(TalkerAPI.CMD_RELOAD_PATCH);
             });
         }
         else

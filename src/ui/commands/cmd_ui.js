@@ -1,3 +1,4 @@
+import { TalkerAPI } from "cables-shared-client";
 import GpuProfiler from "../components/tabs/tab_gpuprofiler.js";
 import Preferences from "../components/tabs/tab_preferences.js";
 import ChangelogToast from "../dialogs/changelog.js";
@@ -218,7 +219,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
 CABLES_CMD_UI.welcomeTab = function (userInteraction)
 {
-    platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+    platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (err, r) =>
     {
         const t = new WelcomeTab(gui.mainTabs, { "patches": r });
         gui.mainTabs.activateTab(t.id);

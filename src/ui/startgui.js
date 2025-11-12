@@ -1,4 +1,4 @@
-import { ele, HandlebarsHelper } from "cables-shared-client";
+import { ele, HandlebarsHelper, TalkerAPI } from "cables-shared-client";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui, { gui } from "./gui.js";
@@ -56,7 +56,7 @@ export default function startUi(cfg)
             return;
         }
 
-        platform.talkerAPI.send("getPatchSummary", {}, (err, summary) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_PATCH_SUMMARY, {}, (err, summary) =>
         {
             if (err)
                 console.log("error in summary", err);
