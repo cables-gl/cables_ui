@@ -212,7 +212,6 @@ export default class VizLayer extends Events
                     "vizLayer": this,
                     "pixelDensity": window.devicePixelRatio
                 };
-
                 if (!item.op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < item.op.uiAttribs.vizLayerMaxZoom)
                     if (pos[0] === pos[0] && size[0] === size[0])
                     {

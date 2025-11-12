@@ -572,7 +572,7 @@ export class TlKeys extends Events
             if (k.cp2r) k.cp2r.setShape(shape);
 
             let col = this.getKeyColor(keyIsselected, this.#hasSelectedKeys, hovering, readonly);
-            keyRect.setColorArray(col);
+            if (keyRect)keyRect.setColorArray(col);
         }
 
         perf.finish();
