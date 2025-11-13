@@ -51,7 +51,7 @@ export const GuiText =
     "tlloopdelete": "Toggle loop area",
     "tlfit": "`f` Zoom to fit selected or all keys",
     "tlmute": "Mute animation",
-    "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='/docs/timeline'>read the documentation</a>",
+    "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='https://cables.gl/docs/2_1_timeline/animation'>read the documentation</a>",
 
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",

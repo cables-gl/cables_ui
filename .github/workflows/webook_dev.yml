@@ -13,7 +13,7 @@ jobs:
     - name: notify dev
       uses: distributhor/workflow-webhook@v3
       with:
-        curl_opts: "--retry 5 --retry-all-errors"
+        curl_opts: "--retry 5 --retry-delay 10 --retry-all-errors"
         webhook_type: "json-extended"
         webhook_url: "https://dev.cables.gl/api/webhooks/updateui?secret=${{ secrets.WEBHOOK_SECRET }}"
         webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
