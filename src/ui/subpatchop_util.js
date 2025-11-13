@@ -1,6 +1,6 @@
 import { Logger, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
-import { nl } from "cables-corelibs/cgl/constants.js";
+import { nl } from "cables-corelibs/cg/constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -712,8 +712,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
             gui.jobs().finish("updateSubPatchOpAttachment");
             if (err)
             {
-                gui.serverOps.showApiError(err);
-                notifyError("Could not save " + newOp.objName, "", { "force": true });
+                notifyError("Could not save " + newOp.objName, err.msg, { "force": true });
             }
             else
             {
