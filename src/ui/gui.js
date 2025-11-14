@@ -112,7 +112,7 @@ export default class Gui extends Events
 
         this._log = new Logger("gui");
 
-        /** @type {CablesTheme} */
+        /** @type {import("./theme.js").CablesTheme} */
         this.theme = defaultTheme;
 
         /** @type {ServerOps} */

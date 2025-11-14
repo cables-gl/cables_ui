@@ -13,7 +13,7 @@ import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
 import { TlKey } from "./tlkey.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 
 /**
  * gltl key rendering
@@ -25,6 +25,8 @@ import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 export class TlKeys extends Events
 {
     static ZPOS_BEZIER = -0.6;
+
+    #log = new Logger("gltlKeys");
 
     /** @type {Anim} */
     #anim = null;
@@ -93,10 +95,9 @@ export class TlKeys extends Events
     constructor(glTl, animLine, anim, parentRect, port, options, idx)
     {
         super();
-        this._log = new Logger("gltlKeys");
-        if (!anim) this._log.error("no anim");
-        if (!parentRect) this._log.error("no parentRect");
-        if (!port) this._log.error("no port");
+        if (!anim) this.#log.error("no anim");
+        if (!parentRect) this.#log.error("no parentRect");
+        if (!port) this.#log.error("no port");
         this.#anim = anim;
 
         this.#idx = idx;
@@ -484,8 +485,6 @@ export class TlKeys extends Events
     {
         let c = gui.theme.colors_timeline.key || [1, 1, 1, 1];
         if (isSelected)c = gui.theme.colors_timeline.key_selected || [1, 1, 1, 1];
-        // if (isSelected)c = gui.theme.colors_timeline.key_selected || [1, 1, 1, 1];
-
         if (readonly)c = gui.theme.colors_timeline.key_readonly || [1, 1, 1, 1];
 
         return c;

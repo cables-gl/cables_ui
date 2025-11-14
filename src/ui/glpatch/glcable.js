@@ -5,7 +5,7 @@ import GlPort from "./glport.js";
 import Gui, { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
 import GlLink from "./gllink.js";
 

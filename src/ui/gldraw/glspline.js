@@ -1,5 +1,5 @@
 import GlRect from "./glrect.js";
-import GlSplineDrawer from "./glsplinedrawer.js";
+import { GlSplineDrawer } from "./glsplinedrawer.js";
 
 export default class GlSpline
 {

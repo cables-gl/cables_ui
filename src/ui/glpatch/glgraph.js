@@ -1,4 +1,4 @@
-import GlSplineDrawer from "../gldraw/glsplinedrawer";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer";
 
 export default class GlGraph
 {

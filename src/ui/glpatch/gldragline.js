@@ -4,7 +4,7 @@ import MouseState from "./mousestate.js";
 import Gui, { gui } from "../gui.js";
 import GlPort from "./glport.js";
 import GlPatch from "./glpatch.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
 
 /**

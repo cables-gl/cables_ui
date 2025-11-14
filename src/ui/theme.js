@@ -1,6 +1,129 @@
 import Gui, { gui } from "./gui.js";
 import defaultTheme from "./defaulttheme.json";
 
+/**
+ * @typedef CablesTheme
+ * @property {theme_colors_types} colors_types
+ * @property {theme_colors_namespaces} colors_namespaces
+ * @property {theme_textedit} textedit
+ * @property {theme_colors_timeline} colors_timeline
+ * @property {theme_colors_patch} colors_patch
+ * @property {theme_colors_html} colors_html
+ * @property {theme_patch} patch
+ * @property {theme_colors_vizlayer} colors_vizlayer
+ */
+/**
+ * @typedef theme_colors_types
+ * @property {Number[]} trigger
+ * @property {Number[]} trigger_inactive
+ * @property {Number[]} num
+ * @property {Number[]} num_inactive
+ * @property {Number[]} obj
+ * @property {Number[]} obj_inactive
+ * @property {Number[]} string
+ * @property {Number[]} string_inactive
+ * @property {Number[]} array
+ * @property {Number[]} array_inactive
+ * @property {Number[]} dynamic
+ */
+/**
+ * @typedef theme_colors_namespaces
+ * @property {Number[]} unknown
+ * @property {Number[]} Ops.Dev
+ * @property {Number[]} Ops.Ui
+ * @property {Number[]} Ops.Vars
+ * @property {Number[]} Ops.Patch
+ * @property {Number[]} Ops.Cables
+ * @property {Number[]} Ops.Array
+ * @property {Number[]} Ops.Arrays
+ * @property {Number[]} Ops.Points
+ * @property {Number[]} Ops.String
+ * @property {Number[]} Ops.Website
+ * @property {Number[]} Ops.Math
+ * @property {Number[]} Ops.Boolean
+ * @property {Number[]} Ops.Date
+ * @property {Number[]} Ops.Color
+ * @property {Number[]} Ops.Time
+ * @property {Number[]} Ops.Anim
+ * @property {Number[]} Ops.Number
+ * @property {Number[]} Ops.Sidebar
+ * @property {Number[]} Ops.Json
+ * @property {Number[]} Ops.Html
+ * @property {Number[]} Ops.Net
+ * @property {Number[]} Ops.WebAudio
+ * @property {Number[]} Ops.Gl
+ * @property {Number[]} Ops.Trigger
+ * @property {Number[]} Ops.Graphics
+ */
+/**
+ * @typedef theme_textedit
+ */
+/**
+ * @typedef theme_colors_timeline
+ * @property {Number[]} background
+ * @property {Number[]} background_hover
+ * @property {Number[]} overview_background
+ * @property {Number[]} overview_bar
+ * @property {Number[]} cursor
+ * @property {Number[]} key_cliparea
+ * @property {Number[]} key_bezier
+ * @property {Number[]} key
+ * @property {Number[]} key_selected
+ * @property {Number[]} spline
+ * @property {Number[]} spline_hover
+ * @property {Number[]} spline_selectedkeys
+ * @property {Number[]} spline_outside
+ * @property {Number[]} spline_outside_hover
+ * @property {Number[]} spline_outside_selectedkeys
+ * @property {Number[]} key_readonly
+ * @property {Number[]} spline_readonly
+ * @property {Number[]} spline_outside_readonly
+ * @property {Number[]} ruler_frames
+ * @property {Number[]} ruler_background
+ * @property {Number[]} ruler_tick
+ * @property {Number[]} ruler_text
+ */
+/**
+ * @typedef theme_colors_patch
+ * @property {Number[]} opBgRectSelected
+ * @property {Number[]} selected
+ * @property {Number[]} selectedCable
+ * @property {Number[]} patchSelectionArea
+ * @property {Number[]} opTitleExt
+ * @property {Number[]} background
+ * @property {Number[]} opBoundsRect
+ * @property {Number[]} opBgRect
+ * @property {Number[]} opErrorWarning
+ * @property {Number[]} opError
+ * @property {Number[]} opErrorHint
+ * @property {Number[]} opNotWorkingCross
+ * @property {Number[]} patchComment
+ */
+/**
+ * @typedef theme_colors_html
+ * @property {Number[]} text-color
+ */
+/**
+ * @typedef theme_patch
+ * @property {number} selectedOpBorderX
+ * @property {number} selectedOpBorderY
+ * @property {number} cablesWidth
+ * @property {number} cablesWidthSelected
+ * @property {number} cablesCurveY
+ * @property {number} cablesSubDivde
+ * @property {number} opStateIndicatorSize
+ * @property {number} fadeOutDistStart
+ * @property {number} fadeOutFadeDist
+ * @property {number} fadeOutFadeOpacity
+ * @property {number} cableButtonSize
+ */
+/**
+ * @typedef theme_colors_vizlayer
+ * @property {Number[]} colorText
+ * @property {Number[]} colorBackground
+ * @property {Number[]} colorLineNumbers
+ */
+
 export class CssClassNames
 {
     static BUTTON_SMALL = "button-small";
@@ -20,54 +143,6 @@ export class DomEvents
     static POINTER_WHEEL = "wheel";
 }
 
-/**
- * @typedef cbltheme_colors_patch
- * @property {number[]} opBgRectSelected
- * @property {number[]} selected
- * @property {number[]} selectedCable
- * @property {number[]} patchSelectionArea
- * @property {number[]} opTitleExt
- * @property {number[]} background
- * @property {number[]} opBoundsRect
- * @property {number[]} opBgRect
- * @property {number[]} opErrorWarning
- * @property {number[]} opError
- * @property {number[]} opErrorHint
- * @property {number[]} opNotWorkingCross
- * @property {number[]} patchComment
- */
-
-/**
- * @typedef cbltheme_colors_vizlayer
- * @property {number[]} colorText
- * @property {number[]} colorBackground
- * @property {number[]} colorLineNumbers
- */
-
-/**
- * @typedef CablesTheme
- * @property {cbltheme_colors_patch} [colors_patch]
- * @property {cbltheme_colors_vizlayer} [colors_patch]
- * @property {object} [colors]
- * @property {object} [colors_patch]
- * @property {object} [colors_textedit]
- * @property {object} [colors_html]
- * @property {object} [colors_vizlayer]
- * @property {object} [colors_timeline]
- * @property {colors_types} [colors_types]
- * @property {object} [colors_namespaces]
- * @property {object} [patch]
- */
-/**
- * @typedef colors_types
- * @property {array} [num]
- * @property {array} [string]
- * @property {array} [array]
- * @property {array} [trigger]
- * @property {array} [obj]
- */
-
-/** @param {CablesTheme} theme */
 export function setUpTheme(theme = {})
 {
     if (!theme) return;
