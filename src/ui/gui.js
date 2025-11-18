@@ -889,7 +889,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        this._corePatch.cgl.updateSize();
+        if (this.corePatch().cgl) this._corePatch.cgl.updateSize();
         if (document.activeElement == document.body) gui.patchView.focus();
 
         perf.finish();
@@ -1891,7 +1891,8 @@ export default class Gui extends Events
                 const repos = branches[branch].join(" and ");
                 msg += repos + " on " + branch;
             }
-            this._log.error(msg);
+            // this._log.error(msg);
+            notifyError("git branches", msg);
         }
 
         gui.savedState.setSavedAll("showUiElements");
