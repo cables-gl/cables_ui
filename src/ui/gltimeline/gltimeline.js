@@ -10,7 +10,7 @@ import Gui, { gui } from "../gui.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlText from "../gldraw/gltext.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";

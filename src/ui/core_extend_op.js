@@ -15,7 +15,7 @@ CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
 /**
- * @extends Op<UiPatch>
+ * @extends Op
  */
 class UiOp extends Op
 {

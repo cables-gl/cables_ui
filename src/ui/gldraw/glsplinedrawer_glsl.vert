@@ -63,8 +63,8 @@ void main()
     texCoord=vec2(0.0,(vPosition.y+1.0)/2.0);
 
     vec4 pos=vec4(vPosition, 1.0);
-    vec4 finalPosition  =  (vec4(spline2,1.0));
-    vec4 finalPosition2 =  (vec4(spline3,1.0));
+    vec4 finalPosition = (vec4(spline2,1.0));
+    vec4 finalPosition2 = (vec4(spline3,1.0));
 
     if(finalPosition.x==0.0 && finalPosition.y==0.0 && finalPosition.z==0.0)
     {
