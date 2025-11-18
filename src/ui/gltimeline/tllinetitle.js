@@ -183,7 +183,7 @@ export class TlTitle extends Events
         this.#gltl.unSelectAllKeys();
         // this.#gltl.deactivateAllAnims(true);
         const keys = this.animLine.getGlKeysForAnim(this.#anim);
-        keys.selectAll();
+        keys?.selectAll();
     }
 
     /**
