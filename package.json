@@ -48,7 +48,8 @@
         "webpack-bundle-analyzer": "4.10.2"
     },
     "scripts": {
-        "start": "gulp",
+        "start": "gulp watch",
+        "watch": "gulp watch",
         "build": "gulp build",
         "build:live": "gulp build",
         "svgcss": "gulp svgcss",
