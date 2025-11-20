@@ -35,8 +35,6 @@ export class GlLineDrawer extends Events
     #geom;
     static EVENT_CLEARED = "clear";
 
-    width = 3;
-
     /** @type {GlSplineObject[]} */
     #splines;
     #cgl;
@@ -74,7 +72,6 @@ export class GlLineDrawer extends Events
     #colors;
     #uniscrollX;
     #uniscrollY;
-    #uniWidthSelected;
     #uniZoom;
     #uniTime;
     #uniFadeoutOptions;
@@ -110,7 +107,6 @@ export class GlLineDrawer extends Events
         this.#uniResY = new Uniform(this.#shader, "f", "resY", 0);
         this.#uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this.#uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
-        this.#uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", 1.5);
         this.#uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
         this.#uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
 
@@ -120,14 +116,12 @@ export class GlLineDrawer extends Events
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
             console.log("userset", which);
-            if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * 0.5 + 1);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
-            // this.#uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
             this.#uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
     }
@@ -207,7 +201,6 @@ export class GlLineDrawer extends Events
 
             this.#uniFadeoutOptions.set(fadeOutOpts);
 
-            // this.#cgl.gl.clear(this.#cgllineWidth.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
             if (this.#points.length > 0)
             {
                 // this.#cgl.gl.lineWidth(1);
