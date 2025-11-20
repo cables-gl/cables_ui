@@ -48,6 +48,11 @@ export default class GlCanvas
         });
 
         this.cgl = this.patch.cgl;
+        if (!this.cgl)
+        {
+            console.error("no cgl in glcanvas constructor");
+
+        }
         this.cgl.pixelDensity = window.devicePixelRatio || 1;
         this.cgl.updateSize();
 
