@@ -5,7 +5,7 @@ import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 
 /**
@@ -75,7 +75,7 @@ export default class GlViewBox
 
         // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
-        userSettings.on("change", (which, _v) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (which, _v) =>
         {
             this.wheelMode = userSettings.get("patch_wheelmode");
         });

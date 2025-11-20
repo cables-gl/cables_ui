@@ -18,7 +18,7 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { CmdOp } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
@@ -407,7 +407,7 @@ export default class GlPatch extends Events
 
         this.vizLayer = new VizLayer(this);
 
-        userSettings.on("change", (key, value) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (key, value) =>
         {
             this.dblClickAction = userSettings.get("doubleClickAction");
             this.vizFlowMode = userSettings.get("glflowmode");

@@ -3,7 +3,7 @@ import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { Events } from "cables-shared-client";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
@@ -104,7 +104,7 @@ export class GlSplineDrawer extends Events
         this.#shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
         this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
 
-        userSettings.on("change", (which, val) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);

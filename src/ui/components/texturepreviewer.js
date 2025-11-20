@@ -6,7 +6,7 @@ import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
-import { userSettings } from "./usersettings.js";
+import UserSettings, { userSettings } from "./usersettings.js";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;
@@ -44,7 +44,7 @@ export default class TexturePreviewer
         this._ele = document.getElementById("bgpreview");
         this.setSize();
 
-        userSettings.on("change", (key, v) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
             if (key == "texpreviewSize") this.setSize(userSettings.get(key));

@@ -3,13 +3,14 @@ import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { Events } from "cables-shared-client";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlLineDrawerFrag from "./gllinedrawer_glsl.frag";
 import srcShaderGlLineDrawerVert from "./gllinedrawer_glsl.vert";
 import GlCanvas from "./glcanvas.js";
 import GlUiCanvas from "../glpatch/gluicanvas.js";
 import GlSpline from "./glspline.js";
+import GlPatch from "../glpatch/glpatch.js";
 
 /**
  * @typedef GlSplineObject
@@ -71,6 +72,13 @@ export class GlLineDrawer extends Events
 
     /** @type {Float32Array} */
     #colors;
+    #uniscrollX;
+    #uniscrollY;
+    #uniWidthSelected;
+    #uniZoom;
+    #uniTime;
+    #uniFadeoutOptions;
+    #uniMousePos;
 
     /**
      * @param {CglContext} cgl
@@ -96,31 +104,31 @@ export class GlLineDrawer extends Events
         // this.#shader.setSource(Shader.getDefaultVertexShader(), Shader.getDefaultFragmentShader(1, 0, 0));
         this.#shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
 
-        this._uniTime = new Uniform(this.#shader, "f", "time", 0);
-        this._uniZoom = new Uniform(this.#shader, "f", "zoom", 0);
+        this.#uniTime = new Uniform(this.#shader, "f", "time", 0);
+        this.#uniZoom = new Uniform(this.#shader, "f", "zoom", 0);
         this.#uniResX = new Uniform(this.#shader, "f", "resX", 0);
         this.#uniResY = new Uniform(this.#shader, "f", "resY", 0);
-        this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
-        this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
-        this._uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", 1);
-
-        this._uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
-
-        this._uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
+        this.#uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
+        this.#uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
+        this.#uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", 1.5);
+        this.#uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
+        this.#uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
 
         this.#shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
         this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
 
-        userSettings.on("change", (which, val) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
+            console.log("userset", which);
+            if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * 0.5 + 1);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
-            this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
-            this._uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
+            // this.#uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
+            this.#uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
     }
 
@@ -189,15 +197,15 @@ export class GlLineDrawer extends Events
 
             this.#uniResX.set(resX);
             this.#uniResY.set(resY);
-            this._uniscrollX.set(scrollX);
-            this._uniscrollY.set(scrollY);
-            this._uniZoom.set(1.0 / zoom);
-            this._uniTime.set(performance.now() / 1000);
+            this.#uniscrollX.set(scrollX);
+            this.#uniscrollY.set(scrollY);
+            this.#uniZoom.set(1.0 / zoom);
+            this.#uniTime.set(performance.now() / 1000);
 
             const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
             if (zoom > 1400)fadeOutOpts[3] = utils.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
 
-            this._uniFadeoutOptions.set(fadeOutOpts);
+            this.#uniFadeoutOptions.set(fadeOutOpts);
 
             // this.#cgl.gl.clear(this.#cgllineWidth.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
             if (this.#points.length > 0)
@@ -231,15 +239,15 @@ export class GlLineDrawer extends Events
 
             this.#uniResX.set(resX);
             this.#uniResY.set(resY);
-            this._uniscrollX.set(scrollX);
-            this._uniscrollY.set(scrollY);
-            this._uniZoom.set(1.0 / zoom);
-            this._uniTime.set(performance.now() / 1000);
+            this.#uniscrollX.set(scrollX);
+            this.#uniscrollY.set(scrollY);
+            this.#uniZoom.set(1.0 / zoom);
+            this.#uniTime.set(performance.now() / 1000);
 
             const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
             if (zoom > 1400)fadeOutOpts[3] = utils.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
 
-            this._uniFadeoutOptions.set(fadeOutOpts);
+            this.#uniFadeoutOptions.set(fadeOutOpts);
 
             // console.log(this.#mesh.geom);
             if (this.#points.length > 0) this.#mesh.render(this.#shader);

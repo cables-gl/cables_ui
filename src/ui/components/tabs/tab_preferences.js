@@ -4,7 +4,7 @@ import { gui } from "../../gui.js";
 import { GuiText } from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
-import { userSettings } from "../usersettings.js";
+import UserSettings, { userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import GlPatch from "../../glpatch/glpatch.js";
@@ -124,7 +124,7 @@ export default class Preferences
         this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
 
         this.setSwitchValue("ace_keymode", userSettings.get("ace_keymode") || "");
-        this.setSwitchValue("glcablewidth", userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) || 3);
+        this.setSwitchValue(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH, userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) || 3);
 
         if (platform.frontendOptions.selectableDownloadPath)
         {
@@ -189,7 +189,7 @@ export default class Preferences
             userSettings.reset();
         });
 
-        userSettings.on("change", () =>
+        userSettings.on(UserSettings.EVENT_CHANGE, () =>
         {
             this.updateValues();
         });
