@@ -60,12 +60,13 @@ export default class CanvasUi
 
         this.canvasEle = this._cg.canvas;
 
-        cg.on("resize", () =>
-        {
-            this.updateSizeDisplay();
-        });
+        if (cg.on)
+            cg.on("resize", () =>
+            {
+                this.updateSizeDisplay();
+            });
 
-        cg.fpsCounter.on("performance", (perf) =>
+        cg.fpsCounter?.on("performance", (perf) =>
         {
             const p = gui.uiProfiler.start("[canvasUi] on performance");
 
