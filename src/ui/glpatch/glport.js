@@ -464,10 +464,8 @@ export default class GlPort
         else if (type == portType.dynamic) portname = "dynamic";
 
         let coll = [1, 0.9, 0.8, 0];
-        console.log("s", selected, hovering);
         if (selected)
         {
-        // name = portname + "_selected";
             coll = gui.theme.colors_patch.selectedCable;
         }
         if (hovering)
