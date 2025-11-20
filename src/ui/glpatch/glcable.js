@@ -81,7 +81,9 @@ export default class GlCable
 
         this.#buttonRect.on(GlRect.EVENT_POINTER_UNHOVER, () =>
         {
-            this._unHover();
+            this.setCloseToMouse(false);
+            this.#link.cableHoverChanged();
+            this.#unHover();
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>
@@ -153,11 +155,11 @@ export default class GlCable
         {
             this.#buttonRect.visible =
             this.#buttonRect.interactive = b;
-            if (!b) this._unHover();
+            if (!b) this.#unHover();
         }
     }
 
-    _unHover()
+    #unHover()
     {
         this.setCloseToMouse(false);
         this.#link.cableHoverChanged();
