@@ -102,7 +102,7 @@ export class GlLineDrawer extends Events
         this.#uniResY = new Uniform(this.#shader, "f", "resY", 0);
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
-        this._uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
+        this._uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", 1);
 
         this._uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
 

@@ -30,10 +30,10 @@ export default class GlSpline
         this.#splineDrawer = splineDrawer;
         this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
+
         splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
         {
             this.dispose();
-
         });
     }
 

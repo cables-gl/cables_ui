@@ -113,7 +113,7 @@ export class GlSplineDrawer extends Events
         gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
             this.#uniWidth.set(gui.theme.patch.cablesWidth || 3);
-            this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
+            this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 1);
             this._uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
     }
@@ -708,8 +708,8 @@ export class GlSplineDrawer extends Events
             {
                 console.log("no spline", this.#splines);
                 return;
-
             }
+
             if (spline.startOffset != count * 6 || this.#splineIndex[numPoints] != i)
             {
                 spline.startOffset = count * 6;
