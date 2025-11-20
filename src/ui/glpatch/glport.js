@@ -450,7 +450,7 @@ export default class GlPort
      * @param {boolean} hovering
      * @param {boolean} selected
      */
-    static getColorBorder(type, hovering, selected)
+    static getCableColorBorder(type, hovering, selected)
     {
         const perf = gui.uiProfiler.start("[glport] getcolorBorder");
         let name = "";
@@ -464,17 +464,18 @@ export default class GlPort
         else if (type == portType.dynamic) portname = "dynamic";
 
         let coll = [1, 0.9, 0.8, 0];
+        console.log("s", selected, hovering);
+        if (selected)
+        {
+        // name = portname + "_selected";
+            coll = gui.theme.colors_patch.selectedCable;
+        }
         if (hovering)
         {
             name = portname + "_hover";
             coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
         }
-        else if (selected)
-        {
-        // name = portname + "_selected";
-            coll = gui.theme.colors_patch.selectedCable;
-        }
-        else return coll;
+        if (!selected && !hovering) return coll;
 
         let col = [coll[0], coll[1], coll[2], coll[3]];
 

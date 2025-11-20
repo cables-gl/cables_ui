@@ -34,14 +34,20 @@ export default class GlCable
     #distFromPort = 0;
 
     #buttonRect = null;
+
+    /** @type {GlLink} */
     #link = null;
-    #curvedSimple = null;
-    #tension = null;
+    #tension = 0.1;
+    #curvedSimple = false;
     #log = null;
+
+    /** @type {GlPatch} */
     #glPatch = null;
     #subPatch = null;
     #type = null;
     #splineIdx = null;
+
+    /** @type {GlSplineDrawer} */
     #splineDrawer = null;
 
     /**
@@ -107,8 +113,6 @@ export default class GlCable
     updateLineStyle()
     {
         this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
-        this.#tension = 0.1;
-        this.#curvedSimple = false;
         // const oldLineType = this._linetype;
         this.#linetype = this.LINETYPE_CURVED;
 
@@ -149,6 +153,9 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {boolean} b
+     */
     setCloseToMouse(b)
     {
         if (this.#buttonRect.interactive != b)
@@ -156,6 +163,7 @@ export default class GlCable
             this.#buttonRect.visible =
             this.#buttonRect.interactive = b;
             if (!b) this.#unHover();
+
         }
     }
 
@@ -452,7 +460,8 @@ export default class GlCable
 
     get hovering()
     {
-        return this.#buttonRect.isHovering() || (this.#link.opIn && this.#link.opIn.isHovering()) || (this.#link.opOut && this.#link.opOut.isHovering());
+        const h = this.#buttonRect.isHovering();// || (this.#link.opIn && this.#link.opIn.isHovering()) || (this.#link.opOut && this.#link.opOut.isHovering());
+        return h;
     }
 
     updateColor()
@@ -472,7 +481,7 @@ export default class GlCable
 
         this.#splineDrawer.setSplineColor(this.#splineIdx, col);
         this.#splineDrawer.setSplineColorInactive(this.#splineIdx, GlPort.getInactiveColor(this.#link.type));
-        this.#splineDrawer.setSplineColorBorder(this.#splineIdx, GlPort.getColorBorder(this.#link.type, hover, selected));
+        this.#splineDrawer.setSplineColorBorder(this.#splineIdx, GlPort.getCableColorBorder(this.#link.type, hover, selected));
 
         this.#buttonRect.setColor(col[0], col[1], col[2], col[3]);
     }
