@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 
 /**
  * managing mouse states buttons/position/dragging etc
@@ -44,7 +44,7 @@ export default class MouseState extends Events
 
         this._initUserPrefs();
 
-        userSettings.on("change", this._initUserPrefs.bind(this));
+        userSettings.on(UserSettings.EVENT_CHANGE, this._initUserPrefs.bind(this));
 
         canvas.addEventListener("pointerenter", (/** @type {PointerEvent} */e) =>
         {

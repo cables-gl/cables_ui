@@ -1,5 +1,5 @@
 import { Events } from "cables-shared-client";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 
 function defaultSetting(initiator = "")
 {
@@ -44,7 +44,7 @@ export default class LogFilter extends Events
 
         this.logs = [];
 
-        userSettings.on("loaded", () =>
+        userSettings.on(UserSettings.EVENT_CHANGE, () =>
         {
             this._settings = JSON.parse(userSettings.get("loggingFilter")) || {};
         });

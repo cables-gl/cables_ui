@@ -11,7 +11,7 @@ import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
-import { userSettings } from "./components/usersettings.js";
+import UserSettings, { userSettings } from "./components/usersettings.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import { GuiText } from "./text.js";
 
@@ -86,7 +86,7 @@ export default function startUi(cfg)
 
                     gui.setFontSize(userSettings.get("fontSizeOff"));
 
-                    userSettings.on("change", function (key, v)
+                    userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
                     {
                         if (key == "fontSizeOff")
                         {

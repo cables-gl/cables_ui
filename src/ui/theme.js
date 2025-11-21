@@ -107,8 +107,6 @@ import defaultTheme from "./defaulttheme.json";
  * @typedef theme_patch
  * @property {number} selectedOpBorderX
  * @property {number} selectedOpBorderY
- * @property {number} cablesWidth
- * @property {number} cablesWidthSelected
  * @property {number} cablesCurveY
  * @property {number} cablesSubDivde
  * @property {number} opStateIndicatorSize
