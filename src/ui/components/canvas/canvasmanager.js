@@ -7,12 +7,16 @@ import { contextMenu } from "../../elements/contextmenu.js";
 
 export default class CanvasManager
 {
+    #contexts = [];
+    #curContextIdx;
+    #menuEle;
+
     constructor()
     {
-        this._curContextIdx = 0;
-        this._contexts = [];
+        this.#curContextIdx = 0;
+        this.#contexts = [];
         this.subWindow = null;
-        this._menuEle = null;
+        this.#menuEle = null;
 
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_PATCHBG = 1;
@@ -57,13 +61,27 @@ export default class CanvasManager
      */
     currentContext()
     {
-        return this._contexts[this._curContextIdx];
+        return this.#contexts[this.#curContextIdx];
     }
 
     currentCanvas()
     {
-        if (!this._contexts[this._curContextIdx]) return null;
-        return this._contexts[this._curContextIdx].canvas;
+        if (!this.#contexts[this.#curContextIdx]) return null;
+        return this.#contexts[this.#curContextIdx].canvas;
+    }
+
+    /**
+     * @param {HTMLCanvasElement} canv
+     */
+    addCanvas(canv, name, setsize)
+    {
+        const ctx = {
+            "getGApiName": () => { return name; },
+            "setSize": setsize,
+            "canvas": canv
+        };
+        this.addContext(ctx);
+
     }
 
     /**
@@ -71,12 +89,12 @@ export default class CanvasManager
      */
     addContext(c)
     {
-        for (let i = 0; i < this._contexts.length; i++) if (this._contexts[i] == c) return;
+        for (let i = 0; i < this.#contexts.length; i++) if (this.#contexts[i] == c) return;
 
         if (!c.canvasUi) c.canvasUi = new CanvasUi(c);
 
-        this._contexts.push(c);
-        this._curContextIdx = this._contexts.length - 1;
+        this.#contexts.push(c);
+        this.#curContextIdx = this.#contexts.length - 1;
 
         const ctx = c;
         gui.cmdPalette.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
@@ -87,8 +105,8 @@ export default class CanvasManager
 
     getCanvasUiBar()
     {
-        if (!this._contexts[this._curContextIdx]) return null;
-        return this._contexts[this._curContextIdx].canvasUi;
+        if (!this.#contexts[this.#curContextIdx]) return null;
+        return this.#contexts[this.#curContextIdx].canvasUi;
     }
 
     blur()
@@ -104,15 +122,15 @@ export default class CanvasManager
 
     updateCanvasUi()
     {
-        if (!this._menuEle) this._menuEle = ele.byId("canvasCtxSwitcher");
+        if (!this.#menuEle) this.#menuEle = ele.byId("canvasCtxSwitcher");
 
-        if (this._menuEle)
+        if (this.#menuEle)
         {
-            for (let i = 0; i < this._contexts.length; i++)
+            for (let i = 0; i < this.#contexts.length; i++)
             {
-                if (this._contexts[i].canvas == this.currentCanvas())
+                if (this.#contexts[i].canvas == this.currentCanvas())
                 {
-                    this._menuEle.innerText = this._contexts[i].getGApiName();
+                    this.#menuEle.innerText = this.#contexts[i].getGApiName();
                 }
             }
         }
@@ -123,15 +141,19 @@ export default class CanvasManager
      */
     setCurrentCanvas(canv)
     {
-        for (let i = 0; i < this._contexts.length; i++)
+        let found = false;
+        for (let i = 0; i < this.#contexts.length; i++)
         {
-            if (this._contexts[i].canvas == canv)
+            if (this.#contexts[i].canvas == canv)
             {
-                this._curContextIdx = i;
-                this._contexts[i].canvas.style["z-index"] = 0;
+                found = true;
+                this.#curContextIdx = i;
+                this.#contexts[i].canvas.style["z-index"] = 0;
             }
-            else this._contexts[i].canvas.style["z-index"] = -1;
+            else this.#contexts[i].canvas.style["z-index"] = -1;
         }
+
+        if (!found) console.log("canvas not found ?Q");
 
         this.updateCanvasUi();
     }
@@ -142,12 +164,12 @@ export default class CanvasManager
      */
     setSize(w, h)
     {
-        for (let i = 0; i < this._contexts.length; i++)
+        for (let i = 0; i < this.#contexts.length; i++)
         {
-            const density = this._contexts[i].pixelDensity;
-            const el = this._contexts[i].canvas;
+            const density = this.#contexts[i].pixelDensity;
+            const el = this.#contexts[i].canvas;
 
-            this._contexts[i].setSize(w, h);
+            this.#contexts[i].setSize(w, h);
         }
         if (this._canvasMode === this.CANVASMODE_POPOUT)
         {
@@ -184,18 +206,21 @@ export default class CanvasManager
     {
         let items = [];
 
-        for (let i = 0; i < this._contexts.length; i++)
+        for (let i = 0; i < this.#contexts.length; i++)
         {
-            const ctx = this._contexts[i];
+            const ctx = this.#contexts[i];
+            const idx = i;
             items.push({ "title": i + ": " + ctx.getGApiName(),
                 "func": () =>
                 {
+                    console.log("switch canvas", ctx);
                     ctx.canvas.focus();
+                    this.setCurrentCanvas(ctx.canvas);
                     this.updateCanvasUi();
                 } });
         }
 
-        this._menuEle = ele;
+        this.#menuEle = ele;
         this.updateCanvasUi();
 
         contextMenu.show({ "items": items }, ele);
