@@ -26,7 +26,7 @@ function initSplitPanes()
             pos = Math.max(320, pos);
 
             gui.userSettings.set(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH, pos);
-            gui.rightPanelWidth = pos;
+            gui.rightPanelWidth = Math.ceil(pos);
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);

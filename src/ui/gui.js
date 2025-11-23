@@ -647,7 +647,7 @@ export default class Gui extends Events
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
-        const optionsWidth = Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2);
+        const optionsWidth = Math.ceil(Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2));
 
         patchHeight -= infoAreaHeight;
 
@@ -766,7 +766,7 @@ export default class Gui extends Events
 
         this._elOptions.style.right = metaWidth + "px";
         this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-        this._elOptions.style.width = optionsWidth + "px";
+        this._elOptions.style.width = (optionsWidth + 1) + "px";
         this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
 
         this._elMeta.style.right = 0 + "px";
