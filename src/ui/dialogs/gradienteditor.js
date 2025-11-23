@@ -11,62 +11,74 @@ import { gui } from "../gui.js";
  */
 export default class GradientEditor
 {
+    #op;
+    #port;
+    #bg;
+    #elContainer;
+    #anim;
+
+    _keyWidth = 7;
+    _keyHeight = 7;
+    _keyStrokeWidth = 2;
+    _keyOpacity = 1;
+    _dragDownDeleteThreshold = 120;
+    _width = 512;
+    _height = 100;
+
+    #log;
+    #oldKeys = [];
+    #keys = [];
+
+    _movingkey = false;
+    _callback = null;
+    _ctx = null;
+
+    _currentKey = null;
+    _oldCurrentKey = null;
+    #options = {};
+    #openerEle;
+    #previousContent;
+
     constructor(opid, portname, options)
     {
-        this._log = new Logger("gradienteditor");
+        this.#log = new Logger("gradienteditor");
         this._opId = opid;
         this._portName = portname;
 
-        this._keyWidth =
-        this._keyHeight = 7;
-        this._keyStrokeWidth = 2;
-        this._keyOpacity = 1;
-        this._dragDownDeleteThreshold = 120;
-        this._width = 512;
-        this._height = 100;
+        this.#op = gui.corePatch().getOpById(this._opId);
+        this.#port = this.#op.getPort(this._portName);
+        this.type = this.#port.uiAttribs.gradientType || "gradient";
 
-        this._oldKeys = [];
-        this._keys = [];
+        this.#anim = new Anim();
+        this.#anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
 
-        this._movingkey = false;
-        this._callback = null;
-        this._ctx = null;
-
-        this._currentKey = null;
-        this._oldCurrentKey = null;
-
-        this._op = gui.corePatch().getOpById(this._opId);
-        this._port = this._op.getPort(this._portName);
-        this.type = this._port.uiAttribs.gradientType || "gradient";
-
-        this._anim = new Anim();
-        this._anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
-
-        this._elContainer = null;
-        this._bg = new ModalBackground();
-        this._bg.on("hide", () =>
+        this.#elContainer = null;
+        this.#bg = new ModalBackground();
+        this.#bg.on("hide", () =>
         {
             this.close();
         });
 
-        this._options = {};
-        this._options.smoothStep = this._port.uiAttribs.gradEditSmoothstep;
-        this._options.step = this._port.uiAttribs.gradEditStep;
-        this._options.oklab = this._port.uiAttribs.gradOklab;
+        this.#options.smoothStep = this.#port.uiAttribs.gradEditSmoothstep;
+        this.#options.step = this.#port.uiAttribs.gradEditStep;
+        this.#options.oklab = this.#port.uiAttribs.gradOklab;
 
-        this._previousContent = "";
-        this._openerEle = (options || {}).openerEle;
+        this.#previousContent = "";
+        this.#openerEle = (options || {}).openerEle;
     }
 
     close()
     {
-        this._bg.hide();
-        this._elContainer.remove();
+        this.#bg.hide();
+        this.#elContainer.remove();
     }
 
+    /**
+     * @param {number} i
+     */
     selectKey(i)
     {
-        this.setCurrentKey(this._keys[i]);
+        this.setCurrentKey(this.#keys[i]);
     }
 
     updateCanvas()
@@ -77,7 +89,7 @@ export default class GradientEditor
             const canvasCurve = ele.byId("gradientEditorCanvasCurve");
             if (!canvas)
             {
-                this._log.error("[gradienteditor] no canvas found");
+                this.#log.error("[gradienteditor] no canvas found");
                 return;
             }
             this._ctx = canvas.getContext("2d");
@@ -86,7 +98,7 @@ export default class GradientEditor
         }
 
         let keys = [];
-        if (this._keys.length == 0) keys.push({
+        if (this.#keys.length == 0) keys.push({
             "posy": 0.5,
             "pos": 0,
             "r": 0,
@@ -94,12 +106,12 @@ export default class GradientEditor
             "b": 0
         });
         else keys = [{
-            "posy": this._keys[0].posy,
+            "posy": this.#keys[0].posy,
             "pos": 0,
-            "r": this._keys[0].r,
-            "g": this._keys[0].g,
-            "b": this._keys[0].b
-        }].concat(this._keys);
+            "r": this.#keys[0].r,
+            "g": this.#keys[0].g,
+            "b": this.#keys[0].b
+        }].concat(this.#keys);
 
         const last = keys[keys.length - 1];
         keys.push({
@@ -139,19 +151,6 @@ export default class GradientEditor
             this._ctxCurve.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
             this._ctxCurve.stroke();
 
-            // smoothed...
-            // this._ctxCurve.strokeStyle = "#aaa";
-            // this._ctxCurve.beginPath();
-            // this._ctxCurve.lineWidth = 2;
-            // let numSteps = 250;
-            // for (let i = 0; i < numSteps + 2; i++)
-            // {
-            //     let x = Math.floor(i / numSteps * this._width);
-            //     let y = Math.floor(this._anim.getValue(i / numSteps) * this._height) - 1;
-            //     if (i == 0) this._ctxCurve.moveTo(x, y);
-            //     else this._ctxCurve.lineTo(x, y);
-            // }
-            // this._ctxCurve.stroke();
         }
         else
         {
@@ -166,10 +165,10 @@ export default class GradientEditor
                     x = Math.round(x);
                     let p = utils.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
 
-                    if (this._options.smoothStep) p = utils.smoothStep(p);
-                    if (this._options.step) p = Math.round(p);
+                    if (this.#options.smoothStep) p = utils.smoothStep(p);
+                    if (this.#options.step) p = Math.round(p);
 
-                    if (this._options.oklab)
+                    if (this.#options.oklab)
                     {
                         const klabA = this.rgbToOklab(keyA.r, keyA.g, keyA.b);
                         const labA_r = klabA[0];
@@ -219,7 +218,7 @@ export default class GradientEditor
                     };
             }
 
-            this._port.set(JSON.stringify({ "keys": keyData }));
+            this.#port.set(JSON.stringify({ "keys": keyData }));
         }
     }
 
@@ -248,18 +247,18 @@ export default class GradientEditor
     {
         function compare(a, b) { return a.pos - b.pos; }
 
-        this._keys.sort(compare);
+        this.#keys.sort(compare);
 
-        this._anim.clear();
+        this.#anim.clear();
         let html = "";
-        for (let i = 0; i < this._keys.length; i++)
+        for (let i = 0; i < this.#keys.length; i++)
         {
-            this._keys[i].pos = Math.min(1.0, Math.max(this._keys[i].pos, 0));
-            this._keys[i].posy = Math.min(1.0, Math.max(this._keys[i].posy, 0));
+            this.#keys[i].pos = Math.min(1.0, Math.max(this.#keys[i].pos, 0));
+            this.#keys[i].posy = Math.min(1.0, Math.max(this.#keys[i].posy, 0));
 
             html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex button-small\">" + i + "</a> ";
 
-            this._anim.setValue(this._keys[i].pos, this._keys[i].posy);
+            this.#anim.setValue(this.#keys[i].pos, this.#keys[i].posy);
         }
 
         ele.byId("gradienteditorKeys").innerHTML = html;
@@ -275,7 +274,7 @@ export default class GradientEditor
 
     deleteKey(k)
     {
-        this._keys.splice(this._keys.indexOf(k), 1);
+        this.#keys.splice(this.#keys.indexOf(k), 1);
         this.onChange();
     }
 
@@ -339,7 +338,7 @@ export default class GradientEditor
 
         this._setKeyStyle(key);
 
-        this._keys.push(key);
+        this.#keys.push(key);
         let shouldDelete = false;
         this.setCurrentKey(key);
 
@@ -409,6 +408,9 @@ export default class GradientEditor
         if (rect) rect.drag(move, down, up);
     }
 
+    /**
+     * @param {Function} cb
+     */
     show(cb)
     {
         this._callback = cb;
@@ -417,28 +419,28 @@ export default class GradientEditor
 
         const html = getHandleBarHtml("GradientEditor", { "name": this._portName });
 
-        this._bg.show(true);
+        this.#bg.show(true);
 
-        this._elContainer = document.createElement("div");
-        this._elContainer.classList.add("gradientEditorContainer");
-        this._elContainer.classList.add("cablesCssUi");
+        this.#elContainer = document.createElement("div");
+        this.#elContainer.classList.add("gradientEditorContainer");
+        this.#elContainer.classList.add("cablesCssUi");
 
-        document.body.appendChild(this._elContainer);
-        this._elContainer.innerHTML = html;
+        document.body.appendChild(this.#elContainer);
+        this.#elContainer.innerHTML = html;
 
-        if (this._openerEle)
+        if (this.#openerEle)
         {
-            const r = this._openerEle.getBoundingClientRect();
-            const rge = this._elContainer.getBoundingClientRect();
+            const r = this.#openerEle.getBoundingClientRect();
+            const rge = this.#elContainer.getBoundingClientRect();
             let ry = r.y;
             if (window.innerHeight - ry < this._height * 1.5) ry -= this._height * 1.5;
-            this._elContainer.style.left = r.x - rge.width - 20 + "px";
-            this._elContainer.style.top = ry + "px";
+            this.#elContainer.style.left = r.x - rge.width - 20 + "px";
+            this.#elContainer.style.top = ry + "px";
         }
         else
         {
-            this._elContainer.style.left = 100 + "px";
-            this._elContainer.style.top = 100 + "px";
+            this.#elContainer.style.left = 100 + "px";
+            this.#elContainer.style.top = 100 + "px";
         }
         this._paper = Raphael("gradienteditorbar", 0, 0);
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
@@ -471,18 +473,18 @@ export default class GradientEditor
             const data = op.getPort(this._portName).get();
             try
             {
-                this._previousContent = data;
+                this.#previousContent = data;
                 const keys = JSON.parse(data).keys || [];
                 for (let i = 1; i < keys.length - 1; i++)
                     this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
             }
             catch (e)
             {
-                this._log.error(e);
+                this.#log.error(e);
             }
         }
 
-        if (this._keys.length == 0)
+        if (this.#keys.length == 0)
         {
             this.addKey(0, 0.5, 0, 0, 0);
             this.addKey(1, 0.5, 1, 1, 1);
@@ -499,7 +501,7 @@ export default class GradientEditor
         ele.byId("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
-            op.getPort(this._portName).set(this._previousContent);
+            op.getPort(this._portName).set(this.#previousContent);
             this.close();
         });
 
@@ -510,7 +512,7 @@ export default class GradientEditor
             {
                 this._currentKey.rect.remove();
                 this.deleteKey(this._currentKey);
-                this._currentKey = this._keys[0];
+                this._currentKey = this.#keys[0];
             }
         });
 
@@ -543,6 +545,11 @@ export default class GradientEditor
         });
     }
 
+    /**
+     * @param {number} r
+     * @param {number} g
+     * @param {number} b
+     */
     rgbToOklab(r, g, b)
     {
         let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
@@ -558,11 +565,21 @@ export default class GradientEditor
         ];
     }
 
+    /**
+     * @param {number} value
+     * @param {number} min
+     * @param {number} max
+     */
     clamp(value, min, max)
     {
         return Math.max(Math.min(value, max), min);
     }
 
+    /**
+     * @param {number} L
+     * @param {number} a
+     * @param {number} b
+     */
     oklabToRGB(L, a, b)
     {
         let l = L + a * +0.3963377774 + b * +0.2158037573;
