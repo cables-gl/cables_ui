@@ -31,7 +31,6 @@ export default class GradientEditor
     #width = 512;
     #height = 100;
 
-    _movingkey = false;
     _callback = null;
     _ctx = null;
 
@@ -40,6 +39,7 @@ export default class GradientEditor
     #options = {};
     #openerEle;
     #previousContent;
+    #downDot = null;
 
     constructor(opid, portname, options)
     {
@@ -348,7 +348,6 @@ export default class GradientEditor
         dot.style.width = this.#keyWidth + "px";
         dot.style.height = this.#keyWidth + "px";
 
-        console.log("posyyyyyyyyyy", posy);
         const key = {
             "posy": posy,
             "pos": pos,
@@ -364,17 +363,24 @@ export default class GradientEditor
         let shouldDelete = false;
         this.setCurrentKey(key);
 
+        dot.addEventListener("pointerup", (e) =>
+        {
+            if (this.#downDot) this.#downDot.style.pointerEvents = "initial";
+            this.#downDot = null;
+        });
+
         dot.addEventListener("pointerdown", (e) =>
         {
             if (e.buttons == 2)
             {
                 this.deleteKey(key);
-                console.log("delllllllllpf s");
                 this.setCurrentKey(this.#keys[0]);
                 return;
             }
             else
             {
+                this.#downDot = dot;
+                if (this.#downDot) this.#downDot.style.pointerEvents = "none";
 
                 this.setCurrentKey(key);
             }
@@ -496,10 +502,31 @@ export default class GradientEditor
         //     {}
         // });
 
+        ele.byId("gradientEditorCanvas").addEventListener("pointerup", (e) =>
+        {
+            if (this.#downDot)
+            {
+                this.#downDot.style.pointerEvents = "initial";
+                this.#downDot = null;
+            }
+        });
+
+        ele.byId("gradientEditorCanvas").addEventListener("pointermove", (e) =>
+        {
+            if (this.#downDot)
+            {
+                this.#currentKey.ele.style.marginTop = e.layerY - (this.#keyWidth / 2) + "px";
+                this.#currentKey.ele.style.marginLeft = e.offsetX - (this.#keyWidth / 2) + "px";
+                this.#currentKey.posy = (e.offsetY + (this.#keyWidth / 2)) / this.#height;
+                this.#currentKey.pos = (e.offsetX + (this.#keyWidth / 2)) / this.#width;
+                this.onChange();
+            }
+
+        });
+
         ele.byId("gradientEditorCanvas").addEventListener("click", (e) =>
         {
-            console.log("ttttttt", e);
-            if (this._movingkey) return;
+            if (this.#downDot) return;
             this.addKey(e.offsetX / this.#width, e.layerY / this.#height);
             this.onChange();
         });
