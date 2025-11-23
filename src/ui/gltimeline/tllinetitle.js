@@ -325,6 +325,7 @@ export class TlTitle extends Events
                 (e) =>
                 {
                     this.#port.animMuted = !this.#port.animMuted;
+                    this.#port.anim.setUiAttribs({ "muted": this.#port.animMuted });
                     this.#port.emitEvent("animLineUpdate");
 
                     this.updateIcons();
