@@ -288,7 +288,7 @@ export default class ServerOps
 
         // check if layout has changed...
         const l = gui.opDocs.getOpDocById(op.opId);
-        if (JSON.stringify(l.layout) == JSON.stringify(opObj)) return false; // has not changed
+        if (l && (JSON.stringify(l.layout) == JSON.stringify(opObj))) return false; // has not changed
 
         platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_LAYOUT, {
             "opname": op.opId,
@@ -301,7 +301,7 @@ export default class ServerOps
             }
             else
             {
-                l.layout = opObj;
+                if (l) l.layout = opObj;
                 gui.emitEvent("refreshManageOp", op.objName);
             }
         });

@@ -1,5 +1,5 @@
 import GlRect from "./glrect.js";
-import GlSplineDrawer from "./glsplinedrawer.js";
+import { GlSplineDrawer } from "./glsplinedrawer.js";
 
 export default class GlSpline
 {
@@ -30,10 +30,10 @@ export default class GlSpline
         this.#splineDrawer = splineDrawer;
         this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
+
         splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
         {
             this.dispose();
-
         });
     }
 

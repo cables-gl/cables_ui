@@ -2280,6 +2280,10 @@ export default class PatchView extends Events
         gui.savedState.setUnSaved("patchview??");
     }
 
+    /**
+     * @param {Port} p1
+     * @param {Port} p2
+     */
     _portValidate(p1, p2)
     {
         if (p1.type != portType.object) return;

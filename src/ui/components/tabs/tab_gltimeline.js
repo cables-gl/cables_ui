@@ -75,12 +75,12 @@ export default class GlTimelineTab
 
         this.#tab.addButton("<span id=\"zoomgraph1\" class=\"nomargin icon icon-chevrons-up-down info\" data-info=\"tlzoomgraph\"></span>", () =>
         {
-            this.tlCanvas.glTimeline.view.scaleValues(-0.3);
+            this.tlCanvas.glTimeline.view.scaleValues(0.6);
         }, ["button-left"]);
 
         this.#tab.addButton("<span id=\"zoomgraph2\" class=\"nomargin icon icon-chevrons-down-up info\" data-info=\"tlzoomgraph\"></span>", () =>
         {
-            this.tlCanvas.glTimeline.view.scaleValues(0.3);
+            this.tlCanvas.glTimeline.view.scaleValues(1.4);
         }, ["button-right"]);
 
         this.#tab.addButtonSpacer();

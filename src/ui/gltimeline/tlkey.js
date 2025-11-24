@@ -7,7 +7,7 @@ import GlSpline from "../gldraw/glspline.js";
 import { TlKeys } from "./tlkeys.js";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 
 export class TlKey extends Events
 {

@@ -112,7 +112,7 @@ export default class Gui extends Events
 
         this._log = new Logger("gui");
 
-        /** @type {CablesTheme} */
+        /** @type {import("./theme.js").CablesTheme} */
         this.theme = defaultTheme;
 
         /** @type {ServerOps} */
@@ -647,7 +647,7 @@ export default class Gui extends Events
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
-        const optionsWidth = Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2);
+        const optionsWidth = Math.ceil(Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2));
 
         patchHeight -= infoAreaHeight;
 
@@ -766,7 +766,7 @@ export default class Gui extends Events
 
         this._elOptions.style.right = metaWidth + "px";
         this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-        this._elOptions.style.width = optionsWidth + "px";
+        this._elOptions.style.width = (optionsWidth + 1) + "px";
         this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
 
         this._elMeta.style.right = 0 + "px";
@@ -889,7 +889,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        this._corePatch.cgl.updateSize();
+        if (this.corePatch().cgl) this._corePatch.cgl.updateSize();
         if (document.activeElement == document.body) gui.patchView.focus();
 
         perf.finish();
@@ -1891,7 +1891,8 @@ export default class Gui extends Events
                 const repos = branches[branch].join(" and ");
                 msg += repos + " on " + branch;
             }
-            this._log.error(msg);
+            // this._log.error(msg);
+            notifyError("git branches", msg);
         }
 
         gui.savedState.setSavedAll("showUiElements");

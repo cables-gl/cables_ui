@@ -273,6 +273,7 @@ export class tlView
      */
     scaleValues(delta)
     {
+        console.log("delta", delta);
         delta = delta;
         const nmin = this.minVal *= delta;
         const nmax = this.maxVal *= delta;

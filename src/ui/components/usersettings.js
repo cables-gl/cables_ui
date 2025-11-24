@@ -10,7 +10,10 @@ import { platform } from "../platform.js";
  */
 export default class UserSettings extends Events
 {
+    static EVENT_CHANGE = "change";
+    static EVENT_LOADED = "loaded";
     static SETTING_GLUI_DEBUG_COLORS = "gluidebugcolors";
+    #wasLoaded = false;
 
     constructor()
     {
@@ -18,7 +21,7 @@ export default class UserSettings extends Events
 
         this._settings = {};
         this._LOCALSTORAGE_KEY = "cables.usersettings";
-        this._wasLoaded = false;
+        this.#wasLoaded = false;
         this._serverDelay = null;
         this.init();
 
@@ -53,8 +56,10 @@ export default class UserSettings extends Events
             this.set(i, settings[i]);
         }
 
-        if (!this._wasLoaded) this.emitEvent("loaded");
-        this._wasLoaded = true;
+        if (!this.#wasLoaded) this.emitEvent(UserSettings.EVENT_LOADED);
+        this.emitEvent(UserSettings.EVENT_CHANGE);
+
+        this.#wasLoaded = true;
     }
 
     setLS(key, value)
@@ -89,7 +94,7 @@ export default class UserSettings extends Events
 
         this._settings[key] = value || false;
 
-        if (this._wasLoaded)
+        if (this.#wasLoaded)
         {
             let delay = 250;
             if (!CABLES.UI.loaded)delay = 2000;
@@ -101,7 +106,7 @@ export default class UserSettings extends Events
                     this.save();
                 }, delay);
             }
-            if (wasChanged) this.emitEvent("change", key, value);
+            if (wasChanged) this.emitEvent(UserSettings.EVENT_CHANGE, key, value);
         }
     }
 

@@ -2,7 +2,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlText from "../gldraw/gltext.js";
 import GlDragLine from "./gldragline.js";
@@ -19,13 +18,13 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { CmdOp } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 import GlLink from "./gllink.js";
-import SuggestionDialog from "../components/suggestiondialog.js";
 import { DomEvents } from "../theme.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 
 /**
  * rendering the patchfield
@@ -36,6 +35,8 @@ import { DomEvents } from "../theme.js";
  */
 export default class GlPatch extends Events
 {
+    static USERPREF_GLPATCH_CABLE_WIDTH = "glcablewidth";
+
     static EVENT_MOUSE_UP_OVER_OP = "mouseUpOverOp";
     static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
@@ -85,6 +86,14 @@ export default class GlPatch extends Events
     _subpatchoprect = null;
     suggestionTeaser = null;
 
+    /** @type {GlLineDrawer[]} */
+    #splineDrawers = null;
+
+    #dropInOpBorder;
+
+    #rectInstancer;
+    #overlaySplines;
+
     /**
      * @param {CglContext} cgl
      */
@@ -103,17 +112,16 @@ export default class GlPatch extends Events
         this._timeStart = performance.now();
         this.vizFlowMode = userSettings.get("glflowmode") || 0;
 
-        this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
-        this._overlaySplines.zPos = 0.5;
-        // this._splineDrawer = new GlSplineDrawer(cgl, "patchCableSplines");
-        this._splineDrawers = { "0": new GlSplineDrawer(cgl, "patchCableSplines_0") };
+        this.#overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
+        this.#overlaySplines.zPos = 0.5;
+        this.#splineDrawers = { "0": new GlSplineDrawer(cgl, "patchCableSplines_0") };
 
         this.viewBox = new GlViewBox(cgl, this);
 
-        this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
+        this.#rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
         this._lines = new GlSplineDrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
-        this._rectInstancer.hoverWhenButton;
+        this.#rectInstancer.hoverWhenButton;
         this._overLayRects.hoverWhenButton = false;
 
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
@@ -123,18 +131,18 @@ export default class GlPatch extends Events
         this._currentSubpatch = 0;
         this._selectionArea = new GlSelectionArea(this._overLayRects);
         this._lastMouseX = this._lastMouseY = -1;
-        this.portDragLine = new GlDragLine(this._overlaySplines, this);
+        this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
         if (userSettings.get("devinfos"))
         {
             CABLES.UI.showDevInfos = true;
-            const idx = this._overlaySplines.getSplineIndex();
-            this._overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
-            this._overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
+            const idx = this.#overlaySplines.getSplineIndex();
+            this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
+            this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
 
-            const idx2 = this._overlaySplines.getSplineIndex();
-            this._overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
-            this._overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
+            const idx2 = this.#overlaySplines.getSplineIndex();
+            this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
+            this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
         }
 
         this.cablesHoverText = new GlText(this._textWriter, "");
@@ -166,7 +174,7 @@ export default class GlPatch extends Events
         this.opShakeDetector = new ShakeDetector();
         this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length === 1)gui.patchView.unlinkSelectedOps(); });
 
-        this.snap = new Snap(cgl, this, this._rectInstancer);
+        this.snap = new Snap(cgl, this, this.#rectInstancer);
 
         // this._redrawFlash = this._overLayRects.createRect({ "name": "redrawflash", "interactive": false });
         // this._redrawFlash.setSize(50, 5);
@@ -179,10 +187,10 @@ export default class GlPatch extends Events
         this._fadeOutRect.setColor(0, 0, 0, 0.0);
         this._fadeOutRect.visible = true;
 
-        this._dropInOpBorder = this._overLayRects.createRect({ "interactive": false, "name": "dropinborder" });
-        this._dropInOpBorder.setSize(100, 100);
-        this._dropInOpBorder.setColor(1, 0, 0, 1);
-        this._dropInOpBorder.visible = false;
+        this.#dropInOpBorder = this._overLayRects.createRect({ "interactive": false, "name": "dropinborder" });
+        this.#dropInOpBorder.setSize(100, 100);
+        this.#dropInOpBorder.setColor(1, 0, 0, 1);
+        this.#dropInOpBorder.visible = false;
 
         cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this._onCanvasMouseMove.bind(this), { "passive": false });
         cgl.canvas.addEventListener(DomEvents.POINTER_UP, this._onCanvasMouseUp.bind(this), { "passive": false });
@@ -307,7 +315,7 @@ export default class GlPatch extends Events
         gui.keys.key("y", "Cut Cables", "up", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
             this.cutLineActive = false;
-            this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
+            this.#overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
         });
 
         gui.on(Gui.EVENT_UILOADED, () =>
@@ -365,9 +373,7 @@ export default class GlPatch extends Events
                     if (msg.hasOwnProperty("zoom"))
                     {
                         if (gui.patchView.patchRenderer.viewBox)
-                        {
                             gui.patchView.patchRenderer.viewBox.animateZoom(msg.zoom);
-                        }
                     }
 
                     if (gui.patchView.patchRenderer.viewBox) gui.patchView.patchRenderer.viewBox.scrollTo(-msg.scrollX, msg.scrollY);
@@ -401,7 +407,7 @@ export default class GlPatch extends Events
 
         this.vizLayer = new VizLayer(this);
 
-        userSettings.on("change", (key, value) =>
+        userSettings.on(UserSettings.EVENT_CHANGE, (key, value) =>
         {
             this.dblClickAction = userSettings.get("doubleClickAction");
             this.vizFlowMode = userSettings.get("glflowmode");
@@ -410,17 +416,19 @@ export default class GlPatch extends Events
             if (key == "linetype")
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
+
+            this.updateCableWidth();
         });
 
         if (userSettings.get("devinfos"))
         {
             gui.corePatch().on("subpatchesChanged", () =>
             {
-                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this._overlaySplines.getSplineIndex();
+                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
 
                 const bounds = gui.patchView.getSubPatchBounds();
 
-                this._overlaySplines.setSpline(this.subpatchAreaSpline, [
+                this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
                     bounds.minX, bounds.minY, 0,
                     bounds.maxX, bounds.minY, 0,
 
@@ -434,7 +442,7 @@ export default class GlPatch extends Events
                     bounds.minX, bounds.minY, 0
                 ]);
 
-                this._overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
+                this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
             });
         }
 
@@ -454,7 +462,7 @@ export default class GlPatch extends Events
 
     get patchAPI() { return this._patchAPI; }
 
-    get rectDrawer() { return this._rectInstancer; }
+    get rectDrawer() { return this.#rectInstancer; }
 
     get selectedGlOps() { return this._selectedGlOps; }
 
@@ -494,7 +502,7 @@ export default class GlPatch extends Events
 
     _removeDropInRect()
     {
-        this._dropInOpBorder.visible = false;
+        this.#dropInOpBorder.visible = false;
     }
 
     /**
@@ -527,18 +535,18 @@ export default class GlPatch extends Events
                         visible = true;
 
                         const border = 5;
-                        this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
-                        this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
-                        this._dropInOpBorder.setColorArray(this._dropInCircleRect.color);
-                        this._dropInOpBorder.setOpacity(0.35);
+                        this.#dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
+                        this.#dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
+                        this.#dropInOpBorder.setColorArray(this._dropInCircleRect.color);
+                        this.#dropInOpBorder.setOpacity(0.35);
                     }
                 }
             }
             else visible = false;
 
-            this._dropInOpBorder.visible = visible;
+            this.#dropInOpBorder.visible = visible;
         }
-        else this._dropInOpBorder.visible = false;
+        else this.#dropInOpBorder.visible = false;
 
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
@@ -554,9 +562,9 @@ export default class GlPatch extends Events
         this._debugRenderStyle++;
         if (this._debugRenderStyle > 3) this._debugRenderStyle = 0;
 
-        for (let i in this._splineDrawers) this._splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
+        for (let i in this.#splineDrawers) this.#splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
 
-        this._rectInstancer.setDebugRenderer(this._debugRenderStyle);
+        this.#rectInstancer.setDebugRenderer(this._debugRenderStyle);
         this._overLayRects.setDebugRenderer(this._debugRenderStyle);
 
         this._textWriter.setDebugRenderer(this._debugRenderStyle);
@@ -702,7 +710,7 @@ export default class GlPatch extends Events
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
-        this._rectInstancer.mouseDown(e);
+        this.#rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
         this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
     }
@@ -730,13 +738,13 @@ export default class GlPatch extends Events
         const perf = gui.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
         this._removeDropInRect();
-        this._rectInstancer.mouseUp(e);
+        this.#rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
         // gui.longPressConnector.longPressCancel();
-        this._rectInstancer.interactive = true;
+        this.#rectInstancer.interactive = true;
 
         if (!this._selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
@@ -921,7 +929,7 @@ export default class GlPatch extends Events
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
-            glOp = new GlOp(this, this._rectInstancer, op);
+            glOp = new GlOp(this, this.#rectInstancer, op);
             this._glOpz[op.id] = glOp;
         }
         else
@@ -1138,9 +1146,9 @@ export default class GlPatch extends Events
         // this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
-        this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-        this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._cgl.popDepthTest();
         this._cgl.pushDepthTest(false);
@@ -1172,7 +1180,7 @@ export default class GlPatch extends Events
         }
 
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
-        this.debugData.rects = this._rectInstancer.getNumRects();
+        this.debugData.rects = this.#rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
         this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
@@ -1181,7 +1189,7 @@ export default class GlPatch extends Events
         this.debugData._mousePatchY = Math.round(this.viewBox.mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-        this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
+        this.debugData.rectInstancer = JSON.stringify(this.#rectInstancer.getDebug(), false, 2);
 
         // this.mouseState.debug(this.debugData);
 
@@ -1234,10 +1242,10 @@ export default class GlPatch extends Events
             this._cutLine.push(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0);
 
             if (!this._cutLineIdx)
-                this._cutLineIdx = this._overlaySplines.getSplineIndex();
+                this._cutLineIdx = this.#overlaySplines.getSplineIndex();
 
-            this._overlaySplines.setSpline(this._cutLineIdx, [...this._cutLine]); // copy dat array
-            this._overlaySplines.setSplineColor(this._cutLineIdx, [1, 0, 0, 1]);
+            this.#overlaySplines.setSpline(this._cutLineIdx, [...this._cutLine]); // copy dat array
+            this.#overlaySplines.setSplineColor(this._cutLineIdx, [1, 0, 0, 1]);
 
             return;
         }
@@ -1254,9 +1262,9 @@ export default class GlPatch extends Events
         let allowSelectionArea = !this.portDragLine.isActive;
         if (this._selectionArea.active)allowSelectionArea = true;
 
-        this._rectInstancer.mouseMove(x, y, this.mouseState.getButton(), e);
+        this.#rectInstancer.mouseMove(x, y, this.mouseState.getButton(), e);
 
-        if (this._rectInstancer.isDragging()) return;
+        if (this.#rectInstancer.isDragging()) return;
 
         /*
          * if (!this.mouseState.isDragging)
@@ -1291,10 +1299,10 @@ export default class GlPatch extends Events
 
         if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
-            if (this._rectInstancer.interactive)
+            if (this.#rectInstancer.interactive)
                 if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
 
-            this._rectInstancer.interactive = false;
+            this.#rectInstancer.interactive = false;
 
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
@@ -1644,7 +1652,7 @@ export default class GlPatch extends Events
         this.links = {};
         this._glOpz = {};
 
-        if (this._rectInstancer) this._rectInstancer.dispose();
+        if (this.#rectInstancer) this.#rectInstancer.dispose();
         if (this._lines) this._lines.dispose();
     }
 
@@ -1696,12 +1704,12 @@ export default class GlPatch extends Events
 
     get allowDragging()
     {
-        return this._rectInstancer.allowDragging;
+        return this.#rectInstancer.allowDragging;
     }
 
     set allowDragging(b)
     {
-        this._rectInstancer.allowDragging = b;
+        this.#rectInstancer.allowDragging = b;
     }
 
     /**
@@ -1917,11 +1925,12 @@ export default class GlPatch extends Events
      */
     getSplineDrawer(subpatchId)
     {
-        if (this._splineDrawers.hasOwnProperty(subpatchId)) return this._splineDrawers[subpatchId];
+        if (this.#splineDrawers.hasOwnProperty(subpatchId)) return this.#splineDrawers[subpatchId];
         else
         {
-            this._splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
-            return this._splineDrawers[subpatchId];
+            this.#splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
+            this.#splineDrawers[subpatchId].width = userSettings.get("glcablewidth") || 1 || gui.theme.patch.cablesWidth;
+            return this.#splineDrawers[subpatchId];
         }
     }
 
@@ -1955,6 +1964,17 @@ export default class GlPatch extends Events
 
         for (let i in this._glOpz)
             this._glOpz[i].updateTheme();
+
+        this.updateCableWidth();
+    }
+
+    updateCableWidth()
+    {
+        for (const i in this.#splineDrawers)
+        {
+            this.#splineDrawers[i].width = userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) || gui.theme.patch.cablesWidth;
+        }
+
     }
 
     /**
@@ -1970,5 +1990,10 @@ export default class GlPatch extends Events
 
         if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
         else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
+    }
+
+    get splineDrawers()// todo: delete, was debug
+    {
+        return this.#splineDrawers;
     }
 }

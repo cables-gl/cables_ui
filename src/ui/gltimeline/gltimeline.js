@@ -10,7 +10,7 @@ import Gui, { gui } from "../gui.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import { userSettings } from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlText from "../gldraw/gltext.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import undo from "../utils/undo.js";
@@ -1174,6 +1174,7 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
+            if (this.#selectedKeys[i].anim.uiAttribs.muted) continue;
             if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
             if (this.#selectedKeys[i].temp.preDragTime === undefined) this.predragSelectedKeys();
             let tt = this.snapTime(this.#selectedKeys[i].temp.preDragTime + deltaTime);
@@ -1474,7 +1475,8 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-            if (this.#selectedKeys[i].anim.uiAttribs.readOnly) continue;
+
+            if (this.canSelectKey(this.#selectedKeys[i])) continue;
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
             const op = this.getPortForAnim(this.#selectedKeys[i].anim)?.op;
             gui.savedState.setUnSaved("deleted keys", op?.getSubPatch());
@@ -1487,12 +1489,25 @@ export class GlTimeline extends Events
 
     /**
      * @param {AnimKey} k
+     */
+    canSelectKey(k)
+    {
+        if (k.anim.uiAttribs.muted) return false;
+        if (k.anim.uiAttribs.readonly) return false;
+
+        return true;
+    }
+
+    /**
+     * @param {AnimKey} k
      * @param {Anim} a
      *
      */
     selectKey(k, a)
     {
         if (TlKeys.dragStarted) return;
+        if (!this.canSelectKey(k)) return;
+
         if (a.tlActive && !this.isKeySelected(k))
         {
 

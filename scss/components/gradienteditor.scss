@@ -5,6 +5,19 @@
     position: absolute;
     width: 640px;
     border-radius: 10px;
+
+    .dot
+    {
+        position: absolute;
+        border-radius: 100%;
+        background-color: #999;
+        border:2px solid black;
+    }
+    .active{
+
+        background-color: #07F78C
+
+    }
 }
 
 #gradienteditorbar

@@ -11,7 +11,7 @@ import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
-import { userSettings } from "./components/usersettings.js";
+import UserSettings, { userSettings } from "./components/usersettings.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import { GuiText } from "./text.js";
 
@@ -86,7 +86,7 @@ export default function startUi(cfg)
 
                     gui.setFontSize(userSettings.get("fontSizeOff"));
 
-                    userSettings.on("change", function (key, v)
+                    userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
                     {
                         if (key == "fontSizeOff")
                         {
@@ -144,7 +144,7 @@ export default function startUi(cfg)
                         projectId = gui.project().shortId || gui.project()._id;
                     }
                     new QRCode(document.getElementById("remote_view_qr"), {
-                        "GuiText": platform.getCablesUrl() + "/remote_client/" + projectId,
+                        "text": platform.getCablesUrl() + "/remote_client/" + projectId,
                         "width": 200,
                         "height": 200,
                         "colorDark": "#000000",
@@ -153,7 +153,7 @@ export default function startUi(cfg)
                     });
 
                     new QRCode(document.getElementById("patch_view_qr"), {
-                        "GuiText": platform.getCablesUrl() + "/p/" + projectId,
+                        "text": platform.getCablesUrl() + "/p/" + projectId,
                         "width": 200,
                         "height": 200,
                         "colorDark": "#000000",
