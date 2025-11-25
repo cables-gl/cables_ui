@@ -4,69 +4,83 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 
 /**
+ * @typedef KeyObject
+ * @property {number} pos
+ * @property {number} posy
+ */
+
+/**
  * gradient editor dialog
- *
- * @export
- * @class GradientEditor
  */
 export default class GradientEditor
 {
+    #op = null;
+    #port = null;
+    #bg = null;
+    #elContainer = null;
+    #anim = null;
+    #log = null;
+    #oldKeys = [];
+    #keys = [];
+
+    #keyWidth = 8;
+    _keyHeight = 8;
+    _keyStrokeWidth = 2;
+    _keyOpacity = 1;
+    _dragDownDeleteThreshold = 120;
+    #width = 512;
+    #height = 100;
+
+    _callback = null;
+    _ctx = null;
+
+    #currentKey = null;
+    _oldCurrentKey = null;
+    #options = {};
+    #openerEle;
+    #previousContent;
+    #downDot = null;
+
     constructor(opid, portname, options)
     {
-        this._log = new Logger("gradienteditor");
+        this.#log = new Logger("gradienteditor");
         this._opId = opid;
         this._portName = portname;
 
-        this._keyWidth =
-        this._keyHeight = 7;
-        this._keyStrokeWidth = 2;
-        this._keyOpacity = 1;
-        this._dragDownDeleteThreshold = 120;
-        this._width = 512;
-        this._height = 100;
+        this.#op = gui.corePatch().getOpById(this._opId);
+        this.#port = this.#op.getPort(this._portName);
+        this.type = this.#port.uiAttribs.gradientType || "gradient";
 
-        this._oldKeys = [];
-        this._keys = [];
+        this.#anim = new Anim();
+        this.#anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
 
-        this._movingkey = false;
-        this._callback = null;
-        this._ctx = null;
-
-        this._currentKey = null;
-        this._oldCurrentKey = null;
-
-        this._op = gui.corePatch().getOpById(this._opId);
-        this._port = this._op.getPort(this._portName);
-        this.type = this._port.uiAttribs.gradientType || "gradient";
-
-        this._anim = new Anim();
-        this._anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
-
-        this._elContainer = null;
-        this._bg = new ModalBackground();
-        this._bg.on("hide", () =>
+        this.#elContainer = null;
+        this.#bg = new ModalBackground();
+        this.#bg.on("hide", () =>
         {
             this.close();
         });
 
-        this._options = {};
-        this._options.smoothStep = this._port.uiAttribs.gradEditSmoothstep;
-        this._options.step = this._port.uiAttribs.gradEditStep;
-        this._options.oklab = this._port.uiAttribs.gradOklab;
+        this.#options.smoothStep = this.#port.uiAttribs.gradEditSmoothstep;
+        this.#options.step = this.#port.uiAttribs.gradEditStep;
+        this.#options.oklab = this.#port.uiAttribs.gradOklab;
 
-        this._previousContent = "";
-        this._openerEle = (options || {}).openerEle;
+        this.#previousContent = "";
+        this.#openerEle = (options || {}).openerEle;
     }
 
     close()
     {
-        this._bg.hide();
-        this._elContainer.remove();
+        this.#bg.hide();
+        this.#elContainer.remove();
     }
 
+    /**
+     * @param {number} i
+     */
     selectKey(i)
     {
-        this.setCurrentKey(this._keys[i]);
+        this.setCurrentKey(this.#keys[i]);
     }
 
     updateCanvas()
@@ -74,19 +88,19 @@ export default class GradientEditor
         if (!this._ctx)
         {
             const canvas = ele.byId("gradientEditorCanvas");
-            const canvasCurve = ele.byId("gradientEditorCanvasCurve");
+            // const canvasCurve = ele.byId("gradientEditorCanvasCurve");
             if (!canvas)
             {
-                this._log.error("[gradienteditor] no canvas found");
+                this.#log.error("[gradienteditor] no canvas found");
                 return;
             }
             this._ctx = canvas.getContext("2d");
-            this._ctxCurve = canvasCurve.getContext("2d");
-            this._imageData = this._ctx.createImageData(this._width, 1);
+            // this._ctxCurve = canvasCurve.getContext("2d");
+            this._imageData = this._ctx.createImageData(this.#width, 1);
         }
 
         let keys = [];
-        if (this._keys.length == 0) keys.push({
+        if (this.#keys.length == 0) keys.push({
             "posy": 0.5,
             "pos": 0,
             "r": 0,
@@ -94,12 +108,12 @@ export default class GradientEditor
             "b": 0
         });
         else keys = [{
-            "posy": this._keys[0].posy,
+            "posy": this.#keys[0].posy,
             "pos": 0,
-            "r": this._keys[0].r,
-            "g": this._keys[0].g,
-            "b": this._keys[0].b
-        }].concat(this._keys);
+            "r": this.#keys[0].r,
+            "g": this.#keys[0].g,
+            "b": this.#keys[0].b
+        }].concat(this.#keys);
 
         const last = keys[keys.length - 1];
         keys.push({
@@ -113,14 +127,14 @@ export default class GradientEditor
         if (this.type == "curve")
         {
             this._ctxCurve.fillStyle = "#444";
-            this._ctxCurve.fillRect(0, 0, this._width, this._height);
+            this._ctxCurve.fillRect(0, 0, this.#width, this.#height);
 
             // --------- 0.5 line...
 
             this._ctxCurve.strokeStyle = "#333";
             this._ctxCurve.beginPath();
-            this._ctxCurve.moveTo(0, this._height / 2);
-            this._ctxCurve.lineTo(this._width, this._height / 2);
+            this._ctxCurve.moveTo(0, this.#height / 2);
+            this._ctxCurve.lineTo(this.#width, this.#height / 2);
             this._ctxCurve.stroke();
 
             // --------- linear
@@ -128,30 +142,17 @@ export default class GradientEditor
             this._ctxCurve.strokeStyle = "#777";
             this._ctxCurve.lineWidth = 1;
             this._ctxCurve.beginPath();
-            this._ctxCurve.moveTo(keys[0].pos * this._width, keys[0].posy * this._height - this._keyWidth / 2);
+            this._ctxCurve.moveTo(keys[0].pos * this.#width, keys[0].posy * this.#height - this.#keyWidth / 2);
 
             for (let i = 0; i < keys.length - 1; i++)
                 this._ctxCurve.lineTo(
-                    Math.floor(keys[i].pos * this._width - this._keyWidth / 2),
-                    Math.floor(keys[i].posy * this._height - this._keyWidth / 2 + 1)
+                    Math.floor(keys[i].pos * this.#width - this.#keyWidth / 2),
+                    Math.floor(keys[i].posy * this.#height - this.#keyWidth / 2 + 1)
                 );
 
-            this._ctxCurve.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
+            this._ctxCurve.lineTo(keys[keys.length - 1].pos * this.#width, keys[keys.length - 1].posy * this.#height - this.#keyWidth / 2);
             this._ctxCurve.stroke();
 
-            // smoothed...
-            // this._ctxCurve.strokeStyle = "#aaa";
-            // this._ctxCurve.beginPath();
-            // this._ctxCurve.lineWidth = 2;
-            // let numSteps = 250;
-            // for (let i = 0; i < numSteps + 2; i++)
-            // {
-            //     let x = Math.floor(i / numSteps * this._width);
-            //     let y = Math.floor(this._anim.getValue(i / numSteps) * this._height) - 1;
-            //     if (i == 0) this._ctxCurve.moveTo(x, y);
-            //     else this._ctxCurve.lineTo(x, y);
-            // }
-            // this._ctxCurve.stroke();
         }
         else
         {
@@ -161,15 +162,15 @@ export default class GradientEditor
                 const keyA = keys[i];
                 const keyB = keys[i + 1];
 
-                for (let x = keyA.pos * this._width; x < keyB.pos * this._width; x++)
+                for (let x = keyA.pos * this.#width; x < keyB.pos * this.#width; x++)
                 {
                     x = Math.round(x);
-                    let p = utils.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
+                    let p = utils.map(x, keyA.pos * this.#width, keyB.pos * this.#width, 0, 1);
 
-                    if (this._options.smoothStep) p = utils.smoothStep(p);
-                    if (this._options.step) p = Math.round(p);
+                    if (this.#options.smoothStep) p = utils.smoothStep(p);
+                    if (this.#options.step) p = Math.round(p);
 
-                    if (this._options.oklab)
+                    if (this.#options.oklab)
                     {
                         const klabA = this.rgbToOklab(keyA.r, keyA.g, keyA.b);
                         const labA_r = klabA[0];
@@ -219,47 +220,50 @@ export default class GradientEditor
                     };
             }
 
-            this._port.set(JSON.stringify({ "keys": keyData }));
+            this.#port.set(JSON.stringify({ "keys": keyData }));
         }
     }
 
+    /**
+     * @param {Object} key
+     */
     _setKeyStyle(key)
     {
         const attr = {};
 
-        if (key.rect)
-        {
-            if (this.type == "curve")
-            {
-                attr.fill = "#888";
-                attr.stroke = "#fff";
-            }
-            else
-            {
-                attr.fill = "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + "," + this._keyOpacity + ")";
-                attr.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
-            }
+        // if (key.rect)
+        // {
+        //     if (this.type == "curve")
+        //     {
+        //         attr.fill = "#888";
+        //         attr.stroke = "#fff";
+        //     }
+        //     else
+        //     {
+        //         attr.fill = "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + "," + this._keyOpacity + ")";
+        //         attr.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
+        //     }
 
-            key.rect.attr(attr);
-        }
+        //     key.rect.attr(attr);
+        // }
     }
 
     onChange()
     {
         function compare(a, b) { return a.pos - b.pos; }
 
-        this._keys.sort(compare);
+        this.#keys.sort(compare);
 
-        this._anim.clear();
+        this.#anim.clear();
         let html = "";
-        for (let i = 0; i < this._keys.length; i++)
+        for (let i = 0; i < this.#keys.length; i++)
         {
-            this._keys[i].pos = Math.min(1.0, Math.max(this._keys[i].pos, 0));
-            this._keys[i].posy = Math.min(1.0, Math.max(this._keys[i].posy, 0));
+            this.#keys[i].pos = Math.min(1.0, Math.max(this.#keys[i].pos, 0));
+            this.#keys[i].posy = Math.min(1.0, Math.max(this.#keys[i].posy, 0));
 
             html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex button-small\">" + i + "</a> ";
 
-            this._anim.setValue(this._keys[i].pos, this._keys[i].posy);
+            this.#anim.setValue(this.#keys[i].pos, this.#keys[i].posy);
         }
 
         ele.byId("gradienteditorKeys").innerHTML = html;
@@ -273,18 +277,26 @@ export default class GradientEditor
         if (this._callback) this._callback();
     }
 
+    /**
+     * @param {KeyObject} k
+     */
     deleteKey(k)
     {
-        this._keys.splice(this._keys.indexOf(k), 1);
+        if (this.#keys.length < 2) return;
+        k.ele.remove();
+        this.#keys.splice(this.#keys.indexOf(k), 1);
         this.onChange();
     }
 
     setCurrentKey(key)
     {
-        if (this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth });
-        this._currentKey = key;
+        for (let i = 0; i < this.#keys.length; i++)
+            this.#keys[i].ele.classList.remove("active");
 
-        if (key == this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth * 2 });
+        this.#currentKey = key;
+        if (this.#currentKey) this.#currentKey.ele.classList.add("active");
+
+        // if (key == this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth * 2 });
 
         ele.byId("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
@@ -317,21 +329,29 @@ export default class GradientEditor
             b = Math.random();
         }
 
-        const rect = this._paper.ellipse(
-            pos * this._width - this._keyWidth / 2,
-            posy * this._height - this._keyWidth / 2,
-            this._keyWidth,
-            this._keyHeight).attr(
-            {
-                "fill": "transparent",
-                "stroke": this.getInvStrokeColor(r, g, b),
-                "stroke-width": this._keyStrokeWidth
-            });
+        // const rect = this._paper.ellipse(
+        //     pos * this._width - this._keyWidth / 2,
+        //     posy * this._height - this._keyWidth / 2,
+        //     this._keyWidth,
+        //     this._keyHeight).attr(
+        //     {
+        //         "fill": "transparent",
+        //         "stroke": this.getInvStrokeColor(r, g, b),
+        //         "stroke-width": this._keyStrokeWidth
+        //     });
+
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        ele.byId("gradienteditorbar").appendChild(dot);
+        dot.style.marginLeft = (pos * this.#width - this.#keyWidth / 2) + "px";
+        dot.style.marginTop = (posy * this.#height - this.#keyWidth / 2) + "px";
+        dot.style.width = this.#keyWidth + "px";
+        dot.style.height = this.#keyWidth + "px";
 
         const key = {
             "posy": posy,
             "pos": pos,
-            "rect": rect,
+            "ele": dot,
             "r": r,
             "g": g,
             "b": b
@@ -339,76 +359,101 @@ export default class GradientEditor
 
         this._setKeyStyle(key);
 
-        this._keys.push(key);
+        this.#keys.push(key);
         let shouldDelete = false;
         this.setCurrentKey(key);
 
-        const move = (dx, dy, x, y, e) =>
+        dot.addEventListener("pointerup", (e) =>
         {
-            this.setCurrentKey(key);
-            this._movingkey = true;
-            const attribs = {};
+            if (this.#downDot) this.#downDot.style.pointerEvents = "initial";
+            this.#downDot = null;
+        });
 
-            attribs.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
-
-            // e.target == key.rect.node || //|| e.target.tagName == "circle"
-            if (e.target.tagName == "svg" || e.target.tagName == "circle" || e.target.tagName == "ellipse")
-            {
-                let eX = e.offsetX - (this._keyWidth / 2);
-                let eY = e.offsetY - (this._keyWidth / 2);
-
-                eX = Math.max(eX, 0);
-                eY = Math.max(eY, 0);
-                eX = Math.min(eX, this._width);
-                eY = Math.min(eY, this._height);
-
-                attribs.cx = eX;
-                attribs.cy = eY;
-
-                key.pos = (eX + (this._keyWidth / 2)) / this._width;
-                key.posy = (eY + (this._keyWidth / 2)) / this._height;
-            }
-
-            rect.attr(attribs);
-            this.onChange();
-        };
-
-        const down = (x, y, e) =>
+        dot.addEventListener("pointerdown", (e) =>
         {
-            try
-            { e.target.setPointerCapture(e.pointerId); }
-            catch (_e)
-            {}
-
-            if (e.buttons == 2) shouldDelete = true;
-
-            this._startMouseY = y;
-            this._movingkey = true;
-            this.setCurrentKey(key);
-        };
-
-        const up = (e) =>
-        {
-            try
-            { e.target.releasePointerCapture(e.pointerId); }
-            catch (_e)
-            {}
-
-            setTimeout(() =>
+            if (e.buttons == 2)
             {
-                this._movingkey = false;
-            }, 100);
-
-            if (shouldDelete && key.rect)
-            {
-                key.rect.remove();
                 this.deleteKey(key);
+                this.setCurrentKey(this.#keys[0]);
+                return;
             }
-        };
+            else
+            {
+                this.#downDot = dot;
+                if (this.#downDot) this.#downDot.style.pointerEvents = "none";
 
-        if (rect) rect.drag(move, down, up);
+                this.setCurrentKey(key);
+            }
+        });
+
+        // const move = (dx, dy, x, y, e) =>
+        // {
+        //     this.setCurrentKey(key);
+        //     this._movingkey = true;
+        //     const attribs = {};
+
+        //     attribs.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
+
+        //     if (e.target.tagName == "svg" || e.target.tagName == "circle" || e.target.tagName == "ellipse")
+        //     {
+        //         let eX = e.offsetX - (this._keyWidth / 2);
+        //         let eY = e.offsetY - (this._keyWidth / 2);
+
+        //         eX = Math.max(eX, 0);
+        //         eY = Math.max(eY, 0);
+        //         eX = Math.min(eX, this._width);
+        //         eY = Math.min(eY, this._height);
+
+        //         attribs.cx = eX;
+        //         attribs.cy = eY;
+
+        //         key.pos = (eX + (this._keyWidth / 2)) / this._width;
+        //         key.posy = (eY + (this._keyWidth / 2)) / this._height;
+        //     }
+
+        //     rect.attr(attribs);
+        //     this.onChange();
+        // };
+
+        // const down = (x, y, e) =>
+        // {
+        //     try
+        //     { e.target.setPointerCapture(e.pointerId); }
+        //     catch (_e)
+        //     {}
+
+        //     if (e.buttons == 2) shouldDelete = true;
+
+        //     this._startMouseY = y;
+        //     this._movingkey = true;
+        //     this.setCurrentKey(key);
+        // };
+
+        // const up = (e) =>
+        // {
+        //     try
+        //     { e.target.releasePointerCapture(e.pointerId); }
+        //     catch (_e)
+        //     {}
+
+        //     setTimeout(() =>
+        //     {
+        //         this._movingkey = false;
+        //     }, 100);
+
+        //     if (shouldDelete && key.rect)
+        //     {
+        //         key.rect.remove();
+        //         this.deleteKey(key);
+        //     }
+        // };
+
+        // if (rect) rect.drag(move, down, up);
     }
 
+    /**
+     * @param {Function} cb
+     */
     show(cb)
     {
         this._callback = cb;
@@ -417,50 +462,72 @@ export default class GradientEditor
 
         const html = getHandleBarHtml("GradientEditor", { "name": this._portName });
 
-        this._bg.show(true);
+        this.#bg.show(true);
 
-        this._elContainer = document.createElement("div");
-        this._elContainer.classList.add("gradientEditorContainer");
-        this._elContainer.classList.add("cablesCssUi");
+        this.#elContainer = document.createElement("div");
+        this.#elContainer.classList.add("gradientEditorContainer");
+        this.#elContainer.classList.add("cablesCssUi");
 
-        document.body.appendChild(this._elContainer);
-        this._elContainer.innerHTML = html;
+        document.body.appendChild(this.#elContainer);
+        this.#elContainer.innerHTML = html;
 
-        if (this._openerEle)
+        if (this.#openerEle)
         {
-            const r = this._openerEle.getBoundingClientRect();
-            const rge = this._elContainer.getBoundingClientRect();
+            const r = this.#openerEle.getBoundingClientRect();
+            const rge = this.#elContainer.getBoundingClientRect();
             let ry = r.y;
-            if (window.innerHeight - ry < this._height * 1.5) ry -= this._height * 1.5;
-            this._elContainer.style.left = r.x - rge.width - 20 + "px";
-            this._elContainer.style.top = ry + "px";
+            if (window.innerHeight - ry < this.#height * 1.5) ry -= this.#height * 1.5;
+            this.#elContainer.style.left = r.x - rge.width - 20 + "px";
+            this.#elContainer.style.top = ry + "px";
         }
         else
         {
-            this._elContainer.style.left = 100 + "px";
-            this._elContainer.style.top = 100 + "px";
+            this.#elContainer.style.left = 100 + "px";
+            this.#elContainer.style.top = 100 + "px";
         }
-        this._paper = Raphael("gradienteditorbar", 0, 0);
-        document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
+        // this._paper = Raphael("gradienteditorbar", 0, 0);
+        // document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
+        // {
+        //     try
+        //     { e.target.setPointerCapture(e.pointerId); }
+        //     catch (_e)
+        //     {}
+        // });
+
+        // document.querySelector("#gradienteditorbar svg").addEventListener("pointerup", (e) =>
+        // {
+        //     try
+        //     { e.target.releasePointerCapture(e.pointerId); }
+        //     catch (_e)
+        //     {}
+        // });
+
+        ele.byId("gradientEditorCanvas").addEventListener("pointerup", (e) =>
         {
-            try
-            { e.target.setPointerCapture(e.pointerId); }
-            catch (_e)
-            {}
+            if (this.#downDot)
+            {
+                this.#downDot.style.pointerEvents = "initial";
+                this.#downDot = null;
+            }
         });
 
-        document.querySelector("#gradienteditorbar svg").addEventListener("pointerup", (e) =>
+        ele.byId("gradientEditorCanvas").addEventListener("pointermove", (e) =>
         {
-            try
-            { e.target.releasePointerCapture(e.pointerId); }
-            catch (_e)
-            {}
+            if (this.#downDot)
+            {
+                this.#currentKey.ele.style.marginTop = e.layerY - (this.#keyWidth / 2) + "px";
+                this.#currentKey.ele.style.marginLeft = e.offsetX - (this.#keyWidth / 2) + "px";
+                this.#currentKey.posy = (e.offsetY + (this.#keyWidth / 2)) / this.#height;
+                this.#currentKey.pos = (e.offsetX + (this.#keyWidth / 2)) / this.#width;
+                this.onChange();
+            }
+
         });
 
-        document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
+        ele.byId("gradientEditorCanvas").addEventListener("click", (e) =>
         {
-            if (this._movingkey) return;
-            this.addKey(e.offsetX / this._width, e.offsetY / this._height);
+            if (this.#downDot) return;
+            this.addKey(e.offsetX / this.#width, e.layerY / this.#height);
             this.onChange();
         });
 
@@ -471,18 +538,18 @@ export default class GradientEditor
             const data = op.getPort(this._portName).get();
             try
             {
-                this._previousContent = data;
+                this.#previousContent = data;
                 const keys = JSON.parse(data).keys || [];
                 for (let i = 1; i < keys.length - 1; i++)
                     this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
             }
             catch (e)
             {
-                this._log.error(e);
+                this.#log.error(e);
             }
         }
 
-        if (this._keys.length == 0)
+        if (this.#keys.length == 0)
         {
             this.addKey(0, 0.5, 0, 0, 0);
             this.addKey(1, 0.5, 1, 1, 1);
@@ -499,18 +566,18 @@ export default class GradientEditor
         ele.byId("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
-            op.getPort(this._portName).set(this._previousContent);
+            op.getPort(this._portName).set(this.#previousContent);
             this.close();
         });
 
         const colEleDel = ele.byId("gradientColorDelete");
         colEleDel.addEventListener("click", (e) =>
         {
-            if (this._currentKey)
+            if (this.#currentKey)
             {
-                this._currentKey.rect.remove();
-                this.deleteKey(this._currentKey);
-                this._currentKey = this._keys[0];
+                this.#currentKey.ele.remove();
+                this.deleteKey(this.#currentKey);
+                this.#currentKey = this.#keys[0];
             }
         });
 
@@ -521,17 +588,17 @@ export default class GradientEditor
 
         colEle.addEventListener("click", (e) =>
         {
-            if (!this._currentKey) return;
+            if (!this.#currentKey) return;
             const cr = new ColorRick({
                 "ele": colEle,
-                "color": [parseInt(this._currentKey.r * 255), parseInt(this._currentKey.g * 255), parseInt(this._currentKey.b * 255)], // "#ffffff",
+                "color": [parseInt(this.#currentKey.r * 255), parseInt(this.#currentKey.g * 255), parseInt(this.#currentKey.b * 255)], // "#ffffff",
                 "onChange": (col) =>
                 {
-                    if (this._currentKey)
+                    if (this.#currentKey)
                     {
-                        this._currentKey.r = col.gl()[0];
-                        this._currentKey.g = col.gl()[1];
-                        this._currentKey.b = col.gl()[2];
+                        this.#currentKey.r = col.gl()[0];
+                        this.#currentKey.g = col.gl()[1];
+                        this.#currentKey.b = col.gl()[2];
 
                         CABLES.GradientEditor.editor._ctx = null;
                         CABLES.GradientEditor.editor.onChange();
@@ -543,6 +610,11 @@ export default class GradientEditor
         });
     }
 
+    /**
+     * @param {number} r
+     * @param {number} g
+     * @param {number} b
+     */
     rgbToOklab(r, g, b)
     {
         let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
@@ -558,11 +630,21 @@ export default class GradientEditor
         ];
     }
 
+    /**
+     * @param {number} value
+     * @param {number} min
+     * @param {number} max
+     */
     clamp(value, min, max)
     {
         return Math.max(Math.min(value, max), min);
     }
 
+    /**
+     * @param {number} L
+     * @param {number} a
+     * @param {number} b
+     */
     oklabToRGB(L, a, b)
     {
         let l = L + a * +0.3963377774 + b * +0.2158037573;
