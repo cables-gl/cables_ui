@@ -818,7 +818,7 @@ export default class ServerOps
     }
 
     /**
-     * @param {{}} options
+     * @param {object} options
      * @param {string} options.title title of the dialog
      * @param {string} options.shortName shortname of the new op
      * @param {string} options.type type of op (patch/user/team/...)
