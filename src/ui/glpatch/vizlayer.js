@@ -44,7 +44,7 @@ export default class VizLayer extends Events
         this._eleCanvas.classList.add("gluiPreviewLayer");
         // this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
 
-        ele.byId("patchviews").appendChild(this._eleCanvas);
+        ele.byId("glpatch2").appendChild(this._eleCanvas);
 
         this._updateSize();
 
