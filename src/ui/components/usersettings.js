@@ -1,4 +1,4 @@
-import { Events } from "cables-shared-client";
+import { Events, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { platform } from "../platform.js";
 
@@ -76,7 +76,7 @@ export default class UserSettings extends Events
 
     save()
     {
-        platform.talkerAPI.send("saveUserSettings", { "settings": this._settings });
+        platform.talkerAPI.send(TalkerAPI.CMD_SAVE_USER_SETTINGS, { "settings": this._settings });
     }
 
     /**

@@ -1,5 +1,5 @@
 // http://html5doctor.com/drag-and-drop-to-server/
-import { Logger } from "cables-shared-client";
+import { Logger, TalkerAPI } from "cables-shared-client";
 import { notifyError } from "../elements/notification.js";
 import FileManager from "../components/filemanager.js";
 import ModalDialog from "./modaldialog.js";
@@ -99,7 +99,7 @@ export default class FileUploader
             reader.addEventListener("load",
                 () =>
                 {
-                    const talkerCommand = opId ? "uploadFileToOp" : "fileUploadStr";
+                    const talkerCommand = opId ? TalkerAPI.CMD_UPLOAD_OP_DEPENDENCY : TalkerAPI.CMD_UPLOAD_FILE;
                     platform.talkerAPI.send(talkerCommand,
                         {
                             "fileStr": reader.result,

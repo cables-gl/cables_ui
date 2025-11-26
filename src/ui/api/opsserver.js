@@ -107,7 +107,7 @@ export default class ServerOps
      */
     load(cb)
     {
-        platform.talkerAPI.send("getAllProjectOps", {}, (err, res) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_PROJECT_OPS, {}, (err, res) =>
         {
             if (err) this._log.error(err);
 
@@ -153,7 +153,7 @@ export default class ServerOps
         };
         if (options && options.opTargetDir) createRequest.opTargetDir = options.opTargetDir;
 
-        platform.talkerAPI.send("opCreate", createRequest, (err, res) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_CREATE_OP, createRequest, (err, res) =>
         {
             if (err)
             {
@@ -290,7 +290,7 @@ export default class ServerOps
         const l = gui.opDocs.getOpDocById(op.opId);
         if (l && (JSON.stringify(l.layout) == JSON.stringify(opObj))) return false; // has not changed
 
-        platform.talkerAPI.send("opSaveLayout", {
+        platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_LAYOUT, {
             "opname": op.opId,
             "layout": opObj
         }, (err, res) =>
@@ -369,7 +369,7 @@ export default class ServerOps
         };
         if (options.opTargetDir) cloneRequest.opTargetDir = options.opTargetDir;
 
-        platform.talkerAPI.send("opClone", cloneRequest, (err, res) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_CLONE_OP, cloneRequest, (err, res) =>
         {
             if (err)
             {
@@ -403,7 +403,7 @@ export default class ServerOps
                     "oldIdAsRef": true
                 });
 
-                platform.talkerAPI.send("opAttachmentSave", {
+                platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_ATTACHMENT, {
                     "opname": name,
                     "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
                     "content": JSON.stringify(sub)
@@ -423,7 +423,7 @@ export default class ServerOps
     addOpLib(opName, libName, next)
     {
         if (libName === "---") return;
-        platform.talkerAPI.send("opAddLib", {
+        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_LIBRARY, {
             "opname": opName,
             "name": libName
         }, (err, res) =>
@@ -473,7 +473,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send("opRemoveLib", {
+            platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_LIBRARY, {
                 "opname": opName,
                 "name": libName
             }, (err, res) =>
@@ -499,7 +499,7 @@ export default class ServerOps
     {
         if (libName === "---") return;
 
-        platform.talkerAPI.send("opAddCoreLib", {
+        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_CORELIB, {
             "opname": opName,
             "name": libName
         }, (err, res) =>
@@ -550,7 +550,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send("opRemoveCoreLib", {
+            platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_CORELIB, {
                 "opname": opName,
                 "name": libName
             }, (err, res) =>
@@ -581,7 +581,7 @@ export default class ServerOps
             "id": "addOpDependency",
             "title": "adding " + depSrc + " to " + opName
         });
-        platform.talkerAPI.send("addOpDependency", {
+        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_DEPENDENCY, {
             "opName": opName,
             "src": depSrc,
             "type": depType,
@@ -638,7 +638,7 @@ export default class ServerOps
                 "id": "removeOpDependency",
                 "title": "removing " + depSrc + " from " + opId
             });
-            platform.talkerAPI.send("removeOpDependency", {
+            platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_DEPENDENCY, {
                 "opName": opId,
                 "src": depSrc,
                 "type": depType
@@ -693,7 +693,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send("opAttachmentDelete", {
+            platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_ATTACHMENT, {
                 "opname": opId,
                 "name": attName
             }, (err, res) =>
@@ -736,7 +736,7 @@ export default class ServerOps
             "prompt": true,
             "promptOk": (attName) =>
             {
-                platform.talkerAPI.send("opAttachmentAdd", {
+                platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_ATTACHMENT, {
                     "opname": opid,
                     "name": attName
                 }, (err, res) =>
@@ -776,11 +776,11 @@ export default class ServerOps
 
         CABLES.shittyTest = CABLES.shittyTest || 1;
 
-        platform.talkerAPI.send("opCreate", {
+        platform.talkerAPI.send(TalkerAPI.CMD_CREATE_OP, {
             "opname": opname
         }, (err3, res) =>
         {
-            platform.talkerAPI.send("opUpdate", {
+            platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_OP, {
                 "opname": opname,
                 "update": {
                     "attachments": atts
@@ -797,7 +797,7 @@ export default class ServerOps
                     this.showApiError(err);
                 }
 
-                platform.talkerAPI.send("opAttachmentGet", {
+                platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_ATTACHMENT, {
                     "opname": opname,
                     "name": attachmentName
                 }, (err2, res2) =>
@@ -818,7 +818,7 @@ export default class ServerOps
     }
 
     /**
-     * @param {{}} options
+     * @param {object} options
      * @param {string} options.title title of the dialog
      * @param {string} options.shortName shortname of the new op
      * @param {string} options.type type of op (patch/user/team/...)
@@ -850,7 +850,7 @@ export default class ServerOps
                 "rename": options.rename
             };
             if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
-            platform.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, initialRes) =>
             {
                 if (err)
                 {
@@ -872,7 +872,7 @@ export default class ServerOps
                         switch (event.currentTarget.id)
                         {
                         case "addOpTargetDir":
-                            platform.talkerAPI.send("addProjectOpDir", {}, (dirErr, dirRes) =>
+                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, dirRes) =>
                             {
                                 if (!dirErr)
                                 {
@@ -901,7 +901,7 @@ export default class ServerOps
                             break;
                         case "openOpTargetDir":
                         default:
-                            platform.talkerAPI.send("openDir", { "dir": selectedDir });
+                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_OPEN_DIR, { "dir": selectedDir });
                             break;
                         }
                     });
@@ -993,7 +993,7 @@ export default class ServerOps
 
         if (options.hasOpDirectories)
         {
-            platform.talkerAPI.send("getProjectOpDirs", {}, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, res) =>
             {
                 let opDirSelect = "Choose op directory:<br/><br/>";
                 opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
@@ -1060,7 +1060,7 @@ export default class ServerOps
                     "title": "checking op name" + fullName
                 });
 
-                platform.talkerAPI.send("checkOpName", checkNameRequest, (err, res) =>
+                platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
                 {
 
                     if (err)
@@ -1249,10 +1249,10 @@ export default class ServerOps
         });
         const iframeEle = modal.iframeEle;
         const talkerAPI = new TalkerAPI(iframeEle.contentWindow);
-        const renameListenerId = talkerAPI.addEventListener("opRenamed", (newOp) =>
+        const renameListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_OP_RENAMED, (newOp) =>
         {
             talkerAPI.removeEventListener(renameListenerId);
-            const renameDoneListenerId = talkerAPI.addEventListener("closeRenameDialog", () =>
+            const renameDoneListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_CLOSE_RENAME_DIALOG, () =>
             {
                 talkerAPI.removeEventListener(renameDoneListenerId);
                 gui.closeModal();
@@ -1301,7 +1301,7 @@ export default class ServerOps
             };
             if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
-            platform.talkerAPI.send("opRename", renameRequest, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_RENAME_OP, renameRequest, (err, res) =>
             {
                 if (err)
                 {
@@ -1330,7 +1330,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send("opDelete", { "opName": opName }, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opName": opName }, (err, res) =>
             {
                 if (err)
                 {
@@ -1546,7 +1546,7 @@ export default class ServerOps
             }
         });
 
-        platform.talkerAPI.send("opAttachmentGet", apiParams, (err, res) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_ATTACHMENT, apiParams, (err, res) =>
         {
             if (err)
             {
@@ -1583,7 +1583,7 @@ export default class ServerOps
                 editorTab.on("save", (_setStatus, _content) =>
                 {
                     gui.savingTitleAnimStart("Saving Attachment...");
-                    platform.talkerAPI.send("opAttachmentSave", {
+                    platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_ATTACHMENT, {
                         "opname": opId,
                         "name": attachmentName,
                         "content": _content
@@ -1716,7 +1716,7 @@ export default class ServerOps
                 }
             });
 
-            platform.talkerAPI.send("getOpCode", {
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_CODE, {
                 "opname": opid,
                 "projectId": this._patchId
             }, (er, rslt) =>
@@ -1739,7 +1739,7 @@ export default class ServerOps
                         gui.savingTitleAnimStart("Saving Op...");
 
                         platform.talkerAPI.send(
-                            "saveOpCode",
+                            TalkerAPI.CMD_SAVE_OP_CODE,
                             {
                                 "opname": opid,
                                 "code": content,
@@ -2105,7 +2105,7 @@ export default class ServerOps
                 "id": "getopdocs",
                 "title": "load opdocs for " + oldName || opIdentifier
             });
-            platform.talkerAPI.send("getOpDocs", opIdentifier, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DOCS, opIdentifier, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
                 if (err)
@@ -2254,7 +2254,7 @@ export default class ServerOps
             collectionOpUrl.push(apiUrl);
             const lid = "collection ops" + collectionName + utils.uuid();
             gui.jobs().start({ "id": "getCollectionOpDocs" });
-            platform.talkerAPI.send("getCollectionOpDocs", { "name": collectionName }, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_COLLECTION_OPDOCS, { "name": collectionName }, (err, res) =>
             {
                 gui.jobs().finish("getCollectionOpDocs");
                 if (!err && res && res.opDocs)

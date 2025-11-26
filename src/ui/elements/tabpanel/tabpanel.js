@@ -1,4 +1,4 @@
-import { Events, Logger, ele } from "cables-shared-client";
+import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { notify, notifyError } from "../notification.js";
@@ -460,7 +460,7 @@ export default class TabPanel extends Events
 
         const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
-        talkerAPI.on("setSavedState", (opts) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_SET_SAVED_STATE, (opts) =>
         {
             if (opts.state)
             {
@@ -472,7 +472,7 @@ export default class TabPanel extends Events
             }
         });
 
-        talkerAPI.on("manualScreenshot", (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_SETTING_MANUAL_SCREENSHOT, (opts, next) =>
         {
             platform.setManualScreenshot(opts.manualScreenshot);
 
@@ -480,29 +480,29 @@ export default class TabPanel extends Events
             {
                 gui.patchView.store.saveScreenshot(true, () =>
                 {
-                    talkerAPI.send("screenshotSaved");
+                    talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
                 });
             }
         });
 
-        talkerAPI.on("notify", (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_NOTIFY, (opts, next) =>
         {
             notify(opts.msg, opts.text, opts.options);
         });
 
-        talkerAPI.on("notifyError", (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_NOTIFY_ERROR, (opts, next) =>
         {
             notifyError(opts.msg, opts.text, opts.options);
         });
 
-        talkerAPI.on("updatePatchName", (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UPDATE_PATCH_NAME, (opts, next) =>
         {
             gui.setProjectName(opts.name);
-            platform.talkerAPI.send("updatePatchName", opts, (err, r) => {});
+            platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts, (err, r) => {});
             gui.patchParamPanel.show(true);
         });
 
-        talkerAPI.on("opsDeleted", (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_OPS_DELETED, (opts, next) =>
         {
             const opdocs = gui.opDocs.getAll();
             const deletedOps = opts.ops || [];

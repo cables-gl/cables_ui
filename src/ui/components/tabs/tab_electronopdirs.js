@@ -1,4 +1,4 @@
-import { ele, Logger } from "cables-shared-client";
+import { ele, Logger, TalkerAPI } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
@@ -24,7 +24,7 @@ export default class ElectronOpDirs
     show()
     {
         if (!this._tab) return;
-        platform.talkerAPI.send("getProjectOpDirs", {}, (err, r) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, r) =>
         {
             if (!err && r.data)
             {
@@ -39,7 +39,7 @@ export default class ElectronOpDirs
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        platform.talkerAPI.send("addProjectOpDir", {}, (dirErr, _dirRes) =>
+                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -60,7 +60,7 @@ export default class ElectronOpDirs
                 {
                     packageButton.addEventListener("click", () =>
                     {
-                        platform.talkerAPI.send("addOpPackage", {}, (dirErr, _dirRes) =>
+                        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_PACKAGE, {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -82,7 +82,7 @@ export default class ElectronOpDirs
                     removeButton.addEventListener("click", () =>
                     {
                         const dir = removeButton.dataset.dir;
-                        platform.talkerAPI.send("removeProjectOpDir", dir, () =>
+                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_REMOVE_PROJECT_OPDIR, dir, () =>
                         {
                             this.show();
                             this._loadOpsInDirs();
@@ -106,7 +106,7 @@ export default class ElectronOpDirs
                         {
                             order.push(dirEle.dataset.dir);
                         });
-                        platform.talkerAPI.send("saveProjectOpDirOrder", order, (orderErr, orderRes) =>
+                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SAVE_PROJECT_OPDIRS_ORDER, order, (orderErr, orderRes) =>
                         {
                             if (orderRes && orderRes.success)
                             {
@@ -129,7 +129,7 @@ export default class ElectronOpDirs
 
     _loadOpsInDirs()
     {
-        platform.talkerAPI.send("getOpDocsAll", { "projectId": gui.patchId }, (_err, _data) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_ALL_OPDOCS, { "projectId": gui.patchId }, (_err, _data) =>
         {
             if (_err)
             {

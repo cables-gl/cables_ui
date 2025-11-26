@@ -1,4 +1,4 @@
-import { Logger, Events } from "cables-shared-client";
+import { Logger, Events, TalkerAPI } from "cables-shared-client";
 import { CgContext } from "cables-corelibs";
 import { utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -75,7 +75,7 @@ export default class PatchSaveServer extends Events
         {
             if (platform.getPatchVersion())
             {
-                platform.talkerAPI.send("reload", { "patchId": gui.project().shortId });
+                platform.talkerAPI.send(TalkerAPI.CMD_RELOAD_PATCH, { "patchId": gui.project().shortId });
             }
         });
     }
@@ -95,7 +95,7 @@ export default class PatchSaveServer extends Events
             "indicator": "canvas"
         });
 
-        platform.talkerAPI.send("checkProjectUpdated", {}, (err, data) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_CHECK_PATCH_UPDATED, {}, (err, data) =>
         {
             if (err)
             {
@@ -196,7 +196,7 @@ export default class PatchSaveServer extends Events
     {
         if (gui.showGuestWarning()) return;
 
-        platform.talkerAPI.send("getPatch", {}, (_err, project) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_PATCH, {}, (_err, project) =>
         {
             if (_err)
             {
@@ -352,7 +352,7 @@ export default class PatchSaveServer extends Events
                     const patchstr = JSON.stringify(patch);
                     let uint8data = pako.deflate(patchstr);
                     let b64 = bytesArrToBase64(uint8data);
-                    platform.talkerAPI.send("saveProjectAs",
+                    platform.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH_AS,
                         {
                             "name": name,
                             "dataB64": b64,
@@ -368,7 +368,7 @@ export default class PatchSaveServer extends Events
                             if (!err)
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
-                                platform.talkerAPI.send("gotoPatch", { "id": newProjectId });
+                                platform.talkerAPI.send(TalkerAPI.CMD_GOTO_PATCH, { "id": newProjectId });
                             }
                             else
                             {
@@ -422,7 +422,7 @@ export default class PatchSaveServer extends Events
                 if (gui.user.supporterFeatures.includes("copy_assets_on_clone"))
                 {
 
-                    platform.talkerAPI.send("getFilelist", { "source": "patch" }, (err, remoteFiles) =>
+                    platform.talkerAPI.send(TalkerAPI.CMD_GET_FILE_LIST, { "source": "patch" }, (err, remoteFiles) =>
                     {
                         let numFiles = 0;
                         if (!err && remoteFiles) numFiles = remoteFiles.filter((remoteFile) => { return !remoteFile.isLibraryFile; }).length;
@@ -791,7 +791,7 @@ export default class PatchSaveServer extends Events
 
         const currentProject = gui.project();
         platform.talkerAPI.send(
-            "setProjectName",
+            TalkerAPI.CMD_SET_PATCH_NAME,
             {
                 "id": currentProject._id,
                 "name": v
@@ -811,7 +811,7 @@ export default class PatchSaveServer extends Events
                 }
                 else
                 {
-                    platform.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                    platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, { "name": newName }, () =>
                     {
                         gui.setProjectName(newName);
                         gui.patchParamPanel.show(true);
@@ -876,7 +876,7 @@ export default class PatchSaveServer extends Events
             const url = gui.canvasManager.currentCanvas().toDataURL();
 
             platform.talkerAPI.send(
-                "saveScreenshot",
+                TalkerAPI.CMD_SAVE_PATCH_SCREENSHOT,
                 {
                     "screenshot": url
                 },
@@ -1052,7 +1052,7 @@ export default class PatchSaveServer extends Events
                 }
                 else
                 {
-                    platform.talkerAPI.send("errorReport", report, doneCallback);
+                    platform.talkerAPI.send(TalkerAPI.CMD_SEND_ERROR_REPORT, report, doneCallback);
                 }
             }
             catch (e)

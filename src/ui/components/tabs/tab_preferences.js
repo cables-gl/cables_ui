@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { ele, TalkerAPI } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { GuiText } from "../../text.js";
@@ -137,7 +137,7 @@ export default class Preferences
                 if (valueEle) valueEle.innerText = currentValue;
                 pathSelectEle.addEventListener("click", () =>
                 {
-                    platform.talkerAPI.send("selectDir", { "dir": currentValue }, (err, dirName) =>
+                    platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SELECT_DIR, { "dir": currentValue }, (err, dirName) =>
                     {
                         if (!err)
                         {

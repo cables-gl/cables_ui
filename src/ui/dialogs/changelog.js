@@ -1,4 +1,4 @@
-import { Logger } from "cables-shared-client";
+import { Logger, TalkerAPI } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
@@ -18,7 +18,7 @@ export default class ChangelogToast
 
     getHtml(cb, since)
     {
-        platform.talkerAPI.send("getChangelog", { "num": 1 }, (err, obj) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_CABLES_CHANGELOG, { "num": 1 }, (err, obj) =>
         {
             if (since)
             {
