@@ -7,6 +7,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
+import { CmdRenderer } from "../../commands/cmd_renderer.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
@@ -222,6 +223,14 @@ export default class EditorTab extends Events
                         });
                 }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
+
+                if (platform.isDevEnv() && document.location.href.indexOf("local") > -1)
+                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-copy\"  ></span>", () =>
+                    {
+                        let path = opname + "/" + opname + ".js";
+                        console.log("op path", path);
+                        navigator.clipboard.writeText(path);
+                    });
 
                 this._editor.resize();
 
