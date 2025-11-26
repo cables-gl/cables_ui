@@ -1,4 +1,4 @@
-import { Logger, Events } from "cables-shared-client";
+import { Logger, Events, ele } from "cables-shared-client";
 import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
@@ -44,7 +44,7 @@ export default class VizLayer extends Events
         this._eleCanvas.classList.add("gluiPreviewLayer");
         // this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
 
-        document.body.appendChild(this._eleCanvas);
+        ele.byId("patchviews").appendChild(this._eleCanvas);
 
         this._updateSize();
 
