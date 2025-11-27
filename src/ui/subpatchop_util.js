@@ -1,6 +1,6 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { Patch, utils } from "cables";
-import { nl } from "cables-corelibs/cgl/constants.js";
+import { nl } from "cables-corelibs/cg/constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -192,7 +192,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 
     // loadingModal.setTask("getting ports json");
     platform.talkerAPI.send(
-        "opAttachmentGet",
+        TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
             "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
@@ -258,7 +258,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
     // loadingModal.setTask("getting ports json");
     platform.talkerAPI.send(
-        "opAttachmentGet",
+        TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
             "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
@@ -306,7 +306,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 
     // loadingModal.setTask("getting ports json");
     platform.talkerAPI.send(
-        "opAttachmentGet",
+        TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
             "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
@@ -419,7 +419,7 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
         }
     }
 
-    platform.talkerAPI.send("opUpdate",
+    platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_OP,
         {
             "opname": opname,
             "update":
@@ -456,7 +456,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
     gui.savingTitleAnimStart("Adding Subpatch Port...");
 
     platform.talkerAPI.send(
-        "opAttachmentGet",
+        TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
             "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
@@ -701,7 +701,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
     gui.jobs().start({ "id": "updateSubPatchOpAttachment" });
     platform.talkerAPI.send(
-        "opAttachmentSave",
+        TalkerAPI.CMD_SAVE_OP_ATTACHMENT,
         {
             "opname": newOp.opId,
             "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
@@ -712,8 +712,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
             gui.jobs().finish("updateSubPatchOpAttachment");
             if (err)
             {
-                gui.serverOps.showApiError(err);
-                notifyError("Could not save " + newOp.objName, "", { "force": true });
+                notifyError("Could not save " + newOp.objName, err.msg, { "force": true });
             }
             else
             {
@@ -767,7 +766,7 @@ subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =
 {
     // const loadingModal = gui.startModalLoading("save op code");
 
-    platform.talkerAPI.send("opUpdate",
+    platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_OP,
         {
             "opname": newOp.objName,
             "update": {

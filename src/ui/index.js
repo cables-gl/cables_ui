@@ -1,6 +1,5 @@
 import { ele } from "cables-shared-client";
 import CABLES from "cables";
-import { CG, CGL, CGP, WEBAUDIO } from "cables-corelibs";
 import { Platform } from "./platform.js";
 import CMD from "./commands/commands.js";
 import OverlayMeshes from "./components/overlay/overlaymeshes.js";
@@ -33,10 +32,6 @@ import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
 import { GuiText } from "./text.js";
 
 window.CABLES = CABLES || {};
-CABLES.CG = CG;
-CABLES.CGL = CGL;
-CABLES.CGP = CGP;
-CABLES.WEBAUDIO = WEBAUDIO;
 
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};

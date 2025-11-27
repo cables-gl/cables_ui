@@ -26,5 +26,5 @@ $zindex_patchfield:$zindex_lowest - 1;
 
 .gluiPreviewLayer
 {
-    z-index: $zindex_lowest - 1;
+    z-index: $zindex_lowest + 1;
 }

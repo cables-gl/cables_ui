@@ -1,4 +1,4 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import Tab from "../../elements/tabpanel/tab.js";
@@ -134,7 +134,7 @@ export default class ManageOp
         clearTimeout(this.#timeout);
         this.#timeout = setTimeout(() =>
         {
-            platform.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_INFO, { "opName": opDoc.id }, (error, res) =>
             {
                 if (error) this.#log.warn("error api?", error);
 

@@ -1,9 +1,9 @@
-import { Logger, ele, CablesConstants } from "cables-shared-client";
+import { Logger, ele, CablesConstants, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import ItemManager from "./tabs/tab_item_manager.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import { GuiText } from  "../text.js";
+import { GuiText } from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
@@ -134,7 +134,7 @@ export default class FileManager
     _getFilesFromSource(source, cb)
     {
         platform.talkerAPI.send(
-            "getFilelist",
+            TalkerAPI.CMD_GET_FILE_LIST,
             {
                 "source": source
             },
@@ -441,7 +441,7 @@ export default class FileManager
             const filename = detailItem.file ? detailItem.file.p : null;
 
             platform.talkerAPI.send(
-                "getFileDetails",
+                TalkerAPI.CMD_GET_FILE_DETAILS,
                 {
                     "projectId": projectId,
                     "fileid": itemId,
@@ -487,7 +487,7 @@ export default class FileManager
                         const fileCategory = fileInfoPath.split("/")[0];
                         const fileName = fileInfoPath.split("/")[1];
                         platform.talkerAPI.send(
-                            "getLibraryFileInfo",
+                            TalkerAPI.CMD_GET_LIBRARYFILE_DETAILS,
                             {
                                 "filename": fileName,
                                 "fileCategory": fileCategory,
@@ -570,7 +570,7 @@ export default class FileManager
                                 loadingModal.setTask("Checking patches and ops...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 platform.talkerAPI.send(
-                                    "checkNumAssetPatches",
+                                    TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
                                     { "filenames": [fullName] },
                                     (countErr, countRes) =>
                                     {
@@ -632,7 +632,7 @@ export default class FileManager
                                             modal.on("onSubmit", () =>
                                             {
                                                 platform.talkerAPI.send(
-                                                    "deleteFile",
+                                                    TalkerAPI.CMD_DELETE_FILE,
                                                     { "fileid": r.fileDb._id },
                                                     (errr, rr) =>
                                                     {
@@ -708,7 +708,7 @@ export default class FileManager
                         const loadingModal = gui.startModalLoading("Checking asset dependencies");
                         loadingModal.setTask("Checking patches and ops...");
                         platform.talkerAPI.send(
-                            "checkNumAssetPatches",
+                            TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
                             { "filenames": fullNames },
                             (countErr, countRes) =>
                             {
@@ -777,7 +777,7 @@ export default class FileManager
                                         selectedFileIds.forEach((fileId) =>
                                         {
                                             platform.talkerAPI.send(
-                                                "deleteFile",
+                                                TalkerAPI.CMD_DELETE_FILE,
                                                 {
                                                     "fileid": fileId
                                                 },
@@ -821,7 +821,7 @@ export default class FileManager
             "promptValue": "newfile.txt",
             "promptOk": (fn) =>
             {
-                platform.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
+                platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_FILE, { "name": fn }, (err, res) =>
                 {
                     if (err)
                     {
@@ -847,7 +847,7 @@ export default class FileManager
         gui.jobs().start({ "id": "uploadfile" + filename, "title": "uploading file " + filename });
 
         platform.talkerAPI.send(
-            "fileUploadStr",
+            TalkerAPI.CMD_UPLOAD_FILE,
             {
                 "fileStr": content,
                 "filename": filename,
@@ -892,7 +892,7 @@ export default class FileManager
 
     copyFileToPatch(url, options = null)
     {
-        platform.talkerAPI.send("fileConvert", {
+        platform.talkerAPI.send(TalkerAPI.CMD_CONVERT_FILE, {
             "url": url,
             "converterId": "copytopatch",
             "options": options

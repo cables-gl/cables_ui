@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
@@ -19,7 +19,7 @@ export default class WelcomeTab
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
 
-        platform.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (err, r) =>
         {
             const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": platform.getCablesStaticUrl(), "version": platform.getCablesVersion() });
             this._tab.html(html);
