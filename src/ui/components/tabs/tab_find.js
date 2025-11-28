@@ -2,7 +2,7 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { GuiText } from  "../../text.js";
+import { GuiText } from "../../text.js";
 import { escapeHTML } from "../../utils/helper.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
@@ -264,7 +264,7 @@ export default class FindTab
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-        if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
+        if (op.uiAttribs.subPatch != 0) html += "<span class=\"button-small " + highlightsubpatch + "\" style=\"float:right;\"> <span class=\"icon icon-op\"></span> " + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
 
         html += "</div>";
 
