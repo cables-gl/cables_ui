@@ -2099,6 +2099,7 @@ export default class PatchView extends Events
 
         let pInput = p1;
         let pOutput = p2;
+        if (!p1) return;
         if (p1.direction == Port.DIR_OUT)
         {
             pInput = p2;
