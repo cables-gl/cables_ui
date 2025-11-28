@@ -264,7 +264,7 @@ export default class FindTab
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-        if (op.uiAttribs.subPatch != 0) html += "<span class=\"button-small " + highlightsubpatch + "\" style=\"float:right;\"> <span class=\"icon icon-op\"></span> " + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
+        if (op.uiAttribs.subPatch != 0) html += "<span class=\"button-small\" style=\"float:right;\"> <span class=\"icon icon-op\"></span> <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span></span>";
 
         html += "</div>";
 
