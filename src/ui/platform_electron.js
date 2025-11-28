@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { ele, TalkerAPI } from "cables-shared-client";
 import { Platform } from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import { notify } from "./elements/notification.js";
@@ -101,7 +101,7 @@ export default class PlatformElectron extends Platform
             inputEle = ele.byQuery(inputId);
             if (inputEle) value = inputEle.value;
         }
-        this.talkerAPI.send("selectFile", { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
+        this.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SELECT_FILE, { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
             if (file && inputEle)
             {
@@ -120,7 +120,7 @@ export default class PlatformElectron extends Platform
     {
         const showBackupDialog = () =>
         {
-            this.talkerAPI.send("patchCreateBackup", {}, (err, result) =>
+            this.talkerAPI.send(TalkerAPI.CMD_CREATE_PATCH_BACKUP, {}, (err, result) =>
             {
                 if (result.success) notify("Backup created!");
             });
@@ -154,8 +154,8 @@ export default class PlatformElectron extends Platform
 
     exportPatch(projectId, exportType = null)
     {
-        let talkerCommand = "exportPatch";
-        if (exportType === "patch") talkerCommand = "exportPatchBundle";
+        let talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH;
+        if (exportType === "patch") talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH_BUNDLE;
         gui.jobs().start({ "id": "exportPatch", "title": "export patch", "indicator": "canvas" });
         this.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {

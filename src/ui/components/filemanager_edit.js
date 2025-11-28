@@ -1,4 +1,5 @@
 import { utils } from "cables";
+import { TalkerAPI } from "cables-shared-client";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -64,7 +65,7 @@ export default class FileManagerEditor
                             gui.jobs().start({ "id": "saveeditorcontent" + filename, "title": "saving file " + filename });
 
                             platform.talkerAPI.send(
-                                "updateFile",
+                                TalkerAPI.CMD_UPDATE_FILE,
                                 {
                                     "fileName": filename,
                                     "content": content,

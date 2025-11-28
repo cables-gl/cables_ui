@@ -38,7 +38,7 @@ export class Platform extends Events
         {
             if (CABLESUILOADER && this.talkerAPI)
             {
-                this.talkerAPI.addEventListener("logError", (errorData) =>
+                this.talkerAPI.addEventListener(TalkerAPI.CMD_UI_LOG_ERROR, (errorData) =>
                 {
                     if (errorData)
                     {
@@ -304,20 +304,20 @@ export class Platform extends Events
 
     savePatch(options, cb)
     {
-        this.talkerAPI.send("savePatch", options, cb);
+        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, options, cb);
     }
 
     initRouting(cb)
     {
         gui.setUser(this._cfg.user);
 
-        this.talkerAPI.addEventListener("notify", (options, _next) =>
+        this.talkerAPI.addEventListener(TalkerAPI.CMD_UI_NOTIFY, (options, _next) =>
         {
             notify(options.msg, options.text, options.options);
         });
 
         this.talkerAPI.addEventListener(
-            "notifyError",
+            TalkerAPI.CMD_UI_NOTIFY_ERROR,
             (options, _next) =>
             {
                 notifyError(options.msg, options.text, options.options);
@@ -325,7 +325,7 @@ export class Platform extends Events
         );
 
         this.talkerAPI.addEventListener(
-            "refreshFileManager",
+            TalkerAPI.CMD_UI_REFRESH_FILEMANAGER,
             (_options, _next) =>
             {
                 gui.closeModal();
@@ -357,7 +357,7 @@ export class Platform extends Events
         });
 
         this.talkerAPI.addEventListener(
-            "fileUpdated",
+            TalkerAPI.CMD_UI_FILE_UPDATED,
             (options, _next) =>
             {
                 if (options && options.filename)
@@ -392,7 +392,7 @@ export class Platform extends Events
         );
 
         this.talkerAPI.addEventListener(
-            "fileDeleted",
+            TalkerAPI.CMD_UI_FILE_DELETED,
             (options, _next) =>
             {
                 if (options && options.fileName && options.fileName.endsWith(".js"))
@@ -431,7 +431,7 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.addEventListener("jobStart", (options, _next) =>
+        this.talkerAPI.addEventListener(TalkerAPI.CMD_UI_JOB_START, (options, _next) =>
         {
             gui.jobs().start({ "id": options.id, "title": options.title });
         });
@@ -442,7 +442,7 @@ export class Platform extends Events
         });
 
         this.talkerAPI.addEventListener(
-            "jobProgress",
+            TalkerAPI.CMD_UI_JOB_PROGRESS,
             (options, _next) =>
             {
                 gui.jobs().setProgress(options.id, options.progress);
@@ -450,15 +450,15 @@ export class Platform extends Events
         );
 
         this.talkerAPI.addEventListener(
-            "updatePatchName",
+            TalkerAPI.CMD_UPDATE_PATCH_NAME,
             (opts, _next) =>
             {
                 gui.setProjectName(opts.name);
-                this.talkerAPI.send("updatePatchName", opts, (_err, _r) => { });
+                this.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts, (_err, _r) => { });
             },
         );
 
-        this.talkerAPI.send("getPatch", {}, (_err, r) =>
+        this.talkerAPI.send(TalkerAPI.CMD_GET_PATCH, {}, (_err, r) =>
         {
             this._cfg.patch = r;
             incrementStartup();
@@ -499,7 +499,7 @@ export class Platform extends Events
                     {
                         backupOptions.title = title;
                         gui.jobs().start({ "id": "patchCreateBackup", "title": "creating backup", "indicator": "canvas" });
-                        this.talkerAPI.send("patchCreateBackup", backupOptions);
+                        this.talkerAPI.send(TalkerAPI.CMD_CREATE_PATCH_BACKUP, backupOptions);
                     }
                 };
 

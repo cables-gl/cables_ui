@@ -1,4 +1,4 @@
-import { Logger } from "cables-shared-client";
+import { Logger, TalkerAPI } from "cables-shared-client";
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
@@ -86,7 +86,7 @@ CABLES_CMD_DEBUG.newGlguiTab = function ()
 CABLES_CMD_DEBUG.toggleMultiplayer = function ()
 {
     platform.talkerAPI.send(
-        "toggleMultiplayerSession",
+        TalkerAPI.CMD_TOGGLE_MULTIPLAYER_SESSION,
         { "projectId": this._patchId },
         (err, res) =>
         {

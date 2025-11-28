@@ -1,4 +1,4 @@
-import { Events, Logger, ele } from "cables-shared-client";
+import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { GuiText } from "../../text.js";
 import ManageOp from "./tab_manage_op.js";
@@ -303,7 +303,7 @@ export default class EditorTab extends Events
     format()
     {
         platform.talkerAPI.send(
-            "formatOpCode",
+            TalkerAPI.CMD_FORMAT_OP_CODE,
             {
                 "code": this._editor.getValue(),
             },

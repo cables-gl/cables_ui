@@ -1,4 +1,4 @@
-import { Logger, ele } from "cables-shared-client";
+import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
@@ -115,7 +115,7 @@ CABLES_CMD_PATCH.deleteSelectedOps = function ()
 
 CABLES_CMD_PATCH.reload = function ()
 {
-    platform.talkerAPI.send("reload");
+    platform.talkerAPI.send(TalkerAPI.CMD_RELOAD_PATCH);
 };
 
 CABLES_CMD_PATCH.save = function (force, cb)
@@ -402,7 +402,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     gui.corePatch().deleteOp(OpTempSubpatch.id);
                                     gui.patchView.setCurrentSubPatch(currentSubpatch, null);
 
-                                    platform.talkerAPI.send("opUpdate",
+                                    platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_OP,
                                         {
                                             "opname": newOpname,
                                             "update": {
@@ -1150,7 +1150,7 @@ CABLES_CMD_PATCH.editOpSummary = function (opId, opName, oldSummary = "")
         "promptOk": (summary) =>
         {
             gui.savingTitleAnimStart("Updating Op...");
-            platform.talkerAPI.send("opSetSummary", { "id": opId, "name": opName, "summary": summary }, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SET_OP_SUMMARY, { "id": opId, "name": opName, "summary": summary }, (err, res) =>
             {
                 if (!err)
                 {
@@ -1196,7 +1196,7 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
 
 CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
 {
-    platform.talkerAPI.send("toggleFav", {}, (err, res) =>
+    platform.talkerAPI.send(TalkerAPI.CMD_TOGGLE_PATCH_FAVS, {}, (err, res) =>
     {
         if (!err && res.success && targetElement)
         {

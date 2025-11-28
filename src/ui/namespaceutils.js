@@ -222,7 +222,7 @@ class namespace
         }
         else if (this.isTeamOp(outerName))
         {
-            if (this.isTeamOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "Team ops cannot contain ops of other teams." + opText;
+            // if (this.isTeamOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "Team ops cannot contain ops of other teams." + opText;
             if (this.isUserOp(innerName)) return "Team ops cannot contain user ops." + opText;
             if (this.isPatchOp(innerName)) return "Team ops cannot contain patch ops." + opText;
         }
