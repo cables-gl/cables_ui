@@ -66,6 +66,7 @@ const defaultOpNames =
     "TriggerNumber": "Ops.Trigger.TriggerNumber",
     "TriggerString": "Ops.Trigger.TriggerString",
     "triggerCounter": "Ops.Trigger.TriggerCounter",
+    "IsTriggered": "Ops.Trigger.IsTriggered",
 
     "StringLength": "Ops.String.StringLength_v2",
     "parseFloat": "Ops.String.StringToNumber",
@@ -263,6 +264,13 @@ const defaultOps = {
             "op": defaultOpNames.triggerCounter,
             "portIn": "exe",
             "portOut": "timesTriggered",
+        },
+        {
+            "typeFrom": portType.trigger,
+            "typeTo": portType.number,
+            "op": defaultOpNames.IsTriggered,
+            "portIn": "Trigger",
+            "portOut": "Was Triggered",
         },
         {
             "typeFrom": portType.trigger,
