@@ -20,7 +20,7 @@ export default class FindTab
     _findTimeoutId = null;
     constructor(tabs, str)
     {
-        this._toggles = ["recent", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
+        this._toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected"];
 
         this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
         tabs.addTab(this._tab, true);
