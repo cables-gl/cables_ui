@@ -115,7 +115,6 @@ export class GlLineDrawer extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
-            console.log("userset", which);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
