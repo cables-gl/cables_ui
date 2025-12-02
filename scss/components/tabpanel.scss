@@ -180,14 +180,8 @@
 
 .dependencytabs {
 
-    .contentcontainer,.contentcontainer .tabcontent
-    {
-        max-height: 220px;
-    }
-
     .addopdependency {
         background-color: var(--color-01);
-        min-height: 150px;
         padding: 15px;
 
         .depSrc.upload {

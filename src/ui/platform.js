@@ -556,8 +556,17 @@ export class Platform extends Events
         const proj = this._cfg.patch;
         incrementStartup();
         if (window.logStartup) logStartup("set project");
-        gui.patchView.setProject(proj, cb);
         if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
+        try
+        {
+            gui.patchView.setProject(proj, cb);
+        }
+        catch (e)
+        {
+            console.error("error during initializeProject", e);
+            if (gui && gui.patchView && gui.patchView.store) gui.patchView.store.opCrashed = true;
+            cb();
+        }
     }
 
     /**

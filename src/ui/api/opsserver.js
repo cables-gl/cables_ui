@@ -1728,6 +1728,7 @@ export default class ServerOps
                     notifyError("Error receiving op code!");
                     editorTab.setContent("");
                     editorSession.remove("op", opname);
+                    if (gui && gui.patchView && gui.patchView.store) gui.patchView.store.opCrashed = true;
                     return;
                 }
                 editorTab.setContent(rslt.code);

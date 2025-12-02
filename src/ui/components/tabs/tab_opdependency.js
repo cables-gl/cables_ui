@@ -32,6 +32,14 @@ export default class OpDependencyTab extends Tab
         return getHandleBarHtml("op_add_dependency_" + this.options.depSource, this.options);
     }
 
+    activate()
+    {
+        this.active = true;
+        this.contentEle.style.display = "block";
+        this.toolbarContainerEle.style.display = "block";
+        this.emitEvent(Tab.EVENT_ACTIVATE);
+    }
+
     _initEventListeners()
     {
         const depSource = this.options.depSource;
