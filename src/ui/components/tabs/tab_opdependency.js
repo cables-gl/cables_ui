@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { CablesConstants, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
@@ -19,7 +19,6 @@ export default class OpDependencyTab extends Tab
     constructor(tabs, title, options = {})
     {
         super(title, options);
-        this.options.docsUrl = platform.getCablesDocsUrl();
         this._tabs = tabs || gui.mainTabs;
         this._tabs.addTab(this);
         gui.maintabPanel.show(true);
@@ -29,7 +28,12 @@ export default class OpDependencyTab extends Tab
 
     getHtml()
     {
-        return getHandleBarHtml("op_add_dependency_" + this.options.depSource, this.options);
+        const templateOptions = {
+            ...this.options,
+            "acceptedFileTypesJavascript": CablesConstants.FILETYPES.javascript,
+            "docsUrl": platform.getCablesDocsUrl()
+        };
+        return getHandleBarHtml("op_add_dependency_" + this.options.depSource, templateOptions);
     }
 
     activate()
