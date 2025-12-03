@@ -501,7 +501,6 @@ export default class PatchSaveServer extends Events
                     "text": "save anyway",
                     "callback": (name) =>
                     {
-                        console.log("nananananawf");
                         this.saveCurrentProject(cb, true);
                     } }
             });

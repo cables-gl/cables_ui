@@ -4,14 +4,14 @@
         <input type="hidden" name="depType" value="commonjs"/>
         <input class="depSrc upload" type="text" readonly disabled>
         <a class="button upload"><span class="icon icon-plus-circle icon-1_25x"></span>Select file</a><br/>
-        <div class="exportName hidden">Export as: <input type="text" value=""/></div>
+        <div class="exportName hidden">Export as:<br/><input type="text" value=""/></div>
         Type of library:
         <select name="type" class="type">
             <option value="commonjs">Common JS</option>
             <option value="module">JS Module</option>
-        </select><br/>
+        </select><br/><br/>
         <a class="button add">Add</a>
-        <input class="hidden" type="file" accept=".js,application/javascript"/>
+        <input class="hidden" type="file" accept="{{acceptedFileTypesJavascript}}"/>
     </div>
 </script>
 <script id="op_add_dependency_url" type="text/x-handlebars-template">
@@ -19,13 +19,13 @@
         Load a javascript library via URL to use in your op&nbsp;&nbsp;&nbsp;<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries"><span class="nomargin icon icon-1_25x icon-help"></span></a><br/>
         <input type="hidden" name="depType" value="commonjs"/>
         <input class="depSrc" type="text">
-        <div class="exportName hidden">Export as: <input type="text" value=""/></div>
+        <div class="exportName hidden">Export as:<br/><input type="text" value=""/></div>
         <br/>
         Type of library:
         <select name="type" class="type">
             <option value="commonjs">Common JS</option>
             <option value="module">JS Module</option>
-        </select><br/>
+        </select><br/><br/>
         <a class="button add">Add</a>
     </div>
 </script>
