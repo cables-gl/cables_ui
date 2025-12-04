@@ -37,7 +37,6 @@ export default class LibLoader
                     }
                     scriptSources.push(script.scriptSrc);
                 });
-                console.log("SSS", scriptSources);
                 loadjs(scriptSources, {
                     "returnPromise": true,
                     "async": false
