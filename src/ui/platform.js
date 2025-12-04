@@ -450,11 +450,12 @@ export class Platform extends Events
         );
 
         this.talkerAPI.addEventListener(
-            TalkerAPI.CMD_UPDATE_PATCH_NAME,
+            TalkerAPI.CMD_UI_UPDATE_PATCH_NAME,
             (opts, _next) =>
             {
                 gui.setProjectName(opts.name);
-                this.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts, (_err, _r) => { });
+                // send this back to have the title of the patch-editor iframe updated
+                this.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts);
             },
         );
 

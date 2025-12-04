@@ -810,11 +810,8 @@ export default class PatchSaveServer extends Events
                 }
                 else
                 {
-                    platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, { "name": newName }, () =>
-                    {
-                        gui.setProjectName(newName);
-                        gui.patchParamPanel.show(true);
-                    });
+                    gui.setProjectName(newName);
+                    gui.patchParamPanel.show(true);
                     if (cb) cb(newName);
                 }
             });
