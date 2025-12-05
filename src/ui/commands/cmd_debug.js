@@ -16,6 +16,7 @@ import UserSettings, { userSettings } from "../components/usersettings.js";
 
 import Gui, { gui } from "../gui.js";
 import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
+import TabThreeDebug from "../components/tabs/tab_threedebug.js";
 
 const CABLES_CMD_DEBUG = {};
 
@@ -36,8 +37,14 @@ CABLES_CMD_DEBUG.showUserPrefs = function ()
 {
     const t = new tab_PreferencesDebug(gui.mainTabs);
     gui.maintabPanel.show();
-
 };
+
+CABLES_CMD_DEBUG.showThreeDebug = function ()
+{
+    const t = new TabThreeDebug(gui.mainTabs);
+    gui.maintabPanel.show();
+};
+
 CABLES_CMD_DEBUG.testCommands = function ()
 {
     for (let i = 0; i < CMD.commands.length; i++)
@@ -431,6 +438,12 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "Show User Preferences Data",
         "func": CABLES_CMD_DEBUG.showUserPrefs,
+        "category": "debug",
+    },
+
+    {
+        "cmd": "Three Debug",
+        "func": CABLES_CMD_DEBUG.showThreeDebug,
         "category": "debug",
     },
 
