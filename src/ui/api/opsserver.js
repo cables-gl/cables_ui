@@ -2402,6 +2402,7 @@ export default class ServerOps
         }
         else
         {
+            modalOptions.okButton = { "text": "Continue loading", "callback": continueLoadingCallback };
             modalOptions.showOkButton = true;
         }
         const modal = new ModalDialog(modalOptions);

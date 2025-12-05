@@ -495,11 +495,12 @@ export default class TabPanel extends Events
             notifyError(opts.msg, opts.text, opts.options);
         });
 
-        talkerAPI.on(TalkerAPI.CMD_UPDATE_PATCH_NAME, (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_UPDATE_PATCH_NAME, (opts, next) =>
         {
             gui.setProjectName(opts.name);
-            platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts, (err, r) => {});
             gui.patchParamPanel.show(true);
+            // send this back to have the title of the patch-editor iframe updated
+            platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts);
         });
 
         talkerAPI.on(TalkerAPI.CMD_UI_OPS_DELETED, (opts, next) =>
