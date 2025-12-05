@@ -12,6 +12,7 @@ export default class TabThreeDebug extends Events
     #tab;
     #op = null;
     #tabs;
+    #threeRender;
 
     constructor(tabs)
     {
@@ -73,8 +74,9 @@ export default class TabThreeDebug extends Events
 
             html += "<li>";
 
-            if (node.userData.op == this.#op.id)html += "--\> ";
-            html += `<strong >${currentPath}</strong> <span>(${typeLabel})</span>`;
+            let cclass = "";
+            if (node.userData.op == this.#op.id)cclass = "color:#00ffff";
+            html += "<span style=\"" + cclass + "\">" + currentPath + "</span> <span>(" + typeLabel + ")</span>";
 
             if (node.userData.op)
                 html += "<a class=\"button-small\" onclick=\"gui.patchView.unselectAllOps();gui.patchView.selectOpId('" + node.userData.op + "');gui.opParams.show('" + node.userData.op + "');gui.patchView.centerSelectOp('" + node.userData.op + "');\">op</a>";
@@ -102,9 +104,19 @@ export default class TabThreeDebug extends Events
     {
         if (this.#op && this.#op.threeOp && this.#op.threeOp.renderer)
         {
-            const html = this.generateSceneStructureHTML(this.#op.threeOp.renderer.scene);
+            if (this.#threeRender == null)
+            {
+                this.#threeRender = this.#op.threeOp.renderer;
+                this.#threeRender.on("change", this.rebuildHtml.bind(this));
+            }
+            if (this.#threeRender)
+            {
 
-            this.#tab.html(html);
+                const html = this.generateSceneStructureHTML(this.#threeRender.scene);
+
+                this.#tab.html(html);
+            }
+
         }
         else
         {
