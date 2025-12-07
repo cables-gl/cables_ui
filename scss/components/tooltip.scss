@@ -1,33 +1,33 @@
 /* mixin for multiline from http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/*/
-@mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: white) {
-    overflow: hidden;
-    position: relative;
-    line-height: $lineHeight;
-    max-height: $lineHeight * $lineCount;
-    text-align: justify;
-    padding-right: $lineHeight;
-    padding-bottom: $lineHeight;
+/* @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: white) { */
+    /* overflow: hidden; */
+    /* position: relative; */
+    /* line-height: $lineHeight; */
+    /* max-height: $lineHeight * $lineCount; */
+    /* text-align: justify; */
+    /* padding-right: $lineHeight; */
+    /* padding-bottom: $lineHeight; */
 
-    max-width: 500px; // * NOTE: change this if you want the max width of the hover info to be shorter/longer
+    /* max-width: 500px; // * NOTE: change this if you want the max width of the hover info to be shorter/longer */
 
-    // * NOTE: this is code for "..." to appear under the multiline string, I couldn't get it to format correctly
-    // * so I will leave this in
-    // &:before {
-    //     content: "...";
-    //     position: absolute;
-    //     // right: 0;
-    //     bottom: $lineHeight/6em; // 0.2em;
-    // }
-    // &:after {
-    //     content: "";
-    //     position: absolute;
-    //     right: 0;
-    //     width: 1em;
-    //     height: 1em;
-    //     margin-top: $lineHeight/6em; //0.2em;
-    //     background: $bgColor;
-    // }
-}
+    /* // * NOTE: this is code for "..." to appear under the multiline string, I couldn't get it to format correctly */
+    /* // * so I will leave this in */
+    /* // &:before { */
+    /* //     content: "..."; */
+    /* //     position: absolute; */
+    /* //     // right: 0; */
+    /* //     bottom: $lineHeight/6em; // 0.2em; */
+    /* // } */
+    /* // &:after { */
+    /* //     content: ""; */
+    /* //     position: absolute; */
+    /* //     right: 0; */
+    /* //     width: 1em; */
+    /* //     height: 1em; */
+    /* //     margin-top: $lineHeight/6em; //0.2em; */
+    /* //     background: $bgColor; */
+    /* // } */
+/* } */
 
 .cablesCssUi
 {
@@ -42,12 +42,23 @@
         z-index: $zindex_low+2;
     }
 
+    #infoAreaParam,#infoArea
+    {
+        bottom:0;
+        text-overflow: ellipsis;
+        position: absolute;
+        height:25px;
+        background-color: var(--color-02);
+        color: var(--text-color);
+        opacity: 0.9;
+        font-size: 17px;
+        user-select: none;
+    }
+
     #infoAreaParam
     {
         z-index: $zindex_low+1;
-        position: absolute;
         min-width: 200px;
-        height:25px;
         bottom:0px;
         padding-left: 5px;
     }
@@ -55,19 +66,7 @@
     #infoArea
     {
         width: 100%;
-        height: 100px;
-
-        position: absolute;
-        background-color: var(--color-02);
-        color: var(--text-color);
-
-        text-overflow: ellipsis;
         overflow: hidden;
-        font-size: 17px;
-        bottom:0;
-        opacity: 0.9;
-
-        user-select: none;
         z-index: $zindex_lowest;
 
         h2
@@ -95,13 +94,9 @@
                 display:inline;
                 margin:0px;
                 padding:0px;
-
-                // float:left;
                 margin-right:15px;
                 background-color: transparent;
-                // border:1px solid red;
                 min-height:100%;
-                // margin-top: 3px;
             }
 
             h2 {
@@ -171,43 +166,14 @@
         }
     }
 
-    // .key_shift
-    // {
-    //     &:before
-    //     {
-    //         content:"W";
-    //         color:transparent;
-    //     }
-
-    //     &:after
-    //     {
-    //         font-size: 14px;
-    //         content:"⇧";
-    //         position:absolute;
-    //         display: block;
-    //         // top:3px;
-    //         // margin-left:12px;
-    //     }
-    // }
     .key_shift
     {
         &:after
         {
             font-size: 14px;
             content:"⇧";
-            // color:green;
             vertical-align: top;
         }
-
-        // &:after
-        // {
-            // font-size: 14px;
-            // content:"⇧";
-            // position:absolute;
-            // display: block;
-            // top:3px;
-            // margin-left:12px;
-        // }
     }
 
     #infoArea .key_shift:after
@@ -220,9 +186,7 @@
     {
         &:after
         {
-            // font-size: 14px;
             content:"⌘";
-            // vertical-align: top;
         }
     }
 
@@ -234,14 +198,10 @@
 
     .tooltip {
         position: absolute;
-        // pointer-events: none;
         z-index: $zindex_highest+1;
         background-color: var(--color-03);
         border-radius: 5px;
-        // text-transform: capitalize;
         white-space: nowrap;
-
-
         color: var(--color-13);
         padding: 5px;
         padding-left: 14px;
@@ -252,6 +212,7 @@
         {
             text-transform: none !important;
         }
+
         &:hover {
             display: none;
         }
