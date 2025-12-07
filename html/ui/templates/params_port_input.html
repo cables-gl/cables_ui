@@ -174,8 +174,10 @@
                 {{#compare port.uiAttribs.display '==' 'gradient' }}
                     </td>
                     <td>
-                        <span class="button gradienteditbutton" onclick="const ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}',{'openerEle':this});ge.show();">
-                            <span class="icon icon-edit"></span>Edit</span>
+
+                        <div class="button_gradient" tabindex="0" id="watchgradient_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
+
+                        <!-- <span class="button gradienteditbutton" > <span class="icon icon-edit"></span>Edit</span> -->
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'texture' }}
                     </td>

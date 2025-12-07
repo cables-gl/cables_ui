@@ -85,10 +85,23 @@
     .button_colorpick
     {
         width: 15px;
+    }
+
+    .button_gradient
+    {
+        width: 80%;
+    }
+
+    .button_gradient, .button_colorpick{
+        cursor: pointer;
         height: 8px;
         padding: 5px !important;
         border-radius: 4px;
-        border:1px solid var(--color-09);
+        border:1px solid var(--color-03);
+    }
+
+    .button_gradient:hover, .button_colorpick:hover{
+        border:1px solid var(--color-12);
     }
 
     .button-left

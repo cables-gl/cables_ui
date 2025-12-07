@@ -16,6 +16,7 @@ import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
+import GradientEditor from "../../dialogs/gradienteditor.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -27,6 +28,8 @@ class ParamsListener extends Events
 {
     _log = new Logger("Paramslistener");
 
+    #watchGradients = [];
+
     constructor(panelid)
     {
         super();
@@ -37,6 +40,7 @@ class ParamsListener extends Events
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
         this._watchStrings = [];
+        this.#watchGradients = [];
         this._portsIn = [];
         this._portsOut = [];
         this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
@@ -92,6 +96,8 @@ class ParamsListener extends Events
             {
                 if (this._portsIn[i].getType() == portType.string) this._watchStrings.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
+                if (this._portsIn[i].uiAttribs.display == "gradient") this.#watchGradients.push(this._portsIn[i]);
+
                 if (this._portsIn[i].isLinked() || this._portsIn[i].isAnimated()) this._watchPorts.push(this._portsIn[i]);
                 this._watchAnimPorts.push(this._portsIn[i]);
             }
@@ -185,6 +191,12 @@ class ParamsListener extends Events
             this.watchColorPickerPort(thePort2, this.panelId, idx);
         }
 
+        for (const iwcp in this.#watchGradients)
+        {
+            const thePort2 = this.#watchGradients[iwcp];
+            const idx = this._portsIn.indexOf(thePort2);
+            this.watchGradientPort(thePort2, this.panelId, idx);
+        }
         this.valueChangerInitSliders();
 
         this._watchPortVisualizer.bind();
@@ -335,6 +347,43 @@ class ParamsListener extends Events
                     inputElements[2].dispatchEvent(new Event("input"));
                     undo.endGroup(undoGroup, "Change Color");
                 },
+            });
+        });
+    }
+
+    /**
+     * @param {any} thePort
+     * @param {string} panelid
+     * @param {string | number} idx
+     */
+    watchGradientPort(thePort, panelid, idx)
+    {
+        console.log("watch...");
+        let foundOpacity = false;
+        const id = "watchgradient_in_" + idx + "_" + panelid;
+        const colEle = ele.byId(id);
+
+        if (!colEle)
+        {
+            this._log.log("color ele not found!", id);
+            return;
+        }
+
+        const updateColorBox = () =>
+        {
+            const o = JSON.parse(thePort.get());
+            colEle.style.background = GradientEditor.getCssGradientString(o.keys);
+        };
+
+        updateColorBox();
+
+        ele.clickable(colEle, (e) =>
+        {
+            const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            ge.show(() =>
+            {
+                console.log("jaja...");
+
             });
         });
     }
@@ -1197,6 +1246,7 @@ class ParamsListener extends Events
         this._watchPorts.length = 0;
         this._watchAnimPorts.length = 0;
         this._watchColorPicker.length = 0;
+        this.#watchGradients.length = 0;
         this._watchStrings.length = 0;
     }
 
