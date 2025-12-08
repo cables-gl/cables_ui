@@ -229,7 +229,7 @@
 
         .multiline-string-port {
             display: block;
-            @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 3, $bgColor: $background-color-dark);
+            // @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 3, $bgColor: $background-color-dark);
         }
 
         .code
