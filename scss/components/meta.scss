@@ -6,34 +6,18 @@
     -webkit-user-select: initialm !important;
 }
 
-
 #meta
 {
     position:absolute;
-    // overflow: auto;
-    // overflow-x: hidden;
     overflow: hidden;
 	background-color: $background-color-dark;
-
-    div
-    {
-        // min-width: 250px;
-    }
 }
 
 #meta_content
 {
     overflow:auto;
     padding:10px;
-    // // font-size: 12px;
-
-    // h3
-    // {
-    //     // font-size: 16px;
-    //     // margin-top: 0px;
-    // }
 }
-
 
 #doc_op
 {
@@ -68,41 +52,6 @@
     }
 }
 
-
-// #metatabs
-// {
-//     padding: 0px !important;
-// }
-
-// .tabs
-// {
-//     background-color: $color-menubar-background;
-//     display: block;
-//     padding: 0px !important;
-//     width:100%;
-//     border-bottom: 2px solid $color-menubar-background-active;
-
-//     a
-//     {
-//         padding:8px !important;
-//         padding-bottom:8px !important;
-//         padding-left:10px !important;
-//         padding-right:10px !important;
-//         color: $color-menubar-text;
-//         opacity: 0.5;
-//     }
-
-//     a.active
-//     {
-//         background-color: $color-menubar-background-active;
-//         color: var(--color-13);
-//         opacity: 1.0;
-//         border-bottom:1px solid var(--color-special);
-//     }
-// }
-
-
-
 #preview_img_container
 {
     user-select:none !important;
@@ -111,7 +60,6 @@
     {
         user-select:none !important;
         background-position: left bottom;
-
     }
 }
 
@@ -151,8 +99,6 @@
     background-color:rgba(128,128,128,1);
     background-image:none;
 }
-
-
 
 .doc-panel
 {

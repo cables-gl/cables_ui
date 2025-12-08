@@ -358,7 +358,6 @@ class ParamsListener extends Events
      */
     watchGradientPort(thePort, panelid, idx)
     {
-        console.log("watch...");
         let foundOpacity = false;
         const id = "watchgradient_in_" + idx + "_" + panelid;
         const colEle = ele.byId(id);
@@ -382,8 +381,7 @@ class ParamsListener extends Events
             const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
             ge.show(() =>
             {
-                console.log("jaja...");
-
+                updateColorBox();
             });
         });
     }

@@ -6,6 +6,10 @@ import { gui } from "../gui.js";
 /**
  * @typedef KeyObject
  * @property {number} pos
+ * @property {number} r
+ * @property {number} g
+ * @property {number} b
+ * @property {number} a
  * @property {number} posy
  */
 
@@ -20,6 +24,8 @@ export default class GradientEditor
     #elContainer = null;
     #anim = null;
     #log = null;
+
+    /** @type {KeyObject[]} */
     #keys = [];
 
     #keyWidth = 8;
@@ -80,6 +86,9 @@ export default class GradientEditor
         this.#openerEle.style.background = GradientEditor.getCssGradientString(this.#keys);
     }
 
+    /**
+     * @param {} keys
+     */
     static getCssGradientString(keys)
     {
         let str = "linear-gradient(";
@@ -90,9 +99,11 @@ export default class GradientEditor
             const r = Math.floor(keys[i].r * 255);
             const g = Math.floor(keys[i].g * 255);
             const b = Math.floor(keys[i].b * 255);
+            let a = Math.floor(keys[i].a);
+            if (keys[i].a === undefined)a = 1;
             const p = Math.floor(keys[i].pos * 100);
 
-            str += ",rgba(" + r + ", " + g + ", " + b + ", 1) " + p + "%";
+            str += ",rgba(" + r + ", " + g + ", " + b + ", " + a + ") " + p + "% ";
         }
 
         str += ")";
@@ -134,14 +145,16 @@ export default class GradientEditor
             "pos": 0,
             "r": 0,
             "g": 0,
-            "b": 0
+            "b": 0,
+            "a": 1
         });
         else keys = [{
             "posy": this.#keys[0].posy,
             "pos": 0,
             "r": this.#keys[0].r,
             "g": this.#keys[0].g,
-            "b": this.#keys[0].b
+            "b": this.#keys[0].b,
+            "a": this.#keys[0].a
         }].concat(this.#keys);
 
         const last = keys[keys.length - 1];
@@ -150,13 +163,16 @@ export default class GradientEditor
             "pos": 1,
             "r": last.r,
             "g": last.g,
-            "b": last.b
+            "b": last.b,
+            "a": last.a,
+
         });
 
         for (let i = 0; i < keys.length - 1; i++)
         {
             const keyA = keys[i];
             const keyB = keys[i + 1];
+            if (keyA.a == undefined)keyA.a = 1;
 
             for (let x = keyA.pos * this.#width; x < keyB.pos * this.#width; x++)
             {
@@ -193,6 +209,8 @@ export default class GradientEditor
                     this.#imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
                     this.#imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
                     this.#imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
+
+                    // this.#imageData.data[x * 4 + 3] = ((p * keyB.a) + (1.0 - p) * (keyA.a));
                     this.#imageData.data[x * 4 + 3] = 255;
                 }
             }
@@ -211,7 +229,8 @@ export default class GradientEditor
                         "posy": keys[i].posy,
                         "r": keys[i].r,
                         "g": keys[i].g,
-                        "b": keys[i].b
+                        "b": keys[i].b,
+                        "a": keys[i].a
                     };
             }
 
@@ -288,15 +307,20 @@ export default class GradientEditor
      * @param {number} [r]
      * @param {number} [g]
      * @param {number} [b]
+     * @param {number} [b]
+     * @param {number} [a]
      */
-    addKey(pos, posy, r, g, b)
+    addKey(pos, posy, r, g, b, a)
     {
         if (r == undefined)
         {
             r = Math.random();
             g = Math.random();
             b = Math.random();
+            a = 1;
         }
+
+        if (a === undefined)a = 1;
 
         const dot = document.createElement("div");
         dot.classList.add("dot");
@@ -312,7 +336,8 @@ export default class GradientEditor
             "ele": dot,
             "r": r,
             "g": g,
-            "b": b
+            "b": b,
+            "a": a
         };
 
         this.#keys.push(key);
@@ -418,7 +443,7 @@ export default class GradientEditor
                 this.#previousContent = data;
                 const keys = JSON.parse(data).keys || [];
                 for (let i = 1; i < keys.length - 1; i++)
-                    this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
+                    this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b, keys[i].a);
             }
             catch (e)
             {
@@ -428,8 +453,8 @@ export default class GradientEditor
 
         if (this.#keys.length == 0)
         {
-            this.addKey(0, 0.5, 0, 0, 0);
-            this.addKey(1, 0.5, 1, 1, 1);
+            this.addKey(0, 0.5, 0, 0, 0, 1);
+            this.addKey(1, 0.5, 1, 1, 1, 1);
         }
 
         this.onChange();
@@ -468,13 +493,16 @@ export default class GradientEditor
             const cr = new ColorRick({
                 "ele": colEle,
                 "color": [Math.floor(this.#currentKey.r * 255), Math.floor(this.#currentKey.g * 255), Math.floor(this.#currentKey.b * 255)], // "#ffffff",
-                "onChange": (col) =>
+                "opacity": this.#currentKey.a,
+                "showOpacity": true,
+                "onChange": (col, a) =>
                 {
                     if (this.#currentKey)
                     {
                         this.#currentKey.r = col.gl()[0];
                         this.#currentKey.g = col.gl()[1];
                         this.#currentKey.b = col.gl()[2];
+                        this.#currentKey.a = a;
 
                         CABLES.GradientEditor.editor._ctx = null;
                         CABLES.GradientEditor.editor.onChange();
