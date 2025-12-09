@@ -20,8 +20,8 @@
             <a href="{{cablesDocsUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
 
             {{#if oldVersion}}
-                <a href="{{cablesDocsUrl}}/op/{{op.objName}}">- newer version available</a>
-                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
+                <br/>
+                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade to newest version</a>
                 <br/>
             {{else}}
                 {{#if op.summary}} - {{op.summary}}{{/if}}
