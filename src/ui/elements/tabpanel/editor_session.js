@@ -98,8 +98,8 @@ export default class EditorSession
      * @name rememberOpenEditor
      * @param {string} type
      * @param {string} name
-     * @param data
-     * @param skipSetEditorTab
+     * @param {object} data
+     * @param {boolean} skipSetEditorTab
      * @function
      */
     rememberOpenEditor(type, name, data, skipSetEditorTab)
@@ -108,9 +108,16 @@ export default class EditorSession
         {
             if (this.#openEditors[i].name == name && this.#openEditors[i].type == type)
             {
+                if (data)
+                {
+                    this.#openEditors[i].data = data;
+                    this.store();
+                    userSettings.set("editortab", name);
+                }
                 return;
             }
         }
+
         const obj = { "name": name, "type": type, "data": data || {} };
         this.#openEditors.push(obj);
         this.store();

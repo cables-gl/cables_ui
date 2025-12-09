@@ -180,7 +180,7 @@ export default function startUi(cfg)
                     {
                         gui.emitEvent(Gui.EVENT_UILOADED);
                         gui.corePatch().timer.setTime(0);
-                        gui.corePatch().timer.play();
+                        // gui.corePatch().timer.play();
                     }, 100);
                 });
 
