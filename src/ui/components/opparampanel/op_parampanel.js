@@ -544,6 +544,7 @@ class OpParampanel extends Events
                 if (err.level == 0) str += "<b>Hint: </b>";
                 if (err.level == 1) str += "<b>Warning: </b>";
                 if (err.level == 2) str += "<b>Error: </b>";
+                if (err.level == 3) str += "<b>Not working: </b>";
                 str += err.txt;
 
                 if (err.options)

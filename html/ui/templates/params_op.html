@@ -73,7 +73,6 @@
         {{/if}}
 
         {{#if op.uiAttribs.error }}
-
             <div class="warning-error warning-error-level2" id="options_error"  >
                 OLD ERROR MSG<br/>
                 <i>Error:</i> {{op.uiAttribs.error}}
@@ -91,9 +90,10 @@
 
         <div id="op_params_uierrors"></div>
 
-        {{#if op.enabled}}{{else}}
-        <div id="uierror__disabled" class="warning-error warning-error-level0"><b>Hint: </b>Op is disabled</div>
-    {{/if}}
+        {{#if op.enabled}}
+        {{else}}
+            <div id="uierror__disabled" class="warning-error warning-error-level0"><b>Hint: </b>Op is disabled</div>
+        {{/if}}
 
         {{#if op.isExperimental }}
             <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
