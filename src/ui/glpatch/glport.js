@@ -31,6 +31,7 @@ export default class GlPort
     groupIndex = 0;
     #posX;
     #mouseButtonRightTimeDown;
+    #hover = false;
 
     /** @type {GlRect} */
     #dot;
@@ -50,6 +51,7 @@ export default class GlPort
 
     /** @type {GlRect} */
     #rect;
+    #rectInstancer;
 
     /**
      * Description
@@ -75,9 +77,9 @@ export default class GlPort
         this.#glPatch = glpatch;
 
         /** @type {GlRectInstancer} */
-        this._rectInstancer = rectInstancer;
+        this.#rectInstancer = rectInstancer;
 
-        this.#rect = new GlRect(this._rectInstancer, { "name": "port" + this.#name, "parent": this.#parentRect, "interactive": true });
+        this.#rect = new GlRect(this.#rectInstancer, { "name": "port" + this.#name, "parent": this.#parentRect, "interactive": true });
 
         this.#mouseButtonRightTimeDown = 0;
         this.#posX = posCount * (gluiconfig.portWidth + gluiconfig.portPadding);
@@ -99,9 +101,9 @@ export default class GlPort
             if (this.#glop.op && this.#glop.op.uiAttribs.mathTitle) this.#glop.setTitle();
         });
 
-        p.on("onUiAttrChange", this._onUiAttrChange.bind(this));
+        p.on("onUiAttrChange", this.#onUiAttrChange.bind(this));
 
-        this._onUiAttrChange(p.uiAttribs);
+        this.#onUiAttrChange(p.uiAttribs);
         this.setFlowModeActivity(1);
         this.updateSize();
         this._updateColor();
@@ -118,7 +120,7 @@ export default class GlPort
     /**
      * @param {import("cables/src/core/core_port.js").PortUiAttribs} attribs
      */
-    _onUiAttrChange(attribs)
+    #onUiAttrChange(attribs)
     {
         if (this.disposed) return;
         if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
@@ -132,7 +134,7 @@ export default class GlPort
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
         {
             if (!this.#rect) return;
-            if (!this.#longPortRect) this.#longPortRect = new GlRect(this._rectInstancer, { "name": "longport", "parent": this.#parentRect, "interactive": false });
+            if (!this.#longPortRect) this.#longPortRect = new GlRect(this.#rectInstancer, { "name": "longport", "parent": this.#parentRect, "interactive": false });
 
             const col = GlPort.getColor(this.#type, false, false, false);
             this.#longPortRect.setColor(col[0], col[1], col[2], 0.5);
@@ -165,7 +167,7 @@ export default class GlPort
 
         if (!this.#dot && showDot)
         {
-            this.#dot = new GlRect(this._rectInstancer, { "name": "portdot", "parent": this.#rect, "interactive": false });
+            this.#dot = new GlRect(this.#rectInstancer, { "name": "portdot", "parent": this.#rect, "interactive": false });
             this.#dot.setSize(0, 0);
             this.#rect.addChild(this.#dot);
         }
@@ -193,7 +195,7 @@ export default class GlPort
             }
         }
 
-        let hover = this._hover;
+        let hover = this.#hover;
 
         for (const i in this.#glop._links)
             if (this.#glop._links[i].portIdIn == this.#id || this.#glop._links[i].portIdOut == this.#id)
@@ -313,7 +315,7 @@ export default class GlPort
     {
         if (!this.#glPatch.hasFocus) return;
 
-        this._hover = true;
+        this.#hover = true;
         const event = {
             "clientX": this.#glPatch.viewBox.mouseX + gui.patchView.boundingRect.left,
             "clientY": this.#glPatch.viewBox.mouseY - 25 + gui.patchView.boundingRect.top
@@ -337,7 +339,7 @@ export default class GlPort
     _onUnhover(_rect)
     {
         this.#glPatch.hoverPort = null;
-        this._hover = false;
+        this.#hover = false;
         this.#port.setUiAttribs({ "hover": false });
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
@@ -350,7 +352,7 @@ export default class GlPort
         this._updateColor();
     }
 
-    get hovering() { return this._hover; }
+    get hovering() { return this.#hover; }
 
     get type() { return this.#port.type; }
 

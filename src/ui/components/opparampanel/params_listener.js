@@ -461,6 +461,7 @@ class ParamsListener extends Events
                 if (eli)eli.addEventListener("click", (e) =>
                 {
                     const name = e.target.dataset.title;
+                    console.log("jajaja", name);
                     ports[index]._onTriggered(name);
                 });
             }

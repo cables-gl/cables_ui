@@ -8,6 +8,7 @@ import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
 import { gui } from "../../gui.js";
 import { UiOp } from "../../core_extend_op.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 /**
  * tab panel for searching through the patch
@@ -17,23 +18,31 @@ import { UiOp } from "../../core_extend_op.js";
  */
 export default class FindTab
 {
+    static TABSESSION_NAME = "find";
+
     _findTimeoutId = null;
+    #tab;
+    #tabs;
+    #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected"];
+    #eleInput = null;
+    #listenerids = [];
+    #lastSearch = "";
+    #lastClicked = -1;
+    #lastSelected = -1;
+    #maxIdx = -1;
+    #inputId = "tabFindInput" + utils.uuid();
+    #closed = false;
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} tabs
+     * @param {string} str
+     */
     constructor(tabs, str)
     {
-        this._toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected"];
 
-        this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
-        tabs.addTab(this._tab, true);
-        this._tabs = tabs;
-
-        this._lastSearch = "";
-        this._lastClicked = -1;
-        this._lastSelected = -1;
-        this._maxIdx = -1;
-        this._inputId = "tabFindInput" + utils.uuid();
-        this._closed = false;
-        this._eleInput = null;
-        this._listenerids = [];
+        this.#tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
+        tabs.addTab(this.#tab, true);
+        this.#tabs = tabs;
 
         let colors = [];
         const warnOps = [];
@@ -43,68 +52,66 @@ export default class FindTab
         {
             const op = gui.corePatch().ops[i];
             if (!op) continue;
-            if (op.uiAttribs.error)
-            {
-                if (namespace.isDeprecatedOp(op.objName)) op.isDeprecated = true;
-            }
-            if (op.uiAttribs.warning) warnOps.push(op);
             if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
         }
         colors = utils.uniqueArray(colors);
 
-        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId, "toggles": this._toggles });
+        const html = getHandleBarHtml("tab_find", { colors, "inputid": this.#inputId, "toggles": this.#toggles });
 
-        this._tab.html(html);
+        this.#tab.html(html);
 
         this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
         const listenerChanged = gui.opHistory.on("changed", this.updateHistory.bind(this));
-        this._listenerids.push(listenerChanged);
+        this.#listenerids.push(listenerChanged);
 
-        this._listenerids.push(gui.corePatch().on("warningErrorIconChange", this._updateCb));
-        this._listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
-        this._listenerids.push(gui.corePatch().on("onOpAdd", this._updateCb));
-        this._listenerids.push(gui.corePatch().on("commentChanged", this._updateCb));
+        this.#listenerids.push(gui.corePatch().on("warningErrorIconChange", this._updateCb));
+        this.#listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
+        this.#listenerids.push(gui.corePatch().on("onOpAdd", this._updateCb));
+        this.#listenerids.push(gui.corePatch().on("commentChanged", this._updateCb));
 
-        this._tab.on("close", () =>
+        this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
+            editorSession.remove(FindTab.TABSESSION_NAME, FindTab.TABSESSION_NAME);
+
             gui.opHistory.off(listenerChanged);
 
-            for (let i = 0; i < this._listenerids.length; i++)
-                gui.corePatch().off(this._listenerids[i]);
+            for (let i = 0; i < this.#listenerids.length; i++)
+                gui.corePatch().off(this.#listenerids[i]);
 
             this.clearHighlightOps();
 
-            this._closed = true;
+            this.#closed = true;
         });
         gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
         {
             this.clearHighlightOps();
-            this.search(this._lastSearch);
+            this.search(this.#lastSearch);
         });
 
-        if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
+        if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
 
-        ele.byId(this._inputId).addEventListener("input", (e) =>
+        ele.byId(this.#inputId).addEventListener("input", (e) =>
         {
             this.search(e.target.value);
         });
-        ele.byId(this._inputId).addEventListener("keydown", (e) =>
+
+        ele.byId(this.#inputId).addEventListener("keydown", (e) =>
         {
             if (e.key == "Escape")
             {
                 this.clearHighlightOps();
-                this._lastSearch = " ";
+                this.#lastSearch = " ";
                 e.target.value = "";
                 this.search(" ");
             }
         });
 
-        ele.byId(this._inputId).select();
+        ele.byId(this.#inputId).select();
 
-        for (let i = 0; i < this._toggles.length; i++)
+        for (let i = 0; i < this.#toggles.length; i++)
         {
-            const toggleEle = ele.byId(this._inputId + "_" + this._toggles[i]);
+            const toggleEle = ele.byId(this.#inputId + "_" + this.#toggles[i]);
 
             toggleEle.addEventListener("click", () =>
             {
@@ -116,54 +123,56 @@ export default class FindTab
                 for (let j = 0; j < toggles.length; j++)
                     srchStr += (toggles[j].dataset.togglestr || "") + " ";
 
-                const toggleInput = /** @type {HTMLInputElement} */ ele.byId(this._inputId + "_toggles");
+                const toggleInput = /** @type {HTMLInputElement} */ ele.byId(this.#inputId + "_toggles");
                 toggleInput.value = srchStr;
 
-                document.getElementById(this._inputId).dispatchEvent(new Event("input"));
+                document.getElementById(this.#inputId).dispatchEvent(new Event("input"));
             });
         }
 
-        ele.byId(this._inputId).addEventListener(
+        ele.byId(this.#inputId).addEventListener(
             "keydown",
             (e) =>
             {
                 if (e.keyCode == 38)
                 {
-                    let c = this._lastClicked - 1;
+                    let c = this.#lastClicked - 1;
                     if (c < 0) c = 0;
                     this.setClicked(c);
                     const resultEle = ele.byId("findresult" + c);
                     if (resultEle) resultEle.click();
-                    if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
+                    if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
                 }
                 else if (e.keyCode == 40)
                 {
-                    let c = this._lastClicked + 1;
-                    if (c > this._maxIdx - 1) c = this._maxIdx;
+                    let c = this.#lastClicked + 1;
+                    if (c > this.#maxIdx - 1) c = this.#maxIdx;
                     this.setClicked(c);
                     const resultEle = ele.byId("findresult" + c);
                     if (resultEle) resultEle.click();
-                    if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
+                    if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
                 }
             }
 
         );
 
-        this._eleInput = document.querySelector("#tabsearchbox input");
-        this._eleInput.value = this._lastSearch;
+        this.#eleInput = document.querySelector("#tabsearchbox input");
+        this.#eleInput.value = this.#lastSearch;
         this._eleResults = ele.byId("tabsearchresult");
 
         this.focus();
-        ele.byId(this._inputId).setSelectionRange(0, this._lastSearch.length);
+        ele.byId(this.#inputId).setSelectionRange(0, this.#lastSearch.length);
 
         clearTimeout(this._findTimeoutId);
 
-        this.search(this._lastSearch);
+        this.search(this.#lastSearch);
         this.updateHistory();
+
+        editorSession.rememberOpenEditor(FindTab.TABSESSION_NAME, FindTab.TABSESSION_NAME, { "search": str }, true);
 
         if (str)
         {
-            this._eleInput.value = str;
+            this.#eleInput.value = str;
             this.search(str);
             this.setSearchInputValue(str);
         }
@@ -172,12 +181,12 @@ export default class FindTab
 
     focus()
     {
-        this._tabs.activateTab(this._tab.id);
+        this.#tabs.activateTab(this.#tab.id);
 
-        if (ele.byId(this._inputId) && document.activeElement != ele.byId(this._inputId))
+        if (ele.byId(this.#inputId) && document.activeElement != ele.byId(this.#inputId))
         {
-            ele.byId(this._inputId).focus();
-            ele.byId(this._inputId).select();
+            ele.byId(this.#inputId).focus();
+            ele.byId(this.#inputId).select();
         }
     }
 
@@ -196,12 +205,12 @@ export default class FindTab
 
     isClosed()
     {
-        return this._closed;
+        return this.#closed;
     }
 
     setSearchInputValue(str)
     {
-        this._eleInput.value = str;
+        this.#eleInput.value = str;
     }
 
     searchAfterPatchUpdate()
@@ -209,14 +218,14 @@ export default class FindTab
         clearTimeout(this._findTimeoutId);
         this._findTimeoutId = setTimeout(() =>
         {
-            const el = ele.byId(this._inputId);
+            const el = ele.byId(this.#inputId);
             if (el) this.search(el.value, true);
         }, 100);
     }
 
     isVisible()
     {
-        return this._tab.isVisible();
+        return this.#tab.isVisible();
     }
 
     _addResultOp(op, result, idx)
@@ -224,7 +233,7 @@ export default class FindTab
         if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
         let html = "";
         let info = "";
-        this._maxIdx = idx;
+        this.#maxIdx = idx;
 
         info += "## searchresult \n\n* score : " + result.score + GuiText.searchResult + "\n";
 
@@ -328,7 +337,7 @@ export default class FindTab
      */
     _doSearch(str, _userInvoked, ops, results)
     {
-        this._lastSearch = str;
+        this.#lastSearch = str;
 
         str = str.toLowerCase();
 
@@ -708,23 +717,28 @@ export default class FindTab
         return results;
     }
 
+    /**
+     * @param {string} str
+     * @param {boolean} [userInvoked]
+     */
     search(str, userInvoked)
     {
+        if (userInvoked) editorSession.rememberOpenEditor(FindTab.TABSESSION_NAME, FindTab.TABSESSION_NAME, { "search": str }, true);
         this.clearHighlightOps();
 
-        str = str || this._lastSearch;
+        str = str || this.#lastSearch;
 
-        if (this._eleInput.value == "")
+        if (this.#eleInput.value == "")
         {
-            this._lastSearch = str = "";
+            this.#lastSearch = str = "";
         }
 
         // console.log("search str", str, (new Error()).stack);
-        this._maxIdx = -1;
+        this.#maxIdx = -1;
         this.setSelectedOp(null);
         this.setClicked(-1);
 
-        const toggleInput = ele.byId(this._inputId + "_toggles");
+        const toggleInput = ele.byId(this.#inputId + "_toggles");
         if (toggleInput && toggleInput.value)str += " " + toggleInput.value;
 
         const strs = str.split(" ");
@@ -807,27 +821,27 @@ export default class FindTab
     {
         num = parseInt(num);
 
-        let el = ele.byId("findresult" + this._lastClicked);
+        let el = ele.byId("findresult" + this.#lastClicked);
         if (el) el.classList.remove("lastClicked");
 
         el = ele.byId("findresult" + num);
         if (el) el.classList.add("lastClicked");
-        this._lastClicked = num;
+        this.#lastClicked = num;
     }
 
     setSelectedOp(opid)
     {
-        let els = document.getElementsByClassName("findresultop" + this._lastSelected);
+        let els = document.getElementsByClassName("findresultop" + this.#lastSelected);
         if (els && els.length == 1) els[0].classList.remove("selected");
 
         els = document.getElementsByClassName("findresultop" + opid);
         if (els && els.length == 1) els[0].classList.add("selected");
-        this._lastSelected = opid;
+        this.#lastSelected = opid;
     }
 
     updateHistory()
     {
-        if (this._lastSearch == ":recent")
+        if (this.#lastSearch == ":recent")
         {
             this._updateCb();
         }
@@ -899,3 +913,8 @@ FindTab.searchExtensionOps = (ops, results) =>
     }
     return results;
 };
+editorSession.addListener(FindTab.TABSESSION_NAME, (id, data) =>
+{
+    console.log("dar", data);
+    new FindTab(gui.mainTabs, data.search);
+});

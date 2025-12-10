@@ -46,6 +46,7 @@ export default function startUi(cfg)
         gui.initCoreListeners();
 
         gui.corePatch().timer.setTime(0);
+        gui.corePatch().timer.pause();
 
         if (!gui.corePatch().cgl.gl)
         {
@@ -179,6 +180,7 @@ export default function startUi(cfg)
                     {
                         gui.emitEvent(Gui.EVENT_UILOADED);
                         gui.corePatch().timer.setTime(0);
+                        // gui.corePatch().timer.play();
                     }, 100);
                 });
 

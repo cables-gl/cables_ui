@@ -87,7 +87,7 @@ export default class GradientEditor
     }
 
     /**
-     * @param {} keys
+     * @param {KeyObject[]} keys
      */
     static getCssGradientString(keys)
     {

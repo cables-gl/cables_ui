@@ -112,7 +112,6 @@ export class GlSplineDrawer extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
-            console.log("change", which);
             if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * 0.5 + 1);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);

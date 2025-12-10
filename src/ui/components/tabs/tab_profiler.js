@@ -31,7 +31,7 @@ export default class Profiler
         this.lastPortTriggers = 0;
         this._subTab = 0;
 
-        this.#tab.on("close", () =>
+        this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
             editorSession.remove(Profiler.TABSESSION_NAME, "profiler");
         });

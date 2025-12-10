@@ -1,5 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
-import { Port } from "cables";
+import { Port, Op } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
@@ -873,7 +873,7 @@ export default class GlOp extends Events
         this._isHovering = h;
     }
 
-    _disposeDots()
+    #disposeDots()
     {
         if (this.#glDotError) this.#glDotError = this.#glDotError.dispose();
         if (this.#glDotWarning) this.#glDotWarning = this.#glDotWarning.dispose();
@@ -901,7 +901,7 @@ export default class GlOp extends Events
         if (this._glColorIndicator) this._glColorIndicator = this._glColorIndicator.dispose();
         if (this._glColorIndicatorSpacing) this._glColorIndicatorSpacing = this._glColorIndicatorSpacing.dispose();
 
-        this._disposeDots();
+        this.#disposeDots();
 
         for (let i = 0; i < this.#glPorts.length; i++) this.#glPorts[i].dispose();
 
@@ -1278,10 +1278,10 @@ export default class GlOp extends Events
 
             for (let i = 0; i < this.opUiAttribs.uierrors.length; i++)
             {
-                if (this.opUiAttribs.uierrors[i].level == 0) hasHints = true;
-                if (this.opUiAttribs.uierrors[i].level == 1) hasWarnings = true;
-                if (this.opUiAttribs.uierrors[i].level == 2) hasErrors = true;
-                if (this.opUiAttribs.uierrors[i].level == 3) notworking = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_HINT) hasHints = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_WARNING) hasWarnings = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKING) notworking = true;
             }
 
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
@@ -1370,7 +1370,7 @@ export default class GlOp extends Events
             (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0) &&
             (this.#glDotError || this.#glDotWarning || this.#glDotHint))
         {
-            this._disposeDots();
+            this.#disposeDots();
         }
     }
 
