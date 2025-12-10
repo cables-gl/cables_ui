@@ -1,6 +1,5 @@
 /**
  * default ops for various shortcuts/operations/files/variables etc.
- *
  */
 
 import { portType } from "./core_constants.js";
@@ -136,6 +135,9 @@ const defaultOpNames =
     "ObjectGetNumberByPath": "Ops.Data.JsonPath.ObjectGetNumberByPath",
     "ObjectGetObjectByPath": "Ops.Data.JsonPath.ObjectGetObjectByPath",
     "ObjectGetStringByPath": "Ops.Data.JsonPath.ObjectGetStringByPath_v2",
+    "MidiNote": "Ops.Devices.Midi.MidiNote",
+    "MidiCC": "Ops.Devices.Midi.MidiCC_v3",
+    "MidiNRPN": "Ops.Devices.Midi.MidiNRPN",
 
     "HttpRequest": "Ops.Json.HttpRequest_v4",
     "glMainloop": "Ops.Gl.MainLoop_v2"

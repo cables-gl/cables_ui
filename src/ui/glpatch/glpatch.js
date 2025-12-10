@@ -73,7 +73,7 @@ export default class GlPatch extends Events
     _dropInCircleLink = null;
     _dropInCircleRect = null;
 
-    _cachedNumSelectedOps = 0;
+    #cachedNumSelectedOps = 0;
     _cachedFirstSelectedOp = null;
 
     _showingOpCursor = false;
@@ -1429,7 +1429,7 @@ export default class GlPatch extends Events
 
         for (const i in this._glOpz) if (this._glOpz[i].selected) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
-        this._cachedNumSelectedOps = 0;
+        this.#cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
         this._updateNumberOfSelectedOps();
 
@@ -1457,12 +1457,12 @@ export default class GlPatch extends Events
 
     getNumSelectedOps()
     {
-        return this._cachedNumSelectedOps;
+        return this.#cachedNumSelectedOps;
     }
 
     getOnlySelectedOp()
     {
-        if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
+        if (this.#cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
     }
 
     isDraggingOps()
@@ -1479,8 +1479,8 @@ export default class GlPatch extends Events
         if (this._glOpz[id] && !this._selectedGlOps[id])
         {
             this._selectedGlOps[id] = this._glOpz[id];
-            this._cachedNumSelectedOps++;
-            if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
+            this.#cachedNumSelectedOps++;
+            if (this.#cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
             gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
@@ -1499,7 +1499,7 @@ export default class GlPatch extends Events
             delete this._selectedGlOps[id];
 
             this._glOpz[id].selected = false;
-            this._cachedNumSelectedOps--;
+            this.#cachedNumSelectedOps--;
         }
     }
 
@@ -1618,7 +1618,7 @@ export default class GlPatch extends Events
             }
         }
 
-        this._cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
+        this.#cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
 
         for (let i = 0; i < ops.length; i++)
         {
