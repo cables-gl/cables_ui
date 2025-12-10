@@ -11,6 +11,7 @@ const defaultOpNames =
     "string": "Ops.String.String_v3",
     "array": "Ops.Array.Array_v3",
     "anim": "Ops.TimeLine.Anim",
+    "fileInput": "Ops.String.File.FileInput_v2",
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",

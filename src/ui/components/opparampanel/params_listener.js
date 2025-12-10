@@ -522,6 +522,25 @@ class ParamsListener extends Events
 
             if (!port.uiAttribs.display || port.uiAttribs.display != "readonly")
             {
+                if (port.uiAttribs.display == "file")
+                    items.push(
+                        {
+                            "title": "Create FileInput Op",
+                            "func": () =>
+                            {
+                                gui.savedState.setUnSaved("initPortClickListener", port.op.getSubPatch());
+                                const oldValue = port.get();
+
+                                gui.patchView.addOpAndLink(defaultOps.defaultOpNames.fileInput, port.op.id, port.name, (op) =>
+                                {
+                                    op.getPort("File").set(oldValue);
+
+                                    gui.corePatch().link(port.op, port.name, op, op.getFirstOutPortByType(port.type).name);
+                                    op.refreshParams();
+                                });
+                            }
+                        });
+
                 if (port.type == portType.string)
                     items.push(
                         {
@@ -591,10 +610,6 @@ class ParamsListener extends Events
 
                     items.push(item);
                 }
-            }
-            if (port.display == "file")
-            {
-
             }
 
             if (
