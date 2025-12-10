@@ -42,7 +42,6 @@ export default class VizLayer extends Events
 
         this._eleCanvas.id = "gluiPreviewLayer";
         this._eleCanvas.classList.add("gluiPreviewLayer");
-        // this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
 
         ele.byId("glpatch2").appendChild(this._eleCanvas);
 
@@ -84,17 +83,17 @@ export default class VizLayer extends Events
 
     _updateSize()
     {
-        if (this._eleCanvas.width != this._glPatch._cgl.canvasWidth ||
-            this._eleCanvas.height != this._glPatch._cgl.canvasHeight)
+        if (this._eleCanvas.width != this._glPatch.cgl.canvasWidth ||
+            this._eleCanvas.height != this._glPatch.cgl.canvasHeight)
         {
-            this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / window.devicePixelRatio + "px";
-            this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / window.devicePixelRatio + "px";
+            this._eleCanvas.style.width = this._glPatch.cgl.canvas.width / window.devicePixelRatio + "px";
+            this._eleCanvas.style.height = this._glPatch.cgl.canvas.height / window.devicePixelRatio + "px";
 
             gui.patchView.updateBoundingRect();
             this._eleCanvas.style.left = gui.patchView.boundingRect.left + "px";
             this._eleCanvas.style.top = gui.patchView.boundingRect.top + "px";
-            this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
-            this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
+            this._eleCanvas.width = this._glPatch.cgl.canvasWidth;
+            this._eleCanvas.height = this._glPatch.cgl.canvasHeight;
             this._canvasCtx = this._eleCanvas.getContext("2d");
         }
     }
