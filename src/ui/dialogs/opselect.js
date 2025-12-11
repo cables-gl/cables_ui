@@ -25,6 +25,7 @@ const MIN_CHARS_QUERY = 2;
 
 export default class OpSelect
 {
+    #minimal = false;
     constructor()
     {
         this.displayBoxIndex = 0;
@@ -172,7 +173,7 @@ export default class OpSelect
 
     _showSuggestionsInfo()
     {
-        if (this._minimal) return;
+        if (this.#minimal) return;
 
         const perf = gui.uiProfiler.start("opselect.suggestioninfo");
 
@@ -301,7 +302,7 @@ export default class OpSelect
 
     updateInfo()
     {
-        if (this._minimal) return;
+        if (this.#minimal) return;
         this._eleSearchinfo = ele.byId("searchinfo");
 
         let opName = "";
@@ -576,7 +577,7 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
-        this._minimal = userSettings.get("miniopselect") == true;
+        this.#minimal = userSettings.get("miniopselect") == true;
 
         this._options = options;
         hideToolTip();
@@ -611,7 +612,7 @@ export default class OpSelect
         ele.show(this._eleOpsearchmodal);
         this._eleOpsearchmodal.style.zIndex = 9999999;
 
-        if (this._minimal) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
+        if (this.#minimal) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
         const eleOpsearch = ele.byId("opsearch");

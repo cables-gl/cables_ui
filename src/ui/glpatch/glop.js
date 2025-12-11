@@ -69,7 +69,7 @@ export default class GlOp extends Events
     _resizableArea = null;
 
     /** @type {GlRect} */
-    _glRectSelected = null;
+    #glRectSelected = null;
 
     /** @type {GlRect} */
     #glRectHighlighted = null;
@@ -225,7 +225,7 @@ export default class GlOp extends Events
         {
             if (!this.#visible) return;
             this._updateSelectedRect();
-            if (this._glRectSelected) this.updateSize();
+            if (this.#glRectSelected) this.updateSize();
         });
 
     }
@@ -715,25 +715,25 @@ export default class GlOp extends Events
 
     _updateSelectedRect()
     {
-        if (!this.#visible || (!this.selected && this._glRectSelected))
+        if (!this.#visible || (!this.selected && this.#glRectSelected))
         {
-            this._glRectSelected.visible = false;
+            this.#glRectSelected.visible = false;
             return;
         }
 
         if (this.selected)
         {
-            if (!this._glRectSelected)
+            if (!this.#glRectSelected)
             {
                 if (!this.#instancer) return; // how?
 
-                this._glRectSelected = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
-                this._glRectSelected.setColorArray(gui.theme.colors_patch.selected);
+                this.#glRectSelected = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
+                this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
                 this.updateSize();
                 this.updatePosition();
             }
-            this._glRectSelected.visible = true;
+            this.#glRectSelected.visible = true;
         }
     }
 
@@ -824,15 +824,15 @@ export default class GlOp extends Events
             this._width += this._height * indicSize;
         }
 
-        if (this._glRectSelected)
+        if (this.#glRectSelected)
         {
-            if (this.#glPatch._numSelectedGlOps > 1)
+            if (gui.patchView.getNumSelectedOps() > 1)
             {
-                this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+                this.#glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
             }
             else
             {
-                this._glRectSelected.setSize(0, 0);
+                this.#glRectSelected.setSize(0, 0);
             }
         }
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
@@ -889,7 +889,7 @@ export default class GlOp extends Events
         if (this._glRerouteDot) this._glRerouteDot = this._glRerouteDot.dispose();
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
-        if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
+        if (this.#glRectSelected) this.#glRectSelected = this.#glRectSelected.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
         if (this.#glTitle) this.#glTitle = this.#glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
@@ -1105,7 +1105,7 @@ export default class GlOp extends Events
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glRectSelected) this._glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
+        if (this.#glRectSelected) this.#glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
         if (this.#glTitle) this.#glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
@@ -1895,7 +1895,7 @@ export default class GlOp extends Events
         this._updateIndicators();
 
         if (this._titleExt) this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
-        if (this._glRectSelected) this._glRectSelected.setColorArray(gui.theme.colors_patch.selected);
+        if (this.#glRectSelected) this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
         if (this.#glDotWarning) this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);

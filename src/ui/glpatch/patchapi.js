@@ -95,11 +95,14 @@ export default class GlPatchAPI
         }
     }
 
+    /**
+     * @param {number} flowMode
+     */
     updateFlowModeActivity(flowMode)
     {
         if (flowMode == 0) return;
 
-        const frameCount = this._glPatch._cgl.fpsCounter.frameCount;
+        const frameCount = this._glPatch.cgl.fpsCounter.frameCount;
         if (this._flowvisStartFrame == 0) this._flowvisStartFrame = frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 5 != 0) return;

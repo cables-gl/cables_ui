@@ -964,6 +964,20 @@ export default class PatchView extends Events
         return ops;
     }
 
+    getNumSelectedOps()
+    {
+        const perf = gui.uiProfiler.start("patchview getNumSelectedOps");
+        let count = 0;
+
+        for (let i = 0; i < this._p.ops.length; i++)
+            if (this._p.ops[i] && this._p.ops[i].uiAttribs && this._p.ops[i].uiAttribs.selected)
+                count++;
+
+        perf.finish();
+
+        return count;
+    }
+
     /** @param {boolean} [firstOnly] */
     unlinkSelectedOps(firstOnly)
     {

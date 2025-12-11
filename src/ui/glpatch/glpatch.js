@@ -41,11 +41,13 @@ export default class GlPatch extends Events
     static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
 
+    #cgl = null;
     hoverPort = null;
     paused = false;
     pauseTimeOut = null;
     blueprint = false;
     isAnimated = false;
+    #numSelectedGlOps = 0;
 
     _mouseLeaveButtons = 0;
     _cutLine = [];
@@ -71,7 +73,7 @@ export default class GlPatch extends Events
     _dropInCircleLink = null;
     _dropInCircleRect = null;
 
-    _cachedNumSelectedOps = 0;
+    #cachedNumSelectedOps = 0;
     _cachedFirstSelectedOp = null;
 
     _showingOpCursor = false;
@@ -88,11 +90,15 @@ export default class GlPatch extends Events
 
     /** @type {GlLineDrawer[]} */
     #splineDrawers = null;
+    #selectionArea = null;
+    #dropInOpBorder = null;
+    #rectInstancer = null;
+    #overlaySplines = null;
+    #numSelOpsTimeout = null;
+    #textWriter = null;
 
-    #dropInOpBorder;
-
-    #rectInstancer;
-    #overlaySplines;
+    #lastMouseX = -1;
+    #lastMouseY = -1;
 
     /**
      * @param {CglContext} cgl
@@ -106,7 +112,7 @@ export default class GlPatch extends Events
 
         if (!cgl) this._log.error("[glpatch] need cgl");
 
-        this._cgl = cgl;
+        this.#cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
 
         this._timeStart = performance.now();
@@ -124,13 +130,12 @@ export default class GlPatch extends Events
         this.#rectInstancer.hoverWhenButton;
         this._overLayRects.hoverWhenButton = false;
 
-        this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
+        this.#textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
 
         /** @type {number|string} */
         this._currentSubpatch = 0;
-        this._selectionArea = new GlSelectionArea(this._overLayRects);
-        this._lastMouseX = this._lastMouseY = -1;
+        this.#selectionArea = new GlSelectionArea(this._overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
         if (userSettings.get("devinfos"))
@@ -145,7 +150,7 @@ export default class GlPatch extends Events
             this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
         }
 
-        this.cablesHoverText = new GlText(this._textWriter, "");
+        this.cablesHoverText = new GlText(this.#textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 0);
 
@@ -452,7 +457,7 @@ export default class GlPatch extends Events
     }
 
     get textWriter()
-    { return this._textWriter; }
+    { return this.#textWriter; }
 
     get name() { return "glpatch"; }
 
@@ -468,7 +473,9 @@ export default class GlPatch extends Events
 
     get subPatch() { return this._currentSubpatch; }
 
-    get isAreaSelecting() { return this._selectionArea.active; }
+    get isAreaSelecting() { return this.#selectionArea.active; }
+
+    get cgl() { return this.#cgl; }
 
     updateVizFlowMode()
     {
@@ -490,7 +497,7 @@ export default class GlPatch extends Events
             else if (this._spacePressed) cur = "grabbing";
         }
 
-        if (this._cursor != cur) this._cgl.setCursor(cur);
+        if (this._cursor != cur) this.#cgl.setCursor(cur);
 
         this._cursor = cur;
     }
@@ -567,7 +574,7 @@ export default class GlPatch extends Events
         this.#rectInstancer.setDebugRenderer(this._debugRenderStyle);
         this._overLayRects.setDebugRenderer(this._debugRenderStyle);
 
-        this._textWriter.setDebugRenderer(this._debugRenderStyle);
+        this.#textWriter.setDebugRenderer(this._debugRenderStyle);
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
 
         /*
@@ -627,9 +634,9 @@ export default class GlPatch extends Events
             return;
         }
 
-        if (this._selectionArea.active)
+        if (this.#selectionArea.active)
         {
-            this._selectionArea.hideArea();
+            this.#selectionArea.hideArea();
         }
         hideToolTip();
 
@@ -706,7 +713,7 @@ export default class GlPatch extends Events
 
         if (this.mouseState.buttonLeft && !this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
-        try { this._cgl.canvas.setPointerCapture(e.pointerId); }
+        try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
@@ -740,13 +747,13 @@ export default class GlPatch extends Events
         this._removeDropInRect();
         this.#rectInstancer.mouseUp(e);
 
-        try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
+        try { this.#cgl.canvas.releasePointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
         // gui.longPressConnector.longPressCancel();
         this.#rectInstancer.interactive = true;
 
-        if (!this._selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
+        if (!this.#selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
             {
@@ -756,9 +763,9 @@ export default class GlPatch extends Events
             }
         }
 
-        if (this._selectionArea.active)
+        if (this.#selectionArea.active)
         {
-            this._selectionArea.hideArea();
+            this.#selectionArea.hideArea();
         }
         this.emitEvent("mouseup", e);
 
@@ -793,7 +800,7 @@ export default class GlPatch extends Events
 
         this._dropInCircleLink = this._dropInCircleRect = null;
 
-        this._selectionArea.mouseUp();
+        this.#selectionArea.mouseUp();
     }
 
     /**
@@ -809,7 +816,7 @@ export default class GlPatch extends Events
 
     isFocused()
     {
-        const isf = document.activeElement == this._cgl.canvas;
+        const isf = document.activeElement == this.#cgl.canvas;
 
         this.wasFocussed = isf;
         return isf;
@@ -962,7 +969,7 @@ export default class GlPatch extends Events
             }
         }
 
-        glOp.setTitle(op.uiAttribs.title, this._textWriter);
+        glOp.setTitle(op.uiAttribs.title, this.#textWriter);
 
         if (!fromDeserialize)
         {
@@ -1040,11 +1047,11 @@ export default class GlPatch extends Events
         if (!gui || !gui.canvasManager) return;
         if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
         {
-            this._cgl.gl.clearColor(0, 0, 0, 0);
+            this.#cgl.gl.clearColor(0, 0, 0, 0);
         }
         else
         {
-            this._cgl.gl.clearColor(
+            this.#cgl.gl.clearColor(
                 gui.theme.colors_patch.background[0],
                 gui.theme.colors_patch.background[1],
                 gui.theme.colors_patch.background[2],
@@ -1052,7 +1059,7 @@ export default class GlPatch extends Events
         }
 
         this.updateSubPatchOpAnim();
-        this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
+        this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
         {
@@ -1065,7 +1072,7 @@ export default class GlPatch extends Events
                 }
             }
         }
-        this.hasFocus = ele.hasFocus(this._cgl.canvas);
+        this.hasFocus = ele.hasFocus(this.#cgl.canvas);
         this.debugData.splineUpdate = 0;
 
         for (const i in this._glOpz)
@@ -1122,8 +1129,8 @@ export default class GlPatch extends Events
             }
         }
 
-        this._cgl.pushDepthTest(true);
-        this._cgl.pushDepthWrite(true);
+        this.#cgl.pushDepthTest(true);
+        this.#cgl.pushDepthWrite(true);
 
         // this._showRedrawFlash++;
         // this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
@@ -1147,22 +1154,22 @@ export default class GlPatch extends Events
 
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
         this.#rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-        this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this.#overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this._cgl.popDepthTest();
-        this._cgl.pushDepthTest(false);
+        this.#cgl.popDepthTest();
+        this.#cgl.pushDepthTest(false);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this._cgl.popDepthTest();
-        this._cgl.pushDepthTest(true);
+        this.#cgl.popDepthTest();
+        this.#cgl.pushDepthTest(true);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
-        this._cgl.pushDepthTest(false);
-        gui.longPressConnector.glRender(this, this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
-        this._cgl.popDepthTest();
+        this.#cgl.pushDepthTest(false);
+        gui.longPressConnector.glRender(this, this.#cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
+        this.#cgl.popDepthTest();
 
         if (this._showingOpCursor)
         {
@@ -1181,7 +1188,7 @@ export default class GlPatch extends Events
 
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this.#rectInstancer.getNumRects();
-        this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
+        this.debugData["text rects"] = this.#textWriter.rectDrawer.getNumRects();
         this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
 
@@ -1195,26 +1202,26 @@ export default class GlPatch extends Events
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
-        if (this._cgl.profileData)
+        if (this.#cgl.profileData)
         {
-            this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
-            this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
+            this.debugData.glPrimitives = this.#cgl.profileData.profileMeshNumElements;
+            this.debugData.glUpdateAttribs = this.#cgl.profileData.profileMeshAttributes;
 
-            for (let i in this._cgl.profileData.profileSingleMeshAttribute)
-                this.debugData["glUpdateAttribs " + i] = this._cgl.profileData.profileSingleMeshAttribute[i];
+            for (let i in this.#cgl.profileData.profileSingleMeshAttribute)
+                this.debugData["glUpdateAttribs " + i] = this.#cgl.profileData.profileSingleMeshAttribute[i];
 
-            this._cgl.profileData.clear();
+            this.#cgl.profileData.clear();
         }
 
-        this._cgl.popDepthTest();
-        this._cgl.popDepthWrite();
+        this.#cgl.popDepthTest();
+        this.#cgl.popDepthWrite();
 
         this._updateGreyout();
         perf.finish();
 
         this.updateCursor();
 
-        this._cgl.profileData.clearGlQuery();
+        this.#cgl.profileData.clearGlQuery();
     }
 
     /**
@@ -1257,10 +1264,8 @@ export default class GlPatch extends Events
         if (!this.portDragLine.isActive)
             if (this._pauseMouseUntilButtonUp) return;
 
-        // if ((this._lastMouseX != x || this._lastMouseY != y) && !gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
-
         let allowSelectionArea = !this.portDragLine.isActive;
-        if (this._selectionArea.active)allowSelectionArea = true;
+        if (this.#selectionArea.active)allowSelectionArea = true;
 
         this.#rectInstancer.mouseMove(x, y, this.mouseState.getButton(), e);
 
@@ -1288,8 +1293,8 @@ export default class GlPatch extends Events
         }
 
         if (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering()) allowSelectionArea = false;
-        if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
-        if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
+        if (this.#selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
+        if (this._lastButton == 1 && this.mouseState.buttonLeft) this.#selectionArea.hideArea();
 
         if (gui.longPressConnector.isActive())
         {
@@ -1300,20 +1305,20 @@ export default class GlPatch extends Events
         if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
             if (this.#rectInstancer.interactive)
-                if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
+                if (this._pressedShiftKey || this._pressedCtrlKey) this.#selectionArea.previousOps = gui.patchView.getSelectedOps();
 
             this.#rectInstancer.interactive = false;
 
-            this._selectionArea.setPos(this._lastMouseX, this._lastMouseY);
-            this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
-            this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
+            this.#selectionArea.setPos(this.#lastMouseX, this.#lastMouseY);
+            this.#selectionArea.setSize((x - this.#lastMouseX), (y - this.#lastMouseY));
+            this._selectOpsInRect(x, y, this.#lastMouseX, this.#lastMouseY);
 
             if (this._pressedShiftKey)
             {
-                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                for (let i = 0; i < this.#selectionArea.previousOps.length; i++)
                 {
-                    this._selectionArea.previousOps[i].selected = true;
-                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                    this.#selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this.#selectionArea.previousOps[i].id);
                 }
             }
 
@@ -1324,17 +1329,17 @@ export default class GlPatch extends Events
                 for (let i in this._selectedGlOps)
                     unselIds.push(this._selectedGlOps[i].id);
 
-                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                for (let i = 0; i < this.#selectionArea.previousOps.length; i++)
                 {
-                    this._selectionArea.previousOps[i].selected = true;
-                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                    this.#selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this.#selectionArea.previousOps[i].id);
                 }
 
                 for (let i = 0; i < unselIds.length; i++)
                     this.unSelectOpId(unselIds[i]);
             }
 
-            gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
+            gui.emitEvent("drawSelectionArea", this.#lastMouseX, this.#lastMouseY, (x - this.#lastMouseX), (y - this.#lastMouseY));
 
             gui.patchView.showSelectedOpsPanel();
 
@@ -1342,14 +1347,14 @@ export default class GlPatch extends Events
         }
         else
         {
-            this._numSelectedGlOps = -1;
-            if (this._selectionArea.isVisible())
+            this.#numSelectedGlOps = -1;
+            if (this.#selectionArea.isVisible())
             {
-                this._selectionArea.previousOps = [];
-                this._selectionArea.hideArea();
+                this.#selectionArea.previousOps = [];
+                this.#selectionArea.hideArea();
             }
-            this._lastMouseX = x;
-            this._lastMouseY = y;
+            this.#lastMouseX = x;
+            this.#lastMouseY = y;
         }
 
         this._lastButton = this.mouseState.getButton();
@@ -1357,12 +1362,13 @@ export default class GlPatch extends Events
 
     _updateNumberOfSelectedOps()
     {
-        clearTimeout(this._numSelOpsTimeout);
-        this._numSelOpsTimeout = setTimeout(() =>
+        if (this.#numSelOpsTimeout) clearTimeout(this.#numSelOpsTimeout);
+        this.#numSelOpsTimeout = setTimeout(() =>
         {
+            this.#numSelOpsTimeout = null;
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
-            const changedNumOps = this._numSelectedGlOps != numSelectedOps;
-            this._numSelectedGlOps = numSelectedOps;
+            const changedNumOps = this.#numSelectedGlOps != numSelectedOps;
+            this.#numSelectedGlOps = numSelectedOps;
             if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
         }, 20);
     }
@@ -1423,7 +1429,7 @@ export default class GlPatch extends Events
 
         for (const i in this._glOpz) if (this._glOpz[i].selected) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
-        this._cachedNumSelectedOps = 0;
+        this.#cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
         this._updateNumberOfSelectedOps();
 
@@ -1451,12 +1457,12 @@ export default class GlPatch extends Events
 
     getNumSelectedOps()
     {
-        return this._cachedNumSelectedOps;
+        return this.#cachedNumSelectedOps;
     }
 
     getOnlySelectedOp()
     {
-        if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
+        if (this.#cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
     }
 
     isDraggingOps()
@@ -1473,8 +1479,8 @@ export default class GlPatch extends Events
         if (this._glOpz[id] && !this._selectedGlOps[id])
         {
             this._selectedGlOps[id] = this._glOpz[id];
-            this._cachedNumSelectedOps++;
-            if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
+            this.#cachedNumSelectedOps++;
+            if (this.#cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
             gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
@@ -1493,7 +1499,7 @@ export default class GlPatch extends Events
             delete this._selectedGlOps[id];
 
             this._glOpz[id].selected = false;
-            this._cachedNumSelectedOps--;
+            this.#cachedNumSelectedOps--;
         }
     }
 
@@ -1612,7 +1618,7 @@ export default class GlPatch extends Events
             }
         }
 
-        this._cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
+        this.#cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -1724,7 +1730,7 @@ export default class GlPatch extends Events
 
     focus()
     {
-        this._cgl.canvas.focus();
+        this.#cgl.canvas.focus();
     }
 
     /**
@@ -1864,14 +1870,14 @@ export default class GlPatch extends Events
 
     pause()
     {
-        this._cgl.canvas.style["background-color"] = "rgba(61,61,61,1)";
+        this.#cgl.canvas.style["background-color"] = "rgba(61,61,61,1)";
         this.paused = true;
         this.emitEvent("paused");
     }
 
     resume()
     {
-        this._cgl.canvas.style["background-color"] = "transparent";
+        this.#cgl.canvas.style["background-color"] = "transparent";
         this.paused = false;
         this.emitEvent("resumed");
     }
@@ -1909,13 +1915,13 @@ export default class GlPatch extends Events
 
     pauseInteraction()
     {
-        this._cgl.canvas.style["pointer-events"] = "none";
+        this.#cgl.canvas.style["pointer-events"] = "none";
         this.vizLayer.pauseInteraction();
     }
 
     resumeInteraction()
     {
-        this._cgl.canvas.style["pointer-events"] = "initial";
+        this.#cgl.canvas.style["pointer-events"] = "initial";
         this.vizLayer.resumeInteraction();
     }
 
@@ -1928,7 +1934,7 @@ export default class GlPatch extends Events
         if (this.#splineDrawers.hasOwnProperty(subpatchId)) return this.#splineDrawers[subpatchId];
         else
         {
-            this.#splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
+            this.#splineDrawers[subpatchId] = new GlSplineDrawer(this.#cgl, "patchCableSplines_" + subpatchId);
             this.#splineDrawers[subpatchId].width = userSettings.get("glcablewidth") || 1 || gui.theme.patch.cablesWidth;
             return this.#splineDrawers[subpatchId];
         }
@@ -1960,7 +1966,7 @@ export default class GlPatch extends Events
 
     updateTheme()
     {
-        this._selectionArea.updateTheme();
+        this.#selectionArea.updateTheme();
 
         for (let i in this._glOpz)
             this._glOpz[i].updateTheme();

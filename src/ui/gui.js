@@ -58,6 +58,7 @@ import { CmdUi } from "./commands/cmd_ui.js";
 import { CmdTimeline } from "./commands/cmd_timeline.js";
 import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
+import defaultOps from "./defaultops.js";
 
 /**
  * @type {Gui}
@@ -93,6 +94,7 @@ export default class Gui extends Events
     static PREF_LAYOUT_BOTTOM_PANEL_HEIGHT = "bottomPanelHeight";
     hasAnims = false;
     unload = false;
+    defaultOps = defaultOps;
 
     /** @type {GlTimeline} */
     glTimeline = null;
