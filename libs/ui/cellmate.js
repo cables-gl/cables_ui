@@ -45,7 +45,6 @@ __webpack_require__.r(__webpack_exports__);
  * @property  {HTMLElement} container element,cellmate will inject itself into this element
  */
 
-console.log("cellmate 9")
 
 let countInst=0
 
@@ -77,7 +76,6 @@ class CellMate
 	#options={};
 	countInst=0;
 	#elScrollVert;
-
 
 	#elScrollVertInner;
 	#elScrollHor;
@@ -1053,6 +1051,39 @@ updateScrollBarsSoon()
 		this.#elTable=null;
 		this.#data=null;
 	}
+
+	deleteLine(l)
+	{
+		l=Math.max(0,l)
+		this.#data.splice(l*this.#dataWidth,this.#dataWidth)
+		this.#dataHeight--;
+		this.resize();
+		this.redrawData();
+	}
+
+	deleteCurrentLine()
+	{
+		this.deleteLine(this.cursorScreenY+this.#scrollY)
+	}
+
+	insertLine(l)
+	{
+		l=Math.max(0,l)
+		this.resizeData(this.#dataWidth,this.#dataHeight+1)
+		for(let i=(this.#dataHeight)*this.#dataWidth;i>l*this.#dataWidth;i--)
+			this.#data[i]=			this.#data[i-this.#dataWidth]
+
+		for(let i=0;i<this.#dataWidth;i++)
+			this.#data[i+l*this.#dataWidth]=""
+
+		this.redrawData();
+		
+	}
+	insertLineAtCursor()
+	{
+		this.insertLine(this.cursorScreenY+this.#scrollY)
+	}
+
 
 }
 

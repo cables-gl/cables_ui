@@ -79,7 +79,14 @@ export default class SpreadSheetTab extends Events
         this.#tab.addButton("export csv", () =>
         {
             this.#cellMate.download("cables.csv", this.#cellMate.toCsv());
-
+        });
+        this.#tab.addButton("delete line", () =>
+        {
+            this.#cellMate.deleteCurrentLine();
+        });
+        this.#tab.addButton("insert line", () =>
+        {
+            this.#cellMate.insertLineAtCursor();
         });
 
         editorSession.rememberOpenEditor(SpreadSheetTab.TABSESSION_NAME, this.#currentId, {
