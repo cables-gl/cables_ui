@@ -27,6 +27,17 @@
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
 
+            {{#if port.uiAttribs.multiPort2}}
+            {{#if port.uiAttribs.hideMultiPortUi}}
+            {{else}}
+
+                <br>
+                Multiport
+
+                <span class="button-small button-icon" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                <span class="button-small button-icon" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
+            {{/if}}
+            {{else}}
         {{#if port.uiAttribs.multiPort}}
             <br>
             <span class="button-small" id="multiport_toggleauto_{{op.id}}_{{port.name}}">toggle</span>
@@ -38,6 +49,7 @@
             {{else}}
                 auto
             {{/if}}
+        {{/if}}
         {{/if}}
 
     {{/compare}}

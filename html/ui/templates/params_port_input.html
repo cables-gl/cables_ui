@@ -37,6 +37,19 @@
 
     {{else}}
 
+            {{#if port.uiAttribs.multiPort2}}
+            {{#if port.uiAttribs.hideMultiPortUi}}
+            {{else}}
+
+                </td><td>
+
+                    Multiport
+
+                    <span class="button-small button-icon" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                    <span class="button-small button-icon" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
+                </td>
+            {{/if}}
+            {{else}}
             {{#if port.uiAttribs.multiPort}}
             {{#if port.uiAttribs.hideMultiPortUi}}
             {{else}}
@@ -56,6 +69,8 @@
                     {{/if}}
                 </td>
             {{/if}}
+            {{/if}}
+
             {{/if}}
 
             {{#if port.uiAttribs.display}}
