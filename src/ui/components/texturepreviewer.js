@@ -246,8 +246,8 @@ export default class TexturePreviewer
 
                 let w = 150;
                 let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
-                let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
-                let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
+                let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer.cgl.pixelDensity + 53);
+                let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer.cgl.pixelDensity - 0);
                 vizCtx.translate(x, y);
 
                 if (w <= 1)w = h / 2;

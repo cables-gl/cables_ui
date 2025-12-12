@@ -12,7 +12,7 @@ export default class GlDebugTab
         tabs.addTab(this._tab, true);
         this.show();
 
-        gui.patchView._patchRenderer._cgl.profileData.doProfileGlQuery = true;
+        gui.patchView._patchRenderer.cgl.profileData.doProfileGlQuery = true;
     }
 
     show()
@@ -21,9 +21,9 @@ export default class GlDebugTab
 
         let html = "<div class=\"tabContentScrollContainer\"><table>";
 
-        for (const i in gui.patchView._patchRenderer._cgl.profileData.glQueryData)
+        for (const i in gui.patchView._patchRenderer.cgl.profileData.glQueryData)
         {
-            html += "<tr><td>" + i + ":</td><td> " + gui.patchView._patchRenderer._cgl.profileData.glQueryData[i].time + "</td></tr>";
+            html += "<tr><td>" + i + ":</td><td> " + gui.patchView._patchRenderer.cgl.profileData.glQueryData[i].time + "</td></tr>";
         }
         html += "</table>";
         html += "<br/><br/>";

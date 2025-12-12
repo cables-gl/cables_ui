@@ -1068,9 +1068,9 @@ CABLES_CMD_PATCH.watchGlOp = function ()
 
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
-    gui.patchView.patchRenderer._cgl.saveScreenshot("patchfield_" + performance.now(), () =>
+    gui.patchView.patchRenderer.cgl.saveScreenshot("patchfield_" + performance.now(), () =>
     {
-        gui.patchView.patchRenderer._cgl.patch.resume();
+        gui.patchView.patchRenderer.cgl.patch.resume();
     });
 };
 
