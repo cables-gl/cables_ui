@@ -41,6 +41,7 @@ function _watch(done)
         const basename = path.basename(file);
         return file.includes("/node_modules/") || basename.startsWith(".");
     } };
+    buildWatcher.watch([".git/HEAD"], watchOptions, gulp.series(_scripts_ui_webpack));
     buildWatcher.watch(["../cables/build/**/*.js"], { "queue": false, ...watchOptions }, gulp.series(_scripts_ui_webpack));
     buildWatcher.watch(["src/ui/**/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/**/*.js", "../shared/shared_constants.json"], watchOptions, gulp.series(_scripts_ui_webpack));
     buildWatcher.watch(["scss/**/*.scss"], watchOptions, gulp.series(_sass));

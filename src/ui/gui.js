@@ -176,7 +176,6 @@ export default class Gui extends Events
             () =>
             {
                 this._corePatch.off(this._patchLoadEndiD);
-                this.corePatch().logStartup("patch loaded 2");
 
                 this.bookmarks.updateDynamicCommands();
                 this.savedState.setSaved("patch load end", 0);

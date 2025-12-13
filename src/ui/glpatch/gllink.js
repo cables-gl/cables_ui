@@ -1,5 +1,5 @@
 import { Logger } from "cables-shared-client";
-import { Link } from "cables";
+import { Link, Op } from "cables";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
 import defaultOps from "../defaultops.js";
@@ -11,6 +11,7 @@ import { userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import GlRect from "../gldraw/glrect.js";
 import GlOp from "./glop.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -269,6 +270,7 @@ export default class GlLink
         this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
+        /** @type {UiOp} */
         const op1 = gui.corePatch().getOpById(this._opIdInput);
         const op2 = gui.corePatch().getOpById(this._opIdOutput);
 

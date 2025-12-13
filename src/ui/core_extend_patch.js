@@ -2,13 +2,13 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-import { Patch } from "cables";
+import { Op, Patch } from "cables";
 import { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
 
 /**
- * @extends Patch
+ * @extends Patch<UiOp>
  */
 class UiPatch extends Patch
 {
@@ -26,6 +26,8 @@ class UiPatch extends Patch
      */
     _opIdsToOps(opids)
     {
+
+        /** @type {UiOp[]} */
         let ops = [];
         for (let i = 0; i < opids.length; i++)
         {
@@ -35,7 +37,7 @@ class UiPatch extends Patch
     }
 
     /**
-     * @param {UiOp} op
+     * @param {Op} op
      */
     hasOp(op)
     {

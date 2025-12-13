@@ -14,9 +14,6 @@ import { getConverters } from "./components/converterops.js";
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
-/**
- * @extends Op
- */
 class UiOp extends Op
 {
     static PORT_UIATTR_HOVER = "hover";
