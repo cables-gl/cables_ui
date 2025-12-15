@@ -88,9 +88,10 @@ class UiOp extends Op
 
     /**
      * @param {Port} otherPort
+     * @param {boolean} inPortsFirst
      * @param {undefined} useConverters
      */
-    findFittingPort(otherPort, inPortsFirst = false, useConverters)
+    findFittingPort(otherPort, inPortsFirst = false, useConverters = false)
     {
         if (inPortsFirst)
         {
@@ -292,6 +293,8 @@ class UiOp extends Op
     /**
      * @param {string} id
      * @param {string} txt
+     * @param {number} level
+     * @param {any} options
      */
     setUiError(id, txt, level = 2, options = {})
     {
@@ -790,6 +793,7 @@ class UiOp extends Op
     /**
      * @param {number} portIndex
      * @param {number} numports
+     * @param {boolean} center
      */
     posByIndex(portIndex, numports, center = false)
     {

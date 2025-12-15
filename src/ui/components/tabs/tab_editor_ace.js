@@ -77,6 +77,7 @@ export default class EditorTab extends Events
 
     /**
      * @param {string} content
+     * @param {boolean} silent
      */
     setContent(content, silent = false)
     {

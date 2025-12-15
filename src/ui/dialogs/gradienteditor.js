@@ -307,7 +307,6 @@ export default class GradientEditor
      * @param {number} [r]
      * @param {number} [g]
      * @param {number} [b]
-     * @param {number} [b]
      * @param {number} [a]
      */
     addKey(pos, posy, r, g, b, a)

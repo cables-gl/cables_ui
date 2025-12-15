@@ -184,6 +184,7 @@ export default class FileUploader
     }
 
     /**
+     * @param {[]} files
      * @param {string} [opName]
      */
     uploadFiles(files, opName)

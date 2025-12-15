@@ -1267,6 +1267,7 @@ export default class Gui extends Events
      * @param {String} projectId
      * @param {String} fileId
      * @param {String} converterName
+     * @param fileName
      */
     showConverter(converterId, projectId, fileId, converterName, fileName = null)
     {

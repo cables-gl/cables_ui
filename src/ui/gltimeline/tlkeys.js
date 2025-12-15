@@ -476,10 +476,10 @@ export class TlKeys extends Events
     }
 
     /**
+     * @param {boolean} isSelected
      * @param {boolean} hasSelectedKeys
      * @param {boolean} hovering
      * @param {boolean} readonly
-     * @param {boolean} isSelected
      */
     getKeyColor(isSelected, hasSelectedKeys, hovering, readonly)
     {
