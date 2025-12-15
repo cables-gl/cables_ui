@@ -26,30 +26,31 @@ const MIN_CHARS_QUERY = 2;
 export default class OpSelect
 {
     #minimal = false;
+    #bg = new ModalBackground();
+    displayBoxIndex = 0;
+    itemHeight = 0;
+    firstTime = true;
+    tree = null;
+    _eleSearchinfo = null;
+    _newOpOptions = {};
+    _searchInputEle = null;
+    _enterPressedEarly = false;
+    _searching = false;
+    _typedSinceOpening = false;
+    _currentInfo = "";
+    _lastScrollTop = -5711;
+    _eleOpsearchmodal = null;
+    _keyTimeout = null;
+    _hideUserOps = false;
+
     constructor()
     {
-        this.displayBoxIndex = 0;
-        this.itemHeight = 0;
-        this.firstTime = true;
-        this.tree = null;
-        this._eleSearchinfo = null;
-        this._newOpOptions = {};
-        this._searchInputEle = null;
-        this._enterPressedEarly = false;
-        this._searching = false;
-        this._bg = new ModalBackground();
-        this._typedSinceOpening = false;
-        this._currentInfo = "";
-        this._lastScrollTop = -5711;
-        this._eleOpsearchmodal = null;
         this._opSearch = new OpSearch();
-        this._keyTimeout = null;
-        this._hideUserOps = false;
     }
 
     close()
     {
-        this._bg.hide();
+        this.#bg.hide();
         this._eleOpsearchmodal.style.zIndex = -9999;
 
         gui.currentModal = null;
@@ -563,9 +564,15 @@ export default class OpSelect
 
     isOpen()
     {
-        return this._bg.showing;
+        return this.#bg.showing;
     }
 
+    /**
+     * @param {{ subPatch?: any; y?: any; onOpAdd?: any; search?: any; }} options
+     * @param {import("../core_extend_op.js").UiOp | import("cables").Op} [linkOp]
+     * @param {Port} [linkPort]
+     * @param {import("cables").Link} [link]
+     */
     show(options, linkOp, linkPort, link)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
@@ -573,7 +580,7 @@ export default class OpSelect
 
         this._eleSearchinfo = ele.byId("searchinfo");
 
-        if (window.gui) gui.currentModal = this;
+        gui.currentModal = this;
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
@@ -606,8 +613,8 @@ export default class OpSelect
 
         ele.hide(ele.byId("search_noresults"));
 
-        this._bg.show();
-        this._bg.on("hide", () => { this.close(); });
+        this.#bg.show();
+        this.#bg.on("hide", () => { this.close(); });
 
         ele.show(this._eleOpsearchmodal);
         this._eleOpsearchmodal.style.zIndex = 9999999;
@@ -680,7 +687,7 @@ export default class OpSelect
      */
     addOp(opname, reopenModal = false, itemType = "op")
     {
-        this._newOpOptions.onOpAdd = null;
+        // this._newOpOptions.onOpAdd = null;
 
         const sq = this._getQuery();
         const mathPortType = this._getMathPortType();
