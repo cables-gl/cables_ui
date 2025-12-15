@@ -90,7 +90,7 @@ export default class GlOp extends Events
     _glColorIndicatorSpacing = null;
 
     /** @type {GlRect} */
-    _glRerouteDot = null;
+    #glRerouteDot = null;
 
     minWidth = 10;
 
@@ -886,7 +886,7 @@ export default class GlOp extends Events
     {
         this._disposed = true;
 
-        if (this._glRerouteDot) this._glRerouteDot = this._glRerouteDot.dispose();
+        if (this.#glRerouteDot) this.#glRerouteDot = this.#glRerouteDot.dispose();
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelected) this.#glRectSelected = this.#glRectSelected.dispose();
@@ -1569,20 +1569,19 @@ export default class GlOp extends Events
 
         if (this.displayType == this.DISPLAY_REROUTE_DOT)
         {
-            if (!this._glRerouteDot)
-                this._glRerouteDot = this.#instancer.createRect({ "name": "reroutedog", "draggable": false, "interactive": false });
+            if (!this.#glRerouteDot)
+                this.#glRerouteDot = this.#instancer.createRect({ "name": "reroutedog", "draggable": false, "interactive": false });
 
             this.#glTitle.text = "";
-            this._glRerouteDot.setSize(this._width, this._height);
+            this.#glRerouteDot.setSize(this._width, this._height);
 
-            this._glRerouteDot.setPosition(-0.5, 0, 0);
-            this._glRerouteDot.setParent(this.#glRectBg);
+            this.#glRerouteDot.setPosition(-0.5, 0, 0);
+            this.#glRerouteDot.setParent(this.#glRectBg);
 
-            this._glRerouteDot.setColorArray(GlPort.getInactiveColor(this.#glPorts[0].port.type));
-            this._glRerouteDot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+            this.#glRerouteDot.setColorArray(GlPort.getInactiveColor(this.#glPorts[0].port.type));
+            this.#glRerouteDot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
             this.#glRectBg.setColor(0, 0, 0, 0);
-            // this._glRectBg.setSize(0.0);
         }
 
         for (const i in this._links) if (this._links[i]) this._links[i].update();

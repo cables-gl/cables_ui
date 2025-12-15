@@ -852,27 +852,29 @@ CABLES_CMD_PATCH.addLinkReroute = function ()
     gui.closeModal();
     const getsetOp = opNames.getRerouteOp(p.type);
 
+    const glPatch = gui.patchView.patchRenderer;
+    const nuiAttribs =
+     {
+         "translate":
+         {
+             "subPatch": gui.patchView.getCurrentSubPatch(),
+             "x": glPatch.snap.snapX(glPatch.lastMouseX),
+             "y": glPatch.snap.snapY(glPatch.lastMouseY)
+         }
+     };
+
     gui.patchView.addOp(
         getsetOp,
-        { "onOpAdd": (opGetter) =>
         {
-            const glPatch = gui.patchView.patchRenderer;
-            let x = glPatch._lastMouseX;
-            let y = glPatch._lastMouseY;
-
-            opGetter.uiAttr({
-                "subPatch": gui.patchView.getCurrentSubPatch(),
-            });
-
-            setTimeout(
-                () =>
-                {
-                    x = glPatch.snap.snapX(x);
-                    y = glPatch.snap.snapY(y);
-
-                    gui.patchView.insertOpInLink(link, opGetter, x, y);
-                }, 100);
-        } });
+            "uiAttribs": structuredClone(nuiAttribs),
+            "onOpAdd": (opGetter) =>
+            {
+                // setTimeout(
+                //     () =>
+                //     {
+                gui.patchView.insertOpInLink(link, opGetter, nuiAttribs.translate.x, nuiAttribs.translate.y);
+            // }, 100);
+            } });
 };
 
 CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)

@@ -456,6 +456,30 @@ export default class GlPatch extends Events
 
     }
 
+    get lastMouseX()
+    {
+        return this.#lastMouseX;
+    }
+
+    get _lastMouseX()
+    {
+        console.warn("_lastmouse should not be used");
+        CABLES.logStack();
+        return this.#lastMouseX;
+    }
+
+    get lastMouseY()
+    {
+        return this.#lastMouseY;
+    }
+
+    get _lastMouseY()
+    {
+        console.warn("_lastmouse should not be used");
+        CABLES.logStack();
+        return this.#lastMouseY;
+    }
+
     get textWriter()
     { return this.#textWriter; }
 

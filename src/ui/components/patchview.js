@@ -468,6 +468,10 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {string} opname
+     * @param {object} [options]
+     */
     addOp(opname, options)
     {
         gui.jobs().start({ "id": "loadOpDependencies" });
@@ -2635,6 +2639,12 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {object} oldLink
+     * @param {Op} op
+     * @param {number} x
+     * @param {number} y
+     */
     insertOpInLink(oldLink, op, x, y)
     {
         let newPortIn = op.getFirstPortIn();
