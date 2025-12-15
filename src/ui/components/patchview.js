@@ -1518,6 +1518,7 @@ export default class PatchView extends Events
 
     /**
      * @param {Op[]} selectedOps
+     * @param _options
      */
     serializeOps(selectedOps, _options = {})
     {
@@ -2054,6 +2055,7 @@ export default class PatchView extends Events
      * @param {string} opid
      * @param {string[]} opids
      * @param {string[]} portnames
+     * @param {boolean} showConverters
      */
     linkPortsToOp(e, opid, opids, portnames, showConverters = false)
     {
@@ -2509,6 +2511,7 @@ export default class PatchView extends Events
     /**
      * @param {string} opid
      * @param {string} newOpObjName
+     * @param {function} cb
      */
     replaceOp(opid, newOpObjName, cb = null)
     {

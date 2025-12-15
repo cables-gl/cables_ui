@@ -517,6 +517,7 @@ export default class PatchSaveServer extends Events
 
     /**
      * @param {function} [cb]
+     * @param {boolean} force
      */
     saveCurrentProject(cb, force = false)
     {

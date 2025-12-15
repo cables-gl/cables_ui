@@ -1768,6 +1768,7 @@ export default class GlOp extends Events
 
     /**
      * @param {string} id
+     * @param {boolean} center
      */
     getPortPos(id, center = true)
     {

@@ -677,6 +677,8 @@ export default class OpSelect
 
     /**
      * @param {string} opname
+     * @param {boolean} reopenModal
+     * @param {string} itemType
      */
     addOp(opname, reopenModal = false, itemType = "op")
     {

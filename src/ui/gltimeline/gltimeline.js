@@ -93,7 +93,7 @@ export class GlTimeline extends Events
     /** @type {GlRectInstancer} */
     #rectsOver = null;
 
-    /** @type {} */
+    /** @type {tlHead} */
     ruler = null;
 
     /** @type {tlOverview} */
@@ -1574,6 +1574,7 @@ export class GlTimeline extends Events
 
     /**
      * @param {object} item
+     * @param {number} level
      * @param {HTMLElement} parentEle
      * @param {TlAnimLine} [parentLine]
      */

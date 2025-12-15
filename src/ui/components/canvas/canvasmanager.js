@@ -72,6 +72,8 @@ export default class CanvasManager
 
     /**
      * @param {HTMLCanvasElement} canv
+     * @param name
+     * @param setsize
      */
     addCanvas(canv, name, setsize)
     {
@@ -179,6 +181,8 @@ export default class CanvasManager
 
     /**
      * @param {function} cb
+     * @param mimeType
+     * @param quality
      */
     screenShot(cb, mimeType = "image/png", quality = 1)
     {

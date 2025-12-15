@@ -145,6 +145,7 @@ export class glTlRuler extends Events
     /**
      * @param {number} s
      * @param {string | boolean} title
+     * @param {boolean} showTitle
      * @param {boolean} special
      * @param {number} [fade]
      */

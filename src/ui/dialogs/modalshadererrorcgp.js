@@ -7,6 +7,7 @@ import { userSettings } from "../components/usersettings.js";
 /**
  * @param {CgpShader} shader
  * @param {GPUCompilationInfo} nfo
+ * @param src
  */
 export function showShaderErrorCgp(shader, nfo, src)
 {
