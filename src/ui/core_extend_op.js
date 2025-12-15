@@ -129,13 +129,17 @@ class UiOp extends Op
      */
     unLinkOptions(tryRelink, temporary)
     {
-        let i = 0;
 
         this.shakeLink = null;
+
+        /** @type {Link[]} */
         this.oldLinks = [];
 
         CABLES.OpUnLinkTempReLinkP1 = null;
         CABLES.OpUnLinkTempReLinkP2 = null;
+
+        console.log("tryrelink", tryRelink, this.getFirstPortIn(), this.getFirstPortOut(), this.getFirstPortIn().isLinked(), this.getFirstPortOut().isLinked()
+        );
 
         if (tryRelink)
         {
@@ -158,7 +162,7 @@ class UiOp extends Op
         {
             for (let ipi = 0; ipi < this.portsIn.length; ipi++)
             {
-                for (i = 0; i < this.portsIn[ipi].links.length; i++)
+                for (let i = 0; i < this.portsIn[ipi].links.length; i++)
                 {
                     this.oldLinks.push({
                         "in": this.portsIn[ipi].links[i].portIn,
@@ -168,7 +172,7 @@ class UiOp extends Op
             }
 
             for (let ipo = 0; ipo < this.portsOut.length; ipo++)
-                for (i = 0; i < this.portsOut[ipo].links.length; i++)
+                for (let i = 0; i < this.portsOut[ipo].links.length; i++)
                     this.oldLinks.push({
                         "in": this.portsOut[ipo].links[i].portIn,
                         "out": this.portsOut[ipo].links[i].portOut
