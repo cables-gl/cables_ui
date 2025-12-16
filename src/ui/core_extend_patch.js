@@ -2,7 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-import { Op, Patch } from "cables";
+import { Op, Patch, Profiler } from "cables";
 import { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
@@ -456,6 +456,24 @@ class UiPatch extends Patch
         return false;
     }
 
+    /**
+     * @param {boolean} enable
+     */
+    profile(enable)
+    {
+        const ops = this.ops;
+        this.profiler = new Profiler(this);
+        for (let i = 0; i < ops.length; i++)
+            this.ops[i].startProfile();
+    }
+
+    startStepDebug()
+    {
+        const ops = this.ops;
+        this.profiler = new Profiler(this);
+        for (let i = 0; i < ops.length; i++)
+            this.ops[i].startStepDebug();
+    }
 }
 
 export { UiPatch };

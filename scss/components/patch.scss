@@ -48,12 +48,12 @@
 // }
 
 
-.port_text_color_trigger, .port_text_color_function { color :var(--color_port_function);}
-.port_text_color_value,.port_text_color_number { color: var(--color_port_value); }
-.port_text_color_object { color: var(--color_port_object);}
-.port_text_color_array { color: var(--color_port_array);  }
-.port_text_color_dynamic { color: var(--color_port_dynamic);}
-.port_text_color_string { color: var(--color_port_string);}
+.port_text_color_trigger, .port_text_color_function { color: var(--color_port_function) !important;}
+.port_text_color_value,.port_text_color_number { color: var(--color_port_value) !important; }
+.port_text_color_object { color: var(--color_port_object) !important;}
+.port_text_color_array { color: var(--color_port_array) !important;  }
+.port_text_color_dynamic { color: var(--color_port_dynamic) !important;}
+.port_text_color_string { color: var(--color_port_string) !important;}
 
 
 .port_color_function { fill:var(--color_port_function); stroke:var(--color_port_function); }

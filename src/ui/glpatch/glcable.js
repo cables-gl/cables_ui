@@ -218,6 +218,8 @@ export default class GlCable
                 if (op.portsIn.length > 0 && op.portsOut.length > 0)
                 {
                     if (!(
+                        op.getFirstPortIn() &&
+                        op.getFirstPortOut() &&
                         op.getFirstPortIn().type == this.#type &&
                         op.getFirstPortOut().type == this.#type))
                         return false;

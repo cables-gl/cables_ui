@@ -896,18 +896,38 @@ class UiOp extends Op
         let portOut = this.portsOut[0];
         if (portOut.ports && portOut.ports.length > 0) portOut = portOut.ports[0];
 
-        return portOut;
+        // return portOut;
     }
 
     startStepDebug()
     {
+        this.patch.continueStepDebugSet = [];
+        this.patch.continueStepDebugLog = [];
 
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
             const p = this.portsIn[ipi];
-            p._onTriggered = p._onTriggeredStepDebug;
+            p._onTriggered = p._onStepDebugTriggered;
+            p.set = p._onStepDebugSet;
+        }
 
-            p.set = p._onSetProfiling;
+        for (let ipi = 0; ipi < this.portsOut.length; ipi++)
+        {
+            const p = this.portsOut[ipi];
+            p._onTriggered = p._onStepDebugTriggered;
+            p._ogTrigger = p.trigger;
+            p.trigger = p._onStepDebugTrigger;
+            p.set = p._onStepDebugSet;
+        }
+    }
+
+    startProfile()
+    {
+        for (let ipi = 0; ipi < this.portsIn.length; ipi++)
+        {
+            const p = this.portsIn[ipi];
+            this.portsIn[ipi]._onTriggered = this.portsIn[ipi]._onTriggeredProfiling;
+            this.portsIn[ipi].set = this.portsIn[ipi]._onSetProfiling;
         }
     }
 }
