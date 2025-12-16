@@ -1959,7 +1959,7 @@ export default class GlPatch extends Events
         else
         {
             this.#splineDrawers[subpatchId] = new GlSplineDrawer(this.#cgl, "patchCableSplines_" + subpatchId);
-            this.#splineDrawers[subpatchId].width = userSettings.get("glcablewidth") || 1 || gui.theme.patch.cablesWidth;
+            this.#splineDrawers[subpatchId].width = userSettings.get("glcablewidth") || gui.theme.patch.cablesWidth;
             return this.#splineDrawers[subpatchId];
         }
     }
