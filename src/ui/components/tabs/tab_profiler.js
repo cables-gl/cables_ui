@@ -43,8 +43,8 @@ export default class Profiler
     }
 
     /**
-     * @param {number} maxTime
      * @param {import("cables/src/core/core_profiler.js").ProfilerItem[]} opids
+     * @param {number} maxTime
      */
     updateHeatmap(opids, maxTime)
     {

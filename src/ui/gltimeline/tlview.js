@@ -123,6 +123,7 @@ export class tlView
 
     /**
      * @param {number} v
+     * @param {number} dur=0.3
      */
     setMinVal(v, dur = 0.3)
     {
@@ -134,6 +135,7 @@ export class tlView
 
     /**
      * @param {number} v
+     * @param {number} dur=0.3
      */
     setMaxVal(v, dur = 0.3)
     {
@@ -246,8 +248,8 @@ export class tlView
 
     /**
      * @param {number} delta
-     * @param {number} dur
      * @param {WheelEvent} e
+     * @param {number} dur=0.3
      */
     setZoomOffsetWheel(delta, e, dur = 0.3)
     {

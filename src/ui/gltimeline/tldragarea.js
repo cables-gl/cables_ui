@@ -191,6 +191,7 @@ export class TlDragArea extends Events
      * @param {number} r
      * @param {number} g
      * @param {number} b
+     * @param {number} a=1
      */
     setColor(r, g, b, a = 1)
     {
