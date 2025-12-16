@@ -30,6 +30,7 @@ import ModalSourceCode from "./dialogs/modalsourcecode.js";
 import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
 import { GuiText } from "./text.js";
+import { UiPort } from "./core_extend_port.js";
 
 window.CABLES = CABLES || {};
 
@@ -92,6 +93,7 @@ CABLES.UI.showShaderErrorCgp = showShaderErrorCgp;
 
 setHtmlDefaultListeners();
 
+CABLES.Port = UiPort;
 CABLES.Op = UiOp;
 CABLES.Patch = UiPatch;
 

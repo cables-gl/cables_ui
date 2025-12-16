@@ -899,6 +899,17 @@ class UiOp extends Op
         return portOut;
     }
 
+    startStepDebug()
+    {
+
+        for (let ipi = 0; ipi < this.portsIn.length; ipi++)
+        {
+            const p = this.portsIn[ipi];
+            p._onTriggered = p._onTriggeredStepDebug;
+
+            p.set = p._onSetProfiling;
+        }
+    }
 }
 
 export { UiOp };
