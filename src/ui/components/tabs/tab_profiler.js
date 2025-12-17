@@ -246,7 +246,9 @@ export default class Profiler
                     for (let j = 0; j < 2 - (item.percent + "").length; j++)
                         pad += "&nbsp;";
 
-                html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td>";
+                let p = (Math.floor(item.percent * 100) / 100) || 0;
+
+                html += pad + p + "% </span></td><td>";
 
                 html += "<span>";
 
@@ -295,8 +297,9 @@ export default class Profiler
             html += "<table>";
             for (let i = 0; i < subPatches.length; i++)
             {
+                const p = (Math.floor(subPatches[i].percent * 100) / 100);
                 html += "<tr>";
-                html += "<td><span>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</span></td>";
+                html += "<td><span>" + p + "%</span></td>";
                 html += "<td><span><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</span></td>";
                 html += "</tr>";
             }

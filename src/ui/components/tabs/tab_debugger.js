@@ -5,6 +5,8 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import opNames from "../../opnameutils.js";
+import { PortDir, portType } from "../../core_constants.js";
 
 export default class TabDebugger
 {
@@ -32,19 +34,21 @@ export default class TabDebugger
 
         ele.clickable(ele.byId("debug_step"), () =>
         {
-            if (this.steps.length > 0)
-            {
-                console.log("left", this.steps.length);
-                const step = this.steps.shift();
-                ele.byId("debugger_log").innerHTML += step.log + "<br/>";
-                if (step)
-                    step.exec();
-            }
+            // if (gui.corePatch().continueStepDebugSet)
+            // {
 
+            //     const f = gui.corePatch().continueStepDebugSet[0];
+            //     gui.corePatch().continueStepDebugSet.shift();
+            //     if (f) f();
+            //     console.log("steps", gui.corePatch().continueStepDebugSet);
+
+            // }
+            this.update();
         });
         ele.clickable(ele.byId("debug_start"), () =>
         {
-            gui.corePatch().debuggerEnabled = true;
+            // gui.corePatch().start = true;
+            gui.corePatch().startStepDebug();
 
         });
         this._tab.on("close", () =>
@@ -55,7 +59,47 @@ export default class TabDebugger
 
     update()
     {
+        console.log("1", gui.corePatch().continueStepDebugLog);
+        // let html = getHandleBarHtml("tab_debugger");
+        let html = "";
+        html += "<table>";
+        let lastOp = null;
+        if (gui.corePatch().continueStepDebugLog)
+            for (let i = 0; i < gui.corePatch().continueStepDebugLog.length; i++)
+            {
+                html += "<tr>";
+                const step = gui.corePatch().continueStepDebugLog[i];
+                html += "<td>";
+                if (lastOp != step.port.op)
+                    html += "<span>op " + step.port.op.name + "</span>";
+                html += "</td>";
+                html += "<td>";
 
+                if (step.port.direction == PortDir.out) html += "out";
+                else html += "in";
+                html += "</td>";
+                html += "<td>";
+
+                html += " <span class=\"" + opNames.getPortTypeClassHtml(step.port.type) + "\">█</span>  " + step.port.name;
+                html += "</td>";
+
+                html += "<td>";
+                if (step.port.type != portType.trigger)
+                {
+                    html += step.vold;
+                    html += " -> ";
+                    html += step.v;
+                }
+                html += "</td>";
+                html += "</tr>";
+
+                lastOp = step.port.op;
+            }
+        html += "</table>";
+
+        // this._tab.html(html);
+        ele.byId("debugger_log").innerHTML = html;
+        // setTimeout(this.update.bind(this), 10000);
     }
 }
 

@@ -136,6 +136,7 @@ export default class GlLink
             if (
                 this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
             {
+                console.log("pressssssss");
                 const opIn = this.#glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
 
                 const pIn = opIn.getPortById(this._portIdInput);
@@ -154,14 +155,21 @@ export default class GlLink
                             const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
 
                             let x = opOut.uiAttribs.translate.x;
+                            let y = this._glPatch.viewBox.mousePatchY;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
+
+                            if (userSettings.get("snapToGrid2"))
+                            {
+                                x = Snap.snapOpPosX(x);
+                                y = Snap.snapOpPosY(y);
+                            }
 
                             op.setUiAttrib(
                                 {
                                     "subPatch": this._glPatch.subPatch,
                                     "translate": {
-                                        "x": Snap.snapOpPosX(x),
-                                        "y": Snap.snapOpPosY(this._glPatch.viewBox.mousePatchY)
+                                        "x": x,
+                                        "y": y
                                     } });
                         } }, null, null, llink);
             }
@@ -185,7 +193,6 @@ export default class GlLink
         });
 
         this._initSubCables();
-
         this._glPatch.addLink(this);
         this.updateVisible();
         this.update();
