@@ -474,6 +474,14 @@ class UiPatch extends Patch
         for (let i = 0; i < ops.length; i++)
             this.ops[i].startStepDebug();
     }
+
+    stopStepDebug()
+    {
+        const ops = this.ops;
+        this.profiler = new Profiler(this);
+        for (let i = 0; i < ops.length; i++)
+            this.ops[i].stopStepDebug();
+    }
 }
 
 export { UiPatch };

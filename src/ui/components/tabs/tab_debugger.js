@@ -30,19 +30,19 @@ export default class TabDebugger
         this._tab.html(html);
         this.update();
 
-        gui.corePatch().on("debuggerstep", (o) =>
-        {
-            this.steps.unshift(o);
-        });
+        // gui.corePatch().on("debuggerstep", (o) =>
+        // {
+        //     this.steps.unshift(o);
+        // });
 
-        ele.clickable(ele.byId("debug_step"), () =>
-        {
-            this.update();
-        });
+        // ele.clickable(ele.byId("debug_step"), () =>
+        // {
+        //     this.update();
+        // });
 
-        ele.clickable(ele.byId("debug_start"), () =>
+        ele.clickable(ele.byId("debug_clear"), () =>
         {
-            gui.corePatch().startStepDebug();
+            gui.corePatch().tempData.continueStepDebugLog = [];
             this.update();
         });
 
@@ -56,19 +56,29 @@ export default class TabDebugger
 
     update()
     {
-        console.log("1");
-        gui.corePatch().continueStepDebugLog = gui.corePatch().continueStepDebugLog || [];
-        if (this.lastCount == gui.corePatch().continueStepDebugLog.length) return;
 
-        this.lastCount = gui.corePatch().continueStepDebugLog.length;
+        gui.corePatch().tempData.continueStepDebugLog = gui.corePatch().tempData.continueStepDebugLog || [];
+        if (this.lastCount == gui.corePatch().tempData.continueStepDebugLog.length) return;
+
+        this.lastCount = gui.corePatch().tempData.continueStepDebugLog.length;
 
         let html = "";
         html += "<table>";
         let lastOp = null;
+        let lastTime = 0;
 
-        for (let i = 0; i < gui.corePatch().continueStepDebugLog.length; i++)
+        for (let i = 0; i < gui.corePatch().tempData.continueStepDebugLog.length; i++)
         {
-            const step = gui.corePatch().continueStepDebugLog[i];
+            const step = gui.corePatch().tempData.continueStepDebugLog[i];
+            if (step.time - lastTime > 200)
+            {
+                html += "<tr>";
+                html += "<td colspan=\"10\"><hr/></div>";
+                html += "</td>";
+                html += "</tr>";
+            }
+            lastTime = step.time;
+
             if (lastOp != step.port.op)
             {
                 html += "<tr>";
@@ -76,6 +86,7 @@ export default class TabDebugger
                 html += "</td>";
                 html += "</tr>";
             }
+
             html += "<tr>";
             html += "<td>";
             if (lastOp != step.port.op)
@@ -98,6 +109,8 @@ export default class TabDebugger
                 html += " → ";
                 html += step.v;
             }
+            if (step.action)
+                html += " " + step.action;
             html += "</td>";
             html += "</tr>";
 
@@ -105,7 +118,6 @@ export default class TabDebugger
         }
         html += "</table>";
 
-        // this._tab.html(html);
         ele.byId("debugger_log").innerHTML = html;
     }
 }
