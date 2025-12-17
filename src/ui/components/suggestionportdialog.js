@@ -36,14 +36,16 @@ export default class SuggestPortDialog
             {
                 const theport = op.portsIn[i];
                 if (
-                    !theport.uiAttribs.hidePort &&
-                !theport.uiAttribs.readOnly &&
-                !theport.uiAttribs.greyout &&
-                theport.direction != port.direction
-                )
+                    theport.uiAttribs.addPort || (
+                        !theport.uiAttribs.hidePort &&
+                        !theport.uiAttribs.readOnly &&
+                        !theport.uiAttribs.greyout &&
+                        theport.direction != port.direction
+                    ))
                 {
                     if (kk == 1)
                         this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+
                     if (!forceConverter && port.type != theport.type)
                     {
                         types[theport.type] = true;
@@ -59,13 +61,13 @@ export default class SuggestPortDialog
                 console.log(getConverters(theport, port));
                 if (
                     !theport.uiAttribs.hidePort &&
-                !theport.uiAttribs.readOnly &&
-                !theport.uiAttribs.greyout &&
-                theport.direction != port.direction
-                )
+                    !theport.uiAttribs.readOnly &&
+                    !theport.uiAttribs.greyout &&
+                    theport.direction != port.direction)
                 {
                     if (kk == 1)
                         this.#addPort(theport, Link.canLink(theport, port), useConverter && getConverters(theport, port).length > 0, port);
+
                     if (!forceConverter && port.type != theport.type)
                     {
                         types[theport.type] = true;
