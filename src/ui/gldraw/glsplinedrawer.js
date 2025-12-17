@@ -30,6 +30,8 @@ export class GlSplineDrawer extends Events
     #count;
     #shader;
 
+    selectedThicknessMultiply = 1.2;
+
     /** @type {Float32Array} */
     #verts;
 
@@ -101,7 +103,7 @@ export class GlSplineDrawer extends Events
         this.#uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this.#uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
         this.#uniWidth = new Uniform(this.#shader, "f", "width", this.width);
-        this.#uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", 3);
+        this.#uniWidthSelected = new Uniform(this.#shader, "f", "widthSelected", userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * this.selectedThicknessMultiply);
 
         this._uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
 
@@ -112,7 +114,7 @@ export class GlSplineDrawer extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
-            if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * 0.5 + 1);
+            if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * this.selectedThicknessMultiply);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
             if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
         });
