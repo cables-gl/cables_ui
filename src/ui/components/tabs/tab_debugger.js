@@ -63,7 +63,7 @@ export default class TabDebugger
         this.lastCount = gui.corePatch().tempData.continueStepDebugLog.length;
 
         let html = "";
-        html += "<table>";
+        html += "<table style=\"width:100%\">";
         let lastOp = null;
         let lastTime = 0;
 
@@ -79,7 +79,7 @@ export default class TabDebugger
             }
             lastTime = step.time;
 
-            if (lastOp != step.port.op)
+            if (step.port && lastOp != step.port.op)
             {
                 html += "<tr>";
                 html += "<td colspan=\"10\"><div style=\"margin:4px\"></div>";
@@ -89,32 +89,36 @@ export default class TabDebugger
 
             html += "<tr>";
             html += "<td>";
-            if (lastOp != step.port.op)
+            if (step.port && lastOp != step.port.op)
                 html += "<span>op " + step.port.op.name + "</span>";
             html += "</td>";
             html += "<td>";
 
-            if (step.port.direction == PortDir.out) html += "out";
-            else html += "in";
+            if (step.port)
+                if (step.port.direction == PortDir.out) html += "out";
+                else html += "in";
+
             html += "</td>";
             html += "<td >";
 
-            html += " <span class=\"" + opNames.getPortTypeClassHtml(step.port.type) + "\">█</span>  " + step.port.name;
+            if (step.port)
+                html += " <span class=\"" + opNames.getPortTypeClassHtml(step.port.type) + "\">█</span>  " + step.port.name;
             html += "</td>";
 
             html += "<td>";
-            if (step.port.type != portType.trigger)
+            if (step.port && step.port.type != portType.trigger)
             {
-                html += step.vold;
+                html += Math.round(step.vold * 10000) / 10000;
                 html += " → ";
-                html += step.v;
+                html += Math.round(step.v * 10000) / 10000;
             }
             if (step.action)
                 html += " " + step.action;
             html += "</td>";
             html += "</tr>";
 
-            lastOp = step.port.op;
+            if (step.port)
+                lastOp = step.port.op;
         }
         html += "</table>";
 

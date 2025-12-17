@@ -54,7 +54,6 @@ class UiPort extends Port
         this.op.patch.tempData.continueStepDebugLog.push({
             "time": performance.now(),
             "port": this,
-            "action": "set ",
             "vold": structuredClone(this.get()),
             "v": structuredClone(v)
         });
