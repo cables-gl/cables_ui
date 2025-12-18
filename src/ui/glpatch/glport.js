@@ -468,7 +468,9 @@ export default class GlPort
         let coll = [1, 0.9, 0.8, 0];
         if (selected)
         {
-            coll = gui.theme.colors_patch.selectedCable;
+            coll = structuredClone(gui.theme.colors_patch.selectedCable);
+            // console.log("coll", coll);
+            // coll = structuredClone(gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1]);
         }
         if (hovering)
         {

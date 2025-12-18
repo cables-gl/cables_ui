@@ -139,8 +139,7 @@ class UiOp extends Op
         CABLES.OpUnLinkTempReLinkP1 = null;
         CABLES.OpUnLinkTempReLinkP2 = null;
 
-        console.log("tryrelink", tryRelink, this.getFirstPortIn(), this.getFirstPortOut(), this.getFirstPortIn().isLinked(), this.getFirstPortOut().isLinked()
-        );
+        console.log("tryrelink", tryRelink, this.getFirstPortIn(), this.getFirstPortOut());
 
         if (tryRelink)
         {
@@ -896,28 +895,56 @@ class UiOp extends Op
         let portOut = this.portsOut[0];
         if (portOut.ports && portOut.ports.length > 0) portOut = portOut.ports[0];
 
-        // return portOut;
+        return portOut;
     }
 
     startStepDebug()
     {
-        this.patch.continueStepDebugSet = [];
-        this.patch.continueStepDebugLog = [];
 
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
             const p = this.portsIn[ipi];
+            p._oldTriggered = p._onTriggered;
             p._onTriggered = p._onStepDebugTriggered;
+
+            p._oldTrigger = p.trigger;
+            p.trigger = p._onStepDebugTrigger;
+
+            p._oldSet = p.set;
             p.set = p._onStepDebugSet;
         }
 
         for (let ipi = 0; ipi < this.portsOut.length; ipi++)
         {
             const p = this.portsOut[ipi];
+            p._oldTriggered = p._onTriggered;
             p._onTriggered = p._onStepDebugTriggered;
-            p._ogTrigger = p.trigger;
+
+            p._oldTrigger = p.trigger;
             p.trigger = p._onStepDebugTrigger;
+
+            p._oldSet = p.set;
             p.set = p._onStepDebugSet;
+        }
+    }
+
+    stopStepDebug()
+    {
+
+        for (let ipi = 0; ipi < this.portsIn.length; ipi++)
+        {
+            const p = this.portsIn[ipi];
+            p._onTriggered = p._oldTriggered;
+            p.trigger = p._oldTrigger;
+            p.set = p._oldSet;
+        }
+
+        for (let ipi = 0; ipi < this.portsOut.length; ipi++)
+        {
+            const p = this.portsOut[ipi];
+            p._onTriggered = p._onStepDebugTriggered;
+            p.trigger = p._oldTrigger;
+            p.set = p._oldSet;
         }
     }
 

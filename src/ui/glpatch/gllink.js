@@ -73,6 +73,8 @@ export default class GlLink
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
         this._subPatch = subpatch;
+
+        /** @type {GlCable} */
         this._cableSub = null;
 
         this._buttonDown = MouseState.BUTTON_NONE;

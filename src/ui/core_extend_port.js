@@ -16,13 +16,13 @@ class UiPort extends Port
     _onStepDebugTriggered()
     {
 
-        this.op.patch.continueStepDebugLog.push({
+        this.op.patch.tempData.continueStepDebugLog.push({
             "port": this,
-            "action": "triggered in"
+            // "action": "triggered "
         });
         // this.op.patch.continueStepDebugSet.push(() =>
         // {
-        console.log("port trigger", this.op.name, this.name,);
+        // console.log("port trigger", this.op.name, this.name,);
         this.onTriggered();
 
         // });
@@ -32,14 +32,15 @@ class UiPort extends Port
     _onStepDebugTrigger()
     {
 
-        this.op.patch.continueStepDebugLog.push({
+        this.op.patch.tempData.continueStepDebugLog.push({
+            "time": performance.now(),
             "port": this,
-            "action": "triggered out"
+            // "action": "triggered "
         });
         // this.op.patch.continueStepDebugSet.push(() =>
         // {
-        console.log("port trigger out", this.op.name, this.name,);
-        this._ogTrigger();
+        // console.log("port trigger ", this.op.name, this.name,);
+        this._oldTrigger();
 
         // });
         // console.log("steps", gui.corePatch().continueStepDebugSet.length);
@@ -50,9 +51,9 @@ class UiPort extends Port
 
         // this.op.patch.continueStepDebugSet.push(() =>
         // {
-        this.op.patch.continueStepDebugLog.push({
+        this.op.patch.tempData.continueStepDebugLog.push({
+            "time": performance.now(),
             "port": this,
-            "action": "set ",
             "vold": structuredClone(this.get()),
             "v": structuredClone(v)
         });

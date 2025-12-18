@@ -11,6 +11,11 @@ import { PortDir, portType } from "../../core_constants.js";
 export default class TabDebugger
 {
     static TABSESSION_NAME = "debugger";
+    lastCount = 0;
+
+    steps = [];
+    index = 0;
+    timeOut = null;
 
     /**
      * @param {TabPanel} tabs
@@ -24,82 +29,100 @@ export default class TabDebugger
         let html = getHandleBarHtml("tab_debugger");
         this._tab.html(html);
         this.update();
-        this.steps = [];
-        this.index = 0;
 
-        gui.corePatch().on("debuggerstep", (o) =>
+        // gui.corePatch().on("debuggerstep", (o) =>
+        // {
+        //     this.steps.unshift(o);
+        // });
+
+        // ele.clickable(ele.byId("debug_step"), () =>
+        // {
+        //     this.update();
+        // });
+
+        ele.clickable(ele.byId("debug_clear"), () =>
         {
-            this.steps.unshift(o);
-        });
-
-        ele.clickable(ele.byId("debug_step"), () =>
-        {
-            // if (gui.corePatch().continueStepDebugSet)
-            // {
-
-            //     const f = gui.corePatch().continueStepDebugSet[0];
-            //     gui.corePatch().continueStepDebugSet.shift();
-            //     if (f) f();
-            //     console.log("steps", gui.corePatch().continueStepDebugSet);
-
-            // }
+            gui.corePatch().tempData.continueStepDebugLog = [];
             this.update();
         });
-        ele.clickable(ele.byId("debug_start"), () =>
-        {
-            // gui.corePatch().start = true;
-            gui.corePatch().startStepDebug();
 
-        });
         this._tab.on("close", () =>
         {
+            clearInterval(this.timeOut);
             editorSession.remove(TabDebugger.TABSESSION_NAME, "debugger");
         });
+        this.timeOut = setInterval(this.update.bind(this), 500);
     }
 
     update()
     {
-        console.log("1", gui.corePatch().continueStepDebugLog);
-        // let html = getHandleBarHtml("tab_debugger");
+
+        gui.corePatch().tempData.continueStepDebugLog = gui.corePatch().tempData.continueStepDebugLog || [];
+        if (this.lastCount == gui.corePatch().tempData.continueStepDebugLog.length) return;
+
+        this.lastCount = gui.corePatch().tempData.continueStepDebugLog.length;
+
         let html = "";
-        html += "<table>";
+        html += "<table style=\"width:100%\">";
         let lastOp = null;
-        if (gui.corePatch().continueStepDebugLog)
-            for (let i = 0; i < gui.corePatch().continueStepDebugLog.length; i++)
+        let lastTime = 0;
+
+        for (let i = 0; i < gui.corePatch().tempData.continueStepDebugLog.length; i++)
+        {
+            const step = gui.corePatch().tempData.continueStepDebugLog[i];
+            if (step.time - lastTime > 200)
             {
                 html += "<tr>";
-                const step = gui.corePatch().continueStepDebugLog[i];
-                html += "<td>";
-                if (lastOp != step.port.op)
-                    html += "<span>op " + step.port.op.name + "</span>";
-                html += "</td>";
-                html += "<td>";
-
-                if (step.port.direction == PortDir.out) html += "out";
-                else html += "in";
-                html += "</td>";
-                html += "<td>";
-
-                html += " <span class=\"" + opNames.getPortTypeClassHtml(step.port.type) + "\">█</span>  " + step.port.name;
-                html += "</td>";
-
-                html += "<td>";
-                if (step.port.type != portType.trigger)
-                {
-                    html += step.vold;
-                    html += " -> ";
-                    html += step.v;
-                }
+                html += "<td colspan=\"10\"><hr/></div>";
                 html += "</td>";
                 html += "</tr>";
-
-                lastOp = step.port.op;
             }
+            lastTime = step.time;
+
+            if (step.port && lastOp != step.port.op)
+            {
+                html += "<tr>";
+                html += "<td colspan=\"10\"><div style=\"margin:4px\"></div>";
+                html += "</td>";
+                html += "</tr>";
+            }
+
+            html += "<tr>";
+            html += "<td>";
+            if (step.port && lastOp != step.port.op)
+                html += "<span>op " + step.port.op.name + "</span>";
+            html += "</td>";
+            html += "<td>";
+
+            if (step.port)
+                if (step.port.direction == PortDir.out) html += "out";
+                else html += "in";
+
+            html += "</td>";
+            html += "<td >";
+
+            if (step.port)
+                html += " <span class=\"" + opNames.getPortTypeClassHtml(step.port.type) + "\">█</span>  " + step.port.name;
+            html += "</td>";
+
+            html += "<td>";
+            if (step.port && step.port.type != portType.trigger)
+            {
+                html += Math.round(step.vold * 10000) / 10000;
+                html += " → ";
+                html += Math.round(step.v * 10000) / 10000;
+            }
+            if (step.action)
+                html += " " + step.action;
+            html += "</td>";
+            html += "</tr>";
+
+            if (step.port)
+                lastOp = step.port.op;
+        }
         html += "</table>";
 
-        // this._tab.html(html);
         ele.byId("debugger_log").innerHTML = html;
-        // setTimeout(this.update.bind(this), 10000);
     }
 }
 

@@ -2,6 +2,7 @@ import { ele, ModalBackground } from "cables-shared-client";
 import { Op, Port } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
+import { DomEvents } from "../theme.js";
 
 /** @typedef SuggestionItem
  * @property {String} [name]
@@ -106,7 +107,7 @@ export default class SuggestionDialog
                     CABLES.UI.suggestions.action(e.target.dataset.id);
             });
 
-            sugeles[i].addEventListener("pointerenter", (e) =>
+            sugeles[i].addEventListener(DomEvents.POINTER_ENTER, (e) =>
             {
                 for (let i = 0; i < suggestions.length; i++)
                     if (suggestions[i].id == e.target.dataset.id && suggestions[i].p)
@@ -117,7 +118,7 @@ export default class SuggestionDialog
                     }
             });
 
-            sugeles[i].addEventListener("pointerleave", (e) =>
+            sugeles[i].addEventListener(DomEvents.POINTER_LEAVE, (e) =>
             {
                 for (let i = 0; i < suggestions.length; i++)
                     if (suggestions[i].id == e.target.dataset.id && suggestions[i].p)
