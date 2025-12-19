@@ -46,7 +46,11 @@ class UiOp extends Op
 
                 for (let j = 0; j < this.portsIn.length; j++)
                     if (i != j && this.portsIn[i].name === this.portsIn[j].name)
+                    {
                         this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
+                        console.log("text2", this.portsIn[j], this.portsIn[i]);
+
+                    }
             }
         });
     }
