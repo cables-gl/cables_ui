@@ -10,8 +10,14 @@ import { PortDir, portType } from "../../core_constants.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import CMD from "../../commands/commands.js";
 
+/**
+ * @typedef KeyBindObject
+ * @property  {String} [cmd]
+ * @property  {string} [action]
+ */
 export default class TabKeybindings
 {
+
     static TABSESSION_NAME = "Keybindings";
     lastCount = 0;
 
@@ -20,6 +26,7 @@ export default class TabKeybindings
      */
     constructor(tabs)
     {
+
         this._tab = new Tab(TabKeybindings.TABSESSION_NAME, { "icon": "list", "singleton": true, "infotext": "tab_keybindings", "padding": true });
         tabs.addTab(this._tab, true);
 
@@ -35,7 +42,6 @@ export default class TabKeybindings
 
         this._tab.on("close", () =>
         {
-            clearInterval(this.timeOut);
             editorSession.remove(TabKeybindings.TABSESSION_NAME, TabKeybindings.TABSESSION_NAME);
         });
     }

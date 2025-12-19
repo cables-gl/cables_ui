@@ -59,6 +59,7 @@ import { CmdTimeline } from "./commands/cmd_timeline.js";
 import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
 import defaultOps from "./defaultops.js";
+import { InputBindings } from "./inputbindings.js";
 
 /**
  * @type {Gui}
@@ -102,6 +103,8 @@ export default class Gui extends Events
     /** @type {GlTimelineTab} */
     glTimeLineTab = null;
     longLinkHover = false;
+
+    inputBindings = new InputBindings();
 
     /**
      * @param {object} cfg
