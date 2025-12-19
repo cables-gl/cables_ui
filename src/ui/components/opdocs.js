@@ -302,6 +302,7 @@ export default class OpDocs
     getHtml(opName, collectionInfo = {})
     {
         let opDoc = this.getOpDocByName(opName);
+        console.log("od", opDoc);
 
         let template = "op-doc-template";
         if (namespace.isExtension(opName)) template = "op-doc-collection-template-extension";
@@ -338,6 +339,10 @@ export default class OpDocs
         });
     }
 
+    /**
+     * @param {string} opname
+     * @param {string} portname
+     */
     showPortDoc(opname, portname)
     {
         const perf = gui.uiProfiler.start("opdocs.portdoc");
