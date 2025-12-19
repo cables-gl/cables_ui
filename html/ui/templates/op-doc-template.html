@@ -1,17 +1,24 @@
 <script id="op-doc-template" type="text/x-handlebars-template">
-    <div class="op-doc">
+    <div id="opselect-layout" class="op-doc {{#if collection}}collection{{/if}}">
         <base target="_blank"/> <!-- open links in new window -->
+        {{#if collection}}
+            <h2><i class="icon icon-book-open"></i>&nbsp;{{collection.title}}</h2>
+            {{#if collection.team}}
+                Maintained by Team <a href="{{cablesUrl}}{{collection.team.link}}">{{collection.team.name}}</a><br/
+            {{/if}}
+        {{/if}}
         {{#if opDoc}}
-            <p class="op-doc__name">{{opDoc.shortNameDisplay}}</p>
-            <p class="">
-                {{opDoc.name}}
-                {{#if opDoc.oldVersion}} OLD {{/if}}
-            </p>
-
+            {{#unless collection}}
+                <p class="op-doc__name">{{opDoc.shortNameDisplay}}</p>
+                <p class="">
+                    {{opDoc.name}}
+                    {{#if opDoc.oldVersion}} OLD {{/if}}
+                </p>
+            {{/unless}}
             {{#if opDoc.summary}}
                 <div class="op-doc__summary">{{md opDoc.summary}}</div>
             {{/if}}
-            {{#if opDoc.hasScreenshot}}
+            {{#if showScreenshot}}
                 <img class="op-doc__screenshot" src="{{cablesUrl}}/op/screenshot/{{ opDoc.name }}.png"/>
             {{/if}}
             {{#if opDoc.content}}
@@ -20,62 +27,18 @@
                 </div>
             {{/if}}
         {{/if}}
+        {{#if collection}}
+            {{#if collection.team}}
+                <a href="{{cablesUrl}}{{collection.team.link}}" class="button-small">View team</a>
+            {{/if}}
+            <a href="{{cablesUrl}}/ops/{{collection.name}}" class="button-small">View ops in this namespace</a>
+            {{#if collection.ops.length}}
+                <br/><br/>
+                {{#each collection.ops}}
+                    <img src="{{../cablesUrl}}/api/op/layout/{{.}}"/>
+                {{/each}}
+            {{/if}}
+        {{/if}}
         <br/><br/>
-    </div>
-</script>
-<script id="op-doc-collection-template-extension" type="text/x-handlebars-template">
-    <div id="opselect-layout" class="collection extension">
-        {{#compare collectionInfo.numOps '==' 0}}
-            <h2><i class="icon icon-book-open"></i>&nbsp;{{collectionInfo.shortName}} Extension</h2>
-        {{else}}
-            <h2><i class="icon icon-book-open"></i>&nbsp;{{collectionInfo.shortName}} Extension - {{collectionInfo.numOps}} ops</h2>
-        {{/compare}}
-        {{#if collectionInfo.teamName}}
-            Maintained by Team <a target="_blank" href="{{cablesUrl}}{{collectionInfo.teamLink}}">{{collectionInfo.teamName}}</a><br/>
-        {{/if}}
-        {{#if opDoc.summary}}
-            <div class="op-doc__summary">{{md opDoc.summary}}</div>
-        {{/if}}
-        {{#if opDoc.description}}
-            <div class="op-doc__description">{{md opDoc.description}}</div>
-        {{/if}}
-        {{#if collectionInfo.teamLink}}
-            <a target=\"_blank\" href="{{cablesUrl}}{{collectionInfo.teamLink}}" class="button-small">View team</a>
-        {{/if}}
-        <a target="_blank" href="{{cablesUrl}}/ops/{{collectionInfo.name}}" class="button-small">View ops in this namespace</a>
-        {{#if collectionInfo.ops.length}}
-            <br/><br/>
-            {{#each collectionInfo.ops}}
-                <img src="{{../cablesUrl}}/api/op/layout/{{.}}"/>
-            {{/each}}
-        {{/if}}
-    </div>
-</script>
-<script id="op-doc-collection-template-teamnamespace" type="text/x-handlebars-template">
-    <div id="opselect-layout" class="collection teamnamespace">
-        {{#compare collectionInfo.numOps '==' 0}}
-            <h2><i class="icon icon-book-open"></i>&nbsp;{{collectionInfo.shortName}}</h2>
-        {{else}}
-            <h2><i class="icon icon-book-open"></i>&nbsp;{{collectionInfo.shortName}} - {{collectionInfo.numOps}} ops</h2>
-        {{/compare}}
-        {{#if collectionInfo.teamName}}
-            Maintained by Team <a target="_blank" href="{{cablesUrl}}{{collectionInfo.teamLink}}">{{collectionInfo.teamName}}</a><br/>
-        {{/if}}
-        {{#if opDoc.summary}}
-            <div class="op-doc__summary">{{md opDoc.summary}}</div>
-        {{/if}}
-        {{#if opDoc.description}}
-            <div class="op-doc__description">{{md opDoc.description}}</div>
-        {{/if}}
-        {{#if collectionInfo.teamLink}}
-            <a target=\"_blank\" href="{{cablesUrl}}{{collectionInfo.teamLink}}" class="button-small">View team</a>
-        {{/if}}
-        <a target="_blank" href="{{cablesUrl}}/ops/{{collectionInfo.name}}" class="button-small">View ops in this namespace</a>
-        {{#if collectionInfo.ops.length}}
-            <br/><br/>
-            {{#each collectionInfo.ops}}
-                <img src="{{../cablesUrl}}/api/op/layout/{{.}}"/>
-            {{/each}}
-        {{/if}}
     </div>
 </script>
