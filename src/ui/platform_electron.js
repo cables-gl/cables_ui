@@ -41,7 +41,6 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
         this.frontendOptions.showFormatCodeButton = false;
-        this.frontendOptions.showOpScreenshots = false;
 
         this.bindHrTimer();
     }

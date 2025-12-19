@@ -31,7 +31,6 @@ export default class PlatformCommunity extends Platform
         this.frontendOptions.sendErrorReports =
         this.frontendOptions.showFormatCodeButton =
         this.frontendOptions.opDependencies =
-        this.frontendOptions.showOpScreenshots =
         this.frontendOptions.showSetProjectTitle = true;
     }
 

@@ -325,7 +325,7 @@ export default class OpDocs
 
         const templateVars = {
             "opDoc": opDoc,
-            "showScreenshot": platform.frontendOptions.showOpScreenshots && !isCollection
+            "showScreenshot": !isCollection
         };
         if (isCollection)
         {
