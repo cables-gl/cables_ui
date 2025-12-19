@@ -240,6 +240,9 @@ export const GuiText =
         "title_quickLinkLongPress": "Long Press Quick Link",
         "subtitle_quickLinkLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
 
+        "title_doubleClickAction": "Double click action",
+        "subtitle_doubleClickAction": "Click two times fast into an empty area of the patch field",
+
         "title_quickLinkMiddleMouse": "Middle Mouse Quick Link",
         "subtitle_quickLinkMiddleMouse": "Middle mouse click an op and drag a line to another",
 
