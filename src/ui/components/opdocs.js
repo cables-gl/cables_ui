@@ -8,6 +8,7 @@ import GlPort from "../glpatch/glport.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /**
  * op documentation loading
@@ -302,28 +303,13 @@ export default class OpDocs
     getHtml(opName, collectionInfo = {})
     {
         let opDoc = this.getOpDocByName(opName);
-
-        let template = "op-doc-template";
-        if (namespace.isExtension(opName)) template = "op-doc-collection-template-extension";
-        if (namespace.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
         if (!opDoc)
         {
-            if (namespace.isCollection(opName))
-            {
-                opDoc = {
-                    "name": "",
-                    "summary": "",
-                    "userOp": false
-                };
-            }
-            else
-            {
-                opDoc = {
-                    "name": opName,
-                    "summary": "No Op Documentation found",
-                    "userOp": namespace.isUserOp(opName)
-                };
-            }
+            opDoc = {
+                "name": opName,
+                "summary": "No Op Documentation found",
+                "userOp": namespace.isUserOp(opName)
+            };
         }
 
         if (!opDoc.isExtended)
@@ -332,12 +318,36 @@ export default class OpDocs
             opDoc.isExtended = true;
         }
 
-        return getHandleBarHtml(template, {
+        const isCollection = namespace.isCollection(opName);
+        let collectionTitle = collectionInfo.shortName;
+        if (namespace.isExtension(opName)) collectionTitle += " Extension";
+        if (collectionInfo.numOps > 0) collectionTitle += " - " + collectionInfo.numOps + " ops";
+
+        const templateVars = {
             "opDoc": opDoc,
-            "collectionInfo": collectionInfo
-        });
+            "showScreenshot": !isCollection
+        };
+        if (isCollection)
+        {
+            opDoc.content = opDoc.description;
+            templateVars.collection = {
+                "name": collectionInfo.name,
+                "shortName": collectionInfo.shortName,
+                "title": collectionTitle,
+                "ops": collectionInfo.ops,
+                "team": {
+                    "name": collectionInfo.teamName,
+                    "link": collectionInfo.teamLink
+                }
+            };
+        }
+        return getHandleBarHtml("op-doc-template", templateVars);
     }
 
+    /**
+     * @param {string} opname
+     * @param {string} portname
+     */
     showPortDoc(opname, portname)
     {
         const perf = gui.uiProfiler.start("opdocs.portdoc");

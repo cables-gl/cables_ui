@@ -151,7 +151,6 @@ export default class OpSelect
 
             let score = 0;
 
-            /** @type {HTMLCollectionOf<Element>} */
             const selected = document.getElementsByClassName("selected");
 
             if (query.length > 0 && selected.length > 0)score = Math.round(100 * parseFloat(selected[0].dataset.score)) / 100;

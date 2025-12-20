@@ -1252,12 +1252,14 @@ CABLES_CMD_PATCH.patchDebugger = () =>
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "Select all ops",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.selectAllOps,
         "hotkey": "CMD + a"
     },
     {
         "cmd": "Delete selected ops",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.deleteSelectedOps,
         "icon": "trash",
@@ -1265,6 +1267,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Save patch",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.save,
         "icon": "save",
@@ -1274,6 +1277,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Save patch as...",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.saveAs,
         "icon": "save",
@@ -1281,6 +1285,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Upload file dialog",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFileDialog,
         "icon": "file",
@@ -1288,6 +1293,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Upload file",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFile,
         "icon": "file",
@@ -1302,6 +1308,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Select child ops",
+        "keybindable": true,
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
     },
@@ -1348,6 +1355,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Add op",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.addOp,
         "icon": "op",
@@ -1367,6 +1375,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Toggle op resizable",
+        "keybindable": true,
         "category": "op",
         "func": CABLES_CMD_PATCH.toggleResizable,
         "icon": "op"
@@ -1385,11 +1394,13 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Pause patch execution",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.pause
     },
     {
         "cmd": "Resume patch execution",
+        "keybindable": true,
         "category": "patch",
         "func": CABLES_CMD_PATCH.resume
     },
@@ -1435,6 +1446,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Align ops left",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.alignOpsLeft,
         "category": "patch",
         "icon": "align-left"
@@ -1447,12 +1459,14 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Add space x",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.addSpaceX,
         "category": "patch",
         "icon": "list"
     },
     {
         "cmd": "Add space y",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.addSpaceY,
         "category": "patch",
         "icon": "list"
@@ -1471,6 +1485,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Link two selected ops",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "category": "patch",
         "icon": "op"
@@ -1478,6 +1493,7 @@ CMD_PATCH_COMMANDS.push(
 
     {
         "cmd": "Go to parent subpatch",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
         "category": "patch",
     },
@@ -1506,6 +1522,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Create subpatch op",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.createSubPatchOp,
         "category": "patch",
         "icon": "op"
@@ -1518,6 +1535,7 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Center ops in subpatch",
+        "keybindable": true,
         "func": CABLES_CMD_PATCH.centerOpsInSubpatch,
         "category": "patch",
         "icon": "op"
@@ -1541,12 +1559,14 @@ CMD_PATCH_COMMANDS.push(
     },
     {
         "cmd": "Patch Profiler",
+        "keybindable": true,
         "category": "patch",
         "icon": "pie-chart",
         "func": CABLES_CMD_PATCH.patchProfiler
     },
     {
         "cmd": "Patch Debugger",
+        "keybindable": true,
         "category": "patch",
         "icon": "list",
         "func": CABLES_CMD_PATCH.patchDebugger

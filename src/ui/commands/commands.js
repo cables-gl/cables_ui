@@ -14,6 +14,7 @@ import fileCommands from "./cmd_files.js";
  * @property {string} [icon]
  * @property {string} [infotext]
  * @property {string} [hotkey]
+ * @property {boolean} [keybindable]
  * @property {("hasCommunity"|"showRemoteViewer")} [frontendOption]
  */
 
@@ -44,6 +45,22 @@ for (let i = 0; i < cblCommands.length; i++)
 }
 
 export default CMD;
+
+/**
+ * @returns {commandObject[]}
+ */
+CMD.getKeyBindableCommands = function ()
+{
+    const arr = [];
+    for (let i = 0; i < cblCommands.length; i++)
+    {
+        if (cblCommands[i].keybindable)
+            arr.push(cblCommands[i]);
+
+    }
+    console.log("arr", arr);
+    return arr;
+};
 
 CMD.exec = function (cmd)
 {

@@ -33,6 +33,7 @@ export function getHandleBarHtml(name, obj)
     let perf = gui.uiProfiler.start("getHandleBarHtml");
 
     const template = handleBarPrecompiled(name);
+    if (!template) return "error: missing handlebars template: " + name;
 
     obj = obj || {};
     obj.frontendOptions = platform.frontendOptions;

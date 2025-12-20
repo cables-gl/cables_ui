@@ -13,6 +13,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
+import TabKeybindings from "../components/tabs/tab_keybinds.js";
 
 const CABLES_CMD_UI = {};
 
@@ -38,6 +39,12 @@ CABLES_CMD_UI.showTips = function ()
 {
     this.tips = new Tips();
     this.tips.show();
+};
+
+CABLES_CMD_UI.keyBindings = function ()
+{
+    const t = new TabKeybindings(gui.mainTabs);
+    gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_UI.canvasLens = function ()
@@ -497,6 +504,11 @@ CMD_UI_COMMANDS.push(
         "cmd": "Show Tips",
         "category": "ui",
         "func": CABLES_CMD_UI.showTips
+    },
+    {
+        "cmd": "Keybindings",
+        "category": "ui",
+        "func": CABLES_CMD_UI.keyBindings
     }
 
 );
