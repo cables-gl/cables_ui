@@ -61,6 +61,7 @@ import defaultOps from "./defaultops.js";
 import IconBar from "./elements/iconbar.js";
 import { Commands } from "./commands/commands.js";
 import { InputBindings } from "./inputbindings.js";
+import TabInputBindings from "./components/tabs/tab_keybinds.js";
 
 /**
  * @type {Gui}
@@ -1403,6 +1404,7 @@ export default class Gui extends Events
         ele.byId("nav_createBackup").addEventListener("click", () => { CmdPatch.createBackup(); });
         ele.byId("nav_viewBackups").addEventListener("click", () => { CmdPatch.showBackups(); });
 
+        ele.byId("nav_userbindings").addEventListener("click", () => { new TabInputBindings(); });
         ele.byId("nav_preferences").addEventListener("click", () => { CmdUi.showPreferences(); });
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {

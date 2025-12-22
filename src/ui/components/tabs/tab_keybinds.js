@@ -11,26 +11,28 @@ import ModalDialog from "../../dialogs/modaldialog.js";
 import { Commands } from "../../commands/commands.js";
 import { InputBindings } from "../../inputbindings.js";
 
-export default class TabKeybindings
+export default class TabInputBindings
 {
-    static TABSESSION_NAME = "Keybindings";
+    static TABSESSION_NAME = "InputBindings";
     lastCount = 0;
     #timeOut = null;
     #tab;
 
     /**
-     * @param {TabPanel} tabs
+     * @param {TabPanel} [tabs]
      */
     constructor(tabs)
     {
-        this.#tab = new Tab(TabKeybindings.TABSESSION_NAME, { "icon": "list", "singleton": true, "infotext": "tab_keybindings", "padding": true });
+        tabs ||= gui.mainTabs;
+        this.#tab = new Tab(TabInputBindings.TABSESSION_NAME, { "icon": "list", "singleton": true, "infotext": "tab_keybindings", "padding": true });
         tabs.addTab(this.#tab, true);
 
-        editorSession.rememberOpenEditor(TabKeybindings.TABSESSION_NAME, TabKeybindings.TABSESSION_NAME, { }, true);
+        editorSession.rememberOpenEditor(TabInputBindings.TABSESSION_NAME, TabInputBindings.TABSESSION_NAME, { }, true);
         let html = getHandleBarHtml("tab_keybindings");
 
         this.#tab.html(html);
         this.update();
+        gui.maintabPanel.show(true);
 
         ele.clickable(ele.byId("keybind_add"), (o) =>
         {
@@ -40,7 +42,7 @@ export default class TabKeybindings
         this.#tab.on("close", () =>
         {
             clearInterval(this.#timeOut);
-            editorSession.remove(TabKeybindings.TABSESSION_NAME, TabKeybindings.TABSESSION_NAME);
+            editorSession.remove(TabInputBindings.TABSESSION_NAME, TabInputBindings.TABSESSION_NAME);
         });
     }
 
@@ -56,6 +58,7 @@ export default class TabKeybindings
         html += "<table class=\"editor_spreadsheet\" style=\"width:100%\">";
 
         html += "<tr>";
+        html += "<td class=\"colname\">Category</td>";
         html += "<td class=\"colname\">Action</td>";
         html += "<td class=\"colname\">Command</td>";
         html += "<td class=\"colname\"> </td>";
@@ -68,6 +71,9 @@ export default class TabKeybindings
             const cmdTitle = cmd?.cmd || "none";
 
             html += "<tr>";
+            html += "<td>";
+            html += InputBindings.ACTIONS[i].category;
+            html += "</td>";
             html += "<td>";
             html += InputBindings.ACTIONS[i].title;
             html += "</td>";
@@ -99,14 +105,8 @@ export default class TabKeybindings
     {
         let html = "";
 
-        // html += "Action:";
-        // html += "<br/>";
-        // html += "<a id=\"cmdclear\" class=\"button\">clear</a>";
-        // html += "<br/>";
-
         html += "Command:";
         html += "<select id=\"cmdselect\">";
-        // html += "<option value=\"none\">none</option>";
         html += "<option value=\"default\">default</option>";
 
         const cmds = Commands.getKeyBindableCommands();
@@ -151,7 +151,7 @@ export default class TabKeybindings
     }
 }
 
-editorSession.addListener(TabKeybindings.TABSESSION_NAME, (id, data) =>
+editorSession.addListener(TabInputBindings.TABSESSION_NAME, (id, data) =>
 {
-    new TabKeybindings(gui.mainTabs);
+    new TabInputBindings(gui.mainTabs);
 });
