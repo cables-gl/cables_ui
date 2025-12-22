@@ -13,67 +13,77 @@ class CmdTimeline
     static get commands()
     {
         return [
-
             {
                 "cmd": "toggle timeline",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.toggleTimeline,
+                "keybindable": true,
                 "icon": "timeline"
             },
             {
                 "cmd": "show timeline",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.openGlTimeline,
+                "keybindable": true,
                 "icon": "timeline"
             },
             {
                 "cmd": "hide timeline",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.hideTimeline,
+                "keybindable": true,
                 "icon": "timeline"
             },
             {
                 "cmd": "timeline play",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.TimelinePlay,
+                "keybindable": true,
                 "icon": "play"
             },
             {
                 "cmd": "timeline pause",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.TimelinePause,
+                "keybindable": true,
                 "icon": "pause"
             },
             {
                 "cmd": "timeline rewind",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.TimelineRewind,
+                "keybindable": true,
                 "icon": "rewind"
             },
             {
                 "cmd": "timeline forward",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.TimelineForward,
+                "keybindable": true,
                 "icon": "fast-forward"
             },
             {
                 "cmd": "timeline rewind to 0",
-                "category": "ui",
+                "category": "timeline",
                 "func": CmdTimeline.TimelineRewindStart,
+                "keybindable": true,
                 "icon": "skip-back"
             },
             {
                 "cmd": "add new keyframe at cursor",
+                "keybindable": true,
                 "category": "timeline",
                 "func": CmdTimeline.TimelineCreateKeyAtCursor
             },
             {
                 "cmd": "snap selected keys times to fps",
+                "keybindable": true,
                 "category": "timeline",
                 "func": CmdTimeline.TimelineSnapTimes
             },
             {
                 "cmd": "timeline toggle line/graph layout",
+                "keybindable": true,
                 "category": "timeline",
                 "icon": "chart-spline",
                 "func": CmdTimeline.toggleGraph

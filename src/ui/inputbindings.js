@@ -1,47 +1,68 @@
 import { CmdPatch } from "./commands/cmd_patch.js";
 import { Commands } from "./commands/commands.js";
+import { userSettings } from "./components/usersettings.js";
 
 /**
  * @typedef BindingObject
  * @property {String} title
+ * @property {String} category
  * @property {String} id
- * @property {function} [default]
- * @property {function} [func]
+ * @property {function} default
+ * @property {function} func
  */
 
 export class InputBindings
 {
+    static USERSETTINGNAME = "inputbinds";
     static MOUSE_PATCH_DBL_CLICK = "patch_dbl_cl";
     static MOUSE_PATCH_RIGHT_CLICK = "patch_right_cl";
     static MOUSE_PATCH_MIDDLE_CLICK = "patch_middle_cl";
 
-    /** @type {BindingObject[]}} */
-    static MOUSE_ACTIONS = [
+    /** @type {BindingObject[]} */
+    static ACTIONS = [
         {
             "id": InputBindings.MOUSE_PATCH_DBL_CLICK,
             "default": CmdPatch.gotoParentSubpatch,
             "func": CmdPatch.gotoParentSubpatch,
-            "title": "Patchfield Double Click"
+            "title": "Double Click",
+            "category": "Patchfield Mouse"
         },
         {
             "id": InputBindings.MOUSE_PATCH_RIGHT_CLICK,
             "default": null,
             "func": null,
-            "title": "Patchfield Background Right Click"
-        },
-        {
-            "id": InputBindings.MOUSE_PATCH_MIDDLE_CLICK,
-            "default": null,
-            "func": null,
-            "title": "Patchfield Background Middle Click"
+            "title": " Background Right Click",
+            "category": "Patchfield Mouse"
         }
     ];
 
-    // bindings = { };
-
     constructor()
     {
-        // this.bindings[InputBindings.MOUSE_PATCH_DBL_CLICK] = { "func": CmdPatch.gotoParentSubpatch };
+        const userBinds = userSettings.get(InputBindings.USERSETTINGNAME);
+        for (let i = 0; i < userBinds.length; i++)
+        {
+            const cmd = Commands.getCommandByName(userBinds[i].cmd);
+            this.setBindingFunc(userBinds[i].id, cmd.func, false);
+        }
+
+    }
+
+    save()
+    {
+        console.log("saved userbinds");
+        const addbinds = [];
+        for (let i = 0; i < InputBindings.ACTIONS.length; i++)
+        {
+            if (InputBindings.ACTIONS[i].default != InputBindings.ACTIONS[i].func)
+            {
+                const cmd = Commands.getCommandByFunction(InputBindings.ACTIONS[i].func);
+                addbinds.push({ "id": InputBindings.ACTIONS[i].id, "cmd": cmd.cmd });
+
+            }
+
+        }
+        console.log("addbinds", addbinds);
+        userSettings.set(InputBindings.USERSETTINGNAME, addbinds);
 
     }
 
@@ -50,18 +71,19 @@ export class InputBindings
      */
     getBind(actionid)
     {
-        for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
+        for (let i = 0; i < InputBindings.ACTIONS.length; i++)
         {
-            if (InputBindings.MOUSE_ACTIONS[i].id == actionid)
-                return InputBindings.MOUSE_ACTIONS[i];
+            if (InputBindings.ACTIONS[i].id == actionid)
+                return InputBindings.ACTIONS[i];
         }
     }
 
     /**
      * @param {string} actionId
      * @param {Function} f
+     * @param {boolean} userInteraction
      */
-    setBindingFunc(actionId, f)
+    setBindingFunc(actionId, f, userInteraction)
     {
         const b = this.getBind(actionId);
 
@@ -71,8 +93,10 @@ export class InputBindings
         }
         else
         {
-            b.func = f;
+            b.func = f || b.default;
         }
+        console.log("userint", userInteraction);
+        if (userInteraction) this.save();
     }
 
     /**
@@ -80,14 +104,14 @@ export class InputBindings
      */
     exec(which)
     {
-        console.log("whichhnhh", which);
         const b = this.getBind(which);
 
         let cmd = {};
-        console.log("bbbbb", b);
 
         cmd = Commands.getCommandByFunction(b.func);
-        console.log(cmd);
-        Commands.exec(cmd.cmd);
+        if (cmd)
+            Commands.exec(cmd.cmd);
+        else
+            console.log("command not found", cmd);
     }
 }

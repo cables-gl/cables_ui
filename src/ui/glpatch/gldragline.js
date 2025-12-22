@@ -49,7 +49,7 @@ export default class GlDragLine
 
         this.#glPatch = glpatch;
 
-        this._clearSpline();
+        this.#clearSpline();
 
         glpatch.on("mouseup", (e) =>
         {
@@ -238,7 +238,7 @@ export default class GlDragLine
         this._update();
     }
 
-    _clearSpline()
+    #clearSpline()
     {
         for (let i = 0; i < this._lineIndices.length; i++)
         {
@@ -257,7 +257,7 @@ export default class GlDragLine
         if (!this.#glPatch.isMouseOverOp() && (!this.#glPatch._cablesHoverButtonRect || !this.#glPatch._cablesHoverButtonRect.isHovering)) this.#glPatch.showOpCursor(true);
         else this.#glPatch.showOpCursor(false);
 
-        this._clearSpline();
+        this.#clearSpline();
 
         if (this.#glPort)
         {
@@ -323,7 +323,8 @@ export default class GlDragLine
         this.setPort(null);
 
         this.#glPatch.allowDragging = true;// this._patchDragWasAllowed;
-        this._clearSpline();
+        this.#glPatch.setHoverLink(null, null);
+        this.#clearSpline();
     }
 
     /**

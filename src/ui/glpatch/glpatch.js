@@ -100,6 +100,8 @@ export default class GlPatch extends Events
 
     #lastMouseX = -1;
     #lastMouseY = -1;
+    #hoverLink;
+    #lines;
 
     /**
      * @param {CglContext} cgl
@@ -126,7 +128,7 @@ export default class GlPatch extends Events
         this.viewBox = new GlViewBox(cgl, this);
 
         this.#rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
-        this._lines = new GlSplineDrawer(cgl, { "name": "links", "initNum": 100 });
+        this.#lines = new GlSplineDrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
         this.#rectInstancer.hoverWhenButton;
         this._overLayRects.hoverWhenButton = false;
@@ -199,7 +201,7 @@ export default class GlPatch extends Events
         this.#dropInOpBorder.visible = false;
 
         cgl.canvas.addEventListener(DomEvents.POINTER_MOVE, this._onCanvasMouseMove.bind(this), { "passive": false });
-        cgl.canvas.addEventListener(DomEvents.POINTER_UP, this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_UP, this.#onCanvasMouseUp.bind(this), { "passive": false });
         cgl.canvas.addEventListener(DomEvents.POINTER_DOWN, this._onCanvasMouseDown.bind(this), { "passive": false });
 
         cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, this._onCanvasMouseLeave.bind(this), { "passive": false });
@@ -693,7 +695,7 @@ export default class GlPatch extends Events
         {
             // when left while button down but re-entering button up...
             this._lastButton = 0;
-            this._onCanvasMouseUp(e);
+            this.#onCanvasMouseUp(e);
         }
     }
 
@@ -753,10 +755,13 @@ export default class GlPatch extends Events
     /**
      * @param {MouseEvent} e
      */
-    _onCanvasMouseUp(e)
+    #onCanvasMouseUp(e)
     {
         this.linkStartedDragging = false;
         this.startLinkButtonDrag = null;
+
+        if (e.button == MouseState.BUTTON_RIGHT && !this.isMouseOverOp() && !this.#hoverLink)
+            gui.inputBindings.exec(InputBindings.MOUSE_PATCH_RIGHT_CLICK);
 
         if (!this.portDragLine.isActive)
         {
@@ -778,7 +783,6 @@ export default class GlPatch extends Events
         try { this.#cgl.canvas.releasePointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        // gui.longPressConnector.longPressCancel();
         this.#rectInstancer.interactive = true;
 
         if (!this.#selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
@@ -791,10 +795,8 @@ export default class GlPatch extends Events
             }
         }
 
-        if (this.#selectionArea.active)
-        {
-            this.#selectionArea.hideArea();
-        }
+        if (this.#selectionArea.active) this.#selectionArea.hideArea();
+
         this.emitEvent("mouseup", e);
 
         if (this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting) this._canvasMouseDownSelecting = false;
@@ -863,7 +865,7 @@ export default class GlPatch extends Events
 
     get lineDrawer()
     {
-        return this._lines;
+        return this.#lines;
     }
 
     deleteLink(linkId)
@@ -1687,7 +1689,7 @@ export default class GlPatch extends Events
         this._glOpz = {};
 
         if (this.#rectInstancer) this.#rectInstancer.dispose();
-        if (this._lines) this._lines.dispose();
+        if (this.#lines) this.#lines.dispose();
     }
 
     reset()
@@ -1974,7 +1976,8 @@ export default class GlPatch extends Events
      */
     setHoverLink(e, link)
     {
-        this._hoverLink = link;
+        this.#hoverLink = link;
+
         if (link && e)
         {
             clearTimeout(this._ttTImeout);
