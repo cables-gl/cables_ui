@@ -13,7 +13,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
-import TabKeybindings from "../components/tabs/tab_keybinds.js";
+import TabInputBindings from "../components/tabs/tab_keybinds.js";
 
 export { CmdUi };
 
@@ -38,6 +38,13 @@ class CmdUi
             "icon": "file"
         },
         {
+            "cmd": "None",
+            "keybindable": true,
+            "category": "ui",
+            "func": CmdUi.none,
+            "icon": "cables"
+        },
+        {
             "cmd": "Toggle files",
             "category": "ui",
             "func": CmdUi.toggleFiles,
@@ -45,11 +52,13 @@ class CmdUi
         },
         {
             "cmd": "Toggle mute",
+            "keybindable": true,
             "category": "ui",
             "func": CmdUi.toggleMute
         },
         {
             "cmd": "Search",
+            "keybindable": true,
             "category": "ui",
             "func": CmdUi.showSearch,
             "icon": "search",
@@ -90,6 +99,7 @@ class CmdUi
         },
         {
             "cmd": "Center patch",
+            "keybindable": true,
             "category": "patch",
             "func": CmdUi.centerPatchOps,
             "hotkey": "c",
@@ -252,7 +262,7 @@ class CmdUi
 
     static keyBindings()
     {
-        const t = new TabKeybindings(gui.mainTabs);
+        const t = new TabInputBindings(gui.mainTabs);
         gui.maintabPanel.show(true);
     }
 
@@ -509,6 +519,10 @@ class CmdUi
     static togglePauseVizLayer()
     {
         userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
+    }
+
+    static none()
+    {
     }
 
 }

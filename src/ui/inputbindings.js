@@ -21,17 +21,17 @@ export class InputBindings
     /** @type {BindingObject[]} */
     static ACTIONS = [
         {
+            "title": "Background Double Click",
             "id": InputBindings.MOUSE_PATCH_DBL_CLICK,
             "default": CmdPatch.gotoParentSubpatch,
             "func": CmdPatch.gotoParentSubpatch,
-            "title": "Double Click",
             "category": "Patchfield Mouse"
         },
         {
+            "title": "Background Right Click",
             "id": InputBindings.MOUSE_PATCH_RIGHT_CLICK,
             "default": null,
             "func": null,
-            "title": " Background Right Click",
             "category": "Patchfield Mouse"
         }
     ];
