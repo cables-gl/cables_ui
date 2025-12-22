@@ -281,7 +281,8 @@ class CmdDebug
 
     static logConsole()
     {
-        gui.showBottomTabs();
+        if (!gui) gui.showBottomTabs();
+        else console.log("couldnot open bottomtabs");
     }
 
     static logging()
