@@ -10,10 +10,10 @@ export { CmdRenderer };
 class CmdRenderer
 {
 
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
 
-        /** @type {import("./commands.js").commandObject[]} */
         return [
             {
                 "cmd": "save screenshot",
@@ -36,6 +36,7 @@ class CmdRenderer
             },
             {
                 "cmd": "reset canvas size",
+                "keybindable": true,
                 "category": "canvas",
                 "func": CmdRenderer.resetSize,
                 "icon": "reset_render_size"

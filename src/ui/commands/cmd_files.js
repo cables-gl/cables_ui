@@ -9,10 +9,9 @@ export { CmdFiles };
 class CmdFiles
 {
 
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
-
-        /** @type {import("./commands.js").commandObject[]} */
         return [
             {
                 "cmd": "Replace file path",

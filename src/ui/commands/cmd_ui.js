@@ -20,217 +20,215 @@ export { CmdUi };
 class CmdUi
 {
 
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
 
-        /** @type {import("./commands.js").commandObject[]} */
-        const l =
-            [{
-                "cmd": "Show settings",
-                "category": "ui",
-                "func": CmdUi.settings,
-                "icon": "settings",
-                "infotext": "cmd_patchsettings"
-            },
-            {
-                "cmd": "Show files",
-                "category": "ui",
-                "func": CmdUi.files,
-                "icon": "file"
-            },
-            {
-                "cmd": "Toggle files",
-                "category": "ui",
-                "func": CmdUi.toggleFiles,
-                "icon": "file"
-            },
-            {
-                "cmd": "Toggle mute",
-                "category": "ui",
-                "func": CmdUi.toggleMute
-            },
-            {
-                "cmd": "Search",
-                "category": "ui",
-                "func": CmdUi.showSearch,
-                "icon": "search",
-                "hotkey": "CMD + f"
-            },
-            {
-                "cmd": "Patch background renderer",
-                "category": "ui",
-                "func": CmdUi.togglePatchBgRenderer,
-                "icon": "canvas_patchbg",
-                "hotkey": "CMD + SHIFT + ENTER"
-            },
-            {
-                "cmd": "Patch background renderer",
-                "category": "ui",
-                "func": CmdUi.togglePatchBgPatchField,
-                "icon": "canvas_op",
-                "hotkey": "SHIFT + ENTER"
-            },
-            {
-                "cmd": "Show command pallet",
-                "category": "ui",
-                "func": CmdUi.showCommandPallet,
-                "icon": "search",
-                "hotkey": "CMD + P"
-            },
-            {
-                "cmd": "Show changelog",
-                "category": "cables",
-                "func": CmdUi.showChangelog,
-                "icon": "info"
-            },
-            {
-                "cmd": "Show buildinfo",
-                "category": "cables",
-                "func": CmdUi.showBuildInfo,
-                "icon": "info"
-            },
-            {
-                "cmd": "Center patch",
-                "category": "patch",
-                "func": CmdUi.centerPatchOps,
-                "hotkey": "c",
-                "icon": "patch_center",
-                "infotext": "cmd_centerpatch"
-            },
-            {
-                "cmd": "Start presentation mode",
-                "category": "ui",
-                "func": CmdUi.startPresentationMode
-            },
-            {
-                "cmd": "Toggle flow visualization",
-                "category": "ui",
-                "func": CmdUi.flowVis,
-                "icon": "cables",
-                "hotkey": "f"
-            },
-            {
-                "cmd": "Jobs",
-                "category": "ui",
-                "func": CmdUi.jobs,
-                "icon": "cables"
-            },
-            {
-                "cmd": "Toggle window fullscreen",
-                "category": "ui",
-                "func": CmdUi.windowFullscreen,
-                "icon": "cables"
-            },
+        return [{
+            "cmd": "Show settings",
+            "category": "ui",
+            "func": CmdUi.settings,
+            "icon": "settings",
+            "infotext": "cmd_patchsettings"
+        },
+        {
+            "cmd": "Show files",
+            "category": "ui",
+            "func": CmdUi.files,
+            "icon": "file"
+        },
+        {
+            "cmd": "Toggle files",
+            "category": "ui",
+            "func": CmdUi.toggleFiles,
+            "icon": "file"
+        },
+        {
+            "cmd": "Toggle mute",
+            "category": "ui",
+            "func": CmdUi.toggleMute
+        },
+        {
+            "cmd": "Search",
+            "category": "ui",
+            "func": CmdUi.showSearch,
+            "icon": "search",
+            "hotkey": "CMD + f"
+        },
+        {
+            "cmd": "Patch background renderer",
+            "category": "ui",
+            "func": CmdUi.togglePatchBgRenderer,
+            "icon": "canvas_patchbg",
+            "hotkey": "CMD + SHIFT + ENTER"
+        },
+        {
+            "cmd": "Patch background renderer",
+            "category": "ui",
+            "func": CmdUi.togglePatchBgPatchField,
+            "icon": "canvas_op",
+            "hotkey": "SHIFT + ENTER"
+        },
+        {
+            "cmd": "Show command pallet",
+            "category": "ui",
+            "func": CmdUi.showCommandPallet,
+            "icon": "search",
+            "hotkey": "CMD + P"
+        },
+        {
+            "cmd": "Show changelog",
+            "category": "cables",
+            "func": CmdUi.showChangelog,
+            "icon": "info"
+        },
+        {
+            "cmd": "Show buildinfo",
+            "category": "cables",
+            "func": CmdUi.showBuildInfo,
+            "icon": "info"
+        },
+        {
+            "cmd": "Center patch",
+            "category": "patch",
+            "func": CmdUi.centerPatchOps,
+            "hotkey": "c",
+            "icon": "patch_center",
+            "infotext": "cmd_centerpatch"
+        },
+        {
+            "cmd": "Start presentation mode",
+            "category": "ui",
+            "func": CmdUi.startPresentationMode
+        },
+        {
+            "cmd": "Toggle flow visualization",
+            "category": "ui",
+            "func": CmdUi.flowVis,
+            "icon": "cables",
+            "hotkey": "f"
+        },
+        {
+            "cmd": "Jobs",
+            "category": "ui",
+            "func": CmdUi.jobs,
+            "icon": "cables"
+        },
+        {
+            "cmd": "Toggle window fullscreen",
+            "category": "ui",
+            "func": CmdUi.windowFullscreen,
+            "icon": "cables"
+        },
 
-            {
-                "cmd": "Toggle snap to grid",
-                "category": "ui",
-                "func": CmdUi.toggleSnapToGrid,
-                "icon": "command"
-            },
-            {
-                "cmd": "Toggle texture preview",
-                "category": "ui",
-                "func": CmdUi.toggleBgTexturePreview,
-                "icon": "monitor"
-            },
-            {
-                "cmd": "Ui profiler",
-                "category": "ui",
-                "func": CmdUi.profileUI,
-                "icon": "command"
-            },
-            {
-                "cmd": "Preferences",
-                "category": "ui",
-                "func": CmdUi.showPreferences,
-                "icon": "cables_editor"
-            },
-            {
-                "cmd": "Chat",
-                "category": "ui",
-                "func": CmdUi.showChat,
-                "icon": "command",
-                "frontendOption": "hasCommunity"
-            },
-            {
-                "cmd": "Open remote viewer",
-                "category": "ui",
-                "func": CmdUi.openRemoteViewer,
-                "icon": "command",
-                "frontendOption": "showRemoteViewer"
-            },
-            {
-                "cmd": "Zoom in",
-                "category": "ui",
-                "func": CmdUi.zoomIn,
-                "icon": "plus",
-                "hotkey": "+",
-                "infotext": "cmd_zoomin"
-            },
-            {
-                "cmd": "Zoom out",
-                "category": "ui",
-                "func": CmdUi.zoomOut,
-                "icon": "minus",
-                "hotkey": "-",
-                "infotext": "cmd_zoomout"
-            },
-            {
-                "cmd": "Watch variables",
-                "category": "ui",
-                "func": CmdUi.watchVars,
-                "icon": "align-justify",
-                "infotext": "cmd_watchvars"
-            },
-            {
-                "cmd": "GPU Profiler",
-                "category": "ui",
-                "func": CmdUi.profileGPU,
-                "icon": "align-justify",
-                "infotext": ""
-            },
-            {
-                "cmd": "Toggle Vizlayer Pause",
-                "category": "ui",
-                "func": CmdUi.togglePauseVizLayer,
-                "infotext": ""
-            },
-            {
-                "cmd": "Show Activity Feed",
-                "category": "ui",
-                "func": CmdUi.activityFeed,
-                "icon": "activity",
-                "frontendOption": "hasCommunity"
-            },
-            {
-                "cmd": "Show Welcome",
-                "category": "ui",
-                "func": CmdUi.welcomeTab,
-                "icon": "cables"
-            },
-            {
-                "cmd": "Close all tabs",
-                "category": "ui",
-                "func": CmdUi.closeAllTabs
-            },
-            {
-                "cmd": "Show Canvas Lens",
-                "category": "ui",
-                "func": CmdUi.canvasLens
-            },
-            {
-                "cmd": "Show Tips",
-                "category": "ui",
-                "func": CmdUi.showTips
-            },
-            {
-                "cmd": "Keybindings",
-                "category": "ui",
-                "func": CmdUi.keyBindings
-            }];
+        {
+            "cmd": "Toggle snap to grid",
+            "category": "ui",
+            "func": CmdUi.toggleSnapToGrid,
+            "icon": "command"
+        },
+        {
+            "cmd": "Toggle texture preview",
+            "category": "ui",
+            "func": CmdUi.toggleBgTexturePreview,
+            "icon": "monitor"
+        },
+        {
+            "cmd": "Ui profiler",
+            "category": "ui",
+            "func": CmdUi.profileUI,
+            "icon": "command"
+        },
+        {
+            "cmd": "Preferences",
+            "category": "ui",
+            "func": CmdUi.showPreferences,
+            "icon": "cables_editor"
+        },
+        {
+            "cmd": "Chat",
+            "category": "ui",
+            "func": CmdUi.showChat,
+            "icon": "command",
+            "frontendOption": "hasCommunity"
+        },
+        {
+            "cmd": "Open remote viewer",
+            "category": "ui",
+            "func": CmdUi.openRemoteViewer,
+            "icon": "command",
+            "frontendOption": "showRemoteViewer"
+        },
+        {
+            "cmd": "Zoom in",
+            "category": "ui",
+            "func": CmdUi.zoomIn,
+            "icon": "plus",
+            "hotkey": "+",
+            "infotext": "cmd_zoomin"
+        },
+        {
+            "cmd": "Zoom out",
+            "category": "ui",
+            "func": CmdUi.zoomOut,
+            "icon": "minus",
+            "hotkey": "-",
+            "infotext": "cmd_zoomout"
+        },
+        {
+            "cmd": "Watch variables",
+            "category": "ui",
+            "func": CmdUi.watchVars,
+            "icon": "align-justify",
+            "infotext": "cmd_watchvars"
+        },
+        {
+            "cmd": "GPU Profiler",
+            "category": "ui",
+            "func": CmdUi.profileGPU,
+            "icon": "align-justify",
+            "infotext": ""
+        },
+        {
+            "cmd": "Toggle Vizlayer Pause",
+            "category": "ui",
+            "func": CmdUi.togglePauseVizLayer,
+            "infotext": ""
+        },
+        {
+            "cmd": "Show Activity Feed",
+            "category": "ui",
+            "func": CmdUi.activityFeed,
+            "icon": "activity",
+            "frontendOption": "hasCommunity"
+        },
+        {
+            "cmd": "Show Welcome",
+            "category": "ui",
+            "func": CmdUi.welcomeTab,
+            "icon": "cables"
+        },
+        {
+            "cmd": "Close all tabs",
+            "category": "ui",
+            "func": CmdUi.closeAllTabs
+        },
+        {
+            "cmd": "Show Canvas Lens",
+            "category": "ui",
+            "func": CmdUi.canvasLens
+        },
+        {
+            "cmd": "Show Tips",
+            "category": "ui",
+            "func": CmdUi.showTips
+        },
+        {
+            "cmd": "Keybindings",
+            "category": "ui",
+            "func": CmdUi.keyBindings
+        }];
 
-        return l;
     }
 
     static settings()

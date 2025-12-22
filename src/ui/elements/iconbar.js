@@ -1,21 +1,28 @@
 import { ele } from "cables-shared-client";
+import { uuid } from "cables/src/core/utils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 import { userSettings } from "../components/usersettings.js";
-import { cblCommands } from "../commands/commands.js";
+import { Commands } from "../commands/commands.js";
 
 export default class IconBar
 {
+
+    /** @type {import("../commands/commands.js").CommandObject[]} */
+    #items = [];
+    #eleContainer = null;
+    #id = uuid();
+
+    /**
+     * @param {string} which
+     */
     constructor(which)
     {
-        this._items = [];
-        this._id = which;
-        this._eleContainer = null;
+        this.#id = which;
         this.vertical = true;
+        this.#updateItems();
 
-        this._updateItems();
-
-        if (this._id === "sidebar_bottom" && gui)
+        if (this.#id === "sidebar_bottom" && gui)
         {
             gui.on("canvasModeChange", (_mode) =>
             {
@@ -26,15 +33,15 @@ export default class IconBar
 
     refresh()
     {
-        this._updateItems();
+        this.#updateItems();
     }
 
-    _updateItems()
+    #updateItems()
     {
-        this._items = [];
+        this.#items = [];
         const items = [];
 
-        if (this._id == "sidebar_bottom")
+        if (this.#id == "sidebar_bottom")
         {
             this.vertical = false;
             items.push("Center patch", "Zoom out", "Zoom in");
@@ -45,22 +52,22 @@ export default class IconBar
             }
         }
 
-        if (this._id == "sidebar_left")
+        if (this.#id == "sidebar_left")
         {
             const defaultItems = ["Save patch", "Add op", "Show settings", "Maximize canvas"];
-            const itemObj = userSettings.get(this._id) || {};
+            const itemObj = userSettings.get(this.#id) || {};
 
             for (let i = 0; i < defaultItems.length; i++)
                 if (!itemObj.hasOwnProperty(defaultItems[i]))
                     itemObj[defaultItems[i]] = true;
 
-            userSettings.set(this._id, itemObj);
+            userSettings.set(this.#id, itemObj);
 
             for (const i in itemObj)
                 if (itemObj[i]) items.push(i);
         }
 
-        if (this._id == "sidebar_timeline")
+        if (this.#id == "sidebar_timeline")
         {
             this.vertical = false;
 
@@ -68,51 +75,48 @@ export default class IconBar
         }
 
         for (let i = 0; i < items.length; i++)
-            for (let j = 0; j < cblCommands.length; j++)
-                if (cblCommands[j].cmd == items[i])
-                    this.addItem(cblCommands[j]);
+            for (let j = 0; j < Commands.commands.length; j++)
+                if (Commands.commands[j].cmd == items[i])
+                    this.addItem(Commands.commands[j]);
 
         this._buildHtml();
     }
 
     _buildHtml()
     {
-        if (this._eleContainer) this._eleContainer.innerHTML = "";
-        else this._eleContainer = document.createElement("div");
+        if (this.#eleContainer) this.#eleContainer.innerHTML = "";
+        else this.#eleContainer = document.createElement("div");
 
-        this._eleContainer.id = "iconbar_" + this._id;
-        this._eleContainer.classList.add("cbl_iconbarContainer");
-        if (!this.vertical) this._eleContainer.classList.add("cbl_iconbar_hor");
+        this.#eleContainer.id = "iconbar_" + this.#id;
+        this.#eleContainer.classList.add("cbl_iconbarContainer");
+        if (!this.vertical) this.#eleContainer.classList.add("cbl_iconbar_hor");
 
         const html = getHandleBarHtml("iconbar", {
-            "items": this._items,
-            "id": this._id,
+            "items": this.#items,
+            "id": this.#id,
             "vertical": this.vertical
         });
 
-        this._eleContainer.innerHTML = html;
+        this.#eleContainer.innerHTML = html;
 
-        ele.byId("mainContainer").appendChild(this._eleContainer);
+        ele.byId("mainContainer").appendChild(this.#eleContainer);
     }
 
     /**
-     * @param {commandObject} item
+     * @param {import("../commands/commands.js").CommandObject} item
      */
     addItem(item)
     {
-        this._items.push(item);
+        this.#items.push(item);
     }
 
+    /**
+     * @param {boolean} b
+     */
     setVisible(b)
     {
-        if (!this._eleContainer) return;
-        if (b)
-        {
-            ele.show(this._eleContainer);
-        }
-        else
-        {
-            ele.hide(this._eleContainer);
-        }
+        if (!this.#eleContainer) return;
+        if (b) ele.show(this.#eleContainer);
+        else ele.hide(this.#eleContainer);
     }
 }

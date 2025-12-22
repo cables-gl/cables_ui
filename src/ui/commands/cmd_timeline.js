@@ -9,6 +9,7 @@ export { CmdTimeline };
 class CmdTimeline
 {
 
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
         return [

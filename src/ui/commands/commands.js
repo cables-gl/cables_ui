@@ -7,7 +7,7 @@ import { CmdTimeline } from "./cmd_timeline.js";
 import { CmdUi } from "./cmd_ui.js";
 
 /**
- * @typedef commandObject
+ * @typedef CommandObject
  * @property {string} cmd
  * @property {function} func
  * @property {string} category
@@ -18,8 +18,8 @@ import { CmdUi } from "./cmd_ui.js";
  * @property {("hasCommunity"|"showRemoteViewer")} [frontendOption]
  */
 
-/** @type {commandObject[]} */
-export let cblCommands = [];
+/** @type {CommandObject[]} */
+let cblCommands = [];
 
 cblCommands = cblCommands.concat(CmdDebug.commands);
 cblCommands = cblCommands.concat(CmdPatch.commands);
@@ -29,6 +29,59 @@ cblCommands = cblCommands.concat(CmdUi.commands);
 cblCommands = cblCommands.concat(CmdOps.commands);
 cblCommands = cblCommands.concat(CmdFiles.commands);
 
+for (let i = 0; i < cblCommands.length; i++)
+{
+    if (cblCommands[i])
+        if (!cblCommands[i].category) console.warn("cmd has no category ", cblCommands[i].cmd);
+}
+
+export { Commands };
+class Commands
+{
+
+    static commands = cblCommands;
+
+    /**
+     * @returns {CommandObject[]}
+     */
+    static getKeyBindableCommands()
+    {
+        const arr = [];
+        for (let i = 0; i < cblCommands.length; i++)
+        {
+            if (cblCommands[i].keybindable)
+                arr.push(cblCommands[i]);
+
+        }
+        console.log("arr", arr);
+        return arr;
+    }
+
+    /**
+     * @param {string} cmd
+     */
+    static exec(cmd)
+    {
+        let found = false;
+        for (let i = 0; i < CMD.commands.length; i++)
+        {
+            if (CMD.commands[i].cmd == cmd)
+            {
+                if (CMD.commands[i].func)
+                {
+                    CMD.commands[i].func();
+                    found = true;
+                }
+                else
+                {
+                    console.warn("cmd has no func", cmd, CMD.commands[i]);
+                }
+            }
+        }
+
+        if (!found)console.warn("command not found:" + cmd);
+    }
+}
 const CMD = {
     "FILES": CmdFiles,
     "UI": CmdUi,
@@ -37,51 +90,8 @@ const CMD = {
     "PATCH": CmdPatch,
     "RENDERER": CmdRenderer,
     "TIMELINE": CmdTimeline,
-    "commands": cblCommands
+    "commands": cblCommands,
+    "exec": Commands.exec
 };
 
 export default CMD;
-
-for (let i = 0; i < cblCommands.length; i++)
-{
-    if (cblCommands[i])
-        if (!cblCommands[i].category) console.warn("cmd has no category ", cblCommands[i].cmd);
-}
-
-/**
- * @returns {commandObject[]}
- */
-CMD.getKeyBindableCommands = function ()
-{
-    const arr = [];
-    for (let i = 0; i < cblCommands.length; i++)
-    {
-        if (cblCommands[i].keybindable)
-            arr.push(cblCommands[i]);
-
-    }
-    console.log("arr", arr);
-    return arr;
-};
-
-CMD.exec = function (cmd)
-{
-    let found = false;
-    for (let i = 0; i < CMD.commands.length; i++)
-    {
-        if (CMD.commands[i].cmd == cmd)
-        {
-            if (CMD.commands[i].func)
-            {
-                CMD.commands[i].func();
-                found = true;
-            }
-            else
-            {
-                console.warn("cmd has no func", cmd, CMD.commands[i]);
-            }
-        }
-    }
-
-    if (!found)console.warn("command not found:" + cmd);
-};

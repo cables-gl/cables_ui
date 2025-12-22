@@ -24,7 +24,7 @@ const log = new Logger("CMD_PATCH");
 class CmdPatch
 {
 
-    /** @type {import("./commands.js").commandObject[]} */
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
         return [

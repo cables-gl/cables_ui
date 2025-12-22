@@ -3,7 +3,7 @@ import { utils } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
-import CMD from "../commands/commands.js";
+import CMD, { Commands } from "../commands/commands.js";
 
 /**
  * show a searchable command palette (cmd/ctrl+p)
@@ -126,7 +126,7 @@ export default class CommandPalette
         }
         else
         {
-            CABLES.CMD.exec(cmd);
+            Commands.exec(cmd);
         }
     }
 

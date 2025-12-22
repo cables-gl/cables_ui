@@ -1,4 +1,5 @@
-import CMD from "./commands/commands.js";
+import { CmdPatch } from "./commands/cmd_patch.js";
+import CMD, { Commands } from "./commands/commands.js";
 
 export class InputBindings
 {
@@ -10,7 +11,7 @@ export class InputBindings
 
     constructor()
     {
-        this.bindings[InputBindings.MOUSE_PATCH_DBL_CLICK] = { "cmd": CMD.PATCH.gotoParentSubpatch.name };
+        this.bindings[InputBindings.MOUSE_PATCH_DBL_CLICK] = { "cmd": CmdPatch.gotoParentSubpatch.name };
 
     }
 
@@ -26,6 +27,8 @@ export class InputBindings
     {
         console.log("whichhnhh", which);
         const b = this.getBind(which);
-        CMD.exec(b.func);
+        Commands.exec(b.func);
     }
 }
+new InputBindings();
+console.log("text", CmdPatch.gotoParentSubpatch.name);

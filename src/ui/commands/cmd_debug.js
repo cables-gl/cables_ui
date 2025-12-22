@@ -18,17 +18,16 @@ import Gui, { gui } from "../gui.js";
 import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
 import TabThreeDebug from "../components/tabs/tab_threedebug.js";
 
-export { CmdDebug };
-
 const log = new Logger("CMD DEBUG");
+export { CmdDebug };
 
 class CmdDebug
 {
 
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
 
-        /** @type {import("./commands.js").commandObject[]} */
         return [
             {
                 "cmd": "Glui debug",

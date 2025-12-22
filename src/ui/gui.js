@@ -20,7 +20,6 @@ import ModalPortValue from "./components/opparampanel/show_port_value_modal.js";
 import uiconfig from "./uiconfig.js";
 import TexturePreviewer from "./components/texturepreviewer.js";
 import OpDocs from "./components/opdocs.js";
-import IconBar from "./elements/iconbar.js";
 import ModalError from "./dialogs/modalerror.js";
 import MetaOpParams from "./components/tabs/meta_opparams.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
@@ -59,6 +58,7 @@ import { CmdTimeline } from "./commands/cmd_timeline.js";
 import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
 import defaultOps from "./defaultops.js";
+import IconBar from "./elements/iconbar.js";
 
 /**
  * @type {Gui}

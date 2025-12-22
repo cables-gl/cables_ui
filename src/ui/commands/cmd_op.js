@@ -8,10 +8,11 @@ export { CmdOps };
 
 class CmdOps
 {
+
+    /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
     {
 
-        /** @type {import("./commands.js").commandObject[]} */
         return [{
             "cmd": "Code a new op",
             "category": "op",
