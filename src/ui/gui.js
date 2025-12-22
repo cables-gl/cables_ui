@@ -59,6 +59,8 @@ import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
 import defaultOps from "./defaultops.js";
 import IconBar from "./elements/iconbar.js";
+import { Commands } from "./commands/commands.js";
+import { InputBindings } from "./inputbindings.js";
 
 /**
  * @type {Gui}
@@ -124,6 +126,7 @@ export default class Gui extends Events
         this.userSettings = userSettings;
         this.uiProfiler = new UiProfiler();
 
+        this.inputBindings = new InputBindings();
         this.canvasManager = new CanvasManager();
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();

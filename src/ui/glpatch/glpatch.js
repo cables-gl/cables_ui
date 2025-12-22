@@ -25,6 +25,7 @@ import { CmdPatch } from "../commands/cmd_patch.js";
 import GlLink from "./gllink.js";
 import { DomEvents } from "../theme.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
+import { InputBindings } from "../inputbindings.js";
 
 /**
  * rendering the patchfield
@@ -203,7 +204,7 @@ export default class GlPatch extends Events
 
         cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, this._onCanvasMouseLeave.bind(this), { "passive": false });
         cgl.canvas.addEventListener(DomEvents.POINTER_ENTER, this._onCanvasMouseEnter.bind(this), { "passive": false });
-        cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this._onCanvasDblClick.bind(this), { "passive": false });
+        cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this.#onCanvasDblClick.bind(this), { "passive": false });
         cgl.canvas.addEventListener("focus", this.isFocused.bind(this));
         cgl.canvas.addEventListener("blur", this.isFocused.bind(this));
 
@@ -610,7 +611,7 @@ export default class GlPatch extends Events
     /**
      * @param {MouseEvent} e
      */
-    _onCanvasDblClick(e)
+    #onCanvasDblClick(e)
     {
         let isOverSubPatchOp = false;
         if (this._hoverOps.length > 0)
@@ -625,22 +626,25 @@ export default class GlPatch extends Events
             gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
         }
         else
-        if (!this.dblClickAction || this.dblClickAction == "parentSub")
         {
-            if (this._currentSubpatch != 0)
-            {
-                const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-                if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
-            }
+            gui.inputBindings.exec(InputBindings.MOUSE_PATCH_DBL_CLICK);
         }
-        else if (this.dblClickAction == "addOp")
-        {
-            CmdPatch.addOp();
-        }
-        else if (this.dblClickAction == "centerPatch")
-        {
-            this.viewBox.centerSelectedOps();
-        }
+        // if (!this.dblClickAction || this.dblClickAction == "parentSub")
+        // {
+        //     if (this._currentSubpatch != 0)
+        //     {
+        //         const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        //         if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
+        //     }
+        // }
+        // else if (this.dblClickAction == "addOp")
+        // {
+        //     CmdPatch.addOp();
+        // }
+        // else if (this.dblClickAction == "centerPatch")
+        // {
+        //     this.viewBox.centerSelectedOps();
+        // }
 
         e.preventDefault();
     }

@@ -183,11 +183,6 @@ class CmdPatch
                 "func": CmdPatch.resume
             },
             {
-                "cmd": "Replace file path",
-                "category": "patch",
-                "func": CmdPatch.replaceFilePath
-            },
-            {
                 "cmd": "Find unconnected ops",
                 "category": "patch",
                 "func": CmdPatch.findUnconnectedOps

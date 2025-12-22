@@ -3,7 +3,9 @@ import { utils } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
-import CMD, { Commands } from "../commands/commands.js";
+import { Commands } from "../commands/commands.js";
+
+Commands.init();
 
 /**
  * show a searchable command palette (cmd/ctrl+p)
@@ -212,7 +214,7 @@ export default class CommandPalette
             }
         }
 
-        const commands = CMD.commands;
+        const commands = Commands.commands;
         for (let i = 0; i < commands.length; i++)
         {
             const cmd = commands[i].cmd;

@@ -18,28 +18,40 @@ import { CmdUi } from "./cmd_ui.js";
  * @property {("hasCommunity"|"showRemoteViewer")} [frontendOption]
  */
 
-/** @type {CommandObject[]} */
-let cblCommands = [];
-
-cblCommands = cblCommands.concat(CmdDebug.commands);
-cblCommands = cblCommands.concat(CmdPatch.commands);
-cblCommands = cblCommands.concat(CmdRenderer.commands);
-cblCommands = cblCommands.concat(CmdTimeline.commands);
-cblCommands = cblCommands.concat(CmdUi.commands);
-cblCommands = cblCommands.concat(CmdOps.commands);
-cblCommands = cblCommands.concat(CmdFiles.commands);
-
-for (let i = 0; i < cblCommands.length; i++)
-{
-    if (cblCommands[i])
-        if (!cblCommands[i].category) console.warn("cmd has no category ", cblCommands[i].cmd);
-}
-
 export { Commands };
 class Commands
 {
 
-    static commands = cblCommands;
+    /** @type {CommandObject[]} */
+    static commands = [];
+
+    static init()
+    {
+
+        Commands.commands = Commands.commands.concat(CmdDebug.commands);
+        Commands.commands = Commands.commands.concat(CmdPatch.commands);
+        Commands.commands = Commands.commands.concat(CmdRenderer.commands);
+        Commands.commands = Commands.commands.concat(CmdTimeline.commands);
+        Commands.commands = Commands.commands.concat(CmdUi.commands);
+        Commands.commands = Commands.commands.concat(CmdOps.commands);
+        Commands.commands = Commands.commands.concat(CmdFiles.commands);
+
+        for (let i = 0; i < Commands.commands.length; i++)
+        {
+            if (Commands.commands[i])
+                if (!Commands.commands[i].category) console.warn("cmd has no category ", Commands.commands[i].cmd);
+        }
+
+        CMD.FILES = CmdFiles,
+        CMD.UI = CmdUi,
+        CMD.DEBUG = CmdDebug,
+        CMD.OP = CmdOps,
+        CMD.PATCH = CmdPatch,
+        CMD.RENDERER = CmdRenderer,
+        CMD.TIMELINE = CmdTimeline,
+        CMD.commands = Commands.commands,
+        CMD.exec = Commands.exec;
+    }
 
     /**
      * @returns {CommandObject[]}
@@ -47,10 +59,10 @@ class Commands
     static getKeyBindableCommands()
     {
         const arr = [];
-        for (let i = 0; i < cblCommands.length; i++)
+        for (let i = 0; i < Commands.commands.length; i++)
         {
-            if (cblCommands[i].keybindable)
-                arr.push(cblCommands[i]);
+            if (Commands.commands[i].keybindable)
+                arr.push(Commands.commands[i]);
 
         }
         console.log("arr", arr);
@@ -65,11 +77,11 @@ class Commands
         let found = false;
         for (let i = 0; i < CMD.commands.length; i++)
         {
-            if (CMD.commands[i].cmd == cmd)
+            if (Commands.commands[i].cmd == cmd)
             {
-                if (CMD.commands[i].func)
+                if (Commands.commands[i].func)
                 {
-                    CMD.commands[i].func();
+                    Commands.commands[i].func();
                     found = true;
                 }
                 else
@@ -81,17 +93,25 @@ class Commands
 
         if (!found)console.warn("command not found:" + cmd);
     }
+
+    /**
+     * @param {function} func
+     */
+    static getCommandByFunction(func)
+    {
+        let cmd = null;
+        for (let i = 0; i < Commands.commands.length; i++)
+        {
+            if (Commands.commands[i].func == func)
+            {
+                cmd = Commands.commands[i];
+                break;
+            }
+        }
+        return cmd;
+    }
 }
 const CMD = {
-    "FILES": CmdFiles,
-    "UI": CmdUi,
-    "DEBUG": CmdDebug,
-    "OP": CmdOps,
-    "PATCH": CmdPatch,
-    "RENDERER": CmdRenderer,
-    "TIMELINE": CmdTimeline,
-    "commands": cblCommands,
-    "exec": Commands.exec
 };
 
 export default CMD;

@@ -8,24 +8,28 @@ import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import opNames from "../../opnameutils.js";
 import { PortDir, portType } from "../../core_constants.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
-import CMD from "../../commands/commands.js";
+import { Commands } from "../../commands/commands.js";
+import { InputBindings } from "../../inputbindings.js";
 
 export default class TabKeybindings
 {
     static TABSESSION_NAME = "Keybindings";
     lastCount = 0;
+    #timeOut = null;
+    #tab;
 
     /**
      * @param {TabPanel} tabs
      */
     constructor(tabs)
     {
-        this._tab = new Tab(TabKeybindings.TABSESSION_NAME, { "icon": "list", "singleton": true, "infotext": "tab_keybindings", "padding": true });
-        tabs.addTab(this._tab, true);
+        this.#tab = new Tab(TabKeybindings.TABSESSION_NAME, { "icon": "list", "singleton": true, "infotext": "tab_keybindings", "padding": true });
+        tabs.addTab(this.#tab, true);
 
-        editorSession.rememberOpenEditor(TabKeybindings.TABSESSION_NAME, "debugger", { }, true);
+        editorSession.rememberOpenEditor(TabKeybindings.TABSESSION_NAME, TabKeybindings.TABSESSION_NAME, { }, true);
         let html = getHandleBarHtml("tab_keybindings");
-        this._tab.html(html);
+
+        this.#tab.html(html);
         this.update();
 
         ele.clickable(ele.byId("keybind_add"), (o) =>
@@ -33,9 +37,9 @@ export default class TabKeybindings
             this.editBinding({});
         });
 
-        this._tab.on("close", () =>
+        this.#tab.on("close", () =>
         {
-            clearInterval(this.timeOut);
+            clearInterval(this.#timeOut);
             editorSession.remove(TabKeybindings.TABSESSION_NAME, TabKeybindings.TABSESSION_NAME);
         });
     }
@@ -43,12 +47,35 @@ export default class TabKeybindings
     update()
     {
 
+        console.log("upldate", JSON.stringify(InputBindings.MOUSE_ACTIONS), InputBindings.MOUSE_ACTIONS.length);
+
         gui.corePatch().tempData.continueStepDebugLog = gui.corePatch().tempData.continueStepDebugLog || [];
-        if (this.lastCount == gui.corePatch().tempData.continueStepDebugLog.length) return;
 
-        this.lastCount = gui.corePatch().tempData.continueStepDebugLog.length;
+        let html = "";
 
-        let html = "hallo";
+        html += "<table class=\"editor_spreadsheet\" style=\"width:100%\">";
+
+        html += "<tr>";
+        html += "<td class=\"colname\">Action</td>";
+        html += "<td class=\"colname\">Command</td>";
+        html += "<tr>";
+
+        for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
+        {
+            let cmd = Commands.getCommandByFunction(InputBindings.MOUSE_ACTIONS[i].func);
+
+            let cmdTitle = "none";
+            if (cmd)cmdTitle = cmd.cmd;
+
+            html += "<tr>";
+            html += "<td>";
+            html += InputBindings.MOUSE_ACTIONS[i].title;
+            html += "</td>";
+            html += "<td>" + cmdTitle;
+            html += "</td>";
+            html += "</tr>";
+        }
+        html += "</table>";
 
         ele.byId("debugger_log").innerHTML = html;
     }
@@ -57,19 +84,11 @@ export default class TabKeybindings
     {
         let html = "";
 
-        const mouseActions = [
-            "right click",
-            "middle click",
-            "left double click",
-            "middle double click",
-            "right double click",
-        ];
-
         html += "Action:";
         html += "<select>";
-        for (let i = 0; i < mouseActions.length; i++)
+        for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
         {
-            html += "<option value=\"\">" + mouseActions[i] + "</option>";
+            html += "<option value=\"" + InputBindings.MOUSE_ACTIONS[i].id + "\">" + InputBindings.MOUSE_ACTIONS[i].title + "</option>";
         }
         html += "</select>";
 
@@ -77,7 +96,7 @@ export default class TabKeybindings
         html += "<br/>";
         html += "Command:";
         html += "<select>";
-        const cmds = CMD.getKeyBindableCommands();
+        const cmds = Commands.getKeyBindableCommands();
         for (let i = 0; i < cmds.length; i++)
         {
             html += "<option value=\"\">" + cmds[i].category + ": " + cmds[i].cmd + "</option>";
