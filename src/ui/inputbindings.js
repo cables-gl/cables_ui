@@ -38,7 +38,7 @@ export class InputBindings
 
     constructor()
     {
-        const userBinds = userSettings.get(InputBindings.USERSETTINGNAME);
+        const userBinds = userSettings.get(InputBindings.USERSETTINGNAME) || [];
         for (let i = 0; i < userBinds.length; i++)
         {
             const cmd = Commands.getCommandByName(userBinds[i].cmd);
