@@ -64,8 +64,7 @@ export default class TabKeybindings
         {
             let cmd = Commands.getCommandByFunction(InputBindings.MOUSE_ACTIONS[i].func);
 
-            let cmdTitle = "none";
-            if (cmd)cmdTitle = cmd.cmd;
+            const cmdTitle = cmd?.cmd || "none";
 
             html += "<tr>";
             html += "<td>";
@@ -85,21 +84,15 @@ export default class TabKeybindings
         let html = "";
 
         html += "Action:";
-        html += "<select>";
-        for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
-        {
-            html += "<option value=\"" + InputBindings.MOUSE_ACTIONS[i].id + "\">" + InputBindings.MOUSE_ACTIONS[i].title + "</option>";
-        }
-        html += "</select>";
 
         html += "<br/>";
         html += "<br/>";
         html += "Command:";
-        html += "<select>";
+        html += "<select id=\"cmdselect\">";
         const cmds = Commands.getKeyBindableCommands();
         for (let i = 0; i < cmds.length; i++)
         {
-            html += "<option value=\"\">" + cmds[i].category + ": " + cmds[i].cmd + "</option>";
+            html += "<option value=\"" + cmds[i].cmd + "\">" + cmds[i].category + ": " + cmds[i].cmd + "</option>";
         }
         html += "</select>";
 
@@ -112,7 +105,7 @@ export default class TabKeybindings
                 "callback": () =>
                 {
 
-                    console.log("jajajaja");
+                    console.log("jajajaja", ele.byId("cmdselect").value);
                 }
             }
         });

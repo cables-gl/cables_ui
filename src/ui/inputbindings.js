@@ -19,6 +19,12 @@ export class InputBindings
             "default": null,
             "func": null,
             "title": "Patchfield Background Right Click"
+        },
+        {
+            "id": InputBindings.MOUSE_PATCH_MIDDLE_CLICK,
+            "default": null,
+            "func": null,
+            "title": "Patchfield Background Middle Click"
         }
     ];
 
