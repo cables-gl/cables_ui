@@ -15,500 +15,502 @@ import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 import TabKeybindings from "../components/tabs/tab_keybinds.js";
 
-const CABLES_CMD_UI = {};
+export { CmdUi };
 
-/** @type {import("./commands.js").commandObject[]} */
-const CMD_UI_COMMANDS = [];
-
-const uiCommands =
+class CmdUi
 {
-    "commands": CMD_UI_COMMANDS,
-    "functions": CABLES_CMD_UI
-};
 
-export default uiCommands;
-export { CABLES_CMD_UI as CmdUi };
-
-CABLES_CMD_UI.settings = function ()
-{
-    if (gui.showGuestWarning()) return;
-    gui.showSettings();
-};
-
-CABLES_CMD_UI.showTips = function ()
-{
-    this.tips = new Tips();
-    this.tips.show();
-};
-
-CABLES_CMD_UI.keyBindings = function ()
-{
-    const t = new TabKeybindings(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
-
-CABLES_CMD_UI.canvasLens = function ()
-{
-    new CanvasLens();
-};
-
-CABLES_CMD_UI.activityFeed = function ()
-{
-    const url = platform.getCablesUrl() + "/myactivityfeed";
-    gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
-};
-
-CABLES_CMD_UI.closeAllTabs = function ()
-{
-    gui.mainTabs.closeAllTabs();
-};
-
-CABLES_CMD_UI.openRemoteViewer = function ()
-{
-    let projectId = gui.patchId;
-    if (gui.project())
+    static get commands()
     {
-        projectId = gui.project().shortId || gui.project()._id;
-    }
-    if (gui.socket) gui.socket.startRemoteViewer(() =>
-    {
-        window.open(platform.getCablesUrl() + "/remote_client/" + projectId);
-    });
-};
 
-CABLES_CMD_UI.files = function ()
-{
-    gui.showFileManager(null, true);
-};
-
-CABLES_CMD_UI.toggleFiles = function ()
-{
-    gui.showFileManager(null, true);
-};
-
-CABLES_CMD_UI.windowFullscreen = function ()
-{
-    if (document.documentElement.mozRequestFullScreen) document.documentElement.mozRequestFullScreen();
-    if (document.documentElement.webkitRequestFullScreen) document.documentElement.webkitRequestFullScreen();
-};
-
-CABLES_CMD_UI.toggleMute = function ()
-{
-    if (gui.corePatch().config.masterVolume > 0.0)
-    {
-        document.getElementById("timelineVolume").classList.remove("icon-volume-2");
-        document.getElementById("timelineVolume").classList.add("icon-volume-x");
-        gui.corePatch().setVolume(0.0);
-    }
-    else
-    {
-        document.getElementById("timelineVolume").classList.add("icon-volume-2");
-        document.getElementById("timelineVolume").classList.remove("icon-volume-x");
-        gui.corePatch().setVolume(1.0);
-    }
-};
-
-CABLES_CMD_UI.showChat = function ()
-{
-    if (gui.socket) gui.socket.showChat();
-};
-
-CABLES_CMD_UI.toggleBgTexturePreview = function ()
-{
-    userSettings.set("bgpreview", !userSettings.get("bgpreview"));
-};
-
-CABLES_CMD_UI.showSearch = function (str)
-{
-    gui.find(str || "");
-};
-
-CABLES_CMD_UI.togglePatchBgPatchField = function ()
-{
-    if (gui && (gui.canvasManager.mode === gui.canvasManager.CANVASMODE_PATCHBG))
-    {
-        gui.patchView.toggleVisibility();
-    }
-};
-
-CABLES_CMD_UI.togglePatchBgRenderer = function ()
-{
-    gui.cyclePatchBg();
-};
-
-CABLES_CMD_UI.showKeys = function ()
-{
-    gui.keys.show();
-};
-
-CABLES_CMD_UI.showCommandPallet = function ()
-{
-    gui.cmdPalette.show();
-};
-
-CABLES_CMD_UI.centerPatchOps = function ()
-{
-    gui.patchView.centerView();
-};
-
-CABLES_CMD_UI.flowVis = function ()
-{
-    userSettings.set("glflowmode", !userSettings.get("glflowmode"));
-};
-
-CABLES_CMD_UI.startPresentationMode = function ()
-{
-    if (!CABLES.UI.keyPresenter)
-    {
-        CABLES.UI.keyPresenter = new Keypresenter();
-        CABLES.UI.keyPresenter.start();
-    }
-};
-
-CABLES_CMD_UI.showChangelog = function (since)
-{
-    (new ChangelogToast()).show(since);
-};
-
-CABLES_CMD_UI.showBuildInfo = function ()
-{
-    let infoHtml = "no info available";
-    if (CABLESUILOADER.buildInfo)
-    {
-        infoHtml = "";
-        const uiBuild = CABLESUILOADER.buildInfo.ui;
-        const coreBuild = CABLESUILOADER.buildInfo.core;
-        const apiBuild = CABLESUILOADER.buildInfo.api;
-
-        if (coreBuild)
-        {
-            infoHtml += "<h3>Core</h3>";
-            infoHtml += "created: " + moment(coreBuild.created).fromNow() + " (" + coreBuild.created + ")<br/>";
-            if (coreBuild.git)
+        /** @type {import("./commands.js").commandObject[]} */
+        const l =
+            [{
+                "cmd": "Show settings",
+                "category": "ui",
+                "func": CmdUi.settings,
+                "icon": "settings",
+                "infotext": "cmd_patchsettings"
+            },
             {
-                infoHtml += "branch: " + coreBuild.git.branch + "<br/>";
-                infoHtml += "message: " + coreBuild.git.message + "<br/>";
+                "cmd": "Show files",
+                "category": "ui",
+                "func": CmdUi.files,
+                "icon": "file"
+            },
+            {
+                "cmd": "Toggle files",
+                "category": "ui",
+                "func": CmdUi.toggleFiles,
+                "icon": "file"
+            },
+            {
+                "cmd": "Toggle mute",
+                "category": "ui",
+                "func": CmdUi.toggleMute
+            },
+            {
+                "cmd": "Search",
+                "category": "ui",
+                "func": CmdUi.showSearch,
+                "icon": "search",
+                "hotkey": "CMD + f"
+            },
+            {
+                "cmd": "Patch background renderer",
+                "category": "ui",
+                "func": CmdUi.togglePatchBgRenderer,
+                "icon": "canvas_patchbg",
+                "hotkey": "CMD + SHIFT + ENTER"
+            },
+            {
+                "cmd": "Patch background renderer",
+                "category": "ui",
+                "func": CmdUi.togglePatchBgPatchField,
+                "icon": "canvas_op",
+                "hotkey": "SHIFT + ENTER"
+            },
+            {
+                "cmd": "Show command pallet",
+                "category": "ui",
+                "func": CmdUi.showCommandPallet,
+                "icon": "search",
+                "hotkey": "CMD + P"
+            },
+            {
+                "cmd": "Show changelog",
+                "category": "cables",
+                "func": CmdUi.showChangelog,
+                "icon": "info"
+            },
+            {
+                "cmd": "Show buildinfo",
+                "category": "cables",
+                "func": CmdUi.showBuildInfo,
+                "icon": "info"
+            },
+            {
+                "cmd": "Center patch",
+                "category": "patch",
+                "func": CmdUi.centerPatchOps,
+                "hotkey": "c",
+                "icon": "patch_center",
+                "infotext": "cmd_centerpatch"
+            },
+            {
+                "cmd": "Start presentation mode",
+                "category": "ui",
+                "func": CmdUi.startPresentationMode
+            },
+            {
+                "cmd": "Toggle flow visualization",
+                "category": "ui",
+                "func": CmdUi.flowVis,
+                "icon": "cables",
+                "hotkey": "f"
+            },
+            {
+                "cmd": "Jobs",
+                "category": "ui",
+                "func": CmdUi.jobs,
+                "icon": "cables"
+            },
+            {
+                "cmd": "Toggle window fullscreen",
+                "category": "ui",
+                "func": CmdUi.windowFullscreen,
+                "icon": "cables"
+            },
+
+            {
+                "cmd": "Toggle snap to grid",
+                "category": "ui",
+                "func": CmdUi.toggleSnapToGrid,
+                "icon": "command"
+            },
+            {
+                "cmd": "Toggle texture preview",
+                "category": "ui",
+                "func": CmdUi.toggleBgTexturePreview,
+                "icon": "monitor"
+            },
+            {
+                "cmd": "Ui profiler",
+                "category": "ui",
+                "func": CmdUi.profileUI,
+                "icon": "command"
+            },
+            {
+                "cmd": "Preferences",
+                "category": "ui",
+                "func": CmdUi.showPreferences,
+                "icon": "cables_editor"
+            },
+            {
+                "cmd": "Chat",
+                "category": "ui",
+                "func": CmdUi.showChat,
+                "icon": "command",
+                "frontendOption": "hasCommunity"
+            },
+            {
+                "cmd": "Open remote viewer",
+                "category": "ui",
+                "func": CmdUi.openRemoteViewer,
+                "icon": "command",
+                "frontendOption": "showRemoteViewer"
+            },
+            {
+                "cmd": "Zoom in",
+                "category": "ui",
+                "func": CmdUi.zoomIn,
+                "icon": "plus",
+                "hotkey": "+",
+                "infotext": "cmd_zoomin"
+            },
+            {
+                "cmd": "Zoom out",
+                "category": "ui",
+                "func": CmdUi.zoomOut,
+                "icon": "minus",
+                "hotkey": "-",
+                "infotext": "cmd_zoomout"
+            },
+            {
+                "cmd": "Watch variables",
+                "category": "ui",
+                "func": CmdUi.watchVars,
+                "icon": "align-justify",
+                "infotext": "cmd_watchvars"
+            },
+            {
+                "cmd": "GPU Profiler",
+                "category": "ui",
+                "func": CmdUi.profileGPU,
+                "icon": "align-justify",
+                "infotext": ""
+            },
+            {
+                "cmd": "Toggle Vizlayer Pause",
+                "category": "ui",
+                "func": CmdUi.togglePauseVizLayer,
+                "infotext": ""
+            },
+            {
+                "cmd": "Show Activity Feed",
+                "category": "ui",
+                "func": CmdUi.activityFeed,
+                "icon": "activity",
+                "frontendOption": "hasCommunity"
+            },
+            {
+                "cmd": "Show Welcome",
+                "category": "ui",
+                "func": CmdUi.welcomeTab,
+                "icon": "cables"
+            },
+            {
+                "cmd": "Close all tabs",
+                "category": "ui",
+                "func": CmdUi.closeAllTabs
+            },
+            {
+                "cmd": "Show Canvas Lens",
+                "category": "ui",
+                "func": CmdUi.canvasLens
+            },
+            {
+                "cmd": "Show Tips",
+                "category": "ui",
+                "func": CmdUi.showTips
+            },
+            {
+                "cmd": "Keybindings",
+                "category": "ui",
+                "func": CmdUi.keyBindings
+            }];
+
+        return l;
+    }
+
+    static settings()
+    {
+        if (gui.showGuestWarning()) return;
+        gui.showSettings();
+    }
+
+    static showPreferences()
+    {
+        if (gui.showGuestWarning()) return;
+        new Preferences(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static showTips()
+    {
+        this.tips = new Tips();
+        this.tips.show();
+    }
+
+    static keyBindings()
+    {
+        const t = new TabKeybindings(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static canvasLens()
+    {
+        new CanvasLens();
+    }
+
+    static activityFeed()
+    {
+        const url = platform.getCablesUrl() + "/myactivityfeed";
+        gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
+    }
+
+    static closeAllTabs()
+    {
+        gui.mainTabs.closeAllTabs();
+    }
+
+    static openRemoteViewer()
+    {
+        let projectId = gui.patchId;
+        if (gui.project())
+        {
+            projectId = gui.project().shortId || gui.project()._id;
+        }
+        if (gui.socket) gui.socket.startRemoteViewer(() =>
+        {
+            window.open(platform.getCablesUrl() + "/remote_client/" + projectId);
+        });
+    }
+
+    static files()
+    {
+        gui.showFileManager(null, true);
+    }
+
+    static toggleFiles()
+    {
+        gui.showFileManager(null, true);
+    }
+
+    static windowFullscreen()
+    {
+        if (document.documentElement.mozRequestFullScreen) document.documentElement.mozRequestFullScreen();
+        if (document.documentElement.webkitRequestFullScreen) document.documentElement.webkitRequestFullScreen();
+    }
+
+    static toggleMute()
+    {
+        if (gui.corePatch().config.masterVolume > 0.0)
+        {
+            document.getElementById("timelineVolume").classList.remove("icon-volume-2");
+            document.getElementById("timelineVolume").classList.add("icon-volume-x");
+            gui.corePatch().setVolume(0.0);
+        }
+        else
+        {
+            document.getElementById("timelineVolume").classList.add("icon-volume-2");
+            document.getElementById("timelineVolume").classList.remove("icon-volume-x");
+            gui.corePatch().setVolume(1.0);
+        }
+    }
+
+    static showChat()
+    {
+        if (gui.socket) gui.socket.showChat();
+    }
+
+    static toggleBgTexturePreview()
+    {
+        userSettings.set("bgpreview", !userSettings.get("bgpreview"));
+    }
+
+    static showSearch(str)
+    {
+        gui.find(str || "");
+    }
+
+    static togglePatchBgPatchField()
+    {
+        if (gui && (gui.canvasManager.mode === gui.canvasManager.CANVASMODE_PATCHBG))
+        {
+            gui.patchView.toggleVisibility();
+        }
+    }
+
+    static togglePatchBgRenderer()
+    {
+        gui.cyclePatchBg();
+    }
+
+    static showKeys()
+    {
+        gui.keys.show();
+    }
+
+    static showCommandPallet()
+    {
+        gui.cmdPalette.show();
+    }
+
+    static centerPatchOps()
+    {
+        gui.patchView.centerView();
+    }
+
+    static flowVis()
+    {
+        userSettings.set("glflowmode", !userSettings.get("glflowmode"));
+    }
+
+    static startPresentationMode()
+    {
+        if (!CABLES.UI.keyPresenter)
+        {
+            CABLES.UI.keyPresenter = new Keypresenter();
+            CABLES.UI.keyPresenter.start();
+        }
+    }
+
+    /**
+     * @param {number} since
+     */
+    static showChangelog(since)
+    {
+        (new ChangelogToast()).show(since);
+    }
+
+    static showBuildInfo()
+    {
+        let infoHtml = "no info available";
+        if (CABLESUILOADER.buildInfo)
+        {
+            infoHtml = "";
+            const uiBuild = CABLESUILOADER.buildInfo.ui;
+            const coreBuild = CABLESUILOADER.buildInfo.core;
+            const apiBuild = CABLESUILOADER.buildInfo.api;
+
+            if (coreBuild)
+            {
+                infoHtml += "<h3>Core</h3>";
+                infoHtml += "created: " + moment(coreBuild.created).fromNow() + " (" + coreBuild.created + ")<br/>";
+                if (coreBuild.git)
+                {
+                    infoHtml += "branch: " + coreBuild.git.branch + "<br/>";
+                    infoHtml += "message: " + coreBuild.git.message + "<br/>";
+                }
+            }
+
+            if (uiBuild)
+            {
+                infoHtml += "<h3>UI</h3>";
+                infoHtml += "created: " + moment(uiBuild.created).fromNow() + " (" + uiBuild.created + ")<br/>";
+                if (uiBuild.git)
+                {
+                    infoHtml += "branch: " + uiBuild.git.branch + "<br/>";
+                    infoHtml += "message: " + uiBuild.git.message + "<br/>";
+                }
+            }
+
+            if (apiBuild)
+            {
+                infoHtml += "<h3>Platform</h3>";
+                infoHtml += "created: " + moment(apiBuild.created).fromNow() + " (" + apiBuild.created + ")<br/>";
+                if (apiBuild.git)
+                {
+                    infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
+                    infoHtml += "message: " + apiBuild.git.message + "<br/>";
+                    if (apiBuild.version) infoHtml += "version: " + apiBuild.version + "<br/>";
+                    if (apiBuild.git.tag) infoHtml += "tag: " + apiBuild.git.tag + "<br/>";
+                }
+                if (apiBuild.platform)
+                {
+                    if (apiBuild.platform.node) infoHtml += "node: " + apiBuild.platform.node + "<br/>";
+                    if (apiBuild.platform.npm) infoHtml += "npm: " + apiBuild.platform.npm + "<br/>";
+                }
             }
         }
 
-        if (uiBuild)
-        {
-            infoHtml += "<h3>UI</h3>";
-            infoHtml += "created: " + moment(uiBuild.created).fromNow() + " (" + uiBuild.created + ")<br/>";
-            if (uiBuild.git)
-            {
-                infoHtml += "branch: " + uiBuild.git.branch + "<br/>";
-                infoHtml += "message: " + uiBuild.git.message + "<br/>";
-            }
-        }
-
-        if (apiBuild)
-        {
-            infoHtml += "<h3>Platform</h3>";
-            infoHtml += "created: " + moment(apiBuild.created).fromNow() + " (" + apiBuild.created + ")<br/>";
-            if (apiBuild.git)
-            {
-                infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
-                infoHtml += "message: " + apiBuild.git.message + "<br/>";
-                if (apiBuild.version) infoHtml += "version: " + apiBuild.version + "<br/>";
-                if (apiBuild.git.tag) infoHtml += "tag: " + apiBuild.git.tag + "<br/>";
-            }
-            if (apiBuild.platform)
-            {
-                if (apiBuild.platform.node) infoHtml += "node: " + apiBuild.platform.node + "<br/>";
-                if (apiBuild.platform.npm) infoHtml += "npm: " + apiBuild.platform.npm + "<br/>";
-            }
-        }
+        new HtmlTab(gui.mainTabs, infoHtml);
     }
 
-    new HtmlTab(gui.mainTabs, infoHtml);
-};
-
-CABLES_CMD_UI.welcomeTab = function (userInteraction)
-{
-    platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (err, r) =>
+    static welcomeTab(userInteraction)
     {
-        const t = new WelcomeTab(gui.mainTabs, { "patches": r });
-        gui.mainTabs.activateTab(t.id);
-        gui.maintabPanel.show(userInteraction);
-    });
-};
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (err, r) =>
+        {
+            const t = new WelcomeTab(gui.mainTabs, { "patches": r });
+            gui.mainTabs.activateTab(t.id);
+            gui.maintabPanel.show(userInteraction);
+        });
+    }
 
-CABLES_CMD_UI.toggleOverlays = function ()
-{
-    const act = !userSettings.get("overlaysShow");
-    userSettings.set("overlaysShow", act);
-    gui.emitEvent("overlaysChanged", act);
-    gui.transformOverlay.updateVisibility();
-    gui.canvasManager.getCanvasUiBar().updateIconState();
-};
+    static toggleOverlays()
+    {
+        const act = !userSettings.get("overlaysShow");
+        userSettings.set("overlaysShow", act);
+        gui.emitEvent("overlaysChanged", act);
+        gui.transformOverlay.updateVisibility();
+        gui.canvasManager.getCanvasUiBar().updateIconState();
+    }
 
-CABLES_CMD_UI.toggleSnapToGrid = function ()
-{
-    userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
-};
+    static toggleSnapToGrid()
+    {
+        userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
+    }
 
-CABLES_CMD_UI.toggleIntroCompleted = function ()
-{
-    userSettings.set("introCompleted", !userSettings.get("introCompleted"));
+    static toggleIntroCompleted()
+    {
+        userSettings.set("introCompleted", !userSettings.get("introCompleted"));
 
-    if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
-};
+        if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
+    }
 
-CABLES_CMD_UI.showAutomaton = function ()
-{
-    new CABLES.UI.AutomatonTab(gui.mainTabs);
-};
+    static showAutomaton()
+    {
+        new CABLES.UI.AutomatonTab(gui.mainTabs);
+    }
 
-CABLES_CMD_UI.showPreferences = function ()
-{
-    if (gui.showGuestWarning()) return;
-    new Preferences(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
+    static profileGPU()
+    {
+        new GpuProfiler(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
 
-CABLES_CMD_UI.profileGPU = function ()
-{
-    new GpuProfiler(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
-
-CABLES_CMD_UI.profileUI = function ()
-{
+    static profileUI()
+    {
     // gui.uiProfiler.show();
-    new UiProfilerTab(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
-
-CABLES_CMD_UI.zoomOut = function ()
-{
-    gui.patchView.zoomStep(1);
-};
-CABLES_CMD_UI.zoomIn = function ()
-{
-    gui.patchView.zoomStep(-1);
-};
-
-CABLES_CMD_UI.watchVars = function ()
-{
-    new WatchVarTab(gui.mainTabs);
-};
-
-CABLES_CMD_UI.jobs = function ()
-{
-    new JobsTab(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
-
-CABLES_CMD_UI.togglePauseVizLayer = function ()
-{
-    userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
-};
-
-CMD_UI_COMMANDS.push(
-    {
-        "cmd": "Show settings",
-        "category": "ui",
-        "func": CABLES_CMD_UI.settings,
-        "icon": "settings",
-        "infotext": "cmd_patchsettings"
-    },
-    {
-        "cmd": "Show files",
-        "category": "ui",
-        "func": CABLES_CMD_UI.files,
-        "icon": "file"
-    },
-    {
-        "cmd": "Toggle files",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleFiles,
-        "icon": "file"
-    },
-    {
-        "cmd": "Toggle mute",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleMute
-    },
-    {
-        "cmd": "Search",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showSearch,
-        "icon": "search",
-        "hotkey": "CMD + f"
-    },
-    {
-        "cmd": "Patch background renderer",
-        "category": "ui",
-        "func": CABLES_CMD_UI.togglePatchBgRenderer,
-        "icon": "canvas_patchbg",
-        "hotkey": "CMD + SHIFT + ENTER"
-    },
-    {
-        "cmd": "Patch background renderer",
-        "category": "ui",
-        "func": CABLES_CMD_UI.togglePatchBgPatchField,
-        "icon": "canvas_op",
-        "hotkey": "SHIFT + ENTER"
-    },
-    {
-        "cmd": "Show command pallet",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showCommandPallet,
-        "icon": "search",
-        "hotkey": "CMD + P"
-    },
-    {
-        "cmd": "Show changelog",
-        "category": "cables",
-        "func": CABLES_CMD_UI.showChangelog,
-        "icon": "info"
-    },
-    {
-        "cmd": "Show buildinfo",
-        "category": "cables",
-        "func": CABLES_CMD_UI.showBuildInfo,
-        "icon": "info"
-    },
-    {
-        "cmd": "Center patch",
-        "category": "patch",
-        "func": CABLES_CMD_UI.centerPatchOps,
-        "hotkey": "c",
-        "icon": "patch_center",
-        "infotext": "cmd_centerpatch"
-    },
-    {
-        "cmd": "Start presentation mode",
-        "category": "ui",
-        "func": CABLES_CMD_UI.startPresentationMode
-    },
-    {
-        "cmd": "Toggle flow visualization",
-        "category": "ui",
-        "func": CABLES_CMD_UI.flowVis,
-        "icon": "cables",
-        "hotkey": "f"
-    },
-    {
-        "cmd": "Jobs",
-        "category": "ui",
-        "func": CABLES_CMD_UI.jobs,
-        "icon": "cables"
-    },
-    {
-        "cmd": "Toggle window fullscreen",
-        "category": "ui",
-        "func": CABLES_CMD_UI.windowFullscreen,
-        "icon": "cables"
-    },
-
-    {
-        "cmd": "Toggle snap to grid",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleSnapToGrid,
-        "icon": "command"
-    },
-    {
-        "cmd": "Toggle texture preview",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleBgTexturePreview,
-        "icon": "monitor"
-    },
-    {
-        "cmd": "Ui profiler",
-        "category": "ui",
-        "func": CABLES_CMD_UI.profileUI,
-        "icon": "command"
-    },
-    {
-        "cmd": "Preferences",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showPreferences,
-        "icon": "cables_editor"
-    },
-    {
-        "cmd": "Chat",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showChat,
-        "icon": "command",
-        "frontendOption": "hasCommunity"
-    },
-    {
-        "cmd": "Open remote viewer",
-        "category": "ui",
-        "func": CABLES_CMD_UI.openRemoteViewer,
-        "icon": "command",
-        "frontendOption": "showRemoteViewer"
-    },
-    {
-        "cmd": "Zoom in",
-        "category": "ui",
-        "func": CABLES_CMD_UI.zoomIn,
-        "icon": "plus",
-        "hotkey": "+",
-        "infotext": "cmd_zoomin"
-    },
-    {
-        "cmd": "Zoom out",
-        "category": "ui",
-        "func": CABLES_CMD_UI.zoomOut,
-        "icon": "minus",
-        "hotkey": "-",
-        "infotext": "cmd_zoomout"
-    },
-    {
-        "cmd": "Watch variables",
-        "category": "ui",
-        "func": CABLES_CMD_UI.watchVars,
-        "icon": "align-justify",
-        "infotext": "cmd_watchvars"
-    },
-    {
-        "cmd": "GPU Profiler",
-        "category": "ui",
-        "func": CABLES_CMD_UI.profileGPU,
-        "icon": "align-justify",
-        "infotext": ""
-    },
-    {
-        "cmd": "Toggle Vizlayer Pause",
-        "category": "ui",
-        "func": CABLES_CMD_UI.togglePauseVizLayer,
-        "infotext": ""
-    },
-    {
-        "cmd": "Show Activity Feed",
-        "category": "ui",
-        "func": CABLES_CMD_UI.activityFeed,
-        "icon": "activity",
-        "frontendOption": "hasCommunity"
-    },
-    {
-        "cmd": "Show Welcome",
-        "category": "ui",
-        "func": CABLES_CMD_UI.welcomeTab,
-        "icon": "cables"
-    },
-    {
-        "cmd": "Close all tabs",
-        "category": "ui",
-        "func": CABLES_CMD_UI.closeAllTabs
-    },
-    {
-        "cmd": "Show Canvas Lens",
-        "category": "ui",
-        "func": CABLES_CMD_UI.canvasLens
-    },
-    {
-        "cmd": "Show Tips",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showTips
-    },
-    {
-        "cmd": "Keybindings",
-        "category": "ui",
-        "func": CABLES_CMD_UI.keyBindings
+        new UiProfilerTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
     }
 
-);
+    static zoomOut()
+    {
+        gui.patchView.zoomStep(1);
+    }
+
+    static zoomIn()
+    {
+        gui.patchView.zoomStep(-1);
+    }
+
+    static watchVars()
+    {
+        new WatchVarTab(gui.mainTabs);
+    }
+
+    static jobs()
+    {
+        new JobsTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static togglePauseVizLayer()
+    {
+        userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
+    }
+
+}
