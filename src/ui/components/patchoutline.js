@@ -7,8 +7,8 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import namespaceutils from "../namespaceutils.js";
-import patchCommands from "../commands/cmd_patch.js";
 import { patchStructureQuery } from "./patchstructurequery.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
 
 export default class PatchOutline extends Events
 {
@@ -241,7 +241,7 @@ export default class PatchOutline extends Events
             func()
             {
                 gui.patchView.focusSubpatchOp(item.subPatchId);
-                patchCommands.setOpTitle();
+                CmdPatch.setOpTitle();
             },
         });
 

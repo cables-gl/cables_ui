@@ -4,151 +4,149 @@ import ParamsListener from "../components/opparampanel/params_listener.js";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 import { gui } from "../gui.js";
 
-const CABLES_CMD_TIMELINE = {};
+export { CmdTimeline };
 
-const timelineCommands =
+class CmdTimeline
 {
 
-    /** @type {import("./commands.js").commandObject[]} */
-    "commands": [],
-    "functions": CABLES_CMD_TIMELINE
-};
-
-export default timelineCommands;
-export { CABLES_CMD_TIMELINE as CmdTimeline };
-
-CABLES_CMD_TIMELINE.TimelineSnapTimes = function ()
-{
-    gui.glTimeline.snapSelectedKeyTimes();
-};
-
-CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor = function ()
-{
-    gui.glTimeline.createKeyAtCursor();
-};
-
-CABLES_CMD_TIMELINE.TimelinePlay = function ()
-{
-    gui.corePatch().timer.play();
-    gui.emitEvent("timelineControl", "setPlay", true, gui.corePatch().timer.getTime());
-};
-
-CABLES_CMD_TIMELINE.TimelineForward = function ()
-{
-    gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 2);
-};
-
-CABLES_CMD_TIMELINE.TimelineRewind = function ()
-{
-    gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 2);
-};
-
-CABLES_CMD_TIMELINE.TimelineRewindStart = function ()
-{
-    gui.corePatch().timer.setTime(0);
-};
-
-CABLES_CMD_TIMELINE.TimelinePause = function ()
-{
-    gui.corePatch().timer.pause();
-    gui.emitEvent("timelineControl", "setPlay", false, gui.corePatch().timer.getTime());
-};
-
-CABLES_CMD_TIMELINE.togglePlay = function ()
-{
-    if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
-    else gui.corePatch().timer.play();
-};
-
-CABLES_CMD_TIMELINE.toggleGraph = function ()
-{
-    gui.glTimeline?.toggleGraphLayout();
-};
-
-CABLES_CMD_TIMELINE.openGlTimeline = function ()
-{
-    gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
-};
-
-CABLES_CMD_TIMELINE.toggleTimeline = function ()
-{
-    gui.toggleTimeline();
-};
-
-CABLES_CMD_TIMELINE.hideTimeline = function ()
-{
-    gui.hideTimeline();
-};
-
-CABLES_CMD_TIMELINE.showTimeline = function ()
-{
-    gui.showTiming();
-};
-
-timelineCommands.commands.push(
+    static get commands()
     {
-        "cmd": "toggle timeline",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.toggleTimeline,
-        "icon": "timeline"
-    },
-    {
-        "cmd": "show timeline",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.openGlTimeline,
-        "icon": "timeline"
-    },
-    {
-        "cmd": "hide timeline",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.hideTimeline,
-        "icon": "timeline"
-    },
-    {
-        "cmd": "timeline play",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.TimelinePlay,
-        "icon": "play"
-    },
-    {
-        "cmd": "timeline pause",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.TimelinePause,
-        "icon": "pause"
-    },
-    {
-        "cmd": "timeline rewind",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.TimelineRewind,
-        "icon": "rewind"
-    },
-    {
-        "cmd": "timeline forward",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.TimelineForward,
-        "icon": "fast-forward"
-    },
-    {
-        "cmd": "timeline rewind to 0",
-        "category": "ui",
-        "func": CABLES_CMD_TIMELINE.TimelineRewindStart,
-        "icon": "skip-back"
-    },
-    {
-        "cmd": "add new keyframe at cursor",
-        "category": "timeline",
-        "func": CABLES_CMD_TIMELINE.TimelineCreateKeyAtCursor
-    },
-    {
-        "cmd": "snap selected keys times to fps",
-        "category": "timeline",
-        "func": CABLES_CMD_TIMELINE.TimelineSnapTimes
-    },
-    {
-        "cmd": "timeline toggle line/graph layout",
-        "category": "timeline",
-        "icon": "chart-spline",
-        "func": CABLES_CMD_TIMELINE.toggleGraph
+        return [
+
+            {
+                "cmd": "toggle timeline",
+                "category": "ui",
+                "func": CmdTimeline.toggleTimeline,
+                "icon": "timeline"
+            },
+            {
+                "cmd": "show timeline",
+                "category": "ui",
+                "func": CmdTimeline.openGlTimeline,
+                "icon": "timeline"
+            },
+            {
+                "cmd": "hide timeline",
+                "category": "ui",
+                "func": CmdTimeline.hideTimeline,
+                "icon": "timeline"
+            },
+            {
+                "cmd": "timeline play",
+                "category": "ui",
+                "func": CmdTimeline.TimelinePlay,
+                "icon": "play"
+            },
+            {
+                "cmd": "timeline pause",
+                "category": "ui",
+                "func": CmdTimeline.TimelinePause,
+                "icon": "pause"
+            },
+            {
+                "cmd": "timeline rewind",
+                "category": "ui",
+                "func": CmdTimeline.TimelineRewind,
+                "icon": "rewind"
+            },
+            {
+                "cmd": "timeline forward",
+                "category": "ui",
+                "func": CmdTimeline.TimelineForward,
+                "icon": "fast-forward"
+            },
+            {
+                "cmd": "timeline rewind to 0",
+                "category": "ui",
+                "func": CmdTimeline.TimelineRewindStart,
+                "icon": "skip-back"
+            },
+            {
+                "cmd": "add new keyframe at cursor",
+                "category": "timeline",
+                "func": CmdTimeline.TimelineCreateKeyAtCursor
+            },
+            {
+                "cmd": "snap selected keys times to fps",
+                "category": "timeline",
+                "func": CmdTimeline.TimelineSnapTimes
+            },
+            {
+                "cmd": "timeline toggle line/graph layout",
+                "category": "timeline",
+                "icon": "chart-spline",
+                "func": CmdTimeline.toggleGraph
+            }
+
+        ];
     }
 
-);
+    static TimelineSnapTimes()
+    {
+        gui.glTimeline.snapSelectedKeyTimes();
+    }
+
+    static TimelineCreateKeyAtCursor()
+    {
+        gui.glTimeline.createKeyAtCursor();
+    }
+
+    static TimelinePlay()
+    {
+        gui.corePatch().timer.play();
+        gui.emitEvent("timelineControl", "setPlay", true, gui.corePatch().timer.getTime());
+    }
+
+    static TimelineForward()
+    {
+        gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() + 2);
+    }
+
+    static TimelineRewind()
+    {
+        gui.corePatch().timer.setTime(gui.corePatch().timer.getTime() - 2);
+    }
+
+    static TimelineRewindStart()
+    {
+        gui.corePatch().timer.setTime(0);
+    }
+
+    static TimelinePause()
+    {
+        gui.corePatch().timer.pause();
+        gui.emitEvent("timelineControl", "setPlay", false, gui.corePatch().timer.getTime());
+    }
+
+    static togglePlay()
+    {
+        if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
+        else gui.corePatch().timer.play();
+    }
+
+    static toggleGraph()
+    {
+        gui.glTimeline?.toggleGraphLayout();
+    }
+
+    static openGlTimeline()
+    {
+        gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
+    }
+
+    static toggleTimeline()
+    {
+        gui.toggleTimeline();
+    }
+
+    static hideTimeline()
+    {
+        gui.hideTimeline();
+    }
+
+    static showTimeline()
+    {
+        gui.showTiming();
+    }
+
+}

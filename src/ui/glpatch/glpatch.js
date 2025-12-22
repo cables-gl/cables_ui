@@ -20,7 +20,7 @@ import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
-import { CmdOp } from "../commands/cmd_op.js";
+import { CmdOps } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 import GlLink from "./gllink.js";
 import { DomEvents } from "../theme.js";

@@ -1,9 +1,9 @@
 import { CmdDebug } from "./cmd_debug.js";
 import { CmdFiles } from "./cmd_files.js";
-import opCommands from "./cmd_op.js";
-import patchCommands from "./cmd_patch.js";
-import rendererCommands from "./cmd_renderer.js";
-import timelineCommands from "./cmd_timeline.js";
+import { CmdOps } from "./cmd_op.js";
+import { CmdPatch } from "./cmd_patch.js";
+import { CmdRenderer } from "./cmd_renderer.js";
+import { CmdTimeline } from "./cmd_timeline.js";
 import { CmdUi } from "./cmd_ui.js";
 
 /**
@@ -22,24 +22,23 @@ import { CmdUi } from "./cmd_ui.js";
 export let cblCommands = [];
 
 cblCommands = cblCommands.concat(CmdDebug.commands);
-cblCommands = cblCommands.concat(patchCommands.commands);
-cblCommands = cblCommands.concat(rendererCommands.commands);
-cblCommands = cblCommands.concat(timelineCommands.commands);
+cblCommands = cblCommands.concat(CmdPatch.commands);
+cblCommands = cblCommands.concat(CmdRenderer.commands);
+cblCommands = cblCommands.concat(CmdTimeline.commands);
 cblCommands = cblCommands.concat(CmdUi.commands);
-cblCommands = cblCommands.concat(opCommands.commands);
+cblCommands = cblCommands.concat(CmdOps.commands);
 cblCommands = cblCommands.concat(CmdFiles.commands);
 
 const CMD = {
     "FILES": CmdFiles,
     "UI": CmdUi,
     "DEBUG": CmdDebug,
+    "OP": CmdOps,
+    "PATCH": CmdPatch,
+    "RENDERER": CmdRenderer,
+    "TIMELINE": CmdTimeline,
     "commands": cblCommands
 };
-
-CMD.PATCH = patchCommands.functions;
-CMD.OP = opCommands.functions;
-CMD.RENDERER = rendererCommands.functions;
-CMD.TIMELINE = timelineCommands.functions;
 
 export default CMD;
 

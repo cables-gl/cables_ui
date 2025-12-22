@@ -952,7 +952,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Array<UiOp>}
+     * @returns {Op[]}
      */
     getSelectedOps()
     {

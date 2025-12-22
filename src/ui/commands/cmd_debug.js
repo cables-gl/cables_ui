@@ -177,13 +177,13 @@ class CmdDebug
 
     static showUserPrefs()
     {
-        const t = new tab_PreferencesDebug(gui.mainTabs);
+        new tab_PreferencesDebug(gui.mainTabs);
         gui.maintabPanel.show();
     }
 
     static showThreeDebug()
     {
-        const t = new TabThreeDebug(gui.mainTabs);
+        new TabThreeDebug(gui.mainTabs);
         gui.maintabPanel.show();
     }
 
@@ -229,7 +229,7 @@ class CmdDebug
 
     static newGlguiTab()
     {
-        const t = new GlGuiTab(gui.mainTabs);
+        new GlGuiTab(gui.mainTabs);
     }
 
     static toggleMultiplayer()
