@@ -96,7 +96,6 @@ export default class Preferences
 
         this.setSwitchValue("quickLinkLongPress", userSettings.get("quickLinkLongPress"));
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
-        this.setSwitchValue("doubleClickAction", userSettings.get("doubleClickAction"));
 
         // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);

@@ -417,7 +417,6 @@ export default class GlPatch extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, (key, value) =>
         {
-            this.dblClickAction = userSettings.get("doubleClickAction");
             this.vizFlowMode = userSettings.get("glflowmode");
             this.updateVizFlowMode();
 
@@ -783,6 +782,7 @@ export default class GlPatch extends Events
         try { this.#cgl.canvas.releasePointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
+        // gui.longPressConnector.longPressCancel();
         this.#rectInstancer.interactive = true;
 
         if (!this.#selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
