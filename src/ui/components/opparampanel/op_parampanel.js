@@ -813,7 +813,7 @@ class OpParampanel extends Events
             "title": "Manage Op Code",
             func()
             {
-                CmdOp.manageOp();
+                CmdOps.manageOp();
             },
         });
 
@@ -821,7 +821,7 @@ class OpParampanel extends Events
             "title": "Clone Op",
             func()
             {
-                CmdOp.cloneSelectedOp();
+                CmdOps.cloneSelectedOp();
             },
         });
 

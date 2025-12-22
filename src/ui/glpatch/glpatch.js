@@ -264,7 +264,7 @@ export default class GlPatch extends Events
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
         gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
-        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdOp.editOp(true); });
+        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdOps.editOp(true); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
         {
             this.viewBox.centerSelectedOps();
