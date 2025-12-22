@@ -58,6 +58,7 @@ export default class TabKeybindings
         html += "<tr>";
         html += "<td class=\"colname\">Action</td>";
         html += "<td class=\"colname\">Command</td>";
+        html += "<td class=\"colname\"> </td>";
         html += "<tr>";
 
         for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
@@ -72,14 +73,29 @@ export default class TabKeybindings
             html += "</td>";
             html += "<td>" + cmdTitle;
             html += "</td>";
+            html += "</td>";
+            html += "<td>";
+            html += "<a id=\"inpbind" + i + "\" class=\"button-small\" >edit</a>";
+            html += "</td>";
             html += "</tr>";
         }
         html += "</table>";
 
         ele.byId("debugger_log").innerHTML = html;
+
+        for (let i = 0; i < InputBindings.MOUSE_ACTIONS.length; i++)
+        {
+            const action = InputBindings.MOUSE_ACTIONS[i].id;
+            ele.clickable(ele.byId("inpbind" + i), () =>
+            {
+
+                this.editBinding(action);
+            });
+
+        }
     }
 
-    editBinding(bind)
+    editBinding(actionId)
     {
         let html = "";
 
@@ -105,7 +121,11 @@ export default class TabKeybindings
                 "callback": () =>
                 {
 
-                    console.log("jajajaja", ele.byId("cmdselect").value);
+                    const cmdname = ele.byId("cmdselect").value;
+                    const cmd = Commands.getCommandByName(cmdname);
+                    console.log("jajajaja", cmd);
+                    gui.inputBindings.setBindingFunc(actionId, cmd.func);
+                    this.update();
                 }
             }
         });

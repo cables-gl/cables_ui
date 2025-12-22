@@ -74,24 +74,32 @@ class Commands
      */
     static exec(cmd)
     {
-        let found = false;
+        const found = Commands.getCommandByName(cmd);
+
+        if (found && found.func)
+        {
+            found.func();
+        }
+        else
+        {
+            console.warn("cmd has no func", cmd, found);
+        }
+        if (!found)console.warn("command not found:" + cmd);
+    }
+
+    /**
+     * @param {string} name
+     */
+    static getCommandByName(name)
+    {
+
         for (let i = 0; i < CMD.commands.length; i++)
         {
-            if (Commands.commands[i].cmd == cmd)
+            if (Commands.commands[i].cmd == name)
             {
-                if (Commands.commands[i].func)
-                {
-                    Commands.commands[i].func();
-                    found = true;
-                }
-                else
-                {
-                    console.warn("cmd has no func", cmd, CMD.commands[i]);
-                }
+                return Commands.commands[i];
             }
         }
-
-        if (!found)console.warn("command not found:" + cmd);
     }
 
     /**
@@ -111,7 +119,6 @@ class Commands
         return cmd;
     }
 }
-const CMD = {
-};
+const CMD = { };
 
 export default CMD;
