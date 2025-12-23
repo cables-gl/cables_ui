@@ -3,6 +3,7 @@
  */
 
 import { Link, Op, Port } from "cables";
+import { Logger } from "cables-shared-client";
 import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
@@ -16,6 +17,7 @@ CABLES.OpUnLinkTempReLinkP2 = null;
 
 class UiOp extends Op
 {
+    #log = new Logger("uiop");
     static PORT_UIATTR_HOVER = "hover";
 
     constructor(patch, objName, id = null)
