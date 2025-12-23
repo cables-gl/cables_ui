@@ -129,7 +129,6 @@ export class InputBindings
 
     save()
     {
-        console.log("saved userbinds");
         const addbinds = [];
         for (let i = 0; i < InputBindings.ACTIONS.length; i++)
         {
@@ -141,7 +140,6 @@ export class InputBindings
             }
 
         }
-        console.log("addbinds", addbinds);
         userSettings.set(InputBindings.USERSETTINGNAME, addbinds);
 
     }
@@ -175,7 +173,6 @@ export class InputBindings
         {
             b.func = f || b.default;
         }
-        console.log("userint", userInteraction);
         if (userInteraction) this.save();
     }
 

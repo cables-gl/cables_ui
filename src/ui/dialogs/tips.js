@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client/index.js";
 import { userSettings } from "../components/usersettings.js";
-import { GuiText } from  "../text.js";
+import { GuiText } from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
 /**

@@ -124,7 +124,6 @@ export default class TabInputBindings
             "text": "",
             "html": html,
             "showOkButton": true,
-            "showCancl": true,
             "okButton": {
                 "callback": () =>
                 {

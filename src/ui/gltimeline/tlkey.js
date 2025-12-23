@@ -264,7 +264,7 @@ export class TlKey extends Events
             if (this.#glTl.isSelecting()) return;
             if (TlKeys.startDragTime == -1111)
             {
-                console.log("cant drag bez...", TlKeys.dragStarted, this.#glTl.isSelecting());
+                // console.log("cant drag bez...", TlKeys.dragStarted, this.#glTl.isSelecting());
                 return;
             }
 

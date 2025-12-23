@@ -285,14 +285,14 @@ export class TlAnimLine extends Events
 
         const title = new TlTitle(this.#glTl, parent || this.#glTl.tlTimeScrollContainer, anim, { "port": p, "animLine": this, "title": this.#options.title });
 
-        title.on(TlTitle.EVENT_CLICK_OPNAME, (title, e) =>
+        title.on(TlTitle.EVENT_CLICK_OPNAME, (title2, e) =>
         {
             if (!e.shiftKey) gui.patchView.unselectAllOps();
-            if (this.#ops[title.index])
+            if (this.#ops[title2.index])
             {
-                gui.patchView.selectOpId(this.#ops[title.index].id);
-                gui.patchView.focusOp(this.#ops[title.index].id);
-                gui.patchView.centerSelectOp(this.#ops[title.index].id);
+                gui.patchView.selectOpId(this.#ops[title2.index].id);
+                gui.patchView.focusOp(this.#ops[title2.index].id);
+                gui.patchView.centerSelectOp(this.#ops[title2.index].id);
             }
             this.updateTitles();
         });

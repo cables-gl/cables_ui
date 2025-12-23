@@ -202,6 +202,9 @@ export default class SuggestionDialog
         this.#eleDialog.style.top = y + "px";
     }
 
+    /**
+     * @param {string} id
+     */
     action(id)
     {
         this.close();

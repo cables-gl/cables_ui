@@ -62,6 +62,7 @@ import IconBar from "./elements/iconbar.js";
 import { Commands } from "./commands/commands.js";
 import { InputBindings } from "./inputbindings.js";
 import TabInputBindings from "./components/tabs/tab_keybinds.js";
+import { CmdDebug } from "./commands/cmd_debug.js";
 
 /**
  * @type {Gui}
@@ -1039,7 +1040,6 @@ export default class Gui extends Events
 
     toggleTimeline()
     {
-        console.log(" gui toggle timeline");
         if (this.glTimeline) this.glTimeline.toggle();
         else
             this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
@@ -1499,7 +1499,7 @@ export default class Gui extends Events
         });
 
         ele.byId("nav_gpuprofiler").addEventListener("click", () => { CmdUi.profileGPU(); });
-        ele.byId("nav_log").addEventListener("click", () => { CABLES.CMD.DEBUG.logConsole(); });
+        ele.byId("nav_log").addEventListener("click", () => { CmdDebug.logConsole(); });
 
         ele.byId("nav_profiler").addEventListener("click", () => { CmdPatch.patchProfiler(); });
         ele.byId("nav_patchanalysis").addEventListener("click", () => { CmdPatch.analyze(); });

@@ -1,14 +1,18 @@
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { GuiText } from  "../text.js";
+import { GuiText } from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
 export default class Exporter
 {
-    constructor(project, versionId, type = null)
+    #project;
+
+    /**
+     * @param {any} project
+     */
+    constructor(project)
     {
-        this._project = project;
-        this._exportType = type;
+        this.#project = project;
     }
 
     show()
@@ -19,8 +23,8 @@ export default class Exporter
             return;
         }
 
-        const projectId = this._project.shortId || this._project._id;
+        const projectId = this.#project.shortId || this.#project._id;
 
-        platform.exportPatch(projectId, this._exportType);
+        platform.exportPatch(projectId);
     }
 }

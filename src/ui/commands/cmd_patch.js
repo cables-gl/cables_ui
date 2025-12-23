@@ -444,7 +444,6 @@ class CmdPatch
         if (platform.isSaving())
         {
             notifyWarn("already saving...");
-            console.log("already saving...");
             return;
         }
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
@@ -851,9 +850,9 @@ class CmdPatch
             true);
     }
 
-    static export(type)
+    static export()
     {
-        const exporter = new Exporter(gui.project(), platform.getPatchVersion(), type);
+        const exporter = new Exporter(gui.project());
         exporter.show();
     }
 

@@ -337,28 +337,28 @@ export class TlKeys extends Events
 
         if (this.shouldDrawSpline() && !this.shouldDrawGraphSpline())
         {
-            const y = Math.floor(this.animLine.height / 2) - 2;
-            let t = 0;
+            const yy = Math.floor(this.animLine.height / 2) - 2;
+            let tt = 0;
             let x = 0;
 
             if (this.anim.keys.length > 0 && this.anim.keys[0].time != 0)
             {
-                pointsSortBefore.push(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), y, z);
+                pointsSortBefore.push(this.#glTl.view.timeToPixel(0 - this.#glTl.view.offset), yy, z);
                 let t = this.anim.keys[0].time;
-                pointsSortBefore.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+                pointsSortBefore.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), yy, z);
             }
 
             for (let i = 0; i < this.anim.keys.length; i++)
             {
-                t = this.anim.keys[i].time;
-                pointsSort.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
+                tt = this.anim.keys[i].time;
+                pointsSort.push(this.#glTl.view.timeToPixel(tt - this.#glTl.view.offset), yy, z);
             }
 
             if (this.anim.keys.length > 0)
             {
-                t = this.anim.keys[this.anim.keys.length - 1].time;
-                pointsSortAfter.push(this.#glTl.view.timeToPixel(t - this.#glTl.view.offset), y, z);
-                pointsSortAfter.push(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#glTl.view.offset), y, z);
+                tt = this.anim.keys[this.anim.keys.length - 1].time;
+                pointsSortAfter.push(this.#glTl.view.timeToPixel(tt - this.#glTl.view.offset), yy, z);
+                pointsSortAfter.push(this.#glTl.view.timeToPixel(this.#glTl.duration - this.#glTl.view.offset), yy, z);
             }
 
         }
@@ -613,7 +613,7 @@ export class TlKeys extends Events
             let ry = y - this.getKeyHeight2() - 2;
             if (this.shouldDrawGraphSpline()) ry = y - this.getKeyWidth2();
 
-            if (rx != rx || ry != ry)console.log("garlic nan", animKey.time, this.#glTl.view.offset, rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
+            if (rx != rx || ry != ry)console.log("tlnan", animKey.time, this.#glTl.view.offset, rx, ry, this.getKeyWidth(), this.getKeyHeight(), y, animKey.value, this.animLine.valueToPixel(animKey.value), this.#parentRect.h);
 
             let z = -0.6;
             // if (this.#anim.tlActive)z = -0.9;
@@ -670,20 +670,20 @@ export class TlKeys extends Events
                 if (i == this.#keys.length - 1)w = 9999;
 
                 let h = this.animLine.height - 4;// whyyy // -(this.getKeyHeight2()) + 2;
-                let y = this.animLine.posY();// -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
+                let yy = this.animLine.posY();// -this.animLine.height / 2 + (this.getKeyHeight2() + 2);
 
                 if (this.isLayoutGraph())
                 {
                     if (kr2)
                     {
                         h = Math.abs((kr.y + kr.h / 2) - (kr2.y + kr2.h / 2));
-                        y += Math.min(kr.y, kr2.y + kr2.h);
+                        yy += Math.min(kr.y, kr2.y + kr2.h);
                     }
-                    else { h = 0; y += kr.y; }
+                    else { h = 0; yy += kr.y; }
                 }
 
                 k.areaRect.setSize(w, h);
-                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), y);
+                k.areaRect.setPosition(kr.x + this.getKeyWidth2(), yy);
                 if (animKey.anim.uiAttribs.readOnly)k.areaRect.setOpacity(0.1);
                 else k.areaRect.setOpacity(0.4);
             }
@@ -802,7 +802,6 @@ export class TlKeys extends Events
                             if (TlKeys.dragStarted) return;
                             if (!e.shiftKey) this.#glTl.unSelectAllKeys("key up");
 
-                            console.log("click,.,.,.", e.shiftKey);
                             this.#glTl.selectKey(key, this.#anim);
                         }
                         this.click = false;
@@ -829,12 +828,7 @@ export class TlKeys extends Events
 
                 keyRect.on(GlRect.EVENT_DRAGSTART, (_rect, _x, _y, button, e) =>
                 {
-                    console.log("key startdrag1", TlKeys.dragStarted);
-                    if (this.#glTl.isSelecting())
-                    {
-                        console.log("isselecting...");
-                        return;
-                    }
+                    if (this.#glTl.isSelecting()) return;
 
                     TlKeys.dragStartX = e.offsetX;
                     TlKeys.dragStartY = e.offsetY;
@@ -869,7 +863,7 @@ export class TlKeys extends Events
                     if (this.#glTl.isSelecting()) return;
                     if (TlKeys.startDragTime == -1111)
                     {
-                        console.log("cant drag....", TlKeys.dragStarted, this.#glTl.isSelecting());
+                        // console.log("cant drag....", TlKeys.dragStarted, this.#glTl.isSelecting());
                         return;
                     }
 
@@ -920,8 +914,8 @@ export class TlKeys extends Events
                         "title": "timeline move keys",
                         "undo": () =>
                         {
-                            for (let i = 0; i < undosel.length; i++)
-                                undosel[i].anim.deserialize(undosel[i], true);
+                            for (let ii = 0; ii < undosel.length; ii++)
+                                undosel[ii].anim.deserialize(undosel[ii], true);
 
                             this.#glTl.updateAllElements();
                         },
@@ -990,8 +984,8 @@ export class TlKeys extends Events
 
     getNumSplinePoints()
     {
-        return this.#spline?.getNumPoints() +
-            this.#splineAfter?.getNumPoints() +
-            this.#splineBefore?.getNumPoints();
+        return (this.#spline?.getNumPoints() || 0) +
+            (this.#splineAfter?.getNumPoints() || 0) +
+            (this.#splineBefore?.getNumPoints() || 0);
     }
 }

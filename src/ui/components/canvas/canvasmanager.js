@@ -204,9 +204,9 @@ export default class CanvasManager
     }
 
     /**
-     * @param {HTMLElement} ele
+     * @param {HTMLElement} elem
      */
-    menu(ele)
+    menu(elem)
     {
         let items = [];
 
@@ -217,17 +217,16 @@ export default class CanvasManager
             items.push({ "title": i + ": " + ctx.getGApiName(),
                 "func": () =>
                 {
-                    console.log("switch canvas", ctx);
                     ctx.canvas.focus();
                     this.setCurrentCanvas(ctx.canvas);
                     this.updateCanvasUi();
                 } });
         }
 
-        this.#menuEle = ele;
+        this.#menuEle = elem;
         this.updateCanvasUi();
 
-        contextMenu.show({ "items": items }, ele);
+        contextMenu.show({ "items": items }, elem);
     }
 
     popOut()
@@ -299,7 +298,6 @@ export default class CanvasManager
 
         this.subWindow.addEventListener("resize", () =>
         {
-            // console.log(this.subWindow.innerWidth, this.subWindow.innerHeight);
             gui.corePatch().cgl.setSize(this.subWindow.innerWidth, this.subWindow.innerHeight);
             gui.corePatch().cgl.updateSize();
         });

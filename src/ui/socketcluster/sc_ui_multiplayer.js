@@ -5,6 +5,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
+import { CmdUi } from "../commands/cmd_ui.js";
 
 export default class ScUiMultiplayer extends Events
 {
@@ -482,9 +483,9 @@ export default class ScUiMultiplayer extends Events
             el.innerHTML = text;
             text = el.textContent || el.innerText || "";
             const maxLength = 32;
-            if (GuiText.length > maxLength)
+            if (text.length > maxLength)
             {
-                text = GuiText.substring(0, maxLength) + "...";
+                text = text.substring(0, maxLength) + "...";
             }
 
             notify(payload.username + " says:", text, {
@@ -492,7 +493,7 @@ export default class ScUiMultiplayer extends Events
                 "buttons": [
                     ["<button>Open Chat</button>", function ()
                     {
-                        CABLES.CMD.UI.showChat();
+                        CmdUi.showChat();
                     }]
                 ]
             });

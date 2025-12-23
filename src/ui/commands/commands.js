@@ -42,14 +42,14 @@ class Commands
                 if (!Commands.commands[i].category) console.warn("cmd has no category ", Commands.commands[i].cmd);
         }
 
-        CMD.FILES = CmdFiles,
-        CMD.UI = CmdUi,
-        CMD.DEBUG = CmdDebug,
-        CMD.OP = CmdOps,
-        CMD.PATCH = CmdPatch,
-        CMD.RENDERER = CmdRenderer,
-        CMD.TIMELINE = CmdTimeline,
-        CMD.commands = Commands.commands,
+        CMD.FILES = CmdFiles;
+        CMD.UI = CmdUi;
+        CMD.DEBUG = CmdDebug;
+        CMD.OP = CmdOps;
+        CMD.PATCH = CmdPatch;
+        CMD.RENDERER = CmdRenderer;
+        CMD.TIMELINE = CmdTimeline;
+        CMD.commands = Commands.commands;
         CMD.exec = Commands.exec;
     }
 

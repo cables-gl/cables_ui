@@ -96,11 +96,6 @@ export class tlView
         this.setMinVal(v);
     }
 
-    set maxVal(v)
-    {
-        this.setMaxVal(v);
-    }
-
     get minVal()
     {
         return this.#frameMinVal;
@@ -109,6 +104,11 @@ export class tlView
     get maxVal()
     {
         return this.#frameMaxVal;
+    }
+
+    set maxVal(v)
+    {
+        this.setMaxVal(v);
     }
 
     checkMinMaxVals()
@@ -275,8 +275,6 @@ export class tlView
      */
     scaleValues(delta)
     {
-        console.log("delta", delta);
-        delta = delta;
         const nmin = this.minVal *= delta;
         const nmax = this.maxVal *= delta;
         this.setMinVal(Math.min(nmin, nmax));
