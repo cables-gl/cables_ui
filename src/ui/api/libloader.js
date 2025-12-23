@@ -59,6 +59,7 @@ export default class LibLoader
                     });
                     this.checkAllLoaded();
                     let libsNotLoaded = this._loadJsLibs || [];
+                    libsNotLoaded = libsNotLoaded.map((lib) => { return lib.scriptSrc; });
                     if (Array.isArray(pathsNotFound)) libsNotLoaded = pathsNotFound;
                     libsNotLoaded.forEach((libNotLoaded) =>
                     {
