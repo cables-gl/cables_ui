@@ -1475,8 +1475,7 @@ export class GlTimeline extends Events
 
         for (let i = 0; i < this.#selectedKeys.length; i++)
         {
-
-            if (this.canSelectKey(this.#selectedKeys[i])) continue;
+            if (!this.canSelectKey(this.#selectedKeys[i])) continue;
             this.#selectedKeyAnims[i].remove(this.#selectedKeys[i]);
             const op = this.getPortForAnim(this.#selectedKeys[i].anim)?.op;
             gui.savedState.setUnSaved("deleted keys", op?.getSubPatch());
