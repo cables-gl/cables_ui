@@ -58,15 +58,14 @@ export default class LibLoader
                         this._libsToLoad.splice(i, 1);
                     });
                     this.checkAllLoaded();
-                    if (pathsNotFound)
+                    let libsNotLoaded = this._loadJsLibs || [];
+                    if (Array.isArray(pathsNotFound)) libsNotLoaded = pathsNotFound;
+                    libsNotLoaded.forEach((libNotLoaded) =>
                     {
-                        pathsNotFound.forEach((pathNotFound) =>
-                        {
-                            const failedScript = this._loadJsLibs.find((script) => { return script.scriptSrc.includes(pathNotFound); });
-                            this._log.error(failedScript.scriptSrc);
-                            if (gui) gui.emitEvent("libLoadError", failedScript.libName);
-                        });
-                    }
+                        const failedScript = this._loadJsLibs.find((script) => { return script.scriptSrc.includes(libNotLoaded); });
+                        this._log.error(failedScript.scriptSrc);
+                        if (gui) gui.emitEvent("libLoadError", failedScript.libName);
+                    });
                 });
             }
         }
