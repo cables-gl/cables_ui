@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
-import { GuiText } from  "../../text.js";
+import { GuiText } from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
 import paramsHelper from "./params_helper.js";

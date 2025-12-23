@@ -71,7 +71,7 @@ const defaultOpNames =
     "StringLength": "Ops.String.StringLength_v2",
     "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
-    "StringToArray": "Ops.Array.StringToArray_v2",
+    "StringToArray": "Ops.Array.StringToArray_v3",
     "arrayToString": "Ops.Array.ArrayToString_v3",
     "stringConcat": "Ops.String.Concat_v2",
 
