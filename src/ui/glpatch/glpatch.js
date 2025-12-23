@@ -2019,7 +2019,7 @@ export default class GlPatch extends Events
     {
         this.#hoverLink = link;
 
-        if (link.link && link && e)
+        if (link && link.link && e)
         {
             clearTimeout(this._ttTImeout);
             updateHoverToolTip(e, link.link.portOut, link);
