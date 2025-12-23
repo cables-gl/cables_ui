@@ -1,10 +1,12 @@
-import { ele } from "cables-shared-client";
+import { Logger, ele } from "cables-shared-client";
 import { Patch, utils } from "cables";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { createEditor } from "../editor.js";
 import { UiOp } from "../../core_extend_op.js";
+
+const log = new Logger("parmashelper");
 
 const paramsHelper =
 {
@@ -146,10 +148,10 @@ const paramsHelper =
     "openParamSpreadSheetEditor": (opid, portname, cb) =>
     {
         const op = gui.corePatch().getOpById(opid);
-        if (!op) return console.warn("paramedit op not found");
+        if (!op) return log.warn("paramedit op not found");
 
         const port = op.getPortByName(portname);
-        if (!port) return console.warn("paramedit port not found");
+        if (!port) return log.warn("paramedit port not found");
 
         new SpreadSheetTab(gui.mainTabs, port, port.get(), {
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
@@ -190,11 +192,11 @@ const paramsHelper =
     "openParamStringEditor": (opid, portname, cb, userInteraction) =>
     {
         const op = gui.corePatch().getOpById(opid);
-        if (!op) return console.warn("paramedit op not found", opid);
+        if (!op) return log.warn("paramedit op not found", opid);
         editorSession.startLoadingTab();
 
         const port = op.getPortByName(portname);
-        if (!port) return console.warn("paramedit port not found", portname);
+        if (!port) return log.warn("paramedit port not found", portname);
 
         let name = gui.mainTabs.getUniqueTitle(op.name + " " + port.name);
 

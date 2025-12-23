@@ -567,7 +567,7 @@ export default class OpSelect
     }
 
     /**
-     * @param {{ subPatch?: any; y?: any; onOpAdd?: any; search?: any; }} options
+     * @param {object} options
      * @param {import("../core_extend_op.js").UiOp | import("cables").Op} [linkOp]
      * @param {Port} [linkPort]
      * @param {import("cables").Link} [link]

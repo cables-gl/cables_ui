@@ -33,6 +33,19 @@ export default class GlLink
     _offsetXInput = 0;
     _offsetXOutput = 0;
 
+    /** @type {GlCable} */
+    #cableSub;
+
+    /** @type {GlCable} */
+    #cable;
+    #visible;
+
+    /** @type {Link} */
+    #link;
+
+    /** @type {GlPatch} */
+    #glPatch;
+
     /**
      *
      * @param {GlPatch} glpatch
@@ -55,16 +68,14 @@ export default class GlLink
     {
         this._id = id;
 
-        /** @type {Link} */
-        this._link = link;
-        this._visible = visible;
+        this.#link = link;
+        this.#visible = visible;
 
         /** @type {GlCable} */
-        this._cable = null;
+        this.#cable = null;
         this._debugColor = true;
 
-        /** @type {GlPatch} */
-        this._glPatch = glpatch;
+        this.#glPatch = glpatch;
         this._type = type;
         this._portNameInput = portNameIn;
         this._portNameOutput = portNameOut;
@@ -75,35 +86,35 @@ export default class GlLink
         this._subPatch = subpatch;
 
         /** @type {GlCable} */
-        this._cableSub = null;
+        this.#cableSub = null;
 
         this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
         this.crossSubpatch = false;
 
         /** @type {GlRect} */
-        this._buttonRect = this._glPatch.rectDrawer.createRect({ "name": "buttonrect", "interactive": true });
+        this._buttonRect = this.#glPatch.rectDrawer.createRect({ "name": "buttonrect", "interactive": true });
         this._buttonRect.setShape(1);
 
         this._buttonRect.on("mouseup", (e) =>
         {
-            this._glPatch.startLinkButtonDrag = null;
+            this.#glPatch.startLinkButtonDrag = null;
 
-            if (this._glPatch.isDraggingPort())
+            if (this.#glPatch.isDraggingPort())
             {
-                if (this._glPatch.portDragLine.isActive)
+                if (this.#glPatch.portDragLine.isActive)
                 {
 
-                    const fromOp = gui.corePatch().getOpById(this._glPatch.portDragLine._startPortOpId);
+                    const fromOp = gui.corePatch().getOpById(this.#glPatch.portDragLine._startPortOpId);
 
                     if (!fromOp) return;
-                    const fromPort = fromOp.getPortById(this._glPatch.portDragLine._startPortId);
+                    const fromPort = fromOp.getPortById(this.#glPatch.portDragLine._startPortId);
 
                     let otherPort = link.portOut;
 
                     if (!otherPort || !fromPort)
                     {
-                        this.#log.warn("port not found", otherPort, fromPort, this._glPatch.portDragLine);
+                        this.#log.warn("port not found", otherPort, fromPort, this.#glPatch.portDragLine);
                         return;
                     }
 
@@ -111,8 +122,8 @@ export default class GlLink
                     {
                         if (fromPort.direction != link.portIn.direction) otherPort = link.portIn;
 
-                        this._link.remove();
-                        this._glPatch.portDragLine.stop();
+                        this.#link.remove();
+                        this.#glPatch.portDragLine.stop();
 
                         gui.corePatch().link(
                             fromOp, fromPort.name, otherPort.op, otherPort.name);
@@ -126,19 +137,17 @@ export default class GlLink
             const pressTime = performance.now() - this._buttonDownTime;
 
             if (
-                this._buttonDown == this._glPatch.mouseState.buttonForRemoveLink &&
+                this._buttonDown == this.#glPatch.mouseState.buttonForRemoveLink &&
                 this._mouseDownX - e.offsetX == 0 &&
                 this._mouseDownY - e.offsetY == 0 &&
                 pressTime < gluiconfig.clickMaxDuration)
             {
-                this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
-                // console
+                this.#glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
             if (
-                this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
+                this._buttonDown == this.#glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
             {
-                console.log("pressssssss");
                 const opIn = this.#glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
 
                 const pIn = opIn.getPortById(this._portIdInput);
@@ -153,11 +162,11 @@ export default class GlLink
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
-                            const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-                            const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+                            const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
+                            const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
 
                             let x = opOut.uiAttribs.translate.x;
-                            let y = this._glPatch.viewBox.mousePatchY;
+                            let y = this.#glPatch.viewBox.mousePatchY;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
 
                             if (userSettings.get("snapToGrid2"))
@@ -168,7 +177,7 @@ export default class GlLink
 
                             op.setUiAttrib(
                                 {
-                                    "subPatch": this._glPatch.subPatch,
+                                    "subPatch": this.#glPatch.subPatch,
                                     "translate": {
                                         "x": x,
                                         "y": y
@@ -181,9 +190,9 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (this._glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
+            if (this.#glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
             {
-                this._glPatch.startLinkButtonDrag = this;
+                this.#glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;
             }
 
@@ -195,20 +204,20 @@ export default class GlLink
         });
 
         this._initSubCables();
-        this._glPatch.addLink(this);
+        this.#glPatch.addLink(this);
         this.updateVisible();
         this.update();
     }
 
     get hovering()
     {
-        if (this._cableSub && this._cableSub.hovering) return true;
-        return this._cable.hovering;
+        if (this.#cableSub && this.#cableSub.hovering) return true;
+        return this.#cable.hovering;
     }
 
     get type() { return this._type; }
 
-    get link() { return this._link; }
+    get link() { return this.#link; }
 
     get opIn() { return this.#glOpIn; }
 
@@ -232,9 +241,9 @@ export default class GlLink
 
     startDragging(e)
     {
-        if (this._glPatch.spacePressed || this._glPatch.linkStartedDragging) return;
+        if (this.#glPatch.spacePressed || this.#glPatch.linkStartedDragging) return;
 
-        this._glPatch.linkStartedDragging = true;
+        this.#glPatch.linkStartedDragging = true;
 
         hideToolTip();
         const
@@ -251,20 +260,20 @@ export default class GlLink
             pIn = opIn.getPortById(this._portIdInput),
             pOut = opOut.getPortById(this._portIdOutput);
 
-        const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-        const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+        const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
+        const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
 
         if (distIn < distOut)
         {
-            const glop = this._glPatch.getGlOp(opOut);
+            const glop = this.#glPatch.getGlOp(opOut);
             const glport = glop.getGlPort(pOut.name);
-            this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, this._startDragEvent);
+            this.#glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, this._startDragEvent);
         }
         else
         {
-            const glop = this._glPatch.getGlOp(opIn);
+            const glop = this.#glPatch.getGlOp(opIn);
             const glport = glop.getGlPort(pIn.name);
-            this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
+            this.#glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
         }
 
         if (!e.altKey)
@@ -273,11 +282,11 @@ export default class GlLink
 
     _initSubCables()
     {
-        if (this._cable) this._cable = this._cable.dispose();
-        if (this._cableSub) this._cableSub = this._cableSub.dispose();
+        if (this.#cable) this.#cable = this.#cable.dispose();
+        if (this.#cableSub) this.#cableSub = this.#cableSub.dispose();
 
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
-        this._glPatch.setDrawableColorByType(this._cable, this._type);
+        this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+        this.#glPatch.setDrawableColorByType(this.#cable, this._type);
 
         /** @type {UiOp} */
         const op1 = gui.corePatch().getOpById(this._opIdInput);
@@ -286,10 +295,10 @@ export default class GlLink
         if (!op1 || !op1.uiAttribs || !op2 || !op2.uiAttribs) return;
         this.crossSubpatch = op1.uiAttribs.subPatch != op2.uiAttribs.subPatch;
 
-        if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
-        if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
+        if (op1.uiAttribs.subPatch != this._subPatch) this.#cableSub = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
+        if (op2.uiAttribs.subPatch != this._subPatch) this.#cableSub = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
 
-        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type);
+        if (this.#cableSub) this.#glPatch.setDrawableColorByType(this.#cableSub, this._type);
 
         if (this.crossSubpatch)
         {
@@ -318,17 +327,17 @@ export default class GlLink
 
     updateLineStyle()
     {
-        this._cable.dispose();
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+        this.#cable.dispose();
+        this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
 
-        this._glPatch.setDrawableColorByType(this._cable, this._type);
+        this.#glPatch.setDrawableColorByType(this.#cable, this._type);
         this.update();
     }
 
     isInCurrentSubPatch()
     {
-        const sub = this._glPatch.getCurrentSubPatch();
-        if (this._cable.subPatch == sub || this._cableSub.subPatch == sub) return true;
+        const sub = this.#glPatch.getCurrentSubPatch();
+        if (this.#cable.subPatch == sub || this.#cableSub.subPatch == sub) return true;
 
         return false;
     }
@@ -344,14 +353,14 @@ export default class GlLink
 
         if (
             (
-                this.#glOpIn.uiAttribs.subPatch != this._cable.subPatch &&
-                this.#glOpOut.uiAttribs.subPatch != this._cable.subPatch
+                this.#glOpIn.uiAttribs.subPatch != this.#cable.subPatch &&
+                this.#glOpOut.uiAttribs.subPatch != this.#cable.subPatch
             )
             ||
             (
-                this._cableSub &&
-                this.#glOpIn.uiAttribs.subPatch != this._cableSub.subPatch &&
-                this.#glOpOut.uiAttribs.subPatch != this._cableSub.subPatch
+                this.#cableSub &&
+                this.#glOpIn.uiAttribs.subPatch != this.#cableSub.subPatch &&
+                this.#glOpOut.uiAttribs.subPatch != this.#cableSub.subPatch
             )
         )
         { // redo everything when ops were moved into another subpatch
@@ -362,8 +371,8 @@ export default class GlLink
         // if (this._cable.subPatch == sub) this._cable.visible = true;
         // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
 
-        if (this._cable) this._cable.updateVisible();
-        if (this._cableSub) this._cableSub.updateVisible();
+        if (this.#cable) this.#cable.updateVisible();
+        if (this.#cableSub) this.#cableSub.updateVisible();
 
         // this._cable.visible =
         // this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
@@ -381,13 +390,13 @@ export default class GlLink
 
     _updatePosition()
     {
-        if (this._visible)
+        if (this.#visible)
         {
             if (!this.crossSubpatch)
             {
                 if (!this.#glOpOut) this.update();
 
-                if (this._cable && this.#glOpOut && this.#glOpIn && this.#glOpIn.getUiAttribs().translate && this.#glOpOut.getUiAttribs().translate)
+                if (this.#cable && this.#glOpOut && this.#glOpIn && this.#glOpIn.getUiAttribs().translate && this.#glOpOut.getUiAttribs().translate)
                 {
                     let topy = this.#glOpIn.getUiAttribs().translate.y;
                     let boty = this.#glOpOut.getUiAttribs().translate.y + this.#glOpOut.h;
@@ -401,7 +410,7 @@ export default class GlLink
                     const pos2x = this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput;
                     const pos2y = boty;
 
-                    this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                    this.#cable.setPosition(pos1x, pos1y, pos2x, pos2y);
                 }
             }
             else
@@ -421,9 +430,9 @@ export default class GlLink
                     if (this._subPatchOp) this._subPatchOp.on("move", () => { this.update(); });
                 }
 
-                if (!this._subPatchInputOp && this._cable)
+                if (!this._subPatchInputOp && this.#cable)
                 {
-                    this._subPatchInputOp = gui.corePatch().getFirstSubPatchOpByName(this._cable.subPatch, defaultOps.subPatchInput2);
+                    this._subPatchInputOp = gui.corePatch().getFirstSubPatchOpByName(this.#cable.subPatch, defaultOps.subPatchInput2);
                     // this._glSubPatchInputOp = this._glPatch.getOp(this._subPatchInputOp.id);
                     if (this._subPatchInputOp) this._subPatchInputOp.on("move", () => { this.update(); });
                 }
@@ -442,14 +451,14 @@ export default class GlLink
 
                 // inner input port op to subpatch-input op
                 if (
-                    this._cable &&
+                    this.#cable &&
                     this._subPatchInputOp &&
-                    this.#glOpIn.uiAttribs.subPatch == this._cable.subPatch)
+                    this.#glOpIn.uiAttribs.subPatch == this.#cable.subPatch)
                 {
                     if (!this.#glOpIn.getUiAttribs().translate) return;
 
                     foundCable = true;
-                    this._cable.setPosition(
+                    this.#cable.setPosition(
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._portNameInput, this._subPatchInputOp.id, true),
@@ -459,15 +468,15 @@ export default class GlLink
 
                 // inner output port op to subpatch output op
                 else if (
-                    this._cableSub &&
+                    this.#cableSub &&
                     this._subPatchOutputOp &&
                     this.#glOpOut.uiAttribs.subPatch == this._subPatchOutputOp.uiAttribs.subPatch)
                 {
                     if (!this.#glOpOut.getUiAttribs().translate) return;
-                    if (this._debugColor) this._cableSub.setColor(0, 0, 1, 1);
+                    if (this._debugColor) this.#cableSub.setColor(0, 0, 1, 1);
 
                     foundCableSub = true;
-                    this._cableSub.setPosition(
+                    this.#cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x,
                         this._subPatchOutputOp.uiAttribs.translate.y,
                         this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
@@ -482,7 +491,7 @@ export default class GlLink
                 //
                 //
                 // outer output port op TO subpatch op
-                if (this._cableSub &&
+                if (this.#cableSub &&
                     this.#glOpOut &&
                     this._subPatchOp &&
                     this.#glOpOut.getUiAttribs().translate &&
@@ -491,10 +500,10 @@ export default class GlLink
                     if (!this.#glOpOut.getUiAttribs().translate) return;
                     if (!this._subPatchOp.uiAttribs.translate) return;
 
-                    if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
+                    if (this._debugColor) this.#cableSub.setColor(0, 1, 0, 1); // green
 
                     foundCableSub = true;
-                    this._cableSub.setPosition(
+                    this.#cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id, true),
                         this._subPatchOp.uiAttribs.translate.y,
                         this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
@@ -506,16 +515,16 @@ export default class GlLink
 
                 // outer input port op FROM subpatch op
                 if (
-                    this._cable &&
+                    this.#cable &&
                     this._subPatchOp &&
                     this.#glOpIn.getUiAttribs().translate &&
                     this._subPatchOp.uiAttribs.translate &&
                     this.#glOpIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch
                 )
                 {
-                    if (this._debugColor) this._cable.setColor(1, 0, 0, 1); // red
+                    if (this._debugColor) this.#cable.setColor(1, 0, 0, 1); // red
                     foundCable = true;
-                    this._cable.setPosition(
+                    this.#cable.setPosition(
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
@@ -525,14 +534,14 @@ export default class GlLink
                 // else
 
                 if (!foundCable &&
-                    this._cable &&
+                    this.#cable &&
                     this._subPatchOp &&
                     this.#glOpIn.getUiAttribs() &&
                     this.#glOpIn.getUiAttribs().translate &&
                     this._subPatchOp.uiAttribs.translate)
                 {
-                    if (this._debugColor) this._cable.setColor(0, 0, 0, 1);
-                    this._cable.setPosition(
+                    if (this._debugColor) this.#cable.setColor(0, 0, 0, 1);
+                    this.#cable.setPosition(
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
@@ -540,10 +549,10 @@ export default class GlLink
                     );
                 }
 
-                if (!foundCableSub && this._cableSub && this._subPatchOutputOp)
+                if (!foundCableSub && this.#cableSub && this._subPatchOutputOp)
                 {
-                    if (this._debugColor) this._cableSub.setColor(1, 0.5, 0.4, 1);
-                    this._cableSub.setPosition(
+                    if (this._debugColor) this.#cableSub.setColor(1, 0.5, 0.4, 1);
+                    this.#cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x + this._subPatchOutputOp.getPortPosX(this._portNameOutput, this._subPatchOutputOp.id, true),
                         this._subPatchOutputOp.uiAttribs.translate.y,
 
@@ -559,7 +568,7 @@ export default class GlLink
     {
         if (!this.#glOpIn)
         {
-            this.#glOpIn = this._glPatch.getOp(this._opIdInput);
+            this.#glOpIn = this.#glPatch.getOp(this._opIdInput);
             if (this.#glOpIn)
             {
                 this.#glOpIn.addLink(this);
@@ -569,7 +578,7 @@ export default class GlLink
 
         if (!this.#glOpOut)
         {
-            this.#glOpOut = this._glPatch.getOp(this._opIdOutput);
+            this.#glOpOut = this.#glPatch.getOp(this._opIdOutput);
             if (this.#glOpOut)
             {
                 this.#glOpOut.addLink(this);
@@ -622,7 +631,7 @@ export default class GlLink
 
     unlink()
     {
-        this._link.remove();
+        this.#link.remove();
         // if (this._glOpOut) this._glOpOut.removeLink(this._id);
         // if (this._glOpIn) this._glOpIn.removeLink(this._id);
     }
@@ -632,8 +641,8 @@ export default class GlLink
         if (this.#glOpOut) this.#glOpOut.removeLink(this._id);
         if (this.#glOpIn) this.#glOpIn.removeLink(this._id);
 
-        if (this._cable) this._cable = this._cable.dispose();
-        if (this._cableSub) this._cableSub = this._cableSub.dispose();
+        if (this.#cable) this.#cable = this.#cable.dispose();
+        if (this.#cableSub) this.#cableSub = this.#cableSub.dispose();
 
         if (this._buttonRect) this._buttonRect = this._buttonRect.dispose();
     }
@@ -678,12 +687,12 @@ export default class GlLink
 
         if (r.length > 10) r = r.substr(0, 43) + "...";
 
-        this._cable.setText(r);
-        this._cable.setSpeed(act);
-        if (this._cableSub)
+        this.#cable.setText(r);
+        this.#cable.setSpeed(act);
+        if (this.#cableSub)
         {
-            this._cableSub.setText(r);
-            this._cableSub.setSpeed(act);
+            this.#cableSub.setText(r);
+            this.#cableSub.setSpeed(act);
         }
     }
 
@@ -691,8 +700,8 @@ export default class GlLink
     {
         if (this._oldHighlight !== b)
         {
-            this._cable.updateColor();
-            if (this._cableSub) this._cableSub.updateColor();
+            this.#cable.updateColor();
+            if (this.#cableSub) this.#cableSub.updateColor();
             // if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
             this._oldHighlight = b;
         }
@@ -706,7 +715,7 @@ export default class GlLink
      */
     collideLine(x1, y1, x2, y2)
     {
-        return this._cable.collideLine(x1, y1, x2, y2) || this._cableSub?.collideLine(x1, y1, x2, y2);
+        return this.#cable.collideLine(x1, y1, x2, y2) || this.#cableSub?.collideLine(x1, y1, x2, y2);
     }
 
     updateTheme()
@@ -746,8 +755,8 @@ export default class GlLink
 
     updateColor()
     {
-        this._cable.updateColor();
-        if (this._cableSub) this._cableSub.updateColor();
+        this.#cable.updateColor();
+        if (this.#cableSub) this.#cableSub.updateColor();
     }
 
     cableHoverChanged()
@@ -756,13 +765,10 @@ export default class GlLink
 
         if (this.#glOpOut && this.#glOpOut.op)
         {
-            // console.log("cableHoverChanged", this._glOpOut);
-            // let glop = this._glPatch.getGlOp(this._glOpOut);
             let port = this.#glOpOut.op.getPortById(this._portIdOutput);
             let glport = this.#glOpOut.getGlPort(port.name);
 
             if (glport)glport._updateColor();
-            // else console.log("no glport");
         }
 
         if (this.#glOpIn && this.#glOpIn.op)
@@ -771,12 +777,9 @@ export default class GlLink
             let glport = this.#glOpIn.getGlPort(port.name);
 
             if (glport)glport._updateColor();
-            // else console.log("no glport");
         }
 
         perf.finish();
 
-        // const glopIn = this._glPatch.getGlOp(this._glOpIn);
-        // glport = glopIn.getGlPort(pIn.name);
     }
 }

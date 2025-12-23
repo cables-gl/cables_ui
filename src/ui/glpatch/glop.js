@@ -799,7 +799,7 @@ export default class GlOp extends Events
             if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
 
             this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0);
-            this._glColorIndicator.setSize(GlOp.COLORINDICATOR_WIDTH,	 h);
+            this._glColorIndicator.setSize(GlOp.COLORINDICATOR_WIDTH, h);
             this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, h);
         }
 
@@ -1537,7 +1537,6 @@ export default class GlOp extends Events
 
         if (this.opUiAttribs.glPreviewTexture)
         {
-            console.log("glprevtex");
             //     if (!this._glRectContent)
             //     {
             //         this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });

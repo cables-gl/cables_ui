@@ -14,6 +14,36 @@ import GlPatch from "./glpatch.js";
  */
 export default class GlViewBox
 {
+    #cgl;
+
+    /** @type {number|string} */
+    _currentSubPatchId = 0;
+    _mouseX = 0;
+    _mouseY = 0;
+    _mousePatchX = this._mousePatchY = 0;
+    cursor = null;
+    _scrollX = 0;
+    _scrollY = 0;
+    _oldScrollX = 0;
+    _oldScrollY = 0;
+    _viewResX = 0;
+    _viewResY = 0;
+    _mouseRightDownStartX = 0;
+    _mouseRightDownStartY = 0;
+    _panStarted = 0;
+    _mouseSmooth = [];
+    _mouseSmoothCount = 0;
+    _subPatchViewBoxes = {};
+    _spaceDown = false;
+    _outOfBounds = false;
+    _defaultEasing = Anim.EASING_EXPO_OUT;
+
+    _zoom = GlUiConfig.zoomDefault;
+    _animScrollX = new Anim({ "defaultEasing": this._defaultEasing });
+    _animScrollY = new Anim({ "defaultEasing": this._defaultEasing });
+    _animZoom = new Anim({ "defaultEasing": this._defaultEasing });
+    mousePatchNotPredicted = vec2.create();
+    _lastPosPixel = vec2.create();
 
     /**
      * @param {CglContext} cgl
@@ -21,42 +51,9 @@ export default class GlViewBox
      */
     constructor(cgl, glPatch)
     {
-        this._cgl = cgl;
+        this.#cgl = cgl;
         this.glPatch = glPatch;
-
-        this.mousePatchNotPredicted = vec2.create();
-        this._lastPosPixel = vec2.create();
-        this._mouseSmooth = [];
-        this._mouseSmoothCount = 0;
-        this._subPatchViewBoxes = {};
-
-        /** @type {number|string} */
-        this._currentSubPatchId = 0;
-        this._mouseX = 0;
-        this._mouseY = 0;
-        this._mousePatchX = this._mousePatchY = 0;
-        this.cursor = null;
-        this._scrollX = 0;
-        this._scrollY = 0;
-        this._oldScrollX = 0;
-        this._oldScrollY = 0;
-        this._viewResX = 0;
-        this._viewResY = 0;
-        this._panStarted = 0;
         this.wheelMode = userSettings.get("patch_wheelmode");
-        // this._opsBoundingRect = null;
-        this._mouseRightDownStartX = 0;
-        this._mouseRightDownStartY = 0;
-        this._zoom = GlUiConfig.zoomDefault;
-        this._spaceDown = false;
-        this._outOfBounds = false;
-
-        this._defaultEasing = Anim.EASING_EXPO_OUT;
-        console.log("Anim.EASING_EXPO_OUT", Anim.EASING_EXPO_OUT);
-
-        this._animScrollX = new Anim({ "defaultEasing": this._defaultEasing });
-        this._animScrollY = new Anim({ "defaultEasing": this._defaultEasing });
-        this._animZoom = new Anim({ "defaultEasing": this._defaultEasing });
 
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": true });
@@ -64,16 +61,9 @@ export default class GlViewBox
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
-        // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
 
         this.glPatch.addEventListener("spacedown", this._onCanvasSpaceDown.bind(this));
         this.glPatch.addEventListener("spaceup", this._onCanvasSpaceUp.bind(this));
-
-        // cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
-
-        // this._eleTabs = document.getElementById("splitterMaintabs");
-
-        // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, _v) =>
         {
@@ -91,7 +81,7 @@ export default class GlViewBox
         this._viewResX = w;
         this._viewResY = h;
 
-        if (first) this.setMousePos(this._cgl.canvasWidth / 2, this._cgl.canvasHeight / 2);
+        if (first) this.setMousePos(this.#cgl.canvasWidth / 2, this.#cgl.canvasHeight / 2);
     }
 
     /**
@@ -188,8 +178,8 @@ export default class GlViewBox
         {
             this.cursor = "grabbing";
             hideToolTip();
-            const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
-            const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
+            const pixelMulX = (this.#cgl.canvas.width / this._zoom) * 0.5 / this.#cgl.pixelDensity;
+            const pixelMulY = (this.#cgl.canvas.height / this._zoom) * 0.5 / this.#cgl.pixelDensity;
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
@@ -207,21 +197,6 @@ export default class GlViewBox
         this._oldScrollY = this._scrollY;
         this.cursor = null;
     }
-
-    // _onCanvasDblClick(e)
-    // {
-    //     const z = GlUiConfig.zoomDefault;
-    //     if (Math.abs(this._zoom - GlUiConfig.zoomDefault) < 200)
-    //     {
-    //         this.glPatch.unselectAll();
-    //         this.centerSelectedOps();
-    //     }
-    //     else
-    //     {
-    //         this.animateZoom(z);
-    //         this.animateToCenterAtMouseCoords();
-    //     }
-    // }
 
     animateToCenterAtMouseCoords()
     {
@@ -349,9 +324,9 @@ export default class GlViewBox
 
     get mousePatchY() { return this._mousePatchY; }
 
-    get width() { return this._cgl.canvasWidth; }
+    get width() { return this.#cgl.canvasWidth; }
 
-    get height() { return this._cgl.canvasHeight; }
+    get height() { return this.#cgl.canvasHeight; }
 
     update()
     {
@@ -454,7 +429,6 @@ export default class GlViewBox
 
             if (ops[i].uiAttribs.translate && !ops[i].uiAttribs.hidden)
             {
-                // console.log(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
                 bb.applyPos(
                     ops[i].uiAttribs.translate.x,
                     ops[i].uiAttribs.translate.y,
