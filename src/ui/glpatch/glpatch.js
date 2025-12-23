@@ -212,6 +212,47 @@ export default class GlPatch extends Events
 
         gui.on(Gui.EVENT_THEMECHANGED, this.updateTheme.bind(this));
 
+        gui.keys.key("1", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_1);
+        });
+        gui.keys.key("2", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_2);
+        });
+        gui.keys.key("3", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_3);
+        });
+        gui.keys.key("4", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_4);
+        });
+        gui.keys.key("5", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_5);
+        });
+        gui.keys.key("6", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_6);
+        });
+        gui.keys.key("7", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_7);
+        });
+        gui.keys.key("8", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_8);
+        });
+        gui.keys.key("9", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_9);
+        });
+        gui.keys.key("0", "Left", "down", null, { "ignoreInput": true, }, () =>
+        {
+            gui.inputBindings.exec(InputBindings.KEY_0);
+        });
+
         gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
         {
             this.viewBox.keyScrollX(-1);

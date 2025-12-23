@@ -670,23 +670,12 @@ export default class GlViewBox
 
     startResize()
     {
-
         this._oldCenterx = this._scrollX;
         this._oldCentery = this._scrollY;
-        // const mouse = this.screenToPatchCoord(this.width / 2, this.height / 2, true);
         this._oldCenterW = this.width;
-
-        console.log("scroll", this._oldCenterx, this._oldCentery);
-        // this._oldCenterx = mouse[0];
-        // this._oldCentery = mouse[1];
-        // console.log("center", mouse, this._zoom);
     }
 
     endResize()
     {
-
-        // this._oldCenterx = this.scrollX;
-        // this._oldCentery = this.scrollY;
-
     }
 }

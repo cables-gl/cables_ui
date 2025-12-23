@@ -200,7 +200,7 @@ export default class KeyBindingsManager extends Events
      * @param {KeyOptions} options
      * @param {Function} cb
      */
-    _addKey(key, title, event, target, options, cb)
+    #addKey(key, title, event, target, options, cb)
     {
         const k =
         {
@@ -233,7 +233,7 @@ export default class KeyBindingsManager extends Events
         options = options || {};
         if (!options.hasOwnProperty("minRestriction")) options.minRestriction = Gui.RESTRICT_MODE_FULL;
 
-        if (Array.isArray(key)) for (let i = 0; i < key.length; i++) this._addKey(key[i], title, event, target, options, cb);
-        else this._addKey(key, title, event, target, options, cb);
+        if (Array.isArray(key)) for (let i = 0; i < key.length; i++) this.#addKey(key[i], title, event, target, options, cb);
+        else this.#addKey(key, title, event, target, options, cb);
     }
 }

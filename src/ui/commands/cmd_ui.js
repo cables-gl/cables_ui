@@ -38,6 +38,13 @@ class CmdUi
             "icon": "file"
         },
         {
+            "cmd": "Toggle Side Panel",
+            "category": "ui",
+            "keybindable": true,
+            "func": CmdUi.toggleSideTabs,
+            "icon": "chevron-left"
+        },
+        {
             "cmd": "None",
             "keybindable": true,
             "category": "ui",
@@ -221,11 +228,13 @@ class CmdUi
         {
             "cmd": "Close all tabs",
             "category": "ui",
+            "keybindable": true,
             "func": CmdUi.closeAllTabs
         },
         {
             "cmd": "Show Canvas Lens",
             "category": "ui",
+            "keybindable": true,
             "func": CmdUi.canvasLens
         },
         {
@@ -523,6 +532,12 @@ class CmdUi
 
     static none()
     {
+    }
+
+    static toggleSideTabs()
+    {
+        gui.maintabPanel.toggle(true);
+        gui.setLayout();
     }
 
 }

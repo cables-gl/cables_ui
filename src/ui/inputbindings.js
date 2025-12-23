@@ -17,6 +17,16 @@ export class InputBindings
     static MOUSE_PATCH_DBL_CLICK = "patch_dbl_cl";
     static MOUSE_PATCH_RIGHT_CLICK = "patch_right_cl";
     static MOUSE_PATCH_MIDDLE_CLICK = "patch_middle_cl";
+    static KEY_1 = "key_1";
+    static KEY_2 = "key_2";
+    static KEY_3 = "key_3";
+    static KEY_4 = "key_4";
+    static KEY_5 = "key_5";
+    static KEY_6 = "key_6";
+    static KEY_7 = "key_7";
+    static KEY_8 = "key_8";
+    static KEY_9 = "key_9";
+    static KEY_0 = "key_0";
 
     /** @type {BindingObject[]} */
     static ACTIONS = [
@@ -33,6 +43,76 @@ export class InputBindings
             "default": null,
             "func": null,
             "category": "Patchfield Mouse"
+        },
+        {
+            "title": "Key 1",
+            "id": InputBindings.KEY_1,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 2",
+            "id": InputBindings.KEY_2,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 3",
+            "id": InputBindings.KEY_3,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 4",
+            "id": InputBindings.KEY_4,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 5",
+            "id": InputBindings.KEY_5,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 6",
+            "id": InputBindings.KEY_6,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 7",
+            "id": InputBindings.KEY_7,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 8",
+            "id": InputBindings.KEY_8,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 9",
+            "id": InputBindings.KEY_9,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
+        },
+        {
+            "title": "Key 0",
+            "id": InputBindings.KEY_0,
+            "default": null,
+            "func": null,
+            "category": "Keyboard Global"
         }
     ];
 
