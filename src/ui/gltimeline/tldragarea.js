@@ -151,7 +151,6 @@ export class TlDragArea extends Events
 
         this.#rectLeft.on(GlRect.EVENT_DRAGEND, () =>
         {
-            console.log("dragEND area");
             this.isDragging = false;
             this.emitEvent(TlDragArea.EVENT_END);
         });
