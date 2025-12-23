@@ -2341,7 +2341,7 @@ export default class PatchView extends Events
         // check if both have defined objtype
         if (p1.uiAttribs.objType && p2.uiAttribs.objType && p1.uiAttribs.objType != p2.uiAttribs.objType)
         {
-            inp.op.setUiError(id, errorMsg);
+            inp.op.setUiError(id, errorMsg, 1);
             return;
         }
 
@@ -2368,7 +2368,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Op<any>} op
+     * @param {Op} op
      */
     isCurrentOp(op)
     {

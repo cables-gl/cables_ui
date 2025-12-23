@@ -47,7 +47,7 @@ class CmdUi
         {
             "cmd": "None",
             "keybindable": true,
-            "category": "ui",
+            "category": " ",
             "func": CmdUi.none,
             "icon": "cables"
         },

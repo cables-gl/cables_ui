@@ -58,14 +58,16 @@ class Commands
      */
     static getKeyBindableCommands()
     {
-        const arr = [];
+        let arr = [];
         for (let i = 0; i < Commands.commands.length; i++)
-        {
             if (Commands.commands[i].keybindable)
                 arr.push(Commands.commands[i]);
 
-        }
-        console.log("arr", arr);
+        arr = arr.sort((a, b) =>
+        {
+            return (a.category + " " + a.cmd).localeCompare(b.category + " " + b.cmd);
+        });
+
         return arr;
     }
 
@@ -84,6 +86,7 @@ class Commands
         {
             console.warn("cmd has no func", cmd, found);
         }
+
         if (!found)console.warn("command not found:" + cmd);
     }
 

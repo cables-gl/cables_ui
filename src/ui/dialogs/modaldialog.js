@@ -6,9 +6,11 @@ import { CssClassNames } from "../theme.js";
 /**
  * configuration object for a modal dialog
  * @typedef {Object} ModalDialogOptions
- * @hideconstructor
- * @property {String} [html=''] html content
- * @property {String} [tite=''] a title of the dialog
+ * @property {String} [html] html content
+ * @property {String} [title] a title of the dialog
+ * @property {String} [text]
+ * @property {Object} [okButton]
+ * @property {Object} [cancelButton]
  * @property {Boolean} [nopadding=false] remove padding around the window
  * @property {Boolean} [warning=false] show a warning triangle
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
@@ -28,6 +30,14 @@ import { CssClassNames } from "../theme.js";
  */
 export default class ModalDialog extends Events
 {
+    #log = new Logger("ModalDialog");
+
+    /** @type {ModalDialogOptions} */
+    #options = {};
+
+    #ele = null;
+    #eleContent = null;
+    #bg = new ModalBackground();
 
     /**
      * @param {ModalDialogOptions} options
@@ -35,25 +45,20 @@ export default class ModalDialog extends Events
     constructor(options, autoOpen = true)
     {
         super();
-        this._log = new Logger("ModalDialog");
 
         if (gui && gui.currentModal) gui.currentModal.close();
-        this._options = options;
-        this._options.okButton = this._options.okButton || {};
-        if (!this._options.okButton.text) this._options.okButton.text = "Ok";
-        if (!this._options.okButton.cssClasses) this._options.okButton.cssClasses = "bluebutton";
-        if (!this._options.okButton.callback) this._options.okButton.callback = null;
+        this.#options = options;
+        this.#options.okButton = this.#options.okButton || {};
+        if (!this.#options.okButton.text) this.#options.okButton.text = "Ok";
+        if (!this.#options.okButton.cssClasses) this.#options.okButton.cssClasses = "bluebutton";
+        if (!this.#options.okButton.callback) this.#options.okButton.callback = null;
 
-        this._options.cancelButton = this._options.cancelButton || {};
-        if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
-        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = CssClassNames.BUTTON;
-        if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
+        this.#options.cancelButton = this.#options.cancelButton || {};
+        if (!this.#options.cancelButton.text) this.#options.cancelButton.text = "Cancel";
+        if (!this.#options.cancelButton.cssClasses) this.#options.cancelButton.cssClasses = CssClassNames.BUTTON;
+        if (!this.#options.cancelButton.callback) this.#options.cancelButton.callback = null;
 
-        this._checkboxGroups = this._options.checkboxGroups || [];
-
-        this._ele = null;
-        this._eleContent = null;
-        this._bg = new ModalBackground();
+        this._checkboxGroups = this.#options.checkboxGroups || [];
 
         if (autoOpen) this.show();
 
@@ -61,13 +66,13 @@ export default class ModalDialog extends Events
 
         if (gui) gui.currentModal = this;
 
-        this._bg.on("hide", this.close.bind(this));
+        this.#bg.on("hide", this.close.bind(this));
     }
 
     close()
     {
-        this._ele.remove();
-        this._bg.hide();
+        this.#ele.remove();
+        this.#bg.hide();
         if (gui) gui.currentModal = null;
         this.emitEvent("onClose", this);
     }
@@ -76,17 +81,17 @@ export default class ModalDialog extends Events
     {
         let html = "";
 
-        if (this._options.title) html += "<h2>";
-        if (this._options.warning) html += "<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
-        if (this._options.title) html += this._options.title + "</h2>";
+        if (this.#options.title) html += "<h2>";
+        if (this.#options.warning) html += "<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
+        if (this.#options.title) html += this.#options.title + "</h2>";
 
-        if (this._options.text)html += this._options.text;
-        if (this._options.html)html += this._options.html;
+        if (this.#options.text)html += this.#options.text;
+        if (this.#options.html)html += this.#options.html;
 
-        if (this._options.prompt)
+        if (this.#options.prompt)
         {
             html += "<br/><br/>";
-            html += "<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (this._options.promptValue || "") + "\"/>";
+            html += "<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (this.#options.promptValue || "") + "\"/>";
             html += "<br/>";
         }
 
@@ -127,46 +132,46 @@ export default class ModalDialog extends Events
             });
         }
 
-        if (this._options.notices && this._options.notices.length > 0)
+        if (this.#options.notices && this.#options.notices.length > 0)
         {
             html += "<div class=\"modallist notices\">";
             html += "<ul>";
-            for (let i = 0; i < this._options.notices.length; i++)
+            for (let i = 0; i < this.#options.notices.length; i++)
             {
-                const item = this._options.notices[i];
+                const item = this.#options.notices[i];
                 html += "<li>" + item + "</li>";
             }
             html += "</ul></div>";
         }
 
-        if (this._options.footer)
+        if (this.#options.footer)
         {
-            html += this._options.footer;
+            html += this.#options.footer;
         }
 
-        if (this._options.prompt)
+        if (this.#options.prompt)
         {
             html += "<br/>";
-            html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
-        if (this._options.choice)
+        if (this.#options.choice)
         {
             html += "<br/><br/>";
-            html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"" + this._options.cancelButton.cssClasses + "\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
-        if (this._options.showOkButton)
+        if (this.#options.showOkButton)
         {
-            html += "<br/><br/><a class=\"" + this._options.okButton.cssClasses + "\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<br/><br/><a class=\"" + this.#options.okButton.cssClasses + "\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         return html;
     }
 
-    _addListeners()
+    #addListeners()
     {
         this._eleClose.addEventListener("pointerdown", this.close.bind(this));
 
@@ -207,7 +212,7 @@ export default class ModalDialog extends Events
             eleChoiceCancel.addEventListener("pointerdown", () =>
             {
                 this.close();
-                if (this._options.cancelButton.callback) this._options.cancelButton.callback();
+                if (this.#options.cancelButton.callback) this.#options.cancelButton.callback();
             });
         }
 
@@ -216,7 +221,7 @@ export default class ModalDialog extends Events
         {
             eleModalOk.addEventListener("pointerdown", () =>
             {
-                if (this._options.okButton.callback) this._options.okButton.callback();
+                if (this.#options.okButton.callback) this.#options.okButton.callback();
                 this.close();
             });
         }
@@ -227,8 +232,8 @@ export default class ModalDialog extends Events
      */
     updateHtml(h)
     {
-        this._options.html = h;
-        this._eleContent.innerHTML = this.html();
+        this.#options.html = h;
+        this.#eleContent.innerHTML = this.html();
 
         Array.from(document.querySelectorAll("pre code")).forEach(function (block)
         {
@@ -238,10 +243,10 @@ export default class ModalDialog extends Events
 
     show()
     {
-        this._bg.show();
+        this.#bg.show();
 
-        this._ele = document.createElement("div");
-        this._eleContent = document.createElement("div");
+        this.#ele = document.createElement("div");
+        this.#eleContent = document.createElement("div");
 
         this._eleCloseIcon = document.createElement("span");
         this._eleCloseIcon.classList.add("icon-x", "icon", "icon-2x");
@@ -250,24 +255,24 @@ export default class ModalDialog extends Events
         this._eleClose.appendChild(this._eleCloseIcon);
         this._eleClose.style.display = "block";
 
-        this._ele.classList.add("modalcontainer");
-        this._ele.classList.add("cablesCssUi");
-        this._ele.appendChild(this._eleClose);
-        this._ele.appendChild(this._eleContent);
+        this.#ele.classList.add("modalcontainer");
+        this.#ele.classList.add("cablesCssUi");
+        this.#ele.appendChild(this._eleClose);
+        this.#ele.appendChild(this.#eleContent);
 
-        document.body.appendChild(this._ele);
+        document.body.appendChild(this.#ele);
 
-        if (!this._options.nopadding) this._eleContent.style.padding = "15px";
-        if (this._options.nopadding) this._ele.style.padding = "0px";
+        if (!this.#options.nopadding) this.#eleContent.style.padding = "15px";
+        if (this.#options.nopadding) this.#ele.style.padding = "0px";
 
-        this._eleContent.innerHTML = this.html();
+        this.#eleContent.innerHTML = this.html();
 
         Array.from(document.querySelectorAll("pre code")).forEach(function (block)
         {
             hljs.highlightElement(block);
         });
 
-        this._addListeners();
+        this.#addListeners();
 
         hideToolTip();
 
@@ -281,7 +286,7 @@ export default class ModalDialog extends Events
 
     getElement()
     {
-        return this._ele;
+        return this.#ele;
     }
 
     _choiceSubmit()
@@ -295,18 +300,18 @@ export default class ModalDialog extends Events
     {
         const elePromptInput = ele.byId("modalpromptinput");
 
-        if (!elePromptInput) return this._log.warn("modal prompt but no input...?!");
-        if (!this._options.promptOk) return this._log.warn("modal prompt but no promptOk callback!");
+        if (!elePromptInput) return this.#log.warn("modal prompt but no input...?!");
+        if (!this.#options.promptOk) return this.#log.warn("modal prompt but no promptOk callback!");
 
         const states = this._getCheckboxStates();
         this.close();
-        this._options.promptOk(elePromptInput.value, states);
+        this.#options.promptOk(elePromptInput.value, states);
         this.emitEvent("onSubmit", elePromptInput.value, states);
     }
 
     persistInIdleMode()
     {
-        return this._options.persistInIdleMode;
+        return this.#options.persistInIdleMode;
     }
 
     _getCheckboxStates()

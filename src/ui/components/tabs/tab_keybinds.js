@@ -48,9 +48,6 @@ export default class TabInputBindings
 
     update()
     {
-
-        console.log("upldate", JSON.stringify(InputBindings.ACTIONS), InputBindings.ACTIONS.length);
-
         gui.corePatch().tempData.continueStepDebugLog = gui.corePatch().tempData.continueStepDebugLog || [];
 
         let html = "";
@@ -127,6 +124,7 @@ export default class TabInputBindings
             "text": "",
             "html": html,
             "showOkButton": true,
+            "showCancl": true,
             "okButton": {
                 "callback": () =>
                 {
