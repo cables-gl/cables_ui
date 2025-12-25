@@ -46,6 +46,8 @@ export default class CanvasManager
         {
             if (this.subWindow) this.subWindow.close();
         });
+
+        this.#findNonCgContexts();
     }
 
     set mode(m)
@@ -75,7 +77,7 @@ export default class CanvasManager
      */
     currentContextCg()
     {
-        return this.#contexts[this.#curContextIdx].cg;
+        return this.#contexts[this.#curContextIdx]?.cg;
     }
 
     currentCanvas()
@@ -111,10 +113,12 @@ export default class CanvasManager
             "cg": c,
             "canvasUi": new CanvasUi(c),
             "canvas": c.canvas,
+            "title": c.getGApiName(),
             "id": uuid()
         };
 
         this.#contexts.push(cc);
+
         this.#curContextIdx = this.#contexts.length - 1;
 
         const ctx = c;
@@ -394,10 +398,14 @@ export default class CanvasManager
                 console.log("found ctx", cc);
 
                 this.#contexts.push(cc);
+                if (this.#contexts.length == 1) this.setCurrentCanvas(canvasEles[i]);
                 this.#curContextIdx = this.#contexts.length - 1;
             }
         }
+
         console.log("num contexts", this.#contexts.length);
+
+        if (this.#contexts.length == 0)setTimeout(() => { this.#findNonCgContexts(); }, 500);
 
     }
 }
