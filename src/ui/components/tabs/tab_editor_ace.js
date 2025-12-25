@@ -763,6 +763,8 @@ export default class EditorTab extends Events
                     const wordList = [
                         "op.log",
                         "op.logWarn",
+                        "/* minimalcore:end */",
+                        "/* minimalcore:start */",
                         "op.logError",
                         "onChange=",
                         "onTriggered=",

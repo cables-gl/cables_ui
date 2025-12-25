@@ -3,6 +3,7 @@
  */
 
 import { Op, Patch, Profiler } from "cables";
+import { Logger } from "cables-shared-client";
 import { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
@@ -12,6 +13,7 @@ import { UiOp } from "./core_extend_op.js";
  */
 class UiPatch extends Patch
 {
+    #log = new Logger("uipatch");
 
     /**
      * @param {import("cables/src/core/core_patch.js").PatchConfig} cfg
@@ -347,7 +349,7 @@ class UiPatch extends Patch
                     const p = op.getPort(oldOp.portsIn[j].name);
                     if (!p)
                     {
-                        this._log.warn("[reloadOp] could not set port " + oldOp.portsIn[j].name + ", probably renamed port ?");
+                        this.#log.warn("[reloadOp] could not set port " + oldOp.portsIn[j].name + ", probably renamed port ?");
                     }
                     else
                     {
@@ -367,7 +369,7 @@ class UiPatch extends Patch
                         oldOp.portsIn[j].links[0].remove();
 
                         l = this.link(op, oldName, oldOutOp, oldOutName);
-                        if (!l) this._log.warn("[reloadOp] relink after op reload not successfull for port " + oldOutName);
+                        if (!l) this.#log.warn("[reloadOp] relink after op reload not successfull for port " + oldOutName);
                         else l.setValue();
                     }
                 }
@@ -383,7 +385,7 @@ class UiPatch extends Patch
                     oldOp.portsOut[j].links[0].remove();
 
                     l = this.link(op, oldNewName, oldInOp, oldInName);
-                    if (!l) this._log.warn("relink after op reload not successfull for port " + oldInName);
+                    if (!l) this.#log.warn("relink after op reload not successfull for port " + oldInName);
                     else l.setValue();
                 }
             }

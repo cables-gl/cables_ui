@@ -1,14 +1,28 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import { CgContext } from "cables-corelibs";
+import { uuid } from "cables/src/core/utils.js";
 import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 
+/**
+ * @typedef CanvasContext
+ * @property {CgContext} [cg]
+ * @property {string} id
+ * @property {string} title
+ * @property {CanvasUi} [canvasUi]
+ * @property {HTMLCanvasElement} canvas
+ */
+
 export default class CanvasManager
 {
+
+    /** @type {CanvasContext[]} */
     #contexts = [];
     #curContextIdx;
+
+    /** @type {HTMLElement} */
     #menuEle;
 
     constructor()
@@ -59,9 +73,9 @@ export default class CanvasManager
     /**
      * @returns {CgContext}
      */
-    currentContext()
+    currentContextCg()
     {
-        return this.#contexts[this.#curContextIdx];
+        return this.#contexts[this.#curContextIdx].cg;
     }
 
     currentCanvas()
@@ -75,27 +89,32 @@ export default class CanvasManager
      * @param name
      * @param setsize
      */
-    addCanvas(canv, name, setsize)
-    {
-        const ctx = {
-            "getGApiName": () => { return name; },
-            "setSize": setsize,
-            "canvas": canv
-        };
-        this.addContext(ctx);
+    // addCanvas(canv, name, setsize)
+    // {
+    //     const ctx = {
+    //         "getGApiName": () => { return name; },
+    //         "setSize": setsize,
+    //         "canvas": canv
+    //     };
+    //     this.addCgContext(ctx);
 
-    }
+    // }
 
     /**
      * @param {CgContext} c
      */
-    addContext(c)
+    addCgContext(c)
     {
-        for (let i = 0; i < this.#contexts.length; i++) if (this.#contexts[i] == c) return;
+        for (let i = 0; i < this.#contexts.length; i++) if (this.#contexts[i].cg == c) return;
 
-        if (!c.canvasUi) c.canvasUi = new CanvasUi(c);
+        const cc = {
+            "cg": c,
+            "canvasUi": new CanvasUi(c),
+            "canvas": c.canvas,
+            "id": uuid()
+        };
 
-        this.#contexts.push(c);
+        this.#contexts.push(cc);
         this.#curContextIdx = this.#contexts.length - 1;
 
         const ctx = c;
@@ -132,7 +151,7 @@ export default class CanvasManager
             {
                 if (this.#contexts[i].canvas == this.currentCanvas())
                 {
-                    this.#menuEle.innerText = this.#contexts[i].getGApiName();
+                    this.#menuEle.innerText = this.#contexts[i].cg?.getGApiName() || this.#contexts[i].title;
                 }
             }
         }
@@ -168,10 +187,10 @@ export default class CanvasManager
     {
         for (let i = 0; i < this.#contexts.length; i++)
         {
-            const density = this.#contexts[i].pixelDensity;
-            const el = this.#contexts[i].canvas;
-
-            this.#contexts[i].setSize(w, h);
+            if (this.#contexts[i].cg)
+            {
+                this.#contexts[i].cg.setSize(w, h);
+            }
         }
         if (this._canvasMode === this.CANVASMODE_POPOUT)
         {
@@ -189,12 +208,6 @@ export default class CanvasManager
         if (this.currentCanvas() && this.currentCanvas().toBlob)
         {
             const url = this.currentCanvas().toDataURL();
-            console.log(url);
-        //         (blob) =>//
-        //         {
-        //             if (cb) cb(blob);
-        //             else this._log.log("no screenshot callback...");
-        //         }, mimeType, quality);
         }
         else
         {
@@ -209,12 +222,16 @@ export default class CanvasManager
     menu(elem)
     {
         let items = [];
+        this.#findNonCgContexts();
 
         for (let i = 0; i < this.#contexts.length; i++)
         {
             const ctx = this.#contexts[i];
             const idx = i;
-            items.push({ "title": i + ": " + ctx.getGApiName(),
+            let n = ctx.cg?.getGApiName();
+            if (!n)n = ctx.title;
+
+            items.push({ "title": i + ": " + n,
                 "func": () =>
                 {
                     ctx.canvas.focus();
@@ -324,5 +341,63 @@ export default class CanvasManager
         gui.emitEvent("canvasModeChange", this._canvasMode);
 
         gui.setLayout();
+    }
+
+    /**
+     * @param {string} id
+     */
+    getCanvContextById(id)
+    {
+        for (let i = 0; i < this.#contexts.length; i++)
+        {
+            if (this.#contexts[i].id == id) return this.#contexts[i];
+
+        }
+
+    }
+
+    #updateTitle(cc)
+    {
+        cc.title = cc.canvas.dataset.contextname;
+
+    }
+
+    #findNonCgContexts()
+    {
+        const canvasEles = ele.byClassAll("cablescontext");
+
+        console.log("text", canvasEles);
+
+        for (let i = 0; i < canvasEles.length; i++)
+        {
+            let found = false;
+
+            for (let j = 0; j < this.#contexts.length; j++)
+            {
+                if (canvasEles[i] == this.#contexts[j].canvas)
+                {
+                    this.#updateTitle(this.#contexts[i]);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+
+                const cc = {
+                    "canvasUi": new CanvasUi(null, canvasEles[i]),
+                    "canvas": canvasEles[i],
+                    "id": uuid()
+                };
+                this.#updateTitle(cc);
+                console.log("found ctx", cc);
+
+                this.#contexts.push(cc);
+                this.#curContextIdx = this.#contexts.length - 1;
+            }
+        }
+        console.log("num contexts", this.#contexts.length);
+
     }
 }

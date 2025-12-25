@@ -83,7 +83,7 @@ class CmdRenderer
 
     static screenshot()
     {
-        gui.canvasManager.currentContext().saveScreenshot();
+        gui.canvasManager.currentContextCg().saveScreenshot();
         gui.corePatch().resume();
     }
 

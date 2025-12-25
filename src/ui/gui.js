@@ -1342,7 +1342,7 @@ export default class Gui extends Events
      */
     bind(cb)
     {
-        this.canvasManager.addContext(this.corePatch().cgl);
+        this.canvasManager.addCgContext(this.corePatch().cgl);
 
         if (this.userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
 

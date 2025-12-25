@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { CgContext } from "cables-corelibs";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 
@@ -7,13 +8,17 @@ import { userSettings } from "../usersettings.js";
  */
 export default class CanvasUi
 {
+    #cg;
+    #canvasEle;
 
     /**
-     * @param {import("cables-corelibs").CgContext} cg
+     * @param {import("cables-corelibs").CgContext} [_cg]
+     * @param {HTMLCanvasElement} [_canvEle]
      */
-    constructor(cg)
+    constructor(_cg = null, _canvEle)
     {
-        this._cg = cg;
+        this.#cg = _cg;
+        this.#canvasEle = _canvEle || _cg?.canvas;
 
         this.isCanvasFocussed = false;
         this.minimized = false;
@@ -33,7 +38,7 @@ export default class CanvasUi
 
         this._elCanvasIconbarContainer.addEventListener("click", () =>
         {
-            this.canvasEle.focus();
+            this.#canvasEle.focus();
         });
 
         this._elCanvasInfoSize.addEventListener("pointerenter", () =>
@@ -50,7 +55,7 @@ export default class CanvasUi
 
         if (this._elInfoVersion)
         {
-            if (this._cg.glVersion == 1)
+            if (this.#cg && this.#cg.glVersion == 1)
             {
                 this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
                 this._elCanvasInfoVer.innerHTML = "WebGL 1";
@@ -58,48 +63,55 @@ export default class CanvasUi
             else this._elInfoVersion.remove();
         }
 
-        this.canvasEle = this._cg.canvas;
-
-        if (cg.on)
-            cg.on("resize", () =>
-            {
-                this.updateSizeDisplay();
-            });
-
-        cg.fpsCounter?.on("performance", (perf) =>
+        if (this.#cg)
         {
-            const p = gui.uiProfiler.start("[canvasUi] on performance");
 
-            // if (this.isCanvasFocussed)
-            // {
-            if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
-            this._oldFps = perf.fps;
-
-            if (this._cg.profileData)
-            {
-                let ms = ((Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0") + "ms";
-
-                if (window.gui && gui.patchView.patchRenderer.vizLayer && gui.patchView.patchRenderer.vizLayer.renderMs > 3)
+            if (this.#cg && this.#cg.on)
+                this.#cg.on("resize", () =>
                 {
-                    ms += " vizLayer: " + Math.round(gui.patchView.patchRenderer.vizLayer.renderMs) + "ms";
-                }
+                    this.updateSizeDisplay();
+                });
 
-                if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms;
-                this._oldMs = ms;
-            }
-            // }
+            if (this.#cg)
+                this.#cg.fpsCounter?.on("performance", (perf) =>
+                {
+                    const p = gui.uiProfiler.start("[canvasUi] on performance");
 
-            p.finish();
-        });
+                    // if (this.isCanvasFocussed)
+                    // {
+                    if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+                    this._oldFps = perf.fps;
 
-        this.canvasEle.setAttribute("tabindex", 0);
+                    if (this.#cg.profileData)
+                    {
+                        let ms = ((Math.round(this.#cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0") + "ms";
 
-        this.canvasEle.addEventListener("focus", () =>
+                        if (window.gui && gui.patchView.patchRenderer.vizLayer && gui.patchView.patchRenderer.vizLayer.renderMs > 3)
+                        {
+                            ms += " vizLayer: " + Math.round(gui.patchView.patchRenderer.vizLayer.renderMs) + "ms";
+                        }
+
+                        if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms;
+                        this._oldMs = ms;
+                    }
+                    // }
+
+                    p.finish();
+                });
+        }
+        else
+        {
+
+        }
+
+        this.#canvasEle.setAttribute("tabindex", 0);
+
+        this.#canvasEle.addEventListener("focus", () =>
         {
             const p = gui.uiProfiler.start("[canvasUi] on focus");
 
             this.showCanvasModal(true);
-            gui.canvasManager.setCurrentCanvas(this.canvasEle);
+            gui.canvasManager.setCurrentCanvas(this.#canvasEle);
             p.finish();
         });
 
@@ -109,15 +121,10 @@ export default class CanvasUi
                 if (this.isCanvasFocussed &&
                     !e.target.classList.contains("item") &&
                     !e.target.classList.contains("icon") &&
-                    e.target != this.canvasEle
+                    e.target != this.#canvasEle
                 ) this.showCanvasModal(false);
             },
             true);
-    }
-
-    get canvasMode()
-    {
-        return gui._canvasMode;
     }
 
     updateCanvasIconBar()
@@ -136,14 +143,14 @@ export default class CanvasUi
     {
         if (!gui.corePatch().cgl) return;
 
-        const canvas = gui.canvasManager.currentCanvas();
+        const canvas = this.#canvasEle;
 
-        const ctx = gui.canvasManager.currentContext();
+        const ctx = gui.canvasManager.currentContextCg();
 
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
 
         let sizeStr = canvas.width + "x" + canvas.height;
-        if (ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
+        if (ctx && ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
         gui.canvasManager.updateCanvasUi();
 
@@ -153,12 +160,12 @@ export default class CanvasUi
         this.updateIconState();
 
         let str = "<table>";
-        str += "<tr><td>Canvas API</td><td>" + ctx.getGApiName() + "</td></tr>";
+        if (ctx) str += "<tr><td>Canvas API</td><td>" + ctx.getGApiName() + "</td></tr>";
         str += "<tr><td>Canvas id</td><td>" + canvas.id + "</td></tr>";
         str += "<tr><td>Canvas CSS Size:</td><td><code>" + canvas.clientWidth + "&nbsp;x&nbsp;" + canvas.clientHeight + "</td></tr>";
         str += "<tr><td>Canvas Pixel Size:</td><td><code>" + canvas.width + " x " + canvas.height + "</td></tr>";
         str += "<tr><td>Device Pixel Ratio/Density:</td><td><code>" + window.devicePixelRatio + "</td></tr>";
-        str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + ctx.pixelDensity + "</td></tr>";
+        if (ctx) str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + ctx.pixelDensity + "</td></tr>";
         str += "</table>";
         this._elCanvasInfoSizeOverlay.innerHTML = str;
 
@@ -204,12 +211,6 @@ export default class CanvasUi
                 if (!this._showing) ele.show(this._elCanvasModalDarkener);
             }
 
-            // if (!this._showing) ele.show(this._elCanvasIconbarContainer);
-
-            // const sizeStr = this.getCanvasSizeString();
-
-            // if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
-            // this._oldSizeStr = sizeStr;
         }
         else
         {

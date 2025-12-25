@@ -381,10 +381,14 @@ export default class OpSearch extends Events
         perf.finish();
     }
 
+    /**
+     * @param {string} query
+     * @param {string} [originalSearch]
+     */
     search(query, originalSearch)
     {
 
-        this.prefereGApi = gui.canvasManager.currentContext().gApi;
+        this.prefereGApi = gui.canvasManager.currentContextCg()?.gApi;
 
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
