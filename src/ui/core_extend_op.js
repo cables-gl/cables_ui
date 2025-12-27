@@ -151,7 +151,7 @@ class UiOp extends Op
         CABLES.OpUnLinkTempReLinkP1 = null;
         CABLES.OpUnLinkTempReLinkP2 = null;
 
-        console.log("tryrelink", tryRelink, this.getFirstPortIn(), this.getFirstPortOut());
+        // console.log("tryrelink", tryRelink, this.getFirstPortIn(), this.getFirstPortOut());
 
         if (tryRelink)
         {
