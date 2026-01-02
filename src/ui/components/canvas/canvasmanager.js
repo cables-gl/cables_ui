@@ -370,7 +370,7 @@ export default class CanvasManager
     {
         const canvasEles = ele.byClassAll("cablescontext");
 
-        console.log("text", canvasEles);
+        // console.log("text", canvasEles);
 
         for (let i = 0; i < canvasEles.length; i++)
         {
@@ -403,7 +403,7 @@ export default class CanvasManager
             }
         }
 
-        console.log("num contexts", this.#contexts.length);
+        // console.log("num contexts", this.#contexts.length);
 
         if (this.#contexts.length == 0)setTimeout(() => { this.#findNonCgContexts(); }, 500);
 
