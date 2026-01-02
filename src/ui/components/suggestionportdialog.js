@@ -120,7 +120,6 @@ export default class SuggestPortDialog
                     found = true;
                     if (!this.#suggestions[i].op)
                     {
-                        console.log("joooooooooo");
 
                         new SuggestPortDialog(op, port, mouseEvent, cb, cbCancel, true, true);
                     }

@@ -870,7 +870,9 @@ export default class PatchSaveServer extends Events
 
             if (cgl.gApi == CgContext.API_WEBGL) thePatch.resume();
 
-            const url = gui.canvasManager.currentCanvas().toDataURL();
+            let url = null;
+
+            gui.canvasManager.currentCanvas()?.toDataURL();
 
             platform.talkerAPI.send(
                 TalkerAPI.CMD_SAVE_PATCH_SCREENSHOT,
