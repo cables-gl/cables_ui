@@ -164,6 +164,7 @@ export default class Gui extends Events
 
         let patchConfig = {
             "editorMode": true,
+            "containerElement": ele.byId("cablescanvas"),
             "canvas":
             {
                 // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
