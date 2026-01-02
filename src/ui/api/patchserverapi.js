@@ -872,13 +872,9 @@ export default class PatchSaveServer extends Events
 
             let url = null;
 
-            gui.canvasManager.currentCanvas()?.toDataURL();
+            url = gui.canvasManager.currentCanvas()?.toDataURL();
 
-            platform.talkerAPI.send(
-                TalkerAPI.CMD_SAVE_PATCH_SCREENSHOT,
-                {
-                    "screenshot": url
-                },
+            const finished =
                 (error, re) =>
                 {
                     if (error) this._log.warn("[screenshot save error]", error);
@@ -892,7 +888,13 @@ export default class PatchSaveServer extends Events
                     if (cb)cb();
 
                     this.finishAnimations();
-                });
+                };
+
+            if (url)
+            {
+                platform.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH_SCREENSHOT, { "screenshot": url }, finished);
+            }
+            else finished();
 
         }, 200);
     }
