@@ -1,6 +1,6 @@
 import { Events, ele } from "cables-shared-client";
 import { utils } from "cables";
-import { GuiText } from  "../../text.js";
+import { GuiText } from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import TabPanel from "./tabpanel.js";
 import { CssClassNames } from "../../theme.js";
@@ -79,6 +79,12 @@ export default class Tab extends Events
         if (this.options.padding) this.contentEle.classList.add("padding");
         this.contentEle.innerHTML = "";
         eleContainer.appendChild(this.contentEle);
+    }
+
+    removeButtons()
+    {
+        this.toolbarEle.innerHTML = "";
+
     }
 
     /**

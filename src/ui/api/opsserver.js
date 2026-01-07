@@ -34,6 +34,7 @@ export default class ServerOps
     #patchId;
     opIdsChangedOnServer = {};
     loaded = false;
+    saveOpsInProgress = {};
 
     constructor(patchId, next)
     {
@@ -1652,6 +1653,13 @@ export default class ServerOps
         }
     }
 
+    getOpEditorTitle(opname)
+    {
+        const parts = opname.split(".");
+        return "Op " + parts[parts.length - 1];
+
+    }
+
     // Shows the editor and displays the code of an op in it
     /**
      * @param {string | import("../core_extend_op.js").UiOp} op
@@ -1696,8 +1704,6 @@ export default class ServerOps
                 "title": "loading op code " + opname
             });
 
-        const parts = opname.split(".");
-        const title = "Op " + parts[parts.length - 1];
         const editorObj = editorSession.rememberOpenEditor("op", opname);
         let editorTab;
 
@@ -1705,7 +1711,7 @@ export default class ServerOps
         {
             // editorTab = new EditorTab({
             editorTab = createEditor({
-                "title": title,
+                "title": this.getOpEditorTitle(opname),
                 "name": editorObj.name,
                 "loading": true,
                 "singleton": true,
@@ -1740,26 +1746,28 @@ export default class ServerOps
 
                 if (!readOnly && editorTab)
                 {
+
                     editorTab.on("save", (setStatus, content, editor) =>
                     {
                         gui.savingTitleAnimStart("Saving Op...");
+                        this.saveOpsInProgress[opname] = true;
 
-                        platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_CODE, {
-                            "opname": opid,
-                            "projectId": this.#patchId
-                        }, (er, rslt) =>
-                        {
-                            if (rslt.code != oldCode)
-                            {
-                                console.log("HAS CHANGED!!!!!!!!");
-                                new ModalDialog({
-                                    "title": "file changed serverside",
-                                    "text": "file was overwritten",
-                                });
-                                console.log("oldcode:", oldCode);
-                            }
+                        // platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_CODE, {
+                        //     "opname": opid,
+                        //     "projectId": this.#patchId
+                        // }, (er, rslt) =>
+                        // {
+                        //     if (rslt.code != oldCode)
+                        //     {
+                        //         console.log("HAS CHANGED!!!!!!!!");
+                        //         new ModalDialog({
+                        //             "title": "file changed serverside",
+                        //             "text": "file was overwritten",
+                        //         });
+                        //         console.log("oldcode:", oldCode);
+                        //     }
 
-                        });
+                        // });
 
                         platform.talkerAPI.send(
                             TalkerAPI.CMD_SAVE_OP_CODE,

@@ -561,17 +561,33 @@ export default class ScConnection extends Events
                         switch (msg.data.build)
                         {
                         case "opchange":
+                            console.log("opchangeeeeeeeeeeeepf s", opName);
                             if (opName)
                             {
                                 const usedOps = gui.corePatch().getOpsByObjName(opName);
                                 if (usedOps && usedOps.length > 0)
                                 {
-                                    const usedOp = usedOps[0];
-                                    gui.serverOps.execute(usedOp.opId, () =>
+                                    if (gui.serverOps.saveOpsInProgress[opName])
                                     {
-                                        notify("reloaded op " + usedOp.objName);
-                                    });
+                                        console.log("currently saving...");
+                                    }
+                                    else
+                                    {
+
+                                        gui.serverOps.execute(opName, () =>
+                                        {
+                                            notify("reloaded op " + opName);
+                                        });
+                                    }
                                 }
+
+                                if (!gui.serverOps.saveOpsInProgress[opName])
+                                {
+                                    const editorTab = gui.mainTabs.getTabByTitle(gui.serverOps.getOpEditorTitle(opName), true);
+                                    if (editorTab && editorTab.editor) editorTab.editor.setInactive();
+                                }
+                                gui.serverOps.saveOpsInProgress[opName] = false;
+
                             }
                             break;
                         case "attachmentchange":
@@ -583,10 +599,10 @@ export default class ScConnection extends Events
                                     const usedOps = gui.corePatch().getOpsByObjName(opName);
                                     if (usedOps && usedOps.length > 0)
                                     {
-                                        const usedOp = usedOps[0];
-                                        gui.serverOps.execute(usedOp.opId, () =>
+
+                                        gui.serverOps.execute(opName, () =>
                                         {
-                                            notify("reloaded op " + usedOp.objName);
+                                            notify("reloaded op " + opName);
                                         });
                                     }
                                 }

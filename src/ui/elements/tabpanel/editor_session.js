@@ -98,8 +98,8 @@ export default class EditorSession
      * @name rememberOpenEditor
      * @param {string} type
      * @param {string} name
-     * @param {object} data
-     * @param {boolean} skipSetEditorTab
+     * @param {object} [data]
+     * @param {boolean} [skipSetEditorTab]
      * @function
      */
     rememberOpenEditor(type, name, data, skipSetEditorTab)

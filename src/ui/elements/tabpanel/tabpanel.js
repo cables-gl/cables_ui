@@ -31,6 +31,9 @@ export default class TabPanel extends Events
     #options;
     #eleId;
 
+    /** @type {Tab[]} */
+    #tabs = [];
+
     /**
      * @param {String} eleId
      * @param {TabPanelOptions} options
@@ -43,7 +46,7 @@ export default class TabPanel extends Events
         this.#options = options;
         this.id = utils.uuid();
         this.#eleId = eleId;
-        this._tabs = [];
+
         this._eleContentContainer = null;
         this._eleTabPanel = null;
         this.showTabListButton = false;
@@ -68,7 +71,7 @@ export default class TabPanel extends Events
 
         this.on(TabPanel.EVENT_RESIZE, () =>
         {
-            for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent(Tab.EVENT_RESIZE);
+            for (let i = 0; i < this.#tabs.length; i++) this.#tabs[i].emitEvent(Tab.EVENT_RESIZE);
         });
     }
 
@@ -95,7 +98,7 @@ export default class TabPanel extends Events
     updateHtml()
     {
         let html = "";
-        html += getHandleBarHtml("tabpanel_bar", { "id": this.id, "tabs": this._tabs });
+        html += getHandleBarHtml("tabpanel_bar", { "id": this.id, "tabs": this.#tabs });
         this._eleTabPanel.innerHTML = html;
 
         const editortabList = document.getElementById("editortabList" + this.id);
@@ -119,9 +122,9 @@ export default class TabPanel extends Events
                 (e) =>
                 {
                     const items = [];
-                    for (let i = 0; i < this._tabs.length; i++)
+                    for (let i = 0; i < this.#tabs.length; i++)
                     {
-                        const tab = this._tabs[i];
+                        const tab = this.#tabs[i];
                         items.push({
                             "title": tab.options.name,
                             "func": () => { this.activateTab(tab.id); }
@@ -137,11 +140,11 @@ export default class TabPanel extends Events
 
         for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPalette.removeDynamic(this._dynCmds[i]);
 
-        for (let i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this.#tabs.length; i++)
         {
             if (window.gui && this.#eleId == "maintabs")
             {
-                const t = this._tabs[i];
+                const t = this.#tabs[i];
 
                 const cmd = gui.cmdPalette.addDynamic("tab", "Tab " + t.title, () =>
                 {
@@ -154,14 +157,14 @@ export default class TabPanel extends Events
 
             // ----------------
 
-            ele.clickable(ele.byId("editortab" + this._tabs[i].id), (e) =>
+            ele.clickable(ele.byId("editortab" + this.#tabs[i].id), (e) =>
             {
                 if (e.target.dataset.id) this.activateTab(e.target.dataset.id, true);
             });
 
-            if (this._tabs[i].options.closable)
+            if (this.#tabs[i].options.closable)
             {
-                document.getElementById("editortab" + this._tabs[i].id).addEventListener(
+                document.getElementById("editortab" + this.#tabs[i].id).addEventListener(
                     "pointerdown",
                     function (e)
                     {
@@ -170,9 +173,9 @@ export default class TabPanel extends Events
                 );
             }
 
-            if (document.getElementById("closetab" + this._tabs[i].id))
+            if (document.getElementById("closetab" + this.#tabs[i].id))
             {
-                document.getElementById("closetab" + this._tabs[i].id).addEventListener(
+                document.getElementById("closetab" + this.#tabs[i].id).addEventListener(
                     "pointerdown",
                     function (e)
                     {
@@ -193,16 +196,16 @@ export default class TabPanel extends Events
         name = name || "";
         let found = false;
         let tab = null;
-        for (let i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this.#tabs.length; i++)
         {
-            if (this._tabs[i].title.toLowerCase() === name.toLowerCase() ||
-                (this._tabs[i].options.name || "").toLowerCase() === name.toLowerCase())
+            if (this.#tabs[i].title.toLowerCase() === name.toLowerCase() ||
+                (this.#tabs[i].options.name || "").toLowerCase() === name.toLowerCase())
             {
-                tab = this._tabs[i];
+                tab = this.#tabs[i];
                 this.activateTab(tab.id);
                 found = true;
             }
-            else this._tabs[i].deactivate();
+            else this.#tabs[i].deactivate();
         }
 
         if (!found) this._log.log("[activateTabByName] could not find tab", name);
@@ -230,20 +233,20 @@ export default class TabPanel extends Events
     activateTab(id)
     {
         let found = null;
-        for (let i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this.#tabs.length; i++)
         {
-            if (this._tabs[i].id === id)
+            if (this.#tabs[i].id === id)
             {
-                found = this._tabs[i];
-                this.emitEvent("onTabActivated", this._tabs[i]);
-                this._tabs[i].activate();
+                found = this.#tabs[i];
+                this.emitEvent("onTabActivated", this.#tabs[i]);
+                this.#tabs[i].activate();
             }
         }
 
         if (found)
-            for (let i = 0; i < this._tabs.length; i++)
-                if (this._tabs[i].id != id)
-                    this._tabs[i].deactivate();
+            for (let i = 0; i < this.#tabs.length; i++)
+                if (this.#tabs[i].id != id)
+                    this.#tabs[i].deactivate();
 
         this.updateHtml();
 
@@ -255,11 +258,11 @@ export default class TabPanel extends Events
     {
         if (this.#options.noUserSetting) return;
         let found = false;
-        for (let i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this.#tabs.length; i++)
         {
-            if (userSettings.get("tabsLastTitle_" + this.#eleId) == this._tabs[i].title)
+            if (userSettings.get("tabsLastTitle_" + this.#eleId) == this.#tabs[i].title)
             {
-                this.activateTab(this._tabs[i].id);
+                this.activateTab(this.#tabs[i].id);
                 found = true;
                 break;
             }
@@ -280,15 +283,23 @@ export default class TabPanel extends Events
      */
     getTabByDataId(dataId)
     {
-        for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].dataId == dataId) return this._tabs[i];
+        for (let i = 0; i < this.#tabs.length; i++) if (this.#tabs[i].dataId == dataId) return this.#tabs[i];
     }
 
     /**
      * @param {string} title
+     * @param {boolean} [noexact]
      */
-    getTabByTitle(title)
+    getTabByTitle(title, noexact = false)
     {
-        for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].title == title) return this._tabs[i];
+        if (noexact)
+        {
+            for (let i = 0; i < this.#tabs.length; i++) if (this.#tabs[i].title.includes(title)) return this.#tabs[i];
+        }
+        else
+        {
+            for (let i = 0; i < this.#tabs.length; i++) if (this.#tabs[i].title == title) return this.#tabs[i];
+        }
     }
 
     /**
@@ -296,12 +307,12 @@ export default class TabPanel extends Events
      */
     getTabById(id)
     {
-        for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].id == id) return this._tabs[i];
+        for (let i = 0; i < this.#tabs.length; i++) if (this.#tabs[i].id == id) return this.#tabs[i];
     }
 
     closeAllTabs()
     {
-        while (this._tabs.length) this.closeTab(this._tabs[0].id);
+        while (this.#tabs.length) this.closeTab(this.#tabs[0].id);
     }
 
     /**
@@ -311,13 +322,13 @@ export default class TabPanel extends Events
     {
         let tab = null;
         let idx = 0;
-        for (let i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this.#tabs.length; i++)
         {
-            if (this._tabs[i].id == id)
+            if (this.#tabs[i].id == id)
             {
-                tab = this._tabs[i];
+                tab = this.#tabs[i];
                 // tab.emitEvent("close");
-                this._tabs.splice(i, 1);
+                this.#tabs.splice(i, 1);
                 idx = i;
                 break;
             }
@@ -327,8 +338,8 @@ export default class TabPanel extends Events
         this.emitEvent("onTabRemoved", tab);
         tab.remove();
 
-        if (idx > this._tabs.length - 1) idx = this._tabs.length - 1;
-        if (this._tabs[idx]) this.activateTab(this._tabs[idx].id);
+        if (idx > this.#tabs.length - 1) idx = this.#tabs.length - 1;
+        if (this.#tabs[idx]) this.activateTab(this.#tabs[idx].id);
 
         this.updateHtml();
     }
@@ -348,7 +359,7 @@ export default class TabPanel extends Events
      */
     setTabNum(num)
     {
-        const tab = this._tabs[Math.min(this._tabs.length, num)];
+        const tab = this.#tabs[Math.min(this.#tabs.length, num)];
         this.activateTab(tab.id);
     }
 
@@ -357,7 +368,7 @@ export default class TabPanel extends Events
      */
     getNumTabs()
     {
-        return this._tabs.length;
+        return this.#tabs.length;
     }
 
     /**
@@ -365,13 +376,13 @@ export default class TabPanel extends Events
      */
     cycleActiveTab()
     {
-        if (this._tabs.length <= 1) return;
+        if (this.#tabs.length <= 1) return;
 
-        for (let i = 1; i < this._tabs.length; i++)
-            if (this._tabs[i - 1].active)
-                return this.activateTab(this._tabs[i].id);
+        for (let i = 1; i < this.#tabs.length; i++)
+            if (this.#tabs[i - 1].active)
+                return this.activateTab(this.#tabs[i].id);
 
-        return this.activateTab(this._tabs[0].id);
+        return this.activateTab(this.#tabs[0].id);
     }
 
     /**
@@ -379,12 +390,12 @@ export default class TabPanel extends Events
      */
     getActiveTab()
     {
-        for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].active) return this._tabs[i];
+        for (let i = 0; i < this.#tabs.length; i++) if (this.#tabs[i].active) return this.#tabs[i];
     }
 
     updateSize()
     {
-        for (let i = 0; i < this._tabs.length; i++) this._tabs[i].updateSize();
+        for (let i = 0; i < this.#tabs.length; i++) this.#tabs[i].updateSize();
     }
 
     getSaveButton()
@@ -417,7 +428,7 @@ export default class TabPanel extends Events
         }
 
         tab.initHtml(this._eleContentContainer);
-        this._tabs.push(tab);
+        this.#tabs.push(tab);
 
         if (activate) this.activateTab(tab.id);
 

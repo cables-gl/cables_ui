@@ -75,6 +75,12 @@ export default class EditorTab extends Events
         if (options.hasOwnProperty("content")) this.setContent(options.content);
     }
 
+    setInactive()
+    {
+        this._tab.html("inactive. file was changed on server, please reload");
+        this._tab.removeButtons();
+    }
+
     /**
      * @param {string} content
      * @param {boolean} silent
