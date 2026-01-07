@@ -1736,12 +1736,30 @@ export default class ServerOps
                     return;
                 }
                 editorTab.setContent(rslt.code);
+                const oldCode = rslt.code;
 
                 if (!readOnly && editorTab)
                 {
                     editorTab.on("save", (setStatus, content, editor) =>
                     {
                         gui.savingTitleAnimStart("Saving Op...");
+
+                        platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_CODE, {
+                            "opname": opid,
+                            "projectId": this.#patchId
+                        }, (er, rslt) =>
+                        {
+                            if (rslt.code != oldCode)
+                            {
+                                console.log("HAS CHANGED!!!!!!!!");
+                                new ModalDialog({
+                                    "title": "file changed serverside",
+                                    "text": "file was overwritten",
+                                });
+                                console.log("oldcode:", oldCode);
+                            }
+
+                        });
 
                         platform.talkerAPI.send(
                             TalkerAPI.CMD_SAVE_OP_CODE,

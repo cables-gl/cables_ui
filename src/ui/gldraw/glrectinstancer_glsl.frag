@@ -121,7 +121,7 @@ float samp(in vec2 uv, float w) {
     float selected=decoration.b;
 
 
-    if(shape==1.0) // circlu
+    if(shape==1.0) // circle
     {
         float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
         float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));

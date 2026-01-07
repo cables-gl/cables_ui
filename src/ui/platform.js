@@ -335,6 +335,7 @@ export class Platform extends Events
 
         this.talkerAPI.addEventListener("executeOp", (options, _next) =>
         {
+            console.log("exeeeeeeeeeeeeeeeeeeeeeeee");
             if (options && options.name)
             {
                 gui.serverOps.execute(options.id || options.name, () =>

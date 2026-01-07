@@ -33,6 +33,7 @@ export default class GlCable
     #visible = true;
     #distFromPort = 0;
 
+    /** @type {GlRect} */
     #buttonRect = null;
 
     /** @type {GlLink} */

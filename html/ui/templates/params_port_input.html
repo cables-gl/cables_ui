@@ -137,10 +137,17 @@
                                 <option value="">...</option>
                             {{/compare}}
 
+
                             {{#each port.uiAttribs.values}}
                                 <option {{#compare this '==' ../port.value }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if ../port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{ this }}</option>
                             {{/each}}
                         </select>
+
+                        {{#if port.uiAttribs.displayValue  }}
+                            <br/>
+                            Stored value: <span><b>{{port.value}}</b></span>
+                        {{/if}}
+
                         <input type="hidden" class="value" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" />
                 {{/compare}}
 

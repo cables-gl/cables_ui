@@ -1598,9 +1598,10 @@ export default class Gui extends Events
 
         this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
         {
+            if (document.activeElement.getAttribute("contenteditable") == "true") return false;
+
             if (document.activeElement)
-                if (
-                    gui.isShowingModal() ||
+                if (gui.isShowingModal() ||
                     (
                         !document.activeElement.classList.contains("ace_text-input") &&
                         document.activeElement.tagName != "INPUT" &&
