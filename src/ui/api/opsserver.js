@@ -1646,7 +1646,7 @@ export default class ServerOps
             if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
         });
 
-        if (!editorObj)
+        if (!editorObj && title)
         {
             gui.mainTabs.activateTabByName(title);
             gui.maintabPanel.show(userInteraction);
