@@ -11,7 +11,7 @@
                 <option value="">UNKNOWN</option>
             {{/compare}}
             {{#each vars}}
-                <option {{#compare _name '==' ../port.uiAttribs.variableName }} SELECTED="SELECTED" {{/compare}} value="{{ _name }}">#{{_name}}</option>
+                <option {{#compare name '==' ../port.uiAttribs.variableName }} SELECTED="SELECTED" {{/compare}} value="{{ name }}">#{{name}}</option>
             {{/each}}
         </select>
 
