@@ -2293,7 +2293,6 @@ export default class Gui extends Events
 
     hide()
     {
-
         if (gui)gui.unload = true;
         this._corePatch.pause();
 

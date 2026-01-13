@@ -1833,10 +1833,9 @@ export default class ServerOps
         }
         else
         {
-            gui.jobs()
-                .finish("load_opcode_" + opname);
+            gui.jobs().finish("load_opcode_" + opname);
 
-            gui.mainTabs.activateTabByName(title);
+            // gui.mainTabs.activateTabByName(title);
             gui.maintabPanel.show(userInteraction);
         }
     }
