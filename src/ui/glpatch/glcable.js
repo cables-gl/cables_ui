@@ -331,14 +331,21 @@ export default class GlCable
                     this.#curvedSimple = true;
                     this.#updateDistFromPort();
 
-                    this.#points = // this._subdivide(
+                    if (this.#y < this.#y2)
+                        this.#points =
+                        [
+                            posX, this.#y - 10, gluiconfig.zPosCables,
+                            posX, this.#y, gluiconfig.zPosCables,
+                            posX2, this.#y2 + 10, gluiconfig.zPosCables,
+                            posX2, this.#y2, gluiconfig.zPosCables
+                        ];
+                    else
+                        this.#points =
                         [
                             posX, this.#y, gluiconfig.zPosCables,
-                            // posX, this._y, gluiconfig.zPosCables,
                             posX2, this.#y2, gluiconfig.zPosCables,
                             posX2, this.#y2, gluiconfig.zPosCables
                         ];
-                    // );
 
                     this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
                 }
