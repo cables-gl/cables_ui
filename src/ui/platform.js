@@ -333,29 +333,6 @@ export class Platform extends Events
             },
         );
 
-        this.talkerAPI.addEventListener("executeOp", (options, _next) =>
-        {
-            if (options && options.name)
-            {
-                gui.serverOps.execute(options.id || options.name, () =>
-                {
-                    if (options.forceReload && options.name)
-                    {
-                        const editorTab = gui.mainTabs.getTabByDataId(options.name);
-                        if (
-                            editorTab &&
-                            editorTab.editor &&
-                            options.hasOwnProperty("code")
-                        )
-                        {
-                            editorTab.editor.setContent(options.code, true);
-                        }
-                    }
-                    notify("reloaded op " + options.name);
-                });
-            }
-        });
-
         this.talkerAPI.addEventListener(
             TalkerAPI.CMD_UI_FILE_UPDATED,
             (options, _next) =>
@@ -436,7 +413,7 @@ export class Platform extends Events
             gui.jobs().start({ "id": options.id, "title": options.title });
         });
 
-        this.talkerAPI.addEventListener("jobFinish", (options, _next) =>
+        this.talkerAPI.addEventListener(TalkerAPI.CMD_UI_JOB_FINISH, (options, _next) =>
         {
             gui.jobs().finish(options.id);
         });

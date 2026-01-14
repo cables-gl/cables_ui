@@ -202,4 +202,31 @@ export default class PlatformElectron extends Platform
     {
         return this.getPatchOpsNamespace() + super.getDefaultOpName();
     }
+
+    initRouting(cb)
+    {
+        super.initRouting(cb);
+        this.talkerAPI.addEventListener(TalkerAPI.CMD_ELECTRON_EXECUTE_OP, (options, _next) =>
+        {
+            if (options && options.name)
+            {
+                gui.serverOps.execute(options.id || options.name, () =>
+                {
+                    if (options.forceReload && options.name)
+                    {
+                        const editorTab = gui.mainTabs.getTabByDataId(options.name);
+                        if (
+                            editorTab &&
+                            editorTab.editor &&
+                            options.hasOwnProperty("code")
+                        )
+                        {
+                            editorTab.editor.setContent(options.code, true);
+                        }
+                    }
+                    notify("reloaded op " + options.name);
+                });
+            }
+        });
+    }
 }
