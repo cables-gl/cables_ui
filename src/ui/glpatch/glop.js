@@ -78,7 +78,7 @@ export default class GlOp extends Events
     #glRectBg = null;
 
     /** @type {GlRect} */
-    _rectResize = null;
+    #rectResize = null;
 
     /** @type {GlRect} */
     _glColorSwatch = null;
@@ -706,7 +706,7 @@ export default class GlOp extends Events
         if (this._glComment)
         {
             let x = this.w + gluiconfig.portWidth;
-            if (this._rectResize) x += this._rectResize.w;
+            if (this.#rectResize) x += this.#rectResize.w;
             if (this._glColorSwatch) x += this._height / 2;
             if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
             else this._glComment.setPosition(12, this._height, 0); // comment op (weird hardcoded values because of title scaling)
@@ -789,8 +789,8 @@ export default class GlOp extends Events
             for (let i = 0; i < this.#glPorts.length; i++)
                 this.#glPorts[i].updateSize();
 
-        if (this._rectResize)
-            this._rectResize.setPosition(this._width, this._height - this._rectResize.h);
+        if (this.#rectResize)
+            this.#rectResize.setPosition(this._width, this._height - this.#rectResize.h);
 
         if (this._glColorIndicator)
         {
@@ -813,7 +813,7 @@ export default class GlOp extends Events
 
         let ext = 0;
         const indicSize = 0.4;
-        if (this._rectResize)ext += this._rectResize.w;
+        if (this.#rectResize)ext += this.#rectResize.w;
         if (this._glColorSwatch)ext += this._height * (indicSize + indicSize);
         this.#glRectBg.setSize(this._width + ext, this._height);
 
@@ -896,7 +896,7 @@ export default class GlOp extends Events
         if (this._titleExt) this._titleExt = this._titleExt.dispose();
         // if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
-        if (this._rectResize) this._rectResize = this._rectResize.dispose();
+        if (this.#rectResize) this.#rectResize = this.#rectResize.dispose();
         if (this._glColorSwatch) this._glColorSwatch = this._glColorSwatch.dispose();
         if (this._glColorIndicator) this._glColorIndicator = this._glColorIndicator.dispose();
         if (this._glColorIndicatorSpacing) this._glColorIndicatorSpacing = this._glColorIndicatorSpacing.dispose();
@@ -1420,10 +1420,10 @@ export default class GlOp extends Events
             }
         }
 
-        if (!this.opUiAttribs.resizable && this._rectResize)
+        if (!this.opUiAttribs.resizable && this.#rectResize)
         {
-            this._rectResize.dispose();
-            this._rectResize = null;
+            this.#rectResize.dispose();
+            this.#rectResize = null;
 
             this.#op.setUiAttribs({
                 "height": 1,
@@ -1438,30 +1438,30 @@ export default class GlOp extends Events
             this._glRectArea.setColor(0, 0, 0, 0.15);
         }
 
-        if (this.opUiAttribs.resizable && !this._rectResize)
+        if (this.opUiAttribs.resizable && !this.#rectResize)
         {
-            this._rectResize = this.#instancer.createRect({ "name": "op resize", "parent": this.#glRectBg, "draggable": true, "interactive": true });
-            this._rectResize.setShape(GlRect.SHAPE_TRIANGLE_BOTTOM);
+            this.#rectResize = this.#instancer.createRect({ "name": "op resize", "parent": this.#glRectBg, "draggable": true, "interactive": true });
+            this.#rectResize.setShape(GlRect.SHAPE_TRIANGLE_BOTTOM);
 
-            if (this.opUiAttribs.hasOwnProperty("resizableX")) this._rectResize.draggableX = this.opUiAttribs.resizableX;
-            if (this.opUiAttribs.hasOwnProperty("resizableY")) this._rectResize.draggableY = this.opUiAttribs.resizableY;
+            if (this.opUiAttribs.hasOwnProperty("resizableX")) this.#rectResize.draggableX = this.opUiAttribs.resizableX;
+            if (this.opUiAttribs.hasOwnProperty("resizableY")) this.#rectResize.draggableY = this.opUiAttribs.resizableY;
 
-            this._rectResize.setSize(gluiconfig.rectResizeSize, gluiconfig.rectResizeSize);
-            this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
-            this._rectResize.setColor(0.24, 0.24, 0.24, 1);
+            this.#rectResize.setSize(gluiconfig.rectResizeSize, gluiconfig.rectResizeSize);
+            this.#rectResize.setPosition((this.opUiAttribs.width || 0) - this.#rectResize.w, (this.opUiAttribs.height || 0) - this.#rectResize.h);
+            this.#rectResize.setColor(0.24, 0.24, 0.24, 1);
 
-            this._rectResize.draggable = true;
-            this._rectResize.draggableMove = true;
-            this._rectResize.interactive = true;
+            this.#rectResize.draggable = true;
+            this.#rectResize.draggableMove = true;
+            this.#rectResize.interactive = true;
 
             doUpdateSize = true;
 
-            this._rectResize.on("drag", (_e) =>
+            this.#rectResize.on("drag", (_e) =>
             {
-                if (this._rectResize)
+                if (this.#rectResize)
                 {
-                    let w = this._rectResize.x - this.x;
-                    let h = this._rectResize.y - this.y;
+                    let w = this.#rectResize.x - this.x - this.#rectResize.w / 2;
+                    let h = this.#rectResize.y - this.y + this.#rectResize.h / 2;
 
                     w = Math.max(this.minWidth, w);
 
