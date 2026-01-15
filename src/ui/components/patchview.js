@@ -1043,6 +1043,7 @@ export default class PatchView extends Events
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
 
         undo.endGroup(undoGroup, "Delete selected ops");
+
     }
 
     createAreaFromSelection()

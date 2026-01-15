@@ -170,14 +170,19 @@ export default function startUi(cfg)
                     gui.corePatch().clearSubPatchCache();
                     gui.patchView.highlightExamplePatchOps();
 
-                    for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
+                    // for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
                     gui.patchParamPanel.show();
 
-                    if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+                    gui.corePatch().loading.on("finishedAll", () =>
+                    {
+                        gui.corePatch().checkLinkTimeWarnings();
+                    });
 
+                    if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
                     setTimeout(() =>
                     {
+                        gui.corePatch().checkLinkTimeWarnings();
                         gui.emitEvent(Gui.EVENT_UILOADED);
                         gui.corePatch().timer.setTime(0);
                         gui.corePatch().timer.play();

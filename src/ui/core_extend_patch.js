@@ -4,7 +4,7 @@
 
 import { Op, Patch, Profiler } from "cables";
 import { Logger } from "cables-shared-client";
-import { gui } from "./gui.js";
+import Gui, { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
 import { UiOp } from "./core_extend_op.js";
 
