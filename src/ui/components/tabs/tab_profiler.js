@@ -262,7 +262,7 @@ export default class Profiler
 
                 if (item.percent > 0)
                 {
-                    htmlBar += "<div class=\"tt\" data-tt=\"" + item.title + "\" style=\"height:20px;background-color:" + this.colors[colorCounter] + ";float:left;padding:0px;overflow:hidden;min-width:0px;width:" + item.percent + "%\"></div>";
+                    htmlBar += "<div class=\"tt\" data-tt=\"" + item.title + "\" style=\"height:20px;background-color:" + this.colors[colorCounter] + ";float:left;padding:0px;overflow:hidden;min-width:0px;width:" + Math.floor(item.percent * 90) + "%\"></div>";
                     colorCounter++;
                     if (colorCounter > this.colors.length - 1)colorCounter = 0;
                 }

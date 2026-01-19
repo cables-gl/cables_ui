@@ -30,7 +30,7 @@ function initSplitPanes()
 
             gui.setLayout();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
-            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
         }
 
         document.addEventListener("pointermove", mm);
@@ -77,7 +77,7 @@ function initSplitPanes()
             e.preventDefault();
             gui.rendererHeight = e.clientY * (1 / gui.corePatch().cgl.canvasScale);
             gui.setLayout();
-            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
         }
 
         document.addEventListener("pointermove", mm);
@@ -131,7 +131,7 @@ function initSplitPanes()
             else gui.rendererHeight = Math.floor(y * (1 / gui.corePatch().cgl.canvasScale) - 38);
 
             gui.setLayout();
-            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
             gui.canvasManager.focus();
             gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
             e.preventDefault();

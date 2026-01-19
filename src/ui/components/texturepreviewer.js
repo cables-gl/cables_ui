@@ -152,7 +152,7 @@ export default class TexturePreviewer
             const cgl = port.op.patch.cgl;
 
             if (!this._emptyCubemap) this._emptyCubemap = Texture.getEmptyCubemapTexture(cgl);
-            port.op.patch.cgl.profileData.profileTexPreviews++;
+            port.op.patch.cgl.profileData.count("vizTexPreviews");
 
             if (!this._mesh)
             {

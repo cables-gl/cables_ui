@@ -965,8 +965,10 @@ class UiOp extends Op
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
             const p = this.portsIn[ipi];
+            // p.set = p._onSetProfiling;
             this.portsIn[ipi]._onTriggered = this.portsIn[ipi]._onTriggeredProfiling;
             this.portsIn[ipi].set = this.portsIn[ipi]._onSetProfiling;
+            // this.portsIn[ipi].setValue = this.portsIn[ipi]._onSetProfiling;
         }
     }
 }
