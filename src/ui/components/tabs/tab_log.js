@@ -339,6 +339,7 @@ export default class LogTab extends Events
     {
         if (!url) return;
         if (url.includes("[native code]")) return;
+        if (url.includes("wasm://")) return;
         if (this.lastErrorSrc.indexOf(url + line) > -1) return;
         this.lastErrorSrc.push(url + line);
 

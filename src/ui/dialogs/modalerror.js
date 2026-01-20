@@ -64,7 +64,7 @@ export default class ModalError
                     info = stackinfo(this._options.exception);
                     stack = this._options.exception.stack;
                 }
-                if (info && info[0].file && !info[0].file.startsWith("wasm"))
+                if (info && info[0].file)
                 {
                     console.log("This is line " + (info[0].line + 1));
                     console.log("This is file " + (info[0].file));
