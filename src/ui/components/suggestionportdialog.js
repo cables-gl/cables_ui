@@ -58,7 +58,6 @@ export default class SuggestPortDialog
             for (let i = 0; i < op.portsOut.length; i++)
             {
                 const theport = op.portsOut[i];
-                console.log(getConverters(theport, port));
                 if (
                     !theport.uiAttribs.hidePort &&
                     !theport.uiAttribs.readOnly &&
