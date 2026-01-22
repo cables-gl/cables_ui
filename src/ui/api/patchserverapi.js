@@ -798,12 +798,12 @@ export default class PatchSaveServer extends Events
             },
             (error, re) =>
             {
-                const newName = re.data ? re.data.name : "";
+                const newName = re?.data?.name;
                 if (error || !newName)
                 {
                     const options = {
                         "title": "Failed to set project name!",
-                        "html": "Error: " + re.msg,
+                        "html": "Error: " + error.msg,
                         "warning": true,
                         "showOkButton": true
                     };
