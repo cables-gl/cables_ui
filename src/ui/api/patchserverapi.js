@@ -797,7 +797,7 @@ export default class PatchSaveServer extends Events
             },
             (error, re) =>
             {
-                const newName = re.data ? re.data.name : "";
+                const newName = re?.data?.name;
                 if (error || !newName)
                 {
                     const options = {
