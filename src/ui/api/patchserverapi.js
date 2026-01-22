@@ -803,7 +803,7 @@ export default class PatchSaveServer extends Events
                 {
                     const options = {
                         "title": "Failed to set project name!",
-                        "html": "Error: " + re.msg,
+                        "html": "Error: " + error.msg,
                         "warning": true,
                         "showOkButton": true
                     };
