@@ -1662,12 +1662,12 @@ export default class ServerOps
 
     // Shows the editor and displays the code of an op in it
     /**
-     * @param {string | import("../core_extend_op.js").UiOp} op
+     * @param {string} opname
      * @param {boolean} [readOnly]
      * @param {function} [cb]
      * @param {boolean} [userInteraction]
      */
-    edit(op, readOnly, cb, userInteraction)
+    edit(opname, readOnly, cb, userInteraction)
     {
         if (gui.isGuestEditor())
         {
@@ -1675,18 +1675,19 @@ export default class ServerOps
             return;
         }
 
-        let opid = op;
-        let opname = opid;
+        let opid = opname;
 
-        if (typeof op == "object")
+        if (typeof opname == "object")
         {
+            // todo remove if not happening anymore
+            console.error("edit op needs opname");
             opid = op.opId;
             opname = op.objName;
         }
         else
         {
-            const docs = gui.opDocs.getOpDocByName(op);
-            if (!docs) return this.#log.warn("[opsserver] could not find docs", op, opid);
+            const docs = gui.opDocs.getOpDocByName(opname);
+            if (!docs) return this.#log.warn("[opsserver] could not find docs", opname);
             opid = docs.id;
 
             if (!opid) this.#log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
@@ -1694,9 +1695,10 @@ export default class ServerOps
 
         if (!opname || opname == "")
         {
-            this.#log.log("UNKNOWN OPNAME ", opname);
+            this.#log.error("UNKNOWN OPNAME ", opname);
             return;
         }
+        console.log("11");
 
         gui.jobs()
             .start({
@@ -1709,7 +1711,8 @@ export default class ServerOps
 
         if (editorObj)
         {
-            // editorTab = new EditorTab({
+            console.log("editorTab", editorTab);
+
             editorTab = createEditor({
                 "title": this.getOpEditorTitle(opname),
                 "name": editorObj.name,
@@ -1827,6 +1830,10 @@ export default class ServerOps
                             });
                     });
                 }
+                else
+                {
+                    console.log("no editortab?");
+                }
 
                 if (cb) cb(); else gui.maintabPanel.show(userInteraction);
             });
@@ -1835,7 +1842,8 @@ export default class ServerOps
         {
             gui.jobs().finish("load_opcode_" + opname);
 
-            // gui.mainTabs.activateTabByName(title);
+            let name = gui.mainTabs.getUniqueTitle(opname);
+            gui.mainTabs.activateTabByName(name);
             gui.maintabPanel.show(userInteraction);
         }
     }

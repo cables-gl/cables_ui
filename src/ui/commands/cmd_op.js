@@ -281,7 +281,7 @@ class CmdOps
 
         if (selops && selops.length > 0)
         {
-            for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i], false, null, userInteraction);
+            for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i].objName, false, null, userInteraction);
         }
     }
 
