@@ -79,6 +79,32 @@
 
             {{/compare}}
 
+            {{#compare converterId '==' 'gltfpack' }}
+            <table>
+                <tr>
+                    <td><input name="kn" type="checkbox"></td>
+                    <td>Keep named nodes and meshes attached</td>
+                </tr>
+                <tr>
+                    <td><input name="km" value="km" type="checkbox"></td>
+                    <td>Keep named materials and disable named material merging</td>
+                </tr>
+                <tr>
+                    <td><input name="ke" value="ke" type="checkbox"></td>
+                    <td>Keep extras data</td>
+                </tr>
+                <tr>
+                    <td><input name="vpf" value="vpf" type="checkbox"></td>
+                    <td>Use floating-point position quantization</td>
+                </tr>
+                <tr>
+                    <td><input name="tw" value="tw" type="checkbox"></td>
+                    <td>Convert all textures to WebP</td>
+                </tr>
+            </table>
+            <br/>
+            {{/compare}}
+
             {{#compare converterId '==' 'pcconv' }}
 
                 <div>

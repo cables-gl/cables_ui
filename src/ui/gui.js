@@ -1298,11 +1298,34 @@ export default class Gui extends Events
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
 
+        const json = {};
+        const converterForm = ele.byId("converterform");
+        if (converterForm)
+        {
+            converterForm.querySelectorAll("input").forEach((e) =>
+            {
+                let value = e.value;
+                if (e.type === "checkbox")
+                {
+                    if (e.checked)
+                    {
+                        value = e.value || true;
+                        if (value === "on") value = true;
+                    }
+                    else
+                    {
+                        value = false;
+                    }
+                }
+                json[e.getAttribute("name")] = value;
+            });
+        }
+
         platform.talkerAPI.send(TalkerAPI.CMD_CONVERT_FILE,
             {
                 "fileId": fileId,
                 "converterId": converterId,
-                "options": this.serializeForm("#converterform")
+                "options": json
             },
             function (err, res)
             {
