@@ -103,16 +103,16 @@ export default class PlatformElectron extends Platform
         }
         this.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SELECT_FILE, { "url": value, "filter": filterType, "opId": opId }, (_err, file) =>
         {
+            const op = gui.corePatch().getOpById(opId);
             if (file && inputEle)
             {
-                const op = gui.corePatch().getOpById(opId);
                 gui.savedState.setUnSaved("filemanager", op.getSubPatch());
                 inputEle.value = file;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);
                 inputEle.dispatchEvent(event);
-                gui.opParams.show(op);
             }
+            gui.opParams.show(op);
         });
     }
 
