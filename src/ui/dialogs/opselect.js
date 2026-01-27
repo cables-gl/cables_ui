@@ -41,11 +41,11 @@ export default class OpSelect
     _lastScrollTop = -5711;
     _eleOpsearchmodal = null;
     _keyTimeout = null;
-    _hideUserOps = false;
+    #opSearch;
 
     constructor()
     {
-        this._opSearch = new OpSearch();
+        this.#opSearch = new OpSearch();
     }
 
     close()
@@ -78,8 +78,8 @@ export default class OpSelect
     updateStatusBar()
     {
         if (!this._eleSearchinfo) return;
-        this._hideUserOps = gui.project().isOpExample;
 
+        this.#opSearch.hideUserOps = gui.project().isOpExample || gui.getPatchSummary()?.isPublic;
         const perf = gui.uiProfiler.start("opselect.udpateOptions");
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
@@ -93,11 +93,11 @@ export default class OpSelect
             ele.show(this._eleTypeStart);
             this._showSuggestionsInfo();
 
-            for (let i = 0; i < this._opSearch.list.length; i++)
-                if (this._opSearch.list[i].element && !this._opSearch.list[i].elementHidden)
+            for (let i = 0; i < this.#opSearch.list.length; i++)
+                if (this.#opSearch.list[i].element && !this.#opSearch.list[i].elementHidden)
                 {
-                    this._opSearch.list[i].elementHidden = true;
-                    ele.hide(this._opSearch.list[i].element);
+                    this.#opSearch.list[i].elementHidden = true;
+                    ele.hide(this.#opSearch.list[i].element);
                 }
         }
         else ele.hide(this._eleTypeStart);
@@ -105,12 +105,12 @@ export default class OpSelect
         if (query.length > 0 && query.length < MIN_CHARS_QUERY && !this.isMathQuery())
         {
             ele.show(this._eleTypeMore);
-            for (let i = 0; i < this._opSearch.list.length; i++)
+            for (let i = 0; i < this.#opSearch.list.length; i++)
             {
-                if (!this._opSearch.list[i].elementHidden)
+                if (!this.#opSearch.list[i].elementHidden)
                 {
-                    this._opSearch.list[i].elementHidden = true;
-                    ele.hide(this._opSearch.list[i].element);
+                    this.#opSearch.list[i].elementHidden = true;
+                    ele.hide(this.#opSearch.list[i].element);
                 }
             }
             this._eleSearchinfo.innerHMTL = "";
@@ -131,9 +131,9 @@ export default class OpSelect
 
         if (query.length >= MIN_CHARS_QUERY)
         {
-            if (this._hideUserOps)
+            if (this.#opSearch.hideUserOps)
             {
-                optionsHtml += "<div class=\"warning\">Your user ops are hidden, patch is an op example</div>";
+                optionsHtml += "<span class=\"warning tt\" data-tt=\"Because patch is public or op example\">User ops hidden</span>";
             }
             else
             {
@@ -417,7 +417,7 @@ export default class OpSelect
 
     search()
     {
-        if (!this._opSearch.list || !this._html) this.prepare();
+        if (!this.#opSearch.list || !this._html) this.prepare();
 
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
@@ -436,29 +436,29 @@ export default class OpSelect
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
 
         if (this._getQuery().length < MIN_CHARS_QUERY && !this.isMathQuery())
-            this._opSearch.search("");
+            this.#opSearch.search("");
         else
-            this._opSearch.search(query, sq);
+            this.#opSearch.search(query, sq);
 
         const perf = gui.uiProfiler.start("opselect.searchLoop");
 
-        for (let i = 0; i < this._opSearch.list.length; i++)
+        for (let i = 0; i < this.#opSearch.list.length; i++)
         {
-            this._opSearch.list[i].element = this._opSearch.list[i].element || ele.byId("result_" + this._opSearch.list[i].id);
+            this.#opSearch.list[i].element = this.#opSearch.list[i].element || ele.byId("result_" + this.#opSearch.list[i].id);
 
-            if (this._opSearch.list[i].score > 0)
+            if (this.#opSearch.list[i].score > 0)
             {
-                this._opSearch.list[i].element.dataset.score = this._opSearch.list[i].score;
-                this._opSearch.list[i].element.dataset.scoreDebug = this._opSearch.list[i].scoreDebug;
-                this._opSearch.list[i].elementHidden = false;
-                ele.show(this._opSearch.list[i].element);
+                this.#opSearch.list[i].element.dataset.score = this.#opSearch.list[i].score;
+                this.#opSearch.list[i].element.dataset.scoreDebug = this.#opSearch.list[i].scoreDebug;
+                this.#opSearch.list[i].elementHidden = false;
+                ele.show(this.#opSearch.list[i].element);
             }
             else
             {
-                this._opSearch.list[i].element.dataset.score = "0.0";
-                this._opSearch.list[i].element.dataset.scoreDebug = "???";
-                this._opSearch.list[i].elementHidden = true;
-                ele.hide(this._opSearch.list[i].element);
+                this.#opSearch.list[i].element.dataset.score = "0.0";
+                this.#opSearch.list[i].element.dataset.scoreDebug = "???";
+                this.#opSearch.list[i].elementHidden = true;
+                ele.hide(this.#opSearch.list[i].element);
             }
         }
 
@@ -517,7 +517,7 @@ export default class OpSelect
 
     reload()
     {
-        this._opSearch.resetList();
+        this.#opSearch.resetList();
         this._html = null;
         this._eleSearchinfo = null;
     }
@@ -526,10 +526,10 @@ export default class OpSelect
     {
         this.tree = new OpTreeList();
 
-        if (!this._opSearch.list)
+        if (!this.#opSearch.list)
         {
             const perf = gui.uiProfiler.start("opselect.prepare.list");
-            this._opSearch._buildList();
+            this.#opSearch._buildList();
             perf.finish();
         }
 
@@ -542,7 +542,7 @@ export default class OpSelect
             this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
             this._eleOpsearchmodal.innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": GuiText, "patchOps": this._opSearch.numPatchops });
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this.#opSearch.list, "texts": GuiText, "patchOps": this.#opSearch.numPatchops });
 
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
@@ -608,7 +608,7 @@ export default class OpSelect
 
         if (this.firstTime || options.search) this.search();
 
-        if (!this._opSearch.list || !this._html) this.prepare();
+        if (!this.#opSearch.list || !this._html) this.prepare();
 
         ele.hide(ele.byId("search_noresults"));
 
@@ -854,7 +854,7 @@ export default class OpSelect
 
     getListItemByOpName(opName)
     {
-        if (!this._opSearch.list) return null;
-        return this._opSearch.list.find((item) => { return item.name === opName; });
+        if (!this.#opSearch.list) return null;
+        return this.#opSearch.list.find((item) => { return item.name === opName; });
     }
 }

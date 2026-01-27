@@ -24,7 +24,7 @@ export default class OpSearch extends Events
         this._wordsDb = null;
         this.numPatchops = 0;
         this.originalSearch = "";
-        this._hideUserOps = false;
+        this.hideUserOps = false;
     }
 
     get list()
@@ -159,7 +159,7 @@ export default class OpSearch extends Events
                 points += p;
             }
 
-            if (list[i].userOp && this._hideUserOps) continue;
+            if (list[i].userOp && this.hideUserOps) continue;
 
             if (list[i]._summary.indexOf(query) > -1)
             {

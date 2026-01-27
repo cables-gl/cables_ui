@@ -751,7 +751,7 @@ export default class PatchSaveServer extends Events
                             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
                             "theme": "dark",
                             "title": "update",
-                            "message": "Error saving patch! ",
+                            "message": "Error saving patch / serializing op",
                             "progressBar": false,
                             "animateInside": false,
                             "close": true,
