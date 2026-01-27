@@ -1698,7 +1698,6 @@ export default class ServerOps
             this.#log.error("UNKNOWN OPNAME ", opname);
             return;
         }
-        console.log("11");
 
         gui.jobs()
             .start({
@@ -1711,8 +1710,6 @@ export default class ServerOps
 
         if (editorObj)
         {
-            console.log("editorTab", editorTab);
-
             editorTab = createEditor({
                 "title": this.getOpEditorTitle(opname),
                 "name": editorObj.name,
