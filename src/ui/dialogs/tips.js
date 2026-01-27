@@ -61,7 +61,7 @@ export default class Tips
 
         html += "<div style=\"clear:both;padding:20px;\">";
         html += "  <a id=\"modalClose\" class=\"bluebutton\">Close</a>";
-        html += "  <a id=\"tips_next\" class=\"button\">Next tip</a>";
+        html += "  <a id=\"tips_next\" class=\"cblbutton\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";
         if (userSettings.get("showTipps")) html += "<a id=\"tips_showNever\" class=\"button-small\">Do not show this on startup</a>";
