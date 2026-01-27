@@ -680,7 +680,7 @@ export default class Gui extends Events
             this._elEditorMinimized.style.left = 0 + "px";
 
             this._elEditorMaximized.style.display = "block";
-            this._elEditorMaximized.style.left = editorWidth + 3 + "px";
+            this._elEditorMaximized.style.left = editorWidth + 5 + "px";
 
             this._elBreadcrumbNav.style.left = editorWidth + 15 + "px";
 

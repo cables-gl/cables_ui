@@ -11,10 +11,7 @@
 
     cursor:pointer;
     padding: 10px;
-    // background-color: var(--color-button-bg);
     background-color: $color-bar-bg;
-    // border-top: 10px solid var(--color-01);
-    // border-bottom: 10px solid var(--color-01);
 
     border-top-right-radius: $iconbar-borderradius;
     border-bottom-right-radius: $iconbar-borderradius;
@@ -22,18 +19,14 @@
 
 }
 
-
-#editorminimized
+#editorminimized:hover,#editormaximized:hover
 {
+    background-color: var(--color-04) !important;
 }
 
 .editorminimized_changed
 {
     background-color: var(--color-06) !important;
-}
-
-#editormaximized
-{
 }
 
 #editor
@@ -51,18 +44,6 @@
         width: 100% !important;
         left: 0 !important;
     }
-
-    // #editorfoot
-    // {
-    //     position: absolute;
-    //     color:var(--color-12);
-    //     font-family: monospace;
-    //     background-color: var(--color-03);
-    //     overflow: hidden;
-    //     z-index: 9;
-    //     bottom:0px;
-    //     user-select: all;
-    // }
 
     #editorbar, .tabBar
     {
@@ -177,7 +158,7 @@
         border-spacing: 0px;
         border-collapse: separate;
         width:100%;
-    };
+    }
 
     td,tr
     {
