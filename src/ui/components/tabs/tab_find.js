@@ -624,6 +624,8 @@ export default class FindTab
 
             for (let i = 0; i < ops.length; i++)
             {
+                if (!ops[i]) continue;
+
                 let score = 0;
                 let found = false;
 
