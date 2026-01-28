@@ -2919,6 +2919,4 @@ export class GlTimeline extends Events
     {
         CABLES.UI.PREVISKEYVAL = null;
     }
-
 }
-console.log("build");
