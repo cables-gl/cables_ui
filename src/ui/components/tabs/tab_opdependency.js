@@ -57,7 +57,7 @@ export default class OpDependencyTab extends Tab
         if (depsEle)
         {
             const srcEle = depsEle.querySelector(".depSrc");
-            const submitEle = depsEle.querySelector(".button.add");
+            const submitEle = depsEle.querySelector(".cblbutton.add");
             const depTypeEle = depsEle.querySelector("input[name='depType']");
             const exportNameEle = depsEle.querySelector(".exportName");
             const typeSelectEle = depsEle.querySelector("select.type");
@@ -95,7 +95,7 @@ export default class OpDependencyTab extends Tab
             }
 
             let fileInput = null;
-            const selectFileButton = depsEle.querySelector(".button.upload");
+            const selectFileButton = depsEle.querySelector(".cblbutton.upload");
             if (selectFileButton)
             {
                 fileInput = depsEle.querySelector("input[type='file']");

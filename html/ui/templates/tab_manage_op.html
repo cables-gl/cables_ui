@@ -181,7 +181,7 @@
                 {{/if}}
             </table>
 
-            <a class="button" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create Attachment</a>
+            <a class="cblbutton" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create Attachment</a>
 
             <br/><br/>
 
@@ -246,7 +246,7 @@
             {{/if}}
 
             {{#if canEditOp}}
-                <a class="button" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
+                <a class="cblbutton" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
                 add <a class="link" href="https://cables.gl/docs/5_writing_ops/dev_libraries/dev_libraries" target="_blank"> libraries and modules</a> to your op<br/><br/>
                 <div id="{{viewId}}_dependencytabs" class="dependencytabs hidden"></div>
             {{/if}}
