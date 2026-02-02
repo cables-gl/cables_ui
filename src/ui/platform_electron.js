@@ -152,7 +152,11 @@ export default class PlatformElectron extends Platform
         return true;
     }
 
-    exportPatch(projectId, exportType = null)
+    /**
+     * @param {string} projectId
+     * @param {"html"|"patch"} [exportType] (used in electron)
+     */
+    exportPatch(projectId, exportType = "html")
     {
         let talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH;
         if (exportType === "patch") talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH_BUNDLE;

@@ -6,13 +6,16 @@ import ModalDialog from "./modaldialog.js";
 export default class Exporter
 {
     #project;
+    #exportType;
 
     /**
      * @param {any} project
+     * @param {"html"|"patch"} [exportType] (used in electron)
      */
-    constructor(project)
+    constructor(project, exportType)
     {
         this.#project = project;
+        this.#exportType = exportType;
     }
 
     show()
@@ -25,6 +28,6 @@ export default class Exporter
 
         const projectId = this.#project.shortId || this.#project._id;
 
-        platform.exportPatch(projectId);
+        platform.exportPatch(projectId, this.#exportType);
     }
 }

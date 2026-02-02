@@ -850,9 +850,12 @@ class CmdPatch
             true);
     }
 
-    static export()
+    /**
+     * @param {"html"|"patch"} [exportType] (used in electron)
+     */
+    static export(exportType)
     {
-        const exporter = new Exporter(gui.project());
+        const exporter = new Exporter(gui.project(), exportType);
         exporter.show();
     }
 
