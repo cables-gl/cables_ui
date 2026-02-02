@@ -595,8 +595,9 @@ export class Platform extends Events
 
     /**
      * @param {string} projectId
+     * @param {string} [exportType] (used in electron)
      */
-    exportPatch(projectId)
+    exportPatch(projectId, exportType)
     {
         let gotoUrl = platform.getCablesUrl() + "/export/" + projectId;
         let url = "";
