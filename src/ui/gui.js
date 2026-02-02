@@ -2259,7 +2259,7 @@ export default class Gui extends Events
         this._corePatch.cgl.on("webglcontextlost", () =>
         {
             new ModalDialog({
-                "warnning": true,
+                "warning": true,
                 "title": "Context lost",
                 "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
             });
@@ -2326,6 +2326,11 @@ export default class Gui extends Events
         document.body.style["pointer-events"] = "none";
     }
 
+    /**
+     * @param {string} id
+     * @param {string} opname
+     * @param {string} portname
+     */
     hoverPortStart(id, opname, portname)
     {
         this.lastHoverPort = this.corePatch().getOpById(id)?.getPortByName(portname);
@@ -2336,6 +2341,6 @@ export default class Gui extends Events
     hoverPortEnd()
     {
         this.lastHoverPort?.setUiAttribs({ "hover": false });
-
     }
+
 }
