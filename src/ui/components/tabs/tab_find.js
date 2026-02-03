@@ -135,7 +135,8 @@ export default class FindTab
             "keydown",
             (e) =>
             {
-                console.log("text", e.keyCode);
+                console.log("text", this.#lastClicked);
+
                 if (e.keyCode == 38)
                 {
                     let c = this.#lastClicked - 1;
@@ -249,10 +250,10 @@ export default class FindTab
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
         if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
-        // this.hlOps.push(op);
-        // op.setUiAttribs({ "highlighted": true });
+        let lastClicked = "";
+        if (this.#lastClicked == idx)lastClicked = "lastClicked";
 
-        html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
+        html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop " + op.id + " " + hiddenClass + " " + lastClicked + " \" data-info=\"" + info + "\" ";
         html += " onmouseover=\"gui.hlFindResult('" + op.id + "')\" ";
         html += " onmouseout=\"gui.hlUnFindResult('" + op.id + "')\" ";
         html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
@@ -742,7 +743,7 @@ export default class FindTab
         // console.log("search str", str, (new Error()).stack);
         this.#maxIdx = -1;
         this.setSelectedOp(null);
-        this.setClicked(-1);
+        // this.setClicked(-1);
 
         const toggleInput = ele.byId(this.#inputId + "_toggles");
         if (toggleInput && toggleInput.value)str += " " + toggleInput.value;
@@ -826,6 +827,7 @@ export default class FindTab
     setClicked(num)
     {
         num = parseInt(num);
+        console.log("clicke", num);
 
         let el = ele.byId("findresult" + this.#lastClicked);
         if (el) el.classList.remove("lastClicked");
