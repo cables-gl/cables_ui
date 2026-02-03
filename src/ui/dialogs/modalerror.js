@@ -277,7 +277,7 @@ export default class ModalError
             }
             else if (showSendButton)
             {
-                str += "<a class=\"button\" id=\"sendErrorReport\">Send Error Report</a>&nbsp;&nbsp;";
+                str += "<a class=\"cblbutton\" id=\"sendErrorReport\">Send Error Report</a>&nbsp;&nbsp;";
             }
         }
 
