@@ -714,7 +714,7 @@ export default class FindTab
 
                 if (op.uiAttribs.hidden) score -= 5;
                 if (op.storage && op.storage.blueprint) score -= 1;
-                if (found && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
+                // if (found && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
                 if (found) results.push({ "op": ops[i], score, where });
             }
         }
