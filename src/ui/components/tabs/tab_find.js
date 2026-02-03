@@ -118,7 +118,6 @@ export default class FindTab
                 toggleEle.classList.toggle("findToggleActive");
 
                 const toggles = ele.byClassAll("findToggleActive");
-                // console.log("toggles", toggles);
                 let srchStr = "";
                 for (let j = 0; j < toggles.length; j++)
                     srchStr += (toggles[j].dataset.togglestr || "") + " ";
@@ -130,12 +129,10 @@ export default class FindTab
             });
         }
 
-        console.log("bind cursor");
         ele.byId(this.#inputId).addEventListener(
             "keydown",
             (e) =>
             {
-                console.log("text", this.#lastClicked);
 
                 if (e.keyCode == 38)
                 {
@@ -740,7 +737,6 @@ export default class FindTab
             this.#lastSearch = str = "";
         }
 
-        // console.log("search str", str, (new Error()).stack);
         this.#maxIdx = -1;
         this.setSelectedOp(null);
         // this.setClicked(-1);
@@ -827,7 +823,6 @@ export default class FindTab
     setClicked(num)
     {
         num = parseInt(num);
-        console.log("clicke", num);
 
         let el = ele.byId("findresult" + this.#lastClicked);
         if (el) el.classList.remove("lastClicked");
@@ -923,7 +918,5 @@ FindTab.searchExtensionOps = (ops, results) =>
 };
 editorSession.addListener(FindTab.TABSESSION_NAME, (id, data) =>
 {
-    console.log("dar", data);
     gui.find(data.search);
-    // new FindTab(gui.mainTabs, data.search);
 });
