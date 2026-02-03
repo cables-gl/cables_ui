@@ -828,7 +828,11 @@ export default class FindTab
         if (el) el.classList.remove("lastClicked");
 
         el = ele.byId("findresult" + num);
-        if (el) el.classList.add("lastClicked");
+        if (el)
+        {
+            el.classList.add("lastClicked");
+            el.scrollIntoView();
+        }
         this.#lastClicked = num;
     }
 

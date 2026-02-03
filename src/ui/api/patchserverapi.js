@@ -174,7 +174,7 @@ export default class PatchSaveServer extends Events
 
                     if ((!gui.restriction.visible || gui.restriction.showing("cablesbuild")) && (newCore || newUi))
                     {
-                        gui.restriction.setMessage("cablesupdate", "cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
+                        gui.restriction.setMessage("cablesupdate", "cables has been updated! &nbsp;&nbsp;&nbsp; <a class=\"cblbutton\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                         gui.jobs().finish("checkupdated");
                     }
                     else
