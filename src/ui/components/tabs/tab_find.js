@@ -46,7 +46,7 @@ export default class FindTab
 
         let colors = [];
         const warnOps = [];
-        this.hlOps = [];
+        // this.hlOps = [];
 
         for (let i = 0; i < gui.corePatch().ops.length; i++)
         {
@@ -130,10 +130,12 @@ export default class FindTab
             });
         }
 
+        console.log("bind cursor");
         ele.byId(this.#inputId).addEventListener(
             "keydown",
             (e) =>
             {
+                console.log("text", e.keyCode);
                 if (e.keyCode == 38)
                 {
                     let c = this.#lastClicked - 1;
@@ -142,6 +144,7 @@ export default class FindTab
                     const resultEle = ele.byId("findresult" + c);
                     if (resultEle) resultEle.click();
                     if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
+                    e.preventDefault();
                 }
                 else if (e.keyCode == 40)
                 {
@@ -151,6 +154,7 @@ export default class FindTab
                     const resultEle = ele.byId("findresult" + c);
                     if (resultEle) resultEle.click();
                     if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
+                    e.preventDefault();
                 }
             }
 
@@ -192,15 +196,15 @@ export default class FindTab
 
     clearHighlightOps()
     {
-        for (let i = 0; i < this.hlOps.length; i++)
-        {
-            if (this.hlOps[i])
-            {
-                this.hlOps[i].setUiAttrib({ "highlighted": false });
-                this.hlOps[i].setUiAttrib({ "highlighted": false });
-            }
-        }
-        this.hlOps = [];
+        // for (let i = 0; i < this.hlOps.length; i++)
+        // {
+        //     if (this.hlOps[i])
+        //     {
+        //         this.hlOps[i].setUiAttrib({ "highlighted": false });
+        //         this.hlOps[i].setUiAttrib({ "highlighted": false });
+        //     }
+        // }
+        // this.hlOps = [];
     }
 
     isClosed()
@@ -245,8 +249,8 @@ export default class FindTab
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
         if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
-        this.hlOps.push(op);
-        op.setUiAttribs({ "highlighted": true });
+        // this.hlOps.push(op);
+        // op.setUiAttribs({ "highlighted": true });
 
         html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
         html += " onmouseover=\"gui.hlFindResult('" + op.id + "')\" ";
@@ -918,5 +922,6 @@ FindTab.searchExtensionOps = (ops, results) =>
 editorSession.addListener(FindTab.TABSESSION_NAME, (id, data) =>
 {
     console.log("dar", data);
-    new FindTab(gui.mainTabs, data.search);
+    gui.find(data.search);
+    // new FindTab(gui.mainTabs, data.search);
 });

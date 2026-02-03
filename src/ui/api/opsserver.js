@@ -993,7 +993,7 @@ export default class ServerOps
         {
             html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         }
-        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
+        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"cblbutton hidden\">Create and replace existing</a>";
         html += "<br/><br/>";
 
         if (options.hasOpDirectories)

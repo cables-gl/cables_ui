@@ -253,35 +253,35 @@ export default class GlPatch extends Events
             gui.inputBindings.exec(InputBindings.KEY_0);
         });
 
-        gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollX(-1);
         });
-        gui.keys.key("ArrowRight", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        gui.keys.key("ArrowRight", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollX(1);
         });
-        gui.keys.key("ArrowUp", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        gui.keys.key("ArrowUp", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollY(-1);
         });
-        gui.keys.key("ArrowDown", "Left", "down", cgl.canvas.id, { "cmdCtrl": true, }, () =>
+        gui.keys.key("ArrowDown", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollY(1);
         });
-        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
         {
             gui.patchView.cursorNavOps(0, -1);
         });
-        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
         {
             gui.patchView.cursorNavOps(0, 1);
         });
-        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
         {
             gui.patchView.cursorNavOps(-1, 0);
         });
-        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, {}, () =>
+        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
         {
             gui.patchView.cursorNavOps(1, 0);
         });
