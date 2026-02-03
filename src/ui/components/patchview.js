@@ -2554,7 +2554,8 @@ export default class PatchView extends Events
                             {
                                 const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
 
-                                origOp.portsOut[i].links[j].remove();
+                                // origOp.portsOut[i].links[j].remove(); // not needed, if it IS needed, upgrade with multiple links on one port, links will be lost!!
+
                                 // origOp.portsOut[i].links[j].link(otherPort, newOp.getPort(origOp.portsOut[i].name.toLowerCase(), true))
                                 this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
                             }
