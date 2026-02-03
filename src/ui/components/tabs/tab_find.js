@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { utils } from "cables";
+import { Op, utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { GuiText } from "../../text.js";
@@ -83,7 +83,7 @@ export default class FindTab
 
             this.#closed = true;
         });
-        gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
+        gui.corePatch().on("subpatchesChanged", () =>
         {
             this.clearHighlightOps();
             this.search(this.#lastSearch);
@@ -210,6 +210,9 @@ export default class FindTab
         return this.#closed;
     }
 
+    /**
+     * @param {string} str
+     */
     setSearchInputValue(str)
     {
         this.#eleInput.value = str;
@@ -230,7 +233,12 @@ export default class FindTab
         return this.#tab.isVisible();
     }
 
-    _addResultOp(op, result, idx)
+    /**
+     * @param {Op} op
+     * @param {Object} result
+     * @param { number} idx
+     */
+    #addResultOp(op, result, idx)
     {
         if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
         let html = "";
@@ -238,8 +246,6 @@ export default class FindTab
         this.#maxIdx = idx;
 
         info += "## searchresult \n\n* score : " + result.score + GuiText.searchResult + "\n";
-
-        if (op.op)op = op.op;
 
         const colorClass = opNames.getNamespaceClassName(op.objName);
 
@@ -279,10 +285,13 @@ export default class FindTab
 
         html += "</div>";
 
-        // this._eleResults.innerHTML += html;
         return html;
     }
 
+    /**
+     * @param {string} word
+     * @param {string} str
+     */
     highlightWord(word, str)
     {
         if (!str || str == "") return "";
@@ -301,6 +310,9 @@ export default class FindTab
         return str;
     }
 
+    /**
+     * @param {string} str
+     */
     _doSearchTriggers(str)
     {
         const triggers = gui.corePatch().namedTriggers;
@@ -316,6 +328,9 @@ export default class FindTab
         return foundtriggers;
     }
 
+    /**
+     * @param {string} str
+     */
     _doSearchVars(str)
     {
         const vars = gui.corePatch().getVars();
@@ -733,9 +748,7 @@ export default class FindTab
         str = str || this.#lastSearch;
 
         if (this.#eleInput.value == "")
-        {
             this.#lastSearch = str = "";
-        }
 
         this.#maxIdx = -1;
         this.setSelectedOp(null);
@@ -797,7 +810,7 @@ export default class FindTab
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
-                html += this._addResultOp(results[i].op, results[i], i);
+                html += this.#addResultOp(results[i].op, results[i], i);
 
             let onclickResults = "gui.patchView.unselectAllOps();";
 
@@ -820,22 +833,33 @@ export default class FindTab
         const timeUsed = performance.now() - startTime;
     }
 
+    /**
+     * @param {number} num
+     */
     setClicked(num)
     {
-        num = parseInt(num);
-
-        let el = ele.byId("findresult" + this.#lastClicked);
-        if (el) el.classList.remove("lastClicked");
-
-        el = ele.byId("findresult" + num);
-        if (el)
+        if (num != this.#lastClicked)
         {
-            el.classList.add("lastClicked");
-            el.scrollIntoView();
+
+            num = parseInt(num);
+
+            let el = ele.byId("findresult" + this.#lastClicked);
+            if (el) el.classList.remove("lastClicked");
+
+            el = ele.byId("findresult" + num);
+            if (el)
+            {
+                el.classList.add("lastClicked");
+                el.scrollIntoView();
+                gui.checkScroll();
+            }
+            this.#lastClicked = num;
         }
-        this.#lastClicked = num;
     }
 
+    /**
+     * @param {string} opid
+     */
     setSelectedOp(opid)
     {
         let els = document.getElementsByClassName("findresultop" + this.#lastSelected);

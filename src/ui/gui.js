@@ -359,7 +359,8 @@ export default class Gui extends Events
         else
         {
             this.patchView.unselectAllOps();
-            this.patchView.selectOpId(opid);
+            // this.patchView.selectOpId(opid);
+            this.patchView.centerSelectOp(opid);
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
                 this.opParams.show(opid);
@@ -369,7 +370,7 @@ export default class Gui extends Events
             });
         }
 
-        if (this.find()) this.find().setClicked(idx);
+        this._find?.setClicked(idx);
     }
 
     /**
@@ -550,17 +551,23 @@ export default class Gui extends Events
         gui.mainTabs.emitEvent("resize");
     }
 
+    checkScroll()
+    {
+        if (document.body.scrollTop > 0)
+        {
+            console.log("page is scrolled wtf...");
+            document.body.scrollTo(0, 0);
+        }
+
+    }
+
     setLayout()
     {
         if (this.unload) return;
         this.pauseProfiling();
         // const wasFocussed = this.patchView.patchRenderer.isFocused;
 
-        if (document.body.scrollTop > 0)
-        {
-            console.log("page is scrolled wtf...");
-            document.body.scrollTo(0, 0);
-        }
+        this.checkScroll();
 
         const perf = this.uiProfiler.start("gui.setlayout");
         let canvasScale = 1;

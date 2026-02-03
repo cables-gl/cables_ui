@@ -2197,35 +2197,40 @@ export default class PatchView extends Events
      */
     setCurrentSubPatch(subpatch, next)
     {
-        gui.restriction.setMessage("subpatchref", null);
-        if (subpatch != 0)
+        const curSub = this.getCurrentSubPatch();
+        if (curSub != subpatch)
         {
-            const outerOp = this.getSubPatchOuterOp(subpatch);
-            const ops = gui.savedState.getUnsavedPatchSubPatchOps();
 
-            for (let i = 0; i < ops.length; i++)
+            gui.restriction.setMessage("subpatchref", null);
+            if (subpatch != 0)
             {
-                if (ops[i].op && outerOp && ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
+                const outerOp = this.getSubPatchOuterOp(subpatch);
+                const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+
+                for (let i = 0; i < ops.length; i++)
                 {
-                    let subid = ops[i].subId;
-                    gui.restriction.setMessage("subpatchref", "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" + subid + "\")'>goto patch</a>");
+                    if (ops[i].op && outerOp && ops[i].op.opId == outerOp.opId && ops[i].op != outerOp)
+                    {
+                        let subid = ops[i].subId;
+                        gui.restriction.setMessage("subpatchref", "changed reference in patch: a unsaved reference of this subpatch ops exists in your patch. <br/>saving this can will overwrite references!<br/><a class='link' onclick='gui.patchView.setCurrentSubPatch(\"" + subid + "\")'>goto patch</a>");
+                    }
                 }
             }
-        }
 
-        if (this._patchRenderer.setCurrentSubPatch)
-        {
-            this._patchRenderer.setCurrentSubPatch(subpatch,
-                () =>
-                {
-                    gui.patchView.updateSubPatchBreadCrumb(subpatch);
-                    if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
-                    if (next) next();
-                });
-        }
-        else this._log.warn("patchRenderer has no function setCurrentSubPatch");
+            if (this._patchRenderer.setCurrentSubPatch)
+            {
+                this._patchRenderer.setCurrentSubPatch(subpatch,
+                    () =>
+                    {
+                        gui.patchView.updateSubPatchBreadCrumb(subpatch);
+                        if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
+                        if (next) next();
+                    });
+            }
+            else this._log.warn("patchRenderer has no function setCurrentSubPatch");
 
-        gui.corePatch().emitEvent("subpatchesChanged");
+            gui.corePatch().emitEvent("subpatchesChanged");
+        }
     }
 
     getLastFocussedOp()
