@@ -1,4 +1,4 @@
-import { Logger, TalkerAPI, ele } from "cables-shared-client";
+import { ele, Logger, TalkerAPI } from "cables-shared-client";
 import { Op, Patch, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
@@ -884,11 +884,11 @@ export default class ServerOps
                                     if (selectElement)
                                     {
                                         selectElement.length = 0;
-                                        dirRes.data.forEach((dir, i) =>
+                                        dirRes.data.forEach((dir) =>
                                         {
-                                            const selected = i === 0;
-                                            selectElement.add(new Option(dir, dir, selected, selected));
-                                            if (selected) opTargetDir = dir;
+                                            const selected = dir.new;
+                                            selectElement.add(new Option(dir.path, dir.path, selected, selected));
+                                            if (selected) opTargetDir = dir.path;
                                         });
                                     }
                                 }
