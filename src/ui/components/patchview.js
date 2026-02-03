@@ -2492,7 +2492,7 @@ export default class PatchView extends Events
                     }
 
                     html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
-                    html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
+                    html += "<a onClick=\"gui.closeModal();\" class=\"cblbutton\">Cancel</a>";
 
                     setTimeout(() =>
                     {
