@@ -684,7 +684,7 @@ export default class ServerOps
         }
         else
         {
-            _remove(opId, depSrc, depType, next);
+            _remove();
         }
 
     }
@@ -829,7 +829,9 @@ export default class ServerOps
      * @param {string} options.type type of op (patch/user/team/...)
      * @param {string} options.suggestedNamespace suggested namespace in dropdown
      * @param {boolean} options.showReplace show "create and replace existing" button
+     * @param {boolean} options.rename rename or create a new op?
      * @param {string|null} options.sourceOpName opname to clone from or create op into
+     * @param {boolean} options.hasOpDirectories electron has directories for additional ops, setting comes from platform_electron.js
      * @param {function} cb
      */
     opNameDialog(options, cb)
@@ -1201,6 +1203,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
@@ -1426,6 +1429,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": oldName,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
