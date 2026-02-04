@@ -461,10 +461,23 @@ export default class TabPanel extends Events
         buttons += "<a class=\"button-small \" id=\"refresh" + id + "\"><span class=\"icon nomargin icon-refresh\"></span></a>";
 
         iframeTab.toolbarEle.innerHTML = buttons;
+
+        const iframe = ele.byId("iframe" + id);
+        const hashUpdate = (e) => { if (e.data?.hash) iframe.src = url + e.data.hash; };
+        window.addEventListener("message", hashUpdate);
+        iframeTab.on(Tab.EVENT_CLOSE, () =>
+        {
+            window.removeEventListener("message", hashUpdate);
+        });
+
         ele.clickable(ele.byId("refresh" + id), () =>
         {
-            ele.byId("iframe" + id).src += "";
-
+            if (iframe)
+            {
+                const newsrc = new URL(iframe.src);
+                newsrc.searchParams.set("nc", utils.uuid());
+                iframe.src = newsrc.toString();
+            }
         });
 
         const frame = document.getElementById("iframe" + id);
