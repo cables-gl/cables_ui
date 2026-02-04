@@ -11,6 +11,7 @@ class namespace
     getNamespace(opname)
     {
         if (!opname) return "";
+        if (opname.endsWith(".")) opname = opname.slice(0, -1);
         const parts = opname.split(".");
         parts.length -= 1;
         return parts.join(".") + ".";
