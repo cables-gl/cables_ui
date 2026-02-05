@@ -681,7 +681,7 @@ export default class FileManager
 
             html += "<br/>";
 
-            if (this._fileSource == "patch") html += "<a class=\"button\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
+            if (this._fileSource == "patch") html += "<a class=\"cblbutton\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
             html += "</div>";
 
             document.getElementById("item_details").innerHTML = html;

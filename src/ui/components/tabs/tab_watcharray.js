@@ -71,13 +71,13 @@ export default class WatchArrayTab extends Events
         {
             this._eleIconMinus = ele.create("a");
             this._eleIconMinus.innerHTML = "-";
-            this._eleIconMinus.classList.add("button");
+            this._eleIconMinus.classList.add("cblbutton");
             this._eleIconMinus.addEventListener("click", () => { this._changeColumns(-1); });
             this._eleIconbar.appendChild(this._eleIconMinus);
 
             this._eleIconPlus = ele.create("a");
             this._eleIconPlus.innerHTML = "+";
-            this._eleIconPlus.classList.add("button");
+            this._eleIconPlus.classList.add("cblbutton");
             this._eleIconPlus.addEventListener("click", () => { this._changeColumns(1); });
             this._eleIconbar.appendChild(this._eleIconPlus);
         }
