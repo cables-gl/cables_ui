@@ -82,26 +82,20 @@
             {{#compare converterId '==' 'gltfpack' }}
             <table>
                 <tr>
-                    <td><input name="kn" type="checkbox"></td>
+                    <td><input name="kn" type="checkbox" checked="checked"></td>
                     <td>Keep named nodes and meshes attached</td>
                 </tr>
                 <tr>
-                    <td><input name="km" type="checkbox"></td>
+                    <td><input name="km" type="checkbox" checked="checked"></td>
                     <td>Keep named materials and disable named material merging</td>
                 </tr>
                 <tr>
-                    <td><input name="ke" type="checkbox"></td>
+                    <td><input name="ke" type="checkbox" checked="checked"></td>
                     <td>Keep extras data</td>
                 </tr>
-                <tr>
-                    <td><input name="vpf" type="checkbox"></td>
-                    <td>Use floating-point position quantization</td>
-                </tr>
-                <tr>
-                    <td><input name="tw" type="checkbox"></td>
-                    <td>Convert all textures to WebP</td>
-                </tr>
             </table>
+            <br/>
+            <div>For more information see <a href="https://www.npmjs.com/package/gltfpack" target="_blank">gltfpack documentation</a>.</div>
             <br/>
             {{/compare}}
 
