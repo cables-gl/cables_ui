@@ -74,7 +74,8 @@ export default class PatchPanel extends Events
                     "isTrustedPatch": platform.isTrustedPatch(),
                     "cablesUrl": platform.getCablesUrl(),
                     "sameHost": isSameHost,
-                    "patchHost": host
+                    "patchHost": host,
+                    "showOpenPatchDirButton": platform.frontendOptions.openLocalFiles && platform.config.currentPatchDir
                 });
         }
         else console.log("no gui project");

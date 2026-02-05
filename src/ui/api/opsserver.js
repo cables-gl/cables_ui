@@ -1,4 +1,4 @@
-import { Logger, TalkerAPI, ele } from "cables-shared-client";
+import { ele, Logger, TalkerAPI } from "cables-shared-client";
 import { Op, Patch, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
@@ -684,7 +684,7 @@ export default class ServerOps
         }
         else
         {
-            _remove(opId, depSrc, depType, next);
+            _remove();
         }
 
     }
@@ -829,7 +829,9 @@ export default class ServerOps
      * @param {string} options.type type of op (patch/user/team/...)
      * @param {string} options.suggestedNamespace suggested namespace in dropdown
      * @param {boolean} options.showReplace show "create and replace existing" button
+     * @param {boolean} options.rename rename or create a new op?
      * @param {string|null} options.sourceOpName opname to clone from or create op into
+     * @param {boolean} options.hasOpDirectories electron has directories for additional ops, setting comes from platform_electron.js
      * @param {function} cb
      */
     opNameDialog(options, cb)
@@ -884,11 +886,11 @@ export default class ServerOps
                                     if (selectElement)
                                     {
                                         selectElement.length = 0;
-                                        dirRes.data.forEach((dir, i) =>
+                                        dirRes.data.forEach((dir) =>
                                         {
-                                            const selected = i === 0;
-                                            selectElement.add(new Option(dir, dir, selected, selected));
-                                            if (selected) opTargetDir = dir;
+                                            const selected = dir.new;
+                                            selectElement.add(new Option(dir.path, dir.path, selected, selected));
+                                            if (selected) opTargetDir = dir.path;
                                         });
                                     }
                                 }
@@ -973,35 +975,38 @@ export default class ServerOps
         };
 
         let html = "";
+        let forms = "";
+        let hints = "";
+        let buttons = "";
 
         if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
 
-        html += "New op name:<br/><br/>";
-        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"" + platform.getDefaultOpName() + "\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
-        html += "&nbsp;";
-        html += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
-        html += "</div><br/><br/>";
-        html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
-        html += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
-        html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
-        html += "<br/><br/>";
+        forms += "New op name:<br/><br/>";
+        forms += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"" + platform.getDefaultOpName() + "\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
+        forms += "&nbsp;";
+        forms += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
+        forms += "</div>";
+        hints += "<br/><div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
+        hints += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
+        hints += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
+        hints += "<br/><br/>";
         if (options.rename)
         {
-            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
+            buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
         }
         else
         {
-            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+            buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         }
-        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"cblbutton hidden\">Create and replace existing</a>";
-        html += "<br/><br/>";
+        buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"cblbutton hidden\">Create and replace existing</a>";
+        buttons += "<br/><br/>";
 
         if (options.hasOpDirectories)
         {
             platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, res) =>
             {
-                let opDirSelect = "Choose op directory:<br/><br/>";
-                opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
+                let opDirSelect = "<br/><div class=\"opDirSelect\">";
+                opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\" style=\"border-radius: 2px;\">";
                 for (let i = 0; i < res.data.length; i++)
                 {
                     const dirInfo = res.data[i];
@@ -1011,13 +1016,15 @@ export default class ServerOps
                 opDirSelect += "</select>";
                 opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
                 opDirSelect += "&nbsp;<a id=\"openOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"open dir\" data-tt=\"open dir\"><span class=\"icon icon-folder\"></span></a>\n";
-                opDirSelect += "<hr/>";
-                html = opDirSelect + html;
+                opDirSelect += "</div>";
+                forms += opDirSelect;
+                html += forms + hints + buttons;
                 _checkOpName();
             });
         }
         else
         {
+            html += forms + hints + buttons;
             _checkOpName();
         }
 
@@ -1043,8 +1050,7 @@ export default class ServerOps
         const _nameChangeListener = () =>
         {
             const newNamespace = ele.byId("opNameDialogNamespace").value;
-            let nameInput = ele.byId("opNameDialogInput").value;
-            const fullName = namespace.capitalizeNamespaceParts(nameInput);
+            const fullName = ele.byId("opNameDialogInput").value;
 
             ele.hide(ele.byId("opNameDialogSubmit"));
             ele.hide(ele.byId("opNameDialogSubmitReplace"));
@@ -1186,11 +1192,7 @@ export default class ServerOps
         options = options || {};
         if (!options.hasOwnProperty("showEditor")) options.showEditor = true;
 
-        if (gui.project().isOpExample)
-        {
-            notifyError("Not possible in op example patch!");
-            return;
-        }
+        if (!platform.checkOpCreate()) return;
 
         let suggestedNamespace = platform.getPatchOpsNamespace();
 
@@ -1201,6 +1203,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
@@ -1426,6 +1429,7 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": oldName,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 

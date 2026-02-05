@@ -1,7 +1,7 @@
 import { ele, TalkerAPI } from "cables-shared-client";
 import { Platform } from "./platform.js";
 import ModalDialog from "./dialogs/modaldialog.js";
-import { notify } from "./elements/notification.js";
+import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { GuiText } from "./text.js";
 
@@ -158,8 +158,8 @@ export default class PlatformElectron extends Platform
      */
     exportPatch(projectId, exportType = "html")
     {
-        let talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH;
-        if (exportType === "patch") talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH_BUNDLE;
+        let talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH_HTML;
+        if (exportType === "patch") talkerCommand = TalkerAPI.CMD_ELECTRON_EXPORT_PATCH;
         gui.jobs().start({ "id": "exportPatch", "title": "export patch", "indicator": "canvas" });
         this.talkerAPI.send(talkerCommand, { "projectId": projectId }, (err, result) =>
         {
@@ -169,8 +169,9 @@ export default class PlatformElectron extends Platform
             gui.jobs().finish("exportPatch");
             if (err || result.error)
             {
+                const message = err?.msg || result?.msg || "";
                 modalOptions.warning = true;
-                modalOptions.text = "Failed to export patch:<br/>" + (err || "") + (result.error || "");
+                modalOptions.text = "Failed to export patch:<br/>" + message;
             }
             else
             {
@@ -232,5 +233,20 @@ export default class PlatformElectron extends Platform
                 });
             }
         });
+    }
+
+    /**
+     * @see {@link ./platform.js}
+     * @returns {boolean}
+     */
+    checkOpCreate()
+    {
+        if (!super.checkOpCreate()) return false;
+        if (!this.config.currentPatchDir)
+        {
+            notifyError("Please save your new project before creating ops!");
+            return false;
+        }
+        return true;
     }
 }

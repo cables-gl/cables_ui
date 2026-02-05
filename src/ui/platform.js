@@ -666,4 +666,20 @@ export class Platform extends Events
     {
         return defaultOps.newOpNameSuggestion;
     }
+
+    /**
+     * check if op creation is possible in patch (e.g. not in example, not in newly created patch in electron)
+     *
+     * @see {@link ./platform_electron.js}
+     * @returns {boolean}
+     */
+    checkOpCreate()
+    {
+        if (gui.project().isOpExample)
+        {
+            notifyError("Not possible in op example patch!");
+            return false;
+        }
+        return true;
+    }
 }
