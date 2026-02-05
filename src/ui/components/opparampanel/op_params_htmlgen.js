@@ -150,7 +150,7 @@ class PortHtmlGenerator
 
             if (ports[i].uiAttribs.display === "file")
             {
-                const url = ports[i].value || "";
+                const url = String(ports[i].value || "");
                 const patchAsset = url.startsWith("/assets/" + gui.project()._id);
                 let fileType = "";
                 if (patchAsset)
@@ -171,7 +171,6 @@ class PortHtmlGenerator
                     tmplData.fileType = fileType;
                     tmplData.fileName = fileName;
                 }
-
             }
 
             html += this._templatePortGeneral(tmplData, { "allowProtoPropertiesByDefault": true, "allowProtoMethodsByDefault": true });

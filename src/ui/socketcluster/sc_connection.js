@@ -561,7 +561,7 @@ export default class ScConnection extends Events
                         switch (msg.data.build)
                         {
                         case "opchange":
-                            console.log("opchangeeeeeeeeeeeepf s", opName);
+                            console.log("opchange", opName);
                             if (opName)
                             {
                                 const usedOps = gui.corePatch().getOpsByObjName(opName);
