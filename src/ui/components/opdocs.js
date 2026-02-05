@@ -440,7 +440,7 @@ export default class OpDocs
         for (const i in defaultOps.defaultOpNames)
         {
             const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
-            if (!doc) this.#log.error("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated?");
+            if (!doc) this.#log.warn("default op not found " + i + " " + defaultOps.defaultOpNames[i] + " ... outdated?");
         }
 
         perf.finish();
