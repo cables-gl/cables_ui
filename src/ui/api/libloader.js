@@ -138,6 +138,7 @@ export default class LibLoader
             {
                 if (libType === "module")
                 {
+                    // do not minify this in webpack export
                     import(/* webpackIgnore: true */scriptSrc).then((importedModule) =>
                     {
                         if (moduleExport)
@@ -166,7 +167,7 @@ export default class LibLoader
                         this._libsToLoad.splice(i, 1);
                         this._list.push(libName);
                         this.checkAllLoaded();
-                    }, true);
+                    });
                 }
                 else
                 {
