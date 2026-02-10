@@ -188,9 +188,6 @@ export default function startUi(cfg)
                         gui.corePatch().timer.setTime(0);
                         gui.corePatch().timer.play();
 
-                        console.log("bb", BoundingBox == CABLES.CG.BoundingBox);
-                        console.log("bb", Geometry == CABLES.CG.Geometry);
-                        console.log("bb", Mesh == CABLES.CGL.Mesh);
                     }, 100);
                 });
 

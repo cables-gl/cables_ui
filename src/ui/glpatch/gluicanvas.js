@@ -99,7 +99,7 @@ export default class GlUiCanvas extends GlCanvas
         const cgl = this.cgl;
 
         cgl.renderStart(cgl);
-        if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
+        if (cgl.lastMesh)cgl.lastMesh.unBind();
 
         if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
 

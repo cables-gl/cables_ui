@@ -79,6 +79,8 @@ helperMeshes.getSelectedShader = function (cgl, options = {})
 
 helperMeshes.drawCircle = function (op, size)
 {
+
+    /** @type {CglContext} */
     const cgl = op.patch.cgl;
 
     if (!helperMeshes.CIRCLE)

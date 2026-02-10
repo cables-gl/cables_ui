@@ -1,7 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
-import { FpsCounter } from "cables-corelibs";
-import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { CGL, FpsCounter, Geometry } from "cables-corelibs";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { TlAnimLine } from "./tlanimline.js";
 import { tlOverview } from "./tloverview.js";
