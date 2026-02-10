@@ -1515,6 +1515,7 @@ export default class PatchView extends Events
     {
         this.clipboardCopyOps(e);
         this.deleteSelectedOps();
+        gui.patchParamPanel.show(true);
     }
 
     /**

@@ -1,4 +1,5 @@
 import { ele, HandlebarsHelper, TalkerAPI } from "cables-shared-client";
+import { BoundingBox, Geometry, Mesh } from "cables-corelibs";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui, { gui } from "./gui.js";
@@ -186,6 +187,10 @@ export default function startUi(cfg)
                         gui.emitEvent(Gui.EVENT_UILOADED);
                         gui.corePatch().timer.setTime(0);
                         gui.corePatch().timer.play();
+
+                        console.log("bb", BoundingBox == CABLES.CG.BoundingBox);
+                        console.log("bb", Geometry == CABLES.CG.Geometry);
+                        console.log("bb", Mesh == CABLES.CGL.Mesh);
                     }, 100);
                 });
 
