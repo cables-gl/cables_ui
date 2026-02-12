@@ -1,6 +1,7 @@
 import { ele } from "cables-shared-client";
 import { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
+import { DomEvents } from "../theme.js";
 
 const splitpane = {};
 window.splitpane = splitpane;
@@ -10,7 +11,7 @@ export default initSplitPanes;
 
 function initSplitPanes()
 {
-    ele.byId("splitterRightPanel").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterRightPanel").addEventListener(DomEvents.POINTER_DOWN, function (ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -33,16 +34,16 @@ function initSplitPanes()
             gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
         }
 
-        document.addEventListener("pointermove", mm);
+        document.addEventListener(DomEvents.POINTER_MOVE, mm);
         splitpane.listeners.push(mm);
     });
 
-    ele.byId("splitterRightPanel").addEventListener("pointerup", function (_e)
+    ele.byId("splitterRightPanel").addEventListener(DomEvents.POINTER_UP, function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
 
-    ele.byId("splitterMaintabs").addEventListener("pointerup", function (_e)
+    ele.byId("splitterMaintabs").addEventListener(DomEvents.POINTER_UP, function (_e)
     {
         gui.resumeInteractionSplitpanes();
     });
@@ -62,13 +63,13 @@ function initSplitPanes()
             gui.mainTabs.emitEvent("resize");
         }
 
-        document.addEventListener("pointermove", mm, { "passive": false });
+        document.addEventListener(DomEvents.POINTER_MOVE, mm, { "passive": false });
         splitpane.listeners.push(mm);
     }
 
-    ele.byId("splitterMaintabs").addEventListener("pointerdown", resizeTabs, { "passive": false });
+    ele.byId("splitterMaintabs").addEventListener(DomEvents.POINTER_DOWN, resizeTabs, { "passive": false });
 
-    ele.byId("splitterRenderer").addEventListener("pointerdown", function (ev)
+    ele.byId("splitterRenderer").addEventListener(DomEvents.POINTER_DOWN, function (ev)
     {
         ev.preventDefault();
         splitpane.bound = true;
@@ -80,11 +81,11 @@ function initSplitPanes()
             gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
         }
 
-        document.addEventListener("pointermove", mm);
+        document.addEventListener(DomEvents.POINTER_MOVE, mm);
         splitpane.listeners.push(mm);
     });
 
-    ele.byId("splitterBottomTabs").addEventListener("pointerdown",
+    ele.byId("splitterBottomTabs").addEventListener(DomEvents.POINTER_DOWN,
         function (ev)
         {
             ev.preventDefault();
@@ -97,7 +98,7 @@ function initSplitPanes()
                 gui.setLayout();
             }
 
-            document.addEventListener("pointermove", mm);
+            document.addEventListener(DomEvents.POINTER_MOVE, mm);
             splitpane.listeners.push(mm);
         });
 
@@ -113,6 +114,10 @@ function initSplitPanes()
 
         ev.preventDefault();
         splitpane.bound = true;
+
+        /**
+         * @param {Object} e
+         */
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
@@ -127,6 +132,9 @@ function initSplitPanes()
 
             gui.rendererWidth = Math.floor((window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3);
 
+            if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FLOAT)
+                gui.rendererWidth -= gui._elOptions.getBoundingClientRect().width;
+
             if (splitpane.rendererAspect) gui.rendererHeight = Math.floor(1 / splitpane.rendererAspect * gui.rendererWidth);
             else gui.rendererHeight = Math.floor(y * (1 / gui.corePatch().cgl.canvasScale) - 38);
 
@@ -137,18 +145,18 @@ function initSplitPanes()
             e.preventDefault();
         }
 
-        document.addEventListener("pointermove", mm);
+        document.addEventListener(DomEvents.POINTER_MOVE, mm);
         splitpane.listeners.push(mm);
     }
 
-    ele.byId("splitterRendererWH").addEventListener("pointerdown", resizeRenderer, { "passive": false });
+    ele.byId("splitterRendererWH").addEventListener(DomEvents.POINTER_DOWN, resizeRenderer, { "passive": false });
 
     function stopSplit(_e)
     {
         if (splitpane.listeners.length > 0)
         {
             for (let i = 0; i < splitpane.listeners.length; i++)
-                document.removeEventListener("pointermove", splitpane.listeners[i]);
+                document.removeEventListener(DomEvents.POINTER_MOVE, splitpane.listeners[i]);
 
             gui.resumeInteractionSplitpanes();
 
@@ -158,5 +166,5 @@ function initSplitPanes()
         }
     }
 
-    document.addEventListener("pointerup", stopSplit);
+    document.addEventListener(DomEvents.POINTER_UP, stopSplit);
 }

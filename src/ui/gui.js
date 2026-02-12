@@ -727,9 +727,17 @@ export default class Gui extends Events
         // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         // this.rightPanelWidth = this.splitpaneRightPos;
 
-        this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+        {
+            this._elSplitterRight.style.top = 0 + "px";
+            this._elSplitterRight.style.height = (patchHeight) + "px";
+        }
+        else
+        {
+            this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
+            this._elSplitterRight.style.height = (patchHeight + 2 - this.rendererHeight) + "px";
+        }
         this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
-        this._elSplitterRight.style.height = (patchHeight + 2 - this.rendererHeight) + "px";
         this._elSplitterRenderer.style.top = this.rendererHeightScaled + "px";
         this._elSplitterRenderer.style.width = this.rendererWidthScaled + "px";
 
@@ -779,9 +787,18 @@ export default class Gui extends Events
         let metaWidth = this.rightPanelWidth - optionsWidth;
 
         this._elOptions.style.right = metaWidth + "px";
-        this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
+
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+        {
+            this._elOptions.style.top = (0) + "px";
+            this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() + "px";
+        }
+        else
+        {
+            this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
+            this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
+        }
         this._elOptions.style.width = (optionsWidth + 1) + "px";
-        this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
 
         this._elMeta.style.right = 0 + "px";
         this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
@@ -792,9 +809,22 @@ export default class Gui extends Events
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
         ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
-        ele.byId("canvasicons").style.right = (0) + "px";
+
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+        {
+            ele.byId("canvasicons").style.right = optionsWidth + "px";
+
+            this._elSplitterRenderer.style.right = optionsWidth + "px";
+        }
+        else
+        {
+
+            this._elSplitterRenderer.style.right = 0 + "px";
+            ele.byId("canvasicons").style.right = (0) + "px";
+        }
 
         const widthResizeIcon = 30;
+
         ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
 
         let top = 0;
@@ -884,6 +914,19 @@ export default class Gui extends Events
             this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
             this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
             this._elCablesCanvasContainer.style.right = "0px";
+            this._elCablesCanvasContainer.style.left = "initial";
+            this._elCablesCanvasContainer.style["transform-origin"] = "top right";
+            this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";
+        }
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+        {
+            this._elCablesCanvasContainer.style["z-index"] = 10;
+
+            this.canvasManager.setSize(this.rendererWidth, this.rendererHeight);
+
+            this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
+            this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
+            this._elCablesCanvasContainer.style.right = optionsWidth + "px";
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
             this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";

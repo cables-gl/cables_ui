@@ -20,27 +20,26 @@ export default class CanvasManager
 
     /** @type {CanvasContext[]} */
     #contexts = [];
-    #curContextIdx;
 
     /** @type {HTMLElement} */
-    #menuEle;
+    #menuEle = null;
+
+    #curContextIdx = 0;
+    subWindow = null;
+
+    CANVASMODE_NORMAL = 0;
+    CANVASMODE_PATCHBG = 1;
+    CANVASMODE_MAXIMIZED = 2;
+    CANVASMODE_POPOUT = 3;
+    CANVASMODE_FLOAT = 4;
+
+    #canvasMode = this.CANVASMODE_NORMAL;
+
+    /** @deprecated */
+    CANVASMODE_FULLSCREEN = 2;
 
     constructor()
     {
-        this.#curContextIdx = 0;
-        this.#contexts = [];
-        this.subWindow = null;
-        this.#menuEle = null;
-
-        this.CANVASMODE_NORMAL = 0;
-        this.CANVASMODE_PATCHBG = 1;
-        this.CANVASMODE_MAXIMIZED = 2;
-        this.CANVASMODE_POPOUT = 3;
-
-        /** @deprecated */
-        this.CANVASMODE_FULLSCREEN = 2;
-
-        this._canvasMode = this.CANVASMODE_NORMAL;
 
         window.addEventListener("beforeunload", () =>
         {
@@ -52,8 +51,8 @@ export default class CanvasManager
 
     set mode(m)
     {
-        const hasChanged = m != this._canvasMode;
-        this._canvasMode = m;
+        const hasChanged = m != this.#canvasMode;
+        this.#canvasMode = m;
 
         if (m == this.CANVASMODE_POPOUT)
         {
@@ -61,7 +60,7 @@ export default class CanvasManager
         }
         else
         {
-            gui.emitEvent("canvasModeChange", this._canvasMode);
+            gui.emitEvent("canvasModeChange", this.#canvasMode);
             if (hasChanged) gui.setLayout();
             gui.corePatch().cgl.updateSize();
         }
@@ -69,7 +68,7 @@ export default class CanvasManager
 
     get mode()
     {
-        return this._canvasMode;
+        return this.#canvasMode;
     }
 
     /**
@@ -196,7 +195,7 @@ export default class CanvasManager
                 this.#contexts[i].cg.setSize(w, h);
             }
         }
-        if (this._canvasMode === this.CANVASMODE_POPOUT)
+        if (this.#canvasMode === this.CANVASMODE_POPOUT)
         {
 
         }
@@ -250,9 +249,18 @@ export default class CanvasManager
         contextMenu.show({ "items": items }, elem);
     }
 
+    float()
+    {
+
+        this.#canvasMode = this.CANVASMODE_FLOAT;
+        gui.emitEvent("canvasModeChange", this.#canvasMode);
+
+        gui.setLayout();
+    }
+
     popOut()
     {
-        if (this._canvasMode === this.CANVASMODE_POPOUT)
+        if (this.#canvasMode === this.CANVASMODE_POPOUT)
         {
             if (this.subWindow)
             {
@@ -337,12 +345,12 @@ export default class CanvasManager
             // for (let i = 0; i < ncablesEles.length; i++)
 
             gui.corePatch().cgl.updateSize();
-            this._canvasMode = this.CANVASMODE_NORMAL;
+            this.#canvasMode = this.CANVASMODE_NORMAL;
             gui.setLayout();
         });
 
-        this._canvasMode = this.CANVASMODE_POPOUT;
-        gui.emitEvent("canvasModeChange", this._canvasMode);
+        this.#canvasMode = this.CANVASMODE_POPOUT;
+        gui.emitEvent("canvasModeChange", this.#canvasMode);
 
         gui.setLayout();
     }

@@ -594,6 +594,11 @@ export class TlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+            if (!kr)
+            {
+                console.log("tlkey no rect");
+                continue;
+            }
 
             if (!this.drawKeys())
             {

@@ -66,6 +66,12 @@ class CmdRenderer
                 "icon": "external"
             },
             {
+                "cmd": "floading canvas",
+                "category": "canvas",
+                "func": CmdRenderer.floatCanvas,
+                "icon": "internal"
+            },
+            {
                 "cmd": "Simulate Scrolling Page",
                 "category": "canvas",
                 "func": CmdRenderer.scrollingPage
@@ -231,6 +237,12 @@ class CmdRenderer
     static popoutCanvas()
     {
         gui.canvasManager.popOut();
+    }
+
+    static floatCanvas()
+    {
+        gui.canvasManager.float();
+
     }
 
 }
