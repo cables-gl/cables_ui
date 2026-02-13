@@ -358,16 +358,17 @@ export default class Gui extends Events
         }
         else
         {
-            this.patchView.unselectAllOps();
-            // this.patchView.selectOpId(opid);
-            this.patchView.centerSelectOp(opid);
-            this.patchView.setCurrentSubPatch(subpatch, () =>
-            {
-                this.opParams.show(opid);
-                this.patchView.focusOpAnim(opid);
-                this.patchView.patchRenderer.viewBox.centerSelectedOps();
-                this.patchView.centerSelectOp(opid);
-            });
+            gui.patchView.gotoOp(opid);
+            // this.patchView.unselectAllOps();
+            // this.patchView.centerSelectOp(opid);
+            // this.patchView.setCurrentSubPatch(subpatch, () =>
+            // {
+            //     // this.patchview
+            //     this.opParams.show(opid);
+            //     this.patchView.focusOpAnim(opid);
+            //     this.patchView.patchRenderer.viewBox.centerSelectedOps();
+            //     this.patchView.centerSelectOp(opid);
+            // });
         }
 
         this._find?.setClicked(idx);

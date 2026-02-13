@@ -103,6 +103,9 @@ export default class ItemManager extends Events
         this.#tab.html("<div id=\"item_manager\" class=\"item_manager\">" + html + "</div>");
     }
 
+    /**
+     * @param {string} t
+     */
     getItemByTitleContains(t)
     {
         for (let i = 0; i < this._items.length; i++)
@@ -114,6 +117,9 @@ export default class ItemManager extends Events
         }
     }
 
+    /**
+     * @param {string} id
+     */
     getItemById(id)
     {
         for (let i = 0; i < this._items.length; i++) if (id === this._items[i].id) return this._items[i];

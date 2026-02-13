@@ -360,7 +360,7 @@ export default class GlViewBox
      * @param {number} [dur]
      * @param {boolean} [_userInteraction]
      */
-    animateScrollTo(x, y, dur, _userInteraction)
+    animateScrollTo(x, y, dur = 0.2, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         let ox = (gui.editorWidth) * 0.5 / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
@@ -373,8 +373,6 @@ export default class GlViewBox
 
         if (_userInteraction || !gui.bottomTabPanel.isVisible())oy = 0;
         if (oy != oy)oy = 0;
-
-        dur = dur || 0.2;
 
         this._animScrollX.clear(this.glPatch.time);
         this._animScrollX.setValue(this.glPatch.time + dur, x - ox);
@@ -404,8 +402,9 @@ export default class GlViewBox
 
     /**
      * @param {boolean} [noAnim]
+     * @param {boolean} [zoom]
      */
-    centerSelectedOps(noAnim)
+    centerSelectedOps(noAnim, zoom = true)
     {
 
         let ops = gui.patchView.getSelectedOps();
@@ -456,8 +455,12 @@ export default class GlViewBox
         let z = Math.max(400, Math.max(zy, zx));
         if (z > 99999)z = 400;
 
-        if (noAnim) this._zoom = z;
-        else this.animateZoom(z);
+        if (zoom)
+        {
+
+            if (noAnim) this._zoom = z;
+            else this.animateZoom(z);
+        }
 
         let cy = bb.center[1] * (this._viewResX / this._viewResY);
 

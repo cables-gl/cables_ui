@@ -29,6 +29,13 @@ import { UiOp } from "../core_extend_op.js";
 import { UiPatch } from "../core_extend_patch.js";
 
 /**
+ * @typedef GotoOpOptions
+ * @property {boolean} [focusAnim=true]
+ * @property {boolean} [showParams=false]
+ * @property {boolean} [center=true]
+ */
+
+/**
  * manage patch view and helper functions
  *
  * @export
@@ -37,6 +44,10 @@ import { UiPatch } from "../core_extend_patch.js";
  */
 export default class PatchView extends Events
 {
+
+    /**
+     * @param {Patch<any>} corepatch
+     */
     constructor(corepatch)
     {
         super();
@@ -428,6 +439,10 @@ export default class PatchView extends Events
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
+    /**
+     * @param {string} filename
+     * @param {PointerEvent} event
+     */
     addAssetOpAuto(filename, event)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
@@ -463,8 +478,10 @@ export default class PatchView extends Events
                 if (op.portsIn[i].uiAttribs.display == "file")
                     op.portsIn[i].set(filename);
 
-            op.refreshParams();
-            this.centerSelectOp(op.opId);
+            // op.refreshParams();
+            // this.centerSelectOp(op.opId);
+
+            this.gotoOp(op.opId, {});
         });
     }
 
@@ -2237,6 +2254,16 @@ export default class PatchView extends Events
     getLastFocussedOp()
     {
         return gui.opParams.getCurrentOp();
+    }
+
+    /**
+     * @param {string} opId
+     * @param {GotoOpOptions} [options]
+     */
+    gotoOp(opId, options = {})
+    {
+        if (this._patchRenderer.gotoOp) this._patchRenderer.gotoOp(opId, options);
+        else this._log.warn("patchRenderer has no function gotoOp");
     }
 
     /**

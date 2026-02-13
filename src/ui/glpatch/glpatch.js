@@ -976,12 +976,57 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {opid} opid
+     * @param {string} opid
      */
     focusOp(opid)
     {
         gui.opParams.show(opid);
         this.focusOpAnim(opid);
+    }
+
+    /**
+     * @param {string} opid
+     * @param {import("../components/patchview.js").GotoOpOptions} options
+     */
+    gotoOp(opid, options = {})
+    {
+
+        if (!options.hasOwnProperty("showParams"))options.showParams = true;
+        if (!options.hasOwnProperty("center"))options.center = true;
+        if (!options.hasOwnProperty("focusAnim"))options.focusAnim = true;
+        if (!options.hasOwnProperty("unselectAll"))options.unselectAll = true;
+        if (!options.hasOwnProperty("zoom"))options.zoom = false;
+
+        // console.log("gotooppppppppppp", options);
+        const op = gui.corePatch().getOpById(opid);
+
+        if (!op)
+        {
+            console.log("unknown goto op");
+            return;
+        }
+
+        if (op.getSubPatch() != gui.patchView.getCurrentSubPatch())
+        {
+
+            gui.patchView.setCurrentSubPatch(op.getSubPatch(), () =>
+            {
+                this.gotoOp(opid, options);
+            });
+            return;
+        }
+
+        if (options.unselectAll) gui.patchView.unselectAllOps();
+
+        if (options.center)
+        {
+            this.setSelectedOpById(opid);
+            this.viewBox.centerSelectedOps(false, options.zoom);
+        }
+
+        if (options.focusAnim) this.focusOpAnim(opid);
+        if (options.showParams) gui.opParams.show(opid);
+        gui.patchView.focus();
     }
 
     /**
