@@ -2,9 +2,10 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import { CgContext } from "cables-corelibs";
 import { uuid } from "cables/src/core/utils.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import { userSettings } from "../usersettings.js";
 
 /**
  * @typedef CanvasContext
@@ -47,6 +48,16 @@ export default class CanvasManager
         });
 
         this.#findNonCgContexts();
+
+    }
+
+    init()
+    {
+        if (userSettings.get("canvasmode") != this.mode)
+        {
+            this.mode = userSettings.get("canvasmode");
+        }
+
     }
 
     set mode(m)
@@ -54,6 +65,8 @@ export default class CanvasManager
         const hasChanged = m != this.#canvasMode;
         this.#canvasMode = m;
 
+        userSettings.set("canvasmode", m);
+        console.log("mode", m);
         if (m == this.CANVASMODE_POPOUT)
         {
             this.popOut();
@@ -251,11 +264,8 @@ export default class CanvasManager
 
     float()
     {
-
-        this.#canvasMode = this.CANVASMODE_FLOAT;
-        gui.emitEvent("canvasModeChange", this.#canvasMode);
-
-        gui.setLayout();
+        if (this.mode == this.CANVASMODE_FLOAT) this.mode = this.CANVASMODE_NORMAL;
+        else this.mode = this.CANVASMODE_FLOAT;
     }
 
     popOut()

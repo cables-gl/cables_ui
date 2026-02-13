@@ -871,23 +871,28 @@ export default class Gui extends Events
 
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - tabPanelTopHeight - menubarHeight - 1 + "px";
 
+        let canvasContWidth = 0;
+        let canvasContHeight = 0;
+        let canvasContRight = 0;
+        let canvasContTop = 0;
+
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            this._elCablesCanvasContainer.style.right = "initial";
+            canvasContRight = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
-            this._elCablesCanvasContainer.style.width = "0px";
-            this._elCablesCanvasContainer.style.height = "0px";
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
         else
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            this._elCablesCanvasContainer.style.right = "initial";
+            canvasContRight = "initial";
 
-            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width = window.innerWidth + "px";
-            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height = window.innerHeight + "px";
+            canvasContWidth = window.innerWidth;
+            canvasContHeight = window.innerHeight;
+            this._elGlCanvasDom.style.width = canvasContWidth + "px";
+            this._elGlCanvasDom.style.height = canvasContHeight + "px";
 
             this._elGlCanvasDom.setAttribute("width", window.innerWidth);
             this._elGlCanvasDom.setAttribute("height", window.innerHeight);
@@ -900,10 +905,10 @@ export default class Gui extends Events
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
 
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            this._elCablesCanvasContainer.style.right = "initial";
+            canvasContRight = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
-            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width;
-            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
+            canvasContWidth = this._elGlCanvasDom.style.width;
+            canvasContHeight = this._elGlCanvasDom.style.height;
             this._elCablesCanvasContainer.style["z-index"] = -1;
         }
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
@@ -912,9 +917,8 @@ export default class Gui extends Events
 
             this.canvasManager.setSize(this.rendererWidth, this.rendererHeight);
 
-            this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
-            this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
-            this._elCablesCanvasContainer.style.right = "0px";
+            canvasContWidth = this.rendererWidth;
+            canvasContHeight = this.rendererHeight;
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
             this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";
@@ -925,19 +929,24 @@ export default class Gui extends Events
 
             this.canvasManager.setSize(this.rendererWidth, this.rendererHeight);
 
-            this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
-            this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
-            this._elCablesCanvasContainer.style.right = optionsWidth + "px";
+            canvasContWidth = this.rendererWidth;
+            canvasContHeight = this.rendererHeight;
+            canvasContRight = optionsWidth;
+
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
             this._elCablesCanvasContainer.style.transform = "scale(" + canvasScale + ")";
         }
 
+        this._elCablesCanvasContainer.style.width = canvasContWidth + "px";
+        this._elCablesCanvasContainer.style.height = canvasContHeight + "px";
+        this._elCablesCanvasContainer.style.right = canvasContRight + "px";
+
         // flashing canvas overlay when saving
-        this._elCanvasFlash.style.width = this.rendererWidthScaled + "px";
-        this._elCanvasFlash.style.height = this.rendererHeightScaled + "px";
-        this._elCanvasFlash.style.right = 0 + "px";
-        this._elCanvasFlash.style.top = 0 + "px";
+        this._elCanvasFlash.style.width = canvasContWidth + "px";
+        this._elCanvasFlash.style.height = canvasContHeight + "px";
+        this._elCanvasFlash.style.right = canvasContRight + "px";
+        this._elCanvasFlash.style.top = canvasContTop + "px";
 
         this._elBgPreview.style.right = (this.rendererWidthScaled + 10) + "px";
         this._elBgPreview.style.top = (menubarHeight + 55) + "px";
@@ -1601,6 +1610,7 @@ export default class Gui extends Events
         ele.byId("nav-item-bpReload").addEventListener("click", () => { CmdPatch.updateLocalChangedBlueprints(); });
 
         this.htmlEleOverlay = new HtmlElementOverlay();
+        this.canvasManager.init();
         this.canvasManager.updateCanvasUi();
         cb();
     }
