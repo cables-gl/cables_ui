@@ -19,6 +19,8 @@ import { userSettings } from "../usersettings.js";
 export default class CanvasManager
 {
 
+    static PREF_CANVASMODE = "canvasmode";
+
     /** @type {CanvasContext[]} */
     #contexts = [];
 
@@ -53,11 +55,10 @@ export default class CanvasManager
 
     init()
     {
-        if (userSettings.get("canvasmode") != this.mode)
+        if (userSettings.get(CanvasManager.PREF_CANVASMODE) != this.mode)
         {
-            this.mode = userSettings.get("canvasmode");
+            this.mode = userSettings.get(CanvasManager.PREF_CANVASMODE) || this.CANVASMODE_NORMAL;
         }
-
     }
 
     set mode(m)
@@ -65,7 +66,7 @@ export default class CanvasManager
         const hasChanged = m != this.#canvasMode;
         this.#canvasMode = m;
 
-        userSettings.set("canvasmode", m);
+        userSettings.set(CanvasManager.PREF_CANVASMODE, m);
         console.log("mode", m);
         if (m == this.CANVASMODE_POPOUT)
         {
@@ -77,6 +78,7 @@ export default class CanvasManager
             if (hasChanged) gui.setLayout();
             gui.corePatch().cgl.updateSize();
         }
+        if (m == this.CANVASMODE_PATCHBG) gui._switchCanvasPatchBg();
     }
 
     get mode()

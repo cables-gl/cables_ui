@@ -69,7 +69,6 @@ export default class Preferences
     {
         this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
         this.setSwitchValue("checkOpCollisions", userSettings.get("checkOpCollisions"));
-        this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));

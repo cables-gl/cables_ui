@@ -873,7 +873,7 @@ export default class Gui extends Events
 
         let canvasContWidth = 0;
         let canvasContHeight = 0;
-        let canvasContRight = 0;
+        let canvasContRight = "0";
         let canvasContTop = 0;
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
@@ -901,14 +901,16 @@ export default class Gui extends Events
         }
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
-            this._elGlCanvasDom.style.width = this._elPatch.style.width;
-            this._elGlCanvasDom.style.height = this._elPatch.style.height;
+            const r = this._elPatch.getBoundingClientRect();
+            this._elGlCanvasDom.style.width = r.width;
+            this._elGlCanvasDom.style.height = r.height;
 
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            canvasContRight = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
-            canvasContWidth = this._elGlCanvasDom.style.width;
-            canvasContHeight = this._elGlCanvasDom.style.height;
+            canvasContWidth = r.width;
+            canvasContHeight = r.height;
+            canvasContRight = "initial";
+
             this._elCablesCanvasContainer.style["z-index"] = -1;
         }
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
@@ -931,7 +933,7 @@ export default class Gui extends Events
 
             canvasContWidth = this.rendererWidth;
             canvasContHeight = this.rendererHeight;
-            canvasContRight = optionsWidth;
+            canvasContRight = String(optionsWidth);
 
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
@@ -951,8 +953,7 @@ export default class Gui extends Events
         this._elBgPreview.style.right = (this.rendererWidthScaled + 10) + "px";
         this._elBgPreview.style.top = (menubarHeight + 55) + "px";
 
-        this._elBgPreviewButtonContainer.style.right = this.rendererWidthScaled + "px";
-        // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
+        this._elBgPreviewButtonContainer.style.right = this.rendererWidthScaled + canvasContRight + "px";
 
         this.emitEvent("setLayout");
 
@@ -964,7 +965,9 @@ export default class Gui extends Events
 
     _switchCanvasSizeNormal()
     {
-        this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
+        if (this.canvasManager.mode != this.canvasManager.CANVASMODE_NORMAL)
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
+
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
     }
@@ -973,10 +976,9 @@ export default class Gui extends Events
     {
         this._oldCanvasWidth = this.rendererWidth;
         this._oldCanvasHeight = this.rendererHeight;
-        // this.rightPanelWidth = this.rendererWidth;
 
-        this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
-        this.userSettings.set("canvasMode", "patchbg");
+        if (this.canvasManager.mode != this.canvasManager.CANVASMODE_PATCHBG)
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
 
         this.rendererHeight = 100;
         this.rightPanelWidth = this._oldCanvasWidth;
@@ -992,7 +994,6 @@ export default class Gui extends Events
         }
         else
         {
-            this.userSettings.set("canvasMode", "");
             this._switchCanvasSizeNormal();
         }
 
@@ -1426,9 +1427,6 @@ export default class Gui extends Events
      */
     bind(cb)
     {
-
-        if (this.userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
-
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         let lastTimeRecent = 0;
