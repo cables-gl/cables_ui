@@ -15,7 +15,7 @@ const defaultOpNames =
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
-    "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
+    "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v5",
     "defaultOpJson": "Ops.Json.HttpRequest_v4",
     "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
