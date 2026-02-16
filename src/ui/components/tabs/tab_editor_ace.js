@@ -92,7 +92,7 @@ export default class EditorTab extends Events
         {
             if (!ele.byId("editorcontent" + this._tab.id))
             {
-                this._log.error("ele not found!!", this);
+                this._log.warn("ele not found!!", this);
                 return;
             }
             this.createEditor("editorcontent" + this._tab.id, content, (editor) =>
