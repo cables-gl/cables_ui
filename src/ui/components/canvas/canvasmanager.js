@@ -67,7 +67,6 @@ export default class CanvasManager
         this.#canvasMode = m;
 
         userSettings.set(CanvasManager.PREF_CANVASMODE, m);
-        console.log("mode", m);
         if (m == this.CANVASMODE_POPOUT)
         {
             this.popOut();

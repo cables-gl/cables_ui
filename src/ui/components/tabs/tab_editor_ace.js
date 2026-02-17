@@ -95,6 +95,12 @@ export default class EditorTab extends Events
                 this._log.warn("ele not found!!", this);
                 return;
             }
+            const eee = document.getElementById("editorcontent" + this._tab.id);
+            if (!eee)
+            {
+                console.log("tab id not available. THIS SHOULD NOT HAPPEN...", eee);
+            }
+
             this.createEditor("editorcontent" + this._tab.id, content, (editor) =>
             {
                 this._editor = editor;
