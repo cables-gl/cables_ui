@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -26,6 +25,7 @@ import GlLink from "./gllink.js";
 import { DomEvents } from "../theme.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import { InputBindings } from "../inputbindings.js";
+import GlPatchAPI from "./patchapi.js";
 
 /**
  * rendering the patchfield
@@ -57,6 +57,8 @@ export default class GlPatch extends Events
     _hoverOps = [];
     _ignoreNonExistError = [];
     _hoverOpLongStartTime = 0;
+
+    /** @type {GlPatchAPI} */
     _patchAPI = null;
     debugData = {};
 

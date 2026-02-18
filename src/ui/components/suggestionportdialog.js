@@ -153,9 +153,10 @@ export default class SuggestPortDialog
             pOutput = p;
         }
 
+        const classNames = [];
         let className = "portSuggest" + p.type;
 
-        if (p.isLinked()) className += "Linked";
+        if (p.isLinked()) classNames.push("linked_border_" + pOutput.getTypeString().toLowerCase());
         let name = p.title;
         if (converter)name =
          "<span style=\"pointer-events:none\" class=\"" + "port_text_color_" + pOutput.getTypeString().toLowerCase() + "\">▐ " + pOutput.title + "</span><span style=\"color:#bbbbbb;\"> →</span> " +
@@ -170,16 +171,17 @@ export default class SuggestPortDialog
             if (p.uiAttribs.group)
             {
                 this.#suggestions.push({ "name": p.uiAttribs.group, "class": "groupname" });
-
             }
             else
             if (this.lastPort)
                 spacing = 8;
         }
         this.lastPort = p;
+        classNames.push(className);
 
         this.#suggestions.push({
-            "class": className,
+            // "class": className,
+            "classNames": classNames,
             "p": p,
             "spacing": spacing,
             "op": p.op.id,

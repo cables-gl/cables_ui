@@ -48,6 +48,7 @@
 // }
 
 
+
 .port_text_color_trigger, .port_text_color_function { color: var(--color_port_function) !important;}
 .port_text_color_value,.port_text_color_number { color: var(--color_port_value) !important; }
 .port_text_color_object { color: var(--color_port_object) !important;}
@@ -102,6 +103,13 @@
 .color-op-category-user { color: var(--color_op_handle_user) !important; }
 
 
+
+.linked_border_trigger, .port_text_color_function { border-left:5px solid var(--color_port_function) !important;}
+.linked_border_value,.port_text_color_number { border-left:5px solid var(--color_port_value) !important; }
+.linked_border_object { border-left:5px solid var(--color_port_object) !important;}
+.linked_border_array { border-left:5px solid var(--color_port_array) !important;  }
+.linked_border_dynamic { border-left:5px solid var(--color_port_dynamic) !important;}
+.linked_border_string { border-left:5px solid var(--color_port_string) !important;}
 
 // @keyframes animSuggestionFadein
 // {

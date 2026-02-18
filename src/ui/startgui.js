@@ -47,7 +47,7 @@ export default function startUi(cfg)
         gui.initCoreListeners();
 
         gui.corePatch().timer.setTime(0);
-        gui.corePatch().timer.pause();
+        gui.corePatch().timer.play();
 
         if (!gui.corePatch().cgl.gl)
         {
@@ -185,8 +185,6 @@ export default function startUi(cfg)
                     {
                         gui.corePatch().checkLinkTimeWarnings();
                         gui.emitEvent(Gui.EVENT_UILOADED);
-                        gui.corePatch().timer.setTime(0);
-                        gui.corePatch().timer.play();
 
                     }, 100);
                 });

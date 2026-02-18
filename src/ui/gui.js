@@ -587,7 +587,6 @@ export default class Gui extends Events
         this._elBgPreviewButtonContainer = ele.byId("bgpreviewButtonsContainer");
 
         this._elOptions = this._elOptions || ele.byId("options");
-        this._elMeta = this._elMeta || ele.byId("meta");
         this._elMenubar = this._elMenubar || ele.byId("menubar");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
         this._elInfoAreaParam = this._elInfoAreaParam || ele.byId("infoAreaParam");
@@ -662,7 +661,7 @@ export default class Gui extends Events
 
         const infoAreaHeight = this.bottomInfoArea.getHeight();
         const menubarHeight = 0;
-        const optionsWidth = Math.ceil(Math.max(this.rightPanelWidth, this.rendererWidthScaled / 2));
+        const optionsWidth = this.rightPanelWidth;
 
         patchHeight -= infoAreaHeight;
 
@@ -787,7 +786,7 @@ export default class Gui extends Events
 
         let metaWidth = this.rightPanelWidth - optionsWidth;
 
-        this._elOptions.style.right = metaWidth + "px";
+        this._elOptions.style.right = 0 + "px";
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
         {
@@ -799,13 +798,8 @@ export default class Gui extends Events
             this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elOptions.style.height = window.innerHeight - this.bottomTabPanel.getHeight() - this.rendererHeightScaled + "px";
         }
+
         this._elOptions.style.width = (optionsWidth + 1) + "px";
-
-        this._elMeta.style.right = 0 + "px";
-        this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
-        this._elMeta.style.width = metaWidth + "px";
-        this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
-
         this._elOptions.style.display = "block";
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
@@ -814,12 +808,10 @@ export default class Gui extends Events
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
         {
             ele.byId("canvasicons").style.right = optionsWidth + "px";
-
             this._elSplitterRenderer.style.right = optionsWidth + "px";
         }
         else
         {
-
             this._elSplitterRenderer.style.right = 0 + "px";
             ele.byId("canvasicons").style.right = (0) + "px";
         }
