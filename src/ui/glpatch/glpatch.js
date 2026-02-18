@@ -143,17 +143,17 @@ export default class GlPatch extends Events
         this.#selectionArea = new GlSelectionArea(this._overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
-        if (userSettings.get("devinfos"))
-        {
-            CABLES.UI.showDevInfos = true;
-            const idx = this.#overlaySplines.getSplineIndex();
-            this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
-            this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
+        // if (userSettings.get("devinfos"))
+        // {
+        //     CABLES.UI.showDevInfos = true;
+        //     const idx = this.#overlaySplines.getSplineIndex();
+        //     this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
+        //     this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
 
-            const idx2 = this.#overlaySplines.getSplineIndex();
-            this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
-            this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
-        }
+        //     const idx2 = this.#overlaySplines.getSplineIndex();
+        //     this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
+        //     this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
+        // }
 
         this.cablesHoverText = new GlText(this.#textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -470,31 +470,31 @@ export default class GlPatch extends Events
             this.updateCableWidth();
         });
 
-        if (userSettings.get("devinfos"))
-        {
-            gui.corePatch().on("subpatchesChanged", () =>
-            {
-                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
+        // if (userSettings.get("devinfos"))
+        // {
+        //     gui.corePatch().on("subpatchesChanged", () =>
+        //     {
+        //         if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
 
-                const bounds = gui.patchView.getSubPatchBounds();
+        //         const bounds = gui.patchView.getSubPatchBounds();
 
-                this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
-                    bounds.minX, bounds.minY, 0,
-                    bounds.maxX, bounds.minY, 0,
+        //         this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
+        //             bounds.minX, bounds.minY, 0,
+        //             bounds.maxX, bounds.minY, 0,
 
-                    bounds.maxX, bounds.minY, 0,
-                    bounds.maxX, bounds.maxY, 0,
+        //             bounds.maxX, bounds.minY, 0,
+        //             bounds.maxX, bounds.maxY, 0,
 
-                    bounds.maxX, bounds.maxY, 0,
-                    bounds.minX, bounds.maxY, 0,
+        //             bounds.maxX, bounds.maxY, 0,
+        //             bounds.minX, bounds.maxY, 0,
 
-                    bounds.minX, bounds.maxY, 0,
-                    bounds.minX, bounds.minY, 0
-                ]);
+        //             bounds.minX, bounds.maxY, 0,
+        //             bounds.minX, bounds.minY, 0
+        //         ]);
 
-                this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
-            });
-        }
+        //         this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
+        //     });
+        // }
 
         this.snap.update();
         this._cablesHoverButtonRect = undefined;
