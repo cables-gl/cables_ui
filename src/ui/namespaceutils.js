@@ -77,6 +77,11 @@ class namespace
         return opname && opname.includes(".Dev.");
     }
 
+    isStandaloneOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.standaloneOp);
+    }
+
     /**
      * @param {String} opname
      * @returns {Boolean}
@@ -143,7 +148,7 @@ class namespace
      */
     isCoreOp(opname)
     {
-        return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname));
+        return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname) || this.isStandaloneOp(opname));
     }
 
     /**
@@ -236,6 +241,10 @@ class namespace
         {
             // valid in editor, since they will be renamed
             // if (this.isPatchOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) Patch ops cannot contain ops of other patches.";
+        }
+        else if (this.isStandaloneOp(outerName))
+        {
+            // valid in standalone, import will rename them to patchops
         }
 
         return false;
