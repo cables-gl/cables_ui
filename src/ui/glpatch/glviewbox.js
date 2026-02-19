@@ -406,6 +406,7 @@ export default class GlViewBox
      */
     centerSelectedOps(noAnim, zoom = true)
     {
+        const defaultZoom = 1200;
 
         let ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) ops = gui.corePatch().ops;
@@ -413,7 +414,7 @@ export default class GlViewBox
         if (ops.length == 0)
         {
             // no ops in patch at all
-            this._zoom = 400;
+            this._zoom = defaultZoom;
             this.scrollTo(0, 0);
             return;
         }
@@ -452,8 +453,8 @@ export default class GlViewBox
 
         const zx = bb.size[0] / 2; // zoom on x
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
-        let z = Math.max(400, Math.max(zy, zx));
-        if (z > 99999)z = 400;
+        let z = Math.max(defaultZoom, Math.max(zy, zx));
+        if (z > 99999)z = defaultZoom;
 
         if (zoom)
         {

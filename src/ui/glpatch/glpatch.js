@@ -997,7 +997,7 @@ export default class GlPatch extends Events
         if (!options.hasOwnProperty("center"))options.center = true;
         if (!options.hasOwnProperty("focusAnim"))options.focusAnim = true;
         if (!options.hasOwnProperty("unselectAll"))options.unselectAll = true;
-        if (!options.hasOwnProperty("zoom"))options.zoom = false;
+        if (!options.hasOwnProperty("zoom"))options.zoom = true;
 
         // console.log("gotooppppppppppp", options);
         const op = gui.corePatch().getOpById(opid);

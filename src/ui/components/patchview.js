@@ -33,6 +33,8 @@ import { UiPatch } from "../core_extend_patch.js";
  * @property {boolean} [focusAnim=true]
  * @property {boolean} [showParams=false]
  * @property {boolean} [center=true]
+ * @property {boolean} [zoom=false]
+ * @property {boolean} [unselectAll]
  */
 
 /**
