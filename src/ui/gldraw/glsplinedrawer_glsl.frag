@@ -13,6 +13,7 @@ UNI vec2 mousePos;
 UNI float a;
 UNI float time;
 
+UNI float zoom;
 UNI float width;
 UNI float widthSelected;
 
@@ -65,17 +66,19 @@ void main()
 
 
     // selected border
-    if(fcolorBorder.a>0.0)
+    if(fcolorBorder.a>0.0&& 1.0/zoom<2000.0)
     {
         float border=widthSelected/(width+widthSelected)/2.0;
 
+        vec4 borderCol=fcolorBorder;
         float fade=0.0;
+        // if(zoom>2000.0)borderCol=finalColor;
 
         fade=
             smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+ // left border
             smoothstep(1.0-border-fwidth(texCoord.y),1.0-border,texCoord.y); // right
 
-        finalColor=mix(finalColor,fcolorBorder,fade);
+        finalColor=mix(finalColor,borderCol,fade);
     }
 
 

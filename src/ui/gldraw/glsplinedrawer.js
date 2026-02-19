@@ -199,6 +199,7 @@ export class GlSplineDrawer extends Events
             this.#uniscrollX.set(scrollX);
             this.#uniscrollY.set(scrollY);
             this.#uniZoom.set(1.0 / zoom);
+            console.log("text", 1 / zoom);
             this.#uniTime.set(performance.now() / 1000);
 
             const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];

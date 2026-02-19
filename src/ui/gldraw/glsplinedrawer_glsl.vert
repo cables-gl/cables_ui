@@ -28,7 +28,6 @@ IN vec3 spline,spline2,spline3;
 OUT vec2 texCoord;
 OUT vec3 norm;
 OUT float zz;
-
 UNI float zoom,resX,resY,scrollX,scrollY;
 
 float texOffset=0.0;
