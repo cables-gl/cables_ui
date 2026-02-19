@@ -459,7 +459,8 @@ class CmdPatch
                         "oldSubId": bp,
                         "next": () =>
                         {
-                            if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, force);
+                            if (gui.getPatchSummary().allowEdit)
+                                if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, force);
                         }
                     });
             }
