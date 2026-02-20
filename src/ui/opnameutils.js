@@ -24,7 +24,11 @@ opNames.getVizOpsForPortLink = (p) =>
         else if (p.type == portType.number && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOps.defaultOpNames.VizBool, defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizLogger];
         else if (p.type == portType.number) return [defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizGraph, defaultOps.defaultOpNames.VizNumberBar, defaultOps.defaultOpNames.VizLogger];
         else if (p.type == portType.array) return [defaultOps.defaultOpNames.VizArrayTable, defaultOps.defaultOpNames.VizArrayGraph];
-        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
+
+        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
+        else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoElement];
+        else if (p.type == portType.object && p.uiAttribs.objType == "geometry") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoGeometry];
+        else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoShader];
         else if (p.type == portType.object) return [defaultOps.defaultOpNames.VizObject];
     }
     return [];
