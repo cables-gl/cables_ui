@@ -86,10 +86,12 @@ const defaultOpNames =
     "VizTexture": "Ops.Ui.VizTexture",
     "InfoElement": "Ops.Html.ElementInfo",
     "InfoGeometry": "Ops.Graphics.Geometry.GeometryInfo",
-    "InfoShader": "Ops.Graphics.Geometry.ShaderInfo",
+    "InfoShader": "Ops.Gl.Shader.ShaderInfo",
     "VizLogger": "Ops.Ui.VizLogger",
     "vizTrigger": "Ops.Ui.VizTrigger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
+    "VizAudioSpectrum": "Ops.Ui.VizAudioSpectrum",
+    "VizAudioWaveform": "Ops.Ui.VizAudioWaveform",
 
     "stringEditor": "Ops.String.StringEditor",
     "sequence": "Ops.Trigger.Sequence",

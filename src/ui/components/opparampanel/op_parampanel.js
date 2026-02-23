@@ -403,7 +403,7 @@ class OpParampanel extends Events
                 }
                 else
                 {
-                    console.log("no filenamebutton");
+                    // no filenamebutton, probably because port is linked...
                 }
             }
 

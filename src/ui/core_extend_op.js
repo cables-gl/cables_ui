@@ -237,7 +237,7 @@ class UiOp extends Op
         count++;
         if (count >= 1000)
         {
-            this._log.log("hasparent loop....", name);
+            this.#log.log("hasparent loop....", name);
             this._ignoreParentChecks = true;
             return false;
         }

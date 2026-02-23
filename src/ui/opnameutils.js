@@ -29,6 +29,8 @@ opNames.getVizOpsForPortLink = (p) =>
         else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoElement];
         else if (p.type == portType.object && p.uiAttribs.objType == "geometry") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoGeometry];
         else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoShader];
+        else if (p.type == portType.object && p.uiAttribs.objType == "audioNode") return [defaultOps.defaultOpNames.VizAudioSpectrum, defaultOps.defaultOpNames.VizAudioWaveform];
+
         else if (p.type == portType.object) return [defaultOps.defaultOpNames.VizObject];
     }
     return [];
