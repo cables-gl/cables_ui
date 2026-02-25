@@ -1772,8 +1772,8 @@ export default class Gui extends Events
      */
     pressedEscape(e)
     {
-        if (this.canvasManager.getCanvasUiBar())
-            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+        const canvasBarUi = this.canvasManager.getCanvasUiBar();
+        if (canvasBarUi) canvasBarUi.showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
         if (this.fileManager) this.fileManager.setFilePort(null);
@@ -1796,7 +1796,7 @@ export default class Gui extends Events
 
             this._elGlCanvasDom.classList.remove("maximized");
             this.setLayout();
-            this.canvasManager.getCanvasUiBar().showCanvasModal(true);
+            if (canvasBarUi) canvasBarUi.showCanvasModal(true);
         }
         else if (CABLES.UI.suggestions)
         {
