@@ -558,7 +558,6 @@ export class Platform extends Events
         this._log.log("showFileSelect", inputId, filterType, opid, previewId);
         gui.showFileManager(() =>
         {
-            this._log.log("showFileSelect22222");
             const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {

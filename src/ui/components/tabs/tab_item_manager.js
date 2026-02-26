@@ -109,12 +109,18 @@ export default class ItemManager extends Events
     getItemByTitleContains(t)
     {
         for (let i = 0; i < this._items.length; i++)
-        {
             if (t.indexOf(this._items[i].title) > -1)
-            {
                 return this._items[i];
-            }
-        }
+    }
+
+    /**
+     * @param {string} t
+     */
+    getItemByTitle(t)
+    {
+        for (let i = 0; i < this._items.length; i++)
+            if (this._items[i].title == t)
+                return this._items[i];
     }
 
     /**

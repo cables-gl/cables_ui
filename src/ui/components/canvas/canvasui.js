@@ -196,8 +196,8 @@ export default class CanvasUi
         this.updateCanvasIconBar();
 
         this.isCanvasFocussed = show;
-        if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
-        else this._elCanvasIconbar.classList.add("hidden");
+        if (this.isCanvasFocussed) this._elCanvasIconbar.classList.add("focussed");
+        else this._elCanvasIconbar.classList.remove("focussed");
 
         if (show)
         {

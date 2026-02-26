@@ -802,18 +802,19 @@ export default class Gui extends Events
         this._elOptions.style.width = (optionsWidth + 1) + "px";
         this._elOptions.style.display = "block";
 
-        ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
-        ele.byId("canvasicons").style.width = (this.rendererWidth * canvasScale) + "px";
+        const elCanvasIcons = ele.byId("canvasicons");
+        elCanvasIcons.style.height = this.canvasInfoUiHeight + "px";
+        elCanvasIcons.style.width = (this.rendererWidth * canvasScale) + "px";
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
         {
-            ele.byId("canvasicons").style.right = optionsWidth + "px";
+            elCanvasIcons.style.right = optionsWidth + "px";
             this._elSplitterRenderer.style.right = optionsWidth + "px";
         }
         else
         {
             this._elSplitterRenderer.style.right = 0 + "px";
-            ele.byId("canvasicons").style.right = (0) + "px";
+            elCanvasIcons.style.right = (0) + "px";
         }
 
         const widthResizeIcon = 30;
@@ -823,7 +824,7 @@ export default class Gui extends Events
         let top = 0;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) top = 0;
         else top = this.rendererHeightScaled + 1;
-        ele.byId("canvasicons").style.top = top + "px";
+        elCanvasIcons.style.top = top + "px";
 
         this._elMenubar.style.top = 0 + "px";
 

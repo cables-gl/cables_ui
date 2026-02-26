@@ -488,6 +488,9 @@ export default class PatchSaveServer extends Events
         });
     }
 
+    /**
+     * @param {Function} cb
+     */
     showSaveWarning(cb)
     {
         if (this.opCrashed)
@@ -498,11 +501,12 @@ export default class PatchSaveServer extends Events
                 "text": "An error happened while creating ops, the op may not be in the patch any longer. make sure the patch looks fine and has all ops",
 
                 "okButton": {
-                    "text": "save anyway",
-                    "callback": (name) =>
+                    "text": "Save anyway",
+                    "callback": () =>
                     {
                         this.saveCurrentProject(cb, true);
-                    } }
+                    }
+                }
             });
             modal.on("onSubmit", () =>
             {

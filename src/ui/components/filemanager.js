@@ -71,6 +71,11 @@ export default class FileManager
         }, 200);
     }
 
+    /**
+     * @param {HTMLElement} portEle
+     * @param {import("../core_extend_op.js").UiOp} [op]
+     * @param {undefined} [previewEle]
+     */
     setFilePort(portEle, op, previewEle)
     {
         if (!portEle)
@@ -337,7 +342,7 @@ export default class FileManager
     _selectFile(filename)
     {
         this._manager.unselectAll();
-        const item = this._manager.getItemByTitleContains(filename);
+        const item = this._manager.getItemByTitle(filename);
         if (!item) return;
         this._manager.selectItemById(item.id);
         const el = document.getElementById("item" + item.id);

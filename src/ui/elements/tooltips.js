@@ -241,7 +241,7 @@ export function updateHoverToolTip(event, port, overlink)
                 oport = gui.patchView.patchRenderer.dragLine._startGlPorts[0].port;
 
             if (!Link.canLink(port, oport))
-                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + Link.canLinkText(port, oport);
+                txt += "<br/><br/><span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + Link.canLinkText(port, oport);
         }
     }
     txt += "&nbsp;";
