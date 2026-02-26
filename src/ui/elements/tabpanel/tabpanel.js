@@ -500,13 +500,13 @@ export default class TabPanel extends Events
         {
             platform.setManualScreenshot(opts.manualScreenshot);
 
-            if (opts.manualScreenshot)
-            {
-                gui.patchView.store.saveScreenshot(true, () =>
-                {
-                    talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
-                });
-            }
+            // if (opts.manualScreenshot)
+            // {
+            //     gui.patchView.store.saveScreenshot(true, () =>
+            //     {
+            //         talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
+            //     });
+            // }
         });
 
         talkerAPI.on(TalkerAPI.CMD_UI_NOTIFY, (opts, next) =>
