@@ -30,7 +30,7 @@ export class GlSplineDrawer extends Events
     #count;
     #shader;
 
-    selectedThicknessMultiply = 0.7;
+    selectedThicknessMultiply = 0.8;
 
     /** @type {Float32Array} */
     #verts;
