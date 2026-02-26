@@ -177,7 +177,7 @@ class CmdRenderer
 
         gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
         gui.setLayout();
-        gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+        gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
     }
 
     static scaleCanvas()

@@ -471,7 +471,7 @@ class CmdUi
         userSettings.set("overlaysShow", act);
         gui.emitEvent("overlaysChanged", act);
         gui.transformOverlay.updateVisibility();
-        gui.canvasManager.getCanvasUiBar().updateIconState();
+        gui.canvasManager.getCanvasUiBar()?.updateIconState();
     }
 
     static toggleSnapToGrid()
