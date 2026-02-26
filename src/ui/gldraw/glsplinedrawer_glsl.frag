@@ -71,6 +71,7 @@ void main()
         float border=widthSelected/(width+widthSelected)/2.0;
 
         vec4 borderCol=fcolorBorder;
+        borderCol=finactiveColor;
         float fade=0.0;
         // if(zoom>2000.0)borderCol=finalColor;
 

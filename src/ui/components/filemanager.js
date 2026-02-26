@@ -343,8 +343,8 @@ export default class FileManager
     {
         this._manager.unselectAll();
 
-        console.log("get by title");
         const item = this._manager.getItemByTitle(filename);
+        console.log("get by title", filename, item);
         if (!item) return;
         this._manager.selectItemById(item.id);
         const el = document.getElementById("item" + item.id);
