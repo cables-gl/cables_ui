@@ -91,6 +91,7 @@ export default class GradientEditor
      */
     static getCssGradientString(keys)
     {
+        if (!keys) return "";
         let str = "linear-gradient(";
         str += "90deg";
 
