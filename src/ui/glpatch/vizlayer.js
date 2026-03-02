@@ -3,6 +3,7 @@ import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
+import CanvasManager from "../components/canvas/canvasmanager.js";
 
 /**
  * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
@@ -117,6 +118,7 @@ export default class VizLayer extends Events
 
     renderVizLayer(gl)
     {
+        if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_MAXIMIZED) return;
         if (!gl && this._fallBackrendererDisabled)
         {
             if (performance.now() - this.lastGlRendering > 500) this._fallBackrendererDisabled = false;

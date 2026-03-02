@@ -100,6 +100,7 @@ export default class GlPatchAPI
      */
     updateFlowModeActivity(flowMode)
     {
+        if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_MAXIMIZED) return;
         if (flowMode == 0) return;
 
         const frameCount = this._glPatch.cgl.fpsCounter.frameCount;
