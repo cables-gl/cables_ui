@@ -496,17 +496,18 @@ export default class TabPanel extends Events
             }
         });
 
-        talkerAPI.on(TalkerAPI.CMD_UI_SETTING_MANUAL_SCREENSHOT, (opts, next) =>
+        talkerAPI.on(TalkerAPI.CMD_UI_SETTING_MANUAL_SCREENSHOT, (opts, _next) =>
         {
             platform.setManualScreenshot(opts.manualScreenshot);
+        });
 
-            // if (opts.manualScreenshot)
-            // {
-            //     gui.patchView.store.saveScreenshot(true, () =>
-            //     {
-            //         talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
-            //     });
-            // }
+        talkerAPI.on(TalkerAPI.CMD_UI_SAVE_SCREENSHOT, (_opts, _next) =>
+        {
+            console.log("HERE!!!");
+            gui.patchView.store.saveScreenshot(true, () =>
+            {
+                talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
+            });
         });
 
         talkerAPI.on(TalkerAPI.CMD_UI_NOTIFY, (opts, next) =>
