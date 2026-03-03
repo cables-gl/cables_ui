@@ -15,6 +15,7 @@ import { CmdRenderer } from "../../commands/cmd_renderer.js";
 
 export default class EditorTabAce extends Events
 {
+    #eleId = "";
     constructor(options)
     {
         super();
@@ -67,9 +68,11 @@ export default class EditorTabAce extends Events
         let style = "";
         let html = "";
 
+        this.#eleId = "editorcontent" + this._tab.id;
+
         if (!options.allowEdit) html += "<br/>Editor is in read only mode (" + (options.allowEditReason || "unknown") + ")<br/><br/>";
         if (!options.allowEdit) style = "background-color:#333;";
-        html += "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
+        html += "<div id=\"" + this.#eleId + "\" style=\"width:100%;height:100%;" + style + "\"><center><br/><br/><br/><br/><span class=\"icon icon-loader\"></span></center></div>";
         this._tab.html(html);
 
         if (options.hasOwnProperty("content")) this.setContent(options.content);
@@ -101,7 +104,7 @@ export default class EditorTabAce extends Events
                 console.log("tab id not available. THIS SHOULD NOT HAPPEN...", eee);
             }
 
-            this.createEditor("editorcontent" + this._tab.id, content, (editor) =>
+            this.createEditor(this.#eleId, content, (editor) =>
             {
                 this._editor = editor;
 
