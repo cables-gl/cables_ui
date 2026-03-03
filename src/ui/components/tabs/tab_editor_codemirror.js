@@ -70,7 +70,7 @@ export default class EditorTabCodemirror extends Events
         let style = "";
 
         if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<div class=\"editor_textarea\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%" + style + "\"></div>";
+        const html = "<div class=\"\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%" + style + "\"></div>";
         this.#tab.html(html);
         this._eleId = "editorcontent" + this.#tab.id;
         this.ele = ele.byId(this._eleId);
@@ -114,7 +114,7 @@ export default class EditorTabCodemirror extends Events
                 // if (this._tab.editorObj && this._tab.editorObj.name) userSettings.set("editortab", this._tab.editorObj.name);
                 },
             );
-
+            this.cmView.setContent(content);
             // setTimeout(() =>
             // {
             //     this.ele.focus();
@@ -181,11 +181,15 @@ export default class EditorTabCodemirror extends Events
         else this.emitEvent("save", onSaveCb.bind(this), this.ele.value, this.ele);
     }
 
+    /**
+     * @param {function} cb
+     */
     createEditor(cb)
     {
 
         if (loadedCm)
         {
+            this.cmView = startCm(this.ele, { "helix": this.helix });
             cb();
         }
         else
@@ -194,7 +198,7 @@ export default class EditorTabCodemirror extends Events
 
             loadjs.ready("codemirror", () =>
             {
-                startCm(this.ele, { "helix": this.helix });
+                this.cmView = startCm(this.ele, { "helix": this.helix });
                 gui.jobs().finish("codemirror");
                 loadedCm = true;
                 console.log("loaded cm");

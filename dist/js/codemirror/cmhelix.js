@@ -34097,10 +34097,12 @@ var __webpack_exports__ = {};
   \******************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _codemirror_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @codemirror/view */ "./node_modules/@codemirror/view/dist/index.js");
-/* harmony import */ var codemirror_helix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! codemirror-helix */ "./node_modules/codemirror-helix/dist/lib.development.js");
-/* harmony import */ var _codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @codemirror/autocomplete */ "./node_modules/@codemirror/autocomplete/dist/index.js");
-/* harmony import */ var _codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @codemirror/lang-javascript */ "./node_modules/@codemirror/lang-javascript/dist/index.js");
-/* harmony import */ var _fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fsegurai/codemirror-theme-tokyo-night-storm */ "./node_modules/@fsegurai/codemirror-theme-tokyo-night-storm/dist/index.js");
+/* harmony import */ var _codemirror_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @codemirror/state */ "./node_modules/@codemirror/state/dist/index.js");
+/* harmony import */ var codemirror_helix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! codemirror-helix */ "./node_modules/codemirror-helix/dist/lib.development.js");
+/* harmony import */ var _codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @codemirror/autocomplete */ "./node_modules/@codemirror/autocomplete/dist/index.js");
+/* harmony import */ var _codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @codemirror/lang-javascript */ "./node_modules/@codemirror/lang-javascript/dist/index.js");
+/* harmony import */ var _fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fsegurai/codemirror-theme-tokyo-night-storm */ "./node_modules/@fsegurai/codemirror-theme-tokyo-night-storm/dist/index.js");
+
 
 
 
@@ -34113,7 +34115,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const customCommands = codemirror_helix__WEBPACK_IMPORTED_MODULE_1__.commands.of([
+const customCommands = codemirror_helix__WEBPACK_IMPORTED_MODULE_2__.commands.of([
   {
     name: "save",
     aliases: ["s", "sv"],
@@ -34128,24 +34130,36 @@ window.startCm=(parent,options)=>{
   
 const  extensions= []
 if(options.helix)
-  extensions.push((0,codemirror_helix__WEBPACK_IMPORTED_MODULE_1__.helix)(
+  extensions.push((0,codemirror_helix__WEBPACK_IMPORTED_MODULE_2__.helix)(
     {
       config: {"editor.cursor-shape.insert":"bar"},
     }));
 
 extensions.push(customCommands)
-extensions.push(_fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_4__.tokyoNightStorm)
+extensions.push(_fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_5__.tokyoNightStorm)
 extensions.push((0,_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.lineNumbers)())
-extensions.push((0,_codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_3__.javascript)())
-extensions.push((0,_codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_2__.autocompletion)())
+extensions.push((0,_codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__.javascript)())
+extensions.push((0,_codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__.autocompletion)())
 
 const view = new _codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView(
   {
-    doc: "",
-    extensions: extensions,
     parent: parent,
+    extensions: extensions,
+    doc: options.content||"",
   });
 
+return {
+  setContent:
+  (c)=>
+  {
+    // view.setState(EditorState.create({ "doc": c }));
+
+view.dispatch({
+  changes: { from: 0, to: view.state.doc.length, insert: c },
+annotations: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Transaction.addToHistory.of(false),
+})
+  }
+}
 }
 
 
