@@ -9,6 +9,9 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdRenderer } from "../../commands/cmd_renderer.js";
 
+let loadedAce = false;
+let loadingAce = false;
+
 /**
  * tab panel for editing text and source code using the ace editor
  */
@@ -384,7 +387,7 @@ export default class EditorTabAce extends Events
      */
     createEditor(id, val, cb)
     {
-        loadAce(() =>
+        this.loadAce(() =>
         {
             const editor = ace.edit(id);
             editor.setValue(""); // need to do this
@@ -814,46 +817,61 @@ export default class EditorTabAce extends Events
             cb(editor);
         });
     }
-}
 
-function loadAce(cb)
-{
-    if (CABLES.loadedAce)
+    /**
+ * @param {Function} cb
+ */
+    loadAce(cb)
     {
-        cb();
-    }
-    else
-    {
-        loadjs.ready("acelibs", () =>
+        if (loadingAce)
         {
-            gui.jobs().finish("acelibs");
-            gui.jobs().start({ "id": "acemisc", "title": "loading ace editor misc files" });
+            console.log("waiting for ace");
+            setTimeout(() =>
+            {
+                this.loadAce(cb);
+            }, 100);
+            return;
+        }
 
+        if (loadedAce)
+        {
+            cb();
+        }
+        else
+        {
+            loadingAce = true;
+            loadjs.ready("acelibs", () =>
+            {
+                gui.jobs().finish("acelibs");
+                gui.jobs().start({ "id": "acemisc", "title": "loading ace editor misc files" });
+
+                try
+                {
+                    loadjs(["js/ace/ext-language_tools.js", "js/ace/theme-cables.js"], "ace");
+                }
+                catch (e)
+                {
+                // ignore error when trying to load multiple times
+                }
+            });
+
+            loadjs.ready("ace", () =>
+            {
+                gui.jobs().finish("acemisc");
+                loadedAce = true;
+                loadingAce = false;
+                cb();
+            });
+
+            gui.jobs().start({ "id": "acelibs", "title": "loading ace editor lib" });
             try
             {
-                loadjs(["js/ace/ext-language_tools.js", "js/ace/theme-cables.js"], "ace");
+                loadjs(["js/ace/ace.js"], "acelibs");
             }
             catch (e)
             {
-                // ignore error when trying to load multiple times
-            }
-        });
-
-        loadjs.ready("ace", () =>
-        {
-            gui.jobs().finish("acemisc");
-            CABLES.loadedAce = true;
-            cb();
-        });
-
-        gui.jobs().start({ "id": "acelibs", "title": "loading ace editor lib" });
-        try
-        {
-            loadjs(["js/ace/ace.js"], "acelibs");
-        }
-        catch (e)
-        {
             // ignore error when trying to load multiple times
+            }
         }
     }
 }

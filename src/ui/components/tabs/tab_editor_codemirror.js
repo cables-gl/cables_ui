@@ -9,6 +9,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 
 let loadedCm = false;
+let loadingCm = false;
 
 /**
  * tab panel for editing text and source code using the codemirror editor
@@ -70,7 +71,7 @@ export default class EditorTabCodemirror extends Events
         let style = "";
 
         if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<div class=\"\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%" + style + "\"></div>";
+        const html = "<div class=\"\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%;overflow:auto;" + style + "\"></div>";
         this.#tab.html(html);
         this._eleId = "editorcontent" + this.#tab.id;
         this.ele = ele.byId(this._eleId);
@@ -186,14 +187,25 @@ export default class EditorTabCodemirror extends Events
      */
     createEditor(cb)
     {
+        if (loadingCm)
+        {
+            console.log("waiting for cm");
+            setTimeout(() =>
+            {
+                this.createEditor(cb);
+            }, 100);
+            return;
+        }
 
         if (loadedCm)
         {
             this.cmView = startCm(this.ele, { "helix": this.helix });
+
             cb();
         }
         else
         {
+            loadingCm = true;
             console.log("loading cm");
 
             loadjs.ready("codemirror", () =>
@@ -201,6 +213,7 @@ export default class EditorTabCodemirror extends Events
                 this.cmView = startCm(this.ele, { "helix": this.helix });
                 gui.jobs().finish("codemirror");
                 loadedCm = true;
+                loadingCm = false;
                 console.log("loaded cm");
                 cb();
             });
