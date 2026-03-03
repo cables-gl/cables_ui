@@ -13,7 +13,7 @@ import { CmdRenderer } from "../../commands/cmd_renderer.js";
  * tab panel for editing text and source code using the ace editor
  */
 
-export default class EditorTab extends Events
+export default class EditorTabAce extends Events
 {
     constructor(options)
     {

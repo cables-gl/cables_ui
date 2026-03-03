@@ -106,6 +106,8 @@ export default class Preferences
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
         this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
 
+        this.setSwitchValue("texteditor", userSettings.get("texteditor") || "");
+
         // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
