@@ -24297,535 +24297,6 @@ const __test = { HeightMap, HeightOracle, MeasuredHeights, QueryType, ChangedRan
 
 /***/ },
 
-/***/ "./node_modules/@fsegurai/codemirror-theme-tokyo-night-storm/dist/index.js"
-/*!*********************************************************************************!*\
-  !*** ./node_modules/@fsegurai/codemirror-theme-tokyo-night-storm/dist/index.js ***!
-  \*********************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   applyMergeRevertStyles: () => (/* binding */ applyMergeRevertStyles),
-/* harmony export */   tokyoNightStorm: () => (/* binding */ tokyoNightStorm),
-/* harmony export */   tokyoNightStormMergeStyles: () => (/* binding */ tokyoNightStormMergeStyles)
-/* harmony export */ });
-/* harmony import */ var _codemirror_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @codemirror/view */ "./node_modules/@codemirror/view/dist/index.js");
-/* harmony import */ var _codemirror_language__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @codemirror/language */ "./node_modules/@codemirror/language/dist/index.js");
-/* harmony import */ var _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @lezer/highlight */ "./node_modules/@lezer/highlight/dist/index.js");
-
-
-
-
-// Helper module for styling options
-const generalContent = {
-    fontSize: '14px',
-    fontFamily: 'JetBrains Mono, Consolas, monospace',
-    lineHeight: '1.6',
-};
-const generalCursor = {
-    borderLeftWidth: '2px',
-};
-const generalDiff = {
-    insertedTextDecoration: 'none',
-    deletedTextDecoration: 'line-through',
-    insertedLinePadding: '1px 3px',
-    borderRadious: '3px'};
-const generalGutter = {
-    border: 'none',
-    paddingRight: '8px',
-    fontSize: '0.9em',
-    fontWeight: '500',
-    lineHeight: '1.78', // Adjusted to compensate for 0.9em fontSize (1.6 / 0.9 ≈ 1.78)
-};
-const generalPanel = {
-    border: 'none',
-    borderRadius: '4px',
-    padding: '2px 10px',
-};
-const generalLine = {
-    borderRadius: '2px',
-};
-const generalMatching = {
-    borderRadius: '2px',
-};
-const generalPlaceholder = {
-    borderRadius: '4px',
-    padding: '0 5px',
-    margin: '0 2px',
-};
-const generalScroller = {
-    width: '12px',
-    height: '12px',
-    borderRadius: '6px',
-};
-const generalSearchField = {
-    borderRadius: '4px',
-    padding: '2px 6px',
-};
-const generalTooltip = {
-    borderRadius: '4px',
-    borderRadiusSelected: '3px',
-    lineHeight: '1.3',
-    padding: '4px 8px',
-    paddingRight: '8px',
-};
-/**
- * Function to apply merge revert styles for a theme
- * @param styles Styles for the merge revert buttons
- * @param styles.backgroundColor Background color of the revert area
- * @param styles.borderColor Border color of the revert area
- * @param styles.buttonColor Color of the revert buttons
- * @param styles.buttonHoverColor Hover color of the revert buttons
- */
-function applyMergeRevertStyles(styles) {
-    // Create a stylesheet
-    const styleEl = document.createElement('style');
-    styleEl.id = 'cm-merge-revert-styles';
-    // Define CSS with the theme-specific values
-    styleEl.textContent = `
-    .cm-merge-revert {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 4px;
-      background-color: ${styles.backgroundColor};
-      border-left: 1px solid ${styles.borderColor};
-      border-right: 1px solid ${styles.borderColor};
-      width: 32px;
-    }
-    
-    .cm-merge-revert button {
-      width: 100%;
-      height: auto;
-      background-color: transparent;
-      border: none;
-      color: ${styles.buttonColor};
-      cursor: pointer;
-      margin: 0 auto;
-      font-size: 20px;
-    }
-    
-    .cm-merge-revert button:hover {
-      background-color: ${styles.buttonHoverColor};
-    }
-  `;
-    // Remove any existing merge styles
-    const existingStyle = document.getElementById('cm-merge-revert-styles');
-    if (existingStyle)
-        existingStyle.remove();
-    // Add the new styles
-    document.head.appendChild(styleEl);
-}
-
-/**
- * Enhanced Tokyo Night Storm theme color definitions
- * ---------------------------------------------
- * Colors organized by function with visual color blocks
- */
-// Base colors
-const base00 = '#24283b', // Background
-// const base01 = '#7982a9'; // Foreground
-base02 = '#414868', // Selection background
-base03 = '#565f89', // Comments, invisible
-base04 = '#c0caf5', // Default foreground (bright blue)
-base05 = '#282e44', // Dark background for panels
-base06 = '#1f2335', // Darker background (gutter)
-// Accent colors
-base07 = '#f7768e', // Errors, invalid
-base08 = '#ff9e64', // Numbers, constants
-base09 = '#e0af68', // Classes, attributes
-base0A = '#9ece6a', // Strings, success
-base0B = '#2ac3de', // Types, parameter
-base0C = '#7aa2f7', // Functions, properties
-base0D = '#bb9af7'; // Keywords, operators
-// UI specific colors
-const invalid = '#f7768e', darkBackground = base06, highlightBackground = '#292e427a', // Line highlight with transparency
-background = base00, tooltipBackground = base05, selection = '#6f7bb630', // Selection background with transparency
-selectionMatch = '#6f7bb650', // Selection match with transparency
-cursor = base04, // Cursor color
-activeBracketBg = '#3d59a150', // Active bracket background with transparency
-activeBracketBorder = base0C, // Active bracket border
-diagnosticWarning = base08, // Warning color
-linkColor = base0B, // Link color
-visitedLinkColor = base0D; // Visited link color
-// Diff/merge specific colors
-const addedBackground = '#3b4a3880', // Dark green with transparency for insertions
-removedBackground = '#4a393a80', // Dark red with transparency for deletions
-addedText = '#9ece6a', // Tokyo Night Storm green for added text
-removedText = '#f7768e'; // Tokyo Night Storm red for removed text
-/**
- * Enhanced editor theme styles for Tokyo Night Storm
- */
-const tokyoNightStormTheme = /*@__PURE__*/_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView.theme({
-    // Base editor styles
-    '&': {
-        color: base04,
-        backgroundColor: background,
-        fontSize: generalContent.fontSize,
-        fontFamily: generalContent.fontFamily,
-    },
-    // Content and cursor
-    '.cm-content': {
-        caretColor: cursor,
-        lineHeight: generalContent.lineHeight,
-    },
-    '.cm-cursor, .cm-dropCursor': {
-        borderLeftColor: cursor,
-        borderLeftWidth: generalCursor.borderLeftWidth,
-    },
-    '.cm-fat-cursor': {
-        backgroundColor: `${cursor}99`,
-        color: background,
-    },
-    // Selection
-    '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {
-        backgroundColor: selection,
-    },
-    // Make sure selection appears above active line
-    '.cm-selectionLayer': {
-        zIndex: 100,
-    },
-    // Search functionality
-    '.cm-searchMatch': {
-        backgroundColor: '#7aa2f740',
-        outline: `1px solid ${base0C}`,
-        color: base04,
-        borderRadius: generalSearchField.borderRadius,
-    },
-    '.cm-searchMatch.cm-searchMatch-selected': {
-        backgroundColor: base0C,
-        color: background,
-        padding: generalSearchField.padding,
-        '& span': {
-            color: background,
-        },
-    },
-    '.cm-search.cm-panel.cm-textfield': {
-        color: base04,
-        borderRadius: generalSearchField.borderRadius,
-        padding: generalSearchField.padding,
-    },
-    // Panels
-    '.cm-panels': {
-        backgroundColor: base05,
-        color: base04,
-        borderRadius: '4px',
-    },
-    '.cm-panels.cm-panels-top': {
-        borderBottom: `1px solid ${base03}`,
-    },
-    '.cm-panels.cm-panels-bottom': {
-        borderTop: `1px solid ${base03}`,
-    },
-    '.cm-panel button': {
-        backgroundColor: tooltipBackground,
-        color: base04,
-        border: generalPanel.border,
-        borderRadius: generalPanel.borderRadius,
-        padding: generalPanel.padding,
-    },
-    '.cm-panel button:hover': {
-        backgroundColor: base06,
-    },
-    // Line highlighting
-    '.cm-activeLine': {
-        backgroundColor: highlightBackground,
-        borderRadius: generalLine.borderRadius,
-        zIndex: 1,
-    },
-    // Gutters
-    '.cm-gutters': {
-        backgroundColor: darkBackground,
-        color: base03,
-        border: generalGutter.border,
-        borderRight: `1px solid ${base06}`,
-        paddingRight: generalGutter.paddingRight,
-    },
-    '.cm-activeLineGutter': {
-        backgroundColor: base06,
-        color: base04,
-        fontWeight: generalGutter.fontWeight,
-    },
-    '.cm-lineNumbers': {
-        fontSize: generalGutter.fontSize,
-        lineHeight: generalGutter.lineHeight,
-    },
-    '.cm-foldGutter': {
-        fontSize: generalGutter.fontSize,
-        lineHeight: generalGutter.lineHeight,
-    },
-    '.cm-foldGutter .cm-gutterElement': {
-        color: base03,
-        cursor: 'pointer',
-    },
-    '.cm-foldGutter .cm-gutterElement:hover': {
-        color: base04,
-    },
-    // Diff/Merge View Styles
-    // Inserted/Added Content
-    '.cm-insertedLine': {
-        textDecoration: generalDiff.insertedTextDecoration,
-        backgroundColor: addedBackground,
-        color: addedText,
-        padding: generalDiff.insertedLinePadding,
-        borderRadius: generalDiff.borderRadious,
-    },
-    'ins.cm-insertedLine, ins.cm-insertedLine:not(:has(.cm-changedText))': {
-        textDecoration: generalDiff.insertedTextDecoration,
-        backgroundColor: `${addedBackground} !important`,
-        color: addedText,
-        padding: generalDiff.insertedLinePadding,
-        borderRadius: generalDiff.borderRadious,
-        border: `1px solid ${addedText}40`,
-    },
-    'ins.cm-insertedLine .cm-changedText': {
-        background: 'transparent !important',
-    },
-    // Deleted/Removed Content
-    '.cm-deletedLine': {
-        textDecoration: generalDiff.deletedTextDecoration,
-        backgroundColor: removedBackground,
-        color: removedText,
-        padding: generalDiff.insertedLinePadding,
-        borderRadius: generalDiff.borderRadious,
-    },
-    'del.cm-deletedLine, del, del:not(:has(.cm-deletedText))': {
-        textDecoration: generalDiff.deletedTextDecoration,
-        backgroundColor: `${removedBackground} !important`,
-        color: removedText,
-        padding: generalDiff.insertedLinePadding,
-        borderRadius: generalDiff.borderRadious,
-        border: `1px solid ${removedText}40`,
-    },
-    'del .cm-deletedText, del .cm-changedText': {
-        background: 'transparent !important',
-    },
-    // Tooltips and autocomplete
-    '.cm-tooltip': {
-        backgroundColor: tooltipBackground,
-        border: `1px solid ${base03}`,
-        borderRadius: generalTooltip.borderRadius,
-        padding: generalTooltip.padding,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-    },
-    '.cm-tooltip-autocomplete': {
-        '& > ul': {
-            backgroundColor: tooltipBackground,
-            border: 'none',
-        },
-        '& > ul > li': {
-            padding: generalTooltip.padding,
-            lineHeight: generalTooltip.lineHeight,
-        },
-        '& > ul > li[aria-selected]': {
-            backgroundColor: selection,
-            color: base04,
-            borderRadius: generalTooltip.borderRadiusSelected,
-        },
-        '& > ul > li > span.cm-completionIcon': {
-            color: base03,
-            paddingRight: generalTooltip.paddingRight,
-        },
-        '& > ul > li > span.cm-completionDetail': {
-            color: base03,
-            fontStyle: 'italic',
-        },
-    },
-    '.cm-tooltip .cm-tooltip-arrow:before': {
-        borderTopColor: 'transparent',
-        borderBottomColor: 'transparent',
-    },
-    '.cm-tooltip .cm-tooltip-arrow:after': {
-        borderTopColor: tooltipBackground,
-        borderBottomColor: tooltipBackground,
-    },
-    // Diagnostics styling
-    '.cm-diagnostic': {
-        '&-error': {
-            borderLeft: `3px solid ${invalid}`,
-        },
-        '&-warning': {
-            borderLeft: `3px solid ${diagnosticWarning}`,
-        },
-        '&-info': {
-            borderLeft: `3px solid ${linkColor}`,
-        },
-    },
-    '.cm-lintPoint-error': {
-        borderBottom: `2px wavy ${invalid}`,
-    },
-    '.cm-lintPoint-warning': {
-        borderBottom: `2px wavy ${diagnosticWarning}`,
-    },
-    // Matching brackets
-    '.cm-matchingBracket': {
-        backgroundColor: activeBracketBg,
-        outline: `1px solid ${activeBracketBorder}`,
-        borderRadius: generalMatching.borderRadius,
-    },
-    '.cm-nonmatchingBracket': {
-        backgroundColor: `${base07}20`,
-        outline: `1px solid ${invalid}`,
-        borderRadius: generalMatching.borderRadius,
-    },
-    // Selection matches
-    '.cm-selectionMatch': {
-        backgroundColor: selectionMatch,
-        outline: `1px solid ${base02}50`,
-        borderRadius: generalMatching.borderRadius,
-    },
-    // Fold placeholder
-    '.cm-foldPlaceholder': {
-        backgroundColor: tooltipBackground,
-        color: base03,
-        border: `1px dotted ${base03}70`,
-        borderRadius: generalPlaceholder.borderRadius,
-        padding: generalPlaceholder.padding,
-        margin: generalPlaceholder.margin,
-    },
-    // Focus outline
-    '&.cm-focused': {
-        outline: 'none',
-        boxShadow: `0 0 0 2px ${background}, 0 0 0 3px ${base0C}40`,
-    },
-    // Scrollbars
-    '& .cm-scroller::-webkit-scrollbar': {
-        width: generalScroller.width,
-        height: generalScroller.height,
-    },
-    '& .cm-scroller::-webkit-scrollbar-track': {
-        background: darkBackground,
-    },
-    '& .cm-scroller::-webkit-scrollbar-thumb': {
-        backgroundColor: base02,
-        borderRadius: generalScroller.borderRadius,
-        border: `3px solid ${darkBackground}`,
-    },
-    '& .cm-scroller::-webkit-scrollbar-thumb:hover': {
-        backgroundColor: base03,
-    },
-    // Ghost text
-    '.cm-ghostText': {
-        opacity: '0.5',
-        color: base03,
-    },
-}, { dark: true });
-/**
- * Enhanced syntax highlighting for Tokyo Night Storm theme
- */
-const tokyoNightStormHighlightStyle = /*@__PURE__*/_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.HighlightStyle.define([
-    // Keywords and control flow
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.keyword, color: base0D, fontWeight: 'bold' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.controlKeyword, color: base0D, fontWeight: 'bold' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.moduleKeyword, color: base0D, fontWeight: 'bold' },
-    // Names and variables
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.deleted, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.character, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.macroName], color: base04 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName], color: base04 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.propertyName], color: base0C, fontStyle: 'normal' },
-    // Classes and types
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.typeName], color: base0B },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.className], color: base09, fontStyle: 'italic' },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.namespace], color: base0C, fontStyle: 'italic' },
-    // Operators and punctuation
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operator, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operatorKeyword], color: base0D },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.bracket], color: base03 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.brace], color: base03 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.punctuation], color: base03 },
-    // Functions and parameters
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.function(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base0C },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.labelName], color: base0C, fontStyle: 'italic' },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.function(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName))], color: base0C },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base04 },
-    // Constants and literals
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.number, color: base08 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.changed, color: base08 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation, color: invalid, fontStyle: 'italic' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.modifier, color: base08, fontStyle: 'italic' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.self, color: base08 },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.color, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.constant(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.standard(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name)],
-        color: base0D,
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.atom, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.bool, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base08 },
-    // Strings and regex
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.processingInstruction, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.inserted], color: base0A },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.regexp], color: '#b4f9f8' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string, color: base0A },
-    // Punctuation and structure
-    { tag: /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.typeName), color: base0B, fontWeight: 'bold' },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.separator], color: base04 },
-    // Comments and documentation
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.meta, color: base03 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.comment, fontStyle: 'italic', color: base03 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.docComment, fontStyle: 'italic', color: base03 },
-    // HTML/XML elements
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.tagName], color: base0D },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.attributeName], color: base09 },
-    // Markdown and text formatting
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading], fontWeight: 'bold', color: '#89ddff' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading1, color: '#89ddff', fontWeight: 'bold' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading2, color: '#89ddff' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading3, color: '#89ddff' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading4, color: '#89ddff' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading5, color: '#89ddff' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading6, color: '#89ddff' },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strong], fontWeight: 'bold', color: base04 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.emphasis], fontStyle: 'italic', color: base0B },
-    // Links and URLs
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.link],
-        color: visitedLinkColor,
-        fontWeight: '500',
-        textDecoration: 'underline',
-        textUnderlinePosition: 'under',
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.url],
-        color: linkColor,
-        textDecoration: 'underline',
-        textUnderlineOffset: '2px',
-    },
-    // Special states
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.invalid],
-        color: base04,
-        textDecoration: 'underline wavy',
-        borderBottom: `1px wavy ${invalid}`,
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strikethrough], color: invalid, textDecoration: 'line-through' },
-    // Enhanced syntax highlighting
-    { tag: /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.constant(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), color: base08 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.deleted, color: invalid },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.squareBracket, color: base03 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.angleBracket, color: base03 },
-    // Additional specific styles
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.monospace, color: base04 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.contentSeparator], color: base0C },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.quote, color: base03 },
-]);
-/**
- * Combined Tokyo Night Storm theme extension
- */
-const tokyoNightStorm = [
-    tokyoNightStormTheme,
-    /*@__PURE__*/(0,_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.syntaxHighlighting)(tokyoNightStormHighlightStyle),
-];
-/**
- * Tokyo Night Storm merge revert styles configuration
- */
-const tokyoNightStormMergeStyles = {
-    backgroundColor: base05,
-    borderColor: base03,
-    buttonColor: base04,
-    buttonHoverColor: base02,
-};
-
-
-
-
-/***/ },
-
 /***/ "./node_modules/@lezer/common/dist/index.js"
 /*!**************************************************!*\
   !*** ./node_modules/@lezer/common/dist/index.js ***!
@@ -30211,6 +29682,205 @@ function codePointSize(code) { return code < 0x10000 ? 1 : 2 }
 
 /***/ },
 
+/***/ "./node_modules/cm6-theme-basic-dark/dist/index.js"
+/*!*********************************************************!*\
+  !*** ./node_modules/cm6-theme-basic-dark/dist/index.js ***!
+  \*********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   basicDark: () => (/* binding */ basicDark),
+/* harmony export */   basicDarkHighlightStyle: () => (/* binding */ basicDarkHighlightStyle),
+/* harmony export */   basicDarkTheme: () => (/* binding */ basicDarkTheme)
+/* harmony export */ });
+/* harmony import */ var _codemirror_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @codemirror/view */ "./node_modules/@codemirror/view/dist/index.js");
+/* harmony import */ var _codemirror_language__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @codemirror/language */ "./node_modules/@codemirror/language/dist/index.js");
+/* harmony import */ var _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @lezer/highlight */ "./node_modules/@lezer/highlight/dist/index.js");
+
+
+
+
+const base00 = '#2E3235', base01 = '#DDDDDD', base02 = '#B9D2FF', base03 = '#b0b0b0', base05 = '#e0e0e0', base06 = '#808080', base07 = '#000000', base08 = '#A54543', base09 = '#fc6d24', base0A = '#fda331', base0B = '#8abeb7', base0C = '#b5bd68', base0D = '#6fb3d2', base0E = '#cc99cc', base0F = '#6987AF';
+const invalid = base09, darkBackground = '#292d30', highlightBackground = base02 + '30', background = base00, tooltipBackground = base01, selection = '#202325', cursor = base01;
+/**
+The editor theme styles for Basic Dark.
+*/
+const basicDarkTheme = /*@__PURE__*/_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView.theme({
+    '&': {
+        color: base01,
+        backgroundColor: background
+    },
+    '.cm-content': {
+        caretColor: cursor
+    },
+    '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
+    '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
+    '.cm-panels': { backgroundColor: darkBackground, color: base03 },
+    '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+    '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+    '.cm-searchMatch': {
+        backgroundColor: base02,
+        outline: `1px solid ${base03}`,
+        color: base07
+    },
+    '.cm-searchMatch.cm-searchMatch-selected': {
+        backgroundColor: base05,
+        color: base07
+    },
+    '.cm-activeLine': { backgroundColor: highlightBackground },
+    '.cm-selectionMatch': { backgroundColor: highlightBackground },
+    '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
+        outline: `1px solid ${base03}`
+    },
+    '&.cm-focused .cm-matchingBracket': {
+        backgroundColor: base02,
+        color: base07
+    },
+    '.cm-gutters': {
+        borderRight: `1px solid #ffffff10`,
+        color: base06,
+        backgroundColor: darkBackground
+    },
+    '.cm-activeLineGutter': {
+        backgroundColor: highlightBackground
+    },
+    '.cm-foldPlaceholder': {
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: base02
+    },
+    '.cm-tooltip': {
+        border: 'none',
+        backgroundColor: tooltipBackground
+    },
+    '.cm-tooltip .cm-tooltip-arrow:before': {
+        borderTopColor: 'transparent',
+        borderBottomColor: 'transparent'
+    },
+    '.cm-tooltip .cm-tooltip-arrow:after': {
+        borderTopColor: tooltipBackground,
+        borderBottomColor: tooltipBackground
+    },
+    '.cm-tooltip-autocomplete': {
+        '& > ul > li[aria-selected]': {
+            backgroundColor: highlightBackground,
+            color: base03
+        }
+    }
+}, { dark: true });
+/**
+The highlighting style for code in the Basic Light theme.
+*/
+const basicDarkHighlightStyle = /*@__PURE__*/_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.HighlightStyle.define([
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.keyword, color: base0A },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.deleted, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.character, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.propertyName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.macroName],
+        color: base0C
+    },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName], color: base0D },
+    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.function(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base0A },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.labelName], color: base09 },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.color, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.constant(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.standard(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name)],
+        color: base0A
+    },
+    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.separator], color: base0E },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.brace], color: base0E },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation],
+        color: invalid
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.number, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.changed, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.modifier, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.self, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.namespace],
+        color: base0A
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.typeName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.className],
+        color: base0D
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operator, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operatorKeyword],
+        color: base0E
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.tagName],
+        color: base0A
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.squareBracket],
+        color: base0E
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.angleBracket],
+        color: base0E
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.attributeName],
+        color: base0D
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.regexp],
+        color: base0A
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.quote],
+        color: base01
+    },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string], color: base0C },
+    {
+        tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.link,
+        color: base0F,
+        textDecoration: 'underline',
+        textUnderlinePosition: 'under'
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.url, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.escape, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string)],
+        color: base0B
+    },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.meta], color: base08 },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.comment], color: base06, fontStyle: 'italic' },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.monospace, color: base01 },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strong, fontWeight: 'bold', color: base0A },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.emphasis, fontStyle: 'italic', color: base0D },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strikethrough, textDecoration: 'line-through' },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading, fontWeight: 'bold', color: base01 },
+    { tag: /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading1), fontWeight: 'bold', color: base01 },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading1, fontWeight: 'bold', color: base01 },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading2, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading3, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading4],
+        fontWeight: 'bold',
+        color: base01
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading5, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading6],
+        color: base01
+    },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.atom, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.bool, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base0B },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.processingInstruction, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.inserted],
+        color: base0B
+    },
+    {
+        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.contentSeparator],
+        color: base0D
+    },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.invalid, color: base02, borderBottom: `1px dotted ${invalid}` }
+]);
+/**
+Extension to enable the Basic Dark theme (both the editor theme and
+the highlight style).
+*/
+const basicDark = [
+    basicDarkTheme,
+    /*@__PURE__*/(0,_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.syntaxHighlighting)(basicDarkHighlightStyle)
+];
+
+
+
+
+/***/ },
+
 /***/ "./node_modules/codemirror-helix/dist/lib.development.js"
 /*!***************************************************************!*\
   !*** ./node_modules/codemirror-helix/dist/lib.development.js ***!
@@ -34101,7 +33771,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var codemirror_helix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! codemirror-helix */ "./node_modules/codemirror-helix/dist/lib.development.js");
 /* harmony import */ var _codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @codemirror/autocomplete */ "./node_modules/@codemirror/autocomplete/dist/index.js");
 /* harmony import */ var _codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @codemirror/lang-javascript */ "./node_modules/@codemirror/lang-javascript/dist/index.js");
-/* harmony import */ var _fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fsegurai/codemirror-theme-tokyo-night-storm */ "./node_modules/@fsegurai/codemirror-theme-tokyo-night-storm/dist/index.js");
+/* harmony import */ var cm6_theme_basic_dark__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! cm6-theme-basic-dark */ "./node_modules/cm6-theme-basic-dark/dist/index.js");
 
 
 
@@ -34113,6 +33783,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// import { tokyoNightStorm } from '@fsegurai/codemirror-theme-tokyo-night-storm'
 
 
 const customCommands = codemirror_helix__WEBPACK_IMPORTED_MODULE_2__.commands.of([
@@ -34121,7 +33792,10 @@ const customCommands = codemirror_helix__WEBPACK_IMPORTED_MODULE_2__.commands.of
     aliases: ["s", "sv"],
     help: "Save the document to the cloud",
     handler(view, args) {
-      console.log("save?" )
+
+      const content = view.state.doc.toString();
+      console.log("save?",content )
+
     },
   },
 ]);
@@ -34136,7 +33810,7 @@ if(options.helix)
     }));
 
 extensions.push(customCommands)
-extensions.push(_fsegurai_codemirror_theme_tokyo_night_storm__WEBPACK_IMPORTED_MODULE_5__.tokyoNightStorm)
+extensions.push(cm6_theme_basic_dark__WEBPACK_IMPORTED_MODULE_5__.basicDark)
 extensions.push((0,_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.lineNumbers)())
 extensions.push((0,_codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__.javascript)())
 extensions.push((0,_codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__.autocompletion)())
@@ -34149,15 +33823,19 @@ const view = new _codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView(
   });
 
 return {
+  getContent:()=>
+  {
+      const content = view.state.doc.toString();
+      return content
+  },
   setContent:
   (c)=>
   {
-    // view.setState(EditorState.create({ "doc": c }));
-
-view.dispatch({
-  changes: { from: 0, to: view.state.doc.length, insert: c },
-annotations: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Transaction.addToHistory.of(false),
-})
+    view.dispatch(
+      {
+        changes: { from: 0, to: view.state.doc.length, insert: c },
+        annotations: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Transaction.addToHistory.of(false),
+      });
   }
 }
 }

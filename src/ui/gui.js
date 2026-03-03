@@ -1723,7 +1723,10 @@ export default class Gui extends Events
         {
             gui.corePatch().checkExtensionOpPatchAssets();
 
-            if (document.activeElement.classList.contains("ace_text-input") && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible()) // && !this.patchView.hasFocus()
+            if ((
+                document.activeElement.classList.contains("ace_text-input") ||
+                document.activeElement.classList.contains("cm-content")) &&
+                 gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible())
             {
                 gui.mainTabs.getSaveButton().cb();
             }
@@ -1732,11 +1735,6 @@ export default class Gui extends Events
                 CmdPatch.save();
             }
         });
-
-        // this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
-        // {
-        //     gui.toggleTimeline();
-        // });
 
         this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, () =>
         {

@@ -115,7 +115,7 @@ export default class EditorTabCodemirror extends Events
                 // if (this._tab.editorObj && this._tab.editorObj.name) userSettings.set("editortab", this._tab.editorObj.name);
                 },
             );
-            this.cmView.setContent(content);
+            this.cmWrap.setContent(content);
             // setTimeout(() =>
             // {
             //     this.ele.focus();
@@ -160,7 +160,7 @@ export default class EditorTabCodemirror extends Events
 
     save()
     {
-        function onSaveCb(txt)
+        const onSaveCb = (txt) =>
         {
             gui.jobs().finish("saveeditorcontent");
 
@@ -168,18 +168,18 @@ export default class EditorTabCodemirror extends Events
             else
             {
                 notify(txt);
-                gui.mainTabs.setChanged(this._tab.id, false);
+                gui.mainTabs.setChanged(this.#tab.id, false);
             }
 
             this.ele.focus();
-        }
+        };
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
         if (this._options.onSave)
         {
-            this._options.onSave(onSaveCb.bind(this), this.ele.value, this.ele);
+            this._options.onSave(onSaveCb, this.cmWrap.getContent(), this.ele);
         }
-        else this.emitEvent("save", onSaveCb.bind(this), this.ele.value, this.ele);
+        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent(), this.ele);
     }
 
     /**
@@ -197,9 +197,14 @@ export default class EditorTabCodemirror extends Events
             return;
         }
 
+        // this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
+        // {
+        //     gui.toggleTimeline();
+        // });
+
         if (loadedCm)
         {
-            this.cmView = startCm(this.ele, { "helix": this.helix });
+            this.cmWrap = startCm(this.ele, { "helix": this.helix });
 
             cb();
         }
@@ -210,7 +215,7 @@ export default class EditorTabCodemirror extends Events
 
             loadjs.ready("codemirror", () =>
             {
-                this.cmView = startCm(this.ele, { "helix": this.helix });
+                this.cmWrap = startCm(this.ele, { "helix": this.helix });
                 gui.jobs().finish("codemirror");
                 loadedCm = true;
                 loadingCm = false;
