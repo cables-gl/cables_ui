@@ -14,7 +14,7 @@ const defaultOpNames =
     "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v3",
-    "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
+    "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v4",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v5",
     "defaultOpJson": "Ops.Json.HttpRequest_v4",
     "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
@@ -73,7 +73,7 @@ const defaultOpNames =
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v3",
     "arrayToString": "Ops.Array.ArrayToString_v3",
-    "stringConcat": "Ops.String.Concat_v2",
+    "stringConcat": "Ops.String.Concat_v3",
 
     "VizArrayTable": "Ops.Ui.VizArrayTable_v2",
     "VizArrayGraph": "Ops.Ui.VizArrayGraph",
