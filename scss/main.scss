@@ -95,10 +95,11 @@ body
         -webkit-tap-highlight-color: transparent;
     }
 
-    select,div // was: *
+    select// was: *
     {
         color:var(--text-color);
     }
+        color:var(--text-color);
 
     h3,h2
     {
@@ -336,7 +337,8 @@ body
         }
     }
 
-    ::selection, &::selection
+    not(.cm-content *)::selection, // TODO: why cant i scope codemirror so their rules are used in .cm-content
+     &::selection
     {
         background: #00FF85 !important;
         color: black !important;

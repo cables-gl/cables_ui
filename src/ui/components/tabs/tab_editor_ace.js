@@ -8,6 +8,7 @@ import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdRenderer } from "../../commands/cmd_renderer.js";
+import { createOpDocButton } from "../editor.js";
 
 let loadedAce = false;
 let loadingAce = false;
@@ -173,83 +174,9 @@ export default class EditorTabAce extends Events
                     this._editor.blur();
                 }
 
-                let opname = null;
-                this._options.editorObj = this._options.editorObj || {};
-                if (this._options.editorObj.type === "op") opname = this._options.editorObj.name;
-                if (this._options.editorObj.data && this._options.editorObj.data.opname) opname = this._options.editorObj.data.opname;
+                createOpDocButton(this._tab, this);
 
-                if (!opname)
-                {
-                    const d = gui.opDocs.getOpDocById(this._options.name);
-                    if (d)opname = d.name;
-                }
-
-                let opId = null;
-                if (opname)
-                {
-                    const opdoc = gui.opDocs.getOpDocByName(opname);
-                    if (opdoc)
-                    {
-                        opId = opdoc.id;
-                    }
-                    else
-                    {
-                        this._log.warn("could not get opdoc:" + opname);
-                    }
-
-                    this._tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
-
-                    if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
-                    {
-                        const el = this._tab.addButton("<span class=\"icon icon-chevron-down\"></span>Op Files", () =>
-                        {
-                            const items = [];
-
-                            items.push({
-                                "title": opdoc.name + ".js",
-                                "func": () =>
-                                {
-                                    gui.serverOps.edit(opdoc.name, false, null, true);
-                                }
-                            });
-
-                            for (let i = 0; i < opdoc.attachmentFiles.length; i++)
-                            {
-                                const fn = opdoc.attachmentFiles[i];
-                                items.push({
-                                    "title": opdoc.attachmentFiles[i],
-                                    "func": () =>
-                                    {
-                                        gui.serverOps.editAttachment(opname, fn);
-                                    }
-                                });
-                            }
-
-                            contextMenu.show({ "items": items }, el);
-                        });
-                    }
-
-                    this._tab.addButton("Op Docs", () => { window.open(platform.getCablesDocsUrl() + "/op/" + opname); });
-                }
-
-                if (platform.frontendOptions.openLocalFiles && this._options.allowEdit)
-                {
-                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"electron_openfolder\" ></span>",
-                        (e) =>
-                        {
-                            if (e.ctrlKey || e.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
-                            else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
-                        });
-                }
                 this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(platform.getCablesDocsUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
-
-                if (platform.isDevEnv() && document.location.href.indexOf("local") > -1)
-                    this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-copy\"  ></span>", () =>
-                    {
-                        let path = opname + "/" + opname + ".js";
-                        console.log("op path", path);
-                        navigator.clipboard.writeText(path);
-                    });
 
                 this._editor.resize();
 

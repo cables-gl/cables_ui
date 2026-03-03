@@ -33807,7 +33807,8 @@ if(options.helix)
   extensions.push((0,codemirror_helix__WEBPACK_IMPORTED_MODULE_2__.helix)(
     {
       config: {"editor.cursor-shape.insert":"bar"},
-    }));
+    }
+  ));
 
 extensions.push(customCommands)
 extensions.push(cm6_theme_basic_dark__WEBPACK_IMPORTED_MODULE_5__.basicDark)

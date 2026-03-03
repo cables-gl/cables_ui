@@ -7,6 +7,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
+import { createOpDocButton } from "../editor.js";
 
 let loadedCm = false;
 let loadingCm = false;
@@ -233,5 +234,8 @@ export default class EditorTabCodemirror extends Events
                 console.log("text", e);
             }
         }
+
+        createOpDocButton(this.#tab, this);
+
     }
 }
