@@ -134,7 +134,7 @@ export default class EditorTabCodemirror extends Events
         platform.talkerAPI.send(
             TalkerAPI.CMD_FORMAT_OP_CODE,
             {
-                "code": this.ele.value,
+                "code": this.cmWrap.getContent(),
             },
             (err, res) =>
             {
@@ -145,8 +145,8 @@ export default class EditorTabCodemirror extends Events
                 }
                 else
                 {
-                    this.ele.value = res.opFullCode;
-                    this.ele.focus();
+                    this.cmWrap.setContent(res.opFullCode);
+                    // this.ele.focus();
                 }
 
                 if (err)
