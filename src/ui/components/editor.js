@@ -1,6 +1,7 @@
 import { contextMenu } from "../elements/contextmenu.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { GuiText } from "../text.js";
 import EditorTabAce from "./tabs/tab_editor_ace.js";
 import EditorTabCodemirror from "./tabs/tab_editor_codemirror.js";
 import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
@@ -18,6 +19,24 @@ export function createEditor(options)
 
 export function createOpDocButton(tab, editor)
 {
+
+    if (editor._options.allowEdit)
+    {
+        if (editor._options.onSave || editor._options.showSaveButton)
+            tab.addButton(GuiText.editorSaveButton, () =>
+            {
+                editor.save();
+            });
+
+        let hideFormatButton = !!editor._options.hideFormatButton;
+        if (!hideFormatButton && editor._options.syntax && editor._options.syntax === "js") hideFormatButton = false;
+        else hideFormatButton = true;
+
+        if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
+
+        if (editor.format && editor._options.allowEdit && !hideFormatButton)
+            tab.addButton(GuiText.editorFormatButton, () => { editor.format(); });
+    }
 
     let opname = null;
     editor._options.editorObj = editor._options.editorObj || {};

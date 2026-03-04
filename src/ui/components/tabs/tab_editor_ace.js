@@ -115,52 +115,52 @@ export default class EditorTabAce extends Events
                 editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
                 editor.getSession().setUseWrapMode(userSettings.get("wrapmode_ace") || false);
 
-                if (gui.userSettings.get("ace_keymode"))
-                {
-                    editor.setKeyboardHandler(gui.userSettings.get("ace_keymode"));
+                // if (gui.userSettings.get("ace_keymode"))
+                // {
+                //     editor.setKeyboardHandler(gui.userSettings.get("ace_keymode"));
 
-                    ace.config.loadModule("ace/keyboard/vim", (module) =>
-                    {
-                        let VimApi = module.CodeMirror.Vim;
-                        VimApi.defineEx("write", "w", (cm, input) =>
-                        {
-                            this.save();
-                        });
-                        VimApi.defineEx("quit", "q", (cm, input) =>
-                        {
-                            this._tab.remove();
-                        });
-                        VimApi.defineEx("wq", null, (cm, input) =>
-                        {
-                            this.save();
-                            // this._tab.remove();
-                            gui.mainTabs.closeTab(this._tab.id);
-                        });
-                        VimApi.map("Y", "y$"); // in normal mode
-                        VimApi.map("W", "hardWrap"); // in normal mode
-                        console.log("${}", VimApi);
-                        // defaultKeymap.push({ "keys": "gq", "type": "operator", "operator": "hardWrap" });
-                        VimApi.defineOperator("hardWrap", function (cm, operatorArgs, ranges, oldAnchor, newHead)
-                        {
-                            console.log("_yiooooo");
-                            // make changes and return new cursor position
-                        });
-                    });
-                }
+                //     ace.config.loadModule("ace/keyboard/vim", (module) =>
+                //     {
+                //         let VimApi = module.CodeMirror.Vim;
+                //         VimApi.defineEx("write", "w", (cm, input) =>
+                //         {
+                //             this.save();
+                //         });
+                //         VimApi.defineEx("quit", "q", (cm, input) =>
+                //         {
+                //             this._tab.remove();
+                //         });
+                //         VimApi.defineEx("wq", null, (cm, input) =>
+                //         {
+                //             this.save();
+                //             // this._tab.remove();
+                //             gui.mainTabs.closeTab(this._tab.id);
+                //         });
+                //         VimApi.map("Y", "y$"); // in normal mode
+                //         VimApi.map("W", "hardWrap"); // in normal mode
+                //         console.log("${}", VimApi);
+                //         // defaultKeymap.push({ "keys": "gq", "type": "operator", "operator": "hardWrap" });
+                //         VimApi.defineOperator("hardWrap", function (cm, operatorArgs, ranges, oldAnchor, newHead)
+                //         {
+                //             console.log("_yiooooo");
+                //             // make changes and return new cursor position
+                //         });
+                //     });
+                // }
 
                 if (this._options.allowEdit)
                 {
-                    if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(GuiText.editorSaveButton, () =>
-                    {
-                        this.save();
-                    });
+                    // if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(GuiText.editorSaveButton, () =>
+                    // {
+                    //     this.save();
+                    // });
 
-                    let hideFormatButton = !!this._options.hideFormatButton;
-                    if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
-                    else hideFormatButton = true;
-                    if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
+                    // let hideFormatButton = !!this._options.hideFormatButton;
+                    // if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
+                    // else hideFormatButton = true;
+                    // if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-                    if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
+                    // if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
                 }
                 else
                 {

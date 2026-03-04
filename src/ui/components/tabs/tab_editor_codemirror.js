@@ -22,6 +22,10 @@ export default class EditorTabCodemirror extends Events
     #tab = null;
     helix = false;
 
+    /**
+     * @param {object} options
+     * @param {boolean} [helix]
+     */
     constructor(options, helix)
     {
         super();
@@ -54,8 +58,6 @@ export default class EditorTabCodemirror extends Events
 
         this.#tab.on("resize", () =>
         {
-            // if (this._tab) this._tab.updateSize();
-            // if (this._editor) this._editor.resize();
         });
 
         const existing = gui.mainTabs.getTabByTitle(title);
@@ -91,43 +93,22 @@ export default class EditorTabCodemirror extends Events
 
         this.createEditor(() =>
         {
-
-            if (this._options.allowEdit)
-            {
-                if (this._options.onSave || this._options.showSaveButton) this.#tab.addButton(GuiText.editorSaveButton, () =>
-                {
-                    this.save();
-                });
-
-                let hideFormatButton = !!this._options.hideFormatButton;
-                if (!hideFormatButton && this._options.syntax && this._options.syntax === "js") hideFormatButton = false;
-                else hideFormatButton = true;
-                if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
-
-                if (this._options.allowEdit && !hideFormatButton) this.#tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
-            }
-
-            this.#tab.addEventListener("close", this._options.onClose);
+            this.#tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
             this.#tab.addEventListener(
-                "onActivate",
+                Tab.EVENT_ACTIVATE,
                 () =>
                 {
-                    this.ele.focus();
-                // if (this._tab.editorObj && this._tab.editorObj.name) userSettings.set("editortab", this._tab.editorObj.name);
-                },
+                    this.cmWrap.focus();
+                }
             );
             this.cmWrap.setContent(content);
-            // setTimeout(() =>
-            // {
-            //     this.ele.focus();
             if (this._options.onFinished) this._options.onFinished();
-            // }, 100);
         });
     }
 
     focus()
     {
-        this.ele.focus();
+        this.cmWrap.focus();
     }
 
     format()
@@ -237,5 +218,10 @@ export default class EditorTabCodemirror extends Events
 
         createOpDocButton(this.#tab, this);
 
+    }
+
+    setInactive()
+    {
+        console.log("codemirror setinactive not implemented.");
     }
 }

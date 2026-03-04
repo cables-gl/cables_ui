@@ -12577,6 +12577,160 @@ function findColumn(string, col, tabSize, strict) {
 
 /***/ },
 
+/***/ "./node_modules/@codemirror/theme-one-dark/dist/index.js"
+/*!***************************************************************!*\
+  !*** ./node_modules/@codemirror/theme-one-dark/dist/index.js ***!
+  \***************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   color: () => (/* binding */ color),
+/* harmony export */   oneDark: () => (/* binding */ oneDark),
+/* harmony export */   oneDarkHighlightStyle: () => (/* binding */ oneDarkHighlightStyle),
+/* harmony export */   oneDarkTheme: () => (/* binding */ oneDarkTheme)
+/* harmony export */ });
+/* harmony import */ var _codemirror_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @codemirror/view */ "./node_modules/@codemirror/view/dist/index.js");
+/* harmony import */ var _codemirror_language__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @codemirror/language */ "./node_modules/@codemirror/language/dist/index.js");
+/* harmony import */ var _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @lezer/highlight */ "./node_modules/@lezer/highlight/dist/index.js");
+
+
+
+
+// Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
+const chalky = "#e5c07b", coral = "#e06c75", cyan = "#56b6c2", invalid = "#ffffff", ivory = "#abb2bf", stone = "#7d8799", // Brightened compared to original to increase contrast
+malibu = "#61afef", sage = "#98c379", whiskey = "#d19a66", violet = "#c678dd", darkBackground = "#21252b", highlightBackground = "#2c313a", background = "#282c34", tooltipBackground = "#353a42", selection = "#3E4451", cursor = "#528bff";
+/**
+The colors used in the theme, as CSS color strings.
+*/
+const color = {
+    chalky,
+    coral,
+    cyan,
+    invalid,
+    ivory,
+    stone,
+    malibu,
+    sage,
+    whiskey,
+    violet,
+    darkBackground,
+    highlightBackground,
+    background,
+    tooltipBackground,
+    selection,
+    cursor
+};
+/**
+The editor theme styles for One Dark.
+*/
+const oneDarkTheme = /*@__PURE__*/_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView.theme({
+    "&": {
+        color: ivory,
+        backgroundColor: background
+    },
+    ".cm-content": {
+        caretColor: cursor
+    },
+    ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor },
+    "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: selection },
+    ".cm-panels": { backgroundColor: darkBackground, color: ivory },
+    ".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
+    ".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+    ".cm-searchMatch": {
+        backgroundColor: "#72a1ff59",
+        outline: "1px solid #457dff"
+    },
+    ".cm-searchMatch.cm-searchMatch-selected": {
+        backgroundColor: "#6199ff2f"
+    },
+    ".cm-activeLine": { backgroundColor: "#6699ff0b" },
+    ".cm-selectionMatch": { backgroundColor: "#aafe661a" },
+    "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+        backgroundColor: "#bad0f847"
+    },
+    ".cm-gutters": {
+        backgroundColor: background,
+        color: stone,
+        border: "none"
+    },
+    ".cm-activeLineGutter": {
+        backgroundColor: highlightBackground
+    },
+    ".cm-foldPlaceholder": {
+        backgroundColor: "transparent",
+        border: "none",
+        color: "#ddd"
+    },
+    ".cm-tooltip": {
+        border: "none",
+        backgroundColor: tooltipBackground
+    },
+    ".cm-tooltip .cm-tooltip-arrow:before": {
+        borderTopColor: "transparent",
+        borderBottomColor: "transparent"
+    },
+    ".cm-tooltip .cm-tooltip-arrow:after": {
+        borderTopColor: tooltipBackground,
+        borderBottomColor: tooltipBackground
+    },
+    ".cm-tooltip-autocomplete": {
+        "& > ul > li[aria-selected]": {
+            backgroundColor: highlightBackground,
+            color: ivory
+        }
+    }
+}, { dark: true });
+/**
+The highlighting style for code in the One Dark theme.
+*/
+const oneDarkHighlightStyle = /*@__PURE__*/_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.HighlightStyle.define([
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.keyword,
+        color: violet },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.deleted, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.character, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.propertyName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.macroName],
+        color: coral },
+    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.function(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.labelName],
+        color: malibu },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.color, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.constant(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.standard(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name)],
+        color: whiskey },
+    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.separator],
+        color: ivory },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.typeName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.className, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.number, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.changed, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.modifier, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.self, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.namespace],
+        color: chalky },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operator, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operatorKeyword, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.url, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.escape, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.regexp, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.link, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string)],
+        color: cyan },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.meta, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.comment],
+        color: stone },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strong,
+        fontWeight: "bold" },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.emphasis,
+        fontStyle: "italic" },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strikethrough,
+        textDecoration: "line-through" },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.link,
+        color: stone,
+        textDecoration: "underline" },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading,
+        fontWeight: "bold",
+        color: coral },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.atom, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.bool, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)],
+        color: whiskey },
+    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.processingInstruction, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.inserted],
+        color: sage },
+    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.invalid,
+        color: invalid },
+]);
+/**
+Extension to enable the One Dark theme (both the editor theme and
+the highlight style).
+*/
+const oneDark = [oneDarkTheme, /*@__PURE__*/(0,_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.syntaxHighlighting)(oneDarkHighlightStyle)];
+
+
+
+
+/***/ },
+
 /***/ "./node_modules/@codemirror/view/dist/index.js"
 /*!*****************************************************!*\
   !*** ./node_modules/@codemirror/view/dist/index.js ***!
@@ -29682,205 +29836,6 @@ function codePointSize(code) { return code < 0x10000 ? 1 : 2 }
 
 /***/ },
 
-/***/ "./node_modules/cm6-theme-basic-dark/dist/index.js"
-/*!*********************************************************!*\
-  !*** ./node_modules/cm6-theme-basic-dark/dist/index.js ***!
-  \*********************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   basicDark: () => (/* binding */ basicDark),
-/* harmony export */   basicDarkHighlightStyle: () => (/* binding */ basicDarkHighlightStyle),
-/* harmony export */   basicDarkTheme: () => (/* binding */ basicDarkTheme)
-/* harmony export */ });
-/* harmony import */ var _codemirror_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @codemirror/view */ "./node_modules/@codemirror/view/dist/index.js");
-/* harmony import */ var _codemirror_language__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @codemirror/language */ "./node_modules/@codemirror/language/dist/index.js");
-/* harmony import */ var _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @lezer/highlight */ "./node_modules/@lezer/highlight/dist/index.js");
-
-
-
-
-const base00 = '#2E3235', base01 = '#DDDDDD', base02 = '#B9D2FF', base03 = '#b0b0b0', base05 = '#e0e0e0', base06 = '#808080', base07 = '#000000', base08 = '#A54543', base09 = '#fc6d24', base0A = '#fda331', base0B = '#8abeb7', base0C = '#b5bd68', base0D = '#6fb3d2', base0E = '#cc99cc', base0F = '#6987AF';
-const invalid = base09, darkBackground = '#292d30', highlightBackground = base02 + '30', background = base00, tooltipBackground = base01, selection = '#202325', cursor = base01;
-/**
-The editor theme styles for Basic Dark.
-*/
-const basicDarkTheme = /*@__PURE__*/_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView.theme({
-    '&': {
-        color: base01,
-        backgroundColor: background
-    },
-    '.cm-content': {
-        caretColor: cursor
-    },
-    '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
-    '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
-    '.cm-panels': { backgroundColor: darkBackground, color: base03 },
-    '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-    '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
-    '.cm-searchMatch': {
-        backgroundColor: base02,
-        outline: `1px solid ${base03}`,
-        color: base07
-    },
-    '.cm-searchMatch.cm-searchMatch-selected': {
-        backgroundColor: base05,
-        color: base07
-    },
-    '.cm-activeLine': { backgroundColor: highlightBackground },
-    '.cm-selectionMatch': { backgroundColor: highlightBackground },
-    '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
-        outline: `1px solid ${base03}`
-    },
-    '&.cm-focused .cm-matchingBracket': {
-        backgroundColor: base02,
-        color: base07
-    },
-    '.cm-gutters': {
-        borderRight: `1px solid #ffffff10`,
-        color: base06,
-        backgroundColor: darkBackground
-    },
-    '.cm-activeLineGutter': {
-        backgroundColor: highlightBackground
-    },
-    '.cm-foldPlaceholder': {
-        backgroundColor: 'transparent',
-        border: 'none',
-        color: base02
-    },
-    '.cm-tooltip': {
-        border: 'none',
-        backgroundColor: tooltipBackground
-    },
-    '.cm-tooltip .cm-tooltip-arrow:before': {
-        borderTopColor: 'transparent',
-        borderBottomColor: 'transparent'
-    },
-    '.cm-tooltip .cm-tooltip-arrow:after': {
-        borderTopColor: tooltipBackground,
-        borderBottomColor: tooltipBackground
-    },
-    '.cm-tooltip-autocomplete': {
-        '& > ul > li[aria-selected]': {
-            backgroundColor: highlightBackground,
-            color: base03
-        }
-    }
-}, { dark: true });
-/**
-The highlighting style for code in the Basic Light theme.
-*/
-const basicDarkHighlightStyle = /*@__PURE__*/_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.HighlightStyle.define([
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.keyword, color: base0A },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.deleted, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.character, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.propertyName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.macroName],
-        color: base0C
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName], color: base0D },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.function(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base0A },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.labelName], color: base09 },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.color, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.constant(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.standard(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name)],
-        color: base0A
-    },
-    { tag: [/*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.definition(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.name), _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.separator], color: base0E },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.brace], color: base0E },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation],
-        color: invalid
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.number, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.changed, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.annotation, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.modifier, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.self, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.namespace],
-        color: base0A
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.typeName, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.className],
-        color: base0D
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operator, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.operatorKeyword],
-        color: base0E
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.tagName],
-        color: base0A
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.squareBracket],
-        color: base0E
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.angleBracket],
-        color: base0E
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.attributeName],
-        color: base0D
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.regexp],
-        color: base0A
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.quote],
-        color: base01
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string], color: base0C },
-    {
-        tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.link,
-        color: base0F,
-        textDecoration: 'underline',
-        textUnderlinePosition: 'under'
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.url, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.escape, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.string)],
-        color: base0B
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.meta], color: base08 },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.comment], color: base06, fontStyle: 'italic' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.monospace, color: base01 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strong, fontWeight: 'bold', color: base0A },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.emphasis, fontStyle: 'italic', color: base0D },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.strikethrough, textDecoration: 'line-through' },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading, fontWeight: 'bold', color: base01 },
-    { tag: /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading1), fontWeight: 'bold', color: base01 },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading1, fontWeight: 'bold', color: base01 },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading2, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading3, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading4],
-        fontWeight: 'bold',
-        color: base01
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading5, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.heading6],
-        color: base01
-    },
-    { tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.atom, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.bool, /*@__PURE__*/_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.special(_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.variableName)], color: base0B },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.processingInstruction, _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.inserted],
-        color: base0B
-    },
-    {
-        tag: [_lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.contentSeparator],
-        color: base0D
-    },
-    { tag: _lezer_highlight__WEBPACK_IMPORTED_MODULE_2__.tags.invalid, color: base02, borderBottom: `1px dotted ${invalid}` }
-]);
-/**
-Extension to enable the Basic Dark theme (both the editor theme and
-the highlight style).
-*/
-const basicDark = [
-    basicDarkTheme,
-    /*@__PURE__*/(0,_codemirror_language__WEBPACK_IMPORTED_MODULE_1__.syntaxHighlighting)(basicDarkHighlightStyle)
-];
-
-
-
-
-/***/ },
-
 /***/ "./node_modules/codemirror-helix/dist/lib.development.js"
 /*!***************************************************************!*\
   !*** ./node_modules/codemirror-helix/dist/lib.development.js ***!
@@ -33771,7 +33726,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var codemirror_helix__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! codemirror-helix */ "./node_modules/codemirror-helix/dist/lib.development.js");
 /* harmony import */ var _codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @codemirror/autocomplete */ "./node_modules/@codemirror/autocomplete/dist/index.js");
 /* harmony import */ var _codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @codemirror/lang-javascript */ "./node_modules/@codemirror/lang-javascript/dist/index.js");
-/* harmony import */ var cm6_theme_basic_dark__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! cm6-theme-basic-dark */ "./node_modules/cm6-theme-basic-dark/dist/index.js");
+/* harmony import */ var _codemirror_theme_one_dark__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @codemirror/theme-one-dark */ "./node_modules/@codemirror/theme-one-dark/dist/index.js");
 
 
 
@@ -33781,6 +33736,7 @@ __webpack_require__.r(__webpack_exports__);
 // import { markdown } from '@codemirror/lang-markdown'
 
 
+// import { basicDark } from 'cm6-theme-basic-dark'
 
 
 // import { tokyoNightStorm } from '@fsegurai/codemirror-theme-tokyo-night-storm'
@@ -33811,7 +33767,9 @@ if(options.helix)
   ));
 
 extensions.push(customCommands)
-extensions.push(cm6_theme_basic_dark__WEBPACK_IMPORTED_MODULE_5__.basicDark)
+extensions.push((0,_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.highlightActiveLine)())
+extensions.push((0,_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.highlightActiveLineGutter)())
+extensions.push(_codemirror_theme_one_dark__WEBPACK_IMPORTED_MODULE_5__.oneDark)
 extensions.push((0,_codemirror_view__WEBPACK_IMPORTED_MODULE_0__.lineNumbers)())
 extensions.push((0,_codemirror_lang_javascript__WEBPACK_IMPORTED_MODULE_4__.javascript)())
 extensions.push((0,_codemirror_autocomplete__WEBPACK_IMPORTED_MODULE_3__.autocompletion)())
@@ -33824,6 +33782,10 @@ const view = new _codemirror_view__WEBPACK_IMPORTED_MODULE_0__.EditorView(
   });
 
 return {
+  focus: ()=>{
+    view.focus()
+    
+  },
   getContent:()=>
   {
       const content = view.state.doc.toString();
@@ -33837,6 +33799,7 @@ return {
         changes: { from: 0, to: view.state.doc.length, insert: c },
         annotations: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Transaction.addToHistory.of(false),
       });
+    view.focus()
   }
 }
 }
