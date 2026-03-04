@@ -1810,11 +1810,15 @@ export default class ServerOps
                                         setStatus("Saved " + opname);
                                         editor.focus();
 
-                                        if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
-                                        {
-                                            gui.opParams.show(gui.corePatch().ops[i].id);
-                                            gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
-                                        }
+                                        if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++)
+                                            if (gui.corePatch().ops[i].uiAttribs &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                            {
+                                                gui.opParams.show(gui.corePatch().ops[i].id);
+                                                gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
+                                            }
 
                                         gui.savingTitleAnimEnd();
                                         gui.endModalLoading();

@@ -155,8 +155,8 @@ export default class EditorTabCodemirror extends Events
         };
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
-        if (this._options.onSave) this._options.onSave(onSaveCb, this.cmWrap.getContent());
-        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent());
+        if (this._options.onSave) this._options.onSave(onSaveCb, this.cmWrap.getContent(), this);
+        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent(), this);
     }
 
     /**
