@@ -53,7 +53,7 @@ export default class EditorTabCodemirror extends Events
 
         this.#tab.on("onActivate", () =>
         {
-            if (this.ele) this.ele.focus();
+            this.focus();
         });
 
         this.#tab.on("resize", () =>
@@ -89,7 +89,6 @@ export default class EditorTabCodemirror extends Events
     setContent(content, silent = false)
     {
         content = content || "";
-        // this.ele.value = content;
 
         this.createEditor(() =>
         {
@@ -128,7 +127,6 @@ export default class EditorTabCodemirror extends Events
                 else
                 {
                     this.cmWrap.setContent(res.opFullCode);
-                    // this.ele.focus();
                 }
 
                 if (err)
@@ -153,16 +151,12 @@ export default class EditorTabCodemirror extends Events
                 gui.mainTabs.setChanged(this.#tab.id, false);
             }
 
-            // this.ele.focus();
             this.focus();
         };
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
-        if (this._options.onSave)
-        {
-            this._options.onSave(onSaveCb, this.cmWrap.getContent(), this.ele);
-        }
-        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent(), this.ele);
+        if (this._options.onSave) this._options.onSave(onSaveCb, this.cmWrap.getContent());
+        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent());
     }
 
     /**
