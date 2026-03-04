@@ -89,7 +89,7 @@ export default class EditorTabCodemirror extends Events
     setContent(content, silent = false)
     {
         content = content || "";
-        this.ele.value = content;
+        // this.ele.value = content;
 
         this.createEditor(() =>
         {
@@ -153,7 +153,8 @@ export default class EditorTabCodemirror extends Events
                 gui.mainTabs.setChanged(this.#tab.id, false);
             }
 
-            this.ele.focus();
+            // this.ele.focus();
+            this.focus();
         };
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
