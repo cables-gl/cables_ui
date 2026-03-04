@@ -107,7 +107,7 @@ export default class EditorTabCodemirror extends Events
 
     focus()
     {
-        this.cmWrap.focus();
+        if (this.cmWrap) this.cmWrap.focus();
     }
 
     format()
