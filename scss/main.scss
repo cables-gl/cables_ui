@@ -337,7 +337,7 @@ body
         }
     }
 
-    not(.cm-content *)::selection, // TODO: why cant i scope codemirror so their rules are used in .cm-content
+    //:not(.cm-content *)::selection, // TODO: why cant i scope codemirror so their rules are used in .cm-content
      &::selection
     {
         background: #00FF85 !important;
