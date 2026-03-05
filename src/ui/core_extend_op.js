@@ -1,4 +1,10 @@
 /**
+ * @typedef LinkObject
+ * @property {Port} in
+ * @property {Port} out
+ */
+
+/**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
@@ -20,6 +26,10 @@ class UiOp extends Op
     #log = new Logger("uiop");
     static PORT_UIATTR_HOVER = "hover";
 
+    /**
+     * @param {import("cables").Patch<any>} patch
+     * @param {string} objName
+     */
     constructor(patch, objName, id = null)
     {
         super(patch, objName, id);
@@ -145,7 +155,7 @@ class UiOp extends Op
 
         this.shakeLink = null;
 
-        /** @type {Link[]} */
+        /** @type {LinkObject[]} */
         this.oldLinks = [];
 
         CABLES.OpUnLinkTempReLinkP1 = null;
@@ -313,7 +323,7 @@ class UiOp extends Op
         if (!txt && !this.uiErrors.hasOwnProperty(id)) return;
         if (this.uiErrors.hasOwnProperty(id) && this.uiErrors[id].txt == txt) return;
 
-        if (id.indexOf(" ") > -1) this._log.warn("setuierror id cant have spaces! ", id);
+        if (id.indexOf(" ") > -1) this.#log.warn("setuierror id cant have spaces! ", id);
         id = id.replaceAll(" ", "_");
 
         if (!txt && this.uiErrors.hasOwnProperty(id)) delete this.uiErrors[id];
@@ -395,7 +405,7 @@ class UiOp extends Op
                 const p = this.linkTimeRules.needsStringToWork[i];
                 if (!p)
                 {
-                    this._log.warn("[needsStringToWork] port not found");
+                    this.#log.warn("[needsStringToWork] port not found");
                     continue;
                 }
                 if (p.linkTimeListener)p.off(p.linkTimeListener);
@@ -425,7 +435,7 @@ class UiOp extends Op
                 const p = this.linkTimeRules.needsLinkedToWork[i];
                 if (!p)
                 {
-                    this._log.warn("[needsLinkedToWork] port not found");
+                    this.#log.warn("[needsLinkedToWork] port not found");
                     continue;
                 }
                 if (!p.isLinked())
@@ -703,7 +713,6 @@ class UiOp extends Op
 
     testTempCollision(ops, glpatch)
     {
-        // this._log.log("testTempCollision");
         for (let j = 0; j < ops.length; j++)
         {
             const b = ops[j];
@@ -814,7 +823,7 @@ class UiOp extends Op
             else return 0;
         }
 
-        if (numports === undefined) this._log.log("posbyindex needs numports param");
+        if (numports === undefined) this.#log.log("posbyindex needs numports param");
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 

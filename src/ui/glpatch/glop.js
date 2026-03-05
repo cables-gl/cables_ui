@@ -147,13 +147,13 @@ export default class GlOp extends Events
     /** @type {Boolean} */
     #wasInCurrentSubpatch = false;
 
-    /** @type {UiOp} */
+    /** @type {Op} */
     #op;
 
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {UiOp} op
+     * @param {Op} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -919,7 +919,10 @@ export default class GlOp extends Events
             this.update();
         }
 
-        if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0) this.#glPatch.deleteOp(this.#op.id);
+        // if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0){
+        //    this.#glPatch.deleteOp(this.#op.id);
+        //    gui.corePatch()
+        // }
     }
 
     refreshPorts()

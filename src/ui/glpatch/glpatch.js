@@ -932,7 +932,7 @@ export default class GlPatch extends Events
 
         if (!glop)
         {
-            this._log.log("could not find op to delete", opid);
+            this._log.warn("could not find op to delete", opid);
             return;
         }
 
@@ -1186,7 +1186,7 @@ export default class GlPatch extends Events
                 if (!this._glOpz[gui.corePatch().ops[j].id] && this._ignoreNonExistError.indexOf(gui.corePatch().ops[j].id) == -1)
                 {
                     this._ignoreNonExistError.push(gui.corePatch().ops[j].id);
-                    this._log.error("missing glop in glpatch: ", gui.corePatch().ops[j].name);
+                    this._log.warn("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
             }
         }
