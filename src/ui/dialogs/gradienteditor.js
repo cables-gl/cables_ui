@@ -274,9 +274,8 @@ export default class GradientEditor
      */
     deleteKey(k)
     {
-        if (this.#keys.length < 2) return;
-        k.ele.remove();
         this.#keys.splice(this.#keys.indexOf(k), 1);
+        if (k.ele)k.ele = k.ele.remove();
         this.onChange();
     }
 
@@ -354,6 +353,7 @@ export default class GradientEditor
         {
             if (e.buttons == 2)
             {
+                if (this.#keys.length < 2) return;
                 this.deleteKey(key);
                 this.setCurrentKey(this.#keys[0]);
                 return;
@@ -465,11 +465,57 @@ export default class GradientEditor
             this.close();
         });
 
+        ele.byId("gradientPreset1").addEventListener("click", () =>
+        {
+            while (this.#keys.length) this.deleteKey(this.#keys[0]);
+            this.addKey(0, 0.5, 1, 1, 1, 1);
+            this.addKey(1, 0.5, 0, 0, 0, 1);
+            this.updateCanvas();
+        });
+        ele.byId("gradientPreset2").addEventListener("click", () =>
+        {
+            while (this.#keys.length) this.deleteKey(this.#keys[0]);
+            this.addKey(0, 0.5, 0, 0, 0, 1);
+            this.addKey(0.5, 0.5, 1, 1, 1, 1);
+            this.addKey(1, 0.5, 0, 0, 0, 1);
+            this.updateCanvas();
+        });
+        ele.byId("gradientPreset3").addEventListener("click", () =>
+        {
+            while (this.#keys.length) this.deleteKey(this.#keys[0]);
+            this.addKey(0, 0.5, 0, 0, 0, 1);
+            this.addKey(0.1, 0.5, 1, 1, 1, 1);
+            this.addKey(0.9, 0.5, 1, 1, 1, 1);
+            this.addKey(1, 0.5, 0, 0, 0, 1);
+            this.updateCanvas();
+        });
+
         ele.byId("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(this.#previousContent);
             this.close();
+            op.refreshParams();
+        });
+
+        ele.byId("gradientReverse").addEventListener("click", () =>
+        {
+            let keys = [];
+            this.#currentKey = null;
+
+            for (let i = 0; i < this.#keys.length; i++) keys[i] = this.#keys[i];
+
+            while (this.#keys.length) this.deleteKey(this.#keys[0]);
+
+            for (let i = 0; i < keys.length; i++)
+            {
+                const k = keys[i];
+                this.addKey(1 - k.pos, k.posy, k.r, k.g, k.b, k.a);
+            }
+
+            this.onChange();
+            this.updateCanvas();
+            console.log("reverse");
         });
 
         const colEleDel = ele.byId("gradientColorDelete");
@@ -477,7 +523,7 @@ export default class GradientEditor
         {
             if (this.#currentKey)
             {
-                this.#currentKey.ele.remove();
+                if (this.#keys.length < 2) return;
                 this.deleteKey(this.#currentKey);
                 this.#currentKey = this.#keys[0];
             }
