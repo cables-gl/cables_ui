@@ -347,7 +347,7 @@ export default class FileManager
         console.log("get by title", filename, item);
         if (!item) return;
         this._manager.selectItemById(item.id);
-        const el = document.getElementById("item" + item.id);
+        const el = ele.byId("item" + item.id);
         if (el) el.scrollIntoView();
     }
 
@@ -405,8 +405,8 @@ export default class FileManager
         });
         if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (html);
 
-        const elSwitchIcons = document.getElementById("switch-display-icons");
-        const elSwitchList = document.getElementById("switch-display-list");
+        const elSwitchIcons = ele.byId("switch-display-icons");
+        const elSwitchList = ele.byId("switch-display-list");
 
         if (elSwitchIcons)
         {
@@ -437,7 +437,7 @@ export default class FileManager
     setDetail(detailItems)
     {
         let html = "";
-        document.getElementById("item_details").innerHTML = "";
+        ele.byId("item_details").innerHTML = "";
 
         if (detailItems.length === 1)
         {
@@ -456,7 +456,13 @@ export default class FileManager
                 },
                 function (err, r)
                 {
-                    console.log("err", err, r);
+                    if (err)
+                    {
+                        html = "Error:" + err.msg;
+                        if (ele.byId("item_details")) ele.byId("item_details").innerHTML = html;
+                        return;
+                    }
+
                     if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
@@ -524,14 +530,14 @@ export default class FileManager
                                     html = getHandleBarHtml("filemanager_details_lib", templateOptions);
                                 }
 
-                                if (document.getElementById("item_details"))
-                                    document.getElementById("item_details").innerHTML = html;
+                                if (ele.byId("item_details"))
+                                    ele.byId("item_details").innerHTML = html;
                             }
                         );
                     }
 
-                    if (document.getElementById("item_details"))
-                        document.getElementById("item_details").innerHTML = html;
+                    if (ele.byId("item_details"))
+                        ele.byId("item_details").innerHTML = html;
 
                     ele.clickable(ele.byId("filecopyurl" + itemId),
                         (e) =>
@@ -677,9 +683,9 @@ export default class FileManager
             if (this._fileSource == "patch") html += "<a class=\"cblbutton\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
             html += "</div>";
 
-            document.getElementById("item_details").innerHTML = html;
+            ele.byId("item_details").innerHTML = html;
 
-            const elDelMulti = document.getElementById("filesdeletmulti");
+            const elDelMulti = ele.byId("filesdeletmulti");
             if (elDelMulti)
             {
                 elDelMulti.addEventListener(
