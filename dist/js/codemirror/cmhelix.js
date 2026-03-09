@@ -29938,9 +29938,7 @@ function readRegister(state, register) {
       return [];
     }
     case ".": {
-      return state.selection.ranges.map(
-        (range) => state.sliceDoc(range.from, range.to)
-      );
+      return state.selection.ranges.map((range) => state.sliceDoc(range.from, range.to));
     }
     case "%": {
       const path = state.facet(pathRegister);
@@ -29993,7 +29991,9 @@ var registersField = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.StateField.d
             navigator.clipboard.writeText(
               // FIXME: proper line ending?
               value.map((yank2) => yank2.toString()).join("\n")
-            );
+            ).catch((error) => {
+              console.error(error);
+            });
             break;
           }
         }
@@ -30334,10 +30334,7 @@ var CommandPanel = class {
   popupRequest;
   showSearchInput(mode = 0 /* Normal */) {
     const input = this.searchInput(mode);
-    this.showInput(
-      input,
-      mode === 1 /* Global */ ? "global-search:" : "search:"
-    );
+    this.showInput(input, mode === 1 /* Global */ ? "global-search:" : "search:");
   }
   showCommandInput() {
     const input = this.commandInput();
@@ -30614,9 +30611,7 @@ Aliases: ${command2.aliases.join(", ")}`;
     const current = this.autocomplete.querySelector(".cm-hx-selected-option");
     current?.classList.remove("cm-hx-selected-option");
     if (selected != null) {
-      this.autocomplete.children[selected].classList.add(
-        "cm-hx-selected-option"
-      );
+      this.autocomplete.children[selected].classList.add("cm-hx-selected-option");
     }
     if (this.popupRequest == null) {
       this.popupRequest = requestAnimationFrame(() => this.positionPopup());
@@ -30900,15 +30895,8 @@ function selectByChar(view, mode, forward) {
       counter--;
       return counter > 0;
     } : void 0;
-    const next = view.moveByChar(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(initial.head),
-      forward,
-      by
-    );
-    return internalSelToCM(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(initial.anchor, next.head),
-      doc
-    );
+    const next = view.moveByChar(_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(initial.head), forward, by);
+    return internalSelToCM(_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(initial.anchor, next.head), doc);
   });
 }
 function selectByLine(view, mode, forward) {
@@ -30929,11 +30917,7 @@ function selectByLine(view, mode, forward) {
       );
     }
     return internalSelToCM(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
-        initial.anchor,
-        selection.head,
-        selection.goalColumn
-      ),
+      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(initial.anchor, selection.head, selection.goalColumn),
       doc
     );
   });
@@ -30988,12 +30972,7 @@ function cursorByHalfPage(view, forward) {
       return range;
     }
     const next = view.moveVertically(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(
-        selection.head,
-        void 0,
-        void 0,
-        selection.goalColumn
-      ),
+      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(selection.head, void 0, void 0, selection.goalColumn),
       forward,
       height
     );
@@ -31014,12 +30993,7 @@ function selectByHalfPage(view, forward) {
       return range;
     }
     const next = view.moveVertically(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(
-        selection.head,
-        void 0,
-        void 0,
-        selection.goalColumn
-      ),
+      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(selection.head, void 0, void 0, selection.goalColumn),
       forward,
       height
     );
@@ -31317,9 +31291,7 @@ function yank(view, mode, register) {
     effects: [
       yankEffect.of([
         register,
-        selection.ranges.map(
-          (range) => view.state.doc.slice(range.from, range.to)
-        )
+        selection.ranges.map((range) => view.state.doc.slice(range.from, range.to))
       ]),
       MODE_EFF.NORMAL
     ]
@@ -31484,10 +31456,7 @@ function mapSel(selection, mapper) {
     const mapped = mapper(selection.main);
     return _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.single(mapped.anchor, mapped.head);
   }
-  return _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.create(
-    selection.ranges.map(mapper),
-    selection.mainIndex
-  );
+  return _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.create(selection.ranges.map(mapper), selection.mainIndex);
 }
 function escape(source) {
   return RegExp.escape(source);
@@ -31682,10 +31651,7 @@ function startSearch(view, mode) {
       if (match.done) {
         reset();
       } else {
-        const selection = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
-          match.value.from,
-          match.value.to
-        );
+        const selection = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(match.value.from, match.value.to);
         view.dispatch({
           selection,
           effects: _codemirror_view__WEBPACK_IMPORTED_MODULE_2__.EditorView.scrollIntoView(selection, { y: "center" })
@@ -31866,10 +31832,52 @@ var helixCommandBindings = {
         view.dispatch({
           effects: MODE_EFF.INSERT,
           selection: mapSel(view.state.selection, (range) => {
-            const start = view.state.doc.lineAt(range.from).from;
+            const line = view.state.doc.lineAt(range.from);
+            const firstNonWhitespace = line.text.match(/\S/)?.index ?? 0;
+            const start = line.from + firstNonWhitespace;
             return _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(start);
           })
         });
+      }
+    },
+    ["C"]: {
+      checkpoint: true,
+      command(view) {
+        const { state } = view;
+        const main = state.selection.main;
+        const currentLine = state.doc.lineAt(main.head);
+        if (currentLine.number >= state.doc.lines) {
+          return false;
+        }
+        const col = (0,_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.countColumn)(
+          currentLine.text,
+          state.tabSize,
+          main.head - currentLine.from
+        );
+        const anchorCol = (0,_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.countColumn)(
+          currentLine.text,
+          state.tabSize,
+          main.anchor - currentLine.from
+        );
+        for (let lineNum = currentLine.number + 1; lineNum <= state.doc.lines; lineNum++) {
+          const line = state.doc.line(lineNum);
+          const newHeadOff = (0,_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.findColumn)(line.text, col, state.tabSize, true);
+          if (newHeadOff < 0) {
+            continue;
+          }
+          const newAnchorOff = (0,_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.findColumn)(line.text, anchorCol, state.tabSize, true);
+          if (newAnchorOff < 0) {
+            continue;
+          }
+          const newHead = line.from + newHeadOff;
+          const newAnchor = line.from + newAnchorOff;
+          const range = main.head < main.anchor ? _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(newHead, newAnchor) : _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(newAnchor, newHead);
+          view.dispatch({
+            selection: state.selection.addRange(range, true),
+            userEvent: "select"
+          });
+          break;
+        }
       }
     },
     ["c"]: {
@@ -31929,10 +31937,7 @@ var helixCommandBindings = {
             return { range };
           }
           return {
-            range: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
-              range.from,
-              range.from + insert.length
-            ),
+            range: _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(range.from, range.from + insert.length),
             changes: {
               from: range.from,
               to: range.to,
@@ -32111,10 +32116,7 @@ var helixCommandBindings = {
         }
         const ideal = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
           startLine.from,
-          Math.min(
-            view.state.doc.length,
-            endLine.to + view.state.lineBreak.length
-          )
+          Math.min(view.state.doc.length, endLine.to + view.state.lineBreak.length)
         );
         const perfectLineSelection = ideal.from === range.from && ideal.to === range.to;
         if (perfectLineSelection || mode.count) {
@@ -32125,10 +32127,7 @@ var helixCommandBindings = {
           const nextLine = view.state.doc.line(nextLineNumber);
           return _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
             startLine.from,
-            Math.min(
-              view.state.doc.length,
-              nextLine.to + view.state.lineBreak.length
-            )
+            Math.min(view.state.doc.length, nextLine.to + view.state.lineBreak.length)
           );
         } else {
           return ideal;
@@ -32169,10 +32168,7 @@ var helixCommandBindings = {
           return;
         }
       }
-      const newRange = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
-        match.value.from,
-        match.value.to
-      );
+      const newRange = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(match.value.from, match.value.to);
       let newSel = newRange;
       if (mode.type === 4 /* Select */) {
         newSel = view.state.selection.addRange(newRange);
@@ -32514,16 +32510,10 @@ var helixCommandBindings = {
         if (bracketSelection == null) {
           return void 0;
         }
-        let selection = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(
-          bracketSelection.from,
-          bracketSelection.to
-        );
+        let selection = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(bracketSelection.from, bracketSelection.to);
         if (!isNormal) {
           const bracketCursor = bracketSelection.from;
-          const internal = cmSelToInternal(
-            view.state.selection.main,
-            view.state.doc
-          );
+          const internal = cmSelToInternal(view.state.selection.main, view.state.doc);
           selection = internalSelToCM(
             _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(internal.anchor, bracketCursor),
             view.state.doc
@@ -32575,18 +32565,18 @@ var helixCommandBindings = {
       checkpoint: true,
       command(view) {
         view.dispatch({ effects: MODE_EFF.NORMAL });
-        readClipboard(view.state).then(
-          (yanked) => paste(view, yanked, false, 1, { reset: false })
-        );
+        readClipboard(view.state).then((yanked) => paste(view, yanked, false, 1, { reset: false })).catch((error) => {
+          console.error(error);
+        });
       }
     },
     ["P"]: {
       checkpoint: true,
       command(view) {
         view.dispatch({ effects: MODE_EFF.NORMAL });
-        readClipboard(view.state).then(
-          (yanked) => paste(view, yanked, true, 1, { reset: false })
-        );
+        readClipboard(view.state).then((yanked) => paste(view, yanked, true, 1, { reset: false })).catch((error) => {
+          console.error(error);
+        });
       }
     },
     // FIXME: align with the non-clipboard one
@@ -32597,6 +32587,8 @@ var helixCommandBindings = {
         readClipboard(view.state).then((yanked) => {
           const tr = view.state.replaceSelection(yanked[0]);
           view.dispatch(tr);
+        }).catch((error) => {
+          console.error(error);
         });
       }
     },
@@ -32624,6 +32616,13 @@ var helixCommandBindings = {
       view.dispatch({
         effects: mode.type === 0 /* Normal */ ? MODE_EFF.NORMAL : MODE_EFF.SELECT
       });
+    },
+    ["c"]: {
+      checkpoint: true,
+      command(view) {
+        view.dispatch({ effects: MODE_EFF.NORMAL });
+        (0,_codemirror_commands__WEBPACK_IMPORTED_MODULE_0__.toggleComment)(view);
+      }
     }
   },
   leftBracket: {
@@ -32660,17 +32659,11 @@ function moveByGroup(view, mode, forward) {
       )
     ];
     let nextAnchor = forward ? headCursor.from : headCursor.to;
-    let nextHead = view.moveByGroup(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(nextAnchor),
-      forward
-    ).head;
+    let nextHead = view.moveByGroup(_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(nextAnchor), forward).head;
     const oldEnd = forward ? headCursor.to : headCursor.from;
     if (nextHead === oldEnd) {
       nextAnchor = nextHead;
-      nextHead = view.moveByGroup(
-        _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(nextAnchor),
-        forward
-      ).head;
+      nextHead = view.moveByGroup(_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(nextAnchor), forward).head;
     }
     const nextRange = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.range(nextAnchor, nextHead);
     if (!normal) {
@@ -32732,14 +32725,8 @@ function toCodemirrorKeymap(keybindings) {
     const gotoCommand = getExplicitCommand(key, keybindings.goto);
     const matchCommand = getExplicitCommand(key, keybindings.match);
     const spaceCommand = getExplicitCommand(key, keybindings.space);
-    const leftBracketCommand = getExplicitCommand(
-      key,
-      keybindings.leftBracket
-    );
-    const rightBracketCommand = getExplicitCommand(
-      key,
-      keybindings.rightBracket
-    );
+    const leftBracketCommand = getExplicitCommand(key, keybindings.leftBracket);
+    const rightBracketCommand = getExplicitCommand(key, keybindings.rightBracket);
     const esc = key === "Escape";
     const isChar = key.length === 1 || key === "Space";
     const command = (view) => {
@@ -32795,10 +32782,7 @@ var endlineCursorWidget = _codemirror_view__WEBPACK_IMPORTED_MODULE_2__.Decorati
 });
 function drawCursorMark(selection, doc) {
   const headSelections = selection.ranges.map(
-    (range) => internalSelToCM(
-      _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(cmSelToInternal(range, doc).head),
-      doc
-    )
+    (range) => internalSelToCM(_codemirror_state__WEBPACK_IMPORTED_MODULE_1__.EditorSelection.cursor(cmSelToInternal(range, doc).head), doc)
   );
   const decorations = [];
   for (const headSel of headSelections) {
@@ -32902,9 +32886,7 @@ var externalCommandsFacet = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Facet
       );
       if (multiple.length > 0) {
         console.warn(
-          `Multiple definitions found for external commands: ${multiple.join(
-            ", "
-          )}`
+          `Multiple definitions found for external commands: ${multiple.join(", ")}`
         );
       }
     }
@@ -32924,7 +32906,7 @@ var pathRegister = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Facet.define({
 });
 function snapshot(state, global = false) {
   const theme = state.field(themeField, false);
-  return {
+  const snapshot2 = {
     registers: state.field(registersField),
     registersHistory: state.field(registersHistoryField),
     theme: theme?.current,
@@ -32932,6 +32914,7 @@ function snapshot(state, global = false) {
       history: state.field(historyField)
     }
   };
+  return snapshot2;
 }
 function globalStateSync(state) {
   const theme = state.field(themeField, false);
@@ -32960,7 +32943,9 @@ var commands = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Facet.define({
   }
 });
 var exportedResetMode = MODE_EFF.NORMAL;
-var themeFacet = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Facet.define({ static: true });
+var themeFacet = _codemirror_state__WEBPACK_IMPORTED_MODULE_1__.Facet.define({
+  static: true
+});
 function changeThemeAction(view, theme) {
   const result = changeTheme(view, theme, false);
   if (result && result.error) {
@@ -32980,8 +32965,14 @@ function changeTheme(view, theme, notify = true) {
   if (Array.isArray(currentThemeExtensions) && currentThemeExtensions.includes(themeObj.extension)) {
     return;
   }
-  const promise = typeof themeObj.extension === "function" ? themeObj.extension() : Promise.resolve(themeObj.extension);
+  const promise = typeof themeObj.extension === "function" ? themeObj.extension().catch((error) => {
+    console.error(error);
+    return null;
+  }) : Promise.resolve(themeObj.extension);
   promise.then((extension) => {
+    if (!extension) {
+      return;
+    }
     view.dispatch({
       effects: [
         themeCompartment.reconfigure([
@@ -32994,6 +32985,8 @@ function changeTheme(view, theme, notify = true) {
     if (notify) {
       view.state.facet(themeFacet).forEach((cb) => cb(themeObj));
     }
+  }).catch((error) => {
+    console.error(error);
   });
 }
 function helix(options = {}) {
@@ -33139,9 +33132,9 @@ function helix(options = {}) {
         help: "Yank main selection into system clipboard",
         handler(view) {
           const selection = view.state.selection.main;
-          navigator.clipboard.writeText(
-            view.state.doc.slice(selection.from, selection.to).toString()
-          );
+          navigator.clipboard.writeText(view.state.doc.slice(selection.from, selection.to).toString()).catch((error) => {
+            console.error(error);
+          });
           return { message: "Yanked main selection to + register" };
         }
       },
@@ -33159,9 +33152,7 @@ function helix(options = {}) {
           if (args.length === 0) {
             const registers = view.state.field(registersField);
             view.dispatch({
-              effects: Object.keys(registers).map(
-                (reg) => yankEffect.of([reg, []])
-              )
+              effects: Object.keys(registers).map((reg) => yankEffect.of([reg, []]))
             });
           } else {
             if (args[0].length > 1) {
@@ -33270,9 +33261,7 @@ function showSearchError(view, query) {
   } catch (error) {
     message = error?.message;
   }
-  getCommandPanel(view).showError(
-    `Invalid regex /${query.search}/: ${message}`
-  );
+  getCommandPanel(view).showError(`Invalid regex /${query.search}/: ${message}`);
 }
 function resetScroll(view, effect) {
   requestAnimationFrame(

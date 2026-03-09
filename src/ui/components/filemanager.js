@@ -456,6 +456,7 @@ export default class FileManager
                 },
                 function (err, r)
                 {
+                    console.log("err", err, r);
                     if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
@@ -532,132 +533,117 @@ export default class FileManager
                     if (document.getElementById("item_details"))
                         document.getElementById("item_details").innerHTML = html;
 
-                    const copyEle = document.querySelector("*[data-info=filemanager_copy_file_url]");
-                    if (copyEle)
-                    {
-                        copyEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                navigator.clipboard
-                                    .writeText(JSON.stringify(r.path))
-                                    .then(() =>
+                    ele.clickable(ele.byId("filecopyurl" + itemId),
+                        (e) =>
+                        {
+                            navigator.clipboard
+                                .writeText(r.path)
+                                .then(() =>
+                                {
+                                    notify("Copied to clipboard");
+                                })
+                                .catch((copyError) =>
+                                {
+                                    notifyWarn("Copied to clipboard failed");
+                                    this._log.warn("copy to clipboard failed", copyError);
+                                });
+                        });
+
+                    ele.clickable(ele.byId("fileedit" + itemId),
+                        (e) =>
+                        {
+                            let fileName = r.fileDb.fileName;
+                            if (platform.frontendOptions.isElectron) fileName = r.path;
+                            gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
+                        });
+
+                    ele.clickable(ele.byId("filedelete" + itemId),
+                        (e) =>
+                        {
+                            const loadingModal = gui.startModalLoading("Checking asset dependencies");
+                            loadingModal.setTask("Checking patches and ops...");
+                            const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
+                            platform.talkerAPI.send(
+                                TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
+                                { "filenames": [fullName] },
+                                (countErr, countRes) =>
+                                {
+                                    gui.endModalLoading();
+                                    let content = "";
+                                    let allowDelete = true;
+                                    if (countRes && countRes.data)
                                     {
-                                        notify("Copied to clipboard");
-                                    })
-                                    .catch((copyError) =>
-                                    {
-                                        notifyWarn("Copied to clipboard failed");
-                                        this._log.warn("copy to clipboard failed", copyError);
-                                    });
-                            });
-                    }
-
-                    const editEle = document.querySelector("*[data-info=filemanager_edit_file]");
-                    if (editEle)
-                    {
-                        editEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                let fileName = r.fileDb.fileName;
-                                if (platform.frontendOptions.isElectron) fileName = r.path;
-                                gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
-                            });
-                    }
-
-                    const delEle = document.getElementById("filedelete" + itemId);
-                    if (delEle)
-                    {
-                        delEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                const loadingModal = gui.startModalLoading("Checking asset dependencies");
-                                loadingModal.setTask("Checking patches and ops...");
-                                const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
-                                platform.talkerAPI.send(
-                                    TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
-                                    { "filenames": [fullName] },
-                                    (countErr, countRes) =>
-                                    {
-                                        gui.endModalLoading();
-                                        let content = "";
-                                        let allowDelete = true;
-                                        if (countRes && countRes.data)
+                                        const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
+                                        if (otherCount)
                                         {
-                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
-                                            if (otherCount)
-                                            {
-                                                let linkText = otherCount + " other patch";
-                                                if (otherCount > 1) linkText += "es";
-                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                            }
-                                            if (countRes.data.countOps)
-                                            {
-                                                let linkText = countRes.data.countOps + " op";
-                                                if (countRes.data.countOps > 1) linkText += "s";
-                                                if (otherCount) content += "<br/>";
-                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                                allowDelete = false;
-                                            }
+                                            let linkText = otherCount + " other patch";
+                                            if (otherCount > 1) linkText += "es";
+                                            content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                         }
-                                        else
+                                        if (countRes.data.countOps)
                                         {
-                                            content += "It may be used in other patches.";
-                                        }
-
-                                        let title = "Really delete this file?";
-                                        let okButton = null;
-
-                                        const patchSummary = gui.getPatchSummary();
-                                        if (patchSummary && patchSummary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
-
-                                        if (!allowDelete)
-                                        {
-                                            title = "You cannot delete this file!";
-                                        }
-                                        else
-                                        {
-                                            okButton = {
-                                                "text": "Really delete",
-                                                "cssClasses": "redbutton"
-                                            };
-                                        }
-
-                                        const options = {
-                                            "title": title,
-                                            "html": content,
-                                            "warning": true,
-                                            "choice": allowDelete,
-                                            "okButton": okButton
-                                        };
-
-                                        const modal = new ModalDialog(options);
-                                        if (allowDelete)
-                                        {
-                                            modal.on("onSubmit", () =>
-                                            {
-                                                platform.talkerAPI.send(
-                                                    TalkerAPI.CMD_DELETE_FILE,
-                                                    { "fileid": r.fileDb._id },
-                                                    (errr, rr) =>
-                                                    {
-                                                        if (rr && rr.success)
-                                                        {
-                                                            this._manager.removeItem(itemId);
-                                                            this.reload();
-                                                        }
-                                                        else notifyError("Error: Could not delete file. " + errr.msg);
-                                                    }
-                                                );
-                                            });
+                                            let linkText = countRes.data.countOps + " op";
+                                            if (countRes.data.countOps > 1) linkText += "s";
+                                            if (otherCount) content += "<br/>";
+                                            content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                            allowDelete = false;
                                         }
                                     }
-                                );
-                            }
-                        );
-                    }
+                                    else
+                                    {
+                                        content += "It may be used in other patches.";
+                                    }
+
+                                    let title = "Really delete this file?";
+                                    let okButton = null;
+
+                                    const patchSummary = gui.getPatchSummary();
+                                    if (patchSummary && patchSummary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
+
+                                    if (!allowDelete)
+                                    {
+                                        title = "You cannot delete this file!";
+                                    }
+                                    else
+                                    {
+                                        okButton = {
+                                            "text": "Really delete",
+                                            "cssClasses": "redbutton"
+                                        };
+                                    }
+
+                                    const options = {
+                                        "title": title,
+                                        "html": content,
+                                        "warning": true,
+                                        "choice": allowDelete,
+                                        "okButton": okButton
+                                    };
+
+                                    const modal = new ModalDialog(options);
+                                    if (allowDelete)
+                                    {
+                                        modal.on("onSubmit", () =>
+                                        {
+                                            platform.talkerAPI.send(
+                                                TalkerAPI.CMD_DELETE_FILE,
+                                                { "fileid": r.fileDb._id },
+                                                (errr, rr) =>
+                                                {
+                                                    if (rr && rr.success)
+                                                    {
+                                                        this._manager.removeItem(itemId);
+                                                        this.reload();
+                                                    }
+                                                    else notifyError("Error: Could not delete file. " + errr.msg);
+                                                }
+                                            );
+                                        });
+                                    }
+                                }
+                            );
+                        }
+                    );
                 }.bind(this)
             );
 
