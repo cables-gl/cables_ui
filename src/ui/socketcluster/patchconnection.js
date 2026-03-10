@@ -104,11 +104,6 @@ PatchConnectionReceiver.prototype._receive = function (ev)
         const op = this._patch.getOpById(data.vars.op);
         if (op) op.enabled = false;
     }
-    else if (data.event === CABLES.PACO_UIATTRIBS)
-    {
-        const op = this._patch.getOpById(data.vars.op);
-        op?.setUiAttrib(data.vars.uiAttribs);
-    }
     else if (data.event === CABLES.PACO_UNLINK)
     {
         const op1 = this._patch.getOpById(data.vars.op1);
@@ -194,31 +189,7 @@ PatchConnectionReceiver.prototype._receive = function (ev)
     }
     else if (data.event === CABLES.PACO_OP_RELOAD)
     {
-        const serops = gui.corePatch().getOpsByObjName(data.vars.opName);
-
-        // const ser = gui.patchView.serializeOps(serops);
-
-        for (let i = 0; i < serops.length; i++)
-        {
-            // serops[i].patch.deleteOp(serops[i].id);
-        }
-
-        // gui.serverOps.execute(data.vars.opName);
-
-        if (gui)gui.serverOps.loadOpDependencies(data.vars.opName, (ops) =>
-        {
-
-            // todo: needs to reconnect etc...
-
-            //     loadOpDependencies
-            //     // gui.serverOps.loadProjectDependencies(ser, () =>
-            //     // {
-            //     //     console.log("ser", ser);
-            //     //     this._patch.deSerialize(ser, { "genIds": false });
-            //     // });
-
-        //     console.log(ops);
-        }, true);
+        if (gui)gui.serverOps.loadOpDependencies(data.vars.opName, null, true);
     }
     else
     {
@@ -262,7 +233,7 @@ const PatchConnectionSender = function (patch)
     });
 
     patch.addEventListener("patchLoadEnd",
-        (newOps, json, genIds) =>
+        (_newOps, json, genIds) =>
         {
             this.paused = false;
             this.send(CABLES.PACO_DESERIALIZE, { "json": json, "genIds": genIds });
@@ -302,19 +273,6 @@ const PatchConnectionSender = function (patch)
             "port1": p1.getName(),
             "port2": p2.getName()
         });
-    });
-
-    patch.addEventListener("onUiAttribsChange", (op, newAttribs) =>
-    {
-        if (!newAttribs) return;
-
-        delete newAttribs.extendTitle;
-        delete newAttribs.history;
-        delete newAttribs.translate;
-        if (Object.keys(newAttribs).length > 0)
-        {
-            this.send(CABLES.PACO_UIATTRIBS, { "op": op.id, "uiAttribs": newAttribs });
-        }
     });
 
     patch.addEventListener("opVariableNameChanged", (op, varName) =>

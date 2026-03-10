@@ -22,8 +22,6 @@ export default class ScUiMultiplayer extends Events
             gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
         }
 
-        this._pilotRequestTimeout = null;
-
         this._registerEventListeners();
     }
 
@@ -319,7 +317,6 @@ export default class ScUiMultiplayer extends Events
         this._connection.on("connectionError", this.updateMultiplayerBar.bind(this));
         this._connection.state.on("enableMultiplayer", this.updateMultiplayerBar.bind(this));
         this._connection.state.on("userListChanged", this.updateMultiplayerBar.bind(this));
-        this._connection.state.on("becamePilot", this.updateMultiplayerBar.bind(this));
         this._connection.on("connectionChanged", this.updateMultiplayerBar.bind(this));
 
         this._connection.on("onInfoMessage", (payload) =>
@@ -337,10 +334,8 @@ export default class ScUiMultiplayer extends Events
 
             if (this._connection.state.getNumClients() > 1)
             {
-                let username = pilot.username + " is";
                 if (pilot.clientId === this._connection.clientId)
                 {
-                    username = "YOU are";
                     // unfollow on becoming pilot
                     this._connection.client.following = null;
                 }
@@ -348,10 +343,8 @@ export default class ScUiMultiplayer extends Events
                 {
                     // follow the pilot
                     this._connection.client.following = pilot.clientId;
-                    // this._jumpToCursor(pilot);
                 }
                 this.updateMultiplayerBar();
-                // notify(username + " the pilot");
             }
         });
 
@@ -372,103 +365,6 @@ export default class ScUiMultiplayer extends Events
             {
                 const opName = msg.opName;
                 notify("reloaded code for op", opName);
-            }
-        });
-
-        this._connection.on("onPilotRequest", (msg) =>
-        {
-            if (!this._connection.multiplayerCapable) return;
-
-            if (msg.state === "request")
-            {
-                if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
-                {
-                    if (!this._pilotRequestTimeout)
-                    {
-                        let content = "You have 20 seconds to react to this request, if you do not react, the request will be accepted<br/><br/>";
-                        content += "<a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
-                        content += "<a class=\"button decline\">Decline</a>";
-
-                        const options = {
-                            "title": msg.username + " wants to be the pilot",
-                            "html": content
-                        };
-                        const modal = new ModalDialog(options, false);
-                        const closeListener = () =>
-                        {
-                            clearTimeout(this._pilotRequestTimeout);
-                            this._pilotRequestTimeout = null;
-                            this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                        };
-                        const closeListenerId = modal.on("onClose", closeListener);
-                        modal.on("onShow", () =>
-                        {
-                            const modalElement = modal.getElement();
-                            const acceptButton = modalElement.querySelector(".button.accept");
-                            const declineButton = modalElement.querySelector(".button.decline");
-
-                            if (acceptButton)
-                            {
-                                acceptButton.addEventListener("pointerdown", () =>
-                                {
-                                    clearTimeout(this._pilotRequestTimeout);
-                                    this._pilotRequestTimeout = null;
-                                    modal.off(closeListenerId);
-                                    this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                                    modal.close();
-                                });
-                            }
-                            if (declineButton)
-                            {
-                                declineButton.addEventListener("pointerdown", () =>
-                                {
-                                    clearTimeout(this._pilotRequestTimeout);
-                                    this._pilotRequestTimeout = null;
-                                    modal.off(closeListenerId);
-                                    this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                                    modal.close();
-                                });
-                            }
-                        });
-
-                        this._pilotRequestTimeout = setTimeout(() =>
-                        {
-                            modal.off(closeListenerId);
-                            this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                            modal.close();
-                        }, this._connection.state.PILOT_REQUEST_TIMEOUT);
-                        modal.show();
-                    }
-                    else
-                    {
-                        // already waiting for pilot request approval/denial, deny other requests
-                        this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId, "reason": "PENDING_REQUEST" });
-                    }
-                }
-            }
-            else if (msg.state === "accepted")
-            {
-                if (msg.initiator && this._connection.clientId === msg.initiator)
-                {
-                    if (this._connection.state && this._connection.state.hasPendingPilotSeatRequest())
-                    {
-                        this._connection.state.acceptPilotSeatRequest();
-                        notify(msg.username, "accepted your pilot seat request");
-                    }
-                }
-            }
-            else if (msg.state === "declined")
-            {
-                if (msg.initiator && this._connection.clientId === msg.initiator)
-                {
-                    if (this._connection.state && this._connection.state.hasPendingPilotSeatRequest())
-                    {
-                        this._connection.state.cancelPilotSeatRequest();
-                        let reason = "declined your pilot seat request";
-                        if (msg.reason && msg.reason === "PENDING_REQUEST") reason = "already has a pending pilot seat request";
-                        notify(msg.username, reason);
-                    }
-                }
             }
         });
 

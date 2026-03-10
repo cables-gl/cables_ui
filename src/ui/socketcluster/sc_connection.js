@@ -398,12 +398,6 @@ export default class ScConnection extends Events
         this._state = new ScState(this);
         if (this.multiplayerCapable)
         {
-            this._state.on("becamePilot", () =>
-            {
-                this._sendPing();
-                this._startPacoSend(this.clientId);
-            });
-
             this._state.on("enableMultiplayer", (payload) =>
             {
                 this._pacoEnabled = true;
@@ -868,11 +862,6 @@ export default class ScConnection extends Events
             msg.lastSeen = this.getTimestamp();
             this._lastPingReceived = msg.lastSeen;
             this.emitEvent("onPingAnswer", msg);
-        }
-        if (msg.name === "pilotRequest")
-        {
-            if (msg.clientId === this._socket.clientId) return;
-            this.emitEvent("onPilotRequest", msg);
         }
         if (msg.name === "reloadOp")
         {
