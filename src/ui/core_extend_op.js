@@ -45,22 +45,24 @@ class UiOp extends Op
 
     #onportsChangeSoon()
     {
-        clearTimeout(this.portChangeTo);
-        this.portChangeTo = setTimeout(() =>
-        {
-            this.setUiError("dupeport", null);
-
-            for (let i = 0; i < this.portsIn.length; i++)
+        // clearTimeout(this.portChangeTo);
+        if (!this.portChangeTo)
+            this.portChangeTo = setTimeout(() =>
             {
-                for (let j = 0; j < this.portsOut.length; j++)
-                    if (this.portsIn[i] != this.portsOut[j] && this.portsIn[i].name == this.portsOut[j].name)
-                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
+                this.portChangeTo = null;
+                this.setUiError("dupeport", null);
 
-                for (let j = 0; j < this.portsIn.length; j++)
-                    if (this.portsIn[i] != this.portsIn[j] && this.portsIn[i].name == this.portsIn[j].name)
-                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
-            }
-        }, 100);
+                for (let i = 0; i < this.portsIn.length; i++)
+                {
+                    for (let j = 0; j < this.portsOut.length; j++)
+                        if (this.portsIn[i] != this.portsOut[j] && this.portsIn[i].name == this.portsOut[j].name)
+                            this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
+
+                    for (let j = 0; j < this.portsIn.length; j++)
+                        if (this.portsIn[i] != this.portsIn[j] && this.portsIn[i].name == this.portsIn[j].name)
+                            this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
+                }
+            }, 100);
     }
 
     initUi()
