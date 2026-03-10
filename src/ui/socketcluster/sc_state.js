@@ -11,8 +11,6 @@ export default class ScState extends Events
     {
         super();
 
-        this.PILOT_REQUEST_TIMEOUT = 20000;
-
         this._log = new Logger("scstate");
 
         this._connection = connection;

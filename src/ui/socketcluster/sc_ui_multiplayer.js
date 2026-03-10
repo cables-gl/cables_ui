@@ -334,10 +334,8 @@ export default class ScUiMultiplayer extends Events
 
             if (this._connection.state.getNumClients() > 1)
             {
-                let username = pilot.username + " is";
                 if (pilot.clientId === this._connection.clientId)
                 {
-                    username = "YOU are";
                     // unfollow on becoming pilot
                     this._connection.client.following = null;
                 }
@@ -345,10 +343,8 @@ export default class ScUiMultiplayer extends Events
                 {
                     // follow the pilot
                     this._connection.client.following = pilot.clientId;
-                    // this._jumpToCursor(pilot);
                 }
                 this.updateMultiplayerBar();
-                // notify(username + " the pilot");
             }
         });
 
