@@ -304,6 +304,7 @@ class UiPatch extends Patch
 
     reloadOp(objName, cb, refOldOp)
     {
+        console.log("reload ", objName);
         let count = 0;
         const ops = [];
         const oldOps = [];

@@ -284,9 +284,9 @@ export class GlTimeline extends Events
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.init(); });
-        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.init(); });
-        gui.corePatch().on("portAnimToggle", () => { this.init(); });
+        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.initSoon(); });
+        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.initSoon(); });
+        gui.corePatch().on("portAnimToggle", () => { this.initSoon(); });
 
         this.#elKeyParamPanel = document.createElement("div");
         this.#elKeyParamPanel.classList.add("keyOverlay");
@@ -542,7 +542,7 @@ export class GlTimeline extends Events
         gui.glTimeline = this;
         gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {
-            if (this.isGraphLayout()) this.init();
+            if (this.isGraphLayout()) this.initSoon();
 
         });
 
@@ -777,7 +777,7 @@ export class GlTimeline extends Events
 
         this.saveUserSettings();
         this.updateIcons();
-        this.init(gui.patchView.getLastFocussedOp());
+        this.init();
         this.needsUpdateAll = "togglelayout";
         this.emitEvent(GlTimeline.EVENT_LAYOUTCHANGE);
 
@@ -1637,6 +1637,15 @@ export class GlTimeline extends Events
 
         // console.log("animlines", this.#tlAnims.length);
 
+    }
+
+    initSoon()
+    {
+        clearTimeout(this.initTimeout);
+        this.initTimeout = setTimeout(() =>
+        {
+            this.init();
+        }, 100);
     }
 
     init()

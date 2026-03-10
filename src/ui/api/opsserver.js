@@ -1921,11 +1921,11 @@ export default class ServerOps
             }
         }
 
+        perf.finish();
         if (!opDoc)
-        {
             return [];
-        }
 
+        const perf2 = gui.uiProfiler.start("[opsserver] getOpDeps2 ");
         const opLibs = this.getOpLibs(opDoc.name);
         const opCoreLibs = this.getCoreLibs(opDoc.name);
         const opDependencies = [];
@@ -1940,7 +1940,7 @@ export default class ServerOps
                 opDependencies.push(dep);
             }
         }
-        perf.finish();
+        perf2.finish();
 
         return [...opLibs, ...opCoreLibs, ...opDependencies];
     }

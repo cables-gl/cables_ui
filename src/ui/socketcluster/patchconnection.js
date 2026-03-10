@@ -242,7 +242,7 @@ const PatchConnectionSender = function (patch)
     patch.addEventListener("onOpDelete",
         (op) =>
         {
-            this.send(CABLES.PACO_OP_DELETE, { "op": op.id, "objName": op.objName });
+            // this.send(CABLES.PACO_OP_DELETE, { "op": op.id, "objName": op.objName });
         });
 
     patch.addEventListener("patchClearStart", () =>
