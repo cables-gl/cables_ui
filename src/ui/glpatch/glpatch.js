@@ -1062,10 +1062,10 @@ export default class GlPatch extends Events
             glOp.uiAttribs = op.uiAttribs || {};
         }
 
-        op.on("onPortRemoved", () => { glOp.refreshPorts(); });
-        op.on("onPortAdd", () => { glOp.refreshPorts(); });
+        op.on(Op.EVENT_PORT_REMOVE, () => { glOp.refreshPorts(); });
+        op.on(Op.EVENT_PORT_ADD, () => { glOp.refreshPorts(); });
         op.on("onEnabledChange", () => { glOp.update(); });
-        op.on("onUiAttribsChange",
+        op.on(Op.EVENT_UIATTR_CHANGE,
             (newAttribs) =>
             {
                 glOp.setUiAttribs(newAttribs, op.uiAttribs);

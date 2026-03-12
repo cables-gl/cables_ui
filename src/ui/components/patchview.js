@@ -340,7 +340,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {UiOp} op
+     * @param {Op} op
      */
     testCollision(op)
     {
@@ -2577,7 +2577,7 @@ export default class PatchView extends Events
                             for (let j = 0; j < origOp.portsIn[i].links.length; j++)
                             {
                                 const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                                origOp.portsIn[i].links[j].remove();
+                                // origOp.portsIn[i].links[j].remove(); not needed, if it IS needed, upgrade with multiple links on one port, links will be lost!!
 
                                 this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
                             }

@@ -292,6 +292,10 @@ export default class GlPatchAPI
         this._glPatch.deleteLink(link.id);
     }
 
+    /**
+     * @param {Op} op
+     * @param {boolean} fromDeserialize
+     */
     _onAddOp(op, fromDeserialize)
     {
         this._glPatch.addOp(op, fromDeserialize);
@@ -299,7 +303,7 @@ export default class GlPatchAPI
 
         if (op.checkLinkTimeWarnings)op.checkLinkTimeWarnings();
 
-        op.on("onPortAdd", (p) =>
+        op.on(Op.EVENT_PORT_ADD, (p) =>
         {
             const glop = this._glPatch.getGlOp(op);
             if (glop) glop.updateSize();

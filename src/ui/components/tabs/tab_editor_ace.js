@@ -373,7 +373,6 @@ export default class EditorTabAce extends Events
                     "content": "inTrigger(\"${1:name}\")",
                     "name": "inTrigger",
                 },
-
                 {
                     "content": "inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
                     "name": "inMultiPort",
@@ -478,7 +477,6 @@ export default class EditorTabAce extends Events
                     "content": "op.toWorkPortsNeedsString(${1:port1},${2:port2});",
                     "name": "op.toWorkPortsNeedsString",
                 },
-
                 {
                     "content": "vec3.create();",
                     "name": "vec3.create",
@@ -519,7 +517,6 @@ export default class EditorTabAce extends Events
                     "content": "op.patch.isEditorMode()",
                     "name": "op.patch.isEditorMode",
                 },
-
             );
             snippetManager.register(snippets, "javascript");
 

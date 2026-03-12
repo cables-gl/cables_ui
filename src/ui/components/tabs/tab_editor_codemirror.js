@@ -1,16 +1,23 @@
 import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
-import Tab from "../../elements/tabpanel/tab.js";
-import { GuiText } from "../../text.js";
-import ManageOp from "./tab_manage_op.js";
-import { notify, notifyError } from "../../elements/notification.js";
-import { gui } from "../../gui.js";
-import { platform } from "../../platform.js";
-import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
+import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers } from "@codemirror/view";
+import { Transaction, Extension, EditorState } from "@codemirror/state";
+import { helix, commands } from "codemirror-helix";
+import { jsonLanguage } from "@codemirror/lang-json";
+import { autocompletion } from "@codemirror/autocomplete";
+import { markdown } from "@codemirror/lang-markdown";
+import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
+// import { basicDark } from 'cm6-theme-basic-dark'
+// import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
 import { createOpDocButton } from "../editor.js";
-
-let loadedCm = false;
-let loadingCm = false;
+import { userSettings } from "../usersettings.js";
+import { contextMenu } from "../../elements/contextmenu.js";
+import { platform } from "../../platform.js";
+import { gui } from "../../gui.js";
+import { notify, notifyError } from "../../elements/notification.js";
+import ManageOp from "./tab_manage_op.js";
+import { GuiText } from "../../text.js";
+import Tab from "../../elements/tabpanel/tab.js";
 
 /**
  * tab panel for editing text and source code using the codemirror editor
@@ -97,17 +104,29 @@ export default class EditorTabCodemirror extends Events
                 Tab.EVENT_ACTIVATE,
                 () =>
                 {
-                    this.cmWrap.focus();
+                    this.focus();
                 }
             );
-            this.cmWrap.setContent(content);
+            this.cmView.dispatch(
+                {
+                    "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
+                    "annotations": Transaction.addToHistory.of(false),
+                });
+            this.cmView.focus();
+            // this.setContent(content);
             if (this._options.onFinished) this._options.onFinished();
         });
     }
 
     focus()
     {
-        if (this.cmWrap) this.cmWrap.focus();
+
+        this.cmView?.focus();
+    }
+
+    getContent()
+    {
+        return this.cmView.state.doc.toString();
     }
 
     format()
@@ -115,7 +134,8 @@ export default class EditorTabCodemirror extends Events
         platform.talkerAPI.send(
             TalkerAPI.CMD_FORMAT_OP_CODE,
             {
-                "code": this.cmWrap.getContent(),
+                "code": this.getContent()
+
             },
             (err, res) =>
             {
@@ -126,7 +146,7 @@ export default class EditorTabCodemirror extends Events
                 }
                 else
                 {
-                    this.cmWrap.setContent(res.opFullCode);
+                    this.setContent(res.opFullCode);
                 }
 
                 if (err)
@@ -155,8 +175,8 @@ export default class EditorTabCodemirror extends Events
         };
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
-        if (this._options.onSave) this._options.onSave(onSaveCb, this.cmWrap.getContent(), this);
-        else this.emitEvent("save", onSaveCb, this.cmWrap.getContent(), this);
+        if (this._options.onSave) this._options.onSave(onSaveCb, this.getContent(), this);
+        else this.emitEvent("save", onSaveCb, this.setContent, this);
     }
 
     /**
@@ -164,54 +184,34 @@ export default class EditorTabCodemirror extends Events
      */
     createEditor(cb)
     {
-        if (loadingCm)
-        {
-            console.log("waiting for cm");
-            setTimeout(() =>
+        const options = {};
+
+        const extensions = [];
+        if (this.helix)
+            extensions.push(helix(
+                {
+                    "config": { "editor.cursor-shape.insert": "bar" },
+                }
+            ));
+
+        // extensions.push(customCommands);
+        extensions.push(highlightActiveLine());
+        extensions.push(highlightActiveLineGutter());
+        extensions.push(oneDark);
+        extensions.push(lineNumbers());
+        extensions.push(javascript());
+        extensions.push(autocompletion());
+        // extensions.push(snippet(snippets));
+
+        this.cmView = new EditorView(
             {
-                this.createEditor(cb);
-            }, 100);
-            return;
-        }
-
-        // this.keys.key(" ", "show/hide timeline", "down", null, { "cmdCtrl": true, "ignoreInput": true }, () =>
-        // {
-        //     gui.toggleTimeline();
-        // });
-
-        if (loadedCm)
-        {
-            this.cmWrap = startCm(this.ele, { "helix": this.helix });
-
-            cb();
-        }
-        else
-        {
-            loadingCm = true;
-            console.log("loading cm");
-
-            loadjs.ready("codemirror", () =>
-            {
-                this.cmWrap = startCm(this.ele, { "helix": this.helix });
-                gui.jobs().finish("codemirror");
-                loadedCm = true;
-                loadingCm = false;
-                console.log("loaded cm");
-                cb();
+                "parent": this.ele,
+                "extensions": extensions,
+                "doc": options.content || "",
             });
 
-            gui.jobs().start({ "id": "codemirror", "title": "loading codemirror editor " });
-            try
-            {
-                loadjs(["js/codemirror/cmhelix.js"], "codemirror");
-            }
-            catch (e)
-            {
-                console.log("text", e);
-            }
-        }
-
         createOpDocButton(this.#tab, this);
+        cb();
 
     }
 
