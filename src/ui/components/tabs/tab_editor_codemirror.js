@@ -126,7 +126,8 @@ export default class EditorTabCodemirror extends Events
 
     getContent()
     {
-        return this.cmView.state.doc.toString();
+        const str = this.cmView.state.doc.toString();
+        return str;
     }
 
     format()
@@ -176,7 +177,7 @@ export default class EditorTabCodemirror extends Events
 
         gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
         if (this._options.onSave) this._options.onSave(onSaveCb, this.getContent(), this);
-        else this.emitEvent("save", onSaveCb, this.setContent, this);
+        else this.emitEvent("save", onSaveCb, this.getContent(), this);
     }
 
     /**
