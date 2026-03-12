@@ -19,6 +19,7 @@
         "cables-corelibs": "file:../cables/src/corelibs/",
         "cables-shared-client": "file:../shared/client/",
         "chroma-js": "2.1.0",
+        "codemirror-helix": "^0.5.5",
         "davidshimjs-qrcodejs": "0.0.2",
         "error-stack-parser": "2.1.4",
         "gl-matrix": "3.4.4",
