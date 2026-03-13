@@ -275,7 +275,7 @@ export const GuiText =
         "subtitle_maximizerenderer": "",
 
         "title_transparentpopout": "Transparent popout canvas",
-        "subtitle_transparentpopout": "Allows transparent backgrounds for popout canvas window",
+        "subtitle_transparentpopout": "Open popout and external canvas as transparent window",
 
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",
