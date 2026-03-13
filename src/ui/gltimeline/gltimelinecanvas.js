@@ -1,10 +1,8 @@
 import { Patch } from "cables";
-import { Texture, WhatTheDog } from "cables-corelibs";
+import { Texture } from "cables-corelibs";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
-
-WhatTheDog.bla = 1;
 
 /**
  * canvas for the timeline {@link GlTimeline}

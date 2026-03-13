@@ -1,6 +1,6 @@
 import { Logger, Events, ele, TalkerAPI } from "cables-shared-client";
 import { Patch, now } from "cables";
-import { CgShader } from "cables-corelibs";
+import { CgShader, initCGL } from "cables-corelibs";
 import defaultTheme from "./defaulttheme.json";
 import { platform } from "./platform.js";
 import Bookmarks from "./components/bookmarks.js";
@@ -113,6 +113,11 @@ export default class Gui extends Events
     constructor(cfg)
     {
         super();
+
+        // this needs to be called here, to make sure listeners to attach
+        // cgl on patch-creation are also called when/if webpack treeshakes
+        // cgl/index.js away since it's not directly used anywhere else
+        initCGL();
 
         this.editorSessionId = cfg.editorSessionId;
 
