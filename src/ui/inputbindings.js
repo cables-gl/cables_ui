@@ -186,9 +186,6 @@ export class InputBindings
         let cmd = {};
 
         cmd = Commands.getCommandByFunction(b.func);
-        if (cmd)
-            Commands.exec(cmd.cmd);
-        else
-            console.log("command not found", cmd);
+        if (cmd) Commands.exec(cmd.cmd);
     }
 }

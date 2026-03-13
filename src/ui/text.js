@@ -274,6 +274,9 @@ export const GuiText =
         "title_maximizerenderer": "Maximize renderer on start",
         "subtitle_maximizerenderer": "",
 
+        "title_transparentpopout": "Transparent popout canvas",
+        "subtitle_transparentpopout": "Open popout and external canvas as transparent window",
+
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",
 
