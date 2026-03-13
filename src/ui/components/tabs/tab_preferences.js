@@ -119,6 +119,7 @@ export default class Preferences
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
         this.setSwitchValue("openfullscreen", userSettings.get("openfullscreen") || false);
         this.setSwitchValue("maximizerenderer", userSettings.get("maximizerenderer") || false);
+        this.setSwitchValue("transparentpopout", userSettings.get("transparentpopout") || false);
 
         this.setInputValue("authorName", userSettings.get("authorName") || "");
         this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
