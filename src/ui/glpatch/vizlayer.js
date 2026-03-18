@@ -380,6 +380,18 @@ export default class VizLayer extends Events
                     ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
                 }
             }
+            if (options.highlightLines.lines && options.highlightLines.lines.includes(i))
+            {
+
+                ctx.fillStyle = "#555555";
+                ctx.fillRect(
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + ((i - offset) * lineHeight) + 3,
+                    layer.width,
+                    lineHeight
+                );
+
+            }
 
             if (hl)
             {
