@@ -74,7 +74,7 @@ export default class FileManagerEditor
                                 {
                                     gui.savedState.setSaved("editorOnChangeFile");
                                     gui.jobs().finish("saveeditorcontent" + filename);
-                                    setStatus("saved");
+                                    setStatus("Saved");
                                 }
                             );
                         },

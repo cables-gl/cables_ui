@@ -9,6 +9,7 @@ import { jsonLanguage } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 // import { basicDark } from 'cm6-theme-basic-dark'
 // import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
 import { indentWithTab } from "@codemirror/commands";
@@ -223,22 +224,24 @@ export default class EditorTabCodemirror extends Events
         extensions.push(highlightActiveLineGutter());
         extensions.push(oneDark);
         extensions.push(lineNumbers());
-        extensions.push(javascript());
         extensions.push(autocompletion());
         extensions.push(keymap.of([indentWithTab]));
 
         extensions.push(lintGutter());
-        extensions.push(syntaxErrorLinter);
+        extensions.push(keymap.of([...searchKeymap]));
+        extensions.push(highlightSelectionMatches());
 
-        extensions.push(
-            javascriptLanguage.data.of({
-                "autocomplete": this.getSnippets()
-            }),
-            autocompletion()
-        );
-
-        // const extensions = [
-        // ];        // extensions.push(snippet(snippets));
+        if (this._options.syntax == "js")
+        {
+            extensions.push(syntaxErrorLinter);
+            extensions.push(javascript());
+            extensions.push(
+                javascriptLanguage.data.of({
+                    "autocomplete": this.getSnippets()
+                }),
+                autocompletion()
+            );
+        }
 
         this.cmView = new EditorView(
             {

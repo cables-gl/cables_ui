@@ -63,6 +63,7 @@ import { Commands } from "./commands/commands.js";
 import { InputBindings } from "./inputbindings.js";
 import TabInputBindings from "./components/tabs/tab_keybinds.js";
 import { CmdDebug } from "./commands/cmd_debug.js";
+import { isFocusOnEditor } from "./components/editor.js";
 
 /**
  * @type {Gui}
@@ -1714,8 +1715,7 @@ export default class Gui extends Events
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
-            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CmdUi.showSearch();
+            if (!(isFocusOnEditor()) && !gui.isShowingModal()) CmdUi.showSearch();
             else e.dontPreventDefault = true;
         });
 
@@ -1728,10 +1728,9 @@ export default class Gui extends Events
         {
             gui.corePatch().checkExtensionOpPatchAssets();
 
-            if ((
-                document.activeElement.classList.contains("ace_text-input") ||
-                document.activeElement.classList.contains("cm-content")) &&
-                 gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible())
+            if ((isFocusOnEditor()) &&
+                 gui.mainTabs.getSaveButton() &&
+                 gui.maintabPanel.isVisible())
             {
                 gui.mainTabs.getSaveButton().cb();
             }

@@ -11,10 +11,18 @@ import { userSettings } from "./usersettings.js";
 export function createEditor(options)
 {
     if (userSettings.get("texteditor") == "textarea") return new EditorTabTextArea(options);
-    else if (userSettings.get("texteditor") == "cm") return new EditorTabCodemirror(options);
     else if (userSettings.get("texteditor") == "cmhx") return new EditorTabCodemirror(options, true);
-    else return new EditorTabAce(options);
+    else if (userSettings.get("texteditor") == "ace") return new EditorTabAce(options);
+    else return new EditorTabCodemirror(options);
 
+}
+
+export function isFocusOnEditor()
+{
+    const isEdit = document.activeElement.classList.contains("ace_text-input") ||
+                   document.activeElement.classList.contains("cm-textfield") ||
+                   document.activeElement.classList.contains("cm-content");
+    return isEdit;
 }
 
 export function createOpDocButton(tab, editor)

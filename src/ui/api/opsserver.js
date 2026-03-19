@@ -1609,7 +1609,7 @@ export default class ServerOps
 
                         if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
 
-                        _setStatus("saved");
+                        _setStatus("Saved " + attachmentName);
 
                         if (attachmentName == subPatchOpUtil.blueprintPortJsonAttachmentFilename)
                         {
