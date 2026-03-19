@@ -26,8 +26,8 @@ export default class GlViewBox
     _scrollY = 0;
     _oldScrollX = 0;
     _oldScrollY = 0;
-    _viewResX = 0;
-    _viewResY = 0;
+    #viewResX = 0;
+    #viewResY = 0;
     _mouseRightDownStartX = 0;
     _mouseRightDownStartY = 0;
     _panStarted = 0;
@@ -77,9 +77,9 @@ export default class GlViewBox
      */
     setSize(w, h)
     {
-        const first = (this._viewResX === 0 && this._viewResY === 0);
-        this._viewResX = w;
-        this._viewResY = h;
+        const first = (this.#viewResX === 0 && this.#viewResY === 0);
+        this.#viewResX = w;
+        this.#viewResY = h;
 
         if (first) this.setMousePos(this.#cgl.canvasWidth / 2, this.#cgl.canvasHeight / 2);
     }
@@ -209,7 +209,7 @@ export default class GlViewBox
      */
     animateToCenterAt(x, y)
     {
-        this.animateScrollTo(x, y * (this._viewResX / this._viewResY), 0);
+        this.animateScrollTo(x, y * (this.#viewResX / this.#viewResY), 0);
     }
 
     /**
@@ -363,10 +363,10 @@ export default class GlViewBox
     animateScrollTo(x, y, dur = 0.2, _userInteraction)
     {
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        let ox = (gui.editorWidth) * 0.5 / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        ox -= (gui.rightPanelWidth) * 0.5 / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        let ox = (gui.getLeftPanelsMaxWidth()) / this.#viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        ox -= (gui.getRightPanelsMaxWidth()) / this.#viewResX * this._animZoom.getValue(this.glPatch.time + 10);
 
-        let oy = (gui.bottomTabPanel.height) / this._viewResY * this._animZoom.getValue(this.glPatch.time + 10);
+        let oy = (gui.bottomTabPanel.height) / this.#viewResY * this._animZoom.getValue(this.glPatch.time + 10);
 
         if (_userInteraction)ox = 0;
         if (ox != ox)ox = 0;
@@ -418,7 +418,7 @@ export default class GlViewBox
             this.scrollTo(0, 0);
             return;
         }
-        if (this._viewResX == 0 || this._viewResY == 0) return;
+        if (this.#viewResX == 0 || this.#viewResY == 0) return;
 
         const bb = new BoundingBox();
         const subp = this.glPatch.getCurrentSubPatch();
@@ -452,7 +452,7 @@ export default class GlViewBox
         bb.size[1] *= padding;
 
         const zx = bb.size[0] / 2; // zoom on x
-        const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
+        const zy = (bb.size[1]) / 2 * (this.#viewResX / this.#viewResY);
         let z = Math.max(defaultZoom, Math.max(zy, zx));
         if (z > 99999)z = defaultZoom;
 
@@ -463,7 +463,7 @@ export default class GlViewBox
             else this.animateZoom(z);
         }
 
-        let cy = bb.center[1] * (this._viewResX / this._viewResY);
+        let cy = bb.center[1] * (this.#viewResX / this.#viewResY);
 
         if (cy != cy) cy = 0;
 
@@ -481,7 +481,7 @@ export default class GlViewBox
         let y = _y;
 
         // const asp = this._viewResY / this._viewResX;
-        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        const zx = 1 / ((this.#viewResX / 2) / this.zoom);
         let zy = zx;
 
         x /= zx;
@@ -499,8 +499,8 @@ export default class GlViewBox
         let x = _x;
         let y = _y;
 
-        const asp = this._viewResY / this._viewResX;
-        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        const asp = this.#viewResY / this.#viewResX;
+        const zx = 1 / ((this.#viewResX / 2) / this.zoom);
         let zy = zx;
 
         x -= this._scrollX;
@@ -509,8 +509,8 @@ export default class GlViewBox
         x /= zx;
         y /= zy;
 
-        x += (this._viewResX / 2);
-        y += (this._viewResY / 2);
+        x += (this.#viewResX / 2);
+        y += (this.#viewResY / 2);
 
         return [x, y];
     }
@@ -523,15 +523,15 @@ export default class GlViewBox
     screenToPatchCoord(x, y, aspect)
     {
         if (this._scrollY != this._scrollY) this._scrollY = 0;
-        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        const zx = 1 / ((this.#viewResX / 2) / this.zoom);
         let zy = zx;
-        if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
-        const asp = this._viewResY / this._viewResX;
+        if (aspect)zy = 1 / (this.#viewResY / 2 / this.zoom);
+        const asp = this.#viewResY / this.#viewResX;
 
         if (this._scrollX != this._scrollX) this._scrollX = 0;
 
-        const mouseAbsX = (x - (this._viewResX / 2)) * zx - (this.scrollX);
-        const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
+        const mouseAbsX = (x - (this.#viewResX / 2)) * zx - (this.scrollX);
+        const mouseAbsY = (y - (this.#viewResY / 2)) * zy + (this.scrollY * asp);
 
         if (isNaN(mouseAbsY)) this.centerSelectedOps(true);
 

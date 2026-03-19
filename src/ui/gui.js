@@ -962,6 +962,26 @@ export default class Gui extends Events
         perf.finish();
     }
 
+    getRightPanelsMaxWidth()
+    {
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+            return this.rightPanelWidth + this.rendererWidth;
+
+        return Math.max(this.rightPanelWidth, this.rendererWidth);
+
+    }
+
+    getLeftPanelsMaxWidth()
+    {
+        return this.editorWidth;
+    }
+
+    getTopPanelHeight()
+    {
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT) return this.rendererHeight;
+        else return 0;
+    }
+
     _switchCanvasSizeNormal()
     {
         if (this.canvasManager.mode != this.canvasManager.CANVASMODE_NORMAL)

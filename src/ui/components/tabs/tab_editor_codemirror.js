@@ -7,13 +7,17 @@ import { syntaxTree } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
 import { jsonLanguage } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
+
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
+// import { glsl } from "codemirror-lang-glsl";
+
 import { oneDark } from "@codemirror/theme-one-dark";
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 // import { basicDark } from 'cm6-theme-basic-dark'
 // import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
 import { indentWithTab } from "@codemirror/commands";
 import { snippetCompletion } from "@codemirror/autocomplete"; // Built-in function
+
 import { createOpDocButton } from "../editor.js";
 import { userSettings } from "../usersettings.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -231,6 +235,10 @@ export default class EditorTabCodemirror extends Events
         extensions.push(keymap.of([...searchKeymap]));
         extensions.push(highlightSelectionMatches());
 
+        // if (this._options.syntax == "glsl")
+        // {
+        //     extensions.push(glsl);
+        // }
         if (this._options.syntax == "js")
         {
             extensions.push(syntaxErrorLinter);
