@@ -25,7 +25,7 @@ opNames.getVizOpsForPortLink = (p) =>
         else if (p.type == portType.number) return [defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizGraph, defaultOps.defaultOpNames.VizNumberBar, defaultOps.defaultOpNames.VizLogger];
         else if (p.type == portType.array) return [defaultOps.defaultOpNames.VizArrayTable, defaultOps.defaultOpNames.VizArrayGraph];
 
-        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
+        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
         else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoElement];
         else if (p.type == portType.object && p.uiAttribs.objType == "geometry") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoGeometry];
         else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoShader];

@@ -177,8 +177,8 @@ export default class OpSelect
 
         const perf = gui.uiProfiler.start("opselect.suggestioninfo");
 
-        let ops = opNames.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
-        let vizops = opNames.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let ops = opNames.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort);
+        let vizops = opNames.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort || CABLES.UI.OPSELECT?.linkNewLink?.portOut);
 
         if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
