@@ -115,7 +115,7 @@ export function createOpDocButton(tab, editor)
 
     if (platform.frontendOptions.openLocalFiles && editor._options.allowEdit)
     {
-        this._tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"electron_openfolder\" ></span>",
+        tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-folder\" data-info=\"electron_openfolder\" ></span>",
             (e) =>
             {
                 if (e.ctrlKey || e.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);

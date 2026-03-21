@@ -119,7 +119,7 @@ export default class PatchSaveServer extends Events
             {
                 const html =
                     "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave the browser-window open, and wait until we are finished with the update.<br/><br/>" +
-                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                    "<a class=\"cblbutton\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
                 new ModalDialog(
                     {
                         "title": "Maintenance Mode",
@@ -138,9 +138,9 @@ export default class PatchSaveServer extends Events
                     if (fromSave)
                     {
                         let html = "This patch was changed. Your version is out of date. <br/><br/>Last update: " + moment(data.updated).fromNow() + " by " + (data.updatedByUser || "unknown") + "<br/><br/>";
-                        html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-                        html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
-                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                         new ModalDialog({
                             "title": "Meanwhile...",

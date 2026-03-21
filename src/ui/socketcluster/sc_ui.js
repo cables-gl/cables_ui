@@ -63,7 +63,7 @@ export default class ScUi
                 opNames += gui.serverOps.opIdsChangedOnServer[i].opName + " ";
             }
 
-            if (!gui.isRemoteClient) gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"button\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
+            if (!gui.isRemoteClient) gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"cblbutton\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
         }
     }
 
