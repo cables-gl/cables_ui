@@ -95,7 +95,7 @@ export default class GlOp extends Events
     minWidth = 10;
 
     /** @type GlText */
-    #glTitle = null;
+    _glTitle = null;
 
     /** @type GlText */
     _glComment = null;
@@ -671,10 +671,10 @@ export default class GlOp extends Events
             title = mathStr;
         }
 
-        if (!this.#glTitle)
+        if (!this._glTitle)
         {
-            this.#glTitle = new GlText(this.#textWriter, title);
-            this.#glTitle.setParentRect(this.#glRectBg);
+            this._glTitle = new GlText(this.#textWriter, title);
+            this._glTitle.setParentRect(this.#glRectBg);
             this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this.#op.objName);
 
             if (this.#op.objName.indexOf("Ops.Ui.Comment") === 0)
@@ -688,13 +688,13 @@ export default class GlOp extends Events
             if (this.opUiAttribs.comment_title) // this._op.objName.indexOf("Ops.Ui.Comment") === 0
             {
                 this._hidePorts = true;
-                this.#glTitle.scale = 4;
+                this._glTitle.scale = 4;
             }
             this._updateColors();
         }
         else
         {
-            if (this.#glTitle.text != String(title)) this.#glTitle.text = String(title);
+            if (this._glTitle.text != String(title)) this._glTitle.text = String(title);
         }
 
         perf.finish();
@@ -770,7 +770,7 @@ export default class GlOp extends Events
 
         this._width = this._getTitleWidth();
         this.minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
-        if (this.#glTitle) this._height = Math.max(this.#glTitle.height + 5, this.#glRectBg.h);
+        if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this.#glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.glPatch.snap.snapY(this.opUiAttribs.height);
         if (this.opUiAttribs.width) this._width = this.glPatch.snap.snapX(Math.max(this.minWidth, this.opUiAttribs.width));
@@ -891,7 +891,7 @@ export default class GlOp extends Events
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelected) this.#glRectSelected = this.#glRectSelected.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
-        if (this.#glTitle) this.#glTitle = this.#glTitle.dispose();
+        if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this._titleExt) this._titleExt = this._titleExt.dispose();
         // if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
@@ -1109,7 +1109,7 @@ export default class GlOp extends Events
 
         if (this.#glRectSelected) this.#glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
-        if (this.#glTitle) this.#glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
@@ -1131,7 +1131,7 @@ export default class GlOp extends Events
     {
         let w = 0;
         if (this._titleExt) w += this._titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
-        if (this.#glTitle) w += this.#glTitle.width;
+        if (this._glTitle) w += this._glTitle.width;
 
         w += gluiconfig.OpTitlePaddingLeftRight * 2.0;
 
@@ -1145,7 +1145,7 @@ export default class GlOp extends Events
 
     _getTitleExtPosition()
     {
-        return gluiconfig.OpTitlePaddingLeftRight + this.#glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
+        return gluiconfig.OpTitlePaddingLeftRight + this._glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
     }
 
     updateVisible()
@@ -1199,7 +1199,7 @@ export default class GlOp extends Events
         if (this.#glRectBg) this.#glRectBg.visible = visi;
         if (this._resizableArea) this._resizableArea.visible = visi;
         if (this._titleExt) this._titleExt.visible = visi;
-        if (this.#glTitle) this.#glTitle.visible = visi;
+        if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
         if (changed) this._updateIndicators();
@@ -1493,7 +1493,7 @@ export default class GlOp extends Events
         else if (this._glComment) this._glComment = this._glComment.dispose();
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
-        else if (this.opUiAttribs.title != this.#glTitle.text) this.setTitle(this.opUiAttribs.title);
+        else if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
         if (this._titleExt)
         {
@@ -1543,7 +1543,7 @@ export default class GlOp extends Events
             if (!this.#glRerouteDot)
                 this.#glRerouteDot = this.#instancer.createRect({ "name": "reroutedog", "draggable": false, "interactive": false });
 
-            this.#glTitle.text = "";
+            this._glTitle.text = "";
             this.#glRerouteDot.setSize(this._width, this._height);
 
             this.#glRerouteDot.setPosition(-0.5, 0, 0);
@@ -1570,13 +1570,13 @@ export default class GlOp extends Events
 
     _updateColors()
     {
-        if (!this.#glRectBg || !this.#glTitle) return;
+        if (!this.#glRectBg || !this._glTitle) return;
 
         if (this.opUiAttribs.hasOwnProperty("heatmapIntensity"))
         {
             if (this.opUiAttribs.heatmapIntensity)
             {
-                this.#glTitle.setColor(1, 1, 1, 1);
+                this._glTitle.setColor(1, 1, 1, 1);
                 this.#glRectBg.setColor(
                     0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);
             }
@@ -1595,17 +1595,17 @@ export default class GlOp extends Events
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
 
-                this.#glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
+                this._glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
                 this.updateSize();
             }
             else // this._glTitle.setColor(1, 1, 1);
-                this.#glTitle.setColorArray(gui.theme.colors_patch.patchComment);
+                this._glTitle.setColorArray(gui.theme.colors_patch.patchComment);
         }
         else
         {
             if (this._OpNameSpaceColor)
-                this.#glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
-            else this.#glTitle.setColor(0.8, 0.8, 0.8);
+                this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            else this._glTitle.setColor(0.8, 0.8, 0.8);
         }
 
         this.#glRectBg.setBorder(this._rectBorder);
@@ -1687,17 +1687,17 @@ export default class GlOp extends Events
         if (!this.#op.enabled)
         {
             this.#glRectBg.setOpacity(0.15, false);
-            this.#glTitle.setOpacity(0.5);
+            this._glTitle.setOpacity(0.5);
         }
         else
         {
             this.#glRectBg.setOpacity(0.9, false);
-            this.#glTitle.setOpacity(1);
+            this._glTitle.setOpacity(1);
         }
 
         if (this.#glNotWorkingCross)
         {
-            this.#glTitle.setOpacity(0.7);
+            this._glTitle.setOpacity(0.7);
         }
 
         if (this._hideBgRect && !this.selected)

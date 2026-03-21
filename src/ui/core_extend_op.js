@@ -49,7 +49,7 @@ class UiOp extends Op
         if (!this.portChangeTo)
         {
 
-            this.portChangeTo = CABLES.idleCallback(this.portChangeTo, () =>
+            this.portChangeTo = CABLES.idleCallbackSoon(this.portChangeTo, () =>
             {
                 this.portChangeTo = null;
                 this.setUiError("dupeport", null);
