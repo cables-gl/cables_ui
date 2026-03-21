@@ -340,7 +340,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Op} op
+     * @param {UiOp} op
      */
     testCollision(op)
     {
@@ -971,7 +971,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Op[]}
+     * @returns {UiOp[]}
      */
     getSelectedOps()
     {

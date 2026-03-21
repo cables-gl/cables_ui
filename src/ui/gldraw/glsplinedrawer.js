@@ -83,7 +83,7 @@ export class GlSplineDrawer extends Events
         this.#cgl = cgl;
         this.#count = -1;
 
-        this.#rebuildLater = performance.now();
+        this.#rebuildLater = false;
         this.doTessEdges = true;
         this.doCalcProgress = true;
 
@@ -177,17 +177,16 @@ export class GlSplineDrawer extends Events
     {
         if (this.#splines.length == 0) return;
 
-        if (this.#rebuildLater > 0)
-        {
-            if (performance.now() - this.#rebuildLater > 30) this.rebuild();
-            clearTimeout(this._laterTimeout);
-            this._laterTimeout = setTimeout(
-                () =>
-                {
-                    this.rebuild();
-                    this.#rebuildLater = 0;
-                }, 30);
-        }
+        // if (this.#rebuildLater)
+        // {
+        //     clearTimeout(this._laterTimeout);
+        //     this._laterTimeout = setTimeout(
+        //         () =>
+        //         {
+        //             this.rebuild();
+        //             this.#rebuildLater = false;
+        //         }, 30);
+        // }
 
         if (this.#mesh)
         {
@@ -212,16 +211,14 @@ export class GlSplineDrawer extends Events
 
         if (this.#splines.length == 0) return;
 
-        if (this.#rebuildLater > 0)
+        if (this.#rebuildLater)
         {
-            if (performance.now() - this.#rebuildLater > 30) this.rebuild();
-            clearTimeout(this._laterTimeout);
-            this._laterTimeout = setTimeout(
-                () =>
-                {
-                    this.rebuild();
-                    this.#rebuildLater = 0;
-                }, 30);
+            // clearTimeout(this._laterTimeout);
+            // this._laterTimeout = setTimeout(
+            // () =>
+            // {
+            this.rebuild();
+            // }, 10);
         }
 
         if (this.#mesh)
@@ -523,14 +520,7 @@ export class GlSplineDrawer extends Events
      */
     _updateAttribsSpeed(idx)
     {
-        if (!this.#mesh)
-        {
-            this.rebuildLater("update speed");
-            // this._rebuildLater = true;
-            // this._rebuildReason = "update speed";
-
-            return;
-        }
+        if (!this.#mesh) return;
 
         let count = 0;
         const off = this.#splines[idx].startOffset || 0;
@@ -571,13 +561,7 @@ export class GlSplineDrawer extends Events
         if (!gui.patchView._patchRenderer) return;
         if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
 
-        if (!this.#mesh || !this._colors)
-        {
-            this.rebuildLater("no mesh/colors");
-            // this._rebuildReason = "no mesh/colors";
-            // this._rebuildLater = true;
-            return;
-        }
+        if (!this.#mesh || !this._colors) return this.rebuildLater("no mesh/colors");
         // if (!this.aps) this.aps = new FpsCounter();
         // this.aps.logFps = true;
         // this.aps.startFrame();
@@ -825,7 +809,7 @@ export class GlSplineDrawer extends Events
 
         perfAttribs2.finish("num" + this.#splines.length);
 
-        this.#rebuildLater = 0;
+        this.#rebuildLater = false;
         perf.finish();
 
         let l = 0;
@@ -841,9 +825,10 @@ export class GlSplineDrawer extends Events
      */
     rebuildLater(str)
     {
+        // console.log("rebuildLater ", str);
         if (!this.#rebuildLater)
         {
-            this.#rebuildLater = performance.now();
+            this.#rebuildLater = true;
             this.#rebuildReason = str;
         }
     }

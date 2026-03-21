@@ -347,6 +347,9 @@ export default class GlCable
                             posX2, this.#y2, gluiconfig.zPosCables
                         ];
 
+                    // make sure all curved cables are the same length
+                    while (this.#points.length < 66) this.#points.push(posX2, this.#y2, gluiconfig.zPosCables);
+
                     this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
                 }
                 else
@@ -368,7 +371,7 @@ export default class GlCable
 
                             posX2, this.#y2 + (distY * 0.002) + this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
                             posX2, this.#y2, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables
+                            posX2, this.#y2, gluiconfig.zPosCables,
 
                         ];
 

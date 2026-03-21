@@ -56,7 +56,7 @@ export default class GlOp extends Events
     _titleExtPort = null;
     _titleExtPortListener = null;
 
-    /** @type GlText */
+    /** @type {GlText} */
     _titleExt = null;
 
     /** @type {Boolean} */
@@ -147,13 +147,13 @@ export default class GlOp extends Events
     /** @type {Boolean} */
     #wasInCurrentSubpatch = false;
 
-    /** @type {Op} */
+    /** @type {UiOp} */
     #op;
 
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {Op} op
+     * @param {UiOp} op
      */
     constructor(glPatch, instancer, op)
     {
@@ -910,6 +910,9 @@ export default class GlOp extends Events
         this.#instancer = null;
     }
 
+    /**
+     * @param {string} linkId
+     */
     removeLink(linkId)
     {
         const l = this._links[linkId];
@@ -1032,11 +1035,7 @@ export default class GlOp extends Events
 
                     colorPorts[0].on(Port.EVENT_UIATTRCHANGE, (attrs, _port) =>
                     {
-                        if (attrs.hasOwnProperty("heatmapIntensity"))
-                        {
-                            this._updateColors();
-
-                        }
+                        if (attrs.hasOwnProperty("heatmapIntensity")) this._updateColors();
 
                         if (attrs.hasOwnProperty("greyout"))
                         {
@@ -1153,10 +1152,7 @@ export default class GlOp extends Events
     {
         if (!this.#wasInCurrentSubpatch && this.isInCurrentSubPatch())
         {
-            if (!this.#wasInited)
-            {
-                this._initGl();
-            }
+            if (!this.#wasInited) this._initGl();
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
@@ -1208,8 +1204,7 @@ export default class GlOp extends Events
 
         if (changed) this._updateIndicators();
 
-        if (changed)
-            for (const i in this._links) this._links[i].visible = true;
+        if (changed) for (const i in this._links) this._links[i].visible = true;
 
         if (!visi) this._isHovering = false;
     }
@@ -1536,32 +1531,6 @@ export default class GlOp extends Events
                     doUpdateSize = true;
                 }
             }
-        }
-
-        if (this.opUiAttribs.glPreviewTexture)
-        {
-            //     if (!this._glRectContent)
-            //     {
-            //         this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });
-            //         this._glRectContent.setParent(this._glRectBg);
-            //         this._glRectContent.setPosition(0, this._height);
-            //         this._glRectContent.setColor(255, 0, 220, 1);
-
-            //         const p = this._op.getPort("Texture");
-            //         this._visPort = p;
-
-            //         this._visPort.onChange = () =>
-            //         {
-            //             const t = this._visPort.get();
-
-            //         if (t)
-            //         {
-            //             const asp = this._width / t.width * 2.5;
-            //             this._glRectContent.setSize(t.width * asp, t.height * asp);
-            //             this._glRectContent.setTexture(this._visPort.get());
-            //         }
-            //     };
-            // }
         }
 
         if (doUpdateSize) this.updateSize();

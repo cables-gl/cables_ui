@@ -26,6 +26,7 @@ import { DomEvents } from "../theme.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import { InputBindings } from "../inputbindings.js";
 import GlPatchAPI from "./patchapi.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * rendering the patchfield
@@ -1555,7 +1556,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {Op} op
+     * @param {UiOp|Op} op
      */
     getGlOp(op)
     {
