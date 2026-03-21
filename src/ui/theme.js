@@ -145,7 +145,7 @@ export function setUpTheme(theme = {})
 {
     if (!theme) return;
 
-    theme = JSON.parse(JSON.stringify(theme));
+    theme = structuredClone(theme);
     theme.colors = theme.colors || {};
 
     const missing = {};

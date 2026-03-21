@@ -48,10 +48,8 @@ class UiOp extends Op
         // clearTimeout(this.portChangeTo);
         if (!this.portChangeTo)
         {
-            const to = 100;
-            if (!gui.finishedLoading)to = 1000;
 
-            this.portChangeTo = setTimeout(() =>
+            this.portChangeTo = CABLES.idleCallback(this.portChangeTo, () =>
             {
                 this.portChangeTo = null;
                 this.setUiError("dupeport", null);
@@ -66,7 +64,7 @@ class UiOp extends Op
                         if (this.portsIn[i] != this.portsIn[j] && this.portsIn[i].name == this.portsIn[j].name)
                             this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
                 }
-            }, to);
+            });
         }
     }
 

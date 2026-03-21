@@ -64,9 +64,12 @@ export default class KeyBindingsManager extends Events
         document.body.removeChild(element);
     }
 
+    /**
+     * @param {any[]} keys
+     */
     _prepareKeysForDisplay(keys)
     {
-        let k = JSON.parse(JSON.stringify(keys));
+        let k = structuredClone(keys);
 
         k.sort(function (a, b)
         {

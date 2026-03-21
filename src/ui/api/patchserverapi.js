@@ -929,7 +929,7 @@ export default class PatchSaveServer extends Events
 
                 try
                 {
-                    neewArg = JSON.parse(JSON.stringify(arg));
+                    neewArg = structuredClone(arg);
                 }
                 catch (e)
                 {

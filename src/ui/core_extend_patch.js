@@ -328,7 +328,7 @@ class UiPatch extends Patch
             oldOp.deleted = true;
             const op = this.addOp(objName, oldOp.uiAttribs);
             if (!op) continue;
-            if (oldOp && oldOp.storage) op.setStorage(JSON.parse(JSON.stringify(oldOp.storage)));
+            if (oldOp && oldOp.storage) op.setStorage(structuredClone(oldOp.storage));
             ops.push(op);
 
             if (oldOp == refOldOp)

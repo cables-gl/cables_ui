@@ -2244,7 +2244,7 @@ export default class Gui extends Events
     init()
     {
 
-        this.setTheme(JSON.parse(JSON.stringify(defaultTheme)));
+        this.setTheme(structuredClone(defaultTheme));
 
         if (window.localStorage.getItem("cables_theme") && window.localStorage.getItem("cables_theme") != "null" && window.localStorage.getItem("cables_theme") != "undefined")
         {
@@ -2385,7 +2385,7 @@ export default class Gui extends Events
 
     getDefaultTheme()
     {
-        return JSON.parse(JSON.stringify(defaultTheme));
+        return structuredClone(defaultTheme);
     }
 
     hide()

@@ -2560,7 +2560,7 @@ export default class PatchView extends Events
 
                     if (origOp)
                     {
-                        const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
+                        const oldUiAttribs = structuredClone(origOp.uiAttribs);
 
                         const theUiAttribs = {};
                         for (const i in oldUiAttribs)
