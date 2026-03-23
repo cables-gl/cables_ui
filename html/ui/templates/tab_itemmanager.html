@@ -105,7 +105,7 @@
         <table class="table">
             {{#if showHeader}}
             <tr>
-                <th width="30" onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
+                <th onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
                 <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">
                     Filename
                     {{#compare order '==' 'name' }}{{#if orderReverse}}<span class="icon icon-arrow-up "></span>{{else}}<span class="icon icon-arrow-down "></span>{{/if}}{{/compare}}
@@ -135,13 +135,17 @@
                     </tr>
                 {{else}}
                     <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}">
-                        <td><span class="icon icon-{{icon}} "></span></td>
+                        <td>
+                            <span class="icon icon-{{icon}}"></span>
+                            {{#if isReference}}
+                                <span class="icon icon-file-symlink"></span>
+                            {{else}}
+                            {{/if}}
+                        </td>
                         <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}}</div>
                         </td>
                         <td>{{sizeKb}}</td>
                         <td>{{relativedate updated}}</td>
-                        <td>{{#if isReference}}reference{{/if}}</td>
-
                     </tr>
                 {{/if}}
             {{/each}}
