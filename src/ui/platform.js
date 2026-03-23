@@ -339,31 +339,7 @@ export class Platform extends Events
             {
                 if (options && options.filename)
                 {
-                    for (let j = 0; j < gui.corePatch().ops.length; j++)
-                    {
-                        if (gui.corePatch().ops[j])
-                        {
-                            if (gui.corePatch().ops[j].onFileChanged)
-                                gui.corePatch().ops[j].onFileChanged(options.filename);
-                            else if (gui.corePatch().ops[j].onFileUploaded)
-                                gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
-                        }
-                    }
-                    if (options.filename.endsWith(".js"))
-                    {
-                        const libUrl =
-                            "/assets/" + gui.project()._id + "/" + options.filename;
-                        if (
-                            gui &&
-                            gui.opDocs &&
-                            gui.opDocs.libs &&
-                            !gui.opDocs.libs.includes(libUrl)
-                        )
-                        {
-                            gui.opDocs.libs.push(libUrl);
-                            gui.emitEvent("refreshManageOp");
-                        }
-                    }
+                    this.fileUpdated(options.filename);
                 }
             },
         );
@@ -447,9 +423,40 @@ export class Platform extends Events
         });
     }
 
+    fileUpdated(filename)
+    {
+        if (!filename) return;
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
+        {
+            if (gui.corePatch().ops[j])
+            {
+                gui.corePatch().ops[j].emitEvent("fileChanged", filename);
+                if (gui.corePatch().ops[j].onFileChanged)
+                    gui.corePatch().ops[j].onFileChanged(filename); // todo deprecate , rename to on("fileChanged", filename)
+                else if (gui.corePatch().ops[j].onFileUploaded)
+                    gui.corePatch().ops[j].onFileUploaded(filename); // todo deprecate , rename to onFileChanged
+            }
+        }
+        if (filename.endsWith(".js"))
+        {
+            const libUrl =
+                "/assets/" + gui.project()._id + "/" + filename;
+            if (
+                gui &&
+                gui.opDocs &&
+                gui.opDocs.libs &&
+                !gui.opDocs.libs.includes(libUrl)
+            )
+            {
+                gui.opDocs.libs.push(libUrl);
+                gui.emitEvent("refreshManageOp");
+            }
+        }
+    }
+
     createBackup()
     {
-        const backupOptions = { "title": name || "" };
+        const backupOptions = { "title": "" };
 
         const modalNotices = [];
         if (gui && gui.user && platform.isTrustedPatch() && gui.user.supporterFeatures && !this.patchIsBackup())

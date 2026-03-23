@@ -46,6 +46,9 @@ export default class ScUi
             case "backupCreated":
                 this._backupCreated(payload);
                 break;
+            case "fileChanged":
+                this._fileChanged(payload);
+                break;
             }
         });
     }
@@ -119,6 +122,22 @@ export default class ScUi
             else
             {
                 notify("Backup created!");
+            }
+        }
+    }
+
+    _fileChanged(payload)
+    {
+        const data = payload.data || {};
+        if (!payload.isOwn)
+        {
+            if (data?.file?.filename)
+            {
+                platform.fileUpdated(data.file.filename);
+                let msg = "File Uploaded";
+                if (data.byUser) msg += " by " + data.byUser;
+                msg += ": " + data.file.filename;
+                notify(msg);
             }
         }
     }
