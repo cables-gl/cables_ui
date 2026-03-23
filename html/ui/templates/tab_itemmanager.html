@@ -67,7 +67,13 @@
                         {{/if}}
                     </div>
                 {{else}}
-                    <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}">
+                    <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}"
+
+                    {{#if usedInPatch}}
+                    {{else}}
+                    style="opacity: 0.5;"
+                    {{/if}}
+                    >
 
                         {{#if preview}}
                             <div class="preview bgPatternDark info" data-info="dragfile" style="width:90%;height:calc(90% - 22px);;background-color:#777;">
@@ -134,7 +140,13 @@
                         </td>
                     </tr>
                 {{else}}
-                    <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}">
+                    <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}"
+
+                    {{#if usedInPatch}}
+                    {{else}}
+                    style="opacity: 0.5;"
+                    {{/if}}
+                    >
                         <td>
                             <span class="icon icon-{{icon}}"></span>
                             {{#if isReference}}
@@ -274,8 +286,6 @@
             <b style="word-break: break-all;">{{file.fileDb.fileName}}</b>
 
             <br/>
-
-
 
             {{#if isPlatformCommunity}}
                 {{#if isReference}}
