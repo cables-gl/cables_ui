@@ -1,7 +1,7 @@
 import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import { linter, lintGutter } from "@codemirror/lint";
 import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap } from "@codemirror/view";
-import { Transaction, Extension, EditorState } from "@codemirror/state";
+import { Transaction, EditorState } from "@codemirror/state";
 import { helix, commands } from "codemirror-helix";
 import { syntaxTree } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
