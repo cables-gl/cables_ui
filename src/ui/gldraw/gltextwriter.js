@@ -51,7 +51,7 @@ export default class GlTextWriter
             {
                 // this.#rectDrawer.setTexture(0, this.#fontTex, true);
                 this.#rectDrawer.setTexture(0, tex, true);
-            }, { "flip": false, "filter": Texture.FILTER_LINEAR });
+            }, { "flip": false, "filter": Texture.FILTER_LINEAR, "imgBitmap": true });
         }
         this.#rectDrawer.setTexture(0, this.#fontTex, true);
 
