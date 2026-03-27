@@ -112,7 +112,7 @@ const defaultOpNames =
     "ArrayMultiply": "Ops.Array.ArrayMultiply",
     "parseObject": "Ops.Json.ParseObject_v2",
 
-    "textureGradient": "Ops.Gl.GradientTexture",
+    "textureGradient": "Ops.Gl.GradientTexture_v2",
     "textureNoise": "Ops.Gl.Textures.NoiseTexture",
 
     "rerouteNumber": "Ops.Ui.Routing.RouteNumber",
