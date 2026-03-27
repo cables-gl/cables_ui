@@ -100,11 +100,18 @@ function valueChanger(eleId, focus, portName, opid)
             if (eleInput.classList.contains("inc_int")) incMode = 1;
 
             eleInput.requestPointerLock = eleInput.requestPointerLock || eleInput.mozRequestPointerLock || eleInput.webkitRequestPointerLock;
-            if (eleInput.requestPointerLock) eleInput.requestPointerLock().catch((e) =>
+            if (eleInput.requestPointerLock)
             {
-                // just to nothing, dont remove, it will throw useless exceptions
-                // console.log("pointerlock catch");
-            });
+
+                const pl = eleInput.requestPointerLock();
+
+                if (pl)pl.catch((e) =>
+                {
+                    // just to nothing, dont remove, it will throw useless exceptions
+                    // console.log("pointerlock catch");
+                });
+
+            }
         }
         else
         {
