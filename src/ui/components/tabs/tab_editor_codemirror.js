@@ -9,7 +9,7 @@ import { jsonLanguage } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
 
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
-// import { glsl } from "codemirror-lang-glsl";
+import { glsl } from "codemirror-lang-glsl";
 
 import { oneDark } from "@codemirror/theme-one-dark";
 import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
@@ -269,10 +269,10 @@ export default class EditorTabCodemirror extends Events
                 }]));
         }
 
-        // if (this._options.syntax == "glsl")
-        // {
-        //     extensions.push(glsl);
-        // }
+        if (this._options.syntax == "glsl")
+        {
+            extensions.push(glsl());
+        }
         if (this._options.syntax == "js")
         {
             extensions.push(syntaxErrorLinter);
