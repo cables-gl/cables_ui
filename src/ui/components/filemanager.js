@@ -75,8 +75,7 @@ export default class FileManager
 
     refresh()
     {
-        clearTimeout(this._refreshDelay);
-        CABLES.idleCallback(
+        CABLES.idleCallback(this._refreshDelay,
             () =>
             {
                 this.setSource("patch");
