@@ -1,7 +1,7 @@
 import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import { linter, lintGutter } from "@codemirror/lint";
-import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap } from "@codemirror/view";
-import { Transaction, EditorState } from "@codemirror/state";
+import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap, drawSelection } from "@codemirror/view";
+import { Transaction, EditorSelection, EditorState } from "@codemirror/state";
 import { helix, commands } from "codemirror-helix";
 import { syntaxTree } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
@@ -12,10 +12,10 @@ import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
 // import { glsl } from "codemirror-lang-glsl";
 
 import { oneDark } from "@codemirror/theme-one-dark";
-import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
+import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
 // import { basicDark } from 'cm6-theme-basic-dark'
 // import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
-import { indentWithTab } from "@codemirror/commands";
+import { indentWithTab, toggleComment, history } from "@codemirror/commands";
 import { snippetCompletion } from "@codemirror/autocomplete"; // Built-in function
 
 import { createOpDocButton } from "../editor.js";
@@ -106,25 +106,41 @@ export default class EditorTabCodemirror extends Events
     {
         content = content || "";
 
-        this.createEditor(() =>
+        if (this.cmView)
         {
-            this.#tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
-            this.#tab.addEventListener(
-                Tab.EVENT_ACTIVATE,
-                () =>
-                {
-                    this.focus();
-                }
-            );
+            const cursorPos = this.cmView.state.selection.main.head;
             this.cmView.dispatch(
                 {
                     "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
                     "annotations": Transaction.addToHistory.of(false),
                 });
             this.cmView.focus();
-            // this.setContent(content);
-            if (this._options.onFinished) this._options.onFinished();
-        });
+            this.cmView.dispatch({
+                "selection": EditorSelection.cursor(cursorPos)
+            });
+        }
+        else
+        {
+            this.createEditor(() =>
+            {
+                this.#tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
+                this.#tab.addEventListener(
+                    Tab.EVENT_ACTIVATE,
+                    () =>
+                    {
+                        this.focus();
+                    }
+                );
+                this.cmView.dispatch(
+                    {
+                        "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
+                        "annotations": Transaction.addToHistory.of(false),
+                    });
+                this.cmView.focus();
+                // this.setContent(content);
+                if (this._options.onFinished) this._options.onFinished();
+            });
+        }
     }
 
     focus()
@@ -234,6 +250,24 @@ export default class EditorTabCodemirror extends Events
         extensions.push(lintGutter());
         extensions.push(keymap.of([...searchKeymap]));
         extensions.push(highlightSelectionMatches());
+
+        if (!this.helix)
+        {
+
+            extensions.push(
+                history(),
+                drawSelection(),
+                EditorState.allowMultipleSelections.of(true));
+            extensions.push(keymap.of([
+                {
+                    "key": "Mod-/",
+                    "run": toggleComment,
+                }, {
+                    "key": "Mod-d",
+                    "run": selectNextOccurrence,
+                    "preventDefault": true,
+                }]));
+        }
 
         // if (this._options.syntax == "glsl")
         // {
