@@ -6,7 +6,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "./usersettings.js";
 
@@ -24,6 +24,9 @@ export default class FileManager
         this._filterType = null;
         this._manager = new ItemManager("Files", gui.mainTabs);
         this._filePortEle = null;
+
+        /** @type {HTMLElement} */
+        this._filePortElePreview = null;
         this._firstTimeOpening = true;
         this._refreshDelay = null;
         this._orderReverse = false;
@@ -37,6 +40,14 @@ export default class FileManager
         this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
 
         this.reload(cb);
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (e) =>
+        {
+            if (this._filePortOp && this._filePortOp != e)
+            {
+                this.cancelFileSelectOp();
+            }
+
+        });
 
         this._manager.addEventListener("onItemsSelected", (items) =>
         {
@@ -65,10 +76,24 @@ export default class FileManager
     refresh()
     {
         clearTimeout(this._refreshDelay);
-        this._refreshDelay = setTimeout(() =>
+        CABLES.idleCallback(
+            () =>
+            {
+                this.setSource("patch");
+            });
+    }
+
+    cancelFileSelectOp()
+    {
+        this._filePortElePreview = null;
+        this._filePortEle = null;
+        this._filePortOp = null;
+
+        if (this._filterType)
         {
-            this.setSource("patch");
-        }, 200);
+            this._filterType = null;
+            this._buildHtml();
+        }
     }
 
     /**
@@ -80,15 +105,7 @@ export default class FileManager
     {
         if (!portEle)
         {
-            this._filePortElePreview = null;
-            this._filePortEle = null;
-            this._filePortOp = null;
-
-            if (this._filterType)
-            {
-                this._filterType = null;
-                this._buildHtml();
-            }
+            this.cancelFileSelectOp();
         }
         else
         {
@@ -114,8 +131,8 @@ export default class FileManager
             return;
         }
 
-        const eleContent = ele.byQuery("#item_manager .filelistcontainer");
-        if (eleContent)eleContent.innerHTML = "<div class=\"loading\" style=\"margin-top:50px;\"></div>";
+        // const eleContent = ele.byQuery("#item_manager .filelistcontainer");
+        // if (eleContent)eleContent.innerHTML = "<div class=\"loading\" style=\"margin-top:50px;\"></div>";
 
         gui.jobs().start({
             "id": "getFileList",
@@ -666,6 +683,7 @@ export default class FileManager
                         this._filePortElePreview.innerHTML = "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
 
                 gui.opParams.show(this._filePortOp);
+                this.refresh();
             }
         }
         else if (detailItems.length > 1)
