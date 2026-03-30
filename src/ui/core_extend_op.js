@@ -413,7 +413,7 @@ class UiOp extends Op
                     this.#log.warn("[needsStringToWork] port not found");
                     continue;
                 }
-                if (p.linkTimeListener)p.off(p.linkTimeListener);
+                if (p.linkTimeListener)p.linkTimeListener = p.off(p.linkTimeListener);
                 if (!p.isLinked() && p.get() == "")
                 {
                     working = false;
