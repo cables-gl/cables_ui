@@ -124,6 +124,17 @@ export default class ScUi
                 notify("Backup created!");
             }
         }
+        else if (data.automaticBackup)
+        {
+            if (data.error)
+            {
+                notifyWarn("Automatic backup failed! " + data.msg);
+            }
+            else
+            {
+                notify("Automatic backup created!");
+            }
+        }
     }
 
     _fileChanged(payload)
