@@ -136,6 +136,9 @@
     <div class="groupSpacer"><h3>Misc</h3></div>
 
     <div class="panel" >
+        Tags:
+        <input spellcheck="off" id="tagInput" style="width:100%;" onInput="gui.opParams.setCurrentOpTags(this.value);" value="{{op.attribs.tags}}"></textarea>
+
         Comment:
         <textarea id="commentTextarea" style="height:60px;width:100%;" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
 

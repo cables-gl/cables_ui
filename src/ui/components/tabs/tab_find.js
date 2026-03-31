@@ -76,8 +76,9 @@ export default class FindTab
 
             gui.opHistory.off(listenerChanged);
 
-            for (let i = 0; i < this.#listenerids.length; i++)
-                gui.corePatch().off(this.#listenerids[i]);
+            for (let i = 0; i < this.#listenerids.length; i++) gui.corePatch().off(this.#listenerids[i]);
+
+            this.#listenerids = [];
 
             this.clearHighlightOps();
 
@@ -657,7 +658,7 @@ export default class FindTab
 
                 if (ops[i].objName.toLowerCase().indexOf(str) > -1)
                 {
-                    where = "name: " + this.highlightWord(str, ops[i].objName);
+                    where = "Name: " + this.highlightWord(str, ops[i].objName);
                     score += 1;
                     found = true;
                 }
@@ -666,7 +667,13 @@ export default class FindTab
                     ops[i].uiAttribs.extendTitle &&
                     (ops[i].uiAttribs.extendTitle + "").toLowerCase().indexOf(str) > -1)
                 {
-                    where = "title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
+                    where = "Title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
+                    score += 1;
+                    found = true;
+                }
+                if (ops[i].attribs.tags && ops[i].attribs.tags.indexOf(str) > -1)
+                {
+                    where = "Tags: " + this.highlightWord(str, ops[i].attribs.tags.join(","));
                     score += 1;
                     found = true;
                 }
@@ -675,21 +682,21 @@ export default class FindTab
                     ops[i].uiAttribs.comment &&
                     ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1)
                 {
-                    where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
+                    where = "Comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
                     score += 1;
                     found = true;
                 }
 
                 if (ops[i].opId.indexOf(str) > -1)
                 {
-                    where = "opid: " + ops[i].opId;
+                    where = "OpId: " + ops[i].opId;
                     score += 1;
                     found = true;
                 }
 
                 if (ops[i].id.indexOf(str) > -1)
                 {
-                    where = "id: " + ops[i].id;
+                    where = "Id: " + ops[i].id;
                     score += 1;
                     found = true;
                 }
@@ -700,7 +707,7 @@ export default class FindTab
 
                     if (String(ops[i].name || "").indexOf("var set") === 0) score += 2; // extra points if var setter
 
-                    where = "name: " + this.highlightWord(str, ops[i].name);
+                    where = "Name: " + this.highlightWord(str, ops[i].name);
                     score += 2;
                     found = true;
                 }

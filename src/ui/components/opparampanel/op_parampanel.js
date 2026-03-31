@@ -664,6 +664,20 @@ class OpParampanel extends Events
         });
     }
 
+    setCurrentOpTags(t)
+    {
+        if (this._currentOp)
+        {
+            console.log(t.split(","));
+            this._currentOp.tags = t.split(",");
+        }
+        else
+        {
+            this._log.warn("no current op tags");
+        }
+
+    }
+
     setCurrentOpComment(v)
     {
         if (this._currentOp)
