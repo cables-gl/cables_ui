@@ -97,6 +97,7 @@ export default class Gui extends Events
     static PREF_LAYOUT_EDITORWIDTH = "editorWidth";
     static PREF_LAYOUT_RIGHT_PANEL_WIDTH = "rightpanelWidth";
     static PREF_LAYOUT_BOTTOM_PANEL_HEIGHT = "bottomPanelHeight";
+    static PREF_AUDIO_MUTE = "editorAudioMute";
     hasAnims = false;
     unload = false;
     defaultOps = defaultOps;

@@ -177,8 +177,8 @@ export default class CanvasUi
         const act = userSettings.get("overlaysShow");
         const icon = ele.byId("canvUitoggleOverlay");
         if (icon)
-            if (act)icon.style.backgroundColor = "var(--color-special)";
-            else icon.style.backgroundColor = "var(--color-07)";
+            if (act)icon.classList.add("icon-highlight");
+            else icon.classList.remove("icon-highlight");
     }
 
     /**

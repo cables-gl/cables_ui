@@ -9,11 +9,12 @@ import WelcomeTab from "../components/tabs/tab_welcome.js";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import Keypresenter from "../components/keypresenter.js";
 import Tips from "../dialogs/tips.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 import TabInputBindings from "../components/tabs/tab_keybinds.js";
+import { notify } from "../elements/notification.js";
 
 export { CmdUi };
 
@@ -61,7 +62,22 @@ class CmdUi
             "cmd": "Toggle mute",
             "keybindable": true,
             "category": "ui",
+            "icon": "volume-2",
             "func": CmdUi.toggleMute
+        },
+        {
+            "cmd": "Mute Audio",
+            "keybindable": true,
+            "icon": "volume-x",
+            "category": "ui",
+            "func": CmdUi.muteAudio
+        },
+        {
+            "cmd": "Unmute Audio",
+            "keybindable": true,
+            "category": "ui",
+            "icon": "volume-2",
+            "func": CmdUi.unMuteAudio
         },
         {
             "cmd": "Search",
@@ -320,19 +336,38 @@ class CmdUi
         if (document.documentElement.webkitRequestFullScreen) document.documentElement.webkitRequestFullScreen();
     }
 
+    static muteAudio(showNotify)
+    {
+
+        document.getElementById("timelineVolume").classList.remove("icon-volume-2");
+        document.getElementById("timelineVolume").classList.add("icon-volume-x");
+        document.getElementById("timelineVolume").classList.add("icon-highlight");
+
+        gui.corePatch().setVolume(0.0);
+        userSettings.set(Gui.PREF_AUDIO_MUTE, true);
+        if (showNotify)notify("Audio Muted");
+
+    }
+
+    static unMuteAudio()
+    {
+        document.getElementById("timelineVolume").classList.add("icon-volume-2");
+        document.getElementById("timelineVolume").classList.remove("icon-volume-x");
+        document.getElementById("timelineVolume").classList.remove("icon-highlight");
+        gui.corePatch().setVolume(1.0);
+        userSettings.set(Gui.PREF_AUDIO_MUTE, false);
+        notify("Audio Unmuted");
+    }
+
     static toggleMute()
     {
         if (gui.corePatch().config.masterVolume > 0.0)
         {
-            document.getElementById("timelineVolume").classList.remove("icon-volume-2");
-            document.getElementById("timelineVolume").classList.add("icon-volume-x");
-            gui.corePatch().setVolume(0.0);
+            this.muteAudio(true);
         }
         else
         {
-            document.getElementById("timelineVolume").classList.add("icon-volume-2");
-            document.getElementById("timelineVolume").classList.remove("icon-volume-x");
-            gui.corePatch().setVolume(1.0);
+            this.unMuteAudio();
         }
     }
 
