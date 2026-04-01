@@ -582,16 +582,20 @@ export default class ServerOps
     {
         if (!opName || !depSrc || !depType) return;
 
-        gui.jobs().start({
-            "id": "addOpDependency",
-            "title": "adding " + depSrc + " to " + opName
-        });
-        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_DEPENDENCY, {
+        let talkerCmd = TalkerAPI.CMD_ADD_OP_DEPENDENCY;
+
+        /** @type {any} */
+        let talkerPayload = {
             "opName": opName,
             "src": depSrc,
             "type": depType,
             "export": exportName
-        }, (err, res) =>
+        };
+        gui.jobs().start({
+            "id": "addOpDependency",
+            "title": "adding " + depSrc + " to " + opName
+        });
+        platform.talkerAPI.send(talkerCmd, talkerPayload, (err, res) =>
         {
             gui.jobs().finish("addOpDependency");
 
@@ -703,27 +707,27 @@ export default class ServerOps
                 "name": attName
             }, (err, res) =>
             {
-                if (err)
+                if (!err)
+                {
+                    if (res && res.data && res.data.name)
+                    {
+                        const opDoc = gui.opDocs.getOpDocByName(opName);
+                        if (opDoc)
+                        {
+                            if (opDoc.attachmentFiles) opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => { return att !== res.data.name; });
+                        }
+                    }
+                    gui.serverOps.loadOpDependencies(opName, () =>
+                    {
+                        gui.emitEvent("refreshManageOp", opName);
+                    }, true);
+
+                }
+                else
                 {
                     this.showApiError(err);
-                    return;
                 }
 
-                if (res && res.data && res.data.name)
-                {
-                    const opDoc = gui.opDocs.getOpDocByName(opName);
-                    if (opDoc)
-                    {
-                        if (opDoc.attachmentFiles) opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => { return att !== res.data.name; });
-                    }
-                }
-
-                gui.emitEvent("refreshManageOp", opName);
-
-                if (err)
-                {
-                    CABLES.UI.MODAL.showError("ERROR", "unable to remove attachment: " + err.msg);
-                }
             });
         });
     }

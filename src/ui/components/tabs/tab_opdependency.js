@@ -30,7 +30,7 @@ export default class OpDependencyTab extends Tab
     {
         const templateOptions = {
             ...this.options,
-            "acceptedFileTypesJavascript": CablesConstants.FILETYPES.javascript,
+            "acceptedFileTypesUpload": CablesConstants.FILETYPES.opdependency,
             "docsUrl": platform.getCablesDocsUrl()
         };
         return getHandleBarHtml("op_add_dependency_" + this.options.depSource, templateOptions);
@@ -123,17 +123,31 @@ export default class OpDependencyTab extends Tab
                 const depType = depTypeEle.value;
                 if (fileInput && fileInput.files && fileInput.files.length > 0)
                 {
-                    const filename = fileInput.files[0].name;
+                    let filename = fileInput.files[0].name;
+                    if (depType === "static" && !filename.startsWith("att_bin_")) filename = "att_bin_" + filename;
                     fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
                     {
                         if (!err)
                         {
-                            gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
+                            if (depType !== "static")
                             {
-                                submitEle.innerText = "Add";
-                                submitEle.disabled = false;
-                                gui.emitEvent("refreshManageOp", opName);
-                            });
+                                gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
+                                {
+                                    submitEle.innerText = "Add";
+                                    submitEle.disabled = false;
+                                    gui.emitEvent("refreshManageOp", opName);
+                                });
+                            }
+                            else
+                            {
+                                gui.serverOps.loadOpDependencies(opName, (op) =>
+                                {
+                                    submitEle.innerText = "Add";
+                                    submitEle.disabled = false;
+                                    gui.emitEvent("refreshManageOp", opName);
+                                }, true);
+
+                            }
                         }
                         else
                         {
