@@ -155,10 +155,13 @@ export default class ManageOp
                         let suffix = "";
                         suffix = parts[parts.length - 1];
 
+                        let readable = res.attachmentFiles[i].substr(4);
+                        if (res.attachmentFiles[i].startsWith("att_bin_")) readable = res.attachmentFiles[i].substr(8);
+
                         attachmentFiles.push(
                             {
                                 "suffix": suffix,
-                                "readable": res.attachmentFiles[i].substr(4),
+                                "readable": readable,
                                 "original": res.attachmentFiles[i]
                             });
 
