@@ -69,6 +69,10 @@
         -webkit-mask-size: 100%;
 
         background-color: var(--color-13);
+
+        &.rotate {
+            animation: rotating 2s linear infinite;
+        }
     }
 
     .icon-empty

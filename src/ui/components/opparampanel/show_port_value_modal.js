@@ -246,7 +246,7 @@ export default class ModalPortValue
 
             let fullHTML = "";
             fullHTML += "<br/>";
-            fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
+            fullHTML += "<a class=\"cblbutton \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";
 

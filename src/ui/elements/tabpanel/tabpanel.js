@@ -450,7 +450,15 @@ export default class TabPanel extends Events
         const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
         const id = utils.uuid();
 
-        const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\" allow=\"clipboard-write\" style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
+        const src = new URL(url);
+        src.searchParams.append("frameid", id);
+
+        let html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div>";
+        html += "<iframe id=\"iframe" + id + "\" ";
+        html += " src=\"" + src + "\"";
+        html += " allow=\"clipboard-write\" style=\"border:none;width:100%;height:100%\"";
+        html += " onload=\"ele.byId('loading" + id + "').style.display='none'; if(ele.byQuery('#refresh" + id + " .icon-refresh')) { ele.byQuery('#refresh" + id + " .icon-refresh').classList.remove('rotate');}\"";
+        html += "></iframe";
         iframeTab.contentEle.innerHTML = html;
         iframeTab.contentEle.style.padding = "0px";
         let buttons = "";
@@ -463,19 +471,31 @@ export default class TabPanel extends Events
         iframeTab.toolbarEle.innerHTML = buttons;
 
         const iframe = ele.byId("iframe" + id);
-        const hashUpdate = (e) => { if (e.data?.hash) iframe.src = url + e.data.hash; };
+        if (iframe) iframe.dataset.currentTab = "";
+        const hashUpdate = (e) =>
+        {
+            if (e.data?.hash && e.data?.frameid && e.data.frameid === id)
+            {
+                if (iframe) iframe.dataset.currentTab = e.data.hash.replace("#", "");
+            }
+        };
         window.addEventListener("message", hashUpdate);
         iframeTab.on(Tab.EVENT_CLOSE, () =>
         {
             window.removeEventListener("message", hashUpdate);
         });
 
-        ele.clickable(ele.byId("refresh" + id), () =>
+        const refreshButton = ele.byId("refresh" + id);
+        ele.clickable(refreshButton, () =>
         {
             if (iframe)
             {
+                const icon = ele.byQuery("#refresh" + id + " .icon-refresh");
+                if (icon) icon.classList.add("rotate");
                 const newsrc = new URL(iframe.src);
-                newsrc.searchParams.set("nc", utils.uuid());
+                newsrc.searchParams.set("frameid", id);
+                newsrc.searchParams.set("nc", String(Date.now()));
+                if (iframe.dataset.currentTab) newsrc.hash = iframe.dataset.currentTab;
                 iframe.src = newsrc.toString();
             }
         });
@@ -503,7 +523,6 @@ export default class TabPanel extends Events
 
         talkerAPI.on(TalkerAPI.CMD_UI_SAVE_SCREENSHOT, (_opts, _next) =>
         {
-            console.log("HERE!!!");
             gui.patchView.store.saveScreenshot(true, () =>
             {
                 talkerAPI.send(TalkerAPI.EVENT_SCREENSHOT_SAVED);
