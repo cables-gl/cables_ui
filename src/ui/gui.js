@@ -109,6 +109,9 @@ export default class Gui extends Events
     glTimeLineTab = null;
     longLinkHover = false;
 
+    /** @type {Gizmo[]} */
+    #gizmos = [];
+
     /**
      * @param {object} cfg
      */
@@ -226,7 +229,6 @@ export default class Gui extends Events
 
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
-        this._gizmo = [];
         this.transformOverlay = new TransformsOverlay();
         this.htmlEleOverlay = null;
 
@@ -2081,20 +2083,20 @@ export default class Gui extends Events
     {
         if (params == null && idx === undefined)
         {
-            for (let i = 0; i < this._gizmo.length; i++) this._gizmo[i].set(params);
+            for (let i = 0; i < this.#gizmos.length; i++) this.#gizmos[i].set(params);
             return;
         }
 
         idx = idx || 0;
-        if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.corePatch().cgl);
+        if (!this.#gizmos[idx]) this.#gizmos[idx] = new Gizmo(this.corePatch().cgl);
 
         if (!this.userSettings.get("overlaysShow"))
         {
-            this._gizmo[idx].set(null);
+            this.#gizmos[idx].set(null);
             return;
         }
 
-        this._gizmo[idx].set(params);
+        this.#gizmos[idx].set(params);
     }
 
     /**

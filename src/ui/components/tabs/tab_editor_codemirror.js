@@ -308,117 +308,117 @@ export default class EditorTabCodemirror extends Events
 
             snippetCompletion("setUiError = function (\"${1:id}\",\"${1:message}\")",
                 {
-                    "label": "inTriggerButton"
+                    "label": "op.inTriggerButton"
                 }),
 
             snippetCompletion("inTriggerButton(\"${1:name}\")",
                 {
-                    "label": "inTriggerButton"
+                    "label": "op.inTriggerButton"
                 }),
 
             snippetCompletion("inTrigger(\"${1:name}\")",
                 {
-                    "label": "inTrigger"
+                    "label": "op.inTrigger"
                 }),
 
             snippetCompletion("inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
                 {
-                    "label": "inMultiPort"
+                    "label": "op.inMultiPort"
                 }),
 
             snippetCompletion("outTrigger(\"${1:name}\")",
                 {
-                    "label": "outTrigger"
+                    "label": "op.outTrigger"
                 }),
 
             snippetCompletion("inBool(\"${1:name}\",${2:false})",
                 {
-                    "label": "inBool"
+                    "label": "op.inBool"
                 }),
 
             snippetCompletion("inInt(\"${1:name}\",${2:0})",
                 {
-                    "label": "inInt"
+                    "label": "op.inInt"
                 }),
 
             snippetCompletion("inFloatSlider(\"${1:name}\",${2:0})",
                 {
-                    "label": "inFloatSlider"
+                    "label": "op.inFloatSlider"
                 }),
 
             snippetCompletion("inFloat(\"${1:name}\",${2:0})",
                 {
-                    "label": "inFloat"
+                    "label": "op.inFloat"
                 }),
 
             snippetCompletion("inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
                 {
-                    "label": "inDropDown"
+                    "label": "op.inDropDown"
                 }),
 
             snippetCompletion("inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
                 {
-                    "label": "inSwitch"
+                    "label": "op.inSwitch"
                 }),
 
             snippetCompletion("inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
                 {
-                    "label": "inStringEditor"
+                    "label": "op.inStringEditor"
                 }),
 
             snippetCompletion("inString(\"${1:name}\",\"${2:default}\")",
                 {
-                    "label": "inString"
+                    "label": "op.inString"
                 }),
 
             snippetCompletion("inObject(\"${1:name}\")",
                 {
-                    "label": "inObject"
+                    "label": "op.inObject"
                 }),
 
             snippetCompletion("inTexture(\"${1:name}\")",
                 {
-                    "label": "inTexture"
+                    "label": "op.inTexture"
                 }),
 
             snippetCompletion("inArray(\"${1:name}\")",
                 {
-                    "label": "inArray"
+                    "label": "op.inArray"
                 }),
 
             snippetCompletion("inUrl(\"${1:name}\")",
                 {
-                    "label": "inUrl"
+                    "label": "op.inUrl"
                 }),
 
             snippetCompletion("outNumber(\"${1:name}\")",
                 {
-                    "label": "outNumber"
+                    "label": "op.outNumber"
                 }),
 
             snippetCompletion("outBoolNum(\"${1:name}\")",
                 {
-                    "label": "outBoolNum"
+                    "label": "op.outBoolNum"
                 }),
 
             snippetCompletion("outString(\"${1:name}\")",
                 {
-                    "label": "outString"
+                    "label": "op.outString"
                 }),
 
             snippetCompletion("outObject(\"${1:name}\")",
                 {
-                    "label": "outObject"
+                    "label": "op.outObject"
                 }),
 
             snippetCompletion("outArray(\"${1:name}\")",
                 {
-                    "label": "outArray"
+                    "label": "op.outArray"
                 }),
 
             snippetCompletion("outTexture(\"${1:name}\")",
                 {
-                    "label": "outTexture"
+                    "label": "op.outTexture"
                 }),
 
             snippetCompletion("CABLES.map(${1:name})",
@@ -500,6 +500,12 @@ export default class EditorTabCodemirror extends Events
                 {
                     "label": "op.patch.isEditorMode"
                 }),
+
+            snippetCompletion("op.isCurrentUiOp()",
+                {
+                    "label": "op.isCurrentUiOp"
+                }),
+
         ];
     }
 }
