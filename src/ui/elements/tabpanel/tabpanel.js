@@ -463,7 +463,14 @@ export default class TabPanel extends Events
         iframeTab.toolbarEle.innerHTML = buttons;
 
         const iframe = ele.byId("iframe" + id);
-        const hashUpdate = (e) => { if (e.data?.hash) iframe.src = url + e.data.hash; };
+        let currentHash = null;
+        const hashUpdate = (e) =>
+        {
+            if (e.data?.hash)
+            {
+                currentHash = e.data.hash.replace("#", "");
+            }
+        };
         window.addEventListener("message", hashUpdate);
         iframeTab.on(Tab.EVENT_CLOSE, () =>
         {
@@ -476,6 +483,7 @@ export default class TabPanel extends Events
             {
                 const newsrc = new URL(iframe.src);
                 newsrc.searchParams.set("nc", utils.uuid());
+                if (currentHash) newsrc.hash = currentHash;
                 iframe.src = newsrc.toString();
             }
         });
