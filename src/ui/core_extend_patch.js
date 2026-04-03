@@ -347,6 +347,7 @@ class UiPatch extends Patch
             {
                 if (oldOp.portsIn[j].links.length === 0)
                 {
+                    console.log(oldOp.portsIn[j].name + "", oldOp.portsIn[j].get());
                     const p = op.getPort(oldOp.portsIn[j].name);
                     if (!p)
                     {
