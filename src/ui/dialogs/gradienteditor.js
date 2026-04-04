@@ -46,6 +46,7 @@ export default class GradientEditor
     #previousContent;
     #downDot = null;
     #imageData;
+    #docListener = null;
 
     /**
      * @param {any} opid
@@ -365,6 +366,17 @@ export default class GradientEditor
 
                 this.setCurrentKey(key);
             }
+
+            this.#docListener = document.body.addEventListener("pointerup", (e) =>
+            {
+                document.body.removeEventListener("pointerup", this.#docListener);
+                if (this.#downDot)
+                {
+                    this.#downDot.style.pointerEvents = "initial";
+                    this.#downDot = null;
+                }
+
+            });
         });
 
     }
@@ -404,8 +416,15 @@ export default class GradientEditor
             this.#elContainer.style.top = 100 + "px";
         }
 
+        ele.byId("gradientEditorCanvas").addEventListener("pointerdown", (e) =>
+        {
+            // ele.byId("gradientEditorCanvas").setPointerCapture(e.pointerId);
+        });
+
         ele.byId("gradientEditorCanvas").addEventListener("pointerup", (e) =>
         {
+            document.body.removeEventListener("pointerup", this.#docListener); // ele.byId("gradientEditorCanvas").releasePointerCapture(e.pointerId);
+
             if (this.#downDot)
             {
                 this.#downDot.style.pointerEvents = "initial";
