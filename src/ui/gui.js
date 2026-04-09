@@ -904,14 +904,14 @@ export default class Gui extends Events
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             const r = this._elPatch.getBoundingClientRect();
-            this._elGlCanvasDom.style.width = r.width;
-            this._elGlCanvasDom.style.height = r.height;
 
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.top = 0 + "px";
+
             canvasContWidth = r.width;
             canvasContHeight = r.height;
             canvasContRight = "initial";
+            this.canvasManager.setSize(r.width, r.height);
 
             this._elCablesCanvasContainer.style["z-index"] = -1;
         }
@@ -985,16 +985,16 @@ export default class Gui extends Events
         else return 0;
     }
 
-    _switchCanvasSizeNormal()
-    {
-        if (this.canvasManager.mode != this.canvasManager.CANVASMODE_NORMAL)
-            this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
+    // _switchCanvasSizeNormal()
+    // {
+    //     if (this.canvasManager.mode != this.canvasManager.CANVASMODE_NORMAL)
+    //         this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
 
-        this.rendererWidth = this._oldCanvasWidth;
-        this.rendererHeight = this._oldCanvasHeight;
-    }
+    //     this.rendererWidth = this._oldCanvasWidth;
+    //     this.rendererHeight = this._oldCanvasHeight;
+    // }
 
-    _switchCanvasPatchBg()
+    setCanvasPatchBg()
     {
         this._oldCanvasWidth = this.rendererWidth;
         this._oldCanvasHeight = this.rendererHeight;
@@ -1006,44 +1006,38 @@ export default class Gui extends Events
         this.rightPanelWidth = this._oldCanvasWidth;
     }
 
-    cyclePatchBg()
+    cycleCanvasSize()
     {
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED) this.toggleMaximizeCanvas();
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
-            this._switchCanvasPatchBg();
-        }
-        else
-        {
-            this._switchCanvasSizeNormal();
-        }
 
-        this.setLayout();
-
-        if (this.canvasManager.getCanvasUiBar())
-            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
-    }
-
-    toggleMaximizeCanvas()
-    {
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
-        {
-            this.patchView.patchRenderer.storeSubPatchViewBox();
-            this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
-            this.rendererWidth = this._oldCanvasWidth;
-            this.rendererHeight = this._oldCanvasHeight;
-        }
-        else
-        {
-            this.patchView.patchRenderer.restoreSubPatchViewBox(this.patchView.getCurrentSubPatch());
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this.canvasManager.mode = this.canvasManager.CANVASMODE_MAXIMIZED;
+        }
+
+        this.canvasManager.mode++;
+        this.canvasManager.mode %= 3;
+
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
+        {
+
+            this.setCanvasPatchBg();
+
+        }
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
+        {
+            this.patchView.patchRenderer.restoreSubPatchViewBox(this.patchView.getCurrentSubPatch());
 
             if (!this.notifiedFullscreen) notify("Press escape to exit maximized mode");
             this.notifiedFullscreen = true;
+        }
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
+        {
+            this.patchView.patchRenderer.storeSubPatchViewBox();
+            this.rendererWidth = this._oldCanvasWidth;
+            this.rendererHeight = this._oldCanvasHeight;
         }
 
         if (this.canvasManager.getCanvasUiBar())
@@ -1725,8 +1719,7 @@ export default class Gui extends Events
         this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPalette.show(); });
-        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.toggleMaximizeCanvas(); });
-        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, () => { this.cyclePatchBg(); });
+        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.cycleCanvasSize(); });
         this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, () =>
         {
             CmdUi.togglePatchBgPatchField();
@@ -1812,7 +1805,7 @@ export default class Gui extends Events
         {
             if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
             {
-                this.toggleMaximizeCanvas();
+                this.cycleCanvasSize();
             }
             else
             {

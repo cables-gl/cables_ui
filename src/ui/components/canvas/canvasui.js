@@ -202,7 +202,6 @@ export default class CanvasUi
         if (show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
-
             {
                 ele.hide(this._elCanvasModalDarkener);
             }

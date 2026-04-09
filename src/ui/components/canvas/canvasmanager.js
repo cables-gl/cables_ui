@@ -77,7 +77,7 @@ export default class CanvasManager
             if (hasChanged) gui.setLayout();
             gui.corePatch().cgl.updateSize();
         }
-        if (m == this.CANVASMODE_PATCHBG) gui._switchCanvasPatchBg();
+        if (m == this.CANVASMODE_PATCHBG) gui.setCanvasPatchBg();
     }
 
     get mode()
