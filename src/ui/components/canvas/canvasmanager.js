@@ -314,12 +314,9 @@ export default class CanvasManager
         containerEle.style.width = "100%";
         containerEle.style.height = "100%";
         nBody.appendChild(containerEle);
+        // gui.corePatch().containerElement = containerEle;
 
         containerEle.id = "cablescanvas";
-
-        // const base = document.createElement("base");
-        // base.setAttribute("href", "https://meineSeite.de/");
-        // document.head.appendChild(base);
 
         const p = gui.corePatch().cgl.canvas.parentElement;
 

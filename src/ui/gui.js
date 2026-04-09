@@ -220,6 +220,8 @@ export default class Gui extends Events
                     CABLES.UI.showShaderError(shader);
             });
 
+        patchConfig.containerElement = null;// set to null, so e.g. popout canvas gets the correct parent
+
         /** @type {PatchView} */
         this.patchView = new PatchView(this._corePatch);
 
