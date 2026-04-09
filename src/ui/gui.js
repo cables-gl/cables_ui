@@ -822,7 +822,6 @@ export default class Gui extends Events
         else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             elCanvasIcons.style.width = optionsWidth + "px";
-            console.log("text ", optionsWidth);
         }
         else
         {
@@ -1014,7 +1013,7 @@ export default class Gui extends Events
         this.rightPanelWidth = this.#oldCanvasWidth;
     }
 
-    cycleCanvasSize()
+    cycleCanvasSize(mode)
     {
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
@@ -1024,8 +1023,15 @@ export default class Gui extends Events
             this.#oldCanvasHeight = this.rendererHeight;
         }
 
-        this.canvasManager.mode++;
-        this.canvasManager.mode %= 3;
+        if (mode == undefined)
+        {
+            this.canvasManager.mode++;
+            this.canvasManager.mode %= 3;
+        }
+        else
+        {
+            this.canvasManager.mode = mode;
+        }
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {

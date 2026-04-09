@@ -396,7 +396,11 @@ class CmdUi
 
     static togglePatchBgRenderer()
     {
-        gui.cyclePatchBg();
+        if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_NORMAL)
+            gui.cycleCanvasSize(gui.canvasManager.CANVASMODE_PATCHBG);
+        else
+            gui.cycleCanvasSize(gui.canvasManager.CANVASMODE_NORMAL);
+
     }
 
     static showKeys()
