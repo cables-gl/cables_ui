@@ -112,6 +112,10 @@ export default class Gui extends Events
     /** @type {Gizmo[]} */
     #gizmos = [];
 
+    #oldCanvasWidth = 0;
+    #oldCanvasHeight = 0;
+    #oldRightPanelWidth = 0;
+
     /**
      * @param {object} cfg
      */
@@ -260,8 +264,6 @@ export default class Gui extends Events
         this.onSaveProject = null;
         this.lastNotIdle = now();
 
-        this._oldCanvasWidth = 0;
-        this._oldCanvasHeight = 0;
         this._oldShowingEditor = false;
 
         this._currentProject = null;
@@ -732,11 +734,7 @@ export default class Gui extends Events
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
-        // this.rightPanelWidth = 200;// this.para;//this.rendererWidthScaled;
-        // if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
-        // this.rightPanelWidth = this.splitpaneRightPos;
-
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FLOAT || this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             this._elSplitterRight.style.top = 0 + "px";
             this._elSplitterRight.style.height = (patchHeight) + "px";
@@ -746,6 +744,7 @@ export default class Gui extends Events
             this._elSplitterRight.style.top = (this.rendererHeight + this.canvasInfoUiHeight) + "px";
             this._elSplitterRight.style.height = (patchHeight + 2 - this.rendererHeight) + "px";
         }
+
         this._elSplitterRight.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
         this._elSplitterRenderer.style.top = this.rendererHeightScaled + "px";
         this._elSplitterRenderer.style.width = this.rendererWidthScaled + "px";
@@ -820,6 +819,11 @@ export default class Gui extends Events
             elCanvasIcons.style.right = optionsWidth + "px";
             this._elSplitterRenderer.style.right = optionsWidth + "px";
         }
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
+        {
+            elCanvasIcons.style.width = optionsWidth + "px";
+            console.log("text ", optionsWidth);
+        }
         else
         {
             this._elSplitterRenderer.style.right = 0 + "px";
@@ -828,7 +832,12 @@ export default class Gui extends Events
 
         const widthResizeIcon = 30;
 
-        ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
+        let canvasIconBarWidth = this.rendererWidth - widthResizeIcon - 10;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
+        {
+            canvasIconBarWidth = optionsWidth;
+        }
+        ele.byId("canvasIconBar").style.width = canvasIconBarWidth + "px";
 
         let top = 0;
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) top = 0;
@@ -996,14 +1005,13 @@ export default class Gui extends Events
 
     setCanvasPatchBg()
     {
-        this._oldCanvasWidth = this.rendererWidth;
-        this._oldCanvasHeight = this.rendererHeight;
+        this.#oldCanvasWidth = this.rendererWidth;
+        this.#oldCanvasHeight = this.rendererHeight;
 
         if (this.canvasManager.mode != this.canvasManager.CANVASMODE_PATCHBG)
             this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
 
-        this.rendererHeight = 100;
-        this.rightPanelWidth = this._oldCanvasWidth;
+        this.rightPanelWidth = this.#oldCanvasWidth;
     }
 
     cycleCanvasSize()
@@ -1011,10 +1019,9 @@ export default class Gui extends Events
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
-
-            this._oldCanvasWidth = this.rendererWidth;
-            this._oldCanvasHeight = this.rendererHeight;
-            this.rightPanelWidth = this.rendererWidth;
+            this.#oldRightPanelWidth = this.rightPanelWidth;
+            this.#oldCanvasWidth = this.rendererWidth;
+            this.#oldCanvasHeight = this.rendererHeight;
         }
 
         this.canvasManager.mode++;
@@ -1022,10 +1029,9 @@ export default class Gui extends Events
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
-
             this.setCanvasPatchBg();
-
         }
+
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this.patchView.patchRenderer.restoreSubPatchViewBox(this.patchView.getCurrentSubPatch());
@@ -1033,11 +1039,13 @@ export default class Gui extends Events
             if (!this.notifiedFullscreen) notify("Press escape to exit maximized mode");
             this.notifiedFullscreen = true;
         }
+
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
             this.patchView.patchRenderer.storeSubPatchViewBox();
-            this.rendererWidth = this._oldCanvasWidth;
-            this.rendererHeight = this._oldCanvasHeight;
+            this.rightPanelWidth = this.#oldRightPanelWidth;
+            this.rendererWidth = this.#oldCanvasWidth;
+            this.rendererHeight = this.#oldCanvasHeight;
         }
 
         if (this.canvasManager.getCanvasUiBar())
