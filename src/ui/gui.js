@@ -114,7 +114,7 @@ export default class Gui extends Events
 
     #oldCanvasWidth = 0;
     #oldCanvasHeight = 0;
-    #oldRightPanelWidth = 0;
+    #oldRightPanelWidth = 300;
 
     /**
      * @param {object} cfg

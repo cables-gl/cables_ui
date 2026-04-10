@@ -148,8 +148,9 @@
 
         .collection
         {
-            border: 2px solid var(--color-07);
+            background-color: var(--color-01);
             margin-bottom: 3px;
+            opacity: 0.65;
         }
     }
 
@@ -230,7 +231,9 @@
 
     .selected
     {
-		background-color: var(--color_op_bg_active);
+		background-color: var(--color_op_bg_active) !important;
+        opacity: 1;
+
         a
         {
             color:white;
