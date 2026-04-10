@@ -35,7 +35,7 @@
             {{#if collection.ops.length}}
                 <br/><br/>
                 {{#each collection.ops}}
-                    <img src="{{../cablesUrl}}/api/op/layout/{{.}}"/>
+                    <a href="{{../cablesUrl}}/op/{{.}}"><img src="{{../cablesUrl}}/api/op/layout/{{.}}"/></a>
                 {{/each}}
             {{/if}}
         {{/if}}
