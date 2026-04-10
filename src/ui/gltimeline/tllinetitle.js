@@ -62,6 +62,7 @@ export class TlTitle extends Events
     #elOpname;
     #elPortname;
     #elPortValue;
+    #elValue;
 
     /**
      * @param {HTMLElement} parentEl
@@ -100,6 +101,10 @@ export class TlTitle extends Events
 
         this.#elPortname = document.createElement("span");
         this.#elPortValue.appendChild(this.#elPortname);
+
+        this.#elValue = document.createElement("div");
+        this.#elValue.classList.add("portValue");
+        this.#elPortValue.appendChild(this.#elValue);
 
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
@@ -474,8 +479,8 @@ export class TlTitle extends Events
      */
     updateValue(t)
     {
-        // if (this.#anim)
-        //     this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
+        if (this.#anim)
+            this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
     }
 
     scrollIntoView()

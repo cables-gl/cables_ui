@@ -43,6 +43,11 @@
             max-width: var(--portNameWidth);
             overflow: hidden ;
             text-overflow: ellipsis;
+            .portValue{
+                float: right;
+                padding-left:10px;
+                padding-right:10px;
+            }
         }
 
         .hover

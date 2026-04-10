@@ -271,6 +271,8 @@ export default class CanvasManager
 
     popOut()
     {
+
+        gui.corePatch().config.containerElement = null;// set to null, so e.g. popout canvas gets the correct parent
         if (this.#canvasMode === this.CANVASMODE_POPOUT)
         {
             if (this.subWindow)
