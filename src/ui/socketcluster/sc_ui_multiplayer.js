@@ -49,12 +49,6 @@ export default class ScUiMultiplayer extends Events
             return a.username.localeCompare(b.username);
         });
 
-        if (clientList.length < 2)
-        {
-            if (!this._connection.client.isPilot) ele.byId("multiplayerbar").style.display = "none";
-            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        }
-
         const data = {
             "clients": clientList,
             "multiplayerCapable": this._connection.multiplayerCapable,
@@ -171,7 +165,18 @@ export default class ScUiMultiplayer extends Events
             });
         }
         const mpBar = ele.byId("multiplayerbar");
-        if (mpBar) mpBar.style.display = "block";
+        if (mpBar)
+        {
+            if (clientList.length < 2)
+            {
+                mpBar.style.display = "none";
+                gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+            }
+            else
+            {
+                mpBar.style.display = "block";
+            }
+        }
     }
 
     _jumpToCursor(client)
