@@ -66,7 +66,7 @@ export default class CanvasManager
         const hasChanged = m != this.#canvasMode;
         this.#canvasMode = m;
 
-        userSettings.set(CanvasManager.PREF_CANVASMODE, m);
+        if (!gui.isRemoteClient) userSettings.set(CanvasManager.PREF_CANVASMODE, m);
         if (m == this.CANVASMODE_POPOUT)
         {
             this.popOut();
