@@ -109,6 +109,35 @@ export class TlTitle extends Events
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
 
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
+        {
+            if (this.#op && !this.#op.isCurrentUiOp()) gui.patchView.setSelectedOpById(this.#op.id);
+
+            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+            const cloned = new e.constructor(e.type, e);
+            if (el) el.dispatchEvent(cloned);
+            else console.log("no el found DOWN");
+            e.preventDefault();
+        });
+
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_UP, (e) =>
+        {
+            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+            const cloned = new e.constructor(e.type, e);
+            if (el) el.dispatchEvent(cloned);
+            else console.log("no el found");
+            e.preventDefault();
+        });
+
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_MOVE, (e) =>
+        {
+            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+            const cloned = new e.constructor(e.type, e);
+            if (el) el.dispatchEvent(cloned);
+            else console.log("no el found");
+            e.preventDefault();
+        });
+
         this.#el.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#el.addEventListener(DomEvents.POINTER_ENTER, () =>
@@ -479,7 +508,7 @@ export class TlTitle extends Events
      */
     updateValue(t)
     {
-        if (this.#anim)
+        if (this.#anim && this.#elValue)
             this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
     }
 
