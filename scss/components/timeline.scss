@@ -93,6 +93,8 @@
 
         &.selectedOp
         {
+            background-color: var(--color-02);
+
             .opname
             {
                 background-color: #555;

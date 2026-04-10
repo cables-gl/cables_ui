@@ -512,7 +512,8 @@ export class TlAnimLine extends Events
     {
         if (this.checkDisposed()) return;
 
-        if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColorArray(gui.theme.colors_timeline.background_hover);
+        if (this.#ops[0].isCurrentUiOp()) this.#rectBg.setColorArray([0.1, 0.1, 0.1, 1]);
+        else if (this.isHovering() && !this.isGraphLayout()) this.#rectBg.setColorArray(gui.theme.colors_timeline.background_hover);
         else this.#rectBg.setColorArray(gui.theme.colors_timeline.background);
 
         for (let i = 0; i < this.#titles.length; i++)
