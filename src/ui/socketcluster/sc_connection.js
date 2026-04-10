@@ -308,7 +308,7 @@ export default class ScConnection extends Events
                 "requestedBy": requestedBy,
                 "forceResync": forceResync
             };
-            this._paco.send(CABLES.PACO_LOAD, payload);
+            this._paco.send(CABLES.PACO_LOAD, payload, forceResync);
             this._pacoSynced = true;
             if (gui.scene().timer)
             {
@@ -322,7 +322,7 @@ export default class ScConnection extends Events
     {
         if (this.inMultiplayerSession && !this.client.isPilot)
         {
-            this.sendPaco({ "requestedBy": this.client.clientId }, "resync");
+            this.sendPaco({ "requestedBy": this.client.clientId }, "resync", true);
         }
     }
 
@@ -806,7 +806,7 @@ export default class ScConnection extends Events
                 if (this._pacoEnabled && this.client) // && this.client.isPilot)
                 {
                     this._log.info("RESYNC sending paco patch....");
-                    this._startPacoSend(msg.clientId);
+                    this._startPacoSend(msg.clientId, true);
                 }
             };
             if (this.inMultiplayerSession)
