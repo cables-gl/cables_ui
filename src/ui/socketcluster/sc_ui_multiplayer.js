@@ -53,7 +53,6 @@ export default class ScUiMultiplayer extends Events
         {
             if (!this._connection.client.isPilot) ele.byId("multiplayerbar").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            return;
         }
 
         const data = {

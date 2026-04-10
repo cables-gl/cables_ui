@@ -371,13 +371,16 @@ export default class ScConnection extends Events
         this._send(this.patchChannelName, "chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
-    sendPaco(payload, name = "paco")
+    sendPaco(payload, name = "paco", sendOnEmptyClientList = false)
     {
         if (!this._pacoEnabled) return;
         if (this.client && (!this.client.isRemoteClient || name === "resync"))
         {
-            payload.name = name || "paco";
-            this._send(this.userPatchChannelName, "paco", payload);
+            if (sendOnEmptyClientList || this.state.getNumClients() > 1)
+            {
+                payload.name = name || "paco";
+                this._send(this.userPatchChannelName, "paco", payload);
+            }
         }
     }
 
@@ -435,7 +438,6 @@ export default class ScConnection extends Events
                 if (!this.isConnected()) return;
                 if (this.inMultiplayerSession)
                 {
-                    // notifyError("multiplayer server disconnected!", "wait for reconnection to rejoin session");
                     this.leaveMultiplayerSession();
                 }
                 // socketcluster reports "hung up" errors during own reconnection/keepalive phase
