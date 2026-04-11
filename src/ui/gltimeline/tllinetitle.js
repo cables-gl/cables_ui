@@ -65,8 +65,10 @@ export class TlTitle extends Events
     #elPortname;
     #elPortValue;
     #elValue;
-    #elKeyButtons;
-    #elKeyKfPrev;
+
+    btnKeyPrev = null;
+    btnKeyAdd = null;
+    btnKeyNext = null;
 
     /**
      * @param {HTMLElement} parentEl
@@ -103,9 +105,9 @@ export class TlTitle extends Events
         this.#elPortValue = document.createElement("span");
         this.#elPortValue.classList.add("portAndValue");
         this.#el.appendChild(this.#elPortValue);
-        this.#elPortValue.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#elPortname = document.createElement("span");
+        this.#elPortname.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
         this.#elPortValue.appendChild(this.#elPortname);
 
         this.#elValue = document.createElement("div");
@@ -118,6 +120,7 @@ export class TlTitle extends Events
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             if (this.#op && !this.#op.isCurrentUiOp()) gui.patchView.setSelectedOpById(this.#op.id);
+            if (!ele.byClass("opparams" + this.#port.op.id)) return;
 
             const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
             const cloned = new e.constructor(e.type, e);
@@ -128,6 +131,7 @@ export class TlTitle extends Events
 
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_UP, (e) =>
         {
+            if (!ele.byClass("opparams" + this.#port.op.id)) return;
             const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
             const cloned = new e.constructor(e.type, e);
             if (el) el.dispatchEvent(cloned);
@@ -137,6 +141,7 @@ export class TlTitle extends Events
 
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_MOVE, (e) =>
         {
+            if (!ele.byClass("opparams" + this.#port.op.id)) return;
             const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
             const cloned = new e.constructor(e.type, e);
             if (el) el.dispatchEvent(cloned);
@@ -363,19 +368,19 @@ export class TlTitle extends Events
         if (this.#port && !this.btnKeyAdd)
         {
 
-            this.btnKeyPrev = this.addButtonRight("<span class=\"icon icon-chevron-left icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+            this.btnKeyPrev = this.addButtonRight("<span class=\"icon icon-chevron-left icon-0_5x nomargin info\" data-info=\"tlbtnPrev\"></span>",
                 (e) =>
                 {
                     this.#gltl.jumpKey(-1, [this.animLine]);
                 }
             );
-            this.btnKeyAdd = this.addButtonRight("<span class=\"icon icon-diamond icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+            this.btnKeyAdd = this.addButtonRight("<span class=\"icon icon-diamond icon-0_5x nomargin info\" data-info=\"tlbtnCreate\"></span>",
                 (e) =>
                 {
                     this.#gltl.createKey(this.#anim, this.#port.op.patch.timer.getTime(), this.#port.get());
                 }
             );
-            this.btnKeyNext = this.addButtonRight("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+            this.btnKeyNext = this.addButtonRight("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlbtnNext\"></span>",
                 (e) =>
                 {
                     this.#gltl.jumpKey(1, [this.animLine]);
@@ -541,6 +546,28 @@ export class TlTitle extends Events
     {
         if (this.#anim && this.#elValue)
             this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
+
+        const key = this.#anim.getKey(t);
+
+        if (!this.#anim.hasStarted(t) || this.#anim.hasEnded(t + 0.001)) this.#elValue.classList.add("outside");
+        else this.#elValue.classList.remove("outside");
+
+        if (this.btnKeyAdd)
+        {
+            if (key.time == t)
+            {
+                this.btnKeyAdd.children[0].classList.add("icon-diamond-fill");
+                this.btnKeyAdd.children[0].classList.remove("icon-diamond");
+                this.btnKeyAdd.children[0].classList.add("onkey");
+            }
+            else
+            {
+                this.btnKeyAdd.children[0].classList.remove("icon-diamond-fill");
+                this.btnKeyAdd.children[0].classList.add("icon-diamond");
+                this.btnKeyAdd.children[0].classList.remove("onkey");
+            }
+        }
+
     }
 
     scrollIntoView()

@@ -32,8 +32,8 @@
             width:22px;
             display: inline-block;
             padding-right: 0px;
-        }
 
+        }
 
         .portAndValue
         {
@@ -41,8 +41,6 @@
             border-left:3px solid transparent;
             position: absolute;
             left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - var(--buttonWidth));
-            /* left:var(--portNameWidth); */
-            /* width: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px); */
             width: var(--portNameWidth);
             max-width: var(--portNameWidth);
             overflow: hidden ;
@@ -50,9 +48,14 @@
 
             .portValue
             {
+                color:#eee;
                 float: right;
                 padding-left:10px;
                 padding-right:10px;
+
+                &.outside{
+                    color:#888;
+                }
             }
         }
 
@@ -72,6 +75,16 @@
             left: calc(var(--timelineSplitterLeft) - 5px);
             transform: translate(-100%);
             z-index: 999;
+
+            .button-small
+            {
+                background-color: var(--color-02)!important;
+            }
+
+            .button-small:hover
+            {
+                background-color: var(--color-05)!important;
+            }
 
         }
 
@@ -96,6 +109,7 @@
                 color:#aaa;
             }
         }
+        .bu
 
         &.selectedOp
         {
@@ -106,6 +120,7 @@
                 background-color: #555;
                 border-radius: 4px;
             }
+
         }
 
         .hiddenOpname
