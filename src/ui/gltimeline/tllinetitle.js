@@ -1,5 +1,5 @@
 import { Events, ele } from "cables-shared-client";
-import { Anim, Op, Port } from "cables";
+import { Anim, AnimKey, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { TlKeys } from "./tlkeys.js";
 import { TlAnimLine } from "./tlanimline.js";
@@ -52,17 +52,21 @@ export class TlTitle extends Events
     /** @type {TlAnimLine} */
     animLine = null;
 
+    #options = {};
+
     collapsed = false;
     #hideOpName = false;
     isHovering = false;
     folderButton = null;
-    #options = {};
+
     #elButtonsRight;
     #elIndent;
     #elOpname;
     #elPortname;
     #elPortValue;
     #elValue;
+    #elKeyButtons;
+    #elKeyKfPrev;
 
     /**
      * @param {HTMLElement} parentEl
@@ -93,6 +97,8 @@ export class TlTitle extends Events
 
         this.#elOpname = document.createElement("span");
         this.#el.appendChild(this.#elOpname);
+
+        ///
 
         this.#elPortValue = document.createElement("span");
         this.#elPortValue.classList.add("portAndValue");
@@ -354,6 +360,29 @@ export class TlTitle extends Events
             }
         }
 
+        if (this.#port && !this.btnKeyAdd)
+        {
+
+            this.btnKeyPrev = this.addButtonRight("<span class=\"icon icon-chevron-left icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+                (e) =>
+                {
+                    this.#gltl.jumpKey(-1, [this.animLine]);
+                }
+            );
+            this.btnKeyAdd = this.addButtonRight("<span class=\"icon icon-diamond icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+                (e) =>
+                {
+                    this.#gltl.createKey(this.#anim, this.#port.op.patch.timer.getTime(), this.#port.get());
+                }
+            );
+            this.btnKeyNext = this.addButtonRight("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
+                (e) =>
+                {
+                    this.#gltl.jumpKey(1, [this.animLine]);
+                }
+            );
+        }
+
         if (this.#port && !this.muteButton)
             this.muteButton = this.addButtonRight("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
                 (e) =>
@@ -365,6 +394,7 @@ export class TlTitle extends Events
                     this.updateIcons();
                 }
             );
+
         if (this.muteButton)
         {
             if (this.#port.animMuted)
@@ -383,6 +413,7 @@ export class TlTitle extends Events
             }
             this.#port.emitEvent("animLineUpdate");
         }
+
     }
 
     /**

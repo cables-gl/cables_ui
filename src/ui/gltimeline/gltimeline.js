@@ -2009,16 +2009,18 @@ export class GlTimeline extends Events
 
     /**
      * @param {number} dir 1 or -1
+     * @param {TlAnimLine[]} [animLines]
      */
-    jumpKey(dir)
+    jumpKey(dir, animLines)
     {
         let theKey = null;
+        animLines = animLines || this.#tlAnims;
 
-        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+        for (let anii = 0; anii < animLines.length; anii++)
         {
-            for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
+            for (let ans = 0; ans < animLines[anii].anims.length; ans++)
             {
-                const anim = this.#tlAnims[anii].anims[ans];
+                const anim = animLines[anii].anims[ans];
                 if (!anim.tlActive) continue;
                 const index = 0;
 

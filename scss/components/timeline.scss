@@ -1,6 +1,7 @@
 .cablesCssUi
 {
-    --portNameWidth:150px;
+    --portNameWidth:170px;
+    --buttonWidth:100px;
 
     .collapsed .tlTitle:not(:first-child)
     {
@@ -33,17 +34,22 @@
             padding-right: 0px;
         }
 
+
         .portAndValue
         {
             background-color:black ;
             border-left:3px solid transparent;
             position: absolute;
-            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px);
+            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - var(--buttonWidth));
+            /* left:var(--portNameWidth); */
+            /* width: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px); */
             width: var(--portNameWidth);
             max-width: var(--portNameWidth);
             overflow: hidden ;
             text-overflow: ellipsis;
-            .portValue{
+
+            .portValue
+            {
                 float: right;
                 padding-left:10px;
                 padding-right:10px;
