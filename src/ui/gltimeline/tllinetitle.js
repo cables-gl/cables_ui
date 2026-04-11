@@ -230,12 +230,13 @@ export class TlTitle extends Events
     setHeight(h)
     {
         this.#el.style.height = Math.max(0, h - 6) + "px";
+        if (h == 0) this.#el.style.display = "none";
+        else this.#el.style.display = "block";
     }
 
     selectAllKeys()
     {
         this.#gltl.unSelectAllKeys();
-        // this.#gltl.deactivateAllAnims(true);
         const keys = this.animLine.getGlKeysForAnim(this.#anim);
         keys?.selectAll();
     }
@@ -339,13 +340,13 @@ export class TlTitle extends Events
             {
                 this.folderButton.children[0].classList.remove("icon-chevron-right");
                 this.folderButton.children[0].classList.add("icon-chevron-down");
-                if (this.#el.parentElement) this.#el.parentElement.classList.remove("collapsed");
+                if (this.#el) this.#el.classList.remove("collapsed");
             }
             else
             {
                 this.folderButton.children[0].classList.add("icon-chevron-right");
                 this.folderButton.children[0].classList.remove("icon-chevron-down");
-                if (this.#el.parentElement) this.#el.parentElement.classList.add("collapsed");
+                if (this.#el) this.#el.classList.add("collapsed");
             }
         }
 
