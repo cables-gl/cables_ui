@@ -69,6 +69,7 @@ export class TlTitle extends Events
     btnKeyPrev = null;
     btnKeyAdd = null;
     btnKeyNext = null;
+    #lastVal = null;
 
     /**
      * @param {HTMLElement} parentEl
@@ -120,13 +121,20 @@ export class TlTitle extends Events
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             if (this.#op && !this.#op.isCurrentUiOp()) gui.patchView.setSelectedOpById(this.#op.id);
-            if (!ele.byClass("opparams" + this.#port.op.id)) return;
 
-            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
-            const cloned = new e.constructor(e.type, e);
-            if (el) el.dispatchEvent(cloned);
-            else console.log("no el found DOWN");
-            e.preventDefault();
+            if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no");
+
+            setTimeout(() =>
+            {
+                if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no2");
+                if (this.#op && !this.#op.isCurrentUiOp()) return;
+
+                const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+                const cloned = new e.constructor(e.type, e);
+                if (el) el.dispatchEvent(cloned);
+                else console.log("no el found DOWN");
+                e.preventDefault();
+            }, 300);
         });
 
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_UP, (e) =>
@@ -142,6 +150,8 @@ export class TlTitle extends Events
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_MOVE, (e) =>
         {
             if (!ele.byClass("opparams" + this.#port.op.id)) return;
+            if (this.#op && !this.#op.isCurrentUiOp()) return;
+
             const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
             const cloned = new e.constructor(e.type, e);
             if (el) el.dispatchEvent(cloned);
@@ -164,16 +174,15 @@ export class TlTitle extends Events
             this.emitEvent("hoverchange");
         });
 
-        ele.clickable(this.#elOpname, (e) =>
+        this.#elOpname.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
             this.#gltl.showParamOp(this.#op);
         });
 
-        ele.clickable(this.#elPortValue, (e) =>
+        this.#elPortValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
-
             this.#gltl.showParamAnim(this.#anim);
         });
 
@@ -545,7 +554,14 @@ export class TlTitle extends Events
     updateValue(t)
     {
         if (this.#anim && this.#elValue)
-            this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
+        {
+
+            const v = Math.round(1000 * this.#anim.getValue(t)) / 1000;
+            if (v != this.#lastVal)
+                this.#elValue.innerHTML = String(v);
+
+            this.#lastVal = v;
+        }
 
         const key = this.#anim.getKey(t);
 
