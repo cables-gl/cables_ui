@@ -1011,6 +1011,14 @@ export default class Gui extends Events
             this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
 
         this.rightPanelWidth = this.#oldCanvasWidth;
+
+        ele.byId("canvasPatchBg").classList.add("icon-highlight");
+    }
+
+    toggleMaximized()
+    {
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED) this.cycleCanvasSize(this.canvasManager.CANVASMODE_NORMAL);
+        else this.cycleCanvasSize(this.canvasManager.CANVASMODE_MAXIMIZED);
     }
 
     cycleCanvasSize(mode)
@@ -1036,7 +1044,10 @@ export default class Gui extends Events
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             this.setCanvasPatchBg();
+            ele.byId("canvasPatchBg").classList.add("icon-highlight");
         }
+        else
+            ele.byId("canvasPatchBg").classList.remove("icon-highlight");
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {

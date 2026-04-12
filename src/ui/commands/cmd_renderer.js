@@ -95,7 +95,7 @@ class CmdRenderer
 
     static maximizeCanvas()
     {
-        gui.cycleCanvasSize();
+        gui.toggleMaximized();
     }
 
     static resetSize()
