@@ -297,36 +297,6 @@ export default class ScState extends Events
             this._sendCursorPos(x, y);
         });
 
-        // gui.on("timelineControl", (command, value) =>
-        // {
-        //     if (!this._connection.inMultiplayerSession) return;
-        //     if (this._connection.client && this._connection.client.isPilot)
-        //     {
-        //         if (command !== "scrollTime")
-        //         {
-        //             const payload = {
-        //                 "command": command,
-        //                 "value": value
-        //             };
-        //             this._connection.sendUi("timelineControl", payload);
-        //         }
-        //         else
-        //         {
-        //             if (this._timelineTimeout) return;
-
-        //             const payload = {
-        //                 "command": "setTime",
-        //                 "value": value
-        //             };
-        //             this._timelineTimeout = setTimeout(() =>
-        //             {
-        //                 this._connection.sendUi("timelineControl", payload);
-        //                 this._timelineTimeout = null;
-        //             }, this._connection.netTimelineScrollDelay);
-        //         }
-        //     }
-        // });
-
         gui.on("portValueEdited", (op, port, value) =>
         {
             if (!this._connection.inMultiplayerSession) return;
