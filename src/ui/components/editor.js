@@ -2,7 +2,6 @@ import { contextMenu } from "../elements/contextmenu.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { GuiText } from "../text.js";
-import EditorTabAce from "./tabs/tab_editor_ace.js";
 import EditorTabCodemirror from "./tabs/tab_editor_codemirror.js";
 import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
 import ManageOp from "./tabs/tab_manage_op.js";
