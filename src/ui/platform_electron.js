@@ -249,4 +249,13 @@ export default class PlatformElectron extends Platform
         }
         return true;
     }
+
+    savePatch(options, cb)
+    {
+        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, options, (err, r) =>
+        {
+            if (r && r.currentPatchDir) this.config.currentPatchDir = r.currentPatchDir;
+            cb(err, r);
+        });
+    }
 }
