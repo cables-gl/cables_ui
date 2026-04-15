@@ -637,13 +637,6 @@ export default class PatchSaveServer extends Events
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 
-                        if (gui.socket)
-                            gui.socket.track("ui", "savepatch", "savepatch", {
-                                "sizeCompressed": uint8data.length / 1024,
-                                "sizeOrig": origSize,
-                                "time": performance.now() - startTime
-                            });
-
                         gui.emitEvent("patchsaved");
                         gui.jobs().finish("projectsave");
 

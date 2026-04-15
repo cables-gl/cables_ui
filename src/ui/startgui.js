@@ -3,7 +3,6 @@ import { BoundingBox, Geometry, Mesh } from "cables-corelibs";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui, { gui } from "./gui.js";
-import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./socketcluster/sc_connection.js";
@@ -29,11 +28,6 @@ export default function startUi(cfg)
     HandlebarsHelper.initHandleBarsHelper();
 
     const gui = new Gui(cfg);
-
-    gui.on("uiloaded", () =>
-    {
-        new Tracking();
-    });
 
     if (gui.isRemoteClient)
         new NoPatchEditor();
