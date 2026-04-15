@@ -14,6 +14,7 @@ export default class UserSettings extends Events
     static EVENT_LOADED = "loaded";
     static SETTING_GLUI_DEBUG_COLORS = "gluidebugcolors";
     #wasLoaded = false;
+    #active = true;
 
     constructor()
     {
@@ -25,7 +26,10 @@ export default class UserSettings extends Events
         this._serverDelay = null;
         this.init();
 
-        this._lsSettings = JSON.parse(localStorage.getItem(this._LOCALSTORAGE_KEY)) || {};
+        if (window.gui && window.gui.isRemoteClient) this.#active = false;
+
+        if (this.#active)
+            this._lsSettings = JSON.parse(localStorage.getItem(this._LOCALSTORAGE_KEY)) || {};
     }
 
     reset()
@@ -50,19 +54,29 @@ export default class UserSettings extends Events
 
     load(settings)
     {
-        for (const i in settings)
+        if (this.#active)
         {
-            this.set(i, settings[i]);
-        }
 
-        if (!this.#wasLoaded) this.emitEvent(UserSettings.EVENT_LOADED);
-        this.emitEvent(UserSettings.EVENT_CHANGE);
+            for (const i in settings)
+            {
+                this.set(i, settings[i]);
+            }
+
+            if (!this.#wasLoaded) this.emitEvent(UserSettings.EVENT_LOADED);
+            this.emitEvent(UserSettings.EVENT_CHANGE);
+
+        }
+        else
+        {
+            this.set("introCompleted", true);
+        }
 
         this.#wasLoaded = true;
     }
 
     setLS(key, value)
     {
+        if (!this.#active) return;
         this._lsSettings[key] = value || false;
         localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._lsSettings));
     }
@@ -75,6 +89,7 @@ export default class UserSettings extends Events
 
     save()
     {
+        if (!this.#active) return;
         platform.talkerAPI.send(TalkerAPI.CMD_SAVE_USER_SETTINGS, { "settings": this._settings });
     }
 
