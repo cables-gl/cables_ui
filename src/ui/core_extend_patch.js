@@ -79,6 +79,9 @@ class UiPatch extends Patch
         }
     }
 
+    /**
+     * @param {string} [subPatchId]
+     */
     getSubPatchOps(subPatchId, recursive = false)
     {
         if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
@@ -240,7 +243,14 @@ class UiPatch extends Patch
         return null;
     }
 
-    getOpsInRect(xa, ya, xb, yb)
+    /**
+     * @param {number} xa
+     * @param {number} ya
+     * @param {number} xb
+     * @param {number} yb
+     * @param {string} subPatchId
+     */
+    getOpsInRect(xa, ya, xb, yb, subPatchId)
     {
         const perf = gui.uiProfiler.start("[extPatch] ops in rect");
         const x = Math.min(xa, xb);
@@ -248,7 +258,7 @@ class UiPatch extends Patch
         const x2 = Math.max(xa, xb);
         const y2 = Math.max(ya, yb);
         const ops = [];
-        const cops = gui.corePatch().getSubPatchOps();
+        const cops = gui.corePatch().getSubPatchOps(subPatchId);
 
         for (let j = 0; j < cops.length; j++)
         {
