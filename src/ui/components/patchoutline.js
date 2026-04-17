@@ -139,6 +139,12 @@ export default class PatchOutline extends Events
                 if (this.isCurrentlyVisible())
                     this.insert();
             });
+
+            gui.on("netClientRemoved", (msg) =>
+            {
+                if (this.isCurrentlyVisible())
+                    this.insert();
+            });
         }
 
         let html = "<h3>Patch Outline</h3>";
