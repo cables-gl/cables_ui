@@ -50,6 +50,8 @@ opNames.getOpsForPortLink = (p) =>
         else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.defaultOpImage, defaultOps.defaultOpNames.textureGradient, defaultOps.defaultOpNames.textureNoise];
         else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.divElement];
         else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.customShader];
+        else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.animInfo];
+
         else if (p.type == portType.object) return [defaultOps.defaultOpNames.parseObject];
     }
     if (p && p.direction == PortDir.out)

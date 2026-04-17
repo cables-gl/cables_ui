@@ -97,6 +97,7 @@ const defaultOpNames =
     "sequence": "Ops.Trigger.Sequence",
     "divElement": "Ops.Html.Elements.Element_v2",
     "customShader": "Ops.Gl.Shader.CustomShader_v2",
+    "animInfo": "Ops.TimeLine.AnimInfo",
 
     "GreaterThan": "Ops.Math.Compare.GreaterThan",
     "LessThan": "Ops.Math.Compare.LessThan",
