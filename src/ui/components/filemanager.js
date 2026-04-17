@@ -9,6 +9,7 @@ import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "./usersettings.js";
+import DragNDrop from "./filemanager_dragdrop.js";
 
 /**
  * manage files/assets of the patch
@@ -18,24 +19,36 @@ import { userSettings } from "./usersettings.js";
  */
 export default class FileManager
 {
+
+    /** @type {string[]} */
+    static updatedFiles = [];
+
+    #fileSource = "patch";
+    _filterType = null;
+    _filePortEle = null;
+
+    /** @type {HTMLElement} */
+    _filePortElePreview = null;
+    _firstTimeOpening = true;
+    _refreshDelay = null;
+    _orderReverse = false;
+
+    /** @type {object} */
+    _files = [];
+
+    /**
+     * @param {Function} cb
+     * @param {boolean} userInteraction
+     */
     constructor(cb, userInteraction)
     {
         this._log = new Logger("filemanager");
-        this._filterType = null;
         this._manager = new ItemManager("Files", gui.mainTabs);
-        this._filePortEle = null;
-
-        /** @type {HTMLElement} */
-        this._filePortElePreview = null;
-        this._firstTimeOpening = true;
-        this._refreshDelay = null;
-        this._orderReverse = false;
         this._order = userSettings.get("filemanager_order") || "name";
-        this._files = [];
 
         gui.maintabPanel.show(userInteraction);
 
-        CABLES.DragNDrop.loadImage();
+        DragNDrop.loadImage();
 
         this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
 
@@ -46,7 +59,6 @@ export default class FileManager
             {
                 this.cancelFileSelectOp();
             }
-
         });
 
         this._manager.addEventListener("onItemsSelected", (items) =>
@@ -67,6 +79,9 @@ export default class FileManager
             });
     }
 
+    /**
+     * @param {boolean} userInteraction
+     */
     show(userInteraction)
     {
         gui.maintabPanel.show(userInteraction);
@@ -78,7 +93,7 @@ export default class FileManager
         CABLES.idleCallback(
             () =>
             {
-                this.setSource("patch");
+                this.setSource(this.#fileSource);
             });
     }
 
@@ -117,11 +132,14 @@ export default class FileManager
         this.updateHeader();
     }
 
+    /**
+     * @param {function} [cb]
+     */
     reload(cb)
     {
         this._manager.clear();
 
-        this._fileSource = this._fileSource || "patch";
+        this.#fileSource = this.#fileSource || "patch";
         // if (this._firstTimeOpening) this._fileSource = "patch";
 
         if (gui.isGuestEditor())
@@ -138,7 +156,7 @@ export default class FileManager
             "title": "Loading file list"
         });
 
-        this._getFilesFromSource(this._fileSource, (files) =>
+        this._getFilesFromSource(this.#fileSource, (files) =>
         {
             if (!files) files = [];
             const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
@@ -226,6 +244,10 @@ export default class FileManager
         if (file.c) for (let i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
     }
 
+    /**
+     * @param {Object} file
+     * @param {string|string[]} filterType
+     */
     _compareFilter(file, filterType)
     {
         if (typeof filterType == "string")
@@ -289,7 +311,7 @@ export default class FileManager
             this._createItem(items, this._files[i], this._filterType);
         }
 
-        this._manager.listHtmlOptions.showHeader = this._fileSource !== "lib";
+        this._manager.listHtmlOptions.showHeader = this.#fileSource !== "lib";
         this._manager.listHtmlOptions.order = this._order;
         this._manager.listHtmlOptions.orderReverse = this._orderReverse;
         this._manager.setItems(items);
@@ -320,11 +342,17 @@ export default class FileManager
         }
     }
 
+    /**
+     * @param {string} f
+     */
     setFilter(f)
     {
         this._manager.setTitleFilter(f);
     }
 
+    /**
+     * @param {string} o
+     */
     setOrder(o)
     {
         if (this._order != o) this._orderReverse = false;
@@ -344,9 +372,13 @@ export default class FileManager
         this._buildHtml();
     }
 
+    /**
+     * @param {string} s
+     * @param {Function} [cb]
+     */
     setSource(s, cb)
     {
-        this._fileSource = s;
+        this.#fileSource = s;
         this.updateHeader();
 
         this.reload(cb);
@@ -372,7 +404,7 @@ export default class FileManager
      */
     selectFile(filename)
     {
-        if (this._fileSource === "patch")
+        if (this.#fileSource === "patch")
         {
             this._selectFile(filename);
         }
@@ -414,7 +446,7 @@ export default class FileManager
         const html = getHandleBarHtml("filemanager_header", {
             "fileSelectOp": this._filePortOp,
             "filterType": this._filterType,
-            "source": this._fileSource,
+            "source": this.#fileSource,
             "display": this._manager.getDisplay(),
             "filter": this._manager.titleFilter
 
@@ -671,7 +703,8 @@ export default class FileManager
 
             if (this._filePortEle)
             {
-                gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
+                if (this._filePortOp)
+                    gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
                 this._filePortEle.value = detailItems[0].p;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);
@@ -681,7 +714,8 @@ export default class FileManager
                     if (this._filePortElePreview)
                         this._filePortElePreview.innerHTML = "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
 
-                gui.opParams.show(this._filePortOp);
+                if (this._filePortOp)
+                    gui.opParams.show(this._filePortOp);
                 this.refresh();
             }
         }
@@ -697,7 +731,7 @@ export default class FileManager
 
             html += "<br/>";
 
-            if (this._fileSource == "patch") html += "<a class=\"cblbutton\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
+            if (this.#fileSource == "patch") html += "<a class=\"cblbutton\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
             html += "</div>";
 
             ele.byId("item_details").innerHTML = html;
@@ -811,10 +845,6 @@ export default class FileManager
                                                     }
 
                                                     this._manager.unselectAll();
-                                                },
-                                                (r) =>
-                                                {
-                                                    this._log.warn("api err", r);
                                                 }
                                             );
                                         });
@@ -945,5 +975,3 @@ export default class FileManager
     }
 
 }
-
-FileManager.updatedFiles = [];
