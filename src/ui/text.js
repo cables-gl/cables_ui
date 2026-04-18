@@ -201,6 +201,9 @@ export const GuiText =
         "title_checkOpCollisions": "Check Op collisions",
         "subtitle_checkOpCollisions": "If activated, ops are moved away when they overlap",
 
+        "title_autoLinkOps": "Automatically Link Ops",
+        "subtitle_autoLinkOps": "Link new ops to the current selected op, if the fist input/output ports match",
+
         "title_nobrowserWarning": "Hide Warning",
         "subtitle_nobrowserWarning": "Hide that red \"unsupported browser\" warning notification",
 

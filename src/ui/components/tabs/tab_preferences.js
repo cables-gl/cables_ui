@@ -68,6 +68,7 @@ export default class Preferences
     updateValues()
     {
         this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
+        this.setSwitchValue(UserSettings.PREF_OPSELECT_AUTOLINKOPS, userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS));
         this.setSwitchValue("checkOpCollisions", userSettings.get("checkOpCollisions"));
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));

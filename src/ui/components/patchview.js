@@ -22,7 +22,7 @@ import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
-import { userSettings } from "./usersettings.js";
+import UserSettings, { userSettings } from "./usersettings.js";
 import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
@@ -548,7 +548,8 @@ export default class PatchView extends Events
                             options.linkNewOpToOp,
                             options.linkNewOpToPort.getName(),
                             op,
-                            foundPort.getName());
+                            op.portsIn[0].getName());
+                        this.alignOpBelowOp(op, options.linkNewOpToOp);
                     }
 
                 }
@@ -1779,7 +1780,8 @@ export default class PatchView extends Events
                     {
                         let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (userSettings.get("snapToGrid2"))
+
+                        if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
                         {
                             x = Snap.snapOpPosX(x);
                             y = Snap.snapOpPosY(y);
@@ -1902,7 +1904,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
+            if (userSettings.get(UserSettings.PREF_SNAPTOGRID)) avg = Snap.snapOpPosX(avg);
 
             for (const j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1921,11 +1923,23 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
+            if (userSettings.get(UserSettings.PREF_SNAPTOGRID)) avg = Snap.snapOpPosY(avg);
 
             for (const j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
         return ops;
+    }
+
+    /**
+     * @param {UiOp} opBelow
+     * @param {UiOp} opAbove
+     */
+    alignOpBelowOp(opBelow, opAbove)
+    {
+
+        let y = opAbove.uiAttribs.translate.y + 0;
+        opBelow.setUiAttribs({ "translate": { "x": opAbove.uiAttribs.translate.x, "y": y } });
+        this.testCollision(opBelow);
     }
 
     /**
@@ -2244,7 +2258,7 @@ export default class PatchView extends Events
 
     /**
      * @param {string | number} subpatch
-     * @param {Function} next
+     * @param {Function} [next]
      */
     setCurrentSubPatch(subpatch, next)
     {

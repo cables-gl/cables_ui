@@ -51,7 +51,6 @@ class CmdPatch
                 "icon": "save",
                 "hotkey": "[cmd_ctrl]`S`",
                 "infotext": "cmd_savepatch"
-
             },
             {
                 "cmd": "Save patch as...",

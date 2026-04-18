@@ -1,6 +1,7 @@
 import { Events, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { platform } from "../platform.js";
+import OpSelect from "../dialogs/opselect.js";
 
 /**
  * storing/loading user settings/ sending to the user and in localstorage etc.
@@ -10,6 +11,9 @@ import { platform } from "../platform.js";
  */
 export default class UserSettings extends Events
 {
+    static PREF_OPSELECT_AUTOLINKOPS = "autoLinkOps";
+    static PREF_SNAPTOGRID = "snapToGrid2";
+
     static EVENT_CHANGE = "change";
     static EVENT_LOADED = "loaded";
     static SETTING_GLUI_DEBUG_COLORS = "gluidebugcolors";
@@ -43,13 +47,14 @@ export default class UserSettings extends Events
     {
         if (!this.get("patch_wheelmode")) this.set("patch_wheelmode", "zoom");
         if (this.get("glflowmode") === null) this.set("glflowmode", 2);
-        if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
+        if (this.get(UserSettings.PREF_SNAPTOGRID) === null) this.set(UserSettings.PREF_SNAPTOGRID, false);
         if (this.get("checkOpCollisions") === null) this.set("checkOpCollisions", true);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("idlemode") === null) this.set("idlemode", false);
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("overlaysShow") === null) this.set("overlaysShow", false);
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
+        if (this.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS) === null) this.set(UserSettings.PREF_OPSELECT_AUTOLINKOPS, true);
     }
 
     load(settings)

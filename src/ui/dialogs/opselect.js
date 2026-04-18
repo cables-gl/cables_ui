@@ -9,7 +9,7 @@ import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import UserSettings, { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 
 /**
@@ -34,6 +34,7 @@ const MIN_CHARS_QUERY = 2;
 
 export default class OpSelect
 {
+
     #minimal = false;
     #bg = new ModalBackground();
     displayBoxIndex = 0;
@@ -736,16 +737,15 @@ export default class OpSelect
             }
         }
 
-        if (this._options.autoLinkCurrentOp)
+        if (userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS))
         {
-            const ops = gui.patchView.getSelectedOps();
+            const currentOps = gui.patchView.getSelectedOps();
 
-            if (ops.length == 1 && ops[0].portsOut.length)
+            if (currentOps.length == 1 && currentOps[0].portsOut.length)
             {
                 this._newOpOptions.linkOnlyFirstPort = true;
-                this._newOpOptions.linkNewOpToOp = ops[0];
-                this._newOpOptions.linkNewOpToPort = ops[0].portsOut[0];
-                console.log("text", this._newOpOptions);
+                this._newOpOptions.linkNewOpToOp = currentOps[0];
+                this._newOpOptions.linkNewOpToPort = currentOps[0].portsOut[0];
             }
         }
 
