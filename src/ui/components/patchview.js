@@ -1,7 +1,7 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import { Link, Op, Patch, Port, utils } from "cables";
 import { BoundingBox, Geometry, Shader } from "cables-corelibs";
-import { getShortOpName } from "cables/src/core/utils.js";
+import { cloneObject, getShortOpName } from "cables/src/core/utils.js";
 import PatchSaveServer from "../api/patchserverapi.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -2560,7 +2560,7 @@ export default class PatchView extends Events
 
                     if (origOp)
                     {
-                        const oldUiAttribs = structuredClone(origOp.uiAttribs);
+                        const oldUiAttribs = cloneObject(origOp.uiAttribs);
 
                         const theUiAttribs = {};
                         for (const i in oldUiAttribs)

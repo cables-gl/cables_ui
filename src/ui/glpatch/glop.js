@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -567,7 +568,7 @@ export default class GlOp extends Events
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
 
-        this.opUiAttribs = structuredClone(attr);
+        this.opUiAttribs = cloneObject(attr);
 
         if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
         {
