@@ -12,6 +12,15 @@ import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 
+/**
+ * @typedef OpSelectOptions
+ * @property {string} [search]
+ * @property {number} [x]
+ * @property {number} [y]
+ * @property {string|number} [subPatch]
+ * @property {Function} [onOpAdd]
+ */
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -151,6 +160,7 @@ export default class OpSelect
 
             let score = 0;
 
+            /** @type {HTMLCollectionOf<HTMLElement>} */
             const selected = document.getElementsByClassName("selected");
 
             if (query.length > 0 && selected.length > 0)score = Math.round(100 * parseFloat(selected[0].dataset.score)) / 100;
@@ -233,7 +243,7 @@ export default class OpSelect
         if (link && link.portIn && link.portIn.type == portType.trigger)
         {
             // show "replace with existing var button..."
-            const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
+            const numExistingTriggers = Object.keys(gui.corePatch().namedTriggers || {}).length;
 
             if (numExistingTriggers == 0) ele.hide(eleReplaceLinkWithExistingTrigger);
             else
@@ -248,7 +258,7 @@ export default class OpSelect
         const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.trigger)
         {
-            const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
+            const numExistingTriggers = Object.keys(gui.corePatch().namedTriggers || {}).length;
 
             const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === Port.DIR_IN);
             const eleTitle = ele.byId("createLinkTriggerExists");
@@ -306,6 +316,8 @@ export default class OpSelect
         this._eleSearchinfo = ele.byId("searchinfo");
 
         let opName = "";
+
+        /** @type {HTMLElement} */
         const selectedEle = ele.byClass("selected");
 
         if (selectedEle)
@@ -313,7 +325,7 @@ export default class OpSelect
             opName = selectedEle.dataset.opname;
         }
 
-        this.updateStatusBar(opName);
+        this.updateStatusBar();
 
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewOpToPort || CABLES.UI.OPSELECT.linkNewLink))
         {
@@ -480,6 +492,9 @@ export default class OpSelect
         perf2.finish();
     }
 
+    /**
+     * @param {number} diff
+     */
     navigate(diff)
     {
         const perf2 = gui.uiProfiler.start("opselect.navigate");
@@ -567,7 +582,7 @@ export default class OpSelect
     }
 
     /**
-     * @param {object} options
+     * @param {OpSelectOptions} options
      * @param {import("../core_extend_op.js").UiOp | import("cables").Op} [linkOp]
      * @param {Port} [linkPort]
      * @param {import("cables").Link} [link]
@@ -640,6 +655,9 @@ export default class OpSelect
         }, 50);
     }
 
+    /**
+     * @param {string} name
+     */
     selectOp(name)
     {
         this._typedSinceOpening = true;
@@ -652,12 +670,18 @@ export default class OpSelect
         this.updateInfo();
     }
 
+    /**
+     * @param {string} what
+     */
     searchFor(what)
     {
         ele.byId("opsearch").value = what;
         this.onInput();
     }
 
+    /**
+     * @param {KeyboardEvent} [e]
+     */
     onInput(e)
     {
         if (this._keyTimeout)clearTimeout(this._keyTimeout);
@@ -712,6 +736,19 @@ export default class OpSelect
             }
         }
 
+        if (this._options.autoLinkCurrentOp)
+        {
+            const ops = gui.patchView.getSelectedOps();
+
+            if (ops.length == 1 && ops[0].portsOut.length)
+            {
+                this._newOpOptions.linkOnlyFirstPort = true;
+                this._newOpOptions.linkNewOpToOp = ops[0];
+                this._newOpOptions.linkNewOpToPort = ops[0].portsOut[0];
+                console.log("text", this._newOpOptions);
+            }
+        }
+
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;
@@ -744,6 +781,9 @@ export default class OpSelect
         }
     }
 
+    /**
+     * @param {string} name
+     */
     loadCollection(name)
     {
         gui.serverOps.loadCollectionOps(name, () =>
@@ -763,6 +803,10 @@ export default class OpSelect
         });
     }
 
+    /**
+     * @param {string} name
+     * @param {boolean} reopenModal
+     */
     addPatchOp(name, reopenModal)
     {
         gui.serverOps.loadOpDependencies(name, () =>
@@ -783,6 +827,9 @@ export default class OpSelect
         });
     }
 
+    /**
+     * @param {boolean} [reopenModal]
+     */
     addSelectedOp(reopenModal)
     {
         const selEle = ele.byClass("selected");
@@ -794,7 +841,6 @@ export default class OpSelect
 
             // if (sq.charAt(0) === i)
             //     sq = defaultOps.defaultMathOps[i]+" "+sq.substr(1);
-
             if (!(listItem && listItem.notUsable))
             {
                 this.addOp(opname, reopenModal, selEle.dataset.itemType);
@@ -802,6 +848,9 @@ export default class OpSelect
         }
     }
 
+    /**
+     * @param {KeyboardEvent} e
+     */
     keyDown(e)
     {
         const eleSelected = ele.byClass("selected");
@@ -852,6 +901,9 @@ export default class OpSelect
         // prevent the default action (scroll / move caret)
     }
 
+    /**
+     * @param {string} opName
+     */
     getListItemByOpName(opName)
     {
         if (!this.#opSearch.list) return null;

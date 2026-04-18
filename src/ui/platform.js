@@ -688,4 +688,9 @@ export class Platform extends Events
         }
         return true;
     }
+
+    currentUserIsPatchOwner()
+    {
+        return true;
+    }
 }

@@ -1719,14 +1719,13 @@ export default class Gui extends Events
             return val;
         };
 
-        this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
+        const esc = (e) =>
         {
             if (document.activeElement.getAttribute("contenteditable") == "true") return false;
 
             if (document.activeElement)
                 if (gui.isShowingModal() ||
                     (
-                        !document.activeElement.classList.contains("ace_text-input") &&
                         document.activeElement.tagName != "INPUT" &&
                         document.activeElement.tagName != "TEXTAREA"
                     ) ||
@@ -1739,7 +1738,10 @@ export default class Gui extends Events
                 {
                     return false;
                 }
-        });
+        };
+
+        this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, esc);
+        this.keys.key(getSettingKeys("keybind_escape", "escape"), "Open \"Op Create\" dialog (or close current dialog)", "down", null, { "shiftKey": true }, esc);
 
         this.keys.key("Escape", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
@@ -1822,7 +1824,7 @@ export default class Gui extends Events
 
         if (this.fileManager) this.fileManager.setFilePort(null);
 
-        if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
+        if (e && (e.ctrlKey || e.altKey || e.metaKey)) return;
 
         if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
@@ -1867,12 +1869,14 @@ export default class Gui extends Events
         {
             if (e)
             {
+                console.log("shiftkey", e.shiftKey);
                 CABLES.UI.OPSELECT.linkNewOpToPort =
                     CABLES.UI.OPSELECT.linkNewLink = null;
                 gui.opSelect().show({
                     "subPatch": this.patchView.getCurrentSubPatch(),
                     "x": 0,
-                    "y": 0
+                    "y": 0,
+                    "autoLinkCurrentOp": e.shiftKey
                 });
             }
         }

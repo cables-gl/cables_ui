@@ -27,6 +27,20 @@ import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 import { UiPatch } from "../core_extend_patch.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
+
+/**
+ * @typedef AddOpOptions
+ * @property {string} [subPatch]
+ * @property {string} [createdLocally]
+ * @property {Port} [linkNewOpToPort]
+ * @property {Link} [linkNewLink]
+ * @property {Op} [linkNewOpToOp]
+ * @property {boolean} [linkOnlyFirstPort]
+ * @property {function} [onOpAdd]
+ * @property {import("cables/src/core/core_patch.js").OpUiAttribs} [uiAttribs]
+
+ */
 
 /**
  * @typedef GotoOpOptions
@@ -489,7 +503,7 @@ export default class PatchView extends Events
 
     /**
      * @param {string} opname
-     * @param {object} [options]
+     * @param {AddOpOptions} [options]
      */
     addOp(opname, options)
     {
@@ -525,27 +539,44 @@ export default class PatchView extends Events
 
             if (options.linkNewOpToPort)
             {
-                const foundPort = op.findFittingPort(options.linkNewOpToPort);
-                if (foundPort)
+                if (options.linkOnlyFirstPort)
                 {
-                    if (op.objName == defaultOps.defaultOpNames.number)
+                    if (op.portsIn[0].type == options.linkNewOpToPort.type)
                     {
-                        const oldValue = options.linkNewOpToPort.get();
-                        op.getPort("value").set(oldValue);
-                        op.setTitle(options.linkNewOpToPort.getName());
-                    }
-                    if (op.objName == defaultOps.defaultOpNames.string)
-                    {
-                        const oldValue = options.linkNewOpToPort.get();
-                        op.getPort("value").set(oldValue);
-                        op.setTitle(options.linkNewOpToPort.getName());
+
+                        gui.corePatch().link(
+                            options.linkNewOpToOp,
+                            options.linkNewOpToPort.getName(),
+                            op,
+                            foundPort.getName());
                     }
 
-                    gui.corePatch().link(
-                        options.linkNewOpToOp,
-                        options.linkNewOpToPort.getName(),
-                        op,
-                        foundPort.getName());
+                }
+                else
+                {
+
+                    const foundPort = op.findFittingPort(options.linkNewOpToPort);
+                    if (foundPort)
+                    {
+                        if (op.objName == defaultOps.defaultOpNames.number)
+                        {
+                            const oldValue = options.linkNewOpToPort.get();
+                            op.getPort("value").set(oldValue);
+                            op.setTitle(options.linkNewOpToPort.getName());
+                        }
+                        if (op.objName == defaultOps.defaultOpNames.string)
+                        {
+                            const oldValue = options.linkNewOpToPort.get();
+                            op.getPort("value").set(oldValue);
+                            op.setTitle(options.linkNewOpToPort.getName());
+                        }
+
+                        gui.corePatch().link(
+                            options.linkNewOpToOp,
+                            options.linkNewOpToPort.getName(),
+                            op,
+                            foundPort.getName());
+                    }
                 }
             }
             if (options.linkNewLink)
@@ -744,7 +775,7 @@ export default class PatchView extends Events
         if (!this._checkErrorTimeout)
         {
             gui.patchView.checkPatchOutdated(isExamplePatch); // first time also check outdated ops..
-            if (isExamplePatch) CABLES.CMD.PATCH.clearOpTitles(); // examples should not have edited op titles...
+            if (isExamplePatch) CmdPatch.clearOpTitles(); // examples should not have edited op titles...
         }
 
         const ops = gui.corePatch().ops;
@@ -971,7 +1002,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {UiOp[]}
+     * @returns {Op[]}
      */
     getSelectedOps()
     {
