@@ -58,7 +58,7 @@ export default class GlOp extends Events
     _titleExtPortListener = null;
 
     /** @type {GlText} */
-    _titleExt = null;
+    #titleExt = null;
 
     /** @type {Boolean} */
     _needsUpdate = true;
@@ -894,7 +894,7 @@ export default class GlOp extends Events
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
-        if (this._titleExt) this._titleExt = this._titleExt.dispose();
+        if (this.#titleExt) this.#titleExt = this.#titleExt.dispose();
         // if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
         if (this.#rectResize) this.#rectResize = this.#rectResize.dispose();
@@ -1111,7 +1111,7 @@ export default class GlOp extends Events
         if (this.#glRectSelected) this.#glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
-        if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
+        if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
 
@@ -1131,7 +1131,7 @@ export default class GlOp extends Events
     _getTitleWidth()
     {
         let w = 0;
-        if (this._titleExt) w += this._titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
+        if (this.#titleExt) w += this.#titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
         if (this._glTitle) w += this._glTitle.width;
 
         w += gluiconfig.OpTitlePaddingLeftRight * 2.0;
@@ -1199,7 +1199,7 @@ export default class GlOp extends Events
 
         if (this.#glRectBg) this.#glRectBg.visible = visi;
         if (this._resizableArea) this._resizableArea.visible = visi;
-        if (this._titleExt) this._titleExt.visible = visi;
+        if (this.#titleExt) this.#titleExt.visible = visi;
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
@@ -1399,23 +1399,23 @@ export default class GlOp extends Events
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)
         {
-            if (!this._titleExt &&
+            if (!this.#titleExt &&
                 (
                     this.opUiAttribs.hasOwnProperty("extendTitle") ||
                     this.opUiAttribs.hasOwnProperty("extendTitlePort")))
             {
-                this._titleExt = new GlText(this.#textWriter, " ");
-                this._titleExt.setParentRect(this.#glRectBg);
-                this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
+                this.#titleExt = new GlText(this.#textWriter, " ");
+                this.#titleExt.setParentRect(this.#glRectBg);
+                this.#titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
 
-                this._titleExt.visible = this.visible;
+                this.#titleExt.visible = this.visible;
             }
-            if (this._titleExt &&
-                (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
+            if (this.#titleExt &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitle") || this.opUiAttribs.extendTitle == null || this.opUiAttribs.extendTitle == undefined) &&
                 (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
             {
-                this._titleExt.dispose();
-                this._titleExt = null;
+                this.#titleExt.dispose();
+                this.#titleExt = null;
             }
         }
 
@@ -1496,7 +1496,7 @@ export default class GlOp extends Events
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
-        if (this._titleExt)
+        if (this.#titleExt)
         {
             if (this.opUiAttribs.hasOwnProperty("extendTitlePort") && this.opUiAttribs.extendTitlePort)
             {
@@ -1504,31 +1504,28 @@ export default class GlOp extends Events
                 if (thePort)
                 {
                     let portVar = thePort.get();
-                    if (portVar)
-                    {
-                        if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
-                        const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
+                    if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
+                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
 
-                        if (str != this._titleExt.text)
-                        {
-                            this._titleExt.text = str;
-                            doUpdateSize = true;
-                        }
+                    if (str != this.#titleExt.text)
+                    {
+                        this.#titleExt.text = str;
+                        doUpdateSize = true;
                     }
                 }
             }
             else
-            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
+            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this.#titleExt.text)
             {
                 const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
 
-                if (this._titleExt.textOrig != str)
+                if (this.#titleExt.textOrig != str)
                 {
-                    this._titleExt.textOrig = str;
+                    this.#titleExt.textOrig = str;
 
                     let shortenStr = str;
                     if (shortenStr.length > 30)shortenStr = str.substring(0, 30) + "...";
-                    this._titleExt.text = shortenStr;
+                    this.#titleExt.text = shortenStr;
                     doUpdateSize = true;
                 }
             }
@@ -1866,7 +1863,7 @@ export default class GlOp extends Events
         this.updateSize();
         this._updateIndicators();
 
-        if (this._titleExt) this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
+        if (this.#titleExt) this.#titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
         if (this.#glRectSelected) this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
