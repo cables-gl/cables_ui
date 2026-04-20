@@ -984,7 +984,8 @@ export default class Gui extends Events
 
     getLeftPanelsMaxWidth()
     {
-        return this.editorWidth;
+        if (this.maintabPanel.isVisible()) return this.editorWidth;
+        else return 0;
     }
 
     getTopPanelHeight()
