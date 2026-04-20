@@ -563,8 +563,10 @@ export class TlTitle extends Events
 
             this.#lastVal = v;
         }
+        if (!this.#anim) return;
 
         const key = this.#anim.getKey(t);
+        if (!key) return;
 
         if (!this.#anim.hasStarted(t) || this.#anim.hasEnded(t + 0.001)) this.#elValue.classList.add("outside");
         else this.#elValue.classList.remove("outside");
