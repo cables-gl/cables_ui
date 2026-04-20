@@ -365,6 +365,7 @@ export default class GlViewBox
         // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         let ox = (gui.getLeftPanelsMaxWidth()) / this.#viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         ox -= (gui.getRightPanelsMaxWidth()) / this.#viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        console.log("rightpanelwidth", gui.getLeftPanelsMaxWidth(), gui.getRightPanelsMaxWidth());
 
         let oy = (gui.bottomTabPanel.height) / this.#viewResY * this._animZoom.getValue(this.glPatch.time + 10);
 
@@ -458,7 +459,6 @@ export default class GlViewBox
 
         if (zoom)
         {
-
             if (noAnim) this._zoom = z;
             else this.animateZoom(z);
         }
