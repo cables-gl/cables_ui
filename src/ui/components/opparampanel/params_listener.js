@@ -462,7 +462,6 @@ class ParamsListener extends Events
                 if (eli)eli.addEventListener("click", (e) =>
                 {
                     const name = e.target.dataset.title;
-                    console.log("jajaja", name);
                     ports[index]._onTriggered(name);
                 });
             }
@@ -1151,7 +1150,7 @@ class ParamsListener extends Events
 
                 if (thePort.isAnimated())
                 {
-                    thePort._tempLastUiValue = thePort.get();
+                    thePort.tempData.tempLastUiValue = thePort.get();
                     const valDisp = thePort.getValueForDisplay();
 
                     // hier
@@ -1203,25 +1202,25 @@ class ParamsListener extends Events
                     newValue = String(thePort.get());
                 }
 
-                if (thePort._tempLastUiValue != newValue)
+                if (thePort.tempData.tempLastUiValue != newValue)
                 {
-                    let el = thePort._tempLastUiEle;
-                    if (!el || thePort._tempLastUiEleId != id)
+                    let el = thePort.tempData.tempLastUiEle;
+                    if (!el || thePort.tempData.tempLastUiEleId != id)
                     {
                         el = document.getElementsByClassName(id);
                         if (el.length > 0)
                         {
-                            el = thePort._tempLastUiEle = el[0];
-                            thePort._tempLastUiEleId = id;
+                            el = thePort.tempData.tempLastUiEle = el[0];
+                            thePort.tempData.tempLastUiEleId = id;
                         }
                     }
 
                     if (el)
                     {
                         el.innerHTML = newValue;
-                        thePort._tempLastUiValue = newValue;
+                        thePort.tempData.tempLastUiValue = newValue;
 
-                        if (thePort.isLinked()) el.dataset.tt = newValue;
+                        if (thePort.isLinked() && el.dataset) el.dataset.tt = newValue;
                     }
                     else
                     {
@@ -1256,9 +1255,9 @@ class ParamsListener extends Events
     {
         for (let i = 0; i < this._watchPorts.length; i++)
         {
-            delete this._watchPorts[i]._tempLastUiValue;
-            delete this._watchPorts[i]._tempLastUiEle;
-            delete this._watchPorts[i]._tempLastUiEleId;
+            delete this._watchPorts[i].tempData.tempLastUiValue;
+            delete this._watchPorts[i].tempData.tempLastUiEle;
+            delete this._watchPorts[i].tempData.tempLastUiEleId;
         }
 
         this._watchPorts.length = 0;
