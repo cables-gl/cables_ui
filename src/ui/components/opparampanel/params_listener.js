@@ -36,6 +36,7 @@ class ParamsListener extends Events
 
         this.panelId = panelid;
 
+        /** @type {Port[]} */
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
@@ -1183,6 +1184,7 @@ class ParamsListener extends Events
                     if (thePort.uiAttribs.stride)name += thePort.uiAttribs.stride;
                     if (thePort.get()) newValue = name + " (" + String(thePort.get().length) + ")";
                     else newValue = name + " (null)";
+
                 }
                 else if (thePort.type == portType.string)
                 {
@@ -1218,6 +1220,8 @@ class ParamsListener extends Events
                     {
                         el.innerHTML = newValue;
                         thePort._tempLastUiValue = newValue;
+
+                        if (thePort.isLinked()) el.dataset.tt = newValue;
                     }
                     else
                     {

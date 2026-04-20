@@ -89,6 +89,8 @@ body
 
 .cablesCssUi
 {
+    color:var(--text-color);
+
     *,*:hover
     {
         -webkit-touch-callout: none;
@@ -99,7 +101,6 @@ body
     {
         color:var(--text-color);
     }
-        color:var(--text-color);
 
     h3,h2
     {

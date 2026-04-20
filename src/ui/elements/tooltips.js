@@ -42,7 +42,16 @@ export function showToolTip(e, txt, nopadding)
         else
         {
             eleTooltip.style.top = e.clientY + 12 + "px";
-            eleTooltip.style.left = e.clientX + 25 + "px";
+            if (e.clientX > window.innerWidth / 2)
+            {
+                eleTooltip.style.right = (window.innerWidth - e.clientX) - 25 + "px";
+                eleTooltip.style.left = "";
+            }
+            else
+            {
+                eleTooltip.style.right = "";
+                eleTooltip.style.left = e.clientX + 25 + "px";
+            }
         }
     }
 
