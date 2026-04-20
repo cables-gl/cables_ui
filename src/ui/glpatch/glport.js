@@ -163,7 +163,15 @@ export default class GlPort
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
-        const showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
+        let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
+
+        if (this.#rect && this.#port.uiAttribs.hidePort)
+        {
+            // console.log("this port should not exist...", this.#port.name);
+            this.#rect.setSize(0, 0);
+            showDot = false;
+            return;
+        }
 
         if (!this.#dot && showDot)
         {
@@ -182,7 +190,10 @@ export default class GlPort
                 let dotPosY = this.#rect.h / 4 - dotSize / 2;
                 if (this.direction == PortDir.in) dotPosY += this.#rect.h / 2;
 
-                if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
+                if (this.#port.uiAttribs.addPort)
+                {
+                    this.#dot.setShape(GlRect.SHAPE_PLUS);
+                }
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
