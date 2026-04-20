@@ -116,6 +116,19 @@ export default class Gui extends Events
     #oldCanvasHeight = 0;
     #oldRightPanelWidth = 300;
 
+    /** @type {Patch} */
+    #corePatch = null;
+
+    /** @type {ServerOps} */
+    serverOps = null;
+    socket = null;
+    canvasMagnifier = null;
+    _timeoutPauseProfiler = null;
+    _restrictionMode = Gui.RESTRICT_MODE_LOADING;
+
+    _modalLoading = null;
+    _modalLoadingCount = 0;
+
     /**
      * @param {object} cfg
      */
@@ -135,9 +148,6 @@ export default class Gui extends Events
         /** @type {import("./theme.js").CablesTheme} */
         this.theme = defaultTheme;
 
-        /** @type {ServerOps} */
-        this.serverOps = null;
-
         /** @type {UserSettings} */
         this.userSettings = userSettings;
         this.uiProfiler = new UiProfiler();
@@ -149,7 +159,6 @@ export default class Gui extends Events
         this.opPortModal = new ModalPortValue();
         this.longPressConnector = new LongPressConnector();
 
-        this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
         this._spaceBarStart = 0;
 
@@ -159,19 +168,12 @@ export default class Gui extends Events
 
         this.patchParamPanel = new PatchPanel();
 
-        this.canvasMagnifier = null;
-
         this.editorWidth = this.userSettings.get(Gui.PREF_LAYOUT_EDITORWIDTH) || 350;
         this.rightPanelWidth = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
         // this.splitpaneRightPos = this.userSettings.get(Gui.PREF_LAYOUT_RIGHT_PANEL_WIDTH) || 450;
 
-        this._timeoutPauseProfiler = null;
         this._cursor = "";
         this.restriction = new GuiRestrictions();
-        this._restrictionMode = Gui.RESTRICT_MODE_LOADING;
-
-        this._modalLoading = null;
-        this._modalLoadingCount = 0;
 
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -191,11 +193,11 @@ export default class Gui extends Events
 
         /** @type {UiPatch} */
         // @ts-ignore
-        this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
-        this._patchLoadEndiD = this._corePatch.on(Patch.EVENT_PATCHLOADEND,
+        this.#corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
+        this._patchLoadEndiD = this.#corePatch.on(Patch.EVENT_PATCHLOADEND,
             () =>
             {
-                this._corePatch.off(this._patchLoadEndiD);
+                this.#corePatch.off(this._patchLoadEndiD);
 
                 this.bookmarks.updateDynamicCommands();
                 this.savedState.setSaved("patch load end", 0);
@@ -221,9 +223,9 @@ export default class Gui extends Events
             });
 
         /** @type {PatchView} */
-        this.patchView = new PatchView(this._corePatch);
+        this.patchView = new PatchView(this.#corePatch);
 
-        this._corePatch.gui = this;
+        this.#corePatch.gui = this;
 
         this._jobs = new Jobs();
         this.cmdPalette = new CommandPalette();
@@ -308,15 +310,15 @@ export default class Gui extends Events
     /** @deprecated */
     scene()
     {
-        return this._corePatch;
+        return this.#corePatch;
     }
 
     /**
-     * @returns {UiPatch}
+     * @returns {Patch<UiPatch>}
      */
     corePatch()
     {
-        return this._corePatch;
+        return this.#corePatch;
     }
 
     jobs()
@@ -649,7 +651,7 @@ export default class Gui extends Events
             this.rendererHeight = window.innerHeight;
         }
 
-        if (this._corePatch.cgl && this._corePatch.cgl.canvasScale) canvasScale = this._corePatch.cgl.canvasScale;
+        if (this.#corePatch.cgl && this.#corePatch.cgl.canvasScale) canvasScale = this.#corePatch.cgl.canvasScale;
 
         this.rendererWidthScaled = this.rendererWidth * canvasScale;// for command "scale canvas"
         this.rendererHeightScaled = this.rendererHeight * canvasScale;
@@ -967,7 +969,7 @@ export default class Gui extends Events
 
         this.emitEvent("setLayout");
 
-        if (this.corePatch().cgl) this._corePatch.cgl.updateSize();
+        if (this.corePatch().cgl) this.#corePatch.cgl.updateSize();
         if (document.activeElement == document.body) gui.patchView.focus();
 
         perf.finish();
@@ -1829,7 +1831,7 @@ export default class Gui extends Events
 
         if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
-        else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
+        else if (this.rendererWidth * this.#corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
             {
@@ -1927,7 +1929,7 @@ export default class Gui extends Events
 
         if (this.userSettings.get("showUIPerf") == true) CmdUi.profileUI();
 
-        if (this._corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))CmdTimeline.openGlTimeline();
+        if (this.#corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))CmdTimeline.openGlTimeline();
 
         this._elGlCanvasDom.addEventListener("pointerenter", () =>
         {
@@ -1941,7 +1943,7 @@ export default class Gui extends Events
 
         if (this.userSettings.get("presentationmode")) CmdUi.startPresentationMode();
 
-        if (this._corePatch.cgl.aborted)
+        if (this.#corePatch.cgl.aborted)
         {
             CABLES.UI.MODAL.showError("no webgl", "your browser does not support webgl");
             return;
@@ -2183,13 +2185,13 @@ export default class Gui extends Events
 
     pauseProfiling()
     {
-        if (!this._corePatch.cgl || !this._corePatch.cgl.profileData) return;
-        this._corePatch.cgl.profileData.pause = true;
+        if (!this.#corePatch.cgl || !this.#corePatch.cgl.profileData) return;
+        this.#corePatch.cgl.profileData.pause = true;
 
         clearTimeout(this._timeoutPauseProfiler);
         this._timeoutPauseProfiler = setTimeout(() =>
         {
-            this._corePatch.cgl.profileData.pause = false;
+            this.#corePatch.cgl.profileData.pause = false;
         }, 200);
     }
 
@@ -2325,16 +2327,16 @@ export default class Gui extends Events
     initCoreListeners()
     {
 
-        this._corePatch.on("portAnimToggle", (_options) =>
+        this.#corePatch.on("portAnimToggle", (_options) =>
         {
             this.hasAnims = true;
         });
-        this._corePatch.on("portAnimCreated", () =>
+        this.#corePatch.on("portAnimCreated", () =>
         {
 
         });
 
-        this._corePatch.on("portAnimUpdated", (_options) =>
+        this.#corePatch.on("portAnimUpdated", (_options) =>
         {
             if (!this.hasAnims)
             {
@@ -2343,20 +2345,20 @@ export default class Gui extends Events
             }
         });
 
-        this._corePatch.on("criticalError", (options) =>
+        this.#corePatch.on("criticalError", (options) =>
         {
             new ModalError(options);
         });
 
-        this._corePatch.on("renderDelayStart", () =>
+        this.#corePatch.on("renderDelayStart", () =>
         {
         });
 
-        this._corePatch.on("renderDelayEnd", () =>
+        this.#corePatch.on("renderDelayEnd", () =>
         {
         });
 
-        this._corePatch.cgl.on("webglcontextlost", () =>
+        this.#corePatch.cgl.on("webglcontextlost", () =>
         {
             new ModalDialog({
                 "warning": true,
@@ -2365,7 +2367,7 @@ export default class Gui extends Events
             });
         });
 
-        this._corePatch.checkExtensionOpPatchAssets();
+        this.#corePatch.checkExtensionOpPatchAssets();
 
     }
 
@@ -2417,7 +2419,7 @@ export default class Gui extends Events
     hide()
     {
         if (gui)gui.unload = true;
-        this._corePatch.pause();
+        this.#corePatch.pause();
 
         ele.byId("gluiPreviewLayer").style.opacity =
             ele.byId("maincomponents").style.opacity =

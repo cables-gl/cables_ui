@@ -23,7 +23,7 @@ export default class FindTab
     _findTimeoutId = null;
     #tab;
     #tabs;
-    #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected"];
+    #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected", "animated"];
     #eleInput = null;
     #listenerids = [];
     #lastSearch = "";
@@ -397,6 +397,11 @@ export default class FindTab
             if (str == ":outdated")
             {
                 FindTab.searchOutDated(ops, results);
+            }
+
+            if (str == ":animated")
+            {
+                FindTab.searchAnimated(ops, results);
             }
 
             if (str == ":selected")
@@ -893,6 +898,23 @@ FindTab.searchOutDated = (ops, results) =>
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
         if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
+    }
+    return results;
+};
+
+FindTab.searchAnimated = (/** @type {Op[]} */ ops, /** @type {Object} */ results) =>
+{
+    console.log("animaaaa");
+    for (let i = 0; i < ops.length; i++)
+    {
+        for (let j = 0; j < ops[i].portsIn.length; j++)
+        {
+            if (ops[i].portsIn[j].isAnimated())
+            {
+                results.push({ "op": ops[i], "score": 1 });
+                break;
+            }
+        }
     }
     return results;
 };

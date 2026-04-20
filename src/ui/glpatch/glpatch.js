@@ -70,6 +70,8 @@ export default class GlPatch extends Events
     frameCount = 0;
     _viewZoom = 0;
     needsRedraw = false;
+
+    /** @type {Object<String,GlOp>} */
     _selectedGlOps = {};
 
     links = {};

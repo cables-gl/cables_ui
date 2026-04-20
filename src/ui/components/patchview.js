@@ -636,6 +636,12 @@ export default class PatchView extends Events
         });
     }
 
+    /**
+     * @param {string} opname
+     * @param {string} opid
+     * @param {string} portname
+     * @param {function} [cb]
+     */
     addOpAndLink(opname, opid, portname, cb)
     {
         const oldOp = gui.corePatch().getOpById(opid);
@@ -705,6 +711,10 @@ export default class PatchView extends Events
         gui.patchParamPanel.show();
     }
 
+    /**
+     * @param {string | number} subPatch
+     * @param {boolean} [noUnselect]
+     */
     selectAllOpsSubPatch(subPatch, noUnselect)
     {
         const ops = gui.corePatch().getSubPatchOps(subPatch);

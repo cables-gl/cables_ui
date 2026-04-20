@@ -21,6 +21,9 @@ import { getConverters } from "./components/converterops.js";
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
+/**
+ * @extends Op<UiOp>
+ */
 class UiOp extends Op
 {
     #log = new Logger("uiop");
