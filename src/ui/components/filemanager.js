@@ -512,7 +512,7 @@ export default class FileManager
                     }
 
                     if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
-                    if (this._fileSource !== "lib")
+                    if (this.#fileSource !== "lib")
                     {
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
@@ -526,7 +526,7 @@ export default class FileManager
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
-                            "source": this._fileSource,
+                            "source": this.#fileSource,
                             "isEditable": editable,
                             "assetPath": assetPath,
                             "isPlatformCommunity": platform.frontendOptions.hasCommunity,
