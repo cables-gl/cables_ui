@@ -29,7 +29,7 @@ export default class FileManagerEditor
         let url = filename;
         if (!filename.startsWith("file:"))
         {
-            url = platform.getAssetUrl() + "/assets/" + patchId + "/" + filename;
+            url = platform.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
         }
 
         if (!syntax) syntax = "text";
