@@ -1082,7 +1082,7 @@ export default class GlOp extends Events
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
-            console.log("setupport", ports[i].name);
+            // console.log("setupport", ports[i].name);
 
             this._setupPort(count, ports[i]);
             count++;
