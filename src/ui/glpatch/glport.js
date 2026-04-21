@@ -165,13 +165,13 @@ export default class GlPort
         const dotSize = gluiconfig.portHeight * 0.75;
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
 
-        if (this.#rect && this.#port.uiAttribs.hidePort)
-        {
-            // console.log("this port should not exist...", this.#port.name);
-            this.#rect.setSize(0, 0);
-            showDot = false;
-            return;
-        }
+        // if (this.#rect && this.#port.uiAttribs.hidePort)
+        // {
+        //     // console.log("this port should not exist...", this.#port.name);
+        //     this.#rect.setSize(0, 0);
+        //     showDot = false;
+        //     return;
+        // }
 
         if (!this.#dot && showDot)
         {
