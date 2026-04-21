@@ -213,6 +213,11 @@ export class Platform extends Events
         return this._cfg.urlSandbox || "";
     }
 
+    getAssetUrl()
+    {
+        return this._cfg.urlAssets || "";
+    }
+
     getUrlOpsCode()
     {
         let url = this.getSandboxUrl() + "/api/ops/code";
