@@ -220,6 +220,9 @@ export class Platform extends Events
         return url;
     }
 
+    /**
+     * @param {string} projectId
+     */
     getUrlProjectOpsCode(projectId)
     {
         let url = this.getCablesUrl() + "/api/ops/code/project/" + projectId;
@@ -247,6 +250,9 @@ export class Platform extends Events
         return this._cfg.isDevEnv;
     }
 
+    /**
+     * @param {any} url
+     */
     noCacheUrl(url)
     {
         return url;
@@ -302,9 +308,13 @@ export class Platform extends Events
             notifyError("UI: using master branch not on live?!");
     }
 
-    savePatch(options, cb)
+    /**
+     * @param {Object} data
+     * @param {Function} cb
+     */
+    savePatch(data, cb)
     {
-        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, options, cb);
+        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, data, cb);
     }
 
     initRouting(cb)
