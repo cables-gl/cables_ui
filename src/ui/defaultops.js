@@ -110,7 +110,7 @@ const defaultOpNames =
     "ArraySum": "Ops.Array.ArraySum",
     "ArraySubtract": "Ops.Array.ArraySubtract",
     "ArrayDivide": "Ops.Array.ArrayDivide",
-    "ArrayMultiply": "Ops.Array.ArrayMultiply",
+    "ArrayMultiply": "Ops.Array.Math.ArrayMultiply",
     "parseObject": "Ops.Json.ParseObject_v2",
 
     "textureGradient": "Ops.Gl.GradientTexture_v2",
