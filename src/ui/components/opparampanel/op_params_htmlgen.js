@@ -140,6 +140,7 @@ class PortHtmlGenerator
                 "portGroupNames": portGroupNames,
                 "dirStr": "in",
                 "cablesUrl": platform.getCablesUrl(),
+                "assetUrl": platform.getAssetUrl(),
                 "openLocalFiles": platform.frontendOptions.openLocalFiles,
                 "portnum": i,
                 "isInput": true,

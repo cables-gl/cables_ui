@@ -217,7 +217,7 @@
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
                         <a class="icon icon-external iconhover" id="portOpenAsset_{{ portnum }}" target="_blank"></a>
-                        <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
+                        <a class="icon icon-download iconhover" href="{{assetUrl}}{{ port.value }}" target="_blank" download></a>
                         <a class="icon icon-text-cursor-input iconhover" onclick="ele.byId('portFilenameButton_{{ portnum }}').classList.toggle('hidden');ele.byId('fileInputContainer_{{ portnum }}').classList.toggle('hidden');" target="_blank" ></a>
                         {{#if fileEditable}}
                             <a class="icon icon-edit iconhover" onclick="gui.fileManagerEditor.editAssetTextFile('{{ fileName }}', '{{ fileType }}');"></a>
