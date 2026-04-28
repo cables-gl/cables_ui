@@ -1,6 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
 
-import { Port, utils } from "cables";
+import { Op, Port, utils } from "cables";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { GuiText } from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
@@ -37,6 +37,7 @@ class OpParampanel extends Events
         this._log = new Logger("OpParampanel");
         this._htmlGen = new PortHtmlGenerator(this.panelId);
 
+        /** @type {Op} */
         this._currentOp = null;
         this._eventPrefix = utils.shortId();
         this._isPortLineDragDown = false;
@@ -93,6 +94,7 @@ class OpParampanel extends Events
     _onUiAttrChangePort(attr, port)
     {
         if (!attr) return;
+
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
         // todo: only update this part of the html
 
@@ -108,6 +110,9 @@ class OpParampanel extends Events
 
     }
 
+    /**
+     * @param {Op<any>} [op]
+     */
     _stopListeners(op)
     {
         op = op || this._currentOp;
@@ -122,6 +127,9 @@ class OpParampanel extends Events
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
     }
 
+    /**
+     * @param {Op<any>} op
+     */
     _startListeners(op)
     {
         if (!op)
@@ -151,7 +159,7 @@ class OpParampanel extends Events
         for (let i = 0; i < this._portsIn.length; i++)
         {
             const listenId = this._portsIn[i].on(
-                "onUiAttrChange",
+                Port.EVENT_UIATTRCHANGE,
                 this._onUiAttrChangePort.bind(this),
                 this._eventPrefix);
             this._portUiAttrListeners.push({ "listenId": listenId, "port": this._portsIn[i] });
@@ -168,7 +176,7 @@ class OpParampanel extends Events
     }
 
     /**
-     * @param {UiOp|String} op
+     * @param {Op|String} op
      */
     show(op)
     {

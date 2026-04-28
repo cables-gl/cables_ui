@@ -101,7 +101,7 @@ export default class GlPort
             if (this.#glop.op && this.#glop.op.uiAttribs.mathTitle) this.#glop.setTitle();
         });
 
-        p.on("onUiAttrChange", this.#onUiAttrChange.bind(this));
+        p.on(Port.EVENT_UIATTRCHANGE, this.#onUiAttrChange.bind(this));
 
         this.#onUiAttrChange(p.uiAttribs);
         this.setFlowModeActivity(1);
