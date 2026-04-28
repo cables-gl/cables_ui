@@ -217,7 +217,7 @@ export default class EditorTabCodemirror extends Events
         if (this.helix)
             extensions.push(helix(
                 {
-                    "config": { "editor.cursor-shape.insert": "bar" },
+                    "config": { "editor.cursor-shape.insert": "bar", "editor.default-yank-register": "+" },
                 }
             ));
         const syntaxErrorLinter = linter((view) =>
