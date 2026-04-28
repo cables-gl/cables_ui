@@ -10,6 +10,9 @@ export default class OpHistory extends Events
         this._position = this._history.length - 1;
     }
 
+    /**
+     * @param {string} opid
+     */
     push(opid)
     {
         if (this._history[this._position] == opid) return;
@@ -39,7 +42,7 @@ export default class OpHistory extends Events
     {
         const opid = this._history[this._position];
 
-        if (!gui.keys.shiftKey) gui.patchView.focusOp(opid, true); else gui.patchView.setSelectedOpById(opid);
+        if (!gui.keys.shiftKey) gui.patchView.focusOp(opid); else gui.patchView.setSelectedOpById(opid);
     }
 
     forward()

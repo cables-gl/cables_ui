@@ -38,13 +38,14 @@ export function showToolTip(e, txt, nopadding)
         {
             eleTooltip.style.top = e.getBoundingClientRect().top + 25 + "px";
             eleTooltip.style.left = e.getBoundingClientRect().left + "px";
+            eleTooltip.style.right = "";
         }
         else
         {
             eleTooltip.style.top = e.clientY + 12 + "px";
             if (e.clientX > window.innerWidth / 2)
             {
-                eleTooltip.style.right = (window.innerWidth - e.clientX) - 25 + "px";
+                eleTooltip.style.right = (window.innerWidth - e.clientX) + 35 + "px";
                 eleTooltip.style.left = "";
             }
             else
@@ -71,6 +72,9 @@ export function hideToolTip()
     ele.hide(eleTooltip);
 }
 
+/**
+ * @param {MouseEvent} e
+ */
 function eleTtOver(e)
 {
     clearTimeout(tooltipTimeout);
@@ -82,6 +86,9 @@ function eleTtOver(e)
         }, 300);
 }
 
+/**
+ * @param {MouseEvent} _e
+ */
 function eleTtOut(_e)
 {
     if (document.activeElement.classList.contains("tt")) return;
@@ -91,6 +98,10 @@ function eleTtOut(_e)
 
 // --------------------------
 
+/**
+ * @param {string} txt
+ * @param {boolean} [param]
+ */
 export function showInfo(txt, param)
 {
     if (param)gui.bottomInfoArea?.setContentParam(txt);
