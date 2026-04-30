@@ -28,6 +28,7 @@ export class ModalOpName
         this._options = options;
         this._callback = callback;
         this._opTargetDir = null;
+        this._currentCheckNameTimeout = null;
 
         if (!platform.isTrustedPatch())
         {
@@ -81,7 +82,7 @@ export class ModalOpName
             "rename": this._options.rename
         };
         if (this._opTargetDir) checkNameRequest.opTargetDir = this._opTargetDir;
-        this._opNameDialogCheckName(checkNameRequest);
+        this._apiCheckName(checkNameRequest);
     }
 
     _getHtml(opDirs = [])
@@ -191,123 +192,135 @@ export class ModalOpName
         ele.byId("opNameDialogInput").focus();
     }
 
-    _opNameDialogCheckName(checkNameRequest)
+    _apiCheckName(checkNameRequest)
     {
-        gui.jobs().start({ "id": "checkopname" });
-        platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, initialRes) =>
+        if (this._currentCheckNameTimeout) return;
+        this._currentCheckNameTimeout = setTimeout(() =>
         {
-            if (err)
-            {
-                gui.jobs().finish("checkopname");
-                gui.serverOps.showApiError(err);
-                return;
-            }
-
-            if (platform.frontendOptions.hasOpDirectories)
-            {
-                ele.clickables(this._modalDialog.getElement(), ".clickable", (event, dataset) =>
-                {
-                    const selectElement = ele.byId("opTargetDir");
-                    const selectedDir = ele.getSelectValue(selectElement);
-                    switch (event.currentTarget.id)
-                    {
-                    case "addOpTargetDir":
-                        gui.jobs().start({ "id": "addprojectdir" });
-                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, dirRes) =>
-                        {
-                            gui.jobs().finish("addprojectdir");
-                            if (!dirErr)
-                            {
-                                if (selectElement)
-                                {
-                                    selectElement.length = 0;
-                                    dirRes.data.forEach((dir) =>
-                                    {
-                                        const selected = dir.new;
-                                        selectElement.add(new Option(dir.path, dir.path, selected, selected));
-                                        if (selected) this._opTargetDir = dir.path;
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                new ModalDialog({
-                                    "showOkButton": true,
-                                    "warning": true,
-                                    "title": "Warning",
-                                    "text": dirErr.msg
-                                });
-                                this.#log.info(dirErr.msg);
-                            }
-                        });
-                        break;
-                    case "openOpTargetDir":
-                    default:
-                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_OPEN_DIR, { "dir": selectedDir });
-                        break;
-                    }
-                });
-            }
-
-            const opNameInput = ele.byId("opNameDialogInput");
-            const checkedName = initialRes.checkedName || this._options.sourceOpName;
-            if (opNameInput.value !== checkedName)
-            {
-                opNameInput.value = checkedName;
-            }
-            this._updateDialog(this._options, initialRes, checkedName);
-
-            if (opNameInput.value)
-            {
-                const parts = opNameInput.value.split(".");
-                let lastPartLength = parts[parts.length - 1].length;
-                if (parts.length > 1)
-                {
-                    opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
-                    opNameInput.focus();
-                }
-            }
-
-            opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
-            ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
-            const opTargetDirEle = ele.byId("opTargetDir");
-            if (opTargetDirEle)
-            {
-                opTargetDirEle.addEventListener("change", () =>
-                {
-                    if (opTargetDirEle)
-                    {
-                        this._opTargetDir = opTargetDirEle.value;
-                    }
-                    else
-                    {
-                        this._opTargetDir = null;
-                    }
-                    this._nameChangeListener(this._options);
-                });
-            }
-
-            const cbOptions = {
-                "replace": false
-            };
-
-            ele.clickable(ele.byId("opNameDialogSubmit"), () =>
-            {
-                if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
-                this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
+            gui.jobs().start({
+                "id": "checkOpName" + checkNameRequest.v,
+                "title": "checking op name" + checkNameRequest.v
             });
-
-            if (this._options.showReplace)
+            platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
             {
-                ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
+                if (err)
                 {
-                    cbOptions.replace = true;
+                    if (!res) res = {};
+                    if (!res.problems) res.problems = [];
+                    if (!res.checkedName) res.checkedName = checkNameRequest.v;
+                    res.problems.push("failed to check op-name with api, try again");
+                    gui.jobs().finish("checkOpName");
+                }
+
+                if (platform.frontendOptions.hasOpDirectories)
+                {
+                    ele.clickables(this._modalDialog.getElement(), ".clickable", (event, dataset) =>
+                    {
+                        const selectElement = ele.byId("opTargetDir");
+                        const selectedDir = ele.getSelectValue(selectElement);
+                        switch (event.currentTarget.id)
+                        {
+                        case "addOpTargetDir":
+                            gui.jobs().start({ "id": "addprojectdir" });
+                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, dirRes) =>
+                            {
+                                gui.jobs().finish("addprojectdir");
+                                if (!dirErr)
+                                {
+                                    if (selectElement)
+                                    {
+                                        selectElement.length = 0;
+                                        dirRes.data.forEach((dir) =>
+                                        {
+                                            const selected = dir.new;
+                                            selectElement.add(new Option(dir.path, dir.path, selected, selected));
+                                            if (selected) this._opTargetDir = dir.path;
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    new ModalDialog({
+                                        "showOkButton": true,
+                                        "warning": true,
+                                        "title": "Warning",
+                                        "text": dirErr.msg
+                                    });
+                                    this.#log.info(dirErr.msg);
+                                }
+                            });
+                            break;
+                        case "openOpTargetDir":
+                        default:
+                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_OPEN_DIR, { "dir": selectedDir });
+                            break;
+                        }
+                    });
+                }
+
+                const opNameInput = ele.byId("opNameDialogInput");
+                const checkedName = res.checkedName || this._options.sourceOpName;
+                if (opNameInput.value !== checkedName)
+                {
+                    opNameInput.value = checkedName;
+                }
+                this._updateDialog(this._options, res, checkedName);
+
+                if (opNameInput.value)
+                {
+                    const parts = opNameInput.value.split(".");
+                    let lastPartLength = parts[parts.length - 1].length;
+                    if (parts.length > 1)
+                    {
+                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
+                        opNameInput.focus();
+                    }
+                }
+
+                opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
+                ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
+                const opTargetDirEle = ele.byId("opTargetDir");
+                if (opTargetDirEle)
+                {
+                    opTargetDirEle.addEventListener("change", () =>
+                    {
+                        if (opTargetDirEle)
+                        {
+                            this._opTargetDir = opTargetDirEle.value;
+                        }
+                        else
+                        {
+                            this._opTargetDir = null;
+                        }
+                        this._nameChangeListener(this._options);
+                    });
+                }
+
+                const cbOptions = {
+                    "replace": false
+                };
+
+                ele.clickable(ele.byId("opNameDialogSubmit"), () =>
+                {
                     if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
                     this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
                 });
-            }
-            gui.jobs().finish("checkopname");
-        });
+
+                if (this._options.showReplace)
+                {
+                    ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
+                    {
+                        cbOptions.replace = true;
+                        if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
+                        this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
+                    });
+                }
+                gui.jobs().finish("checkOpName");
+                this._currentCheckNameTimeout = null;
+                if (cb) cb(err, res);
+            });
+        }, 10);
+
     }
 
     _namespaceChangeListener(dialogOptions)
@@ -347,29 +360,7 @@ export class ModalOpName
             };
             const opTargetDirEle = ele.byId("opTargetDir");
             if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
-
-            gui.jobs().start({
-                "id": "checkOpName" + fullName,
-                "title": "checking op name" + fullName
-            });
-
-            platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
-            {
-
-                if (err)
-                {
-                    if (!res) res = {};
-                    if (!res.problems) res.problems = [];
-                    if (!res.checkedName) res.checkedName = fullName;
-                    res.problems.push("failed to check op-name with api, try again");
-                }
-
-                if (res.checkedName && res.checkedName === fullName)
-                {
-                    this._updateDialog(dialogOptions, res, fullName, newNamespace);
-                }
-                gui.jobs().finish("checkOpName" + fullName);
-            });
+            this._apiCheckName(checkNameRequest);
         }
     }
 }
