@@ -16,6 +16,7 @@ import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
+import { ModalOpName } from "../dialogs/modalopname.js";
 
 export { CmdPatch };
 
@@ -1560,7 +1561,7 @@ class CmdPatch
             }
         }
 
-        gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, options) =>
         {
             gui.closeModal();
             CmdPatch.createOpFromSelection({ "newOpName": newName, "ignoreNsCheck": true, ...options });
