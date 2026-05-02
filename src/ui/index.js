@@ -10,7 +10,7 @@ import { userSettings } from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
 import defaultOps from "./defaultops.js";
-import GradientEditor from "./dialogs/gradienteditor.js";
+import GradientEditor from "./dialogs/canv_gradienteditor.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ModalError from "./dialogs/modalerror.js";
 import oldModalWrap from "./dialogs/modal_old_wrap.js";
