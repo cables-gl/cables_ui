@@ -5,10 +5,9 @@ import CanvasPointEditor from "./canv_pointeditor.js";
 /**
  * gradient editor dialog
  */
-export default class GradientEditor extends CanvasPointEditor
+export default class CurveEditor extends CanvasPointEditor
 {
-    #log = new Logger("gradienteditor");
-    imageData = null;
+    #log = new Logger("curveeditor");
 
     /**
      * @param {any} opid
@@ -21,8 +20,8 @@ export default class GradientEditor extends CanvasPointEditor
         this._opId = opid;
         this._portName = portname;
 
-        this.options.template = "GradientEditor";
-        this.options.canvasId = "gradientEditorCanvas";
+        this.options.template = "CurveEditor";
+        this.options.canvasId = "curveEditorCanvas";
         this.options.smoothStep = this.port.uiAttribs.gradEditSmoothstep;
         this.options.step = this.port.uiAttribs.gradEditStep;
         this.options.oklab = this.port.uiAttribs.gradOklab;
@@ -30,40 +29,12 @@ export default class GradientEditor extends CanvasPointEditor
         this.on("open", () =>
         {
 
-            ele.byId("gradientPreset1").addEventListener("click", () =>
-            {
-                while (this.keys.length) this.deleteKey(this.keys[0]);
-                this.addKey(0, 0.5, 1, 1, 1, 1);
-                this.addKey(1, 0.5, 0, 0, 0, 1);
-                this.updateCanvas();
-                this.onChange();
-            });
-            ele.byId("gradientPreset2").addEventListener("click", () =>
-            {
-                while (this.keys.length) this.deleteKey(this.keys[0]);
-                this.addKey(0, 0.5, 0, 0, 0, 1);
-                this.addKey(0.5, 0.5, 1, 1, 1, 1);
-                this.addKey(1, 0.5, 0, 0, 0, 1);
-                this.updateCanvas();
-                this.onChange();
-            });
-
-            ele.byId("gradientPreset3").addEventListener("click", () =>
-            {
-                while (this.keys.length) this.deleteKey(this.keys[0]);
-                this.addKey(0, 0.5, 0, 0, 0, 1);
-                this.addKey(0.1, 0.5, 1, 1, 1, 1);
-                this.addKey(0.9, 0.5, 1, 1, 1, 1);
-                this.addKey(1, 0.5, 0, 0, 0, 1);
-                this.updateCanvas();
-                this.onChange();
-            });
         });
     }
 
     updateOpenerBackground()
     {
-        this.openerEle.style.background = GradientEditor.getCssGradientString(this.keys);
+        this.openerEle.style.background = CurveEditor.getCssGradientString(this.keys);
     }
 
     /**
@@ -82,9 +53,9 @@ export default class GradientEditor extends CanvasPointEditor
             const b = Math.floor(keys[i].b * 255);
             let a = Math.floor(keys[i].a);
             if (keys[i].a === undefined)a = 1;
-            const p = Math.floor(keys[i].pos * 100);
+            const p = keys[i].posy;
 
-            str += ",rgba(" + r + ", " + g + ", " + b + ", " + a + ") " + p + "% ";
+            str += ",rgba(" + p + ", " + p + ", " + p + ", " + 255 + ") " + 100 + "% ";
         }
 
         str += ")";
@@ -96,14 +67,13 @@ export default class GradientEditor extends CanvasPointEditor
     {
         if (!this.ctx)
         {
-            const canvas = ele.byId("gradientEditorCanvas");
+            const canvas = ele.byId(this.options.canvasId);
             if (!canvas)
             {
                 this.#log.error("[gradienteditor] no canvas found");
                 return;
             }
             this.ctx = canvas.getContext("2d");
-            this.imageData = this.ctx.createImageData(this.width, 1);
         }
 
         let keys = [];
@@ -134,55 +104,29 @@ export default class GradientEditor extends CanvasPointEditor
             "a": last.a,
         });
 
-        for (let i = 0; i < keys.length - 1; i++)
+        this.ctx.fillStyle = "#444444";
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = "#ffffff";
+
+        this.ctx.rect(10, 10, 30, 30);
+
+        this.ctx.beginPath();
+
+        for (let i = 0; i < keys.length; i++)
         {
             const keyA = keys[i];
-            const keyB = keys[i + 1];
-            if (keyA.a == undefined)keyA.a = 1;
+            // const keyB = keys[i + 1];
+            // if (keyA.a == undefined)keyA.a = 1;
 
-            for (let x = keyA.pos * this.width; x < keyB.pos * this.width; x++)
-            {
-                x = Math.round(x);
-                let p = utils.map(x, keyA.pos * this.width, keyB.pos * this.width, 0, 1);
+            if (i == 0) this.ctx.moveTo(keyA.pos * this.width, keyA.posy * this.height);
+            else this.ctx.lineTo(keyA.pos * this.width, keyA.posy * this.height);
 
-                if (this.options.smoothStep) p = utils.smoothStep(p);
-                if (this.options.step) p = Math.round(p);
-
-                if (this.options.oklab)
-                {
-                    const klabA = this.rgbToOklab(keyA.r, keyA.g, keyA.b);
-                    const labA_r = klabA[0];
-                    const labA_g = klabA[1];
-                    const labA_b = klabA[2];
-
-                    const klabB = this.rgbToOklab(keyB.r, keyB.g, keyB.b);
-                    const labB_r = klabB[0];
-                    const labB_g = klabB[1];
-                    const labB_b = klabB[2];
-
-                    const l = ((p * labB_r + (1.0 - p) * labA_r));
-                    const a = ((p * labB_g + (1.0 - p) * labA_g));
-                    const b = ((p * labB_b + (1.0 - p) * labA_b));
-
-                    const pixCol = this.oklabToRGB(l, a, b);
-                    this.imageData.data[x * 4 + 0] = Math.round(pixCol[0] * 255);
-                    this.imageData.data[x * 4 + 1] = Math.round(pixCol[1] * 255);
-                    this.imageData.data[x * 4 + 2] = Math.round(pixCol[2] * 255);
-                    this.imageData.data[x * 4 + 3] = 255;
-                }
-                else
-                {
-                    this.imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
-                    this.imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
-                    this.imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
-
-                    // this.imageData.data[x * 4 + 3] = ((p * keyB.a) + (1.0 - p) * (keyA.a));
-                    this.imageData.data[x * 4 + 3] = 255;
-                }
-            }
-
-            this.ctx.putImageData(this.imageData, 0, 0);
+            console.log(keyA.pos * this.width, keyA.posy * this.height);
         }
+
+        this.ctx.stroke();
 
         if (this._opId && this._portName)
         {

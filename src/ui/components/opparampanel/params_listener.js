@@ -17,6 +17,7 @@ import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import GradientEditor from "../../dialogs/canv_gradienteditor.js";
+import CurveEditor from "../../dialogs/canv_curveeditor.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -29,6 +30,7 @@ class ParamsListener extends Events
     _log = new Logger("Paramslistener");
 
     #watchGradients = [];
+    #watchCurves = [];
 
     constructor(panelid)
     {
@@ -98,6 +100,7 @@ class ParamsListener extends Events
                 if (this._portsIn[i].getType() == portType.string) this._watchStrings.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "gradient") this.#watchGradients.push(this._portsIn[i]);
+                if (this._portsIn[i].uiAttribs.display == "curve") this.#watchCurves.push(this._portsIn[i]);
 
                 if (this._portsIn[i].isLinked() || this._portsIn[i].isAnimated()) this._watchPorts.push(this._portsIn[i]);
                 this._watchAnimPorts.push(this._portsIn[i]);
@@ -197,6 +200,12 @@ class ParamsListener extends Events
             const thePort2 = this.#watchGradients[iwcp];
             const idx = this._portsIn.indexOf(thePort2);
             this.watchGradientPort(thePort2, this.panelId, idx);
+        }
+        for (const iwcp in this.#watchCurves)
+        {
+            const thePort2 = this.#watchCurves[iwcp];
+            const idx = this._portsIn.indexOf(thePort2);
+            this.watchCurvePort(thePort2, this.panelId, idx);
         }
         this.valueChangerInitSliders();
 
@@ -380,6 +389,41 @@ class ParamsListener extends Events
         ele.clickable(colEle, (e) =>
         {
             const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            ge.show(() =>
+            {
+                updateColorBox();
+            });
+        });
+    }
+
+    /**
+     * @param {Port} thePort
+     * @param {string} panelid
+     * @param {string} idx
+     */
+    watchCurvePort(thePort, panelid, idx)
+    {
+        let foundOpacity = false;
+        const id = "watchcurve_in_" + idx + "_" + panelid;
+        const colEle = ele.byId(id);
+
+        if (!colEle)
+        {
+            this._log.log("color ele not found!", id);
+            return;
+        }
+
+        const updateColorBox = () =>
+        {
+            const o = JSON.parse(thePort.get());
+            colEle.style.background = CurveEditor.getCssGradientString(o.keys);
+        };
+
+        updateColorBox();
+
+        ele.clickable(colEle, (e) =>
+        {
+            const ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
             ge.show(() =>
             {
                 updateColorBox();

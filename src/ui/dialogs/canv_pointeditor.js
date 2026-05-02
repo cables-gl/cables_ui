@@ -2,6 +2,7 @@ import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 import { Anim } from "cables";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
+import { DomEvents } from "../theme.js";
 
 /**
  * @typedef KeyObject
@@ -17,7 +18,8 @@ import { gui } from "../gui.js";
 /**
  * @typedef CanvasPointEditorOptions
  * @property {HTMLElement} openerEle
- * @property {string} template
+ * @property {string} [template]
+ * @property {string} [canvasId]
  */
 
 CABLES.GradientEditor = null;
@@ -48,6 +50,8 @@ export default class CanvasPointEditor extends Events
     ctx = null;
     #currentKey = null;
     #oldCurrentKey = null;
+
+    /** @type {CanvasPointEditorOptions} */
     options = {};
     openerEle;
     #previousContent;
@@ -105,6 +109,8 @@ export default class CanvasPointEditor extends Events
     {
         this._bg.hide();
         this._elContainer.remove();
+
+        CABLES.GradientEditor = {};
     }
 
     /**
@@ -302,14 +308,14 @@ export default class CanvasPointEditor extends Events
             this._elContainer.style.top = 100 + "px";
         }
 
-        ele.byId("gradientEditorCanvas").addEventListener("pointerdown", (e) =>
+        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
-            // ele.byId("gradientEditorCanvas").setPointerCapture(e.pointerId);
+            // ele.byId(his.options.canvasId).setPointerCapture(e.pointerId);
         });
 
-        ele.byId("gradientEditorCanvas").addEventListener("pointerup", (e) =>
+        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_UP, (e) =>
         {
-            document.body.removeEventListener("pointerup", this.#docListener); // ele.byId("gradientEditorCanvas").releasePointerCapture(e.pointerId);
+            document.body.removeEventListener("pointerup", this.#docListener); // ele.byId(his.options.canvasId).releasePointerCapture(e.pointerId);
 
             if (this.#downDot)
             {
@@ -318,20 +324,21 @@ export default class CanvasPointEditor extends Events
             }
         });
 
-        ele.byId("gradientEditorCanvas").addEventListener("pointermove", (e) =>
+        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_MOVE, (e) =>
         {
             if (this.#downDot)
             {
                 this.#currentKey.ele.style.marginTop = e.layerY - (this.#keyWidth / 2) + "px";
                 this.#currentKey.ele.style.marginLeft = e.offsetX - (this.#keyWidth / 2) + "px";
-                this.#currentKey.posy = (e.offsetY + (this.#keyWidth / 2)) / this.#height;
+                this.#currentKey.posy = (e.layerY + (this.#keyWidth / 2)) / this.#height;
                 this.#currentKey.pos = (e.offsetX + (this.#keyWidth / 2)) / this.#width;
+                console.log("yyy", e.offsetY, this.#currentKey.posy, this.height);
                 this.onChange();
             }
 
         });
 
-        ele.byId("gradientEditorCanvas").addEventListener("click", (e) =>
+        ele.byId(this.options.canvasId).addEventListener("click", (e) =>
         {
             if (this.#downDot) return;
             this.addKey(e.offsetX / this.#width, e.layerY / this.#height);
