@@ -1,5 +1,6 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 import { Anim } from "cables";
+import { uuid } from "cables/src/core/utils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
 import { DomEvents } from "../theme.js";
@@ -19,7 +20,6 @@ import { DomEvents } from "../theme.js";
  * @typedef CanvasPointEditorOptions
  * @property {HTMLElement} openerEle
  * @property {string} [template]
- * @property {string} [canvasId]
  */
 
 CABLES.GradientEditor = null;
@@ -52,11 +52,12 @@ export default class CanvasPointEditor extends Events
     #oldCurrentKey = null;
 
     /** @type {CanvasPointEditorOptions} */
-    options = {};
+    options = { "openerEle": null };
     openerEle;
     #previousContent;
     #downDot = null;
     #docListener = null;
+    #id = uuid();
 
     /**
      * @param {any} opid
@@ -102,13 +103,16 @@ export default class CanvasPointEditor extends Events
         this.openerEle.style.background = "red";
     }
 
+    get id() { return this.#id; }
+
     get width() { return this.#width; }
     get height() { return this.#height; }
 
     close()
     {
         this._bg.hide();
-        this._elContainer.remove();
+        if (this._elContainer) this._elContainer.remove();
+        this._elContainer = null;
 
         CABLES.GradientEditor = {};
     }
@@ -139,7 +143,7 @@ export default class CanvasPointEditor extends Events
             this.anim.setValue(this.keys[i].pos, this.keys[i].posy);
         }
 
-        ele.byId("gradienteditorKeys").innerHTML = html;
+        ele.byId(this.#id + "Keys").innerHTML = html;
 
         this._timeout = setTimeout(
             () =>
@@ -176,7 +180,7 @@ export default class CanvasPointEditor extends Events
         this.#currentKey = key;
         if (this.#currentKey) this.#currentKey.ele.classList.add("active");
 
-        ele.byId("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
+        ele.byId(this.#id + "ColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
 
     /**
@@ -283,10 +287,13 @@ export default class CanvasPointEditor extends Events
 
         if (gui.currentModal) gui.currentModal.close();
 
-        const html = getHandleBarHtml(this.options.template, { "name": this._portName });
+        const html = getHandleBarHtml(this.options.template, {
+            "id": this.#id,
+            "name": this._portName });
 
         this._bg.show(true);
-        this._elContainer = document.createElement("div");
+        if (!this._elContainer)
+            this._elContainer = document.createElement("div");
         this._elContainer.classList.add("gradientEditorContainer");
         this._elContainer.classList.add("cablesCssUi");
 
@@ -308,12 +315,12 @@ export default class CanvasPointEditor extends Events
             this._elContainer.style.top = 100 + "px";
         }
 
-        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_DOWN, (e) =>
+        ele.byId(this.#id + "Canvas").addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             // ele.byId(his.options.canvasId).setPointerCapture(e.pointerId);
         });
 
-        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_UP, (e) =>
+        ele.byId(this.#id + "Canvas").addEventListener(DomEvents.POINTER_UP, (e) =>
         {
             document.body.removeEventListener("pointerup", this.#docListener); // ele.byId(his.options.canvasId).releasePointerCapture(e.pointerId);
 
@@ -324,7 +331,7 @@ export default class CanvasPointEditor extends Events
             }
         });
 
-        ele.byId(this.options.canvasId).addEventListener(DomEvents.POINTER_MOVE, (e) =>
+        ele.byId(this.#id + "Canvas").addEventListener(DomEvents.POINTER_MOVE, (e) =>
         {
             if (this.#downDot)
             {
@@ -332,13 +339,12 @@ export default class CanvasPointEditor extends Events
                 this.#currentKey.ele.style.marginLeft = e.offsetX - (this.#keyWidth / 2) + "px";
                 this.#currentKey.posy = (e.layerY + (this.#keyWidth / 2)) / this.#height;
                 this.#currentKey.pos = (e.offsetX + (this.#keyWidth / 2)) / this.#width;
-                console.log("yyy", e.offsetY, this.#currentKey.posy, this.height);
                 this.onChange();
             }
 
         });
 
-        ele.byId(this.options.canvasId).addEventListener("click", (e) =>
+        ele.byId(this.#id + "Canvas").addEventListener("click", (e) =>
         {
             if (this.#downDot) return;
             this.addKey(e.offsetX / this.#width, e.layerY / this.#height);
@@ -372,12 +378,12 @@ export default class CanvasPointEditor extends Events
         this.onChange();
         CABLES.GradientEditor.editor = this;
 
-        ele.byId("gradientSaveButton").addEventListener("click", () =>
+        ele.byId(this.#id + "SaveButton").addEventListener("click", () =>
         {
             this.close();
         });
 
-        ele.byId("gradientCancelButton").addEventListener("click", () =>
+        ele.byId(this.#id + "CancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(this.#previousContent);
@@ -385,7 +391,7 @@ export default class CanvasPointEditor extends Events
             op.refreshParams();
         });
 
-        ele.byId("gradientReverse").addEventListener("click", () =>
+        ele.byId(this.#id + "Reverse").addEventListener("click", () =>
         {
             let keys = [];
             this.#currentKey = null;
@@ -404,7 +410,7 @@ export default class CanvasPointEditor extends Events
             this.updateCanvas();
         });
 
-        const colEleDel = ele.byId("gradientColorDelete");
+        const colEleDel = ele.byId(this.#id + "KeyDelete");
         colEleDel.addEventListener("click", (e) =>
         {
             if (this.#currentKey)
@@ -415,35 +421,34 @@ export default class CanvasPointEditor extends Events
             }
         });
 
-        ele.byId("gradientColorInput").classList.remove("hidden");
+        const colEle = ele.byId(this.#id + "ColorInput");
 
-        const colEle = ele.byId("gradientColorInput");
-
-        colEle.addEventListener("click", (e) =>
-        {
-            if (!this.#currentKey) return;
-            const cr = new ColorRick({
-                "ele": colEle,
-                "color": [Math.floor(this.#currentKey.r * 255), Math.floor(this.#currentKey.g * 255), Math.floor(this.#currentKey.b * 255)], // "#ffffff",
-                "opacity": this.#currentKey.a,
-                "showOpacity": true,
-                "onChange": (col, a) =>
-                {
-                    if (this.#currentKey)
+        if (colEle)
+            colEle.addEventListener("click", (e) =>
+            {
+                if (!this.#currentKey) return;
+                const cr = new ColorRick({
+                    "ele": colEle,
+                    "color": [Math.floor(this.#currentKey.r * 255), Math.floor(this.#currentKey.g * 255), Math.floor(this.#currentKey.b * 255)], // "#ffffff",
+                    "opacity": this.#currentKey.a,
+                    "showOpacity": true,
+                    "onChange": (col, a) =>
                     {
-                        this.#currentKey.r = col.gl()[0];
-                        this.#currentKey.g = col.gl()[1];
-                        this.#currentKey.b = col.gl()[2];
-                        this.#currentKey.a = a;
+                        if (this.#currentKey)
+                        {
+                            this.#currentKey.r = col.gl()[0];
+                            this.#currentKey.g = col.gl()[1];
+                            this.#currentKey.b = col.gl()[2];
+                            this.#currentKey.a = a;
 
-                        CABLES.GradientEditor.editor._ctx = null;
-                        CABLES.GradientEditor.editor.onChange();
+                            CABLES.GradientEditor.editor._ctx = null;
+                            CABLES.GradientEditor.editor.onChange();
 
-                        colEle.style.backgroundColor = col.hex();
+                            colEle.style.backgroundColor = col.hex();
+                        }
                     }
-                }
+                });
             });
-        });
 
         this.emitEvent("open");
     }

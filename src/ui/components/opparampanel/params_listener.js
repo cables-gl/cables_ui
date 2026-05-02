@@ -420,10 +420,11 @@ class ParamsListener extends Events
         };
 
         updateColorBox();
+        let ge = null;
 
         ele.clickable(colEle, (e) =>
         {
-            const ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            if (!ge) ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
             ge.show(() =>
             {
                 updateColorBox();

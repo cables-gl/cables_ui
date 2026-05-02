@@ -1,6 +1,7 @@
 import { Logger, ele } from "cables-shared-client";
 import { utils } from "cables";
 import CanvasPointEditor from "./canv_pointeditor.js";
+import { DomEvents } from "../theme.js";
 
 /**
  * gradient editor dialog
@@ -22,15 +23,13 @@ export default class GradientEditor extends CanvasPointEditor
         this._portName = portname;
 
         this.options.template = "GradientEditor";
-        this.options.canvasId = "gradientEditorCanvas";
         this.options.smoothStep = this.port.uiAttribs.gradEditSmoothstep;
         this.options.step = this.port.uiAttribs.gradEditStep;
         this.options.oklab = this.port.uiAttribs.gradOklab;
 
         this.on("open", () =>
         {
-
-            ele.byId("gradientPreset1").addEventListener("click", () =>
+            ele.byId("gradientPreset1").addEventListener(DomEvents.POINTER_CLICK, () =>
             {
                 while (this.keys.length) this.deleteKey(this.keys[0]);
                 this.addKey(0, 0.5, 1, 1, 1, 1);
@@ -38,7 +37,8 @@ export default class GradientEditor extends CanvasPointEditor
                 this.updateCanvas();
                 this.onChange();
             });
-            ele.byId("gradientPreset2").addEventListener("click", () =>
+
+            ele.byId("gradientPreset2").addEventListener(DomEvents.POINTER_CLICK, () =>
             {
                 while (this.keys.length) this.deleteKey(this.keys[0]);
                 this.addKey(0, 0.5, 0, 0, 0, 1);
@@ -48,7 +48,7 @@ export default class GradientEditor extends CanvasPointEditor
                 this.onChange();
             });
 
-            ele.byId("gradientPreset3").addEventListener("click", () =>
+            ele.byId("gradientPreset3").addEventListener(DomEvents.POINTER_CLICK, () =>
             {
                 while (this.keys.length) this.deleteKey(this.keys[0]);
                 this.addKey(0, 0.5, 0, 0, 0, 1);
@@ -96,7 +96,7 @@ export default class GradientEditor extends CanvasPointEditor
     {
         if (!this.ctx)
         {
-            const canvas = ele.byId("gradientEditorCanvas");
+            const canvas = ele.byId(this.id + "Canvas");
             if (!canvas)
             {
                 this.#log.error("[gradienteditor] no canvas found");
@@ -224,16 +224,6 @@ export default class GradientEditor extends CanvasPointEditor
             l * +1.9779984951 + m * -2.4285922050 + s * +0.4505937099,
             l * +0.0259040371 + m * +0.7827717662 + s * -0.8086757660
         ];
-    }
-
-    /**
-     * @param {number} value
-     * @param {number} min
-     * @param {number} max
-     */
-    clamp(value, min, max)
-    {
-        return Math.max(Math.min(value, max), min);
     }
 
     /**

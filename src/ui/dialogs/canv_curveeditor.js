@@ -21,7 +21,6 @@ export default class CurveEditor extends CanvasPointEditor
         this._portName = portname;
 
         this.options.template = "CurveEditor";
-        this.options.canvasId = "curveEditorCanvas";
         this.options.smoothStep = this.port.uiAttribs.gradEditSmoothstep;
         this.options.step = this.port.uiAttribs.gradEditStep;
         this.options.oklab = this.port.uiAttribs.gradOklab;
@@ -48,17 +47,13 @@ export default class CurveEditor extends CanvasPointEditor
 
         for (let i = 0; i < keys.length; i++)
         {
-            const r = Math.floor(keys[i].r * 255);
-            const g = Math.floor(keys[i].g * 255);
-            const b = Math.floor(keys[i].b * 255);
-            let a = Math.floor(keys[i].a);
-            if (keys[i].a === undefined)a = 1;
-            const p = keys[i].posy;
+            const r = Math.floor((1 - keys[i].posy) * 255);
 
-            str += ",rgba(" + p + ", " + p + ", " + p + ", " + 255 + ") " + 100 + "% ";
+            str += ",rgba(" + r + ", " + r + ", " + r + ", " + 255 + ") " + Math.floor((keys[i].pos) * 100) + "% ";
         }
 
         str += ")";
+        // return "red";
 
         return str;
     }
@@ -67,7 +62,7 @@ export default class CurveEditor extends CanvasPointEditor
     {
         if (!this.ctx)
         {
-            const canvas = ele.byId(this.options.canvasId);
+            const canvas = ele.byId(this.id + "Canvas");
             if (!canvas)
             {
                 this.#log.error("[gradienteditor] no canvas found");
@@ -107,8 +102,8 @@ export default class CurveEditor extends CanvasPointEditor
         this.ctx.fillStyle = "#444444";
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = "#ffffff";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = "#999999";
 
         this.ctx.rect(10, 10, 30, 30);
 
@@ -116,14 +111,10 @@ export default class CurveEditor extends CanvasPointEditor
 
         for (let i = 0; i < keys.length; i++)
         {
-            const keyA = keys[i];
-            // const keyB = keys[i + 1];
-            // if (keyA.a == undefined)keyA.a = 1;
+            const key = keys[i];
 
-            if (i == 0) this.ctx.moveTo(keyA.pos * this.width, keyA.posy * this.height);
-            else this.ctx.lineTo(keyA.pos * this.width, keyA.posy * this.height);
-
-            console.log(keyA.pos * this.width, keyA.posy * this.height);
+            if (i == 0) this.ctx.moveTo(key.pos * this.width, key.posy * this.height - 1);
+            else this.ctx.lineTo(key.pos * this.width, key.posy * this.height - 1);
         }
 
         this.ctx.stroke();
@@ -148,36 +139,6 @@ export default class CurveEditor extends CanvasPointEditor
         }
 
         this.updateOpenerBackground();
-    }
-
-    /**
-     * @param {number} r
-     * @param {number} g
-     * @param {number} b
-     */
-    rgbToOklab(r, g, b)
-    {
-        let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
-        let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
-        let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
-        l = Math.cbrt(l);
-        m = Math.cbrt(m);
-        s = Math.cbrt(s);
-        return [
-            l * +0.2104542553 + m * +0.7936177850 + s * -0.0040720468,
-            l * +1.9779984951 + m * -2.4285922050 + s * +0.4505937099,
-            l * +0.0259040371 + m * +0.7827717662 + s * -0.8086757660
-        ];
-    }
-
-    /**
-     * @param {number} value
-     * @param {number} min
-     * @param {number} max
-     */
-    clamp(value, min, max)
-    {
-        return Math.max(Math.min(value, max), min);
     }
 
     /**
