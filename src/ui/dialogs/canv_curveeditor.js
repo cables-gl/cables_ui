@@ -21,9 +21,6 @@ export default class CurveEditor extends CanvasPointEditor
         this._portName = portname;
 
         this.options.template = "CurveEditor";
-        this.options.smoothStep = this.port.uiAttribs.gradEditSmoothstep;
-        this.options.step = this.port.uiAttribs.gradEditStep;
-        this.options.oklab = this.port.uiAttribs.gradOklab;
 
         this.on("open", () =>
         {

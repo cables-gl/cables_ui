@@ -54,7 +54,6 @@ window.ele = ele;
 
 CABLES.UI.userSettings = userSettings;
 
-CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
 CABLES.UI.FindTab = FindTab; // move to command ?
 

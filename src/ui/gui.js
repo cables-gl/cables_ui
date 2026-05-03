@@ -64,6 +64,7 @@ import { InputBindings } from "./inputbindings.js";
 import TabInputBindings from "./components/tabs/tab_keybinds.js";
 import { CmdDebug } from "./commands/cmd_debug.js";
 import { isFocusOnEditor } from "./components/editor.js";
+import GradientEditor from "./dialogs/canv_gradienteditor.js";
 
 /**
  * @type {Gui}
@@ -1698,7 +1699,7 @@ export default class Gui extends Events
                     paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
                 if (port.uiAttribs.display === "gradient")
                 {
-                    const editor = new CABLES.GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") });
+                    const editor = new GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") });
                     editor.show();
                 }
             }

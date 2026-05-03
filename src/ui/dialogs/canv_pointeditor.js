@@ -22,8 +22,6 @@ import { DomEvents } from "../theme.js";
  * @property {string} [template]
  */
 
-CABLES.GradientEditor = null;
-
 /**
  * gradient editor dialog
  */
@@ -77,7 +75,6 @@ export default class CanvasPointEditor extends Events
         this.anim = new Anim();
         this.anim.defaultEasing = Anim.EASING_SMOOTHSTEP;
 
-        this._elContainer = null;
         this._bg = new ModalBackground();
         this._bg.on("hide", () =>
         {
@@ -114,7 +111,6 @@ export default class CanvasPointEditor extends Events
         if (this._elContainer) this._elContainer.remove();
         this._elContainer = null;
 
-        CABLES.GradientEditor = {};
     }
 
     /**
@@ -138,18 +134,23 @@ export default class CanvasPointEditor extends Events
             this.keys[i].pos = Math.min(1.0, Math.max(this.keys[i].pos, 0));
             this.keys[i].posy = Math.min(1.0, Math.max(this.keys[i].posy, 0));
 
-            html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex button-small\">" + i + "</a> ";
+            html += "<a data-index=\"" + i + "\" id=\"" + this.id + "-" + i + "\" class=\"keyindex button-small\">" + i + "</a> ";
 
             this.anim.setValue(this.keys[i].pos, this.keys[i].posy);
         }
 
         ele.byId(this.#id + "Keys").innerHTML = html;
 
-        this._timeout = setTimeout(
-            () =>
+        for (let i = 0; i < this.keys.length; i++)
+            ele.clickable(ele.byId(this.id + "-" + i), (e) =>
             {
-                if (CABLES.GradientEditor.editor) CABLES.GradientEditor.editor.updateCanvas();
-            }, 3);
+                this.selectKey(e.srcElement.dataset.index);
+            });
+
+        this._timeout = setTimeout(() =>
+        {
+            this.updateCanvas();
+        }, 10);
 
         if (this.#callback) this.#callback();
     }
@@ -281,7 +282,7 @@ export default class CanvasPointEditor extends Events
     /**
      * @param {Function} cb
      */
-    show(cb)
+    show(cb = null)
     {
         this.#callback = cb;
 
@@ -293,11 +294,13 @@ export default class CanvasPointEditor extends Events
 
         this._bg.show(true);
         if (!this._elContainer)
+        {
             this._elContainer = document.createElement("div");
+            document.body.appendChild(this._elContainer);
+        }
+
         this._elContainer.classList.add("gradientEditorContainer");
         this._elContainer.classList.add("cablesCssUi");
-
-        document.body.appendChild(this._elContainer);
         this._elContainer.innerHTML = html;
 
         if (this.openerEle)
@@ -376,7 +379,6 @@ export default class CanvasPointEditor extends Events
         }
 
         this.onChange();
-        CABLES.GradientEditor.editor = this;
 
         ele.byId(this.#id + "SaveButton").addEventListener("click", () =>
         {
@@ -441,8 +443,8 @@ export default class CanvasPointEditor extends Events
                             this.#currentKey.b = col.gl()[2];
                             this.#currentKey.a = a;
 
-                            CABLES.GradientEditor.editor._ctx = null;
-                            CABLES.GradientEditor.editor.onChange();
+                            this.ctx = null;
+                            this.onChange();
 
                             colEle.style.backgroundColor = col.hex();
                         }
