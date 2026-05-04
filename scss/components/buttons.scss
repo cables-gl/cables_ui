@@ -90,12 +90,12 @@
         width: 15px;
     }
 
-    .button_gradient
+    .button_gradient,.button_curve
     {
         width: 80%;
     }
 
-    .button_gradient, .button_colorpick{
+.button_curve,    .button_gradient, .button_colorpick{
         cursor: pointer;
         height: 8px;
         padding: 5px !important;

@@ -196,7 +196,13 @@
 
                         <div class="button_gradient" tabindex="0" id="watchgradient_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
 
-                        <!-- <span class="button gradienteditbutton" > <span class="icon icon-edit"></span>Edit</span> -->
+                {{/compare}}
+                {{#compare port.uiAttribs.display '==' 'curve' }}
+                    </td>
+                    <td>
+
+                        <div class="button_curve" tabindex="0" id="watchcurve_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
+
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'texture' }}
                     </td>
