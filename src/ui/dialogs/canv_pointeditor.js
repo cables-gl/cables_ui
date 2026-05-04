@@ -1,5 +1,5 @@
 import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
-import { Anim } from "cables";
+import { Anim, Op, Port } from "cables";
 import { uuid } from "cables/src/core/utils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { gui } from "../gui.js";
@@ -27,7 +27,11 @@ import { DomEvents } from "../theme.js";
  */
 export default class CanvasPointEditor extends Events
 {
+
+    /** @type {Op} */
     op = null;
+
+    /** @type {Port} */
     port = null;
     _bg = null;
     _elContainer = null;
@@ -55,6 +59,7 @@ export default class CanvasPointEditor extends Events
     #previousContent;
     #downDot = null;
     #docListener = null;
+    #closed = false;
     #id = uuid();
 
     /**
@@ -78,6 +83,7 @@ export default class CanvasPointEditor extends Events
         this._bg = new ModalBackground();
         this._bg.on("hide", () =>
         {
+            console.log("modal hide...");
             this.close();
         });
 
@@ -107,6 +113,7 @@ export default class CanvasPointEditor extends Events
 
     close()
     {
+        this.closed = true;
         this._bg.hide();
         if (this._elContainer) this._elContainer.remove();
         this._elContainer = null;
@@ -284,6 +291,8 @@ export default class CanvasPointEditor extends Events
      */
     show(cb = null)
     {
+        if (this.#closed) return console.log("closed already...");
+        console.trace();
         this.#callback = cb;
 
         if (gui.currentModal) gui.currentModal.close();

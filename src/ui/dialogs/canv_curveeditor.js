@@ -102,19 +102,34 @@ export default class CurveEditor extends CanvasPointEditor
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "#999999";
 
-        this.ctx.rect(10, 10, 30, 30);
-
-        this.ctx.beginPath();
-
-        for (let i = 0; i < keys.length; i++)
+        if (this.port.tempData.curveanim)
         {
-            const key = keys[i];
+            this.ctx.beginPath();
+            const num = 100;
+            for (let i = 0; i < num; i++)
+            {
 
-            if (i == 0) this.ctx.moveTo(key.pos * this.width, key.posy * this.height - 1);
-            else this.ctx.lineTo(key.pos * this.width, key.posy * this.height - 1);
+                const y = (1 - this.port.tempData.curveanim.getValue(i / num)) * this.height;
+
+                if (i == 0) this.ctx.moveTo((i / num) * this.width, y);
+                else this.ctx.lineTo((i / num) * this.width, y);
+            }
+            this.ctx.stroke();
         }
+        else
+        {
 
-        this.ctx.stroke();
+            this.ctx.beginPath();
+            for (let i = 0; i < keys.length; i++)
+            {
+                const key = keys[i];
+
+                if (i == 0) this.ctx.moveTo(key.pos * this.width, key.posy * this.height - 1);
+                else this.ctx.lineTo(key.pos * this.width, key.posy * this.height - 1);
+            }
+
+            this.ctx.stroke();
+        }
 
         if (this._opId && this._portName)
         {
