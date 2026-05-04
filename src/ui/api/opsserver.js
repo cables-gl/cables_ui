@@ -15,6 +15,7 @@ import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { createEditor } from "../components/editor.js";
+import { ModalOpName } from "../dialogs/modalopname.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -826,371 +827,6 @@ export default class ServerOps
         });
     }
 
-    /**
-     * @param {object} options
-     * @param {string} options.title title of the dialog
-     * @param {string} options.shortName shortname of the new op
-     * @param {string} options.type type of op (patch/user/team/...)
-     * @param {string} options.suggestedNamespace suggested namespace in dropdown
-     * @param {boolean} options.showReplace show "create and replace existing" button
-     * @param {boolean} options.rename rename or create a new op?
-     * @param {string|null} options.sourceOpName opname to clone from or create op into
-     * @param {boolean} options.hasOpDirectories electron has directories for additional ops, setting comes from platform_electron.js
-     * @param {function} cb
-     */
-    opNameDialog(options, cb)
-    {
-        const newName = options.sourceOpName || options.shortName;
-        let opTargetDir = null;
-        const _checkOpName = () =>
-        {
-            if (!platform.isTrustedPatch())
-            {
-                new ModalDialog({
-                    "title": "Untrusted Patch",
-                    "text": "You need write access in the patch to create ops<br/>Try creating a new patch and try there again",
-                    "showOkButton": true
-                });
-                return;
-            }
-
-            const checkNameRequest = {
-                "namespace": options.suggestedNamespace,
-                "v": newName,
-                "sourceName": options.sourceOpName,
-                "rename": options.rename
-            };
-            if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
-            platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, initialRes) =>
-            {
-                if (err)
-                {
-                    this.showApiError(err);
-                    return;
-                }
-
-                const modalDialog = new ModalDialog({
-                    "title": options.title,
-                    "text": html
-                });
-
-                if (platform.frontendOptions.hasOpDirectories)
-                {
-                    ele.clickables(modalDialog.getElement(), ".clickable", (event, dataset) =>
-                    {
-                        const selectElement = ele.byId("opTargetDir");
-                        const selectedDir = ele.getSelectValue(selectElement);
-                        switch (event.currentTarget.id)
-                        {
-                        case "addOpTargetDir":
-                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, dirRes) =>
-                            {
-                                if (!dirErr)
-                                {
-                                    if (selectElement)
-                                    {
-                                        selectElement.length = 0;
-                                        dirRes.data.forEach((dir) =>
-                                        {
-                                            const selected = dir.new;
-                                            selectElement.add(new Option(dir.path, dir.path, selected, selected));
-                                            if (selected) opTargetDir = dir.path;
-                                        });
-                                    }
-                                }
-                                else
-                                {
-                                    new ModalDialog({
-                                        "showOkButton": true,
-                                        "warning": true,
-                                        "title": "Warning",
-                                        "text": dirErr.msg
-                                    });
-                                    this.#log.info(dirErr.msg);
-                                }
-                            });
-                            break;
-                        case "openOpTargetDir":
-                        default:
-                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_OPEN_DIR, { "dir": selectedDir });
-                            break;
-                        }
-                    });
-                }
-
-                const opNameInput = ele.byId("opNameDialogInput");
-                const checkedName = initialRes.checkedName || options.sourceOpName;
-                if (opNameInput.value !== checkedName)
-                {
-                    opNameInput.value = checkedName;
-                }
-                _updateFormFromApi(initialRes, checkedName);
-
-                if (opNameInput.value)
-                {
-                    const parts = opNameInput.value.split(".");
-                    let lastPartLength = parts[parts.length - 1].length;
-                    if (parts.length > 1)
-                    {
-                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
-                        opNameInput.focus();
-                    }
-                }
-
-                opNameInput.addEventListener("input", _nameChangeListener);
-                ele.byId("opNameDialogNamespace").addEventListener("input", _namespaceChangeListener);
-                const opTargetDirEle = ele.byId("opTargetDir");
-                if (opTargetDirEle)
-                {
-                    opTargetDirEle.addEventListener("change", () =>
-                    {
-                        if (opTargetDirEle)
-                        {
-                            opTargetDir = opTargetDirEle.value;
-                        }
-                        else
-                        {
-                            opTargetDir = null;
-                        }
-                        _nameChangeListener();
-                    });
-                }
-
-                const cbOptions = {
-                    "replace": false
-                };
-
-                ele.clickable(ele.byId("opNameDialogSubmit"), () =>
-                {
-                    if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                    cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
-                });
-
-                if (options.showReplace)
-                {
-                    ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
-                    {
-                        cbOptions.replace = true;
-                        if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                        cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
-                    });
-                }
-            });
-        };
-
-        let html = "";
-        let forms = "";
-        let hints = "";
-        let buttons = "";
-
-        if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
-
-        forms += "New op name:<br/><br/>";
-        forms += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"" + platform.getDefaultOpName() + "\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
-        forms += "&nbsp;";
-        forms += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
-        forms += "</div>";
-        hints += "<br/><div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
-        hints += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
-        hints += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
-        hints += "<br/><br/>";
-        if (options.rename)
-        {
-            buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
-        }
-        else
-        {
-            buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
-        }
-        buttons += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"cblbutton hidden\">Create and replace existing</a>";
-        buttons += "<br/><br/>";
-
-        if (options.hasOpDirectories)
-        {
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, res) =>
-            {
-                let opDirSelect = "<br/><div class=\"opDirSelect\">";
-                opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\" style=\"border-radius: 2px;\">";
-                for (let i = 0; i < res.data.length; i++)
-                {
-                    const dirInfo = res.data[i];
-                    if (i === 0) opTargetDir = dirInfo.dir;
-                    opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
-                }
-                opDirSelect += "</select>";
-                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
-                opDirSelect += "&nbsp;<a id=\"openOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"open dir\" data-tt=\"open dir\"><span class=\"icon icon-folder\"></span></a>\n";
-                opDirSelect += "</div>";
-                forms += opDirSelect;
-                html += forms + hints + buttons;
-                _checkOpName();
-            });
-        }
-        else
-        {
-            html += forms + hints + buttons;
-            _checkOpName();
-        }
-
-        const _namespaceChangeListener = () =>
-        {
-            const opNameInput = ele.byId("opNameDialogInput");
-            const selectEle = ele.byId("opNameDialogNamespace");
-
-            if (selectEle.value && namespace.isNamespaceNameValid(selectEle.value))
-            {
-                const opName = opNameInput.value;
-                const opBasename = opName.substring(opName.lastIndexOf(".") + 1);
-                const newNamespace = selectEle.value;
-                const newOpName = newNamespace + opBasename;
-                if (opNameInput)
-                {
-                    opNameInput.value = newOpName;
-                    _nameChangeListener();
-                }
-            }
-        };
-
-        const _nameChangeListener = () =>
-        {
-            const newNamespace = ele.byId("opNameDialogNamespace").value;
-            const fullName = ele.byId("opNameDialogInput").value;
-
-            ele.hide(ele.byId("opNameDialogSubmit"));
-            ele.hide(ele.byId("opNameDialogSubmitReplace"));
-
-            if (fullName)
-            {
-                const checkNameRequest = {
-                    "namespace": newNamespace,
-                    "v": fullName,
-                    "sourceName": options.sourceOpName,
-                    "rename": options.rename
-                };
-                const opTargetDirEle = ele.byId("opTargetDir");
-                if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
-
-                gui.jobs().start({
-                    "id": "checkOpName" + fullName,
-                    "title": "checking op name" + fullName
-                });
-
-                platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
-                {
-
-                    if (err)
-                    {
-                        if (!res) res = {};
-                        if (!res.problems) res.problems = [];
-                        if (!res.checkedName) res.checkedName = fullName;
-                        res.problems.push("failed to check op-name with api, try again");
-                    }
-
-                    if (res.checkedName && res.checkedName === fullName)
-                    {
-                        _updateFormFromApi(res, fullName, newNamespace);
-                    }
-                    gui.jobs().finish("checkOpName" + fullName);
-                });
-            }
-        };
-
-        const _updateFormFromApi = (res, newOpName, newNamespace = null) =>
-        {
-            let hintsHtml = "";
-            const eleHints = ele.byId("opNameDialogHints");
-            const inputField = ele.byId("opNameDialogInput");
-
-            if (eleHints) ele.hide(eleHints);
-            if (res.hints && res.hints.length > 0)
-            {
-                hintsHtml += "<ul>";
-                res.hints.forEach((hint) =>
-                {
-                    hintsHtml += "<li>" + hint + "</li>";
-                });
-                hintsHtml += "</ul>";
-
-                if (eleHints)
-                {
-                    eleHints.innerHTML = "<h3>Hints</h3>" + hintsHtml;
-                    ele.show(eleHints);
-                }
-            }
-
-            let consequencesHtml = "";
-            const eleCons = ele.byId("opNameDialogConsequences");
-            if (eleCons) ele.hide(eleCons);
-            if (res.consequences && res.consequences.length > 0)
-            {
-                consequencesHtml += "<ul>";
-                res.consequences.forEach((consequence) =>
-                {
-                    consequencesHtml += "<li>" + consequence + "</li>";
-                });
-                consequencesHtml += "</ul>";
-
-                if (eleCons)
-                {
-                    eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
-                    ele.show(eleCons);
-                }
-            }
-
-            if (newOpName)
-            {
-                if (res.problems.length > 0)
-                {
-                    let htmlIssue = "<h3>Issues</h3>";
-                    htmlIssue += "<ul>";
-                    for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul>";
-                    const errorsEle = ele.byId("opcreateerrors");
-                    errorsEle.innerHTML = htmlIssue;
-                    ele.hide(ele.byId("opNameDialogSubmit"));
-                    ele.hide(ele.byId("opNameDialogSubmitReplace"));
-                    errorsEle.classList.remove("hidden");
-
-                    const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
-                    if (versionSuggestions) versionSuggestions.forEach((suggest) =>
-                    {
-                        if (suggest.dataset.nextName)
-                        {
-                            suggest.addEventListener("pointerdown", (e) =>
-                            {
-                                inputField.value = namespace.capitalizeNamespaceParts(suggest.dataset.nextName);
-                                _nameChangeListener();
-                            });
-                        }
-                    });
-                }
-                else
-                {
-                    ele.byId("opcreateerrors").innerHTML = "";
-                    ele.byId("opcreateerrors").classList.add("hidden");
-                    ele.show(ele.byId("opNameDialogSubmit"));
-                    if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
-                }
-            }
-
-            const namespaceEle = ele.byId("opNameDialogNamespace");
-            namespaceEle.innerHTML = "";
-            if (res.namespaces)
-            {
-                res.namespaces.forEach((ns) =>
-                {
-                    const option = document.createElement("option");
-                    option.value = ns;
-                    option.text = ns;
-                    if (newNamespace && ns === newNamespace) option.selected = true;
-                    namespaceEle.add(option);
-                });
-            }
-
-            ele.byId("opNameDialogInput").focus();
-        };
-    }
-
     createDialog(name, options)
     {
         options = options || {};
@@ -1199,10 +835,12 @@ export default class ServerOps
         if (!platform.checkOpCreate()) return;
 
         let suggestedNamespace = platform.getPatchOpsNamespace();
+        let suggestedName = name;
+        if (!suggestedName) suggestedName = suggestedNamespace + platform.getDefaultOpName();
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": name || platform.getDefaultOpName(),
+            "shortName": suggestedName,
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
@@ -1211,7 +849,7 @@ export default class ServerOps
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             let opname = newName;
             this.create(opname, (newOp) =>
@@ -1298,7 +936,7 @@ export default class ServerOps
             "hasOpDirectories": false
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newName;
 
@@ -1437,7 +1075,7 @@ export default class ServerOps
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newName;
 
