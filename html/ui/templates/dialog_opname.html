@@ -7,19 +7,20 @@
         <input type="text" id="opNameDialogInput" value="{{sourceOpName}}" placeholder="{{defaultOpName}}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>&nbsp;
         <!-- forms -->
         <select class="left" id="opNameDialogNamespace"></select><br/>
-        {{#if opDirs}}
-            <br/>
-            <div class="opDirSelect">
-                <select id="opTargetDir" name="opTargetDir" style="border-radius: 2px;">
-                    {{#each opDirs}}
-                        <option value="{{dir}}">{{dir}}</option>
-                    {{/each}}
-                </select>
-                &nbsp;<a id="addOpTargetDir" class="button-small button-icon tt info clickable" data-info="add op dir" data-tt="add op dir"><span class="icon icon-file-plus"></span></a>
-                &nbsp;<a id="openOpTargetDir" class="button-small button-icon tt info clickable" data-info="open dir" data-tt="open dir"><span class="icon icon-folder"></span></a>
-            </div>
-        {{/if}}
-    </div><br/>
+    </div>
+    {{#if opDirs}}
+        <br/>
+        <div class="opDirSelect">
+            <select id="opTargetDir" name="opTargetDir" style="border-radius: 2px;">
+                {{#each opDirs}}
+                    <option value="{{dir}}">{{dir}}</option>
+                {{/each}}
+            </select>
+            &nbsp;<a id="addOpTargetDir" class="button-small button-icon tt info clickable" data-info="add op dir" data-tt="add op dir"><span class="icon icon-file-plus"></span></a>
+            &nbsp;<a id="openOpTargetDir" class="button-small button-icon tt info clickable" data-info="open dir" data-tt="open dir"><span class="icon icon-folder"></span></a>
+        </div>
+    {{/if}}
+    <br/>
     <!-- hints -->
     <div id="opcreateerrors" class="hidden issues"></div>
     <div id="opNameDialogHints" class="hidden hints"></div>
