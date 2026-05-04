@@ -55,8 +55,15 @@ export class ModalOpName
                 });
                 const opNameInput = ele.byId("opNameDialogInput");
                 opNameInput.value = this._options.sourceOpName || this._options.shortName;
-                this._updateDialog(options, { "namespaces": [options.suggestedNamespace], "problems": [] }, opNameInput.value);
+
+                this._updateDialog(options, {
+                    "namespaces": [options.suggestedNamespace],
+                    "problems": []
+                }, opNameInput.value);
                 this._checkOpName();
+
+                opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
+                ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
             });
         }
         else
@@ -67,8 +74,15 @@ export class ModalOpName
             });
             const opNameInput = ele.byId("opNameDialogInput");
             opNameInput.value = this._options.sourceOpName || this._options.shortName;
-            this._updateDialog(options, { "namespaces": [options.suggestedNamespace], "problems": [] }, opNameInput.value);
+
+            this._updateDialog(options, {
+                "namespaces": [options.suggestedNamespace],
+                "problems": []
+            }, opNameInput.value);
             this._checkOpName();
+
+            opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
+            ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
         }
     }
 
@@ -125,6 +139,7 @@ export class ModalOpName
         if (eleCons) ele.hide(eleCons);
         if (data.consequences && data.consequences.length > 0)
         {
+            data.consequences.unshift("New op: <a href=\"/op/" + newOpName + "\">" + newOpName + "</a>");
             consequencesHtml += "<ul>";
             data.consequences.forEach((consequence) =>
             {
@@ -192,14 +207,14 @@ export class ModalOpName
         ele.byId("opNameDialogInput").focus();
     }
 
-    _apiCheckName(checkNameRequest)
+    _apiCheckName(checkNameRequest, cb = null)
     {
-        if (this._currentCheckNameTimeout) return;
+        clearTimeout(this._currentCheckNameTimeout);
         this._currentCheckNameTimeout = setTimeout(() =>
         {
             gui.jobs().start({
                 "id": "checkOpName" + checkNameRequest.v,
-                "title": "checking op name" + checkNameRequest.v
+                "title": "checking op name " + checkNameRequest.v
             });
             platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
             {
@@ -209,7 +224,6 @@ export class ModalOpName
                     if (!res.problems) res.problems = [];
                     if (!res.checkedName) res.checkedName = checkNameRequest.v;
                     res.problems.push("failed to check op-name with api, try again");
-                    gui.jobs().finish("checkOpName");
                 }
 
                 if (platform.frontendOptions.hasOpDirectories)
@@ -260,25 +274,9 @@ export class ModalOpName
 
                 const opNameInput = ele.byId("opNameDialogInput");
                 const checkedName = res.checkedName || this._options.sourceOpName;
-                if (opNameInput.value !== checkedName)
-                {
-                    opNameInput.value = checkedName;
-                }
                 this._updateDialog(this._options, res, checkedName);
+                if (opNameInput && opNameInput.value) opNameInput.focus();
 
-                if (opNameInput.value)
-                {
-                    const parts = opNameInput.value.split(".");
-                    let lastPartLength = parts[parts.length - 1].length;
-                    if (parts.length > 1)
-                    {
-                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
-                        opNameInput.focus();
-                    }
-                }
-
-                opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
-                ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
                 const opTargetDirEle = ele.byId("opTargetDir");
                 if (opTargetDirEle)
                 {
@@ -303,7 +301,7 @@ export class ModalOpName
                 ele.clickable(ele.byId("opNameDialogSubmit"), () =>
                 {
                     if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
-                    this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
+                    this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput?.value), cbOptions);
                 });
 
                 if (this._options.showReplace)
@@ -312,14 +310,14 @@ export class ModalOpName
                     {
                         cbOptions.replace = true;
                         if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
-                        this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
+                        this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput?.value), cbOptions);
                     });
                 }
-                gui.jobs().finish("checkOpName");
+                gui.jobs().finish("checkOpName" + checkNameRequest.v);
                 this._currentCheckNameTimeout = null;
-                if (cb) cb(err, res);
+                if (cb) cb(checkedName);
             });
-        }, 10);
+        }, 250);
 
     }
 
