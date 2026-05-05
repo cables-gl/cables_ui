@@ -2446,4 +2446,25 @@ export default class Gui extends Events
         this.lastHoverPort?.setUiAttribs({ "hover": false });
     }
 
+    /**
+     * @param {function} cb
+     */
+    showVarSelect(cb)
+    {
+        const list = [];
+        const vars = gui.corePatch().getVars();
+        console.log("vars", vars);
+        for (const i in vars)
+        {
+            list.push({ "cmd": i, "func": cb });
+        }
+
+        console.log("list", list);
+
+        const cp = new CommandPalette({ "showIcons": false,
+            "cablesCommands": false,
+            "showCategory": false,
+            "commands": list });
+        cp.show();
+    }
 }

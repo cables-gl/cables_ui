@@ -1,5 +1,5 @@
 import { ele, ModalBackground } from "cables-shared-client";
-import { Port } from "cables";
+import { Link, Port } from "cables";
 import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import OpTreeList from "../components/opselect_treelist.js";
@@ -25,7 +25,11 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.OPSELECT = {};
+
+/** @type {Link} */
 CABLES.UI.OPSELECT.linkNewLink = null;
+
+/** @type {Port} */
 CABLES.UI.OPSELECT.linkNewOpToPort = null;
 CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;

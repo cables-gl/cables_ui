@@ -17,6 +17,7 @@ import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
+import { showInfo } from "../elements/tooltips.js";
 
 export { CmdPatch };
 
@@ -1143,11 +1144,25 @@ class CmdPatch
                 } });
     }
 
-    static createLinkVariableExist(createTrigger = false)
+    static createLinkVariableExist(createTrigger = false, portVar = false)
     {
         gui.opSelect().close();
         const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
         const p = CABLES.UI.OPSELECT.linkNewOpToPort;
+        if (portVar)
+        {
+            p.setVariable("choose...");
+            // gui.showVarSelect((e) =>
+            // {
+            //     console.log("text", e);
+            // });
+
+            // p.op.refreshParams();
+            // if (options.showParams)
+            gui.opParams.show(p.op.id);
+            //  ww
+            return;
+        }
 
         gui.closeModal();
         const getsetOp = opNames.getVarGetterOpNameByType(type, p);

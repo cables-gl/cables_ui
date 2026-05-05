@@ -1,4 +1,4 @@
-import { ele } from "cables-shared-client";
+import { ModalBackground, ele } from "cables-shared-client";
 import { utils } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -8,6 +8,14 @@ import { Commands } from "../commands/commands.js";
 Commands.init();
 
 /**
+ * @typedef CommandPaletteOptions
+ * @property {boolean} [cablesCommands]
+ * @property {boolean} [showCategory]
+ * @property {boolean} [showIcons]
+ * @property {import("../commands/commands.js").CommandObject[]} [commands]
+ */
+
+/**
  * show a searchable command palette (cmd/ctrl+p)
  *
  * @export
@@ -15,17 +23,34 @@ Commands.init();
  */
 export default class CommandPalette
 {
-    constructor()
-    {
-        this._lastSearch = "";
-        this._findTimeoutId = null;
-        this._cursorIndex = 0;
-        this._numResults = 0;
-        this._bookmarkActiveIcon = "icon-pin-filled";
-        this._bookmarkInactiveIcon = "icon-pin-outline";
-        this._defaultIcon = "square";
-        this.dynamicCmds = [];
 
+    /** @type {CommandPaletteOptions} */
+    #options = {
+        "cablesCommands": true,
+        "showCategory": true,
+        "showIcons": true };
+
+    _lastSearch = "";
+    _findTimeoutId = null;
+    _cursorIndex = 0;
+    _numResults = 0;
+    _bookmarkActiveIcon = "icon-pin-filled";
+    _bookmarkInactiveIcon = "icon-pin-outline";
+    _defaultIcon = "square";
+
+    #bg = new ModalBackground();
+
+    /** @type {import("../commands/commands.js").CommandObject[]} */
+    dynamicCmds = [];
+
+    /**
+ * @param {CommandPaletteOptions} options
+ */
+    constructor(options = null)
+    {
+        if (options) this.#options = options;
+
+        this.#bg.on("hide", () => { this.close(); });
     }
 
     /**
@@ -65,7 +90,8 @@ export default class CommandPalette
     {
         this._cursorIndex = 0;
         gui.closeModal();
-        document.getElementById("modalbg").style.display = "block";
+        this.#bg.show();
+        // document.getElementById("modalbg").style.display = "block";
         ele.show(ele.byId("cmdpalette"));
         ele.byId("cmdinput").focus();
         ele.byId("cmdinput").value = this._lastSearch;
@@ -79,6 +105,11 @@ export default class CommandPalette
 
         this.keyDown = this.keyDown.bind(this);
         document.addEventListener("keydown", this.keyDown);
+
+        ele.byId("cmdinput").addEventListener("input", () =>
+        {
+            this.doSearch(ele.byId("cmdinput").value);
+        });
     }
 
     /**
@@ -115,12 +146,15 @@ export default class CommandPalette
         gui.iconBarLeft.refresh();
     }
 
+    /**
+     * @param {PointerEvent} ev
+     */
     onResultClick(ev)
     {
         const el = ev.target;
         const cmd = el.dataset.cmd;
 
-        gui.cmdPalette.close();
+        this.close();
 
         if (el.classList.contains("dyn"))
         {
@@ -170,22 +204,31 @@ export default class CommandPalette
 
         let html = "";
         html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + idx + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPalette.onResultClick(event)>";
-        html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
+
+        if (this.#options.showIcons)
+            html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
+
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
-        html += "<span class=\"category\"> - " + cmd.category || "unknown category" + "</span>";
 
-        const bookmarkIcon = this.getBookmarkIconForCmd(cmd.cmd);
-        html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPalette.onBookmarkIconClick(event)></span>";
-        if (cmd.hotkey)
-        {
-            html += "<span class=\"hotkey right\">[ " + cmd.hotkey + " ]</span>";
-        }
-        if (cmd.userSetting)
-        {
-            html += "<span class=\"right\">Usersetting: [ " + userSettings.get(cmd.userSetting) + " ]</span>";
-        }
-        html += "</div>";
+        if (this.#options.showCategory)
+            html += "<span class=\"category\"> - " + cmd.category || "unknown category" + "</span>";
 
+        if (this.#options.cablesCommands)
+        {
+
+            const bookmarkIcon = this.getBookmarkIconForCmd(cmd.cmd);
+            html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPalette.onBookmarkIconClick(event)></span>";
+            if (cmd.hotkey)
+            {
+                html += "<span class=\"hotkey right\">[ " + cmd.hotkey + " ]</span>";
+            }
+            if (cmd.userSetting)
+            {
+                html += "<span class=\"right\">Usersetting: [ " + userSettings.get(cmd.userSetting) + " ]</span>";
+            }
+            html += "</div>";
+
+        }
         return html;
     }
 
@@ -203,33 +246,50 @@ export default class CommandPalette
 
         let count = 0;
 
-        for (let i = 0; i < this.dynamicCmds.length; i++)
-        {
-            const cmd = this.dynamicCmds[i].cmd;
-
-            if (cmd.toLowerCase().indexOf(str) >= 0)
+        if (this.#options.commands)
+            for (let i = 0; i < this.#options.commands.length; i++)
             {
-                html += this.addResult(this.dynamicCmds[i], count, i);
-                count++;
-            }
-        }
+                const cmd = this.#options.commands[i].cmd;
 
-        const commands = Commands.commands;
-        for (let i = 0; i < commands.length; i++)
+                if (cmd.toLowerCase().indexOf(str) >= 0)
+                {
+                    html += this.addResult(this.#options.commands[i], count, i);
+                    count++;
+                }
+            }
+
+        if (this.#options.cablesCommands)
         {
-            const cmd = commands[i].cmd;
 
-            let show = true;
-            if (commands[i].frontendOption)
-                show = platform.frontendOptions[commands[i].frontendOption];
-
-            if (!show) continue;
-            if (!str && commands[i].category == "debug") continue;
-            if (cmd.toLowerCase().indexOf(str) >= 0)
+            for (let i = 0; i < this.dynamicCmds.length; i++)
             {
-                html += this.addResult(commands[i], count);
-                count++;
+                const cmd = this.dynamicCmds[i].cmd;
+
+                if (cmd.toLowerCase().indexOf(str) >= 0)
+                {
+                    html += this.addResult(this.dynamicCmds[i], count, i);
+                    count++;
+                }
             }
+
+            const commands = Commands.commands;
+            for (let i = 0; i < commands.length; i++)
+            {
+                const cmd = commands[i].cmd;
+
+                let show = true;
+                if (commands[i].frontendOption)
+                    show = platform.frontendOptions[commands[i].frontendOption];
+
+                if (!show) continue;
+                if (!str && commands[i].category == "debug") continue;
+                if (cmd.toLowerCase().indexOf(str) >= 0)
+                {
+                    html += this.addResult(commands[i], count);
+                    count++;
+                }
+            }
+
         }
 
         this._numResults = count;
@@ -262,7 +322,7 @@ export default class CommandPalette
     {
         document.removeEventListener("keydown", this.keyDown);
         ele.byId("searchresult_cmd").innerHTML = "";
-        document.getElementById("modalbg").style.display = "none";
+        this.#bg.hide();
         ele.hide(ele.byId("cmdpalette"));
     }
 

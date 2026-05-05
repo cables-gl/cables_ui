@@ -47,11 +47,14 @@
 
     {{#compare port.direction '==' '0' }}
     <span id="opselect_createVar">
-        <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
+        <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Set+Get variable</a>
         <br/>
         <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Get variable</a>
         <br/>
+        <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist(false,true);">Variable in port</a>
+        <br/>
     </span>
+
     {{/compare}}
 
     {{#compare port.direction '==' '1' }}
