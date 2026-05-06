@@ -59,7 +59,6 @@ import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
 import defaultOps from "./defaultops.js";
 import IconBar from "./elements/iconbar.js";
-import { Commands } from "./commands/commands.js";
 import { InputBindings } from "./inputbindings.js";
 import TabInputBindings from "./components/tabs/tab_keybinds.js";
 import { CmdDebug } from "./commands/cmd_debug.js";
@@ -2456,7 +2455,7 @@ export default class Gui extends Events
         console.log("vars", vars);
         for (const i in vars)
         {
-            list.push({ "cmd": i, "func": cb });
+            list.push({ "cmd": i, "func": (e)=>{cb(e)} });
         }
 
         console.log("list", list);

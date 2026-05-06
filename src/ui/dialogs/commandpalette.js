@@ -1,9 +1,12 @@
 import { ModalBackground, ele } from "cables-shared-client";
 import { utils } from "cables";
+import { uuid } from "cables/src/core/utils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { Commands } from "../commands/commands.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import ModalDialog from "./modaldialog.js";
 
 Commands.init();
 
@@ -23,12 +26,14 @@ Commands.init();
  */
 export default class CommandPalette
 {
+    #id = uuid();
 
     /** @type {CommandPaletteOptions} */
     #options = {
         "cablesCommands": true,
         "showCategory": true,
-        "showIcons": true };
+        "showIcons": true
+    };
 
     _lastSearch = "";
     _findTimeoutId = null;
@@ -62,7 +67,15 @@ export default class CommandPalette
         {
         case 13:
             const el = ele.byId("result" + this._cursorIndex);
-            if (el)el.click();
+            if (this.#options.cablesCommands)
+            {
+                if (el) el.click();
+            }
+            else
+            {
+                console.log("eeee", el);
+                this.execIndex(el);
+            }
             break;
         case 27:
             this.close();
@@ -92,10 +105,18 @@ export default class CommandPalette
         gui.closeModal();
         this.#bg.show();
         // document.getElementById("modalbg").style.display = "block";
+
+        const html = getHandleBarHtml("cmdPalette", { "id": this.#id });
+
         ele.show(ele.byId("cmdpalette"));
-        ele.byId("cmdinput").focus();
-        ele.byId("cmdinput").value = this._lastSearch;
-        document.getElementById("cmdinput").setSelectionRange(0, this._lastSearch.length);
+
+        console.log(html);
+        ele.byId("cmdpalette").innerHTML = html;
+
+        const elInput = ele.byId("cmdinput" + this.#id);
+        elInput.focus();
+        elInput.value = this._lastSearch;
+        elInput.setSelectionRange(0, this._lastSearch.length);
 
         clearTimeout(this._findTimeoutId);
         this._findTimeoutId = setTimeout(() =>
@@ -106,9 +127,14 @@ export default class CommandPalette
         this.keyDown = this.keyDown.bind(this);
         document.addEventListener("keydown", this.keyDown);
 
-        ele.byId("cmdinput").addEventListener("input", () =>
+        elInput.addEventListener("input", () =>
         {
-            this.doSearch(ele.byId("cmdinput").value);
+            this.doSearch(elInput.value);
+        });
+
+        ele.clickable(ele.byId("cmdClose" + this.#id), () =>
+        {
+            this.close();
         });
     }
 
@@ -144,6 +170,20 @@ export default class CommandPalette
         userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
 
         gui.iconBarLeft.refresh();
+    }
+
+    execIndex(el)
+    {
+        const index = el.dataset.index;
+        const cmd = el.dataset.cmd;
+        console.log("execindex", index);
+
+        if (!this.#options.cablesCommands)
+        {
+            console.log("index", index);
+            this.#options.commands[index].func(cmd);
+            this.close();
+        }
     }
 
     /**
@@ -226,9 +266,9 @@ export default class CommandPalette
             {
                 html += "<span class=\"right\">Usersetting: [ " + userSettings.get(cmd.userSetting) + " ]</span>";
             }
-            html += "</div>";
 
         }
+        html += "</div>";
         return html;
     }
 

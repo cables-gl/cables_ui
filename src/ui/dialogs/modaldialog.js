@@ -16,6 +16,7 @@ import { CssClassNames } from "../theme.js";
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
  * @property {String} [promptValue]
+ * @property {Function} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
  */
 

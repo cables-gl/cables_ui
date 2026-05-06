@@ -1013,7 +1013,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Op[]}
+     * @returns {Op<any>[]}
      */
     getSelectedOps()
     {
@@ -1867,7 +1867,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {UiOp[]} ops
+     * @param {Op<any>[]} ops
      */
     compressSelectedOps(ops)
     {
