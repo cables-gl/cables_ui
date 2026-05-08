@@ -21,6 +21,7 @@ import { DomEvents } from "../theme.js";
  * @property {HTMLElement} openerEle
  * @property {string} [template]
  */
+let current = null;
 
 /**
  * gradient editor dialog
@@ -59,7 +60,7 @@ export default class CanvasPointEditor extends Events
     #previousContent;
     #downDot = null;
     #docListener = null;
-    #closed = false;
+    // #closed = false;
     #id = uuid();
 
     /**
@@ -87,10 +88,6 @@ export default class CanvasPointEditor extends Events
             this.close();
         });
 
-        this.options.smoothStep = this.port.uiAttribs.gradEditSmoothstep;
-        this.options.step = this.port.uiAttribs.gradEditStep;
-        this.options.oklab = this.port.uiAttribs.gradOklab;
-
         this.#previousContent = "";
         this.openerEle = (options || {}).openerEle;
         this.updateOpenerBackground();
@@ -113,10 +110,16 @@ export default class CanvasPointEditor extends Events
 
     close()
     {
-        this.closed = true;
+        console.log("clode" + this.#id);
+        // this.#closed = true;
+        if (this._elContainer)
+        {
+            this._elContainer.innerHTML = "no";
+            this._elContainer.remove();
+        }
         this._bg.hide();
-        if (this._elContainer) this._elContainer.remove();
         this._elContainer = null;
+        this.op.refreshParams();
 
     }
 
@@ -291,9 +294,12 @@ export default class CanvasPointEditor extends Events
      */
     show(cb = null)
     {
-        if (this.#closed) return console.log("closed already...");
+        // if (current)current.close();
+        // current = null;
+        // if (this.#closed) return console.log(this.#id + "closed already...");
+        console.log("showwwwwwwww" + this.#id);
         console.trace();
-        this.#callback = cb;
+        if (cb) this.#callback = cb;
 
         if (gui.currentModal) gui.currentModal.close();
 

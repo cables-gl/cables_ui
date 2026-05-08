@@ -406,13 +406,17 @@ class ParamsListener extends Events
     {
         let foundOpacity = false;
         const id = "watchcurve_in_" + idx + "_" + panelid;
-        const colEle = ele.byId(id);
+        let colEle = ele.byId(id);
 
         if (!colEle)
         {
             this._log.log("color ele not found!", id);
             return;
         }
+
+        const elClone = colEle.cloneNode(true);
+        colEle.parentNode.replaceChild(elClone, colEle);// remove and clone node to remove old listeners... not great
+        colEle = elClone;
 
         const updateColorBox = () =>
         {
@@ -425,6 +429,7 @@ class ParamsListener extends Events
         ele.clickable(colEle, (e) =>
         {
             const ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            // thePort.tempData.curveEditor = ge;
             ge.show(() =>
             {
                 updateColorBox();

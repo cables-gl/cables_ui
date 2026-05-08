@@ -50,7 +50,6 @@ export default class CurveEditor extends CanvasPointEditor
         }
 
         str += ")";
-        // return "red";
 
         return str;
     }
@@ -153,25 +152,4 @@ export default class CurveEditor extends CanvasPointEditor
         this.updateOpenerBackground();
     }
 
-    /**
-     * @param {number} L
-     * @param {number} a
-     * @param {number} b
-     */
-    oklabToRGB(L, a, b)
-    {
-        let l = L + a * +0.3963377774 + b * +0.2158037573;
-        let m = L + a * -0.1055613458 + b * -0.0638541728;
-        let s = L + a * -0.0894841775 + b * -1.2914855480;
-        l **= 3;
-        m **= 3;
-        s **= 3;
-        let rgb_r = l * +4.0767416621 + m * -3.3077115913 + s * +0.2309699292;
-        let rgb_g = l * -1.2684380046 + m * +2.6097574011 + s * -0.3413193965;
-        let rgb_b = l * -0.0041960863 + m * -0.7034186147 + s * +1.7076147010;
-        rgb_r = utils.clamp(rgb_r, 0, 1);
-        rgb_g = utils.clamp(rgb_g, 0, 1);
-        rgb_b = utils.clamp(rgb_b, 0, 1);
-        return [rgb_r, rgb_g, rgb_b];
-    }
 }
