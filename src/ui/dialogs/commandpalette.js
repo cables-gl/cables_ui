@@ -382,11 +382,15 @@ export default class CommandPalette
         ele.forEachClass("result", (e) => { e.classList.remove("selected"); });
 
         // const e = ele.byId("result" + this.#resultCommands[this.#cursorIndex]);
-        const el = ele.byId("result" + this.#resultCommands[this.#cursorIndex].id);
-        if (el)
+        const c = this.#resultCommands[this.#cursorIndex];
+        if (c)
         {
-            el.classList.add("selected");
-            el.scrollIntoView({ "block": "end" });
+            const el = ele.byId("result" + c.id);
+            if (el)
+            {
+                el.classList.add("selected");
+                el.scrollIntoView({ "block": "end" });
+            }
         }
     }
 
