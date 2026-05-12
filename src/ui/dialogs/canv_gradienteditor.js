@@ -6,7 +6,7 @@ import { DomEvents } from "../theme.js";
 /**
  * gradient editor dialog
  */
-export default class GradientEditor extends CanvasPointEditor
+export class GradientEditor extends CanvasPointEditor
 {
     #log = new Logger("gradienteditor");
     imageData = null;

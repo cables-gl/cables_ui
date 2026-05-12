@@ -5,7 +5,7 @@ import CanvasPointEditor from "./canv_pointeditor.js";
 /**
  * gradient editor dialog
  */
-export default class CurveEditor extends CanvasPointEditor
+export class CurveEditor extends CanvasPointEditor
 {
     #log = new Logger("curveeditor");
 
@@ -45,7 +45,6 @@ export default class CurveEditor extends CanvasPointEditor
         for (let i = 0; i < keys.length; i++)
         {
             const r = Math.floor((1 - keys[i].posy) * 255);
-
             str += ",rgba(" + r + ", " + r + ", " + r + ", " + 255 + ") " + Math.floor((keys[i].pos) * 100) + "% ";
         }
 

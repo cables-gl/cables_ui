@@ -16,39 +16,49 @@ export default class ChangelogToast
         this._log = new Logger("changelog");
     }
 
+    /**
+   * @param {function} cb
+   * @param {number} since
+   */
     getHtml(cb, since)
     {
-        platform.talkerAPI.send(TalkerAPI.CMD_GET_CABLES_CHANGELOG, { "num": 1 }, (err, obj) =>
-        {
-            if (since)
+        platform.talkerAPI.send(
+            TalkerAPI.CMD_GET_CABLES_CHANGELOG,
+            { "num": 1 },
+            (err, obj) =>
             {
-                if (obj.items) for (let i = 0; i < obj.items.length; i++) if (obj.items[i].date < since) obj.items.length = i;
-                obj.onlyLatest = true;
-            }
+                if (since)
+                {
+                    if (obj.items)
+                        for (let i = 0; i < obj.items.length; i++)
+                            if (obj.items[i].date < since) obj.items.length = i;
+                    obj.onlyLatest = true;
+                }
 
-            let firstTime = false;
+                let firstTime = false;
 
-            if (!userSettings.get("changelogLastView"))
-            {
-                firstTime = true;
-                this._log.log("first time changelog!");
-            }
+                if (!userSettings.get("changelogLastView"))
+                {
+                    firstTime = true;
+                    this._log.log("first time changelog!");
+                }
 
-            userSettings.set("changelogLastView", obj.ts);
+                userSettings.set("changelogLastView", obj.ts);
 
-            if (!obj.items || obj.items.length === 0)
-            {
-                cb(null);
-                return;
-            }
+                if (!obj.items || obj.items.length === 0)
+                {
+                    cb(null);
+                    return;
+                }
 
-            if (firstTime)
-            {
-                cb(null);
-                return;
-            }
-            cb();
-        });
+                if (firstTime)
+                {
+                    cb(null);
+                    return;
+                }
+                cb();
+            },
+        );
     }
 
     showNotification()
@@ -81,6 +91,11 @@ export default class ChangelogToast
         const url = platform.getCablesUrl() + "/changelog?iframe=true";
         const gotoUrl = platform.getCablesUrl() + "/changelog";
 
-        gui.mainTabs.addIframeTab("changelog", url, { "icon": "book-open", "closable": true, "gotoUrl": gotoUrl }, true);
+        gui.mainTabs.addIframeTab(
+            "changelog",
+            url,
+            { "icon": "book-open", "closable": true, "gotoUrl": gotoUrl },
+            true,
+        );
     }
 }

@@ -91,7 +91,7 @@ export const GuiText =
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",
 
-    "minimize_tabpanel": "## [cmd_ctrl]`ESC` - Toggle main tab panel",
+    "minimize_tabpanel": "## [cmd_ctrl]`b` - Toggle left tab panel",
 
     "tab_files": "## Files \n\nUpload and manage your files",
     "tab_code": "## Code\n\nOperator code",

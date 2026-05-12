@@ -24,7 +24,7 @@ Commands.init();
  * @export
  * @class CommandPallete
  */
-export default class CommandPalette
+export class CommandPalette
 {
     #id = uuid();
 

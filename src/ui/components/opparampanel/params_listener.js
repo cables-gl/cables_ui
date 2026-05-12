@@ -16,8 +16,8 @@ import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
-import GradientEditor from "../../dialogs/canv_gradienteditor.js";
-import CurveEditor from "../../dialogs/canv_curveeditor.js";
+import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
+import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
