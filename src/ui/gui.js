@@ -2130,10 +2130,11 @@ export default class Gui extends Events
      * @param {number} x
      * @param {number} y
      * @param {number} z
+     * @param {string} text
      */
-    setTransform(id, x, y, z)
+    setTransform(id, x, y, z, text)
     {
-        if (this.shouldDrawOverlay) this.transformOverlay.add(this.corePatch().cgl, id, x, y, z);
+        if (this.shouldDrawOverlay) this.transformOverlay.add(this.corePatch().cgl, id, x, y, z, text);
     }
 
     /**

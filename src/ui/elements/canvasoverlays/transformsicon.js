@@ -2,6 +2,10 @@ import { gui } from "../../gui.js";
 
 export default class TransformsIcon
 {
+    #eleText = null;
+    #eleCenter = null;
+    #container = null;
+
     constructor(cgl, id)
     {
         this._cgl = cgl;
@@ -11,13 +15,13 @@ export default class TransformsIcon
         this.lastUpdate = performance.now();
 
         if (!cgl || !cgl.canvas) return;
-        const container = cgl.canvas.parentElement;
-        this._eleCenter = document.createElement("div");
+        this.#container = cgl.canvas.parentElement;
+        this.#eleCenter = document.createElement("div");
 
-        this._eleCenter.classList.add("transformSpot");
-        container.appendChild(this._eleCenter);
+        this.#eleCenter.classList.add("transformSpot");
+        this.#container.appendChild(this.#eleCenter);
 
-        this._eleCenter.addEventListener("click", () =>
+        this.#eleCenter.addEventListener("click", () =>
         {
             gui.transformOverlay.click(this._screenPos);
         });
@@ -37,17 +41,41 @@ export default class TransformsIcon
     {
         this.lastUpdate = performance.now();
         this._updateScreenPos();
-        if (this._eleCenter)
+        if (this.#eleCenter)
         {
-            this._eleCenter.style.left = this._screenPos[0] + "px";
-            this._eleCenter.style.top = this._screenPos[1] + "px";
+            this.#eleCenter.style.left = this._screenPos[0] + "px";
+            this.#eleCenter.style.top = this._screenPos[1] + "px";
+        }
+        if (this.#eleText)
+        {
+            this.#eleText.style.left = this._screenPos[0] + "px";
+            this.#eleText.style.top = this._screenPos[1] + "px";
+            this.#eleText.style.position = "absolute";
         }
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     setPos(x, y, z)
     {
         vec3.set(this._pos, x, y, z);
         this.update();
+    }
+
+    /**
+     * @param {string} txt
+     */
+    setText(txt)
+    {
+        if (!this.#eleText)
+        {
+            this.#eleText = document.createElement("div");
+            this.#container.appendChild(this.#eleText);
+        }
+        this.#eleText.innerHTML = txt;
     }
 
     _updateScreenPos()
@@ -85,7 +113,7 @@ export default class TransformsIcon
 
     dispose()
     {
-        if (this._eleCenter)
-            this._eleCenter.remove();
+        if (this.#eleCenter) this.#eleCenter.remove();
+        if (this.#eleText) this.#eleText.remove();
     }
 }
