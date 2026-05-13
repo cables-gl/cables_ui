@@ -1,5 +1,4 @@
 import { TalkerAPI } from "cables-shared-client";
-import GpuProfiler from "../components/tabs/tab_gpuprofiler.js";
 import Preferences from "../components/tabs/tab_preferences.js";
 import ChangelogToast from "../dialogs/changelog.js";
 import WatchVarTab from "../components/tabs/tab_watchvars.js";
@@ -15,6 +14,8 @@ import { userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 import TabInputBindings from "../components/tabs/tab_keybinds.js";
 import { notify } from "../elements/notification.js";
+import { GpuProfiler } from "../components/tabs/tab_profiler_gpu.js";
+import { ProfilerDrawCalls } from "../components/tabs/tab_profiler_drawcalls.js";
 
 export { CmdUi };
 
@@ -219,6 +220,13 @@ class CmdUi
             "cmd": "GPU Profiler",
             "category": "ui",
             "func": CmdUi.profileGPU,
+            "icon": "align-justify",
+            "infotext": ""
+        },
+        {
+            "cmd": "Drawcalls Profiler",
+            "category": "ui",
+            "func": CmdUi.profileDrawCalls,
             "icon": "align-justify",
             "infotext": ""
         },
@@ -536,9 +544,14 @@ class CmdUi
         gui.maintabPanel.show(true);
     }
 
+    static profileDrawCalls()
+    {
+        new ProfilerDrawCalls(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
     static profileUI()
     {
-    // gui.uiProfiler.show();
         new UiProfilerTab(gui.mainTabs);
         gui.maintabPanel.show(true);
     }

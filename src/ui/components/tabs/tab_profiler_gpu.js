@@ -4,22 +4,23 @@ import { gui } from "../../gui.js";
 
 /**
  * tab panel to profile and analyze GPU performance
- *
- * @export
- * @class GpuProfiler
  */
-export default class GpuProfiler
+export class GpuProfiler
 {
+
+    /**
+     * @param {import("../../elements/tabpanel/tabpanel.js").default} tabs
+     */
     constructor(tabs)
     {
         this._tab = new Tab("GPU Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
 
-        this.colors = ["#7AC4E0", "#D183BF", "#9091D6", "#FFC395", "#F0D165", "#63A8E8", "#CF5D9D", "#66C984", "#D66AA6", "#515151"];
-        this.intervalId = null;
-        this.lastPortTriggers = 0;
-        this._subTab = 0;
-        this._foundPerfOp = false;
+        // this.colors = ["#7AC4E0", "#D183BF", "#9091D6", "#FFC395", "#F0D165", "#63A8E8", "#CF5D9D", "#66C984", "#D66AA6", "#515151"];
+        // this.intervalId = null;
+        // this.lastPortTriggers = 0;
+        // this._subTab = 0;
+        // this._foundPerfOp = false;
 
         const glQueryExt = gui.corePatch().cgl.gl.getExtension("EXT_disjoint_timer_query_webgl2");
         if (glQueryExt)gui.corePatch().cgl.profileData.doProfileGlQuery = true;
@@ -91,8 +92,8 @@ export default class GpuProfiler
                 html += "<td><span class=\"nobreak\">" + arr[i].id + "</span></td>";
 
                 html += "<td>";
-                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"button\" >shader</a></td>";
-                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].meshOp + "');gui.patchView.centerSelectOp('" + arr[i].meshOp + "');\" class=\"button\" >mesh</a></td>";
+                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"cblbutton\" >shader</a>";
+                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].meshOp + "');gui.patchView.centerSelectOp('" + arr[i].meshOp + "');\" class=\"cblbutton\" >mesh</a>";
 
                 html += "</td>";
                 html += "</tr>";
