@@ -49,8 +49,11 @@ export class ProfilerDrawCalls
             {
                 console.log("sresresr", gui.corePatch().cgl.profileDrawCalls);
                 cgl.off(l2);
+                const calls = gui.corePatch().cgl.profileDrawCalls;
 
                 let html = "";
+                html += calls.length + " drawcalls";
+
                 html += "<div class=\"editor_spreadsheet\">";
                 html += "<table class=\"spreadsheet\">";
                 html += "<tr>";
@@ -60,14 +63,13 @@ export class ProfilerDrawCalls
                 html += "<td class=\"colname\"></td>";
                 html += "</tr>";
 
-                const calls = gui.corePatch().cgl.profileDrawCalls;
                 for (let i = 0; i < calls.length; i++)
                 {
 
                     html += "<tr>";
                     html += "<td>" + calls[i].name + "</td>";
                     html += "<td>" + calls[i].verts + "</td>";
-                    html += "<td>" + calls[i].instances + "</td>";
+                    html += "<td>" + calls[i].instances || 1 + "</td>";
                     if (calls[i].opId)html += "<td><a onclick=\"gui.patchView.focusOpAnim('" + calls[i].opId + "');gui.patchView.centerSelectOp('" + calls[i].opId + "');\" class=\"cblbutton\" >mesh</a></td>";
                     html += "</tr>";
                 }
@@ -76,43 +78,5 @@ export class ProfilerDrawCalls
 
             });
         });
-        // if (glQueryData)
-        // {
-        //     let arr = [];
-        //     let allTimes = 0;
-
-        //     for (let i in glQueryData)
-        //     {
-        //         arr.push(glQueryData[i]);
-        //         allTimes += (glQueryData[i].time || 0);
-        //     }
-
-        //     arr = arr.sort((a, b) => { return b.perc - a.perc; });
-
-        //     let sum = 0;
-        //     for (let i = 0; i < arr.length; i++)
-        //     {
-        //         sum += (arr[i].time || 0);
-        //     }
-        //     html += "Sum: " + Math.round(sum * 1000) / 1000 + "ms<br/><br/>";
-        //     for (let i = 0; i < arr.length; i++)
-        //     {
-        //         html += "<tr>";
-        //         html += "<td><span>" + Math.round((arr[i].time || 0) * 1000) / 1000 + "ms</span></td>";
-        //         html += "<td><span>" + Math.round((arr[i].perc || 0) * 100) + "%</span></td>";
-        //         html += "<td><span class=\"nobreak\">" + arr[i].id + "</span></td>";
-
-        //         html += "<td>";
-        //         if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"cblbutton\" >shader</a>";
-        //         if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].meshOp + "');gui.patchView.centerSelectOp('" + arr[i].meshOp + "');\" class=\"cblbutton\" >mesh</a>";
-
-        //         html += "</td>";
-        //         html += "</tr>";
-        //     }
-        //     html += "</table>";
-        //     html += "</div>";
-        //     html += "</div>";
-        // }
-        // setTimeout(() => { this.update(); }, 500);
     }
 }
