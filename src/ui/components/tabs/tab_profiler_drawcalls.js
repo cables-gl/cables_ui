@@ -57,7 +57,8 @@ export class ProfilerDrawCalls
                 html += "<div class=\"editor_spreadsheet\">";
                 html += "<table class=\"spreadsheet\">";
                 html += "<tr>";
-                html += "<td class=\"colname\">name</td>";
+                html += "<td class=\"colname\">mesh</td>";
+                html += "<td class=\"colname\">shader</td>";
                 html += "<td class=\"colname\">verts</td>";
                 html += "<td class=\"colname\">instances </td>";
                 html += "<td class=\"colname\"></td>";
@@ -68,6 +69,7 @@ export class ProfilerDrawCalls
 
                     html += "<tr>";
                     html += "<td>" + calls[i].name + "</td>";
+                    html += "<td>" + calls[i].shader + "</td>";
                     html += "<td>" + calls[i].verts + "</td>";
                     html += "<td>" + calls[i].instances || 1 + "</td>";
                     if (calls[i].opId)html += "<td><a onclick=\"gui.patchView.focusOpAnim('" + calls[i].opId + "');gui.patchView.centerSelectOp('" + calls[i].opId + "');\" class=\"cblbutton\" >mesh</a></td>";
