@@ -89,7 +89,7 @@ export class GpuProfiler
                 html += "<tr>";
                 html += "<td><span>" + Math.round((arr[i].time || 0) * 1000) / 1000 + "ms</span></td>";
                 html += "<td><span>" + Math.round((arr[i].perc || 0) * 100) + "%</span></td>";
-                html += "<td><span class=\"nobreak\">" + arr[i].id + "</span></td>";
+                html += "<td><span class=\"nobreak\">" + arr[i].name + "</span></td>";
 
                 html += "<td>";
                 if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"cblbutton\" >shader</a>";
