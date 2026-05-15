@@ -43,13 +43,13 @@ export class ProfilerDrawCalls
         {
 
             cgl.off(l1);
-            cgl.profileDrawCalls = [];
+            cgl.profileData.profileDrawCalls = [];
 
             const l2 = cgl.on("endFrame", () =>
             {
-                console.log("sresresr", gui.corePatch().cgl.profileDrawCalls);
+                console.log("sresresr", gui.corePatch().cgl.profileData.profileDrawCalls);
                 cgl.off(l2);
-                const calls = gui.corePatch().cgl.profileDrawCalls;
+                const calls = gui.corePatch().cgl.profileData.profileDrawCalls;
 
                 let html = "";
                 html += calls.length + " drawcalls";
@@ -76,7 +76,7 @@ export class ProfilerDrawCalls
                     html += "</tr>";
                 }
                 ele.byId("dcresults").innerHTML = html;
-                cgl.profileDrawCalls = null;
+                cgl.profileData.profileDrawCalls = null;
 
             });
         });
