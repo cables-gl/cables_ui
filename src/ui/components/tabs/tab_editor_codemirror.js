@@ -101,9 +101,8 @@ export default class EditorTabCodemirror extends Events
 
     /**
      * @param {string} content
-     * @param {boolean} silent
      */
-    setContent(content, silent = false)
+    setContent(content)
     {
         content = content || "";
 

@@ -1,9 +1,12 @@
-
-
 // todo: all tab stuff should be removed when new tabbar
 
 .cm-editor{
     height:100%
+}
+
+.cm-editor:not(.cm-focused) {
+  opacity: 0.7;
+  filter: grayscale(0.6);
 }
 
 .editor_textarea
@@ -26,7 +29,6 @@
     border-bottom-right-radius: $iconbar-borderradius;
     position:absolute;
 
-}
 
 #editorminimized:hover,#editormaximized:hover
 {
