@@ -394,7 +394,7 @@ export default class FindTab
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
                             results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
-                            results.push({ op, "score": 2, "warning": op.uiAttribs.uierrors[j].txt });
+                            results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
                     }
                 }
             }
@@ -726,7 +726,7 @@ export default class FindTab
                 const op = ops[i];
                 for (let j = 0; j < op.portsIn.length; j++)
                 {
-                    if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
+                    if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
                     {
                         score += 2;
                         where += "port \"" + op.portsIn[j].name + "\" assigned to var " + op.portsIn[j].getVariableName();
