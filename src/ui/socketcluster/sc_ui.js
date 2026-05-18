@@ -130,10 +130,6 @@ export default class ScUi
             {
                 notifyWarn("Automatic backup failed! " + data.msg);
             }
-            else
-            {
-                notify("Automatic backup created!");
-            }
         }
     }
 
