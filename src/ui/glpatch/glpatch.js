@@ -30,6 +30,9 @@ import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
 import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
 
+let idleSoon = null;
+let lastUpdate = 0;
+
 /**
  * rendering the patchfield
  *
@@ -1613,9 +1616,11 @@ export default class GlPatch extends Events
             gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
         }
 
-        if (gui.patchView.getSelectedOps().length > 1)
+        if (performance.now() - lastUpdate > 30 && gui.patchView.getSelectedOps().length > 1)
         {
-            idleCallbackSoon("showpanelsoon", () =>
+
+            lastUpdate = performance.now();
+            idleSoon = idleCallbackSoon(idleSoon, () =>
             {
 
                 gui.patchView.showSelectedOpsPanel();
