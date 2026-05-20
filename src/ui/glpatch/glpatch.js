@@ -27,6 +27,7 @@ import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import { InputBindings } from "../inputbindings.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
+import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
 
 /**
  * rendering the patchfield

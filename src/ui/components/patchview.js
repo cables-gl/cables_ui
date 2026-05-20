@@ -2428,24 +2428,24 @@ export default class PatchView extends Events
         }
 
         const errorMsg = "Object in port <b>" + inp.name + "</b> is not of type " + inp.uiAttribs.objType;
-
+        const lvl = 1;
         // check if both have defined objtype
         if (p1.uiAttribs.objType && p2.uiAttribs.objType && p1.uiAttribs.objType != p2.uiAttribs.objType)
         {
-            inp.op.setUiError(id, errorMsg, 1);
+            inp.op.setUiError(id, errorMsg, lvl);
             return;
         }
 
         // validate by object value
         if (inp.uiAttribs.objType && outp.get())
         {
-            if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof Geometry)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof Shader)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.op.setUiError(id, errorMsg, lvl);
+            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof Geometry)) inp.op.setUiError(id, errorMsg, lvl);
+            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof Shader)) inp.op.setUiError(id, errorMsg, lvl);
+            if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.op.setUiError(id, errorMsg, lvl);
             // * audio
-            if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.op.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "audioNode" && !(outp.get() instanceof AudioNode)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.op.setUiError(id, errorMsg, lvl);
+            if (inp.uiAttribs.objType == "audioNode" && !(outp.get() instanceof AudioNode)) inp.op.setUiError(id, errorMsg, lvl);
         }
     }
 
