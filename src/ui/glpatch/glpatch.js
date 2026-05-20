@@ -54,7 +54,10 @@ export default class GlPatch extends Events
     _mouseLeaveButtons = 0;
     _cutLine = [];
     cutLineActive = false;
+
+    /** @type {Object<string,GlOp>} */
     _glOpz = {};
+
     _hoverOps = [];
     _ignoreNonExistError = [];
     _hoverOpLongStartTime = 0;
@@ -71,7 +74,7 @@ export default class GlPatch extends Events
     _viewZoom = 0;
     needsRedraw = false;
 
-    /** @type {Object<String,GlOp>} */
+    /** @type {Object<string,GlOp>} */
     _selectedGlOps = {};
 
     links = {};

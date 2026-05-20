@@ -3,6 +3,9 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import PatchOutline from "./patchoutline.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { Commands } from "../commands/commands.js";
+import { CmdUi } from "../commands/cmd_ui.js";
+import { CmdPatch } from "../commands/cmd_patch.js";
 
 /**
  * default panel when clicking into the pach background, shows patch summary and tree view
@@ -98,9 +101,9 @@ export default class PatchPanel extends Events
 
         if (ele.byId(gui.getParamPanelEleId()))ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
-        if (ele.byId("btn_patch_settings"))ele.clickable(ele.byId("btn_patch_settings"), CABLES.CMD.UI.settings);
-        if (ele.byId("btn_analyze_patch"))ele.clickable(ele.byId("btn_analyze_patch"), CABLES.CMD.PATCH.analyze);
-        if (ele.byId("btn_toggle_patch_like"))ele.clickable(ele.byId("btn_toggle_patch_like"), CABLES.CMD.PATCH.togglePatchLike);
+        if (ele.byId("btn_patch_settings"))ele.clickable(ele.byId("btn_patch_settings"), CmdUi.settings);
+        if (ele.byId("btn_analyze_patch"))ele.clickable(ele.byId("btn_analyze_patch"), CmdPatch.analyze);
+        if (ele.byId("btn_toggle_patch_like"))ele.clickable(ele.byId("btn_toggle_patch_like"), CmdPatch.togglePatchLike);
 
         if (ele.byId("btn_patch_opendir"))ele.clickable(ele.byId("btn_patch_opendir"), (e) =>
         {

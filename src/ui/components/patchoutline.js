@@ -1,12 +1,8 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import TreeView from "./treeview.js";
-import defaultOps from "../defaultops.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-import { escapeHTML } from "../utils/helper.js";
 import { gui } from "../gui.js";
-import { platform } from "../platform.js";
 import { contextMenu } from "../elements/contextmenu.js";
-import namespaceutils from "../namespaceutils.js";
 import { patchStructureQuery } from "./patchstructurequery.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 
@@ -45,13 +41,6 @@ export default class PatchOutline extends Events
         this._subTree.on("title_dblclick",
             (item, el, event) =>
             {
-                if (item.subPatchId && gui.patchView.getSelectedOps() && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
-                    gui.patchView.clickSubPatchNav(item.subPatchId);
-            });
-
-        this._subTree.on("title_click",
-            (item, el, event) =>
-            {
                 if (item.id)
                 {
                     if (event.shiftKey)
@@ -65,6 +54,13 @@ export default class PatchOutline extends Events
                 else this._log.warn("unknown", item);
             });
 
+        this._subTree.on("title_click",
+            (item, el, event) =>
+            {
+                if (item.subPatchId && gui.patchView.getSelectedOps())// s && gui.patchView.getSelectedOps().length > 0 && gui.patchView.getSelectedOps()[0].id == item.id)
+                    gui.patchView.clickSubPatchNav(item.subPatchId);
+            });
+
         this._subTree.on("icon_click",
             (item) =>
             {
@@ -73,6 +69,9 @@ export default class PatchOutline extends Events
             });
     }
 
+    /**
+     * @param {Object} p
+     */
     deserialize(p)
     {
         if (!p || !p.ui || !p.ui.outline) return;
