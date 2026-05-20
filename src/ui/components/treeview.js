@@ -87,7 +87,6 @@ export default class TreeView extends Events
     bindListeners()
     {
         for (const i in this._clickListenerIds)
-        // for (let i = 0; i < this._clickListenerIds.length; i++)
         {
             const el = ele.byId(i);
             if (el)
@@ -97,7 +96,6 @@ export default class TreeView extends Events
                     {
                         const el2 = event.target;
                         const eletype = el2.dataset.eletype;
-                        console.log("text", eletype);
                         this.emitEvent(eletype + "_click", this._clickListenerIds[i], el2, event);
                     });
 
@@ -110,7 +108,9 @@ export default class TreeView extends Events
                     });
             }
             else
+            {
                 console.log("ele not found", this._clickListenerIds[i]);
+            }
         }
     }
 }

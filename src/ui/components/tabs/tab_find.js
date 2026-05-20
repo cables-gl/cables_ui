@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
 import { Op, utils } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { GuiText } from "../../text.js";
@@ -25,7 +26,10 @@ export default class FindTab
     #tabs;
     #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected", "animated"];
     #eleInput = null;
+
+    /** @type {EventListener[]}  */
     #listenerids = [];
+
     #lastSearch = "";
     #lastClicked = -1;
     #lastSelected = -1;
@@ -63,7 +67,6 @@ export default class FindTab
         this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
         const listenerChanged = gui.opHistory.on("changed", this.updateHistory.bind(this));
-        this.#listenerids.push(listenerChanged);
 
         this.#listenerids.push(gui.corePatch().on("warningErrorIconChange", this._updateCb));
         this.#listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
@@ -79,11 +82,10 @@ export default class FindTab
             for (let i = 0; i < this.#listenerids.length; i++) gui.corePatch().off(this.#listenerids[i]);
 
             this.#listenerids = [];
-
             this.clearHighlightOps();
-
             this.#closed = true;
         });
+
         gui.corePatch().on("subpatchesChanged", () =>
         {
             this.clearHighlightOps();
