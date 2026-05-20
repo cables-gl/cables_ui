@@ -1,5 +1,6 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
+import { idleCallbackSoon } from "cables/src/core/utils.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlText from "../gldraw/gltext.js";
@@ -1612,7 +1613,14 @@ export default class GlPatch extends Events
             gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
         }
 
-        if (gui.patchView.getSelectedOps().length > 1)gui.patchView.showSelectedOpsPanel();
+        if (gui.patchView.getSelectedOps().length > 1)
+        {
+            idleCallbackSoon("showpanelsoon", () =>
+            {
+
+                gui.patchView.showSelectedOpsPanel();
+            });
+        }
     }
 
     /**
