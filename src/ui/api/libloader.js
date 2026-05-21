@@ -45,8 +45,7 @@ export default class LibLoader
                     this._loadJsLibs.forEach((script) =>
                     {
                         loadjs.done(script.libName);
-                        const i = this._libsToLoad.indexOf(script.libName);
-                        this._libsToLoad.splice(i, 1);
+                        this.updateLibsToLoad(script.libName);
                         this._list.push(script.libName);
                     });
                     this.checkAllLoaded();
@@ -54,8 +53,7 @@ export default class LibLoader
                 {
                     this._loadJsLibs.forEach((script) =>
                     {
-                        const i = this._libsToLoad.indexOf(script.libName);
-                        this._libsToLoad.splice(i, 1);
+                        this.updateLibsToLoad(script.libName);
                     });
                     this.checkAllLoaded();
                     let libsNotLoaded = this._loadJsLibs || [];
@@ -102,8 +100,7 @@ export default class LibLoader
 
             if (!module || !module.src || !module.type)
             {
-                const i = this._libsToLoad.indexOf(libName);
-                this._libsToLoad.splice(i, 1);
+                this.updateLibsToLoad(libName);
                 this.checkAllLoaded();
                 if (gui) gui.emitEvent("libLoadError", libName);
                 return;
@@ -146,14 +143,12 @@ export default class LibLoader
                             if (!window.hasOwnProperty(moduleExport))
                                 window[moduleExport] = importedModule;
                         }
-                        const i = this._libsToLoad.indexOf(libName);
-                        this._libsToLoad.splice(i, 1);
+                        this.updateLibsToLoad(libName);
                         this._list.push(libName);
                         this.checkAllLoaded();
                     }).catch((e) =>
                     {
-                        const i = this._libsToLoad.indexOf(libName);
-                        this._libsToLoad.splice(i, 1);
+                        this.updateLibsToLoad(libName);
                         this.checkAllLoaded();
                         this._log.error(e);
                         if (gui) gui.emitEvent("libLoadError", libName);
@@ -163,8 +158,7 @@ export default class LibLoader
                 {
                     gui.serverOps.loadOpDependencies(module.src, () =>
                     {
-                        const i = this._libsToLoad.indexOf(libName);
-                        this._libsToLoad.splice(i, 1);
+                        this.updateLibsToLoad(libName);
                         this._list.push(libName);
                         this.checkAllLoaded();
                     });
@@ -181,16 +175,14 @@ export default class LibLoader
             }
             else
             {
-                const i = this._libsToLoad.indexOf(libName);
-                this._libsToLoad.splice(i, 1);
+                this.updateLibsToLoad(libName);
                 this._list.push(libName);
                 this.checkAllLoaded();
             }
         }
         else
         {
-            const i = this._libsToLoad.indexOf(libName);
-            this._libsToLoad.splice(i, 1);
+            this.updateLibsToLoad(libName);
             this.checkAllLoaded();
         }
     }
@@ -198,5 +190,11 @@ export default class LibLoader
     isDefined(libName, src)
     {
         return loadjs.isDefined(libName) || Boolean(document.querySelector("script[src=\"" + src + "\"]"));
+    }
+
+    updateLibsToLoad(libName)
+    {
+        const i = this._libsToLoad.findIndex((lib) => { return lib === libName || lib.name === libName || lib.src === libName; });
+        this._libsToLoad.splice(i, 1);
     }
 }
