@@ -101,9 +101,9 @@ export class ModalOpName
     {
         const newName = this._options.sourceOpName || this._options.shortName;
         const checkNameRequest = {
-            "namespace": this._options.suggestedNamespace,
-            "v": newName,
-            "sourceName": this._options.sourceOpName,
+            "namespace": this._options.suggestedNamespace?.trim(),
+            "v": newName?.trim(),
+            "sourceName": this._options.sourceOpName?.trim(),
             "rename": this._options.rename
         };
         if (this._opTargetDir) checkNameRequest.opTargetDir = this._opTargetDir;
@@ -166,7 +166,7 @@ export class ModalOpName
 
         if (newOpName)
         {
-            const currentName = inputField.value;
+            const currentName = inputField.value?.trim();
             if (!currentName.startsWith(defaultOps.prefixes.op))
             {
                 if (currentName !== newOpName) inputField.value = newOpName;
@@ -347,9 +347,9 @@ export class ModalOpName
         if (fullName)
         {
             const checkNameRequest = {
-                "namespace": newNamespace,
-                "v": fullName,
-                "sourceName": dialogOptions.sourceOpName,
+                "namespace": newNamespace?.trim(),
+                "v": fullName?.trim(),
+                "sourceName": dialogOptions.sourceOpName?.trim(),
                 "rename": dialogOptions.rename
             };
             const opTargetDirEle = ele.byId("opTargetDir");
