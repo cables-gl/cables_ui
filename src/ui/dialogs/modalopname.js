@@ -4,6 +4,7 @@ import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
 import namespace from "../namespaceutils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
+import defaultOps from "../defaultops.js";
 
 export class ModalOpName
 {
@@ -165,6 +166,11 @@ export class ModalOpName
 
         if (newOpName)
         {
+            const currentName = inputField.value;
+            if (!currentName.startsWith(defaultOps.prefixes.op))
+            {
+                if (currentName !== newOpName) inputField.value = newOpName;
+            }
             if (data.problems.length > 0)
             {
                 let htmlIssue = "<h3>Issues</h3>";
