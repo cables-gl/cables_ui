@@ -1158,9 +1158,6 @@ class CmdPatch
                 gui.opParams.show(p.op.id);
             });
 
-            // p.op.refreshParams();
-            // if (options.showParams)
-            //  ww
             return;
         }
 
