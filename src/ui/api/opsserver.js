@@ -1606,7 +1606,6 @@ export default class ServerOps
         {
             missingOps = this.getMissingOps(proj);
         }
-
         this.loadOps(missingOps, (newOps, newIds) =>
         {
             const perf2 = gui.uiProfiler.start("[opsserver] loadProjectDependencies");
@@ -1632,7 +1631,7 @@ export default class ServerOps
             }
 
             perf2.finish();
-            this.loadOpsLibs(newOps, () =>
+            this.loadOpsLibs(proj.ops, () =>
             {
                 if (_next)
                 {
@@ -1641,7 +1640,6 @@ export default class ServerOps
                 }
             });
         });
-
     }
 
     opCodeLoaded(op)
