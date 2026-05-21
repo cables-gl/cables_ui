@@ -175,7 +175,8 @@ export default class FileManager
         platform.talkerAPI.send(
             TalkerAPI.CMD_GET_FILE_LIST,
             {
-                "source": source
+                "source": source,
+                "references": true
             },
             (err, remoteFiles) =>
             {
