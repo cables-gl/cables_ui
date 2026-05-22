@@ -2454,13 +2454,9 @@ export default class Gui extends Events
     {
         const list = [];
         const vars = gui.corePatch().getVars();
-        console.log("vars", vars);
-        for (const i in vars)
-        {
-            list.push({ "cmd": i, "func": (e) => { cb(e); } });
-        }
 
-        console.log("list", list);
+        for (const i in vars)
+            list.push({ "cmd": i, "func": (e) => { cb(e); } });
 
         const cp = new CommandPalette({ "showIcons": false,
             "cablesCommands": false,

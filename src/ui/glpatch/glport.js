@@ -190,12 +190,11 @@ export default class GlPort
                 let dotPosY = this.#rect.h / 4 - dotSize / 2;
                 if (this.direction == PortDir.in) dotPosY += this.#rect.h / 2;
 
-                if (this.#port.uiAttribs.addPort)
-                {
-                    this.#dot.setShape(GlRect.SHAPE_PLUS);
-                }
+                if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
+                else if (this.#port.isAnimated()) this.#dot.setShape(GlRect.SHAPE_RHOMB);
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                // console.log("SHAPE", this.#dot.shape);
 
                 this.#dot.setSize(dotSize, dotSize);
                 this.#dot.setPosition(gluiconfig.portWidth / 2 - dotSize / 2, dotPosY);
