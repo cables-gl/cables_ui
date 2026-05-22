@@ -318,8 +318,9 @@ export default class ServerOps
      * @param {string} opIdentifier
      * @param {function} [next]
      * @param {object} [options]
+     * @param {boolean} [reloadDependencies=true]
      */
-    execute(opIdentifier, next = null, options = {})
+    execute(opIdentifier, next = null, options = {}, reloadDependencies = true)
     {
         options = options || {};
         gui.savedState.pause();
@@ -360,7 +361,7 @@ export default class ServerOps
                 if (next) next(newOps, options.refOldOp);
                 gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
             }, options.refOldOp);
-        }, true);
+        }, reloadDependencies);
     }
 
     clone(oldname, name, cb, options)
