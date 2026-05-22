@@ -312,6 +312,25 @@ class UiPatch extends Patch
         return animOps;
     }
 
+    /**
+     *
+     * @param {UiOp[]} ops
+     */
+    unshiftOps(ops)
+    {
+        if (!ops) return;
+        for (let i = 0; i < ops.length; i++)
+        {
+            const idx = this.ops.findIndex((op) => { return op.id === ops[i].id; });
+            if (idx > -1)
+            {
+                const op = this.ops[idx];
+                this.ops.splice(idx, 1);
+                this.ops.unshift(op);
+            }
+        }
+    }
+
     reloadOp(objName, cb, refOldOp)
     {
         console.log("reload ", objName);
