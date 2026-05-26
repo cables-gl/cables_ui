@@ -149,7 +149,7 @@ export class ModalOpName
         if (eleCons) ele.hide(eleCons);
         if (data.consequences && data.consequences.length > 0)
         {
-            data.consequences.unshift("New op: <a href=\"/op/" + newOpName + "\">" + newOpName + "</a>");
+            if (!data.problems || data.problems.length === 0) data.consequences.unshift("New op: <a href=\"/op/" + newOpName + "\">" + newOpName + "</a>");
             consequencesHtml += "<ul>";
             data.consequences.forEach((consequence) =>
             {
