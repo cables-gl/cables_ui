@@ -7,11 +7,28 @@ import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
 import ManageOp from "./tabs/tab_manage_op.js";
 import { userSettings } from "./usersettings.js";
 
+/**
+ * @typedef EditorOptions
+ * @property {string} [title]
+ * @property {string} [name]
+ * @property {string} [syntax]
+ * @property {boolean} [singleton]
+ * @property {string} [allowEditReason]
+ * @property {boolean} [showSaveButton]
+ * @property {boolean} [loading]
+ * @property {boolean} [allowEdit]
+ * @property {import("../elements/tabpanel/editor_session.js").EditorSessionOptions} [editorObj]
+ * @property {function} [onClose]
+ */
+
+/**
+ * @param {EditorOptions} options
+ */
 export function createEditor(options)
 {
     if (userSettings.get("texteditor") == "textarea") return new EditorTabTextArea(options);
     else if (userSettings.get("texteditor") == "cmhx") return new EditorTabCodemirror(options, true);
-    else if (userSettings.get("texteditor") == "ace") return new EditorTabAce(options);
+    // else if (userSettings.get("texteditor") == "ace") return new EditorTabAce(options);
     else return new EditorTabCodemirror(options);
 
 }

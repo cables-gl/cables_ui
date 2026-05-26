@@ -5,6 +5,13 @@ import { userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
 
 /**
+ * @typedef EditorSessionOptions
+ * @property {string} type
+ * @property {object} data
+ * @property {string} name
+ */
+
+/**
  * stores opened editors to reopen when loading ui
  */
 export default class EditorSession
@@ -95,12 +102,11 @@ export default class EditorSession
 
     /**
      * remember an open editor
-     * @name rememberOpenEditor
      * @param {string} type
      * @param {string} name
      * @param {object} [data]
      * @param {boolean} [skipSetEditorTab]
-     * @function
+     * @returns {EditorSessionOptions}
      */
     rememberOpenEditor(type, name, data, skipSetEditorTab)
     {

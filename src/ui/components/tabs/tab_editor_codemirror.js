@@ -40,7 +40,7 @@ export default class EditorTabCodemirror extends Events
     helix = false;
 
     /**
-     * @param {object} options
+     * @param {import("../editor.js").EditorOptions} options
      * @param {boolean} [helix]
      */
     constructor(options, helix)
@@ -48,6 +48,7 @@ export default class EditorTabCodemirror extends Events
         super();
         this.helix = helix;
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
+        console.log("allowedit", options.allowEdit);
 
         this._options = options;
 
@@ -90,7 +91,7 @@ export default class EditorTabCodemirror extends Events
 
         let style = "";
 
-        if (!options.allowEdit) style = "background-color:#333;";
+        // if (!options.allowEdit) style = "background-color:#333;";
         const html = "<div class=\"\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%;overflow:auto;" + style + "\"></div>";
         this.#tab.html(html);
         this._eleId = "editorcontent" + this.#tab.id;
@@ -284,12 +285,24 @@ export default class EditorTabCodemirror extends Events
             );
         }
 
+        if (!this._options.allowEdit)
+        {
+            extensions.push(EditorState.readOnly.of(true));
+            extensions.push(EditorView.editable.of(false));
+            extensions.push(EditorView.theme({
+                "&": {
+                    "opacity": "0.75 !important"
+                } }));
+        }
+
         this.cmView = new EditorView(
             {
                 "parent": this.ele,
                 "extensions": extensions,
                 "doc": options.content || "",
             });
+
+        // this.cmView.state.readOnly.of(true);
 
         createOpDocButton(this.#tab, this);
         cb();
