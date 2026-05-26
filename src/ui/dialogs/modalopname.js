@@ -30,6 +30,7 @@ export class ModalOpName
         this._callback = callback;
         this._opTargetDir = null;
         this._currentCheckNameTimeout = null;
+        this._checkedName = null;
 
         if (!platform.isTrustedPatch())
         {
@@ -83,7 +84,8 @@ export class ModalOpName
         ele.clickable(ele.byId("opNameDialogSubmit"), () =>
         {
             if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
-            this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput?.value), cbOptions);
+            const checkedName = this._checkedName || opNameInput?.value;
+            this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(checkedName), cbOptions);
         });
 
         if (this._options.showReplace)
@@ -92,7 +94,8 @@ export class ModalOpName
             {
                 cbOptions.replace = true;
                 if (this._opTargetDir) cbOptions.opTargetDir = this._opTargetDir;
-                this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput?.value), cbOptions);
+                const checkedName = this._checkedName || opNameInput?.value;
+                this._callback(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(checkedName), cbOptions);
             });
         }
     }
@@ -149,7 +152,11 @@ export class ModalOpName
         if (eleCons) ele.hide(eleCons);
         if (data.consequences && data.consequences.length > 0)
         {
-            if (!data.problems || data.problems.length === 0) data.consequences.unshift("New op: <a href=\"/op/" + newOpName + "\">" + newOpName + "</a>");
+            if (!data.problems || data.problems.length === 0)
+            {
+                data.consequences.unshift("New op: <a href=\"/op/" + newOpName + "\">" + newOpName + "</a>");
+                this._checkedName = newOpName;
+            }
             consequencesHtml += "<ul>";
             data.consequences.forEach((consequence) =>
             {
@@ -166,10 +173,10 @@ export class ModalOpName
 
         if (newOpName)
         {
-            const currentName = inputField.value?.trim();
+            const currentName = inputField.value?.trim().toLowerCase();
             if (!currentName.startsWith(defaultOps.prefixes.op))
             {
-                if (currentName !== newOpName) inputField.value = newOpName;
+                // if (currentName !== newOpName) inputField.value = newOpName;
             }
             if (data.problems.length > 0)
             {
