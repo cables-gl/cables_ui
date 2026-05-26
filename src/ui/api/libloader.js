@@ -131,7 +131,7 @@ export default class LibLoader
                 scriptSrc = platform.getSandboxUrl() + basePath + module.src;
             }
 
-            if (!this.isDefined(libName, scriptSrc))
+            if (!this.isDefined(libName, scriptSrc, moduleExport))
             {
                 if (libType === "module")
                 {
@@ -187,9 +187,9 @@ export default class LibLoader
         }
     }
 
-    isDefined(libName, src)
+    isDefined(libName, src, moduleExport = null)
     {
-        return loadjs.isDefined(libName) || Boolean(document.querySelector("script[src=\"" + src + "\"]"));
+        return loadjs.isDefined(libName) || Boolean(document.querySelector("script[src=\"" + src + "\"]")) || moduleExport && window.hasOwnProperty(moduleExport);
     }
 
     updateLibsToLoad(libName)
