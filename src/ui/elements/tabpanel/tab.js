@@ -54,6 +54,9 @@ export default class Tab extends Events
         this.buttons = [];
     }
 
+    /**
+     * @param {HTMLDivElement} eleContainer
+     */
     initHtml(eleContainer)
     {
         if (!this.options.hideToolbar)

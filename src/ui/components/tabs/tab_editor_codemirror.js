@@ -48,7 +48,6 @@ export default class EditorTabCodemirror extends Events
         super();
         this.helix = helix;
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
-        console.log("allowedit", options.allowEdit);
 
         this._options = options;
 
@@ -138,7 +137,6 @@ export default class EditorTabCodemirror extends Events
                         "annotations": Transaction.addToHistory.of(false),
                     });
                 this.cmView.focus();
-                // this.setContent(content);
                 if (this._options.onFinished) this._options.onFinished();
             });
         }

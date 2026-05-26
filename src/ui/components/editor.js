@@ -11,14 +11,18 @@ import { userSettings } from "./usersettings.js";
  * @typedef EditorOptions
  * @property {string} [title]
  * @property {string} [name]
+ * @property {string} [dataId]
  * @property {string} [syntax]
  * @property {boolean} [singleton]
  * @property {string} [allowEditReason]
+ * @property {string} [content]
  * @property {boolean} [showSaveButton]
  * @property {boolean} [loading]
  * @property {boolean} [allowEdit]
  * @property {import("../elements/tabpanel/editor_session.js").EditorSessionOptions} [editorObj]
  * @property {function} [onClose]
+ * @property {function} [onSave]
+ * @property {function} [onFinished]
  */
 
 /**
