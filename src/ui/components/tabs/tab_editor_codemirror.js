@@ -305,117 +305,117 @@ export default class EditorTabCodemirror extends Events
     {
         return [
 
-            snippetCompletion("setUiError = function (\"${1:id}\",\"${1:message}\")",
+            snippetCompletion("op.setUiError = function (\"${1:id}\",\"${1:message}\")",
                 {
                     "label": "op.inTriggerButton"
                 }),
 
-            snippetCompletion("inTriggerButton(\"${1:name}\")",
+            snippetCompletion("op.inTriggerButton(\"${1:name}\")",
                 {
                     "label": "op.inTriggerButton"
                 }),
 
-            snippetCompletion("inTrigger(\"${1:name}\")",
+            snippetCompletion("op.inTrigger(\"${1:name}\")",
                 {
                     "label": "op.inTrigger"
                 }),
 
-            snippetCompletion("inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
+            snippetCompletion("op.inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
                 {
                     "label": "op.inMultiPort"
                 }),
 
-            snippetCompletion("outTrigger(\"${1:name}\")",
+            snippetCompletion("op.outTrigger(\"${1:name}\")",
                 {
                     "label": "op.outTrigger"
                 }),
 
-            snippetCompletion("inBool(\"${1:name}\",${2:false})",
+            snippetCompletion("op.inBool(\"${1:name}\",${2:false})",
                 {
                     "label": "op.inBool"
                 }),
 
-            snippetCompletion("inInt(\"${1:name}\",${2:0})",
+            snippetCompletion("op.inInt(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inInt"
                 }),
 
-            snippetCompletion("inFloatSlider(\"${1:name}\",${2:0})",
+            snippetCompletion("op.inFloatSlider(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inFloatSlider"
                 }),
 
-            snippetCompletion("inFloat(\"${1:name}\",${2:0})",
+            snippetCompletion("op.inFloat(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inFloat"
                 }),
 
-            snippetCompletion("inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
+            snippetCompletion("op.inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
                 {
                     "label": "op.inDropDown"
                 }),
 
-            snippetCompletion("inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
+            snippetCompletion("op.inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
                 {
                     "label": "op.inSwitch"
                 }),
 
-            snippetCompletion("inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
+            snippetCompletion("op.inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
                 {
                     "label": "op.inStringEditor"
                 }),
 
-            snippetCompletion("inString(\"${1:name}\",\"${2:default}\")",
+            snippetCompletion("op.inString(\"${1:name}\",\"${2:default}\")",
                 {
                     "label": "op.inString"
                 }),
 
-            snippetCompletion("inObject(\"${1:name}\")",
+            snippetCompletion("op.inObject(\"${1:name}\")",
                 {
                     "label": "op.inObject"
                 }),
 
-            snippetCompletion("inTexture(\"${1:name}\")",
+            snippetCompletion("op.inTexture(\"${1:name}\")",
                 {
                     "label": "op.inTexture"
                 }),
 
-            snippetCompletion("inArray(\"${1:name}\")",
+            snippetCompletion("op.inArray(\"${1:name}\")",
                 {
                     "label": "op.inArray"
                 }),
 
-            snippetCompletion("inUrl(\"${1:name}\")",
+            snippetCompletion("op.inUrl(\"${1:name}\")",
                 {
                     "label": "op.inUrl"
                 }),
 
-            snippetCompletion("outNumber(\"${1:name}\")",
+            snippetCompletion("op.outNumber(\"${1:name}\")",
                 {
                     "label": "op.outNumber"
                 }),
 
-            snippetCompletion("outBoolNum(\"${1:name}\")",
+            snippetCompletion("op.outBoolNum(\"${1:name}\")",
                 {
                     "label": "op.outBoolNum"
                 }),
 
-            snippetCompletion("outString(\"${1:name}\")",
+            snippetCompletion("op.outString(\"${1:name}\")",
                 {
                     "label": "op.outString"
                 }),
 
-            snippetCompletion("outObject(\"${1:name}\")",
+            snippetCompletion("op.outObject(\"${1:name}\")",
                 {
                     "label": "op.outObject"
                 }),
 
-            snippetCompletion("outArray(\"${1:name}\")",
+            snippetCompletion("op.outArray(\"${1:name}\")",
                 {
                     "label": "op.outArray"
                 }),
 
-            snippetCompletion("outTexture(\"${1:name}\")",
+            snippetCompletion("op.outTexture(\"${1:name}\")",
                 {
                     "label": "op.outTexture"
                 }),
