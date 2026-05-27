@@ -746,8 +746,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                             if (options.next)options.next();
                             gui.savingTitleAnimEnd();
                         },
-                        { "refOldOp": newOp },
-                        false);
+                        { "refOldOp": newOp });
                 }
                 else
                 if (options.next)options.next();
