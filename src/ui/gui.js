@@ -1407,7 +1407,7 @@ export default class Gui extends Events
         const converterForm = ele.byId("converterform");
         if (converterForm)
         {
-            converterForm.querySelectorAll("input").forEach((e) =>
+            converterForm.querySelectorAll("input,select,textarea").forEach((e) =>
             {
                 let value = e.value;
                 if (e.type === "checkbox")
