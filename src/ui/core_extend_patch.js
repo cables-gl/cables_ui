@@ -358,6 +358,8 @@ class UiPatch extends Patch
             const op = this.addOp(objName, oldOp.uiAttribs);
             if (!op) continue;
             if (oldOp && oldOp.storage) op.setStorage(structuredClone(oldOp.storage));
+
+            op.attribs = oldOp.attribs;// maybe should be done in addop above ?
             ops.push(op);
 
             if (oldOp == refOldOp)

@@ -541,7 +541,7 @@ export default class PatchView extends Events
             {
                 if (options.linkOnlyFirstPort)
                 {
-                    if (options.linkNewOpToPort && op.portsIn[0].type == options.linkNewOpToPort.type)
+                    if (options.linkNewOpToPort && op.portsIn[0] && op.portsIn[0].type == options.linkNewOpToPort.type)
                     {
 
                         gui.corePatch().link(
