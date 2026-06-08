@@ -226,7 +226,7 @@
                                         {{#compare type '==' 'op'}}
                                             <a target="_blank" href="{{url}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
                                         {{else}}
-                                            {{src}}
+                                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;{{src}}
                                         {{/compare}}
                                     {{/compare}}
                                 </td>

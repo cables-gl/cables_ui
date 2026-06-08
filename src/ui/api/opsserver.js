@@ -1129,6 +1129,132 @@ export default class ServerOps
         });
     }
 
+    editDependency(op, dependencyName, readOnly, cb, fromListener = false)
+    {
+        let opname = op;
+        let opId = opname;
+
+        if (typeof opname == "object")
+        {
+            opname = op.objName;
+            opId = op.opId;
+        }
+        else
+        {
+            const docs = gui.opDocs.getOpDocByName(opname);
+            if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
+        }
+
+        const parts = opname.split(".");
+        const shortname = parts[parts.length - 1];
+        const title = shortname + "/" + dependencyName;
+        const userInteraction = !fromListener;
+
+        let existingTab = gui.maintabPanel.tabs.getTabByTitle(title);
+        if (existingTab)
+        {
+            gui.mainTabs.activateTabByName(existingTab.title);
+            gui.maintabPanel.show(true);
+            return;
+        }
+
+        let editorObj = null;
+        gui.jobs().start({
+            "id": "load_dependency_" + dependencyName,
+            "title": "loading dependency " + dependencyName
+        });
+
+        const apiParams = {
+            "opname": opId,
+            "name": dependencyName
+        };
+
+        const editorTab = createEditor({
+            "title": title,
+            "name": opId, // "content": content,
+            "loading": true,
+            "syntax": "js",
+            "editorObj": editorObj,
+            "allowEdit": !!readOnly,
+            "showSaveButton": true,
+            "onClose": (which) =>
+            {
+                if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
+            }
+        });
+
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DEPENDENCY, apiParams, (err, res) =>
+        {
+            gui.jobs().finish("load_dependency_" + dependencyName);
+
+            if (err)
+            {
+                this.showApiError(err);
+                this.#log.error("error opening dependency " + dependencyName);
+                this.#log.log(err);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
+                return;
+            }
+
+            if (!res || !res.data || res.data.content === undefined)
+            {
+                if (err) this.#log.log("[editDependency] err", err);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
+                return;
+            }
+
+            editorObj = editorSession.rememberOpenEditor("dependency", title, {
+                "opname": opname,
+                "opid": opId,
+                "name": dependencyName
+            }, true);
+
+            const content = res.data.content || "";
+            editorTab.setContent(content);
+
+            if (editorObj)
+            {
+                editorTab.on("save", (_setStatus, _content) =>
+                {
+                    gui.savingTitleAnimStart("Saving dependency...");
+                    platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_DEPENDENCY, {
+                        "opname": opId,
+                        "name": dependencyName,
+                        "content": _content
+                    }, (errr, re) =>
+                    {
+                        if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+
+                        if (errr)
+                        {
+                            notifyError("error: op not saved");
+                            this.#log.warn("[opDependencySave]", errr);
+                            return;
+                        }
+
+                        if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
+
+                        _setStatus("Saved " + dependencyName);
+
+                        subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
+                        {
+                            gui.opParams.refresh();
+                            gui.savingTitleAnimEnd();
+                        });
+                    });
+                });
+            }
+
+            if (cb) cb(); else gui.maintabPanel.show(userInteraction);
+        });
+
+        if (!editorObj && title)
+        {
+            gui.mainTabs.activateTabByName(title);
+            gui.maintabPanel.show(userInteraction);
+        }
+    }
+
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
     {
         let opname = op;
