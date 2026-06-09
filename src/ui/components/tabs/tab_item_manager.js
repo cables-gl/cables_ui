@@ -97,9 +97,13 @@ export default class ItemManager extends Events
         const options = { "items": this._items };
         for (const i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
 
+        let newest = null;
         const filePorts = gui.patchView.getUrlInputPorts();
         for (let j = 0; j < this._items.length; j++)
         {
+            if (this._items[j].file && (!newest || this._items[j].file.d > newest.file.d))
+                newest = this._items[j];
+
             for (let i = 0; i < filePorts.length; i++)
             {
                 if (filePorts[i].get() == this._items[j].file.p)
@@ -109,6 +113,7 @@ export default class ItemManager extends Events
                 }
             }
         }
+        if (newest)newest.latest = true;
 
         if (this.#display === "icons") html = getHandleBarHtml("tab_itemmanager", options);
         else html = getHandleBarHtml("tab_itemmanager_list", options);

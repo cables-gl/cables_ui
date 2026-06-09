@@ -69,6 +69,8 @@
                 {{else}}
                     <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}"
 
+
+
                     {{#if usedInPatch}}
                     {{else}}
                     style="opacity: 0.7;"
@@ -94,7 +96,7 @@
                         {{/if}}
 
 
-                        <div class="filename">{{{shortTitle}}}</div>
+                        <div class="filename {{#if latest}}latest{{/if}} ">{{{shortTitle}}} {{#if latest}}(latest file){{/if}} </div>
                     </div>
                 {{/if}}
             {{/each}}
@@ -140,7 +142,7 @@
                         </td>
                     </tr>
                 {{else}}
-                    <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}"
+                    <tr class="{{#if latest}}latest{{/if}}  fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}"
 
                     {{#if usedInPatch}}
                     {{else}}
@@ -154,7 +156,7 @@
                             {{else}}
                             {{/if}}
                         </td>
-                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}}</div>
+                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}} {{#if latest}}(latest file){{/if}}</div>
                         </td>
                         <td>{{sizeKb}}</td>
                         <td>{{relativedate updated}}</td>
