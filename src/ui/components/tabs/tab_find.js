@@ -88,8 +88,11 @@ export default class FindTab
 
         gui.corePatch().on("subpatchesChanged", () =>
         {
-            this.clearHighlightOps();
-            this.search(this.#lastSearch);
+            if (this.isVisible())
+            {
+                this.clearHighlightOps();
+                this.search(this.#lastSearch);
+            }
         });
 
         if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();

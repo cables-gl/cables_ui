@@ -666,6 +666,7 @@ export default class GlOp extends Events
             else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.GreaterThan) == 0) mathStr += " > ";
             else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.LessThan) == 0) mathStr += " < ";
             else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Equals) == 0) mathStr += " == ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.EqualsString) == 0) mathStr += " == ";
             else mathStr += "?";
 
             if (this.#op.portsIn[1].getVariableName())mathStr += "#" + this.#op.portsIn[1].getVariableName();

@@ -106,6 +106,7 @@ const defaultOpNames =
     "Divide": "Ops.Math.Divide",
     "Multiply": "Ops.Math.Multiply",
     "Equals": "Ops.Math.Compare.Equals",
+    "EqualsString": "Ops.String.StringEquals_v2",
     "Modulo": "Ops.Math.Modulo",
     "ArraySum": "Ops.Array.ArraySum",
     "ArraySubtract": "Ops.Array.ArraySubtract",
