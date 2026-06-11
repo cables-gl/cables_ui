@@ -467,13 +467,13 @@ export default class PatchSaveServer extends Events
                 }
                 else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
                 {
-                    let patchOpsText = "You are out of asset storage, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
+                    let patchOpsText = "You are out of asset storage, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again.";
                     modalNotices.push(patchOpsText);
                     saveAsModal.show();
                 }
                 else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
                 {
-                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches.";
                     modalNotices.push(patchOpsText);
                     saveAsModal.show();
                 }
