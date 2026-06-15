@@ -241,7 +241,6 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
-                    console.log("OPDOCS", depSrc, depType);
                     const dep = null;
                     if (depType !== "corelib" && opDoc.dependencies)
                     {
@@ -332,7 +331,7 @@ export default class ManageOp
 
                     if (items.length > 0)
                     {
-                        contextMenu.show({ "items": items, }, event.currentTarget);
+                        contextMenu.show({ "items": items }, event.currentTarget);
                     }
 
                 });
