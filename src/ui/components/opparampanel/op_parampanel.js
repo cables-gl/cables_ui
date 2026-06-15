@@ -176,6 +176,17 @@ class OpParampanel extends Events
     }
 
     /**
+     * @param {Port} port
+     */
+    _checkPortTypes(port)
+    {
+        if (port.type == Port.TYPE_NUMBER && typeof port.get() == "string")
+        {
+            this.op.setUiError("typeerr", "wrong type! string in number " + port.name);
+        }
+    }
+
+    /**
      * @param {Op|String} op
      */
     show(op)
@@ -209,6 +220,8 @@ class OpParampanel extends Events
         this._currentOp = op;
 
         if (!op) return;
+
+        op.setUiError("typeerr", null);
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
@@ -299,6 +312,7 @@ class OpParampanel extends Events
 
         for (let i = 0; i < this._portsIn.length; i++)
         {
+            this._checkPortTypes(this._portsIn[i]);
             if (this._portsIn[i].uiAttribs.display && this._portsIn[i].uiAttribs.display == "file")
             {
                 let shortName = String(this._portsIn[i].get() || "Open Filemanager");
@@ -440,6 +454,8 @@ class OpParampanel extends Events
 
         for (const ipo in this._portsOut)
         {
+            this._checkPortTypes(this._portsOut[ipo]);
+
             this._showOpParamsCbPortDelete(ipo, op);
             (function (index)
             {

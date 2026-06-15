@@ -70,10 +70,13 @@ export class CommandPalette
         case 13:
             const rcmd = this.#resultCommands[this.#cursorIndex];
 
-            const el = ele.byId("result" + rcmd.id);
+            if (rcmd)
+            {
+                const el = ele.byId("result" + rcmd.id);
 
-            if (el) el.click();
-            else console.log("no ele");
+                if (el) el.click();
+                else console.log("no ele");
+            }
             break;
         case 27:
             this.close();

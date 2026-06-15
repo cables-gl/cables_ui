@@ -440,6 +440,10 @@ export default class EditorTabCodemirror extends Events
                 {
                     "label": "console.log"
                 }),
+            snippetCompletion("op.logError(\"${1:text}\");",
+                {
+                    "label": "op.logError"
+                }),
 
             snippetCompletion("op.setPortGroup(\"${1:name}\",[${2:port},${3:port}]);",
                 {
