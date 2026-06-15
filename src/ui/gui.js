@@ -128,6 +128,7 @@ export default class Gui extends Events
 
     _modalLoading = null;
     _modalLoadingCount = 0;
+    a = [1, 2,];
 
     /**
      * @param {object} cfg

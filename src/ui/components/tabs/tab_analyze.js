@@ -1,4 +1,5 @@
 import { Events } from "cables-shared-client";
+import { Port } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
 import { gui } from "../../gui.js";
@@ -27,11 +28,46 @@ export default class AnalyzePatchTab extends Events
         this._html();
     }
 
+    _checkPortTypes(ports)
+    {
+        let report = "";
+        for (let i = 0; i < ports.length; i++)
+        {
+            const port = ports[i];
+            if (port.type == Port.TYPE_NUMBER && typeof port.get() == "string")
+            {
+
+                report += "<a class=\"link\" onclick=\"gui.patchView.centerSelectOp('" + port.op.id + "')\">";
+                report += port.op.name;
+
+                report += "</a>";
+                // this.op.setUiError("typeerr", "wrong type! string in number " + port.name);
+                report += ": wrong type! string in number " + port.name + "<br/>";
+            }
+        }
+        return report;
+
+    }
+
     _html()
     {
         let report = "<h1>Analyze Patch</h1>";
         const patch = gui.corePatch();
         report += "<div style=\"overflow:scroll;width:100%;height:100%\">";
+
+        let reportErrs = "";
+        for (let i = 0; i < patch.ops.length; i++)
+        {
+            reportErrs += this._checkPortTypes(patch.ops[i].portsIn);
+            reportErrs += this._checkPortTypes(patch.ops[i].portsOut);
+        }
+        if (reportErrs)
+        {
+
+            report += "<h2>Errors</h2>";
+            report += reportErrs;
+        }
+
         report += "<h2>Ops</h2>";
 
         const opsCount = {};
@@ -217,7 +253,7 @@ export default class AnalyzePatchTab extends Events
         {
             const s = Math.round(serializeSizes[i].size / 1024);
             if (s > 1)
-                report += "<tr><td>" + s + "kb</td><td><a class=\"link\" onclick=\"console.log(456);gui.patchView.centerSelectOp('" + serializeSizes[i].id + "')\">" + serializeSizes[i].name + "</a></td></tr>";
+                report += "<tr><td>" + s + "kb</td><td><a class=\"link\" onclick=\"gui.patchView.centerSelectOp('" + serializeSizes[i].id + "')\">" + serializeSizes[i].name + "</a></td></tr>";
         }
         report += "</table>";
 
