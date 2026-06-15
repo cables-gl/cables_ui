@@ -93,11 +93,11 @@ export default class WatchVarTab extends Events
 
                 const tdVal = ele.create("td");
                 let valStr = "<span id=\"var" + y + "\">";
-                if (typeof valStr == "string")valStr += "\"";
+                if (typeof theVar.getValue() == "string")valStr += "\"";
 
                 valStr += theVar._v;
 
-                if (typeof valStr == "string")valStr += "\"";
+                if (typeof theVar.getValue() == "string")valStr += "\"";
                 valStr += "</span>";
 
                 tdVal.innerHTML = valStr;
