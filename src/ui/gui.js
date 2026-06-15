@@ -185,7 +185,7 @@ export default class Gui extends Events
             {
                 // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
                 "alpha": true,
-                "premultipliedAlpha": true,
+                "premultipliedAlpha": true
             },
             "variables": {}
         };
@@ -1334,39 +1334,39 @@ export default class Gui extends Events
                     [
                         {
                             "title": "32:9",
-                            func() { CmdRenderer.aspect(32 / 9); }
+                            "func": function () { CmdRenderer.aspect(32 / 9); }
                         },
                         {
                             "title": "21:9",
-                            func() { CmdRenderer.aspect(21 / 9); }
+                            "func": function () { CmdRenderer.aspect(21 / 9); }
                         },
                         {
                             "title": "16:9",
-                            func() { CmdRenderer.aspect(16 / 9); }
+                            "func": function () { CmdRenderer.aspect(16 / 9); }
                         },
                         {
                             "title": "16:10",
-                            func() { CmdRenderer.aspect(16 / 10); }
+                            "func": function () { CmdRenderer.aspect(16 / 10); }
                         },
                         {
                             "title": "4:3",
-                            func() { CmdRenderer.aspect(4 / 3); }
+                            "func": function () { CmdRenderer.aspect(4 / 3); }
                         },
                         {
                             "title": "5:4",
-                            func() { CmdRenderer.aspect(5 / 4); }
+                            "func": function () { CmdRenderer.aspect(5 / 4); }
                         },
                         {
                             "title": "1:1",
-                            func() { CmdRenderer.aspect(1); }
+                            "func": function () { CmdRenderer.aspect(1); }
                         },
                         {
                             "title": "1:2",
-                            func() { CmdRenderer.aspect(1 / 2); }
+                            "func": function () { CmdRenderer.aspect(1 / 2); }
                         },
                         {
                             "title": "9:16",
-                            func() { CmdRenderer.aspect(9 / 16); }
+                            "func": function () { CmdRenderer.aspect(9 / 16); }
                         }
                     ]
             }, el);
@@ -1545,7 +1545,7 @@ export default class Gui extends Events
         ele.byId("nav_remoteViewerLink").addEventListener("click", () => { CmdUi.openRemoteViewer(); });
 
         ele.byId("nav_patch_save").addEventListener("click", () => { CmdPatch.save(); });
-        ele.byId("nav_patch_saveas").addEventListener("click", () => { CmdPatch.saveAs(); });
+        ele.byId("nav_patch_saveas").addEventListener("click", () => { CmdPatch.clone(); });
         ele.byId("nav_patch_export").addEventListener("click", () => { CmdPatch.export(); });
         ele.byId("nav_patch_export_patch").addEventListener("click", () => { CmdPatch.export("patch"); });
 
@@ -2365,7 +2365,7 @@ export default class Gui extends Events
             new ModalDialog({
                 "warning": true,
                 "title": "Context lost",
-                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
+                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser"
             });
         });
 

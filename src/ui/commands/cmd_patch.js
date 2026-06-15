@@ -60,7 +60,7 @@ class CmdPatch
                 "category": "patch",
                 "func": CmdPatch.saveAs,
                 "icon": "save",
-                "hotkey": "[cmd_ctrl][shift]`s`",
+                "hotkey": "[cmd_ctrl][shift]`s`"
             },
             {
                 "cmd": "Upload file dialog",
@@ -269,7 +269,7 @@ class CmdPatch
                 "cmd": "Go to parent subpatch",
                 "keybindable": true,
                 "func": CmdPatch.gotoParentSubpatch,
-                "category": "patch",
+                "category": "patch"
             },
             {
                 "cmd": "Open params in tab",
@@ -378,7 +378,7 @@ class CmdPatch
     {
         let ops = gui.patchView.getSelectedOps();
 
-        if (ops.length == 0)ops = gui.corePatch().ops;
+        if (ops.length == 0) ops = gui.corePatch().ops;
 
         if (!ops || ops.length == 0) return;
 
@@ -518,7 +518,7 @@ class CmdPatch
         }
         else
         {
-        // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
+            // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
             const idsParam = ids.join(",");
             const url = platform.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
             gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
@@ -671,10 +671,10 @@ class CmdPatch
                                                 "opname": newOpname,
                                                 "update": {
                                                     "attachments":
-                                                {
-                                                    "att_inc_gen_ports.js": src,
-                                                    "att_ports.json": JSON.stringify(portJson)
-                                                }
+                                                    {
+                                                        "att_inc_gen_ports.js": src,
+                                                        "att_ports.json": JSON.stringify(portJson)
+                                                    }
                                                 }
                                             },
                                             (err, r) =>
@@ -695,7 +695,7 @@ class CmdPatch
                                                     const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
                                                     for (let j = 0; j < oldLinks.length; j++)
                                                     {
-                                                    // outer linking
+                                                        // outer linking
                                                         const oldLink = oldLinks[j];
 
                                                         if (oldLink.pJson)
@@ -716,7 +716,7 @@ class CmdPatch
                                                                         l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
                                                                     }
 
-                                                                    if (!l)log.log("could not recreate oldlink", oldLink);
+                                                                    if (!l) log.log("could not recreate oldlink", oldLink);
                                                                 }
                                                             }
                                                         }
@@ -732,15 +732,17 @@ class CmdPatch
 
                                                     if (!gui.savedState.getStateBlueprint(subPatchId))
                                                     {
-                                                        subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
+                                                        subPatchOpUtil.updateSubPatchOpAttachment(newOp, {
+                                                            "oldSubId": subPatchId,
                                                             "next": () =>
                                                             {
 
-                                                            /*
-                                                             * log.log("bp", bp);
-                                                             * CABLES.CMD.PATCH.save();
-                                                             */
-                                                            } });
+                                                                /*
+                                                                 * log.log("bp", bp);
+                                                                 * CABLES.CMD.PATCH.save();
+                                                                 */
+                                                            }
+                                                        });
                                                     }
                                                     gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                     gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
@@ -810,7 +812,7 @@ class CmdPatch
 
     static uploadFileDialog()
     {
-    // @ts-ignore - if page is loading and a file drag is hovering it will crash because ....
+        // @ts-ignore - if page is loading and a file drag is hovering it will crash because ....
         if (!window.gui || !gui.project()) return;
         const fileElem = document.getElementById("uploaddialog");
 
@@ -831,7 +833,7 @@ class CmdPatch
             {
                 "icon": "settings",
                 "closable": true,
-                "singleton": true,
+                "singleton": true
             },
             true);
     }
@@ -861,6 +863,12 @@ class CmdPatch
         exporter.show();
     }
 
+    static clone()
+    {
+        const projectId = gui.project().shortId || gui.project()._id;
+        platform.clonePatch(projectId);
+    }
+
     static newPatch()
     {
         gui.createProject();
@@ -882,7 +890,7 @@ class CmdPatch
                         op.setUiAttrib({
                             "translate": {
                                 "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
-                                "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                                "y": gui.patchView.patchRenderer.viewBox.mousePatchY }
                         });
                         if (op)
                         {
