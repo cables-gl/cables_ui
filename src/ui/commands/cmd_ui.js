@@ -16,6 +16,7 @@ import TabInputBindings from "../components/tabs/tab_keybinds.js";
 import { notify } from "../elements/notification.js";
 import { GpuProfiler } from "../components/tabs/tab_profiler_gpu.js";
 import { ProfilerDrawCalls } from "../components/tabs/tab_profiler_drawcalls.js";
+import { TabProfilerMemory } from "../components/tabs/tab_profiler_memory.js";
 
 export { CmdUi };
 
@@ -227,6 +228,13 @@ class CmdUi
             "cmd": "Drawcalls Profiler",
             "category": "ui",
             "func": CmdUi.profileDrawCalls,
+            "icon": "align-justify",
+            "infotext": ""
+        },
+        {
+            "cmd": "Memory Profiler",
+            "category": "ui",
+            "func": CmdUi.profileMemory,
             "icon": "align-justify",
             "infotext": ""
         },
@@ -547,6 +555,12 @@ class CmdUi
     static profileDrawCalls()
     {
         new ProfilerDrawCalls(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static profileMemory()
+    {
+        new TabProfilerMemory(gui.mainTabs);
         gui.maintabPanel.show(true);
     }
 
