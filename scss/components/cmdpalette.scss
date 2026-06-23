@@ -29,6 +29,7 @@
 
 		.title
 		{
+            pointer-events: none;
 			position: relative;
 			top: -3px;
 			font-size: 20px;
@@ -37,6 +38,7 @@
 
 		.category
 		{
+            pointer-events: none;
 			position: relative;
 			top: -5px;
 		}
