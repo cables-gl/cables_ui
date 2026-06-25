@@ -220,6 +220,9 @@ export class Platform extends Events
         return url;
     }
 
+    /**
+     * @param {string} projectId
+     */
     getUrlProjectOpsCode(projectId)
     {
         let url = this.getCablesUrl() + "/api/ops/code/project/" + projectId;
@@ -247,6 +250,9 @@ export class Platform extends Events
         return this._cfg.isDevEnv;
     }
 
+    /**
+     * @param {any} url
+     */
     noCacheUrl(url)
     {
         return url;
@@ -302,9 +308,13 @@ export class Platform extends Events
             notifyError("UI: using master branch not on live?!");
     }
 
-    savePatch(options, cb)
+    /**
+     * @param {Object} data
+     * @param {Function} cb
+     */
+    savePatch(data, cb)
     {
-        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, options, cb);
+        this.talkerAPI.send(TalkerAPI.CMD_SAVE_PATCH, data, cb);
     }
 
     initRouting(cb)
@@ -339,31 +349,7 @@ export class Platform extends Events
             {
                 if (options && options.filename)
                 {
-                    for (let j = 0; j < gui.corePatch().ops.length; j++)
-                    {
-                        if (gui.corePatch().ops[j])
-                        {
-                            if (gui.corePatch().ops[j].onFileChanged)
-                                gui.corePatch().ops[j].onFileChanged(options.filename);
-                            else if (gui.corePatch().ops[j].onFileUploaded)
-                                gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
-                        }
-                    }
-                    if (options.filename.endsWith(".js"))
-                    {
-                        const libUrl =
-                            "/assets/" + gui.project()._id + "/" + options.filename;
-                        if (
-                            gui &&
-                            gui.opDocs &&
-                            gui.opDocs.libs &&
-                            !gui.opDocs.libs.includes(libUrl)
-                        )
-                        {
-                            gui.opDocs.libs.push(libUrl);
-                            gui.emitEvent("refreshManageOp");
-                        }
-                    }
+                    this.fileUpdated(options.filename);
                 }
             },
         );
@@ -447,9 +433,40 @@ export class Platform extends Events
         });
     }
 
+    fileUpdated(filename)
+    {
+        if (!filename) return;
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
+        {
+            if (gui.corePatch().ops[j])
+            {
+                gui.corePatch().ops[j].emitEvent("fileChanged", filename);
+                if (gui.corePatch().ops[j].onFileChanged)
+                    gui.corePatch().ops[j].onFileChanged(filename); // todo deprecate , rename to on("fileChanged", filename)
+                else if (gui.corePatch().ops[j].onFileUploaded)
+                    gui.corePatch().ops[j].onFileUploaded(filename); // todo deprecate , rename to onFileChanged
+            }
+        }
+        if (filename.endsWith(".js"))
+        {
+            const libUrl =
+                "/assets/" + gui.project()._id + "/" + filename;
+            if (
+                gui &&
+                gui.opDocs &&
+                gui.opDocs.libs &&
+                !gui.opDocs.libs.includes(libUrl)
+            )
+            {
+                gui.opDocs.libs.push(libUrl);
+                gui.emitEvent("refreshManageOp");
+            }
+        }
+    }
+
     createBackup()
     {
-        const backupOptions = { "title": name || "" };
+        const backupOptions = { "title": "" };
 
         const modalNotices = [];
         if (gui && gui.user && platform.isTrustedPatch() && gui.user.supporterFeatures && !this.patchIsBackup())
@@ -558,7 +575,6 @@ export class Platform extends Events
         this._log.log("showFileSelect", inputId, filterType, opid, previewId);
         gui.showFileManager(() =>
         {
-            this._log.log("showFileSelect22222");
             const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {
@@ -665,5 +681,26 @@ export class Platform extends Events
     getDefaultOpName()
     {
         return defaultOps.newOpNameSuggestion;
+    }
+
+    /**
+     * check if op creation is possible in patch (e.g. not in example, not in newly created patch in electron)
+     *
+     * @see {@link ./platform_electron.js}
+     * @returns {boolean}
+     */
+    checkOpCreate()
+    {
+        if (gui.project().isOpExample)
+        {
+            notifyError("Not possible in op example patch!");
+            return false;
+        }
+        return true;
+    }
+
+    currentUserIsPatchOwner()
+    {
+        return true;
     }
 }

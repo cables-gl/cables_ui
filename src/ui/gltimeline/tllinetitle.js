@@ -1,5 +1,5 @@
 import { Events, ele } from "cables-shared-client";
-import { Anim, Op, Port } from "cables";
+import { Anim, AnimKey, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { TlKeys } from "./tlkeys.js";
 import { TlAnimLine } from "./tlanimline.js";
@@ -52,16 +52,24 @@ export class TlTitle extends Events
     /** @type {TlAnimLine} */
     animLine = null;
 
+    #options = {};
+
     collapsed = false;
     #hideOpName = false;
     isHovering = false;
     folderButton = null;
-    #options = {};
+
     #elButtonsRight;
     #elIndent;
     #elOpname;
     #elPortname;
     #elPortValue;
+    #elValue;
+
+    btnKeyPrev = null;
+    btnKeyAdd = null;
+    btnKeyNext = null;
+    #lastVal = null;
 
     /**
      * @param {HTMLElement} parentEl
@@ -93,16 +101,63 @@ export class TlTitle extends Events
         this.#elOpname = document.createElement("span");
         this.#el.appendChild(this.#elOpname);
 
+        ///
+
         this.#elPortValue = document.createElement("span");
         this.#elPortValue.classList.add("portAndValue");
         this.#el.appendChild(this.#elPortValue);
-        this.#elPortValue.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
         this.#elPortname = document.createElement("span");
+        this.#elPortname.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
         this.#elPortValue.appendChild(this.#elPortname);
+
+        this.#elValue = document.createElement("div");
+        this.#elValue.classList.add("portValue");
+        this.#elPortValue.appendChild(this.#elValue);
 
         this.#elTitle = document.createElement("span");
         this.#el.appendChild(this.#elTitle);
+
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
+        {
+            if (this.#op && !this.#op.isCurrentUiOp()) gui.patchView.setSelectedOpById(this.#op.id);
+
+            if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no");
+
+            setTimeout(() =>
+            {
+                if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no2");
+                if (this.#op && !this.#op.isCurrentUiOp()) return;
+
+                const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+                const cloned = new e.constructor(e.type, e);
+                if (el) el.dispatchEvent(cloned);
+                else console.log("no el found DOWN");
+                e.preventDefault();
+            }, 300);
+        });
+
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_UP, (e) =>
+        {
+            if (!ele.byClass("opparams" + this.#port.op.id)) return;
+            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+            const cloned = new e.constructor(e.type, e);
+            if (el) el.dispatchEvent(cloned);
+            else console.log("no el found");
+            e.preventDefault();
+        });
+
+        if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_MOVE, (e) =>
+        {
+            if (!ele.byClass("opparams" + this.#port.op.id)) return;
+            if (this.#op && !this.#op.isCurrentUiOp()) return;
+
+            const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
+            const cloned = new e.constructor(e.type, e);
+            if (el) el.dispatchEvent(cloned);
+            else console.log("no el found");
+            e.preventDefault();
+        });
 
         this.#el.addEventListener(DomEvents.POINTER_DBL_CLICK, (e) => { this.selectAllKeys(); });
 
@@ -119,16 +174,15 @@ export class TlTitle extends Events
             this.emitEvent("hoverchange");
         });
 
-        ele.clickable(this.#elOpname, (e) =>
+        this.#elOpname.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
             this.#gltl.showParamOp(this.#op);
         });
 
-        ele.clickable(this.#elPortValue, (e) =>
+        this.#elPortValue.addEventListener(DomEvents.POINTER_DOWN, (e) =>
         {
             this.emitEvent(TlTitle.EVENT_CLICK_OPNAME, this, e);
-
             this.#gltl.showParamAnim(this.#anim);
         });
 
@@ -176,12 +230,13 @@ export class TlTitle extends Events
     setHeight(h)
     {
         this.#el.style.height = Math.max(0, h - 6) + "px";
+        if (h == 0) this.#el.style.display = "none";
+        else this.#el.style.display = "block";
     }
 
     selectAllKeys()
     {
         this.#gltl.unSelectAllKeys();
-        // this.#gltl.deactivateAllAnims(true);
         const keys = this.animLine.getGlKeysForAnim(this.#anim);
         keys?.selectAll();
     }
@@ -285,13 +340,13 @@ export class TlTitle extends Events
             {
                 this.folderButton.children[0].classList.remove("icon-chevron-right");
                 this.folderButton.children[0].classList.add("icon-chevron-down");
-                if (this.#el.parentElement) this.#el.parentElement.classList.remove("collapsed");
+                if (this.#el) this.#el.classList.remove("collapsed");
             }
             else
             {
                 this.folderButton.children[0].classList.add("icon-chevron-right");
                 this.folderButton.children[0].classList.remove("icon-chevron-down");
-                if (this.#el.parentElement) this.#el.parentElement.classList.add("collapsed");
+                if (this.#el) this.#el.classList.add("collapsed");
             }
         }
 
@@ -320,6 +375,29 @@ export class TlTitle extends Events
             }
         }
 
+        if (this.#port && !this.btnKeyAdd)
+        {
+
+            this.btnKeyPrev = this.addButtonRight("<span class=\"icon icon-chevron-left icon-0_5x nomargin info\" data-info=\"tlbtnPrev\"></span>",
+                (e) =>
+                {
+                    this.#gltl.jumpKey(-1, [this.animLine]);
+                }
+            );
+            this.btnKeyAdd = this.addButtonRight("<span class=\"icon icon-diamond icon-0_5x nomargin info\" data-info=\"tlbtnCreate\"></span>",
+                (e) =>
+                {
+                    this.#gltl.createKey(this.#anim, this.#port.op.patch.timer.getTime(), this.#port.get());
+                }
+            );
+            this.btnKeyNext = this.addButtonRight("<span class=\"icon icon-chevron-right icon-0_5x nomargin info\" data-info=\"tlbtnNext\"></span>",
+                (e) =>
+                {
+                    this.#gltl.jumpKey(1, [this.animLine]);
+                }
+            );
+        }
+
         if (this.#port && !this.muteButton)
             this.muteButton = this.addButtonRight("<span class=\"icon icon-eye icon-0_5x nomargin info\" data-info=\"tlmute\"></span>",
                 (e) =>
@@ -331,6 +409,7 @@ export class TlTitle extends Events
                     this.updateIcons();
                 }
             );
+
         if (this.muteButton)
         {
             if (this.#port.animMuted)
@@ -349,6 +428,7 @@ export class TlTitle extends Events
             }
             this.#port.emitEvent("animLineUpdate");
         }
+
     }
 
     /**
@@ -474,18 +554,51 @@ export class TlTitle extends Events
      */
     updateValue(t)
     {
-        // if (this.#anim)
-        //     this.#elValue.innerHTML = String(Math.round(1000 * this.#anim.getValue(t)) / 1000);
+        if (this.#anim && this.#elValue)
+        {
+
+            const v = Math.round(1000 * this.#anim.getValue(t)) / 1000;
+            if (v != this.#lastVal)
+                this.#elValue.innerHTML = String(v);
+
+            this.#lastVal = v;
+        }
+        if (!this.#anim) return;
+
+        const key = this.#anim.getKey(t);
+        if (!key) return;
+
+        if (!this.#anim.hasStarted(t) || this.#anim.hasEnded(t + 0.001)) this.#elValue.classList.add("outside");
+        else this.#elValue.classList.remove("outside");
+
+        if (this.btnKeyAdd)
+        {
+            if (key.time == t)
+            {
+                this.btnKeyAdd.children[0].classList.add("icon-diamond-fill");
+                this.btnKeyAdd.children[0].classList.remove("icon-diamond");
+                this.btnKeyAdd.children[0].classList.add("onkey");
+            }
+            else
+            {
+                this.btnKeyAdd.children[0].classList.remove("icon-diamond-fill");
+                this.btnKeyAdd.children[0].classList.add("icon-diamond");
+                this.btnKeyAdd.children[0].classList.remove("onkey");
+            }
+        }
+
     }
 
     scrollIntoView()
     {
+        console.log("scrollintoview ", this.#elTitle.innerHTML);
         const elem = this.#el;
         let rectElem = elem.getBoundingClientRect();
         let rectContainer = this.#gltl.tlTimeScrollContainer.getBoundingClientRect();
         if (rectElem.bottom > rectContainer.bottom || rectElem.top < rectContainer.top)
         {
-            this.#el.scrollIntoView({ "block": "start", "container": "nearest" });
+            // this.#el.scrollIntoView({ "block": "start", "container": "nearest" });
+            this.#el.scrollIntoView();
             document.body.scrollTop = 0;
         }
 

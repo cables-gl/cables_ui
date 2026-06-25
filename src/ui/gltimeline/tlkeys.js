@@ -51,7 +51,7 @@ export class TlKeys extends Events
     /** @type {GlSpline} */
     #splineAfter;
 
-    /** @type {GlSpline} */
+    // * @type {GlSpline}
     #splineBefore;
 
     #disposed = false;
@@ -282,17 +282,17 @@ export class TlKeys extends Events
                 this.#spline.setParentRect(this.#parentRect);
             }
 
-            if (!this.#splineBefore)
-            {
-                this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
-                this.#splineBefore.setParentRect(this.#parentRect);
-            }
+            // if (!this.#splineBefore)
+            // {
+            //     this.#splineBefore = new GlSpline(this.#glTl.splines, "splinebefore " + this.#port.name);
+            //     this.#splineBefore.setParentRect(this.#parentRect);
+            // }
 
-            if (!this.#splineAfter)
-            {
-                this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
-                this.#splineAfter.setParentRect(this.#parentRect);
-            }
+            // if (!this.#splineAfter)
+            // {
+            //     this.#splineAfter = new GlSpline(this.#glTl.splines, "splineafter " + this.#port.name);
+            //     this.#splineAfter.setParentRect(this.#parentRect);
+            // }
         }
 
         if (this.#keys.length != this.#anim.keys.length) return this.init();
@@ -442,10 +442,10 @@ export class TlKeys extends Events
             for (let i = 0; i < pointsSortBefore.length; i += 3)
                 pointsSortBefore[i + 2] = z + 0.1;
 
-            this.#splineAfter.getDrawer().rebuildLater();
-            this.#splineAfter.setPoints(pointsSortAfter);
-            this.#splineBefore.getDrawer().rebuildLater();
-            this.#splineBefore.setPoints(pointsSortBefore);
+            this.#splineAfter?.getDrawer().rebuildLater();
+            this.#splineAfter?.setPoints(pointsSortAfter);
+            this.#splineBefore?.getDrawer().rebuildLater();
+            this.#splineBefore?.setPoints(pointsSortBefore);
         }
 
         this.updateColors();
@@ -535,8 +535,8 @@ export class TlKeys extends Events
         if (this.#spline)
         {
             this.#spline.setColorArray(this.getSplineColor(this.#hasSelectedKeys, false, hovering, readonly));
-            this.#splineAfter.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
-            this.#splineBefore.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
+            this.#splineAfter?.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
+            this.#splineBefore?.setColorArray(this.getSplineColor(this.#hasSelectedKeys, true, hovering, readonly));
         }
 
         for (let i = 0; i < this.#keys.length; i++)
@@ -594,6 +594,11 @@ export class TlKeys extends Events
             const animKey = this.#anim.keys[i];
             const kr = this.#keys[i].rect;
             const k = this.#keys[i];
+            if (!kr)
+            {
+                console.log("tlkey no rect");
+                continue;
+            }
 
             if (!this.drawKeys())
             {
@@ -947,8 +952,8 @@ export class TlKeys extends Events
     disposeSplines()
     {
         if (this.#spline) this.#spline = this.#spline.dispose();
-        if (this.#splineAfter) this.#splineAfter = this.#splineAfter.dispose();
-        if (this.#splineBefore) this.#splineBefore = this.#splineBefore.dispose();
+        this.#splineAfter = this.#splineAfter?.dispose();
+        this.#splineBefore = this.#splineBefore?.dispose();
     }
 
     dispose()

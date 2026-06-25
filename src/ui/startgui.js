@@ -1,8 +1,8 @@
 import { ele, HandlebarsHelper, TalkerAPI } from "cables-shared-client";
+import { BoundingBox, Geometry, Mesh } from "cables-corelibs";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui, { gui } from "./gui.js";
-import Tracking from "./tracking/tracking.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./socketcluster/sc_connection.js";
@@ -14,6 +14,7 @@ import { editorSession } from "./elements/tabpanel/editor_session.js";
 import UserSettings, { userSettings } from "./components/usersettings.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 import { GuiText } from "./text.js";
+import { CmdUi } from "./commands/cmd_ui.js";
 
 /**
  * manage the start of the ui/editor
@@ -28,11 +29,6 @@ export default function startUi(cfg)
 
     const gui = new Gui(cfg);
 
-    gui.on("uiloaded", () =>
-    {
-        new Tracking();
-    });
-
     if (gui.isRemoteClient)
         new NoPatchEditor();
     else
@@ -46,7 +42,7 @@ export default function startUi(cfg)
         gui.initCoreListeners();
 
         gui.corePatch().timer.setTime(0);
-        gui.corePatch().timer.pause();
+        gui.corePatch().timer.play();
 
         if (!gui.corePatch().cgl.gl)
         {
@@ -84,6 +80,11 @@ export default function startUi(cfg)
                     gui.setElementBgPattern(ele.byId("cablescanvas"));
 
                     editorSession.open();
+
+                    if (userSettings.get(Gui.PREF_AUDIO_MUTE))
+                    {
+                        CmdUi.muteAudio(false);
+                    }
 
                     gui.setFontSize(userSettings.get("fontSizeOff"));
 
@@ -184,8 +185,7 @@ export default function startUi(cfg)
                     {
                         gui.corePatch().checkLinkTimeWarnings();
                         gui.emitEvent(Gui.EVENT_UILOADED);
-                        gui.corePatch().timer.setTime(0);
-                        gui.corePatch().timer.play();
+
                     }, 100);
                 });
 

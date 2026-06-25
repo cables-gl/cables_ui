@@ -155,10 +155,13 @@ export default class ManageOp
                         let suffix = "";
                         suffix = parts[parts.length - 1];
 
+                        let readable = res.attachmentFiles[i].substr(4);
+                        if (res.attachmentFiles[i].startsWith("att_bin_")) readable = res.attachmentFiles[i].substr(8);
+
                         attachmentFiles.push(
                             {
                                 "suffix": suffix,
-                                "readable": res.attachmentFiles[i].substr(4),
+                                "readable": readable,
                                 "original": res.attachmentFiles[i]
                             });
 
@@ -238,7 +241,6 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
-                    console.log("OPDOCS", depSrc, depType);
                     const dep = null;
                     if (depType !== "corelib" && opDoc.dependencies)
                     {
@@ -329,7 +331,7 @@ export default class ManageOp
 
                     if (items.length > 0)
                     {
-                        contextMenu.show({ "items": items, }, event.currentTarget);
+                        contextMenu.show({ "items": items }, event.currentTarget);
                     }
 
                 });

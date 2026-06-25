@@ -1,5 +1,6 @@
 import { ele } from "cables-shared-client";
-import { utils } from "cables";
+import { Op, utils } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { GuiText } from "../../text.js";
@@ -23,9 +24,12 @@ export default class FindTab
     _findTimeoutId = null;
     #tab;
     #tabs;
-    #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected"];
+    #toggles = ["currentSubpatch", "outdated", "attention", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "recent", "selected", "animated"];
     #eleInput = null;
+
+    /** @type {EventListener[]}  */
     #listenerids = [];
+
     #lastSearch = "";
     #lastClicked = -1;
     #lastSelected = -1;
@@ -63,7 +67,6 @@ export default class FindTab
         this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
         const listenerChanged = gui.opHistory.on("changed", this.updateHistory.bind(this));
-        this.#listenerids.push(listenerChanged);
 
         this.#listenerids.push(gui.corePatch().on("warningErrorIconChange", this._updateCb));
         this.#listenerids.push(gui.corePatch().on("onOpDelete", this._updateCb));
@@ -76,17 +79,20 @@ export default class FindTab
 
             gui.opHistory.off(listenerChanged);
 
-            for (let i = 0; i < this.#listenerids.length; i++)
-                gui.corePatch().off(this.#listenerids[i]);
+            for (let i = 0; i < this.#listenerids.length; i++) gui.corePatch().off(this.#listenerids[i]);
 
+            this.#listenerids = [];
             this.clearHighlightOps();
-
             this.#closed = true;
         });
-        gui.corePatch().on("subpatchesChanged", (_clientId, _subPatch) =>
+
+        gui.corePatch().on("subpatchesChanged", () =>
         {
-            this.clearHighlightOps();
-            this.search(this.#lastSearch);
+            if (this.isVisible())
+            {
+                this.clearHighlightOps();
+                this.search(this.#lastSearch);
+            }
         });
 
         if (ele.byId(this.#inputId)) ele.byId(this.#inputId).focus();
@@ -210,6 +216,9 @@ export default class FindTab
         return this.#closed;
     }
 
+    /**
+     * @param {string} str
+     */
     setSearchInputValue(str)
     {
         this.#eleInput.value = str;
@@ -230,7 +239,12 @@ export default class FindTab
         return this.#tab.isVisible();
     }
 
-    _addResultOp(op, result, idx)
+    /**
+     * @param {Op} op
+     * @param {Object} result
+     * @param { number} idx
+     */
+    #addResultOp(op, result, idx)
     {
         if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
         let html = "";
@@ -238,8 +252,6 @@ export default class FindTab
         this.#maxIdx = idx;
 
         info += "## searchresult \n\n* score : " + result.score + GuiText.searchResult + "\n";
-
-        if (op.op)op = op.op;
 
         const colorClass = opNames.getNamespaceClassName(op.objName);
 
@@ -267,6 +279,7 @@ export default class FindTab
         html += "</h3>";
 
         if (result.hint) html += "<div class=\"warning-error-level0\">" + result.hint + "</div>";
+        if (result.warning) html += "<div class=\"warning-error-level1\">" + result.warning + "</div>";
         if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
         if (result.history) html += "<span class=\"search-history-item\">" + result.history + "</span><br/>";
         if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
@@ -279,10 +292,13 @@ export default class FindTab
 
         html += "</div>";
 
-        // this._eleResults.innerHTML += html;
         return html;
     }
 
+    /**
+     * @param {string} word
+     * @param {string} str
+     */
     highlightWord(word, str)
     {
         if (!str || str == "") return "";
@@ -301,6 +317,9 @@ export default class FindTab
         return str;
     }
 
+    /**
+     * @param {string} str
+     */
     _doSearchTriggers(str)
     {
         const triggers = gui.corePatch().namedTriggers;
@@ -316,6 +335,9 @@ export default class FindTab
         return foundtriggers;
     }
 
+    /**
+     * @param {string} str
+     */
     _doSearchVars(str)
     {
         const vars = gui.corePatch().getVars();
@@ -373,14 +395,23 @@ export default class FindTab
                     const op = ops[i];
 
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
+                    {
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
                             results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
+                        for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
+                            results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
+                    }
                 }
             }
 
             if (str == ":outdated")
             {
                 FindTab.searchOutDated(ops, results);
+            }
+
+            if (str == ":animated")
+            {
+                FindTab.searchAnimated(ops, results);
             }
 
             if (str == ":selected")
@@ -448,7 +479,7 @@ export default class FindTab
 
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
-                            results.push({ op, "score": 1 });
+                            results.push({ op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
                 }
             }
             else
@@ -458,7 +489,8 @@ export default class FindTab
                 {
                     const op = ops[i];
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
-                        results.push({ op, "score": 1 });
+                        for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 0)
+                            results.push({ op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
                 }
             }
             else
@@ -642,7 +674,7 @@ export default class FindTab
 
                 if (ops[i].objName.toLowerCase().indexOf(str) > -1)
                 {
-                    where = "name: " + this.highlightWord(str, ops[i].objName);
+                    where = "Name: " + this.highlightWord(str, ops[i].objName);
                     score += 1;
                     found = true;
                 }
@@ -651,7 +683,13 @@ export default class FindTab
                     ops[i].uiAttribs.extendTitle &&
                     (ops[i].uiAttribs.extendTitle + "").toLowerCase().indexOf(str) > -1)
                 {
-                    where = "title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
+                    where = "Title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
+                    score += 1;
+                    found = true;
+                }
+                if (ops[i].attribs.tags && ops[i].attribs.tags.indexOf(str) > -1)
+                {
+                    where = "Tags: " + this.highlightWord(str, ops[i].attribs.tags.join(","));
                     score += 1;
                     found = true;
                 }
@@ -660,21 +698,21 @@ export default class FindTab
                     ops[i].uiAttribs.comment &&
                     ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1)
                 {
-                    where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
+                    where = "Comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
                     score += 1;
                     found = true;
                 }
 
                 if (ops[i].opId.indexOf(str) > -1)
                 {
-                    where = "opid: " + ops[i].opId;
+                    where = "OpId: " + ops[i].opId;
                     score += 1;
                     found = true;
                 }
 
                 if (ops[i].id.indexOf(str) > -1)
                 {
-                    where = "id: " + ops[i].id;
+                    where = "Id: " + ops[i].id;
                     score += 1;
                     found = true;
                 }
@@ -685,7 +723,7 @@ export default class FindTab
 
                     if (String(ops[i].name || "").indexOf("var set") === 0) score += 2; // extra points if var setter
 
-                    where = "name: " + this.highlightWord(str, ops[i].name);
+                    where = "Name: " + this.highlightWord(str, ops[i].name);
                     score += 2;
                     found = true;
                 }
@@ -693,7 +731,7 @@ export default class FindTab
                 const op = ops[i];
                 for (let j = 0; j < op.portsIn.length; j++)
                 {
-                    if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
+                    if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
                     {
                         score += 2;
                         where += "port \"" + op.portsIn[j].name + "\" assigned to var " + op.portsIn[j].getVariableName();
@@ -733,9 +771,7 @@ export default class FindTab
         str = str || this.#lastSearch;
 
         if (this.#eleInput.value == "")
-        {
             this.#lastSearch = str = "";
-        }
 
         this.#maxIdx = -1;
         this.setSelectedOp(null);
@@ -797,7 +833,7 @@ export default class FindTab
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
-                html += this._addResultOp(results[i].op, results[i], i);
+                html += this.#addResultOp(results[i].op, results[i], i);
 
             let onclickResults = "gui.patchView.unselectAllOps();";
 
@@ -820,22 +856,33 @@ export default class FindTab
         const timeUsed = performance.now() - startTime;
     }
 
+    /**
+     * @param {number} num
+     */
     setClicked(num)
     {
-        num = parseInt(num);
-
-        let el = ele.byId("findresult" + this.#lastClicked);
-        if (el) el.classList.remove("lastClicked");
-
-        el = ele.byId("findresult" + num);
-        if (el)
+        if (num != this.#lastClicked)
         {
-            el.classList.add("lastClicked");
-            el.scrollIntoView();
+
+            num = parseInt(num);
+
+            let el = ele.byId("findresult" + this.#lastClicked);
+            if (el) el.classList.remove("lastClicked");
+
+            el = ele.byId("findresult" + num);
+            if (el)
+            {
+                el.classList.add("lastClicked");
+                el.scrollIntoView();
+                gui.checkScroll();
+            }
+            this.#lastClicked = num;
         }
-        this.#lastClicked = num;
     }
 
+    /**
+     * @param {string} opid
+     */
     setSelectedOp(opid)
     {
         let els = document.getElementsByClassName("findresultop" + this.#lastSelected);
@@ -862,6 +909,23 @@ FindTab.searchOutDated = (ops, results) =>
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
         if ((doc && doc.oldVersion) || namespace.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
+    }
+    return results;
+};
+
+FindTab.searchAnimated = (/** @type {Op[]} */ ops, /** @type {Object} */ results) =>
+{
+    console.log("animaaaa");
+    for (let i = 0; i < ops.length; i++)
+    {
+        for (let j = 0; j < ops[i].portsIn.length; j++)
+        {
+            if (ops[i].portsIn[j].isAnimated())
+            {
+                results.push({ "op": ops[i], "score": 1 });
+                break;
+            }
+        }
     }
     return results;
 };

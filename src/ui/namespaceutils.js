@@ -11,6 +11,7 @@ class namespace
     getNamespace(opname)
     {
         if (!opname) return "";
+        if (opname.endsWith(".")) opname = opname.slice(0, -1);
         const parts = opname.split(".");
         parts.length -= 1;
         return parts.join(".") + ".";
@@ -74,6 +75,11 @@ class namespace
     isDevOp(opname)
     {
         return opname && opname.includes(".Dev.");
+    }
+
+    isStandaloneOp(opname)
+    {
+        return opname && opname.startsWith(defaultOps.prefixes.standaloneOp);
     }
 
     /**
@@ -142,7 +148,7 @@ class namespace
      */
     isCoreOp(opname)
     {
-        return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname));
+        return !(this.isUserOp(opname) || this.isExtensionOp(opname) || this.isTeamOp(opname) || this.isPatchOp(opname) || this.isStandaloneOp(opname));
     }
 
     /**
@@ -236,6 +242,10 @@ class namespace
             // valid in editor, since they will be renamed
             // if (this.isPatchOp(innerName) && this.getNamespace(innerName) !== this.getNamespace(outerName)) return "(SubpatchOp) Patch ops cannot contain ops of other patches.";
         }
+        else if (this.isStandaloneOp(outerName))
+        {
+            // valid in standalone, import will rename them to patchops
+        }
 
         return false;
     }
@@ -250,7 +260,7 @@ class namespace
             if (opUsername && part === opUsername) return part; // username is the only part of ops that can be lowercase
             return part[0] ? (part[0].toUpperCase() + part.slice(1)) : "";
         });
-        return capitalizedParts.join(".");
+        return capitalizedParts.join(".").trim();
     }
 
 }

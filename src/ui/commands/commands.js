@@ -1,3 +1,4 @@
+import { uuid } from "cables/src/core/utils.js";
 import { CmdDebug } from "./cmd_debug.js";
 import { CmdFiles } from "./cmd_files.js";
 import { CmdOps } from "./cmd_op.js";
@@ -11,6 +12,7 @@ import { CmdUi } from "./cmd_ui.js";
  * @property {string} cmd
  * @property {function} func
  * @property {string} category
+ * @property {string} [id]
  * @property {string} [icon]
  * @property {string} [infotext]
  * @property {string} [hotkey]
@@ -38,8 +40,12 @@ class Commands
 
         for (let i = 0; i < Commands.commands.length; i++)
         {
+
             if (Commands.commands[i])
+            {
                 if (!Commands.commands[i].category) console.warn("cmd has no category ", Commands.commands[i].cmd);
+                Commands.commands[i].id = uuid();
+            }
         }
 
         CMD.FILES = CmdFiles;
@@ -51,6 +57,21 @@ class Commands
         CMD.TIMELINE = CmdTimeline;
         CMD.commands = Commands.commands;
         CMD.exec = Commands.exec;
+    }
+
+    /**
+     * @param {string} id
+     */
+    static getById(id)
+    {
+
+        for (let i = 0; i < Commands.commands.length; i++)
+        {
+            if (Commands.commands[i].id == id)
+            {
+                return Commands.commands[i];
+            }
+        }
     }
 
     /**

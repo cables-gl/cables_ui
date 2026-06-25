@@ -304,6 +304,7 @@
 
         textarea
         {
+            color:var(--text-color);
             background-color: $color-background-input;
             border: 1px solid $background-color-brighter;
             width:95% !important;
@@ -339,17 +340,12 @@
         {
             background-color:var(--color-01);
             margin-top:4px;
-
         }
 
         .ccheckbox
         {
             cursor:pointer;
-        //     padding-right:10px;
-        //     font-size:17px;
-        //     color:var(--color-06);
         }
-
 
         .checkbox-active,.checkbox-inactive
         {
@@ -373,6 +369,7 @@
             width:20px;
             height:20px;
         }
+
         .checkbox-inactive
         {
             border-radius: 4px;
@@ -382,11 +379,6 @@
                 opacity: 0;
             }
         }
-
-        // .fa-check-square:before
-        // {
-        //     color:var(--color-11) !important;
-        // }
 
         .value
         {
@@ -444,52 +436,6 @@
 
     }
 
-
-
-    .panelhead
-    {
-        // background-color: var(--color-01);
-        // // background-color: transparent;
-        // padding: 6px !important;
-        // font-family: Arial;
-        // text-transform: capitalize;
-        // font-size: 14px !important;
-        // font-style: normal;
-        // // cursor:pointer;
-        // padding-left: 10px;
-        // padding-right: 10px;
-        // // padding-top: 20px !important;
-        // margin-bottom: 1px;
-        // text-align: center;
-        // border-top:10px solid var(--color-02);
-        // border-bottom:10px solid var(--color-02) !important;
-        // text-transform: uppercase;
-        // &:hover
-        // {
-        //     color: var(--color-13);
-        // 	   background-color: var(--color-04);
-        // }
-
-        // &:before
-        // {
-        //     font-family: arial;
-        //     content:"\f107";
-        //     margin-right: 5px;
-        //     display:inline-block;
-        // }
-
-        // &.closed
-        // {
-        //     &:before
-        //     {
-        //         font-family: arial;
-        //         content:"\f106";
-        //         margin-right: 5px;
-        //         display:inline-block;
-        //     }
-        // }
-    }
-
     select
     {
         border: 1px solid var(--color-02);
@@ -527,9 +473,7 @@
                 user-select: none !important;
             }
         }
-
     }
-
 
     .valueDragger
     {
@@ -554,8 +498,6 @@
         border-bottom: 1px solid $background-color-dark;
     }
 
-
-
     #options input[type="text"]
     {
         padding:0px;
@@ -563,7 +505,7 @@
     }
 
     #options input:hover {
-    background-color: var(--color-05);
+        background-color: var(--color-05);
     }
 
     #options input[type=range] {
@@ -631,14 +573,6 @@
             margin-right: 5px;
         }
 
-        // &:hover
-        // {
-        //     // background-color: red;
-        //     color:white;
-        //     cursor:pointer;
-        // }
-
-
         background: linear-gradient(180deg,
             rgba(0,0,0,0) calc(50% - 0px),
             var(--color-04) calc(50%),
@@ -663,8 +597,6 @@
         padding-left: 14px;
         margin-top:10px;
         margin-bottom:8px;
-        // color:var(--color-07);
-        // text-align:center;
         line-height: 20px;
         min-height:10px;
     }
@@ -675,17 +607,12 @@
         &::before
         {
             margin:0px !important;
-
         }
     }
-
-
-
 
     .radioToggle
     {
         border-radius:4px;
-        // border:1px solid #222;
         display:inherit;
         background-color: var(--color-05);
 
@@ -702,14 +629,12 @@
             }
         }
 
-
         label span {
             padding:3px;
             padding-top:2px;
             padding-left:6px;
             padding-right:6px;
             text-align:center;
-            // font-size: 13px;
             display:block;
             border-radius: 0px;
         }
@@ -722,7 +647,6 @@
             color: var(--color-13);
             background-color: var(--color-07);
         }
-
 
         label
         {
@@ -738,7 +662,6 @@
                 border-bottom-left-radius:4px;
             }
         }
-
     }
 
     .panel {
@@ -766,11 +689,7 @@
         {
             background-color: var(--color-bg-error) !important;
             color:white !important;
-
-            // color:red !important;
         }
-
-
     }
 
 }

@@ -6,9 +6,10 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { userSettings } from "./usersettings.js";
+import DragNDrop from "./filemanager_dragdrop.js";
 
 /**
  * manage files/assets of the patch
@@ -18,25 +19,47 @@ import { userSettings } from "./usersettings.js";
  */
 export default class FileManager
 {
+
+    /** @type {string[]} */
+    static updatedFiles = [];
+
+    #fileSource = "patch";
+    _filterType = null;
+    _filePortEle = null;
+
+    /** @type {HTMLElement} */
+    _filePortElePreview = null;
+    _firstTimeOpening = true;
+    _refreshDelay = null;
+    _orderReverse = false;
+
+    /** @type {object} */
+    _files = [];
+
+    /**
+     * @param {Function} cb
+     * @param {boolean} userInteraction
+     */
     constructor(cb, userInteraction)
     {
         this._log = new Logger("filemanager");
-        this._filterType = null;
         this._manager = new ItemManager("Files", gui.mainTabs);
-        this._filePortEle = null;
-        this._firstTimeOpening = true;
-        this._refreshDelay = null;
-        this._orderReverse = false;
         this._order = userSettings.get("filemanager_order") || "name";
-        this._files = [];
 
         gui.maintabPanel.show(userInteraction);
 
-        CABLES.DragNDrop.loadImage();
+        DragNDrop.loadImage();
 
         this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
 
         this.reload(cb);
+        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (e) =>
+        {
+            if (this._filePortOp && this._filePortOp != e)
+            {
+                this.cancelFileSelectOp();
+            }
+        });
 
         this._manager.addEventListener("onItemsSelected", (items) =>
         {
@@ -56,6 +79,9 @@ export default class FileManager
             });
     }
 
+    /**
+     * @param {boolean} userInteraction
+     */
     show(userInteraction)
     {
         gui.maintabPanel.show(userInteraction);
@@ -64,26 +90,36 @@ export default class FileManager
 
     refresh()
     {
-        clearTimeout(this._refreshDelay);
-        this._refreshDelay = setTimeout(() =>
-        {
-            this.setSource("patch");
-        }, 200);
+        CABLES.idleCallback(
+            () =>
+            {
+                this.setSource(this.#fileSource);
+            });
     }
 
+    cancelFileSelectOp()
+    {
+        this._filePortElePreview = null;
+        this._filePortEle = null;
+        this._filePortOp = null;
+
+        if (this._filterType)
+        {
+            this._filterType = null;
+            this._buildHtml();
+        }
+    }
+
+    /**
+     * @param {HTMLElement} portEle
+     * @param {import("../core_extend_op.js").UiOp} [op]
+     * @param {undefined} [previewEle]
+     */
     setFilePort(portEle, op, previewEle)
     {
         if (!portEle)
         {
-            this._filePortElePreview = null;
-            this._filePortEle = null;
-            this._filePortOp = null;
-
-            if (this._filterType)
-            {
-                this._filterType = null;
-                this._buildHtml();
-            }
+            this.cancelFileSelectOp();
         }
         else
         {
@@ -96,11 +132,14 @@ export default class FileManager
         this.updateHeader();
     }
 
+    /**
+     * @param {function} [cb]
+     */
     reload(cb)
     {
         this._manager.clear();
 
-        this._fileSource = this._fileSource || "patch";
+        this.#fileSource = this.#fileSource || "patch";
         // if (this._firstTimeOpening) this._fileSource = "patch";
 
         if (gui.isGuestEditor())
@@ -109,15 +148,15 @@ export default class FileManager
             return;
         }
 
-        const eleContent = ele.byQuery("#item_manager .filelistcontainer");
-        if (eleContent)eleContent.innerHTML = "<div class=\"loading\" style=\"margin-top:50px;\"></div>";
+        // const eleContent = ele.byQuery("#item_manager .filelistcontainer");
+        // if (eleContent)eleContent.innerHTML = "<div class=\"loading\" style=\"margin-top:50px;\"></div>";
 
         gui.jobs().start({
             "id": "getFileList",
             "title": "Loading file list"
         });
 
-        this._getFilesFromSource(this._fileSource, (files) =>
+        this._getFilesFromSource(this.#fileSource, (files) =>
         {
             if (!files) files = [];
             const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
@@ -136,7 +175,8 @@ export default class FileManager
         platform.talkerAPI.send(
             TalkerAPI.CMD_GET_FILE_LIST,
             {
-                "source": source
+                "source": source,
+                "references": true
             },
             (err, remoteFiles) =>
             {
@@ -205,6 +245,10 @@ export default class FileManager
         if (file.c) for (let i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
     }
 
+    /**
+     * @param {Object} file
+     * @param {string|string[]} filterType
+     */
     _compareFilter(file, filterType)
     {
         if (typeof filterType == "string")
@@ -268,7 +312,7 @@ export default class FileManager
             this._createItem(items, this._files[i], this._filterType);
         }
 
-        this._manager.listHtmlOptions.showHeader = this._fileSource !== "lib";
+        this._manager.listHtmlOptions.showHeader = this.#fileSource !== "lib";
         this._manager.listHtmlOptions.order = this._order;
         this._manager.listHtmlOptions.orderReverse = this._orderReverse;
         this._manager.setItems(items);
@@ -299,11 +343,17 @@ export default class FileManager
         }
     }
 
+    /**
+     * @param {string} f
+     */
     setFilter(f)
     {
         this._manager.setTitleFilter(f);
     }
 
+    /**
+     * @param {string} o
+     */
     setOrder(o)
     {
         if (this._order != o) this._orderReverse = false;
@@ -323,9 +373,13 @@ export default class FileManager
         this._buildHtml();
     }
 
+    /**
+     * @param {string} s
+     * @param {Function} [cb]
+     */
     setSource(s, cb)
     {
-        this._fileSource = s;
+        this.#fileSource = s;
         this.updateHeader();
 
         this.reload(cb);
@@ -337,10 +391,12 @@ export default class FileManager
     _selectFile(filename)
     {
         this._manager.unselectAll();
-        const item = this._manager.getItemByTitleContains(filename);
+
+        const item = this._manager.getItemByTitle(filename);
+        console.log("get by title", filename, item);
         if (!item) return;
         this._manager.selectItemById(item.id);
-        const el = document.getElementById("item" + item.id);
+        const el = ele.byId("item" + item.id);
         if (el) el.scrollIntoView();
     }
 
@@ -349,7 +405,7 @@ export default class FileManager
      */
     selectFile(filename)
     {
-        if (this._fileSource === "patch")
+        if (this.#fileSource === "patch")
         {
             this._selectFile(filename);
         }
@@ -391,15 +447,15 @@ export default class FileManager
         const html = getHandleBarHtml("filemanager_header", {
             "fileSelectOp": this._filePortOp,
             "filterType": this._filterType,
-            "source": this._fileSource,
+            "source": this.#fileSource,
             "display": this._manager.getDisplay(),
             "filter": this._manager.titleFilter
 
         });
         if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (html);
 
-        const elSwitchIcons = document.getElementById("switch-display-icons");
-        const elSwitchList = document.getElementById("switch-display-list");
+        const elSwitchIcons = ele.byId("switch-display-icons");
+        const elSwitchList = ele.byId("switch-display-list");
 
         if (elSwitchIcons)
         {
@@ -430,7 +486,7 @@ export default class FileManager
     setDetail(detailItems)
     {
         let html = "";
-        document.getElementById("item_details").innerHTML = "";
+        ele.byId("item_details").innerHTML = "";
 
         if (detailItems.length === 1)
         {
@@ -449,8 +505,15 @@ export default class FileManager
                 },
                 function (err, r)
                 {
+                    if (err)
+                    {
+                        html = "Error:" + err.msg;
+                        if (ele.byId("item_details")) ele.byId("item_details").innerHTML = html;
+                        return;
+                    }
+
                     if (r.fileDb) r.ops = opNames.getOpsForFilename(r.fileDb.fileName);
-                    if (this._fileSource !== "lib")
+                    if (this.#fileSource !== "lib")
                     {
                         let downloadUrl = detailItem.p;
                         if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
@@ -464,7 +527,7 @@ export default class FileManager
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
-                            "source": this._fileSource,
+                            "source": this.#fileSource,
                             "isEditable": editable,
                             "assetPath": assetPath,
                             "isPlatformCommunity": platform.frontendOptions.hasCommunity,
@@ -516,147 +579,133 @@ export default class FileManager
                                     html = getHandleBarHtml("filemanager_details_lib", templateOptions);
                                 }
 
-                                if (document.getElementById("item_details"))
-                                    document.getElementById("item_details").innerHTML = html;
+                                if (ele.byId("item_details"))
+                                    ele.byId("item_details").innerHTML = html;
                             }
                         );
                     }
 
-                    if (document.getElementById("item_details"))
-                        document.getElementById("item_details").innerHTML = html;
+                    if (ele.byId("item_details"))
+                        ele.byId("item_details").innerHTML = html;
 
-                    const copyEle = document.querySelector("*[data-info=filemanager_copy_file_url]");
-                    if (copyEle)
-                    {
-                        copyEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                navigator.clipboard
-                                    .writeText(JSON.stringify(r.path))
-                                    .then(() =>
+                    ele.clickable(ele.byId("filecopyurl" + itemId),
+                        (e) =>
+                        {
+                            navigator.clipboard
+                                .writeText(r.path)
+                                .then(() =>
+                                {
+                                    notify("Copied to clipboard");
+                                })
+                                .catch((copyError) =>
+                                {
+                                    notifyWarn("Copied to clipboard failed");
+                                    this._log.warn("copy to clipboard failed", copyError);
+                                });
+                        });
+
+                    ele.clickable(ele.byId("fileedit" + itemId),
+                        (e) =>
+                        {
+                            let fileName = r.fileDb.fileName;
+                            if (platform.frontendOptions.isElectron) fileName = r.path;
+                            gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
+                        });
+
+                    ele.clickable(ele.byId("filedelete" + itemId),
+                        (e) =>
+                        {
+                            const loadingModal = gui.startModalLoading("Checking asset dependencies");
+                            loadingModal.setTask("Checking patches and ops...");
+                            const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
+                            platform.talkerAPI.send(
+                                TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
+                                { "filenames": [fullName] },
+                                (countErr, countRes) =>
+                                {
+                                    gui.endModalLoading();
+                                    let content = "";
+                                    let allowDelete = true;
+                                    if (countRes && countRes.data)
                                     {
-                                        notify("Copied to clipboard");
-                                    })
-                                    .catch((copyError) =>
-                                    {
-                                        notifyWarn("Copied to clipboard failed");
-                                        this._log.warn("copy to clipboard failed", copyError);
-                                    });
-                            });
-                    }
-
-                    const editEle = document.querySelector("*[data-info=filemanager_edit_file]");
-                    if (editEle)
-                    {
-                        editEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                let fileName = r.fileDb.fileName;
-                                if (platform.frontendOptions.isElectron) fileName = r.path;
-                                gui.fileManagerEditor.editAssetTextFile(fileName, r.fileDb.type);
-                            });
-                    }
-
-                    const delEle = document.getElementById("filedelete" + itemId);
-                    if (delEle)
-                    {
-                        delEle.addEventListener(
-                            "click",
-                            (e) =>
-                            {
-                                const loadingModal = gui.startModalLoading("Checking asset dependencies");
-                                loadingModal.setTask("Checking patches and ops...");
-                                const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
-                                platform.talkerAPI.send(
-                                    TalkerAPI.CMD_GET_ASSET_USAGE_COUNT,
-                                    { "filenames": [fullName] },
-                                    (countErr, countRes) =>
-                                    {
-                                        gui.endModalLoading();
-                                        let content = "";
-                                        let allowDelete = true;
-                                        if (countRes && countRes.data)
+                                        const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
+                                        if (otherCount)
                                         {
-                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
-                                            if (otherCount)
-                                            {
-                                                let linkText = otherCount + " other patch";
-                                                if (otherCount > 1) linkText += "es";
-                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                            }
-                                            if (countRes.data.countOps)
-                                            {
-                                                let linkText = countRes.data.countOps + " op";
-                                                if (countRes.data.countOps > 1) linkText += "s";
-                                                if (otherCount) content += "<br/>";
-                                                content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                                allowDelete = false;
-                                            }
+                                            let linkText = otherCount + " other patch";
+                                            if (otherCount > 1) linkText += "es";
+                                            content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                         }
-                                        else
+                                        if (countRes.data.countOps)
                                         {
-                                            content += "It may be used in other patches.";
-                                        }
-
-                                        let title = "Really delete this file?";
-                                        let okButton = null;
-
-                                        const patchSummary = gui.getPatchSummary();
-                                        if (patchSummary && patchSummary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
-
-                                        if (!allowDelete)
-                                        {
-                                            title = "You cannot delete this file!";
-                                        }
-                                        else
-                                        {
-                                            okButton = {
-                                                "text": "Really delete",
-                                                "cssClasses": "redbutton"
-                                            };
-                                        }
-
-                                        const options = {
-                                            "title": title,
-                                            "html": content,
-                                            "warning": true,
-                                            "choice": allowDelete,
-                                            "okButton": okButton
-                                        };
-
-                                        const modal = new ModalDialog(options);
-                                        if (allowDelete)
-                                        {
-                                            modal.on("onSubmit", () =>
-                                            {
-                                                platform.talkerAPI.send(
-                                                    TalkerAPI.CMD_DELETE_FILE,
-                                                    { "fileid": r.fileDb._id },
-                                                    (errr, rr) =>
-                                                    {
-                                                        if (rr && rr.success)
-                                                        {
-                                                            this._manager.removeItem(itemId);
-                                                            this.reload();
-                                                        }
-                                                        else notifyError("Error: Could not delete file. " + errr.msg);
-                                                    }
-                                                );
-                                            });
+                                            let linkText = countRes.data.countOps + " op";
+                                            if (countRes.data.countOps > 1) linkText += "s";
+                                            if (otherCount) content += "<br/>";
+                                            content += "It is used in <a href=\"" + platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                            allowDelete = false;
                                         }
                                     }
-                                );
-                            }
-                        );
-                    }
+                                    else
+                                    {
+                                        content += "It may be used in other patches.";
+                                    }
+
+                                    let title = "Really delete this file?";
+                                    let okButton = null;
+
+                                    const patchSummary = gui.getPatchSummary();
+                                    if (patchSummary && patchSummary.visibility == "public")content += "<div class=\"error warning-error warning-error-level2 text-center\"><br/><br/>this asset is in a public patch, please make sure your patch continues to work!<br/><br/><br/></div>";
+
+                                    if (!allowDelete)
+                                    {
+                                        title = "You cannot delete this file!";
+                                    }
+                                    else
+                                    {
+                                        okButton = {
+                                            "text": "Really delete",
+                                            "cssClasses": "redbutton"
+                                        };
+                                    }
+
+                                    const options = {
+                                        "title": title,
+                                        "html": content,
+                                        "warning": true,
+                                        "choice": allowDelete,
+                                        "okButton": okButton
+                                    };
+
+                                    const modal = new ModalDialog(options);
+                                    if (allowDelete)
+                                    {
+                                        modal.on("onSubmit", () =>
+                                        {
+                                            platform.talkerAPI.send(
+                                                TalkerAPI.CMD_DELETE_FILE,
+                                                { "fileid": r.fileDb._id },
+                                                (errr, rr) =>
+                                                {
+                                                    if (rr && rr.success)
+                                                    {
+                                                        this._manager.removeItem(itemId);
+                                                        this.reload();
+                                                    }
+                                                    else notifyError("Error: Could not delete file. " + errr.msg);
+                                                }
+                                            );
+                                        });
+                                    }
+                                }
+                            );
+                        }
+                    );
                 }.bind(this)
             );
 
             if (this._filePortEle)
             {
-                gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
+                if (this._filePortOp)
+                    gui.savedState.setUnSaved("filemanager", this._filePortOp.getSubPatch());
                 this._filePortEle.value = detailItems[0].p;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);
@@ -666,7 +715,9 @@ export default class FileManager
                     if (this._filePortElePreview)
                         this._filePortElePreview.innerHTML = "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
 
-                gui.opParams.show(this._filePortOp);
+                if (this._filePortOp)
+                    gui.opParams.show(this._filePortOp);
+                this.refresh();
             }
         }
         else if (detailItems.length > 1)
@@ -681,12 +732,12 @@ export default class FileManager
 
             html += "<br/>";
 
-            if (this._fileSource == "patch") html += "<a class=\"button\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
+            if (this.#fileSource == "patch") html += "<a class=\"cblbutton\" id=\"filesdeletmulti\">delete " + detailItems.length + " files</a>";
             html += "</div>";
 
-            document.getElementById("item_details").innerHTML = html;
+            ele.byId("item_details").innerHTML = html;
 
-            const elDelMulti = document.getElementById("filesdeletmulti");
+            const elDelMulti = ele.byId("filesdeletmulti");
             if (elDelMulti)
             {
                 elDelMulti.addEventListener(
@@ -795,10 +846,6 @@ export default class FileManager
                                                     }
 
                                                     this._manager.unselectAll();
-                                                },
-                                                (r) =>
-                                                {
-                                                    this._log.warn("api err", r);
                                                 }
                                             );
                                         });
@@ -929,5 +976,3 @@ export default class FileManager
     }
 
 }
-
-FileManager.updatedFiles = [];

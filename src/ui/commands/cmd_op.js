@@ -78,8 +78,13 @@ class CmdOps
             "func": CmdOps.reloadChangedOps,
             "category": "op",
             "icon": "op"
+        },
+        {
+            "cmd": "Jump op loading queue",
+            "func": CmdOps.jumpOpQueue,
+            "category": "op",
+            "icon": "op"
         }
-
         ];
     }
 
@@ -133,6 +138,12 @@ class CmdOps
         }
         gui.restriction.hide();
 
+    }
+
+    static jumpOpQueue()
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length > 0) gui.corePatch().unshiftOps(ops);
     }
 
     static cloneSelectedOp()

@@ -1,5 +1,5 @@
 import { Patch } from "cables";
-import { CGL, Texture } from "cables-corelibs";
+import { Texture } from "cables-corelibs";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
@@ -45,7 +45,7 @@ export class glTimelineCanvas extends GlCanvas
 
         const cgl = this.cgl;
 
-        if (CGL.MESH.lastMesh) CGL.MESH.lastMesh.unBind();
+        if (cgl.lastMesh) cgl.lastMesh.unBind();
 
         if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
 

@@ -68,8 +68,8 @@ export default class Preferences
     updateValues()
     {
         this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
+        this.setSwitchValue(UserSettings.PREF_OPSELECT_AUTOLINKOPS, userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS));
         this.setSwitchValue("checkOpCollisions", userSettings.get("checkOpCollisions"));
-        this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
@@ -107,6 +107,8 @@ export default class Preferences
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
         this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
 
+        this.setSwitchValue("texteditor", userSettings.get("texteditor") || "");
+
         // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
@@ -118,6 +120,7 @@ export default class Preferences
         this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
         this.setSwitchValue("openfullscreen", userSettings.get("openfullscreen") || false);
         this.setSwitchValue("maximizerenderer", userSettings.get("maximizerenderer") || false);
+        this.setSwitchValue("transparentpopout", userSettings.get("transparentpopout") || false);
 
         this.setInputValue("authorName", userSettings.get("authorName") || "");
         this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);

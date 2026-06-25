@@ -1,6 +1,6 @@
-// @ts-nocheck
 import { Logger, ele, Events } from "cables-shared-client";
 import { Anim, CglContext, Op } from "cables";
+import { idleCallbackSoon } from "cables/src/core/utils.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlText from "../gldraw/gltext.js";
@@ -26,6 +26,12 @@ import GlLink from "./gllink.js";
 import { DomEvents } from "../theme.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import { InputBindings } from "../inputbindings.js";
+import GlPatchAPI from "./patchapi.js";
+import { UiOp } from "../core_extend_op.js";
+import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
+
+let idleSoon = null;
+let lastUpdate = 0;
 
 /**
  * rendering the patchfield
@@ -53,10 +59,15 @@ export default class GlPatch extends Events
     _mouseLeaveButtons = 0;
     _cutLine = [];
     cutLineActive = false;
+
+    /** @type {Object<string,GlOp>} */
     _glOpz = {};
+
     _hoverOps = [];
     _ignoreNonExistError = [];
     _hoverOpLongStartTime = 0;
+
+    /** @type {GlPatchAPI} */
     _patchAPI = null;
     debugData = {};
 
@@ -67,6 +78,8 @@ export default class GlPatch extends Events
     frameCount = 0;
     _viewZoom = 0;
     needsRedraw = false;
+
+    /** @type {Object<string,GlOp>} */
     _selectedGlOps = {};
 
     links = {};
@@ -141,17 +154,17 @@ export default class GlPatch extends Events
         this.#selectionArea = new GlSelectionArea(this._overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
-        if (userSettings.get("devinfos"))
-        {
-            CABLES.UI.showDevInfos = true;
-            const idx = this.#overlaySplines.getSplineIndex();
-            this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
-            this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
+        // if (userSettings.get("devinfos"))
+        // {
+        //     CABLES.UI.showDevInfos = true;
+        //     const idx = this.#overlaySplines.getSplineIndex();
+        //     this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
+        //     this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
 
-            const idx2 = this.#overlaySplines.getSplineIndex();
-            this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
-            this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
-        }
+        //     const idx2 = this.#overlaySplines.getSplineIndex();
+        //     this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
+        //     this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
+        // }
 
         this.cablesHoverText = new GlText(this.#textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -338,8 +351,9 @@ export default class GlPatch extends Events
         });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
-        gui.keys.key("o", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
-        gui.keys.key("i", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
+        gui.keys.key("p", "previous op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
+        gui.keys.key("p", "previous op", "down", cgl.canvas.id, { "displayGroup": "editor", "shiftKey": true }, (_e) => { gui.opHistory.forward(); });
+        // gui.keys.key("i", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
 
         // gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.opHistory.back(); });
         // gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
@@ -468,31 +482,31 @@ export default class GlPatch extends Events
             this.updateCableWidth();
         });
 
-        if (userSettings.get("devinfos"))
-        {
-            gui.corePatch().on("subpatchesChanged", () =>
-            {
-                if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
+        // if (userSettings.get("devinfos"))
+        // {
+        //     gui.corePatch().on("subpatchesChanged", () =>
+        //     {
+        //         if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
 
-                const bounds = gui.patchView.getSubPatchBounds();
+        //         const bounds = gui.patchView.getSubPatchBounds();
 
-                this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
-                    bounds.minX, bounds.minY, 0,
-                    bounds.maxX, bounds.minY, 0,
+        //         this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
+        //             bounds.minX, bounds.minY, 0,
+        //             bounds.maxX, bounds.minY, 0,
 
-                    bounds.maxX, bounds.minY, 0,
-                    bounds.maxX, bounds.maxY, 0,
+        //             bounds.maxX, bounds.minY, 0,
+        //             bounds.maxX, bounds.maxY, 0,
 
-                    bounds.maxX, bounds.maxY, 0,
-                    bounds.minX, bounds.maxY, 0,
+        //             bounds.maxX, bounds.maxY, 0,
+        //             bounds.minX, bounds.maxY, 0,
 
-                    bounds.minX, bounds.maxY, 0,
-                    bounds.minX, bounds.minY, 0
-                ]);
+        //             bounds.minX, bounds.maxY, 0,
+        //             bounds.minX, bounds.minY, 0
+        //         ]);
 
-                this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
-            });
-        }
+        //         this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
+        //     });
+        // }
 
         this.snap.update();
         this._cablesHoverButtonRect = undefined;
@@ -930,7 +944,7 @@ export default class GlPatch extends Events
 
         if (!glop)
         {
-            this._log.log("could not find op to delete", opid);
+            this._log.warn("could not find op to delete", opid);
             return;
         }
 
@@ -976,12 +990,57 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {opid} opid
+     * @param {string} opid
      */
     focusOp(opid)
     {
         gui.opParams.show(opid);
         this.focusOpAnim(opid);
+    }
+
+    /**
+     * @param {string} opid
+     * @param {import("../components/patchview.js").GotoOpOptions} options
+     */
+    gotoOp(opid, options = {})
+    {
+
+        if (!options.hasOwnProperty("showParams"))options.showParams = true;
+        if (!options.hasOwnProperty("center"))options.center = true;
+        if (!options.hasOwnProperty("focusAnim"))options.focusAnim = true;
+        if (!options.hasOwnProperty("unselectAll"))options.unselectAll = true;
+        if (!options.hasOwnProperty("zoom"))options.zoom = true;
+
+        // console.log("gotooppppppppppp", options);
+        const op = gui.corePatch().getOpById(opid);
+
+        if (!op)
+        {
+            console.log("unknown goto op");
+            return;
+        }
+
+        if (op.getSubPatch() != gui.patchView.getCurrentSubPatch())
+        {
+
+            gui.patchView.setCurrentSubPatch(op.getSubPatch(), () =>
+            {
+                this.gotoOp(opid, options);
+            });
+            return;
+        }
+
+        if (options.unselectAll) gui.patchView.unselectAllOps();
+
+        if (options.center)
+        {
+            this.setSelectedOpById(opid);
+            this.viewBox.centerSelectedOps(false, options.zoom);
+        }
+
+        if (options.focusAnim) this.focusOpAnim(opid);
+        if (options.showParams) gui.opParams.show(opid);
+        gui.patchView.focus();
     }
 
     /**
@@ -1015,10 +1074,10 @@ export default class GlPatch extends Events
             glOp.uiAttribs = op.uiAttribs || {};
         }
 
-        op.on("onPortRemoved", () => { glOp.refreshPorts(); });
-        op.on("onPortAdd", () => { glOp.refreshPorts(); });
+        op.on(Op.EVENT_PORT_REMOVE, () => { glOp.refreshPorts(); });
+        op.on(Op.EVENT_PORT_ADD, () => { glOp.refreshPorts(); });
         op.on("onEnabledChange", () => { glOp.update(); });
-        op.on("onUiAttribsChange",
+        op.on(Op.EVENT_UIATTR_CHANGE,
             (newAttribs) =>
             {
                 glOp.setUiAttribs(newAttribs, op.uiAttribs);
@@ -1139,7 +1198,7 @@ export default class GlPatch extends Events
                 if (!this._glOpz[gui.corePatch().ops[j].id] && this._ignoreNonExistError.indexOf(gui.corePatch().ops[j].id) == -1)
                 {
                     this._ignoreNonExistError.push(gui.corePatch().ops[j].id);
-                    this._log.error("missing glop in glpatch: ", gui.corePatch().ops[j].name);
+                    this._log.warn("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
             }
         }
@@ -1508,7 +1567,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {Op} op
+     * @param {UiOp|Op} op
      */
     getGlOp(op)
     {
@@ -1557,7 +1616,16 @@ export default class GlPatch extends Events
             gui.corePatch().getOpById(id).setUiAttrib({ "selected": true });
         }
 
-        if (gui.patchView.getSelectedOps().length > 1)gui.patchView.showSelectedOpsPanel();
+        if (performance.now() - lastUpdate > 30 && gui.patchView.getSelectedOps().length > 1)
+        {
+
+            lastUpdate = performance.now();
+            idleSoon = idleCallbackSoon(idleSoon, () =>
+            {
+
+                gui.patchView.showSelectedOpsPanel();
+            });
+        }
     }
 
     /**

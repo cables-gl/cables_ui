@@ -53,6 +53,10 @@ export const GuiText =
     "tlmute": "Mute animation",
     "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='https://cables.gl/docs/2_1_timeline/animation'>read the documentation</a>",
 
+    "tlbtnCreate": "Create new key in this animation",
+    "tlbtnPrev": "Jump to previous key in this animation",
+    "tlbtnNext": "Jump to next key in this animation",
+
     "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
     "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
     "portUnlink": "Click to unlink port",
@@ -87,7 +91,7 @@ export const GuiText =
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",
 
-    "minimize_tabpanel": "## [cmd_ctrl]`ESC` - Toggle main tab panel",
+    "minimize_tabpanel": "## [cmd_ctrl]`b` - Toggle left tab panel",
 
     "tab_files": "## Files \n\nUpload and manage your files",
     "tab_code": "## Code\n\nOperator code",
@@ -197,6 +201,9 @@ export const GuiText =
         "title_checkOpCollisions": "Check Op collisions",
         "subtitle_checkOpCollisions": "If activated, ops are moved away when they overlap",
 
+        "title_autoLinkOps": "Automatically Link Ops",
+        "subtitle_autoLinkOps": "Link new ops to the current selected op, if the fist input/output ports match",
+
         "title_nobrowserWarning": "Hide Warning",
         "subtitle_nobrowserWarning": "Hide that red \"unsupported browser\" warning notification",
 
@@ -273,6 +280,9 @@ export const GuiText =
 
         "title_maximizerenderer": "Maximize renderer on start",
         "subtitle_maximizerenderer": "",
+
+        "title_transparentpopout": "Transparent popout canvas",
+        "subtitle_transparentpopout": "Open popout and external canvas as transparent window",
 
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",

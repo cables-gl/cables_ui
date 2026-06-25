@@ -1,4 +1,10 @@
 /**
+ * @typedef LinkObject
+ * @property {Port} in
+ * @property {Port} out
+ */
+
+/**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
@@ -15,11 +21,18 @@ import { getConverters } from "./components/converterops.js";
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
 
+/**
+ * @extends Op<UiOp>
+ */
 class UiOp extends Op
 {
     #log = new Logger("uiop");
     static PORT_UIATTR_HOVER = "hover";
 
+    /**
+     * @param {import("cables").Patch<any>} patch
+     * @param {string} objName
+     */
     constructor(patch, objName, id = null)
     {
         super(patch, objName, id);
@@ -35,28 +48,33 @@ class UiOp extends Op
 
     #onportsChangeSoon()
     {
-        clearTimeout(this.portChangeTo);
-        this.portChangeTo = setTimeout(() =>
+        // clearTimeout(this.portChangeTo);
+        if (!this.portChangeTo)
         {
-            this.setUiError("dupeport", null);
 
-            for (let i = 0; i < this.portsIn.length; i++)
+            this.portChangeTo = CABLES.idleCallbackSoon(this.portChangeTo, () =>
             {
-                for (let j = 0; j < this.portsOut.length; j++)
-                    if (this.portsIn[i] != this.portsOut[j] && this.portsIn[i].name == this.portsOut[j].name)
-                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
+                this.portChangeTo = null;
+                this.setUiError("dupeport", null);
 
-                for (let j = 0; j < this.portsIn.length; j++)
-                    if (this.portsIn[i] != this.portsIn[j] && this.portsIn[i].name == this.portsIn[j].name)
-                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
-            }
-        }, 100);
+                for (let i = 0; i < this.portsIn.length; i++)
+                {
+                    for (let j = 0; j < this.portsOut.length; j++)
+                        if (this.portsIn[i] != this.portsOut[j] && this.portsIn[i].name == this.portsOut[j].name)
+                            this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
+
+                    for (let j = 0; j < this.portsIn.length; j++)
+                        if (this.portsIn[i] != this.portsIn[j] && this.portsIn[i].name == this.portsIn[j].name)
+                            this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
+                }
+            });
+        }
     }
 
     initUi()
     {
-        this.on("onPortAdd", () => { this.#onportsChangeSoon(); });
-        this.on("onPortRemove", () => { this.#onportsChangeSoon(); });
+        this.on(Op.EVENT_PORT_ADD, () => { this.#onportsChangeSoon(); });
+        this.on(Op.EVENT_PORT_REMOVE, () => { this.#onportsChangeSoon(); });
     }
 
     undoUnLinkTemporary()
@@ -145,7 +163,7 @@ class UiOp extends Op
 
         this.shakeLink = null;
 
-        /** @type {Link[]} */
+        /** @type {LinkObject[]} */
         this.oldLinks = [];
 
         CABLES.OpUnLinkTempReLinkP1 = null;
@@ -237,7 +255,7 @@ class UiOp extends Op
         count++;
         if (count >= 1000)
         {
-            this._log.log("hasparent loop....", name);
+            this.#log.log("hasparent loop....", name);
             this._ignoreParentChecks = true;
             return false;
         }
@@ -313,7 +331,7 @@ class UiOp extends Op
         if (!txt && !this.uiErrors.hasOwnProperty(id)) return;
         if (this.uiErrors.hasOwnProperty(id) && this.uiErrors[id].txt == txt) return;
 
-        if (id.indexOf(" ") > -1) this._log.warn("setuierror id cant have spaces! ", id);
+        if (id.indexOf(" ") > -1) this.#log.warn("setuierror id cant have spaces! ", id);
         id = id.replaceAll(" ", "_");
 
         if (!txt && this.uiErrors.hasOwnProperty(id)) delete this.uiErrors[id];
@@ -395,10 +413,10 @@ class UiOp extends Op
                 const p = this.linkTimeRules.needsStringToWork[i];
                 if (!p)
                 {
-                    this._log.warn("[needsStringToWork] port not found");
+                    this.#log.warn("[needsStringToWork] port not found");
                     continue;
                 }
-                if (p.linkTimeListener)p.off(p.linkTimeListener);
+                if (p.linkTimeListener)p.linkTimeListener = p.off(p.linkTimeListener);
                 if (!p.isLinked() && p.get() == "")
                 {
                     working = false;
@@ -425,7 +443,7 @@ class UiOp extends Op
                 const p = this.linkTimeRules.needsLinkedToWork[i];
                 if (!p)
                 {
-                    this._log.warn("[needsLinkedToWork] port not found");
+                    this.#log.warn("[needsLinkedToWork] port not found");
                     continue;
                 }
                 if (!p.isLinked())
@@ -703,7 +721,6 @@ class UiOp extends Op
 
     testTempCollision(ops, glpatch)
     {
-        // this._log.log("testTempCollision");
         for (let j = 0; j < ops.length; j++)
         {
             const b = ops[j];
@@ -814,7 +831,7 @@ class UiOp extends Op
             else return 0;
         }
 
-        if (numports === undefined) this._log.log("posbyindex needs numports param");
+        if (numports === undefined) this.#log.log("posbyindex needs numports param");
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 

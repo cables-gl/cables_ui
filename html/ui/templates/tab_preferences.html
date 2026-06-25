@@ -37,6 +37,18 @@
 
     <div class="row">
         <div class="cute-5-phone prefLeft">
+            <span class="prefswitch switch switch-text switch-left"  data-setting="autoLinkOps" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="autoLinkOps" data-value="false">Off</span>
+        </div>
+
+        <div class="cute-7-phone prefRight">
+            <h3>{{texts.title_autoLinkOps}}</h3>
+            {{texts.subtitle_autoLinkOps}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left"  data-setting="checkOpCollisions" data-value="true">On</span>
             <span class="prefswitch switch switch-text switch-right" data-setting="checkOpCollisions" data-value="false">Off</span>
         </div>
@@ -60,17 +72,6 @@
     </div>
 
 
-    <div class="row">
-        <div class="cute-5-phone prefLeft">
-            <span class="prefswitch switch switch-text switch-left"  data-setting="canvasMode" data-value="default">Default</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="canvasMode" data-value="patchbg">Background</span>
-        </div>
-
-        <div class="cute-7-phone prefRight">
-            <h3>{{texts.title_canvaspos}}</h3>
-            {{texts.subtitle_canvaspos}}
-        </div>
-    </div>
 
 
 
@@ -105,14 +106,25 @@
 
     <br/><hr/><br/>
 
-    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>ACE Text Editor</h2></div></div>
+    <div class="row"><div class="title cute-7-phone cute-5-offset"><h2>Text Editor</h2></div></div>
+
+    <div class="row">
+        <div class="cute-5-phone text-right">
+            <span class="prefswitch switch switch-text switch-middle" data-setting="texteditor" data-value="">CodeMirror</span>
+            <span class="prefswitch switch switch-text switch-middle" data-setting="texteditor" data-value="cmhx">CM Helix</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="texteditor" data-value="textarea">Textarea</span>
+        </div>
+        <div class="cute-5-phone left">
+            which editor would you like to use
+        </div>
+    </div>
 
     <div class="row">
         <div class="cute-5-phone text-right">
             <input class="numberinput valinput" data-setting="fontsize_ace" value="12"/>
         </div>
         <div class="cute-5-phone left">
-            {{texts.subtitle_fontsize_ace}}
+            Ace {{texts.subtitle_fontsize_ace}}
         </div>
     </div>
 
@@ -122,7 +134,7 @@
             <span class="prefswitch switch switch-text switch-right" data-setting="wrapmode_ace" data-value="true">On</span>
         </div>
         <div class="cute-5-phone left">
-            {{texts.subtitle_wrapmode_ace}}
+            Ace {{texts.subtitle_wrapmode_ace}}
         </div>
     </div>
 
@@ -136,15 +148,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="cute-5-phone text-right">
-            <span class="prefswitch switch switch-text switch-left" data-setting="ace_keymode" data-value="">Default</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="ace_keymode" data-value="ace/keyboard/vim">Vim</span>
-        </div>
-        <div class="cute-5-phone left">
-            {{texts.subtitle_ace_keymode}}
-        </div>
-    </div>
 
     <br/><hr/><br/>
 
@@ -459,6 +462,16 @@
             <div class="cute-7-phone prefRight">
                 <h3>{{texts.title_maximizerenderer}}</h3>
                 {{texts.subtitle_maximizerenderer}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="cute-5-phone prefLeft">
+                <span class="prefswitch switch switch-text switch-left" data-setting="transparentpopout" data-value="false">Off</span>
+                <span class="prefswitch switch switch-text switch-right" data-setting="transparentpopout" data-value="true">On</span>
+            </div>
+            <div class="cute-7-phone prefRight">
+                <h3>{{texts.title_transparentpopout}}</h3>
+                {{texts.subtitle_transparentpopout}}
             </div>
         </div>
         <div class="row">

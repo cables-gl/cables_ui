@@ -1,6 +1,7 @@
 import { Events, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { platform } from "../platform.js";
+import OpSelect from "../dialogs/opselect.js";
 
 /**
  * storing/loading user settings/ sending to the user and in localstorage etc.
@@ -10,10 +11,14 @@ import { platform } from "../platform.js";
  */
 export default class UserSettings extends Events
 {
+    static PREF_OPSELECT_AUTOLINKOPS = "autoLinkOps";
+    static PREF_SNAPTOGRID = "snapToGrid2";
+
     static EVENT_CHANGE = "change";
     static EVENT_LOADED = "loaded";
     static SETTING_GLUI_DEBUG_COLORS = "gluidebugcolors";
     #wasLoaded = false;
+    #active = true;
 
     constructor()
     {
@@ -25,7 +30,10 @@ export default class UserSettings extends Events
         this._serverDelay = null;
         this.init();
 
-        this._lsSettings = JSON.parse(localStorage.getItem(this._LOCALSTORAGE_KEY)) || {};
+        if (window.gui && window.gui.isRemoteClient) this.#active = false;
+
+        if (this.#active)
+            this._lsSettings = JSON.parse(localStorage.getItem(this._LOCALSTORAGE_KEY)) || {};
     }
 
     reset()
@@ -39,30 +47,41 @@ export default class UserSettings extends Events
     {
         if (!this.get("patch_wheelmode")) this.set("patch_wheelmode", "zoom");
         if (this.get("glflowmode") === null) this.set("glflowmode", 2);
-        if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
+        if (this.get(UserSettings.PREF_SNAPTOGRID) === null) this.set(UserSettings.PREF_SNAPTOGRID, false);
         if (this.get("checkOpCollisions") === null) this.set("checkOpCollisions", true);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("idlemode") === null) this.set("idlemode", false);
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("overlaysShow") === null) this.set("overlaysShow", false);
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
+        if (this.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS) === null) this.set(UserSettings.PREF_OPSELECT_AUTOLINKOPS, true);
     }
 
     load(settings)
     {
-        for (const i in settings)
+        if (this.#active)
         {
-            this.set(i, settings[i]);
-        }
 
-        if (!this.#wasLoaded) this.emitEvent(UserSettings.EVENT_LOADED);
-        this.emitEvent(UserSettings.EVENT_CHANGE);
+            for (const i in settings)
+            {
+                this.set(i, settings[i]);
+            }
+
+            if (!this.#wasLoaded) this.emitEvent(UserSettings.EVENT_LOADED);
+            this.emitEvent(UserSettings.EVENT_CHANGE);
+
+        }
+        else
+        {
+            this.set("introCompleted", true);
+        }
 
         this.#wasLoaded = true;
     }
 
     setLS(key, value)
     {
+        if (!this.#active) return;
         this._lsSettings[key] = value || false;
         localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._lsSettings));
     }
@@ -75,6 +94,7 @@ export default class UserSettings extends Events
 
     save()
     {
+        if (!this.#active) return;
         platform.talkerAPI.send(TalkerAPI.CMD_SAVE_USER_SETTINGS, { "settings": this._settings });
     }
 

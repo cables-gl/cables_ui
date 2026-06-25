@@ -75,9 +75,9 @@ export default class TabPortObjectInspect extends Events
             html += "<div class=\"tabRow\">";
             html += "<h2><span class=\"splitter icon icon-search\"></span>&nbsp;Inspect: " + this.op.name + ": " + this.port.name + "</h2>";
             html += "<br/>";
-            html += "<a class=\"button\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
+            html += "<a class=\"cblbutton\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
-            html += "<a id=\"copybutton" + this._id + "\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
+            html += "<a id=\"copybutton" + this._id + "\" class=\"cblbutton \" ><span class=\"icon icon-copy\"></span>Copy</a>";
             html += "<br/><br/>";
 
             if (thing && thing.constructor)

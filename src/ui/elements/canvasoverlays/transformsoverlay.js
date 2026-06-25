@@ -6,6 +6,8 @@ export default class TransformsOverlay
 {
     constructor()
     {
+
+        /* /** @type {Object<string,TransformsIcon>} */
         this._transforms = {};
         this._lastCheck = 0;
 
@@ -71,12 +73,14 @@ export default class TransformsOverlay
      * @param {number} x
      * @param {number} y
      * @param {number} z
+     * @param {string} text
      */
-    add(cgl, id, x, y, z)
+    add(cgl, id, x, y, z, text)
     {
         if (gui.isRemoteClient) return;
         this._transforms[id] = this._transforms[id] || new TransformsIcon(cgl, id);
         this._transforms[id].setPos(x, y, z);
+        if (text) this._transforms[id].setText(text);
 
         if (performance.now() - this._lastCheck > 50)
         {

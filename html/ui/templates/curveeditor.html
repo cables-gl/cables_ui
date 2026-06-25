@@ -1,0 +1,26 @@
+<script id="CurveEditor" type="text/x-handlebars-template">
+    <div id="{{id}}pointEditor" class="curveEditor" style="padding:20px;padding-top:0px;" >
+
+        <h3>{{name}} Editor</h3>
+
+        <div id="{{id}}ColorInput"></div>
+        <a class="iconbutton" style="position:absolute;left:550px;top:117px;" id="{{id}}KeyDelete"><span class="icon icon-x"></span></a>
+
+
+        <div id="gradienteditorbar" class="editorBar">
+            <canvas id="{{id}}Canvas" width="512" height="100" ></canvas>
+        </div>
+
+        <br/>
+
+        <div id="{{id}}Keys"></div>
+
+        <br/><br/>
+        <a id="{{id}}SaveButton" class="bluebutton">Save</a>
+        <a id="{{id}}CancelButton"class="cblbutton">Cancel</a>
+
+        <a class="iconbutton tt" data-tt="reverse" style="" id="{{id}}Reverse"><span class="icon icon-arrow-down-up"></span></a>
+
+    </div>
+
+</script>

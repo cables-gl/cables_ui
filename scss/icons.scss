@@ -20,7 +20,7 @@
         }
     }
 
-    .iconbutton
+    .iconbutton, .iconbutton-small
     {
         padding:3px;
         background-color: var(--color-button-bg);
@@ -49,6 +49,13 @@
             pointer-events: none;
         }
     }
+    .iconbutton-small
+    {
+        padding-left:4px;
+        padding-right:3px;
+        padding-top:4px;
+        margin-right:0px;
+    }
 
     .icon
     {
@@ -62,6 +69,10 @@
         -webkit-mask-size: 100%;
 
         background-color: var(--color-13);
+
+        &.rotate {
+            animation: rotating 2s linear infinite;
+        }
     }
 
     .icon-empty
@@ -143,5 +154,9 @@
         background-color: transparent !important;
     }
 
+.icon-highlight
+{
+background-color: var(--color-special);
+}
 
 }

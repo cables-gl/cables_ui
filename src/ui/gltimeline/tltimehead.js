@@ -46,6 +46,8 @@ export class tlHead extends Events
             gui.corePatch().timer.pause();
             gui.corePatch().timer.setTime(this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
 
+            gui.corePatch().emitEvent("timelineScrub", this.#glTl.snapTime(this.#glTl.view.pixelToTime(event.offsetX) + this.#glTl.view.offset));
+
         });
 
         this.#glRectBg.on(GlRect.EVENT_POINTER_HOVER, () =>

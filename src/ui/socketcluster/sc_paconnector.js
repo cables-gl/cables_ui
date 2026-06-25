@@ -17,7 +17,7 @@ export default class PacoConnector extends Events
         this._timeouts = {};
     }
 
-    send(event, vars)
+    send(event, vars, sendOnEmptyClientList = false)
     {
         if (!this._connection || this._connection.client.isRemoteClient)
         {
@@ -33,13 +33,13 @@ export default class PacoConnector extends Events
 
             this._timeouts[event] = setTimeout(() =>
             {
-                this._connection.sendPaco({ "data": data });
+                this._connection.sendPaco({ "data": data }, sendOnEmptyClientList);
                 this._timeouts[event] = null;
             }, this._delays[event]);
         }
         else
         {
-            this._connection.sendPaco({ "data": data });
+            this._connection.sendPaco({ "data": data }, "paco", sendOnEmptyClientList);
         }
     }
 

@@ -46,14 +46,15 @@
     <div id="canvasicons" >
         <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
         <div id="canvasIconBar" class="cbl_iconbar cbl_iconbar_hor ">
+            <span onclick="CABLES.CMD.RENDERER.floatCanvas()" class="item"><span class="tt info icon icon-panel-left-close icon-1_25x"  data-tt="floating canvas" data-info="renderer_float" ></span></span>
             <span onclick="CABLES.CMD.RENDERER.popoutCanvas()" class="item"><span class="tt info icon icon-external icon-1_25x"  data-tt="popout canvas" data-info="renderer_popout"></span></span>
 
             <span onclick="CABLES.CMD.RENDERER.maximizeCanvas()" class="item"><span class="tt info icon icon-canvas_max icon-1_25x"  data-tt="maximize canvas" data-info="renderer_maximize"></span></span>
-            <span onclick="CABLES.CMD.UI.togglePatchBgRenderer()" class="item"><span class="tt info icon icon-canvas_patchbg icon-1_25x"  data-tt="patch background" data-info="renderer_patchbg"></span></span>
+            <span onclick="CABLES.CMD.UI.togglePatchBgRenderer()" class="item"><span class="tt info icon icon-canvas_patchbg icon-1_25x" id="canvasPatchBg" data-tt="patch background" data-info="renderer_patchbg"></span></span>
 
             <span onclick="CABLES.CMD.RENDERER.screenshot()" class="item"><span class="tt info icon icon-image icon-1_25x"  data-tt="save screenshot" data-info="save_screenshot"></span></span>
-            <span onclick="CABLES.CMD.UI.toggleMute();" class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
             <span onclick="CABLES.CMD.UI.canvasLens()" class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
+            <span onclick="CABLES.CMD.UI.toggleMute();" class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
             <span onclick="gui.helperContextMenu(this);" class="item"><span class="tt info icon icon-gizmo icon-1_25x" id="canvUitoggleOverlay" data-tt="[o] Toggle Overlays" data-info="toggle_helper"></span></span>
 
             <span onclick="gui.canvasManager.menu(this)" class="item textButton info" data-info="canvas_switch" id="canvasCtxSwitcher" >-</span>

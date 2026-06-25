@@ -67,7 +67,15 @@
                         {{/if}}
                     </div>
                 {{else}}
-                    <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}">
+                    <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable {{#if isLibraryFile}} library{{/if}} " id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="dragfile" data-searchable="{{title}}" data-tt="{{title}}"
+
+
+
+                    {{#if usedInPatch}}
+                    {{else}}
+                    style="opacity: 0.7;"
+                    {{/if}}
+                    >
 
                         {{#if preview}}
                             <div class="preview bgPatternDark info" data-info="dragfile" style="width:90%;height:calc(90% - 22px);;background-color:#777;">
@@ -83,12 +91,12 @@
 
                         {{#if isReference}}
                         <div style="position:absolute;width:12px;height:12px;margin-top:-18px;margin-left:6px;">
-                            <span data-info="dragfile" class="icon icon-file-symlink info"></span>
+                            <span data-info="dragfile tt" data-tt="Refecence: File from other patch" class="icon icon-file-symlink info"></span>
                         </div>
                         {{/if}}
 
 
-                        <div class="filename">{{{shortTitle}}}</div>
+                        <div class="filename {{#if latest}}latest{{/if}} ">{{{shortTitle}}} {{#if latest}}(latest file){{/if}} </div>
                     </div>
                 {{/if}}
             {{/each}}
@@ -105,7 +113,7 @@
         <table class="table">
             {{#if showHeader}}
             <tr>
-                <th width="30" onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
+                <th onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
                 <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">
                     Filename
                     {{#compare order '==' 'name' }}{{#if orderReverse}}<span class="icon icon-arrow-up "></span>{{else}}<span class="icon icon-arrow-down "></span>{{/if}}{{/compare}}
@@ -134,14 +142,24 @@
                         </td>
                     </tr>
                 {{else}}
-                    <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}">
-                        <td><span class="icon icon-{{icon}} "></span></td>
-                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}}</div>
+                    <tr class="{{#if latest}}latest{{/if}}  fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}"
+
+                    {{#if usedInPatch}}
+                    {{else}}
+                    style="opacity: 0.6;"
+                    {{/if}}
+                    >
+                        <td>
+                            <span class="icon icon-{{icon}}"></span>
+                            {{#if isReference}}
+                                <span class="icon icon-file-symlink"></span>
+                            {{else}}
+                            {{/if}}
+                        </td>
+                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}">{{title}} {{#if latest}}(latest file){{/if}}</div>
                         </td>
                         <td>{{sizeKb}}</td>
                         <td>{{relativedate updated}}</td>
-                        <td>{{#if isReference}}reference{{/if}}</td>
-
                     </tr>
                 {{/if}}
             {{/each}}
@@ -270,8 +288,6 @@
             <b style="word-break: break-all;">{{file.fileDb.fileName}}</b>
 
             <br/>
-
-
 
             {{#if isPlatformCommunity}}
                 {{#if isReference}}

@@ -16,6 +16,8 @@ import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import { portType } from "../core_constants.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
+import { ModalOpName } from "../dialogs/modalopname.js";
+import { showInfo } from "../elements/tooltips.js";
 
 export { CmdPatch };
 
@@ -51,7 +53,6 @@ class CmdPatch
                 "icon": "save",
                 "hotkey": "[cmd_ctrl]`S`",
                 "infotext": "cmd_savepatch"
-
             },
             {
                 "cmd": "Save patch as...",
@@ -459,7 +460,8 @@ class CmdPatch
                         "oldSubId": bp,
                         "next": () =>
                         {
-                            if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, force);
+                            if (gui.getPatchSummary().allowEdit)
+                                if (!gui.savedState.getStateBlueprint(0)) gui.patchView.store.saveCurrentProject(cb, force);
                         }
                     });
             }
@@ -652,9 +654,9 @@ class CmdPatch
                         gui.patchView.addOp(newOpname,
                             {
                                 "uiAttribs":
-                            {
-                                "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
-                            },
+                                {
+                                    "translate": { "x": origOpsBounds.minX, "y": origOpsBounds.minY }
+                                },
                                 "onOpAdd": (newOp) =>
                                 {
                                     subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
@@ -1142,11 +1144,22 @@ class CmdPatch
                 } });
     }
 
-    static createLinkVariableExist(createTrigger = false)
+    static createLinkVariableExist(createTrigger = false, portVar = false)
     {
         gui.opSelect().close();
         const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
         const p = CABLES.UI.OPSELECT.linkNewOpToPort;
+        if (portVar)
+        {
+            gui.showVarSelect((e) =>
+            {
+                console.log("text", e);
+                p.setVariable(e.cmd);
+                gui.opParams.show(p.op.id);
+            });
+
+            return;
+        }
 
         gui.closeModal();
         const getsetOp = opNames.getVarGetterOpNameByType(type, p);
@@ -1560,7 +1573,7 @@ class CmdPatch
             }
         }
 
-        gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, options) =>
         {
             gui.closeModal();
             CmdPatch.createOpFromSelection({ "newOpName": newName, "ignoreNsCheck": true, ...options });

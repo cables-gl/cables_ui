@@ -89,13 +89,15 @@ body
 
 .cablesCssUi
 {
+    color:var(--text-color);
+
     *,*:hover
     {
         -webkit-touch-callout: none;
         -webkit-tap-highlight-color: transparent;
     }
 
-    *
+    select// was: *
     {
         color:var(--text-color);
     }
@@ -238,12 +240,13 @@ body
         min-height: 18px;
     }
 
-    .valuetext.inspectable {
+    .valuetext.inspectable
+    {
         min-width: 60%;
     }
 
     // all text input color, border and focus border / sizes can be individual for each and are defined wherever...
-    input.medium,.opsearchInput,input[type=text], input[type=search],#commentTextarea
+    input.medium,.opsearchInput,input[type=text], input[type=search],#commentTextarea,#tagInput
     {
         background-color: var(--color-05);
         color:$mainColor;
@@ -262,7 +265,6 @@ body
         font-size: 18px;
         padding:5px;
         width:100%;
-
     }
 
     input[type=search]::-webkit-search-cancel-button {
@@ -273,7 +275,6 @@ body
         background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E");
         cursor: pointer;
     }
-
 
     input[type=text], input[type=search]
     {
@@ -336,7 +337,8 @@ body
         }
     }
 
-    ::selection, &::selection
+    //:not(.cm-content *)::selection, // TODO: why cant i scope codemirror so their rules are used in .cm-content
+     &::selection
     {
         background: #00FF85 !important;
         color: black !important;
@@ -498,6 +500,7 @@ body
             border-radius: 10px;
             margin-right: 10px;
             max-width: 300px;
+            min-width: 200px;
         }
     }
 

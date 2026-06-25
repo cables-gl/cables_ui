@@ -66,6 +66,12 @@ class CmdRenderer
                 "icon": "external"
             },
             {
+                "cmd": "floading canvas",
+                "category": "canvas",
+                "func": CmdRenderer.floatCanvas,
+                "icon": "internal"
+            },
+            {
                 "cmd": "Simulate Scrolling Page",
                 "category": "canvas",
                 "func": CmdRenderer.scrollingPage
@@ -89,7 +95,7 @@ class CmdRenderer
 
     static maximizeCanvas()
     {
-        gui.toggleMaximizeCanvas();
+        gui.toggleMaximized();
     }
 
     static resetSize()
@@ -171,7 +177,7 @@ class CmdRenderer
 
         gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
         gui.setLayout();
-        gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
+        gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
     }
 
     static scaleCanvas()
@@ -231,6 +237,12 @@ class CmdRenderer
     static popoutCanvas()
     {
         gui.canvasManager.popOut();
+    }
+
+    static floatCanvas()
+    {
+        gui.canvasManager.float();
+
     }
 
 }

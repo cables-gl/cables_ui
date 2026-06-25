@@ -1,56 +1,79 @@
-import { vec3, mat4 } from "gl-matrix";
+import { vec3, mat4, vec2 } from "gl-matrix";
+import { Port } from "cables";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { gui } from "../../gui.js";
 import undo from "../../utils/undo.js";
 
+/**
+ * @typedef GizmoParams
+ * @property {Port} posX
+ * @property {Port} posY
+ * @property {Port} posZ
+ */
+
 export default class Gizmo
 {
+
+    #params = null;
+    #eleCenter = null;
+    #eleX = null;
+    #eleY = null;
+    #eleZ = null;
+    #eleXZ = null;
+    #eleXY = null;
+    #eleYZ = null;
+    lineX = null;
+    lineY = null;
+    lineZ = null;
+
+    #origValue = 0;
+    #dragSum = 0;
+    #dragSumY = 0;
+    #dir = 1;
+    hidden = true;
+
+    static EVENT_GUI_GIZMO_MOVE = "gizmoMove";
+
+    /**
+     * @param {CglContext} cgl
+     */
     constructor(cgl)
     {
         this._cgl = cgl;
-        this._eleCenter = null;
-        this._eleX = null;
-        this._eleY = null;
-        this._eleZ = null;
-        this._eleXZ = null;
-        this._eleXY = null;
-        this._eleYZ = null;
-        this.lineX = null;
-        this.lineY = null;
-        this.lineZ = null;
-
-        this._params = null;
-        this._origValue = 0;
-        this._dragSum = 0;
-        this._dragSumY = 0;
-        this._dir = 1;
-        this.hidden = true;
     }
 
     dispose()
     {
         this.hidden = true;
-        if (this._eleCenter) this._eleCenter.remove();
-        if (this._eleX) this._eleX.remove();
-        if (this._eleY) this._eleY.remove();
-        if (this._eleZ) this._eleZ.remove();
-        if (this._eleXZ) this._eleXZ.remove();
-        if (this._eleXY) this._eleXY.remove();
-        if (this._eleYZ) this._eleYZ.remove();
+        if (this.#eleCenter) this.#eleCenter.remove();
+        if (this.#eleX) this.#eleX.remove();
+        if (this.#eleY) this.#eleY.remove();
+        if (this.#eleZ) this.#eleZ.remove();
+        if (this.#eleXZ) this.#eleXZ.remove();
+        if (this.#eleXY) this.#eleXY.remove();
+        if (this.#eleYZ) this.#eleYZ.remove();
         if (this.lineX) this.lineX.remove();
         if (this.lineY) this.lineY.remove();
         if (this.lineZ) this.lineZ.remove();
     }
 
+    /**
+     * @param {number} x2
+     * @param {number} y2
+     */
     getDir(x2, y2)
     {
-        const xd = this._params.x - x2;
-        const yd = this._params.y - y2;
+        const xd = this.#params.x - x2;
+        const yd = this.#params.y - y2;
         const dist = (xd + yd) / 2;
 
         if (dist < 0) return 1;
         return -1;
     }
 
+    /**
+     * @param {GizmoParams} params
+     */
     set(params)
     {
         if (!params) return this.setParams(params);
@@ -165,175 +188,175 @@ export default class Gizmo
 
     setParams(params)
     {
-        this._params = params;
+        this.#params = params;
         if (!this._cgl) return;
-        if (!this._eleCenter)
+        if (!this.#eleCenter)
         {
             const container = this._cgl.canvas.parentElement;
             if (!container) return;
 
-            this._eleCenter = document.createElement("div");
-            this._eleCenter.id = "gizmo";
+            this.#eleCenter = document.createElement("div");
+            this.#eleCenter.id = "gizmo";
 
-            this._eleCenter.style.background = "#fff";
-            this._eleCenter.style.display = "none";
-            this._eleCenter.style.opacity = "0.9";
-            this._eleCenter.style.pointerEvents = "none";
+            this.#eleCenter.style.background = "#fff";
+            this.#eleCenter.style.display = "none";
+            this.#eleCenter.style.opacity = "0.9";
+            this.#eleCenter.style.pointerEvents = "none";
             // this._eleCenter.style['border-radius']="1130px";
             // this._eleCenter.style.transform='scale(2)';
-            this._eleCenter.classList.add("gizmo");
-            container.appendChild(this._eleCenter);
+            this.#eleCenter.classList.add("gizmo");
+            container.appendChild(this.#eleCenter);
 
-            this._eleX = document.createElement("div");
-            this._eleX.id = "gizmoX";
-            this._eleX.style.background = "#f00";
-            this._eleX.style.display = "none";
-            this._eleX.classList.add("gizmo");
-            container.appendChild(this._eleX);
+            this.#eleX = document.createElement("div");
+            this.#eleX.id = "gizmoX";
+            this.#eleX.style.background = "#f00";
+            this.#eleX.style.display = "none";
+            this.#eleX.classList.add("gizmo");
+            container.appendChild(this.#eleX);
 
-            this._eleXZ = document.createElement("div");
-            this._eleXZ.id = "gizmoXZ";
-            this._eleXZ.style.background = "#f0f";
-            this._eleXZ.style.display = "none";
-            this._eleXZ.style.opacity = "0.5";
-            this._eleXZ.style.borderRadius = "0";
-            this._eleXZ.classList.add("gizmo");
-            container.appendChild(this._eleXZ);
+            this.#eleXZ = document.createElement("div");
+            this.#eleXZ.id = "gizmoXZ";
+            this.#eleXZ.style.background = "#f0f";
+            this.#eleXZ.style.display = "none";
+            this.#eleXZ.style.opacity = "0.5";
+            this.#eleXZ.style.borderRadius = "0";
+            this.#eleXZ.classList.add("gizmo");
+            container.appendChild(this.#eleXZ);
 
-            this._eleXY = document.createElement("div");
-            this._eleXY.id = "gizmoXY";
-            this._eleXY.style.background = "#ff0";
-            this._eleXY.style.display = "none";
-            this._eleXY.style.opacity = "0.5";
-            this._eleXY.style.borderRadius = "0";
-            this._eleXY.classList.add("gizmo");
-            container.appendChild(this._eleXY);
+            this.#eleXY = document.createElement("div");
+            this.#eleXY.id = "gizmoXY";
+            this.#eleXY.style.background = "#ff0";
+            this.#eleXY.style.display = "none";
+            this.#eleXY.style.opacity = "0.5";
+            this.#eleXY.style.borderRadius = "0";
+            this.#eleXY.classList.add("gizmo");
+            container.appendChild(this.#eleXY);
 
-            this._eleYZ = document.createElement("div");
-            this._eleYZ.id = "gizmoYZ";
-            this._eleYZ.style.background = "#0ff";
-            this._eleYZ.style.display = "none";
-            this._eleYZ.style.opacity = "0.5";
-            this._eleYZ.style.borderRadius = "0";
-            this._eleYZ.classList.add("gizmo");
-            container.appendChild(this._eleYZ);
+            this.#eleYZ = document.createElement("div");
+            this.#eleYZ.id = "gizmoYZ";
+            this.#eleYZ.style.background = "#0ff";
+            this.#eleYZ.style.display = "none";
+            this.#eleYZ.style.opacity = "0.5";
+            this.#eleYZ.style.borderRadius = "0";
+            this.#eleYZ.classList.add("gizmo");
+            container.appendChild(this.#eleYZ);
 
-            this._eleY = document.createElement("div");
-            this._eleY.id = "gizmoY";
-            this._eleY.style.background = "#0f0";
-            this._eleY.style.display = "none";
-            this._eleY.classList.add("gizmo");
-            container.appendChild(this._eleY);
+            this.#eleY = document.createElement("div");
+            this.#eleY.id = "gizmoY";
+            this.#eleY.style.background = "#0f0";
+            this.#eleY.style.display = "none";
+            this.#eleY.classList.add("gizmo");
+            container.appendChild(this.#eleY);
 
-            this._eleZ = document.createElement("div");
-            this._eleZ.id = "gizmoZ";
-            this._eleZ.style.background = "#00f";
-            this._eleZ.style.display = "none";
+            this.#eleZ = document.createElement("div");
+            this.#eleZ.id = "gizmoZ";
+            this.#eleZ.style.background = "#00f";
+            this.#eleZ.style.display = "none";
 
-            this._eleZ.classList.add("gizmo");
-            container.appendChild(this._eleZ);
+            this.#eleZ.classList.add("gizmo");
+            container.appendChild(this.#eleZ);
 
             this.lineX = new htmlLine(container, "#f00");
             this.lineY = new htmlLine(container, "#0f0");
             this.lineZ = new htmlLine(container, "#00f");
 
-            this._eleX.addEventListener(
+            this.#eleX.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posX;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posX;
                     this._draggingPortY = null;
-                    this._origValue = this._params.posX.get();
-                    this._dragSum = 0;
-                    this.dragger(this._eleCenter);
+                    this.#origValue = this.#params.posX.get();
+                    this.#dragSum = 0;
+                    this.dragger(this.#eleCenter);
 
-                    this._dir = this.getDir(this._params.xx, this._params.xy);
+                    this.#dir = this.getDir(this.#params.xx, this.#params.xy);
                 },
             );
 
-            this._eleY.addEventListener(
+            this.#eleY.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posY;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posY;
                     this._draggingPortY = null;
-                    this._origValue = this._params.posY.get();
-                    this._dragSum = 0;
-                    this.dragger(this._eleCenter);
+                    this.#origValue = this.#params.posY.get();
+                    this.#dragSum = 0;
+                    this.dragger(this.#eleCenter);
 
-                    this._dir = this.getDir(this._params.yx, this._params.yy);
+                    this.#dir = this.getDir(this.#params.yx, this.#params.yy);
                 },
             );
 
-            this._eleZ.addEventListener(
+            this.#eleZ.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posZ;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posZ;
                     this._draggingPortY = null;
-                    this._origValue = this._params.posZ.get();
-                    this._dragSum = 0;
-                    this.dragger(this._eleCenter);
-                    this._dir = this.getDir(this._params.zx, this._params.zy);
+                    this.#origValue = this.#params.posZ.get();
+                    this.#dragSum = 0;
+                    this.dragger(this.#eleCenter);
+                    this.#dir = this.getDir(this.#params.zx, this.#params.zy);
                 },
             );
 
-            this._eleXZ.addEventListener(
+            this.#eleXZ.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posX;
-                    this._draggingPortY = this._params.posZ;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posX;
+                    this._draggingPortY = this.#params.posZ;
 
-                    this._origValue = this._params.posX.get();
-                    this._origValueY = this._params.posZ.get();
-                    this._dragSum = 0;
-                    this._dragSumY = 0;
-                    this.dragger(this._eleCenter);
+                    this.#origValue = this.#params.posX.get();
+                    this._origValueY = this.#params.posZ.get();
+                    this.#dragSum = 0;
+                    this.#dragSumY = 0;
+                    this.dragger(this.#eleCenter);
                 },
             );
 
-            this._eleXY.addEventListener(
+            this.#eleXY.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posX;
-                    this._draggingPortY = this._params.posY;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posX;
+                    this._draggingPortY = this.#params.posY;
 
-                    this._origValue = this._params.posX.get();
-                    this._origValueY = this._params.posY.get();
+                    this.#origValue = this.#params.posX.get();
+                    this._origValueY = this.#params.posY.get();
 
-                    this._dragSum = 0;
-                    this._dragSumY = 0;
+                    this.#dragSum = 0;
+                    this.#dragSumY = 0;
 
                     // this.flipX = true;
                     this.flipY = true;
 
-                    this.dragger(this._eleCenter);
+                    this.dragger(this.#eleCenter);
                 },
             );
-            this._eleYZ.addEventListener(
+            this.#eleYZ.addEventListener(
                 "pointerdown",
                 () =>
                 {
-                    if (!this._params) return;
-                    this._draggingPort = this._params.posZ;
-                    this._draggingPortY = this._params.posY;
+                    if (!this.#params) return;
+                    this._draggingPort = this.#params.posZ;
+                    this._draggingPortY = this.#params.posY;
 
-                    this._origValue = this._params.posZ.get();
-                    this._origValueY = this._params.posY.get();
-                    this._dragSum = 0;
-                    this._dragSumY = 0;
+                    this.#origValue = this.#params.posZ.get();
+                    this._origValueY = this.#params.posY.get();
+                    this.#dragSum = 0;
+                    this.#dragSumY = 0;
 
                     this.flipY = true;
                     this.flipX = true;
 
-                    this.dragger(this._eleCenter);
+                    this.dragger(this.#eleCenter);
                 },
             );
         }
@@ -345,13 +368,13 @@ export default class Gizmo
             setTimeout(() =>
             {
                 this.hidden = true;
-                this._eleCenter.style.display = "none";
-                this._eleXZ.style.display = "none";
-                this._eleXY.style.display = "none";
-                this._eleYZ.style.display = "none";
-                this._eleX.style.display = "none";
-                this._eleZ.style.display = "none";
-                this._eleY.style.display = "none";
+                this.#eleCenter.style.display = "none";
+                this.#eleXZ.style.display = "none";
+                this.#eleXY.style.display = "none";
+                this.#eleYZ.style.display = "none";
+                this.#eleX.style.display = "none";
+                this.#eleZ.style.display = "none";
+                this.#eleY.style.display = "none";
 
                 this.lineX.hide();
                 this.lineZ.hide();
@@ -365,33 +388,33 @@ export default class Gizmo
         this.lineZ.show();
         this.lineY.show();
 
-        this._eleCenter.style.display = "block";
-        this._eleCenter.style.left = params.x + "px";
-        this._eleCenter.style.top = params.y + "px";
+        this.#eleCenter.style.display = "block";
+        this.#eleCenter.style.left = params.x + "px";
+        this.#eleCenter.style.top = params.y + "px";
 
-        this._eleXZ.style.display = "block";
-        this._eleXZ.style.left = (params.xx + params.zx) / 2 + "px";
-        this._eleXZ.style.top = (params.xy + params.zy) / 2 + "px";
+        this.#eleXZ.style.display = "block";
+        this.#eleXZ.style.left = (params.xx + params.zx) / 2 + "px";
+        this.#eleXZ.style.top = (params.xy + params.zy) / 2 + "px";
 
-        this._eleXY.style.display = "block";
-        this._eleXY.style.left = (params.xx + params.yx) / 2 + "px";
-        this._eleXY.style.top = (params.xy + params.yy) / 2 + "px";
+        this.#eleXY.style.display = "block";
+        this.#eleXY.style.left = (params.xx + params.yx) / 2 + "px";
+        this.#eleXY.style.top = (params.xy + params.yy) / 2 + "px";
 
-        this._eleYZ.style.display = "block";
-        this._eleYZ.style.left = (params.zx + params.yx) / 2 + "px";
-        this._eleYZ.style.top = (params.zy + params.yy) / 2 + "px";
+        this.#eleYZ.style.display = "block";
+        this.#eleYZ.style.left = (params.zx + params.yx) / 2 + "px";
+        this.#eleYZ.style.top = (params.zy + params.yy) / 2 + "px";
 
-        this._eleX.style.display = "block";
-        this._eleX.style.left = params.xx + "px";
-        this._eleX.style.top = params.xy + "px";
+        this.#eleX.style.display = "block";
+        this.#eleX.style.left = params.xx + "px";
+        this.#eleX.style.top = params.xy + "px";
 
-        this._eleY.style.display = "block";
-        this._eleY.style.left = params.yx + "px";
-        this._eleY.style.top = params.yy + "px";
+        this.#eleY.style.display = "block";
+        this.#eleY.style.left = params.yx + "px";
+        this.#eleY.style.top = params.yy + "px";
 
-        this._eleZ.style.display = "block";
-        this._eleZ.style.left = params.zx + "px";
-        this._eleZ.style.top = params.zy + "px";
+        this.#eleZ.style.display = "block";
+        this.#eleZ.style.left = params.zx + "px";
+        this.#eleZ.style.top = params.zy + "px";
 
         this.lineX.set(params.x, params.y, params.xx, params.xy);
         this.lineY.set(params.x, params.y, params.yx, params.yy);
@@ -408,7 +431,7 @@ export default class Gizmo
 
         const down = (e) =>
         {
-            if (CABLES.UI) gui.savedState.setUnSaved("transformDown", this._params.posX.op.getSubPatch());
+            if (CABLES.UI) gui.savedState.setUnSaved("transformDown", this.#params.posX.op.getSubPatch());
 
             isDown = true;
             document.addEventListener("pointerlockchange", lockChange, false);
@@ -447,12 +470,12 @@ export default class Gizmo
                     self._draggingPort.op.patch,
                     self._draggingPort.getName(),
                     self._draggingPort.op.id,
-                    self._origValue,
+                    self.#origValue,
                     self._draggingPort.get()
                 ));
             }
 
-            if (CABLES.UI && this._params) gui.savedState.setUnSaved("transformUp", this._params.posX.op.getSubPatch());
+            if (CABLES.UI && this.#params) gui.savedState.setUnSaved("transformUp", this.#params.posX.op.getSubPatch());
 
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
@@ -472,7 +495,7 @@ export default class Gizmo
 
         const move = (e) =>
         {
-            if (CABLES.UI && this._params) gui.savedState.setUnSaved("transformMove", this._params.posX.op.getSubPatch());
+            if (CABLES.UI && this.#params) gui.savedState.setUnSaved("transformMove", this.#params.posX.op.getSubPatch());
 
             if (self._draggingPortY)
             {
@@ -489,24 +512,24 @@ export default class Gizmo
 
                 if (e.shiftKey) vX *= 0.025;
                 if (e.shiftKey) vY *= 0.025;
-                self._dragSum += vX;
-                self._dragSumY += vY;
-                const newValue = self._origValue + self._dragSum;
-                const newValueY = self._origValueY + self._dragSumY;
+                self.#dragSum += vX;
+                self.#dragSumY += vY;
+                const newValue = self.#origValue + self.#dragSum;
+                const newValueY = self._origValueY + self.#dragSumY;
                 self._draggingPort.set(newValue);
                 self._draggingPortY.set(newValueY);
-                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
-                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPortY.op.id, self._draggingPortY.getName(), newValueY);
+                if (CABLES.UI) gui.emitEvent(Gizmo.EVENT_GUI_GIZMO_MOVE, self._draggingPort.op.id, self._draggingPort.getName(), newValue);
+                if (CABLES.UI) gui.emitEvent(Gizmo.EVENT_GUI_GIZMO_MOVE, self._draggingPortY.op.id, self._draggingPortY.getName(), newValueY);
             }
             else
             {
                 // one axis...
-                let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
+                let v = (e.movementY + e.movementX) * (self.#dir * ((self._multi || 1) / 100));
                 if (e.shiftKey) v *= 0.025;
-                self._dragSum += v;
-                const newValue = self._origValue + self._dragSum;
+                self.#dragSum += v;
+                const newValue = self.#origValue + self.#dragSum;
                 self._draggingPort.set(newValue);
-                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
+                if (CABLES.UI) gui.emitEvent(Gizmo.EVENT_GUI_GIZMO_MOVE, self._draggingPort.op.id, self._draggingPort.getName(), newValue);
             }
         };
 
@@ -519,7 +542,7 @@ export default class Gizmo
             else
             {
                 // escape clicked...
-                self._draggingPort.set(self._origValue);
+                self._draggingPort.set(self.#origValue);
                 up();
             }
         }

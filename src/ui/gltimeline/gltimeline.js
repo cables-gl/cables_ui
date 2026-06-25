@@ -1,7 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
 import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
-import { FpsCounter } from "cables-corelibs";
-import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { CGL, FpsCounter, Geometry } from "cables-corelibs";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { TlAnimLine } from "./tlanimline.js";
 import { tlOverview } from "./tloverview.js";
@@ -285,9 +284,9 @@ export class GlTimeline extends Events
 
         gui.corePatch().on("timelineConfigChange", this.onConfig.bind(this));
 
-        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.init(); });
-        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.init(); });
-        gui.corePatch().on("portAnimToggle", () => { this.init(); });
+        gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.initSoon(); });
+        gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.initSoon(); });
+        gui.corePatch().on("portAnimToggle", () => { this.initSoon(); });
 
         this.#elKeyParamPanel = document.createElement("div");
         this.#elKeyParamPanel.classList.add("keyOverlay");
@@ -543,7 +542,7 @@ export class GlTimeline extends Events
         gui.glTimeline = this;
         gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (op) =>
         {
-            if (this.isGraphLayout()) this.init();
+            if (this.isGraphLayout()) this.initSoon();
 
         });
 
@@ -778,7 +777,7 @@ export class GlTimeline extends Events
 
         this.saveUserSettings();
         this.updateIcons();
-        this.init(gui.patchView.getLastFocussedOp());
+        this.init();
         this.needsUpdateAll = "togglelayout";
         this.emitEvent(GlTimeline.EVENT_LAYOUTCHANGE);
 
@@ -1640,6 +1639,15 @@ export class GlTimeline extends Events
 
     }
 
+    initSoon()
+    {
+        clearTimeout(this.initTimeout);
+        this.initTimeout = setTimeout(() =>
+        {
+            this.init();
+        }, 100);
+    }
+
     init()
     {
         if (this.disposed) return;
@@ -2001,16 +2009,18 @@ export class GlTimeline extends Events
 
     /**
      * @param {number} dir 1 or -1
+     * @param {TlAnimLine[]} [animLines]
      */
-    jumpKey(dir)
+    jumpKey(dir, animLines)
     {
         let theKey = null;
+        animLines = animLines || this.#tlAnims;
 
-        for (let anii = 0; anii < this.#tlAnims.length; anii++)
+        for (let anii = 0; anii < animLines.length; anii++)
         {
-            for (let ans = 0; ans < this.#tlAnims[anii].anims.length; ans++)
+            for (let ans = 0; ans < animLines[anii].anims.length; ans++)
             {
-                const anim = this.#tlAnims[anii].anims[ans];
+                const anim = animLines[anii].anims[ans];
                 if (!anim.tlActive) continue;
                 const index = 0;
 

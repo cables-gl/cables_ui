@@ -35,6 +35,7 @@
             {{#if port.uiAttribs.isAnimated}}&nbsp;&nbsp;&nbsp;<span id="paramportkeyframe_{{port.id}}" data-info="tlKeyIconParam" class="clickable info icon icon-diamond icon-0_75x"></span>{{/if}}
             {{#if port.uiAttribs.expose}}<span>&nbsp;&nbsp;E{{port.uiAttribs.order}}</span>{{/if}}
             {{#if port.uiAttribs.boundToVar}}<span>&nbsp;&nbsp;V</span>{{/if}}
+
         </td>
     {{/if}}
     <td class="port {{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}" id="portLineTitle_{{ dirStr }}_{{ portnum }}"  data-portname="{{port.name}}" >

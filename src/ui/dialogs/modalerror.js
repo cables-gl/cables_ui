@@ -234,14 +234,14 @@ export default class ModalError
             isPrivateOp = namespace.isPrivateOp(this.opName);
             if (window.gui && (gui.user.isStaff || namespace.isCurrentUserOp(this.opName)))
             {
-                str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+                str += "<a class=\"cblbutton \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
             }
         }
 
-        str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+        str += "<a class=\"cblbutton\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         if (CABLES && platform && platform.getIssueTrackerUrl())
         {
-            str += "<a class=\"button\" target=\"_blankk\" href=\"" + platform.getIssueTrackerUrl() + "\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
+            str += "<a class=\"cblbutton\" target=\"_blankk\" href=\"" + platform.getIssueTrackerUrl() + "\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
         }
 
         let ignoreErrorReport = false;
@@ -277,7 +277,7 @@ export default class ModalError
             }
             else if (showSendButton)
             {
-                str += "<a class=\"button\" id=\"sendErrorReport\">Send Error Report</a>&nbsp;&nbsp;";
+                str += "<a class=\"cblbutton\" id=\"sendErrorReport\">Send Error Report</a>&nbsp;&nbsp;";
             }
         }
 

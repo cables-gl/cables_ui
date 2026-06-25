@@ -2,9 +2,10 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import { CgContext } from "cables-corelibs";
 import { uuid } from "cables/src/core/utils.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import { userSettings } from "../usersettings.js";
 
 /**
  * @typedef CanvasContext
@@ -18,29 +19,30 @@ import { contextMenu } from "../../elements/contextmenu.js";
 export default class CanvasManager
 {
 
+    static PREF_CANVASMODE = "canvasmode";
+
     /** @type {CanvasContext[]} */
     #contexts = [];
-    #curContextIdx;
 
     /** @type {HTMLElement} */
-    #menuEle;
+    #menuEle = null;
+
+    #curContextIdx = 0;
+    subWindow = null;
+
+    CANVASMODE_NORMAL = 0;
+    CANVASMODE_PATCHBG = 1;
+    CANVASMODE_MAXIMIZED = 2;
+    CANVASMODE_POPOUT = 3;
+    CANVASMODE_FLOAT = 4;
+
+    #canvasMode = this.CANVASMODE_NORMAL;
+
+    /** @deprecated */
+    CANVASMODE_FULLSCREEN = 2;
 
     constructor()
     {
-        this.#curContextIdx = 0;
-        this.#contexts = [];
-        this.subWindow = null;
-        this.#menuEle = null;
-
-        this.CANVASMODE_NORMAL = 0;
-        this.CANVASMODE_PATCHBG = 1;
-        this.CANVASMODE_MAXIMIZED = 2;
-        this.CANVASMODE_POPOUT = 3;
-
-        /** @deprecated */
-        this.CANVASMODE_FULLSCREEN = 2;
-
-        this._canvasMode = this.CANVASMODE_NORMAL;
 
         window.addEventListener("beforeunload", () =>
         {
@@ -48,28 +50,39 @@ export default class CanvasManager
         });
 
         this.#findNonCgContexts();
+
+    }
+
+    init()
+    {
+        if (userSettings.get(CanvasManager.PREF_CANVASMODE) != this.mode)
+        {
+            this.mode = userSettings.get(CanvasManager.PREF_CANVASMODE) || this.CANVASMODE_NORMAL;
+        }
     }
 
     set mode(m)
     {
-        const hasChanged = m != this._canvasMode;
-        this._canvasMode = m;
+        const hasChanged = m != this.#canvasMode;
+        this.#canvasMode = m;
 
+        if (!gui.isRemoteClient) userSettings.set(CanvasManager.PREF_CANVASMODE, m);
         if (m == this.CANVASMODE_POPOUT)
         {
             this.popOut();
         }
         else
         {
-            gui.emitEvent("canvasModeChange", this._canvasMode);
+            gui.emitEvent("canvasModeChange", this.#canvasMode);
             if (hasChanged) gui.setLayout();
             gui.corePatch().cgl.updateSize();
         }
+        if (m == this.CANVASMODE_PATCHBG) gui.setCanvasPatchBg();
     }
 
     get mode()
     {
-        return this._canvasMode;
+        return this.#canvasMode;
     }
 
     /**
@@ -196,7 +209,7 @@ export default class CanvasManager
                 this.#contexts[i].cg.setSize(w, h);
             }
         }
-        if (this._canvasMode === this.CANVASMODE_POPOUT)
+        if (this.#canvasMode === this.CANVASMODE_POPOUT)
         {
 
         }
@@ -250,9 +263,17 @@ export default class CanvasManager
         contextMenu.show({ "items": items }, elem);
     }
 
+    float()
+    {
+        if (this.mode == this.CANVASMODE_FLOAT) this.mode = this.CANVASMODE_NORMAL;
+        else this.mode = this.CANVASMODE_FLOAT;
+    }
+
     popOut()
     {
-        if (this._canvasMode === this.CANVASMODE_POPOUT)
+
+        gui.corePatch().config.containerElement = null;// set to null, so e.g. popout canvas gets the correct parent
+        if (this.#canvasMode === this.CANVASMODE_POPOUT)
         {
             if (this.subWindow)
             {
@@ -295,12 +316,9 @@ export default class CanvasManager
         containerEle.style.width = "100%";
         containerEle.style.height = "100%";
         nBody.appendChild(containerEle);
+        // gui.corePatch().containerElement = containerEle;
 
         containerEle.id = "cablescanvas";
-
-        // const base = document.createElement("base");
-        // base.setAttribute("href", "https://meineSeite.de/");
-        // document.head.appendChild(base);
 
         const p = gui.corePatch().cgl.canvas.parentElement;
 
@@ -337,12 +355,12 @@ export default class CanvasManager
             // for (let i = 0; i < ncablesEles.length; i++)
 
             gui.corePatch().cgl.updateSize();
-            this._canvasMode = this.CANVASMODE_NORMAL;
+            this.#canvasMode = this.CANVASMODE_NORMAL;
             gui.setLayout();
         });
 
-        this._canvasMode = this.CANVASMODE_POPOUT;
-        gui.emitEvent("canvasModeChange", this._canvasMode);
+        this.#canvasMode = this.CANVASMODE_POPOUT;
+        gui.emitEvent("canvasModeChange", this.#canvasMode);
 
         gui.setLayout();
     }

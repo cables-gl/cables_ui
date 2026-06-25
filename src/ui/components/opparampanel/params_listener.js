@@ -16,7 +16,8 @@ import { userSettings } from "../usersettings.js";
 import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
-import GradientEditor from "../../dialogs/gradienteditor.js";
+import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
+import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -29,6 +30,7 @@ class ParamsListener extends Events
     _log = new Logger("Paramslistener");
 
     #watchGradients = [];
+    #watchCurves = [];
 
     constructor(panelid)
     {
@@ -36,6 +38,7 @@ class ParamsListener extends Events
 
         this.panelId = panelid;
 
+        /** @type {Port[]} */
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
@@ -97,6 +100,7 @@ class ParamsListener extends Events
                 if (this._portsIn[i].getType() == portType.string) this._watchStrings.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "gradient") this.#watchGradients.push(this._portsIn[i]);
+                if (this._portsIn[i].uiAttribs.display == "curve") this.#watchCurves.push(this._portsIn[i]);
 
                 if (this._portsIn[i].isLinked() || this._portsIn[i].isAnimated()) this._watchPorts.push(this._portsIn[i]);
                 this._watchAnimPorts.push(this._portsIn[i]);
@@ -196,6 +200,12 @@ class ParamsListener extends Events
             const thePort2 = this.#watchGradients[iwcp];
             const idx = this._portsIn.indexOf(thePort2);
             this.watchGradientPort(thePort2, this.panelId, idx);
+        }
+        for (const iwcp in this.#watchCurves)
+        {
+            const thePort2 = this.#watchCurves[iwcp];
+            const idx = this._portsIn.indexOf(thePort2);
+            this.watchCurvePort(thePort2, this.panelId, idx);
         }
         this.valueChangerInitSliders();
 
@@ -378,7 +388,48 @@ class ParamsListener extends Events
 
         ele.clickable(colEle, (e) =>
         {
+            console.log("clickedg");
             const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            ge.show(() =>
+            {
+                updateColorBox();
+            });
+        });
+    }
+
+    /**
+     * @param {Port} thePort
+     * @param {string} panelid
+     * @param {string} idx
+     */
+    watchCurvePort(thePort, panelid, idx)
+    {
+        let foundOpacity = false;
+        const id = "watchcurve_in_" + idx + "_" + panelid;
+        let colEle = ele.byId(id);
+
+        if (!colEle)
+        {
+            this._log.log("color ele not found!", id);
+            return;
+        }
+
+        const elClone = colEle.cloneNode(true);
+        colEle.parentNode.replaceChild(elClone, colEle);// remove and clone node to remove old listeners... not great
+        colEle = elClone;
+
+        const updateColorBox = () =>
+        {
+            const o = JSON.parse(thePort.get());
+            colEle.style.background = CurveEditor.getCssGradientString(o.keys);
+        };
+
+        updateColorBox();
+
+        ele.clickable(colEle, (e) =>
+        {
+            const ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
+            // thePort.tempData.curveEditor = ge;
             ge.show(() =>
             {
                 updateColorBox();
@@ -461,7 +512,6 @@ class ParamsListener extends Events
                 if (eli)eli.addEventListener("click", (e) =>
                 {
                     const name = e.target.dataset.title;
-                    console.log("jajaja", name);
                     ports[index]._onTriggered(name);
                 });
             }
@@ -1150,7 +1200,7 @@ class ParamsListener extends Events
 
                 if (thePort.isAnimated())
                 {
-                    thePort._tempLastUiValue = thePort.get();
+                    thePort.tempData.tempLastUiValue = thePort.get();
                     const valDisp = thePort.getValueForDisplay();
 
                     // hier
@@ -1183,6 +1233,7 @@ class ParamsListener extends Events
                     if (thePort.uiAttribs.stride)name += thePort.uiAttribs.stride;
                     if (thePort.get()) newValue = name + " (" + String(thePort.get().length) + ")";
                     else newValue = name + " (null)";
+
                 }
                 else if (thePort.type == portType.string)
                 {
@@ -1201,23 +1252,25 @@ class ParamsListener extends Events
                     newValue = String(thePort.get());
                 }
 
-                if (thePort._tempLastUiValue != newValue)
+                if (thePort.tempData.tempLastUiValue != newValue)
                 {
-                    let el = thePort._tempLastUiEle;
-                    if (!el || thePort._tempLastUiEleId != id)
+                    let el = thePort.tempData.tempLastUiEle;
+                    if (!el || thePort.tempData.tempLastUiEleId != id)
                     {
                         el = document.getElementsByClassName(id);
                         if (el.length > 0)
                         {
-                            el = thePort._tempLastUiEle = el[0];
-                            thePort._tempLastUiEleId = id;
+                            el = thePort.tempData.tempLastUiEle = el[0];
+                            thePort.tempData.tempLastUiEleId = id;
                         }
                     }
 
                     if (el)
                     {
                         el.innerHTML = newValue;
-                        thePort._tempLastUiValue = newValue;
+                        thePort.tempData.tempLastUiValue = newValue;
+
+                        if (thePort.isLinked() && el.dataset) el.dataset.tt = newValue;
                     }
                     else
                     {
@@ -1252,9 +1305,9 @@ class ParamsListener extends Events
     {
         for (let i = 0; i < this._watchPorts.length; i++)
         {
-            delete this._watchPorts[i]._tempLastUiValue;
-            delete this._watchPorts[i]._tempLastUiEle;
-            delete this._watchPorts[i]._tempLastUiEleId;
+            delete this._watchPorts[i].tempData.tempLastUiValue;
+            delete this._watchPorts[i].tempData.tempLastUiEle;
+            delete this._watchPorts[i].tempData.tempLastUiEleId;
         }
 
         this._watchPorts.length = 0;

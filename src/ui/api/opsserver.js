@@ -1,4 +1,4 @@
-import { Logger, TalkerAPI, ele } from "cables-shared-client";
+import { ele, Logger, TalkerAPI } from "cables-shared-client";
 import { Op, Patch, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
@@ -15,6 +15,7 @@ import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { createEditor } from "../components/editor.js";
+import { ModalOpName } from "../dialogs/modalopname.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -317,8 +318,9 @@ export default class ServerOps
      * @param {string} opIdentifier
      * @param {function} [next]
      * @param {object} [options]
+     * @param {boolean} [reloadDependencies=true]
      */
-    execute(opIdentifier, next = null, options = {})
+    execute(opIdentifier, next = null, options = {}, reloadDependencies = true)
     {
         options = options || {};
         gui.savedState.pause();
@@ -353,13 +355,13 @@ export default class ServerOps
                 {
                     this.saveOpLayout(newOps[0]);
                 }
-                gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
                 gui.jobs().finish("executeop");
 
                 gui.savedState.resume();
                 if (next) next(newOps, options.refOldOp);
+                gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
             }, options.refOldOp);
-        }, true);
+        }, reloadDependencies);
     }
 
     clone(oldname, name, cb, options)
@@ -582,16 +584,20 @@ export default class ServerOps
     {
         if (!opName || !depSrc || !depType) return;
 
-        gui.jobs().start({
-            "id": "addOpDependency",
-            "title": "adding " + depSrc + " to " + opName
-        });
-        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_DEPENDENCY, {
+        let talkerCmd = TalkerAPI.CMD_ADD_OP_DEPENDENCY;
+
+        /** @type {any} */
+        let talkerPayload = {
             "opName": opName,
             "src": depSrc,
             "type": depType,
             "export": exportName
-        }, (err, res) =>
+        };
+        gui.jobs().start({
+            "id": "addOpDependency",
+            "title": "adding " + depSrc + " to " + opName
+        });
+        platform.talkerAPI.send(talkerCmd, talkerPayload, (err, res) =>
         {
             gui.jobs().finish("addOpDependency");
 
@@ -684,7 +690,7 @@ export default class ServerOps
         }
         else
         {
-            _remove(opId, depSrc, depType, next);
+            _remove();
         }
 
     }
@@ -703,27 +709,27 @@ export default class ServerOps
                 "name": attName
             }, (err, res) =>
             {
-                if (err)
+                if (!err)
+                {
+                    if (res && res.data && res.data.name)
+                    {
+                        const opDoc = gui.opDocs.getOpDocByName(opName);
+                        if (opDoc)
+                        {
+                            if (opDoc.attachmentFiles) opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => { return att !== res.data.name; });
+                        }
+                    }
+                    gui.serverOps.loadOpDependencies(opName, () =>
+                    {
+                        gui.emitEvent("refreshManageOp", opName);
+                    }, true);
+
+                }
+                else
                 {
                     this.showApiError(err);
-                    return;
                 }
 
-                if (res && res.data && res.data.name)
-                {
-                    const opDoc = gui.opDocs.getOpDocByName(opName);
-                    if (opDoc)
-                    {
-                        if (opDoc.attachmentFiles) opDoc.attachmentFiles = opDoc.attachmentFiles.filter((att) => { return att !== res.data.name; });
-                    }
-                }
-
-                gui.emitEvent("refreshManageOp", opName);
-
-                if (err)
-                {
-                    CABLES.UI.MODAL.showError("ERROR", "unable to remove attachment: " + err.msg);
-                }
             });
         });
     }
@@ -822,389 +828,29 @@ export default class ServerOps
         });
     }
 
-    /**
-     * @param {object} options
-     * @param {string} options.title title of the dialog
-     * @param {string} options.shortName shortname of the new op
-     * @param {string} options.type type of op (patch/user/team/...)
-     * @param {string} options.suggestedNamespace suggested namespace in dropdown
-     * @param {boolean} options.showReplace show "create and replace existing" button
-     * @param {string|null} options.sourceOpName opname to clone from or create op into
-     * @param {function} cb
-     */
-    opNameDialog(options, cb)
-    {
-        const newName = options.sourceOpName || options.shortName;
-        let opTargetDir = null;
-        const _checkOpName = () =>
-        {
-            if (!platform.isTrustedPatch())
-            {
-                new ModalDialog({
-                    "title": "Untrusted Patch",
-                    "text": "You need write access in the patch to create ops<br/>Try creating a new patch and try there again",
-                    "showOkButton": true
-                });
-                return;
-            }
-
-            const checkNameRequest = {
-                "namespace": options.suggestedNamespace,
-                "v": newName,
-                "sourceName": options.sourceOpName,
-                "rename": options.rename
-            };
-            if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
-            platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, initialRes) =>
-            {
-                if (err)
-                {
-                    this.showApiError(err);
-                    return;
-                }
-
-                const modalDialog = new ModalDialog({
-                    "title": options.title,
-                    "text": html
-                });
-
-                if (platform.frontendOptions.hasOpDirectories)
-                {
-                    ele.clickables(modalDialog.getElement(), ".clickable", (event, dataset) =>
-                    {
-                        const selectElement = ele.byId("opTargetDir");
-                        const selectedDir = ele.getSelectValue(selectElement);
-                        switch (event.currentTarget.id)
-                        {
-                        case "addOpTargetDir":
-                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, dirRes) =>
-                            {
-                                if (!dirErr)
-                                {
-                                    if (selectElement)
-                                    {
-                                        selectElement.length = 0;
-                                        dirRes.data.forEach((dir, i) =>
-                                        {
-                                            const selected = i === 0;
-                                            selectElement.add(new Option(dir, dir, selected, selected));
-                                            if (selected) opTargetDir = dir;
-                                        });
-                                    }
-                                }
-                                else
-                                {
-                                    new ModalDialog({
-                                        "showOkButton": true,
-                                        "warning": true,
-                                        "title": "Warning",
-                                        "text": dirErr.msg
-                                    });
-                                    this.#log.info(dirErr.msg);
-                                }
-                            });
-                            break;
-                        case "openOpTargetDir":
-                        default:
-                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_OPEN_DIR, { "dir": selectedDir });
-                            break;
-                        }
-                    });
-                }
-
-                const opNameInput = ele.byId("opNameDialogInput");
-                const checkedName = initialRes.checkedName || options.sourceOpName;
-                if (opNameInput.value !== checkedName)
-                {
-                    opNameInput.value = checkedName;
-                }
-                _updateFormFromApi(initialRes, checkedName);
-
-                if (opNameInput.value)
-                {
-                    const parts = opNameInput.value.split(".");
-                    let lastPartLength = parts[parts.length - 1].length;
-                    if (parts.length > 1)
-                    {
-                        opNameInput.setSelectionRange(opNameInput.value.length - lastPartLength, opNameInput.value.length);
-                        opNameInput.focus();
-                    }
-                }
-
-                opNameInput.addEventListener("input", _nameChangeListener);
-                ele.byId("opNameDialogNamespace").addEventListener("input", _namespaceChangeListener);
-                const opTargetDirEle = ele.byId("opTargetDir");
-                if (opTargetDirEle)
-                {
-                    opTargetDirEle.addEventListener("change", () =>
-                    {
-                        if (opTargetDirEle)
-                        {
-                            opTargetDir = opTargetDirEle.value;
-                        }
-                        else
-                        {
-                            opTargetDir = null;
-                        }
-                        _nameChangeListener();
-                    });
-                }
-
-                const cbOptions = {
-                    "replace": false
-                };
-
-                ele.clickable(ele.byId("opNameDialogSubmit"), () =>
-                {
-                    if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                    cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
-                });
-
-                if (options.showReplace)
-                {
-                    ele.clickable(ele.byId("opNameDialogSubmitReplace"), (event) =>
-                    {
-                        cbOptions.replace = true;
-                        if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
-                        cb(ele.byId("opNameDialogNamespace").value, namespace.capitalizeNamespaceParts(opNameInput.value), cbOptions);
-                    });
-                }
-            });
-        };
-
-        let html = "";
-
-        if (!platform.isElectron()) html += "Want to share your op between patches and/or people? <a href=\"" + platform.getCablesUrl() + "/myteams\" target=\"_blank\">create a team</a><br/><br/>";
-
-        html += "New op name:<br/><br/>";
-        html += "<div class=\"clone\"><input type=\"text\" id=\"opNameDialogInput\" value=\"" + options.sourceOpName + "\" placeholder=\"" + platform.getDefaultOpName() + "\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/>";
-        html += "&nbsp;";
-        html += "<select class=\"left\" id=\"opNameDialogNamespace\"></select><br/>";
-        html += "</div><br/><br/>";
-        html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
-        html += "<div id=\"opNameDialogHints\" class=\"hidden hints\"></div>";
-        html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
-        html += "<br/><br/>";
-        if (options.rename)
-        {
-            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Rename Op</a>";
-        }
-        else
-        {
-            html += "<a tabindex=\"0\" id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
-        }
-        html += "<a tabindex=\"0\" id=\"opNameDialogSubmitReplace\" class=\"cblbutton hidden\">Create and replace existing</a>";
-        html += "<br/><br/>";
-
-        if (options.hasOpDirectories)
-        {
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, res) =>
-            {
-                let opDirSelect = "Choose op directory:<br/><br/>";
-                opDirSelect += "<select id=\"opTargetDir\" name=\"opTargetDir\">";
-                for (let i = 0; i < res.data.length; i++)
-                {
-                    const dirInfo = res.data[i];
-                    if (i === 0) opTargetDir = dirInfo.dir;
-                    opDirSelect += "<option value=\"" + dirInfo.dir + "\">" + dirInfo.dir + "</option>";
-                }
-                opDirSelect += "</select>";
-                opDirSelect += "&nbsp;<a id=\"addOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"add op dir\" data-tt=\"add op dir\"><span class=\"icon icon-file-plus\"></span></a>\n";
-                opDirSelect += "&nbsp;<a id=\"openOpTargetDir\" class=\"button-small button-icon tt info clickable\" data-info=\"open dir\" data-tt=\"open dir\"><span class=\"icon icon-folder\"></span></a>\n";
-                opDirSelect += "<hr/>";
-                html = opDirSelect + html;
-                _checkOpName();
-            });
-        }
-        else
-        {
-            _checkOpName();
-        }
-
-        const _namespaceChangeListener = () =>
-        {
-            const opNameInput = ele.byId("opNameDialogInput");
-            const selectEle = ele.byId("opNameDialogNamespace");
-
-            if (selectEle.value && namespace.isNamespaceNameValid(selectEle.value))
-            {
-                const opName = opNameInput.value;
-                const opBasename = opName.substring(opName.lastIndexOf(".") + 1);
-                const newNamespace = selectEle.value;
-                const newOpName = newNamespace + opBasename;
-                if (opNameInput)
-                {
-                    opNameInput.value = newOpName;
-                    _nameChangeListener();
-                }
-            }
-        };
-
-        const _nameChangeListener = () =>
-        {
-            const newNamespace = ele.byId("opNameDialogNamespace").value;
-            let nameInput = ele.byId("opNameDialogInput").value;
-            const fullName = namespace.capitalizeNamespaceParts(nameInput);
-
-            ele.hide(ele.byId("opNameDialogSubmit"));
-            ele.hide(ele.byId("opNameDialogSubmitReplace"));
-
-            if (fullName)
-            {
-                const checkNameRequest = {
-                    "namespace": newNamespace,
-                    "v": fullName,
-                    "sourceName": options.sourceOpName,
-                    "rename": options.rename
-                };
-                const opTargetDirEle = ele.byId("opTargetDir");
-                if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
-
-                gui.jobs().start({
-                    "id": "checkOpName" + fullName,
-                    "title": "checking op name" + fullName
-                });
-
-                platform.talkerAPI.send(TalkerAPI.CMD_CHECK_OP_NAME, checkNameRequest, (err, res) =>
-                {
-
-                    if (err)
-                    {
-                        if (!res) res = {};
-                        if (!res.problems) res.problems = [];
-                        if (!res.checkedName) res.checkedName = fullName;
-                        res.problems.push("failed to check op-name with api, try again");
-                    }
-
-                    if (res.checkedName && res.checkedName === fullName)
-                    {
-                        _updateFormFromApi(res, fullName, newNamespace);
-                    }
-                    gui.jobs().finish("checkOpName" + fullName);
-                });
-            }
-        };
-
-        const _updateFormFromApi = (res, newOpName, newNamespace = null) =>
-        {
-            let hintsHtml = "";
-            const eleHints = ele.byId("opNameDialogHints");
-            const inputField = ele.byId("opNameDialogInput");
-
-            if (eleHints) ele.hide(eleHints);
-            if (res.hints && res.hints.length > 0)
-            {
-                hintsHtml += "<ul>";
-                res.hints.forEach((hint) =>
-                {
-                    hintsHtml += "<li>" + hint + "</li>";
-                });
-                hintsHtml += "</ul>";
-
-                if (eleHints)
-                {
-                    eleHints.innerHTML = "<h3>Hints</h3>" + hintsHtml;
-                    ele.show(eleHints);
-                }
-            }
-
-            let consequencesHtml = "";
-            const eleCons = ele.byId("opNameDialogConsequences");
-            if (eleCons) ele.hide(eleCons);
-            if (res.consequences && res.consequences.length > 0)
-            {
-                consequencesHtml += "<ul>";
-                res.consequences.forEach((consequence) =>
-                {
-                    consequencesHtml += "<li>" + consequence + "</li>";
-                });
-                consequencesHtml += "</ul>";
-
-                if (eleCons)
-                {
-                    eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
-                    ele.show(eleCons);
-                }
-            }
-
-            if (newOpName)
-            {
-                if (res.problems.length > 0)
-                {
-                    let htmlIssue = "<h3>Issues</h3>";
-                    htmlIssue += "<ul>";
-                    for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul>";
-                    const errorsEle = ele.byId("opcreateerrors");
-                    errorsEle.innerHTML = htmlIssue;
-                    ele.hide(ele.byId("opNameDialogSubmit"));
-                    ele.hide(ele.byId("opNameDialogSubmitReplace"));
-                    errorsEle.classList.remove("hidden");
-
-                    const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
-                    if (versionSuggestions) versionSuggestions.forEach((suggest) =>
-                    {
-                        if (suggest.dataset.nextName)
-                        {
-                            suggest.addEventListener("pointerdown", (e) =>
-                            {
-                                inputField.value = namespace.capitalizeNamespaceParts(suggest.dataset.nextName);
-                                _nameChangeListener();
-                            });
-                        }
-                    });
-                }
-                else
-                {
-                    ele.byId("opcreateerrors").innerHTML = "";
-                    ele.byId("opcreateerrors").classList.add("hidden");
-                    ele.show(ele.byId("opNameDialogSubmit"));
-                    if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
-                }
-            }
-
-            const namespaceEle = ele.byId("opNameDialogNamespace");
-            namespaceEle.innerHTML = "";
-            if (res.namespaces)
-            {
-                res.namespaces.forEach((ns) =>
-                {
-                    const option = document.createElement("option");
-                    option.value = ns;
-                    option.text = ns;
-                    if (newNamespace && ns === newNamespace) option.selected = true;
-                    namespaceEle.add(option);
-                });
-            }
-
-            ele.byId("opNameDialogInput").focus();
-        };
-    }
-
     createDialog(name, options)
     {
         options = options || {};
         if (!options.hasOwnProperty("showEditor")) options.showEditor = true;
 
-        if (gui.project().isOpExample)
-        {
-            notifyError("Not possible in op example patch!");
-            return;
-        }
+        if (!platform.checkOpCreate()) return;
 
         let suggestedNamespace = platform.getPatchOpsNamespace();
+        let suggestedName = name;
+        if (!suggestedName) suggestedName = suggestedNamespace + platform.getDefaultOpName();
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": name || platform.getDefaultOpName(),
+            "shortName": suggestedName,
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
             "sourceOpName": null,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             let opname = newName;
             this.create(opname, (newOp) =>
@@ -1291,7 +937,7 @@ export default class ServerOps
             "hasOpDirectories": false
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newName;
 
@@ -1426,10 +1072,11 @@ export default class ServerOps
             "suggestedNamespace": suggestedNamespace,
             "showReplace": true,
             "sourceOpName": oldName,
+            "rename": false,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
+        new ModalOpName(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newName;
 
@@ -1480,6 +1127,132 @@ export default class ServerOps
                 });
             }, { "opTargetDir": cbOptions.opTargetDir });
         });
+    }
+
+    editDependency(op, dependencyName, readOnly, cb, fromListener = false)
+    {
+        let opname = op;
+        let opId = opname;
+
+        if (typeof opname == "object")
+        {
+            opname = op.objName;
+            opId = op.opId;
+        }
+        else
+        {
+            const docs = gui.opDocs.getOpDocByName(opname);
+            if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
+        }
+
+        const parts = opname.split(".");
+        const shortname = parts[parts.length - 1];
+        const title = shortname + "/" + dependencyName;
+        const userInteraction = !fromListener;
+
+        let existingTab = gui.maintabPanel.tabs.getTabByTitle(title);
+        if (existingTab)
+        {
+            gui.mainTabs.activateTabByName(existingTab.title);
+            gui.maintabPanel.show(true);
+            return;
+        }
+
+        let editorObj = null;
+        gui.jobs().start({
+            "id": "load_dependency_" + dependencyName,
+            "title": "loading dependency " + dependencyName
+        });
+
+        const apiParams = {
+            "opname": opId,
+            "name": dependencyName
+        };
+
+        const editorTab = createEditor({
+            "title": title,
+            "name": opId, // "content": content,
+            "loading": true,
+            "syntax": "js",
+            "editorObj": editorObj,
+            "allowEdit": !!readOnly,
+            "showSaveButton": true,
+            "onClose": (which) =>
+            {
+                if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
+            }
+        });
+
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DEPENDENCY, apiParams, (err, res) =>
+        {
+            gui.jobs().finish("load_dependency_" + dependencyName);
+
+            if (err)
+            {
+                this.showApiError(err);
+                this.#log.error("error opening dependency " + dependencyName);
+                this.#log.log(err);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
+                return;
+            }
+
+            if (!res || !res.data || res.data.content === undefined)
+            {
+                if (err) this.#log.log("[editDependency] err", err);
+                if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
+                return;
+            }
+
+            editorObj = editorSession.rememberOpenEditor("dependency", title, {
+                "opname": opname,
+                "opid": opId,
+                "name": dependencyName
+            }, true);
+
+            const content = res.data.content || "";
+            editorTab.setContent(content);
+
+            if (editorObj)
+            {
+                editorTab.on("save", (_setStatus, _content) =>
+                {
+                    gui.savingTitleAnimStart("Saving dependency...");
+                    platform.talkerAPI.send(TalkerAPI.CMD_SAVE_OP_DEPENDENCY, {
+                        "opname": opId,
+                        "name": dependencyName,
+                        "content": _content
+                    }, (errr, re) =>
+                    {
+                        if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
+
+                        if (errr)
+                        {
+                            notifyError("error: op not saved");
+                            this.#log.warn("[opDependencySave]", errr);
+                            return;
+                        }
+
+                        if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
+
+                        _setStatus("Saved " + dependencyName);
+
+                        subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
+                        {
+                            gui.opParams.refresh();
+                            gui.savingTitleAnimEnd();
+                        });
+                    });
+                });
+            }
+
+            if (cb) cb(); else gui.maintabPanel.show(userInteraction);
+        });
+
+        if (!editorObj && title)
+        {
+            gui.mainTabs.activateTabByName(title);
+            gui.maintabPanel.show(userInteraction);
+        }
     }
 
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
@@ -1605,7 +1378,7 @@ export default class ServerOps
 
                         if (re && re.data && re.data.updated) gui.patchView.store.setServerDate(re.data.updated);
 
-                        _setStatus("saved");
+                        _setStatus("Saved " + attachmentName);
 
                         if (attachmentName == subPatchOpUtil.blueprintPortJsonAttachmentFilename)
                         {
@@ -1806,11 +1579,15 @@ export default class ServerOps
                                         setStatus("Saved " + opname);
                                         editor.focus();
 
-                                        if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
-                                        {
-                                            gui.opParams.show(gui.corePatch().ops[i].id);
-                                            gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
-                                        }
+                                        if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++)
+                                            if (gui.corePatch().ops[i].uiAttribs &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x &&
+                                                 gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                            {
+                                                gui.opParams.show(gui.corePatch().ops[i].id);
+                                                gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
+                                            }
 
                                         gui.savingTitleAnimEnd();
                                         gui.endModalLoading();
@@ -1913,11 +1690,11 @@ export default class ServerOps
             }
         }
 
+        perf.finish();
         if (!opDoc)
-        {
             return [];
-        }
 
+        const perf2 = gui.uiProfiler.start("[opsserver] getOpDeps2 ");
         const opLibs = this.getOpLibs(opDoc.name);
         const opCoreLibs = this.getCoreLibs(opDoc.name);
         const opDependencies = [];
@@ -1932,7 +1709,7 @@ export default class ServerOps
                 opDependencies.push(dep);
             }
         }
-        perf.finish();
+        perf2.finish();
 
         return [...opLibs, ...opCoreLibs, ...opDependencies];
     }
@@ -2051,7 +1828,7 @@ export default class ServerOps
 
     getMissingOps(proj)
     {
-        const perf = gui.uiProfiler.start("[opsserver] gerMissingOps");
+        const perf = gui.uiProfiler.start("[opsserver] getMissingOps");
 
         let missingOps = [];
         const missingOpsFound = [];
@@ -2079,6 +1856,7 @@ export default class ServerOps
 
     isLoaded(op)
     {
+        const perf = gui.uiProfiler.start("[opsserver] isloaded");
         const opDocs = gui.opDocs.getOpDocs();
         const opIdentifier = this.getOpIdentifier(op);
         // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
@@ -2094,6 +1872,7 @@ export default class ServerOps
             // we found an op in opdocs, check if we also have the code and needed libraries
             loaded = this.opCodeLoaded(foundOp);
         }
+        perf.finish();
         return loaded;
     }
 

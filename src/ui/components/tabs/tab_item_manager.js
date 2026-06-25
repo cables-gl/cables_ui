@@ -97,23 +97,53 @@ export default class ItemManager extends Events
         const options = { "items": this._items };
         for (const i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
 
+        let newest = null;
+        const filePorts = gui.patchView.getUrlInputPorts();
+        for (let j = 0; j < this._items.length; j++)
+        {
+            if (this._items[j].file && (!newest || this._items[j].file.d > newest.file.d))
+                newest = this._items[j];
+
+            for (let i = 0; i < filePorts.length; i++)
+            {
+                if (filePorts[i].get() == this._items[j].file.p)
+                {
+                    this._items[j].usedInPatch = true;
+                    break;
+                }
+            }
+        }
+        if (newest)newest.latest = true;
+
         if (this.#display === "icons") html = getHandleBarHtml("tab_itemmanager", options);
         else html = getHandleBarHtml("tab_itemmanager_list", options);
 
         this.#tab.html("<div id=\"item_manager\" class=\"item_manager\">" + html + "</div>");
     }
 
+    /**
+     * @param {string} t
+     */
     getItemByTitleContains(t)
     {
         for (let i = 0; i < this._items.length; i++)
-        {
             if (t.indexOf(this._items[i].title) > -1)
-            {
                 return this._items[i];
-            }
-        }
     }
 
+    /**
+     * @param {string} t
+     */
+    getItemByTitle(t)
+    {
+        for (let i = 0; i < this._items.length; i++)
+            if (this._items[i].title == t)
+                return this._items[i];
+    }
+
+    /**
+     * @param {string} id
+     */
     getItemById(id)
     {
         for (let i = 0; i < this._items.length; i++) if (id === this._items[i].id) return this._items[i];
@@ -160,7 +190,7 @@ export default class ItemManager extends Events
         this.updateSelectionHtml();
     }
 
-    updateDetailHtml(items)
+    updateDetailHtml()
     {
         const detailItems = [];
         for (let i = 0; i < this._items.length; i++) if (this._items[i].selected) detailItems.push(this._items[i]);
@@ -208,7 +238,7 @@ export default class ItemManager extends Events
             {
                 ele.addEventListener(
                     "click",
-                    function (e)
+                    (e) =>
                     {
                         if (!e.shiftKey)
                         {
@@ -221,7 +251,7 @@ export default class ItemManager extends Events
                         }
                         this.updateSelectionHtml();
                         this.updateDetailHtml();
-                    }.bind(this),
+                    }
                 );
             }
         }

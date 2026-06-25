@@ -64,9 +64,12 @@ export default class KeyBindingsManager extends Events
         document.body.removeChild(element);
     }
 
+    /**
+     * @param {any[]} keys
+     */
     _prepareKeysForDisplay(keys)
     {
-        let k = JSON.parse(JSON.stringify(keys));
+        let k = structuredClone(keys);
 
         k.sort(function (a, b)
         {
@@ -113,7 +116,7 @@ export default class KeyBindingsManager extends Events
         {
             const k = this._keys[i];
 
-            if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
+            if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA" || document.activeElement.classList.contains("cm-content"))) continue;
 
             if (k.key != (e.key + "").toLowerCase() || k.event != "up") continue;
 
@@ -178,7 +181,7 @@ export default class KeyBindingsManager extends Events
 
             if (!k.target || k.target == e.target.id)
             {
-                if (k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
+                if (k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA" || document.activeElement.classList.contains("cm-content"))) continue;
 
                 // gui.log.userInteraction("pressed " + e.key);
 

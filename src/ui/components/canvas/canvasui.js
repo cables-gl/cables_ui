@@ -177,8 +177,8 @@ export default class CanvasUi
         const act = userSettings.get("overlaysShow");
         const icon = ele.byId("canvUitoggleOverlay");
         if (icon)
-            if (act)icon.style.backgroundColor = "var(--color-special)";
-            else icon.style.backgroundColor = "var(--color-07)";
+            if (act)icon.classList.add("icon-highlight");
+            else icon.classList.remove("icon-highlight");
     }
 
     /**
@@ -196,13 +196,12 @@ export default class CanvasUi
         this.updateCanvasIconBar();
 
         this.isCanvasFocussed = show;
-        if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
-        else this._elCanvasIconbar.classList.add("hidden");
+        if (this.isCanvasFocussed) this._elCanvasIconbar.classList.add("focussed");
+        else this._elCanvasIconbar.classList.remove("focussed");
 
         if (show)
         {
             if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
-
             {
                 ele.hide(this._elCanvasModalDarkener);
             }

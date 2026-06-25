@@ -22,8 +22,8 @@
     {{else}}
     {{#if port.links}}
 
-        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
+        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
+        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
 
         {{#compare port.uiAttribs.display '==' 'button' }}
             <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
@@ -40,11 +40,8 @@
             {{#if port.uiAttribs.multiPort2}}
             {{#if port.uiAttribs.hideMultiPortUi}}
             {{else}}
-
                 </td><td>
-
                     Multiport
-
                     <span class="button-small button-icon" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
                     <span class="button-small button-icon" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
                 </td>
@@ -199,7 +196,13 @@
 
                         <div class="button_gradient" tabindex="0" id="watchgradient_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
 
-                        <!-- <span class="button gradienteditbutton" > <span class="icon icon-edit"></span>Edit</span> -->
+                {{/compare}}
+                {{#compare port.uiAttribs.display '==' 'curve' }}
+                    </td>
+                    <td>
+
+                        <div class="button_curve" tabindex="0" id="watchcurve_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
+
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'texture' }}
                     </td>

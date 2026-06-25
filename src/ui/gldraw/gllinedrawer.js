@@ -547,6 +547,7 @@ export class GlLineDrawer extends Events
      */
     _updateAttribsCoordinates(idx, updateWhat)
     {
+        console.log("text", idx, updateWhat);
         if (!gui.patchView._patchRenderer) return;
         if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
 

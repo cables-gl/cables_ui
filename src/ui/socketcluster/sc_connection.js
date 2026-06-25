@@ -308,7 +308,7 @@ export default class ScConnection extends Events
                 "requestedBy": requestedBy,
                 "forceResync": forceResync
             };
-            this._paco.send(CABLES.PACO_LOAD, payload);
+            this._paco.send(CABLES.PACO_LOAD, payload, forceResync);
             this._pacoSynced = true;
             if (gui.scene().timer)
             {
@@ -322,7 +322,7 @@ export default class ScConnection extends Events
     {
         if (this.inMultiplayerSession && !this.client.isPilot)
         {
-            this.sendPaco({ "requestedBy": this.client.clientId }, "resync");
+            this.sendPaco({ "requestedBy": this.client.clientId }, "resync", true);
         }
     }
 
@@ -371,13 +371,16 @@ export default class ScConnection extends Events
         this._send(this.patchChannelName, "chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
-    sendPaco(payload, name = "paco")
+    sendPaco(payload, name = "paco", sendOnEmptyClientList = false)
     {
         if (!this._pacoEnabled) return;
         if (this.client && (!this.client.isRemoteClient || name === "resync"))
         {
-            payload.name = name || "paco";
-            this._send(this.userPatchChannelName, "paco", payload);
+            if (sendOnEmptyClientList || this.state.getNumClients() > 1)
+            {
+                payload.name = name || "paco";
+                this._send(this.userPatchChannelName, "paco", payload);
+            }
         }
     }
 
@@ -398,12 +401,6 @@ export default class ScConnection extends Events
         this._state = new ScState(this);
         if (this.multiplayerCapable)
         {
-            this._state.on("becamePilot", () =>
-            {
-                this._sendPing();
-                this._startPacoSend(this.clientId);
-            });
-
             this._state.on("enableMultiplayer", (payload) =>
             {
                 this._pacoEnabled = true;
@@ -441,7 +438,6 @@ export default class ScConnection extends Events
                 if (!this.isConnected()) return;
                 if (this.inMultiplayerSession)
                 {
-                    // notifyError("multiplayer server disconnected!", "wait for reconnection to rejoin session");
                     this.leaveMultiplayerSession();
                 }
                 // socketcluster reports "hung up" errors during own reconnection/keepalive phase
@@ -561,7 +557,7 @@ export default class ScConnection extends Events
                         switch (msg.data.build)
                         {
                         case "opchange":
-                            console.log("opchangeeeeeeeeeeeepf s", opName);
+                            console.log("opchange", opName);
                             if (opName)
                             {
                                 const usedOps = gui.corePatch().getOpsByObjName(opName);
@@ -810,7 +806,7 @@ export default class ScConnection extends Events
                 if (this._pacoEnabled && this.client) // && this.client.isPilot)
                 {
                     this._log.info("RESYNC sending paco patch....");
-                    this._startPacoSend(msg.clientId);
+                    this._startPacoSend(msg.clientId, true);
                 }
             };
             if (this.inMultiplayerSession)
@@ -868,11 +864,6 @@ export default class ScConnection extends Events
             msg.lastSeen = this.getTimestamp();
             this._lastPingReceived = msg.lastSeen;
             this.emitEvent("onPingAnswer", msg);
-        }
-        if (msg.name === "pilotRequest")
-        {
-            if (msg.clientId === this._socket.clientId) return;
-            this.emitEvent("onPilotRequest", msg);
         }
         if (msg.name === "reloadOp")
         {

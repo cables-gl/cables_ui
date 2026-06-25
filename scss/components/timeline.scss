@@ -1,12 +1,14 @@
 .cablesCssUi
 {
-    --portNameWidth:150px;
+    --portNameWidth:170px;
+    --buttonWidth:100px;
 
     .collapsed .tlTitle:not(:first-child)
     {
         padding-top:0px !important;
         border-bottom:0px  ;
     }
+
 
     .tlTitle
     {
@@ -21,6 +23,7 @@
         padding-top:4px;
         overflow: hidden;
 
+
         &:hover,&.hover
         {
             background-color: #111;
@@ -31,18 +34,31 @@
             width:22px;
             display: inline-block;
             padding-right: 0px;
+
         }
 
         .portAndValue
         {
-            background-color:black ;
             border-left:3px solid transparent;
             position: absolute;
-            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - 30px);
+            left: calc(var(--timelineSplitterLeft) - var(--portNameWidth) - var(--buttonWidth));
             width: var(--portNameWidth);
             max-width: var(--portNameWidth);
             overflow: hidden ;
             text-overflow: ellipsis;
+
+            .portValue
+            {
+                color:#eee;
+                float: right;
+                padding-left:10px;
+                padding-right:10px;
+                cursor: ew-resize;
+
+                &.outside{
+                    color:#888;
+                }
+            }
         }
 
         .hover
@@ -61,6 +77,16 @@
             left: calc(var(--timelineSplitterLeft) - 5px);
             transform: translate(-100%);
             z-index: 999;
+
+            .button-small
+            {
+                background-color: var(--color-02)!important;
+            }
+
+            .button-small:hover
+            {
+                background-color: var(--color-05)!important;
+            }
 
         }
 
@@ -88,6 +114,8 @@
 
         &.selectedOp
         {
+            background-color: var(--color-02);
+
             .opname
             {
                 background-color: #555;
@@ -111,15 +139,21 @@
             }
         }
     }
-        .folder{
-            height: 40px;
-            user-select: none;
-            margin-left: 10px;
-            background-color: #444;
-            border-radius: 4px;
-            padding-left: 8px;
-            padding-right: 8px;
-        }
+
+    .collapsed
+    {
+        opacity: 0.5;
+    }
+
+    .folder{
+        height: 40px;
+        user-select: none;
+        margin-left: 10px;
+        background-color: #444;
+        border-radius: 4px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
 
     .hasSelectedKeys
     {
@@ -239,9 +273,7 @@
         .iconbutton
         {
             margin-right: 1px;
-
         }
-
         .panel
         {
             padding:0px
@@ -259,9 +291,7 @@
     .linesContainer
     {
         position: relative;
-        /* border: 1px solid red; */
         overflow: hidden;
-        /* padding-left: 20px; */
 
         .toggle{
             background-color: white;
@@ -272,23 +302,25 @@
             margin-left: -20px;
         }
     }
-        .level1 .indent{ width: 0px; }
-        .level2 .indent{ width: 20px; }
-        .level3 .indent{ width: 40px; }
-        .level4 .indent{ width: 60px; }
-        .level5 .indent{ width: 80px; }
-        .level6 .indent{ width: 100px; }
-        .level7 .indent{ width: 120px; }
-        .level8 .indent{ width: 140px; }
-        .level9 .indent{ width: 160px; }
-        .level10 .indent{ width: 180px; }
-        .level11 .indent{ width: 200px; }
-        .level12 .indent{ width: 220px; }
-        .level13 .indent{ width: 240px; }
-        .level14 .indent{ width: 260px; }
-        .level15 .indent{ width: 280px; }
-        .level16 .indent{ width: 300px; }
-        .level17 .indent{ width: 320px; }
+
+    .level1 .indent{ width: 0px; }
+    .level2 .indent{ width: 20px; }
+    .level3 .indent{ width: 40px; }
+    .level4 .indent{ width: 60px; }
+    .level5 .indent{ width: 80px; }
+    .level6 .indent{ width: 100px; }
+    .level7 .indent{ width: 120px; }
+    .level8 .indent{ width: 140px; }
+    .level9 .indent{ width: 160px; }
+    .level10 .indent{ width: 180px; }
+    .level11 .indent{ width: 200px; }
+    .level12 .indent{ width: 220px; }
+    .level13 .indent{ width: 240px; }
+    .level14 .indent{ width: 260px; }
+    .level15 .indent{ width: 280px; }
+    .level16 .indent{ width: 300px; }
+    .level17 .indent{ width: 320px; }
+
     .indent{
         height: 4px;
         display: inline-block;

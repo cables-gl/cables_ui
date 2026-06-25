@@ -77,6 +77,26 @@ export default class UiProfiler
                 }
 
                 perf._measures[name].date = performance.now();
+
+                // performance.measure(name, {
+                //     "start": this.start,
+                //     "end": performance.now(),
+                //     "detail": {
+                //         "devtools": {
+                //             "dataType": "track-entry",
+                //             "track": "uiprofiler",
+                //             // color: "tertiary-dark",
+                //             // properties: [
+                //             //   ["Filter Type", "Gaussian Blur"],
+                //             //   // Values can be objects, arrays, or other types
+                //             //   ["Resize Dimensions", { w: 500, h: 300 }],
+                //             //   // String values that are URLs get linkified
+                //             //   ["Image URL", "https://example.com/img.png"],
+                //             // ],
+                //             // tooltipText: "Image processed successfully",
+                //         },
+                //     },
+                // });
             }
         };
         return r;

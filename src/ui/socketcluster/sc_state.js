@@ -11,8 +11,6 @@ export default class ScState extends Events
     {
         super();
 
-        this.PILOT_REQUEST_TIMEOUT = 20000;
-
         this._log = new Logger("scstate");
 
         this._connection = connection;
@@ -230,14 +228,6 @@ export default class ScState extends Events
                 });
             }
 
-            if (pilot && !pilot.isRemoteClient)
-            {
-                this._clients[pilot.clientId].isPilot = true;
-                if (pilot.clientId === this._connection.clientId)
-                {
-                    this.becomePilot();
-                }
-            }
         }
 
         return cleanupChange;
@@ -251,63 +241,6 @@ export default class ScState extends Events
     hasPilot()
     {
         return !!this._pilot;
-    }
-
-    becomePilot()
-    {
-        if (!gui.isRemoteClient)
-        {
-            this._connection.client.isPilot = true;
-            this.emitEvent("becamePilot");
-            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        }
-    }
-
-    requestPilotSeat()
-    {
-        const client = this._clients[this._connection.clientId];
-        if (!gui.isRemoteClient && (client && !client.isPilot))
-        {
-            this._connection.sendControl("pilotRequest", { "username": client.username, "state": "request" });
-            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
-            if (myAvatar) myAvatar.classList.add("pilot-request");
-            this._pendingPilotRequest = setTimeout(() =>
-            {
-                if (this._pendingPilotRequest)
-                {
-                    this.acceptPilotSeatRequest();
-                    this._pendingPilotRequest = null;
-                }
-            }, this.PILOT_REQUEST_TIMEOUT + 2000);
-        }
-    }
-
-    hasPendingPilotSeatRequest()
-    {
-        return !!this._pendingPilotRequest;
-    }
-
-    acceptPilotSeatRequest()
-    {
-        const client = this._clients[this._connection.clientId];
-        if (client && !client.isPilot && this._pendingPilotRequest)
-        {
-            clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
-            if (myAvatar) myAvatar.classList.add("pilot-request");
-            this.becomePilot();
-        }
-    }
-
-    cancelPilotSeatRequest()
-    {
-        const client = this._clients[this._connection.clientId];
-        if (client && this._pendingPilotRequest)
-        {
-            clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
-            if (myAvatar) myAvatar.classList.remove("pilot-request");
-        }
     }
 
     _registerEventListeners()
@@ -364,36 +297,6 @@ export default class ScState extends Events
             this._sendCursorPos(x, y);
         });
 
-        gui.on("timelineControl", (command, value) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client && this._connection.client.isPilot)
-            {
-                if (command !== "scrollTime")
-                {
-                    const payload = {
-                        "command": command,
-                        "value": value
-                    };
-                    this._connection.sendUi("timelineControl", payload);
-                }
-                else
-                {
-                    if (this._timelineTimeout) return;
-
-                    const payload = {
-                        "command": "setTime",
-                        "value": value
-                    };
-                    this._timelineTimeout = setTimeout(() =>
-                    {
-                        this._connection.sendUi("timelineControl", payload);
-                        this._timelineTimeout = null;
-                    }, this._connection.netTimelineScrollDelay);
-                }
-            }
-        });
-
         gui.on("portValueEdited", (op, port, value) =>
         {
             if (!this._connection.inMultiplayerSession) return;
@@ -421,12 +324,12 @@ export default class ScState extends Events
             paramsHelper.setPortAnimated(op, index, targetState, defaultValue);
         });
 
-        gui.corePatch().on("pacoPortAnimUpdated", (port) =>
-        {
-            if (!port.anim) return;
-            if (!this._connection.inMultiplayerSession) return;
-            gui.metaKeyframes.showAnim(port.parent.id, port.name);
-        });
+        // gui.corePatch().on("pacoPortAnimUpdated", (port) =>
+        // {
+        //     if (!port.anim) return;
+        //     if (!this._connection.inMultiplayerSession) return;
+        //     gui.metaKeyframes.showAnim(port.parent.id, port.name);
+        // });
 
         gui.on("portValueSetAnimated", (op, portIndex, targetState, defaultValue) =>
         {
@@ -456,27 +359,6 @@ export default class ScState extends Events
             if (this._connection.client && this._connection.client.isPilot)
             {
                 this._connection.sendControl("reloadOp", { "opName": opName });
-            }
-        });
-
-        gui.on("gizmoMove", (opId, portName, newValue) =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            if (this._connection.client && this._connection.client.isPilot)
-            {
-                if (opId && portName)
-                {
-                    const payload = {};
-                    payload.data = {
-                        "event": CABLES.PACO_VALUECHANGE,
-                        "vars": {
-                            "op": opId,
-                            "port": portName,
-                            "v": newValue
-                        }
-                    };
-                    this._connection.sendPaco(payload);
-                }
             }
         });
 

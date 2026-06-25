@@ -1,6 +1,3 @@
-import Gui from "./ui/gui.js"
-import { Platform } from "./ui/platform.js"
-
 declare global {
 
     const CABLESUILOADER:any
@@ -11,11 +8,18 @@ declare global {
     const Handlebars:any
     const hljs:any
     const iziToast:any
+    const introJS:any
     const loadjs:any
     const marked:any
     const moment:any
     const platformLib:any
     const QRCode:any
+    const pako:any
+    const MathParser:any
+    const socketClusterClient:any
+    const tinysort:any
+    const UndoManager:any
+    const Sortable:any
     interface Window {
         Handlebars:any
         logStartup:typeof Function

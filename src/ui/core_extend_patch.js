@@ -79,6 +79,9 @@ class UiPatch extends Patch
         }
     }
 
+    /**
+     * @param {string} [subPatchId]
+     */
     getSubPatchOps(subPatchId, recursive = false)
     {
         if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
@@ -240,7 +243,14 @@ class UiPatch extends Patch
         return null;
     }
 
-    getOpsInRect(xa, ya, xb, yb)
+    /**
+     * @param {number} xa
+     * @param {number} ya
+     * @param {number} xb
+     * @param {number} yb
+     * @param {string} subPatchId
+     */
+    getOpsInRect(xa, ya, xb, yb, subPatchId)
     {
         const perf = gui.uiProfiler.start("[extPatch] ops in rect");
         const x = Math.min(xa, xb);
@@ -248,7 +258,7 @@ class UiPatch extends Patch
         const x2 = Math.max(xa, xb);
         const y2 = Math.max(ya, yb);
         const ops = [];
-        const cops = gui.corePatch().getSubPatchOps();
+        const cops = gui.corePatch().getSubPatchOps(subPatchId);
 
         for (let j = 0; j < cops.length; j++)
         {
@@ -302,8 +312,28 @@ class UiPatch extends Patch
         return animOps;
     }
 
+    /**
+     *
+     * @param {UiOp[]} ops
+     */
+    unshiftOps(ops)
+    {
+        if (!ops) return;
+        for (let i = 0; i < ops.length; i++)
+        {
+            const idx = this.ops.findIndex((op) => { return op.id === ops[i].id; });
+            if (idx > -1)
+            {
+                const op = this.ops[idx];
+                this.ops.splice(idx, 1);
+                this.ops.unshift(op);
+            }
+        }
+    }
+
     reloadOp(objName, cb, refOldOp)
     {
+        console.log("reload ", objName);
         let count = 0;
         const ops = [];
         const oldOps = [];
@@ -327,7 +357,9 @@ class UiPatch extends Patch
             oldOp.deleted = true;
             const op = this.addOp(objName, oldOp.uiAttribs);
             if (!op) continue;
-            if (oldOp && oldOp.storage) op.setStorage(JSON.parse(JSON.stringify(oldOp.storage)));
+            if (oldOp && oldOp.storage) op.setStorage(structuredClone(oldOp.storage));
+
+            op.attribs = oldOp.attribs;// maybe should be done in addop above ?
             ops.push(op);
 
             if (oldOp == refOldOp)
@@ -346,6 +378,7 @@ class UiPatch extends Patch
             {
                 if (oldOp.portsIn[j].links.length === 0)
                 {
+                    // console.log(oldOp.portsIn[j].name + "", oldOp.portsIn[j].get());
                     const p = op.getPort(oldOp.portsIn[j].name);
                     if (!p)
                     {

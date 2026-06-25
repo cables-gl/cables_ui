@@ -7,6 +7,7 @@ import { DomEvents } from "../theme.js";
 /** @typedef SuggestionItem
  * @property {String} [name]
  * @property {String} [class]
+ * @property {Array} [classNames]
  * @property {Number} [id]
  * @property {Number} [rot] - internal: do not set manually
  * @property {Number} [top] - internal: do not set manually
@@ -16,6 +17,7 @@ import { DomEvents } from "../theme.js";
  * @property {Port} [p] - port
  * @property {String} [op] - op id
  * @property {Number} [spacing] - extra spacing
+ * @property {Boolean} [isBoundToVar]
  * @property {Function} [cb] - [callback]
 */
 
@@ -43,7 +45,6 @@ export default class SuggestionDialog
      */
     constructor(suggestions, op, mouseEvent, cb, _action, _showSelect, cbCancel, options = {})
     {
-
         this.createTime = performance.now();
         this.#options = options;
         this.#cb = cb;
@@ -144,6 +145,13 @@ export default class SuggestionDialog
             const sugEle = this.#eleDialog.getElementsByClassName("suggestion" + i)[0];
 
             if (suggestions[i].class)sugEle.classList.add(suggestions[i].class);
+            if (suggestions[i].classNames)
+            {
+                for (let ic = 0; ic < suggestions[i].classNames.length; ic++)
+                {
+                    sugEle.classList.add(suggestions[i].classNames[ic]);
+                }
+            }
 
             if (!options.noAnim)
                 sugEle.animate([

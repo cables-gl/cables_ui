@@ -119,7 +119,7 @@ export default class PatchSaveServer extends Events
             {
                 const html =
                     "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave the browser-window open, and wait until we are finished with the update.<br/><br/>" +
-                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                    "<a class=\"cblbutton\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
                 new ModalDialog(
                     {
                         "title": "Maintenance Mode",
@@ -138,9 +138,9 @@ export default class PatchSaveServer extends Events
                     if (fromSave)
                     {
                         let html = "This patch was changed. Your version is out of date. <br/><br/>Last update: " + moment(data.updated).fromNow() + " by " + (data.updatedByUser || "unknown") + "<br/><br/>";
-                        html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-                        html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
-                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
+                        html += "<a class=\"cblbutton\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                         new ModalDialog({
                             "title": "Meanwhile...",
@@ -152,12 +152,13 @@ export default class PatchSaveServer extends Events
                     {
                         gui.restriction.setMessage("cablesupdate", "This patch was changed by " + (data.updatedByUser || "unknown") + ", " + moment(data.updated).fromNow() + "&nbsp;&nbsp;&nbsp; <a class=\"cblbutton\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>to get the latest update!");
                     }
+                    gui.jobs().finish("checkupdated");
                 }
                 else
                 {
+                    gui.jobs().finish("checkupdated");
                     if (cb)cb(null);
                 }
-                gui.jobs().finish("checkupdated");
             }
             else
             {
@@ -466,13 +467,13 @@ export default class PatchSaveServer extends Events
                 }
                 else if (gui.user.supporterFeatures.includes("overquota_copy_assets_on_clone"))
                 {
-                    let patchOpsText = "You are out of asset storage, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again!</a> ";
+                    let patchOpsText = "You are out of asset storage, upgrade your <a href=\"https://cables.gl/support\" target=\"_blank\">cables-support level</a>, to copy assets over to new patches again.";
                     modalNotices.push(patchOpsText);
                     saveAsModal.show();
                 }
                 else if (!gui.user.supporterFeatures.includes("disabled_copy_assets_on_clone"))
                 {
-                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches!</a> ";
+                    let patchOpsText = "Become a <a href=\"https://cables.gl/support\" target=\"_blank\">cables supporter</a>, to copy assets over to new patches.";
                     modalNotices.push(patchOpsText);
                     saveAsModal.show();
                 }
@@ -488,6 +489,9 @@ export default class PatchSaveServer extends Events
         });
     }
 
+    /**
+     * @param {Function} cb
+     */
     showSaveWarning(cb)
     {
         if (this.opCrashed)
@@ -498,11 +502,12 @@ export default class PatchSaveServer extends Events
                 "text": "An error happened while creating ops, the op may not be in the patch any longer. make sure the patch looks fine and has all ops",
 
                 "okButton": {
-                    "text": "save anyway",
-                    "callback": (name) =>
+                    "text": "Save anyway",
+                    "callback": () =>
                     {
                         this.saveCurrentProject(cb, true);
-                    } }
+                    }
+                }
             });
             modal.on("onSubmit", () =>
             {
@@ -632,13 +637,6 @@ export default class PatchSaveServer extends Events
 
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
-
-                        if (gui.socket)
-                            gui.socket.track("ui", "savepatch", "savepatch", {
-                                "sizeCompressed": uint8data.length / 1024,
-                                "sizeOrig": origSize,
-                                "time": performance.now() - startTime
-                            });
 
                         gui.emitEvent("patchsaved");
                         gui.jobs().finish("projectsave");
@@ -925,7 +923,7 @@ export default class PatchSaveServer extends Events
 
                 try
                 {
-                    neewArg = JSON.parse(JSON.stringify(arg));
+                    neewArg = structuredClone(arg);
                 }
                 catch (e)
                 {

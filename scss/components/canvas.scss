@@ -71,6 +71,10 @@
         padding-right: 5px;;
         overflow: hidden;
     }
+    #canvasIconBar.focussed
+    {
+        opacity: 0.4;
+    }
 
     .threedotcanvas
     {

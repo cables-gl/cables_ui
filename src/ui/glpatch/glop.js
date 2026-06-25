@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
+import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
 import GlArea from "./glarea.js";
@@ -56,8 +57,8 @@ export default class GlOp extends Events
     _titleExtPort = null;
     _titleExtPortListener = null;
 
-    /** @type GlText */
-    _titleExt = null;
+    /** @type {GlText} */
+    #titleExt = null;
 
     /** @type {Boolean} */
     _needsUpdate = true;
@@ -95,7 +96,7 @@ export default class GlOp extends Events
     minWidth = 10;
 
     /** @type GlText */
-    #glTitle = null;
+    _glTitle = null;
 
     /** @type GlText */
     _glComment = null;
@@ -567,7 +568,7 @@ export default class GlOp extends Events
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
 
-        this.opUiAttribs = JSON.parse(JSON.stringify(attr));
+        this.opUiAttribs = cloneObject(attr);
 
         if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
         {
@@ -654,27 +655,31 @@ export default class GlOp extends Events
         {
             let mathStr = "";
 
-            if (!this.#op.portsIn[0].isLinked()) mathStr += this.#op.portsIn[0].get();
+            if (this.#op.portsIn[0].getVariableName())mathStr += "#" + this.#op.portsIn[0].getVariableName();
+            else if (!this.#op.portsIn[0].isLinked()) mathStr += this.#op.portsIn[0].get();
             else if (!this.#op.portsIn[1].isLinked())mathStr += "x";
 
-            if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Sum) == 0) mathStr += "+";
-            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Multiply) == 0) mathStr += "*";
-            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Divide) == 0) mathStr += "/";
-            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Subtract) == 0) mathStr += "-";
-            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.GreaterThan) == 0) mathStr += ">";
-            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.LessThan) == 0) mathStr += "<";
+            if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Sum) == 0) mathStr += " + ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Multiply) == 0) mathStr += " * ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Divide) == 0) mathStr += " / ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Subtract) == 0) mathStr += " - ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.GreaterThan) == 0) mathStr += " > ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.LessThan) == 0) mathStr += " < ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.Equals) == 0) mathStr += " == ";
+            else if (this.#op.objName.indexOf(defaultOps.defaultOpNames.EqualsString) == 0) mathStr += " == ";
             else mathStr += "?";
 
-            if (!this.#op.portsIn[1].isLinked()) mathStr += this.#op.portsIn[1].get();
+            if (this.#op.portsIn[1].getVariableName())mathStr += "#" + this.#op.portsIn[1].getVariableName();
+            else if (!this.#op.portsIn[1].isLinked()) mathStr += this.#op.portsIn[1].get();
             else if (!this.#op.portsIn[0].isLinked()) mathStr += "x";
 
             title = mathStr;
         }
 
-        if (!this.#glTitle)
+        if (!this._glTitle)
         {
-            this.#glTitle = new GlText(this.#textWriter, title);
-            this.#glTitle.setParentRect(this.#glRectBg);
+            this._glTitle = new GlText(this.#textWriter, title);
+            this._glTitle.setParentRect(this.#glRectBg);
             this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this.#op.objName);
 
             if (this.#op.objName.indexOf("Ops.Ui.Comment") === 0)
@@ -688,13 +693,13 @@ export default class GlOp extends Events
             if (this.opUiAttribs.comment_title) // this._op.objName.indexOf("Ops.Ui.Comment") === 0
             {
                 this._hidePorts = true;
-                this.#glTitle.scale = 4;
+                this._glTitle.scale = 4;
             }
             this._updateColors();
         }
         else
         {
-            if (this.#glTitle.text != String(title)) this.#glTitle.text = String(title);
+            if (this._glTitle.text != String(title)) this._glTitle.text = String(title);
         }
 
         perf.finish();
@@ -770,7 +775,7 @@ export default class GlOp extends Events
 
         this._width = this._getTitleWidth();
         this.minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
-        if (this.#glTitle) this._height = Math.max(this.#glTitle.height + 5, this.#glRectBg.h);
+        if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this.#glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.glPatch.snap.snapY(this.opUiAttribs.height);
         if (this.opUiAttribs.width) this._width = this.glPatch.snap.snapX(Math.max(this.minWidth, this.opUiAttribs.width));
@@ -891,9 +896,9 @@ export default class GlOp extends Events
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelected) this.#glRectSelected = this.#glRectSelected.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
-        if (this.#glTitle) this.#glTitle = this.#glTitle.dispose();
+        if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
-        if (this._titleExt) this._titleExt = this._titleExt.dispose();
+        if (this.#titleExt) this.#titleExt = this.#titleExt.dispose();
         // if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
         if (this.#rectResize) this.#rectResize = this.#rectResize.dispose();
@@ -910,6 +915,9 @@ export default class GlOp extends Events
         this.#instancer = null;
     }
 
+    /**
+     * @param {string} linkId
+     */
     removeLink(linkId)
     {
         const l = this._links[linkId];
@@ -919,7 +927,10 @@ export default class GlOp extends Events
             this.update();
         }
 
-        if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0) this.#glPatch.deleteOp(this.#op.id);
+        // if (this.displayType == this.DISPLAY_REROUTE_DOT && Object.keys(this._links).length == 0){
+        //    this.#glPatch.deleteOp(this.#op.id);
+        //    gui.corePatch()
+        // }
     }
 
     refreshPorts()
@@ -1029,11 +1040,7 @@ export default class GlOp extends Events
 
                     colorPorts[0].on(Port.EVENT_UIATTRCHANGE, (attrs, _port) =>
                     {
-                        if (attrs.hasOwnProperty("heatmapIntensity"))
-                        {
-                            this._updateColors();
-
-                        }
+                        if (attrs.hasOwnProperty("heatmapIntensity")) this._updateColors();
 
                         if (attrs.hasOwnProperty("greyout"))
                         {
@@ -1079,6 +1086,7 @@ export default class GlOp extends Events
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
+            // console.log("setupport", ports[i].name);
 
             this._setupPort(count, ports[i]);
             count++;
@@ -1107,8 +1115,8 @@ export default class GlOp extends Events
 
         if (this.#glRectSelected) this.#glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
-        if (this.#glTitle) this.#glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
-        if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
+        if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
 
@@ -1128,8 +1136,8 @@ export default class GlOp extends Events
     _getTitleWidth()
     {
         let w = 0;
-        if (this._titleExt) w += this._titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
-        if (this.#glTitle) w += this.#glTitle.width;
+        if (this.#titleExt) w += this.#titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
+        if (this._glTitle) w += this._glTitle.width;
 
         w += gluiconfig.OpTitlePaddingLeftRight * 2.0;
 
@@ -1143,17 +1151,14 @@ export default class GlOp extends Events
 
     _getTitleExtPosition()
     {
-        return gluiconfig.OpTitlePaddingLeftRight + this.#glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
+        return gluiconfig.OpTitlePaddingLeftRight + this._glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
     }
 
     updateVisible()
     {
         if (!this.#wasInCurrentSubpatch && this.isInCurrentSubPatch())
         {
-            if (!this.#wasInited)
-            {
-                this._initGl();
-            }
+            if (!this.#wasInited) this._initGl();
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
@@ -1199,14 +1204,13 @@ export default class GlOp extends Events
 
         if (this.#glRectBg) this.#glRectBg.visible = visi;
         if (this._resizableArea) this._resizableArea.visible = visi;
-        if (this._titleExt) this._titleExt.visible = visi;
-        if (this.#glTitle) this.#glTitle.visible = visi;
+        if (this.#titleExt) this.#titleExt.visible = visi;
+        if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
         if (changed) this._updateIndicators();
 
-        if (changed)
-            for (const i in this._links) this._links[i].visible = true;
+        if (changed) for (const i in this._links) this._links[i].visible = true;
 
         if (!visi) this._isHovering = false;
     }
@@ -1400,23 +1404,23 @@ export default class GlOp extends Events
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)
         {
-            if (!this._titleExt &&
+            if (!this.#titleExt &&
                 (
                     this.opUiAttribs.hasOwnProperty("extendTitle") ||
                     this.opUiAttribs.hasOwnProperty("extendTitlePort")))
             {
-                this._titleExt = new GlText(this.#textWriter, " ");
-                this._titleExt.setParentRect(this.#glRectBg);
-                this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
+                this.#titleExt = new GlText(this.#textWriter, " ");
+                this.#titleExt.setParentRect(this.#glRectBg);
+                this.#titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
 
-                this._titleExt.visible = this.visible;
+                this.#titleExt.visible = this.visible;
             }
-            if (this._titleExt &&
-                (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
+            if (this.#titleExt &&
+                (!this.opUiAttribs.hasOwnProperty("extendTitle") || this.opUiAttribs.extendTitle == null || this.opUiAttribs.extendTitle == undefined) &&
                 (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
             {
-                this._titleExt.dispose();
-                this._titleExt = null;
+                this.#titleExt.dispose();
+                this.#titleExt = null;
             }
         }
 
@@ -1495,9 +1499,9 @@ export default class GlOp extends Events
         else if (this._glComment) this._glComment = this._glComment.dispose();
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
-        else if (this.opUiAttribs.title != this.#glTitle.text) this.setTitle(this.opUiAttribs.title);
+        else if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
-        if (this._titleExt)
+        if (this.#titleExt)
         {
             if (this.opUiAttribs.hasOwnProperty("extendTitlePort") && this.opUiAttribs.extendTitlePort)
             {
@@ -1505,60 +1509,31 @@ export default class GlOp extends Events
                 if (thePort)
                 {
                     let portVar = thePort.get();
-                    if (portVar)
-                    {
-                        if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
-                        const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
+                    if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
+                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
 
-                        if (str != this._titleExt.text)
-                        {
-                            this._titleExt.text = str;
-                            doUpdateSize = true;
-                        }
+                    if (str != this.#titleExt.text)
+                    {
+                        this.#titleExt.text = str;
+                        doUpdateSize = true;
                     }
                 }
             }
             else
-            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
+            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this.#titleExt.text)
             {
                 const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
 
-                if (this._titleExt.textOrig != str)
+                if (this.#titleExt.textOrig != str)
                 {
-                    this._titleExt.textOrig = str;
+                    this.#titleExt.textOrig = str;
 
                     let shortenStr = str;
                     if (shortenStr.length > 30)shortenStr = str.substring(0, 30) + "...";
-                    this._titleExt.text = shortenStr;
+                    this.#titleExt.text = shortenStr;
                     doUpdateSize = true;
                 }
             }
-        }
-
-        if (this.opUiAttribs.glPreviewTexture)
-        {
-            //     if (!this._glRectContent)
-            //     {
-            //         this._glRectContent = this._instancer.createRect({ "name": "rectcontent", "interactive": false });
-            //         this._glRectContent.setParent(this._glRectBg);
-            //         this._glRectContent.setPosition(0, this._height);
-            //         this._glRectContent.setColor(255, 0, 220, 1);
-
-            //         const p = this._op.getPort("Texture");
-            //         this._visPort = p;
-
-            //         this._visPort.onChange = () =>
-            //         {
-            //             const t = this._visPort.get();
-
-            //         if (t)
-            //         {
-            //             const asp = this._width / t.width * 2.5;
-            //             this._glRectContent.setSize(t.width * asp, t.height * asp);
-            //             this._glRectContent.setTexture(this._visPort.get());
-            //         }
-            //     };
-            // }
         }
 
         if (doUpdateSize) this.updateSize();
@@ -1571,7 +1546,7 @@ export default class GlOp extends Events
             if (!this.#glRerouteDot)
                 this.#glRerouteDot = this.#instancer.createRect({ "name": "reroutedog", "draggable": false, "interactive": false });
 
-            this.#glTitle.text = "";
+            this._glTitle.text = "";
             this.#glRerouteDot.setSize(this._width, this._height);
 
             this.#glRerouteDot.setPosition(-0.5, 0, 0);
@@ -1598,13 +1573,13 @@ export default class GlOp extends Events
 
     _updateColors()
     {
-        if (!this.#glRectBg || !this.#glTitle) return;
+        if (!this.#glRectBg || !this._glTitle) return;
 
         if (this.opUiAttribs.hasOwnProperty("heatmapIntensity"))
         {
             if (this.opUiAttribs.heatmapIntensity)
             {
-                this.#glTitle.setColor(1, 1, 1, 1);
+                this._glTitle.setColor(1, 1, 1, 1);
                 this.#glRectBg.setColor(
                     0.1 + (this.opUiAttribs.heatmapIntensity), 0.1, 0.3 - (0.3 * this.opUiAttribs.heatmapIntensity), 1);
             }
@@ -1623,17 +1598,17 @@ export default class GlOp extends Events
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
 
-                this.#glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
+                this._glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
                 this.updateSize();
             }
             else // this._glTitle.setColor(1, 1, 1);
-                this.#glTitle.setColorArray(gui.theme.colors_patch.patchComment);
+                this._glTitle.setColorArray(gui.theme.colors_patch.patchComment);
         }
         else
         {
             if (this._OpNameSpaceColor)
-                this.#glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
-            else this.#glTitle.setColor(0.8, 0.8, 0.8);
+                this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            else this._glTitle.setColor(0.8, 0.8, 0.8);
         }
 
         this.#glRectBg.setBorder(this._rectBorder);
@@ -1715,17 +1690,17 @@ export default class GlOp extends Events
         if (!this.#op.enabled)
         {
             this.#glRectBg.setOpacity(0.15, false);
-            this.#glTitle.setOpacity(0.5);
+            this._glTitle.setOpacity(0.5);
         }
         else
         {
             this.#glRectBg.setOpacity(0.9, false);
-            this.#glTitle.setOpacity(1);
+            this._glTitle.setOpacity(1);
         }
 
         if (this.#glNotWorkingCross)
         {
-            this.#glTitle.setOpacity(0.7);
+            this._glTitle.setOpacity(0.7);
         }
 
         if (this._hideBgRect && !this.selected)
@@ -1893,7 +1868,7 @@ export default class GlOp extends Events
         this.updateSize();
         this._updateIndicators();
 
-        if (this._titleExt) this._titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
+        if (this.#titleExt) this.#titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
         if (this.#glRectSelected) this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
 
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);

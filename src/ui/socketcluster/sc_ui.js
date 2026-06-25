@@ -46,6 +46,9 @@ export default class ScUi
             case "backupCreated":
                 this._backupCreated(payload);
                 break;
+            case "fileChanged":
+                this._fileChanged(payload);
+                break;
             }
         });
     }
@@ -63,7 +66,7 @@ export default class ScUi
                 opNames += gui.serverOps.opIdsChangedOnServer[i].opName + " ";
             }
 
-            if (!gui.isRemoteClient) gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"button\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
+            if (!gui.isRemoteClient) gui.restriction.setMessage("cablesupdate", "Some ops in this patch have changed: " + opNames + "  <a class=\"cblbutton\" onclick=\"CABLES.CMD.OP.reloadChangedOps();\"><span class=\"icon icon-refresh\"></span>reload ops</a>");
         }
     }
 
@@ -119,6 +122,29 @@ export default class ScUi
             else
             {
                 notify("Backup created!");
+            }
+        }
+        else if (data.automaticBackup)
+        {
+            if (data.error)
+            {
+                notifyWarn("Automatic backup failed! " + data.msg);
+            }
+        }
+    }
+
+    _fileChanged(payload)
+    {
+        const data = payload.data || {};
+        if (!payload.isOwn)
+        {
+            if (data?.file?.filename)
+            {
+                platform.fileUpdated(data.file.filename);
+                let msg = "File Uploaded";
+                if (data.byUser) msg += " by " + data.byUser;
+                msg += ": " + data.file.filename;
+                notify(msg);
             }
         }
     }

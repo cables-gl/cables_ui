@@ -1,5 +1,7 @@
+import { Op } from "cables";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import { gui } from "../gui.js";
+import { UiOp } from "../core_extend_op.js";
 
 export default class opCleaner
 {
@@ -206,6 +208,9 @@ export default class opCleaner
         return 0;
     }
 
+    /**
+     * @param {UiOp} op
+     */
     checkHorizontalPos(op)
     {
         // position on x axis depending on parent op position and port index...
@@ -231,7 +236,7 @@ export default class opCleaner
                     {
                         for (let j = 0; j < parent.portsOut[i].links.length; j++)
                         {
-                            if (parent.portsOut[i].links[j].getOtherPort(parent.portsOut[i]) == op.getFirstLinkedInPort())
+                            if (parent.portsOut[i].links[j] && parent.portsOut[i].links[j].getOtherPort(parent.portsOut[i]) == op.getFirstLinkedInPort())
                             {
                                 found = true;
                                 break;

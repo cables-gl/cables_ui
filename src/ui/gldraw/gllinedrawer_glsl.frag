@@ -13,6 +13,7 @@ UNI vec2 mousePos;
 UNI float a;
 UNI float time;
 
+UNI float zoom;
 UNI float width;
 UNI float widthSelected;
 
