@@ -123,10 +123,10 @@ export default class OpDocs
             // console.log(this._opDocs[i]);
         }
         return {
-            countCoreOps,
-            countTeamOps,
-            countExtensionOps,
-            countUserOps
+            "countCoreOps": countCoreOps,
+            "countTeamOps": countTeamOps,
+            "countExtensionOps": countExtensionOps,
+            "countUserOps": countUserOps
         };
     }
 
@@ -311,6 +311,7 @@ export default class OpDocs
                 "userOp": namespace.isUserOp(opName)
             };
         }
+        collectionInfo = collectionInfo || {};
 
         if (!opDoc.isExtended)
         {
@@ -319,6 +320,7 @@ export default class OpDocs
         }
 
         const isCollection = namespace.isCollection(opName);
+
         let collectionTitle = collectionInfo.shortName;
         if (namespace.isExtension(opName)) collectionTitle += " Extension";
         if (collectionInfo.numOps > 0) collectionTitle += " - " + collectionInfo.numOps + " ops";
