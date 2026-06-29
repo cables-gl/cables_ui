@@ -1,4 +1,5 @@
 import { Events, Logger } from "cables-shared-client";
+import { cloneObject } from "cables/src/core/utils.js";
 import { notifyError } from "../elements/notification.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
@@ -69,7 +70,7 @@ export default class KeyBindingsManager extends Events
      */
     _prepareKeysForDisplay(keys)
     {
-        let k = structuredClone(keys);
+        let k = cloneObject(keys);
 
         k.sort(function (a, b)
         {
@@ -212,7 +213,7 @@ export default class KeyBindingsManager extends Events
             "event": event,
             "target": target,
             "options": options,
-            "cb": cb,
+            "cb": cb
         };
 
         this._keys.push(k);

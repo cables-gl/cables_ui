@@ -82,6 +82,9 @@ class OpParampanel extends Events
         this.show(this._currentOp);
     }
 
+    /**
+     * @param {import("cables/src/core/core_patch.js").OpUiAttribs} attr
+     */
     _onUiAttrChangeOp(attr)
     {
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
@@ -154,7 +157,7 @@ class OpParampanel extends Events
                 });
         }
 
-        this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
+        this.onOpUiAttrChange = op.on(Op.EVENT_UIATTR_CHANGE, this._onUiAttrChangeOp.bind(this));
 
         for (let i = 0; i < this._portsIn.length; i++)
         {
@@ -182,7 +185,7 @@ class OpParampanel extends Events
     {
         if (port.type == Port.TYPE_NUMBER && typeof port.get() == "string")
         {
-            this.op.setUiError("typeerr", "wrong type! string in number " + port.name);
+            this.op.setUiError("typeerr", "Wrong type! String in number " + port.name, 0);
         }
     }
 
@@ -464,7 +467,7 @@ class OpParampanel extends Events
                 {
                     const p = this._portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (gluiconfig.portWidth + gluiconfig.portPadding), "y": p.op.uiAttribs.translate.y + 50, }, op, p);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (gluiconfig.portWidth + gluiconfig.portPadding), "y": p.op.uiAttribs.translate.y + 50 }, op, p);
                 }, { "passive": false });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -747,73 +750,73 @@ class OpParampanel extends Events
         {
             items.push({
                 "title": "Goto Blueprint Op",
-                func()
+                "func": function ()
                 {
                     // gui.patchView.focusSubpatchOp(el.dataset.id);
-                },
+                }
             });
             items.push({
                 "title": "Update Blueprint",
-                func()
+                "func": function ()
                 {
                     const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(el.dataset.id);
                     if (bp) gui.patchView.updateBlueprints([bp]);
-                },
+                }
             });
             items.push({
                 "title": "Open Patch",
                 "iconClass": "icon icon-external",
-                func()
+                "func": function ()
                 {
                     const url = platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
                     window.open(url, "_blank");
-                },
+                }
             });
         }
         else
         {
             items.push({
                 "title": "Rename",
-                func()
+                "func": function ()
                 {
                     gui.patchView.focusSubpatchOp(el.dataset.id);
                     CABLES.CMD.PATCH.setOpTitle();
-                },
+                }
             });
 
             items.push({
                 "title": "Goto Subpatch Op",
-                func()
+                "func": function ()
                 {
                     gui.patchView.focusSubpatchOp(el.dataset.id);
-                },
+                }
             });
 
             if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
                 items.push({
                     "title": "Create op from subpatch",
-                    func()
+                    "func": function ()
                     {
                         gui.serverOps.createBlueprint2Op(el.dataset.id);
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    },
+                    }
                 });
 
             if (el.dataset.blueprintver == 2)
             {
                 items.push({
                     "title": "Save Blueprint Op",
-                    func()
+                    "func": function ()
                     {
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
                         gui.serverOps.updateSubPatchOpAttachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    },
+                    }
                 });
             }
         }
-        contextMenu.show({ items }, el);
+        contextMenu.show({ "items": items }, el);
     }
 
     /**
@@ -828,20 +831,20 @@ class OpParampanel extends Events
 
         items.push({
             "title": "Set title",
-            "func": CABLES.CMD.PATCH.setOpTitle,
+            "func": CABLES.CMD.PATCH.setOpTitle
         });
 
         items.push({
             "title": "Set default values",
-            func()
+            "func": function ()
             {
                 gui.patchView.resetOpValues(opid);
-            },
+            }
         });
 
         items.push({
             "title": "Bookmark",
-            func()
+            "func": function ()
             {
                 gui.bookmarks.add();
             }
@@ -849,21 +852,21 @@ class OpParampanel extends Events
 
         items.push({
             "title": "Manage Op Code",
-            func()
+            "func": function ()
             {
                 CmdOps.manageOp();
-            },
+            }
         });
 
         items.push({
             "title": "Clone Op",
-            func()
+            "func": function ()
             {
                 CmdOps.cloneSelectedOp();
-            },
+            }
         });
 
-        contextMenu.show({ items }, el);
+        contextMenu.show({ "items": items }, el);
     }
 
     getCurrentOp()
