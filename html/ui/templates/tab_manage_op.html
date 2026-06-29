@@ -130,12 +130,14 @@
                 <div class="opDependencyList">
                     <table class="table">
                         <tr>
+                            <th style="width: calc(20px + var(--font-size-off));"></th>
                             <th>Name</th>
                             <th>Type</th>
                             <th></th>
                         </tr>
                         {{#each opDoc.coreLibs}}
                             <tr>
+                                <td></td>
                                 <td>{{.}}</td>
                                 <td>corelib</td>
                                 <td></td>
@@ -150,13 +152,17 @@
 
             <table class="table">
                 <tr>
+                    <th style="width: calc(20px + var(--font-size-off));"></th>
                     <th>Filename</th>
                     <th>Type</th>
                     <th></th>
                 </tr>
                 <tr>
+                    <td>
+                        <a class="icon icon-edit iconhover" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);"></a>&nbsp;
+                    </td>
                     <td onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);" style="cursor:pointer">
-                        <a class="icon icon-edit iconhover" ></a>&nbsp;{{opname}}.js
+                        {{opname}}.js
                     </td>
                     <td>
                         Main Source File
@@ -167,14 +173,17 @@
                 {{#if doc.attachmentFiles}}
                     {{#each doc.attachmentFiles}}
                         <tr>
-                            <td onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');" style="cursor:pointer">
-                                <a class="icon icon-edit iconhover"></a>&nbsp; {{readable}}
+                            <td>
+                                <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');"></a>&nbsp;
+                            </td>
+                            <td onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');" style="cursor: pointer;">
+                                {{readable}}
                             </td>
                             <td>
                                 Attachment
                             </td>
-                            <td>
-                                <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../opname}}','{{../opid}}','{{original}}');"></a>
+                            <td style="text-align: right;">
+                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{original}}" data-deptype="attachment"></a>
                             </td>
                         </tr>
                     {{/each}}
@@ -191,15 +200,17 @@
                 <div class="opDependencyList">
                     <table class="table">
                         <tr>
+                            <th style="width: calc(20px + var(--font-size-off));"></th>
                             <th>Name</th>
                             <th>Type</th>
                             <th></th>
                         </tr>
                         {{#each opDoc.coreLibs}}
                             <tr>
+                                <td></td>
                                 <td>{{.}}</td>
                                 <td>corelib</td>
-                                <td>
+                                <td style="text-align: right;">
                                     {{#if ../canEditOp}}
                                         <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
                                     {{/if}}
@@ -208,9 +219,10 @@
                         {{/each}}
                         {{#each opDoc.libs}}
                             <tr>
+                                <td></td>
                                 <td>{{.}}</td>
                                 <td>lib</td>
-                                <td>
+                                <td style="text-align: right;">
                                     {{#if ../canEditOp}}
                                         <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
                                     {{/if}}
@@ -220,18 +232,21 @@
                         {{#each opDoc.dependencies}}
                             <tr>
                                 <td>
+                                    <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
+                                </td>
+                                <td>
                                     {{#compare type '==' 'npm'}}
-                                        <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{src}}</a>
+                                        <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{readable}}</a>
                                     {{else}}
                                         {{#compare type '==' 'op'}}
                                             <a target="_blank" href="{{url}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
                                         {{else}}
-                                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;{{src}}
+                                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">{{readable}}</a>
                                         {{/compare}}
                                     {{/compare}}
                                 </td>
                                 <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
-                                <td>
+                                <td style="text-align: right;">
                                     {{#if ../canEditOp}}
                                         <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
                                     {{/if}}
@@ -262,12 +277,12 @@
                     <td style="vertical-align: top">
                         <span style="font-size:11px">{{relativedate date}}</span>
                     </td>
-                    <td style="vertical-align: top;font-size:11px ">
+                    <td style="vertical-align: top;font-size:11px">
                         {{#if type}}
                             <span style="border-radius: 4px;text-transform: uppercase; background-color:#aaa;padding-left:4px;padding-right:4px;color:#000;" class="changelogtype-{{type}}">{{type}}</span>
                         {{/if}}
                     </td>
-                    <td style="width:65%;;">
+                    <td style="width:65%;">
                         <span class="changelogText">- {{message}}</span>
                     </td>
                 </tr>

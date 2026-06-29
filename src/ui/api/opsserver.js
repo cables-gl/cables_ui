@@ -1129,7 +1129,7 @@ export default class ServerOps
         });
     }
 
-    editDependency(op, dependencyName, readOnly, cb, fromListener = false)
+    editDependency(op, dependencyName, readableName, readOnly, cb, fromListener = false)
     {
         let opname = op;
         let opId = opname;
@@ -1147,7 +1147,7 @@ export default class ServerOps
 
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
-        const title = shortname + "/" + dependencyName;
+        const title = shortname + "/" + readableName;
         const userInteraction = !fromListener;
 
         let existingTab = gui.maintabPanel.tabs.getTabByTitle(title);
@@ -1160,8 +1160,8 @@ export default class ServerOps
 
         let editorObj = null;
         gui.jobs().start({
-            "id": "load_dependency_" + dependencyName,
-            "title": "loading dependency " + dependencyName
+            "id": "load_dependency_" + readableName,
+            "title": "loading dependency " + readableName
         });
 
         const apiParams = {

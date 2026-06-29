@@ -200,6 +200,15 @@ export default class ManageOp
                         }
                 }
                 const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
+                if (opDoc.dependencies)
+                {
+                    opDoc.dependencies.forEach((dep) =>
+                    {
+                        dep.readable = dep.src;
+                        if (dep.readable && dep.readable.startsWith("./")) dep.readable = dep.readable.replace("./", "");
+                    });
+                }
+
                 const libs = [];
                 allLibs.forEach((lib) =>
                 {
@@ -253,7 +262,7 @@ export default class ManageOp
 
                     const items = [];
 
-                    let downloadable = depType !== "corelib" && depType !== "op";
+                    let downloadable = depType !== "corelib" && depType !== "op" && depType !== "attachment";
                     if (depType === "lib") downloadable = depSrc.startsWith("/assets/");
 
                     if (downloadable)
@@ -316,6 +325,9 @@ export default class ManageOp
                                 break;
                             case "lib":
                                 gui.serverOps.removeOpLib(opName, depSrc);
+                                break;
+                            case "attachment":
+                                gui.serverOps.deleteAttachment(opName, opDoc.id, depSrc);
                                 break;
                             case "commonjs":
                             case "module":
