@@ -128,7 +128,7 @@ export default class Gui extends Events
 
     _modalLoading = null;
     _modalLoadingCount = 0;
-    a = [1, 2,];
+    a = [1, 2];
 
     /**
      * @param {object} cfg
@@ -186,7 +186,7 @@ export default class Gui extends Events
             {
                 // "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
                 "alpha": true,
-                "premultipliedAlpha": true,
+                "premultipliedAlpha": true
             },
             "variables": {}
         };
@@ -1335,39 +1335,39 @@ export default class Gui extends Events
                     [
                         {
                             "title": "32:9",
-                            func() { CmdRenderer.aspect(32 / 9); }
+                            "func": function () { CmdRenderer.aspect(32 / 9); }
                         },
                         {
                             "title": "21:9",
-                            func() { CmdRenderer.aspect(21 / 9); }
+                            "func": function () { CmdRenderer.aspect(21 / 9); }
                         },
                         {
                             "title": "16:9",
-                            func() { CmdRenderer.aspect(16 / 9); }
+                            "func": function () { CmdRenderer.aspect(16 / 9); }
                         },
                         {
                             "title": "16:10",
-                            func() { CmdRenderer.aspect(16 / 10); }
+                            "func": function () { CmdRenderer.aspect(16 / 10); }
                         },
                         {
                             "title": "4:3",
-                            func() { CmdRenderer.aspect(4 / 3); }
+                            "func": function () { CmdRenderer.aspect(4 / 3); }
                         },
                         {
                             "title": "5:4",
-                            func() { CmdRenderer.aspect(5 / 4); }
+                            "func": function () { CmdRenderer.aspect(5 / 4); }
                         },
                         {
                             "title": "1:1",
-                            func() { CmdRenderer.aspect(1); }
+                            "func": function () { CmdRenderer.aspect(1); }
                         },
                         {
                             "title": "1:2",
-                            func() { CmdRenderer.aspect(1 / 2); }
+                            "func": function () { CmdRenderer.aspect(1 / 2); }
                         },
                         {
                             "title": "9:16",
-                            func() { CmdRenderer.aspect(9 / 16); }
+                            "func": function () { CmdRenderer.aspect(9 / 16); }
                         }
                     ]
             }, el);
@@ -1751,6 +1751,18 @@ export default class Gui extends Events
         this.keys.key("b", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPalette.show(); });
+        this.keys.key("Enter", "", "down", null, { "cmdCtrl": false }, () =>
+        {
+
+            const elePromptOk = ele.byId(ModalDialog.MODAL_OK_BUTTON_ID);
+            if (elePromptOk)
+            {
+                console.log("enterrr YES");
+                // elePromptOk.click();
+                elePromptOk.dispatchEvent(new PointerEvent("pointerdown"));
+            }
+
+        });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, () => { this.cycleCanvasSize(); });
         this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, () =>
         {
@@ -2366,7 +2378,7 @@ export default class Gui extends Events
             new ModalDialog({
                 "warning": true,
                 "title": "Context lost",
-                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
+                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser"
             });
         });
 

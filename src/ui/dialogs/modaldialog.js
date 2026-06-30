@@ -9,8 +9,8 @@ import { CssClassNames } from "../theme.js";
  * @property {String} [html] html content
  * @property {String} [title] a title of the dialog
  * @property {String} [text]
- * @property {Object} [okButton]
- * @property {Object} [cancelButton]
+ * @property {ModalDialogButton} [okButton]
+ * @property {ModalDialogButton} [cancelButton]
  * @property {Boolean} [nopadding=false] remove padding around the window
  * @property {Boolean} [warning=false] show a warning triangle
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
@@ -18,6 +18,13 @@ import { CssClassNames } from "../theme.js";
  * @property {String} [promptValue]
  * @property {Function} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
+ */
+
+/**
+ * @typedef {Object} ModalDialogButton
+ * @property {String} [text]
+ * @property {function} [callback]
+ * @property {String} [cssClasses]
  */
 
 /**
@@ -30,6 +37,7 @@ import { CssClassNames } from "../theme.js";
  *     "html":"hello world",
  * });
  */
+
 export default class ModalDialog extends Events
 {
     #log = new Logger("ModalDialog");
@@ -40,6 +48,8 @@ export default class ModalDialog extends Events
     #ele = null;
     #eleContent = null;
     #bg = new ModalBackground();
+
+    static MODAL_OK_BUTTON_ID = "cblmodalpromptok";
 
     /**
      * @param {ModalDialogOptions} options
@@ -154,7 +164,7 @@ export default class ModalDialog extends Events
         if (this.#options.prompt)
         {
             html += "<br/>";
-            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
@@ -167,7 +177,7 @@ export default class ModalDialog extends Events
 
         if (this.#options.showOkButton)
         {
-            html += "<br/><br/><a class=\"" + this.#options.okButton.cssClasses + "\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<br/><br/><a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         return html;
@@ -187,7 +197,7 @@ export default class ModalDialog extends Events
             });
         }
 
-        const elePromptOk = ele.byId("prompt_ok");
+        const elePromptOk = ele.byId(ModalDialog.MODAL_OK_BUTTON_ID);
         if (elePromptOk)
         {
             elePromptOk.addEventListener("pointerdown", () =>
@@ -218,7 +228,7 @@ export default class ModalDialog extends Events
             });
         }
 
-        const eleModalOk = ele.byId("modalClose");
+        const eleModalOk = ele.byId(ModalDialog.MODAL_OK_BUTTON_ID);
         if (eleModalOk)
         {
             eleModalOk.addEventListener("pointerdown", () =>

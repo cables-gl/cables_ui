@@ -194,7 +194,7 @@ export default class PatchView extends Events
                 "context": {
                     "opname": opname
                 },
-                undo()
+                "undo": function ()
                 {
                     const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
                     if (newop)
@@ -216,7 +216,7 @@ export default class PatchView extends Events
                         }
                     }
                 },
-                redo()
+                "redo": function ()
                 {
                     gui.corePatch().deleteOp(_opid, false);
                 }
@@ -1130,11 +1130,11 @@ export default class PatchView extends Events
         {
             undo.add({
                 "title": "paste op",
-                undo()
+                "undo": function ()
                 {
                     gui.corePatch().deleteOp(opid, true);
                 },
-                redo()
+                "redo": function ()
                 {
                     gui.corePatch().addOp(defaultOps.defaultOpNames.uiArea, {
                         "translate": trans,
@@ -1804,11 +1804,11 @@ export default class PatchView extends Events
                     {
                         undo.add({
                             "title": "paste op",
-                            undo()
+                            "undo": function ()
                             {
                                 gui.corePatch().deleteOp(opid, true);
                             },
-                            redo()
+                            "redo": function ()
                             {
                                 gui.patchView.clipboardPaste(e);
                             }
@@ -1968,11 +1968,11 @@ export default class PatchView extends Events
                 "context": {
                     "opname": op.name
                 },
-                undo()
+                "undo": function ()
                 {
                     op.setUiAttribs({ "translate": { "x": oldX, "y": oldY } });
                 },
-                redo()
+                "redo": function ()
                 {
                     op.setUiAttribs({ "translate": { "x": x, "y": y } });
                 }
@@ -2009,7 +2009,7 @@ export default class PatchView extends Events
 
         undo.add({
             "title": "save op positions",
-            undo()
+            "undo": function ()
             {
                 const changedOps = [];
                 for (let j = 0; j < opPositions.length; j++)
@@ -2020,7 +2020,7 @@ export default class PatchView extends Events
                     changedOps.push(op);
                 }
             },
-            redo()
+            "redo": function ()
             {
                 // gui.scene().addOp(objName, op.uiAttribs, opid);
             }
@@ -2581,8 +2581,8 @@ export default class PatchView extends Events
                         html += htmlList;
                     }
 
-                    html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
-                    html += "<a onClick=\"gui.closeModal();\" class=\"cblbutton\">Cancel</a>";
+                    // html += "<br/><a onClick=\"\" class=\"bluebutton\">Really Upgrade</a>";
+                    // html += "<a onClick=\"gui.closeModal();\" class=\"cblbutton\">Cancel</a>";
 
                     setTimeout(() =>
                     {
@@ -2593,7 +2593,16 @@ export default class PatchView extends Events
                     gui.opParams.show(newOp.id);
                     this._patchRenderer.focusOpAnim(newOp.id);
 
-                    new ModalDialog({ "html": html });
+                    console.log("111");
+                    new ModalDialog({ "html": html,
+                        "showOkButton": true,
+                        "okButton": { "text": "Really upgrade",
+                            "callback": () =>
+                            {
+                                gui.patchView.replaceOp(opid, newOpObjName);
+                                gui.closeModal();
+                            } }
+                    });
                 }
             });
         });
@@ -2953,12 +2962,12 @@ export default class PatchView extends Events
             const oldValue = p.get();
             undo.add({
                 "title": "reset defaultvalue",
-                undo()
+                "undo": function ()
                 {
                     p.set(oldValue);
                     gui.opParams.show(op);
                 },
-                redo()
+                "redo": function ()
                 {
                     p.set(p.defaultValue);
                     gui.opParams.show(op);
