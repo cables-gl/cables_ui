@@ -1751,7 +1751,7 @@ export default class Gui extends Events
         this.keys.key("b", "Toggle Tab Area", "down", null, { "cmdCtrl": true }, () => { this.maintabPanel.toggle(true); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, () => { this.cmdPalette.show(); });
-        this.keys.key("Enter", "", "down", null, { "cmdCtrl": false }, () =>
+        this.keys.key("Enter", "", "down", null, { "cmdCtrl": false, "ignoreInput": true }, () =>
         {
 
             const elePromptOk = ele.byId(ModalDialog.MODAL_OK_BUTTON_ID);
