@@ -136,6 +136,12 @@ export class CommandPalette
         {
             this.close();
         });
+
+        if (document.getElementById("upgradableopselected"))
+        {
+            elInput.value = "upgrade selected op";
+            this.doSearch(elInput.value);
+        }
     }
 
     /**

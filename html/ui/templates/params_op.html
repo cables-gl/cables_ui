@@ -21,7 +21,7 @@
 
             {{#if oldVersion}}
                 <br/>
-                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade to newest version</a>
+                <a id="upgradableopselected" class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade to newest version</a>
                 <br/>
             {{else}}
                 {{#if op.summary}} - {{op.summary}}{{/if}}
