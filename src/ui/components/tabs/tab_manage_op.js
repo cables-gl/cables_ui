@@ -250,7 +250,6 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
-                    const dep = null;
                     if (depType !== "corelib" && opDoc.dependencies)
                     {
                         opDoc.dependencies.find((d) => { return d.src == depSrc && d.type == depType; });
@@ -295,22 +294,26 @@ export default class ManageOp
                         });
                     }
 
-                    if (depType === "op" && dep && dep.oldVersion && dep.newestVersion && dep.newestVersion.name)
+                    if (depType === "op")
                     {
-                        items.push({
-                            "title": "upgrade",
-                            "iconClass": "icon icon-op",
-                            "func": (ee) =>
-                            {
-                                gui.serverOps.addOpDependency(opDoc.id, dep.newestVersion.name, depType, null, () =>
+                        const dep = gui.opDocs.getOpDocById(depSrc);
+                        if (dep && dep.oldVersion && dep.newestVersion && dep.newestVersion.name)
+                        {
+                            items.push({
+                                "title": "upgrade",
+                                "iconClass": "icon icon-op",
+                                "func": (ee) =>
                                 {
-                                    gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
+                                    gui.serverOps.addOpDependency(opDoc.id, dep.newestVersion.name, depType, null, () =>
                                     {
-                                        gui.emitEvent("refreshManageOp", opName);
-                                    }, true);
-                                });
-                            }
-                        });
+                                        gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
+                                        {
+                                            gui.emitEvent("refreshManageOp", opName);
+                                        }, true);
+                                    });
+                                }
+                            });
+                        }
                     }
 
                     items.push({
