@@ -50,7 +50,8 @@
 			margin-top: 5px;
 
 			&.bookmark {
-				float: right
+				float: right;
+				pointer-events: all;
 			}
 		}
 

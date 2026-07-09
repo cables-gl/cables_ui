@@ -153,24 +153,32 @@ export class CommandPalette
 
         /** @type {HTMLElement} */
         const el = ev.target;
-        const cmd = el.closest(".result").dataset.cmd;
+        const cmdId = el.closest(".result").dataset.cmdid;
+        const cmd = Commands.getById(cmdId);
+        if (!cmd)
+        {
+            console.log("no cmd", cmdId, this.#options.commands);
+            return;
+        }
+
+        let cmdName = cmd.cmd;
         const itemObj = userSettings.get("sidebar_left") || {};
 
         // replace the pin-icon / set / remove icon from sidebar
-        const addToSidebar = !this.isCmdInSidebar(cmd);
+        const addToSidebar = !this.isCmdInSidebar(cmdName);
         if (addToSidebar)
         {
             el.classList.remove(this._bookmarkInactiveIcon);
             el.classList.add(this._bookmarkActiveIcon);
 
-            itemObj[cmd] = true;
+            itemObj[cmdName] = true;
         }
         else
         { // remove from sidebar
             el.classList.remove(this._bookmarkActiveIcon);
             el.classList.add(this._bookmarkInactiveIcon);
 
-            itemObj[cmd] = false;
+            itemObj[cmdName] = false;
         }
 
         userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
