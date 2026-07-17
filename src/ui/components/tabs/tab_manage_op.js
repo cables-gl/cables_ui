@@ -156,13 +156,15 @@ export default class ManageOp
                         suffix = parts[parts.length - 1];
 
                         let readable = res.attachmentFiles[i].substr(4);
-                        if (res.attachmentFiles[i].startsWith("att_bin_")) readable = res.attachmentFiles[i].substr(8);
+                        const isStatic = res.attachmentFiles[i].startsWith("att_bin_");
+                        if (isStatic) readable = res.attachmentFiles[i].substr(8);
 
                         attachmentFiles.push(
                             {
                                 "suffix": suffix,
                                 "readable": readable,
-                                "original": res.attachmentFiles[i]
+                                "original": res.attachmentFiles[i],
+                                "static": isStatic
                             });
 
                         if (res.attachmentFiles[i] === "att_ports.json")
