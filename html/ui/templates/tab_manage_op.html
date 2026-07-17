@@ -126,7 +126,7 @@
 
         {{#if portJson}}
             {{#if hasDependencies}}
-                <div class="groupSpacer"><h3>Dependencies</h3></div>
+                <div class="groupSpacer"><h3>Files</h3></div>
                 <div class="opDependencyList">
                     <table class="table">
                         <tr>
@@ -139,7 +139,7 @@
                             <tr>
                                 <td></td>
                                 <td>{{.}}</td>
-                                <td>corelib</td>
+                                <td>Dependeny (corelib)</td>
                                 <td></td>
                             </tr>
                         {{/each}}
@@ -188,79 +188,62 @@
                         </tr>
                     {{/each}}
                 {{/if}}
+
+                {{#if hasDependencies}}
+                {{#each opDoc.coreLibs}}
+                    <tr>
+                        <td></td>
+                        <td>{{.}}</td>
+                        <td>Dependency (corelib)</td>
+                        <td style="text-align: right;">
+                            {{#if ../canEditOp}}
+                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
+                            {{/if}}
+                        </td>
+                    </tr>
+                {{/each}}
+                {{#each opDoc.libs}}
+                    <tr>
+                        <td></td>
+                        <td>{{.}}</td>
+                        <td>Dependency (lib)</td>
+                        <td style="text-align: right;">
+                            {{#if ../canEditOp}}
+                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
+                            {{/if}}
+                        </td>
+                    </tr>
+                {{/each}}
+                {{#each opDoc.dependencies}}
+                    <tr>
+                        <td>
+                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
+                        </td>
+                        <td>
+                            {{#compare type '==' 'npm'}}
+                                <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{readable}}</a>
+                            {{else}}
+                                {{#compare type '==' 'op'}}
+                                    <a target="_blank" href="{{url}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
+                                {{else}}
+                                    <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">{{readable}}</a>
+                                {{/compare}}
+                            {{/compare}}
+                        </td>
+                        <td>Dependency ({{type}}{{#compare type '==' 'module' }} exported as: <code>{{export}}</code>{{/compare}})</td>
+                        <td style="text-align: right;">
+                            {{#if ../canEditOp}}
+                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
+                            {{/if}}
+                        </td>
+                    </tr>
+                {{/each}}
+                {{/if}}
+
             </table>
 
-            <a class="cblbutton" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create Attachment</a>
-
-            <br/><br/>
-
-            <div class="groupSpacer"><h3>Dependencies</h3></div>
-
-            {{#if hasDependencies}}
-                <div class="opDependencyList">
-                    <table class="table">
-                        <tr>
-                            <th style="width: calc(20px + var(--font-size-off));"></th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th></th>
-                        </tr>
-                        {{#each opDoc.coreLibs}}
-                            <tr>
-                                <td></td>
-                                <td>{{.}}</td>
-                                <td>corelib</td>
-                                <td style="text-align: right;">
-                                    {{#if ../canEditOp}}
-                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/each}}
-                        {{#each opDoc.libs}}
-                            <tr>
-                                <td></td>
-                                <td>{{.}}</td>
-                                <td>lib</td>
-                                <td style="text-align: right;">
-                                    {{#if ../canEditOp}}
-                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/each}}
-                        {{#each opDoc.dependencies}}
-                            <tr>
-                                <td>
-                                    <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
-                                </td>
-                                <td>
-                                    {{#compare type '==' 'npm'}}
-                                        <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{readable}}</a>
-                                    {{else}}
-                                        {{#compare type '==' 'op'}}
-                                            <a target="_blank" href="{{url}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
-                                        {{else}}
-                                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">{{readable}}</a>
-                                        {{/compare}}
-                                    {{/compare}}
-                                </td>
-                                <td>{{type}}{{#compare type '==' 'module' }} ({{export}}){{/compare}}</td>
-                                <td style="text-align: right;">
-                                    {{#if ../canEditOp}}
-                                        <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/each}}
-                    </table>
-                </div>
-                {{else}}
-                Op has no dependecies
-                <br/><br/>
-            {{/if}}
-
             {{#if canEditOp}}
+                <a class="cblbutton" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create Attachment</a>
                 <a class="cblbutton" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
                 add <a class="link" href="https://cables.gl/docs/5_writing_ops/dev_libraries/dev_libraries" target="_blank"> libraries and modules</a> to your op<br/><br/>
                 <div id="{{viewId}}_dependencytabs" class="dependencytabs hidden"></div>

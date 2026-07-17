@@ -158,6 +158,7 @@ export default class ManageOp
                         let readable = res.attachmentFiles[i].substr(4);
                         const isStatic = res.attachmentFiles[i].startsWith("att_bin_");
                         if (isStatic) readable = res.attachmentFiles[i].substr(8);
+                        readable = readable.replace(".", "_");
 
                         attachmentFiles.push(
                             {

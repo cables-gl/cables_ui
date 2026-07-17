@@ -10,7 +10,11 @@
             <option value="commonjs">Common JS</option>
             <option value="module">JS Module</option>
             <option value="static">Static Attachment</option>
-        </select><br/><br/>
+        </select>
+        <div class="usage warning-error-level0 commonjs">Check library documentation on how to use, i.e. <code>Handlebars.compile("my template")</code></div>
+        <div class="usage warning-error-level0 module hidden">Will be available via export name <code></code> in the op</div>
+        <div class="usage warning-error-level0 static hidden">Can be accessed as base64-string via <code>staticAttachments</code> in the op</div>
+        <br/>
         <a class="cblbutton add">Add</a>
         <input class="hidden" type="file" accept="{{acceptedFileTypesUpload}}"/>
     </div>
@@ -26,7 +30,10 @@
         <select name="type" class="type">
             <option value="commonjs">Common JS</option>
             <option value="module">JS Module</option>
-        </select><br/><br/>
+        </select>
+        <div class="usage warning-error-level0 commonjs">Check library documentation on how to use, i.e. <code>Handlebars.compile("my template")</code></div>
+        <div class="usage warning-error-level0 module hidden">Will be available via export name <code></code> in the op</div>
+        <br/>
         <a class="cblbutton add">Add</a>
     </div>
 </script>
@@ -41,7 +48,7 @@
 <script id="op_add_dependency_op" type="text/x-handlebars-template">
     <div id="addopdependency_op_{{viewId}}" class="addopdependency">
         <div class="warning-error warning-error-level1 hidden">Invalid op-name</div>
-        Make you op inherit dependencies from another op&nbsp;&nbsp;&nbsp;<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries"><span class="nomargin icon icon-1_25x icon-help"></span></a><br/>
+        Inherit dependencies from another op&nbsp;&nbsp;&nbsp;<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries"><span class="nomargin icon icon-1_25x icon-help"></span></a><br/>
         <input type="hidden" name="depType" value="op"/>
         <input class="depSrc" type="text" placeholder="Ops.Gl.MainLoop">
         <a class="cblbutton add">Add</a>

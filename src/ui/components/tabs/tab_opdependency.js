@@ -64,16 +64,33 @@ export default class OpDependencyTab extends Tab
 
             if (typeSelectEle)
             {
+                const depType = typeSelectEle.value;
+                if (depType === "module")
+                {
+                    exportNameEle.addEventListener("input", this._exportNameChange.bind(this));
+                }
+
                 typeSelectEle.addEventListener("change", () =>
                 {
                     depTypeEle.value = typeSelectEle.value;
+                    const usageEles = depsEle.querySelectorAll(".usage");
+                    usageEles.forEach((usageEle) => { ele.hide(usageEle); });
+                    const usageEle = depsEle.querySelector(".usage." + typeSelectEle.value);
+
                     if (exportNameEle && typeSelectEle.value === "module")
                     {
+                        exportNameEle.removeEventListener("input", this._exportNameChange.bind(this));
+                        exportNameEle.addEventListener("input", this._exportNameChange.bind(this));
                         ele.show(exportNameEle);
                     }
                     else
                     {
+                        exportNameEle.removeEventListener("input", this._exportNameChange.bind(this));
                         ele.hide(exportNameEle);
+                    }
+                    if (usageEle)
+                    {
+                        ele.show(usageEle);
                     }
                 });
             }
@@ -103,6 +120,10 @@ export default class OpDependencyTab extends Tab
                 fileInput.addEventListener("change", () =>
                 {
                     srcEle.value = fileInput.files[0].name;
+                    if (depTypeEle && depTypeEle.value === "static") {
+                        const usageEle = depsEle.querySelector(".usage.static code");
+                        if (usageEle) usageEle.innerText = "staticAttachments[\"" + fileInput.files[0].name.replace(".", "_") + "\"]";
+                    }
                 });
             }
             submitEle.addEventListener("click", () =>
@@ -191,6 +212,31 @@ export default class OpDependencyTab extends Tab
                     });
                 }
             });
+        }
+    }
+
+    /**
+     *
+     * @param {InputEvent} event
+     */
+    _exportNameChange(event)
+    {
+        const exportNameEle = event.currentTarget;
+        if (!exportNameEle) return;
+
+        const depSource = this.options.depSource;
+        const viewId = this.options.viewId;
+
+        const selector = "addopdependency_" + depSource + "_" + viewId;
+        const depsEle = ele.byId(selector);
+
+        if (depsEle) {
+
+            const usageEle = depsEle.querySelector(".usage.module code");
+            if (usageEle) {
+                const exportNameInput = exportNameEle.querySelector("input");
+                if (exportNameInput) usageEle.innerText = exportNameInput.value;
+            }
         }
     }
 }
