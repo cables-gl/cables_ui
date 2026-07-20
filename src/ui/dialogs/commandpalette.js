@@ -449,4 +449,26 @@ export class CommandPalette
         this.dynamicCmds.push(cmd);
         return cmd.id;
     }
+
+    /**
+     * used to add commands after init in standalone
+     *
+     * @param {string} category
+     * @param {string} title
+     * @param {Function} func
+     * @param {string} icon
+     */
+    addCommand(category, title, func, icon)
+    {
+        const cmd = {
+            "cmd": title,
+            "category": category,
+            "func": func,
+            "icon": icon || "cables",
+            "id": utils.uuid()
+        };
+
+        Commands.commands.push(cmd);
+        return cmd.id;
+    }
 }
