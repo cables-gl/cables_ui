@@ -580,22 +580,22 @@ export default class ServerOps
         });
     }
 
-    addOpDependency(opName, depSrc, depType, exportName, next = null)
+    addOpDependency(opId, depSrc, depType, exportName, next = null)
     {
-        if (!opName || !depSrc || !depType) return;
+        if (!opId || !depSrc || !depType) return;
 
         let talkerCmd = TalkerAPI.CMD_ADD_OP_DEPENDENCY;
 
         /** @type {any} */
         let talkerPayload = {
-            "opName": opName,
+            "opName": opId,
             "src": depSrc,
             "type": depType,
             "export": exportName
         };
         gui.jobs().start({
             "id": "addOpDependency",
-            "title": "adding " + depSrc + " to " + opName
+            "title": "adding " + depSrc + " to " + opId
         });
         platform.talkerAPI.send(talkerCmd, talkerPayload, (err, res) =>
         {
@@ -611,13 +611,19 @@ export default class ServerOps
                 }
                 else if (err.msg === "NPM_ERROR" && err.data)
                 {
-                    const opText = err.data.opName || opName ? " for " + err.data.opName || opName : "";
+                    const opText = err.data.opName || opId ? " for " + err.data.opName || opId : "";
                     html += "Failed dependency " + opText + ": " + err.data.stderr;
                 }
                 else if (err.msg === "FAILED_TO_ADD_DEPENDENCY" && depType === "op")
                 {
-                    html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
+                    html += "Failed to add op dependency to " + depSrc + "<br/><br/>";
                     html += "Try removing any older version of this dependency first.";
+                }
+                else if (err.msg === "OP_DOES_NOT_EXIST" && depType === "op")
+                {
+                    const opText = err.data.opName || opId;
+                    html += "Failed to add op dependency to " + opText + "<br/><br/>";
+                    html += "Target op " + depSrc + " does not exist!";
                 }
                 else
                 {
@@ -631,9 +637,9 @@ export default class ServerOps
                 });
                 if (next) next(err);
             }
-            gui.serverOps.loadOpDependencies(opName, (op) =>
+            gui.serverOps.loadOpDependencies(opId, (op) =>
             {
-                this.#log.info("op-dependency added: " + opName + " " + depSrc);
+                this.#log.info("op-dependency added: " + opId + " " + depSrc);
                 if (res && res.data && res.data.stdout) this.#log.info("npm: " + res.data.stdout);
                 if (next) next(null, op);
             }, true);
