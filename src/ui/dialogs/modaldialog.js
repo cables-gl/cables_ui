@@ -214,6 +214,7 @@ export default class ModalDialog extends Events
         {
             eleChoiceOk.addEventListener("pointerdown", () =>
             {
+                if (this.#options.okButton.callback) this.#options.okButton.callback();
                 this._choiceSubmit();
             });
         }

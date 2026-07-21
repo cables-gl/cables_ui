@@ -16,6 +16,7 @@ import { userSettings } from "../components/usersettings.js";
 import { portType } from "../core_constants.js";
 import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
+import { CmdOps } from "../commands/cmd_op.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -382,7 +383,28 @@ export default class ServerOps
             {
                 this.#log.log("err res", res);
                 gui.savingTitleAnimEnd();
-                CABLES.UI.MODAL.showError("Could not clone op", err.msg);
+                const dialogOptions = {
+                    "title": "Could not create new op",
+                    "text": err.msg
+                };
+                const parts = name.split("_v");
+                if (err.code === 409 && parts.length)
+                {
+                    const nextVersion = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
+                    dialogOptions.choice = true;
+                    dialogOptions.okButton = {
+                        "text": "Try " + nextVersion,
+                        "callback": () =>
+                        {
+                            CmdOps.createVersionSelectedOp(name);
+                        }
+                    };
+                }
+                else
+                {
+                    dialogOptions.showOkButton = true;
+                }
+                new ModalDialog(dialogOptions);
                 return;
             }
 
@@ -487,7 +509,11 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    CABLES.UI.MODAL.showError("ERROR", "unable to remove library: " + err.msg);
+                    new ModalDialog({
+                        "warning": true,
+                        "title": "ERROR",
+                        "html": "unable to remove library: " + err.msg
+                    });
                 }
                 else
                 {
@@ -564,7 +590,11 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    CABLES.UI.MODAL.showError("ERROR", "unable to remove corelib: " + err.msg);
+                    new ModalDialog({
+                        "warning": true,
+                        "title": "ERROR",
+                        "html": "unable to remove corelib: " + err.msg
+                    });
                 }
                 else
                 {
@@ -963,7 +993,10 @@ export default class ServerOps
                 if (err)
                 {
                     this.#log.log("err res", res);
-                    CABLES.UI.MODAL.showError("Could not rename op", "");
+                    new ModalDialog({
+                        "warning": true,
+                        "title": "Could not rename op"
+                    });
                 }
                 else
                 {
@@ -1450,7 +1483,11 @@ export default class ServerOps
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", GuiText.guestHint);
+            new ModalDialog({
+                "warning": true,
+                "title": "Demo Editor",
+                "html": GuiText.guestHint
+            })
             return;
         }
 

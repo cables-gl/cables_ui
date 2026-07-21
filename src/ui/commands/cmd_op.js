@@ -3,6 +3,7 @@ import ManageOp from "../components/tabs/tab_manage_op.js";
 import { notify } from "../elements/notification.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import ModalDialog from "../dialogs/modaldialog.js";
 
 export { CmdOps };
 
@@ -261,12 +262,12 @@ class CmdOps
         }
     }
 
-    static createVersionSelectedOp()
+    static createVersionSelectedOp(opName = null)
     {
         const ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) return;
 
-        const opname = ops[0].objName;
+        const opname = opName || ops[0].objName;
         let newOpname = "";
         if (opname.includes("_v"))
         {
@@ -275,15 +276,36 @@ class CmdOps
         }
         else newOpname = opname + "_v2";
 
-        gui.serverOps.clone(ops[0].opId, newOpname, () =>
+        if (gui.serverOps.isLoaded({ "objName": newOpname }))
         {
-            gui.serverOps.loadOpDependencies(opname, function ()
-            {
-                gui.patchView.replaceOp(ops[0].id, newOpname);
-
-                notify("created op " + newOpname, null, { "force": true });
+            const parts = newOpname.split("_v");
+            const nextVersion = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
+            new ModalDialog({
+                "title": "Could not create new version",
+                "text": newOpname + " already exists, try a higher version!",
+                "choice": true,
+                "okButton": {
+                    "text": "Try " + nextVersion,
+                    "callback": () =>
+                    {
+                        CmdOps.createVersionSelectedOp(newOpname);
+                    }
+                }
             });
-        });
+            return;
+        }
+        else
+        {
+            gui.serverOps.clone(ops[0].opId, newOpname, () =>
+            {
+                gui.serverOps.loadOpDependencies(opname, function ()
+                {
+                    gui.patchView.replaceOp(ops[0].id, newOpname);
+
+                    notify("created op " + newOpname, null, { "force": true });
+                });
+            });
+        }
     }
 
     static editOp(userInteraction = true)

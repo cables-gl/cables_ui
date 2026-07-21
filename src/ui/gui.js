@@ -443,10 +443,11 @@ export default class Gui extends Events
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError(
-                "Demo Editor",
-                GuiText.guestHint + "<br/><br/><a href=\"" + platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"cblbutton\">Close</a>"
-            );
+            new ModalDialog({
+                "warning": true,
+                "title": "Demo Editor",
+                "html": GuiText.guestHint + "<br/><br/><a href=\"" + platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"cblbutton\">Close</a>"
+            });
             return true;
         }
     }
@@ -1959,7 +1960,11 @@ export default class Gui extends Events
 
         if (this.#corePatch.cgl.aborted)
         {
-            CABLES.UI.MODAL.showError("no webgl", "your browser does not support webgl");
+            new ModalDialog({
+                "warning": true,
+                "title": "no webgl",
+                "html": "your browser does not support webgl"
+            });
             return;
         }
         if (this.userSettings.get("openLogTab") == true) this.showLogging();
