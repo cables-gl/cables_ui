@@ -217,14 +217,16 @@
                 {{#each opDoc.dependencies}}
                     <tr>
                         <td>
+                            {{#compare type '!=' 'op'}}
                             <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
+                            {{/compare}}
                         </td>
                         <td>
                             {{#compare type '==' 'npm'}}
                                 <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{readable}}</a>
                             {{else}}
                                 {{#compare type '==' 'op'}}
-                                    <a target="_blank" href="{{url}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
+                                    <a target="_blank" href="{{../cablesUrl}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
                                 {{else}}
                                     <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">{{readable}}</a>
                                 {{/compare}}
