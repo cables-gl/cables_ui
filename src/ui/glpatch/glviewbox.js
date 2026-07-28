@@ -160,6 +160,12 @@ export default class GlViewBox
         }
     }
 
+    getDragPixelMulX()
+    {
+
+        return (this.#cgl.canvas.width / this._zoom) * 0.5 / this.#cgl.pixelDensity;
+    }
+
     /**
      * @param {PointerEvent} e
      */
@@ -178,11 +184,10 @@ export default class GlViewBox
         {
             this.cursor = "grabbing";
             hideToolTip();
-            const pixelMulX = (this.#cgl.canvas.width / this._zoom) * 0.5 / this.#cgl.pixelDensity;
             const pixelMulY = (this.#cgl.canvas.height / this._zoom) * 0.5 / this.#cgl.pixelDensity;
 
             this.scrollTo(
-                this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
+                this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / this.getDragPixelMulX(),
                 this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY,
                 true);
         }
@@ -239,11 +244,19 @@ export default class GlViewBox
 
         if (doPan)
         {
-            let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
+            if (event.ctrlKey)
+            {
+                this.wheelZoom(event.deltaY);
+            }
+            else
+            {
+                let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
 
-            this.scrollTo(
-                this._scrollX - event.deltaX * speed,
-                this._scrollY - event.deltaY * speed);
+                this.scrollTo(
+                    this._scrollX - event.deltaX * (1 / this.getDragPixelMulX()) * 2,
+                    this._scrollY - event.deltaY * (1 / this.getDragPixelMulX()) * 2,
+                    true);
+            }
         }
 
         if (doZoom)
