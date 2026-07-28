@@ -162,8 +162,13 @@ export default class GlViewBox
 
     getDragPixelMulX()
     {
-
         return (this.#cgl.canvas.width / this._zoom) * 0.5 / this.#cgl.pixelDensity;
+    }
+
+    getDragPixelMulY()
+    {
+
+        return (this.#cgl.canvas.height / this._zoom) * 0.5 / this.#cgl.pixelDensity;
     }
 
     /**
@@ -184,11 +189,10 @@ export default class GlViewBox
         {
             this.cursor = "grabbing";
             hideToolTip();
-            const pixelMulY = (this.#cgl.canvas.height / this._zoom) * 0.5 / this.#cgl.pixelDensity;
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / this.getDragPixelMulX(),
-                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY,
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / this.getDragPixelMulY(),
                 true);
         }
     }
@@ -227,6 +231,10 @@ export default class GlViewBox
 
         let delta = 5;
 
+        if (this.wheelMode == "auto")
+            if (Math.abs(event.deltaX) > 0)
+                this.wheelMode = "pan";
+
         if (event.deltaY < 0)delta *= -1;
 
         let doPan = this.wheelMode == "pan";
@@ -238,8 +246,6 @@ export default class GlViewBox
             {
                 this._panStarted = performance.now();
                 doPan = true;
-
-                this.wheelMode == "pan";
             }
             else doZoom = true;
         }
@@ -248,15 +254,17 @@ export default class GlViewBox
         {
             if (event.ctrlKey)
             {
-                this.wheelZoom(event.deltaY, 0.001);
+                this.wheelZoom(event.deltaY * 0.001, 0.24);// delta is still weird...
+                // console.log("ctrl wheel", event.deltaY, this._mouseX);
             }
             else
             {
-                let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
+                // console.log("no ctrl");
+                // let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
 
                 this.scrollTo(
                     this._scrollX - event.deltaX * (1 / this.getDragPixelMulX()) * 2,
-                    this._scrollY - event.deltaY * (1 / this.getDragPixelMulX()) * 2,
+                    this._scrollY - event.deltaY * (1 / this.getDragPixelMulY()) * 2,
                     true);
             }
         }
@@ -359,9 +367,8 @@ export default class GlViewBox
      * @param {number} z
      * @param {number} [dur]
      */
-    animateZoom(z, dur)
+    animateZoom(z, dur = 0.25)
     {
-        dur = dur || 0.25;
 
         if (isNaN(z)) return console.error("zoom is nan");
         this._animZoom.clear();
