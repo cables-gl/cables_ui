@@ -234,10 +234,12 @@ export default class GlViewBox
 
         if (this.wheelMode == "auto")
         {
-            if (performance.now() - this._panStarted < 500 || Math.abs(event.deltaX) > 0)
+            if (performance.now() - this._panStarted < 50 || Math.abs(event.deltaX) > 0)
             {
                 this._panStarted = performance.now();
                 doPan = true;
+
+                this.wheelMode == "pan";
             }
             else doZoom = true;
         }
@@ -246,7 +248,7 @@ export default class GlViewBox
         {
             if (event.ctrlKey)
             {
-                this.wheelZoom(event.deltaY);
+                this.wheelZoom(event.deltaY, 0.001);
             }
             else
             {
@@ -274,7 +276,7 @@ export default class GlViewBox
     /**
      * @param {number} delta
      */
-    wheelZoom(delta)
+    wheelZoom(delta, dur = 0.5)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
 
@@ -300,7 +302,7 @@ export default class GlViewBox
         if (animate)
         {
             this._zoom = oldZoom;
-            const dur = 0.5;
+            // const dur = 0.5;
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
