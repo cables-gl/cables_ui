@@ -254,13 +254,11 @@ export default class GlViewBox
         {
             if (event.ctrlKey)
             {
-                this.wheelZoom(event.deltaY * 0.001, 0.24);// delta is still weird...
+                this.wheelZoom(event.deltaY * 0.01, false, false);
                 // console.log("ctrl wheel", event.deltaY, this._mouseX);
             }
             else
             {
-                // console.log("no ctrl");
-                // let speed = parseFloat(userSettings.get("patch_panspeed")) || 0.25;
 
                 this.scrollTo(
                     this._scrollX - event.deltaX * (1 / this.getDragPixelMulX()) * 2,
@@ -284,19 +282,28 @@ export default class GlViewBox
     /**
      * @param {number} delta
      */
-    wheelZoom(delta, dur = 0.5)
+    wheelZoom(delta, animate = true, isMouse = true)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
 
         if (delta == 0) return;
 
-        const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
+        if (isMouse)
+        {
 
-        if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
-        else delta = 1 + 0.2 * wheelMultiplier;
+            const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
+
+            if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
+            else delta = 1 + 0.2 * wheelMultiplier;
+
+        }
+        else
+        {
+            delta += 1;
+        }
+        let newZoom = this._zoom * delta;
 
         const mouse = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
-        const newZoom = this._zoom * delta;
 
         const x = this._scrollX + mouse[0];
         const y = this._scrollY + mouse[1];
@@ -305,8 +312,9 @@ export default class GlViewBox
         this._zoom = newZoom;
 
         const mouseAfterZoom = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
+        const dur = 0.5;
 
-        const animate = true;
+        // const animate = true;
         if (animate)
         {
             this._zoom = oldZoom;
@@ -320,6 +328,9 @@ export default class GlViewBox
         }
         else
         {
+            this._zoom = newZoom;
+            this._animZoom.clear();
+            this._animZoom.setValue(this.glPatch.time, newZoom);
             this.scrollTo(
                 x - mouseAfterZoom[0],
                 y - mouseAfterZoom[1],
