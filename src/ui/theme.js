@@ -86,7 +86,8 @@ import defaultTheme from "./defaulttheme.json";
 /**
  * @typedef theme_colors_patch
  * @property {Number[]} opBgRectSelected
- * @property {Number[]} selected
+ * @property {Number[]} selected deprecated
+ * @property {Number[]} selectedBorder
  * @property {Number[]} selectedCable
  * @property {Number[]} patchSelectionArea
  * @property {Number[]} opTitleExt

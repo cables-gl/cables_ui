@@ -102,6 +102,13 @@ export default class CanvasUi
         else
         {
 
+            setInterval(() =>
+            {
+
+                const canvas = this.#canvasEle;
+                if (canvas.dataset.perfms) this._elCanvasInfoMs.innerHTML = canvas.dataset.perfms + " ms";
+                if (canvas.dataset.perfms) this._elCanvasInfoFps.innerHTML = canvas.dataset.perffps + " fps";
+            }, 1000);
         }
 
         this.#canvasEle.setAttribute("tabindex", 0);

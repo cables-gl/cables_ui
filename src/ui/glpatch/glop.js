@@ -70,7 +70,7 @@ export default class GlOp extends Events
     _resizableArea = null;
 
     /** @type {GlRect} */
-    #glRectSelected = null;
+    #glRectSelectedBorder = null;
 
     /** @type {GlRect} */
     #glRectHighlighted = null;
@@ -226,7 +226,7 @@ export default class GlOp extends Events
         {
             if (!this.#visible) return;
             this._updateSelectedRect();
-            if (this.#glRectSelected) this.updateSize();
+            if (this.#glRectSelectedBorder) this.updateSize();
         });
 
     }
@@ -380,7 +380,7 @@ export default class GlOp extends Events
                 const newUiAttr = JSON.stringify(scope.#op.uiAttribs);
                 undo.add({
                     "title": "Move op",
-                    undo()
+                    "undo": function ()
                     {
                         try
                         {
@@ -390,7 +390,7 @@ export default class GlOp extends Events
                         }
                         catch (e) {}
                     },
-                    redo()
+                    "redo": function ()
                     {
                         const u = JSON.parse(newUiAttr);
                         scope.#glPatch.patchAPI.setOpUiAttribs(scope.#id, "translate", { "x": u.translate.x, "y": u.translate.y });
@@ -720,25 +720,25 @@ export default class GlOp extends Events
 
     _updateSelectedRect()
     {
-        if (!this.#visible || (!this.selected && this.#glRectSelected))
+        if (!this.#visible || (!this.selected && this.#glRectSelectedBorder))
         {
-            this.#glRectSelected.visible = false;
+            this.#glRectSelectedBorder.visible = false;
             return;
         }
 
         if (this.selected)
         {
-            if (!this.#glRectSelected)
+            if (!this.#glRectSelectedBorder)
             {
                 if (!this.#instancer) return; // how?
 
-                this.#glRectSelected = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
-                this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
+                this.#glRectSelectedBorder = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
+                this.#glRectSelectedBorder.setColorArray(gui.theme.colors_patch.selected);
 
                 this.updateSize();
                 this.updatePosition();
             }
-            this.#glRectSelected.visible = true;
+            this.#glRectSelectedBorder.visible = true;
         }
     }
 
@@ -829,15 +829,15 @@ export default class GlOp extends Events
             this._width += this._height * indicSize;
         }
 
-        if (this.#glRectSelected)
+        if (this.#glRectSelectedBorder)
         {
             if (gui.patchView.getNumSelectedOps() > 1)
             {
-                this.#glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+                this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
             }
             else
             {
-                this.#glRectSelected.setSize(0, 0);
+                this.#glRectSelectedBorder.setSize(0, 0);
             }
         }
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
@@ -894,7 +894,7 @@ export default class GlOp extends Events
         if (this.#glRerouteDot) this.#glRerouteDot = this.#glRerouteDot.dispose();
         if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
-        if (this.#glRectSelected) this.#glRectSelected = this.#glRectSelected.dispose();
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder = this.#glRectSelectedBorder.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
@@ -1113,7 +1113,7 @@ export default class GlOp extends Events
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this.#glRectSelected) this.#glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
@@ -1775,7 +1775,7 @@ export default class GlOp extends Events
                 {
                     undo.add({
                         "title": "Move op",
-                        undo()
+                        "undo": function ()
                         {
                             try
                             {
@@ -1783,7 +1783,7 @@ export default class GlOp extends Events
                             }
                             catch (e) {}
                         },
-                        redo()
+                        "redo": function ()
                         {
                             scope.#glPatch.patchAPI.setOpUiAttribs(scope.#id, "translate", { "x": oldX, "y": oldY });
                         }
@@ -1869,7 +1869,7 @@ export default class GlOp extends Events
         this._updateIndicators();
 
         if (this.#titleExt) this.#titleExt.setColorArray(gui.theme.colors_patch.opTitleExt);
-        if (this.#glRectSelected) this.#glRectSelected.setColorArray(gui.theme.colors_patch.selected);
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setColorArray(gui.theme.colors_patch.selectedBorder || gui.theme.colors_patch.selected);
 
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
         if (this.#glDotWarning) this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
