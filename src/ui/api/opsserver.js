@@ -1487,7 +1487,7 @@ export default class ServerOps
                 "warning": true,
                 "title": "Demo Editor",
                 "html": GuiText.guestHint
-            })
+            });
             return;
         }
 
@@ -1601,7 +1601,7 @@ export default class ServerOps
                                 if (err)
                                 {
                                     gui.endModalLoading();
-                                    setStatus("Error: " + err.msg || "Unknown error");
+                                    setStatus(err.msg || "Unknown error");
                                     return;
                                 }
 

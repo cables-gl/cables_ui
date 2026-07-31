@@ -249,7 +249,7 @@ export default class PatchSaveServer extends Events
                                 "name": "copy-collab-user-" + i,
                                 "value": user._id,
                                 "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
-                                "checked": false,
+                                "checked": false
                             };
                             if (userOpsUsed.some((userOp) => { return namespace.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
                             {
@@ -801,7 +801,7 @@ export default class PatchSaveServer extends Events
                 {
                     const options = {
                         "title": "Failed to set project name!",
-                        "html": "Error: " + error.msg,
+                        "html": error.msg,
                         "warning": true,
                         "showOkButton": true
                     };
@@ -911,7 +911,7 @@ export default class PatchSaveServer extends Events
                 "initiator": l.initiator,
                 "errorStack": l.errorStack,
                 "args": [],
-                "level": l.level,
+                "level": l.level
             };
 
             log.push(newLine);
@@ -1131,7 +1131,7 @@ export default class PatchSaveServer extends Events
         data.ui = {
             "viewBox": {},
             "renderer": {},
-            "timeline": {},
+            "timeline": {}
         };
 
         data.ui.texPreview = gui.metaTexturePreviewer.serialize();

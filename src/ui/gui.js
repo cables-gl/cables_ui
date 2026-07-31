@@ -1449,7 +1449,7 @@ export default class Gui extends Events
                     }
                     else
                     {
-                        converterOutput.innerHTML = "Error: something went wrong while converting..." + (err.msg || "");
+                        converterOutput.innerHTML = "Something went wrong while converting..." + (err.msg || "");
                     }
                 }
                 else

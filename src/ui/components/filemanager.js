@@ -507,7 +507,7 @@ export default class FileManager
                 {
                     if (err)
                     {
-                        html = "Error:" + err.msg;
+                        html = err.msg;
                         if (ele.byId("item_details")) ele.byId("item_details").innerHTML = html;
                         return;
                     }
@@ -690,7 +690,7 @@ export default class FileManager
                                                         this._manager.removeItem(itemId);
                                                         this.reload();
                                                     }
-                                                    else notifyError("Error: Could not delete file. " + errr.msg);
+                                                    else notifyError("Could not delete file. " + errr.msg);
                                                 }
                                             );
                                         });
@@ -897,7 +897,7 @@ export default class FileManager
             TalkerAPI.CMD_UPLOAD_FILE,
             {
                 "fileStr": content,
-                "filename": filename,
+                "filename": filename
             },
             (err3, res3) =>
             {
