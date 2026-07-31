@@ -3117,7 +3117,7 @@ export default class PatchView extends Events
                 }
             }
 
-            if (gui.user.isStaff && patchSummary.title != patchTitle)
+            if (gui.user.isStaff && patchSummary.title != patchTitle && platform.isTrustedPatch())
             {
                 patchTitle += " Example";
                 this.store.setPatchName(patchTitle);
