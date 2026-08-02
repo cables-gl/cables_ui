@@ -50,6 +50,7 @@ export default class EditorTabCodemirror extends Events
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
 
         this._options = options;
+        this.options = options;
 
         gui.maintabPanel.show();
 
@@ -62,7 +63,7 @@ export default class EditorTabCodemirror extends Events
                 "name": options.name,
                 "dataId": options.dataId || options.name,
                 "infotext": GuiText.editorTab,
-                "singleton": options.singleton,
+                "singleton": options.singleton
             });
 
         this.#tab.editor = this;
@@ -112,7 +113,7 @@ export default class EditorTabCodemirror extends Events
             this.cmView.dispatch(
                 {
                     "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
-                    "annotations": Transaction.addToHistory.of(false),
+                    "annotations": Transaction.addToHistory.of(false)
                 });
             this.cmView.focus();
             this.cmView.dispatch({
@@ -134,7 +135,7 @@ export default class EditorTabCodemirror extends Events
                 this.cmView.dispatch(
                     {
                         "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
-                        "annotations": Transaction.addToHistory.of(false),
+                        "annotations": Transaction.addToHistory.of(false)
                     });
                 this.cmView.focus();
                 if (this._options.onFinished) this._options.onFinished();
@@ -215,14 +216,14 @@ export default class EditorTabCodemirror extends Events
         if (this.helix)
             extensions.push(helix(
                 {
-                    "config": { "editor.cursor-shape.insert": "bar", "editor.default-yank-register": "+" },
+                    "config": { "editor.cursor-shape.insert": "bar", "editor.default-yank-register": "+" }
                 }
             ));
         const syntaxErrorLinter = linter((view) =>
         {
             const diagnostics = [];
             syntaxTree(view.state).iterate({
-                enter(node)
+                "enter": function (node)
                 {
                     if (node.type.isError)
                     {
@@ -230,10 +231,10 @@ export default class EditorTabCodemirror extends Events
                             "from": node.from,
                             "to": node.to,
                             "severity": "error",
-                            "message": "Syntax error",
+                            "message": "Syntax error"
                         });
                     }
-                },
+                }
             });
             return diagnostics;
         });
@@ -260,11 +261,11 @@ export default class EditorTabCodemirror extends Events
             extensions.push(keymap.of([
                 {
                     "key": "Mod-/",
-                    "run": toggleComment,
+                    "run": toggleComment
                 }, {
                     "key": "Mod-d",
                     "run": selectNextOccurrence,
-                    "preventDefault": true,
+                    "preventDefault": true
                 }]));
         }
 
@@ -297,7 +298,7 @@ export default class EditorTabCodemirror extends Events
             {
                 "parent": this.ele,
                 "extensions": extensions,
-                "doc": options.content || "",
+                "doc": options.content || ""
             });
 
         // this.cmView.state.readOnly.of(true);
@@ -518,7 +519,7 @@ export default class EditorTabCodemirror extends Events
             snippetCompletion("op.isCurrentUiOp()",
                 {
                     "label": "op.isCurrentUiOp"
-                }),
+                })
 
         ];
     }
