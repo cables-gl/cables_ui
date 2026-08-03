@@ -5,7 +5,7 @@
     "main": "gulpfile.js",
     "type": "module",
     "engines": {
-        "node": "20.13.1"
+        "node": "24.18.1"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.20.1",
@@ -67,5 +67,11 @@
         "type": "git",
         "url": "git@github.com:cables-gl/cables_ui.git"
     },
-    "author": ""
+    "author": "",
+    "allowScripts": {
+        "file:../../cables": true,
+        "file:../../..": true,
+        "fsevents@2.3.3": true,
+        "cables@1.0.0": true
+    }
 }
