@@ -278,17 +278,15 @@ class CmdOps
 
         if (gui.serverOps.isLoaded({ "objName": newOpname }))
         {
-            const parts = newOpname.split("_v");
-            const nextVersion = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
             new ModalDialog({
                 "title": "Could not create new version",
-                "text": newOpname + " already exists, try a higher version!",
+                "text": newOpname + " already exists, upgrade to newest version first!",
                 "choice": true,
                 "okButton": {
-                    "text": "Try " + nextVersion,
+                    "text": "Upgrade",
                     "callback": () =>
                     {
-                        CmdOps.createVersionSelectedOp(newOpname);
+                        CmdOps.upGradeOps();
                     }
                 }
             });
