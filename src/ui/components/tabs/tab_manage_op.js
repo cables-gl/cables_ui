@@ -169,6 +169,10 @@ export default class ManageOp
                             readableType = "Static " + readableType;
                             fileType = "bin";
                         }
+                        if (readable.startsWith("inc_")) readableType = "Include js file";
+                        if (readable.endsWith("_frag")) readableType = "Fragment shader";
+                        if (readable.endsWith("_vert")) readableType = "Vertex shader";
+
                         opFiles.push({
                             "src": res.attachmentFiles[i],
                             "type": "attachment",
@@ -316,7 +320,6 @@ export default class ManageOp
                     }
                     const openButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='show']");
                     const hideButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='hide']");
-                    console.log("TAB", dependencyTab, openButton, hideButton);
                     if (dataset.action === "show")
                     {
                         if (openButton) ele.hide(openButton);
