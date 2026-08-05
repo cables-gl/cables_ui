@@ -271,7 +271,7 @@ export default class EditorTabCodemirror extends Events
 
         if (this._options.syntax == "glsl") extensions.push(glsl());
         if (this._options.syntax == "css") extensions.push(css());
-        if (this._options.syntax == "md") extensions.push(css());
+        if (this._options.syntax == "md") extensions.push(markdown());
         if (this._options.syntax == "js")
         {
             extensions.push(syntaxErrorLinter);
@@ -290,7 +290,7 @@ export default class EditorTabCodemirror extends Events
             extensions.push(EditorView.editable.of(false));
             extensions.push(EditorView.theme({
                 "&": {
-                    "opacity": "0.75 !important"
+                    "opacity": "0.5 !important"
                 } }));
         }
 

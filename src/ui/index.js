@@ -31,6 +31,7 @@ import { showShaderError } from "./dialogs/modalshadererrorgl.js";
 import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
 import { GuiText } from "./text.js";
 import { UiPort } from "./core_extend_port.js";
+import OpSearch from "./components/opsearch.js";
 
 window.CABLES = CABLES || {};
 
@@ -97,6 +98,7 @@ CABLES.Op = UiOp;
 CABLES.Patch = UiPatch;
 
 CABLES.UI.startUi = startUi;
+CABLES.UI.OpSearch = OpSearch;
 
 // added during webpack build
 CABLES.UI.build = window.BUILD_INFO;

@@ -37,7 +37,7 @@ export default class OpSearch extends Events
         this._list = null;
     }
 
-    _buildList()
+    buildList()
     {
         const perf = gui.uiProfiler.start("opsearch.getlist");
 
@@ -387,12 +387,11 @@ export default class OpSearch extends Events
      */
     search(query, originalSearch)
     {
-
         this.prefereGApi = gui.canvasManager.currentContextCg()?.gApi;
 
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
-        if (!query) return;
+        if (!query) return console.log("no query");
 
         const origQuery = query;
         if (this._wordsDb) // search through word db
@@ -426,6 +425,8 @@ export default class OpSearch extends Events
             }
             else document.getElementById("realsearch").innerHTML = "";
         }
+        else console.warn("no wordsdb");
+
         if (query.length > 1 && this._list)
         {
             for (let i = 0; i < this._list.length; i++)
@@ -569,7 +570,7 @@ export default class OpSearch extends Events
                     "isCollection": isCollection,
                     "buttonText": isCollection ? "Load" : "Add",
                     "type": type,
-                    "pop": popularity,
+                    "pop": popularity
 
                 };
                 if (opDoc && opDoc.notUsable)

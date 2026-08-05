@@ -447,7 +447,7 @@ export default class OpSelect
         this.firstTime = false;
 
         const options = {
-            "linkNamespaceIsTextureEffects": false,
+            "linkNamespaceIsTextureEffects": false
         };
 
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
@@ -549,7 +549,7 @@ export default class OpSelect
         if (!this.#opSearch.list)
         {
             const perf = gui.uiProfiler.start("opselect.prepare.list");
-            this.#opSearch._buildList();
+            this.#opSearch.buildList();
             perf.finish();
         }
 
