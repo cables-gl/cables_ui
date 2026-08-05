@@ -139,34 +139,46 @@ export default class ManageOp
                 if (error) this.#log.warn("error api?", error);
 
                 const perf = gui.uiProfiler.start("showOpCodeMetaPanel");
-                const doc = {};
+                let changelog = [];
                 const opName = this.#currentName;
                 let summary = "";
                 let portJson = null;
 
-                if (res.changelog && res.changelog.length > 0) doc.changelog = res.changelog;
+                if (res.changelog && res.changelog.length > 0) changelog = res.changelog;
+
+                let opFiles = [];
+
+                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
                 if (res.attachmentFiles)
                 {
-                    const attachmentFiles = [];
                     for (let i = 0; i < res.attachmentFiles.length; i++)
                     {
-                        const parts = res.attachmentFiles[i].split(".");
-                        let suffix = "";
-                        suffix = parts[parts.length - 1];
-
                         let readable = res.attachmentFiles[i].substr(4);
                         const isStatic = res.attachmentFiles[i].startsWith("att_bin_");
                         if (isStatic) readable = res.attachmentFiles[i].substr(8);
                         readable = readable.replace(".", "_");
 
-                        attachmentFiles.push(
-                            {
-                                "suffix": suffix,
-                                "readable": readable,
-                                "original": res.attachmentFiles[i],
-                                "static": isStatic
-                            });
+                        let fileType = "js";
+                        if (readable.endsWith("_frag")) fileType = "gl";
+                        if (readable.endsWith("_vert")) fileType = "gl";
+
+                        let readableType = "Attachment";
+                        if (isStatic)
+                        {
+                            readableType = "Static " + readableType;
+                            fileType = "bin";
+                        }
+                        opFiles.push({
+                            "src": res.attachmentFiles[i],
+                            "type": "attachment",
+                            "readable": readable,
+                            "readableType": readableType,
+                            "editable": true,
+                            "removable": canEditOp,
+                            "depType": "attachment",
+                            "fileType": fileType
+                        });
 
                         if (res.attachmentFiles[i] === "att_ports.json")
                         {
@@ -185,13 +197,77 @@ export default class ManageOp
                             }
                         }
                     }
-                    doc.attachmentFiles = attachmentFiles;
                 }
 
-                doc.libs = gui.serverOps.getOpLibs(opName).map((lib) => { return lib.name; });
-                doc.coreLibs = gui.serverOps.getCoreLibs(opName).map((lib) => { return lib.name; });
+                gui.serverOps.getCoreLibs(opName).forEach((coreLib) =>
+                {
+                    opFiles.push({
+                        "src": coreLib.name,
+                        "type": "corelib",
+                        "readable": coreLib.name,
+                        "readableType": "Dependency (lib)",
+                        "editable": false,
+                        "removable": canEditOp,
+                        "depType": "lib",
+                        "fileType": "js"
+                    });
+                });
+
+                gui.serverOps.getOpLibs(opName).forEach((lib) =>
+                {
+                    opFiles.push({
+                        "src": lib.name,
+                        "type": "lib",
+                        "readable": lib.name,
+                        "readableType": "Dependency (corelib)",
+                        "editable": false,
+                        "removable": canEditOp,
+                        "depType": "lib",
+                        "fileType": "js"
+                    });
+                });
+
+                if (opDoc.dependencies)
+                {
+                    opDoc.dependencies.forEach((dep) =>
+                    {
+                        dep.readable = dep.src;
+                        if (dep.readable && dep.readable.startsWith("./")) dep.readable = dep.readable.replace("./", "");
+
+                        let readable = dep.readable;
+                        if (dep.type === "op")
+                        {
+                            readable = dep.opName;
+                            if (dep.oldVersion) readable += " (newer version available!)";
+                        }
+                        let readableType = "Dependency (" + dep.type;
+                        if (dep.type === "module") readableType += " exported as: " + dep.export;
+                        readableType += ")";
+                        opFiles.push({
+                            "src": dep.src,
+                            "type": "dependency",
+                            "readable": readable,
+                            "readableType": readableType,
+                            "editable": dep.type !== "op",
+                            "depType": dep.type,
+                            "depOp": dep.opName,
+                            "fileType": "js"
+                        });
+                    });
+                }
+
+                opFiles.sort((a, b) =>
+                {
+                    const aOp = a.depType === "op";
+                    const bOp = b.depType === "op";
+
+                    if (aOp && !bOp) return -1;
+                    if (!aOp && bOp) return 1;
+
+                    return a.readable?.toLowerCase().localeCompare(b.readable?.toLowerCase());
+                });
+
                 summary = gui.opDocs.getSummary(opName) || "No Summary";
-                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
                 if (portJson && portJson.ports)
                 {
                     portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
@@ -202,52 +278,56 @@ export default class ManageOp
                             if (portJson.ports[i - 1].dir != portJson.ports[i].dir) portJson.ports[i].divider = true;
                         }
                 }
-                const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
-                if (opDoc.dependencies)
-                {
-                    opDoc.dependencies.forEach((dep) =>
-                    {
-                        dep.readable = dep.src;
-                        if (dep.readable && dep.readable.startsWith("./")) dep.readable = dep.readable.replace("./", "");
-                    });
-                }
-
-                const libs = [];
-                allLibs.forEach((lib) =>
-                {
-                    libs.push({
-                        "url": lib,
-                        "name": utils.basename(lib),
-                        "isAssetLib": lib.startsWith("/assets/")
-                    });
-                });
 
                 let canDeleteOp = canEditOp && namespace.isPatchOp(opName);
                 if (platform.frontendOptions.opDeleteInEditor) canDeleteOp = canEditOp;
 
-                const html = getHandleBarHtml("tab_manage_op",
-                    {
-                        "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
-                        "url": platform.getCablesDocsUrl(),
-                        "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
-                        "opid": opDoc.id,
-                        "opname": opDoc.name,
-                        "doc": doc,
-                        "opDoc": opDoc,
-                        "viewId": this.#id,
-                        "subPatchSaved": gui.savedState.isSavedSubOp(opName),
-                        "portJson": portJson,
-                        "summary": summary,
-                        "canEditOp": canEditOp,
-                        "canDeleteOp": canDeleteOp,
-                        "readOnly": !canEditOp,
-                        "user": gui.user,
-                        "warns": res.warns,
-                        "visibilityString": res.visibilityString,
-                        "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
-                    });
+                const html = getHandleBarHtml("tab_manage_op", {
+                    "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
+                    "url": platform.getCablesDocsUrl(),
+                    "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
+                    "opid": opDoc.id,
+                    "opname": opDoc.name,
+                    "changelog": changelog,
+                    "opDoc": opDoc,
+                    "opFiles": opFiles,
+                    "viewId": this.#id,
+                    "subPatchSaved": gui.savedState.isSavedSubOp(opName),
+                    "portJson": portJson,
+                    "summary": summary,
+                    "canEditOp": canEditOp,
+                    "canDeleteOp": canDeleteOp,
+                    "readOnly": !canEditOp,
+                    "user": gui.user,
+                    "warns": res.warns,
+                    "visibilityString": res.visibilityString,
+                    "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
+                });
 
                 this.#tab.html(html);
+
+                ele.clickables(this.#tab.contentEle, ".dependency-add", (e, dataset) =>
+                {
+                    const dependencyTab = ele.byId(this.#id + "_dependencytabs");
+                    if (dependencyTab)
+                    {
+                        if (dataset.action === "show") ele.show(dependencyTab);
+                        if (dataset.action === "hide") ele.hide(dependencyTab);
+                    }
+                    const openButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='show']");
+                    const hideButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='hide']");
+                    console.log("TAB", dependencyTab, openButton, hideButton);
+                    if (dataset.action === "show")
+                    {
+                        if (openButton) ele.hide(openButton);
+                        if (hideButton) ele.show(hideButton);
+                    }
+                    if (dataset.action === "hide")
+                    {
+                        if (openButton) ele.show(openButton);
+                        if (hideButton) ele.hide(hideButton);
+                    }
+                });
 
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
                 {
@@ -360,6 +440,17 @@ export default class ManageOp
                     const tabPanel = ele.byId(dependencyTabId);
                     if (tabPanel)
                     {
+                        const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
+                        const libs = [];
+                        allLibs.forEach((lib) =>
+                        {
+                            libs.push({
+                                "url": lib,
+                                "name": utils.basename(lib),
+                                "isAssetLib": lib.startsWith("/assets/")
+                            });
+                        });
+
                         const panelOptions = {
                             "opDoc": opDoc,
                             "libs": libs,

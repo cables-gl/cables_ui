@@ -170,94 +170,73 @@
                     <td></td>
                 </tr>
 
-                {{#if doc.attachmentFiles}}
-                    {{#each doc.attachmentFiles}}
-                        <tr>
-                            <td>
-                                <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');"></a>&nbsp;
-                            </td>
-                            <td onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');" style="cursor: pointer;">
-                                {{readable}}
-                            </td>
-                            <td>
-                            {{#if static}}Static {{/if}}Attachment
-                            </td>
-                            <td style="text-align: right;">
-                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{original}}" data-deptype="attachment"></a>
-                            </td>
-                        </tr>
-                    {{/each}}
-                {{/if}}
-
-                {{#if hasDependencies}}
-                {{#each opDoc.coreLibs}}
-                    <tr>
-                        <td></td>
-                        <td>{{.}}</td>
-                        <td>Dependency (corelib)</td>
-                        <td style="text-align: right;">
-                            {{#if ../canEditOp}}
-                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="corelib"></a>
-                            {{/if}}
-                        </td>
-                    </tr>
-                {{/each}}
-                {{#each opDoc.libs}}
-                    <tr>
-                        <td></td>
-                        <td>{{.}}</td>
-                        <td>Dependency (lib)</td>
-                        <td style="text-align: right;">
-                            {{#if ../canEditOp}}
-                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{.}}" data-deptype="lib"></a>
-                            {{/if}}
-                        </td>
-                    </tr>
-                {{/each}}
-                {{#each opDoc.dependencies}}
+                {{#if opFiles}}
+                {{#each opFiles}}
                     <tr>
                         <td>
-                            {{#compare type '!=' 'op'}}
-                            <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
-                            {{/compare}}
-                        </td>
-                        <td>
-                            {{#compare type '==' 'npm'}}
-                                <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">{{readable}}</a>
+                        {{#if editable}}
+                            {{#compare type "==" "dependency"}}
+                                <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer" class="icon icon-edit iconhover" ></a>&nbsp;
                             {{else}}
-                                {{#compare type '==' 'op'}}
-                                    <a target="_blank" href="{{../cablesUrl}}/op/{{opName}}">{{opName}}</a>{{#if oldVersion}} (newer version available!){{/if}}
+                                <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');"></a>&nbsp;
+                            {{/compare}}
+                        {{/if}}
+                        </td>
+                        {{#compare type "==" "dependency"}}
+                        <td>
+                            {{#compare depType '==' 'npm'}}
+                                <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">
+                                    <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                                    {{readable}}
+                                </a>
+                            {{else}}
+                                {{#compare depType '==' 'op'}}
+                                    <a target="_blank" href="{{../cablesUrl}}/op/{{depOp}}">
+                                        <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                                        {{readable}}
+                                    </a>
                                 {{else}}
-                                    <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">{{readable}}</a>
+                                    <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">
+                                        <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                                        {{readable}}
+                                    </a>
                                 {{/compare}}
                             {{/compare}}
                         </td>
-                        <td>Dependency ({{type}}{{#compare type '==' 'module' }} exported as: <code>{{export}}</code>{{/compare}})</td>
+                        {{else}}
+                        <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');"{{/compare}}>
+                            <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                            {{readable}}
+                        </td>
+                        {{/compare}}
+                        <td>
+                            {{readableType}}
+                        </td>
                         <td style="text-align: right;">
                             {{#if ../canEditOp}}
-                                <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{type}}"></a>
+                            <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{depType}}"></a>
                             {{/if}}
                         </td>
                     </tr>
                 {{/each}}
                 {{/if}}
-
             </table>
 
             {{#if canEditOp}}
                 <a class="cblbutton" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create Attachment</a>
-                <a class="cblbutton" onclick="ele.byId('{{viewId}}_dependencytabs').classList.toggle('hidden');this.classList.toggle('hidden')"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
+                <a class="cblbutton dependency-add" data-action="show"><span class="icon icon-plus-circle icon-1_25x"></span>Add Dependency</a>
+                <a class="cblbutton dependency-add hidden" data-action="hide"><span class="icon icon-x icon-1_25x"></span></a>
                 add <a class="link" href="https://cables.gl/docs/5_writing_ops/dev_libraries/dev_libraries" target="_blank"> libraries and modules</a> to your op<br/><br/>
                 <div id="{{viewId}}_dependencytabs" class="dependencytabs hidden"></div>
             {{/if}}
 
         {{/if}}
 
-        {{#if doc.changelog}}
+        {{#if changelog}}
             <br/><br/>
             <div class="groupSpacer"><h3>Changelog</h3></div>
             <table class="changelogtable" style="width:100%">
-            {{#each doc.changelog}}
+            {{#each changelog}}
                 <tr>
                     <td style="vertical-align: top">
                         <span style="font-size:11px">{{relativedate date}}</span>
