@@ -162,6 +162,7 @@
                         <a class="icon icon-edit iconhover" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);"></a>&nbsp;
                     </td>
                     <td onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);" style="cursor:pointer">
+                        <span class="fileTypeColor_{{fileType}}">
                         {{opname}}.js
                     </td>
                     <td>
@@ -186,18 +187,15 @@
                         <td>
                             {{#compare depType '==' 'npm'}}
                                 <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">
-                                    <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
                                     {{readable}}
                                 </a>
                             {{else}}
                                 {{#compare depType '==' 'op'}}
                                     <a target="_blank" href="{{../cablesUrl}}/op/{{depOp}}">
-                                        <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
                                         {{readable}}
                                     </a>
                                 {{else}}
                                     <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">
-                                        <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
                                         {{readable}}
                                     </a>
                                 {{/compare}}
