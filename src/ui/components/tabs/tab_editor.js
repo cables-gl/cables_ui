@@ -48,7 +48,7 @@ export default class EditorBase extends Events
         if (arr.length > 0) height = "100px";
 
         const r = document.querySelector(":root");
-        r.style.setProperty("--editorDiagHeight", height);
+        this.eleDiag.parentElement.style.setProperty("--editorDiagHeight", height);
 
         for (let i = 0; i < arr.length; i++)
         {

@@ -246,11 +246,19 @@ const paramsHelper =
                         gui.mainTabs.activateTabByName(name);
                     }
                 });
-            port.on(Port.EVENT_UIATTRCHANGE, () =>
+
+            function updateDiags()
             {
+                console.log("updatediags...", port.uiAttribs.editorDiagnostics);
                 if (port.uiAttribs.editorDiagnostics)
                     editor.setDiags(port.uiAttribs.editorDiagnostics);
-                // editorDiagnostics;
+            }
+
+            updateDiags();
+
+            port.on(Port.EVENT_UIATTRCHANGE, () =>
+            {
+                updateDiags();
             });
 
             gui.corePatch().on(Patch.EVENT_OP_DELETED, (deletedOp) =>
