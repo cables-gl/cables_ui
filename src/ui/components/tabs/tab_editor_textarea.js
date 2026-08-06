@@ -7,16 +7,17 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
+import EditorBase from "./tab_editor.js";
 
 /**
  * tab panel for editing text and source code using the ace editor
  */
 
-export default class EditorTabTextArea extends Events
+export default class EditorTabTextArea extends EditorBase
 {
     constructor(options)
     {
-        super();
+        super(options);
         this._log = new Logger("EditorTab");
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
 
@@ -28,25 +29,25 @@ export default class EditorTabTextArea extends Events
 
         // check if tab exists?
 
-        this._tab = new Tab(title,
+        this.tab = new Tab(title,
             {
                 "icon": null,
                 "type": options.syntax,
                 "name": options.name,
                 "dataId": options.dataId || options.name,
                 "infotext": GuiText.editorTab,
-                "singleton": options.singleton,
+                "singleton": options.singleton
             });
 
-        this._tab.editor = this;
+        this.tab.editor = this;
         this.ele = null;
 
-        this._tab.on("onActivate", () =>
+        this.tab.on("onActivate", () =>
         {
             if (this.ele) this.ele.focus();
         });
 
-        this._tab.on("resize", () =>
+        this.tab.on("resize", () =>
         {
             // if (this._tab) this._tab.updateSize();
             // if (this._editor) this._editor.resize();
@@ -59,16 +60,16 @@ export default class EditorTabTextArea extends Events
         }
         else
         {
-            this._tab.editorObj = options.editorObj;
-            gui.mainTabs.addTab(this._tab);
+            this.tab.editorObj = options.editorObj;
+            gui.mainTabs.addTab(this.tab);
         }
 
         let style = "";
 
         if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<textarea class=\"editor_textarea\" id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%" + style + "\"></textarea>";
-        this._tab.html(html);
-        this.ele = ele.byId("editorcontent" + this._tab.id);
+        const html = "<textarea class=\"editor_textarea\" id=\"editorcontent" + this.tab.id + "\" style=\"width:100%;height:calc(100% - var(--editorDiagHeight))" + style + "\"></textarea>" + this.getDiagHtmlOuter();
+        this.tab.html(html);
+        this.ele = ele.byId("editorcontent" + this.tab.id);
 
         if (options.hasOwnProperty("content")) this.setContent(options.content);
     }
@@ -84,7 +85,7 @@ export default class EditorTabTextArea extends Events
 
         if (this._options.allowEdit)
         {
-            if (this._options.onSave || this._options.showSaveButton) this._tab.addButton(GuiText.editorSaveButton, () =>
+            if (this._options.onSave || this._options.showSaveButton) this.tab.addButton(GuiText.editorSaveButton, () =>
             {
                 this.save();
             });
@@ -94,17 +95,17 @@ export default class EditorTabTextArea extends Events
             else hideFormatButton = true;
             if (!platform.frontendOptions.showFormatCodeButton)hideFormatButton = true;
 
-            if (this._options.allowEdit && !hideFormatButton) this._tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
+            if (this._options.allowEdit && !hideFormatButton) this.tab.addButton(GuiText.editorFormatButton, this.format.bind(this));
         }
 
-        this._tab.addEventListener("close", this._options.onClose);
-        this._tab.addEventListener(
+        this.tab.addEventListener("close", this._options.onClose);
+        this.tab.addEventListener(
             "onActivate",
             () =>
             {
                 this.ele.focus();
                 // if (this._tab.editorObj && this._tab.editorObj.name) userSettings.set("editortab", this._tab.editorObj.name);
-            },
+            }
         );
 
         setTimeout(() =>
@@ -124,7 +125,7 @@ export default class EditorTabTextArea extends Events
         platform.talkerAPI.send(
             TalkerAPI.CMD_FORMAT_OP_CODE,
             {
-                "code": this.ele.value,
+                "code": this.ele.value
             },
             (err, res) =>
             {

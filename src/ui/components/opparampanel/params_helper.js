@@ -249,7 +249,6 @@ const paramsHelper =
 
             function updateDiags()
             {
-                console.log("updatediags...", port.uiAttribs.editorDiagnostics);
                 if (port.uiAttribs.editorDiagnostics)
                     editor.setDiags(port.uiAttribs.editorDiagnostics);
             }

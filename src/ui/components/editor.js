@@ -2,6 +2,7 @@ import { contextMenu } from "../elements/contextmenu.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { GuiText } from "../text.js";
+import EditorBase from "./tabs/tab_editor.js";
 import EditorTabCodemirror from "./tabs/tab_editor_codemirror.js";
 import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
 import ManageOp from "./tabs/tab_manage_op.js";
@@ -27,6 +28,7 @@ import { userSettings } from "./usersettings.js";
 
 /**
  * @param {EditorOptions} options
+ * @returns {EditorBase}
  */
 export function createEditor(options)
 {

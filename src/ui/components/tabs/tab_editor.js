@@ -41,6 +41,7 @@ export default class EditorBase extends Events
     {
         const eleDiagId = "editordiag" + this.tab.id;
         this.eleDiag = ele.byId(eleDiagId);
+        if (!this.eleDiag) return console.warn("editor diagnose panel not found");
         this.eleDiag.innerHTML = "";
 
         let diags = "";
