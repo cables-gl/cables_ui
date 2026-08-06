@@ -49,9 +49,12 @@ export default class EditorBase extends Events
         {
             const d = arr[i];
             const diagLine = document.createElement("div");
+            let classname = "diagSeverity" + d.severity;
+            if (d.fatal)classname = "diagSeverityFatal";
             diagLine.dataset.line = String(d.line);
             diagLine.dataset.col = String(d.column);
             diagLine.innerHTML = d.message;
+            diagLine.classList.add(classname);
 
             diagLine.addEventListener("click", () =>
             {
@@ -61,12 +64,14 @@ export default class EditorBase extends Events
 
             this.eleDiag.appendChild(diagLine);
         }
-
     }
 
+    /**
+     * @param {number} line
+     */
     gotoLine(line)
     {
-        throw new Error("Method not implemented.");
+        throw new Error("gotoline method not implemented.");
     }
 
 }

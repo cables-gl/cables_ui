@@ -158,7 +158,7 @@ export default class EditorTabCodemirror extends EditorBase
     /**
      * @param {number} line
      */
-    goToLine(line)
+    gotoLine(line)
     {
 
         const lineInfo = this.cmView.state.doc.line(line); // 1-based line number

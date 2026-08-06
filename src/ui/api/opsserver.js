@@ -23,6 +23,8 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {string} message
  * @property {number} line
  * @property {number} column
+ * @property {number} severity
+ * @property {boolean} fatal
  */
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....

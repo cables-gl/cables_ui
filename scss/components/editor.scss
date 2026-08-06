@@ -48,11 +48,24 @@
     height:100px;
     overflow:auto;
 
-    div{
+    div
+    {
         border-bottom:1px solid var(--color-01);
         padding:2px;
-
         font-family: monospace;
+        border-left:10px solid #777;
+        padding-left:10px;
+
+    }
+
+    .diagSeverity2
+    {
+        border-left:10px solid #f90;
+    }
+
+    .diagSeverityFatal
+    {
+        border-left:10px solid #f00;
     }
 }
 
