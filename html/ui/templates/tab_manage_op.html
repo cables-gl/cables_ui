@@ -203,7 +203,7 @@
                         </td>
                         {{else}}
                         <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');"{{/compare}}>
-                            {{#compare type "==" "attachment"}}<span class="fileTypeColor_{{fileType}}">{{/compare}}{{fileType}}</span>
+                            {{#compare type "==" "attachment"}}<span class="fileTypeColor_{{fileType}}">{{fileType}}</span>{{/compare}}
                             {{readable}}
                         </td>
                         {{/compare}}
