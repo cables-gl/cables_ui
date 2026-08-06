@@ -28,15 +28,15 @@ import { notify, notifyError } from "../../elements/notification.js";
 import ManageOp from "./tab_manage_op.js";
 import { GuiText } from "../../text.js";
 import Tab from "../../elements/tabpanel/tab.js";
+import EditorBase from "./tab_editor.js";
 
 /**
  * tab panel for editing text and source code using the codemirror editor
  */
 
-export default class EditorTabCodemirror extends Events
+export default class EditorTabCodemirror extends EditorBase
 {
     #log = new Logger("editorTabCm");
-    #tab = null;
     helix = false;
 
     /**
@@ -45,18 +45,15 @@ export default class EditorTabCodemirror extends Events
      */
     constructor(options, helix)
     {
-        super();
+        super(options);
         this.helix = helix;
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
-
-        this._options = options;
-        this.options = options;
 
         gui.maintabPanel.show();
 
         let title = gui.maintabPanel.tabs.getUniqueTitle(options.title);
 
-        this.#tab = new Tab(title,
+        this.tab = new Tab(title,
             {
                 "icon": null,
                 "type": options.syntax,
@@ -66,15 +63,15 @@ export default class EditorTabCodemirror extends Events
                 "singleton": options.singleton
             });
 
-        this.#tab.editor = this;
+        this.tab.editor = this;
         this.ele = null;
 
-        this.#tab.on("onActivate", () =>
+        this.tab.on("onActivate", () =>
         {
             this.focus();
         });
 
-        this.#tab.on("resize", () =>
+        this.tab.on("resize", () =>
         {
         });
 
@@ -85,19 +82,22 @@ export default class EditorTabCodemirror extends Events
         }
         else
         {
-            this.#tab.editorObj = options.editorObj;
-            gui.mainTabs.addTab(this.#tab);
+            this.tab.editorObj = options.editorObj;
+            gui.mainTabs.addTab(this.tab);
         }
 
         let style = "";
 
         // if (!options.allowEdit) style = "background-color:#333;";
-        const html = "<div class=\"\" id=\"editorcontent" + this.#tab.id + "\" style=\"width:100%;height:100%;overflow:auto;" + style + "\"></div>";
-        this.#tab.html(html);
-        this._eleId = "editorcontent" + this.#tab.id;
+        const html =
+            "<div class=\"\" id=\"editorcontent" + this.tab.id + "\" style=\"width:100%;height:calc(100% - 100px);overflow:auto;" + style + "\"></div>" + this.getDiagHtmlOuter();
+        this.tab.html(html);
+        this._eleId = "editorcontent" + this.tab.id;
         this.ele = ele.byId(this._eleId);
 
         if (options.hasOwnProperty("content")) this.setContent(options.content);
+
+        this.setDiags();
     }
 
     /**
@@ -124,8 +124,8 @@ export default class EditorTabCodemirror extends Events
         {
             this.createEditor(() =>
             {
-                this.#tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
-                this.#tab.addEventListener(
+                this.tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
+                this.tab.addEventListener(
                     Tab.EVENT_ACTIVATE,
                     () =>
                     {
@@ -153,6 +153,19 @@ export default class EditorTabCodemirror extends Events
     {
         const str = this.cmView.state.doc.toString();
         return str;
+    }
+
+    /**
+     * @param {number} line
+     */
+    goToLine(line)
+    {
+
+        const lineInfo = this.cmView.state.doc.line(line); // 1-based line number
+        this.cmView.dispatch({
+            "selection": { "anchor": lineInfo.from },
+            "scrollIntoView": true
+        });
     }
 
     format()
@@ -194,7 +207,7 @@ export default class EditorTabCodemirror extends Events
             else
             {
                 notify(txt);
-                gui.mainTabs.setChanged(this.#tab.id, false);
+                gui.mainTabs.setChanged(this.tab.id, false);
             }
 
             this.focus();
@@ -303,7 +316,7 @@ export default class EditorTabCodemirror extends Events
 
         // this.cmView.state.readOnly.of(true);
 
-        createOpDocButton(this.#tab, this);
+        createOpDocButton(this.tab, this);
         cb();
 
     }

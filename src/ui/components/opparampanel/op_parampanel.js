@@ -450,8 +450,17 @@ class OpParampanel extends Events
                 }
             };
 
-            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; }, { "passive": false });
-            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; }, { "passive": false });
+            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () =>
+            {
+                console.log("jajajaja");
+                this._isPortLineDragDown = false; this._portLineDraggedName = null;
+            }, { "passive": false });
+
+            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) =>
+            {
+                this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname;
+            }, { "passive": false });
+
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
 

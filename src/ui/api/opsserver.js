@@ -18,6 +18,13 @@ import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
 
+/**
+ * @typedef LinterDiag
+ * @property {string} message
+ * @property {number} line
+ * @property {number} column
+ */
+
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
 function capitalize(str)
@@ -82,8 +89,7 @@ export default class ServerOps
             {
                 this.#log.log("no data", data);
             }
-        }
-        );
+        });
 
         CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
         {
@@ -1608,8 +1614,9 @@ export default class ServerOps
                                 if (!res.success)
                                 {
                                     gui.savingTitleAnimEnd();
-
-                                    if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true); else if (err) setStatus("Error: " + err.msg || "Unknown error");
+                                    console.log("jajajaja", res);
+                                    editor.setDiags([res.error]);
+                                    // if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true); else if (err) setStatus("Error: " + err.msg || "Unknown error");
                                 }
                                 else
                                 {
@@ -1636,15 +1643,16 @@ export default class ServerOps
                                         gui.endModalLoading();
                                     });
                                 }
-                            },
-                            (result) =>
-                            {
-                                setStatus("ERROR: not saved - " + result.msg);
-                                this.#log.log("err result", result);
+                            }
+                            // (result) =>
+                            // {
+                            //     setStatus("ERROR: not saved - " + result.msg);
+                            //     this.#log.log("err result", result);
 
-                                // gui.endModalLoading();
-                                gui.savingTitleAnimEnd();
-                            });
+                            //     // gui.endModalLoading();
+                            //     gui.savingTitleAnimEnd();
+                            // }
+                        );
                     });
                 }
                 else

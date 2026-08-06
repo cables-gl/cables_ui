@@ -43,7 +43,18 @@
     background-color: var(--color-06) !important;
 }
 
+.editorDiag
+{
+    height:100px;
+    overflow:auto;
 
+    div{
+        border-bottom:1px solid var(--color-01);
+        padding:2px;
+
+        font-family: monospace;
+    }
+}
 
 .editor_spreadsheet
 {
