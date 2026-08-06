@@ -1626,6 +1626,7 @@ export default class ServerOps
                                     if (platform.warnOpEdit(opname)) notifyError("WARNING: op editing on live environment");
                                     if (!Patch.getOpClass(opname)) gui.opSelect().reload();
 
+                                    editor.setDiags(res.linterMessages || []);
                                     gui.serverOps.execute(opid, () =>
                                     {
                                         setStatus("Saved " + opname);

@@ -40,11 +40,17 @@ export default class EditorBase extends Events
      */
     setDiags(arr = [])
     {
-        this._eleDiagId = "editordiag" + this.tab.id;
-        this.eleDiag = ele.byId(this._eleDiagId);
+        const eleDiagId = "editordiag" + this.tab.id;
+        this.eleDiag = ele.byId(eleDiagId);
+        this.eleDiag.innerHTML = "";
 
-        console.log("errarr", arr);
         let diags = "";
+        let height = "0px";
+        if (arr.length > 0) height = "100px";
+
+        const r = document.querySelector(":root");
+        r.style.setProperty("--editorDiagHeight", height);
+
         for (let i = 0; i < arr.length; i++)
         {
             const d = arr[i];
@@ -58,8 +64,8 @@ export default class EditorBase extends Events
 
             diagLine.addEventListener("click", () =>
             {
-                console.log("ddd", d);
                 this.gotoLine(d.line);
+                this.focus();
             });
 
             this.eleDiag.appendChild(diagLine);
@@ -72,6 +78,11 @@ export default class EditorBase extends Events
     gotoLine(line)
     {
         throw new Error("gotoline method not implemented.");
+    }
+
+    focus()
+    {
+
     }
 
 }

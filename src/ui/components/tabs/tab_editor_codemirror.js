@@ -90,7 +90,7 @@ export default class EditorTabCodemirror extends EditorBase
 
         // if (!options.allowEdit) style = "background-color:#333;";
         const html =
-            "<div class=\"\" id=\"editorcontent" + this.tab.id + "\" style=\"width:100%;height:calc(100% - 100px);overflow:auto;" + style + "\"></div>" + this.getDiagHtmlOuter();
+            "<div class=\"\" id=\"editorcontent" + this.tab.id + "\" style=\"width:100%;height:calc(100% - var(--editorDiagHeight));overflow:auto;" + style + "\"></div>" + this.getDiagHtmlOuter();
         this.tab.html(html);
         this._eleId = "editorcontent" + this.tab.id;
         this.ele = ele.byId(this._eleId);

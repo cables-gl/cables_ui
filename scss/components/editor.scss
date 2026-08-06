@@ -45,7 +45,7 @@
 
 .editorDiag
 {
-    height:100px;
+    /* height:100px; */
     overflow:auto;
 
     div
@@ -55,7 +55,13 @@
         font-family: monospace;
         border-left:10px solid #777;
         padding-left:10px;
+        cursor:pointer;
+        opacity:0.7
+    }
 
+    div:hover
+    {
+        opacity:1
     }
 
     .diagSeverity2
