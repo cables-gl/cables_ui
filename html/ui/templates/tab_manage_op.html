@@ -162,7 +162,7 @@
                         <a class="icon icon-edit iconhover" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);"></a>&nbsp;
                     </td>
                     <td onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);" style="cursor:pointer">
-                        <span class="fileTypeColor_{{fileType}}">
+                        <span class="fileTypeColor_js">
                         {{opname}}.js
                     </td>
                     <td>
@@ -203,7 +203,7 @@
                         </td>
                         {{else}}
                         <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');"{{/compare}}>
-                            <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                            {{#compare type "==" "attachment"}}<span class="fileTypeColor_{{fileType}}">{{/compare}}{{fileType}}</span>
                             {{readable}}
                         </td>
                         {{/compare}}
