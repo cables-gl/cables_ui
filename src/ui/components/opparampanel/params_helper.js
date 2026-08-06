@@ -1,5 +1,5 @@
 import { Logger, ele } from "cables-shared-client";
-import { Patch, utils } from "cables";
+import { Patch, Port, utils } from "cables";
 import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
@@ -183,7 +183,7 @@ const paramsHelper =
                 colEle.style.backgroundColor = chroma(
                     Math.round(255 * thePort.get()),
                     Math.round(255 * thePort1.get()),
-                    Math.round(255 * thePort2.get()),
+                    Math.round(255 * thePort2.get())
                 ).hex();
             }
         }
@@ -214,7 +214,7 @@ const paramsHelper =
         if (editorObj)
         {
             // const t = new EditorTab();
-            createEditor(
+            const editor = createEditor(
                 {
                     "title": name,
                     "dataId": dataId,
@@ -246,6 +246,12 @@ const paramsHelper =
                         gui.mainTabs.activateTabByName(name);
                     }
                 });
+            port.on(Port.EVENT_UIATTRCHANGE, () =>
+            {
+                if (port.uiAttribs.editorDiagnostics)
+                    editor.setDiags(port.uiAttribs.editorDiagnostics);
+                // editorDiagnostics;
+            });
 
             gui.corePatch().on(Patch.EVENT_OP_DELETED, (deletedOp) =>
             {
@@ -262,7 +268,7 @@ const paramsHelper =
         else gui.maintabPanel.show(userInteraction);
 
         editorSession.finishLoadingTab();
-    },
+    }
 
 };
 

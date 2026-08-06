@@ -26,7 +26,6 @@ export default class EditorBase extends Events
         this._options = options;
         this.options = options;
         this._log = new Logger("EditorBase");
-
     }
 
     getDiagHtmlOuter()
@@ -62,11 +61,12 @@ export default class EditorBase extends Events
             diagLine.innerHTML = d.message;
             diagLine.classList.add(classname);
 
-            diagLine.addEventListener("click", () =>
-            {
-                this.gotoLine(d.line);
-                this.focus();
-            });
+            if (d.line != -1)
+                diagLine.addEventListener("click", () =>
+                {
+                    this.gotoLine(d.line);
+                    this.focus();
+                });
 
             this.eleDiag.appendChild(diagLine);
         }

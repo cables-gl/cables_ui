@@ -45,12 +45,13 @@
 
 .editorDiag
 {
-    /* height:100px; */
+    height:var(--editorDiagHeight);
     overflow:auto;
 
     div
     {
-        border-bottom:1px solid var(--color-01);
+        background-color:var(--color-01);
+        margin-bottom:1px;
         padding:2px;
         font-family: monospace;
         border-left:10px solid #777;
