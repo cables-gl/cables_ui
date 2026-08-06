@@ -202,8 +202,9 @@
                             {{/compare}}
                         </td>
                         {{else}}
-                        <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');"{{/compare}}>
-                            {{#compare type "==" "attachment"}}<span class="fileTypeColor_{{fileType}}">{{fileType}}</span>{{/compare}}
+                        <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');" style="cursor:pointer"{{/compare}}>
+                            {{#compare type "==" "attachment"}}
+                                <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>{{/compare}}
                             {{readable}}
                         </td>
                         {{/compare}}
