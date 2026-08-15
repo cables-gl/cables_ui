@@ -601,6 +601,7 @@ export default class PatchSaveServer extends Events
 
                 const origSize = Math.round(datastr.length / 1024);
 
+                console.log("origsize", origSize);
                 let uint8data = pako.deflate(datastr);
                 if (origSize > 1000) this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
                 let b64 = bytesArrToBase64(uint8data);

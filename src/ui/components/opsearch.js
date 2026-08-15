@@ -16,7 +16,7 @@ import { platform } from "../platform.js";
  */
 export default class OpSearch extends Events
 {
-    _newOpOptions = {};
+    newOpOptions = {};
     constructor()
     {
         super();
@@ -215,7 +215,7 @@ export default class OpSearch extends Events
 
             if (found)
             {
-                if (this._newOpOptions)
+                if (this.newOpOptions)
                 {
                     const firstportfitspoints = 3;
                     const firstportfitsText = "+3 First Port fits<br/>";
@@ -232,14 +232,14 @@ export default class OpSearch extends Events
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
                         // when inserting into link - find fitting ports
-                        if (this._newOpOptions.linkNewLink)
+                        if (this.newOpOptions.linkNewLink)
                         {
                             let foundPortTypeIn = false;
                             for (let j = 0; j < docs.layout.portsIn.length; j++)
                             {
                                 if (docs.layout.portsIn[j] &&
-                                    this._newOpOptions.linkNewLink.portIn &&
-                                    docs.layout.portsIn[j].type == this._newOpOptions.linkNewLink.portIn.type)
+                                    this.newOpOptions.linkNewLink.portIn &&
+                                    docs.layout.portsIn[j].type == this.newOpOptions.linkNewLink.portIn.type)
                                 {
                                     foundPortTypeIn = true;
                                     break;
@@ -249,7 +249,7 @@ export default class OpSearch extends Events
                             let foundPortTypeOut = false;
                             for (let j = 0; j < docs.layout.portsOut.length; j++)
                             {
-                                if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewLink.portOut.type)
+                                if (docs.layout.portsOut[j].type == this.newOpOptions.linkNewLink.portOut.type)
                                 {
                                     foundPortTypeOut = true;
                                     break;
@@ -257,8 +257,8 @@ export default class OpSearch extends Events
                             }
 
                             if (
-                                docs.layout.portsIn[0].type == this._newOpOptions.linkNewLink.portOut.type &&
-                                docs.layout.portsOut[0].type == this._newOpOptions.linkNewLink.portIn.type
+                                docs.layout.portsIn[0].type == this.newOpOptions.linkNewLink.portOut.type &&
+                                docs.layout.portsOut[0].type == this.newOpOptions.linkNewLink.portIn.type
                             )
                             {
                                 points += firstportfitspoints;
@@ -273,12 +273,12 @@ export default class OpSearch extends Events
                         }
 
                         // when dragging a port - find fitting  input/output port
-                        if (this._newOpOptions.linkNewOpToPort)
+                        if (this.newOpOptions.linkNewOpToPort)
                         {
                             let foundPortType = false;
-                            if (this._newOpOptions.linkNewOpToPort.direction === Port.DIR_OUT)
+                            if (this.newOpOptions.linkNewOpToPort.direction === Port.DIR_OUT)
                             {
-                                if (docs.layout.portsIn[0].type == this._newOpOptions.linkNewOpToPort.type)
+                                if (docs.layout.portsIn[0].type == this.newOpOptions.linkNewOpToPort.type)
                                 {
                                     points += firstportfitspoints;
                                     scoreDebug += firstportfitsText;
@@ -286,7 +286,7 @@ export default class OpSearch extends Events
 
                                 for (let j = 0; j < docs.layout.portsIn.length; j++)
                                 {
-                                    if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewOpToPort.type)
+                                    if (docs.layout.portsIn[j].type == this.newOpOptions.linkNewOpToPort.type)
                                     {
                                         foundPortType = true;
                                         break;
@@ -295,7 +295,7 @@ export default class OpSearch extends Events
                             }
                             else
                             {
-                                if (docs.layout.portsOut[0].type == this._newOpOptions.linkNewOpToPort.type)
+                                if (docs.layout.portsOut[0].type == this.newOpOptions.linkNewOpToPort.type)
                                 {
                                     points += firstportfitspoints;
                                     scoreDebug += firstportfitsText;
@@ -303,7 +303,7 @@ export default class OpSearch extends Events
 
                                 for (let j = 0; j < docs.layout.portsOut.length; j++)
                                 {
-                                    if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewOpToPort.type)
+                                    if (docs.layout.portsOut[j].type == this.newOpOptions.linkNewOpToPort.type)
                                     {
                                         foundPortType = true;
                                         break;

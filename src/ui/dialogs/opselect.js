@@ -60,6 +60,7 @@ export default class OpSelect
     constructor()
     {
         this.#opSearch = new OpSearch();
+
     }
 
     close()
@@ -621,6 +622,7 @@ export default class OpSelect
             "linkNewOpToOp": linkOp,
             "linkNewLink": link
         };
+        this.#opSearch.newOpOptions = this._newOpOptions;
 
         this._searchInputEle = ele.byId("opsearch");
 

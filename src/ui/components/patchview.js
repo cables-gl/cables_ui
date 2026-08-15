@@ -440,7 +440,7 @@ export default class PatchView extends Events
 
     focus()
     {
-        if (this._patchRenderer.focus) this._patchRenderer.focus();
+        if (this._patchRenderer && this._patchRenderer.focus) this._patchRenderer.focus();
     }
 
     clearPatch()
