@@ -31,6 +31,7 @@ class ParamsListener extends Events
 
     #watchGradients = [];
     #watchCurves = [];
+    #watchSg = [];
 
     constructor(panelid)
     {
@@ -101,6 +102,8 @@ class ParamsListener extends Events
                 if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "gradient") this.#watchGradients.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "curve") this.#watchCurves.push(this._portsIn[i]);
+
+                if (this._portsIn[i].uiAttribs.objType && this._portsIn[i].uiAttribs.objType.startsWith("sg_")) this.#watchSg.push(this._portsIn[i]);
 
                 if (this._portsIn[i].isLinked() || this._portsIn[i].isAnimated()) this._watchPorts.push(this._portsIn[i]);
                 this._watchAnimPorts.push(this._portsIn[i]);
@@ -206,6 +209,14 @@ class ParamsListener extends Events
             const thePort2 = this.#watchCurves[iwcp];
             const idx = this._portsIn.indexOf(thePort2);
             this.watchCurvePort(thePort2, this.panelId, idx);
+        }
+        this.valueChangerInitSliders();
+
+        for (const iwcp in this.#watchSg)
+        {
+            const thePort2 = this.#watchSg[iwcp];
+            const idx = this._portsIn.indexOf(thePort2);
+            this.watchSgPort(thePort2, this.panelId, idx);
         }
         this.valueChangerInitSliders();
 
@@ -356,7 +367,7 @@ class ParamsListener extends Events
                     inputElements[1].dispatchEvent(new Event("input"));
                     inputElements[2].dispatchEvent(new Event("input"));
                     undo.endGroup(undoGroup, "Change Color");
-                },
+                }
             });
         });
     }
@@ -437,6 +448,25 @@ class ParamsListener extends Events
         });
     }
 
+    watchSgPort(thePort, panelid, idx)
+    {
+        const id = "watchsg_in_" + idx + "_" + panelid;
+        let inpEle = ele.byId(id);
+
+        if (!inpEle)
+        {
+            this._log.log("color ele not found!", id);
+            return;
+        }
+
+        if (inpEle)inpEle.addEventListener("input", (e) =>
+        {
+            thePort.attribs.sg = inpEle.value;
+            thePort.op.updateGraph();
+
+        });
+    }
+
     /**
      * @param {Port[]} ports
      * @param {number} index
@@ -455,7 +485,7 @@ class ParamsListener extends Events
                     gui.opSelect().show(
                         {
                             "x": p.op.uiAttribs.translate.x + (index * (gluiconfig.portWidth + gluiconfig.portPadding)),
-                            "y": p.op.uiAttribs.translate.y - 50,
+                            "y": p.op.uiAttribs.translate.y - 50
                         }, thePort.op, p);
             });
 
@@ -714,7 +744,7 @@ class ParamsListener extends Events
                         "title": "Extend title: \"" + port.getTitle() + ": x\"",
                         "func": () =>
                         {
-                            port.op.setUiAttrib({ "extendTitlePort": port.name, "widthOnlyGrow": port.name, });
+                            port.op.setUiAttrib({ "extendTitlePort": port.name, "widthOnlyGrow": port.name });
                         }
                     });
             }
@@ -1088,9 +1118,9 @@ class ParamsListener extends Events
                         undo.add({
                             "title": "Value change " + oldv + " to " + newv,
                             "context": {
-                                portname
+                                "portname": portname
                             },
-                            undo()
+                            "undo": function ()
                             {
                                 try
                                 {
@@ -1107,7 +1137,7 @@ class ParamsListener extends Events
                                 }
                                 catch (ex) { this._log.warn("undo failed"); }
                             },
-                            redo()
+                            "redo": function ()
                             {
                                 try
                                 {

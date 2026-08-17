@@ -62,18 +62,12 @@ void main()
     finalColor.a=1.0;
 
 
-
-
-
     // selected border
     if(fcolorBorder.a>0.0&& 1.0/zoom<2000.0)
     {
         float border=widthSelected/(width+widthSelected)/2.0;
-
         vec4 borderCol=fcolorBorder;
-        // borderCol=finactiveColor;
         float fade=0.0;
-        // if(zoom>2000.0)borderCol=finalColor;
 
         fade=
             smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+ // left border
@@ -81,7 +75,6 @@ void main()
 
         finalColor=mix(finalColor,borderCol,fade);
     }
-
 
 
     #ifdef FADEOUT

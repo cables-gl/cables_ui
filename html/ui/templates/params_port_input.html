@@ -70,6 +70,7 @@
 
             {{/if}}
 
+
             {{#if port.uiAttribs.display}}
 
                 {{#compare port.uiAttribs.display '==' 'bool' }}
@@ -213,14 +214,13 @@
                             <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
                         {{/if}}
 
+
+
                     </td>
                 {{/compare}}
-                {{#compare port.uiAttribs.display '==' 'sg_vec' }}
-                    </td>
-                    <td>
-                        <a class="button-small button-icon" onclick="gui.patchView.addOpAndLink('Ops.Team.ShaderGraph.Input','{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
-                    </td>
-                {{/compare}}
+
+
+
                 {{#compare port.uiAttribs.display '==' 'file' }}
                         <a class="icon icon-external iconhover" id="portOpenAsset_{{ portnum }}" target="_blank"></a>
                         <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
@@ -295,6 +295,18 @@
                             {{#if port.uiAttribs.objType}}
                                 <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
                             {{/if}}
+
+                            {{#compare port.uiAttribs.objType '==' 'sg_vec2' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_float' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+
+                            {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+
                         </span>
                 {{/compare}}
                 {{#compare port.type '==' 4}}
