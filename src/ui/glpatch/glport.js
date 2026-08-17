@@ -504,25 +504,31 @@ export default class GlPort
         else if (type == portType.dynamic) portname = "dynamic";
 
         let coll = [1, 0.9, 0.8, 0];
-        if (selected)
+        if (selected || type == portType.object)
         {
-            coll = structuredClone(gui.theme.colors_patch.selectedCable);
-            // console.log("coll", coll);
-            // coll = structuredClone(gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1]);
+        // coll = structuredClone(gui.theme.colors_patch.selectedCable);
+        // console.log("coll", coll);
+
+            coll = structuredClone(gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1]);
         }
         if (hovering)
         {
             name = portname + "_hover";
             coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
         }
-        if (!selected && !hovering) return coll;
+        // if (!selected && !hovering) return coll;
 
         let col = [coll[0], coll[1], coll[2], coll[3]];
 
         if (type == portType.object)
-            if (!hovering && !selected)col[3] = 1;
+        {
+            // console.log(col);
+            // col[3] = 1;
+        }
+        // else
+        // if (!hovering && !selected)col[3] = 0;
         perf.finish();
-
+        // col[3] = 0.5;
         return col;
     }
 }
