@@ -330,7 +330,7 @@ export default class GlLink
         this.#cable.dispose();
         this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
 
-        this.#glPatch.setDrawableColorByType(this.#cable, this._type);
+        this.#glPatch.setDrawableColorByObjType(this.#cable, this._type);
         this.update();
     }
 
@@ -462,7 +462,7 @@ export default class GlLink
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._portNameInput, this._subPatchInputOp.id, true),
-                        this._subPatchInputOp.uiAttribs.translate.y + 30,
+                        this._subPatchInputOp.uiAttribs.translate.y + 30
                     );
                 }
 
@@ -480,7 +480,7 @@ export default class GlLink
                         this._subPatchOutputOp.uiAttribs.translate.x,
                         this._subPatchOutputOp.uiAttribs.translate.y,
                         this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
-                        this.#glOpOut.getUiAttribs().translate.y + 30,
+                        this.#glOpOut.getUiAttribs().translate.y + 30
                     );
                 }
 
@@ -507,7 +507,7 @@ export default class GlLink
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id, true),
                         this._subPatchOp.uiAttribs.translate.y,
                         this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
-                        this.#glOpOut.getUiAttribs().translate.y + 30,
+                        this.#glOpOut.getUiAttribs().translate.y + 30
                     );
                 }
 
@@ -528,7 +528,7 @@ export default class GlLink
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
-                        this._subPatchOp.uiAttribs.translate.y + 30,
+                        this._subPatchOp.uiAttribs.translate.y + 30
                     );
                 }
                 // else
@@ -545,7 +545,7 @@ export default class GlLink
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
-                        this._subPatchOp.uiAttribs.translate.y + 30,
+                        this._subPatchOp.uiAttribs.translate.y + 30
                     );
                 }
 
@@ -557,7 +557,7 @@ export default class GlLink
                         this._subPatchOutputOp.uiAttribs.translate.y,
 
                         this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
-                        this.#glOpOut.getUiAttribs().translate.y + 30,
+                        this.#glOpOut.getUiAttribs().translate.y + 30
                     );
                 }
             }

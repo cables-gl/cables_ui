@@ -8,6 +8,7 @@ import GlPatch from "./glpatch.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
 import GlLink from "./gllink.js";
+import { portType } from "../core_constants.js";
 
 /**
  * rendering cables for links
@@ -371,7 +372,7 @@ export default class GlCable
 
                             posX2, this.#y2 + (distY * 0.002) + this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
                             posX2, this.#y2, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables,
+                            posX2, this.#y2, gluiconfig.zPosCables
 
                         ];
 
@@ -490,10 +491,22 @@ export default class GlCable
             if (this.#link.isAOpSelected())selected = true;
         }
 
-        const col = GlPort.getColor(this.#link.type, false, false);
+        let col = GlPort.getColor(this.#link.type, false, false);
+
+        this.#splineDrawer.setSplineColorInactive(this.#splineIdx, GlPort.getInactiveColor(this.#link.type));
+
+        if (this.#link.link.portIn.type == portType.object)
+        {
+            col =
+                gui.theme.colors_objtypes[this.#link.link.portIn.uiAttribs.objType] ||
+                gui.theme.colors_objtypes[this.#link.link.portOut.uiAttribs.objType]
+                 || gui.theme.colors_objtypes.default;
+
+            this.#splineDrawer.setSplineColorInactive(this.#splineIdx, [col[0] * 0.8, col[1] * 0.8, col[2] * 0.8, 1]);
+
+        }
 
         this.#splineDrawer.setSplineColor(this.#splineIdx, col);
-        this.#splineDrawer.setSplineColorInactive(this.#splineIdx, GlPort.getInactiveColor(this.#link.type));
         this.#splineDrawer.setSplineColorBorder(this.#splineIdx, GlPort.getCableColorBorder(this.#link.type, hover, selected));
 
         this.#buttonRect.setColor(col[0], col[1], col[2], col[3]);

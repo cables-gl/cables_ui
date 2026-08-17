@@ -4,6 +4,7 @@ import defaultTheme from "./defaulttheme.json";
 /**
  * @typedef CablesTheme
  * @property {theme_colors_types} colors_types
+ * @property {theme_colors_objtypes} colors_types
  * @property {theme_colors_namespaces} colors_namespaces
  * @property {theme_textedit} textedit
  * @property {theme_colors_timeline} colors_timeline

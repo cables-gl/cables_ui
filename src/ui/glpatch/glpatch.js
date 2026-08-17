@@ -1834,6 +1834,7 @@ export default class GlPatch extends Events
         else if (t == portType.string) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
         else if (t == portType.dynamic) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
         else this._log.warn("unknown port color");
+
         e.setColor(col[0], col[1], col[2], col[3]);
     }
 

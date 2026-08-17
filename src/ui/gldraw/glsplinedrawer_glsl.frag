@@ -66,9 +66,9 @@ void main()
 
 
     // selected border
-    if(fcolorBorder.a>0.0&& 1.0/zoom<2000.0)
+    if(fcolorBorder.a>0.0)//&& 1.0/zoom<2000.0)
     {
-        float border=widthSelected/(width+widthSelected)/2.0;
+        float border=widthSelected/(width+widthSelected)/4.0;
 
         vec4 borderCol=fcolorBorder;
         borderCol=finactiveColor;

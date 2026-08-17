@@ -164,7 +164,7 @@ export default class GlPort
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotSize = gluiconfig.portHeight * 0.75;
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
-        if (this.#port.uiAttribs.objType && this.#port.uiAttribs.objType.includes("sg_"))showDot = true;
+        if (this.#port.type == portType.object)showDot = true;
 
         if (this.#rect && this.#port.uiAttribs.hidePort)
         {
@@ -192,8 +192,12 @@ export default class GlPort
 
                 dotPosY = -1 * this.#rect.y / 2 + this.rect.h / 2 - dotSize / 2;
 
-                if (this.direction == PortDir.out) dotPosY += this.rect.h * 1.5 + dotSize / 2;
-
+                if (this.direction == PortDir.out)
+                {
+                    dotPosY += this.rect.h;
+                    if (this.#port.isLinked())
+                        dotPosY += dotSize * 1.25;
+                }
                 if (this.#hover)
                     if (this.direction == PortDir.out)
                         dotPosY -= this.#rect.h * 0.75;
@@ -204,7 +208,7 @@ export default class GlPort
                 if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
                 else if (this.#port.isAnimated()) this.#dot.setShape(GlRect.SHAPE_RHOMB);
-                else if (this.#port.uiAttribs.objType && this.#port.uiAttribs.objType.includes("sg_")) this.#dot.setShape(GlRect.SHAPE_RECT);
+                else if (this.#port.type == portType.object) this.#dot.setShape(GlRect.SHAPE_RECT);
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
                 this.#dot.setSize(dotSize, dotSize);
@@ -215,12 +219,9 @@ export default class GlPort
                 this.#dot = this.#dot.dispose();
             }
 
-            if (this.#port.uiAttribs.objType && this.#port.uiAttribs.objType.includes("sg_"))
+            if (this.#port.type == portType.object)
             {
-
-                if (this.#port.uiAttribs.objType == "sg_float") this.#dot.setColor(0, 0.3, 0.7, 1);
-                if (this.#port.uiAttribs.objType == "sg_vec4") this.#dot.setColor(0, 0.3, 0.7, 1);
-                if (this.#port.uiAttribs.objType == "sv_vec2") this.#dot.setColor(0, 0.70, 0.2, 1);
+                this.#dot.setColorArray(gui.theme.colors_objtypes[this.#port.uiAttribs.objType] || gui.theme.colors_objtypes.default);
             }
 
         }
@@ -421,6 +422,13 @@ export default class GlPort
         if (this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
     }
 
+    static getColorObj(type, hovering, _selected, activity)
+    {
+
+        return gui.theme.colors_objtypes[type] || [1, 1, 0, 1];
+
+    }
+
     /**
      * @param {number} type
      * @param {boolean} [hovering]
@@ -511,7 +519,8 @@ export default class GlPort
 
         let col = [coll[0], coll[1], coll[2], coll[3]];
 
-        if (!hovering && !selected)col[3] = 0;
+        if (type == portType.object)
+            if (!hovering && !selected)col[3] = 1;
         perf.finish();
 
         return col;
