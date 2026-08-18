@@ -39,6 +39,7 @@ export default class EditorBase extends Events
      */
     setDiags(arr = [])
     {
+        console.log("set diagsssssssssssssss", arr.length);
         const eleDiagId = "editordiag" + this.tab.id;
         this.eleDiag = ele.byId(eleDiagId);
         if (!this.eleDiag) return console.warn("editor diagnose panel not found");
@@ -50,7 +51,8 @@ export default class EditorBase extends Events
 
         const r = document.querySelector(":root");
         this.eleDiag.parentElement.style.setProperty("--editorDiagHeight", height);
-        const lineNums = [];
+        const lineNumsErr = [];
+        const lineNumsHint = [];
 
         for (let i = 0; i < arr.length; i++)
         {
@@ -70,12 +72,22 @@ export default class EditorBase extends Events
                     this.gotoLine(d.line);
                     this.focus();
                 });
-                lineNums.push(d.line);
+
+                console.log("gddtext", d);
+
+                if (d.fatal)
+                    lineNumsErr.push(d.line);
+                else
+                    lineNumsHint.push(d.line);
 
             }
             this.eleDiag.appendChild(diagLine);
         }
-        this.highlightLines(lineNums);
+        if (this.highlightLines)
+        {
+            if (lineNumsErr.length) this.highlightLines(lineNumsErr, 200, 30, 0);
+            else this.highlightLines(lineNumsHint, 100, 100, 100);
+        }
     }
 
     /**

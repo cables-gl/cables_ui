@@ -549,7 +549,7 @@ export default class EditorTabCodemirror extends EditorBase
         ];
     }
 
-    highlightLines(lineNumbers)
+    highlightLines(lineNumbers, r, g, b)
     {
         if (!this.cmView) return console.log("NO CMWIEW YET");
 
@@ -558,7 +558,7 @@ export default class EditorTabCodemirror extends EditorBase
             .sort((a, b) => { return a - b; })
             .map((n) =>
             {
-                return Decoration.line({ "attributes": { "style": "background-color: rgba(200,100,0,0.3)" } })
+                return Decoration.line({ "attributes": { "style": "background-color: rgba(" + r + "," + b + "," + g + ",0.3)" } })
                     .range(this.cmView.state.doc.line(n).from);
             }
             );

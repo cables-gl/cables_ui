@@ -70,6 +70,7 @@ export function codeWatcher(port)
     console.log("opts", opts);
     const ed = createEditor(opts);
     port.on(Port.EVENT_VALUE_CHANGE, setContent);
+    port.on(Port.EVENT_UIATTRCHANGE, setContent);
 
     setContent();
     return ed;
