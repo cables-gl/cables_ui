@@ -1,3 +1,4 @@
+import { Port } from "cables";
 import { contextMenu } from "../elements/contextmenu.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -45,6 +46,33 @@ export function isFocusOnEditor()
                    document.activeElement.classList.contains("cm-textfield") ||
                    document.activeElement.classList.contains("cm-content");
     return isEdit;
+}
+
+/**
+ * @param {Port} port
+ */
+export function codeWatcher(port)
+{
+    const opts = {
+        "allowEdit": false,
+        "title": port.getName(),
+        "content": port.get(),
+        "syntax": port.uiAttribs.editorSyntax
+    };
+
+    function setContent()
+    {
+
+        ed.setContent(port.get());
+        if (port.uiAttribs.editorDiagnostics) ed.setDiags(port.uiAttribs.editorDiagnostics);
+    }
+
+    console.log("opts", opts);
+    const ed = createEditor(opts);
+    port.on(Port.EVENT_VALUE_CHANGE, setContent);
+
+    setContent();
+    return ed;
 }
 
 export function createOpDocButton(tab, editor)

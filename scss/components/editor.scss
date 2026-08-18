@@ -6,6 +6,11 @@
     height:100%
 }
 
+.cm-highlightedLine
+ {
+ backgroundColor: rgba(255, 220, 0, 0.3)
+ }
+
 .cm-editor:not(.cm-focused) {
   opacity: 0.9;
   filter: grayscale(0.2);

@@ -1,7 +1,7 @@
 import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
 import { linter, lintGutter } from "@codemirror/lint";
-import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap, drawSelection } from "@codemirror/view";
-import { Transaction, EditorSelection, EditorState } from "@codemirror/state";
+import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
+import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
 import { helix, commands } from "codemirror-helix";
 import { syntaxTree } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
@@ -38,6 +38,7 @@ export default class EditorTabCodemirror extends EditorBase
 {
     #log = new Logger("editorTabCm");
     helix = false;
+    #highlightCompartment = new Compartment();
 
     /**
      * @param {import("../editor.js").EditorOptions} options
@@ -124,7 +125,8 @@ export default class EditorTabCodemirror extends EditorBase
         {
             this.createEditor(() =>
             {
-                this.tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
+                if (this._options.onClose)
+                    this.tab.addEventListener(Tab.EVENT_CLOSE, this._options.onClose);
                 this.tab.addEventListener(
                     Tab.EVENT_ACTIVATE,
                     () =>
@@ -232,6 +234,8 @@ export default class EditorTabCodemirror extends EditorBase
                     "config": { "editor.cursor-shape.insert": "bar", "editor.default-yank-register": "+" }
                 }
             ));
+
+        extensions.push(this.#highlightCompartment.of([]));
         const syntaxErrorLinter = linter((view) =>
         {
             const diagnostics = [];
@@ -303,8 +307,16 @@ export default class EditorTabCodemirror extends EditorBase
             extensions.push(EditorView.editable.of(false));
             extensions.push(EditorView.theme({
                 "&": {
-                    "opacity": "0.5 !important"
+                    "opacity": "0.8 !important"
                 } }));
+            EditorView.theme({ // hide cursor
+                ".cm-cursor, .cm-dropCursor": {
+                    "display": "none"
+                },
+                "&.cm-focused": {
+                    "outline": "none"
+                }
+            });
         }
 
         this.cmView = new EditorView(
@@ -535,5 +547,27 @@ export default class EditorTabCodemirror extends EditorBase
                 })
 
         ];
+    }
+
+    highlightLines(lineNumbers)
+    {
+        if (!this.cmView) return console.log("NO CMWIEW YET");
+
+        const deco = lineNumbers
+            .filter((n) => { return n >= 1 && n <= this.cmView.state.doc.lines; })
+            .sort((a, b) => { return a - b; })
+            .map((n) =>
+            {
+                return Decoration.line({ "attributes": { "style": "background-color: rgba(200,100,0,0.3)" } })
+                    .range(this.cmView.state.doc.line(n).from);
+            }
+            );
+
+        console.log("deci", deco, lineNumbers);
+        this.cmView.dispatch({
+            "effects": this.#highlightCompartment.reconfigure(
+                EditorView.decorations.of(Decoration.set(deco))
+            )
+        });
     }
 }

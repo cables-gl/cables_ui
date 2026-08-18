@@ -50,6 +50,7 @@ export default class EditorBase extends Events
 
         const r = document.querySelector(":root");
         this.eleDiag.parentElement.style.setProperty("--editorDiagHeight", height);
+        const lineNums = [];
 
         for (let i = 0; i < arr.length; i++)
         {
@@ -63,14 +64,18 @@ export default class EditorBase extends Events
             diagLine.classList.add(classname);
 
             if (d.line != -1)
+            {
                 diagLine.addEventListener("click", () =>
                 {
                     this.gotoLine(d.line);
                     this.focus();
                 });
+                lineNums.push(d.line);
 
+            }
             this.eleDiag.appendChild(diagLine);
         }
+        this.highlightLines(lineNums);
     }
 
     /**
@@ -84,6 +89,11 @@ export default class EditorBase extends Events
     focus()
     {
 
+    }
+
+    setContent(arg0)
+    {
+        throw new Error("Method not implemented.");
     }
 
 }

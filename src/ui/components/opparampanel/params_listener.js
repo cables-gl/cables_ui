@@ -489,24 +489,24 @@ class ParamsListener extends Events
                         }, thePort.op, p);
             });
 
-        if (ele.byId("portCreateOp_" + dirStr + "_" + index))
-            ele.byId("portCreateOp_" + dirStr + "_" + index).addEventListener("click", function (e)
-            {
-                if (thePort.objType && thePort.objType.indexOf("sg_"))
-                {
-                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, (newop) =>
-                    {
-                        gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
-                    });
-                }
-                if (thePort.type == portType.object)
-                {
-                    gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, (newop) =>
-                    {
-                        gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
-                    });
-                }
-            });
+        // if (ele.byId("portCreateOp_" + dirStr + "_" + index))
+        //     ele.byId("portCreateOp_" + dirStr + "_" + index).addEventListener("click", function (e)
+        //     {
+        //         if (thePort.objType && thePort.objType.indexOf("sg_"))
+        //         {
+        //             gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, (newop) =>
+        //             {
+        //                 gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+        //             });
+        //         }
+        //         if (thePort.type == portType.object)
+        //         {
+        //             gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, (newop) =>
+        //             {
+        //                 gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+        //             });
+        //         }
+        //     });
 
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
