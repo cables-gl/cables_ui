@@ -87,7 +87,7 @@ export default class EditorBase extends Events
         if (this.highlightLines)
         {
             if (lineNumsErr.length) this.highlightLines(lineNumsErr, 200, 30, 0);
-            else this.highlightLines(lineNumsHint, 100, 100, 100);
+            else this.highlightLines(lineNumsHint, 0, 0, 0);
         }
     }
 
