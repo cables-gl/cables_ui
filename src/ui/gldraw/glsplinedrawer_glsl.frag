@@ -63,6 +63,7 @@ void main()
 
 
     // selected border
+
     if(fcolorBorder.a>0.0&& 1.0/zoom<2000.0)
     {
         float border=widthSelected/(width+widthSelected)/2.0;
@@ -73,7 +74,8 @@ void main()
             smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+ // left border
             smoothstep(1.0-border-fwidth(texCoord.y),1.0-border,texCoord.y); // right
 
-        finalColor=mix(finalColor,borderCol,fade);
+            float farFade=1.-(smoothstep(800., 1500., 1.0/zoom));
+        finalColor=mix(finalColor,borderCol,fade*farFade);
     }
 
 
@@ -96,9 +98,6 @@ void main()
 
     #endif
 
-// finalColor=finactiveColor;
-// finalColor.rgb*=fProgress/fSplineLength;
-// finalColor=vec4(1.0);
 
     outColor = finalColor;
 }

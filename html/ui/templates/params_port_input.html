@@ -302,6 +302,9 @@
                             {{#compare port.uiAttribs.objType '==' 'sg_float' }}
                                 <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
                             {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_sampler' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
 
                             {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
                                 <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
