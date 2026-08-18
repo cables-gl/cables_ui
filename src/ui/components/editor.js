@@ -55,7 +55,7 @@ export function codeWatcher(port)
 {
     const opts = {
         "allowEdit": false,
-        "title": port.getName(),
+        "title": port.getTitle(),
         "content": port.get(),
         "syntax": port.uiAttribs.editorSyntax
     };
@@ -67,7 +67,6 @@ export function codeWatcher(port)
         if (port.uiAttribs.editorDiagnostics) ed.setDiags(port.uiAttribs.editorDiagnostics);
     }
 
-    console.log("opts", opts);
     const ed = createEditor(opts);
     port.on(Port.EVENT_VALUE_CHANGE, setContent);
     port.on(Port.EVENT_UIATTRCHANGE, setContent);

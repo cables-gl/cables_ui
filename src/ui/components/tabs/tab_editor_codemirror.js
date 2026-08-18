@@ -164,9 +164,13 @@ export default class EditorTabCodemirror extends EditorBase
     {
 
         const lineInfo = this.cmView.state.doc.line(line); // 1-based line number
+        // this.cmView.dispatch({
+        //     "selection": { "anchor": lineInfo.from },
+        //     "scrollIntoView": true
+        // });
         this.cmView.dispatch({
             "selection": { "anchor": lineInfo.from },
-            "scrollIntoView": true
+            "effects": EditorView.scrollIntoView(lineInfo.from, { "y": "center" })
         });
     }
 
@@ -563,7 +567,6 @@ export default class EditorTabCodemirror extends EditorBase
             }
             );
 
-        console.log("deci", deco, lineNumbers);
         this.cmView.dispatch({
             "effects": this.#highlightCompartment.reconfigure(
                 EditorView.decorations.of(Decoration.set(deco))

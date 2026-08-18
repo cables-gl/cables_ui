@@ -39,7 +39,6 @@ export default class EditorBase extends Events
      */
     setDiags(arr = [])
     {
-        console.log("set diagsssssssssssssss", arr.length);
         const eleDiagId = "editordiag" + this.tab.id;
         this.eleDiag = ele.byId(eleDiagId);
         if (!this.eleDiag) return console.warn("editor diagnose panel not found");
@@ -62,7 +61,7 @@ export default class EditorBase extends Events
             if (d.fatal)classname = "diagSeverityFatal";
             diagLine.dataset.line = String(d.line);
             diagLine.dataset.col = String(d.column);
-            diagLine.innerHTML = d.message;
+            diagLine.innerHTML = d.message.replaceAll("\n", "<br/>");
             diagLine.classList.add(classname);
 
             if (d.line != -1)
@@ -73,10 +72,12 @@ export default class EditorBase extends Events
                     this.focus();
                 });
 
-                console.log("gddtext", d);
-
                 if (d.fatal)
+                {
+
+                    if (lineNumsErr.length == 0) this.gotoLine(d.line);
                     lineNumsErr.push(d.line);
+                }
                 else
                     lineNumsHint.push(d.line);
 
