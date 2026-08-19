@@ -117,9 +117,17 @@ export default class EditorTabCodemirror extends EditorBase
                     "annotations": Transaction.addToHistory.of(false)
                 });
             this.cmView.focus();
-            this.cmView.dispatch({
-                "selection": EditorSelection.cursor(cursorPos)
-            });
+            try
+            {
+
+                this.cmView.dispatch({
+                    "selection": EditorSelection.cursor(cursorPos)
+                });
+            }
+            catch (e)
+            {
+                console.log("cm", e);
+            }
         }
         else
         {
@@ -163,15 +171,22 @@ export default class EditorTabCodemirror extends EditorBase
     gotoLine(line)
     {
 
-        const lineInfo = this.cmView.state.doc.line(line); // 1-based line number
-        // this.cmView.dispatch({
-        //     "selection": { "anchor": lineInfo.from },
-        //     "scrollIntoView": true
-        // });
-        this.cmView.dispatch({
-            "selection": { "anchor": lineInfo.from },
-            "effects": EditorView.scrollIntoView(lineInfo.from, { "y": "center" })
-        });
+        if (line > this.cmView.state.doc.lines) return;
+
+        try
+        {
+
+            const lineInfo = this.cmView.state.doc.line(line); // 1-based line number
+            this.cmView.dispatch({
+                "selection": { "anchor": lineInfo.from },
+                "effects": EditorView.scrollIntoView(lineInfo.from, { "y": "center" })
+            });
+        }
+        catch (e)
+        {
+            console.log("e", e);
+
+        }
     }
 
     format()
@@ -562,6 +577,8 @@ export default class EditorTabCodemirror extends EditorBase
             .sort((a, b) => { return a - b; })
             .map((n) =>
             {
+
+                if (n > this.cmView.state.doc.lines) return;
                 return Decoration.line({ "attributes": { "style": "background-color: rgba(" + r + "," + b + "," + g + ",0.3)" } })
                     .range(this.cmView.state.doc.line(n).from);
             }
