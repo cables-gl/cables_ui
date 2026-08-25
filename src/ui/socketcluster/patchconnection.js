@@ -1,6 +1,21 @@
 import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
 
+/**
+ * @typedef {Object} PatchConnectionReceiver
+ */
+
+/**
+ * @typedef {Object} PatchConnectionSender
+ */
+
+/**
+  * @constructor
+  * @type {PatchConnectionReceiver}
+  * @param {any} patch
+  * @param {any} options
+  * @param {any} connector
+  */
 const PatchConnectionReceiver = function (patch, options, connector)
 {
     this._patch = patch;
@@ -199,6 +214,11 @@ PatchConnectionReceiver.prototype._receive = function (ev)
 
 // ---------------
 
+/**
+ * @constructor
+ * @type {PatchConnectionSender}
+ * @param {any} patch
+ */
 const PatchConnectionSender = function (patch)
 {
     this.connectors = [];
@@ -340,6 +360,9 @@ PatchConnectionSender.prototype.send = function (event, vars)
 
 // -------------
 
+/**
+ * @constructor
+ */
 const PatchConnectorBroadcastChannel = function ()
 {
     if (!window.BroadcastChannel) return;

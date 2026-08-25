@@ -47,6 +47,8 @@ export default class PacoConnector extends Events
     {
         if (!this._receiver)
         {
+
+            /** @type {PatchConnectionReceiver} */
             this._receiver = new PatchConnectionReceiver(
                 gui.corePatch(), {}, this
             );

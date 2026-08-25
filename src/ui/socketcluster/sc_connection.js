@@ -35,6 +35,8 @@ export default class ScConnection extends Events
 
         this._paco = null;
         this._pacoEnabled = false;
+
+        /** @type {PatchConnectionSender} */
         this._patchConnection = new PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
         this._pacoChannel = null;
@@ -331,10 +333,10 @@ export default class ScConnection extends Events
         if (!this._scConfig.enableTracking) return;
 
         const payload = {
-            eventCategory,
-            eventAction,
-            eventLabel,
-            meta
+            "eventCategory": eventCategory,
+            "eventAction": eventAction,
+            "eventLabel": eventLabel,
+            "meta": meta
         };
         this.sendControl("track", payload);
     }
@@ -368,7 +370,7 @@ export default class ScConnection extends Events
         const el = document.createElement("div");
         el.innerHTML = text;
         text = el.textContent || el.innerText || "";
-        this._send(this.patchChannelName, "chat", { "name": "chatmsg", text, "username": gui.user.username });
+        this._send(this.patchChannelName, "chat", { "name": "chatmsg", "text": text, "username": gui.user.username });
     }
 
     sendPaco(payload, name = "paco", sendOnEmptyClientList = false)
@@ -723,8 +725,8 @@ export default class ScConnection extends Events
                     "token": this._token,
                     "clientId": this.client.clientId,
                     "username": this.client.username,
-                    topic,
-                    ...payload,
+                    "topic": topic,
+                    ...payload
                 };
 
                 this.emitEvent("netActivityOut");

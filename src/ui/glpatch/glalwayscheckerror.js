@@ -13,6 +13,11 @@ export default class GlAlwaysCheckError
         return this._cgl.gl.getError();
     }
 
+    /**
+     * @param {Function} func
+     * @param {string} funcName
+     * @returns {Function}
+     */
     _profile(func, funcName)
     {
         const gl = this._cgl.gl;
