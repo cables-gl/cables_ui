@@ -2482,6 +2482,14 @@ export default class PatchView extends Events
             {
                 if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
                     newOp.portsIn[j].set(origOp.portsIn[i].get());
+
+                if (origOp.portsIn[j].anim)
+                {
+
+                    newOp.portsIn[j].setAnimated(true);
+                    newOp.portsIn[j].anim.clear();
+                    newOp.portsIn[j].anim.deserialize(origOp.portsIn[j].anim.getSerialized());
+                }
             }
         }
     }
