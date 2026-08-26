@@ -25,6 +25,7 @@ import { escapeHTML } from "../utils/helper.js";
  * @property {boolean} [include.customOps]
  * @property {boolean} [include.commented]
  * @property {boolean} [include.bookmarks]
+ * @property {boolean} [include.uierrors]
  * @property {boolean} [include.animated]
  * @property {boolean} [include.selected]
  * @property {boolean} [include.colored]
@@ -56,7 +57,7 @@ export class patchStructureQuery
      */
     constructor(options)
     {
-        this.setOptions(options);
+        this.setOptions(options || {});
     }
 
     /**
@@ -172,6 +173,19 @@ export class patchStructureQuery
                 includeReasons.push("includeBookmarks ");
                 included = true;
             }
+
+            if (ops[i].uiErrors)
+            {
+                if (ops[i].uiAttribs.uierrors)
+                    for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
+                    {
+                        if (ops[i].uiAttribs.uierrors[j].level >= 2)
+                        {
+                            includeReasons.push("includeUiErrors");
+                            included = true;
+                        }
+                    }
+            }
             if (this.options.include.comments && ops[i].uiAttribs.comment_title)
             {
                 includeReasons.push("includeComments");
@@ -214,6 +228,7 @@ export class patchStructureQuery
                 else
                 {
                     let icon = "bookmark";
+                    if (ops[i].uiAttribs.uierrors && ops[i].uiAttribs.uierrors.length) icon = "alert-triangle";
                     if (this.options.include.commented && ops[i].uiAttribs.comment) icon = "message";
                     if (this.options.include.colored && ops[i].uiAttribs.color) icon = "op";
                     if (this.options.include.comments && ops[i].objName.indexOf("Ops.Ui.Comment") > -1 && ops[i].uiAttribs.comment_title) icon = "message-square-text";
@@ -223,7 +238,9 @@ export class patchStructureQuery
                     let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
                     if (ops[i].uiAttribs.comment)title += " <span style=\"color: var(--color-special);\">// " + patchStructureQuery.sanitizeComment(ops[i].uiAttribs.comment) + "</span>";
 
-                    const s = { "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": ops[i].uiAttribs.color };
+                    let color = ops[i].uiAttribs.color;
+                    if (ops[i].uiAttribs.uierrors) color = "#ff0000";
+                    const s = { "title": title, "icon": icon, "id": ops[i].id, "order": title + ops[i].id, "iconBgColor": color };
 
                     if (this.options.include.portsAnimated)
                     {

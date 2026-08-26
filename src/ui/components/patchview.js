@@ -773,54 +773,54 @@ export default class PatchView extends Events
 
     checkPatchErrors()
     {
-        if (gui.unload) return;
-        const perf = gui.uiProfiler.start("checkpatcherrors");
-        const hadErrors = this.hasUiErrors;
-        this.hasUiErrors = false;
+        // if (gui.unload) return;
+        // const perf = gui.uiProfiler.start("checkpatcherrors");
+        // const hadErrors = this.hasUiErrors;
+        // this.hasUiErrors = false;
 
-        const patchSummary = gui.getPatchSummary();
-        let isExamplePatch = false;
-        if (patchSummary)
-            isExamplePatch = patchSummary.isBasicExample || (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0);
+        // const patchSummary = gui.getPatchSummary();
+        // let isExamplePatch = false;
+        // if (patchSummary)
+        //     isExamplePatch = patchSummary.isBasicExample || (patchSummary.exampleForOps && patchSummary.exampleForOps.length > 0);
 
-        if (!this._checkErrorTimeout)
-        {
-            gui.patchView.checkPatchOutdated(isExamplePatch); // first time also check outdated ops..
-            if (isExamplePatch) CmdPatch.clearOpTitles(); // examples should not have edited op titles...
-        }
+        // if (!this._checkErrorTimeout)
+        // {
+        //     gui.patchView.checkPatchOutdated(isExamplePatch); // first time also check outdated ops..
+        //     if (isExamplePatch) CmdPatch.clearOpTitles(); // examples should not have edited op titles...
+        // }
 
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-            if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
-                for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
-                    if (ops[i].uiAttribs.uierrors[j].level == 2)
-                    {
-                        this.hasUiErrors = true;
-                        break;
-                    }
+        // const ops = gui.corePatch().ops;
+        // for (let i = 0; i < ops.length; i++)
+        //     if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
+        //         for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
+        //             if (ops[i].uiAttribs.uierrors[j].level == 2)
+        //             {
+        //                 this.hasUiErrors = true;
+        //                 break;
+        //             }
 
-        if (hadErrors != this.hasUiErrors)
-            gui.corePatch().emitEvent("warningErrorIconChange");
+        // if (hadErrors != this.hasUiErrors)
+        //     gui.corePatch().emitEvent("warningErrorIconChange");
 
-        let showAttentionIcon = this.hasUiErrors;
+        // let showAttentionIcon = this.hasUiErrors;
 
-        if (this.hasOldOps && (patchSummary && patchSummary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
+        // if (this.hasOldOps && (patchSummary && patchSummary.isBasicExample || isExamplePatch)) showAttentionIcon = true;
 
-        clearTimeout(this._checkErrorTimeout);
+        // clearTimeout(this._checkErrorTimeout);
 
-        const elError = ele.byId("nav-item-error");
+        // const elError = ele.byId("nav-item-error");
 
-        const wasHidden = elError.classList.contains("hidden");
-        if (showAttentionIcon) ele.show(elError);
-        else ele.hide(elError);
+        // const wasHidden = elError.classList.contains("hidden");
+        // if (showAttentionIcon) ele.show(elError);
+        // else ele.hide(elError);
 
-        const elIcon = ele.byId("nav-item-error-icon");
-        if (showAttentionIcon) elIcon.style["background-color"] = "red";
+        // const elIcon = ele.byId("nav-item-error-icon");
+        // if (showAttentionIcon) elIcon.style["background-color"] = "red";
 
-        if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
+        // if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
 
-        perf.finish();
-        this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
+        // perf.finish();
+        // this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 
     centerSubPatchBounds(subPatch)

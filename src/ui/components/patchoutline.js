@@ -16,13 +16,14 @@ export default class PatchOutline extends Events
         this.queryOptions = {
             "include": {
                 "bookmarks": true,
-                "subpatches": true,
-                "commented": true,
-                "comments": true,
-                "areas": true,
-                "animated": true,
-                "customOps": true,
-                "colored": true
+                "uierrors": true,
+                "subpatches": false,
+                "commented": false,
+                "comments": false,
+                "areas": false,
+                "animated": false,
+                "customOps": false,
+                "colored": false
             }
         };
 
@@ -76,7 +77,7 @@ export default class PatchOutline extends Events
     {
         if (!p || !p.ui || !p.ui.outline) return;
 
-        const outlineCfg = p.ui.outline;
+        const outlineCfg = p.ui.outline || {};
 
         this.queryOptions = outlineCfg;
 
@@ -243,34 +244,34 @@ export default class PatchOutline extends Events
         const items = [];
         items.push({
             "title": "Rename",
-            func()
+            "func": function ()
             {
                 gui.patchView.focusSubpatchOp(item.subPatchId);
                 CmdPatch.setOpTitle();
-            },
+            }
         });
 
         if (item.subPatchVer == "2" && item.blueprintVer != 2)
             items.push({
                 "title": "Create op from subpatch",
-                func()
+                "func": function ()
                 {
                     subPatchOpUtil.createBlueprint2Op(item.subPatchId);
-                },
+                }
             });
 
         if (item.blueprintVer == 2)
         {
             items.push({
                 "title": "Save Op",
-                func()
+                "func": function ()
                 {
                     const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
                     subPatchOpUtil.updateSubPatchOpAttachment(op, { "oldSubId": item.subPatchId });
-                },
+                }
             });
         }
-        contextMenu.show({ items }, el);
+        contextMenu.show({ "items": items }, el);
     }
 }
