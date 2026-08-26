@@ -16,11 +16,11 @@ export default class PatchOutline extends Events
         this.queryOptions = {
             "include": {
                 "bookmarks": true,
+                "comments": true,
+                "areas": true,
                 "uierrors": true,
                 "subpatches": false,
                 "commented": false,
-                "comments": false,
-                "areas": false,
                 "animated": false,
                 "customOps": false,
                 "colored": false
@@ -96,17 +96,17 @@ export default class PatchOutline extends Events
         if (this.queryOptions.include.bookmarks)ele.byId("subtreeFilterBookmarks").classList.add("findToggleActive");
         else ele.byId("subtreeFilterBookmarks").classList.remove("findToggleActive");
 
-        if (this.queryOptions.include.subpatches)ele.byId("subtreeFilterSubPatchOps").classList.add("findToggleActive");
-        else ele.byId("subtreeFilterSubPatchOps").classList.remove("findToggleActive");
-
-        if (this.queryOptions.include.commented)ele.byId("subtreeFilterCommented").classList.add("findToggleActive");
-        else ele.byId("subtreeFilterCommented").classList.remove("findToggleActive");
-
         if (this.queryOptions.include.comments)ele.byId("subtreeFilterComments").classList.add("findToggleActive");
         else ele.byId("subtreeFilterComments").classList.remove("findToggleActive");
 
         if (this.queryOptions.include.areas)ele.byId("subtreeFilterAreas").classList.add("findToggleActive");
         else ele.byId("subtreeFilterAreas").classList.remove("findToggleActive");
+
+        if (this.queryOptions.include.subpatches)ele.byId("subtreeFilterSubPatchOps").classList.add("findToggleActive");
+        else ele.byId("subtreeFilterSubPatchOps").classList.remove("findToggleActive");
+
+        if (this.queryOptions.include.commented)ele.byId("subtreeFilterCommented").classList.add("findToggleActive");
+        else ele.byId("subtreeFilterCommented").classList.remove("findToggleActive");
 
         if (this.queryOptions.include.colored)ele.byId("subtreeFilterColored").classList.add("findToggleActive");
         else ele.byId("subtreeFilterColored").classList.remove("findToggleActive");
@@ -150,10 +150,10 @@ export default class PatchOutline extends Events
         let html = "<h3>Patch Outline</h3>";
         html += "<div style=\"margin-bottom:5px;\">";
         html += "<a id=\"subtreeFilterBookmarks\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_bookmarks\" data-tt=\"bookmarks\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-bookmark\"></span></a>";
-        html += "<a id=\"subtreeFilterCustomOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_customops\" data-tt=\"customops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-op\"></span></a>";
-        html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_commented\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
         html += "<a id=\"subtreeFilterComments\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_comments\" data-tt=\"comments\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message-square-text\"></span></a>";
         html += "<a id=\"subtreeFilterAreas\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_areas\" data-tt=\"areas\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-box-select\"></span></a>";
+        html += "<a id=\"subtreeFilterCustomOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_customops\" data-tt=\"customops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-op\"></span></a>";
+        html += "<a id=\"subtreeFilterCommented\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_commented\" data-tt=\"commented\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-message\"></span></a>";
         html += "<a id=\"subtreeFilterColored\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_colored\" data-tt=\"colored ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-picker\"></span></a>";
         html += "<a id=\"subtreeFilterAnimated\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_animated\" data-tt=\"animated ops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-clock\"></span></a>";
         html += "<a id=\"subtreeFilterSubPatchOps\" class=\"iconbutton findToggle tt info\" data-info=\"outline_filter_subpatchops\" data-tt=\"subpatchops\" style=\"padding:3px;padding-bottom:0;\" onclick=\"\"><span class=\"icon icon-folder\"></span></a>";
