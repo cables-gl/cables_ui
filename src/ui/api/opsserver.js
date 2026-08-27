@@ -22,9 +22,9 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @typedef LinterDiag
  * @property {string} message
  * @property {number} line
- * @property {number} column
- * @property {number} severity
- * @property {boolean} fatal
+ * @property {number} [column]
+ * @property {number} [severity]
+ * @property {boolean} [fatal]
  */
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
@@ -1570,6 +1570,8 @@ export default class ServerOps
                     return;
                 }
                 editorTab.setContent(rslt.code);
+                editorTab.setDiags(this.addOpSourceDiagnostics(rslt.code, []));
+
                 const oldCode = rslt.code;
 
                 if (!readOnly && editorTab)
@@ -1579,23 +1581,6 @@ export default class ServerOps
                     {
                         gui.savingTitleAnimStart("Saving Op...");
                         this.saveOpsInProgress[opname] = true;
-
-                        // platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_CODE, {
-                        //     "opname": opid,
-                        //     "projectId": this.#patchId
-                        // }, (er, rslt) =>
-                        // {
-                        //     if (rslt.code != oldCode)
-                        //     {
-                        //         console.log("HAS CHANGED!!!!!!!!");
-                        //         new ModalDialog({
-                        //             "title": "file changed serverside",
-                        //             "text": "file was overwritten",
-                        //         });
-                        //         console.log("oldcode:", oldCode);
-                        //     }
-
-                        // });
 
                         platform.talkerAPI.send(
                             TalkerAPI.CMD_SAVE_OP_CODE,
@@ -1620,9 +1605,8 @@ export default class ServerOps
                                 if (!res.success)
                                 {
                                     gui.savingTitleAnimEnd();
-                                    console.log("jajajaja", res);
-                                    editor.setDiags([res.error]);
-                                    // if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true); else if (err) setStatus("Error: " + err.msg || "Unknown error");
+
+                                    editor.setDiags(this.addOpSourceDiagnostics(content, [res.error]));
                                 }
                                 else
                                 {
@@ -1651,14 +1635,7 @@ export default class ServerOps
                                     });
                                 }
                             }
-                            // (result) =>
-                            // {
-                            //     setStatus("ERROR: not saved - " + result.msg);
-                            //     this.#log.log("err result", result);
 
-                            //     // gui.endModalLoading();
-                            //     gui.savingTitleAnimEnd();
-                            // }
                         );
                     });
                 }
@@ -2282,5 +2259,25 @@ export default class ServerOps
             modal.on("onSubmit", tryOtherEnvCallback);
             modal.on("onClose", continueLoadingCallback);
         }
+    }
+
+    /**
+     * @param {string} src
+     * @param {LinterDiag[]} diags
+     */
+    addOpSourceDiagnostics(src, diags)
+    {
+        console.log("diags.......");
+        const lines = src.split("\n");
+        for (let i = 0; i < lines.length; i++)
+        {
+            console.log("text", lines[i]);
+            if (lines[i].includes("op.inValue"))diags.push({ "line": i + 1, "message": "deprecated - use inInt/inBool/inString etc" });
+            if (lines[i].includes("op.outFunction"))diags.push({ "line": i + 1, "message": "deprecated" });
+            if (lines[i].includes("op.outValue"))diags.push({ "line": i + 1, "message": "deprecated - use outNumber,outString etc." });
+            if (lines[i].includes("op.outBool"))diags.push({ "line": i + 1, "message": "deprecated" });
+            if (lines[i].includes("op.error"))diags.push({ "line": i + 1, "message": "deprecated" });
+        }
+        return diags;
     }
 }
