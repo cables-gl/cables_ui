@@ -2267,11 +2267,9 @@ export default class ServerOps
      */
     addOpSourceDiagnostics(src, diags)
     {
-        console.log("diags.......");
         const lines = src.split("\n");
         for (let i = 0; i < lines.length; i++)
         {
-            console.log("text", lines[i]);
             if (lines[i].includes("op.inValue"))diags.push({ "line": i + 1, "message": "deprecated - use inInt/inBool/inString etc" });
             if (lines[i].includes("op.outFunction"))diags.push({ "line": i + 1, "message": "deprecated" });
             if (lines[i].includes("op.outValue"))diags.push({ "line": i + 1, "message": "deprecated - use outNumber,outString etc." });
