@@ -907,7 +907,7 @@ export default class ServerOps
                 {
                     // add new op
                     gui.patchView.addOp(opname, {
-                        "onOpAdd": (op) =>
+                        "onOpAdd": (/** @type {Op} */ op) =>
                         {
                             op.setUiAttrib({
                                 "translate": {
@@ -916,8 +916,12 @@ export default class ServerOps
                                 }
                             });
 
-                            if (op) gui.patchView.focusOp(op.id);
-                            if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+                            if (op)
+                            {
+                                gui.patchView.setSelectedOpById(op.id);
+                                gui.patchView.focusOpAnim(op.id);
+                                gui.patchView.patchRenderer.viewBox.centerSelectedOps();
+                            }
                             if (options.cb) options.cb(op);
                         }
                     });

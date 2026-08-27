@@ -379,7 +379,7 @@ export default class VizLayer extends Events
         let redlines = {};
         if (options.diagnostics)
             for (let i = 0; i < options.diagnostics.length; i++)
-                redlines[options.diagnostics[i].line] = true;
+                redlines[options.diagnostics[i].line] = options.diagnostics[i];
 
         for (let i = offset; i < offset + numLines; i += 1)
         {
@@ -407,6 +407,10 @@ export default class VizLayer extends Events
 
             }
 
+            if (redlines[i])
+            {
+
+            }
             if (redlines[i + 1])
             {
                 ctx.fillStyle = "#550000";
@@ -486,6 +490,23 @@ export default class VizLayer extends Events
                 ctx.fillText(indent + lines[i],
                     layer.x / layer.scale + padding,
                     layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+            }
+
+            if (redlines[i])
+            {
+
+                ctx.fillStyle = "#220000";
+                ctx.fillRect(
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + ((i - offset) * lineHeight) + 3,
+                    layer.width,
+                    lineHeight
+                );
+                ctx.fillStyle = "#ffffff";
+                ctx.fillText(indent + redlines[i].message,
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+
             }
         }
 

@@ -2640,6 +2640,7 @@ export default class PatchView extends Events
                             theUiAttribs[i] = oldUiAttribs[i];
                         }
                         newOp.setUiAttrib(theUiAttribs);
+                        gui.patchView.focusOpAnim(newOp.id);
 
                         this.copyOpInputPorts(origOp, newOp);
 
