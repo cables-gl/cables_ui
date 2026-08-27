@@ -6,6 +6,30 @@ import UserSettings, { userSettings } from "../components/usersettings.js";
 import CanvasManager from "../components/canvas/canvasmanager.js";
 
 /**
+ * @typedef VizLayerOptions
+ * @property {number} x
+ * @property {number} y
+ * @property {number} width
+ * @property {number} height
+ * @property {number} scale
+ * @property {boolean} useGl
+ * @property {number} vizLayer
+ * @property {number} pixelDensity
+ */
+
+/**
+ * @typedef VizTextOptions
+ * @property {boolean} showWhitespace
+ * @property {boolean} showLineNum
+ * @property {number} fontSize
+ * @property {boolean} zoomText
+ * @property {boolean} wrap
+ * @property {number} scroll
+ * @property {string} syntax
+ * @property {import("../api/opsserver.js").LinterDiag[]} diagnostics
+ */
+
+/**
  * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
  *
  * @export
@@ -350,7 +374,7 @@ export default class VizLayer extends Events
             linesIdx = r.linesIdx;
         }
 
-        let lastline = "Z";
+        let lastline = -1;
 
         let redlines = {};
         if (options.diagnostics)
@@ -403,7 +427,7 @@ export default class VizLayer extends Events
                 {
                     lastline = idx;
                     ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
-                    ctx.fillText(idx + 1,
+                    ctx.fillText(String(idx + 1),
                         layer.x / layer.scale + padding,
                         layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
                     ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
