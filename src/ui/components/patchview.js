@@ -2485,7 +2485,6 @@ export default class PatchView extends Events
 
                 if (origOp.portsIn[j].anim)
                 {
-
                     newOp.portsIn[j].setAnimated(true);
                     newOp.portsIn[j].anim.clear();
                     newOp.portsIn[j].anim.deserialize(origOp.portsIn[j].anim.getSerialized());

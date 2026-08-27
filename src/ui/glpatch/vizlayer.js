@@ -352,6 +352,11 @@ export default class VizLayer extends Events
 
         let lastline = "Z";
 
+        let redlines = {};
+        if (options.diagnostics)
+            for (let i = 0; i < options.diagnostics.length; i++)
+                redlines[options.diagnostics[i].line] = true;
+
         for (let i = offset; i < offset + numLines; i += 1)
         {
             if (i >= lines.length || i < 0) continue;
@@ -365,21 +370,6 @@ export default class VizLayer extends Events
             const maxChars = layer.width / layer.scale / fs * 3;
             if (lines[i].length > maxChars)lines[i] = lines[i].substring(0, maxChars) + "...";
 
-            if (options.showLineNum)
-            {
-                let idx = i;
-                if (linesIdx)idx = linesIdx[i];
-
-                if (lastline != idx)
-                {
-                    lastline = idx;
-                    ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
-                    ctx.fillText(idx,
-                        layer.x / layer.scale + padding,
-                        layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
-                    ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
-                }
-            }
             if (options.highlightLines && options.highlightLines.lines && options.highlightLines.lines.includes(i))
             {
 
@@ -391,6 +381,33 @@ export default class VizLayer extends Events
                     lineHeight
                 );
 
+            }
+
+            if (redlines[i + 1])
+            {
+                ctx.fillStyle = "#550000";
+                ctx.fillRect(
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + ((i - offset) * lineHeight) + 3,
+                    layer.width,
+                    lineHeight
+                );
+            }
+
+            if (options.showLineNum)
+            {
+                let idx = i;
+                if (linesIdx)idx = linesIdx[i];
+
+                if (lastline != idx)
+                {
+                    lastline = idx;
+                    ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
+                    ctx.fillText(idx + 1,
+                        layer.x / layer.scale + padding,
+                        layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+                    ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+                }
             }
 
             if (hl)
