@@ -182,11 +182,11 @@ export default class OpSearch extends Events
                 scoreDebug += "+4 found in shortname (" + query + ")<br/>";
             }
 
-            if (list[i]._shortName == query)
+            if (list[i]._shortName.startsWith(query))
             {
                 found = true;
-                points += 5;
-                scoreDebug += "+5 query quals shortname<br/>";
+                points += 2;
+                scoreDebug += "+2 query startswith shortname<br/>";
             }
 
             if (orig.length > 1 && list[i]._lowerCaseName.indexOf(orig) > -1)
@@ -229,8 +229,46 @@ export default class OpSearch extends Events
                         scoreDebug += "+" + p + " version<br/>";
                     }
 
+                    /// ////////////////////
+                    // namespace similarity
+
+                    let nspoints = 0;
+                    if (this.newOpOptions.linkNewOpToPort)
+                    {
+                        for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                        {
+                            if (!this.newOpOptions.linkNewOpToPort.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                            nspoints++;
+                        }
+                    }
+                    if (this.newOpOptions.linkNewLink)
+                    {
+                        if (this.newOpOptions.linkNewLink.portIn)
+                            for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                            {
+                                if (!this.newOpOptions.linkNewLink.portIn.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                                nspoints++;
+                            }
+
+                        if (this.newOpOptions.linkNewLink.portIn)
+                            for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                            {
+                                if (!this.newOpOptions.linkNewLink.portOut.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                                nspoints++;
+                            }
+
+                    }
+
+                    if (nspoints > 0)
+                    {
+                        points += nspoints * 2;
+                        scoreDebug += "+" + nspoints + " namespace similarity<br/>";
+                    }
+
+                    /// ////////////////////
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
+
                         // when inserting into link - find fitting ports
                         if (this.newOpOptions.linkNewLink)
                         {
@@ -592,6 +630,15 @@ export default class OpSearch extends Events
                         op.ops = opDoc.ops || [];
                     }
                 }
+
+                op.namespaces = [];
+                let ns = "Ops";
+                for (let j = 1; j < parts.length; j++)
+                {
+                    ns += "." + parts[j];
+                    op.namespaces.push(ns);
+                }
+
                 items.push(op);
             }
         }
