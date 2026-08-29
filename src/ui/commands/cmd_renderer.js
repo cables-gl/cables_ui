@@ -2,6 +2,7 @@ import { ele } from "cables-shared-client";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
+import { notifyError } from "../elements/notification.js";
 
 const CABLES_CMD_RENDERER = {};
 
@@ -89,7 +90,12 @@ class CmdRenderer
 
     static screenshot()
     {
-        gui.canvasManager.currentContextCg().saveScreenshot();
+        if (gui.canvasManager.currentContextCg()?.saveScreenshot)
+        {
+            gui.canvasManager.currentContextCg().saveScreenshot();
+        }
+        else
+            notifyError("screenshot not possible");
         gui.corePatch().resume();
     }
 

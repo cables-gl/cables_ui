@@ -25,6 +25,12 @@
         {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
         {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
 
+        {{#compare port.type '==' 2 }}
+            {{#if port.uiAttribs.objType}}
+                <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
+            {{/if}}
+        {{/compare}}
+
         {{#compare port.uiAttribs.display '==' 'button' }}
             <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}cblbutton button-small{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                 {{#if port.uiAttribs.buttonTitle }}
@@ -107,7 +113,44 @@
                     <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
                 {{/compare}}
 
+<!-- shadergraph inputs... -->
 
+ {{#compare port.uiAttribs.display '==' 'sg' }}
+
+                </td><td>
+
+                            {{#if port.uiAttribs.objType}}
+                                <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
+                            {{/if}}
+
+<!-- {{port.uiAttribs.objType}}... -->
+
+                            {{#compare port.uiAttribs.objType '==' 'sg_vec2' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_vec4' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_float' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_sampler' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+
+                            {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                            {{/compare}}
+
+
+
+
+
+
+
+
+
+                {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'range' }}
                     </td><td>
                     <!-- new value input2 !!! -->
@@ -291,27 +334,8 @@
                         {{#compare port.type '==' 2}}
                     </td>
                     <td>
+                    oo
                         <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >
-                            {{#if port.uiAttribs.objType}}
-                                <span class="objType tt" data-tt="Object type {{port.uiAttribs.objType}}">{{port.uiAttribs.objType}}</span>
-                            {{/if}}
-
-{{port.uiAttribs.objType}}...
-
-                            {{#compare port.uiAttribs.objType '==' 'sg_vec2' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
-                            {{/compare}}
-                            {{#compare port.uiAttribs.objType '==' 'sg_float' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
-                            {{/compare}}
-                            {{#compare port.uiAttribs.objType '==' 'sg_sampler' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
-                            {{/compare}}
-
-                            {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
-                            {{/compare}}
-
                         </span>
                 {{/compare}}
                 {{#compare port.type '==' 4}}
