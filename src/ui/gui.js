@@ -1694,7 +1694,7 @@ export default class Gui extends Events
                 if (port.uiAttribs && port.uiAttribs.editShortcut) break;
             }
 
-            if (port)
+            if (port && !port.isLinked())
             {
                 if (port.uiAttribs.display === "editor")
                     paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
