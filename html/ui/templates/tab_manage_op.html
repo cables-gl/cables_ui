@@ -186,7 +186,13 @@
                             {{/compare}}
                         {{/if}}
                         </td>
-                        <td><span class="fileTypeColor_{{fileType}}">{{fileType}}</span></td>
+                        <td>
+                            {{#compare type "==" "corelib"}}
+                            <span class="cables-icon"></span>
+                            {{else}}
+                            <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>
+                            {{/compare}}
+                        </td>
                         {{#compare type "==" "dependency"}}
                         <td>
                             {{#compare depType '==' 'npm'}}

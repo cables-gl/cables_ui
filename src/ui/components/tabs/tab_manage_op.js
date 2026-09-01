@@ -212,7 +212,7 @@ export default class ManageOp
                         "readableType": "Dependency (corelib)",
                         "editable": false,
                         "removable": canEditOp,
-                        "depType": "lib",
+                        "depType": "corelib",
                         "fileType": "js"
                     });
                 });
