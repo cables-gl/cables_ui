@@ -6,7 +6,7 @@ with contributions by the [cables community](https://discord.gg/cablesgl) and su
 ## Development
 
 
-### Set up local environment
+### Set up local dev environment
 
 * the preferred way of developing cables locally is using the `cables_dev` repository: https://github.com/cables-gl/cables_dev
 * that repo contains scripts that will set up everything for you to get started
