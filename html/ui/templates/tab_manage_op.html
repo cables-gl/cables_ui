@@ -153,6 +153,7 @@
             <table class="table">
                 <tr>
                     <th style="width: calc(20px + var(--font-size-off));"></th>
+                    <th style="width: calc(15px + var(--font-size-off));"></th>
                     <th>Filename</th>
                     <th>Type</th>
                     <th></th>
@@ -161,8 +162,10 @@
                     <td>
                         <a class="icon icon-edit iconhover" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);"></a>&nbsp;
                     </td>
+                    <td>
+                        <span class="fileTypeColor_js">js</span>
+                    </td>
                     <td onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);" style="cursor:pointer">
-                        <span class="fileTypeColor_js">JS</span>
                         {{opname}}.js
                     </td>
                     <td>
@@ -184,6 +187,7 @@
                         {{/if}}
                         </td>
                         {{#compare type "==" "dependency"}}
+                        <td></td>
                         <td>
                             {{#compare depType '==' 'npm'}}
                                 <a class="link" {{#if ../frontendOptions.isElectron}}target="_blank"{{/if}} href="https://www.npmjs.com/package/{{src}}">
@@ -202,9 +206,10 @@
                             {{/compare}}
                         </td>
                         {{else}}
+                        <td>
+                            {{#compare type "==" "attachment"}}<span class="fileTypeColor_{{fileType}}">{{fileType}}</span>{{/compare}}
+                        </td>
                         <td {{#compare type "==" "attachment"}}onclick="gui.serverOps.editAttachment('{{../opname}}','{{src}}');" style="cursor:pointer"{{/compare}}>
-                            {{#compare type "==" "attachment"}}
-                                <span class="fileTypeColor_{{fileType}}">{{fileType}}</span>{{/compare}}
                             {{readable}}
                         </td>
                         {{/compare}}
