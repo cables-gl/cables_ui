@@ -28,6 +28,10 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} dynamic
  */
 /**
+ * @typedef theme_colors_objtypes
+ * @property {Number[]} unknown
+ */
+/**
  * @typedef theme_colors_namespaces
  * @property {Number[]} unknown
  * @property {Number[]} Ops.Dev

@@ -162,7 +162,8 @@ export default class GlPort
         if (!this.#rect) return;
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
-        const dotSize = gluiconfig.portHeight * 0.75;
+        const dotHeight = gluiconfig.portHeight * 0.75;
+        const dotWidth = this.#rect.w - 2 * (gluiconfig.portHeight - dotHeight);
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
         if (this.#port.type == portType.object)showDot = true;
 
@@ -190,13 +191,13 @@ export default class GlPort
 
                 let dotPosY = 0;
 
-                dotPosY = -1 * this.#rect.y / 2 + this.rect.h / 2 - dotSize / 2;
+                dotPosY = -1 * this.#rect.y / 2 + this.rect.h / 2 - dotHeight / 2;
 
                 if (this.direction == PortDir.out)
                 {
                     dotPosY += this.rect.h;
                     if (this.#port.isLinked())
-                        dotPosY += dotSize * 1.25;
+                        dotPosY += dotHeight * 1.25;
                 }
                 if (this.#hover)
                     if (this.direction == PortDir.out)
@@ -211,8 +212,8 @@ export default class GlPort
                 else if (this.#port.type == portType.object) this.#dot.setShape(GlRect.SHAPE_RECT);
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
-                this.#dot.setSize(dotSize, dotSize);
-                this.#dot.setPosition(gluiconfig.portWidth / 2 - dotSize / 2, dotPosY);
+                this.#dot.setSize(dotWidth, dotHeight);
+                this.#dot.setPosition(gluiconfig.portWidth / 2 - dotWidth / 2, dotPosY);
             }
             else
             {
@@ -318,6 +319,10 @@ export default class GlPort
         this.updateSize();
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {GlRect} _rect
+     */
     _onMouseDown(e, _rect)
     {
         if (e.buttons == MouseState.BUTTON_RIGHT) this.#mouseButtonRightTimeDown = performance.now();
@@ -325,6 +330,10 @@ export default class GlPort
         this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, this, this.#glop.id, this.#port.name, e);
     }
 
+    /**
+     * @param {MouseEvent} e
+     * @param {GlRect} _rect
+     */
     _onMouseUp(e, _rect)
     {
         if (this.#mouseButtonRightTimeDown)
@@ -424,9 +433,7 @@ export default class GlPort
 
     static getColorObj(type, hovering, _selected, activity)
     {
-
         return gui.theme.colors_objtypes[type] || [1, 1, 0, 1];
-
     }
 
     /**
