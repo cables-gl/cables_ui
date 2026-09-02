@@ -154,7 +154,8 @@
                 <tr>
                     <th style="width: calc(20px + var(--font-size-off));"></th>
                     <th style="width: calc(15px + var(--font-size-off));"></th>
-                    <th>Filename</th>
+                    <th>Name</th>
+                    <th></th>
                     <th>Type</th>
                     <th></th>
                 </tr>
@@ -171,6 +172,7 @@
                     <td>
                         Main Source File
                     </td>
+                    <td>source code</td>
                     <td></td>
                 </tr>
 
@@ -222,6 +224,9 @@
                         {{/compare}}
                         <td>
                             {{readableType}}
+                        </td>
+                        <td>
+                            {{type}}
                         </td>
                         <td style="text-align: right;">
                             {{#if ../canEditOp}}

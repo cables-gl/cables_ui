@@ -159,10 +159,7 @@ export default class ManageOp
                         if (isStatic) readable = res.attachmentFiles[i].substr(8);
                         readable = readable.replace(".", "_");
 
-                        let fileType = "js";
-                        if (readable.endsWith("_frag")) fileType = "gl";
-                        if (readable.endsWith("_vert")) fileType = "gl";
-
+                        let fileType = "";
                         let readableType = "Attachment";
                         if (isStatic)
                         {
@@ -171,23 +168,26 @@ export default class ManageOp
                         }
                         if (readable.startsWith("inc_"))
                         {
-                            readableType = "Include js file";
+                            readableType = "Included js file";
                             readable = readable.replace("inc_", "");
                         }
                         if (readable.endsWith("_frag"))
                         {
+                            fileType = "gl";
                             readableType = "Fragment shader";
                             const index = readable.lastIndexOf("_frag");
                             if (index >= 0) readable = readable.slice(0, index) + ".frag" + readable.slice(index + 5);
                         }
                         if (readable.endsWith("_vert"))
                         {
+                            fileType = "gl";
                             readableType = "Vertex shader";
                             const index = readable.lastIndexOf("_vert");
                             if (index >= 0) readable = readable.slice(0, index) + ".vert" + readable.slice(index + 5);
                         }
                         if (readable.endsWith("_js"))
                         {
+                            fileType = "js";
                             const index = readable.lastIndexOf("_js");
                             if (index >= 0) readable = readable.slice(0, index) + ".js" + readable.slice(index + 3);
                         }
@@ -228,7 +228,7 @@ export default class ManageOp
                         "src": coreLib.name,
                         "type": "corelib",
                         "readable": coreLib.name,
-                        "readableType": "Dependency (corelib)",
+                        "readableType": "Corelib",
                         "editable": false,
                         "removable": canEditOp,
                         "depType": "corelib",
@@ -242,7 +242,7 @@ export default class ManageOp
                         "src": lib.name,
                         "type": "lib",
                         "readable": lib.name,
-                        "readableType": "Dependency (lib)",
+                        "readableType": "Library",
                         "editable": false,
                         "removable": canEditOp,
                         "depType": "lib",
@@ -263,9 +263,8 @@ export default class ManageOp
                             readable = dep.opName;
                             if (dep.oldVersion) readable += " (newer version available!)";
                         }
-                        let readableType = "Dependency (" + dep.type;
-                        if (dep.type === "module") readableType += " exported as: " + dep.export;
-                        readableType += ")";
+                        let readableType = "Common JS";
+                        if (dep.type === "module") readableType = "Module exported as: " + dep.export;
                         const external = dep.src.startsWith("http");
                         opFiles.push({
                             "src": dep.src,
