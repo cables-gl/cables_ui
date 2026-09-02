@@ -169,9 +169,28 @@ export default class ManageOp
                             readableType = "Static " + readableType;
                             fileType = "bin";
                         }
-                        if (readable.startsWith("inc_")) readableType = "Include js file";
-                        if (readable.endsWith("_frag")) readableType = "Fragment shader";
-                        if (readable.endsWith("_vert")) readableType = "Vertex shader";
+                        if (readable.startsWith("inc_"))
+                        {
+                            readableType = "Include js file";
+                            readable = readable.replace("inc_", "");
+                        }
+                        if (readable.endsWith("_frag"))
+                        {
+                            readableType = "Fragment shader";
+                            const index = readable.lastIndexOf("_frag");
+                            if (index >= 0) readable = readable.slice(0, index) + ".frag" + readable.slice(index + 5);
+                        }
+                        if (readable.endsWith("_vert"))
+                        {
+                            readableType = "Vertex shader";
+                            const index = readable.lastIndexOf("_vert");
+                            if (index >= 0) readable = readable.slice(0, index) + ".vert" + readable.slice(index + 5);
+                        }
+                        if (readable.endsWith("_js"))
+                        {
+                            const index = readable.lastIndexOf("_js");
+                            if (index >= 0) readable = readable.slice(0, index) + ".js" + readable.slice(index + 3);
+                        }
 
                         opFiles.push({
                             "src": res.attachmentFiles[i],
