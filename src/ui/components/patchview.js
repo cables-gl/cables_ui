@@ -3135,7 +3135,7 @@ export default class PatchView extends Events
                 for (let i = 0; i < ops.length; i++)
                 {
                     const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-                    if (!doc || doc.old)
+                    if (!doc || doc.oldVersion)
                     {
                         ops[i].setUiError("nodoc", "outdated op in example patch!");
                     }
