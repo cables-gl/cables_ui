@@ -3134,7 +3134,7 @@ export default class PatchView extends Events
 
                 for (let i = 0; i < ops.length; i++)
                 {
-                    const doc = gui.opDocs.getOpDocByName(defaultOps.defaultOpNames[i]);
+                    const doc = gui.opDocs.getOpDocByName(ops[i].objName);
                     if (!doc)
                     {
                         ops[i].setUiError("nodoc", "nodoc?");
