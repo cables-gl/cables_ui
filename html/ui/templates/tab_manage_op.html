@@ -162,7 +162,7 @@
                     <td>
                         <a class="icon icon-edit iconhover" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);"></a>&nbsp;
                     </td>
-                    <td>
+                    <td style="text-align: center;">
                         <span class="fileTypeColor_js">js</span>
                     </td>
                     <td onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);" style="cursor:pointer">
@@ -186,7 +186,7 @@
                             {{/compare}}
                         {{/if}}
                         </td>
-                        <td>
+                        <td style="text-align: center;">
                             {{#compare type "==" "corelib"}}
                             <span class="cables-icon"></span>
                             {{else}}
