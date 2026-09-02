@@ -124,7 +124,7 @@ export class TlTitle extends Events
 
             if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no");
 
-            setTimeout(() =>
+            this.mouseDownTo = setTimeout(() =>
             {
                 if (!ele.byClass("opparams" + this.#port.op.id)) console.log("no2");
                 if (this.#op && !this.#op.isCurrentUiOp()) return;
@@ -139,6 +139,7 @@ export class TlTitle extends Events
 
         if (this.#elValue) this.#elValue.addEventListener(DomEvents.POINTER_UP, (e) =>
         {
+            clearTimeout(this.mouseDownTo);
             if (!ele.byClass("opparams" + this.#port.op.id)) return;
             const el = ele.byId("portval_" + this.#port.uiAttribs.glPortIndex + "_1-container");
             const cloned = new e.constructor(e.type, e);
