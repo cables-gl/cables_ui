@@ -402,8 +402,6 @@ export default class OpSelect
                     if (docs.coreLibs && docs.coreLibs.indexOf("standalone_electron") > -1)
                         html += "<br/><br/>this is a <a class=\"link\" href=\"https://cables.gl/standalone\" target=\"_blank\">Standalone</a> op, it will not work fully in the web version.";
                 }
-                else html += "no opDocs found";
-
                 html += opDocHtml;
             }
             this._eleSearchinfo.innerHTML = html;
