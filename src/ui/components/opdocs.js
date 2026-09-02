@@ -22,6 +22,8 @@ export default class OpDocs
 
     constructor()
     {
+
+        /** @type {import("cables-shared-client").OpDoc[]} */
         this._opDocs = [];
         this.libs = [];
         this.coreLibs = [];
@@ -221,7 +223,7 @@ export default class OpDocs
     }
 
     /**
-     * @param {Object} op_docs
+     * @param {import("cables-shared-client").OpDoc} op_docs
      * @param {string} portname
      * @param {number} type
      */
@@ -248,6 +250,7 @@ export default class OpDocs
     /**
      * Returns the op documentation object for an op
      * @param {string} opName - Complete op name (long form), e.g. "Ops.Value"
+     * @returns {import("cables-shared-client").OpDoc}
      */
     getOpDocByName(opName)
     {
@@ -280,6 +283,7 @@ export default class OpDocs
     /**
      * Returns the op documentation object for an op
      * @param {string} opId
+     * @returns {import("cables-shared-client").OpDoc}
      */
     getOpDocById(opId)
     {
@@ -418,6 +422,9 @@ export default class OpDocs
         perf.finish();
     }
 
+    /**
+     * @param {import("cables-shared-client").OpDoc} opDoc
+     */
     removeOpDoc(opDoc)
     {
         let i = this._opDocs.length;
