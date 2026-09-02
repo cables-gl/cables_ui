@@ -717,7 +717,7 @@ export default class FileManager
 
                 if (this._filePortOp)
                     gui.opParams.show(this._filePortOp);
-                this.refresh();
+                // this.refresh();
             }
         }
         else if (detailItems.length > 1)
