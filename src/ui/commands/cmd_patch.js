@@ -60,7 +60,7 @@ class CmdPatch
                 "category": "patch",
                 "func": CmdPatch.saveAs,
                 "icon": "save",
-                "hotkey": "[cmd_ctrl][shift]`s`",
+                "hotkey": "[cmd_ctrl][shift]`s`"
             },
             {
                 "cmd": "Upload file dialog",
@@ -95,6 +95,11 @@ class CmdPatch
                 "cmd": "Clear op titles",
                 "category": "op",
                 "func": CmdPatch.clearOpTitles
+            },
+            {
+                "cmd": "Copy patch long id",
+                "category": "patch",
+                "func": CmdPatch.copyLongId
             },
 
             /*
@@ -269,7 +274,7 @@ class CmdPatch
                 "cmd": "Go to parent subpatch",
                 "keybindable": true,
                 "func": CmdPatch.gotoParentSubpatch,
-                "category": "patch",
+                "category": "patch"
             },
             {
                 "cmd": "Open params in tab",
@@ -489,6 +494,12 @@ class CmdPatch
     static createAreaFromSelection()
     {
         gui.patchView.createAreaFromSelection();
+    }
+
+    static copyLongId()
+    {
+        navigator.clipboard.writeText(gui.project().id);
+        notify("copied long id to clipboard", null, { "force": true });
     }
 
     static deleteUnusedPatchOps()
@@ -831,7 +842,7 @@ class CmdPatch
             {
                 "icon": "settings",
                 "closable": true,
-                "singleton": true,
+                "singleton": true
             },
             true);
     }
@@ -882,7 +893,7 @@ class CmdPatch
                         op.setUiAttrib({
                             "translate": {
                                 "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
-                                "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                                "y": gui.patchView.patchRenderer.viewBox.mousePatchY }
                         });
                         if (op)
                         {

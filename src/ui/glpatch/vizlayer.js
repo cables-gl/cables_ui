@@ -379,7 +379,8 @@ export default class VizLayer extends Events
         let redlines = {};
         if (options.diagnostics)
             for (let i = 0; i < options.diagnostics.length; i++)
-                redlines[options.diagnostics[i].line] = options.diagnostics[i];
+                if (!redlines[options.diagnostics[i].line])
+                    redlines[options.diagnostics[i].line] = options.diagnostics[i];
 
         for (let i = offset; i < offset + numLines; i += 1)
         {
