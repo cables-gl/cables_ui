@@ -205,9 +205,13 @@
                                         {{readable}}
                                     </a>
                                 {{else}}
+                                    {{#if external}}
+                                    {{readable}}
+                                    {{else}}
                                     <a onclick="gui.serverOps.editDependency('{{../opname}}', '{{src}}', '{{readable}}', {{../canEditOp}}, null, true);" style="cursor:pointer">
                                         {{readable}}
                                     </a>
+                                    {{/if}}
                                 {{/compare}}
                             {{/compare}}
                         </td>
@@ -221,7 +225,7 @@
                         </td>
                         <td style="text-align: right;">
                             {{#if ../canEditOp}}
-                            <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{depType}}"></a>
+                            <a class="icon icon-three-dots iconhover dependency-options" data-depsrc="{{src}}" data-deptype="{{depType}}" data-external="{{external}}"></a>
                             {{/if}}
                         </td>
                     </tr>

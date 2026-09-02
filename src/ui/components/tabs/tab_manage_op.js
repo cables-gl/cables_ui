@@ -247,12 +247,14 @@ export default class ManageOp
                         let readableType = "Dependency (" + dep.type;
                         if (dep.type === "module") readableType += " exported as: " + dep.export;
                         readableType += ")";
+                        const external = dep.src.startsWith("http");
                         opFiles.push({
                             "src": dep.src,
                             "type": "dependency",
                             "readable": readable,
                             "readableType": readableType,
-                            "editable": dep.type !== "op",
+                            "editable": dep.type !== "op" && !external,
+                            "external": external,
                             "depType": dep.type,
                             "depOp": dep.opName,
                             "fileType": "js"
@@ -336,6 +338,7 @@ export default class ManageOp
                 {
                     const depSrc = dataset.depsrc;
                     const depType = dataset.deptype;
+                    const external = dataset.external && dataset.external === "true";
                     if (depType !== "corelib" && opDoc.dependencies)
                     {
                         opDoc.dependencies.find((d) => { return d.src == depSrc && d.type == depType; });
@@ -347,7 +350,7 @@ export default class ManageOp
 
                     const items = [];
 
-                    let downloadable = depType !== "corelib" && depType !== "op" && depType !== "attachment";
+                    let downloadable = depType !== "corelib" && depType !== "op" && depType !== "attachment" && !external;
                     if (depType === "lib") downloadable = depSrc.startsWith("/assets/");
 
                     if (downloadable)
@@ -376,6 +379,18 @@ export default class ManageOp
                                     element.click();
                                     document.body.removeChild(element);
                                 }
+                            }
+                        });
+                    }
+
+                    if (external)
+                    {
+                        items.push({
+                            "title": "open url",
+                            "iconClass": "icon icon-external",
+                            "func": () =>
+                            {
+                                window.open(depSrc, "_blank");
                             }
                         });
                     }
