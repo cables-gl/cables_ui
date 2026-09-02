@@ -102,14 +102,12 @@ class CmdPatch
                 "func": CmdPatch.copyLongId
             },
 
-            /*
-     * {
-     *     "cmd": "Create subpatch",
-     *     "category": "patch",
-     *     "func": CmdPatch.createSubPatchFromSelection,
-     *     "icon": "subpatch"
-     * },
-     */
+            {
+                "cmd": "Find outdated Ops",
+                "category": "patch",
+                "icon": "search",
+                "func": () => { new CABLES.UI.FindTab(gui.mainTabs, ":outdated"); gui.maintabPanel.show(true); }
+            },
             {
                 "cmd": "Export static html",
                 "category": "patch",

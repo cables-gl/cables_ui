@@ -3129,19 +3129,7 @@ export default class PatchView extends Events
                 }
             }
 
-            if (gui.user.isStaff)
-            {
-
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-                    if (!doc || doc.oldVersion)
-                    {
-                        ops[i].setUiError("nodoc", "outdated op in example patch!");
-                    }
-
-                }
-            }
+            if (gui.user.isStaff) PatchView.addUiErrorOutdatedOps();
 
             if (gui.user.isStaff && patchSummary.title != patchTitle && platform.isTrustedPatch() && gui.user.hasWriteRights)
             {
@@ -3151,6 +3139,19 @@ export default class PatchView extends Events
 
         }
         if (!patchSummary) { console.error("has no patch summary"); }
+    }
+
+    static addUiErrorOutdatedOps()
+    {
+        const ops = gui.corePatch().ops;
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+            if (!doc || doc.oldVersion)
+                ops[i].setUiError("nodoc", "outdated op in example patch!");
+        }
+
     }
 
     warnLargestPort()

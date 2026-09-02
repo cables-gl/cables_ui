@@ -2476,7 +2476,7 @@ export default class Gui extends Events
         for (const i in vars)
             list.push({ "cmd": i, "func": (e) => { cb(e); } });
 
-        const cp = new CommandPalette({ "showIcons": false,
+        const cp = new CommandPalette({ "showIcons": true,
             "cablesCommands": false,
             "showCategory": false,
             "commands": list });
