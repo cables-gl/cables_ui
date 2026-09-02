@@ -111,6 +111,49 @@ export default class ManageOp
         this._initialized = true;
     }
 
+    /**
+    *
+    * @param {Array<Object>} items items with .readableType and .readable
+    * @param {Array<string>} order - order of readableTypes, matched with startsWith
+    * @returns {Array<Object>}
+    */
+    sortFilesByReadableType(items, order = [])
+    {
+        const normalizedOrder = order.map((o) => { return o.toLowerCase(); });
+
+        function getRank(readableType)
+        {
+            const type = readableType.toLowerCase();
+            let bestIndex = -1;
+            let bestLength = -1;
+            normalizedOrder.forEach((prefix, i) =>
+            {
+                if (type.startsWith(prefix) && prefix.length > bestLength)
+                {
+                    bestIndex = i;
+                    bestLength = prefix.length;
+                }
+            });
+            return bestIndex === -1 ? Infinity : bestIndex;
+        }
+
+        return [...items].sort((a, b) =>
+        {
+            const aRank = getRank(a.readableType || "");
+            const bRank = getRank(b.readableType || "");
+
+            if (aRank !== bRank) return aRank - bRank;
+
+            if (aRank === Infinity)
+            {
+                const typeCompare = a.readableType.localeCompare(b.readableType);
+                if (typeCompare !== 0) return typeCompare;
+            }
+
+            return a.readable.localeCompare(b.readable);
+        });
+    }
+
     show()
     {
         editorSession.remove(ManageOp.TABSESSION_NAME, this.#currentId);
@@ -258,13 +301,14 @@ export default class ManageOp
                         if (dep.readable && dep.readable.startsWith("./")) dep.readable = dep.readable.replace("./", "");
 
                         let readable = dep.readable;
+                        let readableType = "Common JS";
+                        if (dep.type === "module") readableType = "Module exported as: " + dep.export;
                         if (dep.type === "op")
                         {
                             readable = dep.opName;
-                            if (dep.oldVersion) readable += " (newer version available!)";
+                            readableType = "Op";
+                            if (dep.oldVersion) readableType += " (newer version available!)";
                         }
-                        let readableType = "Common JS";
-                        if (dep.type === "module") readableType = "Module exported as: " + dep.export;
                         const external = dep.src.startsWith("http");
                         opFiles.push({
                             "src": dep.src,
@@ -280,16 +324,29 @@ export default class ManageOp
                     });
                 }
 
-                opFiles.sort((a, b) =>
-                {
-                    const aOp = a.depType === "op";
-                    const bOp = b.depType === "op";
+                const order = [
+                    "Op",
+                    "Corelib",
+                    "Library",
+                    "Include",
+                    "Vertex",
+                    "Fragment",
+                    "Module",
+                    "Common",
+                    "Static"
+                ];
+                opFiles = this.sortFilesByReadableType(opFiles, order);
 
-                    if (aOp && !bOp) return -1;
-                    if (!aOp && bOp) return 1;
-
-                    return a.readable?.toLowerCase().localeCompare(b.readable?.toLowerCase());
-                });
+                // opFiles.sort((a, b) =>
+                // {
+                //     const aOp = a.depType === "op";
+                //     const bOp = b.depType === "op";
+                //
+                //     if (aOp && !bOp) return -1;
+                //     if (!aOp && bOp) return 1;
+                //
+                //     return a.readable?.toLowerCase().localeCompare(b.readable?.toLowerCase());
+                // });
 
                 summary = gui.opDocs.getSummary(opName) || "No Summary";
                 if (portJson && portJson.ports)
