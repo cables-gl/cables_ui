@@ -276,8 +276,9 @@ export default class GlLink
             this.#glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
         }
 
-        if (!e.altKey)
+        if (!e.altKey && !e.metaKey)
             pIn.removeLinkTo(pOut);
+        e.preventDefault();
     }
 
     _initSubCables()
