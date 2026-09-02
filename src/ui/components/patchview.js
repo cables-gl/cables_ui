@@ -3129,6 +3129,20 @@ export default class PatchView extends Events
                 }
             }
 
+            if (gui.user.isStaff)
+            {
+
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
+                    if (!doc)
+                    {
+                        ops[i].setUiError("nodoc", "nodoc?");
+                    }
+
+                }
+            }
+
             if (gui.user.isStaff && patchSummary.title != patchTitle && platform.isTrustedPatch() && gui.user.hasWriteRights)
             {
                 patchTitle += " Example";
