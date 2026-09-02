@@ -1887,7 +1887,6 @@ export default class Gui extends Events
         {
             if (e)
             {
-                console.log("shiftkey", e.shiftKey);
                 CABLES.UI.OPSELECT.linkNewOpToPort =
                     CABLES.UI.OPSELECT.linkNewLink = null;
                 gui.opSelect().show({

@@ -429,7 +429,7 @@ export default class OpSearch extends Events
 
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
-        if (!query) return console.log("no query");
+        // if (!query) return console.log("no query");
 
         const origQuery = query;
         if (this._wordsDb) // search through word db
