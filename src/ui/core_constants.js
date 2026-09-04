@@ -1,3 +1,4 @@
+/** @deprecated */
 const portType =
 {
     "number": 0,
@@ -5,10 +6,11 @@ const portType =
     "object": 2,
     "array": 3,
     "dynamic": 4,
-    "string": 5,
+    "string": 5
 
 };
 
+/** @deprecated */
 const PortDir =
 {
     "out": 1,
