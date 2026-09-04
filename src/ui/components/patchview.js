@@ -23,7 +23,6 @@ import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
 import UserSettings, { userSettings } from "./usersettings.js";
-import { PortDir, portType } from "../core_constants.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 import { UiPatch } from "../core_extend_patch.js";
@@ -654,7 +653,7 @@ export default class PatchView extends Events
             "onOpAdd": (newOp) =>
             {
                 let newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
-                if (oldOp.getPortByName(portname).direction == PortDir.out)
+                if (oldOp.getPortByName(portname).direction == Port.DIR_OUT)
                     newPort = newOp.getFirstInPortByType(oldOp.getPortByName(portname).type);
 
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
@@ -1632,7 +1631,7 @@ export default class PatchView extends Events
                                 {
                                     const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
                                     ops[i].portsIn[j].links[k] = null;
-                                    if (p && (p.type === portType.string || p.type === portType.number))
+                                    if (p && (p.type === Port.TYPE_STRING || p.type === Port.TYPE_NUMBER))
                                     {
                                         ops[i].portsIn[j].value = p.get();
                                     }
@@ -1659,7 +1658,7 @@ export default class PatchView extends Events
                             {
                                 const p = selectedOps[0].patch.getOpById(ops[i].portsOut[j].links[k].objOut).getPort(ops[i].portsOut[j].links[k].portOut);
                                 ops[i].portsOut[j].links[k] = null;
-                                if (p && (p.type === portType.string || p.type === portType.number))
+                                if (p && (p.type === Port.TYPE_STRING || p.type === Port.TYPE_NUMBER))
                                 {
                                     ops[i].portsOut[j].value = p.get();
                                 }
@@ -2398,11 +2397,11 @@ export default class PatchView extends Events
      */
     _portValidate(p1, p2)
     {
-        if (p1.type != portType.object) return;
+        if (p1.type != Port.TYPE_OBJECT) return;
         let inp = null;
         let outp = null;
 
-        if (p1.direction === PortDir.in)
+        if (p1.direction === Port.DIR_IN)
         {
             inp = p1;
             outp = p2;
@@ -2777,7 +2776,7 @@ export default class PatchView extends Events
             portIn = oldLink.p1.thePort;
             portOut = oldLink.p2.thePort;
 
-            if (oldLink.p2.thePort.direction == PortDir.in)
+            if (oldLink.p2.thePort.direction == Port.DIR_IN)
             {
                 portIn = oldLink.p2.thePort;
                 portOut = oldLink.p1.thePort;
@@ -3072,7 +3071,7 @@ export default class PatchView extends Events
 
         // for (let i = 0; i < ops.length; i++)
         // {
-        //     if (dir == undefined || dir === PortDir.in)
+        //     if (dir == undefined || dir === Port.DIR_IN)
         //         if (ops[i].portsIn)
         //             for (let j = 0; j < ops[i].portsIn.length; j++)
         //                 if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);

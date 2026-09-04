@@ -8,7 +8,6 @@ import Gui, { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlOp from "./glop.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { PortDir, portType } from "../core_constants.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}
@@ -152,7 +151,7 @@ export default class GlPort
         }
         else
         {
-            if (this.#direction == PortDir.out) this.#rect.setShape(9);
+            if (this.#direction == Port.DIR_OUT) this.#rect.setShape(9);
             else this.#rect.setShape(10);
         }
     }
@@ -165,7 +164,7 @@ export default class GlPort
         const dotHeight = gluiconfig.portHeight * 0.75;
         const dotWidth = this.#rect.w - 2 * (gluiconfig.portHeight - dotHeight);
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
-        if (this.#port.type == portType.object)showDot = true;
+        if (this.#port.type == Port.TYPE_OBJECT)showDot = true;
 
         if (this.#rect && this.#port.uiAttribs.hidePort)
         {
@@ -193,23 +192,23 @@ export default class GlPort
 
                 dotPosY = -1 * this.#rect.y / 2 + this.rect.h / 2 - dotHeight / 2;
 
-                if (this.direction == PortDir.out)
+                if (this.direction == Port.DIR_OUT)
                 {
                     dotPosY += this.rect.h;
                     if (this.#port.isLinked())
                         dotPosY += dotHeight * 1.25;
                 }
                 if (this.#hover)
-                    if (this.direction == PortDir.out)
+                    if (this.direction == Port.DIR_OUT)
                         dotPosY -= this.#rect.h * 0.75;
 
                 if (!this.port.isAnimated() && this.#port.isLinked())
-                    if (this.direction == PortDir.in)dotPosY -= 1;
+                    if (this.direction == Port.DIR_IN)dotPosY -= 1;
 
                 if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
                 else if (this.#port.isAnimated()) this.#dot.setShape(GlRect.SHAPE_RHOMB);
-                else if (this.#port.type == portType.object) this.#dot.setShape(GlRect.SHAPE_RECT);
+                else if (this.#port.type == Port.TYPE_OBJECT) this.#dot.setShape(GlRect.SHAPE_RECT);
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
                 this.#dot.setSize(dotWidth, dotHeight);
@@ -220,7 +219,7 @@ export default class GlPort
                 this.#dot = this.#dot.dispose();
             }
 
-            if (this.#port.type == portType.object)
+            if (this.#port.type == Port.TYPE_OBJECT)
             {
                 this.#dot.setColorArray(gui.theme.colors_objtypes[this.#port.uiAttribs.objType] || gui.theme.colors_objtypes.default);
             }
@@ -265,11 +264,11 @@ export default class GlPort
         let h = gluiconfig.portHeight * 2;
         let y = 0;
 
-        if (this.#port.direction == PortDir.out) y = this.#glop.h;
+        if (this.#port.direction == Port.DIR_OUT) y = this.#glop.h;
 
         if (this.#port.isLinked() && !this.#port.isAnimated() && !this.#port.isBoundToVar())
         {
-            if (this.#port.direction == PortDir.in) y += gluiconfig.portHeight * 0.5;
+            if (this.#port.direction == Port.DIR_IN) y += gluiconfig.portHeight * 0.5;
             h = gluiconfig.portHeight * 1.5;
         }
 
@@ -278,13 +277,13 @@ export default class GlPort
         if (this.#glop.displayType === this.#glop.DISPLAY_REROUTE_DOT)
         {
             h = 0;
-            if (this.#port.direction == PortDir.in) y = 0;
+            if (this.#port.direction == Port.DIR_IN) y = 0;
             else y = this.#glop.h;
         }
 
         if (this.#port.uiAttribs.hover)
         {
-            if (this.direction == PortDir.in)
+            if (this.direction == Port.DIR_IN)
                 y -= h * 0.75;
             h *= 1.75;
         }
@@ -300,14 +299,14 @@ export default class GlPort
         if (this.#longPortRect)
         {
             let n = this.#port.op.getNumVisiblePortsIn();
-            if (this.#direction == PortDir.out) n = this.#port.op.getNumVisiblePortsOut();
+            if (this.#direction == Port.DIR_OUT) n = this.#port.op.getNumVisiblePortsOut();
 
             const lastposX = this.#port.op.posByIndex(this.#port.uiAttribs.longPort + this.portIndex - 1, n);
 
             this.#longPortRect.setSize(lastposX - this.#posX, gluiconfig.portLongPortHeight);
 
             let yl = gluiconfig.portHeight - gluiconfig.portLongPortHeight;
-            if (this.#direction == PortDir.out) yl = this.#parentRect.h - gluiconfig.portHeight;
+            if (this.#direction == Port.DIR_OUT) yl = this.#parentRect.h - gluiconfig.portHeight;
 
             this.#longPortRect.setPosition(this.#posX, yl, -0.0001);
         }
@@ -449,12 +448,12 @@ export default class GlPort
         let name = "";
         let portname = "";
 
-        if (type == portType.number) portname = "num";
-        else if (type == portType.trigger) portname = "trigger";
-        else if (type == portType.object) portname = "obj";
-        else if (type == portType.array) portname = "array";
-        else if (type == portType.string) portname = "string";
-        else if (type == portType.dynamic) portname = "dynamic";
+        if (type == Port.TYPE_NUMBER) portname = "num";
+        else if (type == Port.TYPE_TRIGGER) portname = "trigger";
+        else if (type == Port.TYPE_OBJECT) portname = "obj";
+        else if (type == Port.TYPE_ARRAY) portname = "array";
+        else if (type == Port.TYPE_STRING) portname = "string";
+        else if (type == Port.TYPE_DYNAMIC) portname = "dynamic";
 
         if (activity == 0)name = portname + "_inactive";
 
@@ -476,12 +475,12 @@ export default class GlPort
         const perf = gui.uiProfiler.start("[glport] getInactiveColor");
         let portname = "";
 
-        if (type == portType.number) portname = "num";
-        else if (type == portType.trigger) portname = "trigger";
-        else if (type == portType.object) portname = "obj";
-        else if (type == portType.array) portname = "array";
-        else if (type == portType.string) portname = "string";
-        else if (type == portType.dynamic) portname = "dynamic";
+        if (type == Port.TYPE_NUMBER) portname = "num";
+        else if (type == Port.TYPE_TRIGGER) portname = "trigger";
+        else if (type == Port.TYPE_OBJECT) portname = "obj";
+        else if (type == Port.TYPE_ARRAY) portname = "array";
+        else if (type == Port.TYPE_STRING) portname = "string";
+        else if (type == Port.TYPE_DYNAMIC) portname = "dynamic";
 
         const name = portname + "_inactive";
 
@@ -503,15 +502,15 @@ export default class GlPort
         let name = "";
         let portname = "";
 
-        if (type == portType.number) portname = "num";
-        else if (type == portType.trigger) portname = "trigger";
-        else if (type == portType.object) portname = "obj";
-        else if (type == portType.array) portname = "array";
-        else if (type == portType.string) portname = "string";
-        else if (type == portType.dynamic) portname = "dynamic";
+        if (type == Port.TYPE_NUMBER) portname = "num";
+        else if (type == Port.TYPE_TRIGGER) portname = "trigger";
+        else if (type == Port.TYPE_OBJECT) portname = "obj";
+        else if (type == Port.TYPE_ARRAY) portname = "array";
+        else if (type == Port.TYPE_STRING) portname = "string";
+        else if (type == Port.TYPE_DYNAMIC) portname = "dynamic";
 
         let coll = [1, 0.9, 0.8, 0];
-        if (selected || type == portType.object)
+        if (selected || type == Port.TYPE_OBJECT)
         {
         // coll = structuredClone(gui.theme.colors_patch.selectedCable);
         // console.log("coll", coll);
@@ -527,7 +526,7 @@ export default class GlPort
 
         let col = [coll[0], coll[1], coll[2], coll[3]];
 
-        if (type == portType.object)
+        if (type == Port.TYPE_OBJECT)
         {
             // console.log(col);
             // col[3] = 1;

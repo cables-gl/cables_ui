@@ -1,4 +1,5 @@
 import { Logger, TalkerAPI } from "cables-shared-client";
+import { Port } from "cables";
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
@@ -8,7 +9,6 @@ import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
 import GlGuiTab from "../components/tabs/tab_glpatch.js";
 
 import CMD from "./commands.js";
-import { portType } from "../core_constants.js";
 import { platform } from "../platform.js";
 import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
 import { CmdPatch } from "./cmd_patch.js";
@@ -357,7 +357,7 @@ class CmdDebug
                 {
                     const p = ops[i].portsIn[ip];
 
-                    if (p.type == portType.array)
+                    if (p.type == Port.TYPE_ARRAY)
                     {
                         const tests = [
                             () => { p.set([]); },
@@ -374,7 +374,7 @@ class CmdDebug
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
-                    if (p.type == portType.number)
+                    if (p.type == Port.TYPE_NUMBER)
                     {
                         const tests = [
                             () => { p.set(0); },
@@ -385,7 +385,7 @@ class CmdDebug
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
-                    if (p.type == portType.string)
+                    if (p.type == Port.TYPE_STRING)
                     {
                         const tests = [
                             () => { p.set("hello"); },
@@ -395,7 +395,7 @@ class CmdDebug
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
-                    if (p.type == portType.object)
+                    if (p.type == Port.TYPE_OBJECT)
                     {
                         const tests = [
                             () => { p.set(null); },
@@ -406,7 +406,7 @@ class CmdDebug
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
-                    if (p.type == portType.trigger)
+                    if (p.type == Port.TYPE_TRIGGER)
                     {
                         const tests = [
                             () => { p.trigger(); },

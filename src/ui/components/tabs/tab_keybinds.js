@@ -6,7 +6,6 @@ import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import opNames from "../../opnameutils.js";
-import { PortDir, portType } from "../../core_constants.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { Commands } from "../../commands/commands.js";
 import { InputBindings } from "../../inputbindings.js";

@@ -1,5 +1,5 @@
 import { ele, Logger, TalkerAPI } from "cables-shared-client";
-import { Op, Patch, utils } from "cables";
+import { Op, Patch, Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
 import { notifyError } from "../elements/notification.js";
@@ -13,7 +13,6 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { userSettings } from "../components/usersettings.js";
-import { portType } from "../core_constants.js";
 import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
@@ -249,7 +248,7 @@ export default class ServerOps
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
-            if (op.portsIn[i].type === portType.number)
+            if (op.portsIn[i].type === Port.TYPE_NUMBER)
             {
                 if (op.portsIn[i].uiAttribs.display === "bool") l.subType = "boolean";
                 else if (op.portsIn[i].uiAttribs.display === "boolnum") l.subType = "boolean";
@@ -274,7 +273,7 @@ export default class ServerOps
             if (op.portsOut[i].uiAttribs.longPort) l.longPort = op.portsOut[i].uiAttribs.longPort;
 
             if (op.portsOut[i].uiAttribs.hidePort) continue;
-            if (op.portsOut[i].type == portType.number)
+            if (op.portsOut[i].type == Port.TYPE_NUMBER)
             {
                 if (op.portsOut[i].uiAttribs.display === "bool") l.subType = "boolean";
                 else if (op.portsOut[i].uiAttribs.display === "boolnum") l.subType = "boolean";

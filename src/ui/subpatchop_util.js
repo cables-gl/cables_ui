@@ -1,5 +1,5 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { Patch, utils } from "cables";
+import { Patch, Port, utils } from "cables";
 import { nl } from "cables-corelibs/cg/constants.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
@@ -8,7 +8,6 @@ import { getHandleBarHtml } from "./utils/handlebars.js";
 import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { platform } from "./platform.js";
-import { portType } from "./core_constants.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
 
 const subPatchOpUtil = {};
@@ -58,27 +57,27 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.dir == 0) // INPUT
         {
-            if (p.type == portType.string && p.display == "switch") src += "op.inSwitch";
-            else if (p.type == portType.number) src += "op.inFloat";
-            else if (p.type == portType.trigger) src += "op.inTrigger";
-            else if (p.type == portType.object) src += "op.inObject";
-            else if (p.type == portType.array) src += "op.inArray";
-            else if (p.type == portType.string) src += "op.inString";
+            if (p.type == Port.TYPE_STRING && p.display == "switch") src += "op.inSwitch";
+            else if (p.type == Port.TYPE_NUMBER) src += "op.inFloat";
+            else if (p.type == Port.TYPE_TRIGGER) src += "op.inTrigger";
+            else if (p.type == Port.TYPE_OBJECT) src += "op.inObject";
+            else if (p.type == Port.TYPE_ARRAY) src += "op.inArray";
+            else if (p.type == Port.TYPE_STRING) src += "op.inString";
 
             src += "(\"" + p.id + "\""; // 1. name
 
-            if (p.type == portType.string) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
-            if (p.type == portType.number) src += "," + p.value; // 2. param default value
+            if (p.type == Port.TYPE_STRING) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
+            if (p.type == Port.TYPE_NUMBER) src += "," + p.value; // 2. param default value
 
             src += ");";
         }
         else // OUTPUT
         {
-            if (p.type == portType.number) src += "op.outNumber";
-            if (p.type == portType.trigger) src += "op.outTrigger";
-            if (p.type == portType.object) src += "op.outObject";
-            if (p.type == portType.array) src += "op.outArray";
-            if (p.type == portType.string) src += "op.outString";
+            if (p.type == Port.TYPE_NUMBER) src += "op.outNumber";
+            if (p.type == Port.TYPE_TRIGGER) src += "op.outTrigger";
+            if (p.type == Port.TYPE_OBJECT) src += "op.outObject";
+            if (p.type == Port.TYPE_ARRAY) src += "op.outArray";
+            if (p.type == Port.TYPE_STRING) src += "op.outString";
 
             src += "(\"" + p.id + "\""; // 1. name
 
@@ -120,15 +119,15 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         let outPortFunc = "outNumber";
 
-        if (p.type == portType.object && p.uiDisplay == "texture") outPortFunc = "outTexture";
-        else if (p.type == portType.trigger) outPortFunc = "outTrigger";
-        else if (p.type == portType.object) outPortFunc = "outObject";
-        else if (p.type == portType.array) outPortFunc = "outArray";
-        else if (p.type == portType.string) outPortFunc = "outString";
+        if (p.type == Port.TYPE_OBJECT && p.uiDisplay == "texture") outPortFunc = "outTexture";
+        else if (p.type == Port.TYPE_TRIGGER) outPortFunc = "outTrigger";
+        else if (p.type == Port.TYPE_OBJECT) outPortFunc = "outObject";
+        else if (p.type == Port.TYPE_ARRAY) outPortFunc = "outArray";
+        else if (p.type == Port.TYPE_STRING) outPortFunc = "outString";
 
         src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");" + nl;
 
-        if (ports.ports[i].type == portType.number || ports.ports[i].type == portType.string)
+        if (ports.ports[i].type == Port.TYPE_NUMBER || ports.ports[i].type == Port.TYPE_STRING)
             src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );" + nl;
 
         if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
@@ -152,10 +151,10 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.dir != 1) continue;
 
         let inPortFunc = "inFloat";
-        if (ports.ports[i].type == portType.trigger) inPortFunc = "inTrigger";
-        if (ports.ports[i].type == portType.object) inPortFunc = "inObject";
-        if (ports.ports[i].type == portType.array) inPortFunc = "inArray";
-        if (ports.ports[i].type == portType.string) inPortFunc = "inString";
+        if (ports.ports[i].type == Port.TYPE_TRIGGER) inPortFunc = "inTrigger";
+        if (ports.ports[i].type == Port.TYPE_OBJECT) inPortFunc = "inObject";
+        if (ports.ports[i].type == Port.TYPE_ARRAY) inPortFunc = "inArray";
+        if (ports.ports[i].type == Port.TYPE_STRING) inPortFunc = "inString";
 
         src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");" + nl;
         if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
@@ -383,7 +382,7 @@ subPatchOpUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
         if (o.dir == 0)o.dir = 1;
         else o.dir = 0;
 
-    if (port.type == portType.number || port.type == portType.string)
+    if (port.type == Port.TYPE_NUMBER || port.type == Port.TYPE_STRING)
         o.value = port.get();
 
     return o;
@@ -563,12 +562,12 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
             const eleAddUiAttribs = ele.byId("createPortAddUiAttribs");
 
             let type = 0;
-            if (eleType.value.indexOf("Number") == 0)type = portType.number;
-            if (eleType.value.indexOf("Boolean") == 0)type = portType.number;
-            if (eleType.value.indexOf("String") == 0)type = portType.string;
-            if (eleType.value.indexOf("Array") == 0)type = portType.array;
-            if (eleType.value.indexOf("Object") == 0)type = portType.object;
-            if (eleType.value.indexOf("Trigger") == 0)type = portType.trigger;
+            if (eleType.value.indexOf("Number") == 0)type = Port.TYPE_NUMBER;
+            if (eleType.value.indexOf("Boolean") == 0)type = Port.TYPE_NUMBER;
+            if (eleType.value.indexOf("String") == 0)type = Port.TYPE_STRING;
+            if (eleType.value.indexOf("Array") == 0)type = Port.TYPE_ARRAY;
+            if (eleType.value.indexOf("Object") == 0)type = Port.TYPE_OBJECT;
+            if (eleType.value.indexOf("Trigger") == 0)type = Port.TYPE_TRIGGER;
 
             const values = String(eleValues.value);
 
@@ -601,7 +600,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 _log.warn("could not parse add ui attribs...");
             }
 
-            if (type == portType.string)
+            if (type == Port.TYPE_STRING)
             {
                 port.value = eleValue.value;
                 if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
@@ -610,12 +609,12 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Dropdown") > -1) port.uiDisplay = "dropdown";
             }
 
-            if (type == portType.trigger)
+            if (type == Port.TYPE_TRIGGER)
             {
                 if (eleType.value.indexOf("Button") > -1) port.uiDisplay = "button";
             }
 
-            if (type == portType.number)
+            if (type == Port.TYPE_NUMBER)
             {
                 port.value = parseFloat(eleValue.value) || 0;
 
@@ -624,7 +623,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Boolean") > -1) port.uiDisplay = "bool";
             }
 
-            if (type == portType.object)
+            if (type == Port.TYPE_OBJECT)
             {
                 if (eleType.value.indexOf("Gradient") > -1) port.uiDisplay = port.objType = "gradient";
                 if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";

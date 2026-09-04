@@ -10,7 +10,6 @@
 
 import { Link, Op, Port } from "cables";
 import { Logger } from "cables-shared-client";
-import { portType } from "./core_constants.js";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
@@ -378,7 +377,7 @@ class UiOp extends Op
          */
         function hasTriggerInput(op)
         {
-            if (op.portsIn.length > 0 && op.portsIn[0].type == portType.trigger) return true;
+            if (op.portsIn.length > 0 && op.portsIn[0].type == Port.TYPE_TRIGGER) return true;
             return false;
         }
 
@@ -388,8 +387,8 @@ class UiOp extends Op
         if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
         {
             working =
-                this.hasParent(portType.trigger, "TextureEffects.ImageCompose") ||
-                this.hasParent(portType.trigger, "TextureEffects.ImageCompose_v2");
+                this.hasParent(Port.TYPE_TRIGGER, "TextureEffects.ImageCompose") ||
+                this.hasParent(Port.TYPE_TRIGGER, "TextureEffects.ImageCompose_v2");
 
             if (!working) notWorkingMsg = GuiText.working_connected_to + "ImageCompose";
         }
@@ -501,7 +500,7 @@ class UiOp extends Op
                     this.setUiError("webglgpu", "Mixing webgl/webgpu ops: " + otherPort.op.objName, 1);
                 }
 
-                if (port.type == portType.array)
+                if (port.type == Port.TYPE_ARRAY)
                 {
 
                     if (

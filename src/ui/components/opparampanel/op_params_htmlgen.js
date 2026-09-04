@@ -1,6 +1,5 @@
 import { Patch, Port, utils } from "cables";
 import { CablesConstants } from "cables-shared-client";
-import { portType } from "../../core_constants.js";
 import { gui } from "../../gui.js";
 import namespace from "../../namespaceutils.js";
 import opNames from "../../opnameutils.js";
@@ -191,10 +190,10 @@ class PortHtmlGenerator
         for (const i in ports)
         {
             if (
-                ports[i].getType() == portType.number ||
-                ports[i].getType() == portType.array ||
-                ports[i].getType() == portType.string ||
-                ports[i].getType() == portType.object) ports[i].watchId = "out_" + i;
+                ports[i].getType() == Port.TYPE_NUMBER ||
+                ports[i].getType() == Port.TYPE_ARRAY ||
+                ports[i].getType() == Port.TYPE_STRING ||
+                ports[i].getType() == Port.TYPE_OBJECT) ports[i].watchId = "out_" + i;
 
             let startGroup = null;
             let groupSpacer = false;

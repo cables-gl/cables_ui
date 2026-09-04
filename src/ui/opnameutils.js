@@ -1,7 +1,6 @@
 import { Logger } from "cables-shared-client";
 import { Port } from "cables";
 import defaultOps from "./defaultops.js";
-import { PortDir, portType } from "./core_constants.js";
 
 export default class opNames {}
 
@@ -18,20 +17,20 @@ opNames.getNamespaceClassName = (opName) =>
  */
 opNames.getVizOpsForPortLink = (p) =>
 {
-    if (p && p.direction == PortDir.out)
+    if (p && p.direction == Port.DIR_OUT)
     {
-        if (p.type == portType.string) return [defaultOps.defaultOpNames.VizString, defaultOps.defaultOpNames.VizLogger];
-        else if (p.type == portType.number && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOps.defaultOpNames.VizBool, defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizLogger];
-        else if (p.type == portType.number) return [defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizGraph, defaultOps.defaultOpNames.VizNumberBar, defaultOps.defaultOpNames.VizLogger];
-        else if (p.type == portType.array) return [defaultOps.defaultOpNames.VizArrayTable, defaultOps.defaultOpNames.VizArrayGraph];
+        if (p.type == Port.TYPE_STRING) return [defaultOps.defaultOpNames.VizString, defaultOps.defaultOpNames.VizLogger];
+        else if (p.type == Port.TYPE_NUMBER && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOps.defaultOpNames.VizBool, defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizLogger];
+        else if (p.type == Port.TYPE_NUMBER) return [defaultOps.defaultOpNames.VizNumber, defaultOps.defaultOpNames.VizGraph, defaultOps.defaultOpNames.VizNumberBar, defaultOps.defaultOpNames.VizLogger];
+        else if (p.type == Port.TYPE_ARRAY) return [defaultOps.defaultOpNames.VizArrayTable, defaultOps.defaultOpNames.VizArrayGraph];
 
-        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
-        else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoElement];
-        else if (p.type == portType.object && p.uiAttribs.objType == "geometry") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoGeometry];
-        else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoShader];
-        else if (p.type == portType.object && p.uiAttribs.objType == "audioNode") return [defaultOps.defaultOpNames.VizAudioSpectrum, defaultOps.defaultOpNames.VizAudioWaveform];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.VizTexture, defaultOps.defaultOpNames.VizTextureTable, defaultOps.defaultOpNames.VizObject];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoElement];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "geometry") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoGeometry];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.VizObject, defaultOps.defaultOpNames.InfoShader];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "audioNode") return [defaultOps.defaultOpNames.VizAudioSpectrum, defaultOps.defaultOpNames.VizAudioWaveform];
 
-        else if (p.type == portType.object) return [defaultOps.defaultOpNames.VizObject];
+        else if (p.type == Port.TYPE_OBJECT) return [defaultOps.defaultOpNames.VizObject];
     }
     return [];
 };
@@ -41,21 +40,21 @@ opNames.getVizOpsForPortLink = (p) =>
  */
 opNames.getOpsForPortLink = (p) =>
 {
-    if (p && p.direction == PortDir.in)
+    if (p && p.direction == Port.DIR_IN)
     {
-        if (p.type == portType.string) return [defaultOps.defaultOpNames.string, defaultOps.defaultOpNames.stringEditor];
-        else if (p.type == portType.number) return [defaultOps.defaultOpNames.number];
-        else if (p.type == portType.array) return [defaultOps.defaultOpNames.array, defaultOps.defaultOpNames.randomarray, defaultOps.defaultOpNames.StringToArray];
-        else if (p.type == portType.trigger) return [defaultOps.defaultOpNames.sequence];
-        else if (p.type == portType.object && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.defaultOpImage, defaultOps.defaultOpNames.textureGradient, defaultOps.defaultOpNames.textureNoise];
-        else if (p.type == portType.object && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.divElement];
-        else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.customShader];
-        else if (p.type == portType.object && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.animInfo];
+        if (p.type == Port.TYPE_STRING) return [defaultOps.defaultOpNames.string, defaultOps.defaultOpNames.stringEditor];
+        else if (p.type == Port.TYPE_NUMBER) return [defaultOps.defaultOpNames.number];
+        else if (p.type == Port.TYPE_ARRAY) return [defaultOps.defaultOpNames.array, defaultOps.defaultOpNames.randomarray, defaultOps.defaultOpNames.StringToArray];
+        else if (p.type == Port.TYPE_TRIGGER) return [defaultOps.defaultOpNames.sequence];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOps.defaultOpNames.defaultOpImage, defaultOps.defaultOpNames.textureGradient, defaultOps.defaultOpNames.textureNoise];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "element") return [defaultOps.defaultOpNames.divElement];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.customShader];
+        else if (p.type == Port.TYPE_OBJECT && p.uiAttribs.objType == "shader") return [defaultOps.defaultOpNames.animInfo];
 
-        else if (p.type == portType.object) return [defaultOps.defaultOpNames.parseObject];
+        else if (p.type == Port.TYPE_OBJECT) return [defaultOps.defaultOpNames.parseObject];
     }
-    if (p && p.direction == PortDir.out)
-        if (p.type == portType.trigger) return [defaultOps.defaultOpNames.vizTrigger, defaultOps.defaultOpNames.sequence];
+    if (p && p.direction == Port.DIR_OUT)
+        if (p.type == Port.TYPE_TRIGGER) return [defaultOps.defaultOpNames.vizTrigger, defaultOps.defaultOpNames.sequence];
 
     return [];
 };
@@ -91,13 +90,13 @@ opNames.getVarGetterOpNameByType = (type, port) =>
     let opGetterName = "unknown";
     let opSetTriggerName = "unknown";
 
-    if (type == portType.number)
+    if (type == Port.TYPE_NUMBER)
     {
         opSetterName = defaultOps.defaultOpNames.VarSetNumber;
         opGetterName = defaultOps.defaultOpNames.VarGetNumber;
         opSetTriggerName = defaultOps.defaultOpNames.VarTriggerNumber;
     }
-    else if (type == portType.object)
+    else if (type == Port.TYPE_OBJECT)
     {
         opSetterName = defaultOps.defaultOpNames.VarSetObject;
         opGetterName = defaultOps.defaultOpNames.VarGetObject;
@@ -109,19 +108,19 @@ opNames.getVarGetterOpNameByType = (type, port) =>
             opGetterName = defaultOps.defaultOpNames.VarGetTexture;
         }
     }
-    else if (type == portType.array)
+    else if (type == Port.TYPE_ARRAY)
     {
         opSetterName = defaultOps.defaultOpNames.VarSetArray;
         opGetterName = defaultOps.defaultOpNames.VarGetArray;
         opSetTriggerName = defaultOps.defaultOpNames.VarTriggerArray;
     }
-    else if (type == portType.string)
+    else if (type == Port.TYPE_STRING)
     {
         opSetterName = defaultOps.defaultOpNames.VarSetString;
         opGetterName = defaultOps.defaultOpNames.VarGetString;
         opSetTriggerName = defaultOps.defaultOpNames.VarTriggerString;
     }
-    else if (type == portType.trigger)
+    else if (type == Port.TYPE_TRIGGER)
     {
         portName = "Trigger";
         portNameOut = "Triggered";
@@ -149,12 +148,12 @@ opNames.getVarGetterOpNameByType = (type, port) =>
  */
 opNames.getPortTypeClassHtml = (type) =>
 {
-    if (type == portType.number) return "port_text_color_value";
-    if (type == portType.trigger) return "port_text_color_function";
-    if (type == portType.object) return "port_text_color_object";
-    if (type == portType.array) return "port_text_color_array";
-    if (type == portType.string) return "port_text_color_string";
-    if (type == portType.dynamic) return "port_text_color_dynamic";
+    if (type == Port.TYPE_NUMBER) return "port_text_color_value";
+    if (type == Port.TYPE_TRIGGER) return "port_text_color_function";
+    if (type == Port.TYPE_OBJECT) return "port_text_color_object";
+    if (type == Port.TYPE_ARRAY) return "port_text_color_array";
+    if (type == Port.TYPE_STRING) return "port_text_color_string";
+    if (type == Port.TYPE_DYNAMIC) return "port_text_color_dynamic";
     return "port_text_color_unknown";
 };
 
@@ -163,12 +162,12 @@ opNames.getPortTypeClassHtml = (type) =>
  */
 opNames.getPortTypeClass = (type) =>
 {
-    if (type == portType.number) return "port_color_value";
-    if (type == portType.trigger) return "port_color_function";
-    if (type == portType.object) return "port_color_object";
-    if (type == portType.array) return "port_color_array";
-    if (type == portType.string) return "port_color_string";
-    if (type == portType.dynamic) return "port_color_dynamic";
+    if (type == Port.TYPE_NUMBER) return "port_color_value";
+    if (type == Port.TYPE_TRIGGER) return "port_color_function";
+    if (type == Port.TYPE_OBJECT) return "port_color_object";
+    if (type == Port.TYPE_ARRAY) return "port_color_array";
+    if (type == Port.TYPE_STRING) return "port_color_string";
+    if (type == Port.TYPE_DYNAMIC) return "port_color_dynamic";
     return "port_color_unknown";
 };
 
@@ -187,11 +186,11 @@ opNames.getPortTypeClass = (type) =>
  */
 opNames.getRerouteOp = (type) =>
 {
-    if (type == portType.number) return defaultOps.defaultOpNames.rerouteNumber;
-    if (type == portType.string) return defaultOps.defaultOpNames.rerouteString;
-    if (type == portType.array) return defaultOps.defaultOpNames.rerouteArray;
-    if (type == portType.object) return defaultOps.defaultOpNames.rerouteObject;
-    if (type == portType.trigger) return defaultOps.defaultOpNames.rerouteTrigger;
+    if (type == Port.TYPE_NUMBER) return defaultOps.defaultOpNames.rerouteNumber;
+    if (type == Port.TYPE_STRING) return defaultOps.defaultOpNames.rerouteString;
+    if (type == Port.TYPE_ARRAY) return defaultOps.defaultOpNames.rerouteArray;
+    if (type == Port.TYPE_OBJECT) return defaultOps.defaultOpNames.rerouteObject;
+    if (type == Port.TYPE_TRIGGER) return defaultOps.defaultOpNames.rerouteTrigger;
 };
 
 /**

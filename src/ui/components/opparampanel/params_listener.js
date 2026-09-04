@@ -13,7 +13,6 @@ import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
-import { portType } from "../../core_constants.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
@@ -98,7 +97,7 @@ class ParamsListener extends Events
         {
             for (let i = 0; i < this._portsIn.length; i++)
             {
-                if (this._portsIn[i].getType() == portType.string) this._watchStrings.push(this._portsIn[i]);
+                if (this._portsIn[i].getType() == Port.TYPE_STRING) this._watchStrings.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "gradient") this.#watchGradients.push(this._portsIn[i]);
                 if (this._portsIn[i].uiAttribs.display == "curve") this.#watchCurves.push(this._portsIn[i]);
@@ -115,10 +114,10 @@ class ParamsListener extends Events
             for (const i in this._portsOut)
             {
                 if (
-                    this._portsOut[i].getType() == portType.number ||
-                    this._portsOut[i].getType() == portType.array ||
-                    this._portsOut[i].getType() == portType.string ||
-                    this._portsOut[i].getType() == portType.object) this._watchPorts.push(this._portsOut[i]);
+                    this._portsOut[i].getType() == Port.TYPE_NUMBER ||
+                    this._portsOut[i].getType() == Port.TYPE_ARRAY ||
+                    this._portsOut[i].getType() == Port.TYPE_STRING ||
+                    this._portsOut[i].getType() == Port.TYPE_OBJECT) this._watchPorts.push(this._portsOut[i]);
             }
         }
 
@@ -499,7 +498,7 @@ class ParamsListener extends Events
         //                 gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
         //             });
         //         }
-        //         if (thePort.type == portType.object)
+        //         if (thePort.type == Port.TYPE_OBJECT)
         //         {
         //             gui.corePatch().addOp(defaultOps.defaultOpNames.defaultOpImage, {}, (newop) =>
         //             {
@@ -621,7 +620,7 @@ class ParamsListener extends Events
                             }
                         });
 
-                if (port.type == portType.string)
+                if (port.type == Port.TYPE_STRING)
                     items.push(
                         {
                             "title": "Create String Op",
@@ -641,7 +640,7 @@ class ParamsListener extends Events
                             }
                         });
 
-                if (port.type == portType.number)
+                if (port.type == Port.TYPE_NUMBER)
                     items.push(
                         {
                             "title": "Create Number Op",
@@ -662,7 +661,7 @@ class ParamsListener extends Events
                         });
 
                 if (
-                    port.type != portType.trigger &&
+                    port.type != Port.TYPE_TRIGGER &&
                     !port.uiAttribs.expose &&
                     dirStr == "in" &&
                     !port.isAnimated())
@@ -693,7 +692,7 @@ class ParamsListener extends Events
             }
 
             if (
-                port.type == portType.number &&
+                port.type == Port.TYPE_NUMBER &&
                 !port.uiAttribs.expose &&
                 !port.isBoundToVar() &&
                 dirStr == "in")
@@ -728,7 +727,7 @@ class ParamsListener extends Events
                 });
             }
 
-            if (port.type == portType.string || port.type == portType.number)
+            if (port.type == Port.TYPE_STRING || port.type == Port.TYPE_NUMBER)
             {
                 if (port.op.uiAttribs.extendTitlePort == port.name)
                     items.push({
@@ -1223,7 +1222,7 @@ class ParamsListener extends Events
             {
                 const thePort = this._watchPorts[i];
 
-                if (thePort.type != portType.number && thePort.type != portType.string && thePort.type != portType.array && thePort.type != portType.object) continue;
+                if (thePort.type != Port.TYPE_NUMBER && thePort.type != Port.TYPE_STRING && thePort.type != Port.TYPE_ARRAY && thePort.type != Port.TYPE_OBJECT) continue;
 
                 let newValue = "";
                 const id = "watchPortValue_" + thePort.watchId + "_" + this.panelId;
@@ -1234,7 +1233,7 @@ class ParamsListener extends Events
                     const valDisp = thePort.getValueForDisplay();
 
                     // hier
-                    if (thePort.type == portType.number)
+                    if (thePort.type == Port.TYPE_NUMBER)
                     {
                         const elVal = ele.byClass(id);
 
@@ -1246,7 +1245,7 @@ class ParamsListener extends Events
                         if (elDisp) elDisp.innerHTML = valDisp;
                     }
                 }
-                if (thePort.type == portType.number)
+                if (thePort.type == Port.TYPE_NUMBER)
                 {
                     if (thePort.uiAttribs.display == "boolnum")
                     {
@@ -1257,7 +1256,7 @@ class ParamsListener extends Events
                     else
                         newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
-                else if (thePort.type == portType.array)
+                else if (thePort.type == Port.TYPE_ARRAY)
                 {
                     let name = "Array";
                     if (thePort.uiAttribs.stride)name += thePort.uiAttribs.stride;
@@ -1265,14 +1264,14 @@ class ParamsListener extends Events
                     else newValue = name + " (null)";
 
                 }
-                else if (thePort.type == portType.string)
+                else if (thePort.type == Port.TYPE_STRING)
                 {
                     const v = thePort.getValueForDisplay();
 
                     if (v && (typeof v === "string" || v instanceof String)) newValue = "\"" + v + "\"";
                     else newValue = String(v);
                 }
-                else if (thePort.type == portType.object)
+                else if (thePort.type == Port.TYPE_OBJECT)
                 {
                     if (thePort.get()) newValue = "";
                     else newValue = "null";

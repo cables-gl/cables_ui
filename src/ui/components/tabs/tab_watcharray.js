@@ -1,7 +1,6 @@
 import { ele, Events, Logger } from "cables-shared-client";
-import { utils } from "cables";
+import { Port, utils } from "cables";
 import { Texture } from "cables-corelibs";
-import { portType } from "../../core_constants.js";
 
 /**
  * debug: show content of an array in a tab
@@ -20,7 +19,7 @@ export default class WatchArrayTab extends Events
 
         this._numCols = 1;
         if (op.name.indexOf("Array3") > -1 || op.name.indexOf("Points") > -1) this._numCols = 3;
-        if (op.name.indexOf("glArray") > -1 || port.type == portType.object) this._numCols = 4;
+        if (op.name.indexOf("glArray") > -1 || port.type == Port.TYPE_OBJECT) this._numCols = 4;
 
         this._rows = 40;
 
@@ -67,7 +66,7 @@ export default class WatchArrayTab extends Events
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
 
-        if (this.port.type == portType.array)
+        if (this.port.type == Port.TYPE_ARRAY)
         {
             this._eleIconMinus = ele.create("a");
             this._eleIconMinus.innerHTML = "-";
@@ -114,7 +113,7 @@ export default class WatchArrayTab extends Events
 
         while (c >= 0)
         {
-            if (this.port.type == portType.object) str = "RGBAabcdefghijklmnopqrstuvwxyz"[c % 26] + str;
+            if (this.port.type == Port.TYPE_OBJECT) str = "RGBAabcdefghijklmnopqrstuvwxyz"[c % 26] + str;
             else str = "abcdefghijklmnopqrstuvwxyz"[c % 26] + str;
             c = Math.floor(c / 26) - 1;
         }
@@ -127,12 +126,12 @@ export default class WatchArrayTab extends Events
     _getData()
     {
         if (!this.port) return [];
-        if (this.port.type == portType.array)
+        if (this.port.type == Port.TYPE_ARRAY)
         {
             return this.port.get();
         }
 
-        if (this.port.type == portType.object)
+        if (this.port.type == Port.TYPE_OBJECT)
         {
             const realTexture = this.port.get(),
                 gl = this.port.op.patch.cgl.gl;
@@ -258,7 +257,7 @@ export default class WatchArrayTab extends Events
             }
         }
 
-        if (this.port.type == portType.array)
+        if (this.port.type == Port.TYPE_ARRAY)
         {
             let showNum = 0;
             let showLength = 0;
@@ -270,7 +269,7 @@ export default class WatchArrayTab extends Events
 
             this._eleInfo.innerHTML = "showing " + showNum + " of " + showLength + " values ";
         }
-        if (this.port.type == portType.object)
+        if (this.port.type == Port.TYPE_OBJECT)
         {
             this._eleInfo.innerHTML = this.port.get().width + "x" + this.port.get().height + " - " + (this.port.get().height * this.port.get().width) + " Pixels";
         }
