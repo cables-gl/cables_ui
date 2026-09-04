@@ -113,7 +113,8 @@ export default class MouseState extends Events
         for (let i in this._buttonStates)
             str += i + ":" + (this._buttonStates[i].down ? "X" : "-") + " | ";
 
-        gui.patchView._patchRenderer.debugData.mouseState = str;
+        if (gui.patchView._patchRenderer.debugData)
+            gui.patchView._patchRenderer.debugData.mouseState = str;
     }
 
     /** @returns {Number} */

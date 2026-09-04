@@ -637,8 +637,12 @@ export default class GlPatch extends Events
         }
         else this.#dropInOpBorder.visible = false;
 
-        this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
-        this.debugData._onCanvasMouseMove++;
+        if (this.debugData)
+        {
+
+            this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
+            this.debugData._onCanvasMouseMove++;
+        }
 
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;

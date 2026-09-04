@@ -30,10 +30,11 @@ export default class GlDebugTab
         html += "<br/><br/>";
 
         html += "<table>";
-        for (const i in gui.patchView._patchRenderer.debugData)
-        {
-            html += "<tr><td>" + i + ":</td><td>" + gui.patchView._patchRenderer.debugData[i] + "</td></tr>";
-        }
+        if (gui.patchView._patchRenderer.debugData)
+            for (const i in gui.patchView._patchRenderer.debugData)
+            {
+                html += "<tr><td>" + i + ":</td><td>" + gui.patchView._patchRenderer.debugData[i] + "</td></tr>";
+            }
 
         html += "</table></div>";
 
