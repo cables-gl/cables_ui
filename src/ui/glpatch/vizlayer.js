@@ -256,7 +256,8 @@ export default class VizLayer extends Events
         if (gui.texturePreview().needsVizLayer())
             gui.texturePreview().drawVizLayer(this._canvasCtx);
 
-        this._glPatch.debugData.numVizLayers = count;
+        if (this._glPatch.debugData)
+            this._glPatch.debugData.numVizLayers = count;
 
         perf.finish();
     }

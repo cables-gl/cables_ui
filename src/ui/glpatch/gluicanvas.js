@@ -112,7 +112,8 @@ export default class GlUiCanvas extends GlCanvas
 
         if (this._firstTime) this._firstTime = false;
 
-        this.glPatch.debugData.targetFps = this._targetFps;
+        if (this.glPatch.debugData)
+            this.glPatch.debugData.targetFps = this._targetFps;
 
         this.glPatch.render(this.width, this.height);
 
