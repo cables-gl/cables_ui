@@ -38,6 +38,9 @@ export default class GlViewBox
     _outOfBounds = false;
     _defaultEasing = Anim.EASING_EXPO_OUT;
 
+    #lastMousePosX = -1;
+    #lastMousePosY = -1;
+
     _zoom = GlUiConfig.zoomDefault;
     _animScrollX = new Anim({ "defaultEasing": this._defaultEasing });
     _animScrollY = new Anim({ "defaultEasing": this._defaultEasing });
@@ -90,6 +93,9 @@ export default class GlViewBox
      */
     setMousePos(x, y)
     {
+        if (x == this.#lastMousePosX && y == this.#lastMousePosY) return;
+        this.lastMousePosX = x;
+        this.lastMousePosY = y;
         const dx = 0;
         const dy = 0;
 
