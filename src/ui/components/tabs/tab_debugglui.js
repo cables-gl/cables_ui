@@ -12,6 +12,7 @@ export default class GlDebugTab
         tabs.addTab(this._tab, true);
         this.show();
 
+        gui.patchView._patchRenderer.debugData = {};
         gui.patchView._patchRenderer.cgl.profileData.doProfileGlQuery = true;
     }
 

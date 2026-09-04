@@ -68,7 +68,7 @@ export default class GlPatch extends Events
 
     /** @type {GlPatchAPI} */
     _patchAPI = null;
-    debugData = {};
+    debugData = null;
 
     greyOut = false;
     _greyOutRect = null;
@@ -105,6 +105,8 @@ export default class GlPatch extends Events
     #splineDrawers = null;
     #selectionArea = null;
     #dropInOpBorder = null;
+
+    /** @type {GlRectInstancer} */
     #rectInstancer = null;
     #overlaySplines = null;
     #numSelOpsTimeout = null;
@@ -1315,22 +1317,22 @@ export default class GlPatch extends Events
             this.profileMouseEvents = 0;
         }
 
-        this.debugData["glpatch.allowDragging"] = this.allowDragging;
-        this.debugData.rects = this.#rectInstancer.getNumRects();
-        this.debugData["text rects"] = this.#textWriter.rectDrawer.getNumRects();
-        this.debugData.viewZoom = this.viewBox.zoom;
-        this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
+        if (this.debugData)
+        {
+            this.debugData["glpatch.allowDragging"] = this.allowDragging;
+            this.debugData.rects = this.#rectInstancer.getNumRects();
+            this.debugData["text rects"] = this.#textWriter.rectDrawer.getNumRects();
+            this.debugData.viewZoom = this.viewBox.zoom;
+            this.debugData.viewScroll = this.viewBox.scrollX + "," + this.viewBox.scrollY;
 
-        this.debugData._mousePatchX = Math.round(this.viewBox.mousePatchX * 100) / 100;
-        this.debugData._mousePatchY = Math.round(this.viewBox.mousePatchY * 100) / 100;
-        this.debugData.mouse_isDragging = this.mouseState.isDragging;
+            this.debugData._mousePatchX = Math.round(this.viewBox.mousePatchX * 100) / 100;
+            this.debugData._mousePatchY = Math.round(this.viewBox.mousePatchY * 100) / 100;
+            this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-        this.debugData.rectInstancer = JSON.stringify(this.#rectInstancer.getDebug(), false, 2);
+            this.debugData.rectInstancer = JSON.stringify(this.#rectInstancer.getDebug(), false, 2);
 
-        // this.mouseState.debug(this.debugData);
-
-        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
-
+            this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+        }
         if (this.#cgl.profileData)
         {
             this.debugData.glPrimitives = this.#cgl.profileData.profileMeshNumElements;
