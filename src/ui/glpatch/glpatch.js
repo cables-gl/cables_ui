@@ -1204,7 +1204,7 @@ export default class GlPatch extends Events
             }
         }
         this.hasFocus = ele.hasFocus(this.#cgl.canvas);
-        this.debugData.splineUpdate = 0;
+        if (this.debugData) this.debugData.splineUpdate = 0;
 
         for (const i in this._glOpz)
         {
