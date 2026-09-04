@@ -14,7 +14,6 @@ import gluiconfig from "../glpatch/gluiconfig.js";
 import Exporter from "../dialogs/exporter.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
-import { portType } from "../core_constants.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { showInfo } from "../elements/tooltips.js";
@@ -996,7 +995,7 @@ class CmdPatch
                 opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
                 opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-                if (p.type != portType.trigger)
+                if (p.type != Port.TYPE_TRIGGER)
                     opSetter.getPortByName(portName).set(value);
 
                 if (p.direction == Port.DIR_IN)

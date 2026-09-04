@@ -13,7 +13,6 @@ import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import { userSettings } from "../components/usersettings.js";
-import { PortDir, portType } from "../core_constants.js";
 import { UiOp } from "../core_extend_op.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlLink from "./gllink.js";
@@ -947,7 +946,7 @@ export default class GlOp extends Events
 
         if (this.displayType === this.DISPLAY_SUBPATCH)
         {
-            const ports = gui.patchView.getSubPatchExposedPorts(this.#op.patchId.get(), PortDir.in);
+            const ports = gui.patchView.getSubPatchExposedPorts(this.#op.patchId.get(), Port.DIR_IN);
 
             for (let i = 0; i < ports.length; i++)
                 if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
@@ -957,7 +956,7 @@ export default class GlOp extends Events
 
         if (this.displayType === this.DISPLAY_SUBPATCH)
         {
-            const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this.#op.patchId.get(), PortDir.out));
+            const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this.#op.patchId.get(), Port.DIR_OUT));
             for (let i = 0; i < ports.length; i++)
                 if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }

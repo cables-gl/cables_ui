@@ -1,4 +1,5 @@
 import { ele } from "cables-shared-client";
+import { Port } from "cables";
 import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
@@ -6,7 +7,6 @@ import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import opNames from "../../opnameutils.js";
-import { PortDir, portType } from "../../core_constants.js";
 
 export default class TabDebugger
 {
@@ -95,7 +95,7 @@ export default class TabDebugger
             html += "<td>";
 
             if (step.port)
-                if (step.port.direction == PortDir.out) html += "out";
+                if (step.port.direction == Port.DIR_OUT) html += "out";
                 else html += "in";
 
             html += "</td>";
@@ -106,7 +106,7 @@ export default class TabDebugger
             html += "</td>";
 
             html += "<td>";
-            if (step.port && step.port.type != portType.trigger)
+            if (step.port && step.port.type != Port.TYPE_TRIGGER)
             {
                 html += Math.round(step.vold * 10000) / 10000;
                 html += " → ";

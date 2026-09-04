@@ -6,7 +6,6 @@ import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { userSettings } from "../components/usersettings.js";
-import { PortDir } from "../core_constants.js";
 import GlPatch from "./glpatch.js";
 
 /**
@@ -131,7 +130,7 @@ export default class Snap extends Events
             let otherPortIndex = 0;
 
             let ports = otherPort.op.portsOut;
-            if (otherPort.direction == PortDir.in) ports = otherPort.op.portsIn;
+            if (otherPort.direction == Port.DIR_IN) ports = otherPort.op.portsIn;
 
             otherPortIndex = 0;
             for (let j = 0; j < ports.length; j++)

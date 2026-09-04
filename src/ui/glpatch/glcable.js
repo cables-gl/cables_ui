@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { Port } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import { GuiText } from "../text.js";
 import GlPort from "./glport.js";
@@ -8,7 +9,6 @@ import GlPatch from "./glpatch.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
 import GlLink from "./gllink.js";
-import { portType } from "../core_constants.js";
 
 /**
  * rendering cables for links
@@ -495,7 +495,7 @@ export default class GlCable
 
         this.#splineDrawer.setSplineColorInactive(this.#splineIdx, GlPort.getInactiveColor(this.#link.type));
 
-        if (this.#link.link.portIn.type == portType.object)
+        if (this.#link.link.portIn.type == Port.TYPE_OBJECT)
         {
             col =
                 gui.theme.colors_objtypes[this.#link.link.portIn.uiAttribs.objType] ||

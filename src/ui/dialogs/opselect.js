@@ -10,7 +10,6 @@ import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
-import { portType } from "../core_constants.js";
 
 /**
  * @typedef OpSelectOptions
@@ -224,21 +223,21 @@ export default class OpSelect
         */
         const link = CABLES.UI.OPSELECT.linkNewLink;
         let found = false;
-        if (link && link.portIn && (link.portIn.type == portType.trigger))
+        if (link && link.portIn && (link.portIn.type == Port.TYPE_TRIGGER))
         {
             ele.show(ele.byId("opselect_createTrigger"));
             found = true;
         }
         else ele.hide(ele.byId("opselect_createTrigger"));
 
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.number || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.string || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.array || CABLES.UI.OPSELECT.linkNewOpToPort.type == portType.object))
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == Port.TYPE_NUMBER || CABLES.UI.OPSELECT.linkNewOpToPort.type == Port.TYPE_STRING || CABLES.UI.OPSELECT.linkNewOpToPort.type == Port.TYPE_ARRAY || CABLES.UI.OPSELECT.linkNewOpToPort.type == Port.TYPE_OBJECT))
         {
             ele.show(ele.byId("opselect_createVar"));
             found = true;
         }
         else ele.hide(ele.byId("opselect_createVar"));
 
-        if (link && link.portIn && (link.portIn.type == portType.number || link.portIn.type == portType.string || link.portIn.type == portType.array || link.portIn.type == portType.object))
+        if (link && link.portIn && (link.portIn.type == Port.TYPE_NUMBER || link.portIn.type == Port.TYPE_STRING || link.portIn.type == Port.TYPE_ARRAY || link.portIn.type == Port.TYPE_OBJECT))
         {
             ele.show(ele.byId("opselect_replaceVar"));
             found = true;
@@ -246,7 +245,7 @@ export default class OpSelect
         else ele.hide(ele.byId("opselect_replaceVar"));
 
         const eleReplaceLinkWithExistingTrigger = ele.byId("replaceLinkTriggerExists");
-        if (link && link.portIn && link.portIn.type == portType.trigger)
+        if (link && link.portIn && link.portIn.type == Port.TYPE_TRIGGER)
         {
             // show "replace with existing var button..."
             const numExistingTriggers = Object.keys(gui.corePatch().namedTriggers || {}).length;
@@ -262,7 +261,7 @@ export default class OpSelect
 
         // case 7 / 8
         const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.trigger)
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === Port.TYPE_TRIGGER)
         {
             const numExistingTriggers = Object.keys(gui.corePatch().namedTriggers || {}).length;
 
@@ -418,11 +417,11 @@ export default class OpSelect
 
     _getMathPortType()
     {
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === portType.array) return "array";
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === portType.string) return "string";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === Port.TYPE_ARRAY) return "array";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === Port.TYPE_STRING) return "string";
 
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.array) return "array";
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === portType.string) return "string";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === Port.TYPE_ARRAY) return "array";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === Port.TYPE_STRING) return "string";
         return "default";
     }
 

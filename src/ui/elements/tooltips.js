@@ -1,8 +1,7 @@
 import { ele } from "cables-shared-client";
-import { Link, utils } from "cables";
+import { Link, Port, utils } from "cables";
 import { GuiText } from "../text.js";
 import { gui } from "../gui.js";
-import { PortDir, portType } from "../core_constants.js";
 
 let tooltipTimeout = null;
 let eleTooltip = null;
@@ -171,8 +170,8 @@ function getPortDescription(thePort, overlink)
     {
         let strInfo = "";
 
-        if (thePort.direction == PortDir.in) strInfo += GuiText.portDirIn;
-        if (thePort.direction == PortDir.out) strInfo += GuiText.portDirOut;
+        if (thePort.direction == Port.DIR_IN) strInfo += GuiText.portDirIn;
+        if (thePort.direction == Port.DIR_OUT) strInfo += GuiText.portDirOut;
         if (thePort.isLinked()) strInfo += GuiText.portMouseUnlink;
         else strInfo += GuiText.portMouseCreate;
         gui.showInfo(strInfo);
@@ -196,14 +195,14 @@ export function updateHoverToolTip(event, port, overlink)
 
     if (port && !port.uiAttribs.hidePort) //! port.uiAttribs.hideParam
     {
-        if (port.type == portType.number)
+        if (port.type == Port.TYPE_NUMBER)
         {
             val = port.getValueForDisplay();
             if (utils.isNumeric(val))val = Math.round(val * 1000) / 1000;
 
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
-        else if (port.type == portType.string)
+        else if (port.type == Port.TYPE_STRING)
         {
             val = port.getValueForDisplay();
             if (isMultilineString(val))
@@ -217,7 +216,7 @@ export function updateHoverToolTip(event, port, overlink)
                 txt += ": <span class=\"tooltip_value\">" + val + "</span>";
             }
         }
-        else if (port.type == portType.array)
+        else if (port.type == Port.TYPE_ARRAY)
         {
             val = port.get();
             if (val)
@@ -240,7 +239,7 @@ export function updateHoverToolTip(event, port, overlink)
             }
             else txt += "<span class=\"tooltip_value\">null</span>";
         }
-        else if (port.type == portType.object)
+        else if (port.type == Port.TYPE_OBJECT)
         {
             if (!port.get())txt += "<span class=\"tooltip_value\">null</span>";
             if (port.get())
