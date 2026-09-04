@@ -1310,15 +1310,16 @@ export default class GlPatch extends Events
 
         this.needsRedraw = false;
 
-        if (performance.now() - this._fpsStartTime > 1000)
-        {
-            this._fpsStartTime = performance.now();
-            this.debugData.mouseMovePS = this.profileMouseEvents;
-            this.profileMouseEvents = 0;
-        }
-
         if (this.debugData)
         {
+
+            if (performance.now() - this._fpsStartTime > 1000)
+            {
+                this._fpsStartTime = performance.now();
+                this.debugData.mouseMovePS = this.profileMouseEvents;
+                this.profileMouseEvents = 0;
+            }
+
             this.debugData["glpatch.allowDragging"] = this.allowDragging;
             this.debugData.rects = this.#rectInstancer.getNumRects();
             this.debugData["text rects"] = this.#textWriter.rectDrawer.getNumRects();
@@ -1333,7 +1334,7 @@ export default class GlPatch extends Events
 
             this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
         }
-        if (this.#cgl.profileData)
+        if (this.#cgl.profileData && this.debugData)
         {
             this.debugData.glPrimitives = this.#cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this.#cgl.profileData.profileMeshAttributes;
