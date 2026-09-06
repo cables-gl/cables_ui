@@ -1,8 +1,7 @@
 /**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
-
-import { Op, Patch, Profiler } from "cables";
+import { Op, Patch, OpProfiler } from "cables";
 import { Logger } from "cables-shared-client";
 import Gui, { gui } from "./gui.js";
 import namespace from "./namespaceutils.js";
@@ -497,7 +496,7 @@ class UiPatch extends Patch
     profile(enable)
     {
         const ops = this.ops;
-        this.profiler = new Profiler(this);
+        this.profiler = new OpProfiler(this);
         for (let i = 0; i < ops.length; i++)
             this.ops[i].startProfile();
     }
@@ -505,7 +504,7 @@ class UiPatch extends Patch
     startStepDebug()
     {
         const ops = this.ops;
-        this.profiler = new Profiler(this);
+        this.profiler = new OpProfiler(this);
         for (let i = 0; i < ops.length; i++)
             this.ops[i].startStepDebug();
     }
@@ -513,7 +512,7 @@ class UiPatch extends Patch
     stopStepDebug()
     {
         const ops = this.ops;
-        this.profiler = new Profiler(this);
+        this.profiler = new OpProfiler(this);
         for (let i = 0; i < ops.length; i++)
             this.ops[i].stopStepDebug();
     }

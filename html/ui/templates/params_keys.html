@@ -12,11 +12,11 @@
     <div class="content panel">
 
 
-        <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
-        <a data-info="tlIpAbs" class="info iconbutton nomargin {{#compare easing '==' '1' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);"><span class="icon icon-ease-absolute"></span></a>
-        <a data-info="tlIpCurves" class="info iconbutton nomargin {{#if showCurves}}button-active{{/if}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-        <a data-info="tlIpBez" class="info iconbutton nomargin {{#compare easing '==' '4' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBICSPLINE);"><span class="icon icon-tangent"></span></a>
-        <a data-info="tlIpClip" class="info iconbutton nomargin {{#compare easing '==' '28' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CLIP);"><span class="icon icon-clapperboard"></span></a>
+        <a data-info="tlIpLin" class="info iconbutton nomargin {{#compare easing '==' '0' }}button-active{{/compare}} button-left" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.Anim.EASING_LINEAR);"><span class="icon icon-ease-linear"></span></a>
+        <a data-info="tlIpAbs" class="info iconbutton nomargin {{#compare easing '==' '1' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.Anim.EASING_ABSOLUTE);"><span class="icon icon-ease-absolute"></span></a>
+        <a data-info="tlIpCurves" class="info iconbutton nomargin {{#if showCurves}}button-active{{/if}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.Anim.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
+        <a data-info="tlIpBez" class="info iconbutton nomargin {{#compare easing '==' '4' }}button-active{{/compare}} button-middle" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.Anim.EASING_CUBICSPLINE);"><span class="icon icon-tangent"></span></a>
+        <a data-info="tlIpClip" class="info iconbutton nomargin {{#compare easing '==' '28' }}button-active{{/compare}} button-right" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.Anim.EASING_CLIP);"><span class="icon icon-clapperboard"></span></a>
         <br/><br/>
 
         {{#compare easing '==' '0' }}
