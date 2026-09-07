@@ -30,13 +30,13 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
         "cache": { "type": "filesystem" },
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
-            path.join(__dirname, "src", "ui", "index.js"),
+            path.join(__dirname, "src", "ui", "index.js")
         ],
         "devtool": minify ? "source-map" : sourceMap,
         "output": {
             "hashFunction": "xxhash64",
             "path": path.join(__dirname, "dist", "js"),
-            "filename": "cablesui.js",
+            "filename": "cables.ui.js"
         },
         "optimization": {
             "concatenateModules": true,
@@ -51,31 +51,31 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
         "resolve": {
             "extensions": [".json", ".js"],
             "plugins": [
-                new ModuleScopePlugin.default("src/"),
-            ],
+                new ModuleScopePlugin.default("src/")
+            ]
         },
         "module": {
             "rules": [
                 { "sideEffects": false },
                 {
                     "test": /\.frag/,
-                    "use": "raw-loader",
+                    "use": "raw-loader"
                 },
                 {
                     "test": /\.vert/,
-                    "use": "raw-loader",
+                    "use": "raw-loader"
                 },
                 {
                     "test": /\.wgsl/,
-                    "use": "raw-loader",
+                    "use": "raw-loader"
                 },
                 {
                     "test": /\.txt/,
-                    "use": "raw-loader",
+                    "use": "raw-loader"
                 },
                 {
                     "test": /\.d.ts/,
-                    "use": "null-loader",
+                    "use": "null-loader"
                 }
             ]
         },
