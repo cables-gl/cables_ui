@@ -3,6 +3,7 @@ import libchroma from "chroma-js";
 declare global {
 
     const CABLESUILOADER:any
+    var CABLES:any
     const logStartup:typeof Function
     const incrementStartup:typeof Function
 
