@@ -4,6 +4,7 @@ declare global {
 
     const CABLESUILOADER:any
     var CABLES:any
+    var gui:any
     const logStartup:typeof Function
     const incrementStartup:typeof Function
 
@@ -23,9 +24,22 @@ declare global {
     const tinysort:any
     const UndoManager:any
     const Sortable:any
+    const Ammo:any
+    const Tone:any
+    const Object3D:any
+
+    const mat2: typeof import("gl-matrix").mat2
+    const mat3: typeof import("gl-matrix").mat3
+    const mat4: typeof import("gl-matrix").mat4
+    const quat: typeof import("gl-matrix").quat
+    const vec2: typeof import("gl-matrix").vec2
+    const vec3: typeof import("gl-matrix").vec3
+    const vec4: typeof import("gl-matrix").vec4
+
     interface Window {
         Handlebars:any
         logStartup:typeof Function
+        gui:any
     }
 
 }
