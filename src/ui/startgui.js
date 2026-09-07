@@ -42,7 +42,7 @@ export default function startUi(cfg)
         gui.corePatch().timer.setTime(0);
         gui.corePatch().timer.play();
 
-        if (!gui.patchView.patchRenderer.cgl.gl)
+        if (gui.patchView.patchRenderer && gui.patchView.patchRenderer.cgl && !gui.patchView.patchRenderer.cgl.gl)
         {
             // ele.byId("loadingstatus").remove();
             // ele.byId("loadingstatusLog").remove();

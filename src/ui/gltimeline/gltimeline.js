@@ -373,12 +373,12 @@ export class GlTimeline extends Events
             this.dragSelectedKeys(offTime, 0, true);
         });
 
-        this.selectedKeysDragArea.on(GlDragArea.EVENT_START, (e) =>
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_START, () =>
         {
             this.#undoSelection = this.serializeSelectedAnims();
         });
 
-        this.selectedKeysDragArea.on(GlDragArea.EVENT_END, (e) =>
+        this.selectedKeysDragArea.on(GlDragArea.EVENT_END, () =>
         {
             const undosel = this.#undoSelection;
             undo.add({

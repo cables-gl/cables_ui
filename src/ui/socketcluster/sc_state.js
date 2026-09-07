@@ -2,6 +2,7 @@ import { Logger, Events } from "cables-shared-client";
 import { gui } from "../gui.js";
 import ScClient from "./sc_client.js";
 import paramsHelper from "../components/opparampanel/params_helper.js";
+import PacoConnector from "./sc_paconnector.js";
 
 CABLES = CABLES || {};
 
@@ -306,7 +307,7 @@ export default class ScState extends Events
                 {
                     const payload = {};
                     payload.data = {
-                        "event": CABLES.PACO_VALUECHANGE,
+                        "event": PacoConnector.PACO_VALUECHANGE,
                         "vars": {
                             "op": op.id,
                             "port": port.name,
@@ -340,7 +341,7 @@ export default class ScState extends Events
                 {
                     const payload = {};
                     payload.data = {
-                        "event": CABLES.PACO_PORT_SETANIMATED,
+                        "event": PacoConnector.PACO_PORT_SETANIMATED,
                         "vars": {
                             "opId": op.id,
                             "portIndex": portIndex,

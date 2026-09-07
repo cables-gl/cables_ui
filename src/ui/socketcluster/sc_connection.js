@@ -310,7 +310,7 @@ export default class ScConnection extends Events
                 "requestedBy": requestedBy,
                 "forceResync": forceResync
             };
-            this._paco.send(CABLES.PACO_LOAD, payload, forceResync);
+            this._paco.send(PacoConnector.PACO_LOAD, payload, forceResync);
             this._pacoSynced = true;
             if (gui.scene().timer)
             {
@@ -771,7 +771,7 @@ export default class ScConnection extends Events
 
             if (!this._paco)
             {
-                if (msg.data.event !== CABLES.PACO_LOAD)
+                if (msg.data.event !== PacoConnector.PACO_LOAD)
                 {
                     return;
                 }
@@ -781,7 +781,7 @@ export default class ScConnection extends Events
                 this._patchConnection.connectors.push(this._paco);
                 this._synchronizePatch(msg.data);
             }
-            else if (msg.data.event === CABLES.PACO_LOAD)
+            else if (msg.data.event === PacoConnector.PACO_LOAD)
             {
                 if (!foreignRequest || (msg.data.vars && msg.data.vars.forceResync))
                 {

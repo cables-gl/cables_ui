@@ -4,6 +4,29 @@ import { gui } from "../gui.js";
 
 export default class PacoConnector extends Events
 {
+
+    static PACO_CLEAR = 0;
+    static PACO_VALUECHANGE = 1;
+    static PACO_OP_DELETE = 2;
+    static PACO_UNLINK = 3;
+    static PACO_LINK = 4;
+    static PACO_LOAD = 5;
+    static PACO_OP_CREATE = 6;
+    static PACO_OP_ENABLE = 7;
+    static PACO_OP_DISABLE = 8;
+    static PACO_UIATTRIBS = 9;
+    static PACO_VARIABLES = 10;
+    static PACO_TRIGGERS = 11;
+    static PACO_PORT_SETVARIABLE = 12;
+    static PACO_PORT_SETANIMATED = 13;
+    static PACO_PORT_ANIM_UPDATED = 14;
+    static PACO_DESERIALIZE = 15;
+    static PACO_OP_RELOAD = 16;
+
+    /**
+     * @param {} connection
+     * @param {any} paco
+     */
     constructor(connection, paco)
     {
         super();
@@ -12,8 +35,8 @@ export default class PacoConnector extends Events
         this.initialized = false;
         this.paused = false;
         this._delays = {};
-        this._delays[CABLES.PACO_PORT_ANIM_UPDATED] = 500;
-        this._delays[CABLES.PACO_VALUECHANGE] = 300;
+        this._delays[PacoConnector.PACO_PORT_ANIM_UPDATED] = 500;
+        this._delays[PacoConnector.PACO_VALUECHANGE] = 300;
         this._timeouts = {};
     }
 
@@ -55,7 +78,7 @@ export default class PacoConnector extends Events
         }
 
         // wait for initial patch sync before handling other messages
-        if (pacoMsg.event === CABLES.PACO_VALUECHANGE)
+        if (pacoMsg.event === PacoConnector.PACO_VALUECHANGE)
         {
             if (this._connection.state)
             {
