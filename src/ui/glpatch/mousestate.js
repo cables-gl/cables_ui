@@ -113,7 +113,6 @@ export default class MouseState extends Events
         if (userSettingSelectButton == 1) this.buttonForSelecting = MouseState.BUTTON_LEFT;
         if (userSettingSelectButton == 2) this.buttonForSelecting = MouseState.BUTTON_RIGHT;
         if (userSettingSelectButton == 4) this.buttonForSelecting = MouseState.BUTTON_WHEEL;
-        console.log("userSettingSelectButton", userSettingSelectButton);
     }
 
     _updateDebug()

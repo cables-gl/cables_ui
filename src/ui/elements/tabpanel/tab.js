@@ -4,6 +4,7 @@ import { GuiText } from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import TabPanel from "./tabpanel.js";
 import { CssClassNames } from "../../theme.js";
+import EditorBase from "../../components/tabs/tab_editor.js";
 
 /**
  * @typedef TabOptions
@@ -25,6 +26,9 @@ export default class Tab extends Events
     static EVENT_CLOSE = "close";
     static EVENT_DEACTIVATE = "onDeactivate";
     static EVENT_ACTIVATE = "onActivate";
+
+    /** @type {EditorBase} */
+    editor = null;
 
     /**
      * @param {String} title
@@ -68,7 +72,7 @@ export default class Tab extends Events
                     "options": this.options,
                     "id": this.id,
                     "title": this.title,
-                    "hideToolbar": true,
+                    "hideToolbar": true
                 });
 
             eleContainer.appendChild(this.toolbarContainerEle);
@@ -122,7 +126,7 @@ export default class Tab extends Events
         button.innerHTML = html;
         ele.clickable(button, cb);
         this.toolbarEle.appendChild(button);
-        this.buttons.push({ "ele": button, cb, title });
+        this.buttons.push({ "ele": button, "cb": cb, "title": title });
         if (classes) for (let i = 0; i < classes.length; i++)button.classList.add(classes[i]);
         return button;
     }

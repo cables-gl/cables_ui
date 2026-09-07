@@ -10,8 +10,8 @@ import { CmdUi } from "./cmd_ui.js";
 /**
  * @typedef CommandObject
  * @property {string} cmd
- * @property {function} func
- * @property {string} category
+ * @property {function} [func]
+ * @property {string} [category]
  * @property {string} [id]
  * @property {string} [icon]
  * @property {string} [infotext]

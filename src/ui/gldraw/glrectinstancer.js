@@ -1,9 +1,8 @@
 import { Logger, Events } from "cables-shared-client";
-import { Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
-import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
-import { logStack } from "cables/src/core/utils.js";
+import { CglContext, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
+import { utils } from "cables";
 import GlRect from "./glrect.js";
-import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
+import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag" with { type: "string" };
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
@@ -252,7 +251,7 @@ export default class GlRectInstancer extends Events
         {
 
             console.log("not a texure!!!!!");
-            logStack();
+            utils.logStack();
         }
         this.#shader.toggleDefine("SDF_TEXTURE", sdf);
         this.#textures[slot] = tex;

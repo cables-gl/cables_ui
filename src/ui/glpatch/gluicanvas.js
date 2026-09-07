@@ -84,7 +84,7 @@ export default class GlUiCanvas extends GlCanvas
         {
             this.render();
         });
-        console.log("requests");
+        // console.log("requests");
         // this.patch?.on("onRenderFrame", this.render.bind(this));
     }
 
@@ -101,14 +101,14 @@ export default class GlUiCanvas extends GlCanvas
         this.glPatch.updateTime();
         requestAnimationFrame(() => { this.render(); });
 
-        if (this._targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
+        if (this.targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this.targetFps) return;
 
         const cgl = this.cgl;
 
         cgl.renderStart(cgl);
         if (cgl.lastMesh)cgl.lastMesh.unBind();
 
-        if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
+        if (this._oldTargetFps != this.targetFps) this._oldTargetFps = this.targetFps;
 
         if (!this._inited)
         {
@@ -119,7 +119,7 @@ export default class GlUiCanvas extends GlCanvas
         if (this._firstTime) this._firstTime = false;
 
         if (this.glPatch.debugData)
-            this.glPatch.debugData.targetFps = this._targetFps;
+            this.glPatch.debugData.targetFps = this.targetFps;
 
         this.glPatch.render(this.width, this.height);
 

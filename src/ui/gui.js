@@ -1875,11 +1875,11 @@ export default class Gui extends Events
         {
             gui.closeModal();
 
-            if (this.maintabPanel?._tabs?.getActiveTab()?.editor)
+            if (this.maintabPanel?.tabs?.getActiveTab()?.editor)
             {
                 setTimeout(() =>
                 {
-                    this.maintabPanel?._tabs?.getActiveTab().editor.focus();
+                    this.maintabPanel?.tabs?.getActiveTab().editor.focus();
                 }, 50); // why...
             }
         }
