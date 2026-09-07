@@ -1,6 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
 import { vec4 } from "gl-matrix";
-import { Texture } from "cables";
+import { Texture } from "cables-corelibs";
 import { logStack } from "cables/src/core/utils.js";
 import GlRectInstancer from "./glrectinstancer.js";
 
