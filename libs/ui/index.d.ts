@@ -1,10 +1,12 @@
+import libchroma from "chroma-js";
+
 declare global {
 
     const CABLESUILOADER:any
     const logStartup:typeof Function
     const incrementStartup:typeof Function
 
-    const chroma:any
+    const chroma:libchroma
     const Handlebars:any
     const hljs:any
     const iziToast:any
@@ -26,3 +28,4 @@ declare global {
     }
 
 }
+export {};

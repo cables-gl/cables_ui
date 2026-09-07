@@ -1596,12 +1596,10 @@ export default class GlOp extends Events
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
-
                 this._glTitle.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
                 this.updateSize();
             }
-            else // this._glTitle.setColor(1, 1, 1);
-                this._glTitle.setColorArray(gui.theme.colors_patch.patchComment);
+            else this._glTitle.setColorArray(gui.theme.colors_patch.patchComment);
         }
         else
         {
