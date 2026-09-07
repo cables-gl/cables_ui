@@ -2,7 +2,7 @@ import { Logger, Events } from "cables-shared-client";
 import { CglContext, Geometry, Mesh, Shader, Texture, Uniform } from "cables-corelibs";
 import { utils } from "cables";
 import GlRect from "./glrect.js";
-import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag" with { type: "string" };
+import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";

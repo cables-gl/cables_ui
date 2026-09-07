@@ -29,7 +29,6 @@ declare global {
 
 }
 
-// bundled via raw-loader (see webpack.config.js) into plain strings
 declare module "*.frag" {
     const content: string;
     export default content;

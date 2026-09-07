@@ -1,6 +1,6 @@
 import { Events, Logger, ele } from "cables-shared-client";
-import { Anim, AnimKey, Port, Timer, Patch, Op } from "cables";
-import { CGL, FpsCounter, Geometry } from "cables-corelibs";
+import { Anim, AnimKey, Port, Timer, Patch, Op, utils } from "cables";
+import { CglContext, FpsCounter } from "cables-corelibs";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import { TlAnimLine } from "./tlanimline.js";
 import { tlOverview } from "./tloverview.js";
@@ -390,7 +390,7 @@ export class GlTimeline extends Events
 
                     // this.updateAllElements();
                 },
-                redo() {}
+                "redo": function () {}
             });
         });
 
@@ -1269,7 +1269,7 @@ export class GlTimeline extends Events
             o.animName = this.#selectedKeyAnims[i].name;
             o.animId = this.#selectedKeyAnims[i].id;
 
-            if (newId) o.id = CABLES.shortId();
+            if (newId) o.id = utils.shortId();
             keys.push(o);
         }
 
@@ -1463,11 +1463,11 @@ export class GlTimeline extends Events
         const gltl = this;
         undo.add({
             "title": "timeline move keys",
-            undo()
+            "undo": function ()
             {
                 gltl.deserializeKeys(oldKeys);
             },
-            redo()
+            "redo": function ()
             {
             }
         });
@@ -1491,7 +1491,7 @@ export class GlTimeline extends Events
     canSelectKey(k)
     {
         if (k.anim.uiAttribs.muted) return false;
-        if (k.anim.uiAttribs.readonly) return false;
+        if (k.anim.uiAttribs.readOnly) return false;
 
         return true;
     }
@@ -1667,7 +1667,7 @@ export class GlTimeline extends Events
                 "include": { "animated": true, "subpatches": true, "portsAnimated": true },
                 "includeUnsavedIndicator": false,
                 "removeEmptySubpatches": true,
-                "only": { "selected": true },
+                "only": { "selected": true }
             });
         }
 
@@ -1943,7 +1943,7 @@ export class GlTimeline extends Events
         this.updateCursor();
 
         if (this.#layout === GlTimeline.LAYOUT_GRAPHS && this.#tlAnims[0])
-            this.#tlAnims[0].setHeight(this.#cgl.canvasHeight - this.getFirstLinePosy());
+            this.#tlAnims[0].setHeight();
 
         perf.finish();
     }
@@ -2218,12 +2218,12 @@ export class GlTimeline extends Events
 
                         undo.add({
                             "title": "timeline paste keys keys",
-                            undo()
+                            "undo": function ()
                             {
                                 for (let i = 0; i < deser.keys.length; i++)
                                     deser.keys[i].delete();
                             },
-                            redo() { }
+                            "redo": function () { }
                         });
 
                         const animPorts = gui.corePatch().getAllAnimPorts();
@@ -2257,12 +2257,12 @@ export class GlTimeline extends Events
 
         undo.add({
             "title": "timeline duplicate keys",
-            undo()
+            "undo": function ()
             {
                 for (let i = 0; i < newKeys.length; i++)
                     newKeys[i].delete();
             },
-            redo()
+            "redo": function ()
             {
             }
         });
@@ -2303,7 +2303,7 @@ export class GlTimeline extends Events
 
         undo.add({
             "title": "createKey",
-            undo()
+            "undo": function ()
             {
                 if (existedBefore)
                 {
@@ -2314,7 +2314,7 @@ export class GlTimeline extends Events
                     anim.remove(found);
                 }
             },
-            redo()
+            "redo": function ()
             {
                 anim.setValue(time, value);
             }
@@ -2374,7 +2374,7 @@ export class GlTimeline extends Events
                         bezCp1[0],
                         bezCp1[1],
                         bezCp2[0],
-                        bezCp2[1],
+                        bezCp2[1]
                     ]
                 );
             }
@@ -2416,7 +2416,7 @@ export class GlTimeline extends Events
                     }
                     const o = {
                         "t": parseFloat(content.cells[i][0]),
-                        "v": parseFloat(content.cells[i][1]),
+                        "v": parseFloat(content.cells[i][1])
                     };
                     anim.setValue(o.t, o.v);
 
@@ -2612,7 +2612,7 @@ export class GlTimeline extends Events
                                 {
                                     this.createAnimOpFromSelection();
                                 }
-                            },
+                            }
                         ]
                 }, e.target);
         });
