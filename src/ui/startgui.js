@@ -32,7 +32,7 @@ export default function startUi(cfg)
     if (gui.isRemoteClient)
         new NoPatchEditor();
     else
-        new GlGuiFull(gui.corePatch());
+        new GlGuiFull();
 
     incrementStartup();
     gui.serverOps = new ServerOps(cfg.patchId, () =>
@@ -44,7 +44,7 @@ export default function startUi(cfg)
         gui.corePatch().timer.setTime(0);
         gui.corePatch().timer.play();
 
-        if (!gui.corePatch().cgl.gl)
+        if (!gui.patchView.patchRenderer.cgl.gl)
         {
             // ele.byId("loadingstatus").remove();
             // ele.byId("loadingstatusLog").remove();

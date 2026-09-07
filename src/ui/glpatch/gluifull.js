@@ -3,7 +3,7 @@ import GlUiCanvas from "./gluicanvas.js";
 
 export default class GlGuiFull
 {
-    constructor(patch)
+    constructor()
     {
         const views = document.getElementById("patchviews");
         const ele = document.createElement("div");
@@ -13,11 +13,11 @@ export default class GlGuiFull
         ele.id = id;
         ele.classList.add("glpatchcontainer");
 
-        if (!patch.cgl.gl)
-        {
-            console.log("webgl not available! :/");
-            return;
-        }
+        // if (!patch.cgl.gl)
+        // {
+        //     console.log("webgl not available! :/");
+        //     return;
+        // }
 
         const a = new GlUiCanvas(patch, ele);
 
