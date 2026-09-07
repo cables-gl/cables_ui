@@ -54,7 +54,6 @@ export default class GlCanvas
             "glCanvasResizeToWindow": false,
             "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
         });
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
         if (!this.cgl)
         {
@@ -66,12 +65,14 @@ export default class GlCanvas
 
         gui.on("uiIdleStart", () =>
         {
-            this.patch.pause();
+            this.paused = true;
+            // this.patch.pause();
         });
 
         gui.on("uiIdleEnd", () =>
         {
-            this.patch.resume();
+            this.paused = false;
+            // this.patch.resume();
         });
 
         this.canvas.addEventListener("touchmove",
@@ -167,19 +168,19 @@ export default class GlCanvas
 
     activityIdle()
     {
-        this._targetFps = 10;
+        this.targetFps = 10;
     }
 
     activityHigh()
     {
-        this._targetFps = 0;
+        this.targetFps = 0;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 40000);
     }
 
     activityMedium()
     {
-        this._targetFps = 30;
+        this.targetFps = 30;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }

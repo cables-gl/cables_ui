@@ -601,7 +601,8 @@ export default class PatchSaveServer extends Events
 
                 const origSize = Math.round(datastr.length / 1024);
 
-                console.log("origsize", origSize);
+                // console.log("origsize", origSize);
+                //
                 let uint8data = pako.deflate(datastr);
                 if (origSize > 1000) this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
                 let b64 = bytesArrToBase64(uint8data);
@@ -833,6 +834,10 @@ export default class PatchSaveServer extends Events
         });
     }
 
+    /**
+     * @param {boolean} [hires]
+     * @param {Function} [cb]
+     */
     saveScreenshot(hires, cb)
     {
         const thePatch = gui.corePatch();
@@ -983,28 +988,26 @@ export default class PatchSaveServer extends Events
 
         report.cablesUrl = platform.getCablesUrl();
         report.platformVersion = platform.getCablesVersion();
-        if (window.gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
+        if (gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
         report.browserDescription = platform.description;
 
-        if (window.gui)
+        if (gui.project()) report.projectId = gui.project()._id;
+        if (gui.user)
         {
-            if (gui.project()) report.projectId = gui.project()._id;
-            if (gui.user)
-            {
-                report.username = gui.user.username;
-                report.userId = gui.user.id;
-            }
-
-            try
-            {
-                const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
-                report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
-            }
-            catch (e)
-            {
-                this._log.log(e);
-            }
+            report.username = gui.user.username;
+            report.userId = gui.user.id;
         }
+
+        try
+        {
+            const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
+            report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+        }
+        catch (e)
+        {
+            this._log.log(e);
+        }
+
         return report;
     }
 

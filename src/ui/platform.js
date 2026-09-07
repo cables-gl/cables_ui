@@ -29,6 +29,7 @@ import { GuiText } from "./text.js";
  * @property {String} [communityUrl] used in electron, url to community cables.gl instance
  * @property {Object} [paths] used in electron, local filesystem paths
  * @property {String} [currentPatchDir] used in electron, directory of currently opened patch
+ * @property {String} [description]
  */
 
 /**
