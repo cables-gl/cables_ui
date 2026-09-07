@@ -1,10 +1,11 @@
 import libchroma from "chroma-js";
+import Gui from "../../src/ui/gui";
 
 declare global {
 
     const CABLESUILOADER:any
     var CABLES:any
-    var gui:any
+    // var gui:Gui
     const logStartup:typeof Function
     const incrementStartup:typeof Function
 
@@ -39,7 +40,7 @@ declare global {
     interface Window {
         Handlebars:any
         logStartup:typeof Function
-        gui:any
+        // gui:Gui
     }
 
 }

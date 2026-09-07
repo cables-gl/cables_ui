@@ -46,50 +46,29 @@ PatchConnectionReceiver.prototype._receive = function (ev)
         if (this._patch.getOpById(data.vars.opId)) return;
         this._log.verbose("op create:", data.vars.objName);
 
-        if (window.gui)
-        {
-            gui.serverOps.loadOpDependencies(data.vars.objName, () =>
-            {
-                this._addOp(data);
-            });
-        }
-        else
+        gui.serverOps.loadOpDependencies(data.vars.objName, () =>
         {
             this._addOp(data);
-        }
+        });
     }
     else if (data.event === PacoConnector.PACO_DESERIALIZE)
     {
         if (data.vars.json)
         {
-            if (window.gui)
-            {
-                gui.serverOps.loadProjectDependencies(data.vars.json, () =>
-                {
-                    this._patch.deSerialize(data.vars.json, { "genIds": data.vars.genIds });
-                });
-            }
-            else
+            gui.serverOps.loadProjectDependencies(data.vars.json, () =>
             {
                 this._patch.deSerialize(data.vars.json, { "genIds": data.vars.genIds });
-            }
+            });
         }
     }
     else if (data.event === PacoConnector.PACO_LOAD)
     {
         this._log.verbose("PACO load patch.....");
         this._patch.clear();
-        if (window.gui)
-        {
-            gui.serverOps.loadProjectDependencies(JSON.parse(data.vars.patch), () =>
-            {
-                this._patch.deSerialize(data.vars.patch);
-            });
-        }
-        else
+        gui.serverOps.loadProjectDependencies(JSON.parse(data.vars.patch), () =>
         {
             this._patch.deSerialize(data.vars.patch);
-        }
+        });
     }
     else if (data.event === PacoConnector.PACO_CLEAR)
     {
