@@ -19,6 +19,9 @@ export default class MouseState extends Events
     static BUTTON_4 = 8;
     static BUTTON_5 = 16;
 
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
     constructor(canvas)
     {
         super();
@@ -99,11 +102,18 @@ export default class MouseState extends Events
 
     _initUserPrefs()
     {
-        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+        const userSettingScrollButton = userSettings.get(UserSettings.PREF_GLPATCH_PAN);
 
-        if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
         if (userSettingScrollButton == 1) this.buttonForScrolling = MouseState.BUTTON_LEFT;
         if (userSettingScrollButton == 2) this.buttonForScrolling = MouseState.BUTTON_RIGHT;
+        if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
+
+        const userSettingSelectButton = userSettings.get(UserSettings.PREF_GLPATCH_SELECT);
+
+        if (userSettingSelectButton == 1) this.buttonForSelecting = MouseState.BUTTON_LEFT;
+        if (userSettingSelectButton == 2) this.buttonForSelecting = MouseState.BUTTON_RIGHT;
+        if (userSettingSelectButton == 4) this.buttonForSelecting = MouseState.BUTTON_WHEEL;
+        console.log("userSettingSelectButton", userSettingSelectButton);
     }
 
     _updateDebug()
@@ -147,7 +157,8 @@ export default class MouseState extends Events
     }
 
     /**
-     * @private
+     *
+     * @param {string} button
      */
     _buttonUp(button)
     {
@@ -159,6 +170,9 @@ export default class MouseState extends Events
         this._updateDebug();
     }
 
+    /**
+     * @param {string } button
+     */
     #buttonDown(button)
     {
         if (!this._buttonStates[button].down)
@@ -169,6 +183,10 @@ export default class MouseState extends Events
         this._updateDebug();
     }
 
+    /**
+     * @param {number} button
+     * @param {any} newState
+     */
     #setButton(button, newState)
     {
         if (button == MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT)
@@ -232,7 +250,8 @@ export default class MouseState extends Events
     }
 
     /**
-     * @private
+     *
+     * @param {MouseEvent} e
      */
     _down(e)
     {
@@ -272,11 +291,6 @@ export default class MouseState extends Events
     get buttonStateForLinkDrag()
     {
         return this._buttonStates[this._useDragCablesButton].down;
-    }
-
-    get buttonStateForSelectionArea()
-    {
-        return this._buttonStates[MouseState.BUTTON_LEFT].down;
     }
 
     get buttonForRemoveLink()

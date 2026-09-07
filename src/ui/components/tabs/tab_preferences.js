@@ -100,7 +100,8 @@ export default class Preferences
         // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
 
-        this.setSwitchValue("patch_button_scroll", userSettings.get("patch_button_scroll") || "2");
+        this.setSwitchValue(UserSettings.PREF_GLPATCH_PAN, userSettings.get(UserSettings.PREF_GLPATCH_PAN) || "2");
+        this.setSwitchValue(UserSettings.PREF_GLPATCH_SELECT, userSettings.get(UserSettings.PREF_GLPATCH_SELECT) || "1");
         this.setSwitchValue("patch_allowCableDrag", userSettings.get("patch_allowCableDrag") || false);
 
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));

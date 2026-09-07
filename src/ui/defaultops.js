@@ -165,7 +165,7 @@ const defaultOps = {
         "extensionOp": "Ops.Extension.",
         "standaloneOp": "Ops.Local.",
         "webgpu": "Ops.Extension.WebGpu",
-        "webgl": "Ops.Gl.",
+        "webgl": "Ops.Gl."
     },
     "converterOps":
     [
@@ -174,21 +174,21 @@ const defaultOps = {
             "typeTo": Port.TYPE_STRING,
             "op": defaultOpNames.NumberToString,
             "portIn": "Number",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_STRING,
             "typeTo": Port.TYPE_OBJECT,
             "op": defaultOpNames.parseObject,
             "portIn": "JSON String",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_NUMBER,
             "typeTo": Port.TYPE_STRING,
             "op": defaultOpNames.BoolToString,
             "portIn": "Boolean",
-            "portOut": "String",
+            "portOut": "String"
         },
 
         {
@@ -196,63 +196,63 @@ const defaultOps = {
             "typeTo": Port.TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangeNumber,
             "portIn": "Value",
-            "portOut": "Next",
+            "portOut": "Next"
         },
         {
             "typeFrom": Port.TYPE_STRING,
             "typeTo": Port.TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangeString,
             "portIn": "String",
-            "portOut": "Changed",
+            "portOut": "Changed"
         },
         {
             "typeFrom": Port.TYPE_ARRAY,
             "typeTo": Port.TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangeArray,
             "portIn": "String",
-            "portOut": "Changed",
+            "portOut": "Changed"
         },
         {
             "typeFrom": Port.TYPE_TRIGGER,
             "typeTo": Port.TYPE_STRING,
             "op": defaultOpNames.TriggerString,
             "portIn": "Trigger",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_TRIGGER,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.TriggerNumber,
             "portIn": "Set",
-            "portOut": "Out Value",
+            "portOut": "Out Value"
         },
         {
             "typeFrom": Port.TYPE_NUMBER,
             "typeTo": Port.TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangedTrue,
             "portIn": "Value",
-            "portOut": "Next",
+            "portOut": "Next"
         },
         {
             "typeFrom": Port.TYPE_STRING,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.parseFloat,
             "portIn": "String",
-            "portOut": "Number",
+            "portOut": "Number"
         },
         {
             "typeFrom": Port.TYPE_STRING,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.StringLength,
             "portIn": "String",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_ARRAY,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.arrayLength,
             "portIn": "array",
-            "portOut": "length",
+            "portOut": "length"
         },
         {
             "typeFrom": Port.TYPE_STRING,
@@ -260,56 +260,56 @@ const defaultOps = {
             "op": defaultOpNames.StringToArray,
 
             "portIn": "text",
-            "portOut": "array",
+            "portOut": "array"
         },
         {
             "typeFrom": Port.TYPE_ARRAY,
             "typeTo": Port.TYPE_STRING,
             "op": defaultOpNames.arrayToString,
             "portIn": "Array",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_TRIGGER,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.triggerCounter,
             "portIn": "exe",
-            "portOut": "timesTriggered",
+            "portOut": "timesTriggered"
         },
         {
             "typeFrom": Port.TYPE_TRIGGER,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.IsTriggered,
             "portIn": "Trigger",
-            "portOut": "Was Triggered",
+            "portOut": "Was Triggered"
         },
         {
             "typeFrom": Port.TYPE_TRIGGER,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.incrementor,
             "portIn": "Increment",
-            "portOut": "Value",
+            "portOut": "Value"
         },
         {
             "typeFrom": Port.TYPE_OBJECT,
             "typeTo": Port.TYPE_NUMBER,
             "op": defaultOpNames.ObjectGetNumber,
             "portIn": "Data",
-            "portOut": "Result",
+            "portOut": "Result"
         },
         {
             "typeFrom": Port.TYPE_OBJECT,
             "typeTo": Port.TYPE_STRING,
             "op": defaultOpNames.ObjectGetString,
             "portIn": "data",
-            "portOut": "result",
+            "portOut": "result"
         },
         {
             "typeFrom": Port.TYPE_OBJECT,
             "typeTo": Port.TYPE_TRIGGER,
             "op": defaultOpNames.TriggerOnChangeObject,
             "portIn": "Object",
-            "portOut": "Changed",
+            "portOut": "Changed"
         }
 
     ],
@@ -342,9 +342,9 @@ const defaultOps = {
         "Ops.Ui.SubPatch",
         "Ops.Ui.Subpatch2Template",
         "Ops.Ui.SubPatchInput",
-        "Ops.Ui.SubPatchOutput",
-        "Ops.Ui.PatchInput",
-        "Ops.Ui.PatchOutput"
+        "Ops.Ui.SubPatchOutput"
+        // "Ops.Ui.PatchInput",
+        // "Ops.Ui.PatchOutput"
     ],
     "defaultMathOps":
     {
@@ -357,7 +357,7 @@ const defaultOps = {
             "/": defaultOpNames.Divide,
             "*": defaultOpNames.Multiply,
             "=": defaultOpNames.Equals,
-            "%": defaultOpNames.Modulo,
+            "%": defaultOpNames.Modulo
 
         },
         "array":
@@ -365,7 +365,7 @@ const defaultOps = {
             "+": defaultOpNames.ArraySum,
             "-": defaultOpNames.ArraySubtract,
             "/": defaultOpNames.ArrayDivide,
-            "*": defaultOpNames.ArrayMultiply,
+            "*": defaultOpNames.ArrayMultiply
         },
         "string":
         {

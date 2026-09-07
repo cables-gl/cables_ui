@@ -1438,7 +1438,7 @@ export default class GlPatch extends Events
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
 
-        if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
+        if (this.mouseState.buttonStateForSelecting && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
             if (this.#rectInstancer.interactive)
                 if (this._pressedShiftKey || this._pressedCtrlKey) this.#selectionArea.previousOps = gui.patchView.getSelectedOps();

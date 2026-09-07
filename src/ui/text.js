@@ -187,6 +187,7 @@ export const GuiText =
         "title": "Preferences",
 
         "subtitle_scroll_button": "Pan Button",
+        "subtitle_select_button": "Select Button",
         "subtitle_allow_cable_drag": "Allow dragging cables (right mouse button)",
 
         "subtitle_glpatch_cursor": "use native cursor",

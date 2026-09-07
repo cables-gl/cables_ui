@@ -11,6 +11,9 @@ import OpSelect from "../dialogs/opselect.js";
  */
 export default class UserSettings extends Events
 {
+
+    static PREF_GLPATCH_PAN = "patch_button_scroll";
+    static PREF_GLPATCH_SELECT = "patch_button_select";
     static PREF_OPSELECT_AUTOLINKOPS = "autoLinkOps";
     static PREF_SNAPTOGRID = "snapToGrid2";
 
