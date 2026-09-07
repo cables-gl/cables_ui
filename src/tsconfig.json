@@ -1,4 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./**/*.js", "../libs/ui/index.d.ts"],
+  "include": ["./**/*.js", "../libs/ui/index.d.ts", "../libs/ui/assets.d.ts"],
 }
