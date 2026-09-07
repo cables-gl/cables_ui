@@ -2,7 +2,6 @@ import { Events } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
 import TabPanel from "./tabpanel.js";
-import Tab from "./tab.js";
 
 /**
  * the maintabpanel on the left side of the patchfield, can be minimized

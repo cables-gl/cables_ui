@@ -1,7 +1,5 @@
-import { Op, Patch, utils } from "cables";
+import { Patch, utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
-import GlPatch from "../glpatch/glpatch.js";
-import GlPatchAPI from "../glpatch/patchapi.js";
 import { gui } from "../gui.js";
 
 export default class GlCanvas

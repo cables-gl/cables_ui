@@ -6,7 +6,6 @@ import { platform } from "../platform.js";
 import { userSettings } from "../components/usersettings.js";
 import { Commands } from "../commands/commands.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import ModalDialog from "./modaldialog.js";
 
 Commands.init();
 

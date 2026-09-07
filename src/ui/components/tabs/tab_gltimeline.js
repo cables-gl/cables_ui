@@ -1,7 +1,5 @@
-import { logStack } from "cables/src/core/utils.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import defaultOps from "../../defaultops.js";
-import { contextMenu } from "../../elements/contextmenu.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";

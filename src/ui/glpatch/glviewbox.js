@@ -1,5 +1,5 @@
 import { vec2 } from "gl-matrix";
-import { BoundingBox, CG } from "cables-corelibs";
+import { BoundingBox } from "cables-corelibs";
 import { Anim } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlUiConfig from "./gluiconfig.js";

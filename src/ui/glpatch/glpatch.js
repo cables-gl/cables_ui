@@ -1,5 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Anim, Op, Port } from "cables";
+import { Anim, Op } from "cables";
 import { idleCallbackSoon, logStack } from "cables/src/core/utils.js";
 import { BoundingBox } from "cables-corelibs/cg/cg_boundingbox.js";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";

@@ -14,7 +14,6 @@ import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 import { gui } from "./gui.js";
 import { GuiText } from "./text.js";
-import { UiPatch } from "./core_extend_patch.js";
 import { getConverters } from "./components/converterops.js";
 import { UiPort } from "./core_extend_port.js";
 

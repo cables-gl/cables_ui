@@ -1,6 +1,4 @@
-import { uuid } from "cables/src/core/utils.js";
 import { ele } from "cables-shared-client";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 

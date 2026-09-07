@@ -1,5 +1,5 @@
 import { Logger } from "cables-shared-client";
-import { Link, Op } from "cables";
+import { Link } from "cables";
 import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
 import defaultOps from "../defaultops.js";

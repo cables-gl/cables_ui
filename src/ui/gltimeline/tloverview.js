@@ -1,5 +1,4 @@
 import { Events, Logger } from "cables-shared-client/index.js";
-import { clamp } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import { TlDragArea } from "./tldragarea.js";
 import Gui, { gui } from "../gui.js";

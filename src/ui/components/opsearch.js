@@ -1,5 +1,5 @@
 import { Events } from "cables-shared-client";
-import { CG, CgContext } from "cables-corelibs";
+import { CgContext } from "cables-corelibs";
 import { Patch, Port, utils } from "cables";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";

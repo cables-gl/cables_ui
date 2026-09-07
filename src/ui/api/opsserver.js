@@ -1,4 +1,4 @@
-import { ele, Logger, TalkerAPI } from "cables-shared-client";
+import { Logger, TalkerAPI } from "cables-shared-client";
 import { Op, Patch, Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";

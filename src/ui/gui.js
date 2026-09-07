@@ -64,8 +64,6 @@ import { CmdDebug } from "./commands/cmd_debug.js";
 import { isFocusOnEditor } from "./components/editor.js";
 import { GradientEditor } from "./dialogs/canv_gradienteditor.js";
 import { CommandPalette } from "./dialogs/commandpalette.js";
-import GlGuiTab from "./components/tabs/tab_glpatch.js";
-import GlUiCanvas from "./glpatch/gluicanvas.js";
 
 /**
  * @type {Gui}

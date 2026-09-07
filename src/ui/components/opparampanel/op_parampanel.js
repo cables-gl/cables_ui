@@ -14,7 +14,6 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import uiconfig from "../../uiconfig.js";
-import { UiOp } from "../../core_extend_op.js";
 
 /**
  * op parameter panel

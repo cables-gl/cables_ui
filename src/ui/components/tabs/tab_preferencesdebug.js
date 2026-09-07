@@ -1,10 +1,6 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
-import { GuiText } from "../../text.js";
-import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { platform } from "../../platform.js";
 import UserSettings, { userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 

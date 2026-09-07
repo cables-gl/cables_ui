@@ -1,8 +1,5 @@
-import { Logger } from "cables-shared-client";
 import { gui } from "../gui.js";
-import { platform } from "../platform.js";
 import ModalDialog from "../dialogs/modaldialog.js";
-import { notify, notifyError } from "../elements/notification.js";
 
 export { CmdFiles };
 

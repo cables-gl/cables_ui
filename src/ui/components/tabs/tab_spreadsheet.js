@@ -1,5 +1,5 @@
-import { Port, utils } from "cables";
-import { ele, Events, Logger } from "cables-shared-client";
+import { Port } from "cables";
+import { Events, Logger } from "cables-shared-client";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";

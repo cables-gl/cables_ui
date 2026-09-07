@@ -3,7 +3,6 @@ import { Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
-import CanvasManager from "../components/canvas/canvasmanager.js";
 import GlPatch from "./glpatch.js";
 
 /**

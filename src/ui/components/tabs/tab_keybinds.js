@@ -1,11 +1,9 @@
 import { ele } from "cables-shared-client";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
-import opNames from "../../opnameutils.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { Commands } from "../../commands/commands.js";
 import { InputBindings } from "../../inputbindings.js";

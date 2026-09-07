@@ -1,5 +1,4 @@
 import { Logger, ele } from "cables-shared-client";
-import { utils } from "cables";
 import CanvasPointEditor from "./canv_pointeditor.js";
 
 /**

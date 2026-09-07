@@ -10,7 +10,6 @@ import { userSettings } from "./components/usersettings.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
 import defaultOps from "./defaultops.js";
-import { GradientEditor } from "./dialogs/canv_gradienteditor.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ModalError from "./dialogs/modalerror.js";
 import oldModalWrap from "./dialogs/modal_old_wrap.js";
@@ -32,7 +31,7 @@ import { showShaderErrorCgp } from "./dialogs/modalshadererrorcgp.js";
 import { GuiText } from "./text.js";
 import { UiPort } from "./core_extend_port.js";
 import OpSearch from "./components/opsearch.js";
-import { codeWatcher, createEditor } from "./components/editor.js";
+import { codeWatcher } from "./components/editor.js";
 
 window.CABLES = CABLES || {};
 

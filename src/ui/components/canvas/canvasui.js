@@ -1,5 +1,4 @@
 import { ele } from "cables-shared-client";
-import { CgContext } from "cables-corelibs";
 import { gui } from "../../gui.js";
 import { userSettings } from "../usersettings.js";
 

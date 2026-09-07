@@ -1,6 +1,3 @@
-import { utils } from "cables";
-import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen.js";
-import ParamsListener from "../components/opparampanel/params_listener.js";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 import { gui } from "../gui.js";
 

@@ -1,4 +1,4 @@
-import { Logger, ModalBackground, ele } from "cables-shared-client";
+import { Logger } from "cables-shared-client";
 import { utils } from "cables";
 import Gui, { gui } from "../gui.js";
 import { fileUploader } from "../dialogs/upload.js";

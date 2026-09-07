@@ -16,7 +16,6 @@ import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
-import { showInfo } from "../elements/tooltips.js";
 
 export { CmdPatch };
 

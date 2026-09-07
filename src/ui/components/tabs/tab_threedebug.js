@@ -1,5 +1,4 @@
-import { ele, Events } from "cables-shared-client";
-import { utils } from "cables";
+import { Events } from "cables-shared-client";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 

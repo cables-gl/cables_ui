@@ -9,8 +9,6 @@ import { tlView } from "./tlview.js";
 import { TlTitle } from "./tllinetitle.js";
 import { TlValueRuler } from "./tlvalueruler.js";
 import { GlTimeline } from "./gltimeline.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { UiOp } from "../core_extend_op.js";
 import { GuiText } from "../text.js";
 
 /**

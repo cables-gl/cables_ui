@@ -1,4 +1,3 @@
-import { Op } from "cables";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import { gui } from "../gui.js";
 import { UiOp } from "../core_extend_op.js";

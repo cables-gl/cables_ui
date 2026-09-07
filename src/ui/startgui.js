@@ -1,8 +1,7 @@
 import { ele, HandlebarsHelper, TalkerAPI } from "cables-shared-client";
-import { BoundingBox, Geometry, Mesh } from "cables-corelibs";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
-import Gui, { gui } from "./gui.js";
+import Gui from "./gui.js";
 import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./socketcluster/sc_connection.js";
@@ -12,7 +11,6 @@ import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
 import UserSettings, { userSettings } from "./components/usersettings.js";
-import { getHandleBarHtml } from "./utils/handlebars.js";
 import { GuiText } from "./text.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 

@@ -1,11 +1,7 @@
-import { uuid } from "cables/src/core/utils.js";
 import { ele } from "cables-shared-client";
-import { MemProfiler } from "cables/src/core/memprofiler.js";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
-import OpWatchUiAttribs from "./tab_uiattribs.js";
 
 export class TabProfilerMemory
 {

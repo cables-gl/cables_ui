@@ -3,7 +3,6 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import PatchOutline from "./patchoutline.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { Commands } from "../commands/commands.js";
 import { CmdUi } from "../commands/cmd_ui.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 

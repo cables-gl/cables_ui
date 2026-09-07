@@ -8,7 +8,6 @@ import GlPort from "../glpatch/glport.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
-import { platform } from "../platform.js";
 
 /**
  * op documentation loading

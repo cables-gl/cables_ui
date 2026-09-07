@@ -1,6 +1,5 @@
 import { ele } from "cables-shared-client";
 import { Port } from "cables";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { gui } from "../../gui.js";

@@ -1,6 +1,4 @@
 import { Events, Logger } from "cables-shared-client";
-import { map } from "cables/src/core/utils.js";
-import GlText from "../gldraw/gltext.js";
 import GlRect from "../gldraw/glrect.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";

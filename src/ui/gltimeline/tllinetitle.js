@@ -1,11 +1,10 @@
 import { Events, ele } from "cables-shared-client";
-import { Anim, AnimKey, Op, Port } from "cables";
+import { Anim, Op, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { TlKeys } from "./tlkeys.js";
 import { TlAnimLine } from "./tlanimline.js";
 import { GlTimeline } from "./gltimeline.js";
 import opNames from "../opnameutils.js";
-import { UiOp } from "../core_extend_op.js";
 import { CssClassNames, DomEvents } from "../theme.js";
 import { GuiText } from "../text.js";
 import { gui } from "../gui.js";

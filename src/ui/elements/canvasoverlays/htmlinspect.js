@@ -1,6 +1,5 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
-import HtmlElementOverlay from "./htmlelementoverlay.js";
 
 export default class HtmlInspector
 {

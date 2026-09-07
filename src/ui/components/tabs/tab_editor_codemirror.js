@@ -1,11 +1,10 @@
-import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
+import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { linter, lintGutter } from "@codemirror/lint";
-import { EditorView, highlightActiveLineGutter, highlightActiveLine, ViewPlugin, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
+import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
 import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
-import { helix, commands } from "codemirror-helix";
+import { helix } from "codemirror-helix";
 import { syntaxTree } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
-import { jsonLanguage } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
 
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
@@ -20,12 +19,9 @@ import { indentWithTab, toggleComment, history } from "@codemirror/commands";
 import { snippetCompletion } from "@codemirror/autocomplete"; // Built-in function
 
 import { createOpDocButton } from "../editor.js";
-import { userSettings } from "../usersettings.js";
-import { contextMenu } from "../../elements/contextmenu.js";
 import { platform } from "../../platform.js";
 import { gui } from "../../gui.js";
 import { notify, notifyError } from "../../elements/notification.js";
-import ManageOp from "./tab_manage_op.js";
 import { GuiText } from "../../text.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import EditorBase from "./tab_editor.js";

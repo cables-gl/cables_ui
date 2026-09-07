@@ -2,9 +2,7 @@ import { Events, Logger, ele } from "cables-shared-client";
 import ErrorStackParser from "error-stack-parser";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
-import undo from "../../utils/undo.js";
 import { gui } from "../../gui.js";
-import { platform } from "../../platform.js";
 import { userSettings } from "../usersettings.js";
 import { logFilter } from "../../utils/logfilter.js";
 

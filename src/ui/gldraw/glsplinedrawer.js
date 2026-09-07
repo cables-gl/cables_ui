@@ -1,15 +1,12 @@
 import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
-import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { Events } from "cables-shared-client";
 import UserSettings, { userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
-import GlCanvas from "./glcanvas.js";
 import GlUiCanvas from "../glpatch/gluicanvas.js";
-import GlSpline from "./glspline.js";
 import GlPatch from "../glpatch/glpatch.js";
 
 /**

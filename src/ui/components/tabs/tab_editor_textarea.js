@@ -1,12 +1,9 @@
-import { Events, Logger, ele, TalkerAPI } from "cables-shared-client";
+import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { GuiText } from "../../text.js";
-import ManageOp from "./tab_manage_op.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
-import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
 import EditorBase from "./tab_editor.js";
 
 /**

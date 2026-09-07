@@ -2,7 +2,7 @@ import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import { CgContext } from "cables-corelibs";
 import { uuid } from "cables/src/core/utils.js";
-import Gui, { gui } from "../../gui.js";
+import { gui } from "../../gui.js";
 import CanvasUi from "./canvasui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { userSettings } from "../usersettings.js";

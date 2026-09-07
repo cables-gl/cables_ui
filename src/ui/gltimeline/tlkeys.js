@@ -1,7 +1,6 @@
 import { Events, Logger } from "cables-shared-client";
 import { Anim, AnimKey, Patch, Port } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
-import { INSPECT_MAX_BYTES } from "buffer";
 import { map } from "cables/src/core/utils.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
@@ -10,8 +9,6 @@ import Gui, { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { TlAnimLine } from "./tlanimline.js";
 import { hideToolTip, showToolTip } from "../elements/tooltips.js";
-import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import BottomInfoAreaBar from "../elements/bottominfoareabar.js";
 import { TlKey } from "./tlkey.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 

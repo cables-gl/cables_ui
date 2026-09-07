@@ -1,4 +1,3 @@
-import { CG, CGL } from "cables-corelibs";
 import { gui } from "../../gui.js";
 import TransformsIcon from "./transformsicon.js";
 

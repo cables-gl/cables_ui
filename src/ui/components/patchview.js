@@ -25,8 +25,6 @@ import { platform } from "../platform.js";
 import UserSettings, { userSettings } from "./usersettings.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
-import { UiPatch } from "../core_extend_patch.js";
-import { CmdPatch } from "../commands/cmd_patch.js";
 
 /**
  * @typedef AddOpOptions

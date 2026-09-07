@@ -1,7 +1,6 @@
 import { Events, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { platform } from "../platform.js";
-import OpSelect from "../dialogs/opselect.js";
 
 /**
  * storing/loading user settings/ sending to the user and in localstorage etc.

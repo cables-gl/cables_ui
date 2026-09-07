@@ -1,6 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
-import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
