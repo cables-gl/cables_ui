@@ -17,8 +17,6 @@ import { platform } from "../platform.js";
  * - opname: will show opname
  * - exception: will show stacktrace and exception message. etc.
  *
- * @param {Object} option option object
- * @class
  */
 export default class ModalError
 {
