@@ -287,7 +287,7 @@ export default class GlLink
         if (this.#cableSub) this.#cableSub = this.#cableSub.dispose();
 
         this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
-        this.#glPatch.setDrawableColorByType(this.#cable, this._type);
+        // this.#glPatch.setDrawableColorByType(this.#cable, this._type);
 
         /** @type {UiOp} */
         const op1 = gui.corePatch().getOpById(this._opIdInput);
@@ -299,7 +299,7 @@ export default class GlLink
         if (op1.uiAttribs.subPatch != this._subPatch) this.#cableSub = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
         if (op2.uiAttribs.subPatch != this._subPatch) this.#cableSub = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
 
-        if (this.#cableSub) this.#glPatch.setDrawableColorByType(this.#cableSub, this._type);
+        // if (this.#cableSub) this.#glPatch.setDrawableColorByType(this.#cableSub, this._type);
 
         if (this.crossSubpatch)
         {

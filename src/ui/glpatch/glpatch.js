@@ -1825,24 +1825,26 @@ export default class GlPatch extends Events
      * @param {number} t
      * @param {number} [diff]
      */
-    setDrawableColorByType(e, t, diff)
-    {
-        if (!e) return;
-        diff = diff || gluiconfig.colorMulInActive;
+    // setDrawableColorByType(e, t, diff)
+    // {
+    //     if (!e) return;
+    //     diff = diff || gluiconfig.colorMulInActive;
 
-        let col = [0, 0, 0, 0];
-        if (!gui.theme.colors.types) return;
+    //     let col = [0, 0, 0, 0];
 
-        if (t == Port.TYPE_NUMBER) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == Port.TYPE_TRIGGER) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == Port.TYPE_OBJECT) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == Port.TYPE_ARRAY) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == Port.TYPE_STRING) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == Port.TYPE_DYNAMIC) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else this._log.warn("unknown port color");
+    //     console.log("color types", gui.theme.colors);
+    //     if (!gui.theme.colors.types) return;
 
-        e.setColor(col[0], col[1], col[2], col[3]);
-    }
+    //     if (t == Port.TYPE_NUMBER) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else if (t == Port.TYPE_TRIGGER) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else if (t == Port.TYPE_OBJECT) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else if (t == Port.TYPE_ARRAY) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else if (t == Port.TYPE_STRING) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else if (t == Port.TYPE_DYNAMIC) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+    //     else this._log.warn("unknown port color");
+
+    //     e.setColor(col[0], col[1], col[2], col[3]);
+    // }
 
     isDraggingPort()
     {
