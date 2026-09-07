@@ -250,7 +250,7 @@ export class Platform extends Events
      */
     getUrlProjectOpsCode(projectId)
     {
-        let url = this.getCablesUrl() + "/api/ops/code/project/" + projectId;
+        let url = this.getCablesUrl() + "/api/ops/code/project/" + projectId + "/ops.patch.js";
         if (this.config.previewMode) url += "?preview=true";
         return url;
     }
