@@ -28,4 +28,23 @@ declare global {
     }
 
 }
+
+// bundled via raw-loader (see webpack.config.js) into plain strings
+declare module "*.frag" {
+    const content: string;
+    export default content;
+}
+declare module "*.vert" {
+    const content: string;
+    export default content;
+}
+declare module "*.wgsl" {
+    const content: string;
+    export default content;
+}
+declare module "*.txt" {
+    const content: string;
+    export default content;
+}
+
 export {};

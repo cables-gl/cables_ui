@@ -18,6 +18,7 @@ import UserSettings, { userSettings } from "../components/usersettings.js";
  * @property {number} [y]
  * @property {string|number} [subPatch]
  * @property {Function} [onOpAdd]
+ * @property {boolean} [autoLinkCurrentOp]
  */
 
 CABLES = CABLES || {};
