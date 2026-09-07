@@ -224,7 +224,7 @@ export class Platform extends Events
 
     getUrlOpsCode()
     {
-        let url = this.getSandboxUrl() + "/api/ops/code";
+        let url = this.getSandboxUrl() + "/api/ops/ops.core.js";
         if (this.config.previewMode) url += "?preview=true";
         return url;
     }
