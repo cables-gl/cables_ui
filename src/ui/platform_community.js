@@ -10,6 +10,10 @@ import { Platform } from "./platform.js";
  */
 export default class PlatformCommunity extends Platform
 {
+
+    /**
+     * @param {import("./platform.js").PlatformConfig} cfg
+     */
     constructor(cfg)
     {
         super(cfg);

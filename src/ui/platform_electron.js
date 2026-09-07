@@ -14,6 +14,10 @@ import { GuiText } from "./text.js";
  */
 export default class PlatformElectron extends Platform
 {
+
+    /**
+     * @param {import("./platform.js").PlatformConfig} cfg
+     */
     constructor(cfg)
     {
         super(cfg);
@@ -136,7 +140,7 @@ export default class PlatformElectron extends Platform
                 },
                 "title": "Backup",
                 "warning": true,
-                "text": GuiText.projectBackupNotSaved,
+                "text": GuiText.projectBackupNotSaved
             });
 
             return;
