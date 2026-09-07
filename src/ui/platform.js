@@ -11,8 +11,24 @@ import { GuiText } from "./text.js";
 
 /**
  * @typedef PlatformConfig
- * @property {Object} usersettings
+ * @property {Object} [usersettings]
+ * @property {Object} [usersettings.settings]
  * @property {Object} patch
+ * @property {Object} [patch.settings]
+ * @property {Boolean} [patch.settings.manualScreenshot]
+ * @property {Boolean} [isTrustedPatch]
+ * @property {Object} [patchConfig]
+ * @property {String} [patchConfig.prefixAssetPath]
+ * @property {String} [urlCables]
+ * @property {String} [urlSandbox]
+ * @property {Boolean} [previewMode]
+ * @property {String} [patchVersion]
+ * @property {Object} [socketcluster]
+ * @property {Boolean} [isDevEnv]
+ * @property {Object} [user]
+ * @property {String} [communityUrl] used in electron, url to community cables.gl instance
+ * @property {Object} [paths] used in electron, local filesystem paths
+ * @property {String} [currentPatchDir] used in electron, directory of currently opened patch
  */
 
 /**
