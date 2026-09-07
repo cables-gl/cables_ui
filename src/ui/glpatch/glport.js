@@ -299,8 +299,7 @@ export default class GlPort
 
         if (this.#longPortRect)
         {
-            /** @type {UiOp} */
-            const op = this.#port.op;
+            const op = /** @type {UiOp} */ (this.#port.op);
 
             let n = op.getNumVisiblePortsIn();
             if (this.#direction == Port.DIR_OUT) n = op.getNumVisiblePortsOut();

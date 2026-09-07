@@ -16,6 +16,7 @@ import { gui } from "./gui.js";
 import { GuiText } from "./text.js";
 import { UiPatch } from "./core_extend_patch.js";
 import { getConverters } from "./components/converterops.js";
+import { UiPort } from "./core_extend_port.js";
 
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
@@ -27,6 +28,12 @@ class UiOp extends Op
 {
     #log = new Logger("uiop");
     static PORT_UIATTR_HOVER = "hover";
+
+    /** @type {Boolean} set by op script Ops.Ui.SubPatchInput */
+    innerInput;
+
+    /** @type {Boolean} set by op script Ops.Ui.SubPatchOutput */
+    innerOutput;
 
     /**
      * @param {import("cables").Patch<any>} patch
@@ -931,7 +938,7 @@ class UiOp extends Op
 
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
-            const p = this.portsIn[ipi];
+            const p = /** @type {UiPort} */ (this.portsIn[ipi]);
             p._oldTriggered = p._onTriggered;
             p._onTriggered = p._onStepDebugTriggered;
 
@@ -944,7 +951,7 @@ class UiOp extends Op
 
         for (let ipi = 0; ipi < this.portsOut.length; ipi++)
         {
-            const p = this.portsOut[ipi];
+            const p = /** @type {UiPort} */ (this.portsOut[ipi]);
             p._oldTriggered = p._onTriggered;
             p._onTriggered = p._onStepDebugTriggered;
 
@@ -961,7 +968,7 @@ class UiOp extends Op
 
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
-            const p = this.portsIn[ipi];
+            const p = /** @type {UiPort} */ (this.portsIn[ipi]);
             p._onTriggered = p._oldTriggered;
             p.trigger = p._oldTrigger;
             p.set = p._oldSet;
@@ -969,7 +976,7 @@ class UiOp extends Op
 
         for (let ipi = 0; ipi < this.portsOut.length; ipi++)
         {
-            const p = this.portsOut[ipi];
+            const p = /** @type {UiPort} */ (this.portsOut[ipi]);
             p._onTriggered = p._onStepDebugTriggered;
             p.trigger = p._oldTrigger;
             p.set = p._oldSet;
@@ -980,11 +987,11 @@ class UiOp extends Op
     {
         for (let ipi = 0; ipi < this.portsIn.length; ipi++)
         {
-            const p = this.portsIn[ipi];
+            const p = /** @type {UiPort} */ (this.portsIn[ipi]);
             // p.set = p._onSetProfiling;
-            this.portsIn[ipi]._onTriggered = this.portsIn[ipi]._onTriggeredProfiling;
-            this.portsIn[ipi].set = this.portsIn[ipi]._onSetProfiling;
-            // this.portsIn[ipi].setValue = this.portsIn[ipi]._onSetProfiling;
+            p._onTriggered = p._onTriggeredProfiling;
+            p.set = p._onSetProfiling;
+            // p.setValue = p._onSetProfiling;
         }
     }
 }

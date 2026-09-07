@@ -4,7 +4,7 @@ import defaultTheme from "./defaulttheme.json";
 /**
  * @typedef CablesTheme
  * @property {theme_colors_types} colors_types
- * @property {theme_colors_objtypes} colors_types
+ * @property {theme_colors_objtypes} colors_objtypes
  * @property {theme_colors_namespaces} colors_namespaces
  * @property {theme_textedit} textedit
  * @property {theme_colors_timeline} colors_timeline
@@ -28,8 +28,8 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} dynamic
  */
 /**
- * @typedef theme_colors_objtypes
- * @property {Number[]} unknown
+ * @typedef {Object.<string, Number[]>} theme_colors_objtypes
+ * @property {Number[]} default
  */
 /**
  * @typedef theme_colors_namespaces

@@ -228,7 +228,7 @@ class UiPatch extends Patch
             // console.log("subpatch [cache] not found", subPatchId);
             return null;
         }
-        let op = this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
+        let op = /** @type {UiOp} */ (this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId));
         if (op) return op;
 
         // const ops = this.ops;

@@ -289,8 +289,7 @@ export default class GlLink
         this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
         // this.#glPatch.setDrawableColorByType(this.#cable, this._type);
 
-        /** @type {UiOp} */
-        const op1 = gui.corePatch().getOpById(this._opIdInput);
+        const op1 = /** @type {UiOp} */ (gui.corePatch().getOpById(this._opIdInput));
         const op2 = gui.corePatch().getOpById(this._opIdOutput);
 
         if (!op1 || !op1.uiAttribs || !op2 || !op2.uiAttribs) return;

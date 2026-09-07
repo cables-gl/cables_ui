@@ -9,6 +9,7 @@ import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { platform } from "./platform.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
+import { UiOp } from "./core_extend_op.js";
 
 const subPatchOpUtil = {};
 
@@ -664,14 +665,17 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     let hasNoSaveError = false;
-    let erro = "";
+
+    /** @type {{txt: string, level: number, id: string, options: any}} */
+    let erro = null;
 
     const a = {};
     gui.patchView._patchRenderer.viewBox.serialize(a);
     const viewbox = a.viewBoxesGl[oldSubId];
 
-    ops.forEach((op) =>
+    ops.forEach((opBase) =>
     {
+        const op = /** @type {UiOp} */ (opBase);
         if (op.hasUiError("subPatchOpNoSaveError"))
         {
             hasNoSaveError = true;

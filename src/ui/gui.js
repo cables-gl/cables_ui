@@ -116,7 +116,7 @@ export default class Gui extends Events
     #oldCanvasHeight = 0;
     #oldRightPanelWidth = 300;
 
-    /** @type {Patch} */
+    /** @type {UiPatch} */
     #corePatch = null;
 
     /** @type {ServerOps} */
@@ -315,7 +315,7 @@ export default class Gui extends Events
     }
 
     /**
-     * @returns {Patch<UiPatch>}
+     * @returns {UiPatch}
      */
     corePatch()
     {

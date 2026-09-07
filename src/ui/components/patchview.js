@@ -2064,11 +2064,9 @@ export default class PatchView extends Events
     linkPortToOp(e, opid, pid, op2id)
     {
 
-        /** @type {UiOp} */
-        let op1 = this._p.getOpById(opid);
+        let op1 = /** @type {UiOp} */ (this._p.getOpById(opid));
 
-        /** @type {UiOp} */
-        let op2 = this._p.getOpById(op2id);
+        let op2 = /** @type {UiOp} */ (this._p.getOpById(op2id));
         const p = op1.getPort(pid);
         let showConverter = gui.longLinkHover;
         let numPerfectFit = op2.countFittingPorts(p, false);
@@ -2097,7 +2095,7 @@ export default class PatchView extends Events
                 }
                 else
                 {
-                    op2 = this._p.getOpById(newOpId);
+                    op2 = /** @type {UiOp} */ (this._p.getOpById(newOpId));
                     if (Link.canLink(thePort, p))
                     {
                         this._p.link(op1, pid, op2, thePort.name);
