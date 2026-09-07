@@ -8,6 +8,7 @@ import Gui, { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlOp from "./glop.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * rendering ports on {@link GlOp} on  {@link GlPatch}
@@ -298,10 +299,13 @@ export default class GlPort
 
         if (this.#longPortRect)
         {
-            let n = this.#port.op.getNumVisiblePortsIn();
-            if (this.#direction == Port.DIR_OUT) n = this.#port.op.getNumVisiblePortsOut();
+            /** @type {UiOp} */
+            const op = this.#port.op;
 
-            const lastposX = this.#port.op.posByIndex(this.#port.uiAttribs.longPort + this.portIndex - 1, n);
+            let n = op.getNumVisiblePortsIn();
+            if (this.#direction == Port.DIR_OUT) n = op.getNumVisiblePortsOut();
+
+            const lastposX = op.posByIndex(this.#port.uiAttribs.longPort + this.portIndex - 1, n);
 
             this.#longPortRect.setSize(lastposX - this.#posX, gluiconfig.portLongPortHeight);
 
