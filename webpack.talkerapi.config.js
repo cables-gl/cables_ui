@@ -22,12 +22,12 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
-            path.join(__dirname, "src-talkerapi", "talkerapi.js"),
+            path.join(__dirname, "src-talkerapi", "talkerapi.js")
         ],
         "devtool": minify ? "source-map" : sourceMap,
         "output": {
             "path": path.join(__dirname, "dist/js"),
-            "filename": "talkerapi.js"
+            "filename": "talkerapi.ui.js"
         },
         "optimization": {
             "concatenateModules": true,
@@ -42,15 +42,15 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
         "resolve": {
             "extensions": [".json", ".js"],
             "plugins": [
-                new ModuleScopePlugin.default("src-talkerapi/"),
-            ],
+                new ModuleScopePlugin.default("src-talkerapi/")
+            ]
         },
         "module": {
             "rules": [
                 { "sideEffects": false },
                 {
                     "test": /\.d.ts/,
-                    "use": "null-loader",
+                    "use": "null-loader"
                 }
             ]
         },
