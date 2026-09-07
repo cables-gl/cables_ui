@@ -2097,7 +2097,7 @@ export default class ServerOps
         if (endpoint)
         {
             const collectionOpUrl = [];
-            let apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + endpoint + collectionName);
+            let apiUrl = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + endpoint + collectionName + ".js");
             if (platform.config.previewMode) apiUrl += "?preview=true";
             collectionOpUrl.push(apiUrl);
             const lid = "collection ops" + collectionName + utils.uuid();
