@@ -64,6 +64,8 @@ import { CmdDebug } from "./commands/cmd_debug.js";
 import { isFocusOnEditor } from "./components/editor.js";
 import { GradientEditor } from "./dialogs/canv_gradienteditor.js";
 import { CommandPalette } from "./dialogs/commandpalette.js";
+import GlGuiTab from "./components/tabs/tab_glpatch.js";
+import GlUiCanvas from "./glpatch/gluicanvas.js";
 
 /**
  * @type {Gui}
@@ -1846,7 +1848,7 @@ export default class Gui extends Events
 
         if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
-        else if (this.rendererWidth * this.#corePatch.cgl.canvasScale > window.innerWidth * 0.9)
+        else if (this.#corePatch.cgl && this.rendererWidth * this.#corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
             {
@@ -1957,7 +1959,7 @@ export default class Gui extends Events
 
         if (this.userSettings.get("presentationmode")) CmdUi.startPresentationMode();
 
-        if (this.#corePatch.cgl.aborted)
+        if (this.#corePatch.cgl && this.#corePatch.cgl.aborted)
         {
             new ModalDialog({
                 "warning": true,
@@ -2377,7 +2379,7 @@ export default class Gui extends Events
         {
         });
 
-        this.#corePatch.cgl.on("webglcontextlost", () =>
+        this.patchView.patchRenderer.on("webglcontextlost", () =>
         {
             new ModalDialog({
                 "warning": true,

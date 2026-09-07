@@ -21,7 +21,7 @@ export default class GlPatchAPI
         this._log = new Logger("glpatch");
 
         /** @type {Patch} */
-        this._patch = patch;
+        this._patch = gui.corePatch();
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
         this._flowvisStartFrame = 0;
@@ -220,10 +220,10 @@ export default class GlPatchAPI
                 undo.add({
                     "title": "Link port",
                     "context": {
-                        p1Name,
-                        p2Name
+                        "p1Name": p1Name,
+                        "p2Name": p2Name
                     },
-                    undo()
+                    "undo": function ()
                     {
                         const op1 = patch.getOpById(op1Id);
                         const op2 = patch.getOpById(op2Id);
@@ -235,7 +235,7 @@ export default class GlPatchAPI
                         if (op1.getPortByName(p1Name))
                             op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
                     },
-                    redo()
+                    "redo": function ()
                     {
                         patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
                     }
@@ -262,14 +262,14 @@ export default class GlPatchAPI
             undo.add({
                 "title": "Unlink port",
                 "context": {
-                    p1Name,
-                    p2Name
+                    "p1Name": p1Name,
+                    "p2Name": p2Name
                 },
-                undo()
+                "undo": function ()
                 {
                     patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
                 },
-                redo()
+                "redo": function ()
                 {
                     const op1 = patch.getOpById(op1Id);
                     const op2 = patch.getOpById(op2Id);

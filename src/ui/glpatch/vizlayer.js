@@ -4,6 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
 import CanvasManager from "../components/canvas/canvasmanager.js";
+import GlPatch from "./glpatch.js";
 
 /**
  * @typedef VizLayerOptions
@@ -38,12 +39,15 @@ import CanvasManager from "../components/canvas/canvasmanager.js";
  */
 export default class VizLayer extends Events
 {
+
+    /**
+     * @param {GlPatch} glPatch
+     */
     constructor(glPatch)
     {
         super();
 
         this._log = new Logger("VizLayer");
-
         this.renderMs = null;
         this._usingGl = false;
         this._items = [];
@@ -72,7 +76,8 @@ export default class VizLayer extends Events
 
         this._updateSize();
 
-        gui.corePatch().cgl.on("beginFrame", () =>
+        // gui.corePatch()
+        glPatch.cgl.on("beginFrame", () =>
         {
             this._fallBackrendererDisabled = true;
             this._usingGl = true;
@@ -148,7 +153,7 @@ export default class VizLayer extends Events
             if (performance.now() - this.lastGlRendering > 500) this._fallBackrendererDisabled = false;
             return;
         }
-        if (gl && !gui.corePatch().cgl.hasFrameStarted() && this._usingGl)
+        if (gl && !this._glPatch.cgl.hasFrameStarted() && this._usingGl)
         {
             this._usingGl = false;
             return;

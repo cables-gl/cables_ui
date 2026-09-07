@@ -127,8 +127,15 @@ export default class LibLoader
             }
             else
             {
-                const basePath = module.type === "corelib" ? "/api/corelib/" : "/api/lib/";
-                scriptSrc = platform.getSandboxUrl() + basePath + module.src;
+                if (module.type === "corelib")
+                {
+                    scriptSrc = platform.getSandboxUrl() + "/api/corelib/" + module.src + ".js";
+                }
+                else
+                {
+                    scriptSrc = platform.getSandboxUrl() + "/api/lib/" + module.src;
+                }
+
             }
 
             if (!this.isDefined(libName, scriptSrc, moduleExport))

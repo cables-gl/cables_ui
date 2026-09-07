@@ -75,7 +75,9 @@ export default class CanvasManager
         {
             gui.emitEvent("canvasModeChange", this.#canvasMode);
             if (hasChanged) gui.setLayout();
-            gui.corePatch().cgl.updateSize();
+
+            if (gui.corePatch().cgl) gui.corePatch().cgl.updateSize();
+            if (gui.patchView.patchRenderer.cgl) gui.patchView.patchRenderer.cgl.updateSize();
         }
         if (m == this.CANVASMODE_PATCHBG) gui.setCanvasPatchBg();
     }

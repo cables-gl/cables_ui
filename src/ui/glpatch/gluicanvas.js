@@ -80,7 +80,12 @@ export default class GlUiCanvas extends GlCanvas
 
         this.parentResized();
         this.activityHigh();
-        this.patch.on("onRenderFrame", this.render.bind(this));
+        requestAnimationFrame(() =>
+        {
+            this.render();
+        });
+        console.log("requests");
+        // this.patch?.on("onRenderFrame", this.render.bind(this));
     }
 
     parentResized()
@@ -94,7 +99,8 @@ export default class GlUiCanvas extends GlCanvas
     render()
     {
         this.glPatch.updateTime();
-        // if (this.glPatch.paused) return;
+        requestAnimationFrame(() => { this.render(); });
+
         if (this._targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
@@ -121,5 +127,6 @@ export default class GlUiCanvas extends GlCanvas
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
+
     }
 }

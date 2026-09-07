@@ -250,7 +250,8 @@ export default class PatchView extends Events
 
                 gui.rendererWidth = proj.ui.renderer.w;
                 gui.rendererHeight = proj.ui.renderer.h;
-                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
+
+                if (gui.corePatch().cgl)gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
                 gui.setLayout();
             }
 
