@@ -17,7 +17,7 @@ import { CmdUi } from "./cmd_ui.js";
  * @property {string} [infotext]
  * @property {string} [hotkey]
  * @property {boolean} [keybindable]
- * @property {("hasCommunity"|"showRemoteViewer")} [frontendOption]
+ * @property {("hasCommunity"|"showRemoteViewer"|"uploadFiles"|"showExport"|"showPatchBackups")} [frontendOption]
  */
 
 export { Commands };

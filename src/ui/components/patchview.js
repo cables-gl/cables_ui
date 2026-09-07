@@ -1011,16 +1011,17 @@ export default class PatchView extends Events
     }
 
     /**
-     * @returns {Op<any>[]}
+     * @returns {UiOp[]}
      */
     getSelectedOps()
     {
         const perf = gui.uiProfiler.start("patchview getSelectedOps");
+        /** @type {UiOp[]} */
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i] && this._p.ops[i].uiAttribs && this._p.ops[i].uiAttribs.selected)
-                ops.push(this._p.ops[i]);
+                ops.push(/** @type {UiOp} */ (this._p.ops[i]));
 
         perf.finish();
 
@@ -1865,7 +1866,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {Op<any>[]} ops
+     * @param {UiOp[]} ops
      */
     compressSelectedOps(ops)
     {

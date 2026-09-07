@@ -1,5 +1,5 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { Port, utils } from "cables";
+import { Op, Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -16,6 +16,7 @@ import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
 import TabDebugger from "../components/tabs/tab_debugger.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
+import { UiOp } from "../core_extend_op.js";
 
 export { CmdPatch };
 
@@ -372,14 +373,14 @@ class CmdPatch
         const opParams = new OpParampanel();
 
         opParams.setParentElementId(id);
-        opParams.show(op);
+        opParams.show(/** @type {Op} */ (op));
     }
 
     static clearOpTitles()
     {
         let ops = gui.patchView.getSelectedOps();
 
-        if (ops.length == 0)ops = gui.corePatch().ops;
+        if (ops.length == 0)ops = /** @type {UiOp[]} */ (gui.corePatch().ops);
 
         if (!ops || ops.length == 0) return;
 
@@ -398,7 +399,7 @@ class CmdPatch
 
         for (let i = 0; i < ops.length; i++)
         {
-            const op = gui.corePatch().getOpById(ops[i].id);
+            const op = /** @type {UiOp} */ (gui.corePatch().getOpById(ops[i].id));
             op.selectChilds();
         }
 
@@ -1459,14 +1460,14 @@ class CmdPatch
 
         for (let i = 0; i < gui.corePatch().ops.length; i++)
         {
-            const op = gui.corePatch().ops[i];
+            const op = /** @type {UiOp} */ (gui.corePatch().ops[i]);
 
             if (!op.uiAttribs.translate)
                 op.uiAttribs.translate = { "x": 0, "y": 0 };
 
             for (let j = 0; j < gui.corePatch().ops.length; j++)
             {
-                const b = gui.corePatch().ops[j];
+                const b = /** @type {UiOp} */ (gui.corePatch().ops[j]);
                 if (b.deleted || b == op) continue;
 
                 while (b.uiAttribs.translate &&
@@ -1567,6 +1568,8 @@ class CmdPatch
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
+            "rename": false,
+            "sourceOpName": null,
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 

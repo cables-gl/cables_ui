@@ -34,6 +34,8 @@ class UiOp extends Op
     /** @type {Boolean} set by op script Ops.Ui.SubPatchOutput */
     innerOutput;
 
+    deleted=false;
+
     /**
      * @param {import("cables").Patch<any>} patch
      * @param {string} objName
