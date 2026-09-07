@@ -3,14 +3,6 @@ import { gui } from "../gui.js";
 import PacoConnector from "./sc_paconnector.js";
 
 /**
- * @typedef {Object} PatchConnectionReceiver
- */
-
-/**
- * @typedef {Object} PatchConnectionSender
- */
-
-/**
   * @constructor
   * @type {PatchConnectionReceiver}
   * @param {any} patch

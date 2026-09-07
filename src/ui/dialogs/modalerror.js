@@ -30,8 +30,19 @@ import { UiOp } from "../core_extend_op.js";
 /**
  * Opens a modal dialog and shows info about given exception
  *
+<<<<<<< HEAD
+ * options:
+ * - title - will replace title
+ * - text
+ * - codeText - will be shown as monospace font
+ * - op: will add an "edit op" button
+ * - opname: will show opname
+ * - exception: will show stacktrace and exception message. etc.
+ *
+=======
  * @param {ModalErrorOptions} options option object
  * @class
+>>>>>>> refs/remotes/origin/develop
  */
 export default class ModalError
 {
