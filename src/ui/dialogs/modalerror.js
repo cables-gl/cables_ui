@@ -5,19 +5,32 @@ import ModalDialog from "./modaldialog.js";
 import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import { UiOp } from "../core_extend_op.js";
+
+/**
+ * @typedef ModalErrorException
+ * @property {string} [cause] indicates a failing op, format "opId:<id>"
+ * @property {Error} [error] wrapped underlying error, used instead of the exception itself when set
+ * @property {string} [message]
+ * @property {string} [stack]
+ * @property {string} [customMessage] extra message appended below the stacktrace
+ */
+
+/**
+ * @typedef ModalErrorOptions
+ * @property {string} [title] will replace title
+ * @property {string} [text]
+ * @property {string} [codeText] will be shown as monospace font
+ * @property {UiOp} [op] will add an "edit op" button
+ * @property {string} [opname] will show opname
+ * @property {ModalErrorException} [exception] will show stacktrace and exception message
+ * @property {string} [triggerStack]
+ */
 
 /**
  * Opens a modal dialog and shows info about given exception
  *
- * options:
- * - title - will replace title
- * - text
- * - codeText - will be shown as monospace font
- * - op: will add an "edit op" button
- * - opname: will show opname
- * - exception: will show stacktrace and exception message. etc.
- *
- * @param {Object} option option object
+ * @param {ModalErrorOptions} options option object
  * @class
  */
 export default class ModalError
