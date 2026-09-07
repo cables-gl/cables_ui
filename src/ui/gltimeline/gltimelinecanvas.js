@@ -3,6 +3,7 @@ import { Texture } from "cables-corelibs";
 import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
+import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 
 /**
  * canvas for the timeline {@link GlTimeline}
@@ -26,7 +27,7 @@ export class glTimelineCanvas extends GlCanvas
         this.tab = tab;
         this.setSize(100, 100);
         this.activityHigh();
-        this.patch.addEventListener("onRenderFrame", this.render.bind(this));
+        _patch?.addEventListener("onRenderFrame", this.render.bind(this));
 
         this.glTimeline = new GlTimeline(this.cgl);
 

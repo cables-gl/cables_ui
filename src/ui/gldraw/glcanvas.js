@@ -1,4 +1,5 @@
 import { Op, Patch, utils } from "cables";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlPatch from "../glpatch/glpatch.js";
 import GlPatchAPI from "../glpatch/patchapi.js";
 import { gui } from "../gui.js";
@@ -40,14 +41,21 @@ export default class GlCanvas
         if (parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
 
-        this.patch = new Patch({
+        // this.patch = new Patch({
+        //     "glCanvasId": this.canvas.id,
+        //     "glCanvasResizeToParent": false,
+        //     "glCanvasResizeToWindow": false,
+        //     "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
+        // });
+        // this.cgl = this.patch.cgl;
+        this.cgl = new CglContext(null, {
             "glCanvasId": this.canvas.id,
             "glCanvasResizeToParent": false,
             "glCanvasResizeToWindow": false,
             "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
         });
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
-        this.cgl = this.patch.cgl;
         if (!this.cgl)
         {
             console.error("no cgl in glcanvas constructor");
@@ -120,7 +128,8 @@ export default class GlCanvas
         // this.canvas.height = this.height * window.devicePixelRatio;
 
         this.cgl.pixelDensity = window.devicePixelRatio;
-        if (this.patch.isPlaying()) this.cgl.setSize(this.width, this.height);
+        // if (this.patch.isPlaying())
+        this.cgl.setSize(this.width, this.height);
     }
 
     setSizeCss(w, h)
@@ -134,25 +143,26 @@ export default class GlCanvas
         // this.canvas.height = this.height * window.devicePixelRatio;
 
         this.cgl.pixelDensity = window.devicePixelRatio;
-        if (this.patch.isPlaying()) this.cgl.setSize(this.width / this.cgl.pixelDensity, this.height / this.cgl.pixelDensity);
+        // if (this.patch.isPlaying())
+        this.cgl.setSize(this.width / this.cgl.pixelDensity, this.height / this.cgl.pixelDensity);
     }
 
     dispose()
     {
         this.disposed = true;
-        this.patch.pause();
-        this.patch.dispose();
+        // this.patch.pause();
+        // this.patch.dispose();
         this.canvas.remove();
     }
 
     pause()
     {
-        this.patch.pause();
+        // this.patch.pause();
     }
 
     resume()
     {
-        this.patch.resume();
+        // this.patch.resume();
     }
 
     activityIdle()
