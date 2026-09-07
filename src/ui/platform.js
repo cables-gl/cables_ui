@@ -10,6 +10,12 @@ import { userSettings } from "./components/usersettings.js";
 import { GuiText } from "./text.js";
 
 /**
+ * @typedef PlatformConfig
+ * @property {Object} usersettings
+ * @property {Object} patch
+ */
+
+/**
  * @type {Platform}
  */
 let platform = null;
@@ -21,6 +27,9 @@ export { platform };
 export class Platform extends Events
 {
 
+    /**
+     * @param {PlatformConfig} cfg
+     */
     constructor(cfg = null)
     {
         super();
@@ -285,7 +294,7 @@ export class Platform extends Events
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
-                "timeout": false,
+                "timeout": false
             });
         }
     }
@@ -331,7 +340,7 @@ export class Platform extends Events
             (options, _next) =>
             {
                 notifyError(options.msg, options.text, options.options);
-            },
+            }
         );
 
         this.talkerAPI.addEventListener(
@@ -340,7 +349,7 @@ export class Platform extends Events
             {
                 gui.closeModal();
                 gui.refreshFileManager();
-            },
+            }
         );
 
         this.talkerAPI.addEventListener(
@@ -351,7 +360,7 @@ export class Platform extends Events
                 {
                     this.fileUpdated(options.filename);
                 }
-            },
+            }
         );
 
         this.talkerAPI.addEventListener(
@@ -391,7 +400,7 @@ export class Platform extends Events
                         }
                     }
                 }
-            },
+            }
         );
 
         this.talkerAPI.addEventListener(TalkerAPI.CMD_UI_JOB_START, (options, _next) =>
@@ -409,7 +418,7 @@ export class Platform extends Events
             (options, _next) =>
             {
                 gui.jobs().setProgress(options.id, options.progress);
-            },
+            }
         );
 
         this.talkerAPI.addEventListener(
@@ -419,7 +428,7 @@ export class Platform extends Events
                 gui.setProjectName(opts.name);
                 // send this back to have the title of the patch-editor iframe updated
                 this.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, opts);
-            },
+            }
         );
 
         this.talkerAPI.send(TalkerAPI.CMD_GET_PATCH, {}, (_err, r) =>
@@ -507,11 +516,11 @@ export class Platform extends Events
                             "callback": () =>
                             {
                                 new ModalDialog(backupModalOptions);
-                            },
+                            }
                         },
                         "title": "Backup",
                         "warning": true,
-                        "text": GuiText.projectBackupNotSaved,
+                        "text": GuiText.projectBackupNotSaved
                     });
 
                 }
@@ -587,7 +596,7 @@ export class Platform extends Events
             gui.fileManager.setFilePort(
                 portInputEle,
                 gui.corePatch().getOpById(opid),
-                ele.byId(previewId),
+                ele.byId(previewId)
             );
             gui.fileManager.selectFile(fn);
 
@@ -634,16 +643,16 @@ export class Platform extends Events
                 "icon": "settings",
                 "closable": true,
                 "singleton": false,
-                "gotoUrl": gotoUrl,
+                "gotoUrl": gotoUrl
             },
-            true,
+            true
         );
     }
 
     getPatchOpsNamespace()
     {
         const PATCHOPS_ID_REPLACEMENTS = {
-            "-": "___",
+            "-": "___"
         };
         let ns = gui.project().shortId;
         Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>

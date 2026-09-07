@@ -88,6 +88,7 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} ruler_tick
  * @property {Number[]} ruler_text
  */
+
 /**
  * @typedef theme_colors_patch
  * @property {Number[]} opBgRectSelected
@@ -105,10 +106,12 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} opNotWorkingCross
  * @property {Number[]} patchComment
  */
+
 /**
  * @typedef theme_colors_html
  * @property {Number[]} text-color
  */
+
 /**
  * @typedef theme_patch
  * @property {number} selectedOpBorderX
@@ -120,7 +123,9 @@ import defaultTheme from "./defaulttheme.json";
  * @property {number} fadeOutFadeDist
  * @property {number} fadeOutFadeOpacity
  * @property {number} cableButtonSize
+ * @property {number} cablesWidth
  */
+
 /**
  * @typedef theme_colors_vizlayer
  * @property {Number[]} colorText

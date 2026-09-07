@@ -1,6 +1,8 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Anim, CglContext, Op, Port } from "cables";
-import { idleCallbackSoon } from "cables/src/core/utils.js";
+import { Anim, Op, Port } from "cables";
+import { idleCallbackSoon, logStack } from "cables/src/core/utils.js";
+import { BoundingBox } from "cables-corelibs/cg/cg_boundingbox.js";
+import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
 import GlText from "../gldraw/gltext.js";
@@ -101,7 +103,7 @@ export default class GlPatch extends Events
     _subpatchoprect = null;
     suggestionTeaser = null;
 
-    /** @type {GlLineDrawer[]} */
+    /** @type {Object<String,GlLineDrawer>} */
     #splineDrawers = null;
     #selectionArea = null;
     #dropInOpBorder = null;
@@ -142,7 +144,7 @@ export default class GlPatch extends Events
         this.viewBox = new GlViewBox(cgl, this);
 
         this.#rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
-        this.#lines = new GlSplineDrawer(cgl, { "name": "links", "initNum": 100 });
+        this.#lines = new GlSplineDrawer(cgl, "links");
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
         this.#rectInstancer.hoverWhenButton;
         this._overLayRects.hoverWhenButton = false;
@@ -150,8 +152,8 @@ export default class GlPatch extends Events
         this.#textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
 
-        /** @type {number|string} */
-        this._currentSubpatch = 0;
+        /** @type {string} */
+        this._currentSubpatch = "0";
         this.#selectionArea = new GlSelectionArea(this._overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
@@ -522,7 +524,7 @@ export default class GlPatch extends Events
     get _lastMouseX()
     {
         console.warn("_lastmouse should not be used");
-        CABLES.logStack();
+        logStack();
         return this.#lastMouseX;
     }
 
@@ -534,7 +536,7 @@ export default class GlPatch extends Events
     get _lastMouseY()
     {
         console.warn("_lastmouse should not be used");
-        CABLES.logStack();
+        logStack();
         return this.#lastMouseY;
     }
 
@@ -562,7 +564,7 @@ export default class GlPatch extends Events
     updateVizFlowMode()
     {
         for (let i in this._glOpz)
-            this._glOpz[i].updateVizFlowMode(this.vizFlowMode);
+            this._glOpz[i].updateVizFlowMode();
     }
 
     updateCursor()
@@ -1659,7 +1661,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {import("cables-corelibs").BoundingBox} bounds
+     * @param {BoundingBox} bounds
      * @param {Function} next
      */
     subPatchOpAnimStart(bounds, next)
@@ -1819,12 +1821,6 @@ export default class GlPatch extends Events
         return this._glOpz[opid];
     }
 
-    // make static util thing...
-    /**
-     * @param {import("./glcable.js").default} e
-     * @param {number} t
-     * @param {number} [diff]
-     */
     // setDrawableColorByType(e, t, diff)
     // {
     //     if (!e) return;
@@ -1931,7 +1927,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {number|string} sub
+     * @param {string} sub
      * @param {function} [next]
      */
     setCurrentSubPatch(sub, next)
@@ -1952,7 +1948,7 @@ export default class GlPatch extends Events
             // throw new Error("current subpatch undefined");
         }
         this.unselectAll();
-        if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
+        if (sub != "0" && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
 
         /*
