@@ -98,6 +98,7 @@ export default class GlUiCanvas extends GlCanvas
 
     render()
     {
+        const startTime = performance.now();
         this.glPatch.updateTime();
         requestAnimationFrame(() => { this.render(); });
 
@@ -127,6 +128,8 @@ export default class GlUiCanvas extends GlCanvas
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
+
+        gui.corePatch().perfProfiler.setDuration("glui", performance.now() - startTime);
 
     }
 }

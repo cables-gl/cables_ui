@@ -1,5 +1,5 @@
 import { Logger, Events, ele } from "cables-shared-client";
-import { Patch } from "cables";
+import { Op, Patch } from "cables";
 import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
@@ -27,6 +27,7 @@ import GlPatch from "./glpatch.js";
  * @property {number} scroll
  * @property {string} syntax
  * @property {import("../api/opsserver.js").LinterDiag[]} diagnostics
+ * @property {Object} highlightLines
  */
 
 /**
@@ -85,7 +86,7 @@ export default class VizLayer extends Events
 
         gui.corePatch().on(Patch.EVENT_OP_ADDED, (a) =>
         {
-            if (a.renderVizLayer || a.renderVizLayerGl || a.renderVizLayerGpu)
+            if (a.renderVizLayer || a.renderVizLayerGpu)
             {
                 let item = this._itemsLookup[a.id];
                 if (item) this._log.log("vizlayer id already exists...");
@@ -146,6 +147,7 @@ export default class VizLayer extends Events
 
     renderVizLayer(gl)
     {
+        const startTime = performance.now();
         if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_MAXIMIZED) return;
         if (!gl && this._fallBackrendererDisabled)
         {
@@ -244,7 +246,6 @@ export default class VizLayer extends Events
                 if (!item.op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < item.op.uiAttribs.vizLayerMaxZoom)
                     if (pos[0] === pos[0] && size[0] === size[0])
                     {
-                        if (gl && item.op.renderVizLayerGl) item.op.renderVizLayerGl(this._canvasCtx, layer, this);
                         if (item.op.renderVizLayer)item.op.renderVizLayer(this._canvasCtx, layer, this);
                     }
             }
@@ -264,8 +265,12 @@ export default class VizLayer extends Events
             this._glPatch.debugData.numVizLayers = count;
 
         perf.finish();
+        gui.corePatch().perfProfiler.setDuration("vizlayer", performance.now() - startTime);
     }
 
+    /**
+     * @param {Op} op
+     */
     _removeOpItem(op)
     {
         if (!op)

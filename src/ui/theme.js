@@ -128,9 +128,9 @@ import defaultTheme from "./defaulttheme.json";
 
 /**
  * @typedef theme_colors_vizlayer
- * @property {Number[]} colorText
- * @property {Number[]} colorBackground
- * @property {Number[]} colorLineNumbers
+ * @property {string} colorText
+ * @property {string} colorBackground
+ * @property {string} colorLineNumbers
  */
 
 export class CssClassNames
