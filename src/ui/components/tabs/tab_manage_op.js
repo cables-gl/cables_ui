@@ -11,6 +11,8 @@ import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import namespace from "../../namespaceutils.js";
+import ModalOpDependencies from "../../dialogs/modalopdependencies.js";
+import ModalOpAttachments from "../../dialogs/modalopattachments.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -211,7 +213,7 @@ export default class ManageOp
                         }
                         if (readable.startsWith("inc_"))
                         {
-                            readableType = "Included js file";
+                            readableType = "Included JS file";
                             readable = readable.replace("inc_", "");
                         }
                         if (readable.endsWith("_frag"))
@@ -389,24 +391,12 @@ export default class ManageOp
 
                 ele.clickables(this.#tab.contentEle, ".dependency-add", (e, dataset) =>
                 {
-                    const dependencyTab = ele.byId(this.#id + "_dependencytabs");
-                    if (dependencyTab)
-                    {
-                        if (dataset.action === "show") ele.show(dependencyTab);
-                        if (dataset.action === "hide") ele.hide(dependencyTab);
-                    }
-                    const openButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='show']");
-                    const hideButton = this.#tab.contentEle.querySelector("a.dependency-add[data-action='hide']");
-                    if (dataset.action === "show")
-                    {
-                        if (openButton) ele.hide(openButton);
-                        if (hideButton) ele.show(hideButton);
-                    }
-                    if (dataset.action === "hide")
-                    {
-                        if (openButton) ele.show(openButton);
-                        if (hideButton) ele.hide(hideButton);
-                    }
+                    if (canEditOp) new ModalOpDependencies({ "viewId": this.#id, "opDoc": opDoc, "canEditOp": canEditOp });
+                });
+
+                ele.clickables(this.#tab.contentEle, ".attachment-add", (e, dataset) =>
+                {
+                    if (canEditOp) new ModalOpAttachments({ "viewId": this.#id, "opDoc": opDoc, "canEditOp": canEditOp });
                 });
 
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
@@ -529,35 +519,6 @@ export default class ManageOp
 
                 if (canEditOp)
                 {
-                    const dependencyTabId = this.#id + "_dependencytabs";
-                    const tabPanel = ele.byId(dependencyTabId);
-                    if (tabPanel)
-                    {
-                        const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
-                        const libs = [];
-                        allLibs.forEach((lib) =>
-                        {
-                            libs.push({
-                                "url": lib,
-                                "name": utils.basename(lib),
-                                "isAssetLib": lib.startsWith("/assets/")
-                            });
-                        });
-
-                        const panelOptions = {
-                            "opDoc": opDoc,
-                            "libs": libs,
-                            "coreLibs": gui.opDocs.coreLibs,
-                            "user": gui.user,
-                            "canEditOp": canEditOp,
-                            "viewId": this.#id
-                        };
-
-                        if (tabPanel) tabPanel.innerHTML = "";
-                        const depTabs = new OpDependencyTabPanel(dependencyTabId, panelOptions);
-                        depTabs.init();
-                    }
-
                     if (portJson && portJson.ports)
                     {
                         const buttonCreate = ele.byId(this.#id + "_port_create");

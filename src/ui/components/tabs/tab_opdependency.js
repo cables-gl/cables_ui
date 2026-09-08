@@ -48,8 +48,6 @@ export default class OpDependencyTab extends Tab
     {
         const depSource = this.options.depSource;
         const viewId = this.options.viewId;
-        const opName = this.options.opDoc.name;
-        const opDoc = this.options.opDoc;
 
         const selector = "addopdependency_" + depSource + "_" + viewId;
         const depsEle = ele.byId(selector);
@@ -57,7 +55,6 @@ export default class OpDependencyTab extends Tab
         if (depsEle)
         {
             const srcEle = depsEle.querySelector(".depSrc");
-            const submitEle = depsEle.querySelector(".cblbutton.add");
             const depTypeEle = depsEle.querySelector("input[name='depType']");
             const exportNameEle = depsEle.querySelector(".exportName");
             const typeSelectEle = depsEle.querySelector("select.type");
@@ -120,97 +117,96 @@ export default class OpDependencyTab extends Tab
                 fileInput.addEventListener("change", () =>
                 {
                     srcEle.value = fileInput.files[0].name;
-                    if (depTypeEle && depTypeEle.value === "static") {
-                        const usageEle = depsEle.querySelector(".usage.static code");
-                        if (usageEle) usageEle.innerText = "staticAttachments[\"" + fileInput.files[0].name.replace(".", "_") + "\"]";
-                    }
                 });
             }
-            submitEle.addEventListener("click", () =>
+        }
+    }
+
+    submit()
+    {
+        const depSource = this.options.depSource;
+        const viewId = this.options.viewId;
+
+        const selector = "addopdependency_" + depSource + "_" + viewId;
+
+        const depsEle = ele.byId(selector);
+        const srcEle = depsEle.querySelector(".depSrc");
+        const depTypeEle = depsEle.querySelector("input[name='depType']");
+        const exportNameEle = depsEle.querySelector(".exportName");
+        const submitEle = ele.byId("choice_ok");
+
+        const opName = this.options.opDoc.name;
+        const opDoc = this.options.opDoc;
+
+        if (submitEle.disabled) return;
+        const depSrc = srcEle.value;
+        if (!depSrc) return;
+        submitEle.innerText = "working...";
+        submitEle.disabled = true;
+
+        let exportName = null;
+        if (exportNameEle)
+        {
+            const exportNameInput = exportNameEle.querySelector("input");
+            if (exportNameInput) exportName = exportNameInput.value;
+        }
+
+        const depType = depTypeEle.value;
+        const fileInput = depsEle.querySelector("input[type='file']");
+        if (fileInput && fileInput.files && fileInput.files.length > 0)
+        {
+            let filename = fileInput.files[0].name;
+            fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
             {
-                if (submitEle.disabled) return;
-                const depSrc = srcEle.value;
-                if (!depSrc) return;
-                submitEle.innerText = "working...";
-                submitEle.disabled = true;
-
-                let exportName = null;
-                if (exportNameEle)
+                if (!err)
                 {
-                    const exportNameInput = exportNameEle.querySelector("input");
-                    if (exportNameInput) exportName = exportNameInput.value;
-                }
-
-                const depType = depTypeEle.value;
-                if (fileInput && fileInput.files && fileInput.files.length > 0)
-                {
-                    let filename = fileInput.files[0].name;
-                    if (depType === "static" && !filename.startsWith("att_bin_")) filename = "att_bin_" + filename;
-                    fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
-                    {
-                        if (!err)
-                        {
-                            if (depType !== "static")
-                            {
-                                gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
-                                {
-                                    submitEle.innerText = "Add";
-                                    submitEle.disabled = false;
-                                    gui.emitEvent("refreshManageOp", opName);
-                                });
-                            }
-                            else
-                            {
-                                gui.serverOps.loadOpDependencies(opName, (op) =>
-                                {
-                                    submitEle.innerText = "Add";
-                                    submitEle.disabled = false;
-                                    gui.emitEvent("refreshManageOp", opName);
-                                }, true);
-
-                            }
-                        }
-                        else
-                        {
-                            submitEle.innerText = "Add";
-                            submitEle.disabled = false;
-
-                            let html = "";
-                            html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
-                            html += "Try removing any older version of this dependency first.";
-                            new ModalDialog({
-                                "title": "Error adding op-dependency",
-                                "showOkButton": true,
-                                "html": html
-                            });
-                        }
-                    });
-                }
-                else if (depType === "lib")
-                {
-                    gui.serverOps.addOpLib(opName, depSrc, () =>
-                    {
-                        submitEle.innerText = "Add";
-                        submitEle.disabled = false;
-                    });
-                }
-                else if (depType === "corelib")
-                {
-                    gui.serverOps.addCoreLib(opName, depSrc, () =>
-                    {
-                        submitEle.innerText = "Add";
-                        submitEle.disabled = false;
-                    });
-                }
-                else
-                {
-                    gui.serverOps.addOpDependency(opDoc.id, depSrc, depType, exportName, () =>
+                    gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
                     {
                         submitEle.innerText = "Add";
                         submitEle.disabled = false;
                         gui.emitEvent("refreshManageOp", opName);
                     });
                 }
+                else
+                {
+                    submitEle.innerText = "Add";
+                    submitEle.disabled = false;
+
+                    let html = "";
+                    html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
+                    html += "Try removing any older version of this dependency first.";
+                    new ModalDialog({
+                        "title": "Error adding op-dependency",
+                        "showOkButton": true,
+                        "warning": true,
+                        "html": html
+                    });
+                }
+            });
+        }
+        else if (depType === "lib")
+        {
+            gui.serverOps.addOpLib(opName, depSrc, () =>
+            {
+                submitEle.innerText = "Add";
+                submitEle.disabled = false;
+            });
+        }
+        else if (depType === "corelib")
+        {
+            gui.serverOps.addCoreLib(opName, depSrc, () =>
+            {
+                submitEle.innerText = "Add";
+                submitEle.disabled = false;
+            });
+        }
+        else
+        {
+            gui.serverOps.addOpDependency(opDoc.id, depSrc, depType, exportName, () =>
+            {
+                submitEle.innerText = "Add";
+                submitEle.disabled = false;
+                gui.emitEvent("refreshManageOp", opName);
             });
         }
     }
@@ -230,10 +226,12 @@ export default class OpDependencyTab extends Tab
         const selector = "addopdependency_" + depSource + "_" + viewId;
         const depsEle = ele.byId(selector);
 
-        if (depsEle) {
+        if (depsEle)
+        {
 
             const usageEle = depsEle.querySelector(".usage.module code");
-            if (usageEle) {
+            if (usageEle)
+            {
                 const exportNameInput = exportNameEle.querySelector("input");
                 if (exportNameInput) usageEle.innerText = exportNameInput.value;
             }

@@ -1,0 +1,29 @@
+<script id="op_add_attachment_js" type="text/x-handlebars-template">
+    <div id="addopattachment_js_{{viewId}}" class="addopattachment">
+        <div class="usage warning-error-level0 js">Will be executed before the op-code is run.</div>
+        <label>
+            Name: <input class="attSrc" type="text">
+        </label>
+        <input type="hidden" name="attType" value="js"/>
+    </div>
+</script>
+<script id="op_add_attachment_string" type="text/x-handlebars-template">
+    <div id="addopattachment_string_{{viewId}}" class="addopattachment">
+        <div class="usage warning-error-level0 string">Can be accessed as string via <code>attachments</code> in the op</div>
+        <label>
+            Name: <input class="attSrc" type="text">
+        </label>
+        <input type="hidden" name="attType" value="string"/>
+    </div>
+</script>
+<script id="op_add_attachment_binary" type="text/x-handlebars-template">
+    <div id="addopattachment_binary_{{viewId}}" class="addopattachment">
+        <div class="usage warning-error-level0 static">Can be accessed as base64-string via <code>staticAttachments</code> in the op</div>
+        <input class="attSrc upload" type="text" disabled readonly>
+        <a class="cblbutton upload">
+            <span class="icon icon-plus-circle icon-1_25x"></span>Select file</a>
+        <br/>
+        <input type="hidden" name="attType" value="binary"/>
+        <input class="hidden" type="file"/>
+    </div>
+</script>

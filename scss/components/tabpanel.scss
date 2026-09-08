@@ -178,13 +178,16 @@
     overflow-y: auto;
 }
 
-.dependencytabs {
+.dependencytabs, .attachmenttabs {
 
-    .addopdependency {
-        background-color: var(--color-01);
+    .tabcontent {
+        height: fit-content !important;
+    }
+
+    .addopdependency, .addopattachment {
         padding: 15px;
 
-        .depSrc.upload {
+        .depSrc.upload, .attSrc.upload {
             width: 75%;
         }
 
