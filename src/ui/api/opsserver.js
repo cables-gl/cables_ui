@@ -777,47 +777,6 @@ export default class ServerOps
         });
     }
 
-    addAttachmentDialog(opName)
-    {
-        let opid = opName;
-        const docs = gui.opDocs.getOpDocByName(opName);
-        if (docs && docs) opid = docs.id;
-
-        let html = "Use this attachment in " + opName + " by accessing <code>attachments[\"my_attachment\"]</code>.";
-        new ModalDialog({
-            "title": "Create attachment",
-            "text": html,
-            "prompt": true,
-            "promptOk": (attName) =>
-            {
-                platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_ATTACHMENT, {
-                    "opname": opid,
-                    "name": attName
-                }, (err, res) =>
-                {
-                    if (err)
-                    {
-                        this.showApiError(err);
-                        return;
-                    }
-
-                    if (res && res.data && res.data.name)
-                    {
-                        const opDoc = gui.opDocs.getOpDocByName(opName);
-                        if (opDoc)
-                        {
-                            if (!opDoc.attachmentFiles) opDoc.attachmentFiles = [];
-                            if (opDoc.attachmentFiles && !opDoc.attachmentFiles.includes(res.data.name)) opDoc.attachmentFiles.push(res.data.name);
-                        }
-                    }
-
-                    this.editAttachment(opName, "att_" + attName);
-                    gui.emitEvent("refreshManageOp", opName);
-                });
-            }
-        });
-    }
-
     testServer()
     {
         let opname = platform.getPatchOpsNamespace() + "test_" + utils.shortId();
