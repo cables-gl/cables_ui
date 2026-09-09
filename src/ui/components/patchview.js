@@ -91,10 +91,10 @@ export default class PatchView extends Events
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
         corepatch.on("onLink", this._portValidate.bind(this));
-        corepatch.on("onUnLink", this._portValidate.bind(this));
+        corepatch.on(Link.EVENT_UNLINK, this._portValidate.bind(this));
 
         corepatch.on("onLink", this.refreshCurrentOpParamsByPort.bind(this));
-        corepatch.on("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
+        corepatch.on(Link.EVENT_UNLINK, this.refreshCurrentOpParamsByPort.bind(this));
 
         // corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
         corepatch.on(Patch.EVENT_OP_DELETED, this._onDeleteOpUndo.bind(this));
@@ -102,7 +102,7 @@ export default class PatchView extends Events
         corepatch.on(Patch.EVENT_OP_ADDED, (op) => { if (!undo.paused()) gui.savedState.setUnSaved("onOpAdd", op.getSubPatch()); });
         corepatch.on(Patch.EVENT_OP_DELETED, (op) => { if (!undo.paused()) gui.savedState.setUnSaved("onOpDelete", op.getSubPatch()); });
         corepatch.on("onLink", (p1, p2) => { if (!undo.paused()) gui.savedState.setUnSaved("onLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
-        corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused()) gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
+        corepatch.on(Link.EVENT_UNLINK, (p1, p2) => { if (!undo.paused()) gui.savedState.setUnSaved("onUnLink", p1.op.getSubPatch() || p2.op.getSubPatch()); });
     }
 
     get element() { return this._element || PatchView.getElement(); }

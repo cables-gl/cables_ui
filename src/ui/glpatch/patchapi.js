@@ -1,5 +1,5 @@
 import { Logger } from "cables-shared-client";
-import { Op, Patch } from "cables";
+import { Link, Op, Patch } from "cables";
 import GlLink from "./gllink.js";
 import undo from "../utils/undo.js";
 import { hideToolTip } from "../elements/tooltips.js";
@@ -32,7 +32,7 @@ export default class GlPatchAPI
         this._patch.on(Patch.EVENT_OP_DELETED, this._onDeleteOp.bind(this));
 
         this._patch.on("onLink", this._onLink.bind(this));
-        this._patch.on("onUnLink", this._onUnLink.bind(this));
+        this._patch.on(Link.EVENT_UNLINK, this._onUnLink.bind(this));
     }
 
     /**

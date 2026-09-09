@@ -1,4 +1,5 @@
 import { Logger } from "cables-shared-client";
+import { Link } from "cables";
 import { gui } from "../gui.js";
 import PacoConnector from "./sc_paconnector.js";
 
@@ -257,7 +258,7 @@ const PatchConnectionSender = function (patch)
             });
         });
 
-    patch.addEventListener("onUnLink", (p1, p2) =>
+    patch.addEventListener(Link.EVENT_UNLINK, (p1, p2) =>
     {
         this.send(PacoConnector.PACO_UNLINK, {
             "op1": p1.op.id,
