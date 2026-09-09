@@ -10,7 +10,7 @@ import startIdleListeners from "./components/idlemode.js";
 import GlGuiFull from "./glpatch/gluifull.js";
 import { platform } from "./platform.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
-import UserSettings, { userSettings } from "./components/usersettings.js";
+import { UserSettings, userSettings } from "./components/usersettings.js";
 import { GuiText } from "./text.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 
@@ -84,7 +84,7 @@ export default function startUi(cfg)
                         CmdUi.muteAudio(false);
                     }
 
-                    gui.setFontSize(userSettings.get("fontSizeOff"));
+                    gui.setFontSize(userSettings.get(UserSettings.PREF_FONT_SIZE_OFF));
 
                     userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
                     {
@@ -118,7 +118,7 @@ export default function startUi(cfg)
 
                     new HtmlInspector();
 
-                    if (userSettings.get("openLogTab") == true) CABLES.CMD.DEBUG.logConsole();
+                    if (userSettings.get(UserSettings.PREF_OPEN_LOG_TAB) == true) CABLES.CMD.DEBUG.logConsole();
 
                     gui.maintabPanel.init();
 
@@ -126,7 +126,7 @@ export default function startUi(cfg)
 
                     setTimeout(() =>
                     {
-                        if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
+                        if (userSettings.get(UserSettings.PREF_FORCE_WEBGL1)) notifyError("Forcing WebGl v1 ");
                     }, 1000);
 
                     gui.patchView.checkPatchErrors();
@@ -178,7 +178,7 @@ export default function startUi(cfg)
                         gui.corePatch().checkLinkTimeWarnings();
                     });
 
-                    if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+                    if (!userSettings.get(UserSettings.PREF_INTRO_COMPLETED))gui.introduction.showIntroduction();
                     setTimeout(() =>
                     {
                         gui.corePatch().checkLinkTimeWarnings();

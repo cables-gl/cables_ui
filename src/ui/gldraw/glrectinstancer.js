@@ -5,7 +5,7 @@ import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**

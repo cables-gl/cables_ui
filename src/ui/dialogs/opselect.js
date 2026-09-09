@@ -9,7 +9,7 @@ import OpSearch from "../components/opsearch.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import opNames from "../opnameutils.js";
 import { platform } from "../platform.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 /**
  * @typedef OpSelectOptions
@@ -602,7 +602,7 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
-        this.#minimal = userSettings.get("miniopselect") == true;
+        this.#minimal = userSettings.get(UserSettings.PREF_MINIOPSELECT) == true;
 
         this._options = options;
         hideToolTip();

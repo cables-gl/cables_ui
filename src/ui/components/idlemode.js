@@ -1,7 +1,7 @@
 import { ModalBackground, Logger } from "cables-shared-client";
 import uiConfig from "../uiconfig.js";
 import { gui } from "../gui.js";
-import { userSettings } from "./usersettings.js";
+import { UserSettings, userSettings } from "./usersettings.js";
 
 let idling = false;
 let idleTimeout = null;
@@ -19,7 +19,7 @@ function startIdleMode()
 
     if (!window.gui || !gui.finishedLoading()) return;
     if (idling) return;
-    if (!userSettings.get("idlemode")) return;
+    if (!userSettings.get(UserSettings.PREF_IDLEMODE)) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
 
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;

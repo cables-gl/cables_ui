@@ -4,7 +4,7 @@ import { gui } from "../../gui.js";
 import { GuiText } from "../../text.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
-import UserSettings, { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import GlPatch from "../../glpatch/glpatch.js";
@@ -67,71 +67,71 @@ export default class Preferences
 
     updateValues()
     {
-        this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
+        this.setSwitchValue("snapToGrid2", userSettings.get(UserSettings.PREF_SNAPTOGRID));
         this.setSwitchValue(UserSettings.PREF_OPSELECT_AUTOLINKOPS, userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS));
-        this.setSwitchValue("checkOpCollisions", userSettings.get("checkOpCollisions"));
+        this.setSwitchValue("checkOpCollisions", userSettings.get(UserSettings.PREF_CHECK_OP_COLLISIONS));
 
-        this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
-        this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
+        this.setSwitchValue("hideCanvasUi", userSettings.get(UserSettings.PREF_HIDE_CANVAS_UI));
+        this.setSwitchValue("bgpreview", userSettings.get(UserSettings.PREF_BGPREVIEW));
 
-        this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
-        this.setSwitchValue("texpreviewMode", userSettings.get("texpreviewMode") || "");
+        this.setSwitchValue("texpreviewTransparent", userSettings.get(UserSettings.PREF_TEXPREVIEW_TRANSPARENT) || false);
+        this.setSwitchValue("texpreviewMode", userSettings.get(UserSettings.PREF_TEXPREVIEW_MODE) || "");
 
-        this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
-        this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));
-        this.setSwitchValue("presentationmode", userSettings.get("presentationmode"));
-        this.setSwitchValue("nobrowserWarning", userSettings.get("nobrowserWarning"));
-        this.setSwitchValue("introCompleted", userSettings.get("introCompleted"));
-        this.setSwitchValue("randomizePatchName", userSettings.get("randomizePatchName", true));
-        this.setSwitchValue("showTipps", userSettings.get("showTipps"));
-        this.setSwitchValue("showMinimap", userSettings.get("showMinimap"));
-        this.setSwitchValue("hideSizeBar", userSettings.get("hideSizeBar"));
+        this.setSwitchValue("linetype", userSettings.get(UserSettings.PREF_LINETYPE) || "curved");
+        this.setSwitchValue("touchpadmode", userSettings.get(UserSettings.PREF_TOUCHPADMODE));
+        this.setSwitchValue("presentationmode", userSettings.get(UserSettings.PREF_PRESENTATIONMODE));
+        this.setSwitchValue("nobrowserWarning", userSettings.get(UserSettings.PREF_NO_BROWSER_WARNING));
+        this.setSwitchValue("introCompleted", userSettings.get(UserSettings.PREF_INTRO_COMPLETED));
+        this.setSwitchValue("randomizePatchName", userSettings.get(UserSettings.PREF_RANDOMIZE_PATCH_NAME, true));
+        this.setSwitchValue("showTipps", userSettings.get(UserSettings.PREF_SHOW_TIPPS));
+        this.setSwitchValue("showMinimap", userSettings.get(UserSettings.PREF_SHOW_MINIMAP));
+        this.setSwitchValue("hideSizeBar", userSettings.get(UserSettings.PREF_HIDE_SIZE_BAR));
 
-        this.setSwitchValue("helperMode", userSettings.get("helperMode"));
-        this.setSwitchValue("idlemode", userSettings.get("idlemode"));
+        this.setSwitchValue("helperMode", userSettings.get(UserSettings.PREF_HELPERMODE));
+        this.setSwitchValue("idlemode", userSettings.get(UserSettings.PREF_IDLEMODE));
 
-        this.setInputValue("wheelmultiplier", userSettings.get("wheelmultiplier") || 1);
-        this.setInputValue("fontsize_ace", userSettings.get("fontsize_ace") || 12);
-        this.setSwitchValue("wrapmode_ace", userSettings.get("wrapmode_ace") || false);
+        this.setInputValue("wheelmultiplier", userSettings.get(UserSettings.PREF_WHEELMULTIPLIER) || 1);
+        this.setInputValue("fontsize_ace", userSettings.get(UserSettings.PREF_FONTSIZE_ACE) || 12);
+        this.setSwitchValue("wrapmode_ace", userSettings.get(UserSettings.PREF_WRAPMODE_ACE) || false);
 
-        this.setSwitchValue("quickLinkLongPress", userSettings.get("quickLinkLongPress"));
-        this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
+        this.setSwitchValue("quickLinkLongPress", userSettings.get(UserSettings.PREF_QUICKLINK_LONGPRESS));
+        this.setSwitchValue("quickLinkMiddleMouse", userSettings.get(UserSettings.PREF_QUICKLINK_MIDDLEMOUSE));
 
-        // this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
-        this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
+        // this.setSwitchValue("forceWebGl1", userSettings.get(UserSettings.PREF_FORCE_WEBGL1));
+        this.setSwitchValue("devinfos", userSettings.get(UserSettings.PREF_DEVINFOS) || false);
 
         this.setSwitchValue(UserSettings.PREF_GLPATCH_PAN, userSettings.get(UserSettings.PREF_GLPATCH_PAN) || "2");
         this.setSwitchValue(UserSettings.PREF_GLPATCH_SELECT, userSettings.get(UserSettings.PREF_GLPATCH_SELECT) || "1");
-        this.setSwitchValue("patch_allowCableDrag", userSettings.get("patch_allowCableDrag") || false);
+        this.setSwitchValue("patch_allowCableDrag", userSettings.get(UserSettings.PREF_PATCH_ALLOW_CABLEDRAG) || false);
 
-        this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
-        this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
-        this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
+        this.setSwitchValue("miniopselect", userSettings.get(UserSettings.PREF_MINIOPSELECT));
+        this.setSwitchValue("glpatch_cursor", userSettings.get(UserSettings.PREF_GLPATCH_CURSOR));
+        this.setSwitchValue("noFadeOutCables", userSettings.get(UserSettings.PREF_NO_FADEOUT_CABLES));
 
-        this.setSwitchValue("texteditor", userSettings.get("texteditor") || "");
+        this.setSwitchValue("texteditor", userSettings.get(UserSettings.PREF_TEXTEDITOR) || "");
 
         // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
-        this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
-        this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
+        this.setSwitchValue("bgpattern", userSettings.get(UserSettings.PREF_BGPATTERN) || "bgPatternDark");
+        this.setSwitchValue("fontSizeOff", userSettings.get(UserSettings.PREF_FONT_SIZE_OFF) || 0);
 
-        this.setSwitchValue("formatcode", userSettings.get("formatcode") || false);
-        this.setSwitchValue("notlocalizeNumberformat", userSettings.get("notlocalizeNumberformat") || false);
+        this.setSwitchValue("formatcode", userSettings.get(UserSettings.PREF_FORMATCODE) || false);
+        this.setSwitchValue("notlocalizeNumberformat", userSettings.get(UserSettings.PREF_NOTLOCALIZE_NUMBERFORMAT) || false);
 
-        this.setSwitchValue("openlastproject", userSettings.get("openlastproject") || false);
-        this.setSwitchValue("openfullscreen", userSettings.get("openfullscreen") || false);
-        this.setSwitchValue("maximizerenderer", userSettings.get("maximizerenderer") || false);
-        this.setSwitchValue("transparentpopout", userSettings.get("transparentpopout") || false);
+        this.setSwitchValue("openlastproject", userSettings.get(UserSettings.PREF_OPENLASTPROJECT) || false);
+        this.setSwitchValue("openfullscreen", userSettings.get(UserSettings.PREF_OPENFULLSCREEN) || false);
+        this.setSwitchValue("maximizerenderer", userSettings.get(UserSettings.PREF_MAXIMIZERENDERER) || false);
+        this.setSwitchValue("transparentpopout", userSettings.get(UserSettings.PREF_TRANSPARENTPOPOUT) || false);
 
-        this.setInputValue("authorName", userSettings.get("authorName") || "");
-        this.setSwitchValue("escape_closetabs", userSettings.get("escape_closetabs") || false);
+        this.setInputValue("authorName", userSettings.get(UserSettings.PREF_AUTHOR_NAME) || "");
+        this.setSwitchValue("escape_closetabs", userSettings.get(UserSettings.PREF_ESCAPE_CLOSETABS) || false);
 
-        this.setSwitchValue("ace_keymode", userSettings.get("ace_keymode") || "");
+        this.setSwitchValue("ace_keymode", userSettings.get(UserSettings.PREF_ACE_KEYMODE) || "");
         this.setSwitchValue(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH, userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) || 3);
 
         if (platform.frontendOptions.selectableDownloadPath)
         {
-            const currentValue = userSettings.get("downloadPath") || "";
+            const currentValue = userSettings.get(UserSettings.PREF_DOWNLOAD_PATH) || "";
             this.setInputValue("downloadPath", currentValue);
             const pathSelectEle = ele.byId("usersetting_downloadPath");
             if (pathSelectEle)
@@ -144,16 +144,16 @@ export default class Preferences
                     {
                         if (!err)
                         {
-                            userSettings.set("downloadPath", dirName);
+                            userSettings.set(UserSettings.PREF_DOWNLOAD_PATH, dirName);
                         }
                     });
                 });
             }
         }
 
-        this.setSwitchValue("patch_wheelmode", userSettings.get("patch_wheelmode") || "zoom");
-        this.setInputValue("patch_panspeed", userSettings.get("patch_panspeed") || 0.25);
-        this.setInputValue("keybind_escape", userSettings.get("keybind_escape") || "escape");
+        this.setSwitchValue("patch_wheelmode", userSettings.get(UserSettings.PREF_PATCH_WHEELMODE) || "zoom");
+        this.setInputValue("patch_panspeed", userSettings.get(UserSettings.PREF_PATCH_PANSPEED) || 0.25);
+        this.setInputValue("keybind_escape", userSettings.get(UserSettings.PREF_KEYBIND_ESCAPE) || "escape");
     }
 
     show()

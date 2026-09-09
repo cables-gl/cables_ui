@@ -1,7 +1,7 @@
 import { ele } from "cables-shared-client";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
-import UserSettings, { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /**

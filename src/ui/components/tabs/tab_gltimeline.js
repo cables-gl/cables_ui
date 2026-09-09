@@ -5,7 +5,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { GlTimeline } from "../../gltimeline/gltimeline.js";
 import { glTimelineCanvas } from "../../gltimeline/gltimelinecanvas.js";
 import Gui, { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 
 export default class GlTimelineTab
 {
@@ -56,7 +56,7 @@ export default class GlTimelineTab
 
         this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
-            userSettings.set("glTimelineOpened", false);
+            userSettings.set(UserSettings.PREF_GLTIMELINE_OPENED, false);
         });
 
         this.#tab.on(Tab.EVENT_ACTIVATE, () =>

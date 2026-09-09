@@ -8,7 +8,7 @@ import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "./usersettings.js";
+import { UserSettings, userSettings } from "./usersettings.js";
 import DragNDrop from "./filemanager_dragdrop.js";
 
 /**
@@ -44,13 +44,13 @@ export default class FileManager
     {
         this._log = new Logger("filemanager");
         this._manager = new ItemManager("Files", gui.mainTabs);
-        this._order = userSettings.get("filemanager_order") || "name";
+        this._order = userSettings.get(UserSettings.PREF_FILEMANAGER_ORDER) || "name";
 
         gui.maintabPanel.show(userInteraction);
 
         DragNDrop.loadImage();
 
-        this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
+        this._manager.setDisplay(userSettings.get(UserSettings.PREF_FILEMANAGER_DISPLAY) || "icons");
 
         this.reload(cb);
         gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (e) =>
@@ -360,7 +360,7 @@ export default class FileManager
         else this._orderReverse = !this._orderReverse;
 
         this._order = o;
-        userSettings.set("filemanager_order", this._order);
+        userSettings.set(UserSettings.PREF_FILEMANAGER_ORDER, this._order);
         this._buildHtml();
     }
 
@@ -430,7 +430,7 @@ export default class FileManager
 
     setDisplay(type)
     {
-        userSettings.set("filemanager_display", type);
+        userSettings.set(UserSettings.PREF_FILEMANAGER_DISPLAY, type);
         this._manager.setDisplay(type);
         this._manager.setItems();
         this.updateHeader();

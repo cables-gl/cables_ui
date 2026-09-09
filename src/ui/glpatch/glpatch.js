@@ -20,7 +20,7 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { updateHoverToolTip, hideToolTip } from "../elements/tooltips.js";
 import { notify } from "../elements/notification.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { CmdOps } from "../commands/cmd_op.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 import GlLink from "./gllink.js";
@@ -137,7 +137,7 @@ export default class GlPatch extends Events
         this.mouseState = new MouseState(cgl.canvas);
 
         this._timeStart = performance.now();
-        this.vizFlowMode = userSettings.get("glflowmode") || 0;
+        this.vizFlowMode = userSettings.get(UserSettings.PREF_GLFLOWMODE) || 0;
 
         this.#overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this.#overlaySplines.zPos = 0.5;
@@ -159,7 +159,7 @@ export default class GlPatch extends Events
         this.#selectionArea = new GlSelectionArea(this._overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
-        // if (userSettings.get("devinfos"))
+        // if (userSettings.get(UserSettings.PREF_DEVINFOS))
         // {
         //     CABLES.UI.showDevInfos = true;
         //     const idx = this.#overlaySplines.getSplineIndex();
@@ -317,7 +317,7 @@ export default class GlPatch extends Events
 
             notify("Flow Visualization: ", modes[fm]);
 
-            userSettings.set("glflowmode", fm);
+            userSettings.set(UserSettings.PREF_GLFLOWMODE, fm);
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -477,7 +477,7 @@ export default class GlPatch extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, (key, value) =>
         {
-            this.vizFlowMode = userSettings.get("glflowmode");
+            this.vizFlowMode = userSettings.get(UserSettings.PREF_GLFLOWMODE);
             this.updateVizFlowMode();
 
             if (key == "linetype")
@@ -487,7 +487,7 @@ export default class GlPatch extends Events
             this.updateCableWidth();
         });
 
-        // if (userSettings.get("devinfos"))
+        // if (userSettings.get(UserSettings.PREF_DEVINFOS))
         // {
         //     gui.corePatch().on("subpatchesChanged", () =>
         //     {
@@ -1142,7 +1142,7 @@ export default class GlPatch extends Events
 
     _drawCursor()
     {
-        const drawGlCursor = userSettings.get("glpatch_cursor");
+        const drawGlCursor = userSettings.get(UserSettings.PREF_GLPATCH_CURSOR);
 
         /*
          * if (drawGlCursor) this._cgl.setCursor("none");
@@ -2081,7 +2081,7 @@ export default class GlPatch extends Events
         else
         {
             this.#splineDrawers[subpatchId] = new GlSplineDrawer(this.#cgl, "patchCableSplines_" + subpatchId);
-            this.#splineDrawers[subpatchId].width = userSettings.get("glcablewidth") || gui.theme.patch.cablesWidth;
+            this.#splineDrawers[subpatchId].width = userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) || gui.theme.patch.cablesWidth;
             return this.#splineDrawers[subpatchId];
         }
     }

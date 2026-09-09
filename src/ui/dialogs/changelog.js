@@ -1,7 +1,7 @@
 import { Logger, TalkerAPI } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 /**
  * show a toast when cables changelog is new
@@ -37,13 +37,13 @@ export default class ChangelogToast
 
                 let firstTime = false;
 
-                if (!userSettings.get("changelogLastView"))
+                if (!userSettings.get(UserSettings.PREF_CHANGELOG_LAST_VIEW))
                 {
                     firstTime = true;
                     this._log.log("first time changelog!");
                 }
 
-                userSettings.set("changelogLastView", obj.ts);
+                userSettings.set(UserSettings.PREF_CHANGELOG_LAST_VIEW, obj.ts);
 
                 if (!obj.items || obj.items.length === 0)
                 {

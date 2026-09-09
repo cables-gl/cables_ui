@@ -6,7 +6,7 @@ import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 
 /**
@@ -95,7 +95,7 @@ export default class Snap extends Events
     snapX(_x)
     {
         let x = _x;
-        if (userSettings.get("snapToGrid2"))
+        if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
             x = Snap.snapOpPosX(_x);
 
         return x;
@@ -108,7 +108,7 @@ export default class Snap extends Events
      */
     snapY(y, force = false)
     {
-        if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
+        if (userSettings.get(UserSettings.PREF_SNAPTOGRID) || force) return Snap.snapOpPosY(y);
         else return y;
     }
 
@@ -120,7 +120,7 @@ export default class Snap extends Events
      */
     _snapPortX(_x, port, _index, dist)
     {
-        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (userSettings.get(UserSettings.PREF_SNAPTOGRID)) return Snap.snapOpPosX(_x);
 
         for (let i = 0; i < port.links.length; i++)
         {
@@ -160,7 +160,7 @@ export default class Snap extends Events
      */
     snapOpX(_x, op, dist)
     {
-        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
+        if (userSettings.get(UserSettings.PREF_SNAPTOGRID)) return Snap.snapOpPosX(_x);
 
         let hasLinks = false;
         dist = dist || gluiconfig.portWidth;

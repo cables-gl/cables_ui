@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../../gui.js";
-import { userSettings } from "../../components/usersettings.js";
+import { UserSettings, userSettings } from "../../components/usersettings.js";
 import TabPanel from "./tabpanel.js";
 
 /**
@@ -57,7 +57,7 @@ export default class MainTabPanel extends Events
 
     init()
     {
-        const showMainTabs = userSettings.get("maintabsVisible");
+        const showMainTabs = userSettings.get(UserSettings.PREF_MAINTABS_VISIBLE);
         if (showMainTabs) this.show();
         else this.hide(true);
     }
@@ -85,7 +85,7 @@ export default class MainTabPanel extends Events
 
         if (!userInteraction)
         {
-            if (!userSettings.get("maintabsVisible"))
+            if (!userSettings.get(UserSettings.PREF_MAINTABS_VISIBLE))
             {
                 return;
             }
@@ -95,7 +95,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (gui.finishedLoading() && userInteraction) userSettings.set("maintabsVisible", true);
+        if (gui.finishedLoading() && userInteraction) userSettings.set(UserSettings.PREF_MAINTABS_VISIBLE, true);
 
         gui.setLayout();
 
@@ -113,7 +113,7 @@ export default class MainTabPanel extends Events
         this._ele.style.display = "none";
         gui.setLayout();
 
-        if (!donotsave && gui.finishedLoading()) userSettings.set("maintabsVisible", false);
+        if (!donotsave && gui.finishedLoading()) userSettings.set(UserSettings.PREF_MAINTABS_VISIBLE, false);
     }
 
     /**

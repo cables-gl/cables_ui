@@ -6,7 +6,7 @@ import opNames from "../../opnameutils.js";
 import { platform } from "../../platform.js";
 import { GuiText } from "../../text.js";
 import { handleBarPrecompiled } from "../../utils/handlebars.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 
 class PortHtmlGenerator
 {
@@ -70,7 +70,7 @@ class PortHtmlGenerator
             "canEditOp": canEditOp,
             "opChanged": opChanged,
             "oldVersion": oldversion,
-            "minified": userSettings.get("minifiedOpHead"),
+            "minified": userSettings.get(UserSettings.PREF_MINIFIED_OP_HEAD),
             "newestVersion": newestVersion,
             "cablesUrl": platform.getCablesUrl(),
             "hasExample": hasExample,

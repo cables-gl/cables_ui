@@ -2,7 +2,7 @@ import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { Events } from "cables-shared-client";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlLineDrawerFrag from "./gllinedrawer_glsl.frag";
 import srcShaderGlLineDrawerVert from "./gllinedrawer_glsl.vert";
@@ -106,13 +106,13 @@ export class GlLineDrawer extends Events
         this.#uniFadeoutOptions = new Uniform(this.#shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
         this.#uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
 
-        this.#shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
-        this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+        this.#shader.toggleDefine("FADEOUT", !userSettings.get(UserSettings.PREF_FADEOUT_OPTIONS));
+        this.#shader.toggleDefine("DRAWSPEED", userSettings.get(UserSettings.PREF_GLFLOWMODE) != 0);
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
-            if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+            if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get(UserSettings.PREF_GLFLOWMODE) != 0);
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>

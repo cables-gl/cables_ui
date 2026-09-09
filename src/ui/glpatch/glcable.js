@@ -4,7 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import { GuiText } from "../text.js";
 import GlPort from "./glport.js";
 import Gui, { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
@@ -120,19 +120,19 @@ export default class GlCable
         // const oldLineType = this._linetype;
         this.#linetype = this.LINETYPE_CURVED;
 
-        if (userSettings.get("linetype") == "simple") this.#linetype = this.LINETYPE_SIMPLE;
-        if (userSettings.get("linetype") == "straight") this.#linetype = this.LINETYPE_STRAIGHT;
-        if (userSettings.get("linetype") == "h1")
+        if (userSettings.get(UserSettings.PREF_LINETYPE) == "simple") this.#linetype = this.LINETYPE_SIMPLE;
+        if (userSettings.get(UserSettings.PREF_LINETYPE) == "straight") this.#linetype = this.LINETYPE_STRAIGHT;
+        if (userSettings.get(UserSettings.PREF_LINETYPE) == "h1")
         {
             this.#linetype = this.LINETYPE_HANGING;
             this.#tension = 0.0;
         }
-        if (userSettings.get("linetype") == "h2")
+        if (userSettings.get(UserSettings.PREF_LINETYPE) == "h2")
         {
             this.#linetype = this.LINETYPE_HANGING;
             this.#tension = 0.2;
         }
-        if (userSettings.get("linetype") == "h3")
+        if (userSettings.get(UserSettings.PREF_LINETYPE) == "h3")
         {
             this.#linetype = this.LINETYPE_HANGING;
             this.#tension = 0.3;

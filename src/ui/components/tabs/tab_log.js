@@ -3,7 +3,7 @@ import ErrorStackParser from "error-stack-parser";
 import { utils } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 import { logFilter } from "../../utils/logfilter.js";
 
 /**
@@ -46,10 +46,10 @@ export default class LogTab extends Events
 
         const b = this.#tab.addButton("Filter Logs", () => { CABLES.CMD.DEBUG.logging(); });
 
-        const alwaysOpenButton = this.#tab.addButton("Always open: " + (userSettings.get("openLogTab") || false), () =>
+        const alwaysOpenButton = this.#tab.addButton("Always open: " + (userSettings.get(UserSettings.PREF_OPEN_LOG_TAB) || false), () =>
         {
-            userSettings.set("openLogTab", !userSettings.get("openLogTab"));
-            alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get("openLogTab") || false);
+            userSettings.set(UserSettings.PREF_OPEN_LOG_TAB, !userSettings.get(UserSettings.PREF_OPEN_LOG_TAB));
+            alwaysOpenButton.innerHTML = "Always open: " + (userSettings.get(UserSettings.PREF_OPEN_LOG_TAB) || false);
         });
 
         this.#tab.addButton("Clear", () =>

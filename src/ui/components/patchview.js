@@ -22,7 +22,7 @@ import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
-import UserSettings, { userSettings } from "./usersettings.js";
+import { UserSettings, userSettings } from "./usersettings.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 
@@ -356,7 +356,7 @@ export default class PatchView extends Events
      */
     testCollision(op)
     {
-        if (userSettings.get("checkOpCollisions") === false) return;
+        if (userSettings.get(UserSettings.PREF_CHECK_OP_COLLISIONS) === false) return;
 
         if (!op || !op.uiAttribs) return;
         let count = 0;
@@ -683,7 +683,7 @@ export default class PatchView extends Events
                 "params_ops", {
                     "isDevEnv": platform.isDevEnv(),
                     "config": platform.cfg,
-                    "showDevInfos": userSettings.get("devinfos"),
+                    "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS),
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs,
