@@ -72,7 +72,7 @@ export default class GlDragLine
                         const port = op.getPortByName(ele.dataset.portname);
                         if (port)
                         {
-                            this.#glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, port, e);
+                            this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_UP_OVER_PORT, ele.dataset.opid, port, e);
                         }
                     }
                 }
@@ -107,12 +107,12 @@ export default class GlDragLine
             this.#glPatch.showOpCursor(false);
         });
 
-        glpatch.on("mouseDragLink", (glport, _opid, _portName, _e) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_DRAG_LINK, (glport, _opid, _portName, _e) =>
         {
             this.setPort(glport);
         });
 
-        glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, (glport, opid, portName, e) =>
         {
             if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
@@ -163,7 +163,7 @@ export default class GlDragLine
             this.stop();
         });
 
-        glpatch.on("mouseUpOverPort", (opid, port, event) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_UP_OVER_PORT, (opid, port, event) =>
         {
             let portId = port.id;
 

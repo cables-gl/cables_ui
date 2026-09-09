@@ -6,6 +6,7 @@ import { GuiText } from "../../text.js";
 import { PortHtmlGenerator } from "./op_params_htmlgen.js";
 import ParamsListener from "./params_listener.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
+import GlPatch from "../../glpatch/glpatch.js";
 import { notify } from "../../elements/notification.js";
 import namespace from "../../namespaceutils.js";
 import Gui, { gui } from "../../gui.js";
@@ -444,7 +445,7 @@ class OpParampanel extends Events
                         const glPort = glOp.getGlPort(this._portsIn[i].name);
 
                         if (this._portsIn[i].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, this._portsIn[i].name, e);
+                            gui.patchView._patchRenderer.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, glPort, glOp.id, this._portsIn[i].name, e);
                     }
                 }
             };
@@ -493,7 +494,7 @@ class OpParampanel extends Events
                     {
                         const glPort = glOp.getGlPort(this._portsOut[ipo].name);
                         if (this._portsOut[ipo].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, this._portsOut[ipo].name, e);
+                            gui.patchView._patchRenderer.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, glPort, glOp.id, this._portsOut[ipo].name, e);
                     }
                 }
             }, { "passive": false });
