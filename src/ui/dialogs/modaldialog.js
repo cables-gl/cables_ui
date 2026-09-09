@@ -224,8 +224,8 @@ export default class ModalDialog extends Events
         {
             eleChoiceCancel.addEventListener("pointerdown", () =>
             {
-                this.close();
                 if (this.#options.cancelButton.callback) this.#options.cancelButton.callback();
+                this.close();
             });
         }
 

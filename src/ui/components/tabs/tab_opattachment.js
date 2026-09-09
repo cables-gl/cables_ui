@@ -98,92 +98,88 @@ export default class OpAttachmentTab extends Tab
         const attSource = this.options.attSource;
         const selector = "addopattachment_" + attSource + "_" + this.options.viewId;
         const depsEle = ele.byId(selector);
-        const fileInput = depsEle.querySelector("input[type='file']");
         const inputEle = depsEle.querySelector("input[type='text']");
-        let attName = inputEle.value;
-        const opName = this.options.opDoc.name;
-        const opId = this.options.opDoc.id;
+        let filename = inputEle.value;
+        let binary = null;
         if (attSource === "js")
         {
-            if (!attName.startsWith("inc_")) attName = "inc_" + attName;
-            if (!attName.endsWith(".js")) attName += ".js";
-
-            platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_ATTACHMENT, {
-                "opname": opId,
-                "name": attName
-            }, (err, res) =>
-            {
-                if (!err)
-                {
-                    if (res && res.data && res.data.name)
-                    {
-                        const opDoc = gui.opDocs.getOpDocByName(opName);
-                        if (opDoc)
-                        {
-                            if (!opDoc.attachmentFiles) opDoc.attachmentFiles = [];
-                            if (opDoc.attachmentFiles && !opDoc.attachmentFiles.includes(res.data.name)) opDoc.attachmentFiles.push(res.data.name);
-                        }
-                    }
-
-                    gui.serverOps.editAttachment(opName, "att_" + attName);
-                    gui.emitEvent("refreshManageOp", opName);
-                    return;
-                }
-                else
-                {
-                    this.#showError(err);
-                }
-            });
-        }
-        else if (attSource === "string")
-        {
-            platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_ATTACHMENT, {
-                "opname": opId,
-                "name": attName
-            }, (err, res) =>
-            {
-                if (!err)
-                {
-                    if (res && res.data && res.data.name)
-                    {
-                        const opDoc = gui.opDocs.getOpDocByName(opName);
-                        if (opDoc)
-                        {
-                            if (!opDoc.attachmentFiles) opDoc.attachmentFiles = [];
-                            if (opDoc.attachmentFiles && !opDoc.attachmentFiles.includes(res.data.name)) opDoc.attachmentFiles.push(res.data.name);
-                        }
-                    }
-
-                    gui.serverOps.editAttachment(opName, "att_" + attName);
-                    gui.emitEvent("refreshManageOp", opName);
-                }
-                else
-                {
-                    this.#showError(err);
-                    return;
-                }
-            });
+            if (!filename.startsWith("inc_")) filename = "inc_" + filename;
+            if (!filename.endsWith(".js")) filename += ".js";
         }
         else if (attSource === "binary")
         {
-            let filename = fileInput.files[0].name;
+
+            const fileInput = depsEle.querySelector("input[type='file']");
+            filename = fileInput.files[0].name;
             if (!filename.startsWith("att_bin_")) filename = "att_bin_" + filename;
-            fileUploader.uploadFile(fileInput.files[0], filename, opId, (err, newFilename) =>
+            binary = fileInput.files[0];
+        }
+
+        this.#addAttachment(this.options.opDoc, filename, binary);
+    }
+
+    /**
+     *
+     * @param {import("cables-shared-client").OpDoc} opDoc
+     * @param {string} filename
+     * @param {any} [binary]
+     * @param {function} [cb]
+     */
+    #addAttachment(opDoc, filename, binary = null, cb = null)
+    {
+        const opName = opDoc.name;
+        const opId = opDoc.id;
+
+        if (binary)
+        {
+            fileUploader.uploadFile(binary, filename, opId, (err, newFilename) =>
             {
                 if (!err)
                 {
                     gui.serverOps.loadOpDependencies(opName, (op) =>
                     {
                         gui.emitEvent("refreshManageOp", opName);
+                        if (cb) cb();
                     }, true);
                 }
                 else
                 {
                     this.#showError(err);
-                    return;
+                    if (cb) cb(err);
                 }
             });
         }
+        else
+        {
+            platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_ATTACHMENT, {
+                "opname": opId,
+                "name": filename
+            }, (err, res) =>
+            {
+                if (!err)
+                {
+                    if (res && res.data && res.data.name)
+                    {
+                        const newDoc = gui.opDocs.getOpDocByName(opName);
+                        if (newDoc)
+                        {
+                            if (!newDoc.attachmentFiles) newDoc.attachmentFiles = [];
+                            if (newDoc.attachmentFiles && !newDoc.attachmentFiles.includes(res.data.name)) newDoc.attachmentFiles.push(res.data.name);
+                        }
+                    }
+
+                    gui.serverOps.editAttachment(opName, "att_" + filename);
+                    gui.emitEvent("refreshManageOp", opName);
+                    if (cb) cb();
+                }
+                else
+                {
+                    this.#showError(err);
+                    if (cb) cb(err);
+                }
+            });
+        }
+
     }
 
     #showError(err)

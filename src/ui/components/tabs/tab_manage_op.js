@@ -5,7 +5,6 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
-import OpDependencyTabPanel from "../../elements/tabpanel/opdependencytabpanel.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
@@ -199,56 +198,20 @@ export default class ManageOp
                 {
                     for (let i = 0; i < res.attachmentFiles.length; i++)
                     {
-                        let readable = res.attachmentFiles[i].substr(4);
-                        const isStatic = res.attachmentFiles[i].startsWith("att_bin_");
-                        if (isStatic) readable = res.attachmentFiles[i].substr(8);
-                        readable = readable.replace(".", "_");
-
-                        let fileType = "";
-                        let readableType = "Attachment";
-                        if (isStatic)
-                        {
-                            readableType = "Static " + readableType;
-                            fileType = "bin";
-                        }
-                        if (readable.startsWith("inc_"))
-                        {
-                            readableType = "Included JS file";
-                            readable = readable.replace("inc_", "");
-                        }
-                        if (readable.endsWith("_frag"))
-                        {
-                            fileType = "gl";
-                            readableType = "Fragment shader";
-                            const index = readable.lastIndexOf("_frag");
-                            if (index >= 0) readable = readable.slice(0, index) + ".frag" + readable.slice(index + 5);
-                        }
-                        if (readable.endsWith("_vert"))
-                        {
-                            fileType = "gl";
-                            readableType = "Vertex shader";
-                            const index = readable.lastIndexOf("_vert");
-                            if (index >= 0) readable = readable.slice(0, index) + ".vert" + readable.slice(index + 5);
-                        }
-                        if (readable.endsWith("_js"))
-                        {
-                            fileType = "js";
-                            const index = readable.lastIndexOf("_js");
-                            if (index >= 0) readable = readable.slice(0, index) + ".js" + readable.slice(index + 3);
-                        }
-
+                        const filename = res.attachmentFiles[i];
+                        let displayInfo = ManageOp.getAttachmentDisplayInfo(filename);
                         opFiles.push({
-                            "src": res.attachmentFiles[i],
+                            "src": filename,
                             "type": "attachment",
-                            "readable": readable,
-                            "readableType": readableType,
+                            "readable": displayInfo.readableFilename,
+                            "readableType": displayInfo.readableType,
                             "editable": true,
                             "removable": canEditOp,
                             "depType": "attachment",
-                            "fileType": fileType
+                            "fileType": displayInfo.fileType
                         });
 
-                        if (res.attachmentFiles[i] === "att_ports.json")
+                        if (filename === "att_ports.json")
                         {
                             const ops = gui.corePatch().getOpsByObjName(opName);
 
@@ -582,6 +545,58 @@ export default class ManageOp
                 perf.finish();
             });
         }, 100);
+    }
+
+    /**
+     *
+     * @param {string} attachmentFileName
+     * @returns {{filename: string, fileType: string, readableType: string, readableFilename: string}}
+     */
+    static getAttachmentDisplayInfo(attachmentFileName)
+    {
+        let readable = attachmentFileName.substr(4);
+        const isStatic = attachmentFileName.startsWith("att_bin_");
+        if (isStatic) readable = attachmentFileName.substr(8);
+        readable = readable.replace(".", "_");
+
+        let fileType = "";
+        let readableType = "Attachment";
+        if (isStatic)
+        {
+            readableType = "Static " + readableType;
+            fileType = "bin";
+        }
+        if (readable.startsWith("inc_"))
+        {
+            readableType = "Included JS file";
+            readable = readable.replace("inc_", "");
+        }
+        if (readable.endsWith("_frag"))
+        {
+            fileType = "gl";
+            readableType = "Fragment shader";
+            const index = readable.lastIndexOf("_frag");
+            if (index >= 0) readable = readable.slice(0, index) + ".frag" + readable.slice(index + 5);
+        }
+        if (readable.endsWith("_vert"))
+        {
+            fileType = "gl";
+            readableType = "Vertex shader";
+            const index = readable.lastIndexOf("_vert");
+            if (index >= 0) readable = readable.slice(0, index) + ".vert" + readable.slice(index + 5);
+        }
+        if (readable.endsWith("_js"))
+        {
+            fileType = "js";
+            const index = readable.lastIndexOf("_js");
+            if (index >= 0) readable = readable.slice(0, index) + ".js" + readable.slice(index + 3);
+        }
+        return {
+            "filename": attachmentFileName,
+            "fileType": fileType,
+            "readableType": readableType,
+            "readableFilename": readable
+        };
     }
 }
 

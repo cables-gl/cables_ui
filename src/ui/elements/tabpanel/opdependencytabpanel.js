@@ -13,9 +13,6 @@ import { gui } from "../../gui.js";
 export default class OpDependencyTabPanel extends TabPanel
 {
 
-    /** @type {OpDependencyTab[]} */
-    tabs = [];
-
     /**
      * Description
      * @param {string} eleId
@@ -41,14 +38,6 @@ export default class OpDependencyTabPanel extends TabPanel
             this._sources.splice(2, 0, { "title": "From NPM", "value": "npm" });
         }
 
-    }
-
-    /**
-     * @returns {OpDependencyTab}
-     */
-    getActiveTab()
-    {
-        for (let i = 0; i < this.tabs.length; i++) if (this.tabs[i].active) return this.tabs[i];
     }
 
     init()

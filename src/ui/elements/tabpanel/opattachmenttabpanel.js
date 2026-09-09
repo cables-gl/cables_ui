@@ -11,9 +11,6 @@ import OpAttachmentTab from "../../components/tabs/tab_opattachment.js";
 export default class OpAttachmentTabPanel extends TabPanel
 {
 
-    /** @type {OpAttachmentTab[]} */
-    tabs = [];
-
     /**
      * Description
      * @param {string} eleId
@@ -29,14 +26,6 @@ export default class OpAttachmentTabPanel extends TabPanel
             { "title": "String Attachment", "value": "string" },
             { "title": "Binary Attachment", "value": "binary" }
         ];
-    }
-
-    /**
-     * @returns {OpAttachmentTab}
-     */
-    getActiveTab()
-    {
-        for (let i = 0; i < this.tabs.length; i++) if (this.tabs[i].active) return this.tabs[i];
     }
 
     init()

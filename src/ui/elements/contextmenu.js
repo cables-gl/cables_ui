@@ -3,7 +3,8 @@ import { ele } from "cables-shared-client";
 /**
  * @typedef ContextMenuItem
  * @property {String} title
- * @property {String} [icon]
+ * @property {String} [iconClass]
+ * @property {String} [iconText]
  * @property {Function} func
  */
 
@@ -87,8 +88,7 @@ export default class ContextMenu
             {
                 const item = document.createElement("li");
                 item.classList.add("cm_item");
-                item.setAttribute("tabindex", 0);
-                item.innerText = obj.items[i].title;
+                item.setAttribute("tabindex", "0");
 
                 if (obj.items[i].iconClass)
                 {
@@ -96,10 +96,17 @@ export default class ContextMenu
                     icon.classList.add("cm_icon");
                     const classes = obj.items[i].iconClass.split(" ");
                     for (const ii in classes) icon.classList.add(classes[ii]);
-
-                    icon.style.float = "left";
+                    if (obj.items[i].iconText)
+                    {
+                        icon.innerText = obj.items[i].iconText;
+                    }
+                    else
+                    {
+                        icon.style.float = "left";
+                    }
                     item.appendChild(icon);
                 }
+                item.appendChild(document.createTextNode(obj.items[i].title));
 
                 this._element.appendChild(item);
                 this._visible = true;
