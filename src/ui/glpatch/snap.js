@@ -1,5 +1,6 @@
 import { Events } from "cables-shared-client";
-import { CglContext, Port } from "cables";
+import { Port } from "cables";
+import { CglContext } from "cables/src/corelibs/index.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 import uiconfig from "../uiconfig.js";

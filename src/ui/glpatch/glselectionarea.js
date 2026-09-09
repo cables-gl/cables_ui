@@ -59,11 +59,6 @@ export default class GlSelectionArea
         return this._selectRect.w != 0 && this._selectRect.h != 0;
     }
 
-    /** @deprecated */
-    setMousePos(_x, _y)
-    {
-    }
-
     hideArea()
     {
         this._selectRect.setSize(0, 0);

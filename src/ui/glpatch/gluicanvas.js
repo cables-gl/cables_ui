@@ -48,14 +48,15 @@ export default class GlUiCanvas extends GlCanvas
 
         this.glPatch.on("paused", () =>
         {
-            this.patch.pause();
+            // this.patch.pause();
         });
 
         this.glPatch.on("resumed", () =>
         {
             this.cgl.setSize(this.width, this.height);
-            this.patch.resume();
+            // this.patch.resume();
         });
+
         this.canvas.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); };
         this.canvas.addEventListener("pointermove", (_e) =>
         {

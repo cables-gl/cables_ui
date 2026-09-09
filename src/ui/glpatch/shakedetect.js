@@ -33,6 +33,9 @@ export default class ShakeDetector extends Events
         this.shakeCountN = 0;
     }
 
+    /**
+     * @param {number} a
+     */
     move(a)
     {
         if (this.shakeLastX != -1)

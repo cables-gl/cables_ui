@@ -79,21 +79,9 @@ export default class PlatformElectron extends Platform
         return this._cfg.communityUrl || "https://cables.gl";
     }
 
-    getIssueTrackerUrl()
-    {
-        return "https://github.com/cables-gl/cables_electron/issues";
-    }
-
     getCablesStaticUrl()
     {
         return "";
-    }
-
-    noCacheUrl(url)
-    {
-        let separator = "?";
-        if (url.includes("?")) separator = "&";
-        return url + separator + "nc=" + (Date.now() + "").substr(-6);
     }
 
     showFileSelect(inputId, filterType, opId, previewId)
