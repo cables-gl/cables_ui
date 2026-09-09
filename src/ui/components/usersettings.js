@@ -59,6 +59,9 @@ export default class UserSettings extends Events
         if (this.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS) === null) this.set(UserSettings.PREF_OPSELECT_AUTOLINKOPS, true);
     }
 
+    /**
+     * @param {Object} settings
+     */
     load(settings)
     {
         if (this.#active)
@@ -81,6 +84,10 @@ export default class UserSettings extends Events
         this.#wasLoaded = true;
     }
 
+    /**
+     * @param {string | number} key
+     * @param {boolean} value
+     */
     setLS(key, value)
     {
         if (!this.#active) return;
