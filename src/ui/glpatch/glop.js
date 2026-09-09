@@ -410,7 +410,7 @@ export default class GlOp extends Events
     }
 
     /**
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
     _onMouseDown(e)
     {
@@ -438,7 +438,7 @@ export default class GlOp extends Events
         this.#glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
         if (!e.shiftKey)
-            if (e.touchType == "mouse")
+            if (e.pointerType == "mouse")
             {
                 if (this.isHovering()) this.#glPatch.patchAPI.showOpParams(this.#id);
             }

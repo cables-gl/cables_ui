@@ -1061,7 +1061,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {Op} op
+     * @param {UiOp} op
      * @param {boolean} fromDeserialize
      */
     addOp(op, fromDeserialize = false)
