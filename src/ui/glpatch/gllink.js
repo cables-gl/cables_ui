@@ -105,7 +105,7 @@ export default class GlLink
         this._buttonRect = this.#glPatch.rectDrawer.createRect({ "name": "buttonrect", "interactive": true });
         this._buttonRect.setShape(1);
 
-        this._buttonRect.on("mouseup", (e) =>
+        this._buttonRect.on(GlRect.EVENT_POINTER_UP, (e) =>
         {
             this.#glPatch.startLinkButtonDrag = null;
 
@@ -197,7 +197,7 @@ export default class GlLink
             this._buttonDown = MouseState.BUTTON_NONE;
         });
 
-        this._buttonRect.on("mousedown", (e) =>
+        this._buttonRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
         {
             if (this.#glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
             {
