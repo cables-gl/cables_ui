@@ -112,7 +112,7 @@ export default class GlDragLine
             this.setPort(glport);
         });
 
-        glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, (glport, opid, portName, e) =>
         {
             if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
@@ -287,7 +287,7 @@ export default class GlDragLine
                             this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + glUiConfig.portHeight / 2,
                             this._z,
                             this._x, this._y, this._z,
-                            this._x, this._y, this._z,
+                            this._x, this._y, this._z
                         ]);
 
                 count++;
@@ -303,7 +303,7 @@ export default class GlDragLine
                         this.#glPort.glOp.y + this.#rect.y + glUiConfig.portHeight / 2,
                         this._z,
                         this._x, this._y, this._z,
-                        this._x, this._y, this._z,
+                        this._x, this._y, this._z
                     ]);
 
                 this.#splineDrawer.setSplineColor(this._splineIdx, this.color);
