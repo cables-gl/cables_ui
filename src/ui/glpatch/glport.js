@@ -163,13 +163,12 @@ export default class GlPort
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
         const dotHeight = gluiconfig.portHeight * 0.75;
-        const dotWidth = this.#rect.w - 2 * (gluiconfig.portHeight - dotHeight);
+        let dotWidth = dotHeight;
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
         if (this.#port.type == Port.TYPE_OBJECT)showDot = true;
 
         if (this.#rect && this.#port.uiAttribs.hidePort)
         {
-            // console.log("this port should not exist...", this.#port.name);
             this.#rect.setSize(0, 0);
             showDot = false;
             return;
@@ -189,27 +188,47 @@ export default class GlPort
                 if (this.#port.uiAttribs.notWorking) this.#dot.setColor(0.8, 0.2, 0.2, 1);
                 else this.#dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let dotPosY = 0;
+                let dotPosY = ((-this.#rect.y / 2) - dotHeight / 2);
 
-                dotPosY = -1 * this.#rect.y / 2 + this.rect.h / 2 - dotHeight / 2;
+                if (this.#port.type == Port.TYPE_OBJECT)
+                {
+                    dotPosY = 0;
+                    if (this.direction == Port.DIR_OUT)
+                        dotPosY += dotHeight / 4;// this.#rect.h / 2;
+                    else
+                        dotPosY += 0;// dotHeight / 2;
 
+                    if (this.#hover)
+                    {
+
+                        if (this.direction == Port.DIR_OUT)
+                            dotPosY += this.#rect.h * 0.25;
+                    }
+                }
+                else
                 if (this.direction == Port.DIR_OUT)
                 {
-                    dotPosY += this.rect.h;
+                    // dotPosY += this.rect.h;
                     if (this.#port.isLinked())
                         dotPosY += dotHeight * 1.25;
-                }
-                if (this.#hover)
-                    if (this.direction == Port.DIR_OUT)
-                        dotPosY -= this.#rect.h * 0.75;
 
-                if (!this.port.isAnimated() && this.#port.isLinked())
-                    if (this.direction == Port.DIR_IN)dotPosY -= 1;
+                    // dotPosY += this.glOp._height;
+                }
+                else
+                {
+
+                    dotPosY += this.rect.h / 2;
+
+                }
 
                 if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
                 else if (this.#port.isAnimated()) this.#dot.setShape(GlRect.SHAPE_RHOMB);
-                else if (this.#port.type == Port.TYPE_OBJECT) this.#dot.setShape(GlRect.SHAPE_RECT);
+                else if (this.#port.type == Port.TYPE_OBJECT)
+                {
+                    dotWidth = this.#rect.w - 2 * (gluiconfig.portHeight - dotHeight);
+                    this.#dot.setShape(GlRect.SHAPE_RECT);
+                }
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
                 this.#dot.setSize(dotWidth, dotHeight);
