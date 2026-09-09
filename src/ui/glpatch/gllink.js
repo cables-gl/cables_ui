@@ -7,7 +7,7 @@ import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import { gui } from "../gui.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import GlRect from "../gldraw/glrect.js";
 import GlOp from "./glop.js";
@@ -178,7 +178,7 @@ export default class GlLink
                             let y = this.#glPatch.viewBox.mousePatchY;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
 
-                            if (userSettings.get("snapToGrid2"))
+                            if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
                             {
                                 x = Snap.snapOpPosX(x);
                                 y = Snap.snapOpPosY(y);
@@ -199,7 +199,7 @@ export default class GlLink
 
         this._buttonRect.on(GlRect.EVENT_POINTER_DOWN, (e) =>
         {
-            if (this.#glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
+            if (this.#glPatch.mouseState.buttonStateForLinkDrag && userSettings.get(UserSettings.PREF_PATCH_ALLOW_CABLEDRAG))
             {
                 this.#glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;

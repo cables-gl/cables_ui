@@ -1,5 +1,5 @@
 import { utils } from "cables";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
@@ -85,7 +85,7 @@ export default class GlArea
             this._w = this.#rectResize.x - this.#glop.x + this.#rectResize.w / 2;
             this._h = this.#rectResize.y - this.#glop.y + this.#rectResize.h / 2;
 
-            if (userSettings.get("snapToGrid2"))
+            if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
             {
                 this._w = this.#glop.glPatch.snap.snapX(this._w);
                 this._h = this.#glop.glPatch.snap.snapY(this._h);

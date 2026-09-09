@@ -44,7 +44,7 @@ import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
 import paramsHelper from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
-import UserSettings, { userSettings } from "./components/usersettings.js";
+import { UserSettings, userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
 import GlTimelineTab from "./components/tabs/tab_gltimeline.js";
 import { GlTimeline } from "./gltimeline/gltimeline.js";
@@ -219,7 +219,7 @@ export default class Gui extends Events
              */
             (shader) =>
             {
-                if (this.userSettings.get("showAllShaderErrors"))
+                if (this.userSettings.get(UserSettings.PREF_SHOW_ALL_SHADER_ERRORS))
                     CABLES.UI.showShaderError(shader);
             });
 
@@ -329,7 +329,7 @@ export default class Gui extends Events
 
     get shouldDrawOverlay()
     {
-        if (!this.userSettings.get("overlaysShow")) return false;
+        if (!this.userSettings.get(UserSettings.PREF_OVERLAYS_SHOW)) return false;
 
         return true;
     }
@@ -782,7 +782,7 @@ export default class Gui extends Events
 
         if (this._elIconbarLeft)
         {
-            if (this.userSettings.get("hideSizeBar"))
+            if (this.userSettings.get(UserSettings.PREF_HIDE_SIZE_BAR))
             {
                 this._elIconbarLeft.style.display = "none";
             }
@@ -1243,7 +1243,7 @@ export default class Gui extends Events
     {
         if (gui.showGuestWarning()) return;
 
-        const randomize = this.userSettings.get("randomizePatchName", true);
+        const randomize = this.userSettings.get(UserSettings.PREF_RANDOMIZE_PATCH_NAME, true);
         let title = "Enter a name for your new project";
         if (randomize) title += ", leave empty for random name";
         new ModalDialog({
@@ -1883,7 +1883,7 @@ export default class Gui extends Events
             }
         }
         else if (this._opselect.isOpen()) this._opselect.close();
-        else if (this.maintabPanel.isVisible() && gui.userSettings.get("escape_closetabs")) this.maintabPanel.hide();
+        else if (this.maintabPanel.isVisible() && gui.userSettings.get(UserSettings.PREF_ESCAPE_CLOSETABS)) this.maintabPanel.hide();
         else
         {
             if (e)
@@ -1942,7 +1942,7 @@ export default class Gui extends Events
 
         ele.byId("menubar").classList.remove("hidden");
 
-        if (this.userSettings.get("showUIPerf") == true) CmdUi.profileUI();
+        if (this.userSettings.get(UserSettings.PREF_SHOW_UI_PERF) == true) CmdUi.profileUI();
 
         if (this.#corePatch.hasAnimatedPorts() && this.userSettings.get(GlTimeline.USERSETTING_TL_OPENED))CmdTimeline.openGlTimeline();
 
@@ -1956,7 +1956,7 @@ export default class Gui extends Events
             hideInfo();
         });
 
-        if (this.userSettings.get("presentationmode")) CmdUi.startPresentationMode();
+        if (this.userSettings.get(UserSettings.PREF_PRESENTATIONMODE)) CmdUi.startPresentationMode();
 
         if (this.#corePatch.cgl && this.#corePatch.cgl.aborted)
         {
@@ -1967,7 +1967,7 @@ export default class Gui extends Events
             });
             return;
         }
-        if (this.userSettings.get("openLogTab") == true) this.showLogging();
+        if (this.userSettings.get(UserSettings.PREF_OPEN_LOG_TAB) == true) this.showLogging();
 
         gui.transformOverlay.updateVisibility();
 
@@ -1976,8 +1976,8 @@ export default class Gui extends Events
         this.iconBarTimeline = new IconBar("sidebar_timeline");
 
         if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
-            this.userSettings.get("showTipps") &&
-            this.userSettings.get("introCompleted")) CmdUi.showTips();
+            this.userSettings.get(UserSettings.PREF_SHOW_TIPPS) &&
+            this.userSettings.get(UserSettings.PREF_INTRO_COMPLETED)) CmdUi.showTips();
 
         if (platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CmdUi.welcomeTab(true);
 
@@ -2134,7 +2134,7 @@ export default class Gui extends Events
         idx = idx || 0;
         if (!this.#gizmos[idx]) this.#gizmos[idx] = new Gizmo(this.corePatch().cgl);
 
-        if (!this.userSettings.get("overlaysShow"))
+        if (!this.userSettings.get(UserSettings.PREF_OVERLAYS_SHOW))
         {
             this.#gizmos[idx].set(null);
             return;
@@ -2169,7 +2169,7 @@ export default class Gui extends Events
         el.classList.remove("bgPatternGrey");
         el.classList.remove("bgPatternBlue");
 
-        el.classList.add(this.userSettings.get("bgpattern") || "bgPatternDark");
+        el.classList.add(this.userSettings.get(UserSettings.PREF_BGPATTERN) || "bgPatternDark");
     }
 
     notIdling()

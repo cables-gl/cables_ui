@@ -2,7 +2,7 @@ import { Geometry, Mesh, Shader, Uniform } from "cables-corelibs";
 import { utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { Events } from "cables-shared-client";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
@@ -106,14 +106,14 @@ export class GlSplineDrawer extends Events
 
         this._uniMousePos = new Uniform(this.#shader, "2f", "mousePos");
 
-        this.#shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
-        this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+        this.#shader.toggleDefine("FADEOUT", !userSettings.get(UserSettings.PREF_FADEOUT_OPTIONS));
+        this.#shader.toggleDefine("DRAWSPEED", userSettings.get(UserSettings.PREF_GLFLOWMODE) != 0);
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, val) =>
         {
             if (which == GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) this.#uniWidthSelected.set(userSettings.get(GlPatch.USERPREF_GLPATCH_CABLE_WIDTH) * this.selectedThicknessMultiply);
             if (which == "noFadeOutCables") this.#shader.toggleDefine("FADEOUT", !val);
-            if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get("glflowmode") != 0);
+            if (which == "glflowmode") this.#shader.toggleDefine("DRAWSPEED", userSettings.get(UserSettings.PREF_GLFLOWMODE) != 0);
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>
@@ -849,7 +849,7 @@ export class GlSplineDrawer extends Events
         let count = 0;
 
         let step = 0.001;
-        if (!userSettings.get("straightLines")) step = 0.01;
+        if (!userSettings.get(UserSettings.PREF_STRAIGHT_LINES)) step = 0.01;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 

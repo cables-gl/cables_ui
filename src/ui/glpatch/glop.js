@@ -12,7 +12,7 @@ import defaultOps from "../defaultops.js";
 import Gui, { gui } from "../gui.js";
 import GlRect from "../gldraw/glrect.js";
 import GlTextWriter from "../gldraw/gltextwriter.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { UiOp } from "../core_extend_op.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlLink from "./gllink.js";
@@ -466,11 +466,11 @@ export default class GlOp extends Events
 
             if (this.#glPatch.mouseState.buttonMiddle)
             {
-                if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this.#op, e, { "delay": 10 });
+                if (userSettings.get(UserSettings.PREF_QUICKLINK_MIDDLEMOUSE)) gui.longPressConnector.longPressStart(this.#op, e, { "delay": 10 });
             }
             else
             {
-                if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this.#op, e);
+                if (userSettings.get(UserSettings.PREF_QUICKLINK_LONGPRESS)) gui.longPressConnector.longPressStart(this.#op, e);
             }
         }
 

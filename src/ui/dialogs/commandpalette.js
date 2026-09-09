@@ -3,7 +3,7 @@ import { utils } from "cables";
 import { uuid } from "cables/src/core/utils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { Commands } from "../commands/commands.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
@@ -161,7 +161,7 @@ export class CommandPalette
         }
 
         let cmdName = cmd.cmd;
-        const itemObj = userSettings.get("sidebar_left") || {};
+        const itemObj = userSettings.get(UserSettings.PREF_SIDEBAR_LEFT) || {};
 
         // replace the pin-icon / set / remove icon from sidebar
         const addToSidebar = !this.isCmdInSidebar(cmdName);
@@ -180,7 +180,7 @@ export class CommandPalette
             itemObj[cmdName] = false;
         }
 
-        userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
+        userSettings.set(UserSettings.PREF_SIDEBAR_LEFT, JSON.parse(JSON.stringify(itemObj)));
 
         gui.iconBarLeft.refresh();
     }
@@ -237,7 +237,7 @@ export class CommandPalette
      */
     isCmdInSidebar(cmdName)
     {
-        const itemObj = userSettings.get("sidebar_left") || {};
+        const itemObj = userSettings.get(UserSettings.PREF_SIDEBAR_LEFT) || {};
         return itemObj.hasOwnProperty(cmdName) && itemObj[cmdName];
     }
 

@@ -1,4 +1,4 @@
-import { userSettings } from "./usersettings.js";
+import { UserSettings, userSettings } from "./usersettings.js";
 
 /**
  * Show intro and explain gui elements
@@ -17,7 +17,7 @@ export default class Introduction
     /* Disables intro.js for the current logged-in user */
     disableIntroForUser()
     {
-        userSettings.set("introCompleted", true);
+        userSettings.set(UserSettings.PREF_INTRO_COMPLETED, true);
     }
 
     /**

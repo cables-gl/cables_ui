@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 /**
  * managing mouse states buttons/position/dragging etc

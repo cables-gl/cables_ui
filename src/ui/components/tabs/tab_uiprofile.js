@@ -2,7 +2,7 @@ import { Events, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 
 export class UiProfilerTab extends Events
 {
@@ -20,13 +20,13 @@ export class UiProfilerTab extends Events
         this._ele = null;
         this._timeout = null;
 
-        this._currentHighlight = userSettings.get("uiPerfLastHighlight");
-        this.#filter = userSettings.get("showUIPerfFilter") || "";
+        this._currentHighlight = userSettings.get(UserSettings.PREF_UIPERF_LAST_HIGHLIGHT);
+        this.#filter = userSettings.get(UserSettings.PREF_SHOW_UIPERF_FILTER) || "";
         this._ignore = false;
 
         this._tab.on("close", () =>
         {
-            userSettings.set("showUIPerf", false);
+            userSettings.set(UserSettings.PREF_SHOW_UI_PERF, false);
             clearTimeout(this._timeout);
         });
 
@@ -37,7 +37,7 @@ export class UiProfilerTab extends Events
             this.filter(ele.byId("uiPerfFilter").value);
 
         });
-        userSettings.set("showUIPerf", true);
+        userSettings.set(UserSettings.PREF_SHOW_UI_PERF, true);
         this.update();
     }
 
@@ -48,7 +48,7 @@ export class UiProfilerTab extends Events
     {
         for (const i in gui.uiProfiler._measures) gui.uiProfiler._measures[i].highlight = false;
         this._currentHighlight = name;
-        userSettings.set("uiPerfLastHighlight", name);
+        userSettings.set(UserSettings.PREF_UIPERF_LAST_HIGHLIGHT, name);
     }
 
     /**
@@ -58,7 +58,7 @@ export class UiProfilerTab extends Events
     {
         this.#filter = str;
         this.update();
-        userSettings.set("showUIPerfFilter", this.#filter);
+        userSettings.set(UserSettings.PREF_SHOW_UIPERF_FILTER, this.#filter);
     }
 
     update()
@@ -122,7 +122,7 @@ export class UiProfilerTab extends Events
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
-            if (userSettings.get("showUIPerf")) this.update();
+            if (userSettings.get(UserSettings.PREF_SHOW_UI_PERF)) this.update();
         }, 500);
     }
 

@@ -12,7 +12,7 @@ import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
@@ -54,7 +54,7 @@ export default class ServerOps
             (name, data) =>
             {
                 editorSession.startLoadingTab();
-                const lastTab = userSettings.get("editortab");
+                const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
 
                 if (data && data.opId)
                 {
@@ -67,7 +67,7 @@ export default class ServerOps
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    userSettings.set("editortab", lastTab);
+                    userSettings.set(UserSettings.PREF_EDITORTAB, lastTab);
                     editorSession.finishLoadingTab();
                 });
             }
@@ -78,11 +78,11 @@ export default class ServerOps
             editorSession.startLoadingTab();
             if (data && data.opname)
             {
-                const lastTab = userSettings.get("editortab");
+                const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
                 this.editAttachment(data.opname, data.name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    userSettings.set("editortab", lastTab);
+                    userSettings.set(UserSettings.PREF_EDITORTAB, lastTab);
                     editorSession.finishLoadingTab();
                 }, true);
             }
@@ -1313,7 +1313,7 @@ export default class ServerOps
         if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
-        const lastTab = userSettings.get("editortab");
+        const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
         let inactive = false;
         if (fromListener) if (lastTab !== title) inactive = true;
 
@@ -1545,7 +1545,7 @@ export default class ServerOps
                             {
                                 "opname": opid,
                                 "code": content,
-                                "format": userSettings.get("formatcode") || false
+                                "format": userSettings.get(UserSettings.PREF_FORMATCODE) || false
                             },
                             (err, res) =>
                             {

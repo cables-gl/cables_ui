@@ -5,7 +5,7 @@ import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import GlUiConfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 import { UiOp } from "../core_extend_op.js";
 
@@ -57,7 +57,7 @@ export default class GlViewBox
     {
         this.#cgl = cgl;
         this.glPatch = glPatch;
-        this.wheelMode = userSettings.get("patch_wheelmode");
+        this.wheelMode = userSettings.get(UserSettings.PREF_PATCH_WHEELMODE);
 
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": true });
@@ -71,7 +71,7 @@ export default class GlViewBox
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, _v) =>
         {
-            this.wheelMode = userSettings.get("patch_wheelmode");
+            this.wheelMode = userSettings.get(UserSettings.PREF_PATCH_WHEELMODE);
         });
     }
 
@@ -298,7 +298,7 @@ export default class GlViewBox
         if (isMouse)
         {
 
-            const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
+            const wheelMultiplier = (userSettings.get(UserSettings.PREF_WHEELMULTIPLIER) || 1) * 1.5;
 
             if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
             else delta = 1 + 0.2 * wheelMultiplier;

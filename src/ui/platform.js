@@ -6,7 +6,7 @@ import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
 import { gui } from "./gui.js";
-import { userSettings } from "./components/usersettings.js";
+import { UserSettings, userSettings } from "./components/usersettings.js";
 import { GuiText } from "./text.js";
 
 /**
@@ -286,7 +286,7 @@ export class Platform extends Events
 
     showStartupChangelog()
     {
-        const lastView = userSettings.get("changelogLastView");
+        const lastView = userSettings.get(UserSettings.PREF_CHANGELOG_LAST_VIEW);
         const cl = new ChangelogToast();
         cl.getHtml((clhtml) =>
         {
@@ -301,7 +301,7 @@ export class Platform extends Events
     {
         const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !userSettings.get("nobrowserWarning"))
+        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !userSettings.get(UserSettings.PREF_NO_BROWSER_WARNING))
         {
             iziToast.error({
                 "position": "topRight",

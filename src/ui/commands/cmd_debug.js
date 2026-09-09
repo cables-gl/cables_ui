@@ -12,7 +12,7 @@ import CMD from "./commands.js";
 import { platform } from "../platform.js";
 import tab_PreferencesDebug from "../components/tabs/tab_preferencesdebug.js";
 import { CmdPatch } from "./cmd_patch.js";
-import UserSettings, { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 import Gui, { gui } from "../gui.js";
 import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";

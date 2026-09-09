@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client/index.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { GuiText } from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
@@ -26,13 +26,13 @@ export default class Tips
 
     neverShow()
     {
-        userSettings.set("showTipps", false);
+        userSettings.set(UserSettings.PREF_SHOW_TIPPS, false);
         this.show();
     }
 
     showAlways()
     {
-        userSettings.set("showTipps", true);
+        userSettings.set(UserSettings.PREF_SHOW_TIPPS, true);
         this.show();
     }
 
@@ -64,7 +64,7 @@ export default class Tips
         html += "  <a id=\"tips_next\" class=\"cblbutton\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";
-        if (userSettings.get("showTipps")) html += "<a id=\"tips_showNever\" class=\"button-small\">Do not show this on startup</a>";
+        if (userSettings.get(UserSettings.PREF_SHOW_TIPPS)) html += "<a id=\"tips_showNever\" class=\"button-small\">Do not show this on startup</a>";
         else html += "<a id=\"tips_showAlways\" class=\"button-small\">Show on startup again</a>";
         html += "  </div\">";
 

@@ -1,6 +1,6 @@
 import paramsHelper from "../../components/opparampanel/params_helper.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
-import { userSettings } from "../../components/usersettings.js";
+import { UserSettings, userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
 
 /**
@@ -41,7 +41,7 @@ export default class EditorSession
 
     store()
     {
-        userSettings.set("openEditors", this.#openEditors);
+        userSettings.set(UserSettings.PREF_OPEN_EDITORS, this.#openEditors);
     }
 
     loaded()
@@ -117,7 +117,7 @@ export default class EditorSession
                 {
                     this.#openEditors[i].data = data;
                     this.store();
-                    userSettings.set("editortab", name);
+                    userSettings.set(UserSettings.PREF_EDITORTAB, name);
                 }
                 return;
             }
@@ -127,7 +127,7 @@ export default class EditorSession
         this.#openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-            userSettings.set("editortab", name);
+            userSettings.set(UserSettings.PREF_EDITORTAB, name);
 
         return obj;
     }
@@ -139,7 +139,7 @@ export default class EditorSession
      */
     open()
     {
-        const sessions = userSettings.get("openEditors");
+        const sessions = userSettings.get(UserSettings.PREF_OPEN_EDITORS);
 
         if (sessions)
         {

@@ -10,7 +10,7 @@ import Keypresenter from "../components/keypresenter.js";
 import Tips from "../dialogs/tips.js";
 import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import { UiProfilerTab } from "../components/tabs/tab_uiprofile.js";
 import TabInputBindings from "../components/tabs/tab_keybinds.js";
 import { notify } from "../elements/notification.js";
@@ -394,7 +394,7 @@ class CmdUi
 
     static toggleBgTexturePreview()
     {
-        userSettings.set("bgpreview", !userSettings.get("bgpreview"));
+        userSettings.set(UserSettings.PREF_BGPREVIEW, !userSettings.get(UserSettings.PREF_BGPREVIEW));
     }
 
     static showSearch(str)
@@ -436,7 +436,7 @@ class CmdUi
 
     static flowVis()
     {
-        userSettings.set("glflowmode", !userSettings.get("glflowmode"));
+        userSettings.set(UserSettings.PREF_GLFLOWMODE, !userSettings.get(UserSettings.PREF_GLFLOWMODE));
     }
 
     static startPresentationMode()
@@ -522,8 +522,8 @@ class CmdUi
 
     static toggleOverlays()
     {
-        const act = !userSettings.get("overlaysShow");
-        userSettings.set("overlaysShow", act);
+        const act = !userSettings.get(UserSettings.PREF_OVERLAYS_SHOW);
+        userSettings.set(UserSettings.PREF_OVERLAYS_SHOW, act);
         gui.emitEvent("overlaysChanged", act);
         gui.transformOverlay.updateVisibility();
         gui.canvasManager.getCanvasUiBar()?.updateIconState();
@@ -531,14 +531,14 @@ class CmdUi
 
     static toggleSnapToGrid()
     {
-        userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
+        userSettings.set(UserSettings.PREF_SNAPTOGRID_LEGACY, !userSettings.get(UserSettings.PREF_SNAPTOGRID));
     }
 
     static toggleIntroCompleted()
     {
-        userSettings.set("introCompleted", !userSettings.get("introCompleted"));
+        userSettings.set(UserSettings.PREF_INTRO_COMPLETED, !userSettings.get(UserSettings.PREF_INTRO_COMPLETED));
 
-        if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
+        if (!userSettings.get(UserSettings.PREF_INTRO_COMPLETED)) gui.introduction.showIntroduction();
     }
 
     static showAutomaton()
@@ -593,7 +593,7 @@ class CmdUi
 
     static togglePauseVizLayer()
     {
-        userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
+        userSettings.set(UserSettings.PREF_VIZLAYER_PAUSED, !userSettings.get(UserSettings.PREF_VIZLAYER_PAUSED));
     }
 
     static none()

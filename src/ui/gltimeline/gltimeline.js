@@ -7,7 +7,7 @@ import { tlOverview } from "./tloverview.js";
 import { tlView } from "./tlview.js";
 import Gui, { gui } from "../gui.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
-import { userSettings } from "../components/usersettings.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlText from "../gldraw/gltext.js";
@@ -655,7 +655,7 @@ export class GlTimeline extends Events
 
     _initUserPrefs()
     {
-        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+        const userSettingScrollButton = userSettings.get(UserSettings.PREF_GLPATCH_PAN);
         this.buttonForPanning = userSettingScrollButton || 2;
         this.displayUnits = userSettings.get(GlTimeline.USERSETTING_UNITS) || GlTimeline.DISPLAYUNIT_SECONDS;
         this.graphSelectMode = !!userSettings.get(GlTimeline.USERSETTING_GRAPH_SELECTMODE);

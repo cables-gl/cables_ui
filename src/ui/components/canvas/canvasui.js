@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
 import { gui } from "../../gui.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 
 /**
  * the icon bar below the renderer canvas
@@ -180,7 +180,7 @@ export default class CanvasUi
 
     updateIconState()
     {
-        const act = userSettings.get("overlaysShow");
+        const act = userSettings.get(UserSettings.PREF_OVERLAYS_SHOW);
         const icon = ele.byId("canvUitoggleOverlay");
         if (icon)
             if (act)icon.classList.add("icon-highlight");
@@ -192,7 +192,7 @@ export default class CanvasUi
      */
     showCanvasModal(show)
     {
-        if (userSettings.get("hideCanvasUi")) return;
+        if (userSettings.get(UserSettings.PREF_HIDE_CANVAS_UI)) return;
 
         const perf = gui.uiProfiler.start("[canvasUi] showCanvasModal");
 

@@ -12,7 +12,7 @@ import uiconfig from "../../uiconfig.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
-import { userSettings } from "../usersettings.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
@@ -45,7 +45,7 @@ class ParamsListener extends Events
         this.#watchGradients = [];
         this._portsIn = [];
         this._portsOut = [];
-        this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
+        this._doFormatNumbers = !(userSettings.get(UserSettings.PREF_NOTLOCALIZE_NUMBERFORMAT) || false);
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();
