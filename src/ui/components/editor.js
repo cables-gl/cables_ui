@@ -129,6 +129,8 @@ export function createOpDocButton(tab, editor)
                 const items = [];
 
                 items.push({
+                    "iconClass": "fileTypeColor_js",
+                    "iconText": "js",
                     "title": opdoc.name + ".js",
                     "func": () =>
                     {
@@ -139,8 +141,11 @@ export function createOpDocButton(tab, editor)
                 for (let i = 0; i < opdoc.attachmentFiles.length; i++)
                 {
                     const fn = opdoc.attachmentFiles[i];
+                    let displayInfo = ManageOp.getAttachmentDisplayInfo(fn);
                     items.push({
-                        "title": opdoc.attachmentFiles[i],
+                        "iconClass": "fileTypeColor_" + displayInfo.fileType,
+                        "iconText": displayInfo.fileType,
+                        "title": displayInfo.readableFilename,
                         "func": () =>
                         {
                             gui.serverOps.editAttachment(opname, fn);

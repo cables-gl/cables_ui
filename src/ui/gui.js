@@ -1183,6 +1183,7 @@ export default class Gui extends Events
     /**
      * @param {Function} cb
      * @param {boolean} userInteraction
+     * @returns {FileManager}
      */
     getFileManager(cb, userInteraction)
     {
