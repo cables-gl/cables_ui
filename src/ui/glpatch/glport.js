@@ -1,5 +1,6 @@
 import { Logger } from "cables-shared-client";
 import { Port } from "cables";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import gluiconfig from "./gluiconfig.js";
 import GlRect from "../gldraw/glrect.js";
 import MouseState from "./mousestate.js";
@@ -40,7 +41,9 @@ export default class GlPort
     #longPortRect;
 
     #activity = 1;
-    #mouseEvents = [];
+
+    /** @type {EventListener[]} */
+    #mouseEventListeners = [];
 
     /** @type {GlPatch} */
     #glPatch;
@@ -90,10 +93,10 @@ export default class GlPort
 
         this._updateColor();
 
-        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_DOWN, this._onMouseDown.bind(this)));
-        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_UP, this._onMouseUp.bind(this)));
-        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
-        this.#mouseEvents.push(this.#rect.on(GlRect.EVENT_POINTER_UNHOVER, this._onUnhover.bind(this)));
+        this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_DOWN, this._onMouseDown.bind(this)));
+        this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_UP, this._onMouseUp.bind(this)));
+        this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
+        this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_UNHOVER, this._onUnhover.bind(this)));
 
         this.#port.on("onLinkChanged", this._onLinkChanged.bind(this));
         this.#port.on("onValueChangeUi", () =>
@@ -104,7 +107,7 @@ export default class GlPort
         p.on(Port.EVENT_UIATTRCHANGE, this.#onUiAttrChange.bind(this));
 
         this.#onUiAttrChange(p.uiAttribs);
-        this.setFlowModeActivity(1);
+        this.setFlowModeActivity();
         this.updateSize();
         this._updateColor();
     }
@@ -428,7 +431,7 @@ export default class GlPort
 
     get rect() { return this.#rect; }
 
-    setFlowModeActivity(_a)
+    setFlowModeActivity()
     {
         if (this.#activity != this.#port.apf)
         {
@@ -444,16 +447,19 @@ export default class GlPort
             if (this.#glop._links[i].portIdIn == this.#id || this.#glop._links[i].portIdOut == this.#id)
                 this.#glop._links[i].visible = false;
 
-        for (let i = 0; i < this.#mouseEvents.length; i++)
-            this.#rect.off(this.#mouseEvents[i]);
+        for (let i = 0; i < this.#mouseEventListeners.length; i++)
+            this.#rect.off(this.#mouseEventListeners[i]);
 
-        this.#mouseEvents.length = 0;
+        this.#mouseEventListeners.length = 0;
         if (this.#rect) this.#rect = this.#rect.dispose();
         if (this.#dot) this.#dot = this.#dot.dispose();
         if (this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
     }
 
-    static getColorObj(type, hovering, _selected, activity)
+    /**
+     * @param {string} type
+     */
+    static getColorObj(type)
     {
         return gui.theme.colors_objtypes[type] || [1, 1, 0, 1];
     }
