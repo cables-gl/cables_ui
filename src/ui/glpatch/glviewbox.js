@@ -7,6 +7,7 @@ import Gui, { gui } from "../gui.js";
 import { hideToolTip } from "../elements/tooltips.js";
 import UserSettings, { userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * Viewbox of current patch
@@ -449,7 +450,7 @@ export default class GlViewBox
         const defaultZoom = 1200;
 
         let ops = gui.patchView.getSelectedOps();
-        if (ops.length == 0) ops = gui.corePatch().ops;
+        if (ops.length == 0) ops = /** @type {UiOp[]} */ (gui.corePatch().ops);
 
         if (ops.length == 0)
         {
