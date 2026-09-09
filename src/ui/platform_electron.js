@@ -89,13 +89,6 @@ export default class PlatformElectron extends Platform
         return "";
     }
 
-    noCacheUrl(url)
-    {
-        let separator = "?";
-        if (url.includes("?")) separator = "&";
-        return url + separator + "nc=" + (Date.now() + "").substr(-6);
-    }
-
     showFileSelect(inputId, filterType, opId, previewId)
     {
         let value = null;
