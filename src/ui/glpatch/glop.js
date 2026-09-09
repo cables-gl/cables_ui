@@ -190,17 +190,17 @@ export default class GlOp extends Events
         this.setUiAttribs({}, op.uiAttribs);
         if (this.#op)
         {
-            this.#op.on("onStorageChange", () =>
+            this.#op.on(Op.EVENT_STORAGE_CHANGE, () =>
             {
                 this._storageChanged();
             });
 
-            this.#op.on("portOrderChanged", () =>
+            this.#op.on(Op.EVENT_PORT_ORDER_CHANGE, () =>
             {
                 this.refreshPorts();
             });
 
-            this.#op.on("onPortRemoved", () =>
+            this.#op.on(Op.EVENT_PORT_REMOVED, () =>
             {
                 this.refreshPorts();
             });

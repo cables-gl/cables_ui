@@ -3058,7 +3058,7 @@ export default class PatchView extends Events
         const exposeOp = this.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
 
         if (gui.opParams.op == exposeOp) gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
-        exposeOp.emitEvent("portOrderChanged");
+        exposeOp.emitEvent(Op.EVENT_PORT_ORDER_CHANGE);
         exposeOp.emitEvent("glportOrderChanged");
     }
 
