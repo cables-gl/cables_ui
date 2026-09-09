@@ -49,6 +49,7 @@ export default class GlPatch extends Events
     static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
     static EVENT_MOUSE_DRAG_LINK = "mouseDragLink";
+    static EVENT_MOUSE_UP = "mouseup";
 
     #cgl = null;
     hoverPort = null;
@@ -860,7 +861,7 @@ export default class GlPatch extends Events
 
         if (this.#selectionArea.active) this.#selectionArea.hideArea();
 
-        this.emitEvent("mouseup", e);
+        this.emitEvent(GlPatch.EVENT_MOUSE_UP, e);
 
         if (this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting) this._canvasMouseDownSelecting = false;
 

@@ -51,7 +51,7 @@ export default class GlDragLine
 
         this.#clearSpline();
 
-        glpatch.on("mouseup", (e) =>
+        glpatch.on(GlPatch.EVENT_MOUSE_UP, (e) =>
         {
             if (!this.isActive) return;
 
@@ -59,7 +59,7 @@ export default class GlDragLine
             {
             }
 
-            const ele = document.elementFromPoint(e.x, e.y);
+            const ele = /** @type {HTMLElement} */ (document.elementFromPoint(e.x, e.y));
             if (!ele) return;
 
             if (ele.dataset.opid && ele.dataset.portname)
