@@ -1,4 +1,4 @@
-import { Texture } from "cables-corelibs";
+import { CglContext, Texture } from "cables-corelibs";
 import GlRectInstancer from "./glrectinstancer.js";
 
 /**
@@ -15,6 +15,7 @@ import GlRectInstancer from "./glrectinstancer.js";
  */
 export default class GlTextWriter
 {
+
     #fontTex = null;
     #cgl = null;
     #rectDrawer = null;

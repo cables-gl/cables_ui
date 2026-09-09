@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
+// @ts-ignore
 import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
@@ -210,6 +211,7 @@ export default class GlOp extends Events
 
         this._initGl();
 
+        // @ts-ignore
         gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
         {
             this._onMouseHover();
@@ -489,6 +491,7 @@ export default class GlOp extends Events
                         { "name": "" }
                     ],
                     null,
+                    // @ts-ignore
                     { "clientX": 0, "clientY": 0 },
                     null,
                     null,
@@ -511,6 +514,7 @@ export default class GlOp extends Events
                             { "name": "" }
                         ],
                         null,
+                        // @ts-ignore
                         { "clientX": 0, "clientY": 0 },
                         null,
                         null,
@@ -1522,8 +1526,10 @@ export default class GlOp extends Events
             {
                 const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
 
+                // @ts-ignore
                 if (this.#titleExt.textOrig != str)
                 {
+                    // @ts-ignore
                     this.#titleExt.textOrig = str;
 
                     let shortenStr = str;
@@ -1621,6 +1627,7 @@ export default class GlOp extends Events
 
             if (this._transparent)
             {
+                // @ts-ignore
                 this.#glRectBg.setColorArray(gui.theme.colors_patch.transparent);
             }
             else
