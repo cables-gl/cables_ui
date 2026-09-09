@@ -46,6 +46,15 @@ export default class GlLink
     /** @type {GlPatch} */
     #glPatch;
 
+    /** @type {UiOp} */
+    _subPatchOp;
+
+    /** @type {UiOp} */
+    _subPatchInputOp;
+
+    /** @type {UiOp} */
+    _subPatchOutputOp;
+
     /**
      *
      * @param {GlPatch} glpatch
@@ -432,14 +441,14 @@ export default class GlLink
 
                 if (!this._subPatchInputOp && this.#cable)
                 {
-                    this._subPatchInputOp = gui.corePatch().getFirstSubPatchOpByName(this.#cable.subPatch, defaultOps.subPatchInput2);
+                    this._subPatchInputOp = /** @type {UiOp} */ (gui.corePatch().getFirstSubPatchOpByName(this.#cable.subPatch, defaultOps.subPatchInput2));
                     // this._glSubPatchInputOp = this._glPatch.getOp(this._subPatchInputOp.id);
                     if (this._subPatchInputOp) this._subPatchInputOp.on("move", () => { this.update(); });
                 }
 
                 if (!this._subPatchOutputOp && this.#glOpOut && this.#glOpOut.op)
                 {
-                    this._subPatchOutputOp = gui.corePatch().getFirstSubPatchOpByName(this.#glOpOut.op.uiAttribs.subPatch, defaultOps.subPatchOutput2);
+                    this._subPatchOutputOp = /** @type {UiOp} */ (gui.corePatch().getFirstSubPatchOpByName(this.#glOpOut.op.uiAttribs.subPatch, defaultOps.subPatchOutput2));
                     // this._glSubPatchOutputOp = this._glPatch.getOp(this._subPatchOutputOp.id);
                     if (this._subPatchOutputOp) this._subPatchOutputOp.on("move", () => { this.update(); });
                 }
