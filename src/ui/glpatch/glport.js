@@ -198,9 +198,10 @@ export default class GlPort
                     else
                         dotPosY += 0;// dotHeight / 2;
 
+                    if (this.direction == Port.DIR_IN && !this.#port.isLinked())dotPosY += this.#rect.h / 2;
+
                     if (this.#hover)
                     {
-
                         if (this.direction == Port.DIR_OUT)
                             dotPosY += this.#rect.h * 0.25;
                     }
