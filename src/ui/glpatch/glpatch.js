@@ -48,6 +48,7 @@ export default class GlPatch extends Events
     static EVENT_MOUSE_UP_OVER_OP = "mouseUpOverOp";
     static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
+    static EVENT_MOUSE_DRAG_LINK = "mouseDragLink";
 
     #cgl = null;
     hoverPort = null;

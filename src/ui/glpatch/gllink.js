@@ -276,13 +276,13 @@ export default class GlLink
         {
             const glop = this.#glPatch.getGlOp(opOut);
             const glport = glop.getGlPort(pOut.name);
-            this.#glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, this._startDragEvent);
+            this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_DRAG_LINK, glport, opOut.id, pOut.name, this._startDragEvent);
         }
         else
         {
             const glop = this.#glPatch.getGlOp(opIn);
             const glport = glop.getGlPort(pIn.name);
-            this.#glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
+            this.#glPatch.emitEvent(GlPatch.EVENT_MOUSE_DRAG_LINK, glport, opIn.id, pIn.name, this._startDragEvent);
         }
 
         if (!e.altKey && !e.metaKey)
