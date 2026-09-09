@@ -68,12 +68,12 @@ export default class GlLink
      * @param {string} portIdOutput
      * @param {number} type
      * @param {boolean} visible
-     * @param {string|number} subpatch
+     * @param {string} subpatch
      */
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
-        portNameOut, portIdInput, portIdOutput, type, visible = true, subpatch = 0)
+        portNameOut, portIdInput, portIdOutput, type, visible = true, subpatch = "0")
     {
         this._id = id;
 
@@ -482,7 +482,7 @@ export default class GlLink
                     this.#glOpOut.uiAttribs.subPatch == this._subPatchOutputOp.uiAttribs.subPatch)
                 {
                     if (!this.#glOpOut.getUiAttribs().translate) return;
-                    if (this._debugColor) this.#cableSub.setColor(0, 0, 1, 1);
+                    // if (this._debugColor) this.#cableSub.setColor(0, 0, 1, 1);
 
                     foundCableSub = true;
                     this.#cableSub.setPosition(
@@ -509,7 +509,7 @@ export default class GlLink
                     if (!this.#glOpOut.getUiAttribs().translate) return;
                     if (!this._subPatchOp.uiAttribs.translate) return;
 
-                    if (this._debugColor) this.#cableSub.setColor(0, 1, 0, 1); // green
+                    // if (this._debugColor) this.#cableSub.setColor(0, 1, 0, 1); // green
 
                     foundCableSub = true;
                     this.#cableSub.setPosition(
@@ -531,7 +531,7 @@ export default class GlLink
                     this.#glOpIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch
                 )
                 {
-                    if (this._debugColor) this.#cable.setColor(1, 0, 0, 1); // red
+                    // if (this._debugColor) this.#cable.setColor(1, 0, 0, 1); // red
                     foundCable = true;
                     this.#cable.setPosition(
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
@@ -549,7 +549,7 @@ export default class GlLink
                     this.#glOpIn.getUiAttribs().translate &&
                     this._subPatchOp.uiAttribs.translate)
                 {
-                    if (this._debugColor) this.#cable.setColor(0, 0, 0, 1);
+                    // if (this._debugColor) this.#cable.setColor(0, 0, 0, 1);
                     this.#cable.setPosition(
                         this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this.#glOpIn.getUiAttribs().translate.y,
@@ -560,7 +560,7 @@ export default class GlLink
 
                 if (!foundCableSub && this.#cableSub && this._subPatchOutputOp)
                 {
-                    if (this._debugColor) this.#cableSub.setColor(1, 0.5, 0.4, 1);
+                    // if (this._debugColor) this.#cableSub.setColor(1, 0.5, 0.4, 1);
                     this.#cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x + this._subPatchOutputOp.getPortPosX(this._portNameOutput, this._subPatchOutputOp.id, true),
                         this._subPatchOutputOp.uiAttribs.translate.y,

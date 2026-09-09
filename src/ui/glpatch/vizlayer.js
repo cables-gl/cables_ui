@@ -448,7 +448,6 @@ export default class VizLayer extends Events
                     ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
                 }
             }
-
             if (hl)
             {
                 const data = hljs.highlight(lines[i], { "language": options.syntax });

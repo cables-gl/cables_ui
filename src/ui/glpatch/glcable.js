@@ -29,6 +29,8 @@ export default class GlCable
     #x2 = 0;
     #y2 = 0;
     #linetype = this.LINETYPE_CURVED;
+
+    /** @type {number[]} */
     #points = [];
     #disposed = false;
     #visible = true;
@@ -200,6 +202,9 @@ export default class GlCable
         this.#updateLinePos();
     }
 
+    /**
+     * @param {MouseEvent} e
+     */
     _checkCollide(e)
     {
         if (this.#disposed) return;
@@ -256,6 +261,10 @@ export default class GlCable
         else this.#distFromPort = gluiconfig.portHeight * 2.9; // magic number...?!
     }
 
+    /**
+     * @param {number[]} inPoints
+     * @param {number} divs
+     */
     _subdivide(inPoints, divs)
     {
         const arr = [];
@@ -265,6 +274,12 @@ export default class GlCable
         if (newLen != arr.length) arr.length = Math.floor(Math.abs(newLen));
         let count = 0;
 
+        /**
+         * @param {number} x0
+         * @param {number} x1
+         * @param {number} x2
+         * @param {number} t
+         */
         function ip(x0, x1, x2, t)// Bezier
         {
             const r = (x0 * (1 - t) * (1 - t) + 2 * x1 * (1 - t) * t + x2 * t * t);
@@ -512,6 +527,9 @@ export default class GlCable
         this.#buttonRect.setColor(col[0], col[1], col[2], col[3]);
     }
 
+    /**
+     * @deprecated
+     */
     setColor()
     {
         this.updateColor();

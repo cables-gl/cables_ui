@@ -1078,7 +1078,7 @@ export default class GlPatch extends Events
         }
         else
         {
-            glOp.uiAttribs = op.uiAttribs || {};
+            glOp.opUiAttribs = op.uiAttribs || {};
         }
 
         op.on(Op.EVENT_PORT_REMOVE, () => { glOp.refreshPorts(); });
@@ -1336,7 +1336,7 @@ export default class GlPatch extends Events
             this.debugData._mousePatchY = Math.round(this.viewBox.mousePatchY * 100) / 100;
             this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-            this.debugData.rectInstancer = JSON.stringify(this.#rectInstancer.getDebug(), false, 2);
+            this.debugData.rectInstancer = JSON.stringify(this.#rectInstancer.getDebug(), null, 2);
 
             this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
         }

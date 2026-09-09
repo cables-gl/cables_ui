@@ -114,9 +114,6 @@ export default class GlArea
         this.#update();
     }
 
-    /**
-     * @private
-     */
     #update()
     {
         if (this.#rectBg)
