@@ -22,6 +22,7 @@ export default class GlUiCanvas extends GlCanvas
     {
         super(_patch, parentEle);
 
+        this.cgl.name = "ui";
         this.glPatch = new GlPatch(this.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
@@ -34,6 +35,7 @@ export default class GlUiCanvas extends GlCanvas
 
         this.cgl.on("beginFrame", () =>
         {
+
             this.glPatch.vizLayer.renderVizLayer(false);
         });
 
@@ -82,10 +84,11 @@ export default class GlUiCanvas extends GlCanvas
         this.activityHigh();
         requestAnimationFrame(() =>
         {
+            // if (gui.corePatch().cgl) this.cgl.doGlQueryTiming = gui.corePatch().cgl.doGlQueryTiming;
+            // gui.corePatch().perfProfiler.setDuration("glui")
             this.render();
         });
-        // console.log("requests");
-        // this.patch?.on("onRenderFrame", this.render.bind(this));
+
     }
 
     parentResized()
@@ -105,7 +108,10 @@ export default class GlUiCanvas extends GlCanvas
         if (this.targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this.targetFps) return;
 
         const cgl = this.cgl;
+        cgl.perfProfiler = gui.corePatch().perfProfiler;
 
+        cgl.name = "ui ";
+        cgl.doGlQueryTiming = true;
         cgl.renderStart(cgl);
         if (cgl.lastMesh)cgl.lastMesh.unBind();
 
@@ -129,7 +135,7 @@ export default class GlUiCanvas extends GlCanvas
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
 
-        gui.corePatch().perfProfiler.setDuration("glui", performance.now() - startTime);
+        gui.corePatch().perfProfiler.setDuration("glui cpu", performance.now() - startTime);
 
     }
 }

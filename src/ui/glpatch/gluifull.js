@@ -13,12 +13,6 @@ export default class GlGuiFull
         ele.id = id;
         ele.classList.add("glpatchcontainer");
 
-        // if (!patch.cgl.gl)
-        // {
-        //     console.log("webgl not available! :/");
-        //     return;
-        // }
-
         const a = new GlUiCanvas(patch, ele);
 
         gui.patchView.setPatchRenderer(id, a.glPatch);
