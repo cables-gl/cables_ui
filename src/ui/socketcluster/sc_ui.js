@@ -143,6 +143,11 @@ export default class ScUi
                 platform.fileUpdated(data.file.filename);
                 let msg = "File Uploaded";
                 if (data.byUser) msg += " by " + data.byUser;
+                if (data.viaApi)
+                {
+                    msg += " via api";
+                    gui.refreshFileManager();
+                }
                 msg += ": " + data.file.filename;
                 notify(msg);
             }
