@@ -1,4 +1,4 @@
-import { TalkerAPI } from "cables-shared-client";
+import { TalkerAPI, ele } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { notify, notifyWarn } from "../elements/notification.js";
 import ModalDialog from "../dialogs/modaldialog.js";
@@ -147,7 +147,7 @@ export default class ScUi
                 {
                     msg += " via api";
                 }
-                gui.refreshFileManager();
+                if (gui && ele.byId("filemanagercontainer")) gui.refreshFileManager();
                 msg += ": " + data.file.filename;
                 notify(msg);
             }
