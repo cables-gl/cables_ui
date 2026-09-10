@@ -146,8 +146,8 @@ export default class ScUi
                 if (data.viaApi)
                 {
                     msg += " via api";
-                    gui.refreshFileManager();
                 }
+                gui.refreshFileManager();
                 msg += ": " + data.file.filename;
                 notify(msg);
             }
