@@ -39,6 +39,16 @@ export default class OpAttachmentTab extends Tab
         this.active = true;
         this.contentEle.style.display = "block";
         this.toolbarContainerEle.style.display = "block";
+
+        const attSource = this.options.attSource;
+        const viewId = this.options.viewId;
+        const selector = "addopattachment_" + attSource + "_" + viewId;
+        const attsEle = ele.byId(selector);
+        if (attsEle)
+        {
+            const srcEle = attsEle.querySelector(".attSrc");
+            if (srcEle) srcEle.focus();
+        }
         this.emitEvent(Tab.EVENT_ACTIVATE);
     }
 
@@ -66,7 +76,7 @@ export default class OpAttachmentTab extends Tab
                     if (attTypeEle && attTypeEle.value === "binary")
                     {
                         const usageEle = attsEle.querySelector(".usage.static code");
-                        if (usageEle) usageEle.innerText = "staticAttachments[\"" + fileInput.files[0].name.replace(".", "_") + "\"]";
+                        if (usageEle) usageEle.innerText = "staticAttachments." + fileInput.files[0].name.replace(".", "_");
                     }
                 });
             }
@@ -86,7 +96,7 @@ export default class OpAttachmentTab extends Tab
                     srcEle.addEventListener("input", () =>
                     {
                         const usageEle = attsEle.querySelector(".usage.string code");
-                        if (usageEle) usageEle.innerText = "attachments[\"" + srcEle.value.replace(".", "_") + "\"]";
+                        if (usageEle) usageEle.innerText = "attachments." + srcEle.value.replace(".", "_");
                     });
                 }
             }

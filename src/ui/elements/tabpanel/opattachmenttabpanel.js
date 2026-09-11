@@ -22,8 +22,8 @@ export default class OpAttachmentTabPanel extends TabPanel
 
         this._options = options;
         this._sources = [
+            { "title": "Attachment", "value": "string" },
             { "title": "Include JS", "value": "js" },
-            { "title": "String Attachment", "value": "string" },
             { "title": "Binary Attachment", "value": "binary" }
         ];
     }
