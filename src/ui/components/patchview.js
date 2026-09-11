@@ -63,13 +63,13 @@ export default class PatchView extends Events
 {
 
     /**
-     * @param {Patch<any>} corepatch
+     * @param {Patch<UiOp>} corepatch
      */
     constructor(corepatch)
     {
         super();
 
-        /** @type {Patch} */
+        /** @type {Patch<UiOp>} */
         this._p = corepatch;
         this._log = new Logger("patchview");
         this._element = null;
