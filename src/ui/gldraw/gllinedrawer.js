@@ -15,8 +15,10 @@ import GlUiCanvas from "../glpatch/gluicanvas.js";
  * @property {number[]} color
  * @property {number[]} colorInactive
  * @property {number[]} colorBorder
+ * @property {number[]} origPoints;
  * @property {number} speed
  * @property {number} index
+ * @property {number} startOffset
  * @property {boolean} hidden
  * @property {boolean} pointsNeedProgressUpdate
  * @property {boolean} deleted

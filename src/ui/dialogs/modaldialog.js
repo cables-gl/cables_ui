@@ -15,10 +15,14 @@ import { CssClassNames } from "../theme.js";
  * @property {Boolean} [warning=false] show a warning triangle
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
+ * @property {Boolean} [persistInIdleMode]
  * @property {String} [promptValue]
  * @property {Function} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
- */
+ * @property {string[]} [notices]
+ * @property {string} [footer]
+
+*/
 
 /**
  * @typedef {Object} ModalDialogButton
