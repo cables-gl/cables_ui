@@ -1,6 +1,6 @@
 <script id="op_add_attachment_js" type="text/x-handlebars-template">
     <div id="addopattachment_js_{{viewId}}" class="addopattachment">
-        <div class="usage warning-error-level0 js">Will be executed before the op-code is run.</div>
+        <div class="usage js">Will be executed before the op-code is run.<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_attachments/dev_attachments"><span class="nomargin icon icon-1_25x icon-help"></span></a></div>
         <label>
             Name: <input class="attSrc" type="text">
         </label>
@@ -9,7 +9,7 @@
 </script>
 <script id="op_add_attachment_string" type="text/x-handlebars-template">
     <div id="addopattachment_string_{{viewId}}" class="addopattachment">
-        <div class="usage warning-error-level0 string">Can be accessed as string via <code>attachments</code> in the op</div>
+        <div class="usage string">Can be accessed as string via <code>attachments</code> in the op.<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_attachments/dev_attachments"><span class="nomargin icon icon-1_25x icon-help"></span></a></div>
         <label>
             Name: <input class="attSrc" type="text">
         </label>
@@ -18,7 +18,7 @@
 </script>
 <script id="op_add_attachment_binary" type="text/x-handlebars-template">
     <div id="addopattachment_binary_{{viewId}}" class="addopattachment">
-        <div class="usage warning-error-level0 static">Can be accessed as base64-string via <code>staticAttachments</code> in the op</div>
+        <div class="usage static">Can be accessed as base64-string via <code>staticAttachments</code> in the op.<a class="button-small" target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_attachments/dev_attachments"><span class="nomargin icon icon-1_25x icon-help"></span></a></div>
         <input class="attSrc upload" type="text" disabled readonly>
         <a class="cblbutton upload">
             <span class="icon icon-plus-circle icon-1_25x"></span>Select file</a>
