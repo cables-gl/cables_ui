@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import { gui } from "../gui.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
+import { DomEvents } from "../theme.js";
 
 /**
  * managing mouse states buttons/position/dragging etc
@@ -49,21 +50,21 @@ export default class MouseState extends Events
 
         userSettings.on(UserSettings.EVENT_CHANGE, this._initUserPrefs.bind(this));
 
-        canvas.addEventListener("pointerenter", (/** @type {PointerEvent} */e) =>
+        canvas.addEventListener(DomEvents.POINTER_ENTER, (/** @type {PointerEvent} */e) =>
         {
             if (e.pointerType == "touch") this._mouseOverCanvas = true;
             else this._mouseOverCanvas = true;
         });
 
-        canvas.addEventListener("pointerleave", (/** @type {PointerEvent} */e) =>
+        canvas.addEventListener(DomEvents.POINTER_LEAVE, (/** @type {PointerEvent} */e) =>
         {
             if (e.pointerType == "touch") this._mouseOverCanvas = true;
             else this._mouseOverCanvas = false;
         });
 
-        canvas.addEventListener("pointerdown", this._down.bind(this), { "passive": false });
-        canvas.addEventListener("pointerup", this._up.bind(this), { "passive": false });
-        canvas.addEventListener("pointermove", this.#move.bind(this), { "passive": false });
+        canvas.addEventListener(DomEvents.POINTER_DOWN, this._down.bind(this), { "passive": false });
+        canvas.addEventListener(DomEvents.POINTER_UP, this._up.bind(this), { "passive": false });
+        canvas.addEventListener(DomEvents.POINTER_MOVE, this.#move.bind(this), { "passive": false });
         // canvas.addEventListener("touchmove", this._move.bind(this), { "passive": false });
 
         /*
@@ -71,12 +72,12 @@ export default class MouseState extends Events
          * canvas.addEventListener("touchend", this._up.bind(this), { "passive": false });
          */
 
-        canvas.addEventListener("touchenter", (e) =>
+        canvas.addEventListener(DomEvents.TOUCH_ENTER, (e) =>
         {
             this._numFingers = e.touches.length;
         });
 
-        canvas.addEventListener("touchleave", (e) =>
+        canvas.addEventListener(DomEvents.TOUCH_LEAVE, (e) =>
         {
             this._numFingers = e.touches.length;
         });

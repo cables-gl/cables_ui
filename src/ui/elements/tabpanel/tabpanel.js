@@ -27,6 +27,8 @@ import { DomEvents } from "../../theme.js";
 export default class TabPanel extends Events
 {
     static EVENT_RESIZE = "resize";
+    static EVENT_TAB_REMOVED = "onTabRemoved";
+    static EVENT_TAB_ADDED = "onTabAdded";
 
     /** @type {TabPanelOptions} */
     #options;
@@ -336,7 +338,7 @@ export default class TabPanel extends Events
         }
         if (!tab) return;
 
-        this.emitEvent("onTabRemoved", tab);
+        this.emitEvent(TabPanel.EVENT_TAB_REMOVED, tab);
         tab.remove();
 
         if (idx > this.tabs.length - 1) idx = this.tabs.length - 1;
@@ -421,7 +423,7 @@ export default class TabPanel extends Events
             if (t)
             {
                 this.activateTab(t.id);
-                this.emitEvent("onTabAdded", t, true);
+                this.emitEvent(TabPanel.EVENT_TAB_ADDED, t, true);
 
                 if (activate) this.activateTab(t.id);
                 return t;
@@ -434,7 +436,7 @@ export default class TabPanel extends Events
         if (activate) this.activateTab(tab.id);
 
         this.updateHtml();
-        this.emitEvent("onTabAdded", tab, false);
+        this.emitEvent(TabPanel.EVENT_TAB_ADDED, tab, false);
 
         return tab;
     }

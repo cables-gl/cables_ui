@@ -150,6 +150,8 @@ export class DomEvents
     static POINTER_DOWN = "pointerdown";
     static POINTER_UP = "pointerup";
     static POINTER_WHEEL = "wheel";
+    static TOUCH_ENTER = "touchenter";
+    static TOUCH_LEAVE = "touchleave";
 }
 
 export function setUpTheme(theme = {})

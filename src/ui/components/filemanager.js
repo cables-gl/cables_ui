@@ -886,20 +886,21 @@ export default class FileManager
     /**
      * @param {string} filename
      * @param {string} content
-     * @param {Function} cb
+     * @param {Function} [cb]
+     * @param {string} patchId
      */
-    uploadFile(filename, content, cb)
+    uploadFile(filename, content, cb = null, patchId = null)
     {
         gui.jobs().finish("uploadfile" + filename);
         gui.jobs().start({ "id": "uploadfile" + filename, "title": "uploading file " + filename });
 
+        const data = {
+            "fileStr": content,
+            "filename": filename
+        };
+        if (patchId) data.patchId = patchId;
         platform.talkerAPI.send(
-            TalkerAPI.CMD_UPLOAD_FILE,
-            {
-                "fileStr": content,
-                "filename": filename
-            },
-            (err3, res3) =>
+            TalkerAPI.CMD_UPLOAD_FILE, data, (err3, res3) =>
             {
                 gui.savedState.setSaved("editorOnChangeFile");
                 gui.jobs().finish("uploadfile" + filename);

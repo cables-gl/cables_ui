@@ -25,7 +25,7 @@ export default class BottomTabPanel extends Events
         this._ele.style.display = "none";
         this.height = userSettings.get(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT) || uiconfig.timingPanelHeight;
 
-        this.#tabPanel.on("onTabAdded", (tab, existedBefore) =>
+        this.#tabPanel.on(TabPanel.EVENT_TAB_ADDED, (tab, existedBefore) =>
         {
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
@@ -36,7 +36,7 @@ export default class BottomTabPanel extends Events
             if (!wasVisible && window.gui) gui.setLayout();
         });
 
-        this.#tabPanel.on("onTabRemoved", (_tab) =>
+        this.#tabPanel.on(TabPanel.EVENT_TAB_REMOVED, (_tab) =>
         {
             if (this.#tabPanel.getNumTabs() == 0)
             {
