@@ -8,7 +8,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-import { Link, Op, Port } from "cables";
+import { Link, Op, Patch, Port } from "cables";
 import { Logger } from "cables-shared-client";
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
@@ -643,7 +643,7 @@ class UiOp extends Op
 
     isInBlueprint2()
     {
-        if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == 0) return false;
+        if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == Patch.DEFAULT_SUBPATCHID) return false;
 
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
         if (sop)
@@ -789,12 +789,12 @@ class UiOp extends Op
 
     getSubPatch()
     {
-        return this.uiAttribs.subPatch || 0;
+        return this.uiAttribs.subPatch || Patch.DEFAULT_SUBPATCHID;
     }
 
     getParentSubPatch()
     {
-        if (this.uiAttribs.subPatch === 0) return 0;
+        if (this.uiAttribs.subPatch === Patch.DEFAULT_SUBPATCHID) return Patch.DEFAULT_SUBPATCHID;
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
         if (sop) return sop.uiAttribs.subPatch;
 
