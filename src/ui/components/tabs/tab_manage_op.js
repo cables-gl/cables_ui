@@ -294,6 +294,7 @@ export default class ManageOp
                     "Corelib",
                     "Library",
                     "Include",
+                    "Shader",
                     "Vertex",
                     "Fragment",
                     "Module",
@@ -570,6 +571,20 @@ export default class ManageOp
         {
             readableType = "Included JS file";
             readable = readable.replace("inc_", "");
+        }
+        if (readable.endsWith("_glsl"))
+        {
+            fileType = "gl";
+            readableType = "Shader code";
+            const index = readable.lastIndexOf("_glsl");
+            if (index >= 0) readable = readable.slice(0, index) + ".glsl" + readable.slice(index + 5);
+        }
+        if (readable.endsWith("_wgsl"))
+        {
+            fileType = "gl";
+            readableType = "Shader code";
+            const index = readable.lastIndexOf("_wgsl");
+            if (index >= 0) readable = readable.slice(0, index) + ".wgsl" + readable.slice(index + 5);
         }
         if (readable.endsWith("_frag"))
         {
