@@ -118,7 +118,7 @@ export default function setHtmlDefaultListeners()
 
     document.body.addEventListener("dragstart", (e) =>
     {
-        const target = /** @type {HTMLElement} */ (e.target);
+        const target = e.target;
         if (!target.draggable || !target.classList.contains("draggable") || target.nodeName == "TEXTAREA" || target.nodeName == "INPUT")
         {
             e.preventDefault();
