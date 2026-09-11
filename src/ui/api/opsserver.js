@@ -1969,7 +1969,7 @@ export default class ServerOps
                     const missingOpUrl = [];
                     allIdentifiers.forEach((identifier) =>
                     {
-                        let url = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/op/" + identifier) + "?p=" + this.#patchId;
+                        let url = CABLESUILOADER.noCacheUrl(platform.getCablesUrl() + "/api/op/" + identifier + ".js") + "?p=" + this.#patchId;
                         if (platform.config.previewMode) url += "&preview=true";
                         missingOpUrl.push(url);
                     });

@@ -330,7 +330,7 @@ export default class ManageOp
                 if (platform.frontendOptions.opDeleteInEditor) canDeleteOp = canEditOp;
 
                 const html = getHandleBarHtml("tab_manage_op", {
-                    "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName,
+                    "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName + ".svg",
                     "url": platform.getCablesDocsUrl(),
                     "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
                     "opid": opDoc.id,

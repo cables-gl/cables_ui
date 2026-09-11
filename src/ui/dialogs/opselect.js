@@ -380,7 +380,7 @@ export default class OpSelect
 
                 const svg = gui.opDocs.getLayoutSvg(opName);
                 if (svg)html += svg;
-                else html += "<img src=\"" + platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+                else html += "<img src=\"" + platform.getCablesUrl() + "/api/op/layout/" + opName + ".svg\"/>";
 
                 html += "</div>";
                 html += "<a target=\"_blank\" href=\"" + platform.getCablesDocsUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
