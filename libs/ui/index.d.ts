@@ -38,7 +38,7 @@ declare global {
     interface Window {
         Handlebars:any
         logStartup:typeof Function
-        // gui:Gui
+        gui:Gui
     }
 
 }

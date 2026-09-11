@@ -35,7 +35,7 @@ export default function setHtmlDefaultListeners()
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
-        let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        let items = (e.clipboardData || /** @type {any} */ (e).originalEvent.clipboardData).items;
         for (let index in items)
         {
             let item = items[index];
@@ -78,9 +78,10 @@ export default function setHtmlDefaultListeners()
          */
         (e) =>
         {
-            if (e.target.currentSrc) return;
-            if (e.target.classList.contains("selectable")) return;
-            if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
+            const target = /** @type {HTMLElement} */ (e.target);
+            if (/** @type {any} */ (target).currentSrc) return;
+            if (target.classList.contains("selectable")) return;
+            if (target.nodeName == "TEXTAREA" || target.nodeName == "INPUT") return;
 
             // if (ele.byId("cablescanvas").contains(e.target)) return;
             e.preventDefault();
@@ -101,13 +102,14 @@ export default function setHtmlDefaultListeners()
             return;
         }
 
-        if (e && e.exception && String(e.exception.stack).indexOf("file:blob:") == 0)
+        const exception = /** @type {any} */ (e).exception;
+        if (e && exception && String(exception.stack).indexOf("file:blob:") == 0)
         {
             _log.log("ignore file blob exception...");
             return;
         }
 
-        if (!CABLES.lastError != e)
+        if (/** @type {any} */ (!CABLES.lastError) != e)
         {
             _log.error(e);
             CABLES.lastError = e;
@@ -116,7 +118,8 @@ export default function setHtmlDefaultListeners()
 
     document.body.addEventListener("dragstart", (e) =>
     {
-        if (!e.target.draggable || !e.target.classList.contains("draggable") || e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT")
+        const target = /** @type {HTMLElement} */ (e.target);
+        if (!target.draggable || !target.classList.contains("draggable") || target.nodeName == "TEXTAREA" || target.nodeName == "INPUT")
         {
             e.preventDefault();
             return false;
