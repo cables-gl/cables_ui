@@ -730,6 +730,9 @@ class OpParampanel extends Events
         }
     }
 
+    /**
+     * @param {string} t
+     */
     setCurrentOpTitle(t)
     {
         if (this._currentOp) this._currentOp.setTitle(t);
@@ -738,11 +741,17 @@ class OpParampanel extends Events
             this._currentOp.patch.emitEvent("subpatchesChanged");
     }
 
+    /**
+     * @param {Op<any>} op
+     */
     isCurrentOp(op)
     {
         return this._currentOp == op;
     }
 
+    /**
+     * @param {string} opid
+     */
     isCurrentOpId(opid)
     {
         if (!this._currentOp) return false;
@@ -750,83 +759,83 @@ class OpParampanel extends Events
     }
 
     // OLD SUBPATCH LIST!!!!!! REMOVE
-    subPatchContextMenu(el)
-    {
-        const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+    // subPatchContextMenu(el)
+    // {
+    //     const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-        const items = [];
-        if (outer && outer.storage && outer.storage.blueprint)
-        {
-            items.push({
-                "title": "Goto Blueprint Op",
-                "func": function ()
-                {
-                    // gui.patchView.focusSubpatchOp(el.dataset.id);
-                }
-            });
-            items.push({
-                "title": "Update Blueprint",
-                "func": function ()
-                {
-                    const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(el.dataset.id);
-                    if (bp) gui.patchView.updateBlueprints([bp]);
-                }
-            });
-            items.push({
-                "title": "Open Patch",
-                "iconClass": "icon icon-external",
-                "func": function ()
-                {
-                    const url = platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
-                    window.open(url, "_blank");
-                }
-            });
-        }
-        else
-        {
-            items.push({
-                "title": "Rename",
-                "func": function ()
-                {
-                    gui.patchView.focusSubpatchOp(el.dataset.id);
-                    CABLES.CMD.PATCH.setOpTitle();
-                }
-            });
+    //     const items = [];
+    //     if (outer && outer.storage && outer.storage.blueprint)
+    //     {
+    //         items.push({
+    //             "title": "Goto Blueprint Op",
+    //             "func": function ()
+    //             {
+    //                 // gui.patchView.focusSubpatchOp(el.dataset.id);
+    //             }
+    //         });
+    //         items.push({
+    //             "title": "Update Blueprint",
+    //             "func": function ()
+    //             {
+    //                 const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(el.dataset.id);
+    //                 if (bp) gui.patchView.updateBlueprints([bp]);
+    //             }
+    //         });
+    //         items.push({
+    //             "title": "Open Patch",
+    //             "iconClass": "icon icon-external",
+    //             "func": function ()
+    //             {
+    //                 const url = platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
+    //                 window.open(url, "_blank");
+    //             }
+    //         });
+    //     }
+    //     else
+    //     {
+    //         items.push({
+    //             "title": "Rename",
+    //             "func": function ()
+    //             {
+    //                 gui.patchView.focusSubpatchOp(el.dataset.id);
+    //                 CABLES.CMD.PATCH.setOpTitle();
+    //             }
+    //         });
 
-            items.push({
-                "title": "Goto Subpatch Op",
-                "func": function ()
-                {
-                    gui.patchView.focusSubpatchOp(el.dataset.id);
-                }
-            });
+    //         items.push({
+    //             "title": "Goto Subpatch Op",
+    //             "func": function ()
+    //             {
+    //                 gui.patchView.focusSubpatchOp(el.dataset.id);
+    //             }
+    //         });
 
-            if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
-                items.push({
-                    "title": "Create op from subpatch",
-                    "func": function ()
-                    {
-                        gui.serverOps.createBlueprint2Op(el.dataset.id);
-                        // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    }
-                });
+    //         if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
+    //             items.push({
+    //                 "title": "Create op from subpatch",
+    //                 "func": function ()
+    //                 {
+    //                     gui.serverOps.createBlueprint2Op(el.dataset.id);
+    //                     // gui.patchView.focusSubpatchOp(el.dataset.id);
+    //                 }
+    //             });
 
-            if (el.dataset.blueprintver == 2)
-            {
-                items.push({
-                    "title": "Save Blueprint Op",
-                    "func": function ()
-                    {
-                        const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+    //         if (el.dataset.blueprintver == 2)
+    //         {
+    //             items.push({
+    //                 "title": "Save Blueprint Op",
+    //                 "func": function ()
+    //                 {
+    //                     const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-                        gui.serverOps.updateSubPatchOpAttachment(op, { "oldSubId": el.dataset.id });
-                        // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    }
-                });
-            }
-        }
-        contextMenu.show({ "items": items }, el);
-    }
+    //                     gui.serverOps.updateSubPatchOpAttachment(op, { "oldSubId": el.dataset.id });
+    //                     // gui.patchView.focusSubpatchOp(el.dataset.id);
+    //                 }
+    //             });
+    //         }
+    //     }
+    //     contextMenu.show({ "items": items }, el);
+    // }
 
     /**
      * @param {HTMLElement} el

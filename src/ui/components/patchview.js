@@ -478,6 +478,8 @@ export default class PatchView extends Events
         }
 
         const opname = ops[0];
+
+        /** @type {import("cables/src/core/core_op.js").OpUiAttribs} */
         const uiAttr = { "subPatch": this.getCurrentSubPatch() };
 
         let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
@@ -1271,7 +1273,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {string | number} [patchId]
+     * @param {string} [patchId]
      */
     setPositionSubPatchInputOutputOps(patchId)
     {
@@ -1284,7 +1286,7 @@ export default class PatchView extends Events
 
         if (patchInputOPs.length == 0)
         {
-            if (this._p.clearSubPatchCache) this._p.clearSubPatchCache(this.patchId);
+            if (this._p.clearSubPatchCache) this._p.clearSubPatchCache(patchId);
 
             this._p.addOp(defaultOps.defaultOpNames.subPatchInput2, { "subPatch": patchId, "translate": { "x": 0, "y": 0 } });
             this._p.addOp(defaultOps.defaultOpNames.subPatchOutput2, { "subPatch": patchId, "translate": { "x": 0, "y": 0 } });
@@ -1394,7 +1396,7 @@ export default class PatchView extends Events
         {
             for (let _asub in foundSubPatchOps)
             {
-                if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
+                if (!foundSubPatchOps.hasOwnProperty(subid) && subid != Patch.DEFAULT_SUBPATCHID)
                 {
                     this._log.warn("found lost subpatch...", subid);
                     if (countSubs[subid] <= 2)
@@ -1455,7 +1457,7 @@ export default class PatchView extends Events
             let found = false;
             for (let j = 0; j < ops.length; j++)
             {
-                if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
+                if (ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
                     if (ops[j].uiAttribs.hidden)
                     {
@@ -1603,14 +1605,7 @@ export default class PatchView extends Events
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].storage && selectedOps[i].storage.blueprint)
-            {
-                delete selectedOps[i].storage.blueprint;
-            }
-            if (selectedOps[i].uiAttribs.hasOwnProperty("fromNetwork"))
-            {
-                delete selectedOps[i].uiAttribs.fromNetwork;
-            }
+            if (selectedOps[i].storage && selectedOps[i].storage.blueprint) delete selectedOps[i].storage.blueprint;
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
         }
@@ -2261,7 +2256,7 @@ export default class PatchView extends Events
         this._patchRenderer.resumeInteraction();
     }
 
-    /** @returns {String|number} */
+    /** @returns {String} */
     getCurrentSubPatch()
     {
         return this._patchRenderer.getCurrentSubPatch();
@@ -2273,7 +2268,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {string | number} subpatch
+     * @param {string} subpatch
      * @param {Function} [next]
      */
     setCurrentSubPatch(subpatch, next)
@@ -2283,7 +2278,7 @@ export default class PatchView extends Events
         {
 
             gui.restriction.setMessage("subpatchref", null);
-            if (subpatch != 0)
+            if (subpatch != Patch.DEFAULT_SUBPATCHID)
             {
                 const outerOp = this.getSubPatchOuterOp(subpatch);
                 const ops = gui.savedState.getUnsavedPatchSubPatchOps();
@@ -2480,6 +2475,10 @@ export default class PatchView extends Events
         return gui.opParams.isCurrentOpId(opid);
     }
 
+    /**
+     * @param {UiOp} origOp
+     * @param {UiOp} newOp
+     */
     copyOpInputPorts(origOp, newOp)
     {
         for (let i = 0; i < origOp.portsIn.length; i++)
@@ -2503,6 +2502,10 @@ export default class PatchView extends Events
         }
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} opname
+     */
     downGradeOp(opid, opname)
     {
         if (!gui.opDocs.getOpDocByName(opname))
@@ -2531,6 +2534,10 @@ export default class PatchView extends Events
         this.unselectAllOps();
     }
 
+    /**
+     * @param {string} opid
+     * @param {string} newOpObjName
+     */
     replaceOpCheck(opid, newOpObjName)
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
@@ -2857,6 +2864,8 @@ export default class PatchView extends Events
      */
     suggestionBetweenTwoOps(op1, op2)
     {
+
+        /** @type {MouseEvent} */
         const mouseEvent = { "clientX": 400, "clientY": 400 };
         let showConv = true;
 
@@ -3005,16 +3014,13 @@ export default class PatchView extends Events
         gui.opParams.show(op);
     }
 
-    /**
-     * @param {string} bpSubpatchId
-     */
-    getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
-    {
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].uiAttribs.blueprintSubpatch == bpSubpatchId)
-                return ops[i];
-    }
+    // getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
+    // {
+    //     const ops = gui.corePatch().ops;
+    //     for (let i = 0; i < ops.length; i++)
+    //         if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].uiAttribs.blueprintSubpatch == bpSubpatchId)
+    //             return ops[i];
+    // }
 
     /**
      * @param {string} subid

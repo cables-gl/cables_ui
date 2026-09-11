@@ -1,5 +1,5 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { Op, Port, utils } from "cables";
+import { Op, Patch, Port, utils } from "cables";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
@@ -418,7 +418,7 @@ class CmdPatch
         const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
 
         if (names.length == 0) return;
-        if (names.length == 1) gui.patchView.setCurrentSubPatch(0, null);
+        if (names.length == 1) gui.patchView.setCurrentSubPatch(Patch.DEFAULT_SUBPATCHID, null);
         else gui.patchView.setCurrentSubPatch(names[names.length - 1].id, null);
     }
 
@@ -542,7 +542,7 @@ class CmdPatch
     {
         if (!options.ignoreNsCheck)
         {
-            if (gui.patchView.getCurrentSubPatch() != 0)
+            if (gui.patchView.getCurrentSubPatch() != Patch.DEFAULT_SUBPATCHID)
             {
                 const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
                 if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0)
@@ -1537,14 +1537,14 @@ class CmdPatch
 
     static createSubPatchOp()
     {
-        if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
+        if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == Patch.DEFAULT_SUBPATCHID)
         {
             new ModalDialog({ "title": "You don't have write access", "showOkButton": true });
             return;
         }
 
         let suggestedNamespace = platform.getPatchOpsNamespace();
-        if (gui.patchView.getCurrentSubPatch() != 0)
+        if (gui.patchView.getCurrentSubPatch() != Patch.DEFAULT_SUBPATCHID)
         {
             const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
             if (subOuter)
@@ -1573,7 +1573,7 @@ class CmdPatch
             "hasOpDirectories": platform.frontendOptions.hasOpDirectories
         };
 
-        if (gui.patchView.getCurrentSubPatch() != 0)
+        if (gui.patchView.getCurrentSubPatch() != Patch.DEFAULT_SUBPATCHID)
         {
             const outerOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
             if (outerOp)

@@ -195,7 +195,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
         TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
-            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename
         },
         (err, res) =>
         {
@@ -261,7 +261,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
         TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
-            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename
         },
         (err, res) =>
         {
@@ -309,7 +309,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
         TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
-            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename
         },
         (err, res) =>
         {
@@ -409,7 +409,7 @@ subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
         if (
             subOuterOp &&
             (subOuterOp.opId == opname || subOuterOp.objName == opname) &&
-            gui.patchView.getCurrentSubPatch() != 0
+            gui.patchView.getCurrentSubPatch() != Patch.DEFAULT_SUBPATCHID
         )
         {
             const newSubId = utils.shortId();
@@ -459,7 +459,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
         TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
             "opname": opId,
-            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename
         },
         (err, res) =>
         {
@@ -708,7 +708,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         {
             "opname": newOp.opId,
             "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
-            "content": JSON.stringify(o, null, "  "),
+            "content": JSON.stringify(o, null, "  ")
         },
         (err, res) =>
         {

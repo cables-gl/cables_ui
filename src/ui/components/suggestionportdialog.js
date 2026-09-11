@@ -31,6 +31,7 @@ export default class SuggestPortDialog
      * @param {MouseEvent} mouseEvent
      * @param {SuggestCallBack} cb
      * @param {Function} [cbCancel]
+     * @param {boolean} [useConverter]
      * @param {boolean} [forceConverter]
      */
     constructor(op, port, mouseEvent, cb, cbCancel, useConverter, forceConverter)

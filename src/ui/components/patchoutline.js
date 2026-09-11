@@ -236,7 +236,7 @@ export default class PatchOutline extends Events
     }
 
     /**
-     * @param {{ subPatchId: string; subPatchVer: string; blueprintVer: number; }} item
+     * @param {} item
      * @param {HTMLElement} el
      */
     subPatchContextMenu(item, el)

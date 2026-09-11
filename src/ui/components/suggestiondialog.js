@@ -15,7 +15,7 @@ import { DomEvents } from "../theme.js";
  * @property {String} [shortName] - internal: do not set manually
  * @property {String} [classname] - class
  * @property {Port} [p] - port
- * @property {String} [op] - op id
+ * @property {Op} [op] - op id
  * @property {Number} [spacing] - extra spacing
  * @property {Boolean} [isBoundToVar]
  * @property {Function} [cb] - [callback]
@@ -95,8 +95,8 @@ export default class SuggestionDialog
         }
 
         this.#eleDialog.innerHTML = getHandleBarHtml("suggestions", {
-            suggestions,
-            _showSelect
+            "suggestions": suggestions,
+            "_showSelect": _showSelect
         });
 
         const sugeles = this.#eleDialog.getElementsByClassName("suggestion");
@@ -156,11 +156,11 @@ export default class SuggestionDialog
             if (!options.noAnim)
                 sugEle.animate([
                     { "left": -left + "px", "opacity": 0 },
-                    { "left": 0 + "px", "opacity": 1 },
+                    { "left": 0 + "px", "opacity": 1 }
                 ], {
                     "duration": 150 + i * 50,
                     "easing": "ease-out",
-                    "iterations": 1,
+                    "iterations": 1
                 });
 
             suggestions[i].id = i;
