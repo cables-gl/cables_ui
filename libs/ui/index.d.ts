@@ -25,9 +25,6 @@ declare global {
     const tinysort:any
     const UndoManager:any
     const Sortable:any
-    const Ammo:any
-    const Tone:any
-    const Object3D:any
 
     const mat2: typeof import("gl-matrix").mat2
     const mat3: typeof import("gl-matrix").mat3

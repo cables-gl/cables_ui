@@ -3,6 +3,7 @@ import defaultOps from "../defaultops.js";
 import { gui } from "../gui.js";
 import SuggestionDialog from "./suggestiondialog.js";
 import { getConverters } from "./converterops.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * show suggestions for linking a port
@@ -16,14 +17,21 @@ export default class SuggestPortDialog
     /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
     #suggestions = [];
 
+    /** @callback  SuggestCallBack
+     * @param {Port} port
+     * @param {String} op
+     * @param {import("./suggestiondialog.js").SuggestionItem} item
+     * @param {boolean} useConverter
+     */
+
     /**
      * Description
-     * @param {Op} op
+     * @param {UiOp} op
      * @param {Port} port
      * @param {MouseEvent} mouseEvent
-     * @param {Function} cb
+     * @param {SuggestCallBack} cb
      * @param {Function} [cbCancel]
-     * @param {boolean} [useConverter]
+     * @param {boolean} [forceConverter]
      */
     constructor(op, port, mouseEvent, cb, cbCancel, useConverter, forceConverter)
     {

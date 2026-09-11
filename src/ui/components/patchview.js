@@ -32,11 +32,15 @@ import { UiOp } from "../core_extend_op.js";
  * @property {string} [createdLocally]
  * @property {Port} [linkNewOpToPort]
  * @property {Link} [linkNewLink]
- * @property {Op} [linkNewOpToOp]
+ * @property {UiOp} [linkNewOpToOp]
  * @property {boolean} [linkOnlyFirstPort]
- * @property {function} [onOpAdd]
+ * @property {AddOpCallback} [onOpAdd]
  * @property {import("cables/src/core/core_patch.js").OpUiAttribs} [uiAttribs]
+ */
 
+/**
+ * @callback AddOpCallback
+ * @param {UiOp} result
  */
 
 /**
@@ -447,6 +451,10 @@ export default class PatchView extends Events
         this._p.clear();
     }
 
+    /**
+     * @param {string} id
+     * @param {GlPatch} pr
+     */
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
@@ -1016,6 +1024,7 @@ export default class PatchView extends Events
     getSelectedOps()
     {
         const perf = gui.uiProfiler.start("patchview getSelectedOps");
+
         /** @type {UiOp[]} */
         const ops = [];
 
@@ -1359,7 +1368,7 @@ export default class PatchView extends Events
                     };
 
                     arr.push(patchInfo);
-                    if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
+                    if (ops[i].uiAttribs.subPatch !== Patch.DEFAULT_SUBPATCHID) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
             }
         }
@@ -2065,8 +2074,8 @@ export default class PatchView extends Events
     {
 
         let op1 = /** @type {UiOp} */ (this._p.getOpById(opid));
-
         let op2 = /** @type {UiOp} */ (this._p.getOpById(op2id));
+
         const p = op1.getPort(pid);
         let showConverter = gui.longLinkHover;
         let numPerfectFit = op2.countFittingPorts(p, false);
@@ -3086,6 +3095,11 @@ export default class PatchView extends Events
         return foundPorts;
     }
 
+    /**
+     * @param {UiOp[]} ops
+     * @param {string} portName
+     * @param {any} valueNew
+     */
     replacePortValues(ops, portName, valueNew, valueOld = undefined)
     {
         ops.forEach((op) =>

@@ -169,7 +169,7 @@ export default class GlLink
                     {
                         "x": 0,
                         "y": 0,
-                        "onOpAdd": (/** @type {UiOp} */ op) =>
+                        "onOpAdd": (op) =>
                         {
                             const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
                             const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
