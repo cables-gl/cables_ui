@@ -167,8 +167,8 @@ export class GlSplineDrawer extends Events
      * @param {number} scrollX
      * @param {number} scrollY
      * @param {number} zoom
-     * @param {number} _mouseX
-     * @param {number} _mouseY
+     * @param {number} [_mouseX]
+     * @param {number} [_mouseY]
      */
     render(resX, resY, scrollX, scrollY, zoom, _mouseX, _mouseY)
     {

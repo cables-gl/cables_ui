@@ -169,7 +169,7 @@ export default class GlLink
                     {
                         "x": 0,
                         "y": 0,
-                        "onOpAdd": (op) =>
+                        "onOpAdd": (/** @type {UiOp} */ op) =>
                         {
                             const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
                             const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
@@ -248,6 +248,9 @@ export default class GlLink
 
     get subPatch() { return this._subPatch; }
 
+    /**
+     * @param {PointerEvent} e
+     */
     startDragging(e)
     {
         if (this.#glPatch.spacePressed || this.#glPatch.linkStartedDragging) return;
@@ -334,14 +337,14 @@ export default class GlLink
         }
     }
 
-    updateLineStyle()
-    {
-        this.#cable.dispose();
-        this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+    // updateLineStyle()
+    // {
+    //     this.#cable.dispose();
+    //     this.#cable = new GlCable(this.#glPatch, this.#glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
 
-        this.#glPatch.setDrawableColorByObjType(this.#cable, this._type);
-        this.update();
-    }
+    //     this.#glPatch.setDrawableColorByObjType(this.#cable, this._type);
+    //     this.update();
+    // }
 
     isInCurrentSubPatch()
     {
@@ -705,13 +708,15 @@ export default class GlLink
         }
     }
 
+    /**
+     * @param {boolean} b
+     */
     highlight(b)
     {
         if (this._oldHighlight !== b)
         {
             this.#cable.updateColor();
             if (this.#cableSub) this.#cableSub.updateColor();
-            // if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
             this._oldHighlight = b;
         }
     }

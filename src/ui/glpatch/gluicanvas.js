@@ -136,7 +136,7 @@ export default class GlUiCanvas extends GlCanvas
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
 
-        gui.corePatch().perfProfiler.setDuration("glui cpu", performance.now() - startTime);
+        gui.corePatch().perfProfiler.setDuration("ui cpu", performance.now() - startTime);
 
     }
 }

@@ -265,7 +265,7 @@ export default class VizLayer extends Events
             this._glPatch.debugData.numVizLayers = count;
 
         perf.finish();
-        gui.corePatch().perfProfiler.setDuration("vizlayer", performance.now() - startTime);
+        gui.corePatch().perfProfiler.setDuration("ui vizlayer", performance.now() - startTime);
     }
 
     /**

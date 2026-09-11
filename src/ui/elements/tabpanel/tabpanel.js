@@ -8,6 +8,7 @@ import { contextMenu } from "../contextmenu.js";
 import { editorSession } from "./editor_session.js";
 import { userSettings } from "../../components/usersettings.js";
 import Tab from "./tab.js";
+import { DomEvents } from "../../theme.js";
 
 /**
  * @typedef TabPanelOptions
@@ -118,7 +119,7 @@ export default class TabPanel extends Events
 
             editortabList.style.display = "block";
             editortabList.addEventListener(
-                "pointerdown",
+                DomEvents.POINTER_DOWN,
                 (e) =>
                 {
                     const items = [];
