@@ -39,11 +39,17 @@ class ParamsListener extends Events
 
         /** @type {Port[]} */
         this._watchPorts = [];
+
+        /** @type {Port[]} */
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
         this._watchStrings = [];
         this.#watchGradients = [];
+
+        /** @type {Port[]} */
         this._portsIn = [];
+
+        /** @type {Port[]} */
         this._portsOut = [];
         this._doFormatNumbers = !(userSettings.get(UserSettings.PREF_NOTLOCALIZE_NUMBERFORMAT) || false);
         this._watchPortVisualizer = new WatchPortVisualizer();
@@ -270,7 +276,12 @@ class ParamsListener extends Events
      * }
      */
 
-    watchColorPickerPort(thePort, panelid, idx)
+    /**
+     * @param {any} _thePort
+     * @param {string} panelid
+     * @param {number} idx
+     */
+    watchColorPickerPort(_thePort, panelid, idx)
     {
         let foundOpacity = false;
         const inputElements =
@@ -1234,7 +1245,8 @@ class ParamsListener extends Events
                     // hier
                     if (thePort.type == Port.TYPE_NUMBER)
                     {
-                        const elVal = ele.byClass(id);
+
+                        const elVal = /** @type {HTMLInputElement} */(ele.byClass(id));
 
                         if (elVal && elVal != document.activeElement)
                             if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;

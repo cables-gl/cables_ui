@@ -558,11 +558,11 @@ class OpParampanel extends Events
             if (el)el.innerHTML = "";
             return;
         }
-        else
-        if (document.getElementsByClassName("warning-error") != this._currentOp.uiAttribs.uierrors.length)
-        {
-            if (el) el.innerHTML = "";
-        }
+        // else
+        // if (document.getElementsByClassName("warning-error") != this._currentOp.uiAttribs.uierrors.length)
+        // {
+        //     if (el) el.innerHTML = "";
+        // }
 
         if (!el)
         {
@@ -641,55 +641,59 @@ class OpParampanel extends Events
         const perf = gui.uiProfiler.start("[opparampanel] updateUiAttribs");
         let el = null;
 
-        el = document.getElementById("options_warning");
-        if (el)
-        {
-            if (!this._currentOp.uiAttribs.warning || this._currentOp.uiAttribs.warning.length === 0) el.style.display = "none";
-            else
-            {
-                el.style.display = "block";
-                if (el) el.innerHTML = this._currentOp.uiAttribs.warning;
-            }
-        }
+        // el = document.getElementById("options_warning");
+        // if (el)
+        // {
+        //     if (!this._currentOp.uiAttribs.warning || this._currentOp.uiAttribs.warning.length === 0) el.style.display = "none";
+        //     else
+        //     {
+        //         el.style.display = "block";
+        //         if (el) el.innerHTML = this._currentOp.uiAttribs.warning;
+        //     }
+        // }
 
-        el = document.getElementById("options_hint");
-        if (el)
-        {
-            if (!this._currentOp.uiAttribs.hint || this._currentOp.uiAttribs.hint.length === 0) el.style.display = "none";
-            else
-            {
-                el.style.display = "block";
-                if (el) el.innerHTML = this._currentOp.uiAttribs.hint;
-            }
-        }
+        // el = document.getElementById("options_hint");
+        // if (el)
+        // {
+        //     if (!this._currentOp.uiAttribs.hint || this._currentOp.uiAttribs.hint.length === 0) el.style.display = "none";
+        //     else
+        //     {
+        //         el.style.display = "block";
+        //         if (el) el.innerHTML = this._currentOp.uiAttribs.hint;
+        //     }
+        // }
 
-        el = document.getElementById("options_error");
-        if (el)
-        {
-            if (!this._currentOp.uiAttribs.error || this._currentOp.uiAttribs.error.length === 0) el.style.display = "none";
-            else
-            {
-                el.style.display = "block";
-                if (el) el.innerHTML = this._currentOp.uiAttribs.error;
-            }
-        }
+        // el = document.getElementById("options_error");
+        // if (el)
+        // {
+        //     if (!this._currentOp.uiAttribs.error || this._currentOp.uiAttribs.error.length === 0) el.style.display = "none";
+        //     else
+        //     {
+        //         el.style.display = "block";
+        //         if (el) el.innerHTML = this._currentOp.uiAttribs.error;
+        //     }
+        // }
 
-        el = document.getElementById("options_info");
-        if (el)
-        {
-            if (!this._currentOp.uiAttribs.info) el.style.display = "none";
-            else
-            {
-                el.style.display = "block";
-                el.innerHTML = "<div class=\"panelhead\">info</div><div class=\"panel\">" + this._currentOp.uiAttribs.info + "</div>";
-            }
-        }
+        // el = document.getElementById("options_info");
+        // if (el)
+        // {
+        //     if (!this._currentOp.uiAttribs.info) el.style.display = "none";
+        //     else
+        //     {
+        //         el.style.display = "block";
+        //         el.innerHTML = "<div class=\"panelhead\">info</div><div class=\"panel\">" + this._currentOp.uiAttribs.info + "</div>";
+        //     }
+        // }
 
         this.updateUiErrors();
 
         perf.finish();
     }
 
+    /**
+     * @param {number} index
+     * @param {Op<any>} op
+     */
     _showOpParamsCbPortDelete(index, op)
     {
         const el = ele.byId("portdelete_out_" + index);
@@ -700,6 +704,9 @@ class OpParampanel extends Events
         });
     }
 
+    /**
+     * @param {string} t
+     */
     setCurrentOpTags(t)
     {
         if (this._currentOp)
@@ -844,7 +851,7 @@ class OpParampanel extends Events
     {
         const items = [];
 
-        const opname = this._currentOp.objName;
+        // const opname = this._currentOp.objName;
         const opid = this._currentOp.id;
 
         items.push({
@@ -892,7 +899,7 @@ class OpParampanel extends Events
         return this._currentOp;
     }
 
-    hidePorts(arr)
+    hidePorts()
     {
         // console.log("arrrrrr", arr);
         // for (let i = 0; i < arr.length; i++)

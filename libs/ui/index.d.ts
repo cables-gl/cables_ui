@@ -11,6 +11,7 @@ declare global {
 
     const chroma:libchroma
     const Handlebars:any
+    const ColorRick:any
     const hljs:any
     const iziToast:any
     const introJS:any
