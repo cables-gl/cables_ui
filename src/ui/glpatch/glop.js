@@ -966,7 +966,7 @@ export default class GlOp extends Events
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
-        this._initColorSwatch();
+        this.initColorSwatch();
     }
 
     /**
@@ -1016,10 +1016,11 @@ export default class GlOp extends Events
 
     /**
      */
-    _initColorSwatch()
+    initColorSwatch()
     {
         if (!this.#op) return;
         const ports = this.#op.portsIn;
+        let found = false;
 
         for (let i = 0; i < ports.length; i++)
         {
@@ -1053,7 +1054,7 @@ export default class GlOp extends Events
                             }
                             else
                             {
-                                this._initColorSwatch();
+                                this.initColorSwatch();
                             }
 
                             this.updateSize();
@@ -1064,7 +1065,14 @@ export default class GlOp extends Events
                     colorPorts[2].on("change", updateColorIndicator);
                     if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
                 }
+                found = true;
             }
+        }
+
+        if (!found && this._glColorSwatch)
+        {
+            this._glColorSwatch.dispose();
+            this._glColorSwatch = null;
         }
     }
 

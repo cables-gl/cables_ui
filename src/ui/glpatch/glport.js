@@ -128,6 +128,7 @@ export default class GlPort
         if (this.disposed) return;
         if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
         if (attribs.hasOwnProperty("expose")) this._updateColor();
+        if (attribs.hasOwnProperty("colorPick")) this.glOp.initColorSwatch();
 
         if (attribs.hasOwnProperty("addPort")) this._updateColor();
         if (attribs.hasOwnProperty("greyout")) this._updateColor();

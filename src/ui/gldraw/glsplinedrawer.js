@@ -537,6 +537,30 @@ export class GlSplineDrawer extends Events
     }
 
     /**
+     * @param {number} idx
+     */
+    _updateAttribsInfo(idx)
+    {
+        if (!this.#mesh) return;
+
+        let count = 0;
+        const off = this.#splines[idx].startOffset || 0;
+        const points = this.#splines[idx].points;
+
+        if (!points) return;
+
+        for (let i = 0; i < points.length / 3; i++)
+        {
+            for (let j = 0; j < 6; j++)
+            {
+                count += 3;
+                this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
+            }
+        }
+        this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
+    }
+
+    /**
      * @param {number} x1
      * @param {number} y1
      * @param {number} x2

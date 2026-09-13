@@ -31,7 +31,7 @@ import { UiOp } from "../core_extend_op.js";
  * @property {string} [subPatch]
  * @property {string} [createdLocally]
  * @property {Port} [linkNewOpToPort]
- * @property {Link} [linkNewLink]
+ * @property {Object} [linkNewLink]
  * @property {UiOp} [linkNewOpToOp]
  * @property {boolean} [linkOnlyFirstPort]
  * @property {AddOpCallback} [onOpAdd]
