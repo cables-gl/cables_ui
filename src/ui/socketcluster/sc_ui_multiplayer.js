@@ -85,66 +85,6 @@ export default class ScUiMultiplayer extends Events
         gui.restriction.setMessage(null);
         gui.setRestriction(Gui.RESTRICT_MODE_FULL);
 
-        const startButton = userList.querySelector(".start-button");
-        const joinButton = userList.querySelector(".join-button");
-        const leaveButton = userList.querySelector(".leave-button");
-
-        if (startButton)
-        {
-            startButton.addEventListener("pointerdown", () =>
-            {
-                this._connection.startMultiplayerSession();
-            });
-            if (this._connection.multiplayerCapable && this._connection.hasOtherMultiplayerCapableClients && !(this._connection.runningMultiplayerSession || this._connection.inMultiplayerSession))
-            {
-                startButton.classList.add("visible");
-            }
-            else
-            {
-                startButton.classList.remove("visible");
-            }
-        }
-
-        if (joinButton)
-        {
-            joinButton.addEventListener("pointerdown", () =>
-            {
-                this._modalJoinMultiplayerSession();
-            });
-            if (this._connection.onlyRemoteClientsConnected)
-            {
-                joinButton.textContent = "Remote Viewer";
-            }
-            else
-            {
-                joinButton.textContent = "Join";
-            }
-            if (this._connection.multiplayerCapable && this._connection.runningMultiplayerSession && !this._connection.inMultiplayerSession)
-            {
-                joinButton.classList.add("visible");
-            }
-            else
-            {
-                joinButton.classList.remove("visible");
-            }
-        }
-
-        if (leaveButton)
-        {
-            leaveButton.addEventListener("pointerdown", () =>
-            {
-                this._connection.leaveMultiplayerSession();
-            });
-            if (this._connection.multiplayerCapable && this._connection.inMultiplayerSession)
-            {
-                leaveButton.classList.add("visible");
-            }
-            else
-            {
-                leaveButton.classList.remove("visible");
-            }
-        }
-
         const moreOptions = userList.querySelector(".more-options");
         if (moreOptions)
         {
@@ -160,7 +100,7 @@ export default class ScUiMultiplayer extends Events
 
                 if (items.length > 0)
                 {
-                    contextMenu.show({ "items": items, }, event.currentTarget);
+                    contextMenu.show({ "items": items }, event.currentTarget);
                 }
             });
         }
