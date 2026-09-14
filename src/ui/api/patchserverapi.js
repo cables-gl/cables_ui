@@ -503,9 +503,12 @@ export default class PatchSaveServer extends Events
 
                 "okButton": {
                     "text": "Save anyway",
-                    "callback": () =>
+                    "callback": (done) =>
                     {
-                        this.saveCurrentProject(cb, true);
+                        this.saveCurrentProject(() =>
+                        {
+                            done();
+                        }, true);
                     }
                 }
             });

@@ -122,14 +122,13 @@ export default class TabInputBindings
             "html": html,
             "showOkButton": true,
             "okButton": {
-                "callback": () =>
+                "callback": (done) =>
                 {
                     const cmdname = ele.byId("cmdselect").value;
                     let cmd;
                     if (cmdname == "default")
                     {
                         const bi = gui.inputBindings.getBind(actionId);
-                        console.log("bi", bi);
                         cmd = Commands.getCommandByFunction(bi.default);
                         if (!cmd)cmd = {};
                     }
@@ -138,6 +137,7 @@ export default class TabInputBindings
 
                     gui.inputBindings.setBindingFunc(actionId, cmd.func, true);
                     this.update();
+                    done();
                 }
             }
         });

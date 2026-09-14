@@ -26,9 +26,10 @@ export default class OpAttachmentTab extends Tab
 
     getHtml()
     {
+        const acceptedFiles = CablesConstants.FILETYPES.opattachment_static;
         const templateOptions = {
             ...this.options,
-            "acceptedFileTypesUpload": CablesConstants.FILETYPES.opattachment,
+            "acceptedFileTypesUpload": acceptedFiles,
             "docsUrl": platform.getCablesDocsUrl()
         };
         return getHandleBarHtml("op_add_attachment_" + this.options.attSource, templateOptions);
@@ -76,7 +77,7 @@ export default class OpAttachmentTab extends Tab
                     if (attTypeEle && attTypeEle.value === "binary")
                     {
                         const usageEle = attsEle.querySelector(".usage.static code");
-                        if (usageEle) usageEle.innerText = "staticAttachments." + fileInput.files[0].name.replace(".", "_");
+                        if (usageEle) usageEle.innerText = "staticAttachments." + fileInput.files[0].name.replaceAll(".", "_");
                     }
                 });
             }
@@ -96,7 +97,7 @@ export default class OpAttachmentTab extends Tab
                     srcEle.addEventListener("input", () =>
                     {
                         const usageEle = attsEle.querySelector(".usage.string code");
-                        if (usageEle) usageEle.innerText = "attachments." + srcEle.value.replace(".", "_");
+                        if (usageEle) usageEle.innerText = "attachments." + srcEle.value.replaceAll(".", "_");
                     });
                 }
             }

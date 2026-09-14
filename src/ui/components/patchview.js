@@ -2617,14 +2617,13 @@ export default class PatchView extends Events
                     gui.opParams.show(newOp.id);
                     this._patchRenderer.focusOpAnim(newOp.id);
 
-                    console.log("111");
                     new ModalDialog({ "html": html,
                         "showOkButton": true,
                         "okButton": { "text": "Really upgrade",
-                            "callback": () =>
+                            "callback": (done) =>
                             {
                                 gui.patchView.replaceOp(opid, newOpObjName);
-                                gui.closeModal();
+                                done();
                             } }
                     });
                 }

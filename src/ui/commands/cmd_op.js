@@ -284,9 +284,10 @@ class CmdOps
                 "choice": true,
                 "okButton": {
                     "text": "Upgrade",
-                    "callback": () =>
+                    "callback": (done) =>
                     {
                         CmdOps.upGradeOps();
+                        done();
                     }
                 }
             });

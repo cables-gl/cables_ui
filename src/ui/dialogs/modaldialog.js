@@ -15,20 +15,21 @@ import { CssClassNames } from "../theme.js";
  * @property {Boolean} [warning=false] show a warning triangle
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
- * @property {Boolean} [persistInIdleMode]
  * @property {String} [promptValue]
  * @property {Function} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
- * @property {string[]} [notices]
- * @property {string} [footer]
-
-*/
+ */
 
 /**
  * @typedef {Object} ModalDialogButton
  * @property {String} [text]
- * @property {function} [callback]
+ * @property {ModalDialogSubmitCallback} [callback]
  * @property {String} [cssClasses]
+ */
+
+/**
+ * @callback ModalDialogSubmitCallback
+ * @param {Function} done
  */
 
 /**
@@ -218,8 +219,17 @@ export default class ModalDialog extends Events
         {
             eleChoiceOk.addEventListener("pointerdown", () =>
             {
-                if (this.#options.okButton.callback) this.#options.okButton.callback();
-                this._choiceSubmit();
+                if (this.#options.okButton.callback)
+                {
+                    this.#options.okButton.callback(() =>
+                    {
+                        this._choiceSubmit();
+                    });
+                }
+                else
+                {
+                    this._choiceSubmit();
+                }
             });
         }
 
@@ -228,8 +238,18 @@ export default class ModalDialog extends Events
         {
             eleChoiceCancel.addEventListener("pointerdown", () =>
             {
-                if (this.#options.cancelButton.callback) this.#options.cancelButton.callback();
-                this.close();
+                if (this.#options.cancelButton.callback)
+                {
+                    this.#options.cancelButton.callback(() =>
+                    {
+                        this.close();
+                    });
+                }
+                else
+                {
+                    this.close();
+
+                }
             });
         }
 
@@ -238,8 +258,18 @@ export default class ModalDialog extends Events
         {
             eleModalOk.addEventListener("pointerdown", () =>
             {
-                if (this.#options.okButton.callback) this.#options.okButton.callback();
-                this.close();
+                if (this.#options.okButton.callback)
+                {
+                    this.#options.okButton.callback(() =>
+                    {
+                        this.close();
+                    });
+                }
+                else
+                {
+                    this.close();
+
+                }
             });
         }
     }

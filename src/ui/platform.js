@@ -530,8 +530,9 @@ export class Platform extends Events
                         "choice": true,
                         "cancelButton": {
                             "text": "Backup last saved state",
-                            "callback": () =>
+                            "callback": (done) =>
                             {
+                                done();
                                 new ModalDialog(backupModalOptions);
                             }
                         },

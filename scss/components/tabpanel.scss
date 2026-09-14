@@ -187,31 +187,28 @@
     .addopdependency, .addopattachment {
         padding: 15px;
 
+        .highlightBlock {
+            margin-bottom: 20px;
+        }
+
+
         .depSrc.upload, .attSrc.upload {
             width: 75%;
         }
 
         select {
-            padding: 4px;
+            padding: 8px 9px !important;
         }
 
-        input,.bigsel
+        input,.bigsel, select
         {
             margin-top:10px;
             margin-bottom:10px !important;
             max-width: 500px;
         }
-    }
 
-    .libselect {
-        select {
-            padding: 8px 9px !important;
-            width: 100%;
-            margin-bottom: 3px;
-        }
-
-        &.inactive {
-            opacity: 0.5;
+        .upload {
+            margin-top:10px;
         }
     }
 }

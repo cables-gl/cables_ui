@@ -24,15 +24,11 @@ export default class OpDependencyTabPanel extends TabPanel
 
         this._options = options;
         this._sources = [
-            { "title": "Upload File", "value": "file" },
-            { "title": "From URL", "value": "url" },
-            { "title": "Op", "value": "op" },
-            { "title": "Core-Lib", "value": "corelib" }
+            { "title": "Upload File", "value": "file", "icon": "file" },
+            { "title": "From URL", "value": "url", "icon": "globe" },
+            { "title": "Op", "value": "op", "icon": "op" },
+            { "title": "Core-Lib", "value": "corelib", "icon": "cables" }
         ];
-        if (gui && gui.user && gui.user.isStaff)
-        {
-            this._sources.push({ "title": "Lib", "value": "lib", "icon": "lock" });
-        }
         if (platform.getSupportedOpDependencyTypes().includes("npm"))
         {
             this._sources.splice(2, 0, { "title": "From NPM", "value": "npm" });

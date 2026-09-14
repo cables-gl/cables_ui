@@ -110,8 +110,11 @@ export default class PlatformElectron extends Platform
 
     createBackup()
     {
-        const showBackupDialog = () =>
+
+        /**  @type {import("./dialogs/modaldialog.js").ModalDialogSubmitCallback} */
+        const showBackupDialog = (done) =>
         {
+            done();
             this.talkerAPI.send(TalkerAPI.CMD_CREATE_PATCH_BACKUP, {}, (err, result) =>
             {
                 if (result.success) notify("Backup created!");
@@ -134,7 +137,7 @@ export default class PlatformElectron extends Platform
             return;
         }
 
-        showBackupDialog();
+        showBackupDialog(() => {});
     }
 
     showGitBranchWarning() {}

@@ -295,6 +295,7 @@ export default class ManageOp
                     "Shader",
                     "Vertex",
                     "Fragment",
+                    "Stylesheet",
                     "Static",
                     "Dependency: Corelib",
                     "Dependency: Library",

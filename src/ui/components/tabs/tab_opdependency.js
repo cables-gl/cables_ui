@@ -41,6 +41,17 @@ export default class OpDependencyTab extends Tab
         this.active = true;
         this.contentEle.style.display = "block";
         this.toolbarContainerEle.style.display = "block";
+
+        const depSource = this.options.depSource;
+        const viewId = this.options.viewId;
+        const selector = "addopdependency_" + depSource + "_" + viewId;
+        const attsEle = ele.byId(selector);
+        if (attsEle)
+        {
+            const srcEle = attsEle.querySelector(".depSrc");
+            if (srcEle) srcEle.focus();
+        }
+
         this.emitEvent(Tab.EVENT_ACTIVATE);
     }
 
@@ -116,7 +127,7 @@ export default class OpDependencyTab extends Tab
                 selectFileButton.addEventListener("click", () => { fileInput.click(); });
                 fileInput.addEventListener("change", () =>
                 {
-                    srcEle.value = fileInput.files[0].name;
+                    srcEle.innerText = fileInput.files[0].name;
                 });
             }
         }
@@ -229,7 +240,7 @@ export default class OpDependencyTab extends Tab
         if (depsEle)
         {
 
-            const usageEle = depsEle.querySelector(".usage.module code");
+            const usageEle = depsEle.querySelector(".usage.module .codehint");
             if (usageEle)
             {
                 const exportNameInput = exportNameEle.querySelector("input");
