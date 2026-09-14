@@ -236,7 +236,7 @@ export default class ManageOp
                         "src": coreLib.name,
                         "type": "corelib",
                         "readable": coreLib.name,
-                        "readableType": "Corelib",
+                        "readableType": "Dependency: Corelib",
                         "editable": false,
                         "removable": canEditOp,
                         "depType": "corelib",
@@ -250,7 +250,7 @@ export default class ManageOp
                         "src": lib.name,
                         "type": "lib",
                         "readable": lib.name,
-                        "readableType": "Library",
+                        "readableType": "Dependency: Old Library",
                         "editable": false,
                         "removable": canEditOp,
                         "depType": "lib",
@@ -266,8 +266,8 @@ export default class ManageOp
                         if (dep.readable && dep.readable.startsWith("./")) dep.readable = dep.readable.replace("./", "");
 
                         let readable = dep.readable;
-                        let readableType = "Common JS";
-                        if (dep.type === "module") readableType = "Module exported as: " + dep.export;
+                        let readableType = "Dependency: Common JS";
+                        if (dep.type === "module") readableType = "Dependency: Module exported as: " + dep.export;
                         if (dep.type === "op")
                         {
                             readable = dep.opName;
@@ -291,28 +291,17 @@ export default class ManageOp
 
                 const order = [
                     "Op",
-                    "Corelib",
-                    "Library",
                     "Include",
                     "Shader",
                     "Vertex",
                     "Fragment",
-                    "Module",
-                    "Common",
-                    "Static"
+                    "Static",
+                    "Dependency: Corelib",
+                    "Dependency: Library",
+                    "Dependency: Module",
+                    "Dependency: Common"
                 ];
                 opFiles = this.sortFilesByReadableType(opFiles, order);
-
-                // opFiles.sort((a, b) =>
-                // {
-                //     const aOp = a.depType === "op";
-                //     const bOp = b.depType === "op";
-                //
-                //     if (aOp && !bOp) return -1;
-                //     if (!aOp && bOp) return 1;
-                //
-                //     return a.readable?.toLowerCase().localeCompare(b.readable?.toLowerCase());
-                // });
 
                 summary = gui.opDocs.getSummary(opName) || "No Summary";
                 if (portJson && portJson.ports)
@@ -561,7 +550,7 @@ export default class ManageOp
         readable = readable.replace(".", "_");
 
         let fileType = "";
-        let readableType = "Attachment";
+        let readableType = "String";
         if (isStatic)
         {
             readableType = "Static " + readableType;
@@ -581,7 +570,7 @@ export default class ManageOp
         }
         if (readable.endsWith("_wgsl"))
         {
-            fileType = "gl";
+            fileType = "wg";
             readableType = "Shader code";
             const index = readable.lastIndexOf("_wgsl");
             if (index >= 0) readable = readable.slice(0, index) + ".wgsl" + readable.slice(index + 5);
@@ -605,6 +594,13 @@ export default class ManageOp
             fileType = "js";
             const index = readable.lastIndexOf("_js");
             if (index >= 0) readable = readable.slice(0, index) + ".js" + readable.slice(index + 3);
+        }
+        if (readable.endsWith("_css"))
+        {
+            fileType = "css";
+            readableType = "Stylesheet";
+            const index = readable.lastIndexOf("_css");
+            if (index >= 0) readable = readable.slice(0, index) + ".css" + readable.slice(index + 4);
         }
         return {
             "filename": attachmentFileName,
