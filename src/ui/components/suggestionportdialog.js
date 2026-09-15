@@ -17,7 +17,8 @@ export default class SuggestPortDialog
     /** @type {import("./suggestiondialog.js").SuggestionItem[]} */
     #suggestions = [];
 
-    /** @callback  SuggestCallBack
+    /**
+     * @callback  SuggestCallBack
      * @param {Port} port
      * @param {String} op
      * @param {import("./suggestiondialog.js").SuggestionItem} item
@@ -25,7 +26,6 @@ export default class SuggestPortDialog
      */
 
     /**
-     * Description
      * @param {UiOp} op
      * @param {Port} port
      * @param {MouseEvent} mouseEvent
