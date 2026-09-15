@@ -11,16 +11,15 @@ const log = new Logger("parmashelper");
 /**
  * @param {string} v
  * @param {number} dir
- * @param {PointerEvent} e
+ * @param {PointerEvent|MouseEvent|WheelEvent} e
  */
 function inputIncrement(v, dir, e)
 {
-    if (e.target.type == "search") return v;
+    const target =/** @type {HTMLInputElement} */(e.target);
+    if (target.type == "search") return v;
 
     if (gui.opParams && gui.opParams.op)
-    {
         gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
-    }
 
     if (v == "true") return "false";
     if (v == "false") return "true";
@@ -30,7 +29,7 @@ function inputIncrement(v, dir, e)
 
     let add = 0.1;
 
-    if (e.target.classList.contains("inc_int"))add = 1;
+    if (target.classList.contains("inc_int"))add = 1;
 
     if (e && e.shiftKey && e.metaKey)add = 0.001;
     else if (e && e.altKey && e.shiftKey) add = 10;
@@ -48,25 +47,27 @@ export class ParamInputListeners
 {
 
     /**
-     * @param {PointerEvent} event
+     * @param {WheelEvent} event
      */
     static InputListenerMousewheel(event)
     {
         event.preventDefault();
         let delta = -event.deltaY || event.deltaX;
-        if (ele.hasFocus(event.target))
+
+        const target = /** @type {HTMLInputElement} */(event.target);
+        if (ele.hasFocus(target))
         {
             if (delta > 0)
             {
-                if (event.shiftKey) event.target.value = inputIncrement(event.target.value, 0.1, event);
-                else event.target.value = inputIncrement(event.target.value, 1, event);
+                if (event.shiftKey) target.value = String(inputIncrement(target.value, 0.1, event));
+                else target.value = String(inputIncrement(target.value, 1, event));
             }
             else
             {
-                if (event.shiftKey) event.target.value = inputIncrement(event.target.value, -0.1, event);
-                else event.target.value = inputIncrement(event.target.value, -1, event);
+                if (event.shiftKey) target.value = String(String(inputIncrement(target.value, -0.1, event)));
+                else target.value = String(inputIncrement(target.value, -1, event));
             }
-            event.target.dispatchEvent(new Event("input"));
+            target.dispatchEvent(new Event("input"));
 
             return false;
         }
@@ -77,28 +78,29 @@ export class ParamInputListeners
      */
     static InputListenerCursorKeys(e)
     {
-        e.target.value = e.target.value.replaceAll(",", ".");
+        const target = /** @type {HTMLInputElement} */(e.target);
+
+        target.value = target.value.replaceAll(",", ".");
 
         switch (e.which)
         {
         case 38: // up
-            e.target.value = inputIncrement(e.target.value, 1, e);
-            e.target.dispatchEvent(new Event("input"));
+            target.value = String(inputIncrement(target.value, 1, e));
+            target.dispatchEvent(new Event("input"));
             return false;
 
         case 40: // down
-            e.target.value = inputIncrement(e.target.value, -1, e);
-            e.target.dispatchEvent(new Event("input"));
+            target.value = String(inputIncrement(target.value, -1, e));
+            target.dispatchEvent(new Event("input"));
             return false;
         }
     }
 
-}
-
-// clean.......
-const paramsHelper =
-{
-    "valueChangerSetSliderCSS": (v, eleInput) =>
+    /**
+     * @param {number} v
+     * @param {HTMLElement} eleInput
+     */
+    static ValueChangerSetSliderCSS(v, eleInput)
     {
         if (eleInput.dataset.min || eleInput.dataset.max)
             v = utils.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
@@ -109,9 +111,13 @@ const paramsHelper =
         const grad = "linear-gradient(0.25turn, var(--numberinput-bar), var(--numberinput-bar) " + cssv + "%, var(--numberinput-bg) " + cssv + "%)";
 
         eleInput.style.background = grad;
-    },
+    }
 
-    "checkDefaultValue": (port, index, panelid) =>
+    /**
+     * @param {Port} port
+     * @param {string} index
+     */
+    static CheckDefaultValue(port, index)
     {
         if (port.defaultValue !== undefined && port.defaultValue !== null)
         {
@@ -134,13 +140,19 @@ const paramsHelper =
                 }
             }
         }
-    },
+    }
+}
+
+// clean.......
+const paramsHelper =
+{
 
     "togglePortValBool": (which, checkbox) =>
     {
         // gui.setStateUnsaved();
         gui.savedState.setUnSaved("paramsTogglePortValBool", gui.opParams.op.getSubPatch());
-        const inputEle = document.getElementById(which);
+
+        const inputEle = /** @type {HTMLInputElement} */(document.getElementById(which));
         const checkBoxEle = document.getElementById(checkbox);
 
         if (!inputEle || !checkBoxEle) return;
@@ -158,26 +170,8 @@ const paramsHelper =
             checkBoxEle.classList.remove("checkbox-active");
         }
 
-        inputEle.value = bool_value;
+        inputEle.value = String(bool_value);
         inputEle.dispatchEvent(new Event("input"));
-    },
-
-    "openParamSpreadSheetEditor": (opid, portname, cb) =>
-    {
-        const op = gui.corePatch().getOpById(opid);
-        if (!op) return log.warn("paramedit op not found");
-
-        const port = op.getPortByName(portname);
-        if (!port) return log.warn("paramedit port not found");
-
-        new SpreadSheetTab(gui.mainTabs, port, port.get(), {
-            "title": gui.mainTabs.getUniqueTitle("Array " + portname),
-            "onchange": (content) =>
-            {
-                port.set(content);
-                gui.emitEvent("portValueEdited", op, port, content);
-            }
-        });
     },
 
     "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>

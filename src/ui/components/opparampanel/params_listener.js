@@ -16,6 +16,7 @@ import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 import paramsHelper, { ParamInputListeners } from "./params_helper.js";
+import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -229,11 +230,11 @@ class ParamsListener extends Events
 
     valueChangerInitSliders()
     {
-        const els = document.querySelectorAll(".valuesliderinput input");
+        const els = /** @type {NodeListOf<HTMLInputElement>} */(document.querySelectorAll(".valuesliderinput input"));
         for (let i = 0; i < els.length; i++)
         {
             const v = els[i].value;
-            paramsHelper.valueChangerSetSliderCSS(v, els[i].parentElement);
+            ParamInputListeners.ValueChangerSetSliderCSS(parseFloat(v), els[i].parentElement);
         }
     }
 
@@ -529,7 +530,17 @@ class ParamsListener extends Events
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
+                const op = gui.corePatch().getOpById(thePort.op.id);
+                const port = op.getPortByName(thePort.name);
+
+                new SpreadSheetTab(gui.mainTabs, port, {
+                    "title": gui.mainTabs.getUniqueTitle("Array " + thePort.name),
+                    "onchange": (content) =>
+                    {
+                        port.set(content);
+                        gui.emitEvent("portValueEdited", op, port, content);
+                    }
+                });
             });
 
         // /////////////////////
@@ -871,7 +882,7 @@ class ParamsListener extends Events
     initPortInputListener(ports, index, panelid)
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
-        paramsHelper.checkDefaultValue(ports[index], index, panelid);
+        ParamInputListeners.CheckDefaultValue(ports[index], index);
 
         // added missing math constants
         CABLES.UI.mathparser.add("pi", function (n, m) { return Math.PI; });
@@ -1140,7 +1151,7 @@ class ParamsListener extends Events
                 op.uiAttribs.history.lastInteractionBy = { "name": gui.user.usernameLowercase };
             }
 
-            paramsHelper.checkDefaultValue(ports[index], index, panelid);
+            ParamInputListeners.CheckDefaultValue(ports[index], index);
 
             ports[index].emitEvent("onValueChangeUi");
 
