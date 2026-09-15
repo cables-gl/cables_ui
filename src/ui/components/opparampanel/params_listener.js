@@ -16,7 +16,6 @@ import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 import paramsHelper, { ParamInputListeners } from "./params_helper.js";
-import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -550,17 +549,7 @@ class ParamsListener extends Events
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                const op = gui.corePatch().getOpById(thePort.op.id);
-                const port = op.getPortByName(thePort.name);
-
-                new SpreadSheetTab(gui.mainTabs, port, {
-                    "title": gui.mainTabs.getUniqueTitle("Array " + thePort.name),
-                    "onchange": (content) =>
-                    {
-                        port.set(content);
-                        gui.emitEvent("portValueEdited", op, port, content);
-                    }
-                });
+                ParamInputListeners.OpenParamSpreadSheetEditor(thePort.op.id, thePort.name);
             });
 
         // /////////////////////
@@ -570,7 +559,7 @@ class ParamsListener extends Events
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
+            ParamInputListeners.OpenParamStringEditor(thePort.op.id, thePort.name, null, true);
         });
 
         // /////////////////////
