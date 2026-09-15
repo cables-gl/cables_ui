@@ -456,9 +456,9 @@ class OpParampanel extends Events
                 this._isPortLineDragDown = false; this._portLineDraggedName = null;
             }, { "passive": false });
 
-            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) =>
+            ele.on(document.getElementById("portLineTitle_in_" + i), "pointerdown", (e, target) =>
             {
-                this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname;
+                this._isPortLineDragDown = true; this._portLineDraggedName = target.dataset.portname;
             }, { "passive": false });
 
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
@@ -482,7 +482,7 @@ class OpParampanel extends Events
             }.bind(this)(ipo));
 
             document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; }, { "passive": false });
-            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; }, { "passive": false });
+            ele.on(document.getElementById("portLineTitle_out_" + ipo), "pointerdown", (e, target) => { this._isPortLineDragDown = true; this._portLineDraggedName = target.dataset.portname; }, { "passive": false });
 
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", (e) =>
             {
@@ -508,12 +508,12 @@ class OpParampanel extends Events
 
         ele.forEachClass("portCopyClipboard", (ell) =>
         {
-            ell.addEventListener("click", (e) =>
+            ele.on(ell, "click", (e, target) =>
             {
                 if (!navigator.clipboard) return;
 
-                const cop = gui.corePatch().getOpById(e.target.dataset.opid);
-                const port = cop.getPortByName(e.target.dataset.portname);
+                const cop = gui.corePatch().getOpById(target.dataset.opid);
+                const port = cop.getPortByName(target.dataset.portname);
 
                 navigator.clipboard
                     .writeText(String(port.get()))
