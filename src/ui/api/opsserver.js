@@ -152,12 +152,17 @@ export default class ServerOps
         });
     }
 
-    isServerOp(name)
-    {
-        for (let i = 0; i < this.#ops.length; i++) if (this.#ops[i].name === name) return true;
-        return false;
-    }
+    // isServerOp(name)
+    // {
+    //     for (let i = 0; i < this.#ops.length; i++) if (this.#ops[i].name === name) return true;
+    //     return false;
+    // }
 
+    /**
+     * @param {any} name
+     * @param {function} cb
+     * @param {boolean} openEditor
+     */
     create(name, cb, openEditor, options = {})
     {
         gui.savingTitleAnimStart("Creating Op...");

@@ -252,7 +252,7 @@ class OpParampanel extends Events
 
         this.emitEvent("opSelected", op);
 
-        op.isServerOp = gui.serverOps.isServerOp(op.objName);
+        // op.isServerOp = gui.serverOps.isServerOp(op.objName);
 
         /*
          * show first anim in timeline
