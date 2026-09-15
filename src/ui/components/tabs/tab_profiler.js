@@ -57,7 +57,7 @@ export default class Profiler
             {
                 const o =
                 {
-                    "heatmapIntensity": opids[op.id].timePsMs / maxTime,
+                    "heatmapIntensity": opids[op.id].timePsMs / maxTime
                 };
 
                 if (op.isCurrentUiOp())
@@ -346,7 +346,10 @@ export default class Profiler
     }
 }
 
-editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new Profiler(gui.mainTabs);
+    editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
+    {
+        new Profiler(gui.mainTabs);
+    });
 });

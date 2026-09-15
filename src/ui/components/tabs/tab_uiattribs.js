@@ -25,7 +25,7 @@ export default class OpWatchUiAttribs extends Events
     {
         super();
         this.#tabs = tabs;
-        this.#tab = new CABLES.UI.Tab("Op UiAttribs", { "icon": "op", "infotext": "tab_uiattribs", "padding": true, "singleton": "true", });
+        this.#tab = new CABLES.UI.Tab("Op UiAttribs", { "icon": "op", "infotext": "tab_uiattribs", "padding": true, "singleton": "true" });
         this.#tabs.addTab(this.#tab, true);
         this.rebuildHtml();
         this.setOp(gui.opParams.op);
@@ -113,7 +113,11 @@ export default class OpWatchUiAttribs extends Events
             hljs.highlightElement(el);
     }
 }
-editorSession.addListener(OpWatchUiAttribs.TABSESSION_NAME, (id, data) =>
+
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new OpWatchUiAttribs(gui.mainTabs);
+    editorSession.addListener(OpWatchUiAttribs.TABSESSION_NAME, (id, data) =>
+    {
+        new OpWatchUiAttribs(gui.mainTabs);
+    });
 });

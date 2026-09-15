@@ -125,7 +125,10 @@ export default class TabDebugger
     }
 }
 
-editorSession.addListener(TabDebugger.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new TabDebugger(gui.mainTabs);
+    editorSession.addListener(TabDebugger.TABSESSION_NAME, (id, data) =>
+    {
+        new TabDebugger(gui.mainTabs);
+    });
 });

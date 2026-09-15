@@ -17,7 +17,7 @@ export default class TabThreeDebug extends Events
     {
         super();
         this.#tabs = tabs;
-        this.#tab = new CABLES.UI.Tab("threeDebug", { "icon": "op", "infotext": "tab_threedebug", "padding": true, "singleton": "true", });
+        this.#tab = new CABLES.UI.Tab("threeDebug", { "icon": "op", "infotext": "tab_threedebug", "padding": true, "singleton": "true" });
         this.#tabs.addTab(this.#tab, true);
 
         this.#op = null;
@@ -124,7 +124,10 @@ export default class TabThreeDebug extends Events
     }
 }
 
-editorSession.addListener(TabThreeDebug.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new TabThreeDebug(gui.mainTabs);
+    editorSession.addListener(TabThreeDebug.TABSESSION_NAME, (id, data) =>
+    {
+        new TabThreeDebug(gui.mainTabs);
+    });
 });

@@ -70,7 +70,11 @@ export class TabProfilerMemory
         ele.byId("dcresults").innerHTML = html;
     }
 }
-editorSession.addListener(TabProfilerMemory.NAME, (id, data) =>
+
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new TabProfilerMemory(gui.mainTabs);
+    editorSession.addListener(TabProfilerMemory.NAME, (id, data) =>
+    {
+        new TabProfilerMemory(gui.mainTabs);
+    });
 });

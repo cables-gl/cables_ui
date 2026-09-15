@@ -198,7 +198,10 @@ export default class Preferences
         });
     }
 }
-editorSession.addListener(Preferences.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new Preferences(gui.mainTabs);
+    editorSession.addListener(Preferences.TABSESSION_NAME, (id, data) =>
+    {
+        new Preferences(gui.mainTabs);
+    });
 });

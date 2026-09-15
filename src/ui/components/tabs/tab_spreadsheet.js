@@ -120,7 +120,6 @@ export default class SpreadSheetTab extends Events
 
 window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-
     editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
     {
         const op = gui.corePatch().getOpById(data.opid);
