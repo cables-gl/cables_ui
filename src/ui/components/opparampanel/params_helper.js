@@ -141,66 +141,37 @@ export class ParamInputListeners
             }
         }
     }
-}
 
-// clean.......
-const paramsHelper =
-{
-
-    "togglePortValBool": (which, checkbox) =>
+    /**
+     * @param {string} opid
+     * @param {string} portname
+     * @param {Function} [cb]
+     */
+    static OpenParamSpreadSheetEditor(opid, portname, cb)
     {
-        // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("paramsTogglePortValBool", gui.opParams.op.getSubPatch());
+        const op = gui.corePatch().getOpById(opid);
+        if (!op) return log.warn("paramedit op not found");
 
-        const inputEle = /** @type {HTMLInputElement} */(document.getElementById(which));
-        const checkBoxEle = document.getElementById(checkbox);
+        const port = op.getPortByName(portname);
+        if (!port) return log.warn("paramedit port not found");
 
-        if (!inputEle || !checkBoxEle) return;
-        let bool_value = inputEle.value == "true";
-        bool_value = !bool_value;
-
-        if (bool_value)
-        {
-            checkBoxEle.classList.add("checkbox-active");
-            checkBoxEle.classList.remove("checkbox-inactive");
-        }
-        else
-        {
-            checkBoxEle.classList.add("checkbox-inactive");
-            checkBoxEle.classList.remove("checkbox-active");
-        }
-
-        inputEle.value = String(bool_value);
-        inputEle.dispatchEvent(new Event("input"));
-    },
-
-    "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>
-    {
-        const id = "watchcolorpick_in_" + idx + "_" + panelid;
-        const portNum = idx;
-        const colEle = ele.byId(id);
-
-        if (colEle && thePort1 && thePort && thePort2)
-        {
-            const inputElements =
-            [
-                ele.byId("portval_" + portNum + "_" + panelid),
-                ele.byId("portval_" + (portNum + 1) + "_" + panelid),
-                ele.byId("portval_" + (portNum + 2) + "_" + panelid)
-            ];
-
-            if (!inputElements[0] || !inputElements[1] || !inputElements[2])
+        new SpreadSheetTab(gui.mainTabs, port, port.get(), {
+            "title": gui.mainTabs.getUniqueTitle("Array " + portname),
+            "onchange": (content) =>
             {
-                colEle.style.backgroundColor = chroma(
-                    Math.round(255 * thePort.get()),
-                    Math.round(255 * thePort1.get()),
-                    Math.round(255 * thePort2.get())
-                ).hex();
+                port.set(content);
+                gui.emitEvent("portValueEdited", op, port, content);
             }
-        }
-    },
+        });
+    }
 
-    "openParamStringEditor": (opid, portname, cb, userInteraction) =>
+    /**
+     * @param {string} opid
+     * @param {string} portname
+     * @param {Function} [cb]
+     * @param {boolean} [userInteraction]
+     */
+    static OpenParamStringEditor(opid, portname, cb, userInteraction)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op) return log.warn("paramedit op not found", opid);
@@ -286,6 +257,64 @@ const paramsHelper =
         else gui.maintabPanel.show(userInteraction);
 
         editorSession.finishLoadingTab();
+    }
+}
+
+// clean.......
+const paramsHelper =
+{
+
+    "togglePortValBool": (which, checkbox) =>
+    {
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("paramsTogglePortValBool", gui.opParams.op.getSubPatch());
+
+        const inputEle = /** @type {HTMLInputElement} */(document.getElementById(which));
+        const checkBoxEle = document.getElementById(checkbox);
+
+        if (!inputEle || !checkBoxEle) return;
+        let bool_value = inputEle.value == "true";
+        bool_value = !bool_value;
+
+        if (bool_value)
+        {
+            checkBoxEle.classList.add("checkbox-active");
+            checkBoxEle.classList.remove("checkbox-inactive");
+        }
+        else
+        {
+            checkBoxEle.classList.add("checkbox-inactive");
+            checkBoxEle.classList.remove("checkbox-active");
+        }
+
+        inputEle.value = String(bool_value);
+        inputEle.dispatchEvent(new Event("input"));
+    },
+
+    "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>
+    {
+        const id = "watchcolorpick_in_" + idx + "_" + panelid;
+        const portNum = idx;
+        const colEle = ele.byId(id);
+
+        if (colEle && thePort1 && thePort && thePort2)
+        {
+            const inputElements =
+            [
+                ele.byId("portval_" + portNum + "_" + panelid),
+                ele.byId("portval_" + (portNum + 1) + "_" + panelid),
+                ele.byId("portval_" + (portNum + 2) + "_" + panelid)
+            ];
+
+            if (!inputElements[0] || !inputElements[1] || !inputElements[2])
+            {
+                colEle.style.backgroundColor = chroma(
+                    Math.round(255 * thePort.get()),
+                    Math.round(255 * thePort1.get()),
+                    Math.round(255 * thePort2.get())
+                ).hex();
+            }
+        }
     }
 
 };

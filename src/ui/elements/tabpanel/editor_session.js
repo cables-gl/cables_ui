@@ -1,4 +1,4 @@
-import paramsHelper from "../../components/opparampanel/params_helper.js";
+import { ParamInputListeners } from "../../components/opparampanel/params_helper.js";
 import WelcomeTab from "../../components/tabs/tab_welcome.js";
 import { UserSettings, userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
@@ -30,7 +30,7 @@ export default class EditorSession
 
         this.addListener("param", (name, data) =>
         {
-            paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
+            ParamInputListeners.OpenParamStringEditor(data.opid, data.portname, null, userInteraction);
         });
 
         this.addListener("welcometab", (name, data) =>

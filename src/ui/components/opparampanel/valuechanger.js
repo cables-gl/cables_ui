@@ -3,7 +3,7 @@ import { utils } from "cables";
 import { GuiText } from "../../text.js";
 import { hideToolTip } from "../../elements/tooltips.js";
 import undo from "../../utils/undo.js";
-import paramsHelper from "./params_helper.js";
+import { ParamInputListeners } from "./params_helper.js";
 import { gui } from "../../gui.js";
 
 let pointerLockFirstTime = true;
@@ -46,7 +46,7 @@ function valueChanger(eleId, focus, portName, opid)
     if (focus)
     {
         setTextEdit(true);
-        eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
+        eleInput.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
     }
 
     /**
@@ -59,7 +59,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (enabled)
         {
             if (eleContainer.classList.contains("valuesliderinput"))
-                eleInput.addEventListener("input", () => { paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+                eleInput.addEventListener("input", () => { ParamInputListeners.ValueChangerSetSliderCSS(eleInput.value, eleContainer); });
             ele.hide(eleNumInputDisplay);
 
             eleContainer.classList.add("numberinputFocussed");
@@ -74,7 +74,7 @@ function valueChanger(eleId, focus, portName, opid)
             if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input",
                 () =>
                 {
-                    paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+                    ParamInputListeners.ValueChangerSetSliderCSS(eleInput.value, eleContainer);
                 });
 
             ele.show(eleNumInputDisplay);
@@ -90,9 +90,9 @@ function valueChanger(eleId, focus, portName, opid)
     {
         if (ele.hasFocus(eleInput)) return;
 
-        eleInput.removeEventListener("wheel", paramsHelper.inputListenerMousewheel);
-        eleInput.addEventListener("wheel", paramsHelper.inputListenerMousewheel);
-        eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
+        eleInput.removeEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
+        eleInput.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
+        eleInput.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
         mouseDownTime = performance.now();
         isDown = true;
 
@@ -190,7 +190,7 @@ function valueChanger(eleId, focus, portName, opid)
 
     function setProgress(v)
     {
-        paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+        ParamInputListeners.ValueChangerSetSliderCSS(eleInput.value, eleContainer);
         return v;
     }
 
