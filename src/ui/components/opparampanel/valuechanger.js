@@ -12,6 +12,10 @@ export default valueChanger;
 
 /**
  * mouse and keyboard interactions with port parameters
+ * @param {string} eleId
+ * @param {boolean} focus
+ * @param {string} portName
+ * @param {string} opid
  */
 function valueChanger(eleId, focus, portName, opid)
 {
@@ -43,9 +47,11 @@ function valueChanger(eleId, focus, portName, opid)
     {
         setTextEdit(true);
         eleInput.addEventListener("keydown", paramsHelper.inputListenerCursorKeys);
-        // elem.keydown(paramsHelper.inputListenerCursorKeys);
     }
 
+    /**
+     * @param {boolean} enabled
+     */
     function setTextEdit(enabled)
     {
         ele.forEachClass("numberinput", (elm) => { elm.classList.remove("numberinputFocussed"); });
@@ -80,7 +86,7 @@ function valueChanger(eleId, focus, portName, opid)
         }
     }
 
-    function down(e)
+    function down()
     {
         if (ele.hasFocus(eleInput)) return;
 
@@ -105,7 +111,7 @@ function valueChanger(eleId, focus, portName, opid)
 
                 const pl = eleInput.requestPointerLock();
 
-                if (pl)pl.catch((e) =>
+                if (pl)pl.catch(() =>
                 {
                     // just to nothing, dont remove, it will throw useless exceptions
                     // console.log("pointerlock catch");
@@ -121,7 +127,7 @@ function valueChanger(eleId, focus, portName, opid)
         CABLES.mouseDraggingValue = true;
     }
 
-    function up(e)
+    function up()
     {
         if (ele.hasFocus(eleInput)) return;
 
@@ -134,29 +140,28 @@ function valueChanger(eleId, focus, portName, opid)
                 if (oldVal != newVal)
                     undo.add({
                         "title": "Value mousedrag " + oldVal + " to " + newVal,
-                        undo()
+                        "undo": function ()
                         {
                             const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
                             gui.patchView.showDefaultPanel();
 
                             p.set(oldVal);
-                            gui.opParams.show(op);
-                            gui.patchView.focusOp(null);
+                            // gui.opParams.show(op);
                             gui.patchView.focusOp(op.id);
-                            gui.patchView.centerSelectOp(op.id);
+                            gui.patchView.selectOpId(op.id);
                         },
-                        redo()
+                        "redo": function ()
                         {
                             const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
                             gui.patchView.showDefaultPanel();
 
                             p.set(newVal);
-                            gui.opParams.show(op);
-                            gui.patchView.focusOp(null);
+                            // gui.opParams.show(op);
+                            // gui.patchView.focusOp(null);
                             gui.patchView.focusOp(op.id);
-                            gui.patchView.centerSelectOp(op.id);
+                            gui.patchView.selectOpId(op.id);
                         }
                     });
             }(portName, opid, parseFloat(startVal), parseFloat(eleInput.value)));
@@ -200,6 +205,9 @@ function valueChanger(eleId, focus, portName, opid)
         return v;
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
     function move(e)
     {
         if (pointerLockFirstTime)
@@ -251,17 +259,17 @@ function valueChanger(eleId, focus, portName, opid)
             v = utils.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
         eleInput.value = v;
-        eleNumInputDisplay.innerHTML = v;
+        eleNumInputDisplay.innerHTML = String(v);
 
         eleInput.dispatchEvent(new Event("input"));
     }
 
-    function lockError(e)
+    function lockError()
     {
         // console.log("pointer lock error...", e);
     }
 
-    function lockChange(e)
+    function lockChange()
     {
         if (document.pointerLockElement === eleInput || document.mozPointerLockElement === eleInput || document.webkitPointerLockElement === eleInput)
         {
@@ -272,13 +280,13 @@ function valueChanger(eleId, focus, portName, opid)
         {
             // propably cancled by escape key / reset value
             eleInput.value = startVal;
-            eleNumInputDisplay.innerHTML = startVal;
+            eleNumInputDisplay.innerHTML = String(startVal);
             eleInput.dispatchEvent(new Event("input"));
             up();
         }
     }
 
-    function blur(e)
+    function blur()
     {
         // value changed after blur
         if (startVal != eleInputValue())

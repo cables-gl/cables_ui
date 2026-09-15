@@ -180,7 +180,7 @@ class ParamsListener extends Events
             const thePort = this._watchAnimPorts[iwap];
             (function (_thePort, panelid)
             {
-                const id = "watchPortValue_" + _thePort.watchId + "_" + panelid;
+                const id = "watchPortValue_" + _thePort.tempData.watchId + "_" + panelid;
                 const elm = ele.byClass(id);
                 if (elm)elm.addEventListener("focus", () =>
                 {
@@ -420,7 +420,7 @@ class ParamsListener extends Events
     /**
      * @param {Port} thePort
      * @param {string} panelid
-     * @param {string} idx
+     * @param {number} idx
      */
     watchCurvePort(thePort, panelid, idx)
     {
@@ -753,7 +753,7 @@ class ParamsListener extends Events
                         "title": "Extend title: \"" + port.getTitle() + ": x\"",
                         "func": () =>
                         {
-                            port.op.setUiAttrib({ "extendTitlePort": port.name, "widthOnlyGrow": port.name });
+                            port.op.setUiAttrib({ "extendTitlePort": port.name, "widthOnlyGrow": true });
                         }
                     });
             }
@@ -786,76 +786,6 @@ class ParamsListener extends Events
                             subPatchOpUtil.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
-            }
-
-            /*
-             * else
-             * if (
-             *     (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
-             *     !port.isAnimated())
-             * {
-             *     let title = "Subpatch Expose Port ";
-             *     let icon = "";
-             *     if (port.uiAttribs.expose)
-             *     {
-             *         title = "Subpatch Remove Exposed Port";
-             *         icon = "icon icon-x";
-             *     }
-             */
-
-            /*
-             *     items.push(
-             *         {
-             *             "title": title,
-             *             "iconClass": icon,
-             *             "func": () =>
-             *             {
-             *                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
-             */
-
-            /*
-             *                 if (!subOp)
-             *                 { this._log.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
-             */
-
-            //                 port.removeLinks();
-
-            /*
-             *                 subOp.removePort(port);
-             *                 port.setUiAttribs({ "expose": !port.uiAttribs.expose });
-             *                 port.op.refreshParams();
-             */
-
-            /*
-             *                 gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
-             *             }
-             *         });
-             * }
-             */
-
-            if (port.uiAttribs.expose)
-            {
-
-                /*
-                 * items.push(
-                 *     {
-                 *         "title": "Exposed Port: move up",
-                 *         "iconClass": "icon icon-chevron-up",
-                 *         "func": () =>
-                 *         {
-                 *             gui.patchView.setExposedPortOrder(port, -1);
-                 *         }
-                 *     });
-                 * items.push(
-                 *     {
-                 *         "title": "Exposed Port: move down",
-                 *         "iconClass": "icon icon-chevron-down",
-                 *         "func": () =>
-                 *         {
-                 *             gui.patchView.setExposedPortOrder(port, 1);
-                 *         }
-                 *     });
-                 */
             }
 
             let strEditTitle = "Edit title";
@@ -1140,9 +1070,9 @@ class ParamsListener extends Events
                                     p.set(oldv);
                                     gui.emitEvent("portValueEdited", op, p, oldv);
                                     gui.opParams.show(uop);
-                                    gui.patchView.focusOp(null);
+                                    // gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
+                                    gui.patchView.selectOpId(opid);
                                 }
                                 catch (ex) { this._log.warn("undo failed"); }
                             },
@@ -1157,9 +1087,9 @@ class ParamsListener extends Events
                                     p.set(newv);
                                     gui.emitEvent("portValueEdited", op, p, newv);
                                     gui.opParams.show(rop);
-                                    gui.patchView.focusOp(null);
+                                    // gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
+                                    gui.patchView.selectOpId(opid);
                                 }
                                 catch (ex) { this._log.warn("undo failed"); }
                             }
@@ -1235,7 +1165,7 @@ class ParamsListener extends Events
                 if (thePort.type != Port.TYPE_NUMBER && thePort.type != Port.TYPE_STRING && thePort.type != Port.TYPE_ARRAY && thePort.type != Port.TYPE_OBJECT) continue;
 
                 let newValue = "";
-                const id = "watchPortValue_" + thePort.watchId + "_" + this.panelId;
+                const id = "watchPortValue_" + thePort.tempData.watchId + "_" + this.panelId;
 
                 if (thePort.isAnimated())
                 {
@@ -1252,7 +1182,7 @@ class ParamsListener extends Events
                             if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;
                             else if (elVal.value != valDisp) elVal.value = valDisp;
 
-                        const elDisp = ele.byId("numberinputDisplay_" + thePort.watchId + "_" + this.panelId);
+                        const elDisp = ele.byId("numberinputDisplay_" + thePort.tempData.watchId + "_" + this.panelId);
                         if (elDisp) elDisp.innerHTML = valDisp;
                     }
                 }
@@ -1330,7 +1260,7 @@ class ParamsListener extends Events
                         idx);
                 }
 
-                this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());
+                this._watchPortVisualizer.update(id, thePort.tempData.watchId, thePort.get());
             }
 
             perf.finish();
