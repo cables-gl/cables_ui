@@ -1440,7 +1440,7 @@ export default class Gui extends Events
             {
                 ele.hide(ele.byId("converterprogress"));
                 ele.show(ele.byId("converteroutput"));
-                ele.show(ele.byId("modalClose"));
+                ele.show(ele.byId("converterClose"));
 
                 if (err)
                 {
@@ -1461,7 +1461,7 @@ export default class Gui extends Events
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
 
-                    ele.byId("modalClose").classList.remove("hidden");
+                    ele.byId("converterClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
 
                     FileManager.updatedFiles.push(fileId);
