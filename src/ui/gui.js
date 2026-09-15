@@ -42,7 +42,6 @@ import UiProfiler from "./components/uiprofiler.js";
 import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
-import paramsHelper from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import { UserSettings, userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";

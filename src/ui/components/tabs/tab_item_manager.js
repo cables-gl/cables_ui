@@ -22,7 +22,7 @@ export default class ItemManager extends Events
         this.#tab = new Tab(title, {
             "icon": "folder",
             "singleton": true,
-            "padding": true,
+            "padding": true
         });
         tabs.addTab(this.#tab);
 
@@ -32,7 +32,7 @@ export default class ItemManager extends Events
             {
                 this.emitEvent("close");
                 editorSession.remove(ItemManager.TABSESSION_NAME, "profiler");
-            },
+            }
         );
 
         this._items = [];
@@ -259,7 +259,10 @@ export default class ItemManager extends Events
     }
 }
 
-editorSession.addListener(ItemManager.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    gui.showFileManager();
+    editorSession.addListener(ItemManager.TABSESSION_NAME, (id, data) =>
+    {
+        gui.showFileManager();
+    });
 });

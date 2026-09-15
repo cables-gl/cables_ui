@@ -3,7 +3,7 @@ import { Events, Logger } from "cables-shared-client";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
-import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import EditorSession, { editorSession } from "../../elements/tabpanel/editor_session.js";
 import undo from "../../utils/undo.js";
 
 /**
@@ -91,7 +91,7 @@ export default class SpreadSheetTab extends Events
 
         editorSession.rememberOpenEditor(SpreadSheetTab.TABSESSION_NAME, this.#currentId, {
             "portname": port.name,
-            "opid": port.op.id,
+            "opid": port.op.id
         }, true);
         this.show();
         gui.maintabPanel.show(true);
@@ -118,9 +118,13 @@ export default class SpreadSheetTab extends Events
     }
 }
 
-editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    const op = gui.corePatch().getOpById(data.opid);
-    if (!op) return console.log("no spread op found..");
-    new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
+
+    editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
+    {
+        const op = gui.corePatch().getOpById(data.opid);
+        if (!op) return console.log("no spread op found..");
+        new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
+    });
 });

@@ -1,13 +1,13 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
-import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import namespace from "../../namespaceutils.js";
 import ModalOpDependencies from "../../dialogs/modalopdependencies.js";
@@ -612,7 +612,10 @@ export default class ManageOp
     }
 }
 
-editorSession.addListener(ManageOp.TABSESSION_NAME, (id, data) =>
+window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    new ManageOp(gui.mainTabs, id);
+    editorSession.addListener(ManageOp.TABSESSION_NAME, (id, data) =>
+    {
+        new ManageOp(gui.mainTabs, id);
+    });
 });

@@ -167,3 +167,4 @@ export default class EditorSession
  */
 let editorSession = new EditorSession();
 export { editorSession };
+window.dispatchEvent(new CustomEvent(CABLES.UI_EVENT_EDITORSESSION_INIT));

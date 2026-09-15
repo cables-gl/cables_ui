@@ -7,7 +7,7 @@ import Collapsable from "./components/collapsable.js";
 import DragNDrop from "./components/filemanager_dragdrop.js";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners.js";
 import { userSettings } from "./components/usersettings.js";
-import paramsHelper from "./components/opparampanel/params_helper.js";
+// import paramsHelper from "./components/opparampanel/params_helper.js";
 import FindTab from "./components/tabs/tab_find.js";
 import defaultOps from "./defaultops.js";
 import ModalDialog from "./dialogs/modaldialog.js";
@@ -32,6 +32,7 @@ import { GuiText } from "./text.js";
 import { UiPort } from "./core_extend_port.js";
 import OpSearch from "./components/opsearch.js";
 import { codeWatcher } from "./components/editor.js";
+import paramsHelper from "./components/opparampanel/params_helper.js";
 
 window.CABLES = CABLES || {};
 
@@ -100,6 +101,8 @@ CABLES.Patch = UiPatch;
 CABLES.UI.startUi = startUi;
 CABLES.UI.OpSearch = OpSearch;
 CABLES.UI.codeWatcher = codeWatcher;
+
+CABLES.UI_EVENT_EDITORSESSION_INIT = "cblEditorSessionInit";
 
 // added during webpack build
 CABLES.UI.build = window.BUILD_INFO;
