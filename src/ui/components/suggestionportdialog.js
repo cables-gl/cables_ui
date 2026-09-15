@@ -23,6 +23,7 @@ export default class SuggestPortDialog
      * @param {String} op
      * @param {import("./suggestiondialog.js").SuggestionItem} item
      * @param {boolean} useConverter
+     * @returns {void}
      */
 
     /**
