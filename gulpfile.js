@@ -175,9 +175,8 @@ function _sass(done)
 {
     return gulp
         .src("scss/style-dark.scss")
-        .pipe(sass().on("error", sass.logError))
+        .pipe(sass().on("error", (e) => { done(e); }))
         .pipe(rename("style-dark.css"))
-
         .pipe(gulp.dest("dist/css"));
 }
 
@@ -190,7 +189,7 @@ function _svgcss(done)
             svgcss({
                 "fileName": "icons",
                 "cssPrefix": "icon-",
-                "addSize": false,
+                "addSize": false
             })
         )
         .pipe(replace("background-image", "mask"))
@@ -226,7 +225,7 @@ const defaultSeries = gulp.series(
     _scripts_core,
     _scripts_ui_webpack,
     _scripts_talkerapi,
-    _sass,
+    _sass
 );
 
 /**

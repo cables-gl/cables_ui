@@ -60,7 +60,7 @@ export default class Tips
         html += "</div>";
 
         html += "<div style=\"clear:both;padding:20px;\">";
-        html += "  <a id=\"modalClose\" class=\"bluebutton\">Close</a>";
+        html += "  <a id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\" class=\"bluebutton\">Close</a>";
         html += "  <a id=\"tips_next\" class=\"cblbutton\">Next tip</a>";
 
         html += "  <div style=\"float:right;\">";

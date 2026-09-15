@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { Op, utils } from "cables";
+import { Op, Patch, utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
@@ -32,7 +32,7 @@ export default class FindTab
 
     #lastSearch = "";
     #lastClicked = -1;
-    #lastSelected = -1;
+    #lastSelected = null;
     #maxIdx = -1;
     #inputId = "tabFindInput" + utils.uuid();
     #closed = false;
@@ -60,7 +60,7 @@ export default class FindTab
         }
         colors = utils.uniqueArray(colors);
 
-        const html = getHandleBarHtml("tab_find", { colors, "inputid": this.#inputId, "toggles": this.#toggles });
+        const html = getHandleBarHtml("tab_find", { "colors": colors, "inputid": this.#inputId, "toggles": this.#toggles });
 
         this.#tab.html(html);
 
@@ -265,7 +265,7 @@ export default class FindTab
         html += "<div tabindex=\"0\" id=\"findresult" + idx + "\" class=\"info findresultop " + op.id + " " + hiddenClass + " " + lastClicked + " \" data-info=\"" + info + "\" ";
         html += " onmouseover=\"gui.hlFindResult('" + op.id + "')\" ";
         html += " onmouseout=\"gui.hlUnFindResult('" + op.id + "')\" ";
-        html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
+        html += "onkeypress=\"ele.keyClick(event,this)\" onclick=\"gui.focusFindResult(" + idx + ",'" + op.id + "','" + op.uiAttribs.subPatch + "');\">";
 
         let colorHandle = "";
         if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
@@ -288,7 +288,7 @@ export default class FindTab
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-        if (op.uiAttribs.subPatch != 0) html += "<span class=\"button-small\" style=\"float:right;\"> <span class=\"icon icon-op\"></span> <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span></span>";
+        if (op.uiAttribs.subPatch != Patch.DEFAULT_SUBPATCHID) html += "<span class=\"button-small\" style=\"float:right;\"> <span class=\"icon icon-op\"></span> <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span></span>";
 
         html += "</div>";
 
@@ -397,9 +397,9 @@ export default class FindTab
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                     {
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
-                            results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
+                            results.push({ "op": op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
-                            results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
+                            results.push({ "op": op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
                     }
                 }
             }
@@ -426,7 +426,7 @@ export default class FindTab
                 for (let i = 0; i < history.length; i++)
                 {
                     const op = gui.corePatch().getOpById(history[i].id);
-                    results.push({ op, "score": 1 });
+                    results.push({ "op": op, "score": 1 });
                 }
             }
             if (str == ":notcoreops")
@@ -455,7 +455,7 @@ export default class FindTab
                     let activity = 0;
                     for (let k = 0; k < ops[i].portsIn.length; k++) activity += ops[i].portsIn[k].activityCounter;
 
-                    if (activity) results.push({ op, "score": activity }); // "where": "activity: " + activity
+                    if (activity) results.push({ "op": op, "score": activity }); // "where": "activity: " + activity
                 }
             }
             else
@@ -467,7 +467,7 @@ export default class FindTab
 
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
-                            results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
+                            results.push({ "op": op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
                 }
             }
             else
@@ -479,7 +479,7 @@ export default class FindTab
 
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
-                            results.push({ op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
+                            results.push({ "op": op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
                 }
             }
             else
@@ -490,7 +490,7 @@ export default class FindTab
                     const op = ops[i];
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 0)
-                            results.push({ op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
+                            results.push({ "op": op, "score": 1, "warning": op.uiAttribs.uierrors[j].txt });
                 }
             }
             else
@@ -501,7 +501,7 @@ export default class FindTab
                     const op = ops[i];
 
                     if (op.uiAttribs && op.uiAttribs.comment && op.uiAttribs.comment.length > 0)
-                        results.push({ op, "score": 1, "where": op.uiAttribs.comment });
+                        results.push({ "op": op, "score": 1, "where": op.uiAttribs.comment });
                 }
             }
             else
@@ -510,7 +510,7 @@ export default class FindTab
                 for (let i = 0; i < ops.length; i++)
                 {
                     const op = ops[i];
-                    if (op.uiAttribs && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) results.push({ op, "score": 1 });
+                    if (op.uiAttribs && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) results.push({ "op": op, "score": 1 });
                 }
             }
             else
@@ -532,7 +532,7 @@ export default class FindTab
                                     strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
                                 }
 
-                                results.push({ op, "score": 1, "where": strtex });
+                                results.push({ "op": op, "score": 1, "where": strtex });
                             }
                         }
                     }
@@ -607,7 +607,7 @@ export default class FindTab
                 for (let i = 0; i < bms.length; i++)
                 {
                     const op = gui.corePatch().getOpById(bms[i]);
-                    results.push({ op, "score": 1 });
+                    results.push({ "op": op, "score": 1 });
                 }
             }
             else if (str == ":unconnected")
@@ -628,7 +628,7 @@ export default class FindTab
                     }
 
                     if (count == 0)
-                        results.push({ op, "score": 1 });
+                        results.push({ "op": op, "score": 1 });
                 }
             }
             else if (str == ":history")
@@ -647,7 +647,7 @@ export default class FindTab
                     }
                     if (score > 0)
                     {
-                        results.push({ op, "score": score, "history": dateString + " - changed by " + userName });
+                        results.push({ "op": op, "score": score, "history": dateString + " - changed by " + userName });
                     }
                 }
             }
@@ -753,7 +753,7 @@ export default class FindTab
                 if (op.uiAttribs.hidden) score -= 5;
                 if (op.storage && op.storage.blueprint) score -= 1;
                 // if (found && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
-                if (found) results.push({ "op": ops[i], score, where });
+                if (found) results.push({ "op": ops[i], "score": score, "where": where });
             }
         }
         return results;
@@ -864,7 +864,7 @@ export default class FindTab
         if (num != this.#lastClicked)
         {
 
-            num = parseInt(num);
+            num = num;
 
             let el = ele.byId("findresult" + this.#lastClicked);
             if (el) el.classList.remove("lastClicked");
@@ -958,7 +958,7 @@ FindTab.searchPatchOps = (ops, results) =>
     {
         const op = ops[i];
         if (namespace.isPatchOp(op.objName))
-            results.push({ op, "score": 1, "where": op.objName });
+            results.push({ "op": op, "score": 1, "where": op.objName });
     }
     return results;
 };
@@ -969,7 +969,7 @@ FindTab.searchTeamOps = (ops, results) =>
     {
         const op = ops[i];
         if (namespace.isTeamOp(op.objName))
-            results.push({ op, "score": 1, "where": op.objName });
+            results.push({ "op": op, "score": 1, "where": op.objName });
     }
     return results;
 };
@@ -980,7 +980,7 @@ FindTab.searchExtensionOps = (ops, results) =>
     {
         const op = ops[i];
         if (namespace.isExtensionOp(op.objName))
-            results.push({ op, "score": 1, "where": op.objName });
+            results.push({ "op": op, "score": 1, "where": op.objName });
     }
     return results;
 };
