@@ -133,7 +133,7 @@ export default class OpDependencyTab extends Tab
         }
     }
 
-    submit()
+    submit(done)
     {
         const depSource = this.options.depSource;
         const viewId = this.options.viewId;
@@ -149,9 +149,17 @@ export default class OpDependencyTab extends Tab
         const opName = this.options.opDoc.name;
         const opDoc = this.options.opDoc;
 
-        if (submitEle.disabled) return;
+        if (submitEle.disabled)
+        {
+            if (done) done("disabled");
+            return;
+        }
         const depSrc = srcEle.value;
-        if (!depSrc) return;
+        if (!depSrc)
+        {
+            if (done) done("no source");
+            return;
+        }
         submitEle.innerText = "working...";
         submitEle.disabled = true;
 
@@ -176,6 +184,7 @@ export default class OpDependencyTab extends Tab
                         submitEle.innerText = "Add";
                         submitEle.disabled = false;
                         gui.emitEvent("refreshManageOp", opName);
+                        if (done) done();
                     });
                 }
                 else
@@ -201,6 +210,7 @@ export default class OpDependencyTab extends Tab
             {
                 submitEle.innerText = "Add";
                 submitEle.disabled = false;
+                if (done) done();
             });
         }
         else if (depType === "corelib")
@@ -209,6 +219,7 @@ export default class OpDependencyTab extends Tab
             {
                 submitEle.innerText = "Add";
                 submitEle.disabled = false;
+                if (done) done();
             });
         }
         else
@@ -218,6 +229,7 @@ export default class OpDependencyTab extends Tab
                 submitEle.innerText = "Add";
                 submitEle.disabled = false;
                 gui.emitEvent("refreshManageOp", opName);
+                if (done) done();
             });
         }
     }
