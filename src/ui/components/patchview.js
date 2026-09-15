@@ -692,7 +692,7 @@ export default class PatchView extends Events
             const html = getHandleBarHtml(
                 "params_ops", {
                     "isDevEnv": platform.isDevEnv(),
-                    "config": platform.cfg,
+                    "config": platform.config,
                     "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS),
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
@@ -771,7 +771,7 @@ export default class PatchView extends Events
 
     checkPatchErrorsSoon()
     {
-        setTimeout(() =>
+        this._checkErrorTimeout = setTimeout(() =>
         {
             clearTimeout(this._checkErrorTimeout);
             this.checkPatchOutdated();
@@ -831,6 +831,9 @@ export default class PatchView extends Events
         // this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 
+    /**
+     * @param {string} subPatch
+     */
     centerSubPatchBounds(subPatch)
     {
         const bounds = this.getSubPatchBounds(subPatch);
@@ -848,6 +851,9 @@ export default class PatchView extends Events
             }
     }
 
+    /**
+     * @param {string} subPatchId
+     */
     getSubPatchBounds(subPatchId)
     {
         if (subPatchId == undefined) subPatchId = this.getCurrentSubPatch();
@@ -890,12 +896,21 @@ export default class PatchView extends Events
         return bb;
     }
 
+    /**
+     * @param {number} [minWidth]
+     */
     getSelectionBounds(minWidth)
     {
         const ops = this.getSelectedOps();
         return this.getOpBounds(ops, { "minWidth": minWidth });
     }
 
+    /**
+     * @param {number} primAxis
+     * @param {number} secAxis
+     * @param {number} primAxisB
+     * @param {number} secAxisB
+     */
     getDistScore(primAxis, secAxis, primAxisB, secAxisB)
     {
         let score = 0;
@@ -934,6 +949,10 @@ export default class PatchView extends Events
         return foundOp;
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     cursorNavOps(x, y)
     {
         const ops = this.getSelectedOps();
@@ -1764,6 +1783,7 @@ export default class PatchView extends Events
             }
         }
 
+        /** @type {Op} */
         let focusSubpatchop = null;
         gui.serverOps.loadProjectDependencies(pastedJson, (project, newOps) =>
         {
@@ -2864,8 +2884,7 @@ export default class PatchView extends Events
     suggestionBetweenTwoOps(op1, op2)
     {
 
-        /** @type {MouseEvent} */
-        const mouseEvent = { "clientX": 400, "clientY": 400 };
+        const mouseEvent =/** @type {MouseEvent} */ ({ "clientX": 400, "clientY": 400 });
         let showConv = true;
 
         /** @type {import("./suggestiondialog.js").SuggestionItem[]} */

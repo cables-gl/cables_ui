@@ -32,7 +32,6 @@ export default class GlViewBox
     _mouseRightDownStartX = 0;
     _mouseRightDownStartY = 0;
     _panStarted = 0;
-    _mouseSmooth = [];
     _mouseSmoothCount = 0;
     _subPatchViewBoxes = {};
     _spaceDown = false;
