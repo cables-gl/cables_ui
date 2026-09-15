@@ -61,6 +61,9 @@ class OpParampanel extends Events
         return this._currentOp;
     }
 
+    /**
+     * @param {string} eleid
+     */
     setParentElementId(eleid)
     {
         this._eleId = eleid;
@@ -323,7 +326,7 @@ class OpParampanel extends Events
 
                 if (op.getSubPatch())
                 {
-                    const subouterOp = op.patch.getSubPatchOuterOp(op.getSubPatch());
+                    const subouterOp = gui.corePatch().getSubPatchOuterOp(op.getSubPatch());
                     if (subouterOp)
                     {
                         const subOuterName = subouterOp.objName;
@@ -456,7 +459,7 @@ class OpParampanel extends Events
                 this._isPortLineDragDown = false; this._portLineDraggedName = null;
             }, { "passive": false });
 
-            ele.on(document.getElementById("portLineTitle_in_" + i), "pointerdown", (e, target) =>
+            ele.on(document.getElementById("portLineTitle_in_" + i), "pointerdown", (_e, target) =>
             {
                 this._isPortLineDragDown = true; this._portLineDraggedName = target.dataset.portname;
             }, { "passive": false });
@@ -464,7 +467,7 @@ class OpParampanel extends Events
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
 
-        for (const ipo in this._portsOut)
+        for (let ipo = 0; ipo < this._portsOut.length; ipo++)
         {
             this._checkPortTypes(this._portsOut[ipo]);
 
@@ -472,7 +475,7 @@ class OpParampanel extends Events
             (function (index)
             {
                 const elem = ele.byId("portTitle_out_" + index);
-                if (elem)elem.addEventListener("click", (e) =>
+                if (elem)elem.addEventListener("click", (_e) =>
                 {
                     const p = this._portsOut[index];
                     if (!p.uiAttribs.hidePort)

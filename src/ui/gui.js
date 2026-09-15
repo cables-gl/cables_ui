@@ -1316,8 +1316,7 @@ export default class Gui extends Events
                         },
                         {
                             "title": "Maximize Canvas",
-                            "func": CmdRenderer.maximizeCanvas,
-                            "icon": "icon-picker"
+                            "func": CmdRenderer.maximizeCanvas
                         },
                         {
                             "title": "Canvas As Patch Background",
@@ -1653,7 +1652,7 @@ export default class Gui extends Events
             CmdUi.activityFeed();
         });
 
-        ele.byId("nav-item-bpReload").addEventListener("click", () => { CmdPatch.updateLocalChangedBlueprints(); });
+        // ele.byId("nav-item-bpReload").addEventListener("click", () => { CmdPatch.updateLocalChangedBlueprints(); });
 
         this.htmlEleOverlay = new HtmlElementOverlay();
         this.canvasManager.init();
