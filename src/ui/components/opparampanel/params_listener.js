@@ -15,7 +15,7 @@ import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
-import { ParamInputListeners } from "./params_helper.js";
+import paramsHelper, { ParamInputListeners } from "./params_helper.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -1141,7 +1141,6 @@ class ParamsListener extends Events
             }
 
             paramsHelper.checkDefaultValue(ports[index], index, panelid);
-            // if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
             ports[index].emitEvent("onValueChangeUi");
 
