@@ -9,6 +9,8 @@ import { CssClassNames } from "../theme.js";
  * @property {String} [html] html content
  * @property {String} [title] a title of the dialog
  * @property {String} [text]
+ * @property {String} [footer]
+ * @property {String[]} [notices]
  * @property {ModalDialogButton} [okButton]
  * @property {ModalDialogButton} [cancelButton]
  * @property {Boolean} [nopadding=false] remove padding around the window
@@ -363,7 +365,7 @@ export default class ModalDialog extends Events
 
     _getCheckboxStates()
     {
-        const checkboxes = ele.byQueryAll(".modalcheckbox");
+        const checkboxes = /** @type {NodeListOf<HTMLInputElement>} */(ele.byQueryAll(".modalcheckbox"));
         const checkboxStates = {};
         checkboxes.forEach((checkbox) =>
         {
