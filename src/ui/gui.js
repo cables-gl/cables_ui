@@ -366,6 +366,7 @@ export default class Gui extends Events
      */
     focusFindResult(idx, opid, subpatch)
     {
+        this._find?.setClicked(idx);
         if (this.keys.shiftKey)
         {
             this.opParams.show(opid);
@@ -385,7 +386,7 @@ export default class Gui extends Events
             // });
         }
 
-        this._find?.setClicked(idx);
+        this.patchView.focus();
     }
 
     /**
