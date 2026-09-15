@@ -15,7 +15,6 @@ import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
-import { NumberInput } from "../draggablevalue.js";
 import { ParamInputListeners } from "./params_helper.js";
 
 /**
