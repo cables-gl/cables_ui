@@ -104,7 +104,7 @@ export default class OpAttachmentTab extends Tab
         }
     }
 
-    submit()
+    submit(done)
     {
         const attSource = this.options.attSource;
         const selector = "addopattachment_" + attSource + "_" + this.options.viewId;
@@ -126,7 +126,7 @@ export default class OpAttachmentTab extends Tab
             binary = fileInput.files[0];
         }
 
-        this.#addAttachment(this.options.opDoc, filename, binary);
+        this.#addAttachment(this.options.opDoc, filename, binary, done);
     }
 
     /**
