@@ -233,6 +233,12 @@ export default class GlViewBox
      */
     _onCanvasWheel(event)
     {
+        if (event.metaKey)
+        {
+            this.glPatch.emitEvent("META_SCROLL", event.deltaY, this.mouseX, this.mouseY);
+            return;
+        }
+
         if (this.glPatch.mouseState.buttonMiddle) return;
         this.setMousePos(event.offsetX, event.offsetY);
 
