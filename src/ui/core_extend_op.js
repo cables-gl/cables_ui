@@ -4,8 +4,6 @@
  * @property {Port} out
  */
 
-
-
 /**
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
@@ -659,6 +657,9 @@ class UiOp extends Op
         return false;
     }
 
+    /**
+     * @param {Op<any>[]} ops
+     */
     isInLinkedToOpOutside(ops)
     {
         for (let i = 0; i < this.portsIn.length; i++)

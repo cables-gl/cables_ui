@@ -147,29 +147,29 @@ class CmdDebug
             {
                 "cmd": "Glui focusOpAnim",
                 "func": CmdDebug.focusOpAnim,
-                "category": "debug",
+                "category": "debug"
             },
             {
                 "cmd": "Undo history",
                 "func": CmdDebug.undoHistory,
-                "category": "debug",
+                "category": "debug"
             },
             {
                 "cmd": "Test all commands",
                 "func": CmdDebug.testCommands,
-                "category": "debug",
+                "category": "debug"
             },
             {
                 "cmd": "Show User Preferences Data",
                 "func": CmdDebug.showUserPrefs,
-                "category": "debug",
+                "category": "debug"
             },
 
             {
                 "cmd": "Three Debug",
                 "func": CmdDebug.showThreeDebug,
-                "category": "debug",
-            },
+                "category": "debug"
+            }
 
         ];
     }
@@ -239,7 +239,7 @@ class CmdDebug
             (err, res) =>
             {
             // window reloaded from outside
-            },
+            }
         );
 
     /*
@@ -370,7 +370,7 @@ class CmdDebug
                             () => { p.set([0, 1, 2, 3]); },
                             () => { p.set([0, 1, 2, 3, 4]); },
                             () => { p.set([0, 1, null, 3, 4]); },
-                            () => { p.set([0, "hallo", 2, 3, 4]); },
+                            () => { p.set([0, "hallo", 2, 3, 4]); }
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
@@ -381,7 +381,7 @@ class CmdDebug
                             () => { p.set(1); },
                             () => { p.set(1.2); },
                             () => { p.set(100); },
-                            () => { p.set(-100); },
+                            () => { p.set(-100); }
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
@@ -410,7 +410,7 @@ class CmdDebug
                     {
                         const tests = [
                             () => { p.trigger(); },
-                            () => { },
+                            () => { }
                         ];
                         tests[Math.floor(tests.length * Math.random())]();
                     }
