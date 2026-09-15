@@ -55,6 +55,9 @@ export default class ModalDialog extends Events
     #bg = new ModalBackground();
 
     static MODAL_OK_BUTTON_ID = "cblmodalpromptok";
+    static MODAL_CANCEL_BUTTON_ID = "cblmodalpromptcancel";
+    static MODAL_CHOICE_OK_BUTTON_ID = "cblmodalchoiceok";
+    static MODAL_CHOICE_CANCEL_BUTTON_ID = "cblmodalchoicecancel";
 
     /**
      * @param {ModalDialogOptions} options
@@ -170,14 +173,14 @@ export default class ModalDialog extends Events
         {
             html += "<br/>";
             html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"" + ModalDialog.MODAL_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this.#options.choice)
         {
             html += "<br/><br/>";
-            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CHOICE_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this.#options.showOkButton)
@@ -211,10 +214,10 @@ export default class ModalDialog extends Events
             });
         }
 
-        const elePromptCancel = ele.byId("prompt_cancel");
+        const elePromptCancel = ele.byId(ModalDialog.MODAL_CANCEL_BUTTON_ID);
         if (elePromptCancel) elePromptCancel.addEventListener("pointerdown", this.close.bind(this));
 
-        const eleChoiceOk = ele.byId("choice_ok");
+        const eleChoiceOk = ele.byId(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
         if (eleChoiceOk)
         {
             eleChoiceOk.addEventListener("pointerdown", () =>
@@ -233,7 +236,7 @@ export default class ModalDialog extends Events
             });
         }
 
-        const eleChoiceCancel = ele.byId("choice_cancel");
+        const eleChoiceCancel = ele.byId(ModalDialog.MODAL_CHOICE_CANCEL_BUTTON_ID);
         if (eleChoiceCancel)
         {
             eleChoiceCancel.addEventListener("pointerdown", () =>

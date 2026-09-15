@@ -144,7 +144,7 @@ export default class OpDependencyTab extends Tab
         const srcEle = depsEle.querySelector(".depSrc");
         const depTypeEle = depsEle.querySelector("input[name='depType']");
         const exportNameEle = depsEle.querySelector(".exportName");
-        const submitEle = ele.byId("choice_ok");
+        const submitEle = ele.byId(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
 
         const opName = this.options.opDoc.name;
         const opDoc = this.options.opDoc;
