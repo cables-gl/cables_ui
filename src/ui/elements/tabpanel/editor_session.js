@@ -19,9 +19,9 @@ export default class EditorSession
     #listeners;
 
     /**
-     * @param {boolean} userInteraction
+     * @param {boolean} [userInteraction]
      */
-    constructor(userInteraction)
+    constructor(userInteraction = false)
     {
         this.#openEditors = [];
         this.#listeners = {};

@@ -8,6 +8,94 @@ import { UiOp } from "../../core_extend_op.js";
 
 const log = new Logger("parmashelper");
 
+/**
+ * @param {string} v
+ * @param {number} dir
+ * @param {PointerEvent} e
+ */
+function inputIncrement(v, dir, e)
+{
+    if (e.target.type == "search") return v;
+
+    if (gui.opParams && gui.opParams.op)
+    {
+        gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
+    }
+
+    if (v == "true") return "false";
+    if (v == "false") return "true";
+
+    const val = parseFloat(v);
+    if (val != val) return v;
+
+    let add = 0.1;
+
+    if (e.target.classList.contains("inc_int"))add = 1;
+
+    if (e && e.shiftKey && e.metaKey)add = 0.001;
+    else if (e && e.altKey && e.shiftKey) add = 10;
+    else if (e && e.shiftKey) add = 0.01;
+    else if (e && e.altKey) add = 1;
+
+    let r = val + (add * dir);
+
+    if (isNaN(r)) r = 0.0;
+    else r = Math.round(1000 * r) / 1000;
+    return r;
+}
+
+export class ParamInputListeners
+{
+
+    /**
+     * @param {PointerEvent} event
+     */
+    static InputListenerMousewheel(event)
+    {
+        event.preventDefault();
+        let delta = -event.deltaY || event.deltaX;
+        if (ele.hasFocus(event.target))
+        {
+            if (delta > 0)
+            {
+                if (event.shiftKey) event.target.value = inputIncrement(event.target.value, 0.1, event);
+                else event.target.value = inputIncrement(event.target.value, 1, event);
+            }
+            else
+            {
+                if (event.shiftKey) event.target.value = inputIncrement(event.target.value, -0.1, event);
+                else event.target.value = inputIncrement(event.target.value, -1, event);
+            }
+            event.target.dispatchEvent(new Event("input"));
+
+            return false;
+        }
+    }
+
+    /**
+     * @param {PointerEvent} e
+     */
+    static InputListenerCursorKeys(e)
+    {
+        e.target.value = e.target.value.replaceAll(",", ".");
+
+        switch (e.which)
+        {
+        case 38: // up
+            e.target.value = inputIncrement(e.target.value, 1, e);
+            e.target.dispatchEvent(new Event("input"));
+            return false;
+
+        case 40: // down
+            e.target.value = inputIncrement(e.target.value, -1, e);
+            e.target.dispatchEvent(new Event("input"));
+            return false;
+        }
+    }
+
+}
+
+// clean.......
 const paramsHelper =
 {
     "valueChangerSetSliderCSS": (v, eleInput) =>
@@ -21,77 +109,6 @@ const paramsHelper =
         const grad = "linear-gradient(0.25turn, var(--numberinput-bar), var(--numberinput-bar) " + cssv + "%, var(--numberinput-bg) " + cssv + "%)";
 
         eleInput.style.background = grad;
-    },
-
-    "inputListenerMousewheel": (event) =>
-    {
-        event.preventDefault();
-        let delta = -event.deltaY || event.deltaX;
-        if (ele.hasFocus(event.target))
-        {
-            if (delta > 0)
-            {
-                if (event.shiftKey) event.target.value = paramsHelper.inputIncrement(event.target.value, 0.1, event);
-                else event.target.value = paramsHelper.inputIncrement(event.target.value, 1, event);
-            }
-            else
-            {
-                if (event.shiftKey) event.target.value = paramsHelper.inputIncrement(event.target.value, -0.1, event);
-                else event.target.value = paramsHelper.inputIncrement(event.target.value, -1, event);
-            }
-            event.target.dispatchEvent(new Event("input"));
-
-            return false;
-        }
-    },
-
-    "inputListenerCursorKeys": (e) =>
-    {
-        e.target.value = e.target.value.replaceAll(",", ".");
-
-        switch (e.which)
-        {
-        case 38: // up
-            e.target.value = paramsHelper.inputIncrement(e.target.value, 1, e);
-            e.target.dispatchEvent(new Event("input"));
-            return false;
-
-        case 40: // down
-            e.target.value = paramsHelper.inputIncrement(e.target.value, -1, e);
-            e.target.dispatchEvent(new Event("input"));
-            return false;
-        }
-    },
-
-    "inputIncrement": (v, dir, e) =>
-    {
-        if (e.target.type == "search") return v;
-
-        if (gui.opParams && gui.opParams.op)
-        {
-            gui.savedState.setUnSaved("paramsInputIncrement", gui.opParams.op.getSubPatch());
-        }
-
-        if (v == "true") return "false";
-        if (v == "false") return "true";
-
-        const val = parseFloat(v);
-        if (val != val) return v;
-
-        let add = 0.1;
-
-        if (e.target.classList.contains("inc_int"))add = 1;
-
-        if (e && e.shiftKey && e.metaKey)add = 0.001;
-        else if (e && e.altKey && e.shiftKey) add = 10;
-        else if (e && e.shiftKey) add = 0.01;
-        else if (e && e.altKey) add = 1;
-
-        let r = val + (add * dir);
-
-        if (isNaN(r)) r = 0.0;
-        else r = Math.round(1000 * r) / 1000;
-        return r;
     },
 
     "checkDefaultValue": (port, index, panelid) =>

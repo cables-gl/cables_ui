@@ -3,7 +3,6 @@ import { Anim, Port } from "cables";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
-import paramsHelper from "./params_helper.js";
 import WatchPortVisualizer from "./watchportvisualizer.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
@@ -16,6 +15,8 @@ import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
+import { NumberInput } from "../draggablevalue.js";
+import { ParamInputListeners } from "./params_helper.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -457,10 +458,17 @@ class ParamsListener extends Events
         });
     }
 
+    /**
+     * @param {any} thePort
+     * @param {string} panelid
+     * @param { number} idx
+     */
     watchSgPort(thePort, panelid, idx)
     {
         const id = "watchsg_in_" + idx + "_" + panelid;
         let inpEle = ele.byId(id);
+
+        // new NumberInput(inpEle);
 
         if (!inpEle)
         {
@@ -468,6 +476,8 @@ class ParamsListener extends Events
             return;
         }
 
+        if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
+        if (inpEle)inpEle.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
         if (inpEle)inpEle.addEventListener("input", (e) =>
         {
             thePort.attribs.sg = inpEle.value;
