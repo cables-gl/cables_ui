@@ -1,0 +1,35 @@
+.cablesCssUi {
+    .highlightBlock
+    {
+        --highlight-block-color: #303030;
+        --warn-hint: var(--color-bg-error);
+        --info: #EBA605;
+
+        color: white;
+        background-color: var(--highlight-block-color);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+
+        .title {
+            margin-top:15px;
+            text-transform: uppercase;
+            opacity: 0.5;;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        &.error {
+            border-left: 10px solid var(--warn-hint);
+        }
+
+        &.warn {
+            border-left: 10px solid var(--info);
+            margin-top: 0;
+        }
+
+        &.info {
+            border-left: 10px solid var(--color_port_value);
+        }
+    }
+}
