@@ -4,6 +4,7 @@ import gluiconfig from "./gluiconfig.js";
 import Gui, { gui } from "../gui.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
+import { UiOp } from "../core_extend_op.js";
 
 /**
  * @typedef VizLayerOptions
@@ -15,6 +16,16 @@ import GlPatch from "./glpatch.js";
  * @property {boolean} useGl
  * @property {number} vizLayer
  * @property {number} pixelDensity
+ */
+/**
+ * @typedef VizLayerItem
+ * @property {number} posX
+ * @property {number} posY
+ * @property {number} screenPosX
+ * @property {number} screenPosY
+ * @property {UiOp} op
+ * @property {number} w
+ * @property {number} h
  */
 
 /**
@@ -50,6 +61,8 @@ export default class VizLayer extends Events
         this._log = new Logger("VizLayer");
         this.renderMs = null;
         this._usingGl = false;
+
+        /** @type {VizLayerItem[]} */
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
@@ -58,6 +71,23 @@ export default class VizLayer extends Events
         gui.on(Gui.EVENT_UILOADED, () =>
         {
             this._updateSize();
+        });
+
+        this._glPatch.on("META_SCROLL", (delta, x, y) =>
+        {
+            if (delta > 0)delta = 1;
+            else delta = -1;
+            delta *= 0.01;
+
+            const item = this.getItemByPos(x, y);
+            if (item)
+            {
+                const scrollPort = item.op.getPortByName("Scroll");
+                if (scrollPort)
+                {
+                    scrollPort.setValue(scrollPort.get() + delta);
+                }
+            }
         });
 
         userSettings.on(UserSettings.EVENT_CHANGE, (key, value) =>
@@ -134,6 +164,25 @@ export default class VizLayer extends Events
     }
 
     /**
+     * @param {number} x
+     * @param {number} y
+     */
+    getItemByPos(x, y)
+    {
+
+        for (let i = 0; i < this._items.length; i++)
+        {
+            if (x > this._items[i].screenPosX && x < this._items[i].screenPosX + this._items[i].w &&
+                y > this._items[i].screenPosY && y < this._items[i].screenPosY + this._items[i].h)
+            {
+                return this._items[i];
+
+            }
+
+        }
+    }
+
+    /**
      * @param {CgpContext} cgp
      */
     renderWebGpuPreviews(cgp)
@@ -185,6 +234,9 @@ export default class VizLayer extends Events
             const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
             pos[1] += paddingY;
 
+            item.screenPosX = pos[0];
+            item.screenPosY = pos[1];
+
             pos[0] *= window.devicePixelRatio;
             pos[1] *= window.devicePixelRatio;
 
@@ -196,6 +248,8 @@ export default class VizLayer extends Events
 
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(ww, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
+            item.w = size[0];
+            item.h = size[1];
 
             sizeOp[0] *= window.devicePixelRatio;
             sizeOp[1] *= window.devicePixelRatio;

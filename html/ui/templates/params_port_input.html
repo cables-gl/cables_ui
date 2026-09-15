@@ -126,13 +126,17 @@
 <!-- {{port.uiAttribs.objType}}... -->
 
                             {{#compare port.uiAttribs.objType '==' 'sg_vec2' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_1" class="sg_default" value=""/>
                             {{/compare}}
                             {{#compare port.uiAttribs.objType '==' 'sg_vec4' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_1" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_2" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_3" class="sg_default" value=""/>
                             {{/compare}}
                             {{#compare port.uiAttribs.objType '==' 'sg_sampler' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <!-- <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/> -->
                             {{/compare}}
 
                             {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
@@ -141,7 +145,7 @@
 
 
                             {{#compare port.uiAttribs.objType '==' 'sg_float' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value="{{port.attribs.sg}}"/>
     <!-- <div -->
         <!-- data-value="{{port.attribs.sg}}" -->
         <!-- data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"> -->

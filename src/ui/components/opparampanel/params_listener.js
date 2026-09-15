@@ -464,25 +464,45 @@ class ParamsListener extends Events
      */
     watchSgPort(thePort, panelid, idx)
     {
-        const id = "watchsg_in_" + idx + "_" + panelid;
-        let inpEle = ele.byId(id);
-
-        // new NumberInput(inpEle);
-
-        if (!inpEle)
+        function updateValue()
         {
-            this._log.log("color ele not found!", id);
-            return;
+            let strval = "";
+            for (let i = 0; i < 4; i++)
+            {
+                const id = "watchsg_in_" + idx + "_" + panelid + "_" + i;
+                let inpEle = ele.byId(id);
+                if (inpEle)
+                    strval += inpEle.value + ",";
+
+            }
+
+            thePort.attribs.sg = strval.substring(0, strval.length - 1);
+            thePort.op.updateGraph();
         }
 
-        if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
-        if (inpEle)inpEle.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
-        if (inpEle)inpEle.addEventListener("input", (e) =>
-        {
-            thePort.attribs.sg = inpEle.value;
-            thePort.op.updateGraph();
+        const parts = (thePort.attribs.sg || "").split(",");
 
-        });
+        for (let i = 0; i < 4; i++)
+        {
+            const id = "watchsg_in_" + idx + "_" + panelid + "_" + i;
+            let inpEle = ele.byId(id);
+
+            if (!inpEle)
+            {
+                this._log.log("color ele not found!", id);
+                return;
+            }
+            inpEle.value = parts[i];
+
+            if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
+            if (inpEle)inpEle.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
+            if (inpEle)inpEle.addEventListener("input", (e) =>
+            {
+                updateValue();
+
+            });
+
+        }
     }
 
     /**
