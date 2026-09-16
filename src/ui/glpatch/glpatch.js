@@ -50,6 +50,7 @@ export default class GlPatch extends Events
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
     static EVENT_MOUSE_DRAG_LINK = "mouseDragLink";
     static EVENT_MOUSE_UP = "mouseup";
+    static EVENT_SELECTED_OPS_CHANGED = "selectedOpsChanged";
 
     #cgl = null;
     hoverPort = null;
@@ -1509,7 +1510,7 @@ export default class GlPatch extends Events
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
             const changedNumOps = this.#numSelectedGlOps != numSelectedOps;
             this.#numSelectedGlOps = numSelectedOps;
-            if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+            if (changedNumOps) this.emitEvent(GlPatch.EVENT_SELECTED_OPS_CHANGED, numSelectedOps);
         }, 20);
     }
 
