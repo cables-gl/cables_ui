@@ -1,5 +1,9 @@
 import TabPanel from "./tabpanel.js";
 import OpAttachmentTab from "../../components/tabs/tab_opattachment.js";
+import Tab from "./tab.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
+/** @typedef {import("./tab.js").TabOptions} TabOptions */
 
 /**
  * a tab panel, that can contain tabs
@@ -11,31 +15,48 @@ import OpAttachmentTab from "../../components/tabs/tab_opattachment.js";
 export default class OpAttachmentTabPanel extends TabPanel
 {
 
+    /** @type {OpDoc} */
+    #opDoc;
+
+    /** @type {Object[]} */
+    #sources;
+
     /**
      * Description
      * @param {string} eleId
-     * @param {object} options
+     * @param {OpDoc} opDoc
      */
-    constructor(eleId, options)
+    constructor(eleId, opDoc)
     {
         super(eleId, { "noUserSetting": true });
 
-        this._options = options;
-        this._sources = [
-            { "title": "Attachment", "value": "string" },
-            { "title": "Include JS", "value": "js" },
-            { "title": "Binary Attachment", "value": "binary" }
+        this.#opDoc = opDoc;
+
+        this.#sources = [
+            { "title": "Attachment", "type": "string", "icon": "file" },
+            { "title": "Include JS", "type": "js", "icon": "file" },
+            { "title": "Binary Attachment", "type": "binary", "icon": "file" }
         ];
+    }
+
+    /**
+     *
+     * @returns {OpAttachmentTab}
+     */
+    getActiveTab()
+    {
+        return super.getActiveTab();
     }
 
     init()
     {
         let activeTab = null;
-        this._sources.forEach((attSource, i) =>
+        this.#sources.forEach((source, i) =>
         {
-            const title = attSource.title || attSource.value;
-            const tabOptions = { "hideToolbar": true, "closable": false, "attSource": attSource.value, "icon": attSource.icon, ...this._options };
-            const depTab = new OpAttachmentTab(this, title, tabOptions);
+
+            /** @type {TabOptions} */
+            const tabOptions = { "hideToolbar": true, "closable": false, "icon": source.icon };
+            const depTab = new OpAttachmentTab(this, source.title, source.type, this.#opDoc, tabOptions);
             if (i > 0)
             {
                 depTab.deactivate();

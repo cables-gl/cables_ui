@@ -345,12 +345,12 @@ export default class ManageOp
 
                 ele.clickables(this.#tab.contentEle, ".dependency-add", (e, dataset) =>
                 {
-                    if (canEditOp) new ModalOpDependencies({ "viewId": this.#id, "opDoc": opDoc, "canEditOp": canEditOp });
+                    if (canEditOp) new ModalOpDependencies(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".attachment-add", (e, dataset) =>
                 {
-                    if (canEditOp) new ModalOpAttachments({ "viewId": this.#id, "opDoc": opDoc, "canEditOp": canEditOp });
+                    if (canEditOp) new ModalOpAttachments(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
@@ -554,7 +554,7 @@ export default class ManageOp
         let readableType = "String";
         if (isStatic)
         {
-            readableType = "Static " + readableType;
+            readableType = "Binary Attachment";
             fileType = "bin";
         }
         if (readable.startsWith("inc_"))

@@ -30,7 +30,6 @@ import { UiOp } from "../core_extend_op.js";
 /**
  * Opens a modal dialog and shows info about given exception
  *
-<<<<<<< HEAD
  * options:
  * - title - will replace title
  * - text
@@ -39,10 +38,8 @@ import { UiOp } from "../core_extend_op.js";
  * - opname: will show opname
  * - exception: will show stacktrace and exception message. etc.
  *
-=======
  * @param {ModalErrorOptions} options option object
  * @class
->>>>>>> refs/remotes/origin/develop
  */
 export default class ModalError
 {

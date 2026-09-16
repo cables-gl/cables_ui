@@ -1,10 +1,11 @@
 <script id="op_add_dependency_file" type="text/x-handlebars-template">
-    <div id="addopdependency_file_{{viewId}}" class="addopdependency">
+    <div id="addopdependency_file" class="addopdependency">
         <div class="highlightBlock info">
             Upload a javascript library to use it in your op. <a target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries">Learn more...</a><br/>
             <div class="usage commonjs">Check the library's documentation on how to use its functions.<span class="codehint"></span></div>
             <div class="usage module hidden">Your library will be available via export name <span class="codehint"></span> in your op.</div>
         </div>
+        <div class="highlightBlock error hidden"></div>
         <input type="hidden" name="depType" value="commonjs"/>
         Type of library:<br/>
         <select name="type" class="type bigsel">
@@ -12,19 +13,20 @@
             <option value="module">JS Module</option>
         </select>
         <br/><br/>
-        Upload library (.js/.cjs/.mjs): <span class="depSrc upload"></span><br/>
+        Upload library (.js/.cjs/.mjs): <span class="uploadName"></span><br/>
         <a class="cblbutton upload">Select file</a><br/><br/>
         <div class="exportName hidden">Export as:<br/><input type="text" value=""/></div>
-        <input class="hidden" type="file" accept="{{acceptedFileTypesUpload}}"/>
+        <input class="hidden src" type="file" accept="{{acceptedFileTypesUpload}}"/>
     </div>
 </script>
 <script id="op_add_dependency_url" type="text/x-handlebars-template">
-    <div id="addopdependency_url_{{viewId}}" class="addopdependency">
+    <div id="addopdependency_url" class="addopdependency">
         <div class="highlightBlock info">
             Load a javascript library via URL to use in your op. <a target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries">Learn more...</a>
             <div class="usage commonjs">Check the library's documentation on how to use its functions.<span class="codehint"></span></div>
             <div class="usage module hidden">Your library will be available via export name <span class="codehint"></span> in your op.</div>
         </div>
+        <div class="highlightBlock error hidden"></div>
         <input type="hidden" name="depType" value="commonjs"/>
         Type of library:<br/>
         <select name="type" class="type bigsel">
@@ -33,39 +35,39 @@
         </select>
         <br/><br/>
         URL:<br/>
-        <input class="depSrc" type="text">
-        <div class="exportName hidden">Export as:<br/><input type="text" value=""/></div>
-
-        <br/>
+        <input class="src" type="text">
+        <div class="exportName hidden">Export as:<br/><input type="text" class="exportName" value=""/></div>
     </div>
 </script>
 <script id="op_add_dependency_npm" type="text/x-handlebars-template">
-    <div id="addopdependency_npm_{{viewId}}" class="addopdependency">
+    <div id="addopdependency_npm" class="addopdependency">
         <div class="highlightBlock info">
         Add any NPM to your op. <a  target="_blank" href="{{docsUrl}}/docs/6_2_standalone/3_using_npm/using_npm">>Learn more...</a><br/>
         </div>
+        <div class="highlightBlock error hidden"></div>
         <input type="hidden" name="depType" value="npm"/>
-        <input class="depSrc" type="text" placeholder="@cables/cables">
+        <input class="src" type="text" placeholder="@cables/cables">
     </div>
 </script>
 <script id="op_add_dependency_op" type="text/x-handlebars-template">
-    <div id="addopdependency_op_{{viewId}}" class="addopdependency">
+    <div id="addopdependency_op" class="addopdependency">
         <div class="highlightBlock info">
         Inherit dependencies from another op. <a target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries">Learn more...</a><br/>
         </div>
-        <div class="warning-error highlightBlock error hidden">Invalid op-name</div>
+        <div class="highlightBlock error hidden"></div>
         <input type="hidden" name="depType" value="op"/>
-        <input class="depSrc" type="text" placeholder="Ops.Gl.MainLoop">
+        <input class="src" type="text" placeholder="Ops.Gl.MainLoop">
     </div>
 </script>
 <script id="op_add_dependency_corelib" type="text/x-handlebars-template">
-    <div id="addopdependency_corelib_{{viewId}}" class="libselect addopdependency">
+    <div id="addopdependency_corelib" class="libselect addopdependency">
         <div class="highlightBlock info">
         Add a cables core library to your op. <a target="_blank" href="{{docsUrl}}/docs/5_writing_ops/dev_libraries/dev_libraries">Learn more...</a><br/>
         </div>
+        <div class="highlightBlock error hidden"></div>
         <input type="hidden" name="depType" value="corelib"/>
         Select corelib:<br/>
-        <select class="bigsel depSrc" id="{{viewId}}_addcorelib">
+        <select class="bigsel src" id="addcorelib">
             <option value="">---</option>
             {{#each coreLibs}}
                 <option value="{{.}}">{{.}}</option>

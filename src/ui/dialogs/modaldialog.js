@@ -18,13 +18,28 @@ import { CssClassNames } from "../theme.js";
  * @property {String} [promptValue]
  * @property {Function} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
+ * @property {{title: string, checkboxes: ModalDialogCheckbox[]}[]} [checkboxGroups]
+ * @property {string[]} [notices]
+ * @property {string} [footer]
+ * @property {boolean} [persistInIdleMode=false]
+ */
+
+/**
+ * @typedef {Object} ModalDialogCheckbox
+ * @property {string} name
+ * @property {any} value
+ * @property {boolean} checked
+ * @property {boolean} disabled
+ * @property {string} tooltip
+ * @property {string} title
  */
 
 /**
  * @typedef {Object} ModalDialogButton
  * @property {String} [text]
- * @property {ModalDialogSubmitCallback} [callback]
  * @property {String} [cssClasses]
+ * @property {Boolean} [disabled=false]
+ * @property {ModalDialogSubmitCallback} [callback]
  */
 
 /**
@@ -70,12 +85,20 @@ export default class ModalDialog extends Events
         this.#options = options;
         this.#options.okButton = this.#options.okButton || {};
         if (!this.#options.okButton.text) this.#options.okButton.text = "Ok";
-        if (!this.#options.okButton.cssClasses) this.#options.okButton.cssClasses = "bluebutton";
+        if (!this.#options.okButton.cssClasses) this.#options.okButton.cssClasses = CssClassNames.BUTTON + " bluebutton";
+        if (this.#options.okButton.disabled)
+        {
+            this.#options.okButton.cssClasses += " button-disabled button-inactive";
+        }
         if (!this.#options.okButton.callback) this.#options.okButton.callback = null;
 
         this.#options.cancelButton = this.#options.cancelButton || {};
         if (!this.#options.cancelButton.text) this.#options.cancelButton.text = "Cancel";
         if (!this.#options.cancelButton.cssClasses) this.#options.cancelButton.cssClasses = CssClassNames.BUTTON;
+        if (this.#options.cancelButton.disabled)
+        {
+            this.#options.cancelButton.cssClasses += " button-disabled button-inactive";
+        }
         if (!this.#options.cancelButton.callback) this.#options.cancelButton.callback = null;
 
         this._checkboxGroups = this.#options.checkboxGroups || [];
@@ -91,6 +114,7 @@ export default class ModalDialog extends Events
 
     close()
     {
+        console.log("CLOSING TAB");
         this.#ele.remove();
         this.#bg.hide();
         if (gui) gui.currentModal = null;
@@ -172,20 +196,26 @@ export default class ModalDialog extends Events
         if (this.#options.prompt)
         {
             html += "<br/>";
-            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">";
+            html += "&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;";
+            html += "</a>";
             html += "&nbsp;&nbsp;<a class=\"cblbutton\" id=\"" + ModalDialog.MODAL_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this.#options.choice)
         {
             html += "<br/><br/>";
-            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CHOICE_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CHOICE_OK_BUTTON_ID + "\">";
+            html += "&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;";
+            html += "</a>";
             html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this.#options.showOkButton)
         {
-            html += "<br/><br/><a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "<br/><br/><a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_OK_BUTTON_ID + "\">";
+            html += "&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;";
+            html += "</a>";
         }
 
         return html;
@@ -337,6 +367,32 @@ export default class ModalDialog extends Events
     getElement()
     {
         return this.#ele;
+    }
+
+    /**
+     *
+     * @param {string} id
+     */
+    enableButton(id)
+    {
+        const button = ele.byId(id);
+        if (button)
+        {
+            button.classList.remove("button-inactive", "button-disabled");
+        }
+    }
+
+    /**
+     *
+     * @param {string} id
+     */
+    disableButton(id)
+    {
+        const button = ele.byId(id);
+        if (button)
+        {
+            button.classList.add("button-inactive", "button-disabled");
+        }
     }
 
     _choiceSubmit()
