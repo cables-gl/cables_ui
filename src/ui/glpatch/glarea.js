@@ -75,7 +75,7 @@ export default class GlArea
         this.#rectResize.draggable = true;
         this.#rectResize.draggableMove = true;
 
-        this.#glop.on("drag", () =>
+        this.#glop.on(GlOp.EVENT_DRAG, () =>
         {
             this.#update();
         });

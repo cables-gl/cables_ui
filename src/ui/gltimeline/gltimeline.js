@@ -18,6 +18,7 @@ import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
 import uiconfig from "../uiconfig.js";
 import { TlKeys } from "./tlkeys.js";
+import GlPatch from "../glpatch/glpatch.js";
 import { TlDragArea as GlDragArea } from "./tldragarea.js";
 import { contextMenu } from "../elements/contextmenu.js";
 import defaultOps from "../defaultops.js";
@@ -498,7 +499,7 @@ export class GlTimeline extends Events
             for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].updateSelectedOpColor(selops);
         });
 
-        gui.patchView.patchRenderer.on("selectedOpsChanged", () =>
+        gui.patchView.patchRenderer.on(GlPatch.EVENT_SELECTED_OPS_CHANGED, () =>
         {
             let selops = gui.patchView.getSelectedOps();
 
