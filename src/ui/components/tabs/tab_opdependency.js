@@ -6,6 +6,9 @@ import { fileUploader } from "../../dialogs/upload.js";
 import namespace from "../../namespaceutils.js";
 import { platform } from "../../platform.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
 /**
  * tab to manage op dependencies like libs or npm-modules
@@ -16,24 +19,72 @@ import ModalDialog from "../../dialogs/modaldialog.js";
  */
 export default class OpDependencyTab extends Tab
 {
-    constructor(tabs, title, options = {})
+
+    /** @type {TabPanel} */
+    #tabs;
+
+    /** @type {string} */
+    #sourceType;
+
+    /** @type {OpDoc} */
+    #opDoc;
+
+    /** @type {HTMLElement} */
+    #containerEle;
+
+    /** @type {HTMLInputElement} */
+    #srcEle;
+
+    /** @type {HTMLElement} */
+    #exportNameContainer;
+
+    /** @type {HTMLInputElement} */
+    #exportNameEle;
+
+    /** @type {HTMLSelectElement} */
+    #jsTypeSelectEle;
+
+    /** @type {HTMLInputElement} */
+    #fileInputEle;
+
+    /** @type {HTMLElement} */
+    #errorsEle;
+
+    /**
+     * @type {string}
+     */
+    #jsType;
+
+    /**
+     *
+     * @param {TabPanel} tabs
+     * @param {string} title
+     * @param {string} sourceType
+     * @param {OpDoc} opDoc
+     * @param {import("../../elements/tabpanel/tab.js").TabOptions} tabOptions
+     */
+    constructor(tabs, title, sourceType, opDoc, tabOptions = {})
     {
-        super(title, options);
-        this._tabs = tabs || gui.mainTabs;
-        this._tabs.addTab(this);
+        super(title, tabOptions);
+
+        this.#opDoc = opDoc;
+        this.#sourceType = sourceType;
+
+        this.#tabs = tabs;
+        this.#tabs.addTab(this);
         gui.maintabPanel.show(true);
         this.html(this.getHtml());
-        this._initEventListeners();
+        this.#initEventListeners();
     }
 
     getHtml()
     {
         const templateOptions = {
-            ...this.options,
+            "coreLibs": gui.opDocs.coreLibs,
             "acceptedFileTypesUpload": CablesConstants.FILETYPES.opdependency,
             "docsUrl": platform.getCablesDocsUrl()
         };
-        return getHandleBarHtml("op_add_dependency_" + this.options.depSource, templateOptions);
+        return getHandleBarHtml("op_add_dependency_" + this.#sourceType, templateOptions);
     }
 
     activate()
@@ -41,223 +92,302 @@ export default class OpDependencyTab extends Tab
         this.active = true;
         this.contentEle.style.display = "block";
         this.toolbarContainerEle.style.display = "block";
-
-        const depSource = this.options.depSource;
-        const viewId = this.options.viewId;
-        const selector = "addopdependency_" + depSource + "_" + viewId;
-        const attsEle = ele.byId(selector);
-        if (attsEle)
-        {
-            const srcEle = attsEle.querySelector(".depSrc");
-            if (srcEle) srcEle.focus();
-        }
-
+        if (this.#srcEle) this.#srcEle.focus();
+        this.#validate();
         this.emitEvent(Tab.EVENT_ACTIVATE);
     }
 
-    _initEventListeners()
+    #initEventListeners()
     {
-        const depSource = this.options.depSource;
-        const viewId = this.options.viewId;
-
-        const selector = "addopdependency_" + depSource + "_" + viewId;
-        const depsEle = ele.byId(selector);
-
-        if (depsEle)
+        const selector = "addopdependency_" + this.#sourceType;
+        this.#containerEle = ele.byId(selector);
+        if (this.#containerEle)
         {
-            const srcEle = depsEle.querySelector(".depSrc");
-            const depTypeEle = depsEle.querySelector("input[name='depType']");
-            const exportNameEle = depsEle.querySelector(".exportName");
-            const typeSelectEle = depsEle.querySelector("select.type");
+            this.#srcEle = this.#containerEle.querySelector(".src");
 
-            if (typeSelectEle)
+            this.#exportNameContainer = this.#containerEle.querySelector(".exportName");
+            if (this.#exportNameContainer) this.#exportNameEle = this.#exportNameContainer.querySelector("input[type='text']");
+
+            this.#jsTypeSelectEle = this.#containerEle.querySelector("select.type");
+            if (this.#jsTypeSelectEle) this.#jsType = this.#jsTypeSelectEle.value;
+
+            this.#fileInputEle = this.#containerEle.querySelector("input[type='file']");
+            this.#errorsEle = this.#containerEle.querySelector(".highlightBlock.error");
+
+            if (this.#jsTypeSelectEle) this.#jsTypeSelectEle.addEventListener("change", this.#exportTypeChange.bind(this));
+            if (this.#exportNameEle) this.#exportNameEle.addEventListener("input", this.#exportNameChange.bind(this));
+            if (this.#srcEle) this.#srcEle.addEventListener("input", this.#textInputChange.bind(this));
+
+            if (this.#fileInputEle)
             {
-                const depType = typeSelectEle.value;
-                if (depType === "module")
+                const selectFileButton = this.#containerEle.querySelector(".cblbutton.upload");
+                if (selectFileButton)
                 {
-                    exportNameEle.addEventListener("input", this._exportNameChange.bind(this));
+                    selectFileButton.addEventListener("click", () => { this.#fileInputEle.click(); });
+                    this.#fileInputEle.addEventListener("change", this.#uploadFileChange.bind(this));
                 }
-
-                typeSelectEle.addEventListener("change", () =>
-                {
-                    depTypeEle.value = typeSelectEle.value;
-                    const usageEles = depsEle.querySelectorAll(".usage");
-                    usageEles.forEach((usageEle) => { ele.hide(usageEle); });
-                    const usageEle = depsEle.querySelector(".usage." + typeSelectEle.value);
-
-                    if (exportNameEle && typeSelectEle.value === "module")
-                    {
-                        exportNameEle.removeEventListener("input", this._exportNameChange.bind(this));
-                        exportNameEle.addEventListener("input", this._exportNameChange.bind(this));
-                        ele.show(exportNameEle);
-                    }
-                    else
-                    {
-                        exportNameEle.removeEventListener("input", this._exportNameChange.bind(this));
-                        ele.hide(exportNameEle);
-                    }
-                    if (usageEle)
-                    {
-                        ele.show(usageEle);
-                    }
-                });
             }
-
-            const warningEle = depsEle.querySelector(".warning-error");
-            if (warningEle && depTypeEle.value === "op")
-            {
-                srcEle.addEventListener("input", () =>
-                {
-                    if (namespace.isOpNameValid(srcEle.value))
-                    {
-                        ele.hide(warningEle);
-                    }
-                    else
-                    {
-                        ele.show(warningEle);
-                    }
-                });
-            }
-
-            let fileInput = null;
-            const selectFileButton = depsEle.querySelector(".cblbutton.upload");
-            if (selectFileButton)
-            {
-                fileInput = depsEle.querySelector("input[type='file']");
-                selectFileButton.addEventListener("click", () => { fileInput.click(); });
-                fileInput.addEventListener("change", () =>
-                {
-                    srcEle.innerText = fileInput.files[0].name;
-                });
-            }
-        }
-    }
-
-    submit(done)
-    {
-        const depSource = this.options.depSource;
-        const viewId = this.options.viewId;
-
-        const selector = "addopdependency_" + depSource + "_" + viewId;
-
-        const depsEle = ele.byId(selector);
-        const srcEle = depsEle.querySelector(".depSrc");
-        const depTypeEle = depsEle.querySelector("input[name='depType']");
-        const exportNameEle = depsEle.querySelector(".exportName");
-        const submitEle = ele.byId("choice_ok");
-
-        const opName = this.options.opDoc.name;
-        const opDoc = this.options.opDoc;
-
-        if (submitEle.disabled)
-        {
-            if (done) done("disabled");
-            return;
-        }
-        const depSrc = srcEle.value;
-        if (!depSrc)
-        {
-            if (done) done("no source");
-            return;
-        }
-        submitEle.innerText = "working...";
-        submitEle.disabled = true;
-
-        let exportName = null;
-        if (exportNameEle)
-        {
-            const exportNameInput = exportNameEle.querySelector("input");
-            if (exportNameInput) exportName = exportNameInput.value;
-        }
-
-        const depType = depTypeEle.value;
-        const fileInput = depsEle.querySelector("input[type='file']");
-        if (fileInput && fileInput.files && fileInput.files.length > 0)
-        {
-            let filename = fileInput.files[0].name;
-            fileUploader.uploadFile(fileInput.files[0], filename, opDoc.id, (err, newFilename) =>
-            {
-                if (!err)
-                {
-                    gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, depType, exportName, () =>
-                    {
-                        submitEle.innerText = "Add";
-                        submitEle.disabled = false;
-                        gui.emitEvent("refreshManageOp", opName);
-                        if (done) done();
-                    });
-                }
-                else
-                {
-                    submitEle.innerText = "Add";
-                    submitEle.disabled = false;
-
-                    let html = "";
-                    html += "Failed to add op dependency for " + opName + ": " + depSrc + "<br/><br/>";
-                    html += "Try removing any older version of this dependency first.";
-                    new ModalDialog({
-                        "title": "Error adding op-dependency",
-                        "showOkButton": true,
-                        "warning": true,
-                        "html": html
-                    });
-                }
-            });
-        }
-        else if (depType === "lib")
-        {
-            gui.serverOps.addOpLib(opName, depSrc, () =>
-            {
-                submitEle.innerText = "Add";
-                submitEle.disabled = false;
-                if (done) done();
-            });
-        }
-        else if (depType === "corelib")
-        {
-            gui.serverOps.addCoreLib(opName, depSrc, () =>
-            {
-                submitEle.innerText = "Add";
-                submitEle.disabled = false;
-                if (done) done();
-            });
-        }
-        else
-        {
-            gui.serverOps.addOpDependency(opDoc.id, depSrc, depType, exportName, () =>
-            {
-                submitEle.innerText = "Add";
-                submitEle.disabled = false;
-                gui.emitEvent("refreshManageOp", opName);
-                if (done) done();
-            });
         }
     }
 
     /**
      *
-     * @param {InputEvent} event
+     * @param {function} done
+     * @returns
      */
-    _exportNameChange(event)
+    submit(done)
     {
-        const exportNameEle = event.currentTarget;
-        if (!exportNameEle) return;
+        const opDoc = this.#opDoc;
+        const opName = opDoc.name;
 
-        const depSource = this.options.depSource;
-        const viewId = this.options.viewId;
+        const src = this.#srcEle.value;
+        if (!src)
+        {
+            this.#showErrors(["Invalid dependency source"]);
+            return;
+        }
 
-        const selector = "addopdependency_" + depSource + "_" + viewId;
-        const depsEle = ele.byId(selector);
+        let exportName = null;
+        if (this.#exportNameEle) exportName = this.#exportNameEle.value;
 
-        if (depsEle)
+        if (this.#sourceType === "file")
+        {
+            if (this.#fileInputEle.files && this.#fileInputEle.files.length > 0)
+            {
+                let filename = this.#fileInputEle.files[0].name;
+                fileUploader.uploadFile(this.#fileInputEle.files[0], filename, opDoc.id, (err, newFilename) =>
+                {
+                    if (!err)
+                    {
+                        gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, this.#sourceType, exportName, (addErr) =>
+                        {
+                            if (!addErr)
+                            {
+                                gui.emitEvent("refreshManageOp", opName);
+                                if (done) done();
+                            }
+                            else
+                            {
+                                this.#showErrors(["Failed to add op dependency for " + opName + ": " + filename + ":" + addErr]);
+                            }
+
+                        });
+                    }
+                    else
+                    {
+                        this.#showErrors(["Failed to add op dependency for " + opName + ": " + filename + ":" + err]);
+                    }
+                });
+            }
+            else
+            {
+
+            }
+        }
+        else if (this.#sourceType === "corelib")
+        {
+            gui.serverOps.addCoreLib(opName, src, (addErr) =>
+            {
+                if (!addErr)
+                {
+                    gui.emitEvent("refreshManageOp", opName);
+                    if (done) done();
+                }
+                else
+                {
+                    this.#showErrors(["Failed to add op dependency for " + opName + ": " + src + ":" + addErr]);
+                }
+            });
+        }
+        else
+        {
+            gui.serverOps.addOpDependency(opDoc.id, src, this.#sourceType, exportName, (addErr) =>
+            {
+                if (!addErr)
+                {
+                    gui.emitEvent("refreshManageOp", opName);
+                    if (done) done();
+                }
+                else
+                {
+                    this.#showErrors(["Failed to add op dependency for " + opName + ": " + src + ":" + addErr]);
+                }
+
+            });
+        }
+    }
+
+    #validate()
+    {
+        const modal = gui.currentModal;
+        ele.hide(this.#errorsEle);
+
+        const src = this.#srcEle.value;
+
+        let valid = !!src;
+        let errors = [];
+        switch (this.#sourceType)
+        {
+        case "file":
+            if (this.#jsType === "module" && this.#exportNameEle)
+            {
+                let exportName = this.#exportNameEle.value;
+                if (!exportName) valid = false;
+
+                if (exportName)
+                {
+                    try
+                    {
+                        exportName = exportName.trim();
+                        exportName = exportName.replaceAll(";", "");
+                        // eslint-disable-next-line no-new-func
+                        new Function("var " + exportName + ";");
+                    }
+                    catch
+                    {
+                        errors.push("Invalid export name");
+                        valid = false;
+                    }
+                }
+            }
+            break;
+        case "url":
+            if (src)
+            {
+                try
+                {
+                    new URL(src);
+                }
+                catch (e)
+                {
+                    errors.push("Invalid URL");
+                    valid = false;
+                }
+            }
+            else
+            {
+                valid = false;
+            }
+
+            if (this.#jsType === "module" && this.#exportNameEle)
+            {
+                let exportName = this.#exportNameEle.value;
+                if (!exportName) valid = false;
+
+                if (exportName)
+                {
+                    try
+                    {
+                        exportName = exportName.trim();
+                        exportName = exportName.replaceAll(";", "");
+                        // eslint-disable-next-line no-new-func
+                        new Function("var " + exportName + ";");
+                    }
+                    catch
+                    {
+                        errors.push("Invalid export name");
+                        valid = false;
+                    }
+                }
+
+            }
+            break;
+        case "op":
+            if (src)
+            {
+                if (!namespace.isOpNameValid(src))
+                {
+                    errors.push("Invalid Op name");
+                    valid = false;
+                }
+            }
+            break;
+        case "corelib":
+            break;
+
+        }
+
+        if (valid)
+        {
+            if (modal) modal.enableButton(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
+        }
+        else
+        {
+            this.#showErrors(errors);
+            if (modal) modal.disableButton(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
+        }
+
+    }
+
+    /**
+     *
+     * @param {string[]} msgs
+     */
+    #showErrors(msgs)
+    {
+        if (!this.#errorsEle) return;
+        this.#errorsEle.innerHTML = "";
+        if (!msgs || msgs.length === 0)
+        {
+            ele.hide(this.#errorsEle);
+            return;
+        }
+        msgs.forEach((msg) =>
+        {
+            this.#errorsEle.innerHTML += msg + "<br/>";
+        });
+        ele.show(this.#errorsEle);
+    }
+
+    #exportNameChange()
+    {
+        this.#validate();
+        if (!this.#exportNameEle) return;
+        if (this.#containerEle)
         {
 
-            const usageEle = depsEle.querySelector(".usage.module .codehint");
+            const usageEle = this.#containerEle.querySelector(".usage.module .codehint");
             if (usageEle)
             {
-                const exportNameInput = exportNameEle.querySelector("input");
+                const exportNameInput = this.#exportNameEle.querySelector("input");
                 if (exportNameInput) usageEle.innerText = exportNameInput.value;
             }
         }
+    }
+
+    #exportTypeChange()
+    {
+        this.#validate();
+        this.#jsType = this.#jsTypeSelectEle.value;
+        const usageEles = this.#containerEle.querySelectorAll(".usage");
+        usageEles.forEach((usageEle) => { ele.hide(usageEle); });
+        const usageEle = this.#containerEle.querySelector(".usage." + this.#jsType);
+
+        this.#exportNameEle.removeEventListener("input", this.#exportNameChange.bind(this));
+        if (this.#exportNameEle && this.#jsType === "module")
+        {
+            this.#exportNameEle.addEventListener("input", this.#exportNameChange.bind(this));
+            ele.show(this.#exportNameContainer);
+        }
+        else
+        {
+            ele.hide(this.#exportNameContainer);
+        }
+        if (usageEle)
+        {
+            ele.show(usageEle);
+        }
+    }
+
+    #textInputChange()
+    {
+        this.#validate();
+    }
+
+    #uploadFileChange()
+    {
+        this.#validate();
+        const uploadNameEle = this.#containerEle.querySelector(".uploadName");
+        if (uploadNameEle) uploadNameEle.innerText = this.#fileInputEle.files[0].name;
     }
 }
