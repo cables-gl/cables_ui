@@ -492,7 +492,6 @@ class ParamsListener extends Events
                 continue;
             }
 
-            console.log("i" + i, inpEle.value);
             inpEle.value = parts[i] || 0;
 
             if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
@@ -500,7 +499,6 @@ class ParamsListener extends Events
             if (inpEle)inpEle.addEventListener("input", () =>
             {
                 updateValue();
-
             });
 
         }
