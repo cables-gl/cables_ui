@@ -17,8 +17,10 @@ import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
 
+// todo: merge serverops and opdocs.js and/or response from server ? ....
+
 /**
- * @typedef LinterDiag
+ * @typedef {Object} LinterDiag
  * @property {string} message
  * @property {number} line
  * @property {number} [column]
@@ -26,8 +28,9 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {boolean} [fatal]
  */
 
-// todo: merge serverops and opdocs.js and/or response from server ? ....
-
+/**
+ * @param {string | any[]} str
+ */
 function capitalize(str)
 {
     if (!str) return "";
@@ -46,6 +49,10 @@ export default class ServerOps
     loaded = false;
     saveOpsInProgress = {};
 
+    /**
+     * @param {string} patchId
+     * @param {Function} next
+     */
     constructor(patchId, next)
     {
         this.#patchId = patchId;
@@ -1269,21 +1276,19 @@ export default class ServerOps
         }
     }
 
-    editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
+    /**
+     * @param {string} opname
+     * @param {string} attachmentName
+     * @param {boolean} [readOnly]
+     * @param {Function} [cb]
+     */
+    editAttachment(opname, attachmentName, readOnly, cb, fromListener = false)
     {
-        let opname = op;
+        // let opname = op;
         let opId = opname;
 
-        if (typeof opname == "object")
-        {
-            opname = op.objName;
-            opId = op.opId;
-        }
-        else
-        {
-            const docs = gui.opDocs.getOpDocByName(opname);
-            if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
-        }
+        const docs = gui.opDocs.getOpDocByName(opname);
+        if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
 
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
@@ -1319,8 +1324,8 @@ export default class ServerOps
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
         const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
-        let inactive = false;
-        if (fromListener) if (lastTab !== title) inactive = true;
+        // let inactive = false;
+        // if (fromListener) if (lastTab !== title) inactive = true;
 
         // let editorTab = new EditorTab({
         const editorTab = createEditor({
@@ -1331,7 +1336,7 @@ export default class ServerOps
             "editorObj": editorObj,
             "allowEdit": this.canEditAttachment(gui.user, opname),
             "showSaveButton": true,
-            "inactive": inactive,
+            // "inactive": inactive,
             "onClose": (which) =>
             {
                 if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
@@ -1440,11 +1445,13 @@ export default class ServerOps
         }
     }
 
+    /**
+     * @param {string} opname
+     */
     getOpEditorTitle(opname)
     {
         const parts = opname.split(".");
         return "Op " + parts[parts.length - 1];
-
     }
 
     // Shows the editor and displays the code of an op in it
@@ -1468,21 +1475,11 @@ export default class ServerOps
 
         let opid = opname;
 
-        if (typeof opname == "object")
-        {
-            // todo remove if not happening anymore
-            console.error("edit op needs opname");
-            opid = op.opId;
-            opname = op.objName;
-        }
-        else
-        {
-            const docs = gui.opDocs.getOpDocByName(opname);
-            if (!docs) return this.#log.warn("[opsserver] could not find docs", opname);
-            opid = docs.id;
+        const docs = gui.opDocs.getOpDocByName(opname);
+        if (!docs) return this.#log.warn("[opsserver] could not find docs", opname);
+        opid = docs.id;
 
-            if (!opid) this.#log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
-        }
+        if (!opid) this.#log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
 
         if (!opname || opname == "")
         {
@@ -1498,6 +1495,14 @@ export default class ServerOps
 
         const editorObj = editorSession.rememberOpenEditor("op", opname);
         let editorTab;
+
+        let existingTab = gui.maintabPanel.tabs.getTabByTitle(this.getOpEditorTitle(opname));
+        if (existingTab)
+        {
+            gui.mainTabs.activateTabByName(existingTab.title);
+            gui.maintabPanel.show(true);
+            return;
+        }
 
         if (editorObj)
         {
