@@ -129,7 +129,7 @@ class PortHtmlGenerator
                 }
             }
 
-            ports[i].watchId = "in_" + i;
+            ports[i].tempData.watchId = "in_" + i;
 
             const tmplData = {
                 "port": ports[i],
@@ -193,7 +193,7 @@ class PortHtmlGenerator
                 ports[i].getType() == Port.TYPE_NUMBER ||
                 ports[i].getType() == Port.TYPE_ARRAY ||
                 ports[i].getType() == Port.TYPE_STRING ||
-                ports[i].getType() == Port.TYPE_OBJECT) ports[i].watchId = "out_" + i;
+                ports[i].getType() == Port.TYPE_OBJECT) ports[i].tempData.watchId = "out_" + i;
 
             let startGroup = null;
             let groupSpacer = false;
