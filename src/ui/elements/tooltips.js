@@ -181,7 +181,7 @@ function getPortDescription(thePort, overlink)
 }
 
 /**
- * @param {MouseEvent} event
+ * @param {MouseEvent|Object} event
  * @param {import("cables").Port} port
  * @param {boolean | import("../glpatch/gllink.js").default} overlink
  */

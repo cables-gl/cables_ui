@@ -268,7 +268,7 @@ export default class GlPort
 
         if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
 
-        if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
+        // if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
 
     get direction()

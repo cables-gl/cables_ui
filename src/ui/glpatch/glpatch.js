@@ -1,5 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
-import { Anim, Op } from "cables";
+import { Anim, Op, Patch } from "cables";
 import { idleCallbackSoon, logStack } from "cables/src/core/utils.js";
 import { BoundingBox } from "cables-corelibs/cg/cg_boundingbox.js";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
@@ -816,7 +816,7 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
     #onCanvasMouseUp(e)
     {
@@ -1923,7 +1923,7 @@ export default class GlPatch extends Events
         if (this._currentSubpatch === undefined)
         {
             this._log.warn("current subpatch undefined");
-            this.setCurrentSubPatch(0);
+            this.setCurrentSubPatch(Patch.DEFAULT_SUBPATCHID);
         }
         return this._currentSubpatch;
     }
