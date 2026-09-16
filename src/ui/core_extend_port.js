@@ -2,13 +2,13 @@ import { Port } from "cables";
 
 class UiPort extends Port
 {
-    /** @type {Function} stashed original _onTriggered while step-debugging/profiling is active */
+    /** @type {(...args: any[]) => any} stashed original _onTriggered while step-debugging/profiling is active */
     _oldTriggered;
 
-    /** @type {Function} stashed original trigger while step-debugging is active */
+    /** @type {(...args: any[]) => any} stashed original trigger while step-debugging is active */
     _oldTrigger;
 
-    /** @type {Function} stashed original set while step-debugging/profiling is active */
+    /** @type {(...args: any[]) => any} stashed original set while step-debugging/profiling is active */
     _oldSet;
 
     /**

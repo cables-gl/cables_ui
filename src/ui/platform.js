@@ -15,6 +15,7 @@ import { GuiText } from "./text.js";
  * @property {Object} [usersettings.settings]
  * @property {Object} patch
  * @property {Object} [patch.settings]
+ * @property {Object} [patch.ui]
  * @property {Boolean} [patch.settings.manualScreenshot]
  * @property {Boolean} [isTrustedPatch]
  * @property {Object} [patchConfig]

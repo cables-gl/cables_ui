@@ -32,7 +32,6 @@ export default class GlViewBox
     _mouseRightDownStartX = 0;
     _mouseRightDownStartY = 0;
     _panStarted = 0;
-    _mouseSmooth = [];
     _mouseSmoothCount = 0;
     _subPatchViewBoxes = {};
     _spaceDown = false;
@@ -233,6 +232,12 @@ export default class GlViewBox
      */
     _onCanvasWheel(event)
     {
+        if (event.metaKey)
+        {
+            this.glPatch.emitEvent("META_SCROLL", event.deltaY, this.mouseX, this.mouseY);
+            return;
+        }
+
         if (this.glPatch.mouseState.buttonMiddle) return;
         this.setMousePos(event.offsetX, event.offsetY);
 

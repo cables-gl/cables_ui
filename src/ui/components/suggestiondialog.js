@@ -19,6 +19,7 @@ import { DomEvents } from "../theme.js";
  * @property {Number} [spacing] - extra spacing
  * @property {Boolean} [isBoundToVar]
  * @property {Function} [cb] - [callback]
+ * @property {Boolean} [createSpOpPort]
 */
 
 /**

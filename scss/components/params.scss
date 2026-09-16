@@ -662,7 +662,14 @@
                 border-bottom-left-radius:4px;
             }
         }
+
     }
+
+        input.sg_default
+        {
+        margin-right:10px;
+        width:50px;
+        }
 
     .panel {
         &.patch_summary {

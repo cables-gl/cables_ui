@@ -31,6 +31,11 @@ export default class GlOp extends Events
     static COLORINDICATOR_SPACING = 5;
     static COLORINDICATOR_WIDTH = 6;
 
+    static EVENT_HOVER_START = "hoverStart";
+    static EVENT_HOVER_END = "hoverEnd";
+    static EVENT_MOVE = "move";
+    static EVENT_DRAG = "drag";
+
     /** @type Logger */
     #log = new Logger("glop");
 
@@ -212,17 +217,17 @@ export default class GlOp extends Events
         this._initGl();
 
         // @ts-ignore
-        gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT, () =>
         {
             this._onMouseHover();
-
         });
+
         gui.on(Gui.EVENT_MOUSEOVERPORT_OUT, (_num) =>
         {
             this._onMouseHover();
         });
 
-        this.#glPatch.on("selectedOpsChanged", (_num) =>
+        this.#glPatch.on(GlPatch.EVENT_SELECTED_OPS_CHANGED, (_num) =>
         {
             if (!this.#visible) return;
             this._updateSelectedRect();
@@ -451,7 +456,7 @@ export default class GlOp extends Events
         {
             if (!e.shiftKey) this.#glPatch.unselectAll();
             gui.patchView.selectChilds(this.op.id);
-            this.#glPatch.emitEvent("selectedOpsChanged", gui.patchView.getSelectedOps());
+            this.#glPatch.emitEvent(GlPatch.EVENT_SELECTED_OPS_CHANGED, gui.patchView.getSelectedOps());
         }
 
         if (!this.selected)
@@ -874,8 +879,8 @@ export default class GlOp extends Events
      */
     setHover(h)
     {
-        if (!this._isHovering && h) this.emitEvent("hoverStart");
-        if (this._isHovering && !h) this.emitEvent("hoverEnd");
+        if (!this._isHovering && h) this.emitEvent(GlOp.EVENT_HOVER_START);
+        if (this._isHovering && !h) this.emitEvent(GlOp.EVENT_HOVER_END);
 
         this._isHovering = h;
     }
@@ -1060,9 +1065,9 @@ export default class GlOp extends Events
                             this.updateSize();
                         }
                     });
-                    colorPorts[0].on("change", updateColorIndicator);
-                    colorPorts[1].on("change", updateColorIndicator);
-                    colorPorts[2].on("change", updateColorIndicator);
+                    colorPorts[0].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
+                    colorPorts[1].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
+                    colorPorts[2].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
                     if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
                 }
                 found = true;
@@ -1134,7 +1139,7 @@ export default class GlOp extends Events
         {
             this._oldPosx = this.opUiAttribs.translate.x;
             this._oldPosy = this.opUiAttribs.translate.y;
-            this.emitEvent("move");
+            this.emitEvent(GlOp.EVENT_MOVE);
         }
     }
 
@@ -1829,7 +1834,7 @@ export default class GlOp extends Events
         y = this.#glPatch.snap.snapY(y, this.#glPatch._pressedCtrlKey);
 
         this.#glPatch.patchAPI.setOpUiAttribs(this.#id, "translate", { "x": x, "y": y });
-        this.emitEvent("drag");
+        this.emitEvent(GlOp.EVENT_DRAG);
         this.updatePosition();
     }
 

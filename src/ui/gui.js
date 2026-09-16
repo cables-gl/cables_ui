@@ -42,6 +42,7 @@ import UiProfiler from "./components/uiprofiler.js";
 import FindTab from "./components/tabs/tab_find.js";
 import initSplitPanes from "./elements/splitpane.js";
 import undo from "./utils/undo.js";
+import { ParamInputListeners } from "./components/opparampanel/params_helper.js";
 import { contextMenu } from "./elements/contextmenu.js";
 import { UserSettings, userSettings } from "./components/usersettings.js";
 import ServerOps from "./api/opsserver.js";
@@ -1697,7 +1698,7 @@ export default class Gui extends Events
             if (port && !port.isLinked())
             {
                 if (port.uiAttribs.display === "editor")
-                    paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
+                    ParamInputListeners.OpenParamStringEditor(selectedOpId, port.name, null, true);
                 if (port.uiAttribs.display === "gradient")
                 {
                     const editor = new GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") });

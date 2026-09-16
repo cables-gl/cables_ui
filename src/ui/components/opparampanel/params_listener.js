@@ -16,7 +16,6 @@ import { CmdTimeline } from "../../commands/cmd_timeline.js";
 import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 import paramsHelper, { ParamInputListeners } from "./params_helper.js";
-import SpreadSheetTab from "../tabs/tab_spreadsheet.js";
 
 /**
  *listen to user interactions with ports in {@link OpParampanel}
@@ -75,7 +74,7 @@ class ParamsListener extends Events
 
         if (options.element)
         {
-            ele.clickables(options.element, ".clickable", (e, data) =>
+            ele.clickables(options.element, ".clickable", (_e, data) =>
             {
                 switch (data.click)
                 {
@@ -136,7 +135,7 @@ class ParamsListener extends Events
             {
                 const elm = ele.byId("portdelete_in_" + index);
                 // if (elm)ele.clickable(elm, () =>
-                if (elm)elm.addEventListener("click", (e) =>
+                if (elm)elm.addEventListener("click", () =>
                 {
                     this._portsIn[index].removeLinks();
                     gui.opParams.show(this._portsIn[index].op);
@@ -335,7 +334,7 @@ class ParamsListener extends Events
 
         updateColorBox();
 
-        ele.clickable(colEle, (e) =>
+        ele.clickable(colEle, () =>
         // colEle.addEventListener("click", (e) =>
         {
             let undoGroup;
@@ -407,7 +406,7 @@ class ParamsListener extends Events
 
         updateColorBox();
 
-        ele.clickable(colEle, (e) =>
+        ele.clickable(colEle, () =>
         {
             console.log("clickedg");
             const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
@@ -447,7 +446,7 @@ class ParamsListener extends Events
 
         updateColorBox();
 
-        ele.clickable(colEle, (e) =>
+        ele.clickable(colEle, () =>
         {
             const ge = new CurveEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
             // thePort.tempData.curveEditor = ge;
@@ -459,31 +458,50 @@ class ParamsListener extends Events
     }
 
     /**
-     * @param {any} thePort
-     * @param {string} panelid
-     * @param { number} idx
+     * @param {Port} thePort
+     * @param {String} panelid
+     * @param {Number} idx
      */
     watchSgPort(thePort, panelid, idx)
     {
-        const id = "watchsg_in_" + idx + "_" + panelid;
-        let inpEle = ele.byId(id);
-
-        // new NumberInput(inpEle);
-
-        if (!inpEle)
+        function updateValue()
         {
-            this._log.log("color ele not found!", id);
-            return;
+            let strval = "";
+            for (let i = 0; i < 4; i++)
+            {
+                const id = "watchsg_in_" + idx + "_" + panelid + "_" + i;
+                let inpEle = ele.byId(id);
+                if (inpEle)
+                    strval += (inpEle.value || 0.0) + ",";
+            }
+
+            thePort.attribs.sg = strval.substring(0, strval.length - 1) || 0;
+            thePort.op.updateGraph();
         }
 
-        if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
-        if (inpEle)inpEle.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
-        if (inpEle)inpEle.addEventListener("input", (e) =>
-        {
-            thePort.attribs.sg = inpEle.value;
-            thePort.op.updateGraph();
+        const parts = (thePort.attribs.sg || "").split(",");
 
-        });
+        for (let i = 0; i < 4; i++)
+        {
+            const id = "watchsg_in_" + idx + "_" + panelid + "_" + i;
+            let inpEle = ele.byId(id);
+
+            if (!inpEle)
+            {
+                this._log.log("sgport ele not found!", id);
+                continue;
+            }
+
+            inpEle.value = parts[i] || 0;
+
+            if (inpEle)inpEle.addEventListener("wheel", ParamInputListeners.InputListenerMousewheel);
+            if (inpEle)inpEle.addEventListener("keydown", ParamInputListeners.InputListenerCursorKeys);
+            if (inpEle)inpEle.addEventListener("input", () =>
+            {
+                updateValue();
+            });
+
+        }
     }
 
     /**
@@ -497,7 +515,7 @@ class ParamsListener extends Events
         const thePort = ports[index];
 
         if (ele.byId("portTitle_" + dirStr + "_" + index))
-            ele.byId("portTitle_" + dirStr + "_" + index).addEventListener("click", function (e)
+            ele.byId("portTitle_" + dirStr + "_" + index).addEventListener("click", function ()
             {
                 const p = ports[index];
                 if (!p.uiAttribs.hidePort)
@@ -528,19 +546,9 @@ class ParamsListener extends Events
         //     });
 
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
-            ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
+            ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function ()
             {
-                const op = gui.corePatch().getOpById(thePort.op.id);
-                const port = op.getPortByName(thePort.name);
-
-                new SpreadSheetTab(gui.mainTabs, port, {
-                    "title": gui.mainTabs.getUniqueTitle("Array " + thePort.name),
-                    "onchange": (content) =>
-                    {
-                        port.set(content);
-                        gui.emitEvent("portValueEdited", op, port, content);
-                    }
-                });
+                ParamInputListeners.OpenParamSpreadSheetEditor(thePort.op.id, thePort.name);
             });
 
         // /////////////////////
@@ -550,7 +558,7 @@ class ParamsListener extends Events
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
+            ParamInputListeners.OpenParamStringEditor(thePort.op.id, thePort.name, null, true);
         });
 
         // /////////////////////
@@ -558,7 +566,7 @@ class ParamsListener extends Events
         // input button click!!!!
         //
         el = ele.byId("portbutton_" + index + "_" + panelid);
-        if (el) el.addEventListener("click", (e) =>
+        if (el) el.addEventListener("click", () =>
         {
             thePort._onTriggered();
         });
@@ -879,6 +887,11 @@ class ParamsListener extends Events
         op.portsIn[index].op.refreshParams();
     }
 
+    /**
+     * @param {Port[]} ports
+     * @param {string} index
+     * @param {string} panelid
+     */
     initPortInputListener(ports, index, panelid)
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
@@ -910,7 +923,7 @@ class ParamsListener extends Events
                 for (let j = 0; j < labels.length; j++)
                 {
                     const l = labels[j];
-                    ele.clickable(l, (e) =>
+                    ele.clickable(l, () =>
                     {
                         const labelInput = ele.byQuery("#portSwitch_" + index + "_" + panelid + " #" + l.id + " input");
 
@@ -935,7 +948,7 @@ class ParamsListener extends Events
                 let portName = ports[index].name;
                 let opId = ports[index].op.id;
 
-                const cb = (e, keyboard) =>
+                const cb = (_e, keyboard) =>
                 {
                     valueChanger(theId, keyboard, portName, opId);
                     ele.byId(theId).focus();
@@ -951,7 +964,7 @@ class ParamsListener extends Events
                 el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
                 el.addEventListener("pointerenter", () => { isMouse = true; });
                 el.addEventListener("pointerleave", () => { isMouse = false; });
-                el.addEventListener("focus", (e) =>
+                el.addEventListener("focus", () =>
                 {
                     if (isMouse) return;
                     el.removeAttribute("tabindex");
@@ -1001,7 +1014,7 @@ class ParamsListener extends Events
                             }
                             catch (ex)
                             {
-                            // failed to parse math, use unparsed value
+                                // failed to parse math, use unparsed value
                                 mathParsed = e.target.value || 0;
                             }
                             e.target.value = mathParsed;

@@ -15,15 +15,15 @@
             {{/each}}
         </select>
 
-        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
+        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
+        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
     </td>
 
     {{else}}
     {{#if port.links}}
 
-        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
-        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
+        {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
+        {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} tt" data-tt="" ></span>{{/compare}}
 
         {{#compare port.type '==' 2 }}
             {{#if port.uiAttribs.objType}}
@@ -126,13 +126,22 @@
 <!-- {{port.uiAttribs.objType}}... -->
 
                             {{#compare port.uiAttribs.objType '==' 'sg_vec2' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_1" class="sg_default" value=""/>
+                            {{/compare}}
+                            {{#compare port.uiAttribs.objType '==' 'sg_vec3' }}
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_1" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_2" class="sg_default" value=""/>
                             {{/compare}}
                             {{#compare port.uiAttribs.objType '==' 'sg_vec4' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_1" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_2" class="sg_default" value=""/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_3" class="sg_default" value=""/>
                             {{/compare}}
                             {{#compare port.uiAttribs.objType '==' 'sg_sampler' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <!-- <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/> -->
                             {{/compare}}
 
                             {{#compare port.uiAttribs.objType '==' 'sg_bool' }}
@@ -141,7 +150,7 @@
 
 
                             {{#compare port.uiAttribs.objType '==' 'sg_float' }}
-                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"/>
+                                <input value="{{port.attribs.sg}}" data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}_0" class="sg_default" value="{{port.attribs.sg}}"/>
     <!-- <div -->
         <!-- data-value="{{port.attribs.sg}}" -->
         <!-- data-portid="{{port.id}}" id="watchsg_{{dirStr}}_{{portnum}}_{{panelid}}" class="sg_default" value="{{port.attribs.sg}}"> -->
@@ -170,8 +179,8 @@
                         tabindex="0"
                         {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
 
-                        <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
-                        <input autocomplete="off" data-portname="{{port.name}}" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
+                        <span class="numberinput-display" id="numberinputDisplay_{{ port.tempData.watchId }}_{{ panelid }}">{{ port.value }}</span>
+                        <input autocomplete="off" data-portname="{{port.name}}" class="numberinput-value hidden watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
 
                     </div>
                 {{/compare}}
@@ -293,19 +302,19 @@
                         </span>
 
                         <span id="fileInputContainer_{{ portnum }}" class="hidden">
-                            <input autocomplete="off" class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" style="width:90%;display:inline-block;"/>
+                            <input autocomplete="off" class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}" style="width:90%;display:inline-block;"/>
                         </span>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'text' }}
                     </td><td>
-                        <textarea class="value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} info" id="portval_{{ portnum }}_{{ panelid }}">{{port.value}}</textarea>
+                        <textarea class="value watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} info" id="portval_{{ portnum }}_{{ panelid }}">{{port.value}}</textarea>
                 {{/compare}}
             {{else}}
                 {{#compare port.type '==' '5' }}
                         </td>
                     <td>
                     <!-- string -->
-                    <input spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
+                    <input spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }}" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
                 {{/compare}}
 
                 {{#compare port.type '==' '1' }} </td><td>[trigger]
@@ -324,8 +333,8 @@
                                 id="portval_{{ portnum }}_{{ panelid }}-container"
 
                                 onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
-                                <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
-                                <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
+                                <span class="numberinput-display" id="numberinputDisplay_{{ port.tempData.watchId }}_{{ panelid }}">{{ port.value }}</span>
+                                <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
 
                             </div>
                         {{/compare}}
@@ -333,14 +342,14 @@
                             {{#if port.uiAttribs.multiPort}}
                             {{else}}
                                 </td><td>
-                                    <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >Array{{#if port.uiAttribs.stride}}{{port.uiAttribs.stride}}{{/if}}</span>
+                                    <span class="value valuetext watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} inspectable" >Array{{#if port.uiAttribs.stride}}{{port.uiAttribs.stride}}{{/if}}</span>
                             {{/if}}
                         {{/compare}}
                         {{#compare port.type '==' 2}}
                     </td>
                     <td>
                     oo
-                        <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >
+                        <span class="value valuetext watchPort watchPortValue_{{ port.tempData.watchId }}_{{ panelid }} inspectable" >
                         </span>
                 {{/compare}}
                 {{#compare port.type '==' 4}}
