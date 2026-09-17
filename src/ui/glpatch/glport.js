@@ -98,7 +98,7 @@ export default class GlPort
         this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_HOVER, this._onHover.bind(this)));
         this.#mouseEventListeners.push(this.#rect.on(GlRect.EVENT_POINTER_UNHOVER, this._onUnhover.bind(this)));
 
-        this.#port.on("onLinkChanged", this._onLinkChanged.bind(this));
+        this.#port.on(Port.EVENT_LINK_CHANGED, this._onLinkChanged.bind(this));
         this.#port.on("onValueChangeUi", () =>
         {
             if (this.#glop.op && this.#glop.op.uiAttribs.mathTitle) this.#glop.setTitle();
