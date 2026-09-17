@@ -43,7 +43,7 @@ export default class Profiler
     }
 
     /**
-     * @param {import("cables/src/core/core_profiler.js").ProfilerItem[]} opids
+     * @param {import("cables/src/core/core_op_profiler.js").ProfilerItem[]} opids
      * @param {number} maxTime
      */
     updateHeatmap(opids, maxTime)
@@ -141,7 +141,7 @@ export default class Profiler
         const cumulated = {};
         const cumulatedSubPatches = {};
 
-        /** @type {Object.<string,import("cables/src/core/core_profiler.js").ProfilerItem>} */
+        /** @type {Object.<string,import("cables/src/core/core_op_profiler.js").ProfilerItem>} */
         const opids = {};
         let maxMsSecond = 0;
 
