@@ -263,7 +263,7 @@ export default class Gui extends Events
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
-        /** @type {user} */
+        /** @type {import("./api/opsserver.js").User} */
         this.user = null;
         this.onSaveProject = null;
         this.lastNotIdle = now();
@@ -288,7 +288,7 @@ export default class Gui extends Events
     }
 
     /**
-     * @param {Object} p
+     * @param {import("cables-shared-client").SerializedPatch} p
      */
     setProject(p)
     {

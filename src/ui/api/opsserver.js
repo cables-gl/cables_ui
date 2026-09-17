@@ -22,8 +22,12 @@ import { CmdOps } from "../commands/cmd_op.js";
 
 /**
  * @typedef User
+ * @property {string} id
+ * @property {boolean} usernameLowercase
+ * @property {string[]} supporterFeatures
  * @property {boolean} isStaff
  * @property {boolean} isAdmin
+ * @property {boolean} isSupporter
  * @property {boolean} username
  */
 
@@ -868,6 +872,10 @@ export default class ServerOps
         });
     }
 
+    /**
+     * @param {string} [name]
+     * @param {{ hasOwnProperty?: any; showEditor?: any; cb?: any; }} [options]
+     */
     createDialog(name, options)
     {
         options = options || {};
@@ -1876,6 +1884,9 @@ export default class ServerOps
         return this.canEditOp(user, opName);
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatch} proj
+     */
     getMissingOps(proj)
     {
         const perf = gui.uiProfiler.start("[opsserver] getMissingOps");
@@ -2184,7 +2195,7 @@ export default class ServerOps
     }
 
     /**
-     * @param {Op} op
+     * @param {import("cables-shared-client").SerializedOp} op
      */
     getOpIdentifier(op)
     {

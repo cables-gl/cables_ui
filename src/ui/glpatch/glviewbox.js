@@ -583,6 +583,9 @@ export default class GlViewBox
         return [mouseAbsX, mouseAbsY];
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatchUi} dataui
+     */
     serialize(dataui)
     {
         this.storeCurrentSubPatch();
@@ -590,6 +593,9 @@ export default class GlViewBox
         dataui.viewBoxesGl = this._subPatchViewBoxes;
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatchUi} dataui
+     */
     deSerialize(dataui)
     {
         dataui = dataui || {};
