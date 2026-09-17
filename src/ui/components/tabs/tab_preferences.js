@@ -50,6 +50,10 @@ export default class Preferences
         }
     }
 
+    /**
+     * @param {string} name
+     * @param {string | boolean|number} value
+     */
     setSwitchValue(name, value)
     {
         if (value === null)value = false;

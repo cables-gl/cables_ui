@@ -2000,11 +2000,17 @@ export default class GlPatch extends Events
         this.viewBox.storeCurrentSubPatch();
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatchUi} dataUi
+     */
     serialize(dataUi)
     {
         this.viewBox.serialize(dataUi);
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatch} proj
+     */
     setProject(proj)
     {
         this.viewBox.deSerialize(proj.ui);

@@ -4,6 +4,20 @@ import { UserSettings, userSettings } from "../../components/usersettings.js";
 import { gui } from "../../gui.js";
 
 /**
+ * @typedef cbData
+ * @property {string} [opId]
+ * @property {string} [portname]
+ * @property {string} [opname]
+ * @property {string} [name]
+ */
+
+/**
+* @callback editorReopenCallback
+* @param {string} type
+* @param {cbData} data
+*/
+
+/**
  * @typedef EditorSessionOptions
  * @property {string} type
  * @property {object} data
@@ -15,22 +29,22 @@ import { gui } from "../../gui.js";
  */
 export default class EditorSession
 {
-    #openEditors;
-    #listeners;
+    #openEditors = [];
+
+    /** @type {Object<String,editorReopenCallback>} */
+    #listeners = {};
 
     /**
      * @param {boolean} [userInteraction]
      */
     constructor(userInteraction = false)
     {
-        this.#openEditors = [];
-        this.#listeners = {};
         this._loadingCount = 0;
         this._loadedCurrentTab = false;
 
         this.addListener("param", (name, data) =>
         {
-            ParamInputListeners.OpenParamStringEditor(data.opid, data.portname, null, userInteraction);
+            ParamInputListeners.OpenParamStringEditor(data.opId, data.portname, null, userInteraction);
         });
 
         this.addListener("welcometab", (name, data) =>
@@ -153,8 +167,8 @@ export default class EditorSession
 
     /**
      * add listener, a callback will be executed for this type when editor is reopened.
-     * @name addListener
-     * @function
+     * @param {string} type
+     * @param {editorReopenCallback} cb
      */
     addListener(type, cb)
     {

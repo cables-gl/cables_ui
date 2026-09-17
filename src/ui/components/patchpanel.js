@@ -24,7 +24,7 @@ export default class PatchPanel extends Events
     }
 
     /**
-     * @param {object} obj
+     * @param {import("cables-shared-client").SerializedPatch} obj
      */
     deserialize(obj)
     {

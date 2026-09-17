@@ -6,6 +6,18 @@ import namespace from "../namespaceutils.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import defaultOps from "../defaultops.js";
 
+/**
+ * @typedef DialogOptions
+ * @property {string} title
+ * @property {string} shortName
+ * @property {string} type
+ * @property {string} suggestedNamespace
+ * @property {boolean} showReplace
+ * @property {boolean} rename
+ * @property {string} sourceOpName
+ * @property {boolean} hasOpDirectories
+ */
+
 export class ModalOpName
 {
 
@@ -59,6 +71,9 @@ export class ModalOpName
         }
     }
 
+    /**
+     * @param {DialogOptions} options
+     */
     _createModal(options, opDirs = [])
     {
         this._modalDialog = new ModalDialog({
@@ -124,6 +139,9 @@ export class ModalOpName
         });
     }
 
+    /**
+     * @param {DialogOptions} dialogOptions
+     */
     _updateDialog(dialogOptions, data, newOpName, newNamespace = null)
     {
         let hintsHtml = "";
@@ -324,6 +342,9 @@ export class ModalOpName
 
     }
 
+    /**
+     * @param {DialogOptions} dialogOptions
+     */
     _namespaceChangeListener(dialogOptions)
     {
         const opNameInput = ele.byId("opNameDialogInput");
@@ -343,6 +364,9 @@ export class ModalOpName
         }
     }
 
+    /**
+     * @param {DialogOptions} dialogOptions
+     */
     _nameChangeListener(dialogOptions)
     {
         const newNamespace = ele.byId("opNameDialogNamespace").value;

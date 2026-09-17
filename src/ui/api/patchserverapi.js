@@ -51,10 +51,13 @@ export default class PatchSaveServer extends Events
             return this._currentProject.ui;
     }
 
-    setProject(proj)
+    /**
+     * @param {import("cables-shared-client").SerializedPatch} patch
+     */
+    setProject(patch)
     {
-        gui.setProjectName(proj.name);
-        this._currentProject = proj;
+        gui.setProjectName(patch.name);
+        this._currentProject = patch;
     }
 
     setServerDate(d)
@@ -618,7 +621,7 @@ export default class PatchSaveServer extends Events
                 platform.savePatch(
                     {
                         "name": name,
-                        "namespace": currentProject.namespace,
+                        "namespace": currentProject._id,
                         "dataB64": b64,
                         "fromBackup": platform.getPatchVersion() || false,
                         "buildInfo":
@@ -928,11 +931,11 @@ export default class PatchSaveServer extends Events
             for (let j = 0; j < l.args.length; j++)
             {
                 const arg = l.args[j];
-                let neewArg = "";
+                let newArg = "";
 
                 try
                 {
-                    neewArg = structuredClone(arg);
+                    newArg = structuredClone(arg);
                 }
                 catch (e)
                 {
@@ -940,19 +943,19 @@ export default class PatchSaveServer extends Events
                     {
                         if (arg.constructor.name == "Op")
                         {
-                            neewArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
+                            newArg = { "objName": arg.objName, "id": arg.id, "opId": arg.opId };
                         }
                         else if (arg.getSerialized)
                         {
-                            neewArg = arg.getSerialized();
+                            newArg = arg.getSerialized();
                         }
                         else if (arg.serialize)
                         {
-                            neewArg = arg.serialize();
+                            newArg = arg.serialize();
                         }
                         else
                         {
-                            neewArg = " unknown, could not serialize:" + arg.constructor.name;
+                            newArg = " unknown, could not serialize:" + arg.constructor.name;
                         }
                     }
                     else
@@ -960,7 +963,7 @@ export default class PatchSaveServer extends Events
                         this._log.log("no arg", e);
                     }
                 }
-                newLine.args.push(neewArg);
+                newLine.args.push(newArg);
 
                 if (arg)
                 {

@@ -71,7 +71,7 @@ export default class PatchOutline extends Events
     }
 
     /**
-     * @param {Object} p
+     * @param {import("cables-shared-client").SerializedPatch} p
      */
     deserialize(p)
     {

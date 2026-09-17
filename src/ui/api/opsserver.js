@@ -22,8 +22,12 @@ import { CmdOps } from "../commands/cmd_op.js";
 
 /**
  * @typedef User
+ * @property {string} id
+ * @property {boolean} usernameLowercase
+ * @property {string[]} supporterFeatures
  * @property {boolean} isStaff
  * @property {boolean} isAdmin
+ * @property {boolean} isSupporter
  * @property {boolean} username
  */
 
@@ -71,13 +75,13 @@ export default class ServerOps
                 editorSession.startLoadingTab();
                 const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
 
-                if (data && data.opId)
-                {
-                    name = {
-                        "opId": data.opId,
-                        "objName": name
-                    };
-                }
+                // if (data && data.opId)
+                // {
+                //     name = {
+                //         "opId": data.opId,
+                //         "objName": name
+                //     };
+                // }
 
                 this.edit(name, false, () =>
                 {
@@ -88,7 +92,7 @@ export default class ServerOps
             }
         );
 
-        editorSession.addListener("attachment", (name, data) =>
+        editorSession.addListener("attachment", (_name, data) =>
         {
             editorSession.startLoadingTab();
             if (data && data.opname)
@@ -399,6 +403,12 @@ export default class ServerOps
         }, reloadDependencies);
     }
 
+    /**
+     * @param {string} oldname
+     * @param {string} name
+     * @param {function} cb
+     * @param {object} [options]
+     */
     clone(oldname, name, cb, options)
     {
         options = options || { "openEditor": true };
@@ -483,6 +493,11 @@ export default class ServerOps
         });
     }
 
+    /**
+     * @param {string} opName
+     * @param {string} libName
+     * @param {function} next
+     */
     addOpLib(opName, libName, next)
     {
         if (libName === "---") return;
@@ -857,6 +872,10 @@ export default class ServerOps
         });
     }
 
+    /**
+     * @param {string} [name]
+     * @param {{ hasOwnProperty?: any; showEditor?: any; cb?: any; }} [options]
+     */
     createDialog(name, options)
     {
         options = options || {};
@@ -1865,6 +1884,9 @@ export default class ServerOps
         return this.canEditOp(user, opName);
     }
 
+    /**
+     * @param {import("cables-shared-client").SerializedPatch} proj
+     */
     getMissingOps(proj)
     {
         const perf = gui.uiProfiler.start("[opsserver] getMissingOps");
@@ -2137,7 +2159,7 @@ export default class ServerOps
                     if (cb) cb();
                 }
             });
-            loadjs(collectionOpUrl, lid, { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
+            loadjs(collectionOpUrl, lid, { "before": (_path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
         }
         else
         {
@@ -2146,6 +2168,9 @@ export default class ServerOps
         }
     }
 
+    /**
+     * @param {import("cables-shared-client").ApiError} err
+     */
     showApiError(err)
     {
         if (err && err.msg == "ILLEGAL_OPS")
@@ -2170,7 +2195,7 @@ export default class ServerOps
     }
 
     /**
-     * @param {Op} op
+     * @param {import("cables-shared-client").SerializedOp} op
      */
     getOpIdentifier(op)
     {
