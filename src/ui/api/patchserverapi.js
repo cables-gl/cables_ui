@@ -333,7 +333,7 @@ export default class PatchSaveServer extends Events
                 {
                     const collabUsers = [];
                     const collabTeams = [];
-                    let copyAssets = false;
+                    let copyAssets = "";
 
                     if (checkboxStates)
                     {
@@ -578,6 +578,9 @@ export default class PatchSaveServer extends Events
         }, 320);
     }
 
+    /**
+     * @param {Function} cb
+     */
     _saveCurrentProject(cb)
     {
         if (platform.isSaving())
@@ -608,7 +611,7 @@ export default class PatchSaveServer extends Events
                 const origSize = Math.round(datastr.length / 1024);
 
                 // console.log("origsize", origSize);
-                //
+
                 let uint8data = pako.deflate(datastr);
                 if (origSize > 1000) this._log.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
                 let b64 = bytesArrToBase64(uint8data);
@@ -911,6 +914,8 @@ export default class PatchSaveServer extends Events
 
     createErrorReport(title)
     {
+
+        /** @type {import("cables-shared-client").ErrorReport} */
         const report = {};
         report.title = title;
         report.patchTitle = gui.project().name;
@@ -1006,8 +1011,11 @@ export default class PatchSaveServer extends Events
 
         try
         {
-            const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
-            report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+            if (gui.corePatch().cgl)
+            {
+                const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
+                report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+            }
         }
         catch (e)
         {
@@ -1017,6 +1025,9 @@ export default class PatchSaveServer extends Events
         return report;
     }
 
+    /**
+     * @param {import("cables-shared-client").ErrorReport} report
+     */
     sendErrorReport(report, manualSend = true)
     {
         const doneCallback = (res) =>

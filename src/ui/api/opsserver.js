@@ -22,13 +22,13 @@ import { CmdOps } from "../commands/cmd_op.js";
 
 /**
  * @typedef User
+ * @property {string} username
  * @property {string} id
  * @property {boolean} usernameLowercase
  * @property {string[]} supporterFeatures
  * @property {boolean} isStaff
  * @property {boolean} isAdmin
  * @property {boolean} isSupporter
- * @property {boolean} username
  */
 
 /**
