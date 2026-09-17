@@ -1003,8 +1003,9 @@ export default class PatchSaveServer extends Events
 
         try
         {
-            const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
-            report.glRenderer = gui.corePatch().cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+            const gl = gui.corePatch().cgl.gl;
+            const dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
+            report.glRenderer = (dbgRenderInfo && gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL)) || gl.getParameter(gl.RENDERER);
         }
         catch (e)
         {

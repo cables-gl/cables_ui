@@ -146,8 +146,7 @@ export default class Gui extends Events
 
         this._log = new Logger("gui");
 
-        /** @type {import("./theme.js").CablesTheme} */
-        this.theme = defaultTheme;
+        this.theme = /** @type {import("./theme.js").CablesTheme} */ (/** @type {unknown} */ (defaultTheme));
 
         /** @type {UserSettings} */
         this.userSettings = userSettings;
@@ -2293,7 +2292,7 @@ export default class Gui extends Events
     init()
     {
 
-        this.setTheme(structuredClone(defaultTheme));
+        this.setTheme(/** @type {import("./theme.js").CablesTheme} */ (/** @type {unknown} */ (structuredClone(defaultTheme))));
 
         if (window.localStorage.getItem("cables_theme") && window.localStorage.getItem("cables_theme") != "null" && window.localStorage.getItem("cables_theme") != "undefined")
         {

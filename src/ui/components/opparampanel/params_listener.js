@@ -476,7 +476,7 @@ class ParamsListener extends Events
             }
 
             thePort.attribs.sg = strval.substring(0, strval.length - 1) || "0";
-            thePort.op.updateGraph();
+            thePort.op.tempData.shaderNode.updateGraph();
         }
 
         const parts = (thePort.attribs.sg || "").split(",");
